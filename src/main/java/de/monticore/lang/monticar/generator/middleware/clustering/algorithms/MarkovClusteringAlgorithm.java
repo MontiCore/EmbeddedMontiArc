@@ -147,7 +147,7 @@ public class MarkovClusteringAlgorithm implements ClusteringAlgorithm {
             for (int i=0; i<adjMatrix[0].length; i++) {
                 original_ds.add(new DenseInstance(new double[]{i}));
             }
-            MarkovClusteringBuilder builder = new MarkovClusteringBuilder(AutomaticClusteringHelper.adjacencyMatrix2transitionMatrix(adjMatrix));
+            MarkovClusteringBuilder builder = new MarkovClusteringBuilder(AutomaticClusteringHelper.weightedAdjacencyMatrix2transitionMatrix(adjMatrix));
             if (maxResidual != null) builder.setMaxResidual(maxResidual);
             if (gammaExp != null) builder.setGammaExp(gammaExp);
             if (loopGain != null) builder.setLoopGain(loopGain);

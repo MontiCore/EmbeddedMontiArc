@@ -19,6 +19,9 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class AutomaticClusteringHelper {
+
+    static double MAXCOST= 999999;
+
     public static double[][] createAdjacencyMatrix(List<ExpandedComponentInstanceSymbol> subcomps, Collection<ConnectorSymbol> connectors, Map<String, Integer> subcompLabels) {
         // Nodes = subcomponents
         // Verts = connectors between subcomponents
@@ -59,6 +62,48 @@ public class AutomaticClusteringHelper {
         }
 
         return transitionMatrix;
+    }
+
+
+    // generic matrix normalizer
+    public static double[][] normalizeMatrix(double[][] matrix) {
+        double[][] normalizedMatrix= matrix;
+
+        double normalizer;
+        double sum;
+        for(int i = 0; i < matrix[0].length; i++) {
+            normalizer= 0;
+            sum= 0;
+            for(int j = 0; j < matrix[0].length; j++) {
+                sum+= normalizedMatrix[i][j];
+            }
+            if (sum>0) normalizer= 1.0/sum;
+            for(int j = 0; j < matrix[0].length; j++) {
+                normalizedMatrix[i][j] = matrix[i][j] * normalizer;
+            }
+        }
+
+        return normalizedMatrix;
+    }
+
+    // calculate the inverse probabilities of a transition matrix
+    // (regard zero as immutable zero probability)
+    public static double[][] inverseProbabilitiesMatrix(double[][] matrix) {
+        double[][] inverseProbabilityMatrix= matrix;
+
+        for(int i = 0; i < matrix[0].length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (matrix[i][j] > 0) inverseProbabilityMatrix[i][j] = 1.0/matrix[i][j];
+            }
+        }
+
+        return inverseProbabilityMatrix;
+    }
+
+    // Weights in the adjacency matrix are regarded cost or penalty.
+    // They are seen as "inverse probability" (1/prob) in the transition matrix.
+    public static double[][] weightedAdjacencyMatrix2transitionMatrix(double[][] adjacencyMatrix) {
+        return normalizeMatrix(inverseProbabilitiesMatrix(adjacencyMatrix));
     }
 
     public static void annotateComponentWithRosTagsForClusters(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<Set<ExpandedComponentInstanceSymbol>> clusters) {

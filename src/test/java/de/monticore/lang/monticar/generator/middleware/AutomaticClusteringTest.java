@@ -258,6 +258,73 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
     }
 
     @Test
+    public void testWeightedAdjacencyMatrix2transitionMatrix() {
+
+        /*
+
+        0----1----4---6
+        | \/ |     \ /
+        | /\ |      5
+        2----3
+
+        weights used for testing: 1, 5, 10, 20, 50
+
+        */
+
+        double[][] adjacencyMatrix =
+                {
+                        {0, 1, 5, 20, 0, 0, 0},
+                        {1, 0, 1, 1, 50, 0, 0},
+                        {5, 1, 0, 1, 0, 0, 0},
+                        {20, 1, 1, 0, 0, 0, 0},
+                        {0, 50, 0, 0, 0, 1, 1},
+                        {0, 0, 0, 0, 1, 0, 1},
+                        {0, 0, 0, 0, 1, 1, 0},
+                };
+
+        double[][] transitionMatrix = AutomaticClusteringHelper.weightedAdjacencyMatrix2transitionMatrix(adjacencyMatrix);
+
+        double minValWeight;
+        double minValProb;
+        double ratioWeight;
+        double ratioProb;
+        double sum;
+        for(int i = 0; i < transitionMatrix[0].length; i++) {
+            System.out.println();
+            minValWeight= minValProb= Double.MAX_VALUE;
+            sum= 0;
+            // calculate sum and smallest value >0 in transitionMatrix
+            for (int j = 0; j < transitionMatrix[0].length; j++) {
+                System.out.print(transitionMatrix[i][j] + " ");
+                sum+= transitionMatrix[i][j];
+                if (adjacencyMatrix[i][j]>0) {
+                    if (adjacencyMatrix[i][j] < minValWeight) minValWeight= adjacencyMatrix[i][j];
+                }
+            }
+            // expectation: each row sums up to exactly 1
+            System.out.print(" SUM: " + sum);
+            assertEquals(1.0, sum, 0);
+            // find smallest value >0 in adjacencyMatrix
+            for (int j = 0; j < transitionMatrix[0].length; j++) {
+                if (adjacencyMatrix[i][j]>0) {
+                    if (adjacencyMatrix[i][j] < minValProb) minValProb= adjacencyMatrix[i][j];
+                }
+            }
+            // check pairwise ratio of probabilities
+            for (int j = 0; j < transitionMatrix[0].length; j++) {
+                if (transitionMatrix[i][j]>0) {
+                    ratioWeight= minValWeight/adjacencyMatrix[i][j];
+                    ratioProb= minValProb/transitionMatrix[i][j];
+                    // expectation: the ratio between the smallest weight and each row weight in the adjacencyMatrix is the same
+                    // as the ratio between the smallest probability and each row probability in the transitionMatrix
+                    assertEquals(ratioWeight, ratioProb, 0);
+                }
+            }
+        }
+
+    }
+
+    @Test
     public void testMarkovClustering(){
 
         /*
