@@ -20,8 +20,8 @@
  */
 package de.monticore.lang.monticar.emadl.cocos;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl.AbstractSymtabTest;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.symboltable.Scope;
@@ -44,15 +44,15 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
 
     private static final String MODEL_PATH = "src/test/resources/";
 
-    protected static ExpandedComponentInstanceSymbol getComponentInstance(String modelPath, String model) {
+    protected static EMAComponentInstanceSymbol getComponentInstance(String modelPath, String model) {
 
         Scope symTab = createSymTab(MODEL_PATH + modelPath);
-        ComponentSymbol comp = symTab.<ComponentSymbol> resolve(
-                model, ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol comp = symTab.<EMAComponentSymbol> resolve(
+                model, EMAComponentSymbol.KIND).orElse(null);
         assertNotNull("Could not resolve model " + model, comp);
 
-        return (ExpandedComponentInstanceSymbol) comp.getEnclosingScope()
-                .resolveLocally(ExpandedComponentInstanceSymbol.KIND)
+        return (EMAComponentInstanceSymbol) comp.getEnclosingScope()
+                .resolveLocally(EMAComponentInstanceSymbol.KIND)
                 .stream().findFirst().get();
     }
 
