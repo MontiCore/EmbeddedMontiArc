@@ -76,8 +76,6 @@ public class GenerationTest extends AbstractSymtabTest {
         middlewareGenerator.add(new CPPGenImpl(), "cpp");
 
         List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
-        testFilesAreEqual(files, "CMakeCppOnly/src/", generationTargetPath);
-
     }
 
     @Test
@@ -102,8 +100,6 @@ public class GenerationTest extends AbstractSymtabTest {
         distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
-
-        testFilesAreEqual(files, "system/src/", generationTargetPath);
     }
 
     @Test
