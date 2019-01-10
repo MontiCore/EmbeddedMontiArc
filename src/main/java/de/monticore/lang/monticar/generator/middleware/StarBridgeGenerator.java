@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
@@ -34,7 +34,7 @@ public class StarBridgeGenerator implements GeneratorImpl {
         this.generationTargetPath = path.endsWith("/") ? path : path + "/";
     }
 
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         List<File> result = new ArrayList<>();
         generatorImpls.forEach((key, value) -> {
             if (key.willAccept(componentInstanceSymbol)) {

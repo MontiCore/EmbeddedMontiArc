@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
 import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
@@ -127,7 +127,7 @@ public final class DistributedTargetGeneratorCli {
             }
         });
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve(cliParameters.getRootModel(), ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve(cliParameters.getRootModel(), EMAComponentInstanceSymbol.KIND).orElse(null);
 
         if (componentInstanceSymbol == null) {
             Log.error("0x5FFAE: The given component cannot be resolved.");

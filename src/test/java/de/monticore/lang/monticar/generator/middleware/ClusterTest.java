@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusterFromTagsHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
@@ -29,15 +29,15 @@ public class ClusterTest extends AbstractSymtabTest {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.dist.distComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.dist.distComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
         List<Set<ExpandedComponentInstanceSymbol>> clusters = ClusterFromTagsHelper.getClusters(componentInstanceSymbol);
         assertTrue(clusters.size() == 2);
 
-        Set<ExpandedComponentInstanceSymbol> cluster1 = new HashSet<>();
-        Set<ExpandedComponentInstanceSymbol> cluster2 = new HashSet<>();
+        Set<EMAComponentInstanceSymbol> cluster1 = new HashSet<>();
+        Set<EMAComponentInstanceSymbol> cluster2 = new HashSet<>();
 
         cluster1.add(componentInstanceSymbol.getSubComponent("sub1").orElse(null));
         cluster2.add(componentInstanceSymbol.getSubComponent("sub2").orElse(null));
@@ -51,14 +51,14 @@ public class ClusterTest extends AbstractSymtabTest {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.dist.twoCompCluster", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.dist.twoCompCluster", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
         List<Set<ExpandedComponentInstanceSymbol>> clusters = ClusterFromTagsHelper.getClusters(componentInstanceSymbol);
 
-        Set<ExpandedComponentInstanceSymbol> cluster1 = new HashSet<>();
-        Set<ExpandedComponentInstanceSymbol> cluster2 = new HashSet<>();
+        Set<EMAComponentInstanceSymbol> cluster1 = new HashSet<>();
+        Set<EMAComponentInstanceSymbol> cluster2 = new HashSet<>();
 
         cluster1.add(componentInstanceSymbol.getSubComponent("sub1").orElse(null));
         cluster2.add(componentInstanceSymbol.getSubComponent("sub2").orElse(null));
@@ -70,23 +70,23 @@ public class ClusterTest extends AbstractSymtabTest {
         List<ExpandedComponentInstanceSymbol> clusterComps = ClusterFromTagsHelper.getClusterSubcomponents(componentInstanceSymbol);
         assertTrue(clusterComps.size() == 2);
 
-        ExpandedComponentInstanceSymbol clusterComp1 = clusterComps.get(0);
-        ExpandedComponentInstanceSymbol clusterComp2 = clusterComps.get(1);
+        EMAComponentInstanceSymbol clusterComp1 = clusterComps.get(0);
+        EMAComponentInstanceSymbol clusterComp2 = clusterComps.get(1);
 
         assertTrue(clusterComp1.getName().equals("sub1"));
-        assertTrue(clusterComp1.getPort("rosOut").isPresent());
+        assertTrue(clusterComp1.getPortInstance("rosOut").isPresent());
 
-        PortSymbol rosIn = clusterComp2.getPort("rosIn").orElse(null);
-        ExpandedComponentInstanceSymbol sub2 = clusterComp2.getSubComponent("sub2").orElse(null);
-        ExpandedComponentInstanceSymbol sub3 = clusterComp2.getSubComponent("sub3").orElse(null);
+        EMAPortInstanceSymbol rosIn = clusterComp2.getPortInstance("rosIn").orElse(null);
+        EMAComponentInstanceSymbol sub2 = clusterComp2.getSubComponent("sub2").orElse(null);
+        EMAComponentInstanceSymbol sub3 = clusterComp2.getSubComponent("sub3").orElse(null);
 
         assertNotNull(rosIn);
         assertNotNull(sub2);
         assertNotNull(sub3);
 
-        PortSymbol sub2NoRosOut = sub2.getPort("noRosOut").orElse(null);
-        PortSymbol sub3NoRosIn = sub3.getPort("noRosIn").orElse(null);
-        PortSymbol sub3RosIn = sub3.getPort("rosIn").orElse(null);
+        EMAPortInstanceSymbol sub2NoRosOut = sub2.getPortInstance("noRosOut").orElse(null);
+        EMAPortInstanceSymbol sub3NoRosIn = sub3.getPortInstance("noRosIn").orElse(null);
+        EMAPortInstanceSymbol sub3RosIn = sub3.getPortInstance("rosIn").orElse(null);
 
         assertNotNull(sub2NoRosOut);
         assertNotNull(sub3NoRosIn);
@@ -102,7 +102,7 @@ public class ClusterTest extends AbstractSymtabTest {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.dist.twoCompCluster", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.dist.twoCompCluster", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
@@ -119,7 +119,7 @@ public class ClusterTest extends AbstractSymtabTest {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.dist.invalidSuperConnection", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.dist.invalidSuperConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
@@ -141,14 +141,14 @@ public class ClusterTest extends AbstractSymtabTest {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.dist.validSuperConnection", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.dist.validSuperConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
         List<Set<ExpandedComponentInstanceSymbol>> clusters = ClusterFromTagsHelper.getClusters(componentInstanceSymbol);
         assertTrue(clusters.size() == 1);
 
-        Set<ExpandedComponentInstanceSymbol> cluster1 = new HashSet<>();
+        Set<EMAComponentInstanceSymbol> cluster1 = new HashSet<>();
         cluster1.add(componentInstanceSymbol.getSubComponent("sub1").orElse(null));
 
         assertTrue(clusters.contains(cluster1));

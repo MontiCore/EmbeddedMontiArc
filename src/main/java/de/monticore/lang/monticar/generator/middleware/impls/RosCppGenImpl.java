@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
@@ -25,7 +25,7 @@ public class RosCppGenImpl implements GeneratorImpl {
     }
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
         return generatorRosCpp.generateFiles(componentInstanceSymbol, taggingResolver);
     }
@@ -36,10 +36,8 @@ public class RosCppGenImpl implements GeneratorImpl {
     }
 
     @Override
-    public boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        boolean result = componentInstanceSymbol.getPortsList().stream()
-                .filter(PortSymbol::isRosPort)
-                .count() > 0;
+    public boolean willAccept(EMAComponentInstanceSymbol componentInstanceSymbol) {
+        boolean result = componentInstanceSymbol.getPortInstanceList().stream().anyMatch(EMAPortInstanceSymbol::isRosPort);
         if(!result){
             Log.warn("GeneratorRosCpp: No ROS Ports found! Ignoring component " + componentInstanceSymbol.getName());
         }

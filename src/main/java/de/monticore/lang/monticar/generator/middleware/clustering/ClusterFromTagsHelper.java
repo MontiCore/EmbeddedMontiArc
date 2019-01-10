@@ -1,6 +1,13 @@
 package de.monticore.lang.monticar.generator.middleware.clustering;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
@@ -19,13 +26,13 @@ public class ClusterFromTagsHelper {
     private ClusterFromTagsHelper() {
     }
 
-    public static List<Set<ExpandedComponentInstanceSymbol>> getClusters(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        Graph<ExpandedComponentInstanceSymbol, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
+    public static List<Set<EMAComponentInstanceSymbol>> getClusters(EMAComponentInstanceSymbol componentInstanceSymbol) {
+        Graph<EMAComponentInstanceSymbol, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
 
         componentInstanceSymbol.getSubComponents().forEach(graph::addVertex);
         graph.addVertex(componentInstanceSymbol);
 
-        componentInstanceSymbol.getConnectors().stream()
+        componentInstanceSymbol.getConnectorInstances().stream()
                 .filter(c -> !(c.getSourcePort().getMiddlewareSymbol().isPresent() && c.getTargetPort().getMiddlewareSymbol().isPresent()))
                 .forEach(c -> {
                     ExpandedComponentInstanceSymbol compSource = c.getSourcePort().getComponentInstance().orElse(null);
@@ -38,7 +45,7 @@ public class ClusterFromTagsHelper {
                     }
                 });
 
-        ConnectivityInspector<ExpandedComponentInstanceSymbol, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(graph);
+        ConnectivityInspector<EMAComponentInstanceSymbol, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(graph);
         int instanceSetSize = connectivityInspector.connectedSetOf(componentInstanceSymbol).size();
         if (instanceSetSize != 1) {
             Log.warn("0x8EFC3: The supercomponent can only be connected to subcomponents via middleware ports!");
@@ -48,13 +55,13 @@ public class ClusterFromTagsHelper {
         if (instanceSetSize != componentInstanceSymbol.getSubComponents().size() + 1)
             graph.removeVertex(componentInstanceSymbol);
 
-        List<Set<ExpandedComponentInstanceSymbol>> res = connectivityInspector.connectedSets();
+        List<Set<EMAComponentInstanceSymbol>> res = connectivityInspector.connectedSets();
         return res;
     }
 
-    public static List<ExpandedComponentInstanceSymbol> getClusterSubcomponents(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        List<Set<ExpandedComponentInstanceSymbol>> clusters = getClusters(componentInstanceSymbol);
-        List<ExpandedComponentInstanceSymbol> res = new ArrayList<>();
+    public static List<EMAComponentInstanceSymbol> getClusterSubcomponents(EMAComponentInstanceSymbol componentInstanceSymbol) {
+        List<Set<EMAComponentInstanceSymbol>> clusters = getClusters(componentInstanceSymbol);
+        List<EMAComponentInstanceSymbol> res = new ArrayList<>();
         int[] i = {0};
         clusters.forEach(c -> {
             if (c.size() == 1) {
@@ -81,13 +88,13 @@ public class ClusterFromTagsHelper {
 //    Sub Ros -> Super Ros: handled(let ros connect)
 //    Sub Ros -> Sub Ros: do nothing, wrapper and therefore the mw does not affect this level
 //    Sub Ros -> Sub normal: handled(let comp connect)
-    private static ExpandedComponentInstanceSymbol createECISFromCluster(ExpandedComponentInstanceSymbol inst, Set<ExpandedComponentInstanceSymbol> cluster, String clusterName) {
-        Set<PortSymbol> curClusterPorts = cluster.stream().flatMap(ecis -> ecis.getPortsList().stream()).collect(Collectors.toSet());
-        Set<PortSymbol> combinedPorts = new HashSet<>();
+    private static EMAComponentInstanceSymbol createECISFromCluster(EMAComponentInstanceSymbol inst, Set<EMAComponentInstanceSymbol> cluster, String clusterName) {
+        Set<EMAPortInstanceSymbol> curClusterPorts = cluster.stream().flatMap(ecis -> ecis.getPortInstanceList().stream()).collect(Collectors.toSet());
+        Set<EMAPortInstanceSymbol> combinedPorts = new HashSet<>();
         combinedPorts.addAll(curClusterPorts);
-        combinedPorts.addAll(inst.getPortsList());
+        combinedPorts.addAll(inst.getPortInstanceList());
 
-        Set<ConnectorSymbol> tmpConnectiors = inst.getConnectors().stream()
+        Set<EMAConnectorSymbol> tmpConnectiors = inst.getConnectorInstances().stream()
                 //remove all connections that use subcomponents not in cluster
                 .filter(c -> combinedPorts.contains(c.getSourcePort()) && combinedPorts.contains(c.getTargetPort()))
                 //remove all connections from super -> super and warn
@@ -99,19 +106,20 @@ public class ClusterFromTagsHelper {
                     return true;
                 })
                 //remove all connections super <-> cluster
-                .filter(c -> !(inst.getPortsList().contains(c.getSourcePort()) || (inst.getPortsList().contains(c.getTargetPort()))))
+                .filter(c -> !(inst.getPortInstanceList().contains(c.getSourcePort()) || (inst.getPortInstanceList().contains(c.getTargetPort()))))
                 .collect(Collectors.toSet());
 
-        Collection<PortSymbol> mwPorts = curClusterPorts.stream()
+        Collection<EMAPortInstanceSymbol> mwPorts = curClusterPorts.stream()
                 .filter(p -> p.getMiddlewareSymbol().isPresent())
                 .collect(Collectors.toSet());
 
-        List<PortSymbol> tmpPorts = mwPorts.stream()
+        //TODO: use EMAPortSymbol and EMAConnectorSymbol
+        List<EMAPortSymbol> tmpPorts = mwPorts.stream()
                 .filter(p -> p.getMiddlewareSymbol().isPresent())
                 .map(p -> {
                     String sourcePortName;
                     String targetPortName;
-                    String subName = p.getComponentInstance().get().getName();
+                    String subName = p.getComponentInstance().getName();
                     if (p.isIncoming()) {
                         sourcePortName = p.getName();
                         targetPortName = subName + "." + p.getName();
@@ -119,7 +127,7 @@ public class ClusterFromTagsHelper {
                         sourcePortName = subName + "." + p.getName();
                         targetPortName = p.getName();
                     }
-                    ConnectorSymbol tmpConnector = ConnectorSymbol.builder()
+                    EMAConnectorSymbol tmpConnector = EMAConnectorSymbol.builder()
                             .setSource(sourcePortName)
                             .setTarget(targetPortName)
                             .build();
@@ -129,9 +137,9 @@ public class ClusterFromTagsHelper {
                 .collect(Collectors.toList());
 
         Set<ResolvingFilter<? extends Symbol>> resolvingFilters = inst.getSpannedScope().getResolvingFilters();
-        List<ExpandedComponentInstanceSymbol> tmpSubcomps = cluster.stream().map(ExpandedComponentInstanceBuilder::clone).collect(Collectors.toList());
+        List<EMAComponentInstanceSymbol> tmpSubcomps = cluster.stream().map(EMAComponentInstanceBuilder::clone).collect(Collectors.toList());
         tmpSubcomps.forEach(sc -> ((CommonScope) sc.getSpannedScope()).setResolvingFilters(resolvingFilters));
-        ExpandedComponentInstanceSymbol res = new ExpandedComponentInstanceBuilder()
+        EMAComponentInstanceSymbol res = new EMAComponentInstanceBuilder()
                 .setName(clusterName)
                 .setSymbolReference(inst.getComponentType())
                 .addPorts(tmpPorts)

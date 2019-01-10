@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusterFromTagsHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.*;
@@ -36,8 +36,8 @@ public class DistributedTargetGenerator extends CMakeGenerator {
     }
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
-        Map<ExpandedComponentInstanceSymbol, GeneratorImpl> generatorMap = new HashMap<>();
+    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+        Map<EMAComponentInstanceSymbol, GeneratorImpl> generatorMap = new HashMap<>();
 
         fixComponentInstance(componentInstanceSymbol);
 
@@ -54,7 +54,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
         List<File> files = new ArrayList<>();
 
-        for (ExpandedComponentInstanceSymbol comp : generatorMap.keySet()) {
+        for (EMAComponentInstanceSymbol comp : generatorMap.keySet()) {
             files.addAll(generatorMap.get(comp).generate(comp, taggingResolver));
             //add empty generator to subDirs so that CMakeLists.txt will be generated correctly
             subDirs.add(NameHelper.getNameTargetLanguage(comp.getFullName()));
@@ -91,12 +91,12 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         return res;
     }
 
-    private void fixComponentInstance(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    private void fixComponentInstance(EMAComponentInstanceSymbol componentInstanceSymbol) {
         RosHelper.fixRosConnectionSymbols(componentInstanceSymbol);
     }
 
     @Override
-    protected File generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) throws IOException {
+    protected File generateCMake(EMAComponentInstanceSymbol componentInstanceSymbol) throws IOException {
         FileContent fileContent = new FileContent();
         fileContent.setFileName("CMakeLists.txt");
         StringBuilder content = new StringBuilder();

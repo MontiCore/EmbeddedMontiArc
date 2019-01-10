@@ -10,9 +10,9 @@ for your new MiddlewareSymbol. Make sure to load all your tags before starting g
 ## Generator
 The new middleware generator needs to the following methods
 * `setGenerationTargetPath(String path)`: Sets the directory the generated files are written to.
-* `boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol)`: Signals the DistributedTargetGenerator if the middleware generator will generate useful files for the given component.
+* `boolean willAccept(EMAComponentInstanceSymbol componentInstanceSymbol)`: Signals the DistributedTargetGenerator if the middleware generator will generate useful files for the given component.
     * Example: If a Component without RosConnections is passed to the ROS generator, it will reject it.
-* `List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver)`: Generates all files(Adapter + CMake) for the given Component.
+* `List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver)`: Generates all files(Adapter + CMake) for the given Component.
 
 These 3 methods are combined in the Interface [GeneratorImpl](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/src/main/java/de/monticore/lang/monticar/generator/middleware/impls/GeneratorImpl.java). 
 To avoid a cyclic dependency between the new middleware generator and EMAM2Middleware, it is advised to write a small wrapper in EMAM2Middleware instead of implementing the Interface directly. See [RosCppGenImpl](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/src/main/java/de/monticore/lang/monticar/generator/middleware/impls/RosCppGenImpl.java) for an example.

@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -15,7 +15,7 @@ import java.util.Objects;
 public class CMakeGenerator extends StarBridgeGenerator {
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         long notInSubdirs = getGeneratorImpls().stream()
                 .map(this::getImplSubdir)
                 .filter(Objects::isNull)
@@ -31,7 +31,7 @@ public class CMakeGenerator extends StarBridgeGenerator {
         return res;
     }
 
-    protected File generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) throws IOException {
+    protected File generateCMake(EMAComponentInstanceSymbol componentInstanceSymbol) throws IOException {
         FileContent fileContent = new FileContent();
         fileContent.setFileName("CMakeLists.txt");
         StringBuilder content = new StringBuilder();

@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
@@ -28,7 +28,7 @@ public class CPPGenImpl implements GeneratorImpl {
     }
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         List<File> files = new ArrayList<>();
 
         generatorCPP.setGenerationTargetPath(generationTargetPath);

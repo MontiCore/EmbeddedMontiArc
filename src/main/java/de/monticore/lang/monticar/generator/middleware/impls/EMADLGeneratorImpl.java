@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl.generator.Backend;
 import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
 import de.monticore.lang.monticar.generator.FileContent;
@@ -32,7 +32,7 @@ public class EMADLGeneratorImpl implements GeneratorImpl {
 
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         List<File> files = new ArrayList<>();
 
         emadlGenerator.setGenerationTargetPath(generationTargetPath);

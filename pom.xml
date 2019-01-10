@@ -18,11 +18,12 @@
 
         <!-- .. SE-Libraries .................................................. -->
         <se-commons.version>1.7.7</se-commons.version>
-        <Embedded-montiarc-math-generator.version>0.0.26-SNAPSHOT</Embedded-montiarc-math-generator.version>
-        <Embedded-montiarc-math-roscpp-generator.version>0.0.4-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
-        <Embedded-montiarc-math-rosmsg-generator.version>0.0.3-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
-        <EMADL.version>0.2.3</EMADL.version>
-        <EMADL2CPP.version>0.2.4</EMADL2CPP.version>
+        <!--TODO: remove with update to next emam version -->
+        <struct.version>0.0.18-SNAPSHOT</struct.version>
+        <Embedded-montiarc-math-generator.version>0.1.3-SNAPSHOT</Embedded-montiarc-math-generator.version>
+        <Embedded-montiarc-math-roscpp-generator.version>0.1.1-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
+        <EMADL.version>0.2.4</EMADL.version>
+        <EMADL2CPP.version>0.2.6-SNAPSHOT</EMADL2CPP.version>
 
         <!--TODO: remove with update to new emam version-->
         <Tagging.version>0.0.6</Tagging.version>
@@ -52,6 +53,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>struct</artifactId>
+            <version>${struct.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -112,12 +119,6 @@
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-roscpp-generator</artifactId>
             <version>${Embedded-montiarc-math-roscpp-generator.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math-rosmsg-generator</artifactId>
-            <version>${Embedded-montiarc-math-rosmsg-generator.version}</version>
         </dependency>
 
         <!-- EMADL Dependencies -->
