@@ -101,8 +101,8 @@ public class ComponentConverterMethodGeneration {
         for (EMAConnectorInstanceSymbol connector : connectors) {
             if (!connector.isConstant()) {
                 Log.info("source:" + connector.getSource() + " target:" + connector.getTarget(), "Port info:");
-                Variable v1 = PortConverter.getVariableForEMAPortInstanceSymbol(connector, connector.getSource(), bluePrint);
-                Variable v2 = PortConverter.getVariableForEMAPortInstanceSymbol(connector, connector.getTarget(), bluePrint);
+                Variable v1 = PortConverter.getVariableForPortSymbol(connector, connector.getSource(), bluePrint);
+                Variable v2 = PortConverter.getVariableForPortSymbol(connector, connector.getTarget(), bluePrint);
                 Log.info("v1: " + v1.getName() + " v2: " + v2.getName(), "Variable Info:");
                 Log.info("v1: " + v1.getNameTargetLanguageFormat() + " v2: " + v2.getNameTargetLanguageFormat(), "Variable Info:");
 

@@ -50,7 +50,7 @@ public class PortConverter {
         /*Optional<Variable> variable = bluePrint.getVariable(PortSymbol.getNameWithoutArrayBracketPart(connectName));
         if (variable.isPresent())
             return variable.get();*/
-        return convertEMAPortInstanceSymbolToVariable(connectorSymbol, connectName, bluePrint);
+        return convertPortSymbolToVariable(connectorSymbol, connectName, bluePrint);
     }
 
     public static Variable convertPortSymbolToVariable(EMAConnectorInstanceSymbol connectorSymbol, String connectName, BluePrintCPP bluePrint) {
@@ -65,7 +65,7 @@ public class PortConverter {
             portSymbol = connectorSymbol.getTargetPort();
 
 
-        return convertEMAPortInstanceSymbolToVariable(portSymbol, connectName, bluePrint);
+        return convertPortSymbolToVariable(portSymbol, connectName, bluePrint);
     }
 
     public static Variable convertPortSymbolToVariable(EMAPortInstanceSymbol portSymbol, String connectName, BluePrintCPP bluePrint) {
@@ -176,7 +176,7 @@ public class PortConverter {
 
     public static Optional<ASTCommonMatrixType> getCommonMatrixTypeFromPortSymbol(EMAPortInstanceSymbol portSymbol) {
         Optional<ASTCommonMatrixType> result = Optional.empty();
-        Optional<ASTType> astType = getAstTypeFromEMAPortInstanceSymbol(portSymbol);
+        Optional<ASTType> astType = getAstTypeFromPortSymbol(portSymbol);
         if (astType.isPresent()) {
             if (astType.get() instanceof ASTCommonMatrixType) {
                 result = Optional.of((ASTCommonMatrixType) astType.get());

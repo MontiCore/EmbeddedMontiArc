@@ -39,12 +39,12 @@ public class Resolver {
         return symTab.resolve(component, ComponentSymbol.KIND);
     }
 
-    public Optional<EMAPortInstanceSymbol> getEMAPortInstanceSymbol(String port) {
-        return symTab.resolve(port, EMAPortInstanceSymbol.KIND);
+    public Optional<PortSymbol> getPortSymbol(String port) {
+        return symTab.resolve(port, PortSymbol.KIND);
     }
 
-    public Optional<EMAConnectorSymbol> getEMAConnectorSymbol(String con) {
-        return symTab.resolve(con, EMAConnectorSymbol.KIND);
+    public Optional<ConnectorSymbol> getConnectorSymbol(String con) {
+        return symTab.resolve(con, ConnectorSymbol.KIND);
     }
 
     public Optional<ComponentInstanceSymbol> getComponentInstanceSymbol(String inst) {
