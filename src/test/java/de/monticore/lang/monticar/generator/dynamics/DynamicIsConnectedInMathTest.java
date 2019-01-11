@@ -36,7 +36,7 @@ public class DynamicIsConnectedInMathTest extends AbstractSymtabTest {
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/isconnected/test00");
 //            generatorCPP.setUseThreadingOptimization(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
-        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
+//        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class DynamicIsConnectedInMathTest extends AbstractSymtabTest {
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/isconnected/test01");
 //            generatorCPP.setUseThreadingOptimization(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
-        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
+//        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 
     @Test
@@ -66,6 +66,6 @@ public class DynamicIsConnectedInMathTest extends AbstractSymtabTest {
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/isconnected/test02");
 //            generatorCPP.setUseThreadingOptimization(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
-        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
+//        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 }

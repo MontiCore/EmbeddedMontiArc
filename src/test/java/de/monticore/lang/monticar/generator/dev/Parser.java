@@ -76,7 +76,7 @@ public class Parser extends ParserTest{
         StreamScanner scanner = new StreamScanner(Paths.get("src/test/resources"), symTab);
         Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> availableStreams = new HashMap<>(scanner.scan());
 
-        System.out.println(availableStreams);
+//        System.out.println(availableStreams);
     }
 
     @Ignore
@@ -93,6 +93,6 @@ public class Parser extends ParserTest{
         generatorCPP.setGenerateTests(true);
         generatorCPP.setCheckModelDir(true);
         List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
-        System.out.println(files);
+//        System.out.println(files);
     }
 }
