@@ -134,19 +134,14 @@ public class TagThresholdSymbolCreator implements TagSymbolCreator {
         return ret;
     }
 
-  protected EMAComponentInstanceSymbol checkKind(Collection<Symbol> symbols) {
-    EMAComponentInstanceSymbol ret = null;
-    for (Symbol symbol : symbols) {
-      if (symbol.getKind().isSame(EMAComponentInstanceSymbol.KIND)) {
-        if (ret != null) {
-          Log.error(String.format("0xT0031 Found more than one symbol: '%s' and '%s'",
-              ret, symbol));
-          return null;
+    protected boolean checkScope(ASTScope scope) {
+        if (scope.getScopeKind().equals("NameScope")) {
+            return true;
         }
-        ret = (EMAComponentInstanceSymbol)symbol;
-      }
+        Log.error(String.format("0xT0033 Invalid scope kind: '%s'. PowerConsumption expects as scope kind 'NameScope'.",
+                scope.getScopeKind()), scope.get_SourcePositionStart());
+        return false;
     }
-
 
     public void create(ASTTaggingUnit astTaggingUnit, Scope scope) {
         //TODO implement me, required by newer version

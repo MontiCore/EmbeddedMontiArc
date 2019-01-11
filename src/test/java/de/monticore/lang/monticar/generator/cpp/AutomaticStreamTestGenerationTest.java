@@ -297,6 +297,10 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         File destDir = new File(outputDirectory);
         FileUtils.copyDirectory(srcDir, destDir);
         GeneratorCppCli.main(args);
+        if( !SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_LINUX){
+            Log.warn("Unsupported OS for StreamTestExecution");
+            return;
+        }
         StreamTestExecution.compileTests(targetFullPath, targetBasePath);
         StreamTestExecution.executeTests(targetBasePath);
 
@@ -325,6 +329,10 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         File destDir = new File(outputDirectory);
         FileUtils.copyDirectory(srcDir, destDir);
         GeneratorCppCli.main(args);
+        if( !SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_LINUX){
+            Log.warn("Unsupported OS for StreamTestExecution");
+            return;
+        }
         StreamTestExecution.compileTests(targetFullPath, targetBasePath);
         StreamTestExecution.executeTests(targetBasePath);
 

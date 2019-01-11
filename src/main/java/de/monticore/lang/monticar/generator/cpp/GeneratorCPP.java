@@ -298,7 +298,9 @@ public class GeneratorCPP implements Generator {
 
     protected List<File> generateCMakeFiles(EMAComponentInstanceSymbol componentInstanceSymbol) {
         List<File> files = new ArrayList<>();
-        cMakeConfig.getCMakeListsViewModel().setCompName(componentInstanceSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
+        if(componentInstanceSymbol != null) {
+            cMakeConfig.getCMakeListsViewModel().setCompName(componentInstanceSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
+        }
         List<FileContent> contents = cMakeConfig.generateCMakeFiles();
         try {
             for (FileContent content : contents)
