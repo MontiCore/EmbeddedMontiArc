@@ -1,37 +1,39 @@
 #pragma once
-#include "IAdapter_tests_a_compA.hpp"
-#include "tests_a_compA.hpp"
-#include <automated_driving_msgs/StampedFloat64.hpp>
-#include <rclpp/rclpp.hpp>
-#include <rosgraph_msgs/Clock.hpp>
+#include "IAdapter_tests_a_compA.h"
+#include "tests_a_compA.h"
+#include <std_msgs/msg/float64.hpp>
+#include "rclcpp/rclcpp.hpp"
 class RosAdapter_tests_a_compA: public IAdapter_tests_a_compA{
 	tests_a_compA* component;
-	rclpp::Subscriber _clockSubscriber;
-	rclpp::Publisher _echoPublisher;
+	rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr _clockSubscriber;
+	rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr _echoPublisher;
 	
 	public:
 	RosAdapter_tests_a_compA(){
 		
 	}
 	
-	void _clockCallback(const rosgraph_msgs::Clock::SharedPtr msg){
-		component->rosIn = msg->clock.toSec();
+	void _clockCallback(const std_msgs::msg::Float64::SharedPtr msg){
+		component->rosIn = msg->data;
 	}
 	
 	void init(tests_a_compA* comp){
 		this->component = comp;
 		char* tmp = strdup("");
-		int i = 0;
+		int i = 1;
+		
 		rclcpp::init(i, &tmp);
-		_clockSubscriber = node_handle->create_subscription<rosgraph_msgs::Clock>("/clock", _clockCallback);
-		_echoPublisher = node_handle->create_publisher<automated_driving_msgs::StampedFloat64>("/echo");
-		rclcpp::spin(RosAdapter_tests_a_compA);
+		auto node_handle = rclcpp::Node::make_shared("RosAdapter_tests_a_compA");
+		
+		_clockSubscriber = node_handle->create_subscription<std_msgs::msg::Float64>("/clock", std::bind(&RosAdapter_tests_a_compA::_clockCallback, this, std::placeholders::_1));
+		_echoPublisher = node_handle->create_publisher<std_msgs::msg::Float64>("/echo");
+		rclcpp::spin(node_handle);
 	}
 	
 	void publish_echoPublisher(){
-		automated_driving_msgs::StampedFloat64 tmpMsg;
+		std_msgs::msg::Float64 tmpMsg;
 		tmpMsg.data = component->rosOut;
-		_echoPublisher.publish(tmpMsg);
+		_echoPublisher->publish(tmpMsg);
 	}
 	
 	void tick(){
