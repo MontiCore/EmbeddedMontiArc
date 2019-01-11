@@ -15,7 +15,7 @@ public class LanguageUnitRosCMake {
                     "\n" +
                     "<packages>\n" +
                     "\n" +
-                    "add_library(<name> <name>.h)\n" +
+                    "add_library(<name> <name>.cpp)\n" +
                     "set_target_properties(<name> PROPERTIES LINKER_LANGUAGE CXX)\n" +
                     "target_link_libraries(<name> <compName> <libraries>)\n" +
                     "target_include_directories(<name> PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} <include_dirs>)\n" +
@@ -23,7 +23,7 @@ public class LanguageUnitRosCMake {
                     "\n" +
                     "export(TARGETS <name> FILE <name>.cmake)";
 
-    FileContent generate(EMAComponentInstanceSymbol componentInstanceSymbol, List<String> additionalPackages, boolean isRos2Mode) {
+    List<FileContent> generate(EMAComponentInstanceSymbol componentInstanceSymbol, List<String> additionalPackages, boolean isRos2Mode) {
         FileContent fileContent = new FileContent();
         fileContent.setFileName("CMakeLists.txt");
 
@@ -70,7 +70,15 @@ public class LanguageUnitRosCMake {
                 .replace("<dependency>", dependency);
 
         fileContent.setFileContent(content);
-        return fileContent;
+        List<FileContent> result = new ArrayList<>();
+        result.add(fileContent);
+
+        FileContent cppFile = new FileContent();
+        cppFile.setFileName(name + ".cpp");
+        cppFile.setFileContent("#include \""+ name +".h\"");
+        result.add(cppFile);
+
+        return result;
     }
 
 }

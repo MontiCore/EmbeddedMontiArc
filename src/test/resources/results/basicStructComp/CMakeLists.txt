@@ -3,7 +3,7 @@ project (RosAdapter_tests_msg_basicStructComp)
 
 find_package(roscpp REQUIRED)
 
-add_library(RosAdapter_tests_msg_basicStructComp RosAdapter_tests_msg_basicStructComp.h)
+add_library(RosAdapter_tests_msg_basicStructComp RosAdapter_tests_msg_basicStructComp.cpp)
 set_target_properties(RosAdapter_tests_msg_basicStructComp PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(RosAdapter_tests_msg_basicStructComp tests_msg_basicStructComp ${roscpp_LIBRARIES} ${struct_msgs_LIBRARIES})
 target_include_directories(RosAdapter_tests_msg_basicStructComp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${roscpp_INCLUDE_DIRS} ${struct_msgs_INCLUDE_DIRS})

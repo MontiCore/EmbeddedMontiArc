@@ -113,7 +113,7 @@ public class GeneratorRosCpp {
 
             if (generateCMake) {
                 LanguageUnitRosCMake languageUnitRosCMake = new LanguageUnitRosCMake();
-                res.add(languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages(),isRos2Mode()));
+                res.addAll(languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages(),isRos2Mode()));
             }
 
             res.add(apdapter);
