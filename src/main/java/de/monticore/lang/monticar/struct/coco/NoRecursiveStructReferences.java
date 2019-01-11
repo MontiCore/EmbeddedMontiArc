@@ -38,8 +38,8 @@ public class NoRecursiveStructReferences implements StructASTStructCoCo {
 
     @Override
     public void check(ASTStruct node) {
-        if (node.getSymbol().isPresent()) {
-            checkStruct((StructSymbol) node.getSymbol().get());
+        if (node.getSymbolOpt().isPresent()) {
+            checkStruct((StructSymbol) node.getSymbolOpt().get());
         }
     }
 
