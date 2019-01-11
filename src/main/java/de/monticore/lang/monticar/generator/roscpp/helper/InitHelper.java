@@ -23,8 +23,9 @@ public class InitHelper {
         }else{
             result.add(new TargetCodeInstruction("this->component = comp;"));
             result.add(new TargetCodeInstruction("char* tmp = strdup(\"\");"));
-            result.add(new TargetCodeInstruction("int i = 0;"));
+            result.add(new TargetCodeInstruction("int i = 1;"));
             result.add(new TargetCodeInstruction("rclcpp::init(i, &tmp);"));
+            result.add(new TargetCodeInstruction("auto node_handle = rclcpp::Node::make_shared(\""+ classname +"\");"));
         }
         return result;
     }

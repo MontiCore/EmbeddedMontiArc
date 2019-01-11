@@ -1,1 +1,0 @@
-#include "RosAdapter_tests_a_compA.h"

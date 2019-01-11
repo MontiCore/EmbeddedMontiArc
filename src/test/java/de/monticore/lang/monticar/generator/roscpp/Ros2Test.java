@@ -23,7 +23,7 @@ public class Ros2Test extends AbstractSymtabTest{
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.a.compA", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.a.compB", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
@@ -37,7 +37,7 @@ public class Ros2Test extends AbstractSymtabTest{
     @Test
     public void testGenerateCMakeRos2() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.a.compA", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.a.compB", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();

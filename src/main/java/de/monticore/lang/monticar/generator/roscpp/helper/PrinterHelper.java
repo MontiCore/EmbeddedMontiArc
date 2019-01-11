@@ -5,7 +5,9 @@ import de.monticore.lang.monticar.generator.roscpp.util.Method;
 import de.monticore.lang.monticar.generator.roscpp.util.Variable;
 import de.monticore.lang.monticar.generator.roscpp.util.BluePrintCPP;
 
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class PrinterHelper {
 

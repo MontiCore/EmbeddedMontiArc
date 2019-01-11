@@ -17,7 +17,7 @@ public class LanguageUnitRosCMake {
                     "\n" +
                     "add_library(<name> <name>.cpp)\n" +
                     "set_target_properties(<name> PROPERTIES LINKER_LANGUAGE CXX)\n" +
-                    "target_link_libraries(<name> <compName> <libraries>)\n" +
+                    "target_link_libraries(<name> <compName> IAdapter_<compName> <libraries>)\n" +
                     "target_include_directories(<name> PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} <include_dirs>)\n" +
                     "<dependency>\n" +
                     "\n" +
