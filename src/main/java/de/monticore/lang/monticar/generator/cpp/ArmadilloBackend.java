@@ -97,8 +97,7 @@ public class ArmadilloBackend implements MathBackend {
             result += "*" + matrixName;
         }*/
 
-        System.out.println(mathExpressionSymbol.getTextualRepresentation());
-        Log.error("Break down power of into smaller multiplications, this is not fully supported by this backend");
+        Log.error(mathExpressionSymbol.getTextualRepresentation()+System.lineSeparator()+"Break down power of into smaller multiplications, this is not fully supported by this backend");
         return null;
     }
 

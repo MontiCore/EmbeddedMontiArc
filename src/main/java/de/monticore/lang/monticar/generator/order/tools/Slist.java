@@ -29,6 +29,7 @@ import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.logging.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -54,7 +55,8 @@ public class Slist extends AbstractSymtab {
             ip.println("slist Distronic");
             ip.println("slist BrakeForceAssistant");
             ip.unindent();
-            System.out.println(ip.getContent());
+            Log.debug(ip.getContent(), "Slist.main");
+//            System.out.println(ip.getContent());
         } else {
             //creates a fileReader for the *.arc file
             FileReader fr = new FileReader(args[0] + ".arc");
@@ -79,7 +81,8 @@ public class Slist extends AbstractSymtab {
             EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                     Names.getExpandedComponentInstanceSymbolName(componentName),
                     EMAComponentInstanceSymbol.KIND).orElse(null);
-            System.out.println(execute(symTab, inst));
+            Log.debug(execute(symTab, inst), "Slist.main");
+//            System.out.println(execute(symTab, inst));
         }
     }
 

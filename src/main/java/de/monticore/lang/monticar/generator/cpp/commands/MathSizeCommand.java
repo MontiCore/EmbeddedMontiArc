@@ -102,7 +102,8 @@ public class MathSizeCommand extends MathCommand {
         } else if (elementAccess.equals("2")) {
             accessPart = "n_cols";
         } else {
-            System.out.println(elementAccess);
+//            System.out.println(elementAccess);
+            Log.debug(elementAccess, "MathSizeCommand.getAccessPart");
             Log.error("Size error");
         }
         return accessPart;

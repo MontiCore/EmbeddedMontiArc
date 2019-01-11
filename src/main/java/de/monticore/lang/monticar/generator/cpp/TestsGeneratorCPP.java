@@ -317,7 +317,8 @@ public final class TestsGeneratorCPP {
     private static void processIncomingPort(ComponentCheckViewModel vm, ASTStreamValue sv, String portName) {
         ASTStreamValue2InputPortValue converter = new ASTStreamValue2InputPortValue();
         sv.accept(converter);
-        System.out.println("Processing: " + portName);
+//        System.out.println("Processing: " + portName);
+        Log.debug("Processing: " + portName, "TestGeneratorCPP.processIncomingPort");
         if (converter.getResult() != null) {
             vm.getInputPortName2Value().put(portName, converter.getResult());
         }
@@ -334,7 +335,7 @@ public final class TestsGeneratorCPP {
     private static void processIncomingPortArray(ComponentCheckViewModel vm, ASTStreamArrayValues sv, String portName) {
         ASTStreamValue2InputPortValue converter = new ASTStreamValue2InputPortValue();
         sv.accept(converter);
-        System.out.println("Processing: " + portName);
+        Log.debug("Processing: " + portName, "TestGeneratorCPP.processIncomingPortArray");
         if (converter.getResult() != null) {
             vm.getInputPortName2Value().put(portName, converter.getResult());
         }
@@ -446,7 +447,7 @@ public final class TestsGeneratorCPP {
                     //TODO valuepair conversion
                     builder.append("NOT HANDLED VALUEPAIROPT!!!");
                 }
-                System.out.println("Result: " + builder.toString());
+                Log.debug("Result: " + builder.toString(), "TestGeneratorCPP");
                 result = RangeOutputPortCheck.from(builder.toString(), builder.toString(),true);
             }
             handled = true;
@@ -513,7 +514,7 @@ public final class TestsGeneratorCPP {
                     //TODO valuepair conversion
                     result += "NOT HANDLED VALUEPAIROPT!!!";
                 }
-                System.out.println("Result: " + builder.toString());
+                Log.debug("Result: " + builder.toString(), "TestGeneratorCPP.vists(ASTStreamArrayValues)");
                 result += builder.toString();
             }
             handled = true;
