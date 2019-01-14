@@ -26,6 +26,8 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
 import simulation.util.MathHelper;
+//import sensors.abstractsensors.AbstractSensor;
+import sensors.abstractsensors.*;
 import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -592,6 +594,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         // Take the wheel positions and get the frictions coefficients
         //TODO: Let the physical vehicle look up the ground type and not only the weather
         double frictionCoefficient = ((WorldModel.getInstance().isItRaining()) ? PhysicsEngine.ROAD_FRICTION_WET : PhysicsEngine.ROAD_FRICTION_DRY);
+        //frictionCoefficient = ;
         vehicleDynamicsModel.setInput("mu_1", frictionCoefficient);
         vehicleDynamicsModel.setInput("mu_2", frictionCoefficient);
         vehicleDynamicsModel.setInput("mu_3", frictionCoefficient);
