@@ -325,7 +325,7 @@ public class GenerationTest extends AbstractSymtabTest {
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
-        distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/noRosMsg/");
+        distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/noRosMsg/src");
         distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
