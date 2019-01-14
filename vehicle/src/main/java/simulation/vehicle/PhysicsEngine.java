@@ -24,6 +24,7 @@ import commons.simulation.PhysicalObject;
 import commons.simulation.PhysicalObjectType;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.util.MathHelper;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,8 @@ public class PhysicsEngine{
     public static final double ROAD_FRICTION_DRY = 0.8;
     /** Average road friction coefficient for wet roads (no unit) */
     public static final double ROAD_FRICTION_WET = 0.4;
+
+    public static double ROAD_FRICTION = 1;//StreetPavementSensor.getfrictioncoefficient();//1; //simulation.vehicle.//EnvStreet.StreetPavements.DIRT; //this.getfrictioncoefficient();
 
     private PhysicsEngine(){
         // Private constructor to hide the implicit public one

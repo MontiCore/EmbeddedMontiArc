@@ -374,7 +374,7 @@ public class Parser2D implements IParser {
             nodes.add(new Node2D(node.getLongitude(), node.getLatitude(), 0, way.getNodeId(i)));
         }
 
-        this.streets.add(new Street2D(nodes, 50.d, mapper.getIntersectionsForWay(way), way.getId(), isOneWay, parseStreetType(highway)));
+        this.streets.add(new Street2D(nodes, 50.d, mapper.getIntersectionsForWay(way), way.getId(), isOneWay, parseStreetType(highway), parseStreetPavement(highway)));
     }
 
     @Override
@@ -410,6 +410,28 @@ public class Parser2D implements IParser {
             return EnvStreet.StreetTypes.LIVING_STREET;
         } else {
             return EnvStreet.StreetTypes.A_ROAD;    //Default
+        }
+    }
+
+
+
+    /**
+     * converts String streetpavement in enum
+     * @param s as streetpavement
+     */
+    public EnvStreet.StreetPavements parseStreetPavement(String s) {
+        if (s.equals("paved")) {
+            return EnvStreet.StreetPavements.PAVED;
+        } else if (s.equals("unpaved")) {
+            return EnvStreet.StreetPavements.UNPAVED;
+        } else if (s.equals("asphalt") || s.equals("concrete")) {
+            return EnvStreet.StreetPavements.QUALITY;
+        } else if (s.equals("cobblestone") || s.equals("sett") || s.equals("paving_stone")) {
+            return EnvStreet.StreetPavements.STONE;
+        } else if (s.equals("compacted") || s.equals("gravel") || s.equals("dirt")) {
+            return EnvStreet.StreetPavements.DIRT;
+        } else {
+            return EnvStreet.StreetPavements.GRASS;    //als default gut wählbar?
         }
     }
 }
