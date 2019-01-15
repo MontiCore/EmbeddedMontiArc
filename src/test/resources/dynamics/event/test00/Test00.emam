@@ -1,0 +1,11 @@
+package event.test00;
+
+component Test00 {
+    ports
+        out B output;
+
+
+    @ TrueEvent(){
+        connect true -> output;
+    }
+}

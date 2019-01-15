@@ -79,13 +79,14 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
 
     @Test
     public void testCMakeStreamTestGenerationForBasicPortsMath() throws IOException {
+        symtab = createSymTabAndTaggingResolver("src/test/resources/generatecmake");
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicPortsMath", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/test/BasicPortsMath");
-        generatorCPP.setModelsDirPath(Paths.get("src/test/resources/"));
+        generatorCPP.setModelsDirPath(Paths.get("src/test/resources/generatecmake"));
         generatorCPP.setGenerateTests(true);
         generatorCPP.setCheckModelDir(true);
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
@@ -115,15 +116,16 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
 
     @Test
     public void floatDivisionTest() throws IOException {
+        symtab = createSymTabAndTaggingResolver("src/test/resources/generatecmake");
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.math.floatDivisionTest", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/test/math/FloatDivisionTest");
-        generatorCPP.setModelsDirPath(Paths.get("src/test/resources/"));
+        generatorCPP.setModelsDirPath(Paths.get("src/test/resources/generatecmake"));
         generatorCPP.setGenerateTests(true);
-        generatorCPP.setCheckModelDir(true);
+        generatorCPP.setCheckModelDir(false);
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "cmake/test/math/FloatDivisionTest/";
         testCMakeFilesEqual(files, restPath);

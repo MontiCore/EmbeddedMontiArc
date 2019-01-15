@@ -22,10 +22,11 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
+
+
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
@@ -200,6 +201,7 @@ public final class TestsGeneratorCPP {
     }
 
     private void processBluePrint(BluePrintCPP b, EMAComponentInstanceSymbol s) {
+        //TODO: 123 : check if EMAComponentSymbol is correct choice here:  ComponentSymbol cs = s.getComponentType().getReferencedSymbol();
         EMAComponentSymbol cs = s.getComponentType().getReferencedSymbol();
         if (testedComponents.add(cs.getFullName())) {
             processBluePrint(b, cs);
@@ -315,7 +317,8 @@ public final class TestsGeneratorCPP {
     private static void processIncomingPort(ComponentCheckViewModel vm, ASTStreamValue sv, String portName) {
         ASTStreamValue2InputPortValue converter = new ASTStreamValue2InputPortValue();
         sv.accept(converter);
-        System.out.println("Processing: " + portName);
+//        System.out.println("Processing: " + portName);
+        Log.debug("Processing: " + portName, "TestGeneratorCPP.processIncomingPort");
         if (converter.getResult() != null) {
             vm.getInputPortName2Value().put(portName, converter.getResult());
         }
@@ -332,7 +335,7 @@ public final class TestsGeneratorCPP {
     private static void processIncomingPortArray(ComponentCheckViewModel vm, ASTStreamArrayValues sv, String portName) {
         ASTStreamValue2InputPortValue converter = new ASTStreamValue2InputPortValue();
         sv.accept(converter);
-        System.out.println("Processing: " + portName);
+        Log.debug("Processing: " + portName, "TestGeneratorCPP.processIncomingPortArray");
         if (converter.getResult() != null) {
             vm.getInputPortName2Value().put(portName, converter.getResult());
         }
@@ -444,7 +447,7 @@ public final class TestsGeneratorCPP {
                     //TODO valuepair conversion
                     builder.append("NOT HANDLED VALUEPAIROPT!!!");
                 }
-                System.out.println("Result: " + builder.toString());
+                Log.debug("Result: " + builder.toString(), "TestGeneratorCPP");
                 result = RangeOutputPortCheck.from(builder.toString(), builder.toString(),true);
             }
             handled = true;
@@ -511,7 +514,7 @@ public final class TestsGeneratorCPP {
                     //TODO valuepair conversion
                     result += "NOT HANDLED VALUEPAIROPT!!!";
                 }
-                System.out.println("Result: " + builder.toString());
+                Log.debug("Result: " + builder.toString(), "TestGeneratorCPP.vists(ASTStreamArrayValues)");
                 result += builder.toString();
             }
             handled = true;

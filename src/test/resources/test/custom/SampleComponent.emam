@@ -6,7 +6,7 @@ package test.custom;
           in Z^{tilesMaxX,tilesMaxY} world;
 
      implementation Math{
-         Z value = world(posX,posY);
+         Z zvalue = world(posX,posY);
 
      }
  }

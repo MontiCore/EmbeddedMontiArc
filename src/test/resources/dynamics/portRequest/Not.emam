@@ -1,0 +1,16 @@
+package portRequest;
+
+component Not {
+    ports
+        in B a,
+        out B b;
+
+    @ a::value(false){
+        connect true -> b;
+    }
+
+    @ a::value(true){
+        connect false -> b;
+    }
+
+}

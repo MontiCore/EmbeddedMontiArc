@@ -25,9 +25,9 @@ world=imat(tilesMaxX,tilesMaxY);
 }
 void execute()
 {
-int value = 1;
-value = world(pacmanPossibleNextPositionX-1, pacmanPossibleNextPositionY-1);
-if(((value == 1))){
+int zvalue = 1;
+zvalue = world(pacmanPossibleNextPositionX-1, pacmanPossibleNextPositionY-1);
+if(((zvalue == 1))){
 canMove = 0;
 pacmanChosenNextPositionX = pacmanPositionX;
 pacmanChosenNextPositionY = pacmanPositionY;

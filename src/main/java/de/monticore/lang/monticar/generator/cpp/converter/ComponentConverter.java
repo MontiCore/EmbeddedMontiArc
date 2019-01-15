@@ -24,6 +24,7 @@ import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
@@ -32,6 +33,7 @@ import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.*;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConstantConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
+import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -55,9 +57,12 @@ public class ComponentConverter {
         bluePrint.addDefineGenerics(componentSymbol);
 
         addVariables(componentSymbol, bluePrint);
+        BluePrintFixer.fixBluePrintDynamicVariableConnectRequestQueues(bluePrint);
+
 
         String lastNameWithoutArrayPart = "";
         for (EMAComponentInstanceSymbol instanceSymbol : componentSymbol.getSubComponents()) {
+//            Unused: (?)
             int arrayBracketIndex = instanceSymbol.getName().indexOf("[");
             boolean generateComponentInstance = true;
             if (arrayBracketIndex != -1) {
@@ -76,10 +81,28 @@ public class ComponentConverter {
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
         generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
-
         //generate execute method
-        ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
+        Method execute = ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
 
+
+        EventConverter.generateEvents(execute, componentSymbol, bluePrint, mathStatementsSymbol,generatorCPP, includeStrings);
+
+        extendInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
+
+
+        bluePrint.addMethod(execute);
+
+        EventConverter.generatePVCNextMethod(bluePrint);
+
+        if(componentSymbol instanceof EMADynamicComponentInstanceSymbol){
+            if(((EMADynamicComponentInstanceSymbol) componentSymbol).isDynamic()){
+//                bluePrint.setHasSuperClass(Optional.of("__dynamicComponent"));
+                //TODO: ADD parent dynamic function pointer
+                addParentDynamicFunctionPointer(bluePrint);
+
+                bluePrint.addAdditionalIncludeString("DynamicHelper");
+            }
+        }
 
         return bluePrint;
     }
@@ -95,22 +118,66 @@ public class ComponentConverter {
             bluePrint.getMathInformationRegister().addVariable(var);
             var.setIsParameterVariable(true);
         }
+
         //add ports as variables to blueprint
         for (EMAPortInstanceSymbol port : componentSymbol.getPortInstanceList()) {
             //Config ports might already be added from adaptable Parameters
             if(!port.isConfig()) {
-                bluePrint.addVariable(PortConverter.convertEMAPortInstanceSymbolToVariable(port, port.getName(), bluePrint));
+                bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
             }else{
                 Set<String> paramNames = componentSymbol.getParameters().stream().map(EMAVariable::getName).collect(Collectors.toSet());
                 if(!paramNames.contains(port.getName())){
                     //The port was not created by an adaptable parameter with the same name -> add
-                    bluePrint.addVariable(PortConverter.convertEMAPortInstanceSymbolToVariable(port, port.getName(), bluePrint));
+                    bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
                 }
+            }
+
+
+        }
+    }
+
+    public static void addParentDynamicFunctionPointer(BluePrint bluePrint){
+        if(!bluePrint.getVariable("(*__parent_dynamic)(void)").isPresent()) {
+            Variable pd = new Variable();
+            pd.setTypeNameTargetLanguage("void*");
+            pd.setName("__parent");
+            pd.setPublic(false);
+            bluePrint.addVariable(pd);
+
+            pd = new Variable();
+            pd.setTypeNameTargetLanguage("void");
+            pd.setName("(*__parent_dynamic)(void* pt2parrent, bool dynFunc, bool freeFunc)");
+            pd.setPublic(false);
+            bluePrint.addVariable(pd);
+
+            if (bluePrint.getMethod("init").isPresent()) {
+                bluePrint.getMethod("init").get().addInstruction(new TargetCodeInstruction("__parent = NULL;\n"));
+                bluePrint.getMethod("init").get().addInstruction(new TargetCodeInstruction("__parent_dynamic = NULL;\n"));
+            }
+
+            if(!bluePrint.getMethod("set_Parent_Dynamic").isPresent()){
+                Method m = new Method();
+                m.setReturnTypeName("void");
+                m.setName("set_Parent_Dynamic");
+
+                pd = new Variable();
+                pd.setTypeNameTargetLanguage("void* ");
+                pd.setName("parentObj");
+                m.addParameter(pd);
+
+                pd = new Variable();
+                pd.setTypeNameTargetLanguage("void");
+                pd.setName("(*func)(void* pt2parrent, bool d, bool f)");
+                m.addParameter(pd);
+
+                m.addInstruction(new TargetCodeInstruction("__parent = parentObj;\n"));
+                m.addInstruction(new TargetCodeInstruction("__parent_dynamic = func;\n"));
+                bluePrint.addMethod(m);
             }
         }
     }
 
-    public static void generateInitMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings) {
+    public static Method generateInitMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings) {
         Method method = new Method("init", "void");
         bluePrint.addMethod(method);
         for (Variable v : bluePrint.getMathInformationRegister().getVariables()) {
@@ -131,13 +198,19 @@ public class ComponentConverter {
         for (Variable v : bluePrint.getVariables()) {
             Log.info("Variable: " + v.getName(), "initBluePrintCreate:");
 
-            if (v.isInputVariable() && !v.isConstantVariable()) {
-                //method.addParameter(v);
-                //Instruction instruction = new ConnectInstructionCPP(v, true, v, false);
-                //method.addInstruction(instruction);
-            } else if (v.isConstantVariable()) {
-                Instruction instruction = new ConstantConnectInstructionCPP(v, v);
-                method.addInstruction(instruction);
+            if(v instanceof VariablePortValueChecker) {
+//                ((VariablePortValueChecker) v).addInitInstructionsToMethod(method);
+            }else if(v instanceof VariableConstantArray){
+//                ((VariableConstantArray) v).generateInit(method);
+            }else {
+                if (v.isInputVariable() && !v.isConstantVariable()) {
+                    //method.addParameter(v);
+                    //Instruction instruction = new ConnectInstructionCPP(v, true, v, false);
+                    //method.addInstruction(instruction);
+                } else if (v.isConstantVariable()) {
+                    Instruction instruction = new ConstantConnectInstructionCPP(v, v);
+                    method.addInstruction(instruction);
+                }
             }
         }
 
@@ -154,8 +227,32 @@ public class ComponentConverter {
             String result = "";
             result += GeneralHelperMethods.getTargetLanguageVariableInstanceName(subComponent.getName()) + ".init(" + parameterString + ");\n";
 
+            if((componentSymbol instanceof EMADynamicComponentInstanceSymbol) && (subComponent instanceof EMADynamicComponentInstanceSymbol)){
+                if(((EMADynamicComponentInstanceSymbol) componentSymbol).isDynamic() && ((EMADynamicComponentInstanceSymbol) subComponent).isDynamic()){
+                    result += GeneralHelperMethods.getTargetLanguageVariableInstanceName(subComponent.getName()) +".set_Parent_Dynamic(this, dynamicWrapper);\n";
+                }
+            }
+
             TargetCodeInstruction instruction = new TargetCodeInstruction(result);
             method.addInstruction(instruction);
+        }
+        return method;
+    }
+
+    public static void extendInitMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings){
+        Optional<Method> init = bluePrint.getMethod("init");
+        if(!init.isPresent()){
+            init = Optional.of(new Method("init", "void"));
+            bluePrint.addMethod(init.get());
+        }
+        for (Variable v : bluePrint.getVariables()) {
+            Log.info("Variable: " + v.getName(), "initBluePrintExtension:");
+
+            if(v instanceof VariablePortValueChecker) {
+                ((VariablePortValueChecker) v).addInitInstructionsToMethod(init.get());
+            }else if(v instanceof VariableConstantArray){
+                ((VariableConstantArray) v).generateInit(init.get());
+            }
         }
     }
 
@@ -225,10 +322,7 @@ public class ComponentConverter {
                                                                       componentSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         return convertComponentSymbolToBluePrint(componentSymbol, null, includeStrings, generatorCPP);
     }
-
     public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrintCPP);
     }
-
-
 }

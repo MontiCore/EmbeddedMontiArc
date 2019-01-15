@@ -7,7 +7,7 @@ component TypeDimensionsTest{
     implementation Math{
 
         // scalar
-        Q value;
+        Q qvalue;
 
         // vector
         Q^{3} vec3;

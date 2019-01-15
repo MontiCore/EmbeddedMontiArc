@@ -47,6 +47,10 @@ public class ThreadingOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseThreadingOptimization(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/paperMatrixModifier/l2");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "paperMatrixModifier/l2/";

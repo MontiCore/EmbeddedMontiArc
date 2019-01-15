@@ -20,8 +20,8 @@ eb.init();
 }
 void execute()
 {
-eb.lowerBound = CONSTANTPORT3;
-eb.upperBound = CONSTANTPORT4;
+eb.lowerBound = 0;
+eb.upperBound = 3;
 eb.input = input;
 eb.execute();
 output = eb.output;

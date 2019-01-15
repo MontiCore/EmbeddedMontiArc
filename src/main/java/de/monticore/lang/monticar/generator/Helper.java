@@ -23,7 +23,6 @@ package de.monticore.lang.monticar.generator;
 import de.ma2cfg.helper.Names;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;

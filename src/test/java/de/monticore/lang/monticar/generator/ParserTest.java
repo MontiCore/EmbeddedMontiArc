@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -107,7 +107,7 @@ public class ParserTest {
    * @author Robert Heim
    * @see Files#walkFileTree(Path, java.nio.file.FileVisitor)
    */
-  private static class ParseTest extends SimpleFileVisitor<Path> {
+  protected static class ParseTest extends SimpleFileVisitor<Path> {
 
     private String fileEnding;
 
@@ -142,7 +142,7 @@ public class ParserTest {
 
         Log.debug("Parsing file " + file.toString(), "ParserTest");
         testCount++;
-        Optional<ASTEMAMCompilationUnit> maModel = Optional.empty();
+        Optional<ASTEMACompilationUnit> maModel = Optional.empty();
         boolean expectingError = ParserTest.expectedParseErrorModels.contains(file.toString());
 
         EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
@@ -159,7 +159,7 @@ public class ParserTest {
         }
         if (!expectingError && (parser.hasErrors() || !maModel.isPresent())) {
           modelsInError.add(file.toString());
-          Log.error("There were unexpected parser errors");
+          Log.error("There were unexpected parser errors: "+file);
         }
         else {
           Log.getFindings().clear();

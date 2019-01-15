@@ -207,7 +207,7 @@ public class TypeConverter {
             if (variableType.getTypeNameMontiCar().equals(typeNameMontiCar)) {
                 if (typeNameMontiCar.equals("CommonMatrixType")) {
                     if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
-                        variableType = getRealVariableTypeFromEMAPortInstanceSymbol(portSymbol);
+                        variableType = getRealVariableTypeFromPortSymbol(portSymbol);
                     }
                     handleCommonMatrixType(variable, portSymbol);
                 } else if (typeNameMontiCar.equals("AssignmentType")) {
@@ -222,9 +222,9 @@ public class TypeConverter {
         return Optional.empty();
     }
 
-    private static VariableType getRealVariableTypeFromEMAPortInstanceSymbol(EMAPortInstanceSymbol portSymbol) {
+    private static VariableType getRealVariableTypeFromPortSymbol(EMAPortInstanceSymbol portSymbol) {
         VariableType variableType;
-        Optional<ASTCommonMatrixType> astCommonMatrixType = PortConverter.getCommonMatrixTypeFromEMAPortInstanceSymbol(portSymbol);
+        Optional<ASTCommonMatrixType> astCommonMatrixType = PortConverter.getCommonMatrixTypeFromPortSymbol(portSymbol);
         if (astCommonMatrixType.isPresent()) {
             variableType = getRealVariableType(astCommonMatrixType.get());
         } else {

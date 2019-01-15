@@ -44,18 +44,19 @@ public class StreamTestGenerator {
     int intMin, intMax;
 
     public void createStreamTest(EMAComponentInstanceSymbol expandedComponentInstanceSymbol, int amountOfValues, String testNamePostFix) {
-        //TODO remove System.out.printlns
+
         currentGeneratedStreamTest = new StreamTest();
         Collection<EMAPortInstanceSymbol> inPorts = expandedComponentInstanceSymbol.getIncomingPortInstances();
         currentGeneratedStreamTest.setComponentName(Names.FirstUpperCase(expandedComponentInstanceSymbol.getName()));
         currentGeneratedStreamTest.setPackageName(expandedComponentInstanceSymbol.getPackageName());
         currentGeneratedStreamTest.setName(currentGeneratedStreamTest.getComponentName() + "Test" + testNamePostFix);
-        System.out.println("Generating StreamTest for component " + currentGeneratedStreamTest.getComponentName());
+
+        Log.debug("Generating StreamTest for component " + currentGeneratedStreamTest.getComponentName(), "StreamTestGenerator.createStreamTest");
         for (EMAPortInstanceSymbol p : inPorts) {
             if (p.getAstNode().isPresent()) {
-                System.out.println(p.getAstNode().get().getClass().getName());
+//                System.out.println(p.getAstNode().get().getClass().getName());
                 ASTPort astPort = (ASTPort) p.getAstNode().get();
-                System.out.println(astPort.getName());
+//                System.out.println(astPort.getName());
                 StreamTestPort streamTestPort = new StreamTestPort();
                 streamTestPort.setName(p.getName());
                 doubleMin = -10000000;//Maybe these values should be configurable as parameters later?
@@ -72,8 +73,8 @@ public class StreamTestGenerator {
                 } else if (astPort.getType() instanceof ASTCommonMatrixType) {
                     type = 1;
                     ASTCommonMatrixType astCommonMatrixType = (ASTCommonMatrixType) astPort.getType();
-                    System.out.println(astCommonMatrixType.getDimension().getDimensionList().get(0).getClass().getName());
-                    System.out.println(astCommonMatrixType.getDimension().getDimensionList().get(1).getClass().getName());
+//                    System.out.println(astCommonMatrixType.getDimension().getDimensionList().get(0).getClass().getName());
+//                    System.out.println(astCommonMatrixType.getDimension().getDimensionList().get(1).getClass().getName());
                     //System.out.println(astCommonMatrixType.getDimension().getDimensionList().get(0).toString());
                     //System.out.println(astCommonMatrixType.getDimension().getDimensionList().get(1).toString());
                     ASTNode node1 = astCommonMatrixType.getDimension().getDimensionList().get(0);
@@ -89,7 +90,7 @@ public class StreamTestGenerator {
                     //sizeX = astCommonMatrixType.getDimension().getDimensionList().get(0).getClass().getName().toString();
                     //sizeY = astCommonMatrixType.getDimension().getDimensionList().get(1).toString();
                 }
-                System.out.println("AmountOfValues:" + amountOfValues);
+//                System.out.println("AmountOfValues:" + amountOfValues);
                 for (int i = 0; i < amountOfValues; ++i) {
                     StreamTestValue streamTestValue;
                     if (type == 0) {//singular value
@@ -121,7 +122,7 @@ public class StreamTestGenerator {
                 //ConstantPorts do not have an ASTNode
                 //Log.debug(p.getName(), "PortSymbol has no ASTNode:");
             }
-            System.out.println();
+//            System.out.println();
         }
         currentGeneratedStreamTest.fixPortArrays();
     }
@@ -141,11 +142,11 @@ public class StreamTestGenerator {
                 doubleMin = astElementType.getRange().getStartValue().doubleValue();
                 intMin = astElementType.getRange().getStartValue().intValue();
             }
-            System.out.println("Min: " + doubleMin);
+//            System.out.println("Min: " + doubleMin);
             if (astElementType.getRange().getMax().getNumber().isPresent()) {
                 doubleMax = astElementType.getRange().getEndValue().doubleValue();
                 intMax = astElementType.getRange().getEndValue().intValue();
-                System.out.println("Max: " + doubleMax);
+//                System.out.println("Max: " + doubleMax);
             }
         }
     }
@@ -176,11 +177,11 @@ public class StreamTestGenerator {
 
     public Double[][] getRandomDoubleMatrix(int sizeX, int sizeY, double min, double max) {
         Double[][] matrix = new Double[sizeX][sizeY];
-        System.out.println("Started Generation of random " + sizeX + "x" + sizeY + " matrix");
+//        System.out.println("Started Generation of random " + sizeX + "x" + sizeY + " matrix");
         for (int i = 0; i < sizeX; ++i)
             for (int j = 0; j < sizeY; ++j)
                 matrix[i][j] = getRandomDoubleBetween(min, max);
-        System.out.println("Generation of this matrix is done");
+//        System.out.println("Generation of this matrix is done");
         return matrix;
     }
 

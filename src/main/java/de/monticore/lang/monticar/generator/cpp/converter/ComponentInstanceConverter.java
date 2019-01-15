@@ -20,9 +20,12 @@
  */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
+import de.monticore.symboltable.ImportStatement;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -45,7 +48,16 @@ public class ComponentInstanceConverter {
         //String res = getTargetCodeImportString(instanceSymbol, componentSymbol);
         //if (res != null)
         //   variable.setTargetCodeImport(res);
+
+        if(instanceSymbol instanceof EMADynamicComponentInstanceSymbol){
+            variable.setDynamic(
+                    ((EMADynamicComponentInstanceSymbol) instanceSymbol).isDynamicInstance()
+            );
+        }
+
         return variable;
     }
+
+
 
 }

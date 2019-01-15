@@ -1,12 +1,12 @@
 package fas.basicLibrary;
 
-component Memory<T>(T value) {
+component Memory<T>(T mvalue) {
 	port
 		in T in1,
 		out T out1;
 
 	implementation Math{
-	    static T lastVal = value;
+	    static T lastVal = mvalue;
 	    out1=lastVal;
 	}
 }

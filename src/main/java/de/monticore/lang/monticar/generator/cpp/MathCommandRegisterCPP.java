@@ -75,6 +75,11 @@ public class MathCommandRegisterCPP extends MathCommandRegister {
         //for fixing some errors
         registerMathCommand(new MathRowCommand());
         registerMathCommand(new MathColumnCommand());
+
+        //for dynamic
+        registerMathCommand(new DynamicMathPortIsConnectedCommand());
+        registerMathCommand(new DynamicMathPortNewConnectCommand());
+        registerMathCommand(new DynamicMathPortFreeCommand());
     }
 
     /**

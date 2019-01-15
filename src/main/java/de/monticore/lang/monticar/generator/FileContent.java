@@ -20,9 +20,9 @@
  */
 package de.monticore.lang.monticar.generator;
 
+
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
-import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 
 /**
  * @author Sascha Schneiders

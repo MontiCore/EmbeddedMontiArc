@@ -48,11 +48,11 @@ public class ImplementExecutionOrderTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "fas.demo_fas_Fkt_m.velocityControl", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
-        System.out.println("Before inst: " + inst);
+//        System.out.println("Before inst: " + inst);
         List<EMAComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(symTab, inst);
-        System.out.println("After inst: " + inst);
+//        System.out.println("After inst: " + inst);
         assertEquals(13, exOrder.size());
-        System.out.println(exOrder);
+//        System.out.println(exOrder);
         assertEquals(exOrder.get(0).getName(), "sat1");
         assertEquals(symTab.getTags(exOrder.get(0), TagExecutionOrderSymbol.KIND).toString(), "[TagExecutionOrder = 0:0]");
         assertEquals(exOrder.get(1).getName(), "look1");
