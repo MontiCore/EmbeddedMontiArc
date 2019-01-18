@@ -1302,6 +1302,7 @@ public class SimulatorTest {
         public long getId(){
             return uniqueId;
         }
+        @Deprecated
         public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
             //TODO: Function is unnecessary with three dimensional collision detection
             return new ArrayList<>();

@@ -278,6 +278,7 @@ public final class MathHelper {
      * @param vectorsTwo Second pairs of vector start points and end points that create a 2D space, ordered such that left halves of lines between following start points include the 2D space
      * @return True if 2D intersection is non-empty, otherwise false
      */
+    @Deprecated
     public static boolean checkIntersection2D(List<Map.Entry<RealVector, RealVector>> vectorsOne, List<Map.Entry<RealVector, RealVector>> vectorsTwo) {
         //TODO: Function is unnecessary with three dimensional collision detection
         // If any list is empty, return false
