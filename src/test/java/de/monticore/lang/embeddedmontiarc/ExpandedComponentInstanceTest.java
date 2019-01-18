@@ -23,6 +23,7 @@ package de.monticore.lang.embeddedmontiarc;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstanceInformation;
@@ -51,6 +52,17 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         Log.enableFailQuick(false);
     }
+
+    @Test
+    public void testClone(){
+        Scope symTab = createSymTab("src/test/resources");
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve("testing.subComponentConnector2", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(inst);
+
+        EMAComponentInstanceSymbol inst2 = EMAComponentInstanceBuilder.clone(inst);
+        assertEquals(inst.toString().trim(),inst2.toString().trim());
+    }
+
 
     @Test
     public void testFAS() throws Exception {
