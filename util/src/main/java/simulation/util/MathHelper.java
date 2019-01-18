@@ -263,12 +263,12 @@ public final class MathHelper {
     private static boolean existsSeparatingPlane(RealVector separatingAxis, OrientedBoundingBox boxOne, OrientedBoundingBox boxTwo) {
         RealVector posDifference = boxTwo.getPosition().subtract(boxOne.getPosition());
         return Math.abs(posDifference.dotProduct(separatingAxis)) >
-                Math.abs(boxOne.getLocalAxisX().mapMultiply(boxOne.getHalfWidth()).dotProduct(separatingAxis)) +
-                        Math.abs(boxOne.getLocalAxisY().mapMultiply(boxOne.getHalfHeight()).dotProduct(separatingAxis)) +
-                        Math.abs(boxOne.getLocalAxisZ().mapMultiply(boxOne.getHalfLength()).dotProduct(separatingAxis)) +
+                (Math.abs(boxOne.getLocalAxisX().mapMultiply(boxOne.getHalfWidth()).dotProduct(separatingAxis)) +
+                        Math.abs(boxOne.getLocalAxisY().mapMultiply(boxOne.getHalfLength()).dotProduct(separatingAxis)) +
+                        Math.abs(boxOne.getLocalAxisZ().mapMultiply(boxOne.getHalfHeight()).dotProduct(separatingAxis)) +
                         Math.abs(boxTwo.getLocalAxisX().mapMultiply(boxTwo.getHalfWidth()).dotProduct(separatingAxis)) +
-                        Math.abs(boxTwo.getLocalAxisY().mapMultiply(boxTwo.getHalfHeight()).dotProduct(separatingAxis)) +
-                        Math.abs(boxTwo.getLocalAxisZ().mapMultiply(boxTwo.getHalfLength()).dotProduct(separatingAxis));
+                        Math.abs(boxTwo.getLocalAxisY().mapMultiply(boxTwo.getHalfLength()).dotProduct(separatingAxis)) +
+                        Math.abs(boxTwo.getLocalAxisZ().mapMultiply(boxTwo.getHalfHeight()).dotProduct(separatingAxis)));
     }
 
     /**

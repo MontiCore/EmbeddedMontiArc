@@ -245,26 +245,40 @@ public class MathHelperTest {
         assertTrue(MathHelper.checkIntersection(box1, box2));
 
         box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 3, 3, 3, noRotation);
-        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {4, 0, 0}), 3, 3, 3, noRotation);
+        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {3.1, 0, 0}), 3, 3, 3, noRotation);
         assertFalse(MathHelper.checkIntersection(box1, box2));
 
-        RealMatrix rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, Math.PI / 4.0, 0.0).getMatrix());
-        box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 3, 3, 3, rotation);
-        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {4, 0, 0}), 3, 3, 3, rotation);
+        RealMatrix rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, Math.PI / 4.0).getMatrix());
+        box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 3, 3, 3, noRotation);
+        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {3.1, 0, 0}), 3, 3, 3, rotation);
         assertTrue(MathHelper.checkIntersection(box1, box2));
 
         box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 3, 3, 3, noRotation);
-        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 4, 0}), 3, 3, 3, noRotation);
+        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 3.1, 0}), 3, 3, 3, noRotation);
         assertFalse(MathHelper.checkIntersection(box1, box2));
 
-        rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, Math.PI / 4.0, 0.0f, Math.PI).getMatrix());
-        box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 3, 3, 3, rotation);
-        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 4, 0}), 3, 3, 3, rotation);
+        box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 3.1}), 3, 3, 3, noRotation);
+        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 3, 3, 3, noRotation);
+        assertFalse(MathHelper.checkIntersection(box1, box2));
+
+        box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 3}), 3, 3, 3, noRotation);
+        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 3, 3, 3, noRotation);
         assertTrue(MathHelper.checkIntersection(box1, box2));
 
-        rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, Math.PI / 4.0, 0.0f, Math.PI).getMatrix());
-        box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, -4, 0}), 3, 3, 3, rotation);
-        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 3, 3, 3, rotation);
+        rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, Math.PI / 2.0).getMatrix());
+        box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 3, 6, 2, noRotation);
+        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {4.5, 0, 0}), 3, 6, 2, rotation);
+        assertTrue(MathHelper.checkIntersection(box1, box2));
+
+        rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, Math.PI).getMatrix());
+        box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 2, 4, 6, noRotation);
+        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 5, 0}), 2, 4, 6, rotation);
+        assertFalse(MathHelper.checkIntersection(box1, box2));
+
+        rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, Math.PI / 4.0, 0.0, 0.0).getMatrix());
+        box1 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 0, 0}), 2, 4, 6, rotation);
+        rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, -Math.PI / 4.0, 0.0, Math.PI).getMatrix());
+        box2 = new OrientedBoundingBox(new ArrayRealVector(new double[] {0, 5, 0}), 2, 4, 6, rotation);
         assertTrue(MathHelper.checkIntersection(box1, box2));
     }
 
