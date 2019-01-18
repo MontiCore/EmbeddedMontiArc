@@ -135,7 +135,7 @@ public class ClusterHelper {
                 .collect(Collectors.toList());
 
         Set<ResolvingFilter<? extends Symbol>> resolvingFilters = inst.getSpannedScope().getResolvingFilters();
-        List<EMAComponentInstanceSymbol> tmpSubcomps = cluster.stream().map(ClusterHelper::realClone).collect(Collectors.toList());
+        List<EMAComponentInstanceSymbol> tmpSubcomps = cluster.stream().map(EMAComponentInstanceBuilder::clone).collect(Collectors.toList());
         tmpSubcomps.forEach(sc -> ((CommonScope) sc.getSpannedScope()).setResolvingFilters(resolvingFilters));
         EMAComponentInstanceSymbol res = new EMAComponentInstanceBuilder()
                 .setName(clusterName)
@@ -150,26 +150,6 @@ public class ClusterHelper {
         ((CommonScope) res.getSpannedScope()).setResolvingFilters(resolvingFilters);
         res.setEnclosingScope((MutableScope) inst.getEnclosingScope());
         return res;
-    }
-
-    //TODO: ports, package name are not cloned in EMAComponentInstanceBuilder::clone
-    private static EMAComponentInstanceSymbol realClone(EMAComponentInstanceSymbol inst) {
-        Collection<EMAComponentInstanceSymbol> subcomps = inst.getSubComponents().stream().map(ClusterHelper::realClone).collect(Collectors.toList());
-        Collection<EMAConnectorSymbol> connectors = inst.getConnectorInstances().stream().map(EMAConnectorBuilder::clone).collect(Collectors.toList());
-        Collection<EMAPortSymbol> ports = inst.getPortInstanceList().stream().map(EMAPortBuilder::clone).collect(Collectors.toList());
-
-        EMAComponentInstanceBuilder res = (new EMAComponentInstanceBuilder());
-
-        ports.forEach(res::addPort);
-
-        res.setName(inst.getName())
-            .setPackageName(inst.getPackageName())
-            .setSymbolReference(inst.getComponentType())
-            .addConnectors(connectors)
-            .addSubComponents(subcomps)
-            .addResolutionDeclarationSymbols(inst.getResolutionDeclarationSymbols());
-
-        return res.build();
     }
 
 }
