@@ -137,7 +137,7 @@ public class ClusterFromTagsHelper {
                 .collect(Collectors.toList());
 
         Set<ResolvingFilter<? extends Symbol>> resolvingFilters = inst.getSpannedScope().getResolvingFilters();
-        List<EMAComponentInstanceSymbol> tmpSubcomps = cluster.stream().map(ClusterHelper::realClone).collect(Collectors.toList());
+        List<EMAComponentInstanceSymbol> tmpSubcomps = cluster.stream().map(EMAComponentInstanceBuilder::clone).collect(Collectors.toList());
         tmpSubcomps.forEach(sc -> ((CommonScope) sc.getSpannedScope()).setResolvingFilters(resolvingFilters));
         EMAComponentInstanceSymbol res = new EMAComponentInstanceBuilder()
                 .setName(clusterName)
