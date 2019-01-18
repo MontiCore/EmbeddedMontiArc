@@ -76,7 +76,7 @@ public class PhysicsEngine{
         }
 
         // Do not compute collision if the object is not a car
-        if(object.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+        if(object.getPhysicalObjectType() != PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
             return;
         }
 
