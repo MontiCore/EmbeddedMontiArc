@@ -115,8 +115,8 @@ public class PhysicsEngine{
         }
 
         // Construct bounding boxes
-        OrientedBoundingBox boxA = new OrientedBoundingBox(objectA.getGeometryPosition(), objectA.getWidth(), objectA.getHeight(), objectA.getLength(), objectA.getRotation());
-        OrientedBoundingBox boxB = new OrientedBoundingBox(objectB.getGeometryPosition(), objectB.getWidth(), objectB.getHeight(), objectB.getLength(), objectB.getRotation());
+        OrientedBoundingBox boxA = new OrientedBoundingBox(objectA.getGeometryPosition(), objectA.getWidth(), objectA.getLength(), objectA.getHeight(), objectA.getRotation());
+        OrientedBoundingBox boxB = new OrientedBoundingBox(objectB.getGeometryPosition(), objectB.getWidth(), objectB.getLength(), objectB.getHeight(), objectB.getRotation());
 
         // Perform collision computation and return result
         return MathHelper.checkIntersection(boxA, boxB);

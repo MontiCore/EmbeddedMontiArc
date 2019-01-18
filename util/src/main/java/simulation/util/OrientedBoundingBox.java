@@ -27,13 +27,13 @@ import org.apache.commons.math3.linear.RealVector;
 public class OrientedBoundingBox {
     private RealVector position;
     private double halfWidth;
-    private double halfHeight;
     private double halfLength;
+    private double halfHeight;
     private RealVector localAxisX; // Unit vector representing the local x-axis
     private RealVector localAxisY; // Unit vector representing the local y-axis
     private RealVector localAxisZ; // Unit vector representing the local z-axis
 
-    public OrientedBoundingBox(RealVector geometryPosition, double width, double height, double length, RealMatrix rotation) {
+    public OrientedBoundingBox(RealVector geometryPosition, double width, double length, double height, RealMatrix rotation) {
         if(geometryPosition.getDimension() != 3){
             throw new IllegalArgumentException("Position " + geometryPosition + " should be three dimensional.");
         }
@@ -47,8 +47,8 @@ public class OrientedBoundingBox {
 
         // Set measurements
         halfWidth = width / 2.0;
-        halfHeight = height / 2.0;
         halfLength = length / 2.0;
+        halfHeight = height / 2.0;
 
         // Determine axes
         localAxisX = getAxis(rotation, new double[] {1.0, 0.0, 0.0});
