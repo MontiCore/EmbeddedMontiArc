@@ -196,18 +196,25 @@ public class EMADLGenerator {
         }
 
         for (ExpandedComponentInstanceSymbol componentInstance : allInstances) {
-            String fullName = componentInstance.getFullName().replaceAll("\\.", "_");
+            ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
+            Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
 
+            if(!architecture.isPresent()) {
+                continue;
+            }
+
+            String fullName = componentInstance.getFullName().replaceAll("\\.", "_");
             String creatorScriptName = "CNNCreator_" + fullName + ".py";
             String creatorScript = fileContentMap.get(creatorScriptName);
             int creatorScriptHash = creatorScript.hashCode();
 
-            String trainerScriptName = "CNNTrainer_" + fullName + ".py";
+
+            String parsedFullName = fullName.substring(0, 1).toLowerCase() + fullName.substring(1);
+            String trainerScriptName = "CNNTrainer_" + parsedFullName + ".py";
             String trainerScript = fileContentMap.get(trainerScriptName);
             int trainerScriptHash = trainerScript.hashCode();
 
             // This is not the real path to the training data! Adapt accordingly once sub-task 4 is solved
-            ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
             String trainConfigFilename = "NOT_FOUND";
             String componentConfigFilename = component.getFullName().replaceAll("\\.", "/");
             String instanceConfigFilename = component.getFullName().replaceAll("\\.", "/") + "_"  + component.getName();
