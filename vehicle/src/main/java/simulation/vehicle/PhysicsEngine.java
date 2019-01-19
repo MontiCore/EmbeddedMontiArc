@@ -24,7 +24,9 @@ import commons.simulation.PhysicalObject;
 import commons.simulation.PhysicalObjectType;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.environment.visualisationadapter.interfaces.EnvObject;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
+import simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetPavements;
 import simulation.util.MathHelper;
 import java.util.List;
 import java.util.Map;
@@ -201,6 +203,55 @@ public class PhysicsEngine{
         if(objectB.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
             PhysicalVehicle vehicleB = (PhysicalVehicle) objectB;
             vehicleB.addForce(forceB);
+        }
+    }
+
+    public static double calcFrictionCoefficient(EnvStreet street, boolean isItRaining) {
+        switch(street.getStreetPavement()) {
+            case PAVED:
+                if (isItRaining) {
+                    return 1;
+                } else {
+                    return 1;
+                }
+
+            case UNPAVED:
+                if (isItRaining) {
+                    return 1;
+                } else {
+                    return 1;
+                }
+
+            case QUALITY:
+                if (isItRaining) {
+                    return 1;
+                } else {
+                    return 1;
+                }
+
+            case STONE:
+                if (isItRaining) {
+                    return 1;
+                } else {
+                    return 1;
+                }
+
+            case DIRT:
+                if (isItRaining) {
+                    return  0.55;
+                } else {
+                    return 0.65;
+                }
+
+            case GRASS:
+                if (isItRaining) {
+                    return 1;
+                } else {
+                    return 1;
+                }
+
+            default:
+                return 1;
         }
     }
 }

@@ -25,6 +25,9 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
+import simulation.environment.geometry.osmadapter.GeomStreet;
+import simulation.environment.visualisationadapter.interfaces.EnvObject;
+import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.util.MathHelper;
 //import sensors.abstractsensors.AbstractSensor;
 //import sensors.abstractsensors.*;
@@ -592,12 +595,36 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         // Take the wheel positions and get the frictions coefficients
         //TODO: Let the physical vehicle look up the ground type and not only the weather
-        double frictionCoefficient = ((WorldModel.getInstance().isItRaining()) ? PhysicsEngine.ROAD_FRICTION_WET : PhysicsEngine.ROAD_FRICTION_DRY);
+        /*double frictionCoefficient = ((WorldModel.getInstance().isItRaining()) ? PhysicsEngine.ROAD_FRICTION_WET : PhysicsEngine.ROAD_FRICTION_DRY);
         //frictionCoefficient = ;
         vehicleDynamicsModel.setInput("mu_1", frictionCoefficient);
         vehicleDynamicsModel.setInput("mu_2", frictionCoefficient);
         vehicleDynamicsModel.setInput("mu_3", frictionCoefficient);
-        vehicleDynamicsModel.setInput("mu_4", frictionCoefficient);
+        vehicleDynamicsModel.setInput("mu_4", frictionCoefficient);*/
+
+        RealVector[] wheelPositions = {
+            getFrontRightWheelGeometryPosition(),
+            getFrontLeftWheelGeometryPosition(),
+            getBackRightWheelGeometryPosition(),
+            getBackLeftWheelGeometryPosition(),
+        };
+
+        String[] tires = {
+            "mu_1",
+            "mu_2",
+            "mu_3",
+            "mu_4",
+        };
+
+        double frictionCoefficient;
+        EnvStreet street;
+
+        for (int i = 0; i < 4; i++) {
+            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetByRealVector(wheelPositions[i]).getObject();
+            frictionCoefficient = PhysicsEngine.calcFrictionCoefficient(street, WorldModel.getInstance().isItRaining());
+
+            vehicleDynamicsModel.setInput(tires[i], frictionCoefficient);
+        }
 
         // Store z coordinate for interpolation later
         double oldZ = vehicleDynamicsModel.getValue("z");
