@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.emadl.generator;
 
-
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.apache.commons.cli.*;
@@ -56,6 +55,16 @@ public class EMADLGeneratorCli {
             .hasArg(true)
             .required(false)
             .build();
+/**/
+    public static final Option OPTION_RESTRAINED_TRAINING = Option.builder("f")
+    		.longOpt("forced")
+    		.desc("no training or a forced training. Options: y (a forced training), n (no training)")
+    		.hasArg(true)
+    		.required(false)
+    		.build();
+
+
+
 
     private EMADLGeneratorCli() {
     }
@@ -75,6 +84,7 @@ public class EMADLGeneratorCli {
         options.addOption(OPTION_ROOT_MODEL);
         options.addOption(OPTION_OUTPUT_PATH);
         options.addOption(OPTION_BACKEND);
+        options.addOption(OPTION_RESTRAINED_TRAINING);
         return options;
     }
 
@@ -94,7 +104,9 @@ public class EMADLGeneratorCli {
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
         String backendString = cliArgs.getOptionValue(OPTION_BACKEND.getOpt());
+        String forced = cliArgs.getOptionValue(OPTION_RESTRAINED_TRAINING.getOpt());
         final String DEFAULT_BACKEND = "MXNET";
+        final String DEFAULT_FORCED = "UNSET";
 
         if (backendString == null) {
             Log.warn("backend not specified. backend set to default value " + DEFAULT_BACKEND);
@@ -106,13 +118,27 @@ public class EMADLGeneratorCli {
             Log.warn("specified backend " + backendString + " not supported. backend set to default value " + DEFAULT_BACKEND);
             backend = Backend.getBackendFromString(DEFAULT_BACKEND);
         }
+
+
+        if (forced == null) {
+            Log.warn("forced not specified. forced set to default value" + DEFAULT_FORCED);
+            forced = DEFAULT_FORCED;
+        }else if (forced == "y") {
+        	Log.warn("training with enforcement");
+            /**/
+        }else if (forced == "n") {
+        	Log.warn("no training with enforcement");
+        }else{
+        	Log.error("no such parameter" + forced);
+            System.exit(1);
+        }
         EMADLGenerator generator = new EMADLGenerator(backend.get());
 
         if (outputPath != null){
             generator.setGenerationTargetPath(outputPath);
         }
         try{
-            generator.generate(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()), rootModelName);
+            generator.generate(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()), rootModelName, forced);
         }
         catch (IOException e){
             Log.error("io error during generation", e);
@@ -122,5 +148,6 @@ public class EMADLGeneratorCli {
             Log.error("template error during generation", e);
             System.exit(1);
         }
+        
     }
 }

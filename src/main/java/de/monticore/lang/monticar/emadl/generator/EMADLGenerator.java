@@ -103,7 +103,7 @@ public class EMADLGenerator {
         return emamGen;
     }
 
-    public void generate(String modelPath, String qualifiedName) throws IOException, TemplateException {
+    public void generate(String modelPath, String qualifiedName, String forced) throws IOException, TemplateException {
         setModelsPath( modelPath );
         TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
         ComponentSymbol component = symtab.<ComponentSymbol>resolve(qualifiedName, ComponentSymbol.KIND).orElse(null);
@@ -118,12 +118,14 @@ public class EMADLGenerator {
         }
 
         ExpandedComponentInstanceSymbol instance = component.getEnclosingScope().<ExpandedComponentInstanceSymbol>resolve(instanceName, ExpandedComponentInstanceSymbol.KIND).get();
-
-        generateFiles(symtab, instance, symtab);
+        
+        
+        generateFiles(symtab, instance, symtab, forced);
+        
     }
 
-    public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
-        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
+    public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab, String forced) throws IOException {
+        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab, forced);
 
         for (FileContent fileContent : fileContents) {
             emamGen.generateFile(fileContent);
@@ -181,7 +183,7 @@ public class EMADLGenerator {
         }
     }
 
-    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
+    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab, String forced){
         List<FileContent> fileContents = new ArrayList<>();
         Set<ExpandedComponentInstanceSymbol> allInstances = new HashSet<>();
 
@@ -231,7 +233,7 @@ public class EMADLGenerator {
             System.out.println(trainingHash);
 
             boolean alreadyTrained = isAlreadyTrained(trainingHash, componentInstance);
-            if(alreadyTrained) {
+            if(alreadyTrained || forced == "n") {
                 System.out.println("Already trained");
             }
             else {
