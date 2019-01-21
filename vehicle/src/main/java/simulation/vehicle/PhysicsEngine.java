@@ -209,35 +209,21 @@ public class PhysicsEngine{
 
     public static double calcFrictionCoefficient(EnvStreet street, boolean isItRaining) {
         switch(street.getStreetPavement()) {
-            case PAVED:
+            case QUALITY: // Asphalt
                 if (isItRaining) {
-                    return 1;
+                    return 0.75;
                 } else {
-                    return 1;
+                    return 0.9;
                 }
 
-            case UNPAVED:
+            case STONE: case PAVED:
                 if (isItRaining) {
-                    return 1;
+                    return 0.4;
                 } else {
-                    return 1;
+                    return 0.6;
                 }
 
-            case QUALITY:
-                if (isItRaining) {
-                    return 1;
-                } else {
-                    return 1;
-                }
-
-            case STONE:
-                if (isItRaining) {
-                    return 1;
-                } else {
-                    return 1;
-                }
-
-            case DIRT:
+            case DIRT: case UNPAVED:
                 if (isItRaining) {
                     return  0.55;
                 } else {
@@ -246,9 +232,9 @@ public class PhysicsEngine{
 
             case GRASS:
                 if (isItRaining) {
-                    return 1;
+                    return 0.25; // provisional value
                 } else {
-                    return 1;
+                    return 0.35;
                 }
 
             default:
