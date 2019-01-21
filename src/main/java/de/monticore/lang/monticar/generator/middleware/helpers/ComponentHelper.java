@@ -1,28 +1,29 @@
 package de.monticore.lang.monticar.generator.middleware.helpers;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ComponentHelper {
-    public static List<ExpandedComponentInstanceSymbol> getSubcompsOrderedByName(ExpandedComponentInstanceSymbol componentInstanceSymbol){
+    public static List<EMAComponentInstanceSymbol> getSubcompsOrderedByName(EMAComponentInstanceSymbol componentInstanceSymbol){
         return componentInstanceSymbol.getSubComponents().stream()
-                .sorted(Comparator.comparing(ExpandedComponentInstanceSymbol::getFullName))
+                .sorted(Comparator.comparing(EMAComponentInstanceSymbol::getFullName))
                 .collect(Collectors.toList());
     }
 
-    public static Collection<ConnectorSymbol> getInnerConnectors(ExpandedComponentInstanceSymbol componentInstanceSymbol){
+    public static Collection<EMAConnectorInstanceSymbol> getInnerConnectors(EMAComponentInstanceSymbol componentInstanceSymbol){
         String superCompName = componentInstanceSymbol.getFullName();
-        return componentInstanceSymbol.getConnectors().stream()
+        return componentInstanceSymbol.getConnectorInstances().stream()
                 //filter out all connectors to super component
-                .filter(con -> !con.getSourcePort().getComponentInstance().get().getFullName().equals(superCompName)
-                        && !con.getTargetPort().getComponentInstance().get().getFullName().equals(superCompName))
+                .filter(con -> !con.getSourcePort().getComponentInstance().getFullName().equals(superCompName)
+                        && !con.getTargetPort().getComponentInstance().getFullName().equals(superCompName))
                 .collect(Collectors.toList());
     }
 
-    public static Map<String, Integer> getLabelsForSubcomps(List<ExpandedComponentInstanceSymbol> subcomps) {
+    public static Map<String, Integer> getLabelsForSubcomps(List<EMAComponentInstanceSymbol> subcomps) {
         Map<String, Integer> componentIndecies = new HashMap<>();
 
         int[] i = {0};
