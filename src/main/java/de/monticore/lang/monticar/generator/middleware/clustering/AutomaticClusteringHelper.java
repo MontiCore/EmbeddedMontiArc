@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 
 public class AutomaticClusteringHelper {
 
-    static double MAXCOST= 999999;
-
     public static double[][] createAdjacencyMatrix(List<ExpandedComponentInstanceSymbol> subcomps, Collection<ConnectorSymbol> connectors, Map<String, Integer> subcompLabels) {
         // Nodes = subcomponents
         // Verts = connectors between subcomponents
