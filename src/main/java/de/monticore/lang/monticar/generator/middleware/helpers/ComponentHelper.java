@@ -30,4 +30,12 @@ public class ComponentHelper {
         subcomps.forEach(sc -> componentIndecies.put(sc.getFullName(), i[0]++));
         return componentIndecies;
     }
+
+    public static Map<Integer, String> getSubcompsLabels(List<ExpandedComponentInstanceSymbol> subcomps) {
+        Map<Integer, String> componentIndecies = new HashMap<>();
+
+        int[] i = {0};
+        subcomps.forEach(sc -> componentIndecies.put(i[0]++, sc.getFullName()));
+        return componentIndecies;
+    }
 }

@@ -20,10 +20,17 @@ import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.stream.file.FileSinkImages;
+import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.view.ViewerPipe;
 import org.junit.Test;
 import smile.clustering.DBSCAN;
 import smile.clustering.SpectralClustering;
+import de.monticore.lang.monticar.svggenerator.SVGMain;
+import org.graphstream.graph.*;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,6 +42,7 @@ import static org.junit.Assert.assertTrue;
 public class AutomaticClusteringTest extends AbstractSymtabTest{
 
     public static final String TEST_PATH = "src/test/resources/";
+    public static final String TEST_PATH_PNG = "src/test/resources/clustering/test-images/";
 
 
     @Test
@@ -487,6 +495,52 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
     @Test
     public void testClusteringAlgorithms(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        //String modelName= "clustering.unambiguousCluster";
+        String modelName= "clustering.midSizeDemoCluster";
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve(modelName, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(componentInstanceSymbol);
+
+
+        // get stuff together for adjmatrix
+        List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(componentInstanceSymbol);
+        Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
+        Map<Integer, String> subcompsLabels = ComponentHelper.getSubcompsLabels(subcompsOrderedByName);
+        double[][] adjMatrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
+                ComponentHelper.getInnerConnectors(componentInstanceSymbol),
+                labelsForSubcomps);
+        // build a graph from this stuff
+        Graph graph = new SingleGraph(modelName);
+        Node node= null;
+        Edge edge= null;
+        String subCompLabel= null;
+        for(int i = 0; i < adjMatrix[0].length; i++) {
+            node= graph.addNode(Integer.toString(i));
+            subCompLabel= subcompsLabels.get(Integer.parseInt(node.getId()));
+            subCompLabel= subCompLabel.substring(subCompLabel.lastIndexOf('.') + 1);
+            node.addAttribute("ui.label", node.getId() + " (" + subCompLabel + ")");
+        }
+        for(int i = 0; i < adjMatrix[0].length; i++) {
+            for(int j = i; j < adjMatrix[0].length; j++) {
+                if (adjMatrix[i][j] > 0) {
+                    edge= graph.addEdge(i + "-" + j, Integer.toString(i), Integer.toString(j));
+                    edge.addAttribute("ui.label", adjMatrix[i][j]);
+                }
+            }
+        }
+
+        FileSinkImages img = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.XGA);
+        img.setStyleSheet("graph { padding: 100px; }");
+        img.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_FULLY_AT_NEW_IMAGE);
+        try { img.writeAll(graph, TEST_PATH_PNG + modelName + ".png"); } catch (IOException e) { System.out.println("Couldn't create image file "+TEST_PATH_PNG + modelName + ".png"+
+                "\n"+e.getMessage()); };
+
+        SimpleModelViewer viewer= new SimpleModelViewer(graph);
+        viewer.run();
+
         Object[] params;
         for(ClusteringKind kind : ClusteringKind.values()){
             params= null;
@@ -501,13 +555,11 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
                     };
                     break;
             }
-            testCreateClusters(ClusteringAlgorithmFactory.getFromKind(kind), params);
+            testCreateClusters(ClusteringAlgorithmFactory.getFromKind(kind), params, componentInstanceSymbol, modelName);
         }
     }
 
-    private void testCreateClusters(ClusteringAlgorithm algorithm, Object[] params){
-        //UnambiguousCluster
-        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+    private void testCreateClusters(ClusteringAlgorithm algorithm, Object[] params, ExpandedComponentInstanceSymbol componentInstanceSymbol, String modelName){
 
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.unambiguousCluster", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
@@ -519,6 +571,133 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
             clusters = algorithm.cluster(componentInstanceSymbol);
 
 
+        double colorIncrement= 1.0/clusters.size();
+        double sizeIncrement= Math.ceil(50/clusters.size());
+        double color= 0;
+        double size= 10;
+
+        // get stuff together for adjmatrix
+        List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(componentInstanceSymbol);
+        Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
+        Map<Integer, String> subcompsLabels = ComponentHelper.getSubcompsLabels(subcompsOrderedByName);
+        double[][] adjMatrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
+                ComponentHelper.getInnerConnectors(componentInstanceSymbol),
+                labelsForSubcomps);
+        // build a graph from this stuff
+        Graph graph = new SingleGraph(algoNameShort);
+        Node node= null;
+        Edge edge= null;
+        String subCompLabel= null;
+        for(int i = 0; i < adjMatrix[0].length; i++) {
+            node= graph.addNode(Integer.toString(i));
+            subCompLabel= subcompsLabels.get(Integer.parseInt(node.getId()));
+            subCompLabel= subCompLabel.substring(subCompLabel.lastIndexOf('.') + 1);
+            node.addAttribute("ui.label", node.getId() + " (" + subCompLabel + ")");
+        }
+        for(int i = 0; i < adjMatrix[0].length; i++) {
+            for(int j = i; j < adjMatrix[0].length; j++) {
+                if (adjMatrix[i][j] > 0) {
+                    edge= graph.addEdge(i + "-" + j, Integer.toString(i), Integer.toString(j));
+                    edge.addAttribute("ui.label", adjMatrix[i][j]);
+                }
+            }
+        }
+
+        // style (colorize + resize) nodes for clusters
+        Node n;
+        Edge e;
+        String nodeName;
+        String nodeId;
+        Set<ExpandedComponentInstanceSymbol> cluster;
+        List<String> clusterNames;
+        for(int i = 0; i < clusters.size(); i++) {
+            cluster = clusters.get(i);
+            clusterNames = cluster.stream().map(CommonSymbol::getFullName).collect(Collectors.toList());
+            for(int j = 0; j < clusterNames.size(); j++) {
+                nodeId= null;
+                nodeId= labelsForSubcomps.get(clusterNames.get(j)).toString();
+                if (nodeId!=null) {
+                    n= graph.getNode(nodeId);
+                    n.setAttribute("ui.style", "fill-mode: dyn-plain; fill-color: red, black; size: " + size + "px;");
+                    n.setAttribute("ui.color", color);
+
+                    // find cutting edges and delete or re-color them
+                    for(int k = 0; k < adjMatrix[Integer.parseInt(nodeId)].length; k++) {
+                        if (adjMatrix[Integer.parseInt(nodeId)][k] > 0) {
+                            // target node k is not in current cluster
+                            nodeName= subcompsLabels.get(k);
+                            if (!clusterNames.contains(nodeName)) {
+                                e= null;
+                                e= graph.getEdge(Integer.parseInt(nodeId)+"-"+k);
+                                //graph.removeEdge(e);
+                                if (e!=null) e.setAttribute("ui.style", "fill-mode: plain; fill-color: #F0F0F0;");
+                            }
+                        }
+                    }
+                }
+            }
+        color= color + colorIncrement;
+        size= size + sizeIncrement;
+        }
+
+        FileSinkImages img = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.XGA);
+        img.setStyleSheet("graph { padding: 100px; }");
+        img.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_FULLY_AT_NEW_IMAGE);
+        try { img.writeAll(graph, TEST_PATH_PNG + modelName + "/" + graph.getId() + ".png"); } catch (IOException ex) { System.out.println("Couldn't create image file "+TEST_PATH_PNG + graph.getId() + ".png"+
+                "\n"+ex.getMessage()); };
+
+        SimpleModelViewer viewer= new SimpleModelViewer(graph);
+        viewer.run();
+
+    if (modelName=="clustering.midSizeDemoCluster") {
+        assertTrue(clusters.size() == 2);
+
+        Set<ExpandedComponentInstanceSymbol> cluster1 = clusters.get(0);
+        Set<ExpandedComponentInstanceSymbol> cluster2 = clusters.get(1);
+        assertTrue((cluster1.size() == 3 && cluster2.size() == 4) ||
+                           (cluster2.size() == 3 && cluster1.size() == 4)
+        );
+
+        List<String> cluster1Names = cluster1.stream()
+                .map(CommonSymbol::getFullName)
+                .collect(Collectors.toList());
+
+        List<String> cluster2Names = cluster2.stream()
+                .map(CommonSymbol::getFullName)
+                .collect(Collectors.toList());
+
+        if (cluster1.size() == 4) {
+            if (cluster1Names.get(0).endsWith("comp0") ||
+                cluster1Names.get(0).endsWith("comp1") ||
+                cluster1Names.get(0).endsWith("comp2") ||
+                cluster1Names.get(0).endsWith("comp3")
+            ) {
+                assertTrue(cluster1Names.contains(modelName + ".comp0"));
+                assertTrue(cluster1Names.contains(modelName + ".comp1"));
+                assertTrue(cluster1Names.contains(modelName + ".comp2"));
+                assertTrue(cluster1Names.contains(modelName + ".comp3"));
+
+                assertTrue(cluster2Names.contains(modelName + ".comp4"));
+                assertTrue(cluster2Names.contains(modelName + ".comp5"));
+                assertTrue(cluster2Names.contains(modelName + ".comp6"));
+            }
+        } else if (cluster1.size() == 3) {
+            if (cluster1Names.get(0).endsWith("comp4") ||
+                cluster1Names.get(0).endsWith("comp5") ||
+                cluster1Names.get(0).endsWith("comp6")
+            ) {
+                assertTrue(cluster2Names.contains(modelName + ".comp0"));
+                assertTrue(cluster2Names.contains(modelName + ".comp1"));
+                assertTrue(cluster2Names.contains(modelName + ".comp2"));
+                assertTrue(cluster2Names.contains(modelName + ".comp3"));
+
+                assertTrue(cluster1Names.contains(modelName + ".comp4"));
+                assertTrue(cluster1Names.contains(modelName + ".comp5"));
+                assertTrue(cluster1Names.contains(modelName + ".comp6"));
+            }
+        }
+    }
+    if (modelName=="clustering.unambiguousCluster") {
         if (algorithm instanceof SpectralClusteringAlgorithm) {
 
             assertTrue(clusters.size() == 2);
@@ -574,6 +753,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
             assertTrue(cluster3Names.contains("clustering.unambiguousCluster.compC"));
             assertTrue(cluster4Names.contains("clustering.unambiguousCluster.compD"));
         }
+    }
 
     }
 
