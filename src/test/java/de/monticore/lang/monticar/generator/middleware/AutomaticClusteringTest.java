@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.middleware;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.*;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.*;
 import com.clust4j.algo.AffinityPropagation;
@@ -27,7 +27,6 @@ import org.graphstream.ui.view.ViewerPipe;
 import org.junit.Test;
 import smile.clustering.DBSCAN;
 import smile.clustering.SpectralClustering;
-import de.monticore.lang.monticar.svggenerator.SVGMain;
 import org.graphstream.graph.*;
 
 import javax.swing.*;
@@ -49,10 +48,10 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
     public void testAdjacencyMatrixCreation(){
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.system", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("lab.system", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(componentInstanceSymbol);
+        List<EMAComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(componentInstanceSymbol);
         double[][] matrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
                 ComponentHelper.getInnerConnectors(componentInstanceSymbol),
                 ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName));
@@ -110,13 +109,32 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
     public void testFlattenAlgorithm1(){
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.overallSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver
+                .<EMAComponentInstanceSymbol>resolve("lab.overallSystem", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper.flattenArchitecture(componentInstanceSymbol);
+        EMAComponentInstanceSymbol newComponentInstanceSymbol = FlattenArchitecture
+                .flattenArchitecture(componentInstanceSymbol);
         assertNotNull(newComponentInstanceSymbol);
-        Collection<ExpandedComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
-        Collection<ConnectorSymbol> connectors = newComponentInstanceSymbol.getConnectors();
+        Collection<EMAComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<EMAConnectorInstanceSymbol> connectors = newComponentInstanceSymbol.getConnectorInstances();
+        assertEquals(10, subComponents.size());
+        assertEquals(20, connectors.size());
+    }
+
+    @Test
+    public void testFlattenAlgorithm1ShortNames(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver
+                .<EMAComponentInstanceSymbol>resolve("lab.overallSystem", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        EMAComponentInstanceSymbol newComponentInstanceSymbol = FlattenArchitecture
+                .flattenArchitecture(componentInstanceSymbol, new HashMap<>());
+        assertNotNull(newComponentInstanceSymbol);
+        Collection<EMAComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<EMAConnectorInstanceSymbol> connectors = newComponentInstanceSymbol.getConnectorInstances();
         assertEquals(10, subComponents.size());
         assertEquals(20, connectors.size());
     }
@@ -125,15 +143,51 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
     public void testFlattenAlgorithm2(){
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.spanningSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver
+                .<EMAComponentInstanceSymbol>resolve("lab.spanningSystem", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper.flattenArchitecture(componentInstanceSymbol);
+        EMAComponentInstanceSymbol newComponentInstanceSymbol = FlattenArchitecture
+                .flattenArchitecture(componentInstanceSymbol);
         assertNotNull(newComponentInstanceSymbol);
-        Collection<ExpandedComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
-        Collection<ConnectorSymbol> connectors = newComponentInstanceSymbol.getConnectors();
+        Collection<EMAComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<EMAConnectorInstanceSymbol> connectors = newComponentInstanceSymbol.getConnectorInstances();
         assertEquals(20, subComponents.size());
         assertEquals(40, connectors.size());
+    }
+
+    @Test
+    public void testFlattenAlgorithm2ShortNames() {
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver
+                .<EMAComponentInstanceSymbol>resolve("lab.spanningSystem", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        EMAComponentInstanceSymbol newComponentInstanceSymbol = FlattenArchitecture
+                .flattenArchitecture(componentInstanceSymbol, new HashMap<>());
+        assertNotNull(newComponentInstanceSymbol);
+        Collection<EMAComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<EMAConnectorInstanceSymbol> connectors = newComponentInstanceSymbol.getConnectorInstances();
+        assertEquals(20, subComponents.size());
+        assertEquals(40, connectors.size());
+    }
+
+    @Test
+    public void testFlattenAlgorithmWithLevels() {
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver
+                .<EMAComponentInstanceSymbol>resolve("lab.spanningSystem", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        EMAComponentInstanceSymbol newComponentInstanceSymbol = FlattenArchitecture
+                .flattenArchitecture(componentInstanceSymbol, new HashMap<>(), 2);
+        assertNotNull(newComponentInstanceSymbol);
+        Collection<EMAComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<EMAConnectorInstanceSymbol> connectors = newComponentInstanceSymbol.getConnectorInstances();
+        assertEquals(4, subComponents.size());
+        assertEquals(24, connectors.size());
     }
 
 
@@ -445,13 +499,13 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         //String modelName= "clustering.unambiguousCluster";
         String modelName= "clustering.midSizeDemoCluster";
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve(modelName, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve(modelName, EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(componentInstanceSymbol);
 
 
         // get stuff together for adjmatrix
-        List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(componentInstanceSymbol);
+        List<EMAComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(componentInstanceSymbol);
         Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
         Map<Integer, String> subcompsLabels = ComponentHelper.getSubcompsLabels(subcompsOrderedByName);
         double[][] adjMatrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
@@ -504,13 +558,17 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         }
     }
 
-    private void testCreateClusters(ClusteringAlgorithm algorithm, Object[] params, ExpandedComponentInstanceSymbol componentInstanceSymbol, String modelName){
+    private void testCreateClusters(ClusteringAlgorithm algorithm, Object[] params, EMAComponentInstanceSymbol componentInstanceSymbol, String modelName){
 
         String algoName= algorithm.toString().substring(0, algorithm.toString().lastIndexOf("@"));
         String algoNameShort= algoName.substring(algoName.lastIndexOf(".")+1);
         System.out.println(algoName);
 
-        List<Set<ExpandedComponentInstanceSymbol>> clusters = null;
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+        componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.unambiguousCluster", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        List<Set<EMAComponentInstanceSymbol>> clusters = null;
         if (params != null) clusters = algorithm.cluster(componentInstanceSymbol, params); else
             clusters = algorithm.cluster(componentInstanceSymbol);
 
@@ -521,7 +579,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         double size= 10;
 
         // get stuff together for adjmatrix
-        List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(componentInstanceSymbol);
+        List<EMAComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(componentInstanceSymbol);
         Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
         Map<Integer, String> subcompsLabels = ComponentHelper.getSubcompsLabels(subcompsOrderedByName);
         double[][] adjMatrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
@@ -552,7 +610,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         Edge e;
         String nodeName;
         String nodeId;
-        Set<ExpandedComponentInstanceSymbol> cluster;
+        Set<EMAComponentInstanceSymbol> cluster;
         List<String> clusterNames;
         for(int i = 0; i < clusters.size(); i++) {
             cluster = clusters.get(i);
@@ -596,8 +654,8 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
     if (modelName=="clustering.midSizeDemoCluster") {
         assertTrue(clusters.size() == 2);
 
-        Set<ExpandedComponentInstanceSymbol> cluster1 = clusters.get(0);
-        Set<ExpandedComponentInstanceSymbol> cluster2 = clusters.get(1);
+        Set<EMAComponentInstanceSymbol> cluster1 = clusters.get(0);
+        Set<EMAComponentInstanceSymbol> cluster2 = clusters.get(1);
         assertTrue((cluster1.size() == 3 && cluster2.size() == 4) ||
                            (cluster2.size() == 3 && cluster1.size() == 4)
         );
@@ -646,8 +704,8 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
             assertTrue(clusters.size() == 2);
 
-            Set<ExpandedComponentInstanceSymbol> cluster1 = clusters.get(0);
-            Set<ExpandedComponentInstanceSymbol> cluster2 = clusters.get(1);
+            Set<EMAComponentInstanceSymbol> cluster1 = clusters.get(0);
+            Set<EMAComponentInstanceSymbol> cluster2 = clusters.get(1);
             assertTrue(cluster1.size() == 2);
             assertTrue(cluster2.size() == 2);
 
@@ -678,10 +736,10 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
             assertTrue(clusters.size() == 4);
 
-            Set<ExpandedComponentInstanceSymbol> cluster1 = clusters.get(0);
-            Set<ExpandedComponentInstanceSymbol> cluster2 = clusters.get(1);
-            Set<ExpandedComponentInstanceSymbol> cluster3 = clusters.get(2);
-            Set<ExpandedComponentInstanceSymbol> cluster4 = clusters.get(3);
+            Set<EMAComponentInstanceSymbol> cluster1 = clusters.get(0);
+            Set<EMAComponentInstanceSymbol> cluster2 = clusters.get(1);
+            Set<EMAComponentInstanceSymbol> cluster3 = clusters.get(2);
+            Set<EMAComponentInstanceSymbol> cluster4 = clusters.get(3);
             assertTrue(cluster1.size() == 1);
             assertTrue(cluster2.size() == 1);
             assertTrue(cluster3.size() == 1);
@@ -708,18 +766,18 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
         //ClustersWithSingleConnection
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
         //Force cluster; spectral would not cluster this way!
-        List<Set<ExpandedComponentInstanceSymbol>> clusters = new ArrayList<>();
+        List<Set<EMAComponentInstanceSymbol>> clusters = new ArrayList<>();
 
-        HashSet<ExpandedComponentInstanceSymbol> cluster1 = new HashSet<>();
+        HashSet<EMAComponentInstanceSymbol> cluster1 = new HashSet<>();
         cluster1.add(componentInstanceSymbol.getSubComponent("outComp1").get());
         cluster1.add(componentInstanceSymbol.getSubComponent("inOutComp").get());
         clusters.add(cluster1);
 
-        HashSet<ExpandedComponentInstanceSymbol> cluster2 = new HashSet<>();
+        HashSet<EMAComponentInstanceSymbol> cluster2 = new HashSet<>();
         cluster2.add(componentInstanceSymbol.getSubComponent("outComp2").get());
         cluster2.add(componentInstanceSymbol.getSubComponent("doubleInComp").get());
         clusters.add(cluster2);
@@ -727,15 +785,15 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         AutomaticClusteringHelper.annotateComponentWithRosTagsForClusters(componentInstanceSymbol, clusters);
 
-        List<String> rosPortsSuper = componentInstanceSymbol.getPortsList().stream()
-                .filter(PortSymbol::isRosPort)
-                .map(PortSymbol::getFullName)
+        List<String> rosPortsSuper = componentInstanceSymbol.getPortInstanceList().stream()
+                .filter(EMAPortInstanceSymbol::isRosPort)
+                .map(EMAPortInstanceSymbol::getFullName)
                 .collect(Collectors.toList());
 
         List<String> rosPortsSubComps = componentInstanceSymbol.getSubComponents().stream()
-                .flatMap(subc -> subc.getPortsList().stream())
-                .filter(PortSymbol::isRosPort)
-                .map(PortSymbol::getFullName)
+                .flatMap(subc -> subc.getPortInstanceList().stream())
+                .filter(EMAPortInstanceSymbol::isRosPort)
+                .map(EMAPortInstanceSymbol::getFullName)
                 .collect(Collectors.toList());
 
         //No Ports in super comp
@@ -760,28 +818,28 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
         //CostHeuristic
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("test.costHeuristic", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("test.costHeuristic", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        double inC = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inC").get());
-        double inQ = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inQ").get());
-        double inZ = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inZ").get());
-        double inB = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inB").get());
+        double inC = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPortInstance("inC").get());
+        double inQ = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPortInstance("inQ").get());
+        double inZ = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPortInstance("inZ").get());
+        double inB = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPortInstance("inB").get());
 
         assertTrue(inC > inQ);
         assertTrue(inQ > inZ);
         assertTrue(inZ > inB);
 
-        double inQVec = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inQVec").get());
-        double inQVec2 = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inQVec2").get());
+        double inQVec = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPortInstance("inQVec").get());
+        double inQVec2 = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPortInstance("inQVec2").get());
 
-        double inQMat = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inQMat").get());
-        double inQMat2 = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inQMat2").get());
+        double inQMat = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPortInstance("inQMat").get());
+        double inQMat2 = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPortInstance("inQMat2").get());
 
         assertTrue(inQVec2 > inQVec);
         assertTrue(inQMat2 > inQMat);
 
-        double inPos = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inPos").get());
+        double inPos = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPortInstance("inPos").get());
     }
 
     @Test

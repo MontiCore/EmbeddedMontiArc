@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware.clustering.algorithms;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
@@ -12,9 +12,9 @@ import java.util.*;
 // spectral clusterer product implementation
 public class SpectralClusteringAlgorithm implements ClusteringAlgorithm {
     @Override
-    public List<Set<ExpandedComponentInstanceSymbol>> cluster(ExpandedComponentInstanceSymbol component, Object... args) {
+    public List<Set<EMAComponentInstanceSymbol>> cluster(EMAComponentInstanceSymbol component, Object... args) {
 
-        List<Set<ExpandedComponentInstanceSymbol>> res = new ArrayList<>();
+        List<Set<EMAComponentInstanceSymbol>> res = new ArrayList<>();
 
         // params
         Integer numClusters= null;
@@ -75,7 +75,7 @@ public class SpectralClusteringAlgorithm implements ClusteringAlgorithm {
         if (error) {
             Log.error("SpectralClusteringAlgorithm: Mandatory parameter(s) missing!");
         } else {
-            List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(component);
+            List<EMAComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(component);
             Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
             double[][] adjMatrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
                     ComponentHelper.getInnerConnectors(component),

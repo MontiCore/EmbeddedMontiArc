@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -14,7 +14,7 @@ public class ODVGenImpl implements  GeneratorImpl {
     private String generationTargetPath;
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         //TODO: implement ODV generator in new Project(e.g. EMAM2ODV)
         Log.warn("ODV is not yet implemented!");
         return new ArrayList<>();
@@ -26,7 +26,7 @@ public class ODVGenImpl implements  GeneratorImpl {
     }
 
     @Override
-    public boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    public boolean willAccept(EMAComponentInstanceSymbol componentInstanceSymbol) {
         //TODO: check if component has ODV Ports
         return true;
     }
