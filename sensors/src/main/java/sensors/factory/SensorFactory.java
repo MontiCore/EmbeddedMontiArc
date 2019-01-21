@@ -63,8 +63,6 @@ public class SensorFactory {
             return new RightBackWheelDistanceToStreetSensor(this.physicalVehicle);
         case SENSOR_STREETTYPE:
             return new StreetTypeSensor(this.physicalVehicle);
-        case SENSOR_STREETPAVEMENT:
-            return new StreetPavementSensor(this.physicalVehicle);
         case SENSOR_DAYNIGHT:
             return new DayNightSensor(this.physicalVehicle);
         case SENSOR_LEFT_FRONT_DISTANCE:

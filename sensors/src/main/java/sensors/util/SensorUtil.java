@@ -44,7 +44,6 @@ public class SensorUtil {
         physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_RIGHT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR));
         physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_LEFT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR));
         physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_STREETTYPE));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_STREETPAVEMENT));
         physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_DAYNIGHT));
         physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_LEFT_FRONT_DISTANCE));
         physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_RIGHT_FRONT_DISTANCE));
