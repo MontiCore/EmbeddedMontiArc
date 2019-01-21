@@ -227,12 +227,58 @@ public final class MathHelper {
     }
 
     /**
+     * Function that checks if two oriented bounding boxes intersect
+     *
+     * @param boxOne First bounding box
+     * @param boxTwo Second bounding box
+     * @return True if the boxes intersect, otherwise false
+     */
+    public static boolean checkIntersection(OrientedBoundingBox boxOne, OrientedBoundingBox boxTwo) {
+        // Using separating axis theorem the bounding boxes intersect iff no separating plane exists for these 15 cases
+        return !(existsSeparatingPlane(boxOne.getLocalAxisX(), boxOne, boxTwo) ||
+                existsSeparatingPlane(boxOne.getLocalAxisY(), boxOne, boxTwo) ||
+                existsSeparatingPlane(boxOne.getLocalAxisZ(), boxOne, boxTwo) ||
+                existsSeparatingPlane(boxTwo.getLocalAxisX(), boxOne, boxTwo) ||
+                existsSeparatingPlane(boxTwo.getLocalAxisY(), boxOne, boxTwo) ||
+                existsSeparatingPlane(boxTwo.getLocalAxisZ(), boxOne, boxTwo) ||
+                existsSeparatingPlane(crossProduct(boxOne.getLocalAxisX(), boxTwo.getLocalAxisX()), boxOne, boxTwo) ||
+                existsSeparatingPlane(crossProduct(boxOne.getLocalAxisX(), boxTwo.getLocalAxisY()), boxOne, boxTwo) ||
+                existsSeparatingPlane(crossProduct(boxOne.getLocalAxisX(), boxTwo.getLocalAxisZ()), boxOne, boxTwo) ||
+                existsSeparatingPlane(crossProduct(boxOne.getLocalAxisY(), boxTwo.getLocalAxisX()), boxOne, boxTwo) ||
+                existsSeparatingPlane(crossProduct(boxOne.getLocalAxisY(), boxTwo.getLocalAxisY()), boxOne, boxTwo) ||
+                existsSeparatingPlane(crossProduct(boxOne.getLocalAxisY(), boxTwo.getLocalAxisZ()), boxOne, boxTwo) ||
+                existsSeparatingPlane(crossProduct(boxOne.getLocalAxisZ(), boxTwo.getLocalAxisX()), boxOne, boxTwo) ||
+                existsSeparatingPlane(crossProduct(boxOne.getLocalAxisZ(), boxTwo.getLocalAxisY()), boxOne, boxTwo) ||
+                existsSeparatingPlane(crossProduct(boxOne.getLocalAxisZ(), boxTwo.getLocalAxisZ()), boxOne, boxTwo));
+    }
+
+    /**
+     * Function that checks whether there exists a separating plane between 2 oriented bounding boxes
+     *
+     * @param separatingAxis Vector to which the separating plane should be orthogonal to
+     * @param boxOne First oriented bounding box
+     * @param boxTwo Second oriented bounding box
+     * @return True if separating plane exists, otherwise false
+     */
+    private static boolean existsSeparatingPlane(RealVector separatingAxis, OrientedBoundingBox boxOne, OrientedBoundingBox boxTwo) {
+        RealVector posDifference = boxTwo.getPosition().subtract(boxOne.getPosition());
+        return Math.abs(posDifference.dotProduct(separatingAxis)) >
+                (Math.abs(boxOne.getLocalAxisX().mapMultiply(boxOne.getHalfWidth()).dotProduct(separatingAxis)) +
+                        Math.abs(boxOne.getLocalAxisY().mapMultiply(boxOne.getHalfLength()).dotProduct(separatingAxis)) +
+                        Math.abs(boxOne.getLocalAxisZ().mapMultiply(boxOne.getHalfHeight()).dotProduct(separatingAxis)) +
+                        Math.abs(boxTwo.getLocalAxisX().mapMultiply(boxTwo.getHalfWidth()).dotProduct(separatingAxis)) +
+                        Math.abs(boxTwo.getLocalAxisY().mapMultiply(boxTwo.getHalfLength()).dotProduct(separatingAxis)) +
+                        Math.abs(boxTwo.getLocalAxisZ().mapMultiply(boxTwo.getHalfHeight()).dotProduct(separatingAxis)));
+    }
+
+    /**
      * Function that checks if two 2D spaces defined by real vectors have a non empty 2D space intersection
      *
      * @param vectorsOne First pairs of vector start points and end points that create a 2D space, ordered such that left halves of lines between following start points include the 2D space
      * @param vectorsTwo Second pairs of vector start points and end points that create a 2D space, ordered such that left halves of lines between following start points include the 2D space
      * @return True if 2D intersection is non-empty, otherwise false
      */
+    @Deprecated
     public static boolean checkIntersection2D(List<Map.Entry<RealVector, RealVector>> vectorsOne, List<Map.Entry<RealVector, RealVector>> vectorsTwo) {
         //TODO: Function is unnecessary with three dimensional collision detection
         // If any list is empty, return false

@@ -36,6 +36,7 @@ import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.network.*;
 import simulation.util.Log;
 import simulation.util.MathHelper;
+import simulation.util.OrientedBoundingBox;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.Vehicle;
 import java.util.*;
@@ -766,6 +767,7 @@ public class TaskAppVelocityControl extends NetworkTask {
                 double otherCompass = statusEntry.getValue().getValue().get(4);
                 double otherLength = statusEntry.getValue().getValue().get(5);
                 double otherWidth = statusEntry.getValue().getValue().get(6);
+                double otherHeight = statusEntry.getValue().getValue().get(7);
 
                 RealVector otherFrontGps = otherGps.copy();
                 RealVector otherAddVector = new ArrayRealVector(new double[]{0.0, 1.0, 0.0});
@@ -826,11 +828,11 @@ public class TaskAppVelocityControl extends NetworkTask {
                         }
 
                         // Compute boundaries for vehicles at new positions
-                        List<Map.Entry<RealVector, RealVector>> vehicleBoundaries = compute2DBoundaryVectors(gpsOnTrajectory, compassOnTrajectory, length, width);
-                        List<Map.Entry<RealVector, RealVector>> otherVehicleBoundaries = compute2DBoundaryVectors(otherGpsOnTrajectory, otherCompassOnTrajectory, otherLength, otherWidth);
+                        OrientedBoundingBox vehicleBoundingBox = new OrientedBoundingBox(gpsOnTrajectory, width, length, height, rotationMatrix);
+                        OrientedBoundingBox otherVehicleBoundingBox = new OrientedBoundingBox(otherGpsOnTrajectory, otherWidth, otherLength, otherHeight, otherRotationMatrix);
 
                         // Detect collision with boundaries
-                        boolean collisionDetected = MathHelper.checkIntersection2D(vehicleBoundaries, otherVehicleBoundaries);
+                        boolean collisionDetected = MathHelper.checkIntersection(vehicleBoundingBox, otherVehicleBoundingBox);
 
                         if (collisionDetected) {
                             // Collision angle may only be within specified range, angles close to orthogonal should be handled by priority rules
