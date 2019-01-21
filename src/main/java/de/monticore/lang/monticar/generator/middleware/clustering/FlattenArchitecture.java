@@ -1,7 +1,13 @@
 package de.monticore.lang.monticar.generator.middleware.clustering;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.symboltable.CommonScope;
+import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
@@ -20,12 +26,12 @@ public class FlattenArchitecture {
      * @return  The top level component with just the computational components as subcomponents.
      */
 
-    public static ExpandedComponentInstanceSymbol flattenArchitecture(ExpandedComponentInstanceSymbol symbol, Map<String,Integer> map){
+    public static EMAComponentInstanceSymbol flattenArchitecture(EMAComponentInstanceSymbol symbol, Map<String,Integer> map){
         if (symbol.getSubComponents().isEmpty()){
             return recursionAnchor(symbol, map);
         }
 
-        for (ExpandedComponentInstanceSymbol sym : symbol.getSubComponents()){
+        for (EMAComponentInstanceSymbol sym : symbol.getSubComponents()){
             symbol = flattenArchitecture(sym, map);
         }
         return doAlgorithmStepShortNames(symbol);
@@ -41,38 +47,34 @@ public class FlattenArchitecture {
      * @return  The top level component with just the computational components as subcomponents.
      */
 
-    public static ExpandedComponentInstanceSymbol flattenArchitecture(ExpandedComponentInstanceSymbol symbol){
+    public static EMAComponentInstanceSymbol flattenArchitecture(EMAComponentInstanceSymbol symbol){
         if (symbol.getSubComponents().isEmpty()){
             if (symbol.getEnclosingComponent().isPresent()){
                 return copySymbolWithSystemName(symbol);
             }
             return symbol;
         }
-        for (ExpandedComponentInstanceSymbol sym : symbol.getSubComponents()){
+        for (EMAComponentInstanceSymbol sym : symbol.getSubComponents()){
             symbol = flattenArchitecture(sym);
         }
 
         if (symbol.getEnclosingComponent().isPresent()){
-            ExpandedComponentInstanceSymbol enclosingComponent = copySymbolWithSystemName(symbol);
+            EMAComponentInstanceSymbol enclosingComponent = copySymbolWithSystemName(symbol);
             symbol = enclosingComponent.getSubComponent(symbol.getFullName().replace(".", "_")).get();
-            ExpandedComponentInstanceSymbol thisSymbol = symbol;
+            EMAComponentInstanceSymbol thisSymbol = symbol;
 
-            List<ExpandedComponentInstanceSymbol> newSubcomponents = getNewSubcomponents(symbol, enclosingComponent);
+            List<EMAComponentInstanceSymbol> newSubcomponents = getNewSubcomponents(symbol, enclosingComponent);
 
-            HashSet<String> incomingPorts = new HashSet<>(symbol.getIncomingPorts().stream().map(p ->{
-                return p.getFullName();
-            }).collect(Collectors.toList()));
-            HashSet<String> outgoingPorts = new HashSet<>(symbol.getOutgoingPorts().stream().map(p ->{
-                return p.getFullName();
-            }).collect(Collectors.toList()));
+            HashSet<String> incomingPorts = symbol.getIncomingPortInstances().stream().map(CommonSymbol::getFullName).collect(Collectors.toCollection(HashSet::new));
+            HashSet<String> outgoingPorts = symbol.getOutgoingPortInstances().stream().map(CommonSymbol::getFullName).collect(Collectors.toCollection(HashSet::new));
 
             //only connectors from incoming ports
-            Set<ConnectorSymbol> incomingConnectors = symbol.getConnectors().stream()
+            Set<EMAConnectorSymbol> incomingConnectors = symbol.getConnectorInstances().stream()
                     .filter(c -> incomingPorts.contains(thisSymbol.getFullName() + "." + thisSymbol.getName() + "_"+ c.getSource()))
                     .collect(Collectors.toSet());
 
             //only connectors from outgoing ports
-            Set<ConnectorSymbol> outgoingConnectors = symbol.getConnectors().stream()
+            Set<EMAConnectorSymbol> outgoingConnectors = symbol.getConnectorInstances().stream()
                     .filter(c -> outgoingPorts.contains(thisSymbol.getFullName() + "." + thisSymbol.getName() + "_"+ c.getTarget()))
                     .collect(Collectors.toSet());
 
@@ -91,37 +93,33 @@ public class FlattenArchitecture {
      * @param level The amount of levels to go deeper before starting to flatten.
      * @return  The top level component with just the computational components as subcomponents.
      */
-    public static ExpandedComponentInstanceSymbol flattenArchitecture(ExpandedComponentInstanceSymbol symbol,
+    public static EMAComponentInstanceSymbol flattenArchitecture(EMAComponentInstanceSymbol symbol,
                                                                       Map<String,Integer> map, Integer level){
         if (symbol.getSubComponents().isEmpty() || level == 0){
             return recursionAnchor(symbol, map);
         }
 
-        for (ExpandedComponentInstanceSymbol sym : symbol.getSubComponents()){
+        for (EMAComponentInstanceSymbol sym : symbol.getSubComponents()){
             symbol = flattenArchitecture(sym, map, level - 1);
         }
         return doAlgorithmStepShortNames(symbol);
     }
 
-    private static ExpandedComponentInstanceSymbol doAlgorithmStepShortNames(ExpandedComponentInstanceSymbol symbol) {
+    private static EMAComponentInstanceSymbol doAlgorithmStepShortNames(EMAComponentInstanceSymbol symbol) {
         if (symbol.getEnclosingComponent().isPresent()) {
-            ExpandedComponentInstanceSymbol enclosingComponent = copySymbolWithSystemName(symbol, symbol.getName(), false);
-            List<ExpandedComponentInstanceSymbol> newSubcomponents = getNewSubcomponents(symbol, enclosingComponent);
+            EMAComponentInstanceSymbol enclosingComponent = copySymbolWithSystemName(symbol, symbol.getName(), false);
+            List<EMAComponentInstanceSymbol> newSubcomponents = getNewSubcomponents(symbol, enclosingComponent);
 
-            HashSet<String> incomingPorts = new HashSet<>(symbol.getIncomingPorts().stream().map(p -> {
-                return p.getName();
-            }).collect(Collectors.toList()));
-            HashSet<String> outgoingPorts = new HashSet<>(symbol.getOutgoingPorts().stream().map(p -> {
-                return p.getName();
-            }).collect(Collectors.toList()));
+            HashSet<String> incomingPorts = symbol.getIncomingPortInstances().stream().map(CommonSymbol::getName).collect(Collectors.toCollection(HashSet::new));
+            HashSet<String> outgoingPorts = symbol.getOutgoingPortInstances().stream().map(CommonSymbol::getName).collect(Collectors.toCollection(HashSet::new));
 
             //only connectors from incoming ports
-            Set<ConnectorSymbol> incomingConnectors = symbol.getConnectors().stream()
+            Set<EMAConnectorSymbol> incomingConnectors = symbol.getConnectorInstances().stream()
                     .filter(c -> incomingPorts.contains(c.getSource()))
                     .collect(Collectors.toSet());
 
             //only connectors from outgoing ports
-            Set<ConnectorSymbol> outgoingConnectors = symbol.getConnectors().stream()
+            Set<EMAConnectorSymbol> outgoingConnectors = symbol.getConnectorInstances().stream()
                     .filter(c -> outgoingPorts.contains(c.getTarget()))
                     .collect(Collectors.toSet());
             return connectNewConnectors(symbol, enclosingComponent, newSubcomponents, incomingConnectors, outgoingConnectors);
@@ -131,14 +129,14 @@ public class FlattenArchitecture {
         }
     }
 
-    private static List<ExpandedComponentInstanceSymbol> getNewSubcomponents(ExpandedComponentInstanceSymbol symbol, ExpandedComponentInstanceSymbol enclosingComponent) {
-        List<ExpandedComponentInstanceSymbol> newSubcomponents = enclosingComponent.getSubComponents().stream()
+    private static List<EMAComponentInstanceSymbol> getNewSubcomponents(EMAComponentInstanceSymbol symbol, EMAComponentInstanceSymbol enclosingComponent) {
+        List<EMAComponentInstanceSymbol> newSubcomponents = enclosingComponent.getSubComponents().stream()
                 .filter(e -> !e.getFullName().equals(symbol.getFullName())).collect(Collectors.toList());
         newSubcomponents.addAll(newSubcomponents.size(), new ArrayList<>(symbol.getSubComponents()));
         return newSubcomponents;
     }
 
-    private static ExpandedComponentInstanceSymbol recursionAnchor(ExpandedComponentInstanceSymbol symbol, Map<String, Integer> map) {
+    private static EMAComponentInstanceSymbol recursionAnchor(EMAComponentInstanceSymbol symbol, Map<String, Integer> map) {
         if (symbol.getEnclosingComponent().isPresent()) {
             if (map.containsKey(symbol.getName())) {
                 map.replace(symbol.getName(), map.get(symbol.getName()) + 1);
@@ -151,28 +149,28 @@ public class FlattenArchitecture {
         return symbol;
     }
 
-    private static ExpandedComponentInstanceSymbol connectNewConnectors(ExpandedComponentInstanceSymbol symbol,
-                                                                        ExpandedComponentInstanceSymbol enclosingComponent,
-                                                                        List<ExpandedComponentInstanceSymbol> newSubcomponents,
-                                                                        Set<ConnectorSymbol> incomingConnectors,
-                                                                        Set<ConnectorSymbol> outgoingConnectors) {
+    private static EMAComponentInstanceSymbol connectNewConnectors(EMAComponentInstanceSymbol symbol,
+                                                                        EMAComponentInstanceSymbol enclosingComponent,
+                                                                        List<EMAComponentInstanceSymbol> newSubcomponents,
+                                                                        Set<EMAConnectorSymbol> incomingConnectors,
+                                                                        Set<EMAConnectorSymbol> outgoingConnectors) {
         //only connectors going into symbol
-        Set<ConnectorSymbol> incomingParentConnectors = enclosingComponent.getConnectors().stream()
-                .filter(c -> c.getTargetPort().getComponentInstance().get().getFullName().equals(symbol.getFullName()))
+        Set<EMAConnectorSymbol> incomingParentConnectors = enclosingComponent.getConnectorInstances().stream()
+                .filter(c -> c.getTargetPort().getComponentInstance().getFullName().equals(symbol.getFullName()))
                 .collect(Collectors.toSet());
 
         //only connectors going out of symbol
-        Set<ConnectorSymbol> outgoingParentConnectors = enclosingComponent.getConnectors().stream()
-                .filter(c -> c.getSourcePort().getComponentInstance().get().getFullName().equals(symbol.getFullName()))
+        Set<EMAConnectorSymbol> outgoingParentConnectors = enclosingComponent.getConnectorInstances().stream()
+                .filter(c -> c.getSourcePort().getComponentInstance().getFullName().equals(symbol.getFullName()))
                 .collect(Collectors.toSet());
 
         //untouched connectors of enclosing symbol
-        Set<ConnectorSymbol> newConnectors = enclosingComponent.getConnectors().stream()
+        Set<EMAConnectorSymbol> newConnectors = enclosingComponent.getConnectorInstances().stream()
                 .filter(c -> !(incomingParentConnectors.contains(c) || outgoingParentConnectors.contains(c)))
                 .collect(Collectors.toSet());
 
         //untouched connectors of symbol with renamed ports
-        newConnectors.addAll(symbol.getConnectors().stream()
+        newConnectors.addAll(symbol.getConnectorInstances().stream()
                 //.map(c -> {return mapToNewName(c);})
                 .filter(c -> !(incomingConnectors.contains(c) || outgoingConnectors.contains(c)))
                 .collect(Collectors.toSet()));
@@ -181,21 +179,21 @@ public class FlattenArchitecture {
 
         connectNewConnectorsOutgoing(outgoingConnectors, outgoingParentConnectors, newConnectors);
 
-        ExpandedComponentInstanceSymbol res = constructECIS(enclosingComponent, newSubcomponents, newConnectors,
-                enclosingComponent.getName(), new ArrayList<>(enclosingComponent.getPortsList()));
+        EMAComponentInstanceSymbol res = constructECIS(enclosingComponent, newSubcomponents, newConnectors,
+                enclosingComponent.getName(), new ArrayList<>(enclosingComponent.getPortInstanceList()));
 
         return res;
     }
 
-    private static void connectNewConnectorsOutgoing(Set<ConnectorSymbol> outgoingConnectors,
-                                                     Set<ConnectorSymbol> outgoingParentConnectors,
-                                                     Set<ConnectorSymbol> newConnectors) {
-        for (ConnectorSymbol con : outgoingConnectors) {
-            for (ConnectorSymbol connectorSymbol : outgoingParentConnectors) {
-                if (con.getTarget().equals(connectorSymbol.getSource().replaceFirst(".*_", ""))) {
-                    ConnectorSymbol tmpConnector = ConnectorSymbol.builder()
+    private static void connectNewConnectorsOutgoing(Set<EMAConnectorSymbol> outgoingConnectors,
+                                                     Set<EMAConnectorSymbol> outgoingParentConnectors,
+                                                     Set<EMAConnectorSymbol> newConnectors) {
+        for (EMAConnectorSymbol con : outgoingConnectors) {
+            for (EMAConnectorSymbol EMAConnectorInstanceSymbol : outgoingParentConnectors) {
+                if (con.getTarget().equals(EMAConnectorInstanceSymbol.getSource().replaceFirst(".*_", ""))) {
+                    EMAConnectorSymbol tmpConnector = EMAConnectorInstanceSymbol.builder()
                             .setSource(con.getSource())
-                            .setTarget(connectorSymbol.getTarget())
+                            .setTarget(EMAConnectorInstanceSymbol.getTarget())
                             .build();
                     newConnectors.add(tmpConnector);
                 }
@@ -203,14 +201,14 @@ public class FlattenArchitecture {
         }
     }
 
-    private static void connectNewConnectorsIncoming(Set<ConnectorSymbol> incomingConnectors,
-                                                     Set<ConnectorSymbol> incomingParentConnectors,
-                                                     Set<ConnectorSymbol> newConnectors) {
-        for (ConnectorSymbol con : incomingConnectors) {
-            for (ConnectorSymbol connectorSymbol : incomingParentConnectors) {
-                if (con.getSource().equals(connectorSymbol.getTarget().replaceFirst(".*_", ""))) {
-                    ConnectorSymbol tmpConnector = ConnectorSymbol.builder()
-                            .setSource(connectorSymbol.getSource())
+    private static void connectNewConnectorsIncoming(Set<EMAConnectorSymbol> incomingConnectors,
+                                                     Set<EMAConnectorSymbol> incomingParentConnectors,
+                                                     Set<EMAConnectorSymbol> newConnectors) {
+        for (EMAConnectorSymbol con : incomingConnectors) {
+            for (EMAConnectorSymbol EMAConnectorInstanceSymbol : incomingParentConnectors) {
+                if (con.getSource().equals(EMAConnectorInstanceSymbol.getTarget().replaceFirst(".*_", ""))) {
+                    EMAConnectorSymbol tmpConnector = EMAConnectorInstanceSymbol.builder()
+                            .setSource(EMAConnectorInstanceSymbol.getSource())
                             .setTarget(con.getTarget())
                             .build();
                     newConnectors.add(tmpConnector);
@@ -219,28 +217,24 @@ public class FlattenArchitecture {
         }
     }
 
-    private static ExpandedComponentInstanceSymbol copySymbolWithSystemName(ExpandedComponentInstanceSymbol symbol,
+    private static EMAComponentInstanceSymbol copySymbolWithSystemName(EMAComponentInstanceSymbol symbol,
                                                                             String newName, boolean atomic) {
-        ExpandedComponentInstanceSymbol enclosingComponent = symbol.getEnclosingComponent().get();
-        ExpandedComponentInstanceSymbol thisSymbol = symbol;
-        List<ExpandedComponentInstanceSymbol> subcomponents = enclosingComponent.getSubComponents().stream()
+        EMAComponentInstanceSymbol enclosingComponent = symbol.getEnclosingComponent().get();
+        EMAComponentInstanceSymbol thisSymbol = symbol;
+        List<EMAComponentInstanceSymbol> subcomponents = enclosingComponent.getSubComponents().stream()
                 .filter(e -> !e.getFullName().equals(thisSymbol.getFullName())).collect(Collectors.toList());
-        List<PortSymbol> ports = new LinkedList<>();
+        List<EMAPortSymbol> ports = new LinkedList<>();
         if (atomic) {
-            ports.addAll(symbol.getPortsList());
+            ports.addAll(symbol.getPortInstanceList());
         }else {
             createNewPorts(symbol, newName, ports);
         }
-        ExpandedComponentInstanceSymbol e = constructECIS(symbol, new ArrayList<>(symbol.getSubComponents()),
-                new HashSet<>(symbol.getConnectors()), newName, ports);
+        EMAComponentInstanceSymbol e = constructECIS(symbol, new ArrayList<>(symbol.getSubComponents()),
+                new HashSet<>(symbol.getConnectorInstances()), newName, ports);
         subcomponents.add(e);
-        HashSet<String> incomingPorts = new HashSet<>(symbol.getIncomingPorts().stream().map(p ->{
-            return symbol.getName() + "." + p.getName();
-        }).collect(Collectors.toList()));
-        HashSet<String> outgoingPorts = new HashSet<>(symbol.getOutgoingPorts().stream().map(p ->{
-            return symbol.getName() + "." + p.getName();
-        }).collect(Collectors.toList()));
-        Set<ConnectorSymbol> newConnectors = enclosingComponent.getConnectors().stream()
+        HashSet<String> incomingPorts = symbol.getIncomingPortInstances().stream().map(p -> symbol.getName() + "." + p.getName()).collect(Collectors.toCollection(HashSet::new));
+        HashSet<String> outgoingPorts = symbol.getOutgoingPortInstances().stream().map(p -> symbol.getName() + "." + p.getName()).collect(Collectors.toCollection(HashSet::new));
+        Set<EMAConnectorSymbol> newConnectors = enclosingComponent.getConnectorInstances().stream()
                 .map(c ->{
                     if (incomingPorts.contains(c.getTarget().substring(0,1).toLowerCase()
                             + c.getTarget().substring(1))){
@@ -263,46 +257,42 @@ public class FlattenArchitecture {
                 })
                 .collect(Collectors.toSet());
         return constructECIS(enclosingComponent, subcomponents, newConnectors, enclosingComponent.getName(),
-                new ArrayList<>(enclosingComponent.getPortsList()));
+                new ArrayList<>(enclosingComponent.getPortInstanceList()));
     }
 
-    private static void createNewPorts(ExpandedComponentInstanceSymbol symbol, String newName, List<PortSymbol> ports) {
-        for (PortSymbol port : symbol.getPortsList()) {
-            ports.add((PortSymbol) (port.isConstant() ?
+    private static void createNewPorts(EMAComponentInstanceSymbol symbol, String newName, List<EMAPortSymbol> ports) {
+        for (EMAPortInstanceSymbol port : symbol.getPortInstanceList()) {
+            ports.add((port.isConstant() ?
                     (new EMAPortBuilder()).setName(newName + "_" + port.getName()).setDirection(port.isIncoming())
-                            .setTypeReference(port.getTypeReference()).setConstantValue(((ConstantPortSymbol) port).getConstantValue())
-                            .setASTNode(port.getAstNode()).buildConstantPort()
+                            .setTypeReference(port.getTypeReference()).setConstantValue(port.getConstantValue().get())
+                            .setASTNode(port.getAstNode()).build()
                     : (new EMAPortBuilder()).setName(newName + "_" + port.getName()).setDirection(port.isIncoming())
                     .setTypeReference(port.getTypeReference()).setASTNode(port.getAstNode()).setConfig(port.isConfig())
-                    .setMiddlewareSymbol(port.getMiddlewareSymbol()).build()));
+                    .setMiddlewareSymbol(port.getMiddlewareSymbol().orElse(null)).build()));
         }
     }
 
-    private static ExpandedComponentInstanceSymbol copySymbolWithSystemName(ExpandedComponentInstanceSymbol symbol) {
-        ExpandedComponentInstanceSymbol enclosingComponent = symbol.getEnclosingComponent().get();
-        ExpandedComponentInstanceSymbol thisSymbol = symbol;
-        List<ExpandedComponentInstanceSymbol> subcomponents = enclosingComponent.getSubComponents().stream()
+    private static EMAComponentInstanceSymbol copySymbolWithSystemName(EMAComponentInstanceSymbol symbol) {
+        EMAComponentInstanceSymbol enclosingComponent = symbol.getEnclosingComponent().get();
+        EMAComponentInstanceSymbol thisSymbol = symbol;
+        List<EMAComponentInstanceSymbol> subcomponents = enclosingComponent.getSubComponents().stream()
                 .filter(e -> !e.getFullName().equals(thisSymbol.getFullName())).collect(Collectors.toList());
-        List<PortSymbol> ports = new ArrayList<>();
+        List<EMAPortSymbol> ports = new ArrayList<>();
         String newName = symbol.getFullName().replace(".", "_");
         String newEnclosingName = enclosingComponent.getFullName().replace(".", "_");
         createNewPorts(symbol, newName, ports);
-        ExpandedComponentInstanceSymbol e = constructECIS(symbol, new ArrayList<>(symbol.getSubComponents()),
-                new HashSet<>(symbol.getConnectors()), newName, ports);
+        EMAComponentInstanceSymbol e = constructECIS(symbol, new ArrayList<>(symbol.getSubComponents()),
+                new HashSet<>(symbol.getConnectorInstances()), newName, ports);
         subcomponents.add(e);
-        HashSet<String> incomingPorts = new HashSet<>(symbol.getIncomingPorts().stream().map(p ->{
-            return p.getFullName();
-        }).collect(Collectors.toList()));
-        HashSet<String> outgoingPorts = new HashSet<>(symbol.getOutgoingPorts().stream().map(p ->{
-            return p.getFullName();
-        }).collect(Collectors.toList()));
-        Set<ConnectorSymbol> newConnectors = enclosingComponent.getConnectors().stream()
+        HashSet<String> incomingPorts = symbol.getIncomingPortInstances().stream().map(CommonSymbol::getFullName).collect(Collectors.toCollection(HashSet::new));
+        HashSet<String> outgoingPorts = symbol.getOutgoingPortInstances().stream().map(CommonSymbol::getFullName).collect(Collectors.toCollection(HashSet::new));
+        Set<EMAConnectorSymbol> newConnectors = enclosingComponent.getConnectorInstances().stream()
                 .map(c ->{
-                    if (incomingPorts.contains(c.getComponentInstance().get().getFullName() + "." +
+                    if (incomingPorts.contains(c.getComponentInstance().getFullName() + "." +
                             c.getTarget().substring(0,1).toLowerCase() + c.getTarget().substring(1))){
                         c.setSource(c.getSource());
                         c.setTarget(c.getTarget().replaceFirst("[^.]*.",e.getName() + "." + newName + "_"));
-                    } else if (outgoingPorts.contains(c.getComponentInstance().get().getFullName() + "." +
+                    } else if (outgoingPorts.contains(c.getComponentInstance().getFullName() + "." +
                             c.getSource().substring(0,1).toLowerCase() + c.getSource().substring(1))){
                         c.setSource(c.getSource().replaceFirst("[^.]*.",e.getName() + "." + newName + "_"));
                         c.setTarget(c.getTarget());
@@ -311,18 +301,19 @@ public class FlattenArchitecture {
                 })
                 .collect(Collectors.toSet());
         return constructECIS(enclosingComponent, subcomponents, newConnectors, enclosingComponent.getName(),
-                new ArrayList<>(enclosingComponent.getPortsList()));
+                new ArrayList<>(enclosingComponent.getPortInstanceList()));
     }
 
-    private static ExpandedComponentInstanceSymbol constructECIS(ExpandedComponentInstanceSymbol enclosingComponent,
-                                                                 List<ExpandedComponentInstanceSymbol> newSubcomponents,
-                                                                 Set<ConnectorSymbol> newConnectors, String name,
-                                                                 List<PortSymbol> ports) {
+    private static EMAComponentInstanceSymbol constructECIS(EMAComponentInstanceSymbol enclosingComponent,
+                                                                 List<EMAComponentInstanceSymbol> newSubcomponents,
+                                                                 Set<EMAConnectorSymbol> newConnectors, String name,
+                                                                 List<EMAPortSymbol> ports) {
         Set<ResolvingFilter<? extends Symbol>> resolvingFilters = enclosingComponent.getSpannedScope().getResolvingFilters();
 
         newSubcomponents.forEach(sc -> ((CommonScope) sc.getSpannedScope()).setResolvingFilters(resolvingFilters));
-        ExpandedComponentInstanceSymbol res = new ExpandedComponentInstanceBuilder()
+        EMAComponentInstanceSymbol res = new EMAComponentInstanceBuilder()
                 .setName(name)
+                .setPackageName(enclosingComponent.getPackageName())
                 .setSymbolReference(enclosingComponent.getComponentType())
                 .addPorts(ports)
                 .addConnectors(newConnectors)

@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.MiddlewareSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
@@ -21,21 +21,21 @@ public class MiddlewareTagGenImpl implements GeneratorImpl {
     private String generationTargetPath;
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         List<File> res = new ArrayList<>();
 
         //Collect Ports with Middleware Symbols from Super Component and first level subcomponents
-        List<PortSymbol> middlewarePortsSuper = componentInstanceSymbol.getPortsList().stream()
+        List<EMAPortInstanceSymbol> middlewarePortsSuper = componentInstanceSymbol.getPortInstanceList().stream()
                 .filter(portSymbol -> portSymbol.getMiddlewareSymbol().isPresent())
                 .collect(Collectors.toList());
 
-        List<PortSymbol> middlewarePortsSub = componentInstanceSymbol.getSubComponents()
+        List<EMAPortInstanceSymbol> middlewarePortsSub = componentInstanceSymbol.getSubComponents()
                 .stream()
-                .flatMap(ecis -> ecis.getPortsList().stream())
+                .flatMap(ecis -> ecis.getPortInstanceList().stream())
                 .filter(portSymbol -> portSymbol.getMiddlewareSymbol().isPresent())
                 .collect(Collectors.toList());
 
-        List<PortSymbol> middlewarePorts = new ArrayList<>();
+        List<EMAPortInstanceSymbol> middlewarePorts = new ArrayList<>();
         middlewarePorts.addAll(middlewarePortsSub);
         middlewarePorts.addAll(middlewarePortsSuper);
 
@@ -44,9 +44,9 @@ public class MiddlewareTagGenImpl implements GeneratorImpl {
         return res;
     }
 
-    private File generateRosTags(String packageName ,List<PortSymbol> middlewarePorts) throws IOException {
-        List<PortSymbol> rosPorts = middlewarePorts.stream()
-                .filter(PortSymbol::isRosPort)
+    private File generateRosTags(String packageName ,List<EMAPortInstanceSymbol> middlewarePorts) throws IOException {
+        List<EMAPortInstanceSymbol> rosPorts = middlewarePorts.stream()
+                .filter(EMAPortInstanceSymbol::isRosPort)
                 .collect(Collectors.toList());
 
         FileContent result = new FileContent();
@@ -88,7 +88,7 @@ public class MiddlewareTagGenImpl implements GeneratorImpl {
     }
 
     @Override
-    public boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    public boolean willAccept(EMAComponentInstanceSymbol componentInstanceSymbol) {
         //TODO: fill?
         return true;
     }
