@@ -53,6 +53,13 @@ public class Street2D extends EnvObject2D implements EnvStreet {
         init(speedLimit, intersections, isOneWay);
     }
 
+
+    public Street2D(List<EnvNode> nodes, Number speedLimit, Collection<EnvIntersection> intersections, long osmId, boolean isOneWay, StreetTypes streetType) {
+        super(nodes, EnvTag.STREET, osmId);
+        init(speedLimit, intersections, isOneWay, streetType);
+    }
+
+
     public Street2D(List<EnvNode> nodes, Number speedLimit, Collection<EnvIntersection> intersections, long osmId, boolean isOneWay, StreetTypes streetType, StreetPavements streetPavements) {
         super(nodes, EnvTag.STREET, osmId);
         init(speedLimit, intersections, isOneWay, streetType, streetPavements);
@@ -61,6 +68,18 @@ public class Street2D extends EnvObject2D implements EnvStreet {
     private void init(Number speedLimit, Collection<EnvIntersection> intersections, boolean isOneWay) {
         this.speedLimit = speedLimit;
         this.isOneWay = isOneWay;
+        if (intersections == null) {
+            this.intersections = new ArrayList<>();
+        } else {
+            this.intersections = new ArrayList<>(intersections);
+        }
+    }
+
+
+    private void init(Number speedLimit, Collection<EnvIntersection> intersections, boolean isOneWay, StreetTypes streetType) {
+        this.speedLimit = speedLimit;
+        this.isOneWay = isOneWay;
+        this.streetType = streetType;
         if (intersections == null) {
             this.intersections = new ArrayList<>();
         } else {

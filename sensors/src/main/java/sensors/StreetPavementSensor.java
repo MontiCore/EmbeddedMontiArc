@@ -51,7 +51,7 @@ public class StreetPavementSensor extends AbstractSensor {
 
     @Override
     public BusEntry getType() {
-        return BusEntry.SENSOR_STREETPAVEMENT;
+        return BusEntry.SENSOR_CURRENT_SURFACE;
     }
 
     @Override
@@ -68,42 +68,6 @@ public class StreetPavementSensor extends AbstractSensor {
         this.value = s2d.getStreetPavement().toString();
     }
 
-
-
-    public double getfrictionceofficient() {
-        Optional<Sensor> streetPavementSensor = this.getPhysicalVehicle().getSimulationVehicle().getSensorByType(getType());
-        double frictioncoefficient = 1;
-        if (streetPavementSensor.isPresent()) {
-            String streetPavement = (String) (streetPavementSensor.get().getValue());
-
-            switch (streetPavement) {
-                case "PAVED":
-                    frictioncoefficient = 1;
-                    break;
-                case "UNPAVED":
-                    frictioncoefficient = 0.5;
-                    break;
-                case "QUALITY":
-                    frictioncoefficient = 1;
-                    break;
-                case "STONE":
-                    frictioncoefficient = 0.8;
-                    break;
-                case "DIRT":
-                    frictioncoefficient = 0.5;
-                    break;
-                case "GRASS":
-                    frictioncoefficient = 0.3;
-                    break;
-                default:
-                    frictioncoefficient = 0.3;
-                    break;
-            }
-
-        }
-
-        return frictioncoefficient;
-    }
 
 
     @Override
