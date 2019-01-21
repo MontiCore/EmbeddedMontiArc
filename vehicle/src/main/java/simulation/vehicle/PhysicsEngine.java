@@ -26,6 +26,8 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.util.MathHelper;
+import simulation.util.OrientedBoundingBox;
+
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +79,7 @@ public class PhysicsEngine{
         }
 
         // Do not compute collision if the object is not a car
-        if(object.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+        if(object.getPhysicalObjectType() != PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
             return;
         }
 
@@ -115,11 +117,12 @@ public class PhysicsEngine{
             return false;
         }
 
-        // Perform collision computation
-        //TODO: Use a three dimensional collision detection
-        List<Map.Entry<RealVector, RealVector>> boundariesA = objectA.getBoundaryVectors();
-        List<Map.Entry<RealVector, RealVector>> boundariesB = objectB.getBoundaryVectors();
-        return MathHelper.checkIntersection2D(boundariesA, boundariesB);
+        // Construct bounding boxes
+        OrientedBoundingBox boxA = new OrientedBoundingBox(objectA.getGeometryPosition(), objectA.getWidth(), objectA.getLength(), objectA.getHeight(), objectA.getRotation());
+        OrientedBoundingBox boxB = new OrientedBoundingBox(objectB.getGeometryPosition(), objectB.getWidth(), objectB.getLength(), objectB.getHeight(), objectB.getRotation());
+
+        // Perform collision computation and return result
+        return MathHelper.checkIntersection(boxA, boxB);
     }
 
     /**
@@ -206,35 +209,21 @@ public class PhysicsEngine{
 
     public static double calcFrictionCoefficient(EnvStreet street, boolean isItRaining) {
         switch(street.getStreetPavement()) {
-            case PAVED:
+            case QUALITY: // Asphalt
                 if (isItRaining) {
-                    return 1;
+                    return 0.75;
                 } else {
-                    return 1;
+                    return 0.9;
                 }
 
-            case UNPAVED:
+            case STONE: case PAVED:
                 if (isItRaining) {
-                    return 1;
+                    return 0.4;
                 } else {
-                    return 1;
+                    return 0.6;
                 }
 
-            case QUALITY:
-                if (isItRaining) {
-                    return 1;
-                } else {
-                    return 1;
-                }
-
-            case STONE:
-                if (isItRaining) {
-                    return 1;
-                } else {
-                    return 1;
-                }
-
-            case DIRT:
+            case DIRT: case UNPAVED:
                 if (isItRaining) {
                     return  0.55;
                 } else {
@@ -243,9 +232,9 @@ public class PhysicsEngine{
 
             case GRASS:
                 if (isItRaining) {
-                    return 1;
+                    return 0.25; // provisional value
                 } else {
-                    return 1;
+                    return 0.35;
                 }
 
             default:
