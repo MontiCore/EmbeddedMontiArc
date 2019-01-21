@@ -69,14 +69,27 @@ public class EMAComponentInstanceBuilder {
     }
 
     public static EMAComponentInstanceSymbol clone(EMAComponentInstanceSymbol inst) {
-        return new EMAComponentInstanceBuilder().setName(inst.getName())
+        Collection<EMAComponentInstanceSymbol> subcomps = inst.getSubComponents().stream().map(EMAComponentInstanceBuilder::clone).collect(Collectors.toList());
+        Collection<EMAConnectorSymbol> connectors = inst.getConnectorInstances().stream().map(EMAConnectorBuilder::clone).collect(Collectors.toList());
+        Collection<EMAPortSymbol> ports = inst.getPortInstanceList().stream().map(EMAPortBuilder::clone).collect(Collectors.toList());
+
+        EMAComponentInstanceBuilder res = (new EMAComponentInstanceBuilder());
+
+
+        res
+                .setName(inst.getName())
                 .setSymbolReference(inst.getComponentType())
-                //.addPorts(inst.getPortInstanceList().stream().map(p -> EMAPortBuilder.clone(p)).collect(Collectors.toList()))
-                //.addPorts(inst.getPortInstanceList()) // is cloned in build method
-                .addConnectors(inst.getConnectorInstances().stream().map(c -> EMAConnectorBuilder.clone(c)).collect(Collectors.toList()))
-                .addSubComponents(inst.getSubComponents().stream().map(s -> EMAComponentInstanceBuilder.clone(s)).collect(Collectors.toList()))
+                .addPorts(ports)
+                .addSubComponents(subcomps)
+                .addConnectors(connectors)
+                .addResolvingFilters(inst.getSpannedScope().getResolvingFilters())
+                .addActualTypeArguments(inst.getComponentType().getFormalTypeParameters(), inst.getActualTypeArguments())
                 .addResolutionDeclarationSymbols(inst.getResolutionDeclarationSymbols())
-                .build();
+                .addParameters(inst.getParameters())
+                .addArguments(inst.getArguments())
+                .setPackageName(inst.getPackageName());
+
+        return res.build();
     }
 
     public EMAComponentInstanceBuilder addResolvingFilter(ResolvingFilter filter) {
