@@ -2,6 +2,9 @@ package de.monticore.lang.monticar.generator.middleware.clustering;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
@@ -21,25 +24,21 @@ public class AutomaticClusteringHelper {
 
     static double MAXCOST= 999999;
 
-    public static double[][] createAdjacencyMatrix(List<ExpandedComponentInstanceSymbol> subcomps, Collection<ConnectorSymbol> connectors, Map<String, Integer> subcompLabels) {
+    public static double[][] createAdjacencyMatrix(List<EMAComponentInstanceSymbol> subcomps, Collection<EMAConnectorInstanceSymbol> connectors, Map<String, Integer> subcompLabels) {
         // Nodes = subcomponents
         // Verts = connectors between subcomponents
 
         double[][] res = new double[subcomps.size()][subcomps.size()];
 
         connectors.forEach(con -> {
-            Optional<ExpandedComponentInstanceSymbol> sourceCompOpt = con.getSourcePort().getComponentInstance();
-            Optional<ExpandedComponentInstanceSymbol> targetCompOpt = con.getTargetPort().getComponentInstance();
+            EMAComponentInstanceSymbol sourceCompOpt = con.getSourcePort().getComponentInstance();
+            EMAComponentInstanceSymbol targetCompOpt = con.getTargetPort().getComponentInstance();
 
-            if (sourceCompOpt.isPresent() && targetCompOpt.isPresent()) {
-                int index1 = subcompLabels.get(sourceCompOpt.get().getFullName());
-                int index2 = subcompLabels.get(targetCompOpt.get().getFullName());
+                int index1 = subcompLabels.get(sourceCompOpt.getFullName());
+                int index2 = subcompLabels.get(targetCompOpt.getFullName());
 
                 res[index1][index2] = getTypeCostHeuristic(con.getSourcePort());
                 res[index2][index1] = getTypeCostHeuristic(con.getSourcePort());
-            } else {
-                Log.error("0xADE65: Component of source or target not found!");
-            }
         });
 
 
@@ -105,16 +104,16 @@ public class AutomaticClusteringHelper {
         return normalizeMatrix(inverseProbabilitiesMatrix(adjacencyMatrix));
     }
 
-    public static void annotateComponentWithRosTagsForClusters(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<Set<ExpandedComponentInstanceSymbol>> clusters) {
-        Collection<ConnectorSymbol> connectors = componentInstanceSymbol.getConnectors();
+    public static void annotateComponentWithRosTagsForClusters(EMAComponentInstanceSymbol componentInstanceSymbol, List<Set<EMAComponentInstanceSymbol>> clusters) {
+        Collection<EMAConnectorInstanceSymbol> connectors = componentInstanceSymbol.getConnectorInstances();
 
         connectors.forEach(con -> {
             // -1 = super comp
             int sourceClusterLabel = -1;
             int targetClusterLabel = -1;
 
-            ExpandedComponentInstanceSymbol sourceComp = con.getSourcePort().getComponentInstance().get();
-            ExpandedComponentInstanceSymbol targetComp = con.getTargetPort().getComponentInstance().get();
+            EMAComponentInstanceSymbol sourceComp = con.getSourcePort().getComponentInstance();
+            EMAComponentInstanceSymbol targetComp = con.getTargetPort().getComponentInstance();
 
             for(int i = 0; i < clusters.size(); i++){
                 if(clusters.get(i).contains(sourceComp)){
@@ -135,7 +134,7 @@ public class AutomaticClusteringHelper {
 
     }
 
-    public static double getTypeCostHeuristic(PortSymbol port){
+    public static double getTypeCostHeuristic(EMAPortSymbol port){
         return getTypeCostHeuristic(port.getTypeReference());
     }
 
