@@ -1,0 +1,9 @@
+component Calculator{
+    ports in Z(0:999) number1,
+          in Z(0:999) number2,
+          out Z(0:1998) result;
+
+    implementation Math{
+          result = number1 + number2;
+    }
+}
