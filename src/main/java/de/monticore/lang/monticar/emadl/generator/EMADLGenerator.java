@@ -137,7 +137,7 @@ public class EMADLGenerator {
             fileContentMap.put(f.getFileName(), f.getFileContent());
         }
 
-        List<FileContent> fileContentsTrainingHashes = new HashSet<>();
+        List<FileContent> fileContentsTrainingHashes = new ArrayList<>();
         for (ExpandedComponentInstanceSymbol componentInstance : allInstances) {
             ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
             Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
