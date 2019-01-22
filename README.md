@@ -91,6 +91,7 @@ Schema of config json:
     'rootModel':'<fully qualified name of the root model>',
     'generators':['<identifier for first generator>', '<identifier for second generator>',...],
     'emadlBackend':'<deep-learning-framework backend. Options: MXNET, CAFFE2>'
+    'writeTagFile':[ 'true' | 'false'(default) ] Writes a .tag file with all Middleware tags into the generated code
 }
 ```
 Generator Options:
