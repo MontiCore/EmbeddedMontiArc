@@ -1,12 +1,12 @@
 package de.monticore.lang.monticar.generator.middleware;
 
+import com.clust4j.algo.AffinityPropagation;
+import com.clust4j.algo.AffinityPropagationParameters;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.*;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.*;
-import com.clust4j.algo.AffinityPropagation;
-import com.clust4j.algo.AffinityPropagationParameters;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
@@ -20,30 +20,52 @@ import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSinkImages;
-import org.graphstream.ui.view.Viewer;
-import org.graphstream.ui.view.ViewerPipe;
 import org.junit.Test;
 import smile.clustering.DBSCAN;
 import smile.clustering.SpectralClustering;
 import de.monticore.lang.monticar.svggenerator.SVGMain;
 import org.graphstream.graph.*;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AutomaticClusteringTest extends AbstractSymtabTest{
 
     public static final String TEST_PATH = "src/test/resources/";
     public static final String TEST_PATH_PNG = "src/test/resources/clustering/test-images/";
+    public static final String TEST_PATH_PACMAN = "src/test/resources/pacman/";
 
+    @Test
+    public void testPacmanModelClustering() throws IOException {
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH_PACMAN);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("de.rwth.pacman.heithoff2.controller", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        EMAComponentInstanceSymbol flattendComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
+
+        SpectralClusteringAlgorithm clusteringAlgorithm = new SpectralClusteringAlgorithm();
+        Object[] params = new Object[]{SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, 2};
+        List<Set<EMAComponentInstanceSymbol>> clusters = clusteringAlgorithm.cluster(flattendComponent, params);
+
+        AutomaticClusteringHelper.annotateComponentWithRosTagsForClusters(flattendComponent, clusters);
+
+        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
+        distributedTargetGenerator.setGenerateMiddlewareTags(true);
+        distributedTargetGenerator.setGenerationTargetPath("target/generated-sources-clustering/pacman/src/");
+
+        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
+        distributedTargetGenerator.add(new RosCppGenImpl(),"roscpp");
+
+        distributedTargetGenerator.generate(flattendComponent,taggingResolver);
+    }
 
     @Test
     public void testAdjacencyMatrixCreation(){
