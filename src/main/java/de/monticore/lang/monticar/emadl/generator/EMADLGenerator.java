@@ -157,7 +157,6 @@ public class EMADLGenerator {
         printWriter.println("make");
         printWriter.println("cd CMakeFiles");
         printWriter.println("g++ feature_tests.cxx");
-        printWriter.println("./a.out");
 
         printWriter.close();
       }catch(Exception e){
