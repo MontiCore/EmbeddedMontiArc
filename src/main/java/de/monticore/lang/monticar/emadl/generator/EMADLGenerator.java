@@ -175,7 +175,7 @@ public class EMADLGenerator {
             System.out.println(trainingHash);
 
             boolean alreadyTrained = isAlreadyTrained(trainingHash, componentInstance);
-            if(alreadyTrained) {
+            if((alreadyTrained && forced !="y") || forced=="n") {
                 System.out.println("Already trained");
             }
             else {
