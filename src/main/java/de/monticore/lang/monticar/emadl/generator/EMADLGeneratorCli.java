@@ -24,6 +24,7 @@ import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.apache.commons.cli.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -148,6 +149,5 @@ public class EMADLGeneratorCli {
             Log.error("template error during generation", e);
             System.exit(1);
         }
-        
     }
 }

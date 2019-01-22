@@ -117,10 +117,54 @@ public class EMADLGenerator {
         }
 
         ExpandedComponentInstanceSymbol instance = component.getEnclosingScope().<ExpandedComponentInstanceSymbol>resolve(instanceName, ExpandedComponentInstanceSymbol.KIND).get();
-        
-        
+
+
         generateFiles(symtab, instance, symtab, forced);
-        
+        try{
+          executeCommands();
+        }catch(Exception e){
+          System.out.println(e);
+        }
+    }
+
+    public void executeCommands() throws IOException {
+
+      File tempScript = createTempScript();
+
+      try {
+          ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
+          pb.inheritIO();
+          Process process = pb.start();
+          process.waitFor();
+      }catch(Exception e){
+          System.out.println(e);
+      } finally {
+          tempScript.delete();
+      }
+    }
+
+    public File createTempScript() throws IOException{
+      File tempScript = File.createTempFile("script", null);
+      try{
+        Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+                tempScript));
+        PrintWriter printWriter = new PrintWriter(streamWriter);
+
+        printWriter.println("#!/bin/bash");
+        printWriter.println("cd " + getGenerationTargetPath());
+        printWriter.println("mkdir build | cd build");
+        printWriter.println("cmake ..");
+        printWriter.println("make");
+        printWriter.println("cd CMakeFiles");
+        printWriter.println("g++ feature_tests.cxx");
+        printWriter.println("./a.out");
+
+        printWriter.close();
+      }catch(Exception e){
+        System.out.println(e);
+      }
+
+        return tempScript;
     }
 
     public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab, String forced) throws IOException {
