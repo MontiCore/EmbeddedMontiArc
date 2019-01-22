@@ -123,10 +123,64 @@ public class EMADLGenerator {
     }
 
     public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
-        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
+        Set<ExpandedComponentInstanceSymbol> allInstances = new HashSet<>();
+        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab, allInstances);
 
         for (FileContent fileContent : fileContents) {
             emamGen.generateFile(fileContent);
+        }
+
+        // train
+        Map<String, String> fileContentMap = new HashMap<>();
+        for(FileContent f : fileContents) {
+            fileContentMap.put(f.getFileName(), f.getFileContent());
+        }
+
+        for (ExpandedComponentInstanceSymbol componentInstance : allInstances) {
+            ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
+            Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
+
+            if(!architecture.isPresent()) {
+                continue;
+            }
+
+            String fullName = componentInstance.getFullName().replaceAll("\\.", "_");
+            String creatorScriptName = "CNNCreator_" + fullName + ".py";
+            String creatorScript = fileContentMap.get(creatorScriptName);
+            int creatorScriptHash = creatorScript.hashCode();
+
+
+            String parsedFullName = fullName.substring(0, 1).toLowerCase() + fullName.substring(1);
+            String trainerScriptName = "CNNTrainer_" + parsedFullName + ".py";
+            System.out.println("CNNTrainer file: " + trainerScriptName);
+            String trainerScript = fileContentMap.get(trainerScriptName);
+            int trainerScriptHash = trainerScript.hashCode();
+
+            // This is not the real path to the training data! Adapt accordingly once sub-task 4 is solved
+            String trainConfigFilename = "NOT_FOUND";
+            String componentConfigFilename = component.getFullName().replaceAll("\\.", "/");
+            String instanceConfigFilename = component.getFullName().replaceAll("\\.", "/") + "_"  + component.getName();
+            if (Files.exists(Paths.get( getModelsPath() + instanceConfigFilename + ".cnnt"))) {
+                trainConfigFilename = instanceConfigFilename;
+            }
+            else if (Files.exists(Paths.get( getModelsPath() + componentConfigFilename + ".cnnt"))){
+                trainConfigFilename = componentConfigFilename;
+            }
+            Path dataPath = Paths.get( getModelsPath() + trainConfigFilename + ".data");
+            byte[] dataHash = checksum(dataPath);
+
+            String trainingHash = creatorScriptHash + "-" + trainerScriptHash + "-" + convertByteArrayToHexString(dataHash);
+            System.out.println(trainingHash);
+
+            boolean alreadyTrained = isAlreadyTrained(trainingHash, componentInstance);
+            if(alreadyTrained) {
+                System.out.println("Already trained");
+            }
+            else {
+                System.out.println("Not trained yet");
+            }
+
+            fileContents.add(new FileContent(trainingHash, componentConfigFilename + ".training_hash"));
         }
     }
 
@@ -181,66 +235,14 @@ public class EMADLGenerator {
         }
     }
 
-    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
+    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab, 
+    Set<ExpandedComponentInstanceSymbol> allInstances) {
         List<FileContent> fileContents = new ArrayList<>();
-        Set<ExpandedComponentInstanceSymbol> allInstances = new HashSet<>();
 
         generateComponent(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
 
         String instanceName = componentInstanceSymbol.getComponentType().getFullName().replaceAll("\\.", "_");
         fileContents.addAll(generateCNNTrainer(allInstances, instanceName));
-
-        Map<String, String> fileContentMap = new HashMap<>();
-        for(FileContent f : fileContents) {
-            fileContentMap.put(f.getFileName(), f.getFileContent());
-        }
-
-        for (ExpandedComponentInstanceSymbol componentInstance : allInstances) {
-            ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
-            Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
-
-            if(!architecture.isPresent()) {
-                continue;
-            }
-
-            String fullName = componentInstance.getFullName().replaceAll("\\.", "_");
-            String creatorScriptName = "CNNCreator_" + fullName + ".py";
-            String creatorScript = fileContentMap.get(creatorScriptName);
-            int creatorScriptHash = creatorScript.hashCode();
-
-
-            String parsedFullName = fullName.substring(0, 1).toLowerCase() + fullName.substring(1);
-            String trainerScriptName = "CNNTrainer_" + parsedFullName + ".py";
-            String trainerScript = fileContentMap.get(trainerScriptName);
-            int trainerScriptHash = trainerScript.hashCode();
-
-            // This is not the real path to the training data! Adapt accordingly once sub-task 4 is solved
-            String trainConfigFilename = "NOT_FOUND";
-            String componentConfigFilename = component.getFullName().replaceAll("\\.", "/");
-            String instanceConfigFilename = component.getFullName().replaceAll("\\.", "/") + "_"  + component.getName();
-            if (Files.exists(Paths.get( getModelsPath() + instanceConfigFilename + ".cnnt"))) {
-                trainConfigFilename = instanceConfigFilename;
-            }
-            else if (Files.exists(Paths.get( getModelsPath() + componentConfigFilename + ".cnnt"))){
-                trainConfigFilename = componentConfigFilename;
-            }
-            Path dataPath = Paths.get( getModelsPath() + trainConfigFilename + ".data");
-            byte[] dataHash = checksum(dataPath);
-
-            String trainingHash = creatorScriptHash + "-" + trainerScriptHash + "-" + convertByteArrayToHexString(dataHash);
-            System.out.println(trainingHash);
-
-            boolean alreadyTrained = isAlreadyTrained(trainingHash, componentInstance);
-            if(alreadyTrained) {
-                System.out.println("Already trained");
-            }
-            else {
-                System.out.println("Not trained yet");
-            }
-
-            fileContents.add(new FileContent(trainingHash, componentConfigFilename + ".training_hash"));
-        }
-
 
         fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
         TypesGeneratorCPP tg = new TypesGeneratorCPP();
