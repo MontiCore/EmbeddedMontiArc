@@ -44,14 +44,13 @@ import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.DigestInputStream;
@@ -180,6 +179,25 @@ public class EMADLGenerator {
             }
             else {
                 System.out.println("Not trained yet");
+                String trainingPath = getGenerationTargetPath() + trainerScriptName;
+                String pythonExe = "/usr/bin/python";
+                if(Files.exists(Paths.get(trainingPath))){
+                    try{
+                    ProcessBuilder pb = new ProcessBuilder(Arrays.asList(pythonExe, trainingPath));
+                    Process p = pb.start();
+
+                    BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    String line = "";
+                    System.out.println("Starting training of " + trainConfigFilename);
+                    int exitCode = p.waitFor();
+                    System.out.println("Exit Code : " + exitCode);
+                    line = bfr.readLine();
+                    System.out.println("First Line: " + line);
+                    while ((line = bfr.readLine()) != null){
+                        System.out.println("python output:" + line);
+                    }
+                    }catch(Exception e){System.out.println(e);}
+                }else{System.out.println("Trainingfile not found.");}
             }
 
             fileContents.add(new FileContent(trainingHash, componentConfigFilename + ".training_hash"));
