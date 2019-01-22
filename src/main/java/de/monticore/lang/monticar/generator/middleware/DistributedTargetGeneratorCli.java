@@ -5,7 +5,6 @@ import com.google.gson.stream.JsonReader;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
-import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.EMADLGeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
@@ -14,7 +13,6 @@ import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.cli.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -24,7 +22,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public final class DistributedTargetGeneratorCli {
 
@@ -36,6 +33,7 @@ public final class DistributedTargetGeneratorCli {
             "    'rootModel':'<fully qualified name of the root model>',\n" +
             "    'generators':['<identifier for first generator>', '<identifier for second generator>',...],\n" +
             "    'emadlBackend':'<deep-learning-framework backend. Options: MXNET, CAFFE2>'\n" +
+            "    'writeTagFile':[ 'true' | 'false'(default) ] Writes a .tag file with all Middleware tags into the generated code\n" +
             "}\n\n" +
             "Generator Options:\n" +
             "Behaviour generators:\n" +
@@ -115,6 +113,7 @@ public final class DistributedTargetGeneratorCli {
 
         DistributedTargetGenerator generator = new DistributedTargetGenerator();
         generator.setGenerationTargetPath(cliParameters.getOutputDir());
+        generator.setGenerateMiddlewareTags(cliParameters.getWriteTagFile());
 
         Set<String> validGenNames = getGeneratorNames();
 

@@ -3,25 +3,26 @@ package de.monticore.lang.monticar.generator.middleware;
 import java.util.Set;
 
 public class CliParameters {
+    private static final boolean DEFAULT_WRITE_TAG_FILE = false;
+    private static final String DEFAULT_EMADL_BACKEND = "MXNET";
+
     private String modelsDir;
     private String outputDir;
     private String rootModel;
     private Set<String> generators;
     private String emadlBackend;
+    private Boolean writeTagFile;
 
     public CliParameters() {
     }
 
-    public CliParameters(String modelsDir, String outputDir, String rootModel, Set<String> generators) {
-        this(modelsDir, outputDir, rootModel, generators, "MXNET");
-    }
-
-    public CliParameters(String modelsDir, String outputDir, String rootModel, Set<String> generators, String emadlBackend) {
+    public CliParameters(String modelsDir, String outputDir, String rootModel, Set<String> generators, String emadlBackend, Boolean writeTagFile) {
         this.modelsDir = modelsDir;
         this.outputDir = outputDir;
         this.rootModel = rootModel;
         this.generators = generators;
-        this.emadlBackend = emadlBackend;
+        this.emadlBackend = emadlBackend == null ? DEFAULT_EMADL_BACKEND : emadlBackend;
+        this.writeTagFile = writeTagFile == null ? DEFAULT_WRITE_TAG_FILE : writeTagFile;
     }
 
     public String getModelsDir() {
@@ -42,5 +43,9 @@ public class CliParameters {
 
     public String getEmadlBackend() {
         return emadlBackend;
+    }
+
+    public boolean getWriteTagFile() {
+        return writeTagFile;
     }
 }
