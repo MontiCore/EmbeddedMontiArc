@@ -649,6 +649,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         SimpleModelViewer viewer= new SimpleModelViewer(graph);
         viewer.run();
 
+
     if (modelName=="clustering.midSizeDemoCluster") {
         assertTrue(clusters.size() == 2);
 
