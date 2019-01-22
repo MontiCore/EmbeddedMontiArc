@@ -72,6 +72,7 @@ public class ClusterFromTagsHelper {
                     i[0]++;
                 }
                 res.add(createECISFromCluster(componentInstanceSymbol, c, clusterPrefix + i[0]));
+                i[0]++;
             }
         });
         return res;
