@@ -22,14 +22,15 @@ public class RosHelper {
                 .forEach(connectorSymbol -> {
                     if (Objects.equals(connectorSymbol.getSourcePort().getComponentInstance(), componentInstanceSymbol)) {
                         //In port of supercomp
-                        inferRosConnectionIfPossible(connectorSymbol.getSourcePort(), connectorSymbol.getTargetPort());
+                        inferRosConnectionIfPossible(connectorSymbol);
                         generateRosConnectionIfPossible(connectorSymbol);
                     } else if (Objects.equals(connectorSymbol.getTargetPort().getComponentInstance(), componentInstanceSymbol)) {
                         //out port of supercomp
-                        inferRosConnectionIfPossible(connectorSymbol.getTargetPort(), connectorSymbol.getSourcePort());
+                        inferRosConnectionIfPossible(connectorSymbol);
                         generateRosConnectionIfPossible(connectorSymbol);
                     } else {
                         //In between subcomps
+                        inferRosConnectionIfPossible(connectorSymbol);
                         generateRosConnectionIfPossible(connectorSymbol);
                     }
 
@@ -37,6 +38,7 @@ public class RosHelper {
     }
 
     //Cannot be moved to GeneratorRosCpp: target port name needed for topic name
+
     private static void generateRosConnectionIfPossible(EMAConnectorInstanceSymbol connectorSymbol) {
         MiddlewareSymbol sourceTag = connectorSymbol.getSourcePort().getMiddlewareSymbol().orElse(null);
         MiddlewareSymbol targetTag = connectorSymbol.getTargetPort().getMiddlewareSymbol().orElse(null);
@@ -70,6 +72,11 @@ public class RosHelper {
             connectorSymbol.getSourcePort().setMiddlewareSymbol(new RosConnectionSymbol(topicName, rosTypeB.getName()));
             connectorSymbol.getTargetPort().setMiddlewareSymbol(new RosConnectionSymbol(topicName, rosTypeA.getName()));
         }
+    }
+
+    private static void inferRosConnectionIfPossible(EMAConnectorInstanceSymbol connectorSymbol) {
+        inferRosConnectionIfPossible(connectorSymbol.getSourcePort(), connectorSymbol.getTargetPort());
+        inferRosConnectionIfPossible(connectorSymbol.getTargetPort(), connectorSymbol.getSourcePort());
     }
 
     private static void inferRosConnectionIfPossible(EMAPortInstanceSymbol sourcePort, EMAPortInstanceSymbol targetPort) {
