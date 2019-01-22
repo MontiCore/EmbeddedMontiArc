@@ -565,7 +565,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         System.out.println(algoName);
 
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
-        componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.unambiguousCluster", EMAComponentInstanceSymbol.KIND).orElse(null);
+        componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve(modelName, EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
         List<Set<EMAComponentInstanceSymbol>> clusters = null;
@@ -650,6 +650,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         SimpleModelViewer viewer= new SimpleModelViewer(graph);
         viewer.run();
+
 
     if (modelName=="clustering.midSizeDemoCluster") {
         assertTrue(clusters.size() == 2);
