@@ -1,4 +1,6 @@
-component Number{
+package CalculatorTest;
+
+component NumberDetector{
     ports in Q(0:1)^10 pred_num1,
           in Q(0:1)^10 pred_num2,
           in Q(0:1)^10 pred_num3,
