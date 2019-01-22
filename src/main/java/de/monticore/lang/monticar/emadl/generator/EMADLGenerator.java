@@ -137,6 +137,7 @@ public class EMADLGenerator {
             fileContentMap.put(f.getFileName(), f.getFileContent());
         }
 
+        List<FileContent> fileContentsTrainingHashes = new HashSet<>();
         for (ExpandedComponentInstanceSymbol componentInstance : allInstances) {
             ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
             Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
@@ -200,9 +201,14 @@ public class EMADLGenerator {
                 }else{System.out.println("Trainingfile not found.");}
             }
 
-            fileContents.add(new FileContent(trainingHash, componentConfigFilename + ".training_hash"));
+            fileContentsTrainingHashes.add(new FileContent(trainingHash, componentConfigFilename + ".training_hash"));
+        }
+
+        for (FileContent fileContent : fileContentsTrainingHashes) {
+            emamGen.generateFile(fileContent);
         }
     }
+
 
     private static String convertByteArrayToHexString(byte[] arrayBytes) {
         StringBuffer stringBuffer = new StringBuffer();
