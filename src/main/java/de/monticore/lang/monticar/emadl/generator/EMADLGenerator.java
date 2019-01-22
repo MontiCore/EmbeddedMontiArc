@@ -103,7 +103,7 @@ public class EMADLGenerator {
         return emamGen;
     }
 
-    public void generate(String modelPath, String qualifiedName) throws IOException, TemplateException {
+    public void generate(String modelPath, String qualifiedName, String forced) throws IOException, TemplateException {
         setModelsPath( modelPath );
         TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
         ComponentSymbol component = symtab.<ComponentSymbol>resolve(qualifiedName, ComponentSymbol.KIND).orElse(null);
@@ -118,13 +118,15 @@ public class EMADLGenerator {
         }
 
         ExpandedComponentInstanceSymbol instance = component.getEnclosingScope().<ExpandedComponentInstanceSymbol>resolve(instanceName, ExpandedComponentInstanceSymbol.KIND).get();
-
-        generateFiles(symtab, instance, symtab);
+        
+        
+        generateFiles(symtab, instance, symtab, forced);
+        
     }
 
-    public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
+    public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab, String forced) throws IOException {
         Set<ExpandedComponentInstanceSymbol> allInstances = new HashSet<>();
-        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab, allInstances);
+        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab, allInstances, forced);
 
         for (FileContent fileContent : fileContents) {
             emamGen.generateFile(fileContent);
@@ -235,8 +237,7 @@ public class EMADLGenerator {
         }
     }
 
-    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab, 
-    Set<ExpandedComponentInstanceSymbol> allInstances) {
+    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab, Set<ExpandedComponentInstanceSymbol> allInstances, String forced){
         List<FileContent> fileContents = new ArrayList<>();
 
         generateComponent(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
