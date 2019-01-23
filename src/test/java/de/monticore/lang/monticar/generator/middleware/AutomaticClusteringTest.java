@@ -676,7 +676,11 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 */
 
     if (modelName=="clustering.midSizeDemoCluster") {
-        assertTrue(clusters.size() == 2);
+        if (algorithm instanceof AffinityPropagationAlgorithm) {
+            assertTrue(clusters.get(0).size() > 0 &&
+                    clusters.get(1).size() > 0 &&
+                    clusters.get(2).size() > 0
+            );
 
         Set<ExpandedComponentInstanceSymbol> cluster1 = clusters.get(0);
         Set<ExpandedComponentInstanceSymbol> cluster2 = clusters.get(1);
@@ -684,42 +688,76 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
                            (cluster2.size() == 3 && cluster1.size() == 4)
         );
 
-        List<String> cluster1Names = cluster1.stream()
-                .map(CommonSymbol::getFullName)
-                .collect(Collectors.toList());
+            List<String> cluster1Names = cluster1.stream()
+                    .map(CommonSymbol::getFullName)
+                    .collect(Collectors.toList());
 
-        List<String> cluster2Names = cluster2.stream()
-                .map(CommonSymbol::getFullName)
-                .collect(Collectors.toList());
+            List<String> cluster2Names = cluster2.stream()
+                    .map(CommonSymbol::getFullName)
+                    .collect(Collectors.toList());
 
-        if (cluster1.size() == 4) {
-            if (cluster1Names.get(0).endsWith("comp0") ||
-                cluster1Names.get(0).endsWith("comp1") ||
-                cluster1Names.get(0).endsWith("comp2") ||
-                cluster1Names.get(0).endsWith("comp3")
-            ) {
-                assertTrue(cluster1Names.contains(modelName + ".comp0"));
-                assertTrue(cluster1Names.contains(modelName + ".comp1"));
-                assertTrue(cluster1Names.contains(modelName + ".comp2"));
-                assertTrue(cluster1Names.contains(modelName + ".comp3"));
+            List<String> cluster3Names = cluster3.stream()
+                    .map(CommonSymbol::getFullName)
+                    .collect(Collectors.toList());
 
-                assertTrue(cluster2Names.contains(modelName + ".comp4"));
-                assertTrue(cluster2Names.contains(modelName + ".comp5"));
-                assertTrue(cluster2Names.contains(modelName + ".comp6"));
+            // cut-off point should be at comp1 or comp4, so those nodes should form a cluster of their own
+            if (cluster1.size() == 1) {
+                if (cluster1Names.get(0).endsWith("comp1")) assertTrue(cluster1Names.contains(modelName + ".comp1"));
+                if (cluster1Names.get(0).endsWith("comp4")) assertTrue(cluster1Names.contains(modelName + ".comp4"));
+            } else if (cluster2.size() == 1) {
+                if (cluster2Names.get(0).endsWith("comp1")) assertTrue(cluster2Names.contains(modelName + ".comp1"));
+                if (cluster2Names.get(0).endsWith("comp4")) assertTrue(cluster2Names.contains(modelName + ".comp4"));
+            } else if (cluster3.size() == 1) {
+                if (cluster3Names.get(0).endsWith("comp1")) assertTrue(cluster3Names.contains(modelName + ".comp1"));
+                if (cluster3Names.get(0).endsWith("comp4")) assertTrue(cluster3Names.contains(modelName + ".comp4"));
             }
-        } else if (cluster1.size() == 3) {
-            if (cluster1Names.get(0).endsWith("comp4") ||
-                cluster1Names.get(0).endsWith("comp5") ||
-                cluster1Names.get(0).endsWith("comp6")
-            ) {
-                assertTrue(cluster2Names.contains(modelName + ".comp0"));
-                assertTrue(cluster2Names.contains(modelName + ".comp1"));
-                assertTrue(cluster2Names.contains(modelName + ".comp2"));
-                assertTrue(cluster2Names.contains(modelName + ".comp3"));
 
-                assertTrue(cluster1Names.contains(modelName + ".comp4"));
-                assertTrue(cluster1Names.contains(modelName + ".comp5"));
-                assertTrue(cluster1Names.contains(modelName + ".comp6"));
+        } else {
+            assertTrue(clusters.size() == 2);
+
+            Set<EMAComponentInstanceSymbol> cluster1 = clusters.get(0);
+            Set<EMAComponentInstanceSymbol> cluster2 = clusters.get(1);
+            assertTrue((cluster1.size() == 3 && cluster2.size() == 4) ||
+                    (cluster2.size() == 3 && cluster1.size() == 4)
+            );
+
+            List<String> cluster1Names = cluster1.stream()
+                    .map(CommonSymbol::getFullName)
+                    .collect(Collectors.toList());
+
+            List<String> cluster2Names = cluster2.stream()
+                    .map(CommonSymbol::getFullName)
+                    .collect(Collectors.toList());
+
+            if (cluster1.size() == 4) {
+                if (cluster1Names.get(0).endsWith("comp0") ||
+                        cluster1Names.get(0).endsWith("comp1") ||
+                        cluster1Names.get(0).endsWith("comp2") ||
+                        cluster1Names.get(0).endsWith("comp3")
+                ) {
+                    assertTrue(cluster1Names.contains(modelName + ".comp0"));
+                    assertTrue(cluster1Names.contains(modelName + ".comp1"));
+                    assertTrue(cluster1Names.contains(modelName + ".comp2"));
+                    assertTrue(cluster1Names.contains(modelName + ".comp3"));
+
+                    assertTrue(cluster2Names.contains(modelName + ".comp4"));
+                    assertTrue(cluster2Names.contains(modelName + ".comp5"));
+                    assertTrue(cluster2Names.contains(modelName + ".comp6"));
+                }
+            } else if (cluster1.size() == 3) {
+                if (cluster1Names.get(0).endsWith("comp4") ||
+                        cluster1Names.get(0).endsWith("comp5") ||
+                        cluster1Names.get(0).endsWith("comp6")
+                ) {
+                    assertTrue(cluster2Names.contains(modelName + ".comp0"));
+                    assertTrue(cluster2Names.contains(modelName + ".comp1"));
+                    assertTrue(cluster2Names.contains(modelName + ".comp2"));
+                    assertTrue(cluster2Names.contains(modelName + ".comp3"));
+
+                    assertTrue(cluster1Names.contains(modelName + ".comp4"));
+                    assertTrue(cluster1Names.contains(modelName + ".comp5"));
+                    assertTrue(cluster1Names.contains(modelName + ".comp6"));
+                }
             }
         }
     }
