@@ -4,7 +4,7 @@ project (Coordinator_${compName} CXX)
 set (CMAKE_CXX_STANDARD 14)
 set (THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-add_library(IAdapter_${compName} IAdapter_${compName}.cxx)
+add_library(IAdapter_${compName} IAdapter_${compName}.cpp)
 target_link_libraries(IAdapter_${compName} ${compName})
 target_include_directories(IAdapter_${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

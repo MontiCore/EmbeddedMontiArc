@@ -56,12 +56,12 @@ public class GenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
-        StarBridgeGenerator starBridgeGenerator = new CMakeGenerator();
-        starBridgeGenerator.setGenerationTargetPath("./target/generated-sources-cmake/CMakeGeneration/src/");
-        starBridgeGenerator.add(new CPPGenImpl(), "cpp");
-        starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
+        CMakeGenerator cmakeGenerator = new CMakeGenerator();
+        cmakeGenerator.setGenerationTargetPath("./target/generated-sources-cmake-no-build/CMakeGeneration/src/");
+        cmakeGenerator.add(new CPPGenImpl(), "cpp");
+        cmakeGenerator.add(new RosCppGenImpl(), "roscpp");
 
-        starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
+        cmakeGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
     @Test
