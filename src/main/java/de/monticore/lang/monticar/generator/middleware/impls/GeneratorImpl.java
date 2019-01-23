@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface GeneratorImpl {
-    default List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    default List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         return new ArrayList<>();
     }
 
@@ -17,7 +17,7 @@ public interface GeneratorImpl {
 
     }
 
-    default boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    default boolean willAccept(EMAComponentInstanceSymbol componentInstanceSymbol) {
         return true;
     }
 }

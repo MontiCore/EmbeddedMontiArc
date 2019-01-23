@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class MiddlewareGenerator extends CMakeGenerator {
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         //Add dummy GeneratorImpl for the subdir
         String subdir = "coordinator/";
         this.add(new GeneratorImpl() {
@@ -31,7 +31,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
         return files;
     }
 
-    private FileContent generateIAdapterCpp(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    private FileContent generateIAdapterCpp(EMAComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();
         String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         res.setFileName("IAdapter_" + name + ".cpp");
@@ -39,7 +39,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
         return res;
     }
 
-    private FileContent generateIAdapterHeader(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    private FileContent generateIAdapterHeader(EMAComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();
         String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         res.setFileName("IAdapter_" + name + ".h");
@@ -48,7 +48,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
     }
 
 
-    private FileContent generateCoordinator(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<File> files) {
+    private FileContent generateCoordinator(EMAComponentInstanceSymbol componentInstanceSymbol, List<File> files) {
 
 
         String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
@@ -89,7 +89,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
     }
 
 
-    private FileContent generateCoordinatorCMakeList(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<File> files) {
+    private FileContent generateCoordinatorCMakeList(EMAComponentInstanceSymbol componentInstanceSymbol, List<File> files) {
         FileContent res = new FileContent();
         String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
 
