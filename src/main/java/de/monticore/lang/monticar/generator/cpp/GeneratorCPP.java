@@ -23,12 +23,18 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.ma2cfg.helper.Names;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
+import de.monticore.lang.monticar.generator.cpp.Dynamics.DynamicHelper;
+import de.monticore.lang.monticar.generator.cpp.Dynamics.EventPortValueCheck;
+import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
+import de.monticore.lang.monticar.generator.cpp.converter.OptimizationSymbolHandler;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
@@ -72,11 +78,20 @@ public class GeneratorCPP implements Generator {
     private boolean generateCMake = false;
     private CMakeConfig cMakeConfig;
 
+    //MathOpt
+    private MathOptSolverConfig mathOptSolverConfig = new MathOptSolverConfig();
+    private OptimizationSymbolHandler mathOptExecuteMethodGenerator = new OptimizationSymbolHandler();
+    private MathOptFunctionFixer mathOptFunctionFixer = new MathOptFunctionFixer();
+
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
-        useOctaveBackend();
+        setGenerateCMake(true);
+        useArmadilloBackend();
         TypeConverter.clearTypeSymbols();
         currentInstance = this;
+
+        mathOptExecuteMethodGenerator.setSuccessor(ExecuteMethodGenerator.getInstance());
+        mathOptFunctionFixer.setSuccessor(MathFunctionFixer.getInstance());
     }
 
 
@@ -180,6 +195,9 @@ public class GeneratorCPP implements Generator {
         } else {
             //setGenerateMainClass(true);
         }
+
+
+
         currentFileContentList = fileContents;
         if (!streamTestGenerationMode)
             fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol, symtab), componentInstanceSymbol));
@@ -214,6 +232,29 @@ public class GeneratorCPP implements Generator {
                 fileContents.addAll(SimulatorIntegrationHelper.getSimulatorIntegrationHelperFileContent());
             }
         }
+        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
+            fileContents.add(OctaveHelper.getOctaveHelperFileContent());
+        if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
+            fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
+
+        if(componentInstanceSymbol instanceof EMADynamicComponentInstanceSymbol){
+            //TODO: add Events Value Helper
+            if(!((EMADynamicComponentInstanceSymbol) componentInstanceSymbol).getEventHandlers().isEmpty())
+                fileContents.add(EventPortValueCheck.getEventPortValueCheckFileContent());
+
+            if(((EMADynamicComponentInstanceSymbol)componentInstanceSymbol).isDynamic()){
+                fileContents.add(DynamicHelper.getDynamicHelperFileContent());
+            }
+        }
+
+
+
+        if (shouldGenerateMainClass()) {
+            //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
+        } else if (shouldGenerateSimulatorInterface()) {
+            fileContents.addAll(SimulatorIntegrationHelper.getSimulatorIntegrationHelperFileContent());
+        }
+
         return fileContents;
     }
 
@@ -257,7 +298,9 @@ public class GeneratorCPP implements Generator {
 
     protected List<File> generateCMakeFiles(EMAComponentInstanceSymbol componentInstanceSymbol) {
         List<File> files = new ArrayList<>();
-        cMakeConfig.getCMakeListsViewModel().setCompName(componentInstanceSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
+        if(componentInstanceSymbol != null) {
+            cMakeConfig.getCMakeListsViewModel().setCompName(componentInstanceSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
+        }
         List<FileContent> contents = cMakeConfig.generateCMakeFiles();
         try {
             for (FileContent content : contents)
@@ -510,4 +553,13 @@ public class GeneratorCPP implements Generator {
         return cMakeConfig;
     }
 
+
+
+    public MathOptSolverConfig getMathOptSolverConfig() {
+        return mathOptSolverConfig;
+    }
+
+    public OptimizationSymbolHandler getMathOptExecuteMethodGenerator() {
+        return mathOptExecuteMethodGenerator;
+    }
 }

@@ -13,9 +13,9 @@ component PacmanMovementCollisionChecker<N tilesMaxX = 16, N tilesMaxY = 16>{
          out N pacmanChosenNextPositionY;
 
     implementation Math{
-        Z value = 1;
-        value = world(pacmanPossibleNextPositionX, pacmanPossibleNextPositionY);
-        if(value == 1)
+        Z zvalue = 1;
+        zvalue = world(pacmanPossibleNextPositionX, pacmanPossibleNextPositionY);
+        if(zvalue == 1)
             canMove = 0;
             pacmanChosenNextPositionX = pacmanPositionX;
             pacmanChosenNextPositionY = pacmanPositionY;

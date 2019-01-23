@@ -12,7 +12,7 @@ void init()
 }
 void execute()
 {
-double value;
+double qvalue;
 colvec vec3=colvec(3);
 mat mat33=mat(3,3);
 cube cub333=cube(3,3,3);

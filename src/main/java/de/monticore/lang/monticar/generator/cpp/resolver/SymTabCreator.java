@@ -24,6 +24,7 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
 import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
@@ -60,6 +61,8 @@ public class SymTabCreator {
     }
 
     public Scope createSymTab() {
+        //ConstantPortSymbol.resetLastID();
+        ConstantPortHelper.resetLastID();
         MathConverter.resetIDs();
         ThreadingOptimizer.resetID();
         ModelingLanguageFamily fam = new ModelingLanguageFamily();

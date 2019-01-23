@@ -27,10 +27,13 @@ import java.util.List;
  * @author Sascha Schneiders
  */
 public class Method {
+
     String name;
     String typeName;
     List<Variable> parameters = new ArrayList<>();
     List<Instruction> instructions = new ArrayList<>();
+
+    protected boolean isPublic = true;
 
     public Method() {
 
@@ -107,5 +110,13 @@ public class Method {
         }
         args += parameters.get(size - 1).getNameTargetLanguageFormat();
         return String.format("%s(%s)", name, args);
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 }

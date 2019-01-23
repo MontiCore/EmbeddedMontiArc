@@ -20,18 +20,11 @@
  */
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
+
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
-import de.se_rwth.commons.logging.Log;
-import org.eclipse.core.internal.jobs.ObjectMap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**

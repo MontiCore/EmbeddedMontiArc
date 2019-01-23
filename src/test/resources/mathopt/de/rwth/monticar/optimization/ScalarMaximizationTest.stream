@@ -1,0 +1,6 @@
+package de.rwth.monticar.optimization;
+
+stream ScalarMaximizationTest for ScalarMaximizationTest{
+    xOut: 0 +/- 0.0001;
+    yOut: 42 +/- 0.0001;
+}

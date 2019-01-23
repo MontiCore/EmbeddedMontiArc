@@ -47,6 +47,12 @@ public class Variable {
     boolean parameterVariable = false;
     int arraySize = 1;
     boolean isArray = false;
+
+
+    boolean isPublic = true;
+    boolean isDynamic = false;
+
+
     Optional<String> constantValue = Optional.empty();
     List<String> additionalInformation = new ArrayList<>();
     List<String> dimensionalInformation = new ArrayList<>();
@@ -74,6 +80,7 @@ public class Variable {
         this.constantVariable = variable.constantVariable;
         this.arraySize = variable.arraySize;
         this.additionalInformation = variable.additionalInformation;
+        this.isDynamic = variable.isArray;
         updateArrayStatus();
     }
 
@@ -266,5 +273,21 @@ public class Variable {
         } else {
             //keep array status until explicitly changed
         }
+    }
+
+    public boolean isDynamic() {
+        return isDynamic;
+    }
+
+    public void setDynamic(boolean dynamic) {
+        isDynamic = dynamic;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 }

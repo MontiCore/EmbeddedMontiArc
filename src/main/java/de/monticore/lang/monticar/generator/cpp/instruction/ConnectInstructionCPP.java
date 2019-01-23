@@ -34,6 +34,7 @@ public class ConnectInstructionCPP extends ConnectInstruction {
 
 
 
+
     @Override
     public String getTargetLanguageInstruction() {
         String resultString = "";
@@ -64,4 +65,6 @@ public class ConnectInstructionCPP extends ConnectInstruction {
         }
         return resultString;
     }
+
+
 }

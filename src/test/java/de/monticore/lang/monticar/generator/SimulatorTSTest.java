@@ -20,13 +20,13 @@
  */
 package de.monticore.lang.monticar.generator;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 
 public class SimulatorTSTest extends AbstractSymtab{
 

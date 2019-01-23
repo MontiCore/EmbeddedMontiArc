@@ -1,0 +1,6 @@
+package de.rwth.monticar.optimization;
+
+stream ScalarMultMinTest for ScalarMultMinTest{
+    xOut: 5 +/- 0.0001;
+    yOut: 20 +/- 0.0001;
+}

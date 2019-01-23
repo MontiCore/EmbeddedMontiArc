@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.BluePrint;
 
 import java.util.List;
@@ -54,12 +53,14 @@ public class GeneralHelperMethods {
      * @return
      */
     public static String getTargetLanguageVariableInstanceName(String name) {
+
+
         String nameChanged = "";
         int indexSecond = 0;
         while (true) {
             int indexFirst = name.indexOf("[", indexSecond);
             if (indexFirst != -1) {
-                nameChanged += name.substring(0, indexFirst);
+                nameChanged += name.substring(indexSecond, indexFirst);
                 indexSecond = name.indexOf("]", indexFirst + 1);
                 if (indexSecond != -1) {
                     String subString = name.substring(indexFirst + 1, indexSecond++);
@@ -78,5 +79,6 @@ public class GeneralHelperMethods {
         if (nameChanged.equals(""))
             return name;
         return nameChanged;
+
     }
 }

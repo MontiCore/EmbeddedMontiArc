@@ -87,7 +87,7 @@ public class AllTemplatesTest {
         s1c2.getOutputPortName2Check().put("out5", RangeOutputPortCheck.from(0, 0));
 
         String result = AllTemplates.generateComponentStreamTest(vm);
-        System.out.println("Result: "+result);
+//        System.out.println("Result: "+result);
         Assert.assertNotNull(result);
         //When used this way = is not added as it happens in TestsGenerator usage
 

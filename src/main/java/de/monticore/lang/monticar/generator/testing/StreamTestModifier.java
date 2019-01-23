@@ -95,7 +95,7 @@ public class StreamTestModifier {
 
             File curDir = new File(OSHelper.getDirPrefix() + "/target/generated-sources-cpp/streamtest/exec/");
             File curDir2 = new File(OSHelper.getDirPrefix() + "/target/generated-sources-cpp/streamtest/");
-            System.out.println("Directories:");
+//            System.out.println("Directories:");
             getAllFiles(curDir);
             getAllFiles(curDir2);
         }
@@ -116,7 +116,7 @@ public class StreamTestModifier {
     public static void getAllFiles(File curDir) {
         File[] filesList = curDir.listFiles();
         for (File f : filesList) {
-            System.out.println(f.getName());
+//            System.out.println(f.getName());
         }
     }
 }

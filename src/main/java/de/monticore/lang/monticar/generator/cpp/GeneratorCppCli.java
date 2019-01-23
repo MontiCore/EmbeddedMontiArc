@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.cpp;
 
+
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
@@ -206,8 +207,8 @@ public final class GeneratorCppCli {
 
     }
 
-    public static EMAComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {
-        EMAComponentInstanceSymbol componentSymbol = resolver.getEMAComponentInstanceSymbol(rootModelName).orElse(null);
+    private static EMAComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {
+        EMAComponentInstanceSymbol componentSymbol = resolver.getExpandedComponentInstanceSymbol(rootModelName).orElse(null);
         if (componentSymbol == null) {
             Log.error("could not resolve component " + rootModelName);
             //System.exit(1);

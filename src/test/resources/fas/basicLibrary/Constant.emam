@@ -1,9 +1,9 @@
 package fas.basicLibrary;
 
-component Constant<T>(T value) {
+component Constant<T>(T cvalue) {
 	port 
 		out T out1;
     implementation Math{
-        out1=value;
+        out1=cvalue;
     }
 }

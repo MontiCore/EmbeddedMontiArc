@@ -20,7 +20,8 @@
  */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.generator.MathBackend;
@@ -47,7 +48,8 @@ public class MathConverter {
     }
 
     public static Variable getVariableFromBluePrint(String namey, BluePrintCPP bluePrintCPP) {
-        String name = EMAPortInstanceSymbol.getNameWithoutArrayBracketPart(namey);
+
+        String name = EMAPortSymbol.getNameWithoutArrayBracketPart(namey);
         Variable variable = bluePrintCPP.getVariable(name).orElse(null);
         return variable;
     }

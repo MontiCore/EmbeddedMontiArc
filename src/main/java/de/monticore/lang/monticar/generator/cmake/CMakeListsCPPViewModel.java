@@ -39,7 +39,7 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
     // fields
     private String compName;
 
-    private List<CMakeFindModule> moduleDependencies;
+    private HashSet<CMakeFindModule> moduleDependencies;
 
     private List<String> cmakeCommandList = new ArrayList<>();
 
@@ -55,11 +55,11 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
         this.compName = compName;
     }
 
-    public List<CMakeFindModule> getModuleDependencies() {
+    public HashSet<CMakeFindModule> getModuleDependencies() {
         return moduleDependencies;
     }
 
-    public void setModuleDependencies(List<CMakeFindModule> moduleDependencies) {
+    public void setModuleDependencies(HashSet<CMakeFindModule> moduleDependencies) {
         this.moduleDependencies = moduleDependencies;
     }
 

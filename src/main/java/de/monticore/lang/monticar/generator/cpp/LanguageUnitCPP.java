@@ -111,6 +111,12 @@ public class LanguageUnitCPP extends LanguageUnit {
                     resultString += "#include \"" + v.getVariableType().getIncludeName() + ".h\"\n";
                 }
             }
+            if(v instanceof VariablePortValueChecker){
+                if(!alreadyGeneratedIncludes.contains("PortValueCheck")){
+                    alreadyGeneratedIncludes.add("PortValueCheck");
+                    resultString += "#include \"PortValueCheck.h\"\n";
+                }
+            }
 
         }
 
@@ -139,78 +145,47 @@ public class LanguageUnitCPP extends LanguageUnit {
         }
 
         //class definition start
-        resultString += "class " + bluePrint.getName() + "{\n";
+        resultString += "class " + bluePrint.getName() ;
+        resultString += "{\n";
 
         //const variables
         for (String constString : bluePrint.getConsts())
             resultString += constString;
+
+        //private variables
+        for (Variable v : bluePrint.getVariables()) {
+            if (v.isPublic()) {
+                continue;
+            }
+            resultString += generateHeaderGenerateVariable(v);
+        }
+
+        //private methods
+        for (Method method : bluePrint.getMethods()) {
+            if(method.isPublic()){
+                continue;
+            }
+            resultString += generateMethod(method, bluePrint);
+        }
+
         resultString += "public:\n";
         if (generatorCPP.isExecutionLoggingActive) {
             resultString += "int __EXECCOUNTER;\n";
         }
         //input variable
         for (Variable v : bluePrint.getVariables()) {
-            if (!v.isArray())
-                resultString += v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + ";\n";
-            else
-                resultString += v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + "[" + v.getArraySize() + "]" + ";\n";
+            if (!v.isPublic()) {
+                continue;
+            }
+            resultString += generateHeaderGenerateVariable(v);
         }
 
         //generate methods
         for (Method method : bluePrint.getMethods()) {
-
-            int counter = 0;
-            resultString += method.getReturnTypeName() + " " + method.getName() + "(";
-
-            for (Variable param : method.getParameters()) {
-                if (counter == 0) {
-                    ++counter;
-                    resultString += param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
-                } else {
-                    resultString += ", " + param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
-                }
-                if (param.isArray())
-                    resultString += "[" + param.getArraySize() + "]";
+            if(!method.isPublic()){
+                continue;
             }
-            resultString += ")\n";//TODO add semicolon when using source files
-
-            //method body start
-            resultString += "{\n";
-            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
-                resultString += "std::ofstream __LogExecutionFile;\n";
-                resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
-
-            }
-            for (Instruction instruction : method.getInstructions()) {
-                if (instruction instanceof ConnectInstructionCPP) {
-                    ConnectInstructionCPP connectInstructionCPP = (ConnectInstructionCPP) instruction;
-                    Log.info("v1: " + connectInstructionCPP.getVariable1().getName() + "v2: " + connectInstructionCPP.getVariable2().getName(), "Instruction:");
-                } else if (instruction instanceof ExecuteInstruction) {
-                    ExecuteInstruction executeInstruction = (ExecuteInstruction) instruction;
-
-                }
-                Log.info(resultString, "beforRes:");
-                resultString += instruction.getTargetLanguageInstruction();
-                Log.info(resultString, "afterRes:");
-            }
-            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
-                for (Variable v : bluePrint.getVariables()) {
-                    if (v.hasAdditionalInformation(Variable.ORIGINPORT)) {
-                        resultString += "__LogExecutionFile << \"" + v.getNameTargetLanguageFormat() + " : \";\n";
-                        resultString += "toFileString(__LogExecutionFile, " + v.getNameTargetLanguageFormat() + ");\n";
-                        resultString += "__LogExecutionFile << \"\\n\";\n";
-                    }
-                }
-            }
-            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
-                resultString += "__LogExecutionFile.close();\n";
-                resultString += "__EXECCOUNTER = __EXECCOUNTER + 1;\n";
-            }
-            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("init")) {
-                resultString += "__EXECCOUNTER = 0;\n";
-            }
-            //method body end
-            resultString += "}\n";
+            resultString += generateMethod(method, bluePrint);
         }
 
 
@@ -224,5 +199,77 @@ public class LanguageUnitCPP extends LanguageUnit {
         return resultString;
     }
 
+    protected String generateHeaderGenerateVariable(Variable v){
+
+        if(v instanceof VariablePortValueChecker){
+            return ((VariablePortValueChecker)v).getTypeTargetLanguageFormat() +" "+ v.getNameTargetLanguageFormat()+";\n";
+        }else {
+
+            if (!v.isArray())
+                return v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + ";\n";
+            else
+                return v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + "[" + v.getArraySize() + "]" + ";\n";
+        }
+    }
+
+    protected String generateMethod(Method method, BluePrint bluePrint){
+
+        int counter = 0;
+        String resultString = method.getReturnTypeName() + " " + method.getName() + "(";
+        for (Variable param : method.getParameters()) {
+            if (counter == 0) {
+                ++counter;
+                resultString += param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
+            } else {
+                resultString += ", " + param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
+            }
+            if (param.isArray())
+                resultString += "[" + param.getArraySize() + "]";
+        }
+        resultString += ")\n";//TODO add semicolon when using source files
+
+        //method body start
+        resultString += "{\n";
+
+        if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+            resultString += "std::ofstream __LogExecutionFile;\n";
+            resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
+
+        }
+
+        for (Instruction instruction : method.getInstructions()) {
+            if (instruction instanceof ConnectInstructionCPP) {
+                ConnectInstructionCPP connectInstructionCPP = (ConnectInstructionCPP) instruction;
+                Log.info("v1: " + connectInstructionCPP.getVariable1().getName() + "v2: " + connectInstructionCPP.getVariable2().getName(), "Instruction:");
+            } else if (instruction instanceof ExecuteInstruction) {
+                ExecuteInstruction executeInstruction = (ExecuteInstruction) instruction;
+
+            }
+            Log.info(resultString, "beforRes:");
+            resultString += instruction.getTargetLanguageInstruction();
+            Log.info(resultString, "afterRes:");
+        }
+
+        if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+            for (Variable v : bluePrint.getVariables()) {
+                if (v.hasAdditionalInformation(Variable.ORIGINPORT)) {
+                    resultString += "__LogExecutionFile << \"" + v.getNameTargetLanguageFormat() + " : \";\n";
+                    resultString += "toFileString(__LogExecutionFile, " + v.getNameTargetLanguageFormat() + ");\n";
+                    resultString += "__LogExecutionFile << \"\\n\";\n";
+                }
+            }
+        }
+        if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+            resultString += "__LogExecutionFile.close();\n";
+            resultString += "__EXECCOUNTER = __EXECCOUNTER + 1;\n";
+        }
+        if (generatorCPP.isExecutionLoggingActive && method.getName().equals("init")) {
+            resultString += "__EXECCOUNTER = 0;\n";
+        }
+
+        //method body end
+        resultString += "}\n";
+        return resultString;
+    }
 
 }

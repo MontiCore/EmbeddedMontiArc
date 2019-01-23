@@ -40,9 +40,12 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
     public void testRowVectorMathSectionTest() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.math.rowVectorMathSectionTest", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.math.rowVectorMathSectionTest",
+                EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerateCMake(false);
+        generatorCPP.useOctaveBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testMath/l0/";
@@ -57,6 +60,8 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.math.columnVectorMathSectionTest", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testMath/l0/";
@@ -70,6 +75,8 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.math.staticMathSectionVariableTest", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testMath/l0/";
@@ -83,6 +90,8 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.math.matrixConstantVariableMathSectionTest", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testMath/l0/";
@@ -96,6 +105,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testMath/l0/";
@@ -110,6 +120,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testMath/l0/";
@@ -124,6 +135,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testMath/l0/";

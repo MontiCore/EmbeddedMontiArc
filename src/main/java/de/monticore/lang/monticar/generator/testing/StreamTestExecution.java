@@ -44,7 +44,8 @@ public class StreamTestExecution {
             execName = "./compileCPPTests.sh";
         } else {
             execName = "generic_platform";
-            System.out.println("ERROR: Unsupported platform!!!");
+            Log.error("Unsupported platform!!!");
+//            System.out.println("ERROR: Unsupported platform!!!");
         }
 
         //Check if g++ is available
@@ -59,6 +60,7 @@ public class StreamTestExecution {
     }
 
     private static void execWithExitCheck(Process p, String errorPrefix) throws IOException {
+
 
         while (p.isAlive()) {
             //if (Log.isInfoEnabled(""))
@@ -103,7 +105,8 @@ public class StreamTestExecution {
             execName = "./executeStreamTest.sh";
         } else {
             execName = "generic_platform";
-            System.out.println("ERROR: Unsupported platform!!!");
+            Log.error("ERROR: Unsupported platform!!!");
+//            System.out.println("ERROR: Unsupported platform!!!");
         }
         Process p = Runtime.
                 getRuntime().

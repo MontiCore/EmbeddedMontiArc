@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.cpp.armadillo;
 
+
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
@@ -50,6 +51,7 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";
@@ -65,6 +67,7 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";

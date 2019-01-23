@@ -46,6 +46,10 @@ public final class AllTemplates {
     private static final Template AUTOPILOT_ADAPTER;
     private static final Template SERVER_WRAPPER;
 
+    private static final Template DYNAMICS_EVENT_PortValueCheker;
+    private static final Template DYNAMICS_EVENT_DynamicHelper;
+
+
     static {
         Configuration conf = new Configuration(Configuration.VERSION_2_3_23);
         conf.setDefaultEncoding("UTF-8");
@@ -60,6 +64,8 @@ public final class AllTemplates {
             ENUM = conf.getTemplate("/type/Enum.ftl");
             AUTOPILOT_ADAPTER = conf.getTemplate("/autopilotadapter/AutopilotAdapter.ftl");
             SERVER_WRAPPER = conf.getTemplate("/serverwrapper/ServerWrapper.ftl");
+            DYNAMICS_EVENT_PortValueCheker = conf.getTemplate("/dynamics/events_port_value_check_h.ftl");
+            DYNAMICS_EVENT_DynamicHelper = conf.getTemplate("/dynamics/dynamic_port_request_connect_helper_h.ftl");
         } catch (IOException e) {
             String msg = "could not load templates";
             Log.error(msg, e);
@@ -97,8 +103,29 @@ public final class AllTemplates {
         return generate(SERVER_WRAPPER, viewModel);
     }
 
+    public static String generateDynamicEventsPortValueCheck(){
+        return generateWithoutData(DYNAMICS_EVENT_PortValueCheker);
+    }
+
+    public static String generateDynamicHelper(){
+        return generateWithoutData(DYNAMICS_EVENT_DynamicHelper);
+    }
+
+
     private static String generate(Template template, ViewModelBase viewModelBase) {
         return generate(template, TemplateHelper.getDataForTemplate(viewModelBase));
+    }
+
+
+    private static String generateWithoutData(Template template){
+        Log.errorIfNull(template);
+        StringWriter sw = new StringWriter();
+        try{
+            template.process(new Object(), sw);
+        } catch (TemplateException | IOException e) {
+            Log.error("template generation failed, template: " + template.getName(), e);
+        }
+        return sw.toString();
     }
 
     private static String generate(Template template, Object dataForTemplate) {

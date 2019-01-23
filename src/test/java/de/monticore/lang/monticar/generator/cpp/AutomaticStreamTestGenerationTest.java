@@ -173,7 +173,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         //   --root-model=%1 ^
         //   --flag-generate-tests ^
         //   --flag-use-armadillo-backend
-        System.out.println("Generation Done");
+//        System.out.println("Generation Done");
         String targetBasePath = OSHelper.getDirPrefix() + "/target/generated-sources-cpp/streamtest";
         String targetRestPath = "/autopilot";
         String targetFullPath = targetBasePath + targetRestPath;
@@ -297,6 +297,10 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         File destDir = new File(outputDirectory);
         FileUtils.copyDirectory(srcDir, destDir);
         GeneratorCppCli.main(args);
+        if( !SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_LINUX){
+            Log.warn("Unsupported OS for StreamTestExecution");
+            return;
+        }
         StreamTestExecution.compileTests(targetFullPath, targetBasePath);
         StreamTestExecution.executeTests(targetBasePath);
 
@@ -325,6 +329,10 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         File destDir = new File(outputDirectory);
         FileUtils.copyDirectory(srcDir, destDir);
         GeneratorCppCli.main(args);
+        if( !SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_LINUX){
+            Log.warn("Unsupported OS for StreamTestExecution");
+            return;
+        }
         StreamTestExecution.compileTests(targetFullPath, targetBasePath);
         StreamTestExecution.executeTests(targetBasePath);
 
