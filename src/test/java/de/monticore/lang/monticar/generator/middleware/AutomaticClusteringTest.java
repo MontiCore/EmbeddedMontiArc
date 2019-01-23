@@ -560,8 +560,10 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         try { img.writeAll(graph, TEST_PATH_PNG + modelName + ".png"); } catch (IOException e) { System.out.println("Couldn't create image file "+TEST_PATH_PNG + modelName + ".png"+
                 "\n"+e.getMessage()); };
 
+/*
         SimpleModelViewer viewer= new SimpleModelViewer(graph);
         viewer.run();
+*/
 
         Object[] params;
         for(ClusteringKind kind : ClusteringKind.values()){
@@ -668,9 +670,10 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         try { img.writeAll(graph, TEST_PATH_PNG + modelName + "/" + graph.getId() + ".png"); } catch (IOException ex) { System.out.println("Couldn't create image file "+TEST_PATH_PNG + graph.getId() + ".png"+
                 "\n"+ex.getMessage()); };
 
+/*
         SimpleModelViewer viewer= new SimpleModelViewer(graph);
         viewer.run();
-
+*/
 
     if (modelName=="clustering.midSizeDemoCluster") {
         assertTrue(clusters.size() == 2);
