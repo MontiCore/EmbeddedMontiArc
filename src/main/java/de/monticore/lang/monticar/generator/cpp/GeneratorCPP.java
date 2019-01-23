@@ -224,7 +224,7 @@ public class GeneratorCPP implements Generator {
             if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
                 fileContents.add(OctaveHelper.getOctaveHelperFileContent());
             if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
-                fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
+                fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent(isGenerateTests));
 
             if (shouldGenerateMainClass()) {
                 //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
@@ -235,7 +235,7 @@ public class GeneratorCPP implements Generator {
         if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
             fileContents.add(OctaveHelper.getOctaveHelperFileContent());
         if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
-            fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
+            fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent(isGenerateTests));
 
         if(componentInstanceSymbol instanceof EMADynamicComponentInstanceSymbol){
             //TODO: add Events Value Helper

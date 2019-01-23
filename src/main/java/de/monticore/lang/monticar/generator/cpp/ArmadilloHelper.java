@@ -28,10 +28,10 @@ import de.monticore.lang.monticar.generator.FileContent;
 public class ArmadilloHelper {
     public static String fileName = "HelperA";
 
-    public static FileContent getArmadilloHelperFileContent() {
+    public static FileContent getArmadilloHelperFileContent(boolean generateTests) {
         FileContent fileContent = new FileContent();
         fileContent.setFileName(fileName + ".h");
-        String fileContentString = ArmadilloHelperSource.armadilloHelperSourceCode;
+        String fileContentString = generateTests ? ArmadilloHelperSource.armadilloHelperSourceCodeWithTests : ArmadilloHelperSource.armadilloHelperSourceCode;
 
         fileContent.setFileContent(fileContentString);
         return fileContent;
