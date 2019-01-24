@@ -23,6 +23,7 @@ package de.monticore.lang.monticar.cnnarch.caffe2generator;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -30,9 +31,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import static junit.framework.TestCase.assertTrue;
 
 public class GenerationTest extends AbstractSymtabTest{
+    @Rule
+    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
     @Before
     public void setUp() {
@@ -61,16 +65,8 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testAlexnetGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "Alexnet", "-o", "./target/generated-sources-cnnarch/"};
+        exit.expectSystemExit();
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().isEmpty());
-
-        checkFilesAreEqual(
-                Paths.get("./target/generated-sources-cnnarch"),
-                Paths.get("./src/test/resources/target_code"),
-                Arrays.asList(
-                        "CNNCreator_Alexnet.py",
-                        "CNNPredictor_Alexnet.h",
-                        "execute_Alexnet"));
     }
 
     @Test
@@ -94,8 +90,8 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testThreeInputCNNGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
+        exit.expectSystemExit();
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 1);
     }
 
     @Test
