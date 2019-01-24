@@ -15,6 +15,7 @@ public class LayerSupportChecker {
         this.unsupportedLayerList.add(SPLIT_NAME);
         this.unsupportedLayerList.add(GET_NAME);
         this.unsupportedLayerList.add(CONCATENATE_NAME);
+        this.unsupportedLayerList.add(BATCHNORM_NAME);
     }
 
     public boolean isSupported(String element) {
