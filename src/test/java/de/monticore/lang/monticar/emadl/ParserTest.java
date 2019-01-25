@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.emadl;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -119,7 +119,7 @@ public class ParserTest {
 
                 Log.debug("Parsing file " + file.toString(), "ParserTest");
                 testCount++;
-                Optional<ASTEMAMCompilationUnit> model = Optional.empty();
+                Optional<ASTEMACompilationUnit> model = Optional.empty();
                 boolean expectingError = ParserTest.expectedParseErrorModels.contains(file.toString());
 
                 EMADLParser parser = new EMADLParser();

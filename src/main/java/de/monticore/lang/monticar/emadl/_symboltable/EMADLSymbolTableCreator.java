@@ -20,9 +20,9 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreatorTOP;
 import de.monticore.lang.mathopt._symboltable.MathOptSymbolTableCreator;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
@@ -91,7 +91,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
      */
 
 
-    public Scope createFromAST(ASTEMAMCompilationUnit rootNode) {
+    public Scope createFromAST(ASTEMACompilationUnit rootNode) {
         Log.errorIfNull(rootNode, "0xA7004_184 Error by creating of the EMADLSymbolTableCreator symbol table: top ast node is null");
         rootNode.accept(visitor);
         return getFirstCreatedScope();
