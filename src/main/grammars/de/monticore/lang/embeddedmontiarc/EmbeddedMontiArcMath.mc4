@@ -24,11 +24,10 @@ grammar EmbeddedMontiArcMath extends  de.monticore.lang.embeddedmontiarcdynamic.
                                       de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior,
                                       de.monticore.lang.MathOpt {
 
-    //EMAMCompilationUnit = EMACompilationUnit;
     start EMACompilationUnit;
 
     BehaviorEmbedding =  Statement+;
 
-    BehaviorName = "Math";
+    BehaviorName = name:"Math";
 
 }
