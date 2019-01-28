@@ -31,10 +31,12 @@ import java.util.List;
 public class EMADLMathStatementsSymbol extends MathStatementsSymbol {
     protected List<MathExpressionSymbol> emadlMathExpressionSymbols = null;
 
-    public EMADLMathStatementsSymbol(String name, ASTStatement astStatement) {
+    public EMADLMathStatementsSymbol(String name, List<ASTStatement> statements) {
         super(name, null);
         this.emadlMathExpressionSymbols = new ArrayList<>();
-        emadlMathExpressionSymbols.add((MathExpressionSymbol) astStatement.getSymbolOpt().get());
+        for (ASTStatement astStatement : statements) {
+            emadlMathExpressionSymbols.add((MathExpressionSymbol) astStatement.getSymbolOpt().get());
+        }
     }
 
     @Override

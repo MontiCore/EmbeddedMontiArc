@@ -29,6 +29,7 @@ import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symbol
 import de.monticore.lang.math._ast.ASTStatement;
 import de.monticore.lang.mathopt._symboltable.MathOptSymbolTableCreator;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
+import de.monticore.lang.monticar.emadl._ast.ASTBehaviorEmbedding;
 import de.monticore.lang.monticar.emadl._visitor.EMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.symboltable.MutableScope;
@@ -121,8 +122,12 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         }
     }
 
-    public void endVisit(ASTStatement ast) {
-        addToScopeAndLinkWithNode(new EMADLMathStatementsSymbol("MathStatements", ast), ast);
+    public void endVisit(ASTBehaviorEmbedding ast) {
+        if(ast.isPresentArchitecture()){
+            //processed in handle/visit/endVisit of ASTArchitecture and ASTArchBody
+        }else if(ast.getStatementList().size() > 0) {
+            addToScopeAndLinkWithNode(new EMADLMathStatementsSymbol("MathStatements", ast.getStatementList()), ast);
+        }
     }
 
 
