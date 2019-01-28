@@ -21,12 +21,14 @@
 package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._visitor.EmbeddedMontiArcBehaviorVisitor;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreatorTOP;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.instanceStructure.ModifiedEMAComponentInstanceSymbolCreator;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicSymbolTableCreator;
+import de.monticore.lang.math._ast.ASTStatement;
 import de.monticore.lang.mathopt._symboltable.MathOptSymbolTableCreator;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
-import de.monticore.lang.monticar.emadl._ast.ASTMathStatements;
 import de.monticore.lang.monticar.emadl._visitor.EMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.symboltable.MutableScope;
@@ -41,10 +43,11 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     
     private final EMADLDelegatorVisitor visitor = new EMADLDelegatorVisitor();
 
-    private EmbeddedMontiArcSymbolTableCreator emaSTC;
     private EmbeddedMontiArcMathSymbolTableCreatorTOP emamSTC;
     private CNNArchSymbolTableCreator cnnArchSTC;
     private MathOptSymbolTableCreator mathOptSTC;
+    private EmbeddedMontiArcDynamicSymbolTableCreator emadSTC;
+    private EmbeddedMontiArcBehaviorVisitor emaBehaviorSTC;
 
     public EMADLSymbolTableCreator(
             final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
@@ -58,28 +61,30 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     }
 
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
-        this.emaSTC = new ModifiedEMASymbolTableCreator(resolvingConfig, scopeStack);//new ModifiedEMASymbolTableCreator(resolvingConfig, scopeStack);
         this.cnnArchSTC = new CNNArchSymbolTableCreator(resolvingConfig, scopeStack);
         this.emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack);
         this.mathOptSTC = new MathOptSymbolTableCreator(resolvingConfig, scopeStack);
-
-        visitor.setEmbeddedMontiArcVisitor(emaSTC);
-        visitor.setEmbeddedMontiArcBehaviorVisitor(
-                new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack));
-        visitor.setEmbeddedMontiArcMathVisitor(emamSTC);
+        this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
+        this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
+        this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
 
-        visitor.setMathOptVisitor(mathOptSTC);
+        visitor.setEmbeddedMontiArcMathVisitor(emamSTC);
+        visitor.setEmbeddedMontiArcVisitor(emadSTC);
+        visitor.setEmbeddedMontiArcDynamicVisitor(emadSTC);
+        visitor.setEmbeddedMontiArcBehaviorVisitor(emaBehaviorSTC);
         visitor.setMathVisitor(mathOptSTC);
-        visitor.setMatrixVisitor(mathOptSTC);
-        visitor.setMatrixExpressionsVisitor(mathOptSTC);
-
         visitor.setExpressionsBasisVisitor(mathOptSTC);
         visitor.setCommonExpressionsVisitor(mathOptSTC);
-        visitor.setTypes2Visitor(mathOptSTC);
         visitor.setAssignmentExpressionsVisitor(mathOptSTC);
+        visitor.setMatrixExpressionsVisitor(mathOptSTC);
+        visitor.setMatrixVisitor(mathOptSTC);
+        visitor.setTypes2Visitor(mathOptSTC);
+        visitor.setMathOptVisitor(mathOptSTC);
+
+        visitor.setCommon2Visitor(emamSTC);
     }
 
 /**
@@ -99,7 +104,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
 
     @Override
     public MutableScope getFirstCreatedScope() {
-        return emaSTC.getFirstCreatedScope();
+        return emadSTC.getFirstCreatedScope();
     }
 
     private EMADLVisitor realThis = this;
@@ -116,7 +121,9 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         }
     }
 
-    public void endVisit(ASTMathStatements ast) {
+    public void endVisit(ASTStatement ast) {
         addToScopeAndLinkWithNode(new EMADLMathStatementsSymbol("MathStatements", ast), ast);
     }
+
+
 }

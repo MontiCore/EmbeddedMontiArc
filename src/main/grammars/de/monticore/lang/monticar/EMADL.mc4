@@ -5,9 +5,7 @@ grammar EMADL extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcMath,
 
     start EMACompilationUnit;
 
-    BehaviorEmbedding = Architecture | MathStatements;
-
-    MathStatements = Statement+;
+    BehaviorEmbedding = Architecture | Statement+;
 
     BehaviorName = name:"CNN" | name:"Math";
 }
