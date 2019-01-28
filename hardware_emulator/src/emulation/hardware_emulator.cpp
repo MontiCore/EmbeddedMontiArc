@@ -9,125 +9,95 @@ using namespace std;
 void HardwareEmulator::init( Computer &computer, const char *module_name ) {
     this->computer = &computer;
     this->module_name = module_name;
-    
     jni_emu.init( computer );
     simulation_time = computer.computing_time;
+    
+    for ( uint input_id : Range( AUTOPILOT_INPUT_COUNT ) ) {
+        auto &addr = inputs.function_address[input_id];
+        auto &input = AutopilotFunction::autopilot_inputs[input_id];
+        auto name = input.get_input_name();
+        addr = computer.sys_calls.get_syscall( module_name, name );
+        if ( addr == 0 )
+            Log::err << "Couldn't find function " << name << "\n";
+    }
+    for ( uint output_id : Range( AUTOPILOT_OUTPUT_COUNT ) ) {
+        auto &addr = outputs.function_address[output_id];
+        auto &output = AutopilotFunction::autopilot_outputs[output_id];
+        outputs.buffer[output_id].init( output.type );
+        addr = computer.sys_calls.get_syscall( module_name, output.get_output_name() );
+    }
+    
+    init_address = computer.sys_calls.get_syscall( module_name, AutopilotFunction::get_name( "init" ) );
+    exec_address = computer.sys_calls.get_syscall( module_name, AutopilotFunction::get_name( "exec" ) );
+    
+    this->did_run = false;
 }
 
-void HardwareEmulator::set_input_count( uint input_count ) {
-    input_double_pos = 0;
-    input_int_pos = 0;
-    input_array_pos = 0;
-    input_double_buffer.init( input_count );
-    input_double_buffer.set_zero();
-    input_int_buffer.init( input_count );
-    input_int_buffer.set_zero();
-    input_array_buffer.init( input_count );
-    for ( auto &e : input_array_buffer )
-        e.size = 0;
+void HardwareEmulator::set_inputs() {
+    for ( auto input_id : Range( AUTOPILOT_INPUT_COUNT ) )
+        call_input( input_id );
 }
 
-void HardwareEmulator::set_output_count( uint output_count ) {
-    output_buffer.init( output_count );
-    current_output_buffer.init( output_count );
-    current_output_buffer.set_zero();
-    output_pos = 0;
+void HardwareEmulator::get_outputs() {
+    for ( auto output_id : Range( AUTOPILOT_OUTPUT_COUNT ) )
+        call_output( output_id );
 }
 
-void HardwareEmulator::set_function_count( uint function_count ) {
-    functions.init( function_count );
-}
-
-void HardwareEmulator::reg_function( uint func, const char *name, uint type ) {
-    auto &f = functions[func];
-    f.address = computer->sys_calls.get_syscall( module_name, name );
-    f.type = type;
-    switch ( type ) {
-        case INPUT_DOUBLE:
-            f.buffer_index = input_double_pos;
-            input_double_pos++;
-            break;
-        case INPUT_INT:
-            f.buffer_index = input_int_pos;
-            input_int_pos++;
-            break;
-        case INPUT_ARRAY:
-            f.buffer_index = input_array_pos;
-            input_array_pos++;
-            break;
-        case OUTPUT:
-            f.buffer_index = output_pos;
-            output_pos++;
-            break;
+void HardwareEmulator::exec() {
+    if ( !computing() ) {
+        if ( did_run ) {
+            did_run = false;
+            get_outputs();
+        }
+        
+        set_inputs();
+        call_void( exec_address );
+        
+        if ( computing() )
+            did_run = true;
+        else
+            get_outputs();
     }
 }
+
 
 void HardwareEmulator::add_time( ulong delta ) {
     //If computer did not use all the available time, set its time 'starting point' to the current simulation time.
     if ( computer->computing_time < simulation_time )
         computer->computing_time = simulation_time;
-    bool was_comp = computing();
     simulation_time += delta;
-    if ( was_comp && !computing() ) //Update output buffer
-        for ( auto i : Range( output_buffer.size() ) )
-            current_output_buffer[i] = output_buffer[i];
 }
 
-void HardwareEmulator::set_input_double( uint func_id, double val ) {
-    auto &f = functions[func_id];
-    input_double_buffer[f.buffer_index] = val;
-    f.new_input = true;
-}
-
-void HardwareEmulator::set_input_int( uint func_id, int val ) {
-    auto &f = functions[func_id];
-    input_int_buffer[f.buffer_index] = val;
-    f.new_input = true;
-}
-
-void HardwareEmulator::set_input_array( uint func_id, double *vals, uint count ) {
-    auto &f = functions[func_id];
-    auto &arr = input_array_buffer[f.buffer_index];
-    if ( arr.buffer.size() < count )
-        arr.buffer.init( count );
-    for ( uint i : Range( count ) )
-        arr.buffer[i] = vals[i];
-    arr.size = count;
-    f.new_input = true;
-}
-
-double HardwareEmulator::get_output( uint func_id ) {
-    auto &f = functions[func_id];
-    return output_buffer[f.buffer_index];
-}
-
-void HardwareEmulator::call( uint func_id ) {
-    auto &f = functions[func_id];
-    double *in;
-    int *in2;
-    double res;
-    HardwareEmulator::DoubleArray *arr;
-    switch ( f.type ) {
-        case INPUT_DOUBLE:
-            in = &( input_double_buffer[f.buffer_index] );
-            call_success = jni_emu.call( f.address, *in );
+void HardwareEmulator::call_input( uint func_id ) {
+    auto &addr = inputs.function_address[func_id];
+    auto &input = inputs.buffer[func_id];
+    
+    switch ( input.type ) {
+        case VALUE_TYPE::DOUBLE:
+            call_success = jni_emu.call( addr, input.double_value );
             break;
-        case INPUT_INT:
-            in2 = &( input_int_buffer[f.buffer_index] );
-            call_success = jni_emu.call( f.address, ( ulong ) * in2 );
+        case VALUE_TYPE::INT:
+            call_success = jni_emu.call( addr, ( ulong ) input.int_value );
             break;
-        case INPUT_ARRAY:
-            arr = &( input_array_buffer[f.buffer_index] );
-            call_success = jni_emu.call( f.address, arr->buffer.begin(), arr->size );
+        case VALUE_TYPE::DOUBLE_ARRAY:
+            call_success = jni_emu.call( addr, input.double_array.data.begin(), input.double_array.size );
             break;
-        case OUTPUT:
-            call_success = jni_emu.call( f.address );
-            res = jni_emu.return_double();
-            output_buffer[f.buffer_index] = res;
-            if ( !computing() )
-                current_output_buffer[f.buffer_index] = res;
-            break;
-        default:
-            call_success = jni_emu.call( f.address );
     }
 }
+
+void HardwareEmulator::call_output( uint func_id ) {
+    auto &addr = outputs.function_address[func_id];
+    auto &output = outputs.buffer[func_id];
+    
+    switch ( output.type ) {
+        case VALUE_TYPE::DOUBLE:
+            call_success = jni_emu.call( addr );
+            output.double_value = jni_emu.return_double();
+            break;
+    }
+}
+
+void HardwareEmulator::call_void( uint64_t address ) {
+    call_success = jni_emu.call( address );
+}
+

@@ -163,6 +163,7 @@ class Array {
         Array() : m_size( 0 ) {}
         
         Array( uint size ) {
+            m_size = 0;
             init( size );
         }
         void init( uint size ) {
@@ -172,6 +173,10 @@ class Array {
             m_size = size;
             if ( size > 0 )
                 data = UniqueArray<T>( new T[size] );
+        }
+        void init( uint size, T *buffer ) {
+            init( size );
+            std::memcpy( data.get(), buffer, sizeof( T )*m_size );
         }
         //*
         Array( const Array &x ) = delete;

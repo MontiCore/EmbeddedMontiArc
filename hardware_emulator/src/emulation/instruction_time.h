@@ -10,4 +10,7 @@ struct CodeDecoder {
     ZydisDecodedInstruction instruction;
 };
 
+/*
+    Returns the number of processor ticks needed for the given instruction.
+*/
 uint get_instruction_ticks( ZydisDecodedInstruction &instruction );

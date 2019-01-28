@@ -11,7 +11,7 @@ set(JAVA_DIR "${JAVA_BIN_DIR}/..")
 message("JAVA_DIR: ${JAVA_DIR}")
 
 #Name of the resulting library that is loaded in the autopilot RMIServer.
-set(AUTOPILO_ADAPTER_NAME "AutopilotAdapter")
+set(AUTOPILO_ADAPTER_NAME "HardwareEmulator")
 
 #Basic source files
 list(APPEND HARDWARE_EMU_SOURCEFILES
@@ -22,10 +22,16 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   src/utility.h
   src/utility.cpp
   
-  src/interfaces/dll_interface.h
-  src/interfaces/dll_interface.cpp
-  src/interfaces/autopilot_interface.h
-  src/interfaces/autopilot_interface.cpp
+  src/dll_interface.h
+  src/dll_interface.cpp
+  
+  src/autopilot/autopilot_interface.h
+  src/autopilot/autopilot_interface.cpp
+  src/autopilot/autopilot_inputs.h
+  src/autopilot/autopilot_outputs.h
+  src/autopilot/autopilot_port_info.h
+  src/autopilot/autopilot_functions.h
+  src/autopilot/autopilot_functions.cpp
   
   src/emulation/instruction_time.h
   src/emulation/instruction_time.cpp
@@ -53,7 +59,6 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   
   src/jni/jni_emulator.h
   src/jni/jni_emulator.cpp
-  
 )
 
 #Source files for the test project
@@ -63,8 +68,8 @@ list(APPEND HARDWARE_EMU_TEST_SOURCEFILES
 
 #Source files for the Autopilot Library
 list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_SOURCEFILES
-  src/jni/simulator_integration_AutopilotAdapter.h
-  src/jni/AutopilotAdapter.cpp
+  src/emulation/simulator_integration_HardwareEmulatorInterface.h
+  src/emulation/HardwareEmulatorInterface.cpp
 )
 
 #Setup the project file structure for Visual Studio projects
