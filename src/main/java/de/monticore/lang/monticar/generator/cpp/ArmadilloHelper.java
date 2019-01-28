@@ -36,4 +36,8 @@ public class ArmadilloHelper {
         fileContent.setFileContent(fileContentString);
         return fileContent;
     }
+
+    public static FileContent getArmadilloHelperFileContent(){
+        return getArmadilloHelperFileContent(false);
+    }
 }
