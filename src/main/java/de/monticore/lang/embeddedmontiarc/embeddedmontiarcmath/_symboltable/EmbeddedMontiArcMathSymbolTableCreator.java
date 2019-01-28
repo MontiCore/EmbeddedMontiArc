@@ -40,8 +40,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
 
-public class EmbeddedMontiArcMathSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
-        implements EmbeddedMontiArcMathVisitor {
+public class EmbeddedMontiArcMathSymbolTableCreator extends EmbeddedMontiArcMathSymbolTableCreatorTOP {
 
     // TODO doc
     private EmbeddedMontiArcMathDelegatorVisitor visitor = new EmbeddedMontiArcMathDelegatorVisitor();

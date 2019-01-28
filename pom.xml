@@ -30,7 +30,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math</artifactId>
-    <version>0.1.6-SNAPSHOT</version>
+    <version>0.1.7-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -73,7 +73,7 @@
         <javac.target.version>1.8</javac.target.version>
 
         <!-- Use plexus compiler to speed up testing -->
-        <!--<plexus.compiler.eclipse.version>2.8</plexus.compiler.eclipse.version>-->
+        <plexus.compiler.eclipse.version>2.8</plexus.compiler.eclipse.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -296,15 +296,15 @@
                     <target>${java.version}</target><meminitial>1024m</meminitial>
                     <maxmem>2048m</maxmem>
                     <fork>true</fork>
-                    <!--<compilerId>eclipse</compilerId>-->
+                    <compilerId>eclipse</compilerId>
                 </configuration>
-                <!--<dependencies>-->
-                <!--<dependency>-->
-                <!--<groupId>org.codehaus.plexus</groupId>-->
-                <!--<artifactId>plexus-compiler-eclipse</artifactId>-->
-                <!--<version>${plexus.compiler.eclipse.version}</version>-->
-                <!--</dependency>-->
-                <!--</dependencies>-->
+                <dependencies>
+                <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-compiler-eclipse</artifactId>
+                <version>${plexus.compiler.eclipse.version}</version>
+                </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
