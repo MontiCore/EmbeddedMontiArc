@@ -8,7 +8,7 @@ import sys
 import numpy as np
 import time
 from mxnet import gluon, autograd, nd
-from CNNNet_VGG16 import Net
+from CNNNet_${tc.fullArchitectureName} import Net
 
 @mx.init.register
 class MyConstant(mx.init.Initializer):
@@ -18,14 +18,14 @@ class MyConstant(mx.init.Initializer):
     def _init_weight(self, _, arr):
         arr[:] = mx.nd.array(self.value)
 
-class CNNCreator_VGG16:
+class ${tc.fileNameWithoutEnding}:
 
-    _data_dir_ = "data/VGG16/"
-    _model_dir_ = "model/VGG16/"
-    _model_prefix_ = "VGG16"
-    _input_names_ = ['data']
-    _input_shapes_ = [(3,224,224)]
-    _output_names_ = ['predictions_label']
+    _data_dir_ = "data/${tc.fullArchitectureName}/"
+    _model_dir_ = "model/${tc.fullArchitectureName}/"
+    _model_prefix_ = "${tc.architectureName}"
+    _input_names_ = [${tc.join(tc.architectureInputs, ",", "'", "'")}]
+    _input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.definition.type.dimensions, ",")})</#list>]
+    _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "_label'")}]
 
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
@@ -131,9 +131,9 @@ class CNNCreator_VGG16:
                 min_learning_rate = optimizer_params['learning_rate_minimum']
                 del optimizer_params['learning_rate_minimum']
             optimizer_params['lr_scheduler'] = mx.lr_scheduler.FactorScheduler(
-                optimizer_params['step_size'],
-                factor=optimizer_params['learning_rate_decay'],
-                stop_factor_lr=min_learning_rate)
+                                                   optimizer_params['step_size'],
+                                                   factor=optimizer_params['learning_rate_decay'],
+                                                   stop_factor_lr=min_learning_rate)
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
