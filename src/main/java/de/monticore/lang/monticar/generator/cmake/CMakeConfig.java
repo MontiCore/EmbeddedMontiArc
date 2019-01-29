@@ -91,11 +91,21 @@ public class CMakeConfig {
         List<FileContent> files = new ArrayList<FileContent>();
         // generate CMakeLists.txt
         files.add(generateCMakeLists());
+        // generate ${component.name}.cpp
+        files.add(generateComponentCpp());
         // generate FindModule.cmake's
         for (CMakeFindModule module : moduleList) {
             files.add(generateCMakeFindPackage(module));
         }
         return files;
+    }
+
+    private FileContent generateComponentCpp() {
+        FileContent result = new FileContent();
+        String compName = cMakeListsViewModel.getCompName().replace(".", "_");
+        result.setFileName(compName + ".cpp");
+        result.setFileContent("#include \""+ compName +".h\"");
+        return result;
     }
 
     private FileContent generateCMakeFindPackage(CMakeFindModule module) {

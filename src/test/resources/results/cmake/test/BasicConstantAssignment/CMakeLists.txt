@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 project(test_basicConstantAssignment LANGUAGES CXX)
 
@@ -15,7 +15,7 @@ set(LIBS ${LIBS} ${Armadillo_LIBRARIES})
 
 # create static library
 include_directories(${INCLUDE_DIRS})
-add_library(test_basicConstantAssignment test_basicConstantAssignment.h)
+add_library(test_basicConstantAssignment test_basicConstantAssignment.cpp)
 target_include_directories(test_basicConstantAssignment PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${INCLUDE_DIRS})
 target_link_libraries(test_basicConstantAssignment PUBLIC ${LIBS})
 set_target_properties(test_basicConstantAssignment PROPERTIES LINKER_LANGUAGE CXX)

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 project(${viewModel.compName} LANGUAGES CXX)
 
@@ -20,7 +20,7 @@ ${cmd}
 
 # create static library
 include_directories(${r"${INCLUDE_DIRS}"})
-add_library(${viewModel.compName} ${viewModel.compName}.h)
+add_library(${viewModel.compName} ${viewModel.compName}.cpp)
 target_include_directories(${viewModel.compName} PUBLIC ${r"${CMAKE_CURRENT_SOURCE_DIR}"} ${r"${INCLUDE_DIRS}"})
 target_link_libraries(${viewModel.compName} PUBLIC ${r"${LIBS}"})
 set_target_properties(${viewModel.compName} PROPERTIES LINKER_LANGUAGE CXX)
