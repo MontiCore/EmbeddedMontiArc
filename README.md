@@ -9,19 +9,24 @@
 
 
 ## How to Run
-First, build the MNISTPredictor by:
+First, generate the code for the EMADL model by executing:
+```
+bash generate.sh
+```
+
+Then, build the MNISTPredictor by:
 
 ```
-bash build.sh 
+bash build.sh
 ```
 
-Then, navigate to the target directory in order to run the predictor as follows:
+Finally, navigate to the target directory in order to run the predictor as follows:
 ```
 cd target/
-./DigitClassifier ../src/resources/test_img/3.jpg
+./DigitClassifier ./test_img/3.jpg
 ```
 
-Try different images from the provided `/src/resources/test_img/` directory.
+You can try different images from the provided `/test_img` directory or even create your own images for testing. Note that the application program DigitClassifier will automatically rescale the given input image to the size 28x28.
 
 
 ## Troubleshooting Help

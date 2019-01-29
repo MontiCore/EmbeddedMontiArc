@@ -5,5 +5,10 @@ echo "Building DigitClassifier.."
 cmake ..
 make
 
-cp src/resources/DigitClassifier ../target/DigitClassifier
+cp src/main/cpp/DigitClassifier ../target/DigitClassifier
+
+echo "Copying resources to target directory.."
+cd ..
+cp -r src/main/resources/* ./target
+echo "done"
 
