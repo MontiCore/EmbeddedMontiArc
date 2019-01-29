@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #run from project root!
 #make sure all ros packages have been sourced!
 function quitOnError {
