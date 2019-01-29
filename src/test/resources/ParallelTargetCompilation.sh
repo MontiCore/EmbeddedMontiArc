@@ -13,9 +13,17 @@ function build() {
     echo Trying to build "$1"
     echo creating dir "$1"/build
     mkdir "$1"/build
-    quitOnError "$1"
-    echo CMake
-    cmake -B"$1"/build/ -H"$1"/src/ -DCMAKE_BUILD_TYPE=DEBUG
+    # quitOnError "$1"
+    if [[ `command -v ccache` ]]
+    then
+        echo CMake with ccache
+        export CXX="/usr/bin/g++"
+        cmake -B"$1"/build/ -H"$1"/src/ -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_CXX_COMPILER_LAUNCHER="ccache"
+    else
+        echo CMake without ccache
+        cmake -B"$1"/build/ -H"$1"/src/ -DCMAKE_BUILD_TYPE=DEBUG
+    fi
+
     quitOnError "$1"
     echo make
     make -s -C "$1"/build/
