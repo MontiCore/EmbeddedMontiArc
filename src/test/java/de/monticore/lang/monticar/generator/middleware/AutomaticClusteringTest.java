@@ -25,6 +25,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSinkImages;
+import org.junit.Assert;
 import org.junit.Test;
 import smile.clustering.DBSCAN;
 import smile.clustering.SpectralClustering;
@@ -126,91 +127,6 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         assertTrue( labels[1] != labels[2]);
         assertTrue( labels[1] != labels[3]);
 
-    }
-
-    @Test
-    public void testFlattenAlgorithm1(){
-        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
-
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver
-                .<EMAComponentInstanceSymbol>resolve("lab.overallSystem", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-
-        EMAComponentInstanceSymbol newComponentInstanceSymbol = FlattenArchitecture
-                .flattenArchitecture(componentInstanceSymbol);
-        assertNotNull(newComponentInstanceSymbol);
-        Collection<EMAComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
-        Collection<EMAConnectorInstanceSymbol> connectors = newComponentInstanceSymbol.getConnectorInstances();
-        assertEquals(10, subComponents.size());
-        assertEquals(20, connectors.size());
-    }
-
-    @Test
-    public void testFlattenAlgorithm1ShortNames(){
-        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
-
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver
-                .<EMAComponentInstanceSymbol>resolve("lab.overallSystem", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-
-        EMAComponentInstanceSymbol newComponentInstanceSymbol = FlattenArchitecture
-                .flattenArchitecture(componentInstanceSymbol, new HashMap<>());
-        assertNotNull(newComponentInstanceSymbol);
-        Collection<EMAComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
-        Collection<EMAConnectorInstanceSymbol> connectors = newComponentInstanceSymbol.getConnectorInstances();
-        assertEquals(10, subComponents.size());
-        assertEquals(20, connectors.size());
-    }
-
-    @Test
-    public void testFlattenAlgorithm2(){
-        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
-
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver
-                .<EMAComponentInstanceSymbol>resolve("lab.spanningSystem", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-
-        EMAComponentInstanceSymbol newComponentInstanceSymbol = FlattenArchitecture
-                .flattenArchitecture(componentInstanceSymbol);
-        assertNotNull(newComponentInstanceSymbol);
-        Collection<EMAComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
-        Collection<EMAConnectorInstanceSymbol> connectors = newComponentInstanceSymbol.getConnectorInstances();
-        assertEquals(20, subComponents.size());
-        assertEquals(40, connectors.size());
-    }
-
-    @Test
-    public void testFlattenAlgorithm2ShortNames() {
-        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
-
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver
-                .<EMAComponentInstanceSymbol>resolve("lab.spanningSystem", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-
-        EMAComponentInstanceSymbol newComponentInstanceSymbol = FlattenArchitecture
-                .flattenArchitecture(componentInstanceSymbol, new HashMap<>());
-        assertNotNull(newComponentInstanceSymbol);
-        Collection<EMAComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
-        Collection<EMAConnectorInstanceSymbol> connectors = newComponentInstanceSymbol.getConnectorInstances();
-        assertEquals(20, subComponents.size());
-        assertEquals(40, connectors.size());
-    }
-
-    @Test
-    public void testFlattenAlgorithmWithLevels() {
-        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
-
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver
-                .<EMAComponentInstanceSymbol>resolve("lab.spanningSystem", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-
-        EMAComponentInstanceSymbol newComponentInstanceSymbol = FlattenArchitecture
-                .flattenArchitecture(componentInstanceSymbol, new HashMap<>(), 2);
-        assertNotNull(newComponentInstanceSymbol);
-        Collection<EMAComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
-        Collection<EMAConnectorInstanceSymbol> connectors = newComponentInstanceSymbol.getConnectorInstances();
-        assertEquals(4, subComponents.size());
-        assertEquals(24, connectors.size());
     }
 
 
@@ -983,4 +899,6 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         assertEquals(2, labels.length);
         assertTrue(labels[0] != labels[1]);
     }
+
+
 }
