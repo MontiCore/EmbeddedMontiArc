@@ -37,8 +37,9 @@
                     <pathMain>./src/main/emam</pathMain>
                     <pathTest>./src/test/emam</pathTest>
                     <pathTmpOut>./target/tmp</pathTmpOut>
+                    <generator>VS2017</generator>
                 </configuration>
-        
+
                 <executions>
                     <execution>
                         <phase>test</phase>

@@ -1,0 +1,16 @@
+package TestA;
+
+component Indices {
+        ports
+                in Q(0:1)^10 preds[3],
+                out Z(0:9) inds[6];
+        
+        implementation Math {
+            for i = 1:6
+                inds(i) = argmax(preds(i));
+            end
+
+    }
+
+    
+}
