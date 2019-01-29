@@ -64,51 +64,51 @@ class CNNCreator_VGG16:
 
     		data = data
     		# data, output shape: {[3,224,224]}
-      		conv1_ = brew.conv(model, data, 'conv1_', dim_in=3, dim_out=64, kernel=3, stride=1)
+    		conv1_ = brew.conv(model, data, 'conv1_', dim_in=3, dim_out=64, kernel=3, stride=1, pad=1)
     		# conv1_, output shape: {[64,224,224]}
     		relu1_ = brew.relu(model, conv1_, conv1_)
-      		conv2_ = brew.conv(model, relu1_, 'conv2_', dim_in=64, dim_out=64, kernel=3, stride=1)
+    		conv2_ = brew.conv(model, relu1_, 'conv2_', dim_in=64, dim_out=64, kernel=3, stride=1, pad=1)
     		# conv2_, output shape: {[64,224,224]}
     		relu2_ = brew.relu(model, conv2_, conv2_)
     		pool2_ = brew.max_pool(model, relu2_, 'pool2_', kernel=2, stride=2)
     		# pool2_, output shape: {[64,112,112]}
-      		conv3_ = brew.conv(model, pool2_, 'conv3_', dim_in=64, dim_out=128, kernel=3, stride=1)
+    		conv3_ = brew.conv(model, pool2_, 'conv3_', dim_in=64, dim_out=128, kernel=3, stride=1, pad=1)
     		# conv3_, output shape: {[128,112,112]}
     		relu3_ = brew.relu(model, conv3_, conv3_)
-      		conv4_ = brew.conv(model, relu3_, 'conv4_', dim_in=128, dim_out=128, kernel=3, stride=1)
+    		conv4_ = brew.conv(model, relu3_, 'conv4_', dim_in=128, dim_out=128, kernel=3, stride=1, pad=1)
     		# conv4_, output shape: {[128,112,112]}
     		relu4_ = brew.relu(model, conv4_, conv4_)
     		pool4_ = brew.max_pool(model, relu4_, 'pool4_', kernel=2, stride=2)
     		# pool4_, output shape: {[128,56,56]}
-      		conv5_ = brew.conv(model, pool4_, 'conv5_', dim_in=128, dim_out=256, kernel=3, stride=1)
+    		conv5_ = brew.conv(model, pool4_, 'conv5_', dim_in=128, dim_out=256, kernel=3, stride=1, pad=1)
     		# conv5_, output shape: {[256,56,56]}
     		relu5_ = brew.relu(model, conv5_, conv5_)
-      		conv6_ = brew.conv(model, relu5_, 'conv6_', dim_in=256, dim_out=256, kernel=3, stride=1)
+    		conv6_ = brew.conv(model, relu5_, 'conv6_', dim_in=256, dim_out=256, kernel=3, stride=1, pad=1)
     		# conv6_, output shape: {[256,56,56]}
     		relu6_ = brew.relu(model, conv6_, conv6_)
-      		conv7_ = brew.conv(model, relu6_, 'conv7_', dim_in=256, dim_out=256, kernel=3, stride=1)
+    		conv7_ = brew.conv(model, relu6_, 'conv7_', dim_in=256, dim_out=256, kernel=3, stride=1, pad=1)
     		# conv7_, output shape: {[256,56,56]}
     		relu7_ = brew.relu(model, conv7_, conv7_)
     		pool7_ = brew.max_pool(model, relu7_, 'pool7_', kernel=2, stride=2)
     		# pool7_, output shape: {[256,28,28]}
-      		conv8_ = brew.conv(model, pool7_, 'conv8_', dim_in=256, dim_out=512, kernel=3, stride=1)
+    		conv8_ = brew.conv(model, pool7_, 'conv8_', dim_in=256, dim_out=512, kernel=3, stride=1, pad=1)
     		# conv8_, output shape: {[512,28,28]}
     		relu8_ = brew.relu(model, conv8_, conv8_)
-      		conv9_ = brew.conv(model, relu8_, 'conv9_', dim_in=512, dim_out=512, kernel=3, stride=1)
+    		conv9_ = brew.conv(model, relu8_, 'conv9_', dim_in=512, dim_out=512, kernel=3, stride=1, pad=1)
     		# conv9_, output shape: {[512,28,28]}
     		relu9_ = brew.relu(model, conv9_, conv9_)
-      		conv10_ = brew.conv(model, relu9_, 'conv10_', dim_in=512, dim_out=512, kernel=3, stride=1)
+    		conv10_ = brew.conv(model, relu9_, 'conv10_', dim_in=512, dim_out=512, kernel=3, stride=1, pad=1)
     		# conv10_, output shape: {[512,28,28]}
     		relu10_ = brew.relu(model, conv10_, conv10_)
     		pool10_ = brew.max_pool(model, relu10_, 'pool10_', kernel=2, stride=2)
     		# pool10_, output shape: {[512,14,14]}
-      		conv11_ = brew.conv(model, pool10_, 'conv11_', dim_in=512, dim_out=512, kernel=3, stride=1)
+    		conv11_ = brew.conv(model, pool10_, 'conv11_', dim_in=512, dim_out=512, kernel=3, stride=1, pad=1)
     		# conv11_, output shape: {[512,14,14]}
     		relu11_ = brew.relu(model, conv11_, conv11_)
-      		conv12_ = brew.conv(model, relu11_, 'conv12_', dim_in=512, dim_out=512, kernel=3, stride=1)
+    		conv12_ = brew.conv(model, relu11_, 'conv12_', dim_in=512, dim_out=512, kernel=3, stride=1, pad=1)
     		# conv12_, output shape: {[512,14,14]}
     		relu12_ = brew.relu(model, conv12_, conv12_)
-      		conv13_ = brew.conv(model, relu12_, 'conv13_', dim_in=512, dim_out=512, kernel=3, stride=1)
+    		conv13_ = brew.conv(model, relu12_, 'conv13_', dim_in=512, dim_out=512, kernel=3, stride=1, pad=1)
     		# conv13_, output shape: {[512,14,14]}
     		relu13_ = brew.relu(model, conv13_, conv13_)
     		pool13_ = brew.max_pool(model, relu13_, 'pool13_', kernel=2, stride=2)
