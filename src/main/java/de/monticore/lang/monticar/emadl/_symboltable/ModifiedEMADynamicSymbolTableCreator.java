@@ -23,21 +23,22 @@ package de.monticore.lang.monticar.emadl._symboltable;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicSymbolTableCreator;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
 
-public class ModifiedEMASymbolTableCreator extends EmbeddedMontiArcSymbolTableCreator {
+public class ModifiedEMADynamicSymbolTableCreator extends EmbeddedMontiArcDynamicSymbolTableCreator {
 
     private ModifiedExpandedInstanceSymbolCreator instanceSymbolCreator = new ModifiedExpandedInstanceSymbolCreator();
 
-    public ModifiedEMASymbolTableCreator(ResolvingConfiguration resolverConfig, MutableScope enclosingScope) {
+    public ModifiedEMADynamicSymbolTableCreator(ResolvingConfiguration resolverConfig, MutableScope enclosingScope) {
         super(resolverConfig, enclosingScope);
     }
 
-    public ModifiedEMASymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack) {
+    public ModifiedEMADynamicSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack) {
         super(resolvingConfig, scopeStack);
     }
 

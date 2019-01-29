@@ -30,7 +30,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-deeplearning</artifactId>
-    <version>0.2.4</version>
+    <version>0.2.5</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -41,13 +41,13 @@
         <se-commons.version>1.7.8</se-commons.version>
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
         <Common-MontiCar.version>0.0.14-20180704.113055-2</Common-MontiCar.version>
-        <Embedded-MontiArc.version>0.1.7-SNAPSHOT</Embedded-MontiArc.version>
-        <Embedded-MontiArc-Math.version>0.1.4-SNAPSHOT</Embedded-MontiArc-Math.version>
-        <Embedded-MontiArc-MathOpt.version>0.1.3-SNAPSHOT</Embedded-MontiArc-MathOpt.version>
+        <Embedded-MontiArc.version>0.1.9-SNAPSHOT</Embedded-MontiArc.version>
+        <Embedded-MontiArc-Math.version>0.1.7-SNAPSHOT</Embedded-MontiArc-Math.version>
         <Embedded-MontiArc-Behaviour.version>0.0.15-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
         <CNNArch.version>0.2.7</CNNArch.version>
         <Math.version>0.0.19-SNAPSHOT</Math.version>
         <MathOpt.version>0.1.1-SNAPSHOT</MathOpt.version>
+        <embedded-montiarc-dynamics.version>0.0.2-SNAPSHOT</embedded-montiarc-dynamics.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -73,6 +73,7 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <plexus-compiler-eclipse.version>2.8.1</plexus-compiler-eclipse.version>
     </properties>
 
     <dependencies>
@@ -221,20 +222,6 @@
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math-opt</artifactId>
-            <version>${Embedded-MontiArc-MathOpt.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math-opt</artifactId>
-            <version>${Embedded-MontiArc-MathOpt.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>cnn-arch</artifactId>
             <version>${CNNArch.version}</version>
         </dependency>
@@ -246,6 +233,22 @@
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-dynamics</artifactId>
+            <version>${embedded-montiarc-dynamics.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-dynamics</artifactId>
+            <version>${embedded-montiarc-dynamics.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+
 
 
         <!-- .. Test Libraries ............................................... -->
@@ -346,10 +349,18 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler.plugin}</version>
                 <configuration>
+                    <compilerId>eclipse</compilerId>
                     <useIncrementalCompilation>true</useIncrementalCompilation>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-eclipse</artifactId>
+                        <version>${plexus-compiler-eclipse.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>

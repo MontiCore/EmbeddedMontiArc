@@ -1,13 +1,11 @@
 package de.monticore.lang.monticar;
 
-grammar EMADL extends de.monticore.lang.EmbeddedMontiArcMathOpt,
+grammar EMADL extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcMath,
                       de.monticore.lang.monticar.CNNArch{
 
-    start EMAMCompilationUnit;
+    start EMACompilationUnit;
 
-    BehaviorEmbedding = Architecture | MathStatements;
-
-    MathStatements = Statement+;
+    BehaviorEmbedding = Architecture | Statement+;
 
     BehaviorName = name:"CNN" | name:"Math";
 }

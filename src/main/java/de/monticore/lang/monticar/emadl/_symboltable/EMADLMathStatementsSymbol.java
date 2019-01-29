@@ -23,7 +23,6 @@ package de.monticore.lang.monticar.emadl._symboltable;
 import de.monticore.lang.math._ast.ASTStatement;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.monticar.emadl._ast.ASTMathStatements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +31,10 @@ import java.util.List;
 public class EMADLMathStatementsSymbol extends MathStatementsSymbol {
     protected List<MathExpressionSymbol> emadlMathExpressionSymbols = null;
 
-    public EMADLMathStatementsSymbol(String name, ASTMathStatements ast) {
+    public EMADLMathStatementsSymbol(String name, List<ASTStatement> statements) {
         super(name, null);
         this.emadlMathExpressionSymbols = new ArrayList<>();
-        for (ASTStatement astStatement : ast.getStatementList()) {
+        for (ASTStatement astStatement : statements) {
             emadlMathExpressionSymbols.add((MathExpressionSymbol) astStatement.getSymbolOpt().get());
         }
     }

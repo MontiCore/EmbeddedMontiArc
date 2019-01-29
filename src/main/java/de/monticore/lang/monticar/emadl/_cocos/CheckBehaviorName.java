@@ -46,8 +46,8 @@ public class CheckBehaviorName implements EMADLASTBehaviorNameCoCo, EMADLASTBeha
     }
 
     private void checkBehavior() {
-        if (behaviorName.getNameOpt().get().equals("Math")){
-            if (!behaviorEmbedding.isPresentMathStatements()){
+        if (behaviorName.getName().equals("Math")){
+            if (behaviorEmbedding.getStatementList() == null){
                 Log.error("Implementation Name 'Math' is incorrect."
                         , behaviorName.get_SourcePositionStart());
             }
