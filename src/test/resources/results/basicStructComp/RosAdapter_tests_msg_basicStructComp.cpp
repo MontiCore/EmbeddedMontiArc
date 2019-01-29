@@ -1,0 +1,1 @@
+#include "RosAdapter_tests_msg_basicStructComp.h"

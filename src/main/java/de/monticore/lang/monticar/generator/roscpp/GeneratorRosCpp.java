@@ -23,6 +23,15 @@ public class GeneratorRosCpp {
 
     private String generationTargetPath;
     private boolean generateCMake = false;
+    private boolean ros2Mode = false;
+
+    public boolean isRos2Mode() {
+        return ros2Mode;
+    }
+
+    public void setRos2Mode(boolean ros2Mode) {
+        this.ros2Mode = ros2Mode;
+    }
 
     public void setGenerateCMake(boolean generateCMake) {
         this.generateCMake = generateCMake;
@@ -81,6 +90,7 @@ public class GeneratorRosCpp {
         FileContent apdapter = new FileContent();
 
         LanguageUnitRosCppAdapter languageUnitRosCppAdapter = new LanguageUnitRosCppAdapter();
+        languageUnitRosCppAdapter.setRos2Mode(this.isRos2Mode());
         Optional<BluePrintCPP> currentBluePrint = languageUnitRosCppAdapter.generateBluePrint(component);
 
         if(currentBluePrint.isPresent()) {
@@ -103,7 +113,7 @@ public class GeneratorRosCpp {
 
             if (generateCMake) {
                 LanguageUnitRosCMake languageUnitRosCMake = new LanguageUnitRosCMake();
-                res.add(languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages()));
+                res.addAll(languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages(),isRos2Mode()));
             }
 
             res.add(apdapter);

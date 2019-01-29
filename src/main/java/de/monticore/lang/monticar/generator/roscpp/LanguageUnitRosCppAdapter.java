@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
+import de.monticore.lang.monticar.generator.roscpp.helper.InitHelper;
 import de.monticore.lang.monticar.generator.roscpp.util.*;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
@@ -23,6 +24,15 @@ public class LanguageUnitRosCppAdapter {
     private List<MsgConverter> msgConverts = new ArrayList<>();
     private List<String> additionalPackages = new ArrayList<>();
     private Map<RosMsg, MCTypeReference<? extends MCTypeSymbol>> usedRosMsgs = new HashMap<>();
+    private boolean ros2Mode = false;
+
+    public boolean isRos2Mode() {
+        return ros2Mode;
+    }
+
+    public void setRos2Mode(boolean ros2Mode) {
+        this.ros2Mode = ros2Mode;
+    }
 
     public List<String> getAdditionalPackages() {
         return additionalPackages;
@@ -54,21 +64,48 @@ public class LanguageUnitRosCppAdapter {
     }
 
     private void generateIncludes(EMAComponentInstanceSymbol componentSymbol, List<EMAPortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
-        currentBluePrint.addAdditionalIncludeString("<ros/ros.h>");
-        String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
-        currentBluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
-        currentBluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
-        //Add each msg include exactly once
+        if(!isRos2Mode()) {
+            currentBluePrint.addAdditionalIncludeString("<ros/ros.h>");
+            String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
+            currentBluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
+            currentBluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
+            //Add each msg include exactly once
 
-        rosPorts.stream()
-                .map(EMAPortSymbol::getMiddlewareSymbol)
-                .map(Optional::get)
-                .map(mws -> (RosConnectionSymbol) mws)
-                .map(RosConnectionSymbol::getTopicType)
-                .map(Optional::get)
-                .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
-                .map(type -> "<" + type + ".h>")
-                .forEach(currentBluePrint::addAdditionalIncludeString);
+            rosPorts.stream()
+                    .map(EMAPortSymbol::getMiddlewareSymbol)
+                    .map(Optional::get)
+                    .map(mws -> (RosConnectionSymbol) mws)
+                    .map(RosConnectionSymbol::getTopicType)
+                    .map(Optional::get)
+                    .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
+                    .map(type -> "<" + type + ".h>")
+                    .forEach(currentBluePrint::addAdditionalIncludeString);
+        }else{
+            currentBluePrint.addAdditionalIncludeString("<rclcpp/rclcpp.hpp>");
+            String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
+            currentBluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
+            currentBluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
+            //Add each msg include exactly once
+
+            rosPorts.stream()
+                    .map(EMAPortSymbol::getMiddlewareSymbol)
+                    .map(Optional::get)
+                    .map(mws -> (RosConnectionSymbol) mws)
+                    .map(RosConnectionSymbol::getTopicType)
+                    .map(Optional::get)
+                    .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
+                    .map(type ->{
+                        if(type.contains("/msg/")) {
+                            String[] parts = type.split("/");
+                            parts[parts.length - 1] = parts[parts.length - 1].substring(0, 1).toLowerCase() + parts[parts.length - 1].substring(1);
+                            return String.join("/", parts);
+                        }else{
+                            return type;
+                        }
+                    })
+                    .map(type -> "<" + type + ".hpp>")
+                    .forEach(currentBluePrint::addAdditionalIncludeString);
+        }
 
         msgConverts.stream()
                 .map(MsgConverter::getAdditionalIncludes)
@@ -107,7 +144,7 @@ public class LanguageUnitRosCppAdapter {
 
         publishers.keySet().forEach(var -> {
             Method method = topicToMethod.get(publishers.get(var).getTopicName().get());
-            method.addInstruction(new PublishInstruction(var));
+            method.addInstruction(new PublishInstruction(var, ros2Mode));
             currentBluePrint.addMethod(method);
         });
     }
@@ -132,26 +169,25 @@ public class LanguageUnitRosCppAdapter {
         compPointer.setName("comp");
         initMethod.addParameter(compPointer);
 
-        initMethod.addInstruction(new TargetCodeInstruction("this->component = comp;"));
-        initMethod.addInstruction(new TargetCodeInstruction("char* tmp = strdup(\"\");"));
-        initMethod.addInstruction(new TargetCodeInstruction("int i = 0;"));
-        initMethod.addInstruction(new TargetCodeInstruction("ros::init(i, &tmp, \"" + classname + "_node\");"));
-        initMethod.addInstruction(new TargetCodeInstruction("ros::NodeHandle node_handle = ros::NodeHandle();"));
+        InitHelper.getInitInstructions(classname,isRos2Mode()).forEach(initMethod::addInstruction);
 
         //subs
         subscribers.keySet().stream()
-                .map(var -> new SubscribeInstruction(classname, var, subscribers.get(var).getTopicName().get(), getTopicNameTargetLanguage(subscribers.get(var).getTopicName().get()) + "Callback"))
+                .map(var -> new SubscribeInstruction(classname, var, subscribers.get(var).getTopicName().get(), getTopicNameTargetLanguage(subscribers.get(var).getTopicName().get()) + "Callback", isRos2Mode(), getFullRosType(subscribers.get(var))))
                 .distinct()
                 .sorted(Comparator.comparing(SubscribeInstruction::getTargetLanguageInstruction))
                 .forEach(initMethod::addInstruction);
 
         publishers.keySet().stream()
-                .map(var -> new AdvertiseInstruction(var, getFullRosType(publishers.get(var)), publishers.get(var).getTopicName().get()))
+                .map(var -> new AdvertiseInstruction(var, getFullRosType(publishers.get(var)), publishers.get(var).getTopicName().get(),isRos2Mode()))
                 .distinct()
                 .sorted(Comparator.comparing(AdvertiseInstruction::getTargetLanguageInstruction))
                 .forEach(initMethod::addInstruction);
-
-        initMethod.addInstruction(new TargetCodeInstruction("ros::spin();"));
+        if(!isRos2Mode()) {
+            initMethod.addInstruction(new TargetCodeInstruction("ros::spin();"));
+        }else{
+            initMethod.addInstruction(new TargetCodeInstruction("rclcpp::spin(node_handle);"));
+        }
 
         currentBluePrint.addMethod(initMethod);
     }
@@ -176,7 +212,11 @@ public class LanguageUnitRosCppAdapter {
                     String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName().get()).toLowerCase() + "Subscriber";
                     if (!uniqueSubFields.containsKey(name)) {
                         Variable field = new Variable();
-                        field.setTypeNameTargetLanguage("ros::Subscriber");
+                        if(!isRos2Mode()) {
+                            field.setTypeNameTargetLanguage("ros::Subscriber");
+                        }else{
+                            field.setTypeNameTargetLanguage("rclcpp::Subscription<" + getFullRosType(rosConnectionSymbol) + ">::SharedPtr");
+                        }
                         field.setName(name);
                         uniqueSubFields.put(name, field);
                         currBluePrint.addVariable(field);
@@ -192,7 +232,11 @@ public class LanguageUnitRosCppAdapter {
                     String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName().get()).toLowerCase() + "Publisher";
                     if (!uniquePubFields.containsKey(name)) {
                         Variable field = new Variable();
-                        field.setTypeNameTargetLanguage("ros::Publisher");
+                        if(!isRos2Mode()) {
+                            field.setTypeNameTargetLanguage("ros::Publisher");
+                        }else{
+                            field.setTypeNameTargetLanguage("rclcpp::Publisher<" + getFullRosType(rosConnectionSymbol) + ">::SharedPtr");
+                        }
                         field.setName(name);
                         uniquePubFields.put(name, field);
                         currBluePrint.addVariable(field);
@@ -235,7 +279,12 @@ public class LanguageUnitRosCppAdapter {
                         Method method = new Method(getTopicNameTargetLanguage(rosCon.getTopicName().get()) + "Callback", "void");
                         Variable tmpParam = new Variable();
                         tmpParam.setName("msg");
-                        tmpParam.setTypeNameTargetLanguage("const " + getFullRosType(rosCon) + "::ConstPtr&");
+                        if(!isRos2Mode())
+                        {
+                            tmpParam.setTypeNameTargetLanguage("const " + getFullRosType(rosCon) + "::ConstPtr&");
+                        }else{
+                            tmpParam.setTypeNameTargetLanguage("const " + getFullRosType(rosCon) + "::SharedPtr");
+                        }
                         method.addParameter(tmpParam);
                         uniqueMethods.put(rosCon.getTopicName().get(), method);
                     }
