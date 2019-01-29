@@ -6,6 +6,9 @@ import shutil
 import h5py
 import sys
 import numpy as np
+import time
+from mxnet import gluon, autograd, nd
+from CNNNet_Alexnet import Net
 
 @mx.init.register
 class MyConstant(mx.init.Initializer):
@@ -17,7 +20,6 @@ class MyConstant(mx.init.Initializer):
 
 class CNNCreator_Alexnet:
 
-    module = None
     _data_dir_ = "data/Alexnet/"
     _model_dir_ = "model/Alexnet/"
     _model_prefix_ = "Alexnet"
@@ -25,6 +27,9 @@ class CNNCreator_Alexnet:
     _input_shapes_ = [(3,224,224)]
     _output_names_ = ['predictions_label']
 
+    def __init__(self):
+        self.weight_initializer = mx.init.Normal()
+        self.net = None
 
     def load(self, context):
         lastEpoch = 0
@@ -51,11 +56,7 @@ class CNNCreator_Alexnet:
             return 0
         else:
             logging.info("Loading checkpoint: " + param_file)
-            self.module.load(prefix=self._model_dir_ + self._model_prefix_,
-                              epoch=lastEpoch,
-                              data_names=self._input_names_,
-                              label_names=self._output_names_,
-                              context=context)
+            self.net.load_parameters(param_file)
             return lastEpoch
 
 
@@ -130,19 +131,19 @@ class CNNCreator_Alexnet:
                 min_learning_rate = optimizer_params['learning_rate_minimum']
                 del optimizer_params['learning_rate_minimum']
             optimizer_params['lr_scheduler'] = mx.lr_scheduler.FactorScheduler(
-                                                   optimizer_params['step_size'],
-                                                   factor=optimizer_params['learning_rate_decay'],
-                                                   stop_factor_lr=min_learning_rate)
+                optimizer_params['step_size'],
+                factor=optimizer_params['learning_rate_decay'],
+                stop_factor_lr=min_learning_rate)
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
 
         train_iter, test_iter, data_mean, data_std = self.load_data(batch_size)
-        if self.module == None:
+        if self.net == None:
             if normalize:
-                self.construct(mx_context, data_mean, data_std)
+                self.construct(context=mx_context, data_mean=nd.array(data_mean), data_std=nd.array(data_std))
             else:
-                self.construct(mx_context)
+                self.construct(context=mx_context)
 
         begin_epoch = 0
         if load_checkpoint:
@@ -157,272 +158,79 @@ class CNNCreator_Alexnet:
             if not os.path.isdir(self._model_dir_):
                 raise
 
-        self.module.fit(
-            train_data=train_iter,
-            eval_metric=eval_metric,
-            eval_data=test_iter,
-            optimizer=optimizer,
-            optimizer_params=optimizer_params,
-            batch_end_callback=mx.callback.Speedometer(batch_size),
-            epoch_end_callback=mx.callback.do_checkpoint(prefix=self._model_dir_ + self._model_prefix_, period=checkpoint_period),
-            begin_epoch=begin_epoch,
-            num_epoch=num_epoch + begin_epoch)
-        self.module.save_checkpoint(self._model_dir_ + self._model_prefix_, num_epoch + begin_epoch)
-        self.module.save_checkpoint(self._model_dir_ + self._model_prefix_ + '_newest', 0)
+        trainer = mx.gluon.Trainer(self.net.collect_params(), optimizer, optimizer_params)
+
+        if self.net.last_layer == 'softmax':
+            loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss()
+        elif self.net.last_layer == 'sigmoid':
+            loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
+        elif self.net.last_layer == 'linear':
+            loss_function = mx.gluon.loss.L2Loss()
+        else: # TODO: Change default?
+            loss_function = mx.gluon.loss.L2Loss()
+            logging.warning("Invalid last_layer, defaulting to L2 loss")
+
+        speed_period = 50
+        tic = None
+
+        for epoch in range(begin_epoch, begin_epoch + num_epoch):
+            train_iter.reset()
+            for batch_i, batch in enumerate(train_iter):
+                data = batch.data[0].as_in_context(mx_context)
+                label = batch.label[0].as_in_context(mx_context)
+                with autograd.record():
+                    output = self.net(data)
+                    loss = loss_function(output, label)
+
+                loss.backward()
+                trainer.step(batch_size)
+
+                if tic is None:
+                    tic = time.time()
+                else:
+                    if batch_i % speed_period == 0:
+                        try:
+                            speed = speed_period * batch_size / (time.time() - tic)
+                        except ZeroDivisionError:
+                            speed = float("inf")
+
+                        logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec" % (epoch, batch_i, speed))
+
+                        tic = time.time()
+
+            tic = None
+
+            train_iter.reset()
+            metric = mx.metric.create(eval_metric)
+            for batch_i, batch in enumerate(train_iter):
+                data = batch.data[0].as_in_context(mx_context)
+                label = batch.label[0].as_in_context(mx_context)
+                output = self.net(data)
+                predictions = mx.nd.argmax(output, axis=1)
+                metric.update(preds=predictions, labels=label)
+            train_metric_score = metric.get()[1]
+
+            test_iter.reset()
+            metric = mx.metric.create(eval_metric)
+            for batch_i, batch in enumerate(test_iter):
+                data = batch.data[0].as_in_context(mx_context)
+                label = batch.label[0].as_in_context(mx_context)
+                output = self.net(data)
+                predictions = mx.nd.argmax(output, axis=1)
+                metric.update(preds=predictions, labels=label)
+            test_metric_score = metric.get()[1]
+
+            logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))
+
+            if (epoch - begin_epoch) % checkpoint_period == 0:
+                self.net.export(self._model_dir_ + self._model_prefix_, epoch)
+
+        self.net.export(self._model_dir_ + self._model_prefix_, num_epoch + begin_epoch)
+        self.net.export(self._model_dir_ + self._model_prefix_ + '_newest', 0)
 
 
     def construct(self, context, data_mean=None, data_std=None):
-        data = mx.sym.var("data",
-            shape=(0,3,224,224))
-        # data, output shape: {[3,224,224]}
-
-        if not data_mean is None:
-            assert(not data_std is None)
-            _data_mean_ = mx.sym.Variable("_data_mean_", shape=(3,224,224), init=MyConstant(value=data_mean.tolist()))
-            _data_mean_ = mx.sym.BlockGrad(_data_mean_)
-            _data_std_ = mx.sym.Variable("_data_std_", shape=(3,224,224), init=MyConstant(value=data_mean.tolist()))
-            _data_std_ = mx.sym.BlockGrad(_data_std_)
-            data = mx.symbol.broadcast_sub(data, _data_mean_)
-            data = mx.symbol.broadcast_div(data, _data_std_)
-        conv1_ = mx.symbol.pad(data=data,
-            mode='constant',
-            pad_width=(0,0,0,0,2,1,2,1),
-            constant_value=0)
-        conv1_ = mx.symbol.Convolution(data=conv1_,
-            kernel=(11,11),
-            stride=(4,4),
-            num_filter=96,
-            no_bias=False,
-            name="conv1_")
-        # conv1_, output shape: {[96,55,55]}
-
-        lrn1_ = mx.symbol.LRN(data=conv1_,
-            alpha=0.0001,
-            beta=0.75,
-            knorm=2,
-            nsize=5,
-            name="lrn1_")
-        pool1_ = mx.symbol.Pooling(data=lrn1_,
-            kernel=(3,3),
-            pool_type="max",
-            stride=(2,2),
-            name="pool1_")
-        # pool1_, output shape: {[96,27,27]}
-
-        relu1_ = mx.symbol.Activation(data=pool1_,
-            act_type='relu',
-            name="relu1_")
-
-        split1_ = mx.symbol.split(data=relu1_,
-            num_outputs=2,
-            axis=1,
-            name="split1_")
-        # split1_, output shape: {[48,27,27][48,27,27]}
-
-        get2_1_ = split1_[0]
-        conv2_1_ = mx.symbol.pad(data=get2_1_,
-            mode='constant',
-            pad_width=(0,0,0,0,2,2,2,2),
-            constant_value=0)
-        conv2_1_ = mx.symbol.Convolution(data=conv2_1_,
-            kernel=(5,5),
-            stride=(1,1),
-            num_filter=128,
-            no_bias=False,
-            name="conv2_1_")
-        # conv2_1_, output shape: {[128,27,27]}
-
-        lrn2_1_ = mx.symbol.LRN(data=conv2_1_,
-            alpha=0.0001,
-            beta=0.75,
-            knorm=2,
-            nsize=5,
-            name="lrn2_1_")
-        pool2_1_ = mx.symbol.Pooling(data=lrn2_1_,
-            kernel=(3,3),
-            pool_type="max",
-            stride=(2,2),
-            name="pool2_1_")
-        # pool2_1_, output shape: {[128,13,13]}
-
-        relu2_1_ = mx.symbol.Activation(data=pool2_1_,
-            act_type='relu',
-            name="relu2_1_")
-
-        get2_2_ = split1_[1]
-        conv2_2_ = mx.symbol.pad(data=get2_2_,
-            mode='constant',
-            pad_width=(0,0,0,0,2,2,2,2),
-            constant_value=0)
-        conv2_2_ = mx.symbol.Convolution(data=conv2_2_,
-            kernel=(5,5),
-            stride=(1,1),
-            num_filter=128,
-            no_bias=False,
-            name="conv2_2_")
-        # conv2_2_, output shape: {[128,27,27]}
-
-        lrn2_2_ = mx.symbol.LRN(data=conv2_2_,
-            alpha=0.0001,
-            beta=0.75,
-            knorm=2,
-            nsize=5,
-            name="lrn2_2_")
-        pool2_2_ = mx.symbol.Pooling(data=lrn2_2_,
-            kernel=(3,3),
-            pool_type="max",
-            stride=(2,2),
-            name="pool2_2_")
-        # pool2_2_, output shape: {[128,13,13]}
-
-        relu2_2_ = mx.symbol.Activation(data=pool2_2_,
-            act_type='relu',
-            name="relu2_2_")
-
-        concatenate3_ = mx.symbol.concat(relu2_1_, relu2_2_,
-            dim=1,
-            name="concatenate3_")
-        # concatenate3_, output shape: {[256,13,13]}
-
-        conv3_ = mx.symbol.pad(data=concatenate3_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv3_ = mx.symbol.Convolution(data=conv3_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=384,
-            no_bias=False,
-            name="conv3_")
-        # conv3_, output shape: {[384,13,13]}
-
-        relu3_ = mx.symbol.Activation(data=conv3_,
-            act_type='relu',
-            name="relu3_")
-
-        split3_ = mx.symbol.split(data=relu3_,
-            num_outputs=2,
-            axis=1,
-            name="split3_")
-        # split3_, output shape: {[192,13,13][192,13,13]}
-
-        get4_1_ = split3_[0]
-        conv4_1_ = mx.symbol.pad(data=get4_1_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv4_1_ = mx.symbol.Convolution(data=conv4_1_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=192,
-            no_bias=False,
-            name="conv4_1_")
-        # conv4_1_, output shape: {[192,13,13]}
-
-        relu4_1_ = mx.symbol.Activation(data=conv4_1_,
-            act_type='relu',
-            name="relu4_1_")
-
-        conv5_1_ = mx.symbol.pad(data=relu4_1_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv5_1_ = mx.symbol.Convolution(data=conv5_1_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=128,
-            no_bias=False,
-            name="conv5_1_")
-        # conv5_1_, output shape: {[128,13,13]}
-
-        pool5_1_ = mx.symbol.Pooling(data=conv5_1_,
-            kernel=(3,3),
-            pool_type="max",
-            stride=(2,2),
-            name="pool5_1_")
-        # pool5_1_, output shape: {[128,6,6]}
-
-        relu5_1_ = mx.symbol.Activation(data=pool5_1_,
-            act_type='relu',
-            name="relu5_1_")
-
-        get4_2_ = split3_[1]
-        conv4_2_ = mx.symbol.pad(data=get4_2_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv4_2_ = mx.symbol.Convolution(data=conv4_2_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=192,
-            no_bias=False,
-            name="conv4_2_")
-        # conv4_2_, output shape: {[192,13,13]}
-
-        relu4_2_ = mx.symbol.Activation(data=conv4_2_,
-            act_type='relu',
-            name="relu4_2_")
-
-        conv5_2_ = mx.symbol.pad(data=relu4_2_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv5_2_ = mx.symbol.Convolution(data=conv5_2_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=128,
-            no_bias=False,
-            name="conv5_2_")
-        # conv5_2_, output shape: {[128,13,13]}
-
-        pool5_2_ = mx.symbol.Pooling(data=conv5_2_,
-            kernel=(3,3),
-            pool_type="max",
-            stride=(2,2),
-            name="pool5_2_")
-        # pool5_2_, output shape: {[128,6,6]}
-
-        relu5_2_ = mx.symbol.Activation(data=pool5_2_,
-            act_type='relu',
-            name="relu5_2_")
-
-        concatenate6_ = mx.symbol.concat(relu5_1_, relu5_2_,
-            dim=1,
-            name="concatenate6_")
-        # concatenate6_, output shape: {[256,6,6]}
-
-        fc6_ = mx.symbol.flatten(data=concatenate6_)
-        fc6_ = mx.symbol.FullyConnected(data=fc6_,
-            num_hidden=4096,
-            no_bias=False,
-            name="fc6_")
-        relu6_ = mx.symbol.Activation(data=fc6_,
-            act_type='relu',
-            name="relu6_")
-
-        dropout6_ = mx.symbol.Dropout(data=relu6_,
-            p=0.5,
-            name="dropout6_")
-        fc7_ = mx.symbol.FullyConnected(data=dropout6_,
-            num_hidden=4096,
-            no_bias=False,
-            name="fc7_")
-        relu7_ = mx.symbol.Activation(data=fc7_,
-            act_type='relu',
-            name="relu7_")
-
-        dropout7_ = mx.symbol.Dropout(data=relu7_,
-            p=0.5,
-            name="dropout7_")
-        fc8_ = mx.symbol.FullyConnected(data=dropout7_,
-            num_hidden=10,
-            no_bias=False,
-            name="fc8_")
-
-        predictions = mx.symbol.SoftmaxOutput(data=fc8_,
-            name="predictions")
-
-        self.module = mx.mod.Module(symbol=mx.symbol.Group([predictions]),
-                                         data_names=self._input_names_,
-                                         label_names=self._output_names_,
-                                         context=context)
+        self.net = Net(data_mean=data_mean, data_std=data_std)
+        self.net.collect_params().initialize(self.weight_initializer, ctx=context)
+        self.net.hybridize()
+        self.net(mx.nd.zeros((1,)+self._input_shapes_[0], ctx=context))
