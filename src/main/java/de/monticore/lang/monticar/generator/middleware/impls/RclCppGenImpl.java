@@ -10,13 +10,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class RosCppGenImpl implements GeneratorImpl {
+public class RclCppGenImpl implements GeneratorImpl {
     private String generationTargetPath;
     private GeneratorRosCpp generatorRosCpp;
 
-    public RosCppGenImpl(){
+    public RclCppGenImpl(){
         generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerateCMake(true);
+        generatorRosCpp.setRos2Mode(true);
     }
 
     public void setGeneratorRosCpp(GeneratorRosCpp generatorRosCpp) {
@@ -38,7 +39,7 @@ public class RosCppGenImpl implements GeneratorImpl {
     public boolean willAccept(EMAComponentInstanceSymbol componentInstanceSymbol) {
         boolean result = componentInstanceSymbol.getPortInstanceList().stream().anyMatch(EMAPortInstanceSymbol::isRosPort);
         if(!result){
-            Log.warn("GeneratorRosCpp: No ROS Ports found! Ignoring component " + componentInstanceSymbol.getName());
+            Log.warn("Generator rclcpp: No ROS Ports found! Ignoring component " + componentInstanceSymbol.getName());
         }
 
         return result;

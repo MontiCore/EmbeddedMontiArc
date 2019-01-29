@@ -286,4 +286,57 @@ public class CliTest {
     private boolean logContains(String errorCode) {
         return LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains(errorCode));
     }
+
+    @Test
+    public void testRclcppGenerator(){
+        String targetDir = "target/cliTest/AllGenerators/";
+        String json = buildParameterJson(
+                VALID_MODELS_DIR_OPTION,
+                VALID_ROOT_MODEL_OPTION,
+                Arrays.asList("cpp","rclcpp"),
+                targetDir);
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
+
+        String[] positiveFileNames = {
+                "CMakeLists.txt",
+                "tests_a_addComp/cpp/tests_a_addComp.h",
+                "tests_a_addComp/cpp/CMakeLists.txt",
+                "tests_a_addComp/coordinator/CMakeLists.txt",
+                "tests_a_addComp/coordinator/Coordinator_tests_a_addComp.cpp",
+                "tests_a_addComp/rclcpp/RosAdapter_tests_a_addComp.h",
+                "tests_a_addComp/rclcpp/CMakeLists.txt",
+        };
+
+        for (String positiveFileName : positiveFileNames) {
+            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+        }
+    }
+
+    @Test
+    public void testRos2cppGenerator(){
+        String targetDir = "target/cliTest/AllGenerators/";
+        String json = buildParameterJson(
+                VALID_MODELS_DIR_OPTION,
+                VALID_ROOT_MODEL_OPTION,
+                Arrays.asList("cpp","ros2cpp"),
+                targetDir);
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
+
+        String[] positiveFileNames = {
+                "CMakeLists.txt",
+                "tests_a_addComp/cpp/tests_a_addComp.h",
+                "tests_a_addComp/cpp/CMakeLists.txt",
+                "tests_a_addComp/coordinator/CMakeLists.txt",
+                "tests_a_addComp/coordinator/Coordinator_tests_a_addComp.cpp",
+                "tests_a_addComp/rclcpp/RosAdapter_tests_a_addComp.h",
+                "tests_a_addComp/rclcpp/CMakeLists.txt",
+        };
+
+        for (String positiveFileName : positiveFileNames) {
+            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+        }
+    }
+
 }

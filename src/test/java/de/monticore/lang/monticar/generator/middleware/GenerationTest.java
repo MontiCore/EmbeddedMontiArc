@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
@@ -334,5 +336,21 @@ public class GenerationTest extends AbstractSymtabTest {
         List<String> filenames = files.stream().map(File::getAbsolutePath).map(name -> name.replace('\\','/')).collect(Collectors.toList());
 
         assertFalse(filenames.stream().anyMatch(fn -> fn.endsWith("rosMsg/CMakeLists.txt")));
+    }
+
+    @Test
+    public void testRos2Generation() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.aRos2.addComp", EMAComponentInstanceSymbol.KIND).orElse(null);
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        assertNotNull(componentInstanceSymbol);
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
+        distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-ros2/addComp/src");
+        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
+        distributedTargetGenerator.add(new RclCppGenImpl(), "rclcpp");
+        List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 }
