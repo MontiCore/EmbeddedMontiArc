@@ -401,6 +401,66 @@ public class WorldModel implements World{
     }
 
     @Override
+    public boolean isFrontLeftWheelOnStreet(IPhysicalVehicle v) {
+        Number distanceToLeft = getDistanceFrontLeftWheelToLeftStreetBorder(v);
+        Number distanceToRight;
+
+        // calculate distance to right street border
+        RealVector pos = v.getFrontLeftWheelGeometryPosition();
+        EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
+        GeomStreet minStreet = getMinimumStreetForNode(n);
+
+        distanceToRight = minStreet.getDistanceToRight(v);
+
+        return (distanceToLeft.doubleValue() > 6 || distanceToRight.doubleValue() > 6);
+    }
+
+    @Override
+    public boolean isFrontRightWheelOnStreet(IPhysicalVehicle v){
+        Number distanceToLeft;
+        Number distanceToRight = getDistanceToRightStreetBorder(v);
+
+        // calculate distance to right street border
+        RealVector pos = v.getFrontLeftWheelGeometryPosition();
+        EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
+        GeomStreet minStreet = getMinimumStreetForNode(n);
+
+        distanceToLeft = minStreet.getDistanceToRight(v);
+
+        return (distanceToLeft.doubleValue() > 6 || distanceToRight.doubleValue() > 6);
+    }
+
+    @Override
+    public boolean isBackLeftWheelOnStreet(IPhysicalVehicle v){
+        Number distanceToLeft = getDistanceFrontLeftWheelToLeftStreetBorder(v);
+        Number distanceToRight;
+
+        // calculate distance to right street border
+        RealVector pos = v.getFrontLeftWheelGeometryPosition();
+        EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
+        GeomStreet minStreet = getMinimumStreetForNode(n);
+
+        distanceToRight = minStreet.getDistanceToRight(v);
+
+        return (distanceToLeft.doubleValue() > 6 || distanceToRight.doubleValue() > 6);
+    }
+
+    @Override
+    public boolean isBackRightWheelOnStreet(IPhysicalVehicle v){
+        Number distanceToLeft;
+        Number distanceToRight = getDistanceToRightStreetBorder(v);
+
+        // calculate distance to right street border
+        RealVector pos = v.getFrontLeftWheelGeometryPosition();
+        EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
+        GeomStreet minStreet = getMinimumStreetForNode(n);
+
+        distanceToLeft = minStreet.getDistanceToRight(v);
+
+        return (distanceToLeft.doubleValue() > 6 || distanceToRight.doubleValue() > 6);
+    }
+
+    @Override
     public VisualisationEnvironmentContainer getContainer() throws Exception {
         return this.visualisationContainer;
     }
