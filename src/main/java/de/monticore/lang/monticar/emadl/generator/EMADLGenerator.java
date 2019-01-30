@@ -28,6 +28,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Componen
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnntrain.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
@@ -252,36 +253,6 @@ public class EMADLGenerator {
         }
     }
 
-    private String getDataPath(String modelName){
-        
-        BufferedReader reader;
-        try{
-            reader = new BufferedReader(new FileReader(getModelsPath() + "config.txt"));
-            
-            String line = reader.readLine();
-            List<String> lineList;
-        
-            while(line != null){
-                lineList = Splitter.on(' ').splitToList(line);
-                if((lineList.get(0)).equals(modelName)){  
-                    List<String> subList = lineList.subList(1,lineList.size());         
-                    String path = String.join(" ", subList);
-                    reader.close();
-
-                    return path;
-                } 
-                line = reader.readLine();
-                
-                
-            }
-            reader.close();
-        } catch(IOException e){
-            e.printStackTrace();
-        }
-        return "Path not found";
-    }
-
-
     private static String convertByteArrayToHexString(byte[] arrayBytes) {
         StringBuffer stringBuffer = new StringBuffer();
         for (int i = 0; i < arrayBytes.length; i++) {
@@ -383,7 +354,7 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
-            String dPath = getDataPath(componentSymbol.getFullName());
+            String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "config.txt", componentSymbol.getFullName());
             architecture.get().setDataPath(dPath);
             generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get());
         }
