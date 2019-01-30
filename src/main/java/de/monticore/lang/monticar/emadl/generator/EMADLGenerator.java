@@ -223,7 +223,7 @@ public class EMADLGenerator {
             else {
                 System.out.println("Not trained yet");
                 String trainingPath = getGenerationTargetPath() + trainerScriptName;
-                String pythonExe = "/usr/bin/python";
+                String pythonExe = "/home/christopher/anaconda3/bin/python";
                 if(Files.exists(Paths.get(trainingPath))){
                     ProcessBuilder pb = new ProcessBuilder(Arrays.asList(pythonExe, trainingPath)).inheritIO();
                     Process p = pb.start();
@@ -384,7 +384,7 @@ public class EMADLGenerator {
 
         if (architecture.isPresent()){
             String dPath = getDataPath(componentSymbol.getFullName());
-            System.out.println("flag: " + dPath);
+            architecture.get().setDataPath(dPath);
             generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get());
         }
         else if (mathStatements.isPresent()){
