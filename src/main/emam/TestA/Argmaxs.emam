@@ -1,0 +1,13 @@
+package TestA;
+
+component Argmaxs{
+        ports
+                in Q(0:1)^{3,10} input,
+                out Z(0:9)^3 maxs;
+
+        implementation Math{
+            for i = 1:3
+                maxs(i) = argmax(input(i));
+            end
+        }
+}

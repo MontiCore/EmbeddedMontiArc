@@ -2,21 +2,26 @@ package TestA;
 
 component Calculator {
         ports  
-                in Q(0:1)^10 input1[3],
-                in Q(0:1)^10 input2[3],
-                out Z(0:1998) out1;
+                in Q(0:1)^{3, 10} in1,
+                in Q(0:1)^{3,10} in2,
 
-        instance Indices args1;
-        instance Indices args2;
-        connect input1 -> args1.preds;
-        connect input2 -> args2.preds;
-        connect args1.inds -> numbers1;
-        connect args2.inds -> numbers2;
+                out Z(0:1998) out1;
+        
+        instance Argmaxs args1;
+        instance Argmaxs args2;
+        instance GetNumber gn1;
+        instance GetNumber gn2;
+
+        connect in1 -> args1.input;
+        connect in2 -> args2.input;
+        
+        connect args1.input -> gn1.digits;
+        connect args2.input -> gn2.digits;
 
         implementation Math{
-            tmp1 = numbers2(1) * 100 + numbers2(1)*100 + numbers1(2) * 10 + numbers2(2) * 10 + numbers1(3) + numbers2(3);
-            out1 = tmp1;
+                out1 = gn2.numb + gn1.numb;
+        }
 
-            
-    }
+
+
 }
