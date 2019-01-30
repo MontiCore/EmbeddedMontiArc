@@ -225,28 +225,22 @@ public class EMADLGenerator {
                 String trainingPath = getGenerationTargetPath() + trainerScriptName;
                 String pythonExe = "/usr/bin/python";
                 if(Files.exists(Paths.get(trainingPath))){
-                    try{
-                    ProcessBuilder pb = new ProcessBuilder(Arrays.asList(pythonExe, trainingPath));
+                    ProcessBuilder pb = new ProcessBuilder(Arrays.asList(pythonExe, trainingPath)).inheritIO();
                     Process p = pb.start();
 
-                    BufferedReader bfr1 = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                    BufferedReader bfr2 = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-                    String line = "";
-                    System.out.println("Starting training of " + trainConfigFilename);
-                    int exitCode = p.waitFor();
-                    System.out.println("Exit Code : " + exitCode);
-                    line = bfr1.readLine();
-                    System.out.println("First Line: " + line);
-                    while (line != null){
-                        System.out.println(line);
-                        line = bfr1.readLine();
+                    int exitCode = 0;
+                    try {
+                        exitCode = p.waitFor();
                     }
-                    line = bfr2.readLine();
-                    while(line != null){
-                        System.out.println(line);
-                        line = bfr2.readLine();
+                    catch(InterruptedException e) {
+                        //throw new Exception("Error: Training aborted" + e.toString());
+                        System.out.println("Error: Training aborted" + e.toString());
                     }
-                    }catch(Exception e){System.out.println(e);}
+
+                    if(exitCode != 0) {
+                        //throw new Exception("Error: Training error");
+                        System.out.println("Error: Training failed" + Integer.toString(exitCode));
+                    }
                 }else{System.out.println("Trainingfile not found.");}
             }
 
