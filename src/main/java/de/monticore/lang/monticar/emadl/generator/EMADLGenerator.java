@@ -182,8 +182,7 @@ public class EMADLGenerator {
 
         List<FileContent> fileContentsTrainingHashes = new ArrayList<>();
         for (ExpandedComponentInstanceSymbol componentInstance : allInstances) {
-            ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
-            Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
+            Optional<ArchitectureSymbol> architecture = componentInstance.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
 
             if(!architecture.isPresent()) {
                 continue;
@@ -203,16 +202,15 @@ public class EMADLGenerator {
 
             // This is not the real path to the training data! Adapt accordingly once sub-task 4 is solved
             String trainConfigFilename = "NOT_FOUND";
-            String componentConfigFilename = component.getFullName().replaceAll("\\.", "/");
-            String instanceConfigFilename = component.getFullName().replaceAll("\\.", "/") + "_"  + component.getName();
+            String componentConfigFilename = componentInstance.getFullName().replaceAll("\\.", "/");
+            String instanceConfigFilename = componentInstance.getFullName().replaceAll("\\.", "/") + "_"  + componentInstance.getName();
             if (Files.exists(Paths.get( getModelsPath() + instanceConfigFilename + ".cnnt"))) {
                 trainConfigFilename = instanceConfigFilename;
             }
             else if (Files.exists(Paths.get( getModelsPath() + componentConfigFilename + ".cnnt"))){
                 trainConfigFilename = componentConfigFilename;
             }
-            Path dataPath = Paths.get( getModelsPath() + trainConfigFilename + ".data");
-            byte[] dataHash = checksum(dataPath);
+            byte[] dataHash = checksum(Paths.get(architecture.get().getDataPath()));
 
             String trainingHash = creatorScriptHash + "-" + trainerScriptHash + "-" + convertByteArrayToHexString(dataHash);
             System.out.println(trainingHash);
