@@ -252,6 +252,35 @@ public class EMADLGenerator {
         }
     }
 
+    private String getDataPath(String modelName){
+        
+        BufferedReader reader;
+        try{
+            reader = new BufferedReader(new FileReader(getModelsPath() + "config.txt"));
+            
+            String line = reader.readLine();
+            List<String> lineList;
+        
+            while(line != null){
+                lineList = Splitter.on(' ').splitToList(line);
+                if((lineList.get(0)).equals(modelName)){  
+                    List<String> subList = lineList.subList(1,lineList.size());         
+                    String path = String.join(" ", subList);
+                    reader.close();
+
+                    return path;
+                } 
+                line = reader.readLine();
+                
+                
+            }
+            reader.close();
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+        return "Path not found";
+    }
+
 
     private static String convertByteArrayToHexString(byte[] arrayBytes) {
         StringBuffer stringBuffer = new StringBuffer();
@@ -354,6 +383,8 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
+            String dPath = getDataPath(componentSymbol.getFullName());
+            System.out.println("flag: " + dPath);
             generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get());
         }
         else if (mathStatements.isPresent()){
