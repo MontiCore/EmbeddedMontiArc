@@ -80,6 +80,7 @@ public class CNNArch2MxNet implements CNNArchGenerator {
         CNNArchCocos.checkAll(compilationUnit.get());
 
         try{
+            compilationUnit.get().getArchitecture().setDataPath("Temporary - read the correct data path from the config!");
             generateFiles(compilationUnit.get().getArchitecture());
         }
         catch (IOException e){
