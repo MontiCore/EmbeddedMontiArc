@@ -26,6 +26,7 @@ import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.IOSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.generator.FileContent;
@@ -41,19 +42,37 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.List;
 
 public class CNNArch2Caffe2 implements CNNArchGenerator{
 
     private String generationTargetPath;
 
-    private void supportCheck(ArchitectureSymbol architecture){
-        LayerSupportChecker layerChecker = new LayerSupportChecker();
-        for (ArchitectureElementSymbol element : ((CompositeElementSymbol)architecture.getBody()).getElements()){
-            if (!layerChecker.isSupported(element.toString())) {
-                Log.error("Unsupported layer " + "'" + element.getName() + "'" + " for the backend CAFFE2. Code generation aborted.");
-                System.exit(1);
+    private boolean isSupportedLayer(ArchitectureElementSymbol element, LayerSupportChecker layerChecker){
+        List<ArchitectureElementSymbol> constructLayerElemList;
+
+        if (!(element instanceof IOSymbol) && (element.getResolvedThis().get() instanceof CompositeElementSymbol))
+        {
+            constructLayerElemList = ((CompositeElementSymbol)element.getResolvedThis().get()).getElements();
+            for (ArchitectureElementSymbol constructedLayerElement : constructLayerElemList) {
+                if (!isSupportedLayer(constructedLayerElement, layerChecker)) return false;
             }
         }
+        if (!layerChecker.isSupported(element.toString())) {
+            Log.error("Unsupported layer " + "'" + element.getName() + "'" + " for the backend CAFFE2.");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    private boolean supportCheck(ArchitectureSymbol architecture){
+        LayerSupportChecker layerChecker = new LayerSupportChecker();
+        for (ArchitectureElementSymbol element : ((CompositeElementSymbol)architecture.getBody()).getElements()){
+            if(!isSupportedLayer(element, layerChecker)) return false;
+        }
+        return true;
     }
 
     public CNNArch2Caffe2() {
@@ -90,7 +109,10 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         }
 
         CNNArchCocos.checkAll(compilationUnit.get());
-        supportCheck(compilationUnit.get().getArchitecture());
+        if (!supportCheck(compilationUnit.get().getArchitecture())){
+            Log.error("Code generation aborted.");
+            System.exit(1);
+        }
 
         try{
             generateFiles(compilationUnit.get().getArchitecture());

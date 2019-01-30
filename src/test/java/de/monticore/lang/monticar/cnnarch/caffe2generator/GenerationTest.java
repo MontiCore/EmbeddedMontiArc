@@ -46,9 +46,9 @@ public class GenerationTest extends AbstractSymtabTest{
     }
 
     @Test
-    public void testCifar10Classifier() throws IOException, TemplateException {
+    public void testLeNetGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "CifarClassifierNetwork", "-o", "./target/generated-sources-cnnarch/"};
+        String[] args = {"-m", "src/test/resources/architectures", "-r", "LeNet", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2Caffe2Cli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
@@ -56,9 +56,18 @@ public class GenerationTest extends AbstractSymtabTest{
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
-                "CNNCreator_CifarClassifierNetwork.py",
-                "CNNPredictor_CifarClassifierNetwork.h",
-                "execute_CifarClassifierNetwork"));
+                        "CNNCreator_LeNet.py",
+                        "CNNPredictor_LeNet.h",
+                        "execute_LeNet"));
+    }
+
+    @Test
+    public void testCifar10Classifier() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "CifarClassifierNetwork", "-o", "./target/generated-sources-cnnarch/"};
+        exit.expectSystemExit();
+        CNNArch2Caffe2Cli.main(args);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
@@ -67,6 +76,8 @@ public class GenerationTest extends AbstractSymtabTest{
         String[] args = {"-m", "src/test/resources/architectures", "-r", "Alexnet", "-o", "./target/generated-sources-cnnarch/"};
         exit.expectSystemExit();
         CNNArch2Caffe2Cli.main(args);
+        assertTrue(Log.getFindings().size() == 2);
+
     }
 
     @Test
@@ -92,14 +103,16 @@ public class GenerationTest extends AbstractSymtabTest{
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
         exit.expectSystemExit();
         CNNArch2Caffe2Cli.main(args);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
     public void testResNeXtGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();;
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ResNeXt50"};
+        exit.expectSystemExit();
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().isEmpty());
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
