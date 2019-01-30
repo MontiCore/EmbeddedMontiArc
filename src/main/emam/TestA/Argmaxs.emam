@@ -2,12 +2,12 @@ package TestA;
 
 component Argmaxs{
         ports
-                in Q(0:1)^{3,10} input,
-                out Z(0:9)^3 maxs;
+                in Q(0:1)^10 input1,
+                in Q(0:1)^10 input2,
+                in Q(0:1)^10 input3,
+                out Z(0:999) max;
 
         implementation Math{
-            for i = 1:3
-                maxs(i) = argmax(input(i));
-            end
+            max = amax(input1) + 10*amax(input2) + 100*amax(input3);
         }
 }

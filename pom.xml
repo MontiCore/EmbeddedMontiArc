@@ -38,6 +38,7 @@
                     <pathTest>./src/test/emam</pathTest>
                     <pathTmpOut>./target/tmp</pathTmpOut>
                     <generator>VS2017</generator>
+                    <showBuildAndRunOutput>true</showBuildAndRunOutput>
                 </configuration>
 
                 <executions>
