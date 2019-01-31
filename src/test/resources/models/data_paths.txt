@@ -1,1 +1,2 @@
-VGG16= data/cifar10_cifar10Classifier_net
+
+cifar10.CifarNetwork data/cifar10_cifar10Classifier_net
