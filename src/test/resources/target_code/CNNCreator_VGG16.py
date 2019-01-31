@@ -20,7 +20,7 @@ class CNNCreator_VGG16:
     module = None
     _data_dir_ = "data/VGG16/"
     _model_dir_ = "model/VGG16/"
-    _model_prefix_ = "VGG16"
+    _model_prefix_ = "model"
     _input_names_ = ['data']
     _input_shapes_ = [(3,224,224)]
     _output_names_ = ['predictions_label']

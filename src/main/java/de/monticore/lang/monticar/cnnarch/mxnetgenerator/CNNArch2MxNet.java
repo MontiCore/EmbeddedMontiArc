@@ -26,6 +26,7 @@ import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
+import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
@@ -43,6 +44,7 @@ import java.util.Optional;
 public class CNNArch2MxNet implements CNNArchGenerator {
 
     private String generationTargetPath;
+    private String modelPath;
 
     public CNNArch2MxNet() {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
@@ -51,6 +53,14 @@ public class CNNArch2MxNet implements CNNArchGenerator {
     @Override
     public boolean isCMakeRequired() {
         return true;
+    }
+
+    public String getModelPath(){
+        return modelPath;
+    }
+
+    public void setModelPath(Path modelPath){
+        this.modelPath =  modelPath.toString();
     }
 
     public String getGenerationTargetPath() {
@@ -67,6 +77,7 @@ public class CNNArch2MxNet implements CNNArchGenerator {
     public void generate(Path modelsDirPath, String rootModelName){
         final ModelPath mp = new ModelPath(modelsDirPath);
         GlobalScope scope = new GlobalScope(mp, new CNNArchLanguage());
+        setModelPath(modelsDirPath);  
         generate(scope, rootModelName);
     }
 
@@ -80,7 +91,12 @@ public class CNNArch2MxNet implements CNNArchGenerator {
         CNNArchCocos.checkAll(compilationUnit.get());
 
         try{
-            compilationUnit.get().getArchitecture().setDataPath("Temporary - read the correct data path from the config!");
+            String confPath = getModelPath() + "/data_paths.txt";
+            System.out.println(confPath);
+            String dataPath = DataPathConfigParser.getDataPath(confPath  , rootModelName);
+            System.out.println(dataPath);
+            compilationUnit.get().getArchitecture().setDataPath(dataPath);
+            compilationUnit.get().getArchitecture().setComponentName(rootModelName);
             generateFiles(compilationUnit.get().getArchitecture());
         }
         catch (IOException e){

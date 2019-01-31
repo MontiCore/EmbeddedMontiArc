@@ -20,7 +20,7 @@ class CNNCreator_CifarClassifierNetwork:
     module = None
     _data_dir_ = "data/CifarClassifierNetwork/"
     _model_dir_ = "model/CifarClassifierNetwork/"
-    _model_prefix_ = "CifarClassifierNetwork"
+    _model_prefix_ = "model"
     _input_names_ = ['data']
     _input_shapes_ = [(3,32,32)]
     _output_names_ = ['softmax_label']
