@@ -1,0 +1,5 @@
+train.log
+target/
+data/vGG16/mnist.pkl.gz
+data/vGG16/st.h5
+model/
