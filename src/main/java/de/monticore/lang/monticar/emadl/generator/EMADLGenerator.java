@@ -201,7 +201,7 @@ public class EMADLGenerator {
             byte cnntHash[] = checksum(Paths.get(cnntPath));
 
             // This is not the real path to the training data! Adapt accordingly once sub-task 4 is solved
-            String componentConfigFilename = componentInstance.getFullName().replaceAll("\\.", "/");
+            String componentConfigFilename = componentInstance.getComponentType().getReferencedSymbol().getFullName().replaceAll("\\.", "/");
             String instanceConfigFilename = componentInstance.getFullName().replaceAll("\\.", "/") + "_"  + componentInstance.getName();
             byte[] dataHash = checksum(Paths.get(architecture.get().getDataPath()));
 
