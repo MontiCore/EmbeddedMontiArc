@@ -15,7 +15,7 @@
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-      <CNNArch.version>0.2.7</CNNArch.version>
+      <CNNArch.version>0.2.7-SNAPSHOT</CNNArch.version>
       <CNNTrain.version>0.2.5</CNNTrain.version>
       <embedded-montiarc-math-generator>0.0.25-20180812.120330-2</embedded-montiarc-math-generator>
     
