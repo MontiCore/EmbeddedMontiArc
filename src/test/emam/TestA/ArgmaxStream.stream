@@ -1,9 +1,0 @@
-package TestA;
-
-stream ArgmaxStream for Argmaxs {
-    input1: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    input2: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    input3: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0];
-
-    max: 100;
-}
