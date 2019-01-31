@@ -16,8 +16,9 @@ public class DataPathConfigParser{
 
     public DataPathConfigParser(ConfigurationSymbol configuration, String configPath) {
         this.configuration = configuration;
+        setConfigFileName("ConfigChainAutomation");
 		setConfigPath(configPath); 
-		setConfigFileName("ConfigChainAutomation");
+		
     }	
 	
 	public String getConfigFileName() {
