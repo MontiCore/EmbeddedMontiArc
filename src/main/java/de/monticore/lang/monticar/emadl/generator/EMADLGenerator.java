@@ -181,6 +181,7 @@ public class EMADLGenerator {
         }
 
         List<FileContent> fileContentsTrainingHashes = new ArrayList<>();
+        List<String> newHashes = new ArrayList<>();
         for (ExpandedComponentInstanceSymbol componentInstance : allInstances) {
             Optional<ArchitectureSymbol> architecture = componentInstance.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
 
@@ -188,39 +189,35 @@ public class EMADLGenerator {
                 continue;
             }
 
-            String fullName = componentInstance.getFullName().replaceAll("\\.", "_");
-            String creatorScriptName = "CNNCreator_" + fullName + ".py";
-            String creatorScript = fileContentMap.get(creatorScriptName);
-            int creatorScriptHash = creatorScript.hashCode();
+            if(forced == "n") {
+                continue;
+            }
 
+            String configFilename = getConfigFilename(componentInstance.getComponentType().getFullName(), componentInstance.getFullName(), componentInstance.getName());
+            String emadlPath = getModelsPath() + configFilename + ".emadl";
+            String cnntPath = getModelsPath() + configFilename + ".cnnt";
 
-            String parsedFullName = fullName.substring(0, 1).toLowerCase() + fullName.substring(1);
-            String trainerScriptName = "CNNTrainer_" + parsedFullName + ".py";
-            System.out.println("CNNTrainer file: " + trainerScriptName);
-            String trainerScript = fileContentMap.get(trainerScriptName);
-            int trainerScriptHash = trainerScript.hashCode();
+            byte emadlHash[] = checksum(Paths.get(emadlPath));
+            byte cnntHash[] = checksum(Paths.get(cnntPath));
 
             // This is not the real path to the training data! Adapt accordingly once sub-task 4 is solved
-            String trainConfigFilename = "NOT_FOUND";
             String componentConfigFilename = componentInstance.getFullName().replaceAll("\\.", "/");
             String instanceConfigFilename = componentInstance.getFullName().replaceAll("\\.", "/") + "_"  + componentInstance.getName();
-            if (Files.exists(Paths.get( getModelsPath() + instanceConfigFilename + ".cnnt"))) {
-                trainConfigFilename = instanceConfigFilename;
-            }
-            else if (Files.exists(Paths.get( getModelsPath() + componentConfigFilename + ".cnnt"))){
-                trainConfigFilename = componentConfigFilename;
-            }
             byte[] dataHash = checksum(Paths.get(architecture.get().getDataPath()));
 
-            String trainingHash = creatorScriptHash + "-" + trainerScriptHash + "-" + convertByteArrayToHexString(dataHash);
+            String trainingHash = convertByteArrayToHexString(emadlHash) + "#" +
+                convertByteArrayToHexString(cnntHash) + "#" +
+                convertByteArrayToHexString(dataHash);
             System.out.println(trainingHash);
 
-            boolean alreadyTrained = isAlreadyTrained(trainingHash, componentInstance);
-            if((alreadyTrained && forced !="y") || forced=="n") {
+            boolean alreadyTrained = newHashes.contains(trainingHash) || isAlreadyTrained(trainingHash, componentInstance);
+            if(alreadyTrained && forced !="y") {
                 System.out.println("Already trained");
             }
             else {
                 System.out.println("Not trained yet");
+                String parsedFullName = componentInstance.getFullName().substring(0, 1).toLowerCase() + componentInstance.getFullName().substring(1).replaceAll("\\.", "_");
+                String trainerScriptName = "CNNTrainer_" + parsedFullName + ".py";
                 String trainingPath = getGenerationTargetPath() + trainerScriptName;
                 String pythonExe = "/home/christopher/anaconda3/bin/python";
                 if(Files.exists(Paths.get(trainingPath))){
@@ -234,16 +231,22 @@ public class EMADLGenerator {
                     catch(InterruptedException e) {
                         //throw new Exception("Error: Training aborted" + e.toString());
                         System.out.println("Error: Training aborted" + e.toString());
+                        continue;
                     }
 
                     if(exitCode != 0) {
                         //throw new Exception("Error: Training error");
                         System.out.println("Error: Training failed" + Integer.toString(exitCode));
+                        continue;
                     }
-                }else{System.out.println("Trainingfile not found.");}
+
+                    fileContentsTrainingHashes.add(new FileContent(trainingHash, componentConfigFilename + ".training_hash"));
+                    newHashes.add(trainingHash);
+                }else{
+                    System.out.println("Trainingfile " + trainingPath + " not found.");
+                }
             }
 
-            fileContentsTrainingHashes.add(new FileContent(trainingHash, componentConfigFilename + ".training_hash"));
         }
 
         for (FileContent fileContent : fileContentsTrainingHashes) {
@@ -288,10 +291,11 @@ public class EMADLGenerator {
             String checkFilePathString = getGenerationTargetPath() + componentConfigFilename + ".training_hash";
             Path checkFilePath = Paths.get( checkFilePathString);
             if(Files.exists(checkFilePath)) {
-                String hash = Files.readAllLines(checkFilePath).get(0);
-
-                if(hash.equals(trainingHash)) {
-                    return true;
+                List<String> hashes = Files.readAllLines(checkFilePath);
+                for(String hash : hashes) {
+                    if(hash.equals(trainingHash)) {
+                        return true;
+                    }
                 }
             }
 
@@ -439,6 +443,32 @@ public class EMADLGenerator {
         }
     }
 
+    private String getConfigFilename(String mainComponentName, String componentFullName, String componentName) {
+        String trainConfigFilename;
+        String mainComponentConfigFilename = mainComponentName.replaceAll("\\.", "/");
+        String componentConfigFilename = componentFullName.replaceAll("\\.", "/");
+        String instanceConfigFilename = componentFullName.replaceAll("\\.", "/") + "_"  + componentName;
+        if (Files.exists(Paths.get( getModelsPath() + instanceConfigFilename + ".cnnt"))) {
+            trainConfigFilename = instanceConfigFilename;
+        }
+        else if (Files.exists(Paths.get( getModelsPath() + componentConfigFilename + ".cnnt"))){
+            trainConfigFilename = componentConfigFilename;
+        }
+        else if (Files.exists(Paths.get( getModelsPath() + mainComponentConfigFilename + ".cnnt"))){
+            trainConfigFilename = mainComponentConfigFilename;
+        }
+        else{
+            Log.error("Missing configuration file. " +
+                    "Could not find a file with any of the following names (only one needed): '"
+                    + getModelsPath() + instanceConfigFilename + ".cnnt', '"
+                    + getModelsPath() + componentConfigFilename + ".cnnt', '"
+                    + getModelsPath() + mainComponentConfigFilename + ".cnnt'." +
+                    " These files denote respectively the configuration for the single instance, the component or the whole system.");
+            return null;
+        }
+        return trainConfigFilename;
+    }
+
     public List<FileContent> generateCNNTrainer(Set<ExpandedComponentInstanceSymbol> allInstances, String mainComponentName) {
         List<FileContent> fileContents = new ArrayList<>();
         for (ExpandedComponentInstanceSymbol componentInstance : allInstances) {
@@ -446,28 +476,7 @@ public class EMADLGenerator {
             Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
 
             if (architecture.isPresent()) {
-                String trainConfigFilename;
-                String mainComponentConfigFilename = mainComponentName.replaceAll("\\.", "/");
-                String componentConfigFilename = component.getFullName().replaceAll("\\.", "/");
-                String instanceConfigFilename = component.getFullName().replaceAll("\\.", "/") + "_"  + component.getName();
-                if (Files.exists(Paths.get( getModelsPath() + instanceConfigFilename + ".cnnt"))) {
-                    trainConfigFilename = instanceConfigFilename;
-                }
-                else if (Files.exists(Paths.get( getModelsPath() + componentConfigFilename + ".cnnt"))){
-                    trainConfigFilename = componentConfigFilename;
-                }
-                else if (Files.exists(Paths.get( getModelsPath() + mainComponentConfigFilename + ".cnnt"))){
-                    trainConfigFilename = mainComponentConfigFilename;
-                }
-                else{
-                    Log.error("Missing configuration file. " +
-                            "Could not find a file with any of the following names (only one needed): '"
-                            + getModelsPath() + instanceConfigFilename + ".cnnt', '"
-                            + getModelsPath() + componentConfigFilename + ".cnnt', '"
-                            + getModelsPath() + mainComponentConfigFilename + ".cnnt'." +
-                            " These files denote respectively the configuration for the single instance, the component or the whole system.");
-                    return null;
-                }
+                String trainConfigFilename = getConfigFilename(mainComponentName, component.getFullName(), component.getName());
 
                 //should be removed when CNNTrain supports packages
                 List<String> names = Splitter.on("/").splitToList(trainConfigFilename);
