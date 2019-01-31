@@ -1,4 +1,5 @@
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
+package de.monticore.lang.monticar.emadl.generator;
 
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
 
