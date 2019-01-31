@@ -1,34 +1,20 @@
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 package de.monticore.lang.monticar.emadl.generator;
 
-import de.monticore.lang.monticar.cnntrain._symboltable.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.net.URL;
+import java.util.Objects;
+import java.util.Properties;
 
 public class DataPathConfigParser{
-
-    private String configTargetPath;
-	ConfigurationSymbol configuration;
+	
+	private String configTargetPath;
     private String configFileName;
 
-    public DataPathConfigParser(ConfigurationSymbol configuration, String configPath) {
-        this.configuration = configuration;
-        setConfigFileName("ConfigChainAutomation");
+    public DataPathConfigParser(String configPath) {
 		setConfigPath(configPath); 
-		
     }	
-	
-	public String getConfigFileName() {
-        return configFileName;
-    }
-	
-	public void setConfigFileName(String configFileName){
-		this.configFileName = configFileName + ".cnnt";
-	}
-	
+		
 	public String getConfigPath() {
         if (configTargetPath.charAt(configTargetPath.length() - 1) != '/') {
             this.configTargetPath = configTargetPath + "/";
@@ -37,17 +23,23 @@ public class DataPathConfigParser{
     }
 	
 	public void setConfigPath(String configTargetPath){
-		this.configTargetPath = configTargetPath + getConfigFileName;
+		this.configTargetPath = configTargetPath;
 	}
-	
-    public ConfigurationSymbol getConfiguration() {
-        return configuration;
-    }
 
 	public String getDataPath(String modelName) {
-        if (!getConfiguration().getEntryMap().containsKey(modelName)) {
-            return null;
-        }
-        return String.valueOf(getConfiguration().getEntry(modelName).getValue());
+		Properties properties = new Properties();
+		
+		try
+		{
+			properties.load(new FileInputStream(configTargetPath));
+		}catch(IOException e)
+		{
+			 e.printStackTrace();
+		}
+        for (String key: properties.stringPropertyNames())
+		{
+			if (key == modelName)
+				return properties.getProperty(key);
+		}
     }
 }
