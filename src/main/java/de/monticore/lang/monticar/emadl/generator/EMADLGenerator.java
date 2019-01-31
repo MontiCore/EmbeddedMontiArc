@@ -56,6 +56,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.DigestInputStream;
 
+import javax.xml.bind.DatatypeConverter;
+
 public class EMADLGenerator {
 
     private GeneratorEMAMOpt2CPP emamGen;
@@ -166,6 +168,22 @@ public class EMADLGenerator {
         return tempScript;
     }
 
+    private String getChecksumForFile(String filePath) throws IOException {
+        Path wiki_path = Paths.get(filePath);
+        MessageDigest md5;
+
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+            md5.update(Files.readAllBytes(wiki_path));
+            byte[] digest = md5.digest();
+
+            return DatatypeConverter.printHexBinary(digest).toUpperCase();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "No_Such_Algorithm_Exception";
+        }
+    }
+
     public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab, String forced) throws IOException {
         Set<ExpandedComponentInstanceSymbol> allInstances = new HashSet<>();
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab, allInstances, forced);
@@ -197,18 +215,15 @@ public class EMADLGenerator {
             String emadlPath = getModelsPath() + configFilename + ".emadl";
             String cnntPath = getModelsPath() + configFilename + ".cnnt";
 
-            byte emadlHash[] = checksum(Paths.get(emadlPath));
-            byte cnntHash[] = checksum(Paths.get(cnntPath));
+            String emadlHash = getChecksumForFile(emadlPath);
+            String cnntHash = getChecksumForFile(cnntPath);
 
             // This is not the real path to the training data! Adapt accordingly once sub-task 4 is solved
             String componentConfigFilename = componentInstance.getComponentType().getReferencedSymbol().getFullName().replaceAll("\\.", "/");
-            String instanceConfigFilename = componentInstance.getFullName().replaceAll("\\.", "/") + "_"  + componentInstance.getName();
-            byte[] dataHash = checksum(Paths.get(architecture.get().getDataPath()));
+            String trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train.h5");
+            String testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test.h5");
 
-            String trainingHash = convertByteArrayToHexString(emadlHash) + "#" +
-                convertByteArrayToHexString(cnntHash) + "#" +
-                convertByteArrayToHexString(dataHash);
-            System.out.println(trainingHash);
+            String trainingHash = emadlHash + "#" + cnntHash + "#" + trainingDataHash + "#" + testDataHash;
 
             boolean alreadyTrained = newHashes.contains(trainingHash) || isAlreadyTrained(trainingHash, componentInstance);
             if(alreadyTrained && forced !="y") {
@@ -261,26 +276,6 @@ public class EMADLGenerator {
                     .substring(1));
         }
         return stringBuffer.toString();
-    }
-
-    private byte[] checksum(Path path) {
-        byte[] digest = new byte[0];
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            try (InputStream is = Files.newInputStream(path);
-                DigestInputStream dis = new DigestInputStream(is, md))
-            {
-            /* Read decorated stream (dis) to EOF as normal... */
-            }
-            digest = md.digest();
-        }
-        catch(NoSuchAlgorithmException e) {
-            System.out.println("NoSuchArgumentException: " +e.toString());
-        }
-        catch(IOException e) {
-            System.out.println("IOEception: " + e.toString());
-        }
-        return digest;
     }
 
     private boolean isAlreadyTrained(String trainingHash, ExpandedComponentInstanceSymbol componentInstance) {
