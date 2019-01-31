@@ -21,37 +21,44 @@
 package de.monticore.lang.monticar.cnnarch;
 
 import java.io.*;
-import java.util.*;
-import com.google.common.base.Splitter;
+import java.net.URL;
+import java.util.Objects;
+import java.util.Properties;
 
-public class DataPathConfigParser {
+public class DataPathConfigParser{
+	
+	private String configTargetPath;
+    private String configFileName;
 
-    public static String getDataPath(String configPath, String modelName){
-        
-        BufferedReader reader;
-        try{
-            reader = new BufferedReader(new FileReader(configPath));
-            
-            String line = reader.readLine();
-            List<String> lineList;
-        
-            while(line != null){
-                lineList = Splitter.on(' ').splitToList(line);
-                if((lineList.get(0)).equals(modelName)){  
-                    List<String> subList = lineList.subList(1,lineList.size());         
-                    String path = String.join(" ", subList);
-                    reader.close();
-
-                    return path;
-                } 
-                line = reader.readLine();
-                
-                
-            }
-            reader.close();
-        } catch(IOException e){
-            e.printStackTrace();
+    public DataPathConfigParser(String configPath) {
+		setConfigPath(configPath); 
+    }	
+		
+	public String getConfigPath() {
+        if (configTargetPath.charAt(configTargetPath.length() - 1) != '/') {
+            this.configTargetPath = configTargetPath + "/";
         }
-        return "Path not found";
+        return configTargetPath;
+    }
+	
+	public void setConfigPath(String configTargetPath){
+		this.configTargetPath = configTargetPath;
+	}
+
+	public String getDataPath(String modelName) {
+		Properties properties = new Properties();
+		
+		try
+		{
+			properties.load(new FileInputStream(configTargetPath));
+		}catch(IOException e)
+		{
+			 e.printStackTrace();
+		}
+        for (String key: properties.stringPropertyNames())
+		{
+			if (key == modelName)
+				return properties.getProperty(key);
+		}
     }
 }
