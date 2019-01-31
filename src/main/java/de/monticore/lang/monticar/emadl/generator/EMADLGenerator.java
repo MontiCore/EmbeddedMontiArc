@@ -168,7 +168,7 @@ public class EMADLGenerator {
         return tempScript;
     }
 
-    private String getChecksumForFile(String filePath) throws IOException {
+    public String getChecksumForFile(String filePath) throws IOException {
         Path wiki_path = Paths.get(filePath);
         MessageDigest md5;
 
@@ -351,7 +351,9 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "ConfigChainAutomation.properties");
+            System.out.println(getModelsPath() + "data_paths.txt");
+            System.out.println("Lookign for key " + componentSymbol.getFullName());
+            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
             String dPath = newParserConfig.getDataPath(componentSymbol.getFullName());
 
             /*String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "data_paths.txt", componentSymbol.getFullName());*/
