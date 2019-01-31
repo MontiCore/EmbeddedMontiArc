@@ -18,8 +18,8 @@
 #include <iostream>
 #include <map>
 
-CAFFE2_DEFINE_string(init_net, "./model/${tc.fullArchitectureName}/init_net.pb", "The given path to the init protobuffer.");
-CAFFE2_DEFINE_string(predict_net, "./model/${tc.fullArchitectureName}/predict_net.pb", "The given path to the predict protobuffer.");
+CAFFE2_DEFINE_string(init_net, "./model/${tc.componentName}/init_net.pb", "The given path to the init protobuffer.");
+CAFFE2_DEFINE_string(predict_net, "./model/${tc.componentName}/predict_net.pb", "The given path to the predict protobuffer.");
 
 using namespace caffe2;
 
