@@ -219,7 +219,7 @@ public class EMADLGenerator {
                 String parsedFullName = componentInstance.getFullName().substring(0, 1).toLowerCase() + componentInstance.getFullName().substring(1).replaceAll("\\.", "_");
                 String trainerScriptName = "CNNTrainer_" + parsedFullName + ".py";
                 String trainingPath = getGenerationTargetPath() + trainerScriptName;
-                String pythonExe = "/home/christopher/anaconda3/bin/python";
+                String pythonExe = "/usr/bin/python";
                 if(Files.exists(Paths.get(trainingPath))){
                     ProcessBuilder pb = new ProcessBuilder(Arrays.asList(pythonExe, trainingPath)).inheritIO();
                     Process p = pb.start();
@@ -356,9 +356,7 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "ConfigChainAutomation.properties");
-            String dPath = newParserConfig.getDataPath(componentSymbol.getFullName());
-            /*String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "data_paths.txt", componentSymbol.getFullName());*/
+            String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "data_paths.txt", componentSymbol.getFullName());
             architecture.get().setDataPath(dPath);
             architecture.get().setComponentName(componentSymbol.getFullName());
             generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get());
