@@ -60,5 +60,6 @@ public class DataPathConfigParser{
 			if (key == modelName)
 				return properties.getProperty(key);
 		}
+		return "empty string";
     }
 }
