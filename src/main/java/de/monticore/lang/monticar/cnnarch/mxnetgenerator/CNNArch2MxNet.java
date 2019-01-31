@@ -91,9 +91,11 @@ public class CNNArch2MxNet implements CNNArchGenerator {
         CNNArchCocos.checkAll(compilationUnit.get());
 
         try{
-            String confPath = getModelPath() + "/data_paths.txt";
+            String confPath = getModelPath() + "ConfigChainAutomation.properties";
+            DataPathConfigParser newParserConfig = new DataPathConfigParser(confPath);
             System.out.println(confPath);
-            String dataPath = DataPathConfigParser.getDataPath(confPath  , rootModelName);
+            /*String dataPath = DataPathConfigParser.getDataPath(confPath  , rootModelName);*/
+            String dataPath = newParserConfig.getDataPath(componentSymbol.getFullName());
             System.out.println(dataPath);
             compilationUnit.get().getArchitecture().setDataPath(dataPath);
             compilationUnit.get().getArchitecture().setComponentName(rootModelName);
