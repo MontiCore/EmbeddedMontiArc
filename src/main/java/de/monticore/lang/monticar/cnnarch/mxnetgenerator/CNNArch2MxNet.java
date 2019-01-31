@@ -36,6 +36,7 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
+import java.lang.System;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,12 +92,9 @@ public class CNNArch2MxNet implements CNNArchGenerator {
         CNNArchCocos.checkAll(compilationUnit.get());
 
         try{
-            String confPath = getModelPath() + "ConfigChainAutomation.properties";
+            String confPath = getModelPath() + "/data_paths.txt";
             DataPathConfigParser newParserConfig = new DataPathConfigParser(confPath);
-            System.out.println(confPath);
-            /*String dataPath = DataPathConfigParser.getDataPath(confPath  , rootModelName);*/
-            String dataPath = newParserConfig.getDataPath(componentSymbol.getFullName());
-            System.out.println(dataPath);
+            String dataPath = newParserConfig.getDataPath(rootModelName);
             compilationUnit.get().getArchitecture().setDataPath(dataPath);
             compilationUnit.get().getArchitecture().setComponentName(rootModelName);
             generateFiles(compilationUnit.get().getArchitecture());
