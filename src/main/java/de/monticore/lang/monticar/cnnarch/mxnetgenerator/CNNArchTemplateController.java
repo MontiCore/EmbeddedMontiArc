@@ -127,6 +127,10 @@ public class CNNArchTemplateController {
         return list;
     }
 
+    public String getComponentName(){
+        return getArchitecture().getComponentName();
+    }
+
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer){
         String templatePath = relativePath + templateWithoutFileEnding + FTL_FILE_ENDING;
         Map<String, Object> ftlContext = new HashMap<>();

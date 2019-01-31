@@ -19,8 +19,8 @@ class ${tc.fileNameWithoutEnding}:
 
     module = None
     _data_dir_ = "${tc.dataPath}/"
-    _model_dir_ = "model/${tc.fullArchitectureName}/"
-    _model_prefix_ = "${tc.architectureName}"
+    _model_dir_ = "model/${tc.componentName}/"
+    _model_prefix_ = "model"
     _input_names_ = [${tc.join(tc.architectureInputs, ",", "'", "'")}]
     _input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.definition.type.dimensions, ",")})</#list>]
     _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "_label'")}]
