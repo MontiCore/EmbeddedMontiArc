@@ -636,6 +636,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         vehicleDynamicsModel.setInput("mu_3", frictionCoefficient);
 
+        // back right wheel
         if(WorldModel.getInstance().isBackRightWheelOnStreet(this)) {
             street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetByRealVector(getBackRightWheelGeometryPosition()).getObject();
         } else {
