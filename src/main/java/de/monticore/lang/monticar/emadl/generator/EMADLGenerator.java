@@ -356,7 +356,9 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
-            String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "data_paths.txt", componentSymbol.getFullName());
+            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "ConfigChainAutomation.properties");
+            String dPath = newParserConfig.getDataPath(componentSymbol.getFullName());
+            /*String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "data_paths.txt", componentSymbol.getFullName());*/
             architecture.get().setDataPath(dPath);
             architecture.get().setComponentName(componentSymbol.getFullName());
             generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get());
