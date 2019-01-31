@@ -74,6 +74,14 @@
       <id>se-nexus</id>
       <repositories>
         <repository>
+        <id>local-maven-repo</id>
+          <url>file:///home/eisberg/Documents/SPP/local-maven-repo</url>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
           <id>central</id>
           <url>http://central</url>
           <releases><enabled /></releases>
