@@ -42,6 +42,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private List<IOSymbol> outputs = new ArrayList<>();
     private Map<String, IODeclarationSymbol> ioDeclarationMap = new HashMap<>();
     private String dataPath;
+    private String componentName;
 
     public ArchitectureSymbol() {
         super("", KIND);
@@ -61,6 +62,14 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public void setDataPath(String dataPath) {
         this.dataPath = dataPath;
+    }
+
+    public void setComponentName(String componentName){
+        this.componentName = componentName;
+    }
+
+    public String getComponentName(){
+        return this.componentName;
     }
 
     public List<IOSymbol> getInputs() {
