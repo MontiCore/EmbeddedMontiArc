@@ -418,7 +418,7 @@ public class WorldModel implements World{
     @Override
     public boolean isFrontRightWheelOnStreet(IPhysicalVehicle v){
         Number distanceToLeft;
-        Number distanceToRight = getDistanceToRightStreetBorder(v);
+        Number distanceToRight = getDistanceFrontRightWheelToRightStreetBorder(v);
 
         // calculate distance to right street border
         RealVector pos = v.getFrontLeftWheelGeometryPosition();
@@ -432,7 +432,7 @@ public class WorldModel implements World{
 
     @Override
     public boolean isBackLeftWheelOnStreet(IPhysicalVehicle v){
-        Number distanceToLeft = getDistanceFrontLeftWheelToLeftStreetBorder(v);
+        Number distanceToLeft = getDistanceBackLeftWheelToLeftStreetBorder(v);
         Number distanceToRight;
 
         // calculate distance to right street border
@@ -448,7 +448,7 @@ public class WorldModel implements World{
     @Override
     public boolean isBackRightWheelOnStreet(IPhysicalVehicle v){
         Number distanceToLeft;
-        Number distanceToRight = getDistanceToRightStreetBorder(v);
+        Number distanceToRight = getDistanceBackRightWheelToRightStreetBorder(v);
 
         // calculate distance to right street border
         RealVector pos = v.getFrontLeftWheelGeometryPosition();
