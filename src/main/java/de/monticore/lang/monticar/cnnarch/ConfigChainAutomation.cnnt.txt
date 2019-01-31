@@ -1,0 +1,4 @@
+configuration chaniautomation{
+	VGG16: ./target/data/VGG16/
+	Alexnet: ./target/data/Alexnet/
+}
