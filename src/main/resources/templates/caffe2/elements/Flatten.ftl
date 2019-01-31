@@ -1,2 +1,1 @@
-    		${element.name} = mx.symbol.Flatten(data=${element.inputs[0]},
-    		    name="${element.name}")
+            ${element.name} = model.net.Flatten(${element.inputs[0]}, "${element.name}")

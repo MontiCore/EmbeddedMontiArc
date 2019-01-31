@@ -1,6 +1,7 @@
-    		${element.name} = mx.symbol.LRN(data=${element.inputs[0]},
-    		    alpha=${element.alpha?c},
-    		    beta=${element.beta?c},
-    		    knorm=${element.knorm?c},
-    		    nsize=${element.nsize?c},
-    		    name="${element.name}")
+<#assign input = element.inputs[0]>
+<#if !element.knorm?string?contains(".")>
+	<#assign bias = element.knorm?string["0.0"]>
+<#else>
+	<#assign bias = element.knorm?c>
+</#if>
+    		${element.name} = brew.lrn(model, ${input}, '${element.name}', size=${element.nsize?c}, alpha=${element.alpha?c}, beta=${element.beta?c}, bias=${bias})

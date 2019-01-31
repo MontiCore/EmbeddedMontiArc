@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 import lmdb
+
 class CNNCreator_LeNet:
 
     module = None
@@ -58,7 +59,7 @@ class CNNCreator_LeNet:
 
             return data, label, dataset_size
 
-    def create_model(self, model, data, device_opts):
+    def create_model(self, model, data, device_opts, is_test):
     	with core.DeviceScope(device_opts):
 
     		image = data
@@ -135,7 +136,7 @@ class CNNCreator_LeNet:
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
     	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'train_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	predictions = self.create_model(train_model, data, device_opts=device_opts)
+    	predictions = self.create_model(train_model, data, device_opts=device_opts, is_test=False)
     	self.add_training_operators(train_model, predictions, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	self.add_accuracy(train_model, predictions, label, device_opts, eval_metric)
     	with core.DeviceScope(device_opts):
@@ -158,7 +159,7 @@ class CNNCreator_LeNet:
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
     	data, label, test_dataset_size = self.add_input(test_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'test_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	predictions = self.create_model(test_model, data, device_opts=device_opts)
+    	predictions = self.create_model(test_model, data, device_opts=device_opts, is_test=True)
     	self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
     	workspace.CreateNet(test_model.net, overwrite=True)
@@ -176,7 +177,7 @@ class CNNCreator_LeNet:
     	# == Deployment model. ==
     	# We simply need the main AddModel part.
     	deploy_model = model_helper.ModelHelper(name="deploy_net", arg_scope=arg_scope, init_params=False)
-    	self.create_model(deploy_model, "data", device_opts)
+    	self.create_model(deploy_model, "data", device_opts, is_test=True)
 
     	print("Saving deploy model")
     	self.save_net(self._init_net_, self._predict_net_, deploy_model)

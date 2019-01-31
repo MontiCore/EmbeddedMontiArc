@@ -64,80 +64,43 @@ class CNNCreator_Alexnet:
 
     		data = data
     		# data, output shape: {[3,224,224]}
-      		conv1_ = brew.conv(model, data, 'conv1_', dim_in=3, dim_out=96, kernel=11, stride=4)
+    		conv1_ = brew.conv(model, data, 'conv1_', dim_in=3, dim_out=96, kernel=11, stride=4)
     		# conv1_, output shape: {[96,55,55]}
-    		lrn1_ = mx.symbol.LRN(data=conv1_,
-    		    alpha=0.0001,
-    		    beta=0.75,
-    		    knorm=2,
-    		    nsize=5,
-    		    name="lrn1_")
+    		lrn1_ = brew.lrn(model, conv1_, 'lrn1_', size=5, alpha=0.0001, beta=0.75, bias=2.0)
     		pool1_ = brew.max_pool(model, lrn1_, 'pool1_', kernel=3, stride=2)
     		# pool1_, output shape: {[96,27,27]}
     		relu1_ = brew.relu(model, pool1_, pool1_)
-    		split1_ = mx.symbol.split(data=relu1_,
-    		    num_outputs=2,
-    		    axis=1,
-    		    name="split1_")
-    		# split1_, output shape: {[48,27,27][48,27,27]}
-    		get2_1_ = split1_[0]
-      		conv2_1_ = brew.conv(model, get2_1_, 'conv2_1_', dim_in=48, dim_out=128, kernel=5, stride=1)
+    		conv2_1_ = brew.conv(model, get2_1_, 'conv2_1_', dim_in=48, dim_out=128, kernel=5, stride=1, pad=1)
     		# conv2_1_, output shape: {[128,27,27]}
-    		lrn2_1_ = mx.symbol.LRN(data=conv2_1_,
-    		    alpha=0.0001,
-    		    beta=0.75,
-    		    knorm=2,
-    		    nsize=5,
-    		    name="lrn2_1_")
+    		lrn2_1_ = brew.lrn(model, conv2_1_, 'lrn2_1_', size=5, alpha=0.0001, beta=0.75, bias=2.0)
     		pool2_1_ = brew.max_pool(model, lrn2_1_, 'pool2_1_', kernel=3, stride=2)
     		# pool2_1_, output shape: {[128,13,13]}
     		relu2_1_ = brew.relu(model, pool2_1_, pool2_1_)
-    		get2_2_ = split1_[1]
-      		conv2_2_ = brew.conv(model, get2_2_, 'conv2_2_', dim_in=48, dim_out=128, kernel=5, stride=1)
+    		conv2_2_ = brew.conv(model, get2_2_, 'conv2_2_', dim_in=48, dim_out=128, kernel=5, stride=1, pad=1)
     		# conv2_2_, output shape: {[128,27,27]}
-    		lrn2_2_ = mx.symbol.LRN(data=conv2_2_,
-    		    alpha=0.0001,
-    		    beta=0.75,
-    		    knorm=2,
-    		    nsize=5,
-    		    name="lrn2_2_")
+    		lrn2_2_ = brew.lrn(model, conv2_2_, 'lrn2_2_', size=5, alpha=0.0001, beta=0.75, bias=2.0)
     		pool2_2_ = brew.max_pool(model, lrn2_2_, 'pool2_2_', kernel=3, stride=2)
     		# pool2_2_, output shape: {[128,13,13]}
     		relu2_2_ = brew.relu(model, pool2_2_, pool2_2_)
-    		concatenate3_ = mx.symbol.concat(relu2_1_, relu2_2_,
-    		    dim=1,
-    		    name="concatenate3_")
-    		# concatenate3_, output shape: {[256,13,13]}
-      		conv3_ = brew.conv(model, concatenate3_, 'conv3_', dim_in=256, dim_out=384, kernel=3, stride=1)
+    		conv3_ = brew.conv(model, concatenate3_, 'conv3_', dim_in=256, dim_out=384, kernel=3, stride=1, pad=1)
     		# conv3_, output shape: {[384,13,13]}
     		relu3_ = brew.relu(model, conv3_, conv3_)
-    		split3_ = mx.symbol.split(data=relu3_,
-    		    num_outputs=2,
-    		    axis=1,
-    		    name="split3_")
-    		# split3_, output shape: {[192,13,13][192,13,13]}
-    		get4_1_ = split3_[0]
-      		conv4_1_ = brew.conv(model, get4_1_, 'conv4_1_', dim_in=192, dim_out=192, kernel=3, stride=1)
+    		conv4_1_ = brew.conv(model, get4_1_, 'conv4_1_', dim_in=192, dim_out=192, kernel=3, stride=1, pad=1)
     		# conv4_1_, output shape: {[192,13,13]}
     		relu4_1_ = brew.relu(model, conv4_1_, conv4_1_)
-      		conv5_1_ = brew.conv(model, relu4_1_, 'conv5_1_', dim_in=192, dim_out=128, kernel=3, stride=1)
+    		conv5_1_ = brew.conv(model, relu4_1_, 'conv5_1_', dim_in=192, dim_out=128, kernel=3, stride=1, pad=1)
     		# conv5_1_, output shape: {[128,13,13]}
     		pool5_1_ = brew.max_pool(model, conv5_1_, 'pool5_1_', kernel=3, stride=2)
     		# pool5_1_, output shape: {[128,6,6]}
     		relu5_1_ = brew.relu(model, pool5_1_, pool5_1_)
-    		get4_2_ = split3_[1]
-      		conv4_2_ = brew.conv(model, get4_2_, 'conv4_2_', dim_in=192, dim_out=192, kernel=3, stride=1)
+    		conv4_2_ = brew.conv(model, get4_2_, 'conv4_2_', dim_in=192, dim_out=192, kernel=3, stride=1, pad=1)
     		# conv4_2_, output shape: {[192,13,13]}
     		relu4_2_ = brew.relu(model, conv4_2_, conv4_2_)
-      		conv5_2_ = brew.conv(model, relu4_2_, 'conv5_2_', dim_in=192, dim_out=128, kernel=3, stride=1)
+    		conv5_2_ = brew.conv(model, relu4_2_, 'conv5_2_', dim_in=192, dim_out=128, kernel=3, stride=1, pad=1)
     		# conv5_2_, output shape: {[128,13,13]}
     		pool5_2_ = brew.max_pool(model, conv5_2_, 'pool5_2_', kernel=3, stride=2)
     		# pool5_2_, output shape: {[128,6,6]}
     		relu5_2_ = brew.relu(model, pool5_2_, pool5_2_)
-    		concatenate6_ = mx.symbol.concat(relu5_1_, relu5_2_,
-    		    dim=1,
-    		    name="concatenate6_")
-    		# concatenate6_, output shape: {[256,6,6]}
     		fc6_ = brew.fc(model, concatenate6_, 'fc6_', dim_in=256 * 6 * 6, dim_out=4096)
     		# fc6_, output shape: {[4096,1,1]}
     		relu6_ = brew.relu(model, fc6_, fc6_)
