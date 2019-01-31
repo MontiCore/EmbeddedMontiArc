@@ -57,7 +57,7 @@ public class DataPathConfigParser{
 		}
         for (String key: properties.stringPropertyNames())
 		{
-			if (key == modelName)
+			if (key.equals(modelName))
 				return properties.getProperty(key);
 		}
 		return "empty string";
