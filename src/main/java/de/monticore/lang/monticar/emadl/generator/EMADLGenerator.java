@@ -354,6 +354,7 @@ public class EMADLGenerator {
         if (architecture.isPresent()){
             String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "data_paths.txt", componentSymbol.getFullName());
             architecture.get().setDataPath(dPath);
+            architecture.get().setComponentName(componentSymbol.getFullName());
             generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get());
         }
         else if (mathStatements.isPresent()){

@@ -19,8 +19,8 @@ class CNNCreator_cifar10_cifar10Classifier_net:
 
     module = None
     _data_dir_ = "data/cifar10_cifar10Classifier_net/"
-    _model_dir_ = "model/cifar10_cifar10Classifier_net/"
-    _model_prefix_ = "net"
+    _model_dir_ = "model/cifar10.CifarNetwork/"
+    _model_prefix_ = "model"
     _input_names_ = ['data']
     _input_shapes_ = [(3,32,32)]
     _output_names_ = ['softmax_label']
