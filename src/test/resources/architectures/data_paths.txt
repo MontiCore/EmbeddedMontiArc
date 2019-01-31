@@ -1,0 +1,5 @@
+Alexnet data/Alexnet
+CifarClassifierNetwork data/CifarClassifierNetwork
+LeNet data/LeNet
+VGG16 data/VGG16
+MultipleOutputs data/MultipleOutputs
