@@ -23,7 +23,7 @@ public class MarkovCliParameters extends AlgorithmCliParameters {
     }
 
     @Override
-    public ClusteringAlgorithm asClustringAlgorithm() {
+    public ClusteringAlgorithm asClusteringAlgorithm() {
         MarkovClusteringAlgorithm markovClusteringAlgorithm = new MarkovClusteringAlgorithm();
         markovClusteringAlgorithm.setArgs(asAlgorithmArgs());
         return markovClusteringAlgorithm;

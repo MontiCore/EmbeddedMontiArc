@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.monticar.generator.middleware.cli.CliParametersLoader;
 import de.monticore.lang.monticar.generator.middleware.cli.CliParameters;
-import de.monticore.lang.monticar.generator.middleware.cli.ClustringParameters;
+import de.monticore.lang.monticar.generator.middleware.cli.ClusteringParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.ResultChoosingStrategy;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.*;
 import org.junit.Test;
@@ -27,27 +27,27 @@ public class ParameterLoadingTest {
     @Test
     public void testClusterParamsDefaultValues() throws FileNotFoundException {
         CliParameters params = loadCliParameters("clusterParamsDefaultValues");
-        ClustringParameters clustringParameters = params.getClustringParameters().get();
-        assertFalse(clustringParameters.getNumberOfClusters().isPresent());
-        assertEquals(ResultChoosingStrategy.bestWithFittingN, clustringParameters.getChooseBy());
-        assertTrue(clustringParameters.getAlgorithmParameters().isEmpty());
+        ClusteringParameters clusteringParameters = params.getClusteringParameters().get();
+        assertFalse(clusteringParameters.getNumberOfClusters().isPresent());
+        assertEquals(ResultChoosingStrategy.bestWithFittingN, clusteringParameters.getChooseBy());
+        assertTrue(clusteringParameters.getAlgorithmParameters().isEmpty());
     }
 
     @Test
     public void testClusterParamsNoAlgo() throws FileNotFoundException {
         CliParameters params = loadCliParameters("clusterParamsNoAlgo");
-        ClustringParameters clustringParameters = params.getClustringParameters().get();
-        assertEquals(3, (long) clustringParameters.getNumberOfClusters().get());
-        assertEquals(ResultChoosingStrategy.bestOverall, clustringParameters.getChooseBy());
-        assertTrue(clustringParameters.getAlgorithmParameters().isEmpty());
+        ClusteringParameters clusteringParameters = params.getClusteringParameters().get();
+        assertEquals(3, (long) clusteringParameters.getNumberOfClusters().get());
+        assertEquals(ResultChoosingStrategy.bestOverall, clusteringParameters.getChooseBy());
+        assertTrue(clusteringParameters.getAlgorithmParameters().isEmpty());
     }
 
     @Test
     public void testClusterParamsAllAlgos() throws FileNotFoundException {
         CliParameters params = loadCliParameters("clusterParamsAllAlgos");
-        ClustringParameters clustringParameters = params.getClustringParameters().get();
+        ClusteringParameters clusteringParameters = params.getClusteringParameters().get();
 
-        List<AlgorithmCliParameters> algorithmParameters = clustringParameters.getAlgorithmParameters();
+        List<AlgorithmCliParameters> algorithmParameters = clusteringParameters.getAlgorithmParameters();
         assertEquals(4, algorithmParameters.size());
 
         Map<String, AlgorithmCliParameters> nameToParams = new HashMap<>();
@@ -88,9 +88,9 @@ public class ParameterLoadingTest {
      @Test
     public void testClusterParamsInvalidAlgos() throws FileNotFoundException {
         CliParameters params = loadCliParameters("clusterParamsInvalidAlgos");
-        ClustringParameters clustringParameters = params.getClustringParameters().get();
+        ClusteringParameters clusteringParameters = params.getClusteringParameters().get();
 
-        List<AlgorithmCliParameters> algorithmParameters = clustringParameters.getAlgorithmParameters();
+        List<AlgorithmCliParameters> algorithmParameters = clusteringParameters.getAlgorithmParameters();
         assertEquals(2, algorithmParameters.size());
 
         assertTrue(algorithmParameters.get(0) instanceof UnknownAlgorithmCliParameters);

@@ -15,7 +15,7 @@ public class UnknownAlgorithmCliParameters extends AlgorithmCliParameters {
     }
 
     @Override
-    public ClusteringAlgorithm asClustringAlgorithm() {
+    public ClusteringAlgorithm asClusteringAlgorithm() {
         return null;
     }
 

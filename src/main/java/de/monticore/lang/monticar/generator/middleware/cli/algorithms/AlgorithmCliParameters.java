@@ -18,7 +18,7 @@ public abstract class AlgorithmCliParameters {
         return name;
     }
 
-    public abstract ClusteringAlgorithm asClustringAlgorithm();
+    public abstract ClusteringAlgorithm asClusteringAlgorithm();
 
     public abstract List<Object> asAlgorithmArgs();
 

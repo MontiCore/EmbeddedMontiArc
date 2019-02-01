@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ClustringParameters {
+public class ClusteringParameters {
     private Integer numberOfClusters;
     private ResultChoosingStrategy chooseBy = ResultChoosingStrategy.bestWithFittingN;
     private List<AlgorithmCliParameters> algorithmParameters = new ArrayList<>();
 
-    public ClustringParameters() {
+    public ClusteringParameters() {
     }
 
     public Optional<Integer> getNumberOfClusters() {
