@@ -1,6 +1,18 @@
 package de.monticore.lang.monticar.generator.middleware.cli.algorithms;
 
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
+import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringAlgorithm;
+import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringBuilder;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
+    private Integer numberOfClusters;
+    private Integer l;
+    private Double sigma;
 
     public SpectralClusteringCliParameters() {
     }
@@ -8,5 +20,52 @@ public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
     @Override
     public String getName() {
         return TYPE_SPECTRAL_CLUSTERING;
+    }
+
+    @Override
+    public ClusteringAlgorithm asClustringAlgorithm() {
+        return new SpectralClusteringAlgorithm();
+    }
+
+    @Override
+    public List<Object> asAlgorithmArgs(){
+        ArrayList<Object> res = new ArrayList<>();
+
+        if(!isValid()){
+            Log.error("SpectralClusteringCliParameters: The numberOfClusters parameter is mandatory but unset!");
+            return res;
+        }
+
+        res.add(SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS);
+        res.add(numberOfClusters);
+
+        if(l != null){
+            res.add(SpectralClusteringBuilder.SpectralParameters.SPECTRAL_L);
+            res.add(l);
+        }
+
+        if(sigma != null){
+            res.add(SpectralClusteringBuilder.SpectralParameters.SPECTRAL_SIGMA);
+            res.add(sigma);
+        }
+
+        return res;
+    }
+
+    @Override
+    public boolean isValid() {
+        return numberOfClusters != null;
+    }
+
+    public Optional<Integer> getNumberOfClusters() {
+        return Optional.ofNullable(numberOfClusters);
+    }
+
+    public Optional<Integer> getL() {
+        return Optional.ofNullable(l);
+    }
+
+    public Optional<Double> getSigma() {
+        return Optional.ofNullable(sigma);
     }
 }
