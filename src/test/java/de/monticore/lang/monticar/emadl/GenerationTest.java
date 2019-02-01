@@ -20,6 +20,8 @@
  */
 package de.monticore.lang.monticar.emadl;
 
+import de.monticore.lang.monticar.emadl.generator.Backend;
+import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
 import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
@@ -31,6 +33,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 public class GenerationTest extends AbstractSymtabTest {
 
@@ -124,5 +129,20 @@ public class GenerationTest extends AbstractSymtabTest {
         String[] args = {"-m", "src/test/resources/models/", "-r", "InstanceTest.MainB", "-b", "MXNET", "-f", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
+    }
+
+    //Test hash-function
+    @Test
+    public void testHashFunction() throws IOException, TemplateException {
+        //EMADLGenerator is tested
+        EMADLGenerator tester = new EMADLGenerator(Backend.MXNET);
+        
+        //assert statements
+        try{
+            tester.getChecksumForFile("invalid Path!");
+            assumeFalse("Exception in getChecksum is not correct", false);
+        }catch(IOException e){
+            assumeTrue("Exception in getChecksum is correct", true);
+        }
     }
 }

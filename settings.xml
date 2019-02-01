@@ -39,7 +39,7 @@
       <id>se-nexus</id>
       <username>cibuild</username>
       <password>${env.cibuild}</password>
-    </server> 
+    </server>
 
      <server>
       <id>github</id>
@@ -53,7 +53,7 @@
       <id>se-nexus</id>
       <mirrorOf>external:*</mirrorOf>
       <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
-    </mirror>	 
+    </mirror>
   </mirrors>
 
   <profiles>
@@ -79,6 +79,14 @@
     <profile>
       <id>se-nexus</id>
       <repositories>
+	<repository>
+          <id>local-maven-repo</id>
+          <url>file:///home/maurice/local-maven-repo/</url>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
         <repository>
           <id>central</id>
           <url>http://central</url>
@@ -99,5 +107,5 @@
 
   <activeProfiles>
     <activeProfile>se-nexus</activeProfile>
-  </activeProfiles>  
+  </activeProfiles>
 </settings>
