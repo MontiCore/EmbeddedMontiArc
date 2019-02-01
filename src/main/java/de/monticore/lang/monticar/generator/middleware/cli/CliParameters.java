@@ -23,8 +23,8 @@ public class CliParameters {
         this.outputDir = outputDir;
         this.rootModel = rootModel;
         this.generators = generators;
-        this.emadlBackend = emadlBackend == null ? DEFAULT_EMADL_BACKEND : emadlBackend;
-        this.writeTagFile = writeTagFile == null ? DEFAULT_WRITE_TAG_FILE : writeTagFile;
+        this.emadlBackend = emadlBackend;
+        this.writeTagFile = writeTagFile;
         this.clustringParameters = clustringParameters;
     }
 
@@ -45,11 +45,11 @@ public class CliParameters {
     }
 
     public String getEmadlBackend() {
-        return emadlBackend;
+        return emadlBackend == null ? DEFAULT_EMADL_BACKEND : emadlBackend;
     }
 
     public boolean getWriteTagFile() {
-        return writeTagFile;
+        return writeTagFile == null ? DEFAULT_WRITE_TAG_FILE : writeTagFile;
     }
 
     public Optional<ClustringParameters> getClustringParameters() {
