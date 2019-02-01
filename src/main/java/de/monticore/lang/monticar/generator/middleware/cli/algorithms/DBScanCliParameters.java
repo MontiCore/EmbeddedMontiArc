@@ -23,7 +23,7 @@ public class DBScanCliParameters extends AlgorithmCliParameters {
     }
 
     @Override
-    public ClusteringAlgorithm asClustringAlgorithm() {
+    public ClusteringAlgorithm asClusteringAlgorithm() {
         DBSCANClusteringAlgorithm dbscanClusteringAlgorithm = new DBSCANClusteringAlgorithm();
         dbscanClusteringAlgorithm.setArgs(asAlgorithmArgs());
         return dbscanClusteringAlgorithm;

@@ -3,7 +3,7 @@
   "outputDir": "target/cliTest/validConfigFile",
   "rootModel": "tests.a.addComp",
   "generators": ["cpp","roscpp"],
-  "clustringParameters":{
+  "clusteringParameters":{
     "numberOfClusters":3,
     "chooseBy":"bestOverall"
   }

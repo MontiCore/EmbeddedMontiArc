@@ -12,7 +12,7 @@ o	Order all sub components by name (neccessary for the adjacency matrix).
 o	Create adjacency matrix to use with a clustering algorithm, with subcomponents as nodes and connectors between subcomponents as vertices. Sift out all connectors to the super component.
 2)	Feed adjacency matrix into the selected clustering algorithm
 o	We are using the machine learning library "smile ml" (see: https://github.com/haifengl/smile) which provides a broad range of different clustering and partitioning approaches. As a prime example we are using "spectral clustering" here. For a closer look at this approach, see the section below. 
-o	The clustring algorithm yields multiple cluster labels with the clustered entries of the adjacency matrix assigned to them. We have to convert them back to a set of symbol tables of components representing the clusters.
+o	The clustering algorithm yields multiple cluster labels with the clustered entries of the adjacency matrix assigned to them. We have to convert them back to a set of symbol tables of components representing the clusters.
 3)	Generate middleware tags separating the clusters
 o	This will build the cluster-to-ROS connections.
 o	We won’t take account of ports of the super component and only consider connected top level components.

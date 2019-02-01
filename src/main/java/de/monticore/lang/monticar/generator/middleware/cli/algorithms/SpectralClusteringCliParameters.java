@@ -23,7 +23,7 @@ public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
     }
 
     @Override
-    public ClusteringAlgorithm asClustringAlgorithm() {
+    public ClusteringAlgorithm asClusteringAlgorithm() {
         SpectralClusteringAlgorithm clusteringAlgorithm = new SpectralClusteringAlgorithm();
         clusteringAlgorithm.setArgs(asAlgorithmArgs());
         return clusteringAlgorithm;

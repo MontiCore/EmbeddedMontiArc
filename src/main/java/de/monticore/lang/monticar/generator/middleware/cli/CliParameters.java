@@ -13,19 +13,19 @@ public class CliParameters {
     private Set<String> generators;
     private String emadlBackend;
     private Boolean writeTagFile;
-    private ClustringParameters clustringParameters;
+    private ClusteringParameters clusteringParameters;
 
     public CliParameters() {
     }
 
-    public CliParameters(String modelsDir, String outputDir, String rootModel, Set<String> generators, String emadlBackend, Boolean writeTagFile, ClustringParameters clustringParameters) {
+    public CliParameters(String modelsDir, String outputDir, String rootModel, Set<String> generators, String emadlBackend, Boolean writeTagFile, ClusteringParameters clusteringParameters) {
         this.modelsDir = modelsDir;
         this.outputDir = outputDir;
         this.rootModel = rootModel;
         this.generators = generators;
         this.emadlBackend = emadlBackend;
         this.writeTagFile = writeTagFile;
-        this.clustringParameters = clustringParameters;
+        this.clusteringParameters = clusteringParameters;
     }
 
     public String getModelsDir() {
@@ -52,8 +52,8 @@ public class CliParameters {
         return writeTagFile == null ? DEFAULT_WRITE_TAG_FILE : writeTagFile;
     }
 
-    public Optional<ClustringParameters> getClustringParameters() {
-        return Optional.ofNullable(clustringParameters);
+    public Optional<ClusteringParameters> getClusteringParameters() {
+        return Optional.ofNullable(clusteringParameters);
     }
 
 }

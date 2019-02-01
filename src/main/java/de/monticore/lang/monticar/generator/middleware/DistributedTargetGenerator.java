@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.middleware.cli.ClusteringParameters;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusterFromTagsHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.*;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
@@ -26,6 +27,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
     private Set<String> subDirs = new HashSet<>();
 
+    private ClusteringParameters clusteringParameters;
 
     public DistributedTargetGenerator() {
     }
