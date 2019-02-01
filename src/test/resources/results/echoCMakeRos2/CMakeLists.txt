@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project (RosAdapter_tests_a_compB)
+set (CMAKE_CXX_STANDARD 14)
+set (AMENT_CMAKE_UNINSTALL_TARGET FALSE)
 
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)

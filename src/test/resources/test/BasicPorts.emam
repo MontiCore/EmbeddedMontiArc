@@ -1,8 +1,8 @@
 package test;
 
 component BasicPorts{
-    ports in (-oo:oo) in1,in (-oo:oo) in2,
-          out (-oo:oo) out1,out (-oo:oo) out2;
+    ports in Q in1,in Q in2,
+          out Q out1,out Q out2;
 
      connect in1 -> out2;
 
