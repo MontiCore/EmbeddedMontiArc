@@ -80,7 +80,7 @@ ROS Kinetic currently only supports Linux and the installation is described [her
 ## Usage
 ### CLI
 Maven generates the jar `embedded-montiarc-math-middleware-generator-{Version}-jar-with-dependencies.jar`
-and the cli is located in `de.monticore.lang.monticar.generator.middleware.DistributedTargetGeneratorCli`.
+and the cli is located in `de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGeneratorCli`.
 
 Parameters: `${file path to config json}` OR `-r ${raw json config string}`
 ```

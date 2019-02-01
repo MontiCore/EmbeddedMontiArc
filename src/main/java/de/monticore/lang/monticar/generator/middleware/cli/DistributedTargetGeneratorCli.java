@@ -1,10 +1,11 @@
-package de.monticore.lang.monticar.generator.middleware;
+package de.monticore.lang.monticar.generator.middleware.cli;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
+import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.EMADLGeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;

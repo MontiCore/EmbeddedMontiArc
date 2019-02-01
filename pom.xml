@@ -207,7 +207,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>de.monticore.lang.monticar.generator.middleware.DistributedTargetGeneratorCli</mainClass>
+                                    <mainClass>de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGeneratorCli</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

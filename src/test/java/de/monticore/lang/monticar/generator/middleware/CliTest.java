@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.LogConfig;
+import de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGeneratorCli;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.ArrayUtils;
