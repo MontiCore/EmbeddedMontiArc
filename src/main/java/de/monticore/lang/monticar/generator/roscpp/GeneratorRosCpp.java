@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GeneratorRosCpp {
 
@@ -101,24 +102,40 @@ public class GeneratorRosCpp {
             apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint.get(), ": public IAdapter_" + nameTargetLanguage));
 
             GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
+            generatorRosMsg.setRos2mode(ros2Mode);
             for (Map.Entry<RosMsg, MCTypeReference<? extends MCTypeSymbol>> entry : languageUnitRosCppAdapter.getUsedRosMsgs().entrySet()) {
                 String packageName = Arrays.stream(entry.getKey().getName().split("/")).findFirst().get();
                 if (packageName.equals("struct_msgs")) {
-                    generatorRosMsg.setTarget(generationTargetPath + "/" + packageName, packageName);
+                    String ros2extra = isRos2Mode() ? "msg/" : "";
+                    generatorRosMsg.setTarget(generationTargetPath + "/" + ros2extra + packageName, packageName);
                     List<FileContent> tmpFileContents = generatorRosMsg.generateStrings(entry.getValue());
-                    tmpFileContents.forEach(fc -> fc.setFileName(packageName + "/" + fc.getFileName()));
+                    tmpFileContents.forEach(fc -> fc.setFileName(packageName + "/" + ros2extra + fc.getFileName()));
+                    if(ros2Mode){
+                        lowercaseMsgFieldNames(tmpFileContents);
+                    }
                     res.addAll(tmpFileContents);
                 }
             }
 
             if (generateCMake) {
                 LanguageUnitRosCMake languageUnitRosCMake = new LanguageUnitRosCMake();
-                res.addAll(languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages(),isRos2Mode()));
+
+                List<RosMsg> rosMsgs = new ArrayList<>(languageUnitRosCppAdapter.getUsedRosMsgs().keySet());
+                res.addAll(languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages(), rosMsgs, isRos2Mode()));
             }
 
             res.add(apdapter);
         }
         return res;
+    }
+
+    private void lowercaseMsgFieldNames(List<FileContent> tmpFileContents) {
+        tmpFileContents.forEach(fc ->{
+            String fixedFileContent = Arrays.stream(fc.getFileContent().split("\\r?\\n"))
+                    .map(line -> line.substring(0,line.indexOf(" ")) + line.substring(line.indexOf(" ")).toLowerCase())
+                    .collect(Collectors.joining("\n"));
+            fc.setFileContent(fixedFileContent);
+        });
     }
 
 }

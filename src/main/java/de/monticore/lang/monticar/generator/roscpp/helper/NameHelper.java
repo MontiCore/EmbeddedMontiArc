@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp.helper;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
+import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -86,5 +87,38 @@ public class NameHelper {
             }
         });
         return res;
+    }
+
+    public static List<String> getAllFieldNames(StructSymbol structSymbol){
+        ArrayList<String> res = new ArrayList<>();
+        structSymbol.getStructFieldDefinitions().forEach(f -> {
+            if (f.getType().getReferencedSymbol() instanceof StructSymbol) {
+                List<String> tmpFields = getAllFieldNames((StructSymbol) f.getType().getReferencedSymbol());
+                tmpFields.stream()
+                        .map(tmpF -> f.getName() + "." + tmpF)
+                        .forEach(res::add);
+            } else {
+                res.add(f.getName());
+            }
+        });
+        return res;
+    }
+
+    public static String addMsgToMsgType(String msgType){
+        String[] parts = msgType.split("/");
+        if (!parts[1].equals("msg")) {
+            parts[0] = parts[0] + "/msg";
+        }
+        return String.join("/", parts);
+
+    }
+
+    public static String msgTypeToSnakecase(String type) {
+        String[] parts = type.split("/");
+        // First letter lowercase without _
+        parts[parts.length - 1] = parts[parts.length - 1].substring(0, 1).toLowerCase() + parts[parts.length - 1].substring(1);
+        // After: replace A with _a
+        parts[parts.length - 1] = parts[parts.length - 1].replaceAll("([A-Z])", "_$1").toLowerCase();
+        return String.join("/", parts);
     }
 }
