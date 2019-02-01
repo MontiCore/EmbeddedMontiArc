@@ -56,15 +56,20 @@ public class EMADLGeneratorCli {
             .hasArg(true)
             .required(false)
             .build();
-/**/
+
+    public static final Option OPTION_TRAINING_PYTHON_PATH = Option.builder("p")
+            .longOpt("python")
+            .desc("path to python. Default is /usr/bin/python")
+            .hasArg(true)
+            .required(false)
+            .build();
+
     public static final Option OPTION_RESTRAINED_TRAINING = Option.builder("f")
     		.longOpt("forced")
     		.desc("no training or a forced training. Options: y (a forced training), n (no training)")
     		.hasArg(true)
     		.required(false)
-    		.build();
-
-
+            .build();
 
 
     private EMADLGeneratorCli() {
@@ -86,6 +91,7 @@ public class EMADLGeneratorCli {
         options.addOption(OPTION_OUTPUT_PATH);
         options.addOption(OPTION_BACKEND);
         options.addOption(OPTION_RESTRAINED_TRAINING);
+        options.addOption(OPTION_TRAINING_PYTHON_PATH);
         return options;
     }
 
@@ -106,6 +112,7 @@ public class EMADLGeneratorCli {
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
         String backendString = cliArgs.getOptionValue(OPTION_BACKEND.getOpt());
         String forced = cliArgs.getOptionValue(OPTION_RESTRAINED_TRAINING.getOpt());
+        String pythonPath = cliArgs.getOptionValue(OPTION_TRAINING_PYTHON_PATH.getOpt());
         final String DEFAULT_BACKEND = "MXNET";
         final String DEFAULT_FORCED = "UNSET";
 
@@ -120,6 +127,9 @@ public class EMADLGeneratorCli {
             backend = Backend.getBackendFromString(DEFAULT_BACKEND);
         }
 
+        if(pythonPath == null) {
+            pythonPath = "/usr/bin/python";
+        }
 
         if (forced == null) {
             Log.warn("forced not specified. forced set to default value" + DEFAULT_FORCED);
@@ -139,7 +149,7 @@ public class EMADLGeneratorCli {
             generator.setGenerationTargetPath(outputPath);
         }
         try{
-            generator.generate(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()), rootModelName, forced);
+            generator.generate(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()), rootModelName, pythonPath, forced);
         }
         catch (IOException e){
             Log.error("io error during generation", e);

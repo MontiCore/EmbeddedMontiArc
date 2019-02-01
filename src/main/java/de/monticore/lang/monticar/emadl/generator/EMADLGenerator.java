@@ -105,7 +105,7 @@ public class EMADLGenerator {
         return emamGen;
     }
 
-    public void generate(String modelPath, String qualifiedName, String forced) throws IOException, TemplateException {
+    public void generate(String modelPath, String qualifiedName, String pythonPath, String forced) throws IOException, TemplateException {
         setModelsPath( modelPath );
         TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
         ComponentSymbol component = symtab.<ComponentSymbol>resolve(qualifiedName, ComponentSymbol.KIND).orElse(null);
@@ -122,7 +122,7 @@ public class EMADLGenerator {
         ExpandedComponentInstanceSymbol instance = component.getEnclosingScope().<ExpandedComponentInstanceSymbol>resolve(instanceName, ExpandedComponentInstanceSymbol.KIND).get();
 
 
-        generateFiles(symtab, instance, symtab, forced);
+        generateFiles(symtab, instance, symtab, pythonPath, forced);
         try{
           executeCommands();
         }catch(Exception e){
@@ -184,7 +184,7 @@ public class EMADLGenerator {
         }
     }
 
-    public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab, String forced) throws IOException {
+    public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab, String pythonPath, String forced) throws IOException {
         Set<ExpandedComponentInstanceSymbol> allInstances = new HashSet<>();
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab, allInstances, forced);
 
@@ -234,9 +234,8 @@ public class EMADLGenerator {
                 String parsedFullName = componentInstance.getFullName().substring(0, 1).toLowerCase() + componentInstance.getFullName().substring(1).replaceAll("\\.", "_");
                 String trainerScriptName = "CNNTrainer_" + parsedFullName + ".py";
                 String trainingPath = getGenerationTargetPath() + trainerScriptName;
-                String pythonExe = "/usr/bin/python";
                 if(Files.exists(Paths.get(trainingPath))){
-                    ProcessBuilder pb = new ProcessBuilder(Arrays.asList(pythonExe, trainingPath)).inheritIO();
+                    ProcessBuilder pb = new ProcessBuilder(Arrays.asList(pythonPath, trainingPath)).inheritIO();
                     Process p = pb.start();
 
                     int exitCode = 0;
