@@ -130,7 +130,7 @@ public class GenerationTest extends AbstractSymtabTest{
         CNNTrain2Caffe2 trainGenerator = new CNNTrain2Caffe2();
         trainGenerator.generate(Paths.get(sourcePath), "FullConfig");
 
-        assertTrue(Log.getFindings().size() == 9);
+        assertTrue(Log.getFindings().size() == 8);
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),

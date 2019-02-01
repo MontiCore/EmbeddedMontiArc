@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 import lmdb
+
 class CNNCreator_Alexnet:
 
     module = None
@@ -58,97 +59,56 @@ class CNNCreator_Alexnet:
 
             return data, label, dataset_size
 
-    def create_model(self, model, data, device_opts):
+    def create_model(self, model, data, device_opts, is_test):
     	with core.DeviceScope(device_opts):
 
     		data = data
     		# data, output shape: {[3,224,224]}
-      		conv1_ = brew.conv(model, data, 'conv1_', dim_in=3, dim_out=96, kernel=11, stride=4)
+    		conv1_ = brew.conv(model, data, 'conv1_', dim_in=3, dim_out=96, kernel=11, stride=4)
     		# conv1_, output shape: {[96,55,55]}
-    		lrn1_ = mx.symbol.LRN(data=conv1_,
-    		    alpha=0.0001,
-    		    beta=0.75,
-    		    knorm=2,
-    		    nsize=5,
-    		    name="lrn1_")
+    		lrn1_ = brew.lrn(model, conv1_, 'lrn1_', size=5, alpha=0.0001, beta=0.75, bias=2.0)
     		pool1_ = brew.max_pool(model, lrn1_, 'pool1_', kernel=3, stride=2)
     		# pool1_, output shape: {[96,27,27]}
     		relu1_ = brew.relu(model, pool1_, pool1_)
-    		split1_ = mx.symbol.split(data=relu1_,
-    		    num_outputs=2,
-    		    axis=1,
-    		    name="split1_")
-    		# split1_, output shape: {[48,27,27][48,27,27]}
-    		get2_1_ = split1_[0]
-      		conv2_1_ = brew.conv(model, get2_1_, 'conv2_1_', dim_in=48, dim_out=128, kernel=5, stride=1)
+    		conv2_1_ = brew.conv(model, get2_1_, 'conv2_1_', dim_in=48, dim_out=128, kernel=5, stride=1, pad=1)
     		# conv2_1_, output shape: {[128,27,27]}
-    		lrn2_1_ = mx.symbol.LRN(data=conv2_1_,
-    		    alpha=0.0001,
-    		    beta=0.75,
-    		    knorm=2,
-    		    nsize=5,
-    		    name="lrn2_1_")
+    		lrn2_1_ = brew.lrn(model, conv2_1_, 'lrn2_1_', size=5, alpha=0.0001, beta=0.75, bias=2.0)
     		pool2_1_ = brew.max_pool(model, lrn2_1_, 'pool2_1_', kernel=3, stride=2)
     		# pool2_1_, output shape: {[128,13,13]}
     		relu2_1_ = brew.relu(model, pool2_1_, pool2_1_)
-    		get2_2_ = split1_[1]
-      		conv2_2_ = brew.conv(model, get2_2_, 'conv2_2_', dim_in=48, dim_out=128, kernel=5, stride=1)
+    		conv2_2_ = brew.conv(model, get2_2_, 'conv2_2_', dim_in=48, dim_out=128, kernel=5, stride=1, pad=1)
     		# conv2_2_, output shape: {[128,27,27]}
-    		lrn2_2_ = mx.symbol.LRN(data=conv2_2_,
-    		    alpha=0.0001,
-    		    beta=0.75,
-    		    knorm=2,
-    		    nsize=5,
-    		    name="lrn2_2_")
+    		lrn2_2_ = brew.lrn(model, conv2_2_, 'lrn2_2_', size=5, alpha=0.0001, beta=0.75, bias=2.0)
     		pool2_2_ = brew.max_pool(model, lrn2_2_, 'pool2_2_', kernel=3, stride=2)
     		# pool2_2_, output shape: {[128,13,13]}
     		relu2_2_ = brew.relu(model, pool2_2_, pool2_2_)
-    		concatenate3_ = mx.symbol.concat(relu2_1_, relu2_2_,
-    		    dim=1,
-    		    name="concatenate3_")
-    		# concatenate3_, output shape: {[256,13,13]}
-      		conv3_ = brew.conv(model, concatenate3_, 'conv3_', dim_in=256, dim_out=384, kernel=3, stride=1)
+    		conv3_ = brew.conv(model, concatenate3_, 'conv3_', dim_in=256, dim_out=384, kernel=3, stride=1, pad=1)
     		# conv3_, output shape: {[384,13,13]}
     		relu3_ = brew.relu(model, conv3_, conv3_)
-    		split3_ = mx.symbol.split(data=relu3_,
-    		    num_outputs=2,
-    		    axis=1,
-    		    name="split3_")
-    		# split3_, output shape: {[192,13,13][192,13,13]}
-    		get4_1_ = split3_[0]
-      		conv4_1_ = brew.conv(model, get4_1_, 'conv4_1_', dim_in=192, dim_out=192, kernel=3, stride=1)
+    		conv4_1_ = brew.conv(model, get4_1_, 'conv4_1_', dim_in=192, dim_out=192, kernel=3, stride=1, pad=1)
     		# conv4_1_, output shape: {[192,13,13]}
     		relu4_1_ = brew.relu(model, conv4_1_, conv4_1_)
-      		conv5_1_ = brew.conv(model, relu4_1_, 'conv5_1_', dim_in=192, dim_out=128, kernel=3, stride=1)
+    		conv5_1_ = brew.conv(model, relu4_1_, 'conv5_1_', dim_in=192, dim_out=128, kernel=3, stride=1, pad=1)
     		# conv5_1_, output shape: {[128,13,13]}
     		pool5_1_ = brew.max_pool(model, conv5_1_, 'pool5_1_', kernel=3, stride=2)
     		# pool5_1_, output shape: {[128,6,6]}
     		relu5_1_ = brew.relu(model, pool5_1_, pool5_1_)
-    		get4_2_ = split3_[1]
-      		conv4_2_ = brew.conv(model, get4_2_, 'conv4_2_', dim_in=192, dim_out=192, kernel=3, stride=1)
+    		conv4_2_ = brew.conv(model, get4_2_, 'conv4_2_', dim_in=192, dim_out=192, kernel=3, stride=1, pad=1)
     		# conv4_2_, output shape: {[192,13,13]}
     		relu4_2_ = brew.relu(model, conv4_2_, conv4_2_)
-      		conv5_2_ = brew.conv(model, relu4_2_, 'conv5_2_', dim_in=192, dim_out=128, kernel=3, stride=1)
+    		conv5_2_ = brew.conv(model, relu4_2_, 'conv5_2_', dim_in=192, dim_out=128, kernel=3, stride=1, pad=1)
     		# conv5_2_, output shape: {[128,13,13]}
     		pool5_2_ = brew.max_pool(model, conv5_2_, 'pool5_2_', kernel=3, stride=2)
     		# pool5_2_, output shape: {[128,6,6]}
     		relu5_2_ = brew.relu(model, pool5_2_, pool5_2_)
-    		concatenate6_ = mx.symbol.concat(relu5_1_, relu5_2_,
-    		    dim=1,
-    		    name="concatenate6_")
-    		# concatenate6_, output shape: {[256,6,6]}
     		fc6_ = brew.fc(model, concatenate6_, 'fc6_', dim_in=256 * 6 * 6, dim_out=4096)
     		# fc6_, output shape: {[4096,1,1]}
     		relu6_ = brew.relu(model, fc6_, fc6_)
-    		dropout6_ = mx.symbol.Dropout(data=relu6_,
-    		    p=0.5,
-    		    name="dropout6_")
+    		dropout6_ = brew.dropout(model, relu6_, 'dropout6_', ratio=0.5, is_test=False)
     		fc7_ = brew.fc(model, dropout6_, 'fc7_', dim_in=4096, dim_out=4096)
     		# fc7_, output shape: {[4096,1,1]}
     		relu7_ = brew.relu(model, fc7_, fc7_)
-    		dropout7_ = mx.symbol.Dropout(data=relu7_,
-    		    p=0.5,
-    		    name="dropout7_")
+    		dropout7_ = brew.dropout(model, relu7_, 'dropout7_', ratio=0.5, is_test=False)
     		fc8_ = brew.fc(model, dropout7_, 'fc8_', dim_in=4096, dim_out=10)
     		# fc8_, output shape: {[10,1,1]}
     		predictions = brew.softmax(model, fc8_, 'predictions')
@@ -210,7 +170,7 @@ class CNNCreator_Alexnet:
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
     	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'train_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	predictions = self.create_model(train_model, data, device_opts=device_opts)
+    	predictions = self.create_model(train_model, data, device_opts=device_opts, is_test=False)
     	self.add_training_operators(train_model, predictions, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	self.add_accuracy(train_model, predictions, label, device_opts, eval_metric)
     	with core.DeviceScope(device_opts):
@@ -233,7 +193,7 @@ class CNNCreator_Alexnet:
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
     	data, label, test_dataset_size = self.add_input(test_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'test_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	predictions = self.create_model(test_model, data, device_opts=device_opts)
+    	predictions = self.create_model(test_model, data, device_opts=device_opts, is_test=True)
     	self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
     	workspace.CreateNet(test_model.net, overwrite=True)
@@ -251,7 +211,7 @@ class CNNCreator_Alexnet:
     	# == Deployment model. ==
     	# We simply need the main AddModel part.
     	deploy_model = model_helper.ModelHelper(name="deploy_net", arg_scope=arg_scope, init_params=False)
-    	self.create_model(deploy_model, "data", device_opts)
+    	self.create_model(deploy_model, "data", device_opts, is_test=True)
 
     	print("Saving deploy model")
     	self.save_net(self._init_net_, self._predict_net_, deploy_model)

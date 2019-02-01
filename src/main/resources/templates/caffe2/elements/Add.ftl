@@ -1,2 +1,1 @@
-    		${element.name} = ${tc.join(element.inputs, " + ")}
-<#include "OutputShape.ftl">
+<#-- This layer is currently not supported -->
