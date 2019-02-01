@@ -20,7 +20,7 @@ component VGG16{
              conv(filter=2, channels=64, ->=2) ->
              Pooling(pool_type="max", kernel=(2,2), stride=(1,1)) ->
              fc() ->
-             FullyConnected(units=100) ->
+             FullyConnected(units=10) ->
              Softmax() ->
              predictions
          }
