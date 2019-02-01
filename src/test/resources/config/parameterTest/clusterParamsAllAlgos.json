@@ -1,0 +1,22 @@
+{
+  "modelsDir": "src/test/resources/",
+  "outputDir": "target/cliTest/validConfigFile",
+  "rootModel": "tests.a.addComp",
+  "generators": ["cpp","roscpp"],
+  "clustringParameters":{
+    "algorithmParameters":[
+      {
+        "name":"SpectralClustering"
+      },
+      {
+        "name":"DBScan"
+      },
+      {
+        "name":"Markov"
+      },
+      {
+        "name":"AffinityPropagation"
+      }
+    ]
+  }
+}

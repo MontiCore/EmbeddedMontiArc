@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware.cli;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class CliParameters {
@@ -12,17 +13,19 @@ public class CliParameters {
     private Set<String> generators;
     private String emadlBackend;
     private Boolean writeTagFile;
+    private ClustringParameters clustringParameters;
 
     public CliParameters() {
     }
 
-    public CliParameters(String modelsDir, String outputDir, String rootModel, Set<String> generators, String emadlBackend, Boolean writeTagFile) {
+    public CliParameters(String modelsDir, String outputDir, String rootModel, Set<String> generators, String emadlBackend, Boolean writeTagFile, ClustringParameters clustringParameters) {
         this.modelsDir = modelsDir;
         this.outputDir = outputDir;
         this.rootModel = rootModel;
         this.generators = generators;
         this.emadlBackend = emadlBackend == null ? DEFAULT_EMADL_BACKEND : emadlBackend;
         this.writeTagFile = writeTagFile == null ? DEFAULT_WRITE_TAG_FILE : writeTagFile;
+        this.clustringParameters = clustringParameters;
     }
 
     public String getModelsDir() {
@@ -48,4 +51,9 @@ public class CliParameters {
     public boolean getWriteTagFile() {
         return writeTagFile;
     }
+
+    public Optional<ClustringParameters> getClustringParameters() {
+        return Optional.ofNullable(clustringParameters);
+    }
+
 }
