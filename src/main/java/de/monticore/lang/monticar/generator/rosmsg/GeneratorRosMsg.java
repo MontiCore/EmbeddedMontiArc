@@ -13,17 +13,22 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GeneratorRosMsg {
     private String path;
     private String currentPackageName;
     private Set<String> alreadyGenerated = new HashSet<>();
+    private boolean ros2mode = false;
 
+    public boolean isRos2mode() {
+        return ros2mode;
+    }
+
+    public void setRos2mode(boolean ros2mode) {
+        this.ros2mode = ros2mode;
+    }
 
     public void setTarget(String path, String packageName) {
         if (path.endsWith("/")) {
@@ -62,21 +67,21 @@ public class GeneratorRosMsg {
     }
 
     public List<FileContent> generateStruct(String packageName, StructSymbol structSymbol) {
-        if (alreadyGenerated.contains(packageName + "/" + getTargetName(structSymbol))) {
+        if (alreadyGenerated.contains(packageName + "/" + getTargetName(structSymbol, ros2mode))) {
             Log.debug("Struct " + structSymbol + " was already generated!", "structGeneration");
             return new ArrayList<>();
         }
-        alreadyGenerated.add(packageName + "/" + getTargetName(structSymbol));
+        alreadyGenerated.add(packageName + "/" + getTargetName(structSymbol, ros2mode));
 
         List<FileContent> fileContents = new ArrayList<>();
 
         String definition = structSymbol.getStructFieldDefinitions().stream()
                 .filter(sfds -> sfds.getType().existsReferencedSymbol())
-                .map(sfds -> getInMsgRosType(currentPackageName, sfds.getType().getReferencedSymbol()) + " " + sfds.getName())
+                .map(sfds -> getInMsgRosType(currentPackageName, sfds.getType().getReferencedSymbol(), ros2mode) + " " + sfds.getName())
                 .collect(Collectors.joining("\n"));
 
         FileContent fc = new FileContent();
-        fc.setFileName(getTargetName(structSymbol) + ".msg");
+        fc.setFileName(getTargetName(structSymbol, ros2mode) + ".msg");
         fc.setFileContent(definition);
         fileContents.add(fc);
 
@@ -93,22 +98,33 @@ public class GeneratorRosMsg {
         return fileContents;
     }
 
-    public static RosMsg createMsgForStruct(String packageName, StructSymbol structSymbol) {
-        RosMsg res = new RosMsg(getFullTargetName(packageName, structSymbol));
+    public static RosMsg createMsgForStruct(String packageName, StructSymbol structSymbol, boolean ros2mode) {
+        RosMsg res = new RosMsg(getFullTargetName(packageName, structSymbol, ros2mode));
         structSymbol.getStructFieldDefinitions().stream()
                 .filter(sfds -> sfds.getType().existsReferencedSymbol())
                 .forEach(sfds -> {
                     MCTypeSymbol referencedSymbol = sfds.getType().getReferencedSymbol();
                     if (referencedSymbol instanceof StructSymbol) {
-                        res.addField(new RosField(sfds.getName(), createMsgForStruct(packageName, (StructSymbol) referencedSymbol)));
+                        res.addField(new RosField(getFieldName(sfds, ros2mode), createMsgForStruct(packageName, (StructSymbol) referencedSymbol, ros2mode)));
                     } else {
-                        res.addField(new RosField(sfds.getName(), new RosType(getInMsgRosType(packageName, referencedSymbol))));
+                        res.addField(new RosField(getFieldName(sfds, ros2mode), new RosType(getInMsgRosType(packageName, referencedSymbol, ros2mode))));
                     }
                 });
         return res;
     }
 
-    private static String getInMsgRosType(String packageName, MCTypeSymbol referencedSymbol) {
+    private static String getFieldName(StructFieldDefinitionSymbol sfds, boolean ros2mode) {
+        if (ros2mode){
+            return sfds.getName().toLowerCase();
+        }
+        else{
+            return sfds.getName();
+        }
+
+
+    }
+
+    private static String getInMsgRosType(String packageName, MCTypeSymbol referencedSymbol, boolean ros2mode) {
         if (referencedSymbol.isKindOf(MontiCarTypeSymbol.KIND)) {
             MontiCarTypeSymbol mcastTypeSymbol = (MontiCarTypeSymbol) referencedSymbol;
             if (mcastTypeSymbol.getName().equals("Q")) {
@@ -124,7 +140,7 @@ public class GeneratorRosMsg {
 
         if (referencedSymbol instanceof StructSymbol) {
             StructSymbol structSymbol = (StructSymbol) referencedSymbol;
-            return packageName + "/" + getTargetName(structSymbol);
+            return packageName + "/" + getTargetName(structSymbol, ros2mode);
         }
 
         Log.error("Case not handled! MCTypeReference " + referencedSymbol);
@@ -132,19 +148,24 @@ public class GeneratorRosMsg {
     }
 
     public static RosMsg getRosType(String packageName, MCTypeReference<? extends MCTypeSymbol> typeReference) {
+        return getRosType(packageName, typeReference, false);
+    }
+
+    public static RosMsg getRosType(String packageName, MCTypeReference<? extends MCTypeSymbol> typeReference, boolean ros2mode) {
         MCTypeSymbol type = typeReference.getReferencedSymbol();
         String typeName = type.getName();
+        String ros2extra = ros2mode ? "msg/" : "";
 
         if (typeName.equals("Q")) {
-            RosMsg tmpMsg = new RosMsg("std_msgs/Float64");
+            RosMsg tmpMsg = new RosMsg("std_msgs/" + ros2extra + "Float64");
             tmpMsg.addField(new RosField("data", new RosType("float64")));
             return tmpMsg;
         } else if (typeName.equals("Z")) {
-            RosMsg tmpMsg = new RosMsg("std_msgs/Int32");
+            RosMsg tmpMsg = new RosMsg("std_msgs/" + ros2extra + "Int32");
             tmpMsg.addField(new RosField("data", new RosType("int32")));
             return tmpMsg;
         } else if (typeName.equals("B")) {
-            RosMsg tmpMsg = new RosMsg("std_msgs/Bool");
+            RosMsg tmpMsg = new RosMsg("std_msgs/" + ros2extra + "Bool");
             tmpMsg.addField(new RosField("data", new RosType("bool")));
             return tmpMsg;
         } else if (typeName.equals("CommonMatrixType") && type.isKindOf(MCASTTypeSymbol.KIND)) {
@@ -152,13 +173,13 @@ public class GeneratorRosMsg {
             String tmpMsgName = "";
             String tmpTypeName = "";
             if (matrixType.getElementType().isRational()) {
-                tmpMsgName = "std_msgs/Float64MultiArray";
+                tmpMsgName = "std_msgs/" + ros2extra + "Float64MultiArray";
                 tmpTypeName = "float64";
             } else if (matrixType.getElementType().isWholeNumber()) {
-                tmpMsgName = "std_msgs/Int32MultiArray";
+                tmpMsgName = "std_msgs/" + ros2extra + "Int32MultiArray";
                 tmpTypeName = "int32";
             } else if (matrixType.getElementType().isBoolean()) {
-                tmpMsgName = "std_msgs/ByteMultiArray";
+                tmpMsgName = "std_msgs/" + ros2extra + "ByteMultiArray";
                 tmpTypeName = "byte";
             } else {
                 Log.error("Matrix type not supported: " + matrixType);
@@ -169,7 +190,7 @@ public class GeneratorRosMsg {
 
         if (type instanceof StructSymbol) {
             StructSymbol structSymbol = (StructSymbol) type;
-            return createMsgForStruct(packageName, structSymbol);
+            return createMsgForStruct(packageName, structSymbol, ros2mode);
         }
         Log.error("Case not handled! MCTypeReference " + typeReference);
         return null;
@@ -207,11 +228,19 @@ public class GeneratorRosMsg {
         return tmpMsg;
     }
 
-    private static String getTargetName(StructSymbol structSymbol) {
-        return structSymbol.getFullName().replace(".", "_");
+    private static String getTargetName(StructSymbol structSymbol, boolean ros2mode) {
+        if (ros2mode){
+            return Arrays.stream(structSymbol.getFullName()
+                    .split("\\."))
+                    .map(fn -> fn.substring(0, 1).toUpperCase() + fn.substring(1))
+                    .collect(Collectors.joining());
+        }
+        else{
+            return structSymbol.getFullName().replace(".", "_");
+        }
     }
 
-    private static String getFullTargetName(String packageName, StructSymbol structSymbol) {
-        return packageName + "/" + getTargetName(structSymbol);
+    private static String getFullTargetName(String packageName, StructSymbol structSymbol, boolean ros2mode) {
+        return ros2mode ? packageName + "/msg/" + getTargetName(structSymbol, ros2mode) : packageName + "/" + getTargetName(structSymbol, ros2mode);
     }
 }
