@@ -4,8 +4,8 @@
 <#elseif element.logisticRegressionOutput>
     		${element.name} = model.net.Sigmoid(${input}, '${element.name}')
 <#elseif element.linearRegressionOutput>
-    		${element.name} = mx.symbol.LinearRegressionOutput(data=${element.inputs[0]}, <#-- TODO: check how to adapt linearRegressionOutput -->
-    		    name="${element.name}")
+    		<#--Don't add L2 loss here but within the function "add_training_operators" from CNNCreator.ftl-->
+    		${element.name} = ${input}
 </#if>
 
     		return ${element.name}
