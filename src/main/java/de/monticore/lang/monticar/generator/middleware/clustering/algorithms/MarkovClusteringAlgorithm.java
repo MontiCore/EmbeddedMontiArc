@@ -15,6 +15,17 @@ import java.util.*;
 
 // markov mcl clusterer product implementation
 public class MarkovClusteringAlgorithm implements ClusteringAlgorithm {
+    private List<Object> args;
+
+    public void setArgs(List<Object> args) {
+        this.args = args;
+    }
+
+    @Override
+    public List<Object> getArgs() {
+        return args;
+    }
+
 
     private static Dataset[] getClustering(Dataset data, SparseMatrix matrix) {
         int[] sparseMatrixSize = matrix.getSize();

@@ -24,7 +24,9 @@ public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
 
     @Override
     public ClusteringAlgorithm asClustringAlgorithm() {
-        return new SpectralClusteringAlgorithm();
+        SpectralClusteringAlgorithm clusteringAlgorithm = new SpectralClusteringAlgorithm();
+        clusteringAlgorithm.setArgs(asAlgorithmArgs());
+        return clusteringAlgorithm;
     }
 
     @Override
@@ -67,5 +69,17 @@ public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
 
     public Optional<Double> getSigma() {
         return Optional.ofNullable(sigma);
+    }
+
+    public void setNumberOfClusters(Integer numberOfClusters) {
+        this.numberOfClusters = numberOfClusters;
+    }
+
+    public void setL(Integer l) {
+        this.l = l;
+    }
+
+    public void setSigma(Double sigma) {
+        this.sigma = sigma;
     }
 }

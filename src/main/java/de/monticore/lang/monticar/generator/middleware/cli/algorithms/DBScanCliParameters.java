@@ -24,7 +24,9 @@ public class DBScanCliParameters extends AlgorithmCliParameters {
 
     @Override
     public ClusteringAlgorithm asClustringAlgorithm() {
-        return new DBSCANClusteringAlgorithm();
+        DBSCANClusteringAlgorithm dbscanClusteringAlgorithm = new DBSCANClusteringAlgorithm();
+        dbscanClusteringAlgorithm.setArgs(asAlgorithmArgs());
+        return dbscanClusteringAlgorithm;
     }
 
     @Override
@@ -54,5 +56,13 @@ public class DBScanCliParameters extends AlgorithmCliParameters {
 
     public Optional<Double> getRadius() {
         return Optional.ofNullable(radius);
+    }
+
+    public void setMinPts(Integer min_pts) {
+        this.min_pts = min_pts;
+    }
+
+    public void setRadius(Double radius) {
+        this.radius = radius;
     }
 }
