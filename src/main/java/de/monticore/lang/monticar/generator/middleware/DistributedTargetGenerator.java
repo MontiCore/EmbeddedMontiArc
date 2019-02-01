@@ -4,6 +4,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.helpers.*;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.RclCppGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.apache.commons.io.FileUtils;
 
@@ -48,20 +49,8 @@ public class DistributedTargetGenerator extends CMakeGenerator {
             subDirs.add(NameHelper.getNameTargetLanguage(comp.getFullName()));
         }
 
-        //generate rosMsg CMake iff a .msg file was generated
-        if(files.stream().anyMatch(f -> f.getName().endsWith(".msg"))){
-            subDirs.add("rosMsg");
-            files.add(generateRosMsgGen());
-        }
-
         files.add(generateCMake(componentInstanceSymbol));
         return files;
-    }
-
-    private File generateRosMsgGen() throws IOException {
-        File file = new File(generationTargetPath + "rosMsg/CMakeLists.txt");
-        FileUtils.write(file, TemplateHelper.getStruct_msgsCmakeTemplate());
-        return file;
     }
 
     private GeneratorImpl createFullGenerator(String subdir) {
@@ -74,7 +63,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
     }
 
     private void fixComponentInstance(EMAComponentInstanceSymbol componentInstanceSymbol) {
-        RosHelper.fixRosConnectionSymbols(componentInstanceSymbol);
+        RosHelper.fixRosConnectionSymbols(componentInstanceSymbol, this.getGeneratorImpls().stream().anyMatch(g -> g instanceof RclCppGenImpl));
     }
 
     @Override
