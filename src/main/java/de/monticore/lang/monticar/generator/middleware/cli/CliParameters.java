@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.middleware;
+package de.monticore.lang.monticar.generator.middleware.cli;
 
 import java.util.Set;
 
