@@ -338,19 +338,4 @@ public class GenerationTest extends AbstractSymtabTest {
         assertFalse(filenames.stream().anyMatch(fn -> fn.endsWith("rosMsg/CMakeLists.txt")));
     }
 
-    @Test
-    public void testRos2Generation() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.aRos2.addComp", EMAComponentInstanceSymbol.KIND).orElse(null);
-        RosToEmamTagSchema.registerTagTypes(taggingResolver);
-
-        assertNotNull(componentInstanceSymbol);
-        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
-
-        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
-        distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-ros2/addComp/src");
-        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
-        distributedTargetGenerator.add(new RclCppGenImpl(), "rclcpp");
-        List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
-    }
 }
