@@ -56,9 +56,14 @@ public class SpectralClusteringBuilder {
     public SpectralClustering build() {
         SpectralClustering sc;
 
-        if (this.l != null && this.sigma != null) sc = new SpectralClustering(data, k, l, sigma); else
-            if (this.sigma != null) sc = new SpectralClustering(data, k, sigma); else
+        if (this.l != null && this.sigma != null) {
+            sc = new SpectralClustering(data, k, l, sigma);
+        } else {
+            if (this.sigma != null) {
+                sc = new SpectralClustering(data, k, sigma);
+            } else
                 sc = new SpectralClustering(data, k);
+        }
 
         return sc;
     }

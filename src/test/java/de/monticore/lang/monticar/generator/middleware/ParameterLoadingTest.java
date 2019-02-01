@@ -53,10 +53,36 @@ public class ParameterLoadingTest {
         Map<String, AlgorithmCliParameters> nameToParams = new HashMap<>();
         algorithmParameters.forEach(p -> nameToParams.put(p.getName(), p));
 
+
         assertTrue(nameToParams.get("SpectralClustering") instanceof SpectralClusteringCliParameters);
         assertTrue(nameToParams.get("DBScan") instanceof DBScanCliParameters);
         assertTrue(nameToParams.get("Markov") instanceof MarkovCliParameters);
         assertTrue(nameToParams.get("AffinityPropagation") instanceof AffinityPropagationCliParameters);
+
+        SpectralClusteringCliParameters spectralClustering = (SpectralClusteringCliParameters) nameToParams.get("SpectralClustering");
+        DBScanCliParameters dbScan = (DBScanCliParameters) nameToParams.get("DBScan");
+        MarkovCliParameters markov = (MarkovCliParameters) nameToParams.get("Markov");
+        AffinityPropagationCliParameters affinityPropagation = (AffinityPropagationCliParameters) nameToParams.get("AffinityPropagation");
+
+        assertTrue(spectralClustering.isValid());
+        assertTrue(dbScan.isValid());
+        assertTrue(markov.isValid());
+        assertTrue(affinityPropagation.isValid());
+
+        double delta = 0.000001;
+
+        assertEquals(4, (int) spectralClustering.getNumberOfClusters().get());
+        assertEquals(10, (int) spectralClustering.getL().get());
+        assertEquals(0.01, (double) spectralClustering.getSigma().get(), delta);
+
+        assertEquals(5, (int) dbScan.getMinPts().get());
+        assertEquals(2.5, (double) dbScan.getRadius().get(), delta);
+
+        assertEquals(0.001, markov.getMaxResidual().get(), delta);
+        assertEquals(2.0, markov.getGammaExp().get(), delta);
+        assertEquals(0, markov.getLoopGain().get(), delta);
+        assertEquals(0.002, markov.getZeroMax().get(), delta);
+
     }
 
      @Test
