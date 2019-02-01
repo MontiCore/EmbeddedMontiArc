@@ -11,20 +11,33 @@ component Calculator {
 
                 out Z(0:1998) out1;
         
-        instance Argmaxs args1;
-        instance Argmaxs args2;
+        instance ArgMax<10> number1_ones;
+        instance ArgMax<10> number1_tens;
+        instance ArgMax<10> number1_hundreds;
+        instance ArgMax<10> number2_ones;
+        instance ArgMax<10> number2_tens;
+        instance ArgMax<10> number2_hundreds;
+        instance DigitCombiner number1;
+        instance DigitCombiner number2;
         instance Add add;
         
 
-        connect in1_1 -> args1.input1;
-        connect in1_2 -> args1.input2;
-        connect in1_3 -> args1.input3;
-        connect in2_1 -> args2.input1;
-        connect in2_2 -> args2.input2;
-        connect in2_3 -> args2.input3;
+        connect in1_1 -> number1_ones.inputVector;
+        connect in1_2 -> number1_tens.inputVector;
+        connect in1_3 -> number1_hundreds.inputVector;
+        connect in2_1 -> number2_ones.inputVector;
+        connect in2_2 -> number2_tens.inputVector;
+        connect in2_3 -> number2_hundreds.inputVector;
 
-        connect args1.max -> add.num1;
-        connect args2.max -> add.num2;
+        connect number1_ones.maxIndex -> number1.ones;
+        connect number1_tens.maxIndex -> number1.tens;
+        connect number1_hundreds.maxIndex -> number1.hundreds;
+        connect number2_ones.maxIndex -> number2.ones;
+        connect number2_tens.maxIndex -> number2.tens;
+        connect number2_hundreds.maxIndex -> number2.hundreds;
+
+        connect number1.number -> add.num1;
+        connect number2.number -> add.num2;
 
         connect add.sum -> out1;
 

@@ -1,7 +1,7 @@
 package cNNCalculator;
 
 component VGG16{
-    ports in Q(0:1)^{1, 28, 28} image,
+    ports in Z(0:255)^{1, 28, 28} image,
          out Q(0:1)^{10} predictions;
 
          implementation CNN {

@@ -1,12 +1,12 @@
 package cNNCalculator;
 
 component Connector {
-    ports in Q(0:1)^{1, 28, 28} image1,
-          in Q(0:1)^{1, 28, 28} image2,
-          in Q(0:1)^{1, 28, 28} image3,
-          in Q(0:1)^{1, 28, 28} image4,
-          in Q(0:1)^{1, 28, 28} image5,
-          in Q(0:1)^{1, 28, 28} image6,
+    ports in Z(0:255)^{1, 28, 28} image1,
+          in Z(0:255)^{1, 28, 28} image2,
+          in Z(0:255)^{1, 28, 28} image3,
+          in Z(0:255)^{1, 28, 28} image4,
+          in Z(0:255)^{1, 28, 28} image5,
+          in Z(0:255)^{1, 28, 28} image6,
           out Z(0:1998) res;
 
     instance VGG16 predictor1;
