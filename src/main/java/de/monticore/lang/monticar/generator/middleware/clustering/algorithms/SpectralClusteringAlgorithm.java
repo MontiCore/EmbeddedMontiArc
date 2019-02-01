@@ -11,6 +11,17 @@ import java.util.*;
 
 // spectral clusterer product implementation
 public class SpectralClusteringAlgorithm implements ClusteringAlgorithm {
+    private List<Object> args;
+
+    public void setArgs(List<Object> args) {
+        this.args = args;
+    }
+
+    @Override
+    public List<Object> getArgs() {
+        return args;
+    }
+
     @Override
     public List<Set<EMAComponentInstanceSymbol>> cluster(EMAComponentInstanceSymbol component, Object... args) {
 

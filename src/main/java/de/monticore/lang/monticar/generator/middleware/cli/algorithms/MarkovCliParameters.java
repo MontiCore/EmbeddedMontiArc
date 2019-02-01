@@ -24,7 +24,9 @@ public class MarkovCliParameters extends AlgorithmCliParameters {
 
     @Override
     public ClusteringAlgorithm asClustringAlgorithm() {
-        return new MarkovClusteringAlgorithm();
+        MarkovClusteringAlgorithm markovClusteringAlgorithm = new MarkovClusteringAlgorithm();
+        markovClusteringAlgorithm.setArgs(asAlgorithmArgs());
+        return markovClusteringAlgorithm;
     }
 
     @Override
@@ -68,5 +70,21 @@ public class MarkovCliParameters extends AlgorithmCliParameters {
 
     public Optional<Double> getZeroMax() {
         return Optional.ofNullable(zero_max);
+    }
+
+    public void setMaxResidual(Double max_residual) {
+        this.max_residual = max_residual;
+    }
+
+    public void setGammaExp(Double gamma_exp) {
+        this.gamma_exp = gamma_exp;
+    }
+
+    public void setLoopGain(Double loop_gain) {
+        this.loop_gain = loop_gain;
+    }
+
+    public void setZeroMax(Double zero_max) {
+        this.zero_max = zero_max;
     }
 }
