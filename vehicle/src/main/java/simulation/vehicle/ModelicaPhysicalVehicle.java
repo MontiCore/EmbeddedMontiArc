@@ -605,7 +605,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         // front left wheel
         if(WorldModel.getInstance().isFrontLeftWheelOnStreet(this)) {
-            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetByRealVector(getFrontLeftWheelGeometryPosition()).getObject();
+            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(getFrontLeftWheelGeometryPosition()).getObject();
         } else {
             street = new Street2D(null, null, null, 0, true, null, EnvStreet.StreetPavements.UNPAVED);
         }
@@ -616,7 +616,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         // front right wheel
         if(WorldModel.getInstance().isFrontRightWheelOnStreet(this)) {
-            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetByRealVector(getFrontRightWheelGeometryPosition()).getObject();
+            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(getFrontRightWheelGeometryPosition()).getObject();
         } else {
             street = new Street2D(null, null, null, 0, true, null, EnvStreet.StreetPavements.UNPAVED);
         }
@@ -627,7 +627,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         // back left wheel
         if(WorldModel.getInstance().isBackLeftWheelOnStreet(this)) {
-            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetByRealVector(getBackLeftWheelGeometryPosition()).getObject();
+            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(getBackLeftWheelGeometryPosition()).getObject();
         } else {
             street = new Street2D(null, null, null, 0, true, null, EnvStreet.StreetPavements.UNPAVED);
         }
@@ -638,7 +638,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         // back right wheel
         if(WorldModel.getInstance().isBackRightWheelOnStreet(this)) {
-            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetByRealVector(getBackRightWheelGeometryPosition()).getObject();
+            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(getBackRightWheelGeometryPosition()).getObject();
         } else {
             street = new Street2D(null, null, null, 0, true, null, EnvStreet.StreetPavements.UNPAVED);
         }
