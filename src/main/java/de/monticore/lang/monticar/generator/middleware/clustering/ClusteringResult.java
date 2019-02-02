@@ -1,7 +1,9 @@
 package de.monticore.lang.monticar.generator.middleware.clustering;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.AlgorithmCliParameters;
+import de.monticore.lang.monticar.generator.middleware.impls.MiddlewareTagGenImpl;
 
 import java.util.List;
 import java.util.Set;
@@ -49,5 +51,17 @@ public class ClusteringResult {
 
     public boolean hasNumberOfClusters(int n){
         return getNumberOfClusters() == n;
+    }
+
+    public FileContent getTagFile(String fileName){
+        FileContent res = new FileContent();
+        res.setFileName(fileName);
+        String prefix = "//Algorithm: " + this.getParameters().toString() + "\n" +
+                        "//Number of clusters: " + this.getNumberOfClusters() + "\n" +
+                        "//Score: " + this.getScore() + "\n";
+
+        String content = MiddlewareTagGenImpl.getFileContent(component, this.clustering);
+        res.setFileContent(prefix + content);
+        return res;
     }
 }

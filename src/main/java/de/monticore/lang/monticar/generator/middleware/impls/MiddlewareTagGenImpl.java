@@ -1,29 +1,49 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.MiddlewareSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringResultList;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MiddlewareTagGenImpl implements GeneratorImpl {
 
     private String generationTargetPath;
+    private ClusteringResultList clusteringResults;
+
+    public ClusteringResultList getClusteringResults() {
+        return clusteringResults;
+    }
+
+    public void setClusteringResults(ClusteringResultList clusteringResults) {
+        this.clusteringResults = clusteringResults;
+    }
 
     @Override
     public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         List<File> res = new ArrayList<>();
+        List<EMAPortInstanceSymbol> middlewarePorts = getMiddlewarePorts(componentInstanceSymbol);
+        res.add(FileHelper.generateFile(generationTargetPath ,generateRosTags(componentInstanceSymbol.getPackageName(),middlewarePorts, false)));
+        for(FileContent fc : clusteringResults.getAllTagFiles("Clustering")){
+            res.add(FileHelper.generateFile(generationTargetPath , fc));
+        }
 
+        return res;
+    }
+
+    private static List<EMAPortInstanceSymbol> getMiddlewarePorts(EMAComponentInstanceSymbol componentInstanceSymbol) {
         //Collect Ports with Middleware Symbols from Super Component and first level subcomponents
         List<EMAPortInstanceSymbol> middlewarePortsSuper = componentInstanceSymbol.getPortInstanceList().stream()
                 .filter(portSymbol -> portSymbol.getMiddlewareSymbol().isPresent())
@@ -38,18 +58,26 @@ public class MiddlewareTagGenImpl implements GeneratorImpl {
         List<EMAPortInstanceSymbol> middlewarePorts = new ArrayList<>();
         middlewarePorts.addAll(middlewarePortsSub);
         middlewarePorts.addAll(middlewarePortsSuper);
-
-        res.add(generateRosTags(componentInstanceSymbol.getPackageName(),middlewarePorts));
-
-        return res;
+        return middlewarePorts;
     }
 
-    private File generateRosTags(String packageName ,List<EMAPortInstanceSymbol> middlewarePorts) throws IOException {
-        List<EMAPortInstanceSymbol> rosPorts = middlewarePorts.stream()
-                .filter(EMAPortInstanceSymbol::isRosPort)
-                .collect(Collectors.toList());
+    public static String getFileContent(EMAComponentInstanceSymbol componentInstanceSymbol, List<Set<EMAComponentInstanceSymbol>> clustering){
+        List<EMAConnectorInstanceSymbol> affectedConnectors = AutomaticClusteringHelper.getInterClusterConnectors(componentInstanceSymbol, clustering);
+        List<EMAPortInstanceSymbol> affectedPorts = affectedConnectors.stream().flatMap(c -> Stream.of(c.getSourcePort(), c.getTargetPort())).collect(Collectors.toList());
+        return generateRosTags(componentInstanceSymbol.getPackageName(), affectedPorts, true).getFileContent();
+    }
 
+    private static FileContent generateRosTags(String packageName , List<EMAPortInstanceSymbol> affectedPorts, boolean ignoreOldValues){
         FileContent result = new FileContent();
+
+        List<EMAPortInstanceSymbol> rosPorts;
+        if(!ignoreOldValues) {
+            rosPorts = affectedPorts.stream()
+                    .filter(EMAPortInstanceSymbol::isRosPort)
+                    .collect(Collectors.toList());
+        }else{
+            rosPorts = affectedPorts;
+        }
 
         result.setFileName("RosConnections.tag");
 
@@ -63,15 +91,17 @@ public class MiddlewareTagGenImpl implements GeneratorImpl {
         //Pro port: tag ${port.fullName} with RosConnection (; | topic=(${topicName},${topicType}) , (msgField=${msgField})?);
         rosPorts.forEach(p -> {
             content.append("tag " + p.getFullName() + " with RosConnection");
-            RosConnectionSymbol rosSymbol = (RosConnectionSymbol) p.getMiddlewareSymbol().get();
-            if(rosSymbol.getTopicName().isPresent() && rosSymbol.getTopicType().isPresent()){
-                content.append(" = {topic = ("+ rosSymbol.getTopicName().get() +", " +rosSymbol.getTopicType().get() + ")");
+            if(!ignoreOldValues) {
+                RosConnectionSymbol rosSymbol = (RosConnectionSymbol) p.getMiddlewareSymbol().get();
+                if (rosSymbol.getTopicName().isPresent() && rosSymbol.getTopicType().isPresent()) {
+                    content.append(" = {topic = (" + rosSymbol.getTopicName().get() + ", " + rosSymbol.getTopicType().get() + ")");
 
-                if(rosSymbol.getMsgField().isPresent()){
-                    content.append(", msgField = " + rosSymbol.getMsgField().get());
+                    if (rosSymbol.getMsgField().isPresent()) {
+                        content.append(", msgField = " + rosSymbol.getMsgField().get());
+                    }
+
+                    content.append("}");
                 }
-
-                content.append("}");
             }
             content.append(";\n");
 
@@ -79,7 +109,7 @@ public class MiddlewareTagGenImpl implements GeneratorImpl {
         content.append("}");
 
         result.setFileContent(content.toString());
-        return FileHelper.generateFile(generationTargetPath ,result);
+        return result;
     }
 
     @Override

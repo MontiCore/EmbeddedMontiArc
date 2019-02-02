@@ -3,6 +3,7 @@
   "outputDir": "target/cliTest/flattenSpectralMulti/",
   "rootModel": "de.rwth.pacman.heithoff2.controller",
   "generators": ["cpp","roscpp"],
+  "writeTagFile":true,
   "clusteringParameters":{
     "flatten":true,
     "algorithmParameters":[

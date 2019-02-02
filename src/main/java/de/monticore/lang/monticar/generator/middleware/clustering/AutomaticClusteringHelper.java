@@ -134,13 +134,23 @@ public class AutomaticClusteringHelper {
     }
 
     public static double getTypeCostHeuristic(EMAComponentInstanceSymbol componentInstanceSymbol, List<Set<EMAComponentInstanceSymbol>> clustering){
+        List<EMAConnectorInstanceSymbol> interClusterConnectors = getInterClusterConnectors(componentInstanceSymbol, clustering);
+
+        return interClusterConnectors.stream()
+                .map(EMAConnectorInstanceSymbol::getTargetPort)
+                .map(AutomaticClusteringHelper::getTypeCostHeuristic)
+                .mapToDouble(d -> d)
+                .sum();
+    }
+
+    public static List<EMAConnectorInstanceSymbol> getInterClusterConnectors(EMAComponentInstanceSymbol componentInstanceSymbol, List<Set<EMAComponentInstanceSymbol>> clustering) {
         List<Set<String>> clusteringAsNames = clustering.stream()
                 .map(s -> s.stream()
                         .map(CommonSymbol::getFullName)
                         .collect(Collectors.toSet()))
                 .collect(Collectors.toList());
 
-        List<EMAConnectorInstanceSymbol> interClusterConnectors = componentInstanceSymbol.getConnectorInstances().stream()
+        return componentInstanceSymbol.getConnectorInstances().stream()
                 .filter(con -> {
                     EMAComponentInstanceSymbol sourceComp = con.getSourcePort().getComponentInstance();
                     EMAComponentInstanceSymbol targetComp = con.getTargetPort().getComponentInstance();
@@ -160,12 +170,6 @@ public class AutomaticClusteringHelper {
                     return sourceClusterIndex != targetClusterIndex;
                 })
                 .collect(Collectors.toList());
-
-        return interClusterConnectors.stream()
-                .map(EMAConnectorInstanceSymbol::getTargetPort)
-                .map(AutomaticClusteringHelper::getTypeCostHeuristic)
-                .mapToDouble(d -> d)
-                .sum();
     }
 
     public static double getTypeCostHeuristic(EMAPortSymbol port){

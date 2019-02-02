@@ -20,6 +20,7 @@ import java.util.*;
 
 public class DistributedTargetGenerator extends CMakeGenerator {
     private boolean generateMiddlewareTags = false;
+    private ClusteringResultList clusteringResults = new ClusteringResultList();
 
     public boolean isGenerateMiddlewareTags() {
         return generateMiddlewareTags;
@@ -83,6 +84,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         if(generateMiddlewareTags){
             MiddlewareTagGenImpl middlewareTagGen = new MiddlewareTagGenImpl();
             middlewareTagGen.setGenerationTargetPath(generationTargetPath + "emam/");
+            middlewareTagGen.setClusteringResults(clusteringResults);
             files.addAll(middlewareTagGen.generate(componentInstanceSymbol,taggingResolver));
         }
 
@@ -105,7 +107,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
             //Cluster
             if(clusteringParameters.getAlgorithmParameters().size() > 0) {
-                ClusteringResultList clusteringResults = AutomaticClusteringHelper.executeClusteringFromParams(componentInstanceSymbol, clusteringParameters.getAlgorithmParameters());
+                clusteringResults = AutomaticClusteringHelper.executeClusteringFromParams(componentInstanceSymbol, clusteringParameters.getAlgorithmParameters());
                 Optional<Integer> nOpt = clusteringParameters.getNumberOfClusters();
                 for(ClusteringResult c : clusteringResults){
                     String prefix = nOpt.isPresent() && !c.hasNumberOfClusters(nOpt.get()) ? "[IGNORED]" : "";
