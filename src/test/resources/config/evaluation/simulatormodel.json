@@ -1,0 +1,16 @@
+{
+  "modelsDir": "src/test/resources/simulatorModel/",
+  "outputDir": "target/evaluation/simulatormodel/",
+  "rootModel": "simulatorModel.mainController",
+  "generators": ["cpp"],
+  "writeTagFile":true,
+  "clusteringParameters":{
+    "flatten":true,
+    "algorithmParameters":[
+      {
+        "name":"SpectralClustering",
+        "numberOfClusters":3
+      }
+    ]
+  }
+}
