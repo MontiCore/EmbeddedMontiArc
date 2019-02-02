@@ -1,9 +1,11 @@
 package de.monticore.lang.monticar.generator.middleware.clustering;
 
+import de.monticore.lang.monticar.generator.FileContent;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 public class ClusteringResultList extends ArrayList<ClusteringResult> {
@@ -28,5 +30,16 @@ public class ClusteringResultList extends ArrayList<ClusteringResult> {
     public Optional<ClusteringResult> getBestResultOverall(){
         this.sort(Comparator.comparing(ClusteringResult::getScore));
         return this.size() == 0 ? Optional.empty() : Optional.of(this.get(0));
+    }
+
+    public List<FileContent> getAllTagFiles(String baseName){
+        List<FileContent> res = new ArrayList<>();
+        int i = 1;
+        for (ClusteringResult r : this) {
+            FileContent tagFile = r.getTagFile(baseName + "_" + i + "_" + r.getParameters().getName() + ".tag");
+            res.add(tagFile);
+            i++;
+        }
+        return res;
     }
 }
