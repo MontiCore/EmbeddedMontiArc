@@ -6,7 +6,6 @@ import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.Spe
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
@@ -30,12 +29,12 @@ public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
     }
 
     @Override
-    public List<Object> asAlgorithmArgs(){
+    public Object[] asAlgorithmArgs(){
         ArrayList<Object> res = new ArrayList<>();
 
         if(!isValid()){
             Log.error("SpectralClusteringCliParameters: The numberOfClusters parameter is mandatory but unset!");
-            return res;
+            return res.toArray();
         }
 
         res.add(SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS);
@@ -51,7 +50,7 @@ public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
             res.add(sigma);
         }
 
-        return res;
+        return res.toArray();
     }
 
     @Override
@@ -81,5 +80,14 @@ public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
 
     public void setSigma(Double sigma) {
         this.sigma = sigma;
+    }
+
+    @Override
+    public String toString() {
+        return "SpectralClustering{" +
+                "numberOfClusters=" + numberOfClusters +
+                ", l=" + l +
+                ", sigma=" + sigma +
+                '}';
     }
 }

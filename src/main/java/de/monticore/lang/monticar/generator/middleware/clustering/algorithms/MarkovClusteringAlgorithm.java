@@ -15,14 +15,14 @@ import java.util.*;
 
 // markov mcl clusterer product implementation
 public class MarkovClusteringAlgorithm implements ClusteringAlgorithm {
-    private List<Object> args;
+    private Object[] args;
 
-    public void setArgs(List<Object> args) {
+    public void setArgs(Object[] args) {
         this.args = args;
     }
 
     @Override
-    public List<Object> getArgs() {
+    public Object[] getArgs() {
         return args;
     }
 

@@ -1,23 +1,22 @@
 package de.monticore.lang.monticar.generator.middleware.clustering;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
+import de.monticore.lang.monticar.generator.middleware.cli.algorithms.AlgorithmCliParameters;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.resolving.ResolvingFilter;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.symboltable.CommonSymbol;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AutomaticClusteringHelper {
@@ -134,6 +133,41 @@ public class AutomaticClusteringHelper {
 
     }
 
+    public static double getTypeCostHeuristic(EMAComponentInstanceSymbol componentInstanceSymbol, List<Set<EMAComponentInstanceSymbol>> clustering){
+        List<Set<String>> clusteringAsNames = clustering.stream()
+                .map(s -> s.stream()
+                        .map(CommonSymbol::getFullName)
+                        .collect(Collectors.toSet()))
+                .collect(Collectors.toList());
+
+        List<EMAConnectorInstanceSymbol> interClusterConnectors = componentInstanceSymbol.getConnectorInstances().stream()
+                .filter(con -> {
+                    EMAComponentInstanceSymbol sourceComp = con.getSourcePort().getComponentInstance();
+                    EMAComponentInstanceSymbol targetComp = con.getTargetPort().getComponentInstance();
+
+                    int sourceClusterIndex = -1;
+                    int targetClusterIndex = -1;
+
+                    for (int i = 0; i < clusteringAsNames.size(); i++) {
+                        if (clusteringAsNames.get(i).contains(sourceComp.getFullName())) {
+                            sourceClusterIndex = i;
+                        }
+                        if (clusteringAsNames.get(i).contains(targetComp.getFullName())) {
+                            targetClusterIndex = i;
+                        }
+                    }
+
+                    return sourceClusterIndex != targetClusterIndex;
+                })
+                .collect(Collectors.toList());
+
+        return interClusterConnectors.stream()
+                .map(EMAConnectorInstanceSymbol::getTargetPort)
+                .map(AutomaticClusteringHelper::getTypeCostHeuristic)
+                .mapToDouble(d -> d)
+                .sum();
+    }
+
     public static double getTypeCostHeuristic(EMAPortSymbol port){
         return getTypeCostHeuristic(port.getTypeReference());
     }
@@ -175,5 +209,13 @@ public class AutomaticClusteringHelper {
     }
 
 
+    public static ClusteringResultList executeClusteringFromParams(EMAComponentInstanceSymbol emaComponentInstance, List<AlgorithmCliParameters> algoParams) {
+        ClusteringResultList res = new ClusteringResultList();
+        for (int i = 0; i < algoParams.size(); i++) {
+            System.out.println("Clustering with algorithm " + (i+1) + "/" + algoParams.size() + ": " +algoParams.get(i).toString());
+            res.add(ClusteringResult.fromParameters(emaComponentInstance, algoParams.get(i)));
+        }
+        return res;
+    }
 
 }

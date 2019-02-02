@@ -30,11 +30,11 @@ public class DBScanCliParameters extends AlgorithmCliParameters {
     }
 
     @Override
-    public List<Object> asAlgorithmArgs() {
+    public Object[] asAlgorithmArgs() {
         List<Object> res = new ArrayList<>();
         if(!isValid()){
             Log.error("DBScanCliParameters: The min_pts or radius parameters are mandatory but at least one is unset!");
-            return res;
+            return res.toArray();
         }
 
         res.add(DBSCANClusteringBuilder.DBSCANParameters.DBSCAN_MIN_PTS);
@@ -42,7 +42,7 @@ public class DBScanCliParameters extends AlgorithmCliParameters {
         res.add(DBSCANClusteringBuilder.DBSCANParameters.DBSCAN_RADIUS);
         res.add(radius);
 
-        return res;
+        return res.toArray();
     }
 
     @Override
@@ -64,5 +64,13 @@ public class DBScanCliParameters extends AlgorithmCliParameters {
 
     public void setRadius(Double radius) {
         this.radius = radius;
+    }
+
+    @Override
+    public String toString() {
+        return "DBScan{" +
+                "min_pts=" + min_pts +
+                ", radius=" + radius +
+                '}';
     }
 }

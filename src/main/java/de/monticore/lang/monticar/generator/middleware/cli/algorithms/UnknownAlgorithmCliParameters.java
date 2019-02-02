@@ -2,8 +2,6 @@ package de.monticore.lang.monticar.generator.middleware.cli.algorithms;
 
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
 
-import java.util.List;
-
 public class UnknownAlgorithmCliParameters extends AlgorithmCliParameters {
 
     public UnknownAlgorithmCliParameters() {
@@ -20,7 +18,7 @@ public class UnknownAlgorithmCliParameters extends AlgorithmCliParameters {
     }
 
     @Override
-    public List<Object> asAlgorithmArgs() {
+    public Object[] asAlgorithmArgs() {
         return null;
     }
 

@@ -3,12 +3,14 @@ package de.monticore.lang.monticar.generator.middleware.cli.algorithms;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.AffinityPropagationAlgorithm;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AffinityPropagationCliParameters extends AlgorithmCliParameters{
 
     public AffinityPropagationCliParameters() {
+    }
+
+    @Override
+    public String getName() {
+        return TYPE_AFFINITY_PROPAGATION;
     }
 
     @Override
@@ -17,12 +19,17 @@ public class AffinityPropagationCliParameters extends AlgorithmCliParameters{
     }
 
     @Override
-    public List<Object> asAlgorithmArgs(){
-        return new ArrayList<>();
+    public Object[] asAlgorithmArgs(){
+        return new Object[]{};
     }
 
     @Override
     public boolean isValid() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "AffinityPropagation";
     }
 }

@@ -11,14 +11,14 @@ import java.util.*;
 
 // DBSCAN clusterer product implementation
 public class DBSCANClusteringAlgorithm implements ClusteringAlgorithm {
-    private List<Object> args;
+    private Object[] args;
 
-    public void setArgs(List<Object> args) {
+    public void setArgs(Object[] args) {
         this.args = args;
     }
 
     @Override
-    public List<Object> getArgs() {
+    public Object[] getArgs() {
         return args;
     }
 

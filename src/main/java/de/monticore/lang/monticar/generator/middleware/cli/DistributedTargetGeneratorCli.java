@@ -154,6 +154,15 @@ public final class DistributedTargetGeneratorCli {
             generator.add(new ODVGenImpl(), "odv");
         }
 
+        if (cliParameters.getClusteringParameters().isPresent()) {
+            ClusteringParameters clusteringParameters = cliParameters.getClusteringParameters().get();
+            generator.setClusteringParameters(clusteringParameters);
+
+            clusteringParameters.getAlgorithmParameters().stream()
+                    .filter(alg -> !alg.isValid())
+                    .forEach(alg -> Log.error("Parameters for the algorithm " + alg.getName() + " are invalid!"));
+        }
+
         try {
             generator.generate(componentInstanceSymbol, taggingResolver);
         } catch (IOException e) {

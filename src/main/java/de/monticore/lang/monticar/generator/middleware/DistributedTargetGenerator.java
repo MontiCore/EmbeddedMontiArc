@@ -3,8 +3,12 @@ package de.monticore.lang.monticar.generator.middleware;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.cli.ClusteringParameters;
-import de.monticore.lang.monticar.generator.middleware.clustering.ClusterFromTagsHelper;
-import de.monticore.lang.monticar.generator.middleware.helpers.*;
+import de.monticore.lang.monticar.generator.middleware.cli.ResultChoosingStrategy;
+import de.monticore.lang.monticar.generator.middleware.clustering.*;
+import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.RosHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.MiddlewareTagGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -32,16 +36,24 @@ public class DistributedTargetGenerator extends CMakeGenerator {
     public DistributedTargetGenerator() {
     }
 
+    public ClusteringParameters getClusteringParameters() {
+        return clusteringParameters;
+    }
+
+    public void setClusteringParameters(ClusteringParameters clusteringParameters) {
+        this.clusteringParameters = clusteringParameters;
+    }
+
     @Override
     public void setGenerationTargetPath(String path) {
         super.setGenerationTargetPath(path);
     }
 
     @Override
-    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    public List<File> generate(EMAComponentInstanceSymbol genComp, TaggingResolver taggingResolver) throws IOException {
         Map<EMAComponentInstanceSymbol, GeneratorImpl> generatorMap = new HashMap<>();
 
-        fixComponentInstance(componentInstanceSymbol);
+        EMAComponentInstanceSymbol componentInstanceSymbol = preprocessing(genComp);
 
         List<ExpandedComponentInstanceSymbol> clusterSubcomponents = ClusterFromTagsHelper.getClusterSubcomponents(componentInstanceSymbol);
         if (clusterSubcomponents.size() > 0) {
@@ -78,6 +90,47 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         return files;
     }
 
+    private EMAComponentInstanceSymbol preprocessing(EMAComponentInstanceSymbol genComp) {
+        EMAComponentInstanceSymbol componentInstanceSymbol = genComp;
+        if(clusteringParameters != null){
+            //Flatten
+            if(clusteringParameters.getFlatten()){
+                if(clusteringParameters.getFlattenLevel().isPresent()){
+                    Integer level = clusteringParameters.getFlattenLevel().get();
+                    componentInstanceSymbol = FlattenArchitecture.flattenArchitecture(genComp, new HashMap<>(), level);
+                }else {
+                    componentInstanceSymbol = FlattenArchitecture.flattenArchitecture(genComp);
+                }
+            }
+
+            //Cluster
+            if(clusteringParameters.getAlgorithmParameters().size() > 0) {
+                ClusteringResultList clusteringResults = AutomaticClusteringHelper.executeClusteringFromParams(componentInstanceSymbol, clusteringParameters.getAlgorithmParameters());
+                Optional<Integer> nOpt = clusteringParameters.getNumberOfClusters();
+                for(ClusteringResult c : clusteringResults){
+                    String prefix = nOpt.isPresent() && !c.hasNumberOfClusters(nOpt.get()) ? "[IGNORED]" : "";
+                    System.out.println(prefix + "Score was " + c.getScore() + " for " + c.getParameters().toString());
+                }
+
+                Optional<ClusteringResult> clusteringOpt;
+                if(nOpt.isPresent() && clusteringParameters.getChooseBy().equals(ResultChoosingStrategy.bestWithFittingN)){
+                    clusteringOpt = clusteringResults.getBestResultWithFittingN(nOpt.get());
+                }else{
+                    clusteringOpt = clusteringResults.getBestResultOverall();
+                }
+
+                if(clusteringOpt.isPresent()){
+                    ClusteringResult clusteringResult = clusteringOpt.get();
+                    System.out.println("Best score was " + clusteringResult.getScore() + " for " + clusteringResult.getParameters().toString());
+                    AutomaticClusteringHelper.annotateComponentWithRosTagsForClusters(componentInstanceSymbol, clusteringResult.getClustering());
+                }
+            }
+        }
+
+        fixComponentInstance(componentInstanceSymbol);
+        return componentInstanceSymbol;
+    }
+
     private File generateRosMsgGen() throws IOException {
         File file = new File(generationTargetPath + "rosMsg/CMakeLists.txt");
         FileUtils.write(file, TemplateHelper.getStruct_msgsCmakeTemplate());
@@ -103,7 +156,6 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         fileContent.setFileName("CMakeLists.txt");
         StringBuilder content = new StringBuilder();
         content.append("cmake_minimum_required(VERSION 3.5)\n");
-        //TODO setProjectName?
         content.append("project (default)\n");
         content.append("set (CMAKE_CXX_STANDARD 11)\n");
 

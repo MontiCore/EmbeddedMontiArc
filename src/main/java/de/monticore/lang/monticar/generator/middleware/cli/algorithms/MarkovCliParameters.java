@@ -30,7 +30,7 @@ public class MarkovCliParameters extends AlgorithmCliParameters {
     }
 
     @Override
-    public List<Object> asAlgorithmArgs() {
+    public Object[] asAlgorithmArgs() {
         List<Object> res = new ArrayList<>();
         if(max_residual != null){
             res.add(MarkovClusteringBuilder.MarkovParameters.MARKOV_MAX_RESIDUAL);
@@ -48,7 +48,7 @@ public class MarkovCliParameters extends AlgorithmCliParameters {
             res.add(MarkovClusteringBuilder.MarkovParameters.MARKOV_ZERO_MAX);
             res.add(zero_max);
         }
-        return res;
+        return res.toArray();
     }
 
     @Override
@@ -86,5 +86,15 @@ public class MarkovCliParameters extends AlgorithmCliParameters {
 
     public void setZeroMax(Double zero_max) {
         this.zero_max = zero_max;
+    }
+
+    @Override
+    public String toString() {
+        return "Markov{" +
+                "max_residual=" + max_residual +
+                ", gamma_exp=" + gamma_exp +
+                ", loop_gain=" + loop_gain +
+                ", zero_max=" + zero_max +
+                '}';
     }
 }

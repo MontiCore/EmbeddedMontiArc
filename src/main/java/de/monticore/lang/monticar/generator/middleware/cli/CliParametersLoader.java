@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.middleware.cli;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.*;
+import de.se_rwth.commons.logging.Log;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -36,7 +37,10 @@ public class CliParametersLoader {
                 case "dbscan": return DBScanCliParameters.class;
                 case "affinitypropagation": return AffinityPropagationCliParameters.class;
                 case "markov": return MarkovCliParameters.class;
-                default: return UnknownAlgorithmCliParameters.class;
+                default:{
+                    Log.warn("Loaded config of unknown clustering algorithm: " + algoName);
+                    return UnknownAlgorithmCliParameters.class;
+                }
             }
         }
     }

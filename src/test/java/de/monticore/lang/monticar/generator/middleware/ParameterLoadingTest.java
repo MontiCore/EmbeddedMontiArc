@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware;
 
-import de.monticore.lang.monticar.generator.middleware.cli.CliParametersLoader;
 import de.monticore.lang.monticar.generator.middleware.cli.CliParameters;
+import de.monticore.lang.monticar.generator.middleware.cli.CliParametersLoader;
 import de.monticore.lang.monticar.generator.middleware.cli.ClusteringParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.ResultChoosingStrategy;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.*;
@@ -12,9 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class ParameterLoadingTest {
@@ -85,7 +83,7 @@ public class ParameterLoadingTest {
 
     }
 
-     @Test
+    @Test
     public void testClusterParamsInvalidAlgos() throws FileNotFoundException {
         CliParameters params = loadCliParameters("clusterParamsInvalidAlgos");
         ClusteringParameters clusteringParameters = params.getClusteringParameters().get();
@@ -95,6 +93,27 @@ public class ParameterLoadingTest {
 
         assertTrue(algorithmParameters.get(0) instanceof UnknownAlgorithmCliParameters);
         assertTrue(algorithmParameters.get(1) instanceof UnknownAlgorithmCliParameters);
+    }
+
+    @Test
+    public void testClusterParamsNumberOfClustersOverride() throws FileNotFoundException {
+        CliParameters params = loadCliParameters("NumberOfClustersOverride");
+        ClusteringParameters clusteringParameters = params.getClusteringParameters().get();
+
+        List<AlgorithmCliParameters> algorithmParameters = clusteringParameters.getAlgorithmParameters();
+        assertEquals(4, algorithmParameters.size());
+
+        assertTrue(algorithmParameters.get(0) instanceof SpectralClusteringCliParameters);
+        assertTrue(algorithmParameters.get(1) instanceof SpectralClusteringCliParameters);
+        assertTrue(algorithmParameters.get(2) instanceof SpectralClusteringCliParameters);
+
+        SpectralClusteringCliParameters sc0 = (SpectralClusteringCliParameters) algorithmParameters.get(0);
+        SpectralClusteringCliParameters sc1 = (SpectralClusteringCliParameters) algorithmParameters.get(1);
+        SpectralClusteringCliParameters sc2 = (SpectralClusteringCliParameters) algorithmParameters.get(2);
+
+        assertEquals(5, (int) sc0.getNumberOfClusters().get());
+        assertEquals(5, (int) sc1.getNumberOfClusters().get());
+        assertEquals(5, (int) sc2.getNumberOfClusters().get());
     }
 
 
