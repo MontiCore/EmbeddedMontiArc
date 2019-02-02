@@ -9,11 +9,14 @@ import java.util.Set;
 public interface ClusteringAlgorithm {
     List<Set<EMAComponentInstanceSymbol>> cluster(EMAComponentInstanceSymbol component, Object... args);
 
-    //TODO: add arguments as typed state of the algorithms
-    default List<Set<EMAComponentInstanceSymbol>> cluster(EMAComponentInstanceSymbol component){
-        return cluster(component ,getArgs());
+    //TODO: add arguments as typed state of the algorithms(instead of untyped)
+    default List<Set<EMAComponentInstanceSymbol>> clusterWithState(EMAComponentInstanceSymbol component){
+        Object[] args = getArgs();
+        return cluster(component, args);
     }
 
-    List<Object> getArgs();
+    default Object[] getArgs(){
+        return null;
+    }
 
 }

@@ -8,9 +8,7 @@
     "algorithmParameters":[
       {
         "name":"SpectralClustering",
-        "numberOfClusters":4,
-        "l": 10,
-        "sigma": 0.01
+        "numberOfClusters":3
       },
       {
         "name":"DBScan",
@@ -18,11 +16,7 @@
         "radius":2.5
       },
       {
-        "name":"Markov",
-        "max_residual":0.001,
-        "gamma_exp": 2.0,
-        "loop_gain": 0.0,
-        "zero_max": 0.002
+        "name":"Markov"
       },
       {
         "name":"AffinityPropagation"
