@@ -1,1 +1,1 @@
-cNNCalculator.VGG16 src/resources/data/vGG16
+cNNCalculator.Network resources/training_data

@@ -9,27 +9,29 @@ component Connector {
           in Z(0:255)^{1, 28, 28} image6,
           out Z(0:1998) res;
 
-    instance VGG16 predictor1;
-    instance VGG16 predictor2;
-    instance VGG16 predictor3;
-    instance VGG16 predictor4;
-    instance VGG16 predictor5;
-    instance VGG16 predictor6;
+    instance Network<10> predictor1;
+    instance Network<10> predictor2;
+    instance Network<10> predictor3;
+    instance Network<10> predictor4;
+    instance Network<10> predictor5;
+    instance Network<10> predictor6;
     instance Calculator cal;
 
-    connect image1 -> predictor1.image;
-    connect image2 -> predictor2.image;
-    connect image3 -> predictor3.image;
-    connect image4 -> predictor4.image;
-    connect image5 -> predictor5.image;
-    connect image6 -> predictor6.image;
+    instance ArgMax<10> maxi;
 
-    connect predictor1.predictions -> cal.in1_1;
-    connect predictor2.predictions -> cal.in1_2;
-    connect predictor3.predictions -> cal.in1_3;
-    connect predictor4.predictions -> cal.in2_1;
-    connect predictor5.predictions -> cal.in2_2;
-    connect predictor6.predictions -> cal.in2_3;
+    connect image1 -> predictor1.data;
+    connect image2 -> predictor2.data;
+    connect image3 -> predictor3.data;
+    connect image4 -> predictor4.data;
+    connect image5 -> predictor5.data;
+    connect image6 -> predictor6.data;
+
+    connect predictor1.softmax -> cal.in1_1;
+    connect predictor2.softmax -> cal.in1_2;
+    connect predictor3.softmax -> cal.in1_3;
+    connect predictor4.softmax -> cal.in2_1;
+    connect predictor5.softmax -> cal.in2_2;
+    connect predictor6.softmax -> cal.in2_3;
 
     connect cal.out1 -> res;
 
