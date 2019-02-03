@@ -603,49 +603,31 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         double frictionCoefficient;
         EnvStreet street;
 
-        // front left wheel
-        if(WorldModel.getInstance().isFrontLeftWheelOnStreet(this)) {
-            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(getFrontLeftWheelGeometryPosition()).getObject();
-        } else {
-            street = new Street2D(null, null, null, 0, true, null, EnvStreet.StreetPavements.UNPAVED);
+        RealVector[] wheelPositions = {
+            getFrontLeftWheelGeometryPosition(),
+            getFrontRightWheelGeometryPosition(),
+            getBackLeftWheelGeometryPosition(),
+            getBackRightWheelGeometryPosition(),
+        };
+
+        String[] wheelNames = {
+            "mu_1",
+            "mu_2",
+            "mu_3",
+            "mu_4",
+        };
+
+        for (int i = 0; i < 4; i++) {
+            if(((WorldModel) WorldModel.getInstance()).isPointOnStreet(wheelPositions[i])) {
+                street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(wheelPositions[i]).getObject();
+            } else {
+                street = new Street2D(null, null, null, 0, true, null, EnvStreet.StreetPavements.UNPAVED);
+            }
+    
+            frictionCoefficient = PhysicsEngine.calcFrictionCoefficient(street, WorldModel.getInstance().isItRaining());
+    
+            vehicleDynamicsModel.setInput(wheelNames[i], frictionCoefficient);
         }
-
-        frictionCoefficient = PhysicsEngine.calcFrictionCoefficient(street, WorldModel.getInstance().isItRaining());
-
-        vehicleDynamicsModel.setInput("mu_1", frictionCoefficient);
-
-        // front right wheel
-        if(WorldModel.getInstance().isFrontRightWheelOnStreet(this)) {
-            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(getFrontRightWheelGeometryPosition()).getObject();
-        } else {
-            street = new Street2D(null, null, null, 0, true, null, EnvStreet.StreetPavements.UNPAVED);
-        }
-
-        frictionCoefficient = PhysicsEngine.calcFrictionCoefficient(street, WorldModel.getInstance().isItRaining());
-
-        vehicleDynamicsModel.setInput("mu_2", frictionCoefficient);
-
-        // back left wheel
-        if(WorldModel.getInstance().isBackLeftWheelOnStreet(this)) {
-            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(getBackLeftWheelGeometryPosition()).getObject();
-        } else {
-            street = new Street2D(null, null, null, 0, true, null, EnvStreet.StreetPavements.UNPAVED);
-        }
-
-        frictionCoefficient = PhysicsEngine.calcFrictionCoefficient(street, WorldModel.getInstance().isItRaining());
-
-        vehicleDynamicsModel.setInput("mu_3", frictionCoefficient);
-
-        // back right wheel
-        if(WorldModel.getInstance().isBackRightWheelOnStreet(this)) {
-            street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(getBackRightWheelGeometryPosition()).getObject();
-        } else {
-            street = new Street2D(null, null, null, 0, true, null, EnvStreet.StreetPavements.UNPAVED);
-        }
-
-        frictionCoefficient = PhysicsEngine.calcFrictionCoefficient(street, WorldModel.getInstance().isItRaining());
-
-        vehicleDynamicsModel.setInput("mu_4", frictionCoefficient);
 
         // Store z coordinate for interpolation later
         double oldZ = vehicleDynamicsModel.getValue("z");

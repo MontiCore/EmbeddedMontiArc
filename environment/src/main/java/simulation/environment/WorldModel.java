@@ -401,64 +401,16 @@ public class WorldModel implements World{
     }
 
     @Override
-    public boolean isFrontLeftWheelOnStreet(IPhysicalVehicle v) {
-        Number distanceToLeft = getDistanceFrontLeftWheelToLeftStreetBorder(v);
-        Number distanceToRight;
-
-        // calculate distance to right street border
-        RealVector pos = v.getFrontLeftWheelGeometryPosition();
-        EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
+    public boolean isPointOnStreet(double x, double y, double z) {
+        EnvNode n = new Node2D(x, y, z);
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        distanceToRight = minStreet.getDistanceToRight(v);
-
-        return (distanceToLeft.doubleValue() > 6 || distanceToRight.doubleValue() > 6);
+        return minStreet.contains(n);
     }
 
-    @Override
-    public boolean isFrontRightWheelOnStreet(IPhysicalVehicle v){
-        Number distanceToLeft;
-        Number distanceToRight = getDistanceFrontRightWheelToRightStreetBorder(v);
-
-        // calculate distance to right street border
-        RealVector pos = v.getFrontLeftWheelGeometryPosition();
-        EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
-        GeomStreet minStreet = getMinimumStreetForNode(n);
-
-        distanceToLeft = minStreet.getDistanceToRight(v);
-
-        return (distanceToLeft.doubleValue() > 6 || distanceToRight.doubleValue() > 6);
-    }
-
-    @Override
-    public boolean isBackLeftWheelOnStreet(IPhysicalVehicle v){
-        Number distanceToLeft = getDistanceBackLeftWheelToLeftStreetBorder(v);
-        Number distanceToRight;
-
-        // calculate distance to right street border
-        RealVector pos = v.getFrontLeftWheelGeometryPosition();
-        EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
-        GeomStreet minStreet = getMinimumStreetForNode(n);
-
-        distanceToRight = minStreet.getDistanceToRight(v);
-
-        return (distanceToLeft.doubleValue() > 6 || distanceToRight.doubleValue() > 6);
-    }
-
-    @Override
-    public boolean isBackRightWheelOnStreet(IPhysicalVehicle v){
-        Number distanceToLeft;
-        Number distanceToRight = getDistanceBackRightWheelToRightStreetBorder(v);
-
-        // calculate distance to right street border
-        RealVector pos = v.getFrontLeftWheelGeometryPosition();
-        EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
-        GeomStreet minStreet = getMinimumStreetForNode(n);
-
-        distanceToLeft = minStreet.getDistanceToRight(v);
-
-        return (distanceToLeft.doubleValue() > 6 || distanceToRight.doubleValue() > 6);
-    }
+    public boolean isPointOnStreet(RealVector v) {
+        return isPointOnStreet(v.getEntry(0), v.getEntry(1), v.getEntry(2));
+    } 
 
     @Override
     public VisualisationEnvironmentContainer getContainer() throws Exception {

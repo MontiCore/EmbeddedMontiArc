@@ -102,28 +102,12 @@ public interface World {
     public abstract Number getDistanceBackRightWheelToRightStreetBorder(IPhysicalVehicle v);
 
     /**
-     * @param v
-     * @return wether the front left wheel is on a street
+     * @param x x-Coordinate
+     * @param y y-Coordinate
+     * @param z z-Coordinate
+     * @return wether given cordinates correspond to a point on a street
      */
-    public abstract boolean isFrontLeftWheelOnStreet(IPhysicalVehicle v);
-
-    /**
-     * @param v
-     * @return wether the front right wheel is on a street
-     */
-    public abstract boolean isFrontRightWheelOnStreet(IPhysicalVehicle v);
-
-    /**
-     * @param v
-     * @return wether the back left wheel is on a street
-     */
-    public abstract boolean isBackLeftWheelOnStreet(IPhysicalVehicle v);
-
-    /**
-     * @param v
-     * @return wether the back right wheel is on a street
-     */
-    public abstract boolean isBackRightWheelOnStreet(IPhysicalVehicle v);
+    public abstract boolean isPointOnStreet(double x, double y, double z);
 
     /**
      * @param o
