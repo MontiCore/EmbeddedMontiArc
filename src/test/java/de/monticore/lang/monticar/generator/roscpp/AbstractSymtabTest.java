@@ -9,6 +9,7 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.Utils;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
@@ -39,7 +40,9 @@ public class AbstractSymtabTest {
 
     public static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
         Scope scope = createSymTab(modelPath);
-        return new TaggingResolver(scope, Arrays.asList(modelPath));
+        TaggingResolver taggingResolver = new TaggingResolver(scope, Arrays.asList(modelPath));
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+        return taggingResolver;
     }
 
     public static Scope createSymTab(String... modelPath) {

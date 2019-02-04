@@ -6,9 +6,13 @@ import de.monticore.lang.monticar.generator.roscpp.util.TargetCodeInstruction;
 import de.monticore.lang.monticar.generator.roscpp.helper.IndexHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
+import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
+import de.se_rwth.commons.logging.Log;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SetStructPortInstruction extends TargetCodeInstruction {
@@ -48,8 +52,38 @@ public class SetStructPortInstruction extends TargetCodeInstruction {
                         .collect(Collectors.joining("\n"));
             }
         } else {
-            this.instruction = NameHelper.getAllFieldNames(rosMsg).stream()
-                    .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + "." + field + " = msg->" + field + ";")
+            StructSymbol structSymbol = (StructSymbol) port.getTypeReference().getReferencedSymbol();
+
+            List<String> structFieldNames = NameHelper.getAllFieldNames(structSymbol);
+            List<String> rosMsgFieldNames = NameHelper.getAllFieldNames(rosMsg);
+
+            if(structFieldNames.size() != rosMsgFieldNames.size()){
+                Log.error("Struct and RosMsg don't have the same number of fields!");
+            }
+
+            // Struct field names can contain uppercase letters
+            // RosMsgs for ros2 can only contain lowercase letters
+            // => match each sField to exactly one rField
+            Map<String, String> structToMsgField = new HashMap<>();
+            for (String sField : structFieldNames){
+                boolean found = false;
+                for(String rField : rosMsgFieldNames){
+                    if(sField.equals(rField) || sField.toLowerCase().equals(rField)){
+                        if(found){
+                            Log.error("Found more than one RosMsg field for one Struct field!");
+                        }else{
+                            structToMsgField.put(sField, rField);
+                            found = true;
+                        }
+                    }
+                }
+                if(!found){
+                    Log.error("No RosMsg field found for Struct field " + sField);
+                }
+            }
+
+            this.instruction = structFieldNames.stream()
+                    .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + "." + field + " = msg->" + structToMsgField.get(field) + ";")
                     .sorted()
                     .collect(Collectors.joining("\n"));
         }

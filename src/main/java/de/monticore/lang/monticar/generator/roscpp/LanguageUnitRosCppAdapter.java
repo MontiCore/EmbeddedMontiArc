@@ -95,10 +95,8 @@ public class LanguageUnitRosCppAdapter {
                     .map(Optional::get)
                     .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
                     .map(type ->{
-                        if(type.contains("/msg/")) {
-                            String[] parts = type.split("/");
-                            parts[parts.length - 1] = parts[parts.length - 1].substring(0, 1).toLowerCase() + parts[parts.length - 1].substring(1);
-                            return String.join("/", parts);
+                        if(ros2Mode) {
+                            return NameHelper.msgTypeToSnakecase(NameHelper.addMsgToMsgType(type));
                         }else{
                             return type;
                         }
@@ -131,10 +129,10 @@ public class LanguageUnitRosCppAdapter {
                     RosConnectionSymbol rcs = (RosConnectionSymbol) p.getMiddlewareSymbol().get();
                     Method method = topicToMethod.get(rcs.getTopicName().get());
 
+                    String packageName = Arrays.stream(rcs.getTopicType().get().split("/")).findFirst().get();
+                    RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, p.getTypeReference(), ros2Mode);
+                    usedRosMsgs.put(rosMsg, p.getTypeReference());
                     if (!rcs.getMsgField().isPresent()) {
-                        String packageName = Arrays.stream(rcs.getTopicType().get().split("/")).findFirst().get();
-                        RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, p.getTypeReference());
-                        usedRosMsgs.put(rosMsg, p.getTypeReference());
                         method.addInstruction(new SetStructMsgInstruction(p, rosMsg));
                     } else {
                         SetMsgFieldInstruction tmpInstr = new SetMsgFieldInstruction(p, getMsgConverter(rcs.getMsgField().get(), p.isIncoming()));
@@ -263,7 +261,11 @@ public class LanguageUnitRosCppAdapter {
 
 
     private String getFullRosType(RosConnectionSymbol rosConnectionSymbol) {
-        return rosConnectionSymbol.getTopicType().get().replace("/", "::");
+        String topicType = rosConnectionSymbol.getTopicType().get();
+        if(ros2Mode){
+            topicType = NameHelper.addMsgToMsgType(topicType);
+        }
+        return topicType.replace("/", "::");
     }
 
     private void generateCallbacks(List<EMAPortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
@@ -296,7 +298,7 @@ public class LanguageUnitRosCppAdapter {
                     if (msgField == null) {
                         //TODO: checks?
                         String packageName = Arrays.stream(rosCon.getTopicType().get().split("/")).findFirst().get();
-                        RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, portSymbol.getTypeReference());
+                        RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, portSymbol.getTypeReference(), ros2Mode);
                         usedRosMsgs.put(rosMsg, portSymbol.getTypeReference());
                         method.addInstruction(new SetStructPortInstruction(portSymbol, rosMsg));
                     } else {

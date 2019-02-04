@@ -53,5 +53,54 @@ public class Ros2Test extends AbstractSymtabTest{
         assertTrue(fileNames.contains("CMakeLists.txt"));
     }
 
+    @Test
+    public void testBasicStructCompGeneration() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.structs.basicStructComp", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-rclcpp/basicStructComp/");
+        generatorRosCpp.setGenerateCMake(true);
+        generatorRosCpp.setRos2Mode(true);
+        List<File> files = generatorRosCpp.generateFiles(componentInstanceSymbol, taggingResolver);
+
+        List<String> fileNames = files.stream()
+                .map(File::getName)
+                .collect(Collectors.toList());
+
+        assertTrue(fileNames.contains("CMakeLists.txt"));
+        assertTrue(fileNames.contains("generateMsgs.py"));
+        assertTrue(fileNames.contains("rclcpp_msg_gen.json"));
+        assertTrue(fileNames.contains("TestsStructsPosition.msg"));
+    }
+
+    @Test
+    public void testNestedStructCompGeneration() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.structs.nestedStructComp", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-rclcpp/nestedStructComp/");
+        generatorRosCpp.setGenerateCMake(true);
+        generatorRosCpp.setRos2Mode(true);
+        List<File> files = generatorRosCpp.generateFiles(componentInstanceSymbol, taggingResolver);
+
+        List<String> fileNames = files.stream()
+                .map(File::getName)
+                .collect(Collectors.toList());
+
+        assertTrue(fileNames.contains("CMakeLists.txt"));
+        assertTrue(fileNames.contains("generateMsgs.py"));
+        assertTrue(fileNames.contains("rclcpp_msg_gen.json"));
+        assertTrue(fileNames.contains("TestsStructsPosition.msg"));
+        assertTrue(fileNames.contains("TestsStructsPositionWithDeltaTime.msg"));
+
+    }
+
+
 }
 
