@@ -43,7 +43,7 @@ public class MiddlewareSymbolTest extends AbstractSymtabTest {
         assertNotEquals(rosInRCS, sub1RosInRCS);
         assertNotEquals(rosOutRCS, sub1RosOutRCS);
 
-        RosHelper.fixRosConnectionSymbols(componentInstanceSymbol);
+        RosHelper.fixRosConnectionSymbols(componentInstanceSymbol, false);
 
         assertEquals(rosInRCS, sub1RosInRCS);
         assertEquals(rosOutRCS, sub1RosOutRCS);

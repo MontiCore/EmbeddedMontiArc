@@ -23,18 +23,28 @@ public class DummyMiddlewareGenImpl implements GeneratorImpl {
 
         List<File> res = new ArrayList<>();
         res.add(FileHelper.generateFile(generationTargetPath, generateCMake(componentInstanceSymbol)));
-        res.add(FileHelper.generateFile(generationTargetPath, generateAdapter(componentInstanceSymbol)));
+        res.add(FileHelper.generateFile(generationTargetPath, generateAdapterHeader(componentInstanceSymbol)));
+        res.add(FileHelper.generateFile(generationTargetPath, generateAdapterCpp(componentInstanceSymbol)));
         return res;
     }
 
 
-    private FileContent generateAdapter(EMAComponentInstanceSymbol componentInstanceSymbol) {
+    private FileContent generateAdapterHeader(EMAComponentInstanceSymbol componentInstanceSymbol) {
         String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         String content = TemplateHelper.getDummyAdapterTemplate()
                 .replace("${compName}", name);
 
         FileContent res = new FileContent();
         res.setFileName("DummyAdapter_" + name + ".h");
+        res.setFileContent(content);
+        return res;
+    }
+
+    private FileContent generateAdapterCpp(EMAComponentInstanceSymbol componentInstanceSymbol){
+        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
+        String content = "#include \"" + name +".h\"";
+        FileContent res = new FileContent();
+        res.setFileName("DummyAdapter_" + name + ".cpp");
         res.setFileContent(content);
         return res;
     }

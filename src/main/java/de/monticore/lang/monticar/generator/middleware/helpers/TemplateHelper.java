@@ -32,10 +32,6 @@ public class TemplateHelper {
         return getTemplate("coordinatorTemplate.ftl");
     }
 
-    public static String getStruct_msgsCmakeTemplate() {
-        return getTemplate("struct_msgsCmakeTemplate.ftl");
-    }
-
     public static String getDummyCmakeTemplate() {
         return getTemplate("dummyCmakeTemplate.ftl");
     }

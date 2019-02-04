@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
@@ -56,12 +58,12 @@ public class GenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
-        StarBridgeGenerator starBridgeGenerator = new CMakeGenerator();
-        starBridgeGenerator.setGenerationTargetPath("./target/generated-sources-cmake/CMakeGeneration/src/");
-        starBridgeGenerator.add(new CPPGenImpl(), "cpp");
-        starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
+        CMakeGenerator cmakeGenerator = new CMakeGenerator();
+        cmakeGenerator.setGenerationTargetPath("./target/generated-sources-cmake-no-build/CMakeGeneration/src/");
+        cmakeGenerator.add(new CPPGenImpl(), "cpp");
+        cmakeGenerator.add(new RosCppGenImpl(), "roscpp");
 
-        starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
+        cmakeGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
     @Test
@@ -335,4 +337,5 @@ public class GenerationTest extends AbstractSymtabTest {
 
         assertFalse(filenames.stream().anyMatch(fn -> fn.endsWith("rosMsg/CMakeLists.txt")));
     }
+
 }
