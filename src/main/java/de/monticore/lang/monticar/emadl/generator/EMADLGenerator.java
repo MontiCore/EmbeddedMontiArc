@@ -63,11 +63,14 @@ public class EMADLGenerator {
     private GeneratorEMAMOpt2CPP emamGen;
     private CNNArchGenerator cnnArchGenerator;
     private CNNTrainGenerator cnnTrainGenerator;
+    private Backend backend;
 
     private String modelsPath;
+    
 
 
     public EMADLGenerator(Backend backend) {
+        this.backend = backend;
         emamGen = new GeneratorEMAMOpt2CPP();
         emamGen.useArmadilloBackend();
         emamGen.setGenerationTargetPath("./target/generated-sources-emadl/");
@@ -220,9 +223,17 @@ public class EMADLGenerator {
 
             // This is not the real path to the training data! Adapt accordingly once sub-task 4 is solved
             String componentConfigFilename = componentInstance.getComponentType().getReferencedSymbol().getFullName().replaceAll("\\.", "/");
-            String trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train.h5");
-            String testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test.h5");
 
+            String b = backend.getBackendString(backend);
+            String trainingDataHash = "";
+            String testDataHash = "";
+            if(b.equals("CAFFE2")){
+                trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train_lmdb/data.mdb");
+                testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test_lmdb/data.mdb");
+            }else{
+                trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train.h5");
+                testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test.h5");
+            }
             String trainingHash = emadlHash + "#" + cnntHash + "#" + trainingDataHash + "#" + testDataHash;
 
             boolean alreadyTrained = newHashes.contains(trainingHash) || isAlreadyTrained(trainingHash, componentInstance);
