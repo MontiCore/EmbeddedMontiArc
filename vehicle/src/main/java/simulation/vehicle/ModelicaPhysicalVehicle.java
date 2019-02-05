@@ -26,12 +26,12 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
 import simulation.environment.visualisationadapter.implementation.Street2D;
+import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.util.MathHelper;
-import java.util.AbstractMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 import static simulation.vehicle.VehicleActuatorType.*;
 import static simulation.vehicle.VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING;
 
@@ -621,7 +621,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             if(((WorldModel) WorldModel.getInstance()).isPointOnStreet(wheelPositions[i])) {
                 street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(wheelPositions[i]).getObject();
             } else {
-                street = new Street2D(null, null, null, 0, true, null, EnvStreet.StreetPavements.UNPAVED);
+                street = new Street2D(new ArrayList<>(), 0, new ArrayList<>(), 0, true, EnvStreet.StreetTypes.A_ROAD, EnvStreet.StreetPavements.UNPAVED);
             }
     
             frictionCoefficient = PhysicsEngine.calcFrictionCoefficient(street, WorldModel.getInstance().isItRaining());

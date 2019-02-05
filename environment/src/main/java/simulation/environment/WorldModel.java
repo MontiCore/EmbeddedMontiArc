@@ -404,8 +404,11 @@ public class WorldModel implements World{
     public boolean isPointOnStreet(double x, double y, double z) {
         EnvNode n = new Node2D(x, y, z);
         GeomStreet minStreet = getMinimumStreetForNode(n);
+        double streetZ = minStreet.getGround(x, y, z);
 
-        return minStreet.contains(n);
+        Node2D n1 = new Node2D(x, y, streetZ);
+
+        return minStreet.contains(n1);
     }
 
     public boolean isPointOnStreet(RealVector v) {
