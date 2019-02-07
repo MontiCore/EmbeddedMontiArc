@@ -25,8 +25,10 @@ import commons.map.IControllerNode;
 import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObject;
 import javafx.geometry.Point3D;
+import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.geometry.osmadapter.GeomStreet;
 import simulation.environment.pedestrians.PedestrianContainer;
+import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
 import java.util.List;
 
@@ -107,7 +109,13 @@ public interface World {
      * @param z z-Coordinate
      * @return wether given cordinates correspond to a point on a street
      */
-    public abstract boolean isPointOnStreet(double x, double y, double z);
+    boolean isPointOnStreet(double x, double y, double z);
+
+    /**
+     * @param v
+     * @return returns surface of the point corresponding to the given coordinate vector
+     */
+    EnvStreet.StreetPavements getSurfaceType(RealVector v);
 
     /**
      * @param o

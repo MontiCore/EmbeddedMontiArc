@@ -592,42 +592,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         vehicleDynamicsModel.setInput("F_ext_y", localForce.getEntry(1));
 
         // Take the wheel positions and get the frictions coefficients
-        //TODO: Let the physical vehicle look up the ground type and not only the weather
-        /*double frictionCoefficient = ((WorldModel.getInstance().isItRaining()) ? PhysicsEngine.ROAD_FRICTION_WET : PhysicsEngine.ROAD_FRICTION_DRY);
-        //frictionCoefficient = ;
-        vehicleDynamicsModel.setInput("mu_1", frictionCoefficient);
-        vehicleDynamicsModel.setInput("mu_2", frictionCoefficient);
-        vehicleDynamicsModel.setInput("mu_3", frictionCoefficient);
-        vehicleDynamicsModel.setInput("mu_4", frictionCoefficient);*/
-
-        double frictionCoefficient;
-        EnvStreet street;
-
-        RealVector[] wheelPositions = {
-            getFrontLeftWheelGeometryPosition(),
-            getFrontRightWheelGeometryPosition(),
-            getBackLeftWheelGeometryPosition(),
-            getBackRightWheelGeometryPosition(),
-        };
-
-        String[] wheelNames = {
-            "mu_1",
-            "mu_2",
-            "mu_3",
-            "mu_4",
-        };
-
-        for (int i = 0; i < 4; i++) {
-            if(((WorldModel) WorldModel.getInstance()).isPointOnStreet(wheelPositions[i])) {
-                street = (EnvStreet) ((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector(wheelPositions[i]).getObject();
-            } else {
-                street = new Street2D(new ArrayList<>(), 0, new ArrayList<>(), 0, true, EnvStreet.StreetTypes.A_ROAD, EnvStreet.StreetPavements.UNPAVED);
-            }
-    
-            frictionCoefficient = PhysicsEngine.calcFrictionCoefficient(street, WorldModel.getInstance().isItRaining());
-    
-            vehicleDynamicsModel.setInput(wheelNames[i], frictionCoefficient);
-        }
+        vehicleDynamicsModel.setInput("mu_1", PhysicsEngine.calcFrictionCoefficient(getFrontLeftWheelGeometryPosition()));
+        vehicleDynamicsModel.setInput("mu_2", PhysicsEngine.calcFrictionCoefficient(getFrontRightWheelGeometryPosition()));
+        vehicleDynamicsModel.setInput("mu_3", PhysicsEngine.calcFrictionCoefficient(getBackLeftWheelGeometryPosition()));
+        vehicleDynamicsModel.setInput("mu_4", PhysicsEngine.calcFrictionCoefficient(getBackRightWheelGeometryPosition()));
 
         // Store z coordinate for interpolation later
         double oldZ = vehicleDynamicsModel.getValue("z");

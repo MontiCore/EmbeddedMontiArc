@@ -40,6 +40,7 @@ import simulation.environment.pedestrians.PedestrianContainer;
 import simulation.environment.visualisationadapter.implementation.Node2D;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
+import simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetPavements;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
 import simulation.environment.weather.Weather;
 import simulation.environment.weather.WeatherSettings;
@@ -414,6 +415,15 @@ public class WorldModel implements World{
     public boolean isPointOnStreet(RealVector v) {
         return isPointOnStreet(v.getEntry(0), v.getEntry(1), v.getEntry(2));
     } 
+
+    @Override
+    public StreetPavements getSurfaceType(RealVector v) {
+        if(isPointOnStreet(v)) {
+            return ((EnvStreet) getMinimumStreetForRealVector(v).getObject()).getStreetPavement();
+        } else {
+            return StreetPavements.UNPAVED;
+        }
+    }
 
     @Override
     public VisualisationEnvironmentContainer getContainer() throws Exception {
