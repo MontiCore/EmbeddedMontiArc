@@ -186,6 +186,7 @@ public abstract class SplineDeterminator {
         for(Key k : keys) {
             double dist = this.splines.get(k).computeDistanceToMiddle(p);
             if(dist < minDist) {
+                minDist = dist;
                 result = this.splines.get(k);
             }
         }

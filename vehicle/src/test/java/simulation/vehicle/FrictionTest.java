@@ -20,35 +20,17 @@
  */
 package simulation.vehicle;
 
-import commons.controller.interfaces.Bus;
-import commons.controller.interfaces.FunctionBlockInterface;
-import commons.map.IControllerNode;
-import commons.simulation.PhysicalObjectType;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.BlockRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-import org.jfree.data.xy.Vector;
 import org.junit.*;
-import simulation.environment.World;
-import simulation.environment.WorldModel;
-import simulation.environment.visualisationadapter.interfaces.EnvStreet;
-import simulation.util.Log;
-import simulation.util.MathHelper;
-import java.util.Optional;
 
 
 public class FrictionTest {
     @Test
-    public static void test(){
+    public void test(){
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        ModelicaPhysicalVehicle physicalVehicle2 = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
 
-        ModelicaPhysicalVehicleBuilder builder = new ModelicaPhysicalVehicleBuilder();
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) builder.buildPhysicalVehicle();
-        //RealVector vector = (30,10);//(6453.37385514145,2774.6997263998,0.0);
-        Assert.assertEquals(1, PhysicsEngine.calcFrictionCoefficient(physicalVehicle.getPosition()), 0);//((WorldModel) WorldModel.getInstance()).getMinimumStreetForRealVector().getObject(), false), 0);
+        physicalVehicle.putOnSurface(843, 236, 0.0);
+        Assert.assertEquals(0.6, PhysicsEngine.calcFrictionCoefficient(physicalVehicle.getPosition()), 0);
+        Assert.assertEquals(0.65, PhysicsEngine.calcFrictionCoefficient(physicalVehicle2.getPosition()), 0);
     }
 }
