@@ -23,6 +23,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     OptimizerEntry implements ConfigEntry = name:"optimizer" ":" value:OptimizerValue;
     TrainContextEntry implements ConfigEntry = name:"context" ":" value:TrainContextValue;
     EvalMetricEntry implements ConfigEntry = name:"eval_metric" ":" value:EvalMetricValue;
+    LossEntry implements ConfigEntry = name:"loss" ":" value:LossValue;
 
     EvalMetricValue implements ConfigValue =(accuracy:"accuracy"
                                                | crossEntropy:"cross_entropy"
@@ -31,6 +32,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
                                                | mse:"mse"
                                                | rmse:"rmse"
                                                | topKAccuracy:"top_k_accuracy");
+
+    LossValue implements ConfigValue =(euclidean:"euclidean" | crossEntropy:"cross_entropy");
 
     LRPolicyValue implements ConfigValue =(fixed:"fixed"
                                          | step:"step"

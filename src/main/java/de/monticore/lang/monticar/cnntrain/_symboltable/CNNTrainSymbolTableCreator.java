@@ -179,6 +179,21 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
+    public void visit(ASTLossEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        ValueSymbol value = new ValueSymbol();
+        if (node.getValue().isPresentEuclidean()){
+            value.setValue(Loss.EUCLIDEAN);
+        }
+        else if (node.getValue().isPresentCrossEntropy()){
+            value.setValue(Loss.CROSS_ENTROPY);
+        }
+        entry.setValue(value);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
     public void endVisit(ASTLRPolicyValue node) {
         OptimizerParamValueSymbol value = new OptimizerParamValueSymbol();
         if (node.isPresentFixed()){
