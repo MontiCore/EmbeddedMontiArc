@@ -42,4 +42,13 @@ public class ClusteringResultList extends ArrayList<ClusteringResult> {
         }
         return res;
     }
+
+    //TODO: refactor to List<File>?
+    public void saveAllVisualizations(String path, String baseName){
+        int i = 1;
+        for (ClusteringResult r : this){
+            r.saveVisualization(path, baseName + "_" + i + "_" + r.getParameters().getName());
+            i++;
+        }
+    }
 }

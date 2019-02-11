@@ -3,7 +3,9 @@ package de.monticore.lang.monticar.generator.middleware.clustering;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.AlgorithmCliParameters;
+import de.monticore.lang.monticar.generator.middleware.clustering.visualization.ModelVisualizer;
 import de.monticore.lang.monticar.generator.middleware.impls.MiddlewareTagGenImpl;
+import org.graphstream.graph.Graph;
 
 import java.util.List;
 import java.util.Set;
@@ -64,4 +66,12 @@ public class ClusteringResult {
         res.setFileContent(prefix + content);
         return res;
     }
+
+    //TODO: refactor to File?
+    public void saveVisualization(String path, String fileName){
+        Graph g = ModelVisualizer.buildGraph(component, parameters.toString());
+        ModelVisualizer.visualizeClustering(g, clustering, component);
+        ModelVisualizer.saveGraphAsImage(g, path, fileName);
+    }
+
 }
