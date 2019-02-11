@@ -33,9 +33,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 
 public class GenerationTest extends AbstractSymtabTest {
 
@@ -131,18 +128,14 @@ public class GenerationTest extends AbstractSymtabTest {
         assertTrue(Log.getFindings().isEmpty());
     }
 
-    //Test hash-function
     @Test
-    public void testHashFunction() throws IOException, TemplateException {
-        //EMADLGenerator is tested
+    public void testHashFunction() {
         EMADLGenerator tester = new EMADLGenerator(Backend.MXNET);
         
-        //assert statements
         try{
             tester.getChecksumForFile("invalid Path!");
-            assumeFalse("Exception in getChecksum is not correct", false);
-        }catch(IOException e){
-            assumeTrue("Exception in getChecksum is correct", true);
+            assertTrue("Hash method should throw IOException on invalid path", false);
+        } catch(IOException e){
         }
     }
 }

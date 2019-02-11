@@ -1,2 +1,8 @@
 
 cifar10.CifarNetwork data/cifar10_cifar10Classifier_net
+MultipleOutputs data/MultipleOutputs
+InstanceTest.NetworkB data/InstanceTest.NetworkB
+Alexnet data/Alexnet
+ThreeInputCNN_M14 data/ThreeInputCNN_M14
+VGG16 data/VGG16
+ResNeXt50 data/ResNeXt50

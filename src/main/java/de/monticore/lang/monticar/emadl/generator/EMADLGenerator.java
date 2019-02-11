@@ -361,8 +361,6 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
-            System.out.println(getModelsPath() + "data_paths.txt");
-            System.out.println("Lookign for key " + componentSymbol.getFullName());
             DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
             String dPath = newParserConfig.getDataPath(componentSymbol.getFullName());
 
