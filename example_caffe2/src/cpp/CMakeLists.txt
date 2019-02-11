@@ -8,7 +8,6 @@ add_executable(DigitCalculator DigitCalculator.cpp)
 
 set_target_properties(DigitCalculator PROPERTIES LINKER_LANGUAGE CXX)
 find_package(OpenCV REQUIRED)
-target_link_libraries(DigitCalculator "/home/christopher/Documents/Master/Semester2/Praktikum/mxnet/lib/libmxnet.so")
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${OpenCV_LIBS})
 target_link_libraries(DigitCalculator  cNNCalculator_connector ${LIBS} -lblas -lopenblas)
