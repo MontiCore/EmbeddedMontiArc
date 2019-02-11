@@ -7,6 +7,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.*;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.*;
+import de.monticore.lang.monticar.generator.middleware.clustering.visualization.ModelVisualizer;
+import de.monticore.lang.monticar.generator.middleware.clustering.visualization.SimpleModelViewer;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
@@ -433,7 +435,6 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
     @Test
     public void testClusteringAlgorithms(){
-        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
         //String modelName= "clustering.unambiguousCluster";
         String modelName= "clustering.midSizeDemoCluster";
@@ -470,16 +471,8 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
             }
         }
 
-        FileSinkImages img = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.XGA);
-        img.setStyleSheet("graph { padding: 100px; }");
-        img.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_FULLY_AT_NEW_IMAGE);
-        try { img.writeAll(graph, TEST_PATH_PNG + modelName + ".png"); } catch (IOException e) { System.out.println("Couldn't create image file "+TEST_PATH_PNG + modelName + ".png"+
-                "\n"+e.getMessage()); };
-
-/*
-        SimpleModelViewer viewer= new SimpleModelViewer(graph);
-        viewer.run();
-*/
+        ModelVisualizer.saveGraphAsImage(graph, TEST_PATH_PNG, modelName);
+        // ModelVisualizer.viewGraph(graph);
 
         Object[] params;
         for(ClusteringKind kind : ClusteringKind.values()){
@@ -540,8 +533,6 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
                     edge= graph.addEdge(i + "-" + j, Integer.toString(i), Integer.toString(j));
                     edge.addAttribute("ui.label", adjMatrix[i][j]);
                 }
-            }
-        }
 
         // style (colorize + resize) nodes for clusters
         Node n;
@@ -676,64 +667,63 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
                 }
             }
         }
-    }
-    if (modelName=="clustering.unambiguousCluster") {
-        if (algorithm instanceof SpectralClusteringAlgorithm) {
+        if (modelName=="clustering.unambiguousCluster") {
+            if (algorithm instanceof SpectralClusteringAlgorithm) {
 
-            assertTrue(clusters.size() == 2);
+                assertTrue(clusters.size() == 2);
 
-            Set<EMAComponentInstanceSymbol> cluster1 = clusters.get(0);
-            Set<EMAComponentInstanceSymbol> cluster2 = clusters.get(1);
-            assertTrue(cluster1.size() == 2);
-            assertTrue(cluster2.size() == 2);
+                Set<EMAComponentInstanceSymbol> cluster1 = clusters.get(0);
+                Set<EMAComponentInstanceSymbol> cluster2 = clusters.get(1);
+                assertTrue(cluster1.size() == 2);
+                assertTrue(cluster2.size() == 2);
 
-            List<String> cluster1Names = cluster1.stream()
-                    .map(CommonSymbol::getFullName)
-                    .collect(Collectors.toList());
+                List<String> cluster1Names = cluster1.stream()
+                        .map(CommonSymbol::getFullName)
+                        .collect(Collectors.toList());
 
-            List<String> cluster2Names = cluster2.stream()
-                    .map(CommonSymbol::getFullName)
-                    .collect(Collectors.toList());
+                List<String> cluster2Names = cluster2.stream()
+                        .map(CommonSymbol::getFullName)
+                        .collect(Collectors.toList());
 
-            if (cluster1Names.get(0).endsWith("compA") || cluster1Names.get(0).endsWith("compB")) {
+                if (cluster1Names.get(0).endsWith("compA") || cluster1Names.get(0).endsWith("compB")) {
+                    assertTrue(cluster1Names.contains("clustering.unambiguousCluster.compA"));
+                    assertTrue(cluster1Names.contains("clustering.unambiguousCluster.compB"));
+
+                    assertTrue(cluster2Names.contains("clustering.unambiguousCluster.compC"));
+                    assertTrue(cluster2Names.contains("clustering.unambiguousCluster.compD"));
+                } else {
+                    assertTrue(cluster1Names.contains("clustering.unambiguousCluster.compC"));
+                    assertTrue(cluster1Names.contains("clustering.unambiguousCluster.compD"));
+
+                    assertTrue(cluster2Names.contains("clustering.unambiguousCluster.compA"));
+                    assertTrue(cluster2Names.contains("clustering.unambiguousCluster.compB"));
+                }
+            }
+
+            if (algorithm instanceof MarkovClusteringAlgorithm) {
+
+                assertTrue(clusters.size() == 4);
+
+                Set<EMAComponentInstanceSymbol> cluster1 = clusters.get(0);
+                Set<EMAComponentInstanceSymbol> cluster2 = clusters.get(1);
+                Set<EMAComponentInstanceSymbol> cluster3 = clusters.get(2);
+                Set<EMAComponentInstanceSymbol> cluster4 = clusters.get(3);
+                assertTrue(cluster1.size() == 1);
+                assertTrue(cluster2.size() == 1);
+                assertTrue(cluster3.size() == 1);
+                assertTrue(cluster4.size() == 1);
+
+                List<String> cluster1Names = cluster1.stream().map(CommonSymbol::getFullName).collect(Collectors.toList());
+                List<String> cluster2Names = cluster2.stream().map(CommonSymbol::getFullName).collect(Collectors.toList());
+                List<String> cluster3Names = cluster3.stream().map(CommonSymbol::getFullName).collect(Collectors.toList());
+                List<String> cluster4Names = cluster4.stream().map(CommonSymbol::getFullName).collect(Collectors.toList());
+
                 assertTrue(cluster1Names.contains("clustering.unambiguousCluster.compA"));
-                assertTrue(cluster1Names.contains("clustering.unambiguousCluster.compB"));
-
-                assertTrue(cluster2Names.contains("clustering.unambiguousCluster.compC"));
-                assertTrue(cluster2Names.contains("clustering.unambiguousCluster.compD"));
-            } else {
-                assertTrue(cluster1Names.contains("clustering.unambiguousCluster.compC"));
-                assertTrue(cluster1Names.contains("clustering.unambiguousCluster.compD"));
-
-                assertTrue(cluster2Names.contains("clustering.unambiguousCluster.compA"));
                 assertTrue(cluster2Names.contains("clustering.unambiguousCluster.compB"));
+                assertTrue(cluster3Names.contains("clustering.unambiguousCluster.compC"));
+                assertTrue(cluster4Names.contains("clustering.unambiguousCluster.compD"));
             }
         }
-
-        if (algorithm instanceof MarkovClusteringAlgorithm) {
-
-            assertTrue(clusters.size() == 4);
-
-            Set<EMAComponentInstanceSymbol> cluster1 = clusters.get(0);
-            Set<EMAComponentInstanceSymbol> cluster2 = clusters.get(1);
-            Set<EMAComponentInstanceSymbol> cluster3 = clusters.get(2);
-            Set<EMAComponentInstanceSymbol> cluster4 = clusters.get(3);
-            assertTrue(cluster1.size() == 1);
-            assertTrue(cluster2.size() == 1);
-            assertTrue(cluster3.size() == 1);
-            assertTrue(cluster4.size() == 1);
-
-            List<String> cluster1Names = cluster1.stream().map(CommonSymbol::getFullName).collect(Collectors.toList());
-            List<String> cluster2Names = cluster2.stream().map(CommonSymbol::getFullName).collect(Collectors.toList());
-            List<String> cluster3Names = cluster3.stream().map(CommonSymbol::getFullName).collect(Collectors.toList());
-            List<String> cluster4Names = cluster4.stream().map(CommonSymbol::getFullName).collect(Collectors.toList());
-
-            assertTrue(cluster1Names.contains("clustering.unambiguousCluster.compA"));
-            assertTrue(cluster2Names.contains("clustering.unambiguousCluster.compB"));
-            assertTrue(cluster3Names.contains("clustering.unambiguousCluster.compC"));
-            assertTrue(cluster4Names.contains("clustering.unambiguousCluster.compD"));
-        }
-    }
 
     }
 

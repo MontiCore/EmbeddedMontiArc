@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.middleware.clustering;
+package de.monticore.lang.monticar.generator.middleware.clustering.visualization;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.ui.view.Viewer;
