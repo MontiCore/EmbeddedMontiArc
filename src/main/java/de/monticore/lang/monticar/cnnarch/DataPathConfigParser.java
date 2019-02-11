@@ -20,6 +20,8 @@
  */
 package de.monticore.lang.monticar.cnnarch;
 
+import de.se_rwth.commons.logging.Log;
+
 import java.io.*;
 import java.net.URL;
 import java.util.Objects;
@@ -28,10 +30,19 @@ import java.util.Properties;
 public class DataPathConfigParser{
 	
 	private String configTargetPath;
-    private String configFileName;
+	private String configFileName;
+	private Properties properties;
 
     public DataPathConfigParser(String configPath) {
 		setConfigPath(configPath); 
+		properties = new Properties();
+		try
+		{
+			properties.load(new FileInputStream(configTargetPath));
+		} catch(IOException e)
+		{
+			Log.error("Config file " + configPath + " could not be found");
+		}
     }	
 		
 	public String getConfigPath() {
@@ -46,20 +57,10 @@ public class DataPathConfigParser{
 	}
 
 	public String getDataPath(String modelName) {
-		Properties properties = new Properties();
-		
-		try
-		{
-			properties.load(new FileInputStream(configTargetPath));
-		}catch(IOException e)
-		{
-			 e.printStackTrace();
+		String path = properties.getProperty(modelName);
+		if(path == null) {
+			Log.error("Data path config file did not specify a path for component '" + modelName + "'");
 		}
-        for (String key: properties.stringPropertyNames())
-		{
-			if (key.equals(modelName))
-				return properties.getProperty(key);
-		}
-		return "empty string";
+		return path;
     }
 }
