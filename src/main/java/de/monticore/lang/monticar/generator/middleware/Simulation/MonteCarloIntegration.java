@@ -14,14 +14,14 @@ import java.util.Set;
 
 public class MonteCarloIntegration {
 
-    public double simulate(int iterations, EMAComponentInstanceSymbol componentInstanceSymbol){
+    public static double simulate(int iterations, EMAComponentInstanceSymbol componentInstanceSymbol){
         EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
 
         double sum = 0;
 
-        for(long i = 0; i<iterations; i++){
+        for(int i = 0; i<iterations; i++){
             // Cluster with Spectral + save the cost: Parameter(Number of clusters, data)
-            int randNumClusters = randomNumberInRange(1, componentInstanceSymbol.getSubComponents().size());
+            int randNumClusters = randomNumberInRange(2, componentInstanceSymbol.getSubComponents().size());
 
             SpectralClusteringAlgorithm spectralClusteringAlgorithm = new SpectralClusteringAlgorithm();
             Object[] params = new Object[]{SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, randNumClusters};
@@ -32,10 +32,11 @@ public class MonteCarloIntegration {
             sum+=calculateCostOfClusters(componentInstanceSymbol, spectralClusters);
         }
 
+        // return average costs of clustering with spectral
         return sum/iterations;
     }
 
-    public int randomNumberInRange(int min, int max) {
+    public static int randomNumberInRange(int min, int max) {
         Random random = new Random();
         return random.nextInt((max - min) + 1) + min;
     }
@@ -46,6 +47,8 @@ public class MonteCarloIntegration {
         double sum = 0;
 
         for(EMAConnectorInstanceSymbol con : connectors){
+            System.out.println("Connector size "+connectors.size());
+            System.out.println("Con: "+con);
             // -1 = super comp
             int sourceClusterLabel = -1;
             int targetClusterLabel = -1;
@@ -64,6 +67,7 @@ public class MonteCarloIntegration {
             }
             if(sourceClusterLabel != targetClusterLabel){
                 sum +=AutomaticClusteringHelper.getTypeCostHeuristic(con.getSourcePort());
+                System.out.println("CostSub: " + AutomaticClusteringHelper.getTypeCostHeuristic(con.getSourcePort()));
             }
 
         }
