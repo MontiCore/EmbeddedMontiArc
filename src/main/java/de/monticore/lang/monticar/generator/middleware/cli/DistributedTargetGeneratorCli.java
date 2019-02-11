@@ -1,10 +1,10 @@
-package de.monticore.lang.monticar.generator.middleware;
+package de.monticore.lang.monticar.generator.middleware.cli;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
+import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.EMADLGeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
@@ -15,7 +15,6 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -58,8 +57,7 @@ public final class DistributedTargetGeneratorCli {
 
             String filePath = expandHomeDir(args[0]);
             try {
-                JsonReader jsonReader = new JsonReader(new FileReader(filePath));
-                parameters = gson.fromJson(jsonReader, CliParameters.class);
+                parameters = CliParametersLoader.loadCliParameters(filePath);
             } catch (FileNotFoundException e) {
                 Log.error("0x49E6A: Can not find specified config file: " + args[0] + "!");
             }
@@ -154,6 +152,15 @@ public final class DistributedTargetGeneratorCli {
 
         if (cliParameters.getGenerators().contains(GENERATOR_ODV)) {
             generator.add(new ODVGenImpl(), "odv");
+        }
+
+        if (cliParameters.getClusteringParameters().isPresent()) {
+            ClusteringParameters clusteringParameters = cliParameters.getClusteringParameters().get();
+            generator.setClusteringParameters(clusteringParameters);
+
+            clusteringParameters.getAlgorithmParameters().stream()
+                    .filter(alg -> !alg.isValid())
+                    .forEach(alg -> Log.error("Parameters for the algorithm " + alg.getName() + " are invalid!"));
         }
 
         try {

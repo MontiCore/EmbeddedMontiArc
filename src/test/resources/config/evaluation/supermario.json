@@ -1,0 +1,16 @@
+{
+  "modelsDir": "src/test/resources/supermario/",
+  "outputDir": "target/evaluation/supermario/",
+  "rootModel": "de.rwth.supermario.haller.controller",
+  "generators": ["cpp"],
+  "writeTagFile":true,
+  "clusteringParameters":{
+    "flatten":true,
+    "algorithmParameters":[
+      {
+        "name":"SpectralClustering",
+        "numberOfClusters":3
+      }
+    ]
+  }
+}

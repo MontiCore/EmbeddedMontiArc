@@ -13,6 +13,17 @@ import java.util.*;
 
 public class AffinityPropagationAlgorithm implements ClusteringAlgorithm {
 
+    private Object[] args;
+
+    public void setArgs(Object[] args) {
+        this.args = args;
+    }
+
+    @Override
+    public Object[] getArgs() {
+        return args;
+    }
+
     @Override
     public List<Set<EMAComponentInstanceSymbol>> cluster(EMAComponentInstanceSymbol component, Object... args) {
 

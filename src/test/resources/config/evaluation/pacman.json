@@ -1,0 +1,16 @@
+{
+  "modelsDir": "src/test/resources/pacman/",
+  "outputDir": "target/evaluation/pacman/",
+  "rootModel": "de.rwth.pacman.heithoff2.controller",
+  "generators": ["cpp"],
+  "writeTagFile":true,
+  "clusteringParameters":{
+    "flatten":true,
+    "algorithmParameters":[
+      {
+        "name":"SpectralClustering",
+        "numberOfClusters":3
+      }
+    ]
+  }
+}
