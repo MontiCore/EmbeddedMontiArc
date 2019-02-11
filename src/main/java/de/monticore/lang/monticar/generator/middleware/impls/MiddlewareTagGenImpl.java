@@ -40,6 +40,7 @@ public class MiddlewareTagGenImpl implements GeneratorImpl {
             res.add(FileHelper.generateFile(generationTargetPath , fc));
         }
 
+        clusteringResults.saveAllVisualizations(generationTargetPath, "img_");
         return res;
     }
 
