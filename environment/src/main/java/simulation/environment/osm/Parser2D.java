@@ -211,6 +211,7 @@ public class Parser2D implements IParser {
         }
         buildContainer();
         addSomeRandomTrees();
+        generateZCoordinates();
 
         if (minLong != Double.MAX_VALUE && minLat != Double.MAX_VALUE) {
             convertLatLongToMeters(minLong, minLat);
@@ -218,7 +219,6 @@ public class Parser2D implements IParser {
             convertLatLongToMeters();
         }
 
-        generateZCoordinates();
         addStreetSigns();
     }
 
@@ -228,8 +228,8 @@ public class Parser2D implements IParser {
     }
 
     private void generateZCoordinates() {
-        ZCoordinateGenerator.generateZCoordinates(containerM, this.z);
-        containerM.setHeightMap(ZCoordinateGenerator.getHeightMap());
+        ZCoordinateGenerator.generateZCoordinates(container, this.z);
+        container.setHeightMap(ZCoordinateGenerator.getHeightMap());
     }
 
     private void addSomeRandomTrees() {
@@ -242,10 +242,12 @@ public class Parser2D implements IParser {
 
     private void convertLatLongToMeters() {
         this.containerM = new EnvironmentContainerConverter(this.container).getContainer();
+        this.containerM.setHeightMap(container.getHeightMap());
     }
 
     private void convertLatLongToMeters(double minLong, double minLat) {
         this.containerM = new EnvironmentContainerConverter(this.container, minLong, minLat).getContainer();
+        this.containerM.setHeightMap(container.getHeightMap());
     }
 
 
