@@ -13,19 +13,22 @@ import java.util.Set;
 public class ClusteringResult {
     Double score = null;
     private EMAComponentInstanceSymbol component;
-
     private AlgorithmCliParameters parameters;
     private List<Set<EMAComponentInstanceSymbol>> clustering;
+    private long durration;
 
-    private ClusteringResult(EMAComponentInstanceSymbol component, AlgorithmCliParameters parameters, List<Set<EMAComponentInstanceSymbol>> clustering) {
+    private ClusteringResult(EMAComponentInstanceSymbol component, AlgorithmCliParameters parameters, List<Set<EMAComponentInstanceSymbol>> clustering, long durration) {
         this.component = component;
         this.parameters = parameters;
         this.clustering = clustering;
+        this.durration = durration;
     }
 
     public static ClusteringResult fromParameters(EMAComponentInstanceSymbol component, AlgorithmCliParameters parameters){
+        long startTime = System.currentTimeMillis();
         List<Set<EMAComponentInstanceSymbol>> res = parameters.asClusteringAlgorithm().clusterWithState(component);
-        return new ClusteringResult(component, parameters, res);
+        long endTime = System.currentTimeMillis();
+        return new ClusteringResult(component, parameters, res, endTime - startTime);
     }
 
     public double getScore(){
@@ -51,6 +54,10 @@ public class ClusteringResult {
         return clustering.size();
     }
 
+    private long getDurration() {
+        return this.durration;
+    }
+
     public boolean hasNumberOfClusters(int n){
         return getNumberOfClusters() == n;
     }
@@ -60,7 +67,8 @@ public class ClusteringResult {
         res.setFileName(fileName);
         String prefix = "//Algorithm: " + this.getParameters().toString() + "\n" +
                         "//Number of clusters: " + this.getNumberOfClusters() + "\n" +
-                        "//Score: " + this.getScore() + "\n";
+                        "//Score: " + this.getScore() + "\n" +
+                        "//Durration in ms: " + this.getDurration() + "\n";
 
         String content = MiddlewareTagGenImpl.getFileContent(component, this.clustering);
         res.setFileContent(prefix + content);
