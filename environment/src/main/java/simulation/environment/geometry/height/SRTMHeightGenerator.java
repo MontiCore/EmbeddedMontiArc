@@ -100,32 +100,47 @@ public class SRTMHeightGenerator implements HeightGenerator {
 
     private static double[][] getHeightMapFromFile(File heightDataFile) {
         double[][] heightData = new double[NUM_SAMPLES][];
-        try(RandomAccessFile heightDataFileSeeker = new RandomAccessFile(heightDataFile, "r")) {
+
+        if (heightDataFile.exists()) {
+            try(RandomAccessFile heightDataFileSeeker = new RandomAccessFile(heightDataFile, "r")) {
+                for (int row = 0; row < NUM_SAMPLES; row++) {
+                    heightData[row] = new double[NUM_SAMPLES];
+                    for (int column = 0; column < NUM_SAMPLES; column++) {
+                        // We invert the rows, because in the height file they are written northern most first,
+                        // but we want them from lowest latitude to highest latitude
+                        heightDataFileSeeker.seek(((NUM_SAMPLES - row - 1) * NUM_SAMPLES + column) * NUM_BYTES_PER_HEIGHT_VALUE);
+
+                        // Read next 2-byte-height-value (according to big-endian-format)
+                        int msb = heightDataFileSeeker.read();
+                        int lsb = heightDataFileSeeker.read();
+
+                        // Construct height value and assign in height map
+                        double heightValue = (msb << Byte.SIZE) | lsb;
+                        if (heightValue == INVALID_HEIGHT_VALUE) { // Check if height value is valid
+                            // TODO: Handle invalid values better than just setting them to 0 maybe?
+                            heightValue = 0.0;
+                        }
+
+                        heightData[row][column] = heightValue;
+                    }
+                }
+            }
+            catch (Exception ex) {
+                Log.warning("Exception occurred while parsing height data file!");
+                ex.printStackTrace();
+            }
+        }
+        else {
+            // Height data file was not found, so give a warning
+            Log.warning("Height data file not found!");
+
+            // Fill height map with zeros
             for (int row = 0; row < NUM_SAMPLES; row++) {
                 heightData[row] = new double[NUM_SAMPLES];
                 for (int column = 0; column < NUM_SAMPLES; column++) {
-                    // We invert the rows, because in the height file they are written northern most first,
-                    // but we want them from lowest latitude to highest latitude
-                    heightDataFileSeeker.seek(((NUM_SAMPLES - row - 1) * NUM_SAMPLES + column) * NUM_BYTES_PER_HEIGHT_VALUE);
-
-                    // Read next 2-byte-height-value (according to big-endian-format)
-                    int msb = heightDataFileSeeker.read();
-                    int lsb = heightDataFileSeeker.read();
-
-                    // Construct height value and assign in height map
-                    double heightValue = (msb << Byte.SIZE) | lsb;
-                    if (heightValue == INVALID_HEIGHT_VALUE) { // Check if height value is valid
-                        // TODO: Handle invalid values better than just setting them to 0 maybe?
-                        heightValue = 0.0;
-                    }
-
-                    heightData[row][column] = heightValue;
+                    heightData[row][column] = 0.0;
                 }
             }
-        }
-        catch (Exception ex) {
-            Log.warning("Exception occurred while parsing height data file!");
-            ex.printStackTrace();
         }
 
         return heightData;
