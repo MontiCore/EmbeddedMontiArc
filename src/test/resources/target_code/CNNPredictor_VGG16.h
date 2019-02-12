@@ -18,8 +18,8 @@
 #include <iostream>
 #include <map>
 
-CAFFE2_DEFINE_string(init_net_CNNPredictor_VGG16, "./model/VGG16/init_net_CNNPredictor_VGG16.pb", "The given path to the init protobuffer.");
-CAFFE2_DEFINE_string(predict_net_CNNPredictor_VGG16, "./model/VGG16/predict_net_CNNPredictor_VGG16.pb", "The given path to the predict protobuffer.");
+CAFFE2_DEFINE_string(init_net_CNNPredictor_VGG16, "./model/VGG16/init_net.pb", "The given path to the init protobuffer.");
+CAFFE2_DEFINE_string(predict_net_CNNPredictor_VGG16, "./model/VGG16/predict_net.pb", "The given path to the predict protobuffer.");
 
 using namespace caffe2;
 
