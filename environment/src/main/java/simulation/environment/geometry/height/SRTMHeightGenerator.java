@@ -22,8 +22,8 @@ package simulation.environment.geometry.height;
 
 import simulation.util.Log;
 
-import java.io.File;
-import java.io.RandomAccessFile;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,10 +37,10 @@ import java.util.regex.Pattern;
 public class SRTMHeightGenerator implements HeightGenerator {
     private static final double SAMPLE_SIZE = 3.0; // SRTM3 sampled at 3 arc-seconds
     private static final double INVALID_HEIGHT_VALUE = -32768.0; // Value of non-valid data sample in the file
-    private static final double SECONDS_PER_DEG = 3600;
+    private static final double SECONDS_PER_DEG = 3600; // 1 degree has 3600 arc-seconds
     private static final int NUM_SAMPLES = 1201; // Number of rows as well as number of columns in the file
-    private static final int NUM_BYTES_PER_HEIGHT_VALUE = 2; // Each height value is 2 bytes large
     private static final double SRTM_RESOLUTION = SAMPLE_SIZE / SECONDS_PER_DEG;
+    private static final String HEIGHT_DATA_FILE_NAME = "N50E006.hgt";
     private static final String HEIGHT_DATA_FILE_NAME_PATTERN = "[NS]([0-9]{2})[EW]([0-9]{3})"; // e.g.: N50E006.hgt
 
     private double[][] heightMap;
@@ -49,14 +49,19 @@ public class SRTMHeightGenerator implements HeightGenerator {
     private double maxLatitude;
     private double maxLongitude;
 
-    public SRTMHeightGenerator(File heightDataFile) {
+    public SRTMHeightGenerator() {
         // Read in height map from file
-        heightMap = getHeightMapFromFile(heightDataFile);
+        InputStream heightDataStream = getClass().getResourceAsStream("/" + HEIGHT_DATA_FILE_NAME);
+        heightMap = getHeightMapFromFile(heightDataStream);
+        try {
+            heightDataStream.close();
+        }
+        catch (IOException ex) { }
 
         // Read min lat/long from file name
-        String heightDataFileName = heightDataFile.getName();
+        // This is done by pattern, so it can be dynamically done when using different file names
         Pattern pattern = Pattern.compile(HEIGHT_DATA_FILE_NAME_PATTERN);
-        Matcher matcher = pattern.matcher(heightDataFileName);
+        Matcher matcher = pattern.matcher(HEIGHT_DATA_FILE_NAME);
         if (matcher.find()) {
             minLatitude = Integer.valueOf(matcher.group(1));
             minLongitude = Integer.valueOf(matcher.group(2));
@@ -67,7 +72,6 @@ public class SRTMHeightGenerator implements HeightGenerator {
         maxLongitude = getLongitudeFromColumn(NUM_SAMPLES - 1);
     }
 
-    // TODO: An Server schicken: Höhenmatrix, MinLat, MinLong, Delta, Max Werte
     // NOTE: We need to get longitude and latitude, otherwise getting the value from height matrix will fail
     @Override
     public double getGround(double longitude, double latitude) {
@@ -98,48 +102,37 @@ public class SRTMHeightGenerator implements HeightGenerator {
         return heightMap;
     }
 
-    private static double[][] getHeightMapFromFile(File heightDataFile) {
+    private static double[][] getHeightMapFromFile(InputStream heightDataStream) {
+        // Construct the array
         double[][] heightData = new double[NUM_SAMPLES][];
-
-        if (heightDataFile.exists()) {
-            try(RandomAccessFile heightDataFileSeeker = new RandomAccessFile(heightDataFile, "r")) {
-                for (int row = 0; row < NUM_SAMPLES; row++) {
-                    heightData[row] = new double[NUM_SAMPLES];
-                    for (int column = 0; column < NUM_SAMPLES; column++) {
-                        // We invert the rows, because in the height file they are written northern most first,
-                        // but we want them from lowest latitude to highest latitude
-                        heightDataFileSeeker.seek(((NUM_SAMPLES - row - 1) * NUM_SAMPLES + column) * NUM_BYTES_PER_HEIGHT_VALUE);
-
-                        // Read next 2-byte-height-value (according to big-endian-format)
-                        int msb = heightDataFileSeeker.read();
-                        int lsb = heightDataFileSeeker.read();
-
-                        // Construct height value and assign in height map
-                        double heightValue = (msb << Byte.SIZE) | lsb;
-                        if (heightValue == INVALID_HEIGHT_VALUE) { // Check if height value is valid
-                            // TODO: Handle invalid values better than just setting them to 0 maybe?
-                            heightValue = 0.0;
-                        }
-
-                        heightData[row][column] = heightValue;
-                    }
-                }
-            }
-            catch (Exception ex) {
-                Log.warning("Exception occurred while parsing height data file!");
-                ex.printStackTrace();
-            }
+        for (int row = 0; row < NUM_SAMPLES; row++) {
+            heightData[row] = new double[NUM_SAMPLES];
         }
-        else {
-            // Height data file was not found, so give a warning
-            Log.warning("Height data file not found!");
 
-            // Fill height map with zeros
-            for (int row = 0; row < NUM_SAMPLES; row++) {
-                heightData[row] = new double[NUM_SAMPLES];
-                for (int column = 0; column < NUM_SAMPLES; column++) {
-                    heightData[row][column] = 0.0;
+        // Rows are filled backwards, because in the height file they are written northern most first,
+        // but we want them from lowest to highest latitude
+        for (int row = NUM_SAMPLES - 1; row >= 0; row--) {
+            for (int column = 0; column < NUM_SAMPLES; column++) {
+                double heightValue;
+                try {
+                    // Read next 2-byte-height-value (according to big-endian-format)
+                    int msb = heightDataStream.read();
+                    int lsb = heightDataStream.read();
+
+                    // Construct height value
+                    heightValue = (msb << Byte.SIZE) | lsb;
                 }
+                catch (IOException ex) {
+                    Log.warning("Exception occurred while parsing height data file at row=" + row + ",column=" + column);
+                    heightValue = 0.0;
+                }
+
+                if (heightValue == INVALID_HEIGHT_VALUE) {
+                    // TODO: Handle invalid values differently than just setting them to 0?
+                    heightValue = 0.0;
+                }
+
+                heightData[row][column] = heightValue;
             }
         }
 

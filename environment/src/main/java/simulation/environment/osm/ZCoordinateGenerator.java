@@ -51,8 +51,7 @@ public class ZCoordinateGenerator {
         } else if(strategy == ParserSettings.ZCoordinates.STATIC) {
             heightGenerator = new StaticHeightGenerator(container.getBounds());
         } else if (strategy == ParserSettings.ZCoordinates.FROM_FILE) {
-            File heightDataFile = new File(ZCoordinateGenerator.class.getResource("/N50E006.hgt").getPath());
-            heightGenerator = new SRTMHeightGenerator(heightDataFile);
+            heightGenerator = new SRTMHeightGenerator();
         } else {
             ConcentricCircleGenerator.init(container.getBounds());
             heightGenerator = ConcentricCircleGenerator.getInstance();
