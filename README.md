@@ -83,25 +83,67 @@ Maven generates the jar `embedded-montiarc-math-middleware-generator-{Version}-j
 and the cli is located in `de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGeneratorCli`.
 
 Parameters: `${file path to config json}` OR `-r ${raw json config string}`
-```
-Schema of config json:
-{
-    'modelsDir':'<path to directory with EMAM models>',
-    'outputDir':'<path to output directory for generated files>',
-    'rootModel':'<fully qualified name of the root model>',
-    'generators':['<identifier for first generator>', '<identifier for second generator>',...],
-    'emadlBackend':'<deep-learning-framework backend. Options: MXNET, CAFFE2>'
-    'writeTagFile':[ 'true' | 'false'(default) ] Writes a .tag file with all Middleware tags into the generated code
-}
-```
-Generator Options:
-- Behaviour generators:
-    - 'cpp': EMAM2CPP
-    - 'emadlcpp': EMADL2CPP
-- Middleware generators:
-    - 'roscpp': EMAM2Roscpp
+
+Example: [CliUsage.sh](src/test/resources/CliUsage.sh)
+
+An example config file with all clustering algorithms: [config](src/test/resources/config/parameterTest/clusterParamsAllAlgos.json)
+
+| Name                 | Type   | Required | Description                                                                               |
+|----------------------|--------|----------|-------------------------------------------------------------------------------------------|
+| modelsDir            | String |     ✅    | path to directory with EMAM models                                                        |
+| outputDir            | String |     ✅    | path to output directory for generated files                                              |
+| rootModel            | String |     ✅    | fully qualified name of the root model                                                    |
+| generators           | List   |     ✅    | List of generator identfiers<br> 'cpp', 'emadlcpp', 'roscpp', 'rclcpp'                    |
+| emadlBackend         | String |     ❓    | deep-learning-framework backend<br> 'MXNET'(Default), 'CAFFE2'                                     |
+| writeTagFile         | Bool   |     ❓    | Writes a .tag file with all Middleware tags into the generated code<br> Defaults to false |
+| clusteringParameters | Object |     ❓    | Options to cluster the component before generating<br> See below                          |
+
+Clustering Parameters:
+
+| Name                | Type         | Required | Description                                                                                                                                                                                                                                       |
+|---------------------|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| numberOfClusters    | int          | ❓        | Number of clusters the subcomponents should be divided into<br> Overrides numberOfClusters in algorithmParameters                                                                                                                                 |
+| flatten             | bool         | ❓        | Replace all components with their subcomponents execpt when it is atomic or the flatten level is reached                                                                                                                                          |
+| flattenLevel        | int          | ❓        | Maximal level of component flattening                                                                                                                                                                                                             |
+| chooseBy            | String       | ❓        | Strategie to choose from the resulting clusterings<br> bestWithFittingN(Default): if numberOfClusters is set, all results with a different number of clusters are ignored<br> bestOverall: ignore numberOfClusters, choose result with best score |
+| algorithmParameters | List<Object> | ❓        | Used to specify which algorithms(and their parameters) are used for clustering                                                                                                                                                                    |
+
+There are 4 different Clustering Algorithms with distinct parameters
+
+Spectral Clustering:
+
+| Name             | Type   | Required | Description                                                                     |
+|------------------|--------|----------|---------------------------------------------------------------------------------|
+| name             | String | ✅️        | must equal "SpectralClustering"                                                 |
+| numberOfClusters | int    | ✅️        | Number of clusters that are created<br> Overwritten by global numberOfClusters  |
+| l                | int    | ❓        |                                                                                 |
+| sigma            | double | ❓        |                                                                                 |
+
+DBScan:
+
+| Name    | Type   | Required | Description         |
+|---------|--------|----------|---------------------|
+| name    | String | ✔️        | must equal "DBScan" |
+| min_pts | int    | ✔️        |                     |
+| radius  | double | ✔️        |                     |
+
+Markov:
+
+| Name         | Type   | Required | Description         |
+|--------------|--------|----------|---------------------|
+| name         | String | ✔️     | must equal "Markov" |
+| max_residual | double | ❓        |                     |
+| gamma_exp    | double | ❓        |                     |
+| loop_gain    | double | ❓        |                     |
+| zero_max     | double | ❓        |                     |
+
+Affinity Propagation:
+
+| Name | Type   | Required | Description                      |
+|------|--------|----------|----------------------------------|
+| name | String | ✔️        | must equal "AffinityPropagation" |
+
     
-Example: [CliUsage.sh](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/src/test/resources/CliUsage.sh)
 
 ### Defining the connection between a component and the middleware
 The connection between middleware and the component is defined as tags on Ports in .tag files.
