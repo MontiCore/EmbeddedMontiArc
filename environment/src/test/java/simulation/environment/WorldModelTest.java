@@ -121,5 +121,34 @@ public class WorldModelTest extends TestCase {
                 }
             }
         }
+
+        WorldModel.init(new ParserSettings("/map_ahornstrasse.osm", ParserSettings.ZCoordinates.FROM_FILE),
+                new WeatherSettings());
+        world = WorldModel.getInstance();
+
+        // Test height of some random nodes
+        // Reference values taken from https://www.freemaptools.com/elevation-finder.htm
+        for(EnvStreet s : world.getContainer().getStreets()) {
+            for(EnvNode n : s.getNodes()) {
+                if (n.getOsmId() == 1830204382L) {
+                    assertEquals(237, Math.round(n.getZ().doubleValue()));
+                }
+                else if (n.getOsmId() == 4180733590L) {
+                    assertEquals(222, Math.round(n.getZ().doubleValue()));
+                }
+                else if (n.getOsmId() == 206176292L) {
+                    assertEquals(210, Math.round(n.getZ().doubleValue()));
+                }
+                else if (n.getOsmId() == 36831057L) {
+                    assertEquals(209, Math.round(n.getZ().doubleValue()));
+                }
+                else if (n.getOsmId() == 60533928) {
+                    assertEquals(207, Math.round(n.getZ().doubleValue()));
+                }
+                else if (n.getOsmId() == 450648425) {
+                    assertEquals(228, Math.round(n.getZ().doubleValue()));
+                }
+            }
+        }
     }
 }

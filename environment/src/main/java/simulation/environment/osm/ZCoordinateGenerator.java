@@ -20,10 +20,7 @@
  */
 package simulation.environment.osm;
 
-import simulation.environment.geometry.height.AllZeroGenerator;
-import simulation.environment.geometry.height.ConcentricCircleGenerator;
-import simulation.environment.geometry.height.HeightGenerator;
-import simulation.environment.geometry.height.StaticHeightGenerator;
+import simulation.environment.geometry.height.*;
 import simulation.environment.visualisationadapter.implementation.Bounds2D;
 import simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D;
 import simulation.environment.visualisationadapter.implementation.Node2D;
@@ -31,6 +28,8 @@ import simulation.environment.visualisationadapter.interfaces.Building;
 import simulation.environment.visualisationadapter.interfaces.EnvBounds;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
+
+import java.io.File;
 
 /**
  * Created by lukas on 16.02.17.
@@ -51,6 +50,9 @@ public class ZCoordinateGenerator {
             heightGenerator = new AllZeroGenerator();
         } else if(strategy == ParserSettings.ZCoordinates.STATIC) {
             heightGenerator = new StaticHeightGenerator(container.getBounds());
+        } else if (strategy == ParserSettings.ZCoordinates.FROM_FILE) {
+            File heightDataFile = new File(ZCoordinateGenerator.class.getResource("/N50E006.hgt").getPath());
+            heightGenerator = new SRTMHeightGenerator(heightDataFile);
         } else {
             ConcentricCircleGenerator.init(container.getBounds());
             heightGenerator = ConcentricCircleGenerator.getInstance();
