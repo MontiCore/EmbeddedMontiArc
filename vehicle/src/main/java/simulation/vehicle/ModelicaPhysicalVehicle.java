@@ -567,7 +567,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         double brakeAcceleration1 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).getActuatorValueCurrent();
         double brakeAcceleration2 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
         double brakeAcceleration3 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).getActuatorValueCurrent();
-        double brakeAcceleration4 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
+        double brakeAcceleration4 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).getActuatorValueCurrent();
         double brakeForce1 = (m/4) * brakeAcceleration1;
         double brakeForce2 = (m/4) * brakeAcceleration2;
         double brakeForce3 = (m/4) * brakeAcceleration3;
