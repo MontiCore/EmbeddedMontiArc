@@ -17,6 +17,11 @@ public class DBScanCliParameters extends AlgorithmCliParameters {
     public DBScanCliParameters() {
     }
 
+    public DBScanCliParameters(Integer min_pts, Double radius) {
+        this.min_pts = min_pts;
+        this.radius = radius;
+    }
+
     @Override
     public String getName() {
         return TYPE_DBSCAN;
