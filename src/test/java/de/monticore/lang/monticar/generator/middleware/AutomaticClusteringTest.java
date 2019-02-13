@@ -97,6 +97,31 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         }
     }
 
+    @Test
+    public void testAdjacencyMatrixCreation2(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("lab.adjMatrixComp", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        List<EMAComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(componentInstanceSymbol);
+        double[][] matrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
+                ComponentHelper.getInnerConnectors(componentInstanceSymbol),
+                ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName));
+
+
+        //sorted full name: sub1, sub2, sub3
+        double[][] expRes = {{0,10,20}  //sub1
+                            ,{10,0,0}  //sub2
+                            ,{20,0,0}}; //sub3
+
+        for(int i = 0; i< expRes.length; i++){
+            for(int j = 0; j < expRes[i].length;j++){
+                assertTrue(expRes[i][j] == matrix[i][j]);
+            }
+        }
+    }
+
 
     @Test
     public void testSpectralClustering(){

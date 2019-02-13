@@ -36,8 +36,8 @@ public class AutomaticClusteringHelper {
                 int index1 = subcompLabels.get(sourceCompOpt.getFullName());
                 int index2 = subcompLabels.get(targetCompOpt.getFullName());
 
-                res[index1][index2] = getTypeCostHeuristic(con.getSourcePort());
-                res[index2][index1] = getTypeCostHeuristic(con.getSourcePort());
+                res[index1][index2] += getTypeCostHeuristic(con.getSourcePort());
+                res[index2][index1] += getTypeCostHeuristic(con.getSourcePort());
         });
 
 
