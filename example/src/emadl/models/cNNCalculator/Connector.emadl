@@ -17,8 +17,6 @@ component Connector {
     instance Network<10> predictor6;
     instance Calculator cal;
 
-    instance ArgMax<10> maxi;
-
     connect image1 -> predictor1.data;
     connect image2 -> predictor2.data;
     connect image3 -> predictor3.data;
