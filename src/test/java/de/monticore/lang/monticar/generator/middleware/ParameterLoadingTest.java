@@ -5,6 +5,8 @@ import de.monticore.lang.monticar.generator.middleware.cli.CliParametersLoader;
 import de.monticore.lang.monticar.generator.middleware.cli.ClusteringParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.ResultChoosingStrategy;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.*;
+import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicAlgorithmCliParameters;
+import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicSpectralClusteringCliParameters;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -117,7 +119,58 @@ public class ParameterLoadingTest {
     }
 
 
+    @Test
+    public void testDynamicClusteringArgs() throws FileNotFoundException {
+        CliParameters params = loadCliParameters("clusterDynamic");
+        ClusteringParameters clusteringParameters = params.getClusteringParameters().get();
 
+        List<DynamicAlgorithmCliParameters> dynm = clusteringParameters.getDynamicAlgorithmCliParameters();
+        assertEquals(2, dynm.size());
+        assertTrue(dynm.get(0) instanceof DynamicSpectralClusteringCliParameters);
+
+        DynamicSpectralClusteringCliParameters dynmSpectral = (DynamicSpectralClusteringCliParameters) dynm.get(0);
+        assertTrue(dynmSpectral.isValid());
+
+        assertEquals(8, dynmSpectral.getNumberOfClusters().getAllAsInt().size());
+        assertEquals(10, dynmSpectral.getL().getAllAsInt().size());
+        assertEquals(11, dynmSpectral.getSigma().getAllAsInt().size());
+
+        List<AlgorithmCliParameters> spectrals = dynmSpectral.getAll();
+
+        assertEquals(8 * 11 * 10 ,spectrals.size());
+
+        for(AlgorithmCliParameters s : spectrals){
+            System.out.println(s);
+        }
+
+        List<AlgorithmCliParameters> compatible = dynm.get(1).getAll();
+        assertEquals(1, compatible.size());
+    }
+
+    @Test
+    public void testListParameterClusteringArgs() throws FileNotFoundException {
+        CliParameters params = loadCliParameters("clusterDynamicList");
+        ClusteringParameters clusteringParameters = params.getClusteringParameters().get();
+
+        List<DynamicAlgorithmCliParameters> dynm = clusteringParameters.getDynamicAlgorithmCliParameters();
+        assertEquals(1, dynm.size());
+        assertTrue(dynm.get(0) instanceof DynamicSpectralClusteringCliParameters);
+
+        DynamicSpectralClusteringCliParameters dynmSpectralList = (DynamicSpectralClusteringCliParameters) dynm.get(0);
+        assertTrue(dynmSpectralList.isValid());
+
+        assertEquals(3, dynmSpectralList.getNumberOfClusters().getAllAsInt().size());
+        assertEquals(4, dynmSpectralList.getL().getAllAsInt().size());
+        assertEquals(1, dynmSpectralList.getSigma().getAllAsInt().size());
+
+        List<AlgorithmCliParameters> spectrals = dynmSpectralList.getAll();
+
+        assertEquals(3 * 4 * 1 ,spectrals.size());
+
+        for(AlgorithmCliParameters s : spectrals){
+            System.out.println(s);
+        }
+    }
 
 
 }

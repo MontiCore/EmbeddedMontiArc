@@ -16,6 +16,16 @@ public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
     public SpectralClusteringCliParameters() {
     }
 
+    public SpectralClusteringCliParameters(int numberOfClusters) {
+        this.numberOfClusters = numberOfClusters;
+    }
+
+    public SpectralClusteringCliParameters(int numberOfClusters, int l, double sigma) {
+        this.numberOfClusters = numberOfClusters;
+        this.l = l;
+        this.sigma = sigma;
+    }
+
     @Override
     public String getName() {
         return TYPE_SPECTRAL_CLUSTERING;

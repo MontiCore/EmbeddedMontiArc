@@ -17,6 +17,13 @@ public class MarkovCliParameters extends AlgorithmCliParameters {
     public MarkovCliParameters() {
     }
 
+    public MarkovCliParameters(Double max_residual, Double gamma_exp, Double loop_gain, Double zero_max) {
+        this.max_residual = max_residual;
+        this.gamma_exp = gamma_exp;
+        this.loop_gain = loop_gain;
+        this.zero_max = zero_max;
+    }
+
     @Override
     public String getName() {
         return TYPE_MARKOV;
