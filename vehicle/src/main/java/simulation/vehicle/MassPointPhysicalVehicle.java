@@ -1084,7 +1084,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             RealVector forceRoadFrictionBackFront = mpVelocityWheels.mapMultiply(-1.0);
             double forceRoadFrictionBackFrontNorm = forceRoadFrictionBackFront.getNorm();
             double pressure = (mp.getPressure() > 0.0 ? mp.getPressure() : VEHICLE_DEFAULT_TIRE_PRESSURE);
-            double rollingCoefficient = 0.005 + (1 / pressure) * (0.01 + 0.0095 * (forceRoadFrictionBackFrontNorm * 3.6 / 100) * (forceRoadFrictionBackFrontNorm * 3.6 / 100));
+            double rollingCoefficient = PhysicsEngine.calcRollingResistance(getPosition(), pressure, forceRoadFrictionBackFrontNorm);
 
             if (forceRoadFrictionBackFrontNorm > 0.0) {
                 forceRoadFrictionBackFront = forceRoadFrictionBackFront.mapDivide(forceRoadFrictionBackFrontNorm);

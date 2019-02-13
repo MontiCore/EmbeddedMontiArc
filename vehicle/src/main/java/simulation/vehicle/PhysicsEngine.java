@@ -22,6 +22,9 @@ package simulation.vehicle;
 
 import commons.simulation.PhysicalObject;
 import commons.simulation.PhysicalObjectType;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.WorldModel;
@@ -29,8 +32,9 @@ import simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetPa
 import simulation.util.MathHelper;
 import simulation.util.OrientedBoundingBox;
 
+import java.io.*;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * Physics calculations for simulation
@@ -40,10 +44,6 @@ public class PhysicsEngine{
     public static final double GRAVITY_EARTH = -9.81;
     /** Average air density */
     public static final double AIR_DENSITY = 1.225;
-    /** Average road friction coefficient for dry roads (no unit) */
-    public static final double ROAD_FRICTION_DRY = 0.8;
-    /** Average road friction coefficient for wet roads (no unit) */
-    public static final double ROAD_FRICTION_WET = 0.4;
 
     private PhysicsEngine(){
         // Private constructor to hide the implicit public one
@@ -210,6 +210,19 @@ public class PhysicsEngine{
         StreetPavements streetPavement = WorldModel.getInstance().getSurfaceType(v);
         boolean isItRaining = WorldModel.getInstance().isItRaining();
 
+        return calcFrictionCoefficient(streetPavement, isItRaining);
+    }
+
+    public static double calcFrictionCoefficient(StreetPavements streetPavement, boolean isItRaining) {
+        /*try {
+            Reader in = new FileReader("vehicle/src/main/java/simulation/vehicle/FrictionCoefficient.csv");
+            CSVParser parser = new CSVParser(in, CSVFormat.EXCEL.withHeader().withIgnoreHeaderCase());
+
+            parser.getRecords().;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+        // TODO CSV
         switch(streetPavement) {
             case QUALITY: // Asphalt
                 if (isItRaining) {
@@ -241,6 +254,35 @@ public class PhysicsEngine{
 
             default:
                 return 1;
+        }
+    }
+    public static double calcRollingResistance(RealVector v, double pressure, double forceRoadFrictionBackFrontNorm){
+
+        StreetPavements streetPavement = WorldModel.getInstance().getSurfaceType(v);
+        boolean isItRaining = WorldModel.getInstance().isItRaining();
+
+        switch(streetPavement) {
+            case QUALITY: case STONE: case PAVED:// Asphalt
+                if (isItRaining) {
+                    return 0.017;
+                } else {
+                    return 0.014;
+                }
+            case DIRT: case UNPAVED:
+                if(isItRaining) {
+                    return 0.030;
+                } else{
+                    return 0.020;
+                }
+            case GRASS:
+                if (isItRaining) {
+                    return 0.080; // provisional value
+                } else {
+                    return 0.050;
+                }
+
+            default:
+                return 0.005 + (1 / pressure) * (0.01 + 0.0095 * (forceRoadFrictionBackFrontNorm * 3.6 / 100) * (forceRoadFrictionBackFrontNorm * 3.6 / 100));
         }
     }
 }
