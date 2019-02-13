@@ -127,21 +127,16 @@ public class EMADLGeneratorCli {
             backend = Backend.getBackendFromString(DEFAULT_BACKEND);
         }
 
-        if(pythonPath == null) {
+        if (pythonPath == null) {
             pythonPath = "/usr/bin/python";
         }
 
         if (forced == null) {
-            Log.warn("forced not specified. forced set to default value" + DEFAULT_FORCED);
             forced = DEFAULT_FORCED;
-        }else if (forced == "y") {
-        	Log.warn("training with enforcement");
-            /**/
-        }else if (forced == "n") {
-        	Log.warn("no training with enforcement");
-        }else{
-        	Log.error("no such parameter" + forced);
-            System.exit(1);
+        }
+        else if (!forced.equals("y") && !forced.equals("n")) {
+            Log.error("specified setting ("+forced+") for forcing/preventing training not supported. set to default value " + DEFAULT_FORCED);
+            forced = DEFAULT_FORCED;
         }
         EMADLGenerator generator = new EMADLGenerator(backend.get());
 

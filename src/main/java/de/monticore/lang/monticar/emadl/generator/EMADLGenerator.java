@@ -210,7 +210,7 @@ public class EMADLGenerator {
                 continue;
             }
 
-            if(forced == "n") {
+            if(forced.equals("n")) {
                 continue;
             }
 
@@ -237,11 +237,10 @@ public class EMADLGenerator {
             String trainingHash = emadlHash + "#" + cnntHash + "#" + trainingDataHash + "#" + testDataHash;
 
             boolean alreadyTrained = newHashes.contains(trainingHash) || isAlreadyTrained(trainingHash, componentInstance);
-            if(alreadyTrained && forced !="y") {
-                System.out.println("Already trained");
+            if(alreadyTrained && !forced.equals("y")) {
+                Log.warn("Training of model " + componentInstance.getFullName() + " skipped");
             }
             else {
-                System.out.println("Not trained yet");
                 String parsedFullName = componentInstance.getFullName().substring(0, 1).toLowerCase() + componentInstance.getFullName().substring(1).replaceAll("\\.", "_");
                 String trainerScriptName = "CNNTrainer_" + parsedFullName + ".py";
                 String trainingPath = getGenerationTargetPath() + trainerScriptName;
@@ -267,7 +266,8 @@ public class EMADLGenerator {
 
                     fileContentsTrainingHashes.add(new FileContent(trainingHash, componentConfigFilename + ".training_hash"));
                     newHashes.add(trainingHash);
-                }else{
+                }
+                else{
                     System.out.println("Trainingfile " + trainingPath + " not found.");
                 }
             }
