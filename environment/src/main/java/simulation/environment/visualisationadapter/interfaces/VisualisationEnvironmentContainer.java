@@ -35,6 +35,11 @@ public interface VisualisationEnvironmentContainer {
     public abstract Collection<EnvStreet> getStreets();
 
     /**
+     * @return a Collection of all streets in the container
+     */
+    public abstract Collection<Waterway> getWaterway();
+
+    /**
      * @return a Collection of all buildings in the container
      */
     public abstract Collection<Building> getBuildings();

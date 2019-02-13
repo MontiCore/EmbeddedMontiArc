@@ -25,6 +25,18 @@ package simulation.environment.visualisationadapter.interfaces;
  *
  * An interface for buildings in the environment
  * Currently unused
+ *
+ * Update by Florisa on 31.01.19.
  */
 public interface Building extends EnvObject{
+    /**
+     * lists type of buildings
+     */
+    public enum BuildingTypes{UNIVERSITY, HOUSE, GARAGES, CHURCH}
+
+    /**
+     * @return the type of buildings
+     */
+
+    public abstract BuildingTypes getBuildingTypes();
 }

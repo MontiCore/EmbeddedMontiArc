@@ -18,13 +18,35 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package simulation.environment.visualisationadapter.interfaces;
+package simulation.environment.visualisationadapter.implementation;
 
-/**
- * Created by lukas on 15.12.16.
- *
- * An enum type for defining the type of an Environment Object
- */
-public enum EnvTag {
-    BUILDING, STREET, TREE, TRAFFIC_SIGNAL, WATERWAY
+import simulation.environment.visualisationadapter.interfaces.Building;
+import simulation.environment.visualisationadapter.interfaces.EnvNode;
+import simulation.environment.visualisationadapter.interfaces.EnvTag;
+
+import java.util.List;
+
+public class BuildingImpl extends  EnvObject2D implements Building {
+
+    public BuildingTypes buildingTypes;
+    public BuildingImpl(List<EnvNode> nodes, EnvTag tag) {
+        super(nodes, tag);
+    }
+
+    public BuildingImpl(List<EnvNode> nodes, EnvTag tag, long osmId) {
+        super(nodes, tag, osmId);
+    }
+
+    public BuildingImpl(List<EnvNode> nodes, long osmId) {
+        super(nodes, EnvTag.BUILDING, osmId);
+    }
+
+    @Override
+    public BuildingTypes getBuildingTypes() {
+        return buildingTypes;
+    }
+
+    public String toString(){
+        return this.nodes.toString();
+    }
 }

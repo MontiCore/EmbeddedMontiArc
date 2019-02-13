@@ -26,6 +26,7 @@ import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObject;
 import javafx.geometry.Point3D;
 import simulation.environment.geometry.osmadapter.GeomStreet;
+import simulation.environment.osm.Parser2D;
 import simulation.environment.pedestrians.PedestrianContainer;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
 import java.util.List;
@@ -112,6 +113,12 @@ public interface World {
      * @throws Exception
      */
     public abstract VisualisationEnvironmentContainer getContainer() throws Exception;
+
+    /**
+     * @return the Parser to be used by the Visualisation-Group
+     * @throws Exception
+     */
+    public abstract Parser2D getParser() throws Exception;
 
     /**
      * @return true iff it is raining

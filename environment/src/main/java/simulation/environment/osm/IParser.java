@@ -23,6 +23,8 @@ package simulation.environment.osm;
 import simulation.environment.visualisationadapter.interfaces.Building;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
+import simulation.environment.visualisationadapter.interfaces.Waterway;
+
 import java.util.Collection;
 
 /**
@@ -47,6 +49,13 @@ public interface IParser {
      * @return a collection of all Buildings parsed
      */
     public abstract Collection<Building> getBuildings();
+
+    /**
+     * @return a collection of all Buildings parsed
+     */
+    public abstract Collection<Waterway> getWaterways();
+
+
 
     /**
      * @return an EnvironmentContainer

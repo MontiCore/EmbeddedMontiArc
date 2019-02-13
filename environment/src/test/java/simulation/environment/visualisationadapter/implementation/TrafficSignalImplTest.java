@@ -28,8 +28,6 @@ import org.junit.Test;
 public class TrafficSignalImplTest {
     @Test
     public void executeLoopIteration() throws Exception {
-        TrafficSignalImpl trafficSignal = new TrafficSignalImpl();
-        trafficSignal.executeLoopIteration(30);
-    }
 
+    }
 }

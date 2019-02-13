@@ -34,19 +34,26 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
     private Collection<EnvStreet> streets;
     private Collection<Building> buildings;
     private Collection<EnvNode> trees;
+    private Collection<Waterway> waterway;
     private EnvBounds bounds = null;
 
     private Point3D midPoint;
     private double[][] heightMap;
 
 
-    public EnvironmentContainer2D(EnvBounds bounds, Collection<EnvStreet> streets, Collection<Building> buildings) {
+    public EnvironmentContainer2D(EnvBounds bounds, Collection<EnvStreet> streets, Collection<Building> buildings, Collection<Waterway> waterway) {
         this.bounds = bounds;
         this.streets = streets;
         this.buildings = buildings;
+        this.waterway = waterway;
 
     }
 
+
+    @Override
+    public Collection<Waterway> getWaterway() {
+        return this.waterway;
+    }
 
     @Override
     public Collection<EnvStreet> getStreets() {

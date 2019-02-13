@@ -32,11 +32,9 @@ import de.topobyte.osm4j.core.resolve.EntityNotFoundException;
 import de.topobyte.osm4j.xml.dynsax.OsmXmlReader;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
-import simulation.environment.visualisationadapter.implementation.Bounds2D;
-import simulation.environment.visualisationadapter.implementation.Node2D;
-import simulation.environment.visualisationadapter.implementation.Street2D;
+import simulation.environment.visualisationadapter.implementation.*;
 import simulation.environment.visualisationadapter.interfaces.*;
-import simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D;
+
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -50,6 +48,8 @@ import java.util.*;
 /**
  * Created by lukas on 08.01.17.
  * Parses OSM-Data using osm4j
+ * Update by Florisa on 31.01.19.
+ * Update by Danilo on 07.02.19
  */
 public class Parser2D implements IParser {
     private InMemoryMapDataSet dataSet;
@@ -60,6 +60,7 @@ public class Parser2D implements IParser {
 
     private HashSet<EnvStreet> streets;
     private HashSet<Building> buildings;
+    private HashSet<Waterway> waterway;
 
     private String filePath;
 
@@ -83,6 +84,7 @@ public class Parser2D implements IParser {
     private void init() {
         this.streets = new HashSet<>();
         this.buildings = new HashSet<>();
+        this.waterway = new HashSet<>();
     }
 
     /**
@@ -129,7 +131,11 @@ public class Parser2D implements IParser {
 
                 Map<String, String> tags = OsmModelUtil.getTagsAsMap(way);
                 String highway = tags.get("highway");
-                if (highway == null) {
+                String building = tags.get("building");
+                String waterway = tags.get("waterway");
+              //  System.out.println("PARSE FUNCTION   "+highway);
+               // System.out.println("");System.out.println(" ");
+                if (highway == null && building == null && waterway == null) {
                     continue;
                 }
 
@@ -153,6 +159,7 @@ public class Parser2D implements IParser {
             LinkedList<Long> removeListOsmWayMapIDs = new LinkedList<>();
 
             for (Long osmWayMapID : this.dataSet.getWays().keys()) {
+
                 OsmWay way = this.dataSet.getWay(osmWayMapID);
 
                 for (int i = 0; i < way.getNumberOfTags(); ++i) {
@@ -160,9 +167,12 @@ public class Parser2D implements IParser {
                     String key = tag.getKey();
                     String val = tag.getValue();
 
+
                     // Filter key:highway with values in: footway, bridleway, steps, path, cycleway, pedestrian, track, elevator
                     if (key.equals("highway") && (val.equals("footway") || val.equals("bridleway") || val.equals("steps") || val.equals("path") || val.equals("cycleway") || val.equals("pedestrian") || val.equals("track") || val.equals("elevator"))) {
-                        removeListOsmWayMapIDs.add(osmWayMapID);
+
+
+//                        removeListOsmWayMapIDs.add(osmWayMapID);
                         break;
                     }
                 }
@@ -172,6 +182,7 @@ public class Parser2D implements IParser {
             for (Long removeOsmWayMapID : removeListOsmWayMapIDs) {
                 this.dataSet.getWays().remove(removeOsmWayMapID);
             }
+
 
         } catch (OsmInputException e) {
             e.printStackTrace();
@@ -275,7 +286,6 @@ public class Parser2D implements IParser {
             e.printStackTrace();
         }
 
-
         findIntersections();
         mapIntersections();
         try {
@@ -324,9 +334,11 @@ public class Parser2D implements IParser {
 
 
     private void buildContainer() {
+
         this.container = new simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D(
                 new Bounds2D(this.dataSet.getBounds().getLeft(), this.dataSet.getBounds().getRight(), this.dataSet.getBounds().getBottom(), this.dataSet.getBounds().getTop(), 0, 0),
-                this.streets, this.buildings);
+                this.streets, this.buildings, this.waterway);
+
     }
 
     private void findIntersections() {
@@ -346,6 +358,12 @@ public class Parser2D implements IParser {
         for (OsmWay way : dataSet.getWays().valueCollection()) {
             Map<String, String> tags = OsmModelUtil.getTagsAsMap(way);
             String highway = tags.get("highway");
+            String building = tags.get("building");
+            String waterway = tags.get("waterway");
+
+        //  System.out.println("PARSE OBJECTS FUNCTION  "+highway);
+          //  System.out.println(waterway);
+
             if (highway != null) {
                 // Check if way is marked as oneWayRoad
                 boolean isOneWay = false;
@@ -356,8 +374,44 @@ public class Parser2D implements IParser {
 
                 constructStreet(way, isOneWay, highway);
             }
+            if (building != null) {
+                constructBuilding( way , building );
+            }
+
+            if (waterway != null) {
+                constructWaterway( way, waterway);
+
+            }
+
         }
     }
+
+    private void constructWaterway(OsmWay way, String waterway) throws EntityNotFoundException {
+
+
+        List<EnvNode> nodes = new ArrayList<>();
+        for (int i = 0; i < way.getNumberOfNodes(); i++) {
+
+            OsmNode node = dataSet.getNode(way.getNodeId(i));
+
+            nodes.add(new Node2D(node.getLongitude(), node.getLatitude(), 0, way.getNodeId(i)));
+        }
+        this.waterway.add(new Waterway2D(nodes,way.getId()));
+    }
+
+
+    private void constructBuilding(OsmWay way, String building) throws EntityNotFoundException {
+
+            List<EnvNode> nodes = new ArrayList<>();
+            for (int i = 0; i < way.getNumberOfNodes(); i++) {
+                OsmNode node = dataSet.getNode(way.getNodeId(i));
+                nodes.add(new Node2D(node.getLongitude(), node.getLatitude(), 0, way.getNodeId(i)));
+            }
+
+            this.buildings.add(new BuildingImpl(nodes,way.getId()));
+
+
+        }
 
     /**
      * construct a Street2D from a given OsmWay object
@@ -385,6 +439,11 @@ public class Parser2D implements IParser {
     @Override
     public Collection<Building> getBuildings() {
         return this.buildings;
+    }
+
+    @Override
+    public Collection<Waterway> getWaterways() {
+        return this.waterway;
     }
 
     public InMemoryMapDataSet getDataSet() {

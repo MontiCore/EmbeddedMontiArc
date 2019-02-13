@@ -20,6 +20,7 @@
  */
 package simulation.environment;
 
+
 import commons.map.Adjacency;
 import commons.map.ControllerContainer;
 import commons.map.IAdjacency;
@@ -32,18 +33,19 @@ import simulation.environment.geometry.DetailedMapConstructor;
 import simulation.environment.geometry.StreetSignPositioner;
 import simulation.environment.geometry.osmadapter.GeomStreet;
 import simulation.environment.object.TrafficLightSwitcher;
-import simulation.environment.osm.IParser;
 import simulation.environment.osm.Parser2D;
 import simulation.environment.osm.ParserSettings;
 import simulation.environment.osm.ZCoordinateGenerator;
 import simulation.environment.pedestrians.PedestrianContainer;
 import simulation.environment.visualisationadapter.implementation.Node2D;
+import simulation.environment.visualisationadapter.interfaces.Building;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
 import simulation.environment.weather.Weather;
 import simulation.environment.weather.WeatherSettings;
 import java.util.*;
+
 
 /**
  * Created by lukas on 02.02.17.
@@ -63,6 +65,7 @@ public class WorldModel implements World{
                 e.printStackTrace();
             }
         }
+
         return ourInstance;
     }
 
@@ -90,7 +93,8 @@ public class WorldModel implements World{
      */
     public static World init(VisualisationEnvironmentContainer visContainer, WeatherSettings weatherSettings) {
     	ourInstance = new WorldModel(visContainer, weatherSettings);
-    	return ourInstance;
+
+        return ourInstance;
     }
     
     /**
@@ -121,6 +125,7 @@ public class WorldModel implements World{
     }
 
     private VisualisationEnvironmentContainer visualisationContainer;
+    private ArrayList<Building> buldings;
 
     private ArrayList<GeomStreet> streets;
 
@@ -132,7 +137,7 @@ public class WorldModel implements World{
 
     private ControllerContainer contContainer;
 
-    
+    private Parser2D parsing;
     private WorldModel(ParserSettings pSettings, WeatherSettings settings) throws Exception {
         this.pSettings = pSettings;
         parseWorld(pSettings);
@@ -224,9 +229,11 @@ public class WorldModel implements World{
     }
 
     private void parseWorld(ParserSettings pSettings) throws Exception {
-        IParser parser = new Parser2D(pSettings);
+        Parser2D parser = new Parser2D(pSettings);
         parser.parse();
+        this.parsing = parser;
         this.visualisationContainer = parser.getContainer();
+
     }
 
     private void constructGeomStreets() {
@@ -397,7 +404,10 @@ public class WorldModel implements World{
     public VisualisationEnvironmentContainer getContainer() throws Exception {
         return this.visualisationContainer;
     }
-
+    @Override
+    public Parser2D getParser() throws Exception {
+        return this.parsing;
+    }
     @Override
     public boolean isItRaining() {
         return this.weather.isRain();

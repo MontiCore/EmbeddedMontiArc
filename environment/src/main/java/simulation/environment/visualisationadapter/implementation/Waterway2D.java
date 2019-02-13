@@ -20,35 +20,54 @@
  */
 package simulation.environment.visualisationadapter.implementation;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import simulation.environment.object.TrafficLightSwitcher;
-import simulation.environment.visualisationadapter.interfaces.SignTypeAndState;
+import simulation.environment.visualisationadapter.interfaces.EnvIntersection;
+import simulation.environment.visualisationadapter.interfaces.EnvNode;
+import simulation.environment.visualisationadapter.interfaces.EnvTag;
+import simulation.environment.visualisationadapter.interfaces.Waterway;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by lukas on 13.03.17.
- */
-public class TrafficSignalTest extends TestCase {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public TrafficSignalTest(String testName) {
-        super(testName);
+public class Waterway2D extends EnvObject2D implements Waterway {
+
+
+
+    public Waterway.WaterTypes waterType;
+
+    public Waterway2D(List<EnvNode> nodes) {
+        super(nodes, EnvTag.WATERWAY);
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(TrafficSignalTest.class);
-    }
-
-    public void testApp() {
+    public Waterway2D(List<EnvNode> nodes,  long osmId) {
+        super(nodes, EnvTag.WATERWAY, osmId);
 
     }
+
+    public Waterway2D(List<EnvNode> nodes,  long osmId, Waterway.WaterTypes waterType) {
+        super(nodes, EnvTag.WATERWAY, osmId);
+
+    }
+
+
+
+
+
+    public String toString() {
+        return this.nodes.toString();
+    }
+
+
+
+
+
+    @Override
+    public Number getWaterwayWidth() {
+        return Waterway.RIVER_WIDTH;
+    }
+
+
+
+    @Override
+    public Waterway.WaterTypes getWaterType(){ return waterType; }
 }

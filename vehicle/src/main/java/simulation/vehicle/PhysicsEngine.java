@@ -28,7 +28,6 @@ import simulation.util.MathHelper;
 import simulation.util.OrientedBoundingBox;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Physics calculations for simulation
