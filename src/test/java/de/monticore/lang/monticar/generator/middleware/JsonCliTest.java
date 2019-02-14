@@ -38,5 +38,10 @@ public class JsonCliTest {
         DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/parameterTest/clusterParamsAllAlgosMinParams.json"});
     }
 
+    @Test
+    public void testDynamicParameterList() {
+        DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/parameterTest/clusterDynamicList.json"});
+    }
+
 
 }
