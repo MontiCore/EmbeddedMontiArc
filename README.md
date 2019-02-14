@@ -110,6 +110,22 @@ Clustering Parameters:
 
 There are 4 different Clustering Algorithms with distinct parameters
 
+Every parameter of the clustering algorithms can be dynamic, enabling automatic search for the best values. Available are lists and generators as seen in the example below:
+```json
+"sigma":[1,2,3]
+"sigma":{
+  "min":1,
+  "max":3,
+  "step":1
+}
+"sigma":{
+  "min":1,
+  "max":3,
+  "count":3
+}
+```
+Also see [clusterDynamic.json](src/test/resources/config/parameterTest/clusterDynamic.json) and [clusterDynamicList.json](src/test/resources/config/parameterTest/clusterDynamicList.json)
+
 Spectral Clustering:
 
 | Name             | Type   | Required | Description                                                                     |
