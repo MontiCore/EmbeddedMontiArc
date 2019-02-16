@@ -128,10 +128,14 @@ class CNNCreator_VGG16:
     		return predictions
 
     # this adds the loss and optimizer
-    def add_training_operators(self, model, output, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum) :
+    def add_training_operators(self, model, output, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum) :
     	with core.DeviceScope(device_opts):
-    		xent = model.LabelCrossEntropy([output, label], 'xent')
-    		loss = model.AveragedLoss(xent, "loss")
+    		if loss == 'cross_entropy':
+    		    xent = model.LabelCrossEntropy([output, label], 'xent')
+    		    loss = model.AveragedLoss(xent, "loss")
+    		elif loss == 'euclidean':
+    		    dist = model.net.SquaredL2Distance([label, output], 'dist')
+    		    loss = dist.AveragedLoss([], ['loss'])
 
     		model.AddGradientOperators([loss])
 
@@ -168,7 +172,7 @@ class CNNCreator_VGG16:
                 accuracy = brew.accuracy(model, [output, label], "accuracy", top_k=3)
             return accuracy
 
-    def train(self, num_epoch=1000, batch_size=64, context='gpu', eval_metric='accuracy', opt_type='adam', base_learning_rate=0.001, weight_decay=0.001, policy='fixed', stepsize=1, epsilon=1E-8, beta1=0.9, beta2=0.999, gamma=0.999, momentum=0.9) :
+    def train(self, num_epoch=1000, batch_size=64, context='gpu', eval_metric='accuracy', loss='cross_entropy', opt_type='adam', base_learning_rate=0.001, weight_decay=0.001, policy='fixed', stepsize=1, epsilon=1E-8, beta1=0.9, beta2=0.999, gamma=0.999, momentum=0.9) :
         if context == 'cpu':
             device_opts = core.DeviceOption(caffe2_pb2.CPU, 0)
             print("CPU mode selected")

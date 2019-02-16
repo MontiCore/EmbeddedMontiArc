@@ -67,6 +67,13 @@ public class ConfigurationData {
         return getConfiguration().getEntry("eval_metric").getValue().toString();
     }
 
+    public String getLoss() {
+        if (!getConfiguration().getEntryMap().containsKey("loss")) {
+            return null;
+        }
+        return getConfiguration().getEntry("loss").getValue().toString();
+    }
+
     public String getOptimizerName() {
         if (getConfiguration().getOptimizer() == null) {
             return null;
