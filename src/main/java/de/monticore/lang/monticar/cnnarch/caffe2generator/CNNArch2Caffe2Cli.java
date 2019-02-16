@@ -19,6 +19,7 @@
  * *******************************************************************************
  */
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
+import de.se_rwth.commons.logging.Log;
 
 import org.apache.commons.cli.*;
 
@@ -73,11 +74,16 @@ public class CNNArch2Caffe2Cli {
         try {
             cliArgs = parser.parse(options, args);
         } catch (ParseException e) {
-            System.err.println("argument parsing exception: " + e.getMessage());
-            System.exit(1);
+            Log.error("argument parsing exception: " + e.getMessage());
+            quitGeneration();
             return null;
         }
         return cliArgs;
+    }
+
+    private static void quitGeneration(){
+        Log.error("Code generation is aborted");
+        System.exit(1);
     }
 
     private static void runGenerator(CommandLine cliArgs) {

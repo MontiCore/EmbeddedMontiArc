@@ -10,7 +10,7 @@
   <artifactId>cnnarch-caffe2-generator</artifactId>
   <version>0.2.8-SNAPSHOT</version>
 
-  <!-- == PROJECT DEPENDENCIES ============================================= -->
+  <!-- == PROJECT DEPENDENCIES =========================================    ==== -->
 
   <properties>
 
