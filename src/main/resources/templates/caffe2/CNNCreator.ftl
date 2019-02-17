@@ -124,7 +124,7 @@ ${tc.include(tc.architecture.body)}
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
     	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'train_lmdb'), db_type='lmdb', device_opts=device_opts)
     	${tc.join(tc.architectureOutputs, ",", "","")} = self.create_model(train_model, data, device_opts=device_opts, is_test=False)
-    	self.add_training_operators(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
+    	self.add_training_operators(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	self.add_accuracy(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, eval_metric)
     	with core.DeviceScope(device_opts):
     		brew.add_weight_decay(train_model, weight_decay)
