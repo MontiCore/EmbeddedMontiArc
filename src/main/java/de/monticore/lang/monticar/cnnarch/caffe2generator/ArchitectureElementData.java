@@ -20,14 +20,12 @@
  */
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.se_rwth.commons.logging.Log;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.List;
 
 public class ArchitectureElementData {
@@ -176,8 +174,7 @@ public class ArchitectureElementData {
 
         if (padding_type.equals(AllPredefinedLayers.PADDING_VALID)){
             pad = 0;
-        }
-        else if (padding_type.equals(AllPredefinedLayers.PADDING_SAME)){
+        } else if (padding_type.equals(AllPredefinedLayers.PADDING_SAME)){
             pad = 1;
         }
 
