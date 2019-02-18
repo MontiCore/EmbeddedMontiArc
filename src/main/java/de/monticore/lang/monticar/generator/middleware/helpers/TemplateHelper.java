@@ -48,4 +48,17 @@ public class TemplateHelper {
         return getTemplate("coordinatorCmakeListsTemplate.ftl");
     }
 
+    public static String getCompilationBashTemplate(){
+        return getTemplate("compile.sh.template");
+    }
+
+    public static String getCompilationMingwTemplate(){
+        return getTemplate("compileMingw.bat.template");
+    }
+
+    public static String getCompilationMsbuildTemplate(){
+        return getTemplate("compileMsbuild.bat.template");
+    }
+
+
 }

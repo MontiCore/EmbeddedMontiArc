@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+
+# add *_HOME to PATH temporarily
+<additional_executables>
+
+# source additional environment variables
+<additional_env>
+
+# check if needed programs are in PATH
+<executable_checks>
+
+
+# cmake
+curDir=`dirname "$0"`
+cmake -B"$curDir"/build/ -H"$curDir/src" "$@"
+
+# make
+make -C "$curDir"

@@ -2,11 +2,13 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.middleware.compile.CompilationGenerator;
 import de.monticore.lang.monticar.generator.middleware.helpers.*;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RclCppGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import org.apache.commons.io.FileUtils;
+import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +23,14 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
     @Override
     public void setGenerationTargetPath(String path) {
-        super.setGenerationTargetPath(path);
+        String res = path;
+        if(res.endsWith("/") || res.endsWith("\\")){
+            res = res.substring(0,res.length() - 1);
+        }
+        if(res.endsWith("/src") || res.endsWith("\\src")){
+            res = res.substring(0, res.length() - 4);
+        }
+        super.setGenerationTargetPath(res);
     }
 
     @Override
@@ -50,12 +59,13 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         }
 
         files.add(generateCMake(componentInstanceSymbol));
+        files.addAll(generateCompileScripts());
         return files;
     }
 
     private GeneratorImpl createFullGenerator(String subdir) {
         MiddlewareGenerator res = new MiddlewareGenerator();
-        res.setGenerationTargetPath(generationTargetPath + (subdir.endsWith("/") ? subdir : subdir + "/"));
+        res.setGenerationTargetPath(generationTargetPath + "src/" + (subdir.endsWith("/") ? subdir : subdir + "/"));
 
         this.getGeneratorImpls().forEach(gen -> res.add(gen, this.getImplSubdir(gen)));
 
@@ -86,7 +96,32 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
         fileContent.setFileContent(content.toString());
 
-        return FileHelper.generateFile(generationTargetPath, fileContent);
+        return FileHelper.generateFile(generationTargetPath + "src/", fileContent);
+    }
+
+    protected List<File> generateCompileScripts(){
+        List<File> res = new ArrayList<>();
+
+        boolean useRos = this.getGeneratorImpls().stream().anyMatch(impl -> impl instanceof RosCppGenImpl);
+        boolean useRos2 = this.getGeneratorImpls().stream().anyMatch(impl -> impl instanceof RclCppGenImpl);
+
+        List<CompilationGenerator> generators = CompilationGenerator.getInstanceOfAllGenerators();
+        generators.forEach(g -> g.setUseRos(useRos));
+        generators.forEach(g -> g.setUseRos2(useRos2));
+
+        generators.stream()
+                .peek(g -> g.setUseRos(useRos))
+                .peek(g -> g.setUseRos2(useRos2))
+                .filter(CompilationGenerator::isValid)
+                .forEach(g -> {
+                    try {
+                        res.add(FileHelper.generateFile(generationTargetPath ,g.getCompilationScript()));
+                    } catch (IOException e) {
+                        Log.error("0xD4BAA: Error generating compile scripts!", e);
+                    }
+                });
+
+        return res;
     }
 
 }
