@@ -4,7 +4,6 @@
 <#elseif element.logisticRegressionOutput>
     		${element.name} = model.net.Sigmoid(${input}, '${element.name}')
 <#elseif element.linearRegressionOutput>
-    		<#--Don't add L2 loss here but within the function "add_training_operators" from CNNCreator.ftl-->
     		${element.name} = ${input}
 </#if>
 

@@ -23,7 +23,7 @@
 	<#assign kernelParameter = "kernel_h=${kernelHeight}, kernel_w=${kernelWidth}">
 </#if>
 <#if element.poolType == "max">
-    		${element.name} = brew.max_pool(model, ${input}, '${element.name}', ${kernelParameter}, ${strideParameter})
+    		${element.name} = brew.max_pool(model, ${input}, '${element.name}', ${kernelParameter}, ${strideParameter}${padParameter})
 <#elseif element.poolType == "avg">
     		${element.name} = brew.average_pool(model, ${input}, '${element.name}', ${kernelParameter}, ${strideParameter}${padParameter})
 </#if>
