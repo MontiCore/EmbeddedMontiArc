@@ -29,6 +29,9 @@ if __name__ == "__main__":
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric}',
 </#if>
+<#if (config.loss)??>
+        loss='${config.loss}',
+</#if>
 <#if (config.configuration.optimizer)??>
         opt_type='${config.optimizerName}',
 <#list config.optimizerParams?keys as param>

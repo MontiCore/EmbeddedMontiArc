@@ -45,6 +45,10 @@ public class CNNArchTemplateController {
     private ArchitectureElementData dataElement;
 
 
+    public String loss;
+    public static final String CROSS_ENTROPY = "cross_entropy";
+    public static final String EUCLIDEAN = "euclidean";
+
     public CNNArchTemplateController(ArchitectureSymbol architecture) {
         setArchitecture(architecture);
     }
@@ -121,6 +125,10 @@ public class CNNArchTemplateController {
             list.add(nameManager.getName(ioElement));
         }
         return list;
+    }
+
+    public String getArchitectureLoss(){
+        return this.loss;
     }
 
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer){
@@ -236,18 +244,30 @@ public class CNNArchTemplateController {
 
 
     public boolean isLogisticRegressionOutput(ArchitectureElementSymbol architectureElement){
-        return isTOutput(Sigmoid.class, architectureElement);
+        if (isTOutput(Sigmoid.class, architectureElement)){
+            this.loss = CROSS_ENTROPY;
+            return true;
+        }
+        return false;
     }
 
     public boolean isLinearRegressionOutput(ArchitectureElementSymbol architectureElement){
-        return architectureElement.isOutput()
+        if (architectureElement.isOutput()
                 && !isLogisticRegressionOutput(architectureElement)
-                && !isSoftmaxOutput(architectureElement);
+                && !isSoftmaxOutput(architectureElement)){
+            this.loss = EUCLIDEAN;
+            return true;
+        }
+        return false;
     }
 
 
     public boolean isSoftmaxOutput(ArchitectureElementSymbol architectureElement){
-        return isTOutput(Softmax.class, architectureElement);
+        if (isTOutput(Softmax.class, architectureElement)){
+            this.loss = CROSS_ENTROPY;
+            return true;
+        }
+        return false;
     }
 
     private boolean isTOutput(Class inputPredefinedLayerClass, ArchitectureElementSymbol architectureElement){
