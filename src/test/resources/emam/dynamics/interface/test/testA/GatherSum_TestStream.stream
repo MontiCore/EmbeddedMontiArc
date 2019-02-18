@@ -1,0 +1,9 @@
+package testA;
+
+stream GatherSum_TestStream for GatherSum_TestWrapper {
+
+    connectNew: false tick false;
+    sumValueIn: 0 tick 0;
+    out1: 0 tick 0;
+
+}
