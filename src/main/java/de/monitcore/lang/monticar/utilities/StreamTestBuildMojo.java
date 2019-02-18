@@ -1,7 +1,8 @@
 package de.monitcore.lang.monticar.utilities;
 
 import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+//import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -78,8 +79,8 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
             throw new MojoExecutionException("Failed to create hash files for "+MojoName());
         }
 
-        List<ComponentSymbol> toBuild = getToTestComponentSymbols(false);
-        for (ComponentSymbol cs : toBuild) {
+        List<EMAComponentSymbol> toBuild = getToTestComponentSymbols(false);
+        for (EMAComponentSymbol cs : toBuild) {
             buildHash = SearchFiles.hashDirFiles(Paths.get(this.getPathTmpOutBUILD(), cs.getFullName()).toString());
             cppHash = SearchFiles.hashDirFiles(Paths.get(this.getPathTmpOutCPP(), cs.getFullName()).toString());
             try {
@@ -133,14 +134,14 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
 
     protected void buildStreamTests() throws MojoExecutionException, MojoFailureException {
 
-        List<ComponentSymbol> toBuild = getToTestComponentSymbols(false);
+        List<EMAComponentSymbol> toBuild = getToTestComponentSymbols(false);
 
 
         logInfo("Build StreamTest executables:");
 
         boolean allCompiled = true;
 
-        for (ComponentSymbol cs : toBuild) {
+        for (EMAComponentSymbol cs : toBuild) {
             logInfo(" - "+cs.getFullName());
             if(checkHashesAndExecForBuild(cs.getFullName())){
                 logInfo("   -> Files are up to date");

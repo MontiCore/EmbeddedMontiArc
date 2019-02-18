@@ -3,9 +3,10 @@ package de.monitcore.lang.monticar.utilities;
 import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
+//import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.streamunits._ast.ASTStreamUnitsCompilationUnit;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
@@ -68,7 +69,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             throw new MojoExecutionException("Could not copy files: "+e.getMessage() );
         }
 
-        List<ComponentSymbol> toTest = getToTestComponentSymbols(true);
+        List<EMAComponentSymbol> toTest = getToTestComponentSymbols(true);
         generateCPP(toTest);
     }
 
@@ -159,10 +160,10 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                     boolean resolved = false;
                     String modelName;
                     if(ending.equalsIgnoreCase("emam")) {
-                        ASTEMAMCompilationUnit ast = (ASTEMAMCompilationUnit) node.get();
+                        ASTEMACompilationUnit ast = (ASTEMACompilationUnit) node.get();
 
-                        modelName = modelNameCalculator(f.getValue(),"emam", ast.getEMACompilationUnit().getPackageList());
-                        Optional<ComponentSymbol> comp = scope.<ComponentSymbol>resolve(modelName, ComponentSymbol.KIND);
+                        modelName = modelNameCalculator(f.getValue(),"emam", ast.getPackageList());
+                        Optional<EMAComponentSymbol> comp = scope.<EMAComponentSymbol>resolve(modelName, EMAComponentSymbol.KIND);
                         resolved = comp.isPresent();
                     }else if(ending.equalsIgnoreCase("stream")){
                         ASTStreamUnitsCompilationUnit ast = (ASTStreamUnitsCompilationUnit)node.get();
@@ -193,16 +194,16 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
     }
 
-    protected void generateCPP(List<ComponentSymbol> toTest){
+    protected void generateCPP(List<EMAComponentSymbol> toTest){
         Scope scope = getScope();
         TaggingResolver tagging = this.getTaggingResolver();
 
         logInfo("Generate CPP:");
-        for (ComponentSymbol cs :toTest) {
+        for (EMAComponentSymbol cs :toTest) {
             String name = cs.getPackageName() + "." + cs.getName().substring(0,1).toLowerCase()+cs.getName().substring(1);
             logInfo(" - "+cs.getFullName()+" = "+name);
 
-            Optional<ExpandedComponentInstanceSymbol> ecis = scope.<ExpandedComponentInstanceSymbol>resolve(name, ExpandedComponentInstanceSymbol.KIND);
+            Optional<EMAComponentInstanceSymbol> ecis = scope.<EMAComponentInstanceSymbol>resolve(name, EMAComponentInstanceSymbol.KIND);
 
             if(!ecis.isPresent()){
                 logError("   -> Can't resolve ExpandedComponentInstanceSymbol for "+cs.getFullName());

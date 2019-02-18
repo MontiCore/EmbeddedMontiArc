@@ -4,7 +4,8 @@ import de.monitcore.lang.monticar.utilities.StreamTestExecuteMojo;
 import de.monitcore.lang.monticar.utilities.tools.ChecksumChecker;
 import de.monitcore.lang.monticar.utilities.tools.LogToFile;
 import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+//import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
@@ -88,7 +89,7 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
         for (String model : this.middlewareRootModels){
             logInfo(" - "+model);
 
-            Optional<ExpandedComponentInstanceSymbol> ecis = scope.<ExpandedComponentInstanceSymbol>resolve(model, ExpandedComponentInstanceSymbol.KIND);
+            Optional<EMAComponentInstanceSymbol> ecis = scope.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND);
             if(!ecis.isPresent()){
                 logError("   -> Can't resolve ExpandedComponentInstanceSymbol for "+model);
                 modelsInError.add(model);

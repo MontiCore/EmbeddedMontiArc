@@ -2,7 +2,8 @@ package de.monitcore.lang.monticar.utilities;
 
 
 import de.monitcore.lang.monticar.utilities.tools.ChecksumChecker;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+//import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 @Mojo(name = "streamtest-execute")
 public class StreamTestExecuteMojo extends StreamTestMojoBase {
-    protected List<ComponentSymbol> toRun;
+    protected List<EMAComponentSymbol> toRun;
     private boolean throwAMojoExecutionExceptionInPost = false;
 
     protected String getPathMojoExecutionOutput(){
@@ -61,7 +62,7 @@ public class StreamTestExecuteMojo extends StreamTestMojoBase {
 
 
         logInfo("Running StreamTest executables:");
-        for (ComponentSymbol cs : toRun) {
+        for (EMAComponentSymbol cs : toRun) {
             logInfo(" - "+cs.getFullName());
 
             if(runExecFor(cs.getFullName())){
@@ -137,7 +138,7 @@ public class StreamTestExecuteMojo extends StreamTestMojoBase {
             if(failedFileBuild().exists()){
                 logError(" -> Cached execution failed. ");
 
-                for (ComponentSymbol cs : toRun) {
+                for (EMAComponentSymbol cs : toRun) {
                     File resultNumber = Paths.get(hashDirBuild().getPath(), cs.getFullName()+".exit.txt").toFile();
                     if(resultNumber.exists())
                     {
@@ -269,7 +270,7 @@ public class StreamTestExecuteMojo extends StreamTestMojoBase {
 
     protected String hashOfBuildFiles(){
         StringBuilder sb = new StringBuilder();
-        for (ComponentSymbol cs : toRun) {
+        for (EMAComponentSymbol cs : toRun) {
             try {
                 sb.append(ChecksumChecker.getChecksumForFileMD5(getExecutable(cs.getFullName())));
             } catch (IOException e) {

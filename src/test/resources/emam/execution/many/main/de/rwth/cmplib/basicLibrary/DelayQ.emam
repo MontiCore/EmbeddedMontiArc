@@ -1,12 +1,12 @@
 package de.rwth.cmplib.basicLibrary;
 
-component DelayQ (Q value) {
+component DelayQ (Q valueQ) {
 	port
 		in Q in1,
 		out Q out1;
 
 	implementation Math {
-        static T prev = value;
+        static T prev = valueQ;
         out1 = prev;
         prev = in1;
 	}

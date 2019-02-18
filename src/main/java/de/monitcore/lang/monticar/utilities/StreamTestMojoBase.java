@@ -6,7 +6,8 @@ import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.enumlang._parser.EnumLangParser;
@@ -358,24 +359,24 @@ public class StreamTestMojoBase extends AbstractMojo {
 
     //<editor-fold desc="Get Component Symbols">
 
-    protected List<ComponentSymbol> getToTestComponentSymbols(boolean output){
+    protected List<EMAComponentSymbol> getToTestComponentSymbols(boolean output){
 
         ComponentScanner componentScanner = new ComponentScanner(Paths.get(this.pathMain), this.getScope(), "emam");
         Set<String> componentNames = componentScanner.scan();
 
         StreamScanner scanner = new StreamScanner(Paths.get(this.pathTest), this.getScope());
-        Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> streamTests = scanner.scan();
+        Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> streamTests = scanner.scan();
 
         if(output) {
             logInfo("Searching components (with wrapper) with streamtests.");
         }
 
-        List<ComponentSymbol> toTestComponents = new ArrayList<>();
+        List<EMAComponentSymbol> toTestComponents = new ArrayList<>();
         for (String componentName: componentNames) {
             if(output){
                 logInfo(" - "+componentName);
             }
-            Optional<ComponentSymbol> cs = getTestComponentSymbol(componentName, streamTests.keySet());
+            Optional<EMAComponentSymbol> cs = getTestComponentSymbol(componentName, streamTests.keySet());
             if(!cs.isPresent()){
                 if(output) {
                     logWarn("   -> No streamtest found for " + componentName);
@@ -392,17 +393,17 @@ public class StreamTestMojoBase extends AbstractMojo {
         return toTestComponents;
     }
 
-    protected Optional<ComponentSymbol> getTestComponentSymbol(String componentName, Set<ComponentSymbol> componentSymbols){
+    protected Optional<EMAComponentSymbol> getTestComponentSymbol(String componentName, Set<EMAComponentSymbol> componentSymbols){
 
-        Optional<ComponentSymbol> cs = FindComponentSymbolByName(componentName, componentSymbols);
+        Optional<EMAComponentSymbol> cs = FindComponentSymbolByName(componentName, componentSymbols);
         if(!cs.isPresent()){
             cs = FindComponentSymbolByName(componentName+this.wrapperTestExtension, componentSymbols);
         }
         return cs;
     }
 
-    protected Optional<ComponentSymbol> FindComponentSymbolByName(String name, Set<ComponentSymbol> componentSymbols){
-        for (ComponentSymbol cs :componentSymbols) {
+    protected Optional<EMAComponentSymbol> FindComponentSymbolByName(String name, Set<EMAComponentSymbol> componentSymbols){
+        for (EMAComponentSymbol cs :componentSymbols) {
             if(cs.getFullName().equals(name)){
                 return Optional.of(cs);
             }
