@@ -52,7 +52,7 @@ public class BashCompilationGenerator extends CompilationGenerator {
 
     @Override
     protected String getScriptTemplate() {
-        return TemplateHelper.getCompilationBashTemplate();
+        return TemplateHelper.getCompilationBashTemplate().replace("\r\n", "\n");
     }
 
     @Override

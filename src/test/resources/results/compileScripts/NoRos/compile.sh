@@ -40,4 +40,4 @@ curDir=`dirname "$0"`
 cmake -B"$curDir"/build/ -H"$curDir/src" "$@"
 
 # make
-make -j4 -C "$curDir"
+make -j4 -C "$curDir/build"
