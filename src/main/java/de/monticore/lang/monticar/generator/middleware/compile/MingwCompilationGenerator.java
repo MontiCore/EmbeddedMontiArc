@@ -14,12 +14,12 @@ public class MingwCompilationGenerator extends WindowsCompilationGenerator {
     }
 
     @Override
-    public String getScriptTemplate() {
+    protected String getScriptTemplate() {
         return TemplateHelper.getCompilationMingwTemplate();
     }
 
     @Override
-    public List<String> getAdditionalPathDirs() {
+    protected List<String> getAdditionalPathDirs() {
         return Arrays.asList("cmake","make","g++");
     }
 

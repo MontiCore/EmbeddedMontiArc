@@ -20,15 +20,15 @@ public abstract class CompilationGenerator {
         return (supportsRos() || !useRos()) && (supportsRos2() || !useRos2());
     }
 
-    public abstract String getPathTemplate();
+    protected abstract String getPathTemplate();
 
-    public abstract String getCheckExeTemplate();
+    protected abstract String getCheckExeTemplate();
 
-    public abstract String getSourceEnvVarsTemplate();
+    protected abstract String getSourceEnvVarsTemplate();
 
-    public abstract String getScriptTemplate();
+    protected abstract String getScriptTemplate();
 
-    public abstract List<String> getAdditionalPathDirs();
+    protected abstract List<String> getAdditionalPathDirs();
 
     protected abstract String getFileName();
 

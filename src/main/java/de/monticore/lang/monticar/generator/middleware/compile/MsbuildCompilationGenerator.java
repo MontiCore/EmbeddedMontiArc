@@ -13,12 +13,12 @@ public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
     }
 
     @Override
-    public String getScriptTemplate() {
+    protected String getScriptTemplate() {
         return TemplateHelper.getCompilationMsbuildTemplate();
     }
 
     @Override
-    public List<String> getAdditionalPathDirs() {
+    protected List<String> getAdditionalPathDirs() {
         return Arrays.asList("cmake","msbuild");
     }
 

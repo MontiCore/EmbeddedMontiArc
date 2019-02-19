@@ -20,17 +20,17 @@ public abstract class WindowsCompilationGenerator extends CompilationGenerator {
     private String SOURCE_ENV_VARS_TEMPLATE = "call <env_file>";
 
     @Override
-    public String getPathTemplate() {
+    protected String getPathTemplate() {
         return PATH_TEMPLATE;
     }
 
     @Override
-    public String getCheckExeTemplate() {
+    protected String getCheckExeTemplate() {
         return CHECK_EXE_TEMPLATE;
     }
 
     @Override
-    public String getSourceEnvVarsTemplate() {
+    protected String getSourceEnvVarsTemplate() {
         return SOURCE_ENV_VARS_TEMPLATE;
     }
 

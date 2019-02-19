@@ -35,27 +35,27 @@ public class BashCompilationGenerator extends CompilationGenerator {
     }
 
     @Override
-    public String getPathTemplate() {
+    protected String getPathTemplate() {
         return PATH_TEMPLATE;
     }
 
     @Override
-    public String getCheckExeTemplate() {
+    protected String getCheckExeTemplate() {
         return CHECK_EXE_TEMPLATE;
     }
 
     @Override
-    public String getSourceEnvVarsTemplate() {
+    protected String getSourceEnvVarsTemplate() {
         return SOURCE_ENV_VARS_TEMPLATE;
     }
 
     @Override
-    public String getScriptTemplate() {
+    protected String getScriptTemplate() {
         return TemplateHelper.getCompilationBashTemplate();
     }
 
     @Override
-    public List<String> getAdditionalPathDirs() {
+    protected List<String> getAdditionalPathDirs() {
         return Arrays.asList("cmake","make");
     }
 
