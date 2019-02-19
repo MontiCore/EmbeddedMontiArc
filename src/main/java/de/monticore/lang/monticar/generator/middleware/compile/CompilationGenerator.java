@@ -2,15 +2,13 @@ package de.monticore.lang.monticar.generator.middleware.compile;
 
 import de.monticore.lang.monticar.generator.FileContent;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class CompilationGenerator {
     private boolean useRos = false;
     private boolean useRos2 = false;
+    private Map<String, String> additionalErrorMsg = new HashMap<>();
 
     public abstract boolean supportsRos();
 
@@ -18,6 +16,15 @@ public abstract class CompilationGenerator {
 
     public boolean isValid() {
         return (supportsRos() || !useRos()) && (supportsRos2() || !useRos2());
+    }
+
+    protected void setAdditionalErrorMsg(String executable, String errorMsg) {
+        additionalErrorMsg.put(executable, errorMsg);
+    }
+
+    protected String getAdditionalErrorMsg(String executable) {
+        String s = additionalErrorMsg.getOrDefault(executable, defaultErrorMsg(executable));
+        return "\techo \"" + s + "\"" + getNewlineDelimiter();
     }
 
     protected abstract String getPathTemplate();
@@ -55,7 +62,9 @@ public abstract class CompilationGenerator {
     }
 
     protected String fillCheckExeTemplate(String exe) {
-        return getCheckExeTemplate().replace("<exe>", exe);
+        return getCheckExeTemplate()
+                .replace("<exe>", exe)
+                .replace("<additional_error>", getAdditionalErrorMsg(exe));
     }
 
     protected String fillSourceEnvVarsTemplate(String envFile) {
@@ -106,5 +115,9 @@ public abstract class CompilationGenerator {
         res.add(new MingwCompilationGenerator());
         res.add(new MsbuildCompilationGenerator());
         return res;
+    }
+
+    protected String defaultErrorMsg(String executable) {
+        return "Try setting the environment variable " + executable + "_HOME to the base of your installation or adding it to your PATH!";
     }
 }

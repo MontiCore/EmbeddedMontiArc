@@ -1,21 +1,20 @@
 package de.monticore.lang.monticar.generator.middleware.compile;
 
 import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
-import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class WindowsCompilationGenerator extends CompilationGenerator {
     private String PATH_TEMPLATE = "IF NOT [%<new_exe>_HOME%] == [] (\n" +
-            "   set PATH=\"%<new_exe>_HOME%;%PATH%\"\n" +
+            "\tset PATH=\"%<new_exe>_HOME%;%PATH%\"\n" +
             ")";
     private String CHECK_EXE_TEMPLATE = "where <exe>\n" +
             "IF NOT %ERRORLEVEL% EQU 0 (\n" +
-            "   echo \"Can not find <exe> in PATH! Aborting.\"\n" +
-            "   exit /B 1\n" +
+            "\techo \"Can not find <exe> in PATH! Aborting.\"\n" +
+            "<additional_error>" +
+            "\texit /B 1\n" +
             ")";
     private String SOURCE_ENV_VARS_TEMPLATE = "call <env_file>";
 

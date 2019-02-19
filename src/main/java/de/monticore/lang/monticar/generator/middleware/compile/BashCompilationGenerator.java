@@ -10,15 +10,16 @@ import java.util.List;
 public class BashCompilationGenerator extends CompilationGenerator {
     private String PATH_TEMPLATE = "if [ -n \"$<new_exe>_HOME\" ]\n" +
             "then\n"+
-            "   export PATH=\"$<new_exe>_HOME:$PATH\"\n"+
+            "\texport PATH=\"$<new_exe>_HOME:$PATH\"\n" +
             "fi";
 
     private String CHECK_EXE_TEMPLATE = "if [[ `command -v <exe>` ]]\n" +
             "then\n" +
-            "    echo \"Found <exe>\"\n" +
+            "\techo \"Found <exe>\"\n" +
             "else\n" +
-            "    echo \"Can not find <exe> in PATH! Aborting.\"\n" +
-            "    exit 1\n" +
+            "\techo \"Can not find <exe> in PATH! Aborting.\"\n" +
+            "<additional_error>" +
+            "\texit 1\n" +
             "fi";
 
     private String SOURCE_ENV_VARS_TEMPLATE = "source <env_file>";
@@ -56,6 +57,8 @@ public class BashCompilationGenerator extends CompilationGenerator {
 
     @Override
     protected List<String> getAdditionalPathDirs() {
+        setAdditionalErrorMsg("roscore", defaultErrorMsg("ROS"));
+        setAdditionalErrorMsg("ros2", defaultErrorMsg("ROS2"));
         return Arrays.asList("cmake","make");
     }
 

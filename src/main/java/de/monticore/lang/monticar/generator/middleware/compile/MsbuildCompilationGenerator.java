@@ -19,6 +19,8 @@ public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
 
     @Override
     protected List<String> getAdditionalPathDirs() {
+        setAdditionalErrorMsg("vcvars64.bat", defaultErrorMsg("msbuild"));
+        setAdditionalErrorMsg("ros2", defaultErrorMsg("ROS2"));
         return Arrays.asList("cmake","msbuild");
     }
 
