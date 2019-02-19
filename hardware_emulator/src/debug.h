@@ -2,7 +2,7 @@
 #include "computer/memory.h"
 #include "computer/registers.h"
 #include "computer/system_calls.h"
-#include "emulation/instruction_time.h"
+#include "computer/instruction_time.h"
 
 #include <Zydis/Zydis.h>
 

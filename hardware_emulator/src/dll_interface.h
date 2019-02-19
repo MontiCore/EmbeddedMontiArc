@@ -12,7 +12,6 @@ namespace ADD_DLL {
             ADD,
             FUNCTION_COUNT
         };
-        bool test_main();
         void init();
         int add( int a, int b );
         bool call_success;
@@ -31,7 +30,6 @@ namespace LOADED_DLL {
             TEST_METHOD,
             FUNCTION_COUNT
         };
-        bool test_main();
         void init();
         void test_method( void );
         bool call_success;

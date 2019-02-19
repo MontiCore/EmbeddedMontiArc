@@ -198,7 +198,7 @@ void OS::Windows::init( Computer &computer ) {
     computer.memory.write_memory( io_slot, ( uchar * )io_files );
 }
 
-bool OS::Windows::load_dll( const char *file ) {
+bool OS::Windows::load_file( const char *file ) {
     if ( !dll.init( file, computer->sys_calls, computer->memory ) )
         return false;
     dll.dll_main( *computer );

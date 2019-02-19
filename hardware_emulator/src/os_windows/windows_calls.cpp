@@ -80,7 +80,7 @@ bool WindowsCalls::get_proc_heap( Computer &inter, SysCall &syscall ) {
 bool WindowsCalls::heap_alloc( Computer &inter, SysCall &syscall ) {
     auto heap_handle = inter.fast_call.get_param1();
     if ( inter.heap.heap_handle != heap_handle ) {
-        cerr << "Trying to alloc on non-existing heap" << endl;
+        Log::err << "Trying to alloc on non-existing heap\n";
         return false;
     }
     auto flags = inter.fast_call.get_param2();
@@ -96,7 +96,7 @@ bool WindowsCalls::heap_alloc( Computer &inter, SysCall &syscall ) {
 bool WindowsCalls::heap_free( Computer &inter, SysCall &syscall ) {
     auto heap_handle = inter.fast_call.get_param1();
     if ( inter.heap.heap_handle != heap_handle ) {
-        cerr << "Trying to alloc on non-existing heap" << endl;
+        Log::err << "Trying to alloc on non-existing heap\n";
         return false;
     }
     auto flags = inter.fast_call.get_param2();
@@ -154,7 +154,7 @@ bool WindowsCalls::strlen( Computer &inter, SysCall &syscall ) {
     auto name_str = inter.memory.read_str( addr );
     string name = ( char * )name_str;
     uint size = ( uint ) name.size();
-    Log::sys << Log::tag << "strlen(\"" << name << "\"): " << to_string( size ) << "\n";
+    //Log::sys << Log::tag << "strlen(\"" << name << "\"): " << to_string( size ) << "\n";
     inter.fast_call.set_return( size );
     return true;
 }
@@ -166,8 +166,8 @@ bool WindowsCalls::strncmp( Computer &inter, SysCall &syscall ) {
     string str1 = ( char * )inter.memory.read_str( addr1 );
     string str2 = ( char * )inter.memory.read_str( addr2 );
     sint res = ::strncmp( str1.c_str(), str2.c_str(), count );
-    Log::sys << Log::tag << "strncmp(\"" << str1 << "\",\"" << str2 << "\"," + to_string( count ) << "\"): " << to_string(
-                 res ) << "\n";
+    /*Log::sys << Log::tag << "strncmp(\"" << str1 << "\",\"" << str2 << "\"," + to_string( count ) << "\"): " << to_string(
+                 res ) << "\n";*/
     inter.fast_call.set_return( res );
     return true;
 }

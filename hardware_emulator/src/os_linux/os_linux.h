@@ -1,28 +1,15 @@
 #pragma once
-#include "dll_loader.h"
 #include "computer/os.h"
-
 
 namespace OS {
 
-
-    extern MemoryRange io_slot;
-    struct Windows : public OS {
+    struct Linux : public OS {
         MemorySection *section;
         SectionStack *section_stack;
         
-        DLLLoader dll;
-        
-        MemoryRange cmd_line_wstr;
-        MemoryRange cmd_line_str;
-        
-        MemoryRange io_stdin;
-        MemoryRange io_stdout;
-        MemoryRange io_stderr;
-        
         Array<char> name_buffer;
         
-        Windows() : name_buffer( 1024 ) {}
+        Linux() : name_buffer( 1024 ) {}
         
         void init( Computer &computer );
         
@@ -31,5 +18,4 @@ namespace OS {
         ulong add_symbol( const std::string &mod, const std::string &name, uint size,
                           Annotation::Type type = Annotation::SYMBOL );
     };
-    
 }

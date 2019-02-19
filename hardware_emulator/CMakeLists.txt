@@ -21,23 +21,22 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   src/tests.cpp
   src/utility.h
   src/utility.cpp
+  src/config.h
+  src/config.cpp
   
   src/dll_interface.h
   src/dll_interface.cpp
   
-  src/autopilot/autopilot_interface.h
-  src/autopilot/autopilot_interface.cpp
-  src/autopilot/autopilot_inputs.h
-  src/autopilot/autopilot_outputs.h
-  src/autopilot/autopilot_port_info.h
-  src/autopilot/autopilot_functions.h
-  src/autopilot/autopilot_functions.cpp
   
-  src/emulation/instruction_time.h
-  src/emulation/instruction_time.cpp
-  src/emulation/hardware_emulator.h
-  src/emulation/hardware_emulator.cpp
+  src/emulator/emulator_manager.h
+  src/emulator/emulator_manager.cpp
+  src/emulator/hardware_emulator.h
+  src/emulator/hardware_emulator.cpp
+  src/emulator/function_value.h
+  src/emulator/function_value.cpp
   
+  src/computer/instruction_time.h
+  src/computer/instruction_time.cpp
   src/computer/computer.h
   src/computer/computer.cpp
   src/computer/computer_layout.h
@@ -49,6 +48,8 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   src/computer/system_calls.cpp
   src/computer/method_calling.h
   src/computer/method_calling.cpp
+  src/computer/os.h
+  src/computer/os.cpp
   
   src/os_windows/dll_loader.h
   src/os_windows/dll_loader.cpp
@@ -57,8 +58,12 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   src/os_windows/windows_calls.h
   src/os_windows/windows_calls.cpp
   
-  src/jni/jni_emulator.h
-  src/jni/jni_emulator.cpp
+  src/os_linux/so_loader.h
+  src/os_linux/so_loader.cpp
+  src/os_linux/os_linux.h
+  src/os_linux/os_linux.cpp
+  src/os_linux/linux_calls.h
+  src/os_linux/linux_calls.cpp
 )
 
 #Source files for the test project
@@ -68,8 +73,8 @@ list(APPEND HARDWARE_EMU_TEST_SOURCEFILES
 
 #Source files for the Autopilot Library
 list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_SOURCEFILES
-  src/emulation/simulator_integration_HardwareEmulatorInterface.h
-  src/emulation/HardwareEmulatorInterface.cpp
+  src/emulator/emulator_server.h
+  src/emulator/emulator_server.cpp
 )
 
 #Setup the project file structure for Visual Studio projects

@@ -4,7 +4,7 @@
 #include "debug.h"
 #include "system_calls.h"
 #include "method_calling.h"
-#include "emulation/instruction_time.h"
+#include "computer/instruction_time.h"
 
 #include <Zydis/Zydis.h>
 

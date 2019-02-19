@@ -1,5 +1,5 @@
 #include "tests.h"
-
+#include "utility.h"
 
 
 bool test_case( const char *name, bool( *test )( void ) ) {
@@ -8,7 +8,7 @@ bool test_case( const char *name, bool( *test )( void ) ) {
         Log::err << "Test failed\n";
         return false;
     }
-    Log::test << "Test succeeded\n";
+    Log::test << "Test succeeded\n\n";
     return true;
 }
 
@@ -24,8 +24,11 @@ int main( int argc, char **argv ) {
     if ( !test_case( "Syscall DLL", test_syscall_dll ) )
         return 2;
         
-    if ( !test_case( "Autopilot DLL", test_autopilot_dll ) )
+    if ( !test_case( "Hardware Manager querries", test_hardware_manager_querries ) )
         return 3;
+        
+    if ( !test_case( "Autopilot DLL", test_autopilot_dll ) )
+        return 4;
         
     ConsoleColor::Console::drop();
     return 0;

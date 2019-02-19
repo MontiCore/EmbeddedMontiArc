@@ -11,6 +11,10 @@ using namespace peparse;
 int iter_exports( void *data, VA address, std::string &module_name, std::string &symbol_name ) {
     auto &loader = *static_cast<OS::DLLLoader *>( data );
     SysCall call( symbol_name, module_name, address );
+    if ( !loader.module_name_set ) {
+        loader.module_name_set = true;
+        loader.module_name = module_name;
+    }
     loader.sys_calls->add_syscall( call );
     return 0;
 }
@@ -87,6 +91,7 @@ bool OS::DLLLoader::init( const std::string &file_name, SystemCalls &sys_calls, 
     sec.set_file_range( MemoryRange( 0, info.size_of_headers ) );
     sec.upload( file.begin(), info.size_of_headers );
     
+    module_name_set = false;
     IterSec( static_cast<peparse::parsed_pe *>( pe ), iter_sections, this );
     IterImpVAString( static_cast<peparse::parsed_pe *>( pe ), iter_imports, this );
     IterExpVA( static_cast<peparse::parsed_pe *>( pe ), iter_exports, this );

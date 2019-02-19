@@ -26,6 +26,8 @@ namespace OS {
         void *pe;
         Array<char> file;
         std::string file_name;
+        std::string module_name;
+        bool module_name_set;
         
         SystemCalls *sys_calls;
         Memory *mem;

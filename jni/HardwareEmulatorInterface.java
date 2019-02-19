@@ -9,30 +9,36 @@ public class HardwareEmulatorInterface {
         // when the java app with simulation is started
         System.loadLibrary("HardwareEmulator");
     }
-
-    private native boolean init();
-    private native void add_input(String key, Serializable value);
-    private native void exec();
-    private native void get_outputs(HashMap<String, Serializable> opaque_hashmap);
-    private void add_output(HashMap<String, Serializable> opaque_hashmap, String key, Serializable value) {
-        opaque_hashmap.put(key, value);
-    }
-    private native String message(String msg);
     
-
-    public HashMap<String, Serializable> execute(HashMap<String, Serializable> inputs) {
-		//set inputs
-		for (HashMap.Entry<String, Serializable> entry : inputs.entrySet()){
-		    add_input(entry.getKey(), entry.getValue());
+    public native boolean init();
+    
+    public native int alloc_autopilot(String config);
+    public native void free_autopilot(int id);
+    
+    public void update_bus(int id, HashMap<String, Serializable> inputs){
+        for (HashMap.Entry<String, Serializable> entry : inputs.entrySet()){
+		    add_one_input(id, entry.getKey(), entry.getValue());
         }
 
-		//execute model
-		exec();
-		
-		//fill in outputs
-		HashMap<String, Serializable> outputs = new HashMap<String, Serializable>();
-		get_outputs(outputs);
-		
+    }
+    
+    public native void start_tick(long time_delta);
+    public native void end_tick();
+    
+    public HashMap<String, Serializable> get_outputs(int id){
+        HashMap<String, Serializable> outputs = new HashMap<String, Serializable>();
+		querry_outputs(id, outputs);
 		return outputs;	
-	}
+    }
+    
+    
+    public native String querry(String msg);
+    public native String querry_autopilot(int id, String msg);
+    
+    
+    private native void add_one_input(int id, String key, Serializable value);
+    private native void querry_outputs(int id, HashMap<String, Serializable> opaque_hashmap);
+    private void add_one_output(HashMap<String, Serializable> opaque_hashmap, String key, Serializable value) {
+        opaque_hashmap.put(key, value);
+    }
 }

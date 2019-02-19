@@ -32,6 +32,8 @@ linux_build:
   image: maven:3-jdk-8
 
   script: 
+  - sudo apt-get install build-essential
+  - sudo apt-get -y install cmake
   - docs/build.sh
   artifacts:
     paths:
