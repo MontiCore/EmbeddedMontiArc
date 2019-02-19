@@ -120,7 +120,7 @@ public class CliTest {
         };
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -139,7 +139,7 @@ public class CliTest {
         String[] positiveFileNames = getEMADLGeneratedFilesList(false);
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -157,7 +157,7 @@ public class CliTest {
         String[] positiveFileNames = getEMADLGeneratedFilesList(true);
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -169,7 +169,7 @@ public class CliTest {
         String[] positiveFileNames = getEMADLGeneratedFilesList(true);
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -223,7 +223,7 @@ public class CliTest {
         };
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get("target/cliTest/validConfigFile/" + positiveFileName)));
+            assertTrue(Files.exists(Paths.get("target/cliTest/validConfigFile/src/" + positiveFileName)));
         }
     }
 
@@ -249,7 +249,7 @@ public class CliTest {
         };
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -309,7 +309,7 @@ public class CliTest {
         };
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -335,7 +335,7 @@ public class CliTest {
         };
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 

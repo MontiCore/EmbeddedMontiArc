@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project (Coordinator_${compName} CXX)
+project (Coordinator_${compName} LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 14)
 set (THREADS_PREFER_PTHREAD_FLAG ON)
