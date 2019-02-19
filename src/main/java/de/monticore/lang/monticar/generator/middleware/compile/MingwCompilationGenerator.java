@@ -29,6 +29,11 @@ public class MingwCompilationGenerator extends WindowsCompilationGenerator {
     }
 
     @Override
+    protected List<String> getPostSourceExecutables() {
+        return new ArrayList<>();
+    }
+
+    @Override
     protected List<String> getEnvironmentFiles() {
         return new ArrayList<>();
     }

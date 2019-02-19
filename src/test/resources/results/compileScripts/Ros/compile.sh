@@ -11,9 +11,6 @@ then
    export PATH="$make_HOME:$PATH"
 fi
 
-# source additional environment variables
-source "$ROS_HOME"/setup.bash
-
 # check if needed programs are in PATH
 if [[ `command -v cmake` ]]
 then
@@ -30,10 +27,21 @@ else
     exit 1
 fi
 
+# source additional environment variables
+source "$ROS_HOME"/setup.bash
+
+# Post source check if needed programs are in PATH
+if [[ `command -v roscore` ]]
+then
+    echo "Found roscore"
+else
+    echo "Can not find roscore in PATH! Aborting."
+    exit 1
+fi
 
 # cmake
 curDir=`dirname "$0"`
 cmake -B"$curDir"/build/ -H"$curDir/src" "$@"
 
 # make
-make -C "$curDir"
+make -j4 -C "$curDir"

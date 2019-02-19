@@ -115,7 +115,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
                 .filter(CompilationGenerator::isValid)
                 .forEach(g -> {
                     try {
-                        res.add(FileHelper.generateFile(generationTargetPath ,g.getCompilationScript()));
+                        res.addAll(FileHelper.generateFiles(generationTargetPath ,g.getCompilationScripts()));
                     } catch (IOException e) {
                         Log.error("0xD4BAA: Error generating compile scripts!", e);
                     }

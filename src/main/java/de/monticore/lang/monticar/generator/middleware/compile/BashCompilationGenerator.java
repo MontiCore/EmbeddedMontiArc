@@ -70,6 +70,18 @@ public class BashCompilationGenerator extends CompilationGenerator {
     }
 
     @Override
+    protected List<String> getPostSourceExecutables() {
+        ArrayList<String> res = new ArrayList<>();
+        if(useRos()){
+            res.add("roscore");
+        }
+        if(useRos2()){
+            res.add("ros2");
+        }
+        return res;
+    }
+
+    @Override
     protected List<String> getEnvironmentFiles() {
         List<String> res = new ArrayList<>();
         if(useRos()){

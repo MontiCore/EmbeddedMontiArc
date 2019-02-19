@@ -11,9 +11,6 @@ then
    export PATH="$make_HOME:$PATH"
 fi
 
-# source additional environment variables
-source "$ROS2_HOME"/setup.bash
-
 # check if needed programs are in PATH
 if [[ `command -v cmake` ]]
 then
@@ -30,10 +27,21 @@ else
     exit 1
 fi
 
+# source additional environment variables
+source "$ROS2_HOME"/setup.bash
+
+# Post source check if needed programs are in PATH
+if [[ `command -v ros2` ]]
+then
+    echo "Found ros2"
+else
+    echo "Can not find ros2 in PATH! Aborting."
+    exit 1
+fi
 
 # cmake
 curDir=`dirname "$0"`
 cmake -B"$curDir"/build/ -H"$curDir/src" "$@"
 
 # make
-make -C "$curDir"
+make -j4 -C "$curDir"

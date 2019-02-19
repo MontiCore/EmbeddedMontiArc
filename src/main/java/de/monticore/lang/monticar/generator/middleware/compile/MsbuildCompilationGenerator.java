@@ -29,17 +29,27 @@ public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
     }
 
     @Override
+    protected List<String> getPostSourceExecutables() {
+        List<String> res = new ArrayList<>();
+        res.add("msbuild");
+        if(useRos2()){
+            res.add("ros2");
+        }
+        return res;
+    }
+
+    @Override
     protected List<String> getEnvironmentFiles() {
         List<String> res = new ArrayList<>();
         res.add("vcvars64.bat");
         if(useRos2()){
-            res.add("%ROS_HOME%\\local_setup.bat");
+            res.add("%ROS2_HOME%\\local_setup.bat");
         }
         return res;
     }
 
     @Override
     protected List<String> getExecutables() {
-        return Arrays.asList("cmake","vcvars64.bat","msbuild");
+        return Arrays.asList("cmake","vcvars64.bat");
     }
 }

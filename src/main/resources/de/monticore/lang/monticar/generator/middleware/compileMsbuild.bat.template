@@ -2,16 +2,19 @@
 :: add *_HOME to PATH temporarily
 <additional_executables>
 
+:: check if needed programs are in PATH
+<executable_checks>
+
 :: source additional environment variables
 <additional_env>
 
-:: check if needed programs are in PATH
-<executable_checks>
+:: Post source check if needed programs are in PATH
+<post_executable_checks>
 
 :: cmake
 cmake -B./build/ -G "Visual Studio 15 2017 Win64" %* ./src
 
 :: msbuild
 cd .\build
-msbuild /t:build /p:Configuration=Release ALL_BUILD.vcxproj
+msbuild /m /t:build /p:Configuration=Release ALL_BUILD.vcxproj
 cd ..

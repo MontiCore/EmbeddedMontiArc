@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.middleware.compile;
 import de.monticore.lang.monticar.generator.FileContent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,9 +13,10 @@ public abstract class CompilationGenerator {
     private boolean useRos2 = false;
 
     public abstract boolean supportsRos();
+
     public abstract boolean supportsRos2();
 
-    public boolean isValid(){
+    public boolean isValid() {
         return (supportsRos() || !useRos()) && (supportsRos2() || !useRos2());
     }
 
@@ -48,26 +50,27 @@ public abstract class CompilationGenerator {
         this.useRos2 = useRos2;
     }
 
-    protected String fillPathTemplate(String newExe){
-        return getPathTemplate().replace("<new_exe>",newExe);
+    protected String fillPathTemplate(String newExe) {
+        return getPathTemplate().replace("<new_exe>", newExe);
     }
 
-    protected String fillCheckExeTemplate(String exe){
-        return getCheckExeTemplate().replace("<exe>",exe);
+    protected String fillCheckExeTemplate(String exe) {
+        return getCheckExeTemplate().replace("<exe>", exe);
     }
 
-    protected String fillSourceEnvVarsTemplate(String envFile){
-        return getSourceEnvVarsTemplate().replace("<env_file>",envFile);
+    protected String fillSourceEnvVarsTemplate(String envFile) {
+        return getSourceEnvVarsTemplate().replace("<env_file>", envFile);
     }
 
-    protected String fillScriptTemplate(String additional_executables, String executable_checks, String additional_env){
+    protected String fillScriptTemplate(String additional_executables, String executable_checks, String additional_env, String post_executable_checks) {
         return getScriptTemplate()
-                .replace("<additional_executables>",additional_executables)
-                .replace("<executable_checks>",executable_checks)
-                .replace("<additional_env>",additional_env);
+                .replace("<additional_executables>", additional_executables)
+                .replace("<executable_checks>", executable_checks)
+                .replace("<additional_env>", additional_env)
+                .replace("<post_executable_checks>", post_executable_checks);
     }
 
-    public FileContent getCompilationScript(){
+    public List<FileContent> getCompilationScripts() {
         FileContent res = new FileContent();
         String additional_executables = getAdditionalPathDirs().stream()
                 .map(this::fillPathTemplate)
@@ -81,17 +84,23 @@ public abstract class CompilationGenerator {
                 .map(this::fillSourceEnvVarsTemplate)
                 .collect(Collectors.joining(getNewlineDelimiter()));
 
-        res.setFileName(getFileName());
-        res.setFileContent(fillScriptTemplate(additional_executables,executable_checks,additional_env));
+        String post_executable_checks = getPostSourceExecutables().stream()
+                .map(this::fillCheckExeTemplate)
+                .collect(Collectors.joining(getNewlineDelimiter()));
 
-        return res;
+        res.setFileName(getFileName());
+        res.setFileContent(fillScriptTemplate(additional_executables, executable_checks, additional_env, post_executable_checks));
+
+        return Arrays.asList(res);
     }
+
+    protected abstract List<String> getPostSourceExecutables();
 
     protected abstract List<String> getEnvironmentFiles();
 
     protected abstract List<String> getExecutables();
 
-    public static List<CompilationGenerator> getInstanceOfAllGenerators(){
+    public static List<CompilationGenerator> getInstanceOfAllGenerators() {
         List<CompilationGenerator> res = new ArrayList<>();
         res.add(new BashCompilationGenerator());
         res.add(new MingwCompilationGenerator());

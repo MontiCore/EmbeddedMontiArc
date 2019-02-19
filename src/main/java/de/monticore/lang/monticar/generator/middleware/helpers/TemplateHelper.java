@@ -60,5 +60,9 @@ public class TemplateHelper {
         return getTemplate("compileMsbuild.bat.template");
     }
 
+    public static String getSubstTemplate(){
+        return getTemplate("subst.bat.template");
+    }
+
 
 }

@@ -10,9 +10,6 @@ IF NOT [%g++_HOME%] == [] (
    set PATH="%g++_HOME%;%PATH%"
 )
 
-:: source additional environment variables
-
-
 :: check if needed programs are in PATH
 where cmake
 IF NOT %ERRORLEVEL% EQU 0 (
@@ -30,10 +27,16 @@ IF NOT %ERRORLEVEL% EQU 0 (
    exit /B 1
 )
 
+:: source additional environment variables
+
+
+:: Post source check if needed programs are in PATH
+
+
 :: cmake
 cmake -B./build/ -G "MinGW Makefiles" %* ./src
 
 :: make
 cd .\build
-make
+make -j4
 cd ..

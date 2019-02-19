@@ -7,10 +7,6 @@ IF NOT [%msbuild_HOME%] == [] (
    set PATH="%msbuild_HOME%;%PATH%"
 )
 
-:: source additional environment variables
-call vcvars64.bat
-call %ROS_HOME%\local_setup.bat
-
 :: check if needed programs are in PATH
 where cmake
 IF NOT %ERRORLEVEL% EQU 0 (
@@ -22,9 +18,20 @@ IF NOT %ERRORLEVEL% EQU 0 (
    echo "Can not find vcvars64.bat in PATH! Aborting."
    exit /B 1
 )
+
+:: source additional environment variables
+call vcvars64.bat
+call %ROS2_HOME%\local_setup.bat
+
+:: Post source check if needed programs are in PATH
 where msbuild
 IF NOT %ERRORLEVEL% EQU 0 (
    echo "Can not find msbuild in PATH! Aborting."
+   exit /B 1
+)
+where ros2
+IF NOT %ERRORLEVEL% EQU 0 (
+   echo "Can not find ros2 in PATH! Aborting."
    exit /B 1
 )
 
@@ -33,5 +40,5 @@ cmake -B./build/ -G "Visual Studio 15 2017 Win64" %* ./src
 
 :: msbuild
 cd .\build
-msbuild /t:build /p:Configuration=Release ALL_BUILD.vcxproj
+msbuild /m /t:build /p:Configuration=Release ALL_BUILD.vcxproj
 cd ..
