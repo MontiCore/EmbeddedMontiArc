@@ -11,8 +11,11 @@ All communication of these 2 Components will then be tunneled trough the specifi
 see [TUTORIAL_ADD_MIDDLEWARE.md](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/TUTORIAL_ADD_MIDDLEWARE.md)
 
 ## Dependencies needed to compile the generated projects
+### Note
+The generator creates compile scripts for all supported compilers. A project with ROS Middleware contains `compile.sh`, as only Linux is supported by ROS. A project with ROS2 contains `compile.sh` and `compileMsbuild.bat` as Linux and Windows(with Msbuild) are supported.
+If you are having problems compiling on Windows because of the path length limit, use `substCompileMsbuild.bat` or  `substCompileMingw.bat`.
 ### All generated projects
-CMake, Make,a C++ compiler, and Armadillo are required to compile the generated projects.
+CMake, Make, a C++ compiler, and Armadillo are required to compile the generated projects.
 #### Linux
 Gcc is recommended as the C++ compiler.
 Example install of all needed packages for ubuntu:
@@ -31,13 +34,6 @@ $ whereis make
 make: /usr/bin/make
 $ ls "$Armadillo_HOME/include"
 armadillo_bits armadillo.h
-```
-
-Compiling a generated project:
-```bash
-cd /path/to/build/directory
-cmake /path/to/generated/project/source
-make
 ```
 
 #### Windows
@@ -64,18 +60,45 @@ armadillo.h
 ...
 ```
 
-Compiling a generated project:
+Alternatively Msbuild can be used as a compiler. Download and install Build Tools für Visual Studio 2017 by visiting [this](https://visualstudio.microsoft.com/de/downloads/) site, and navigating to `Tools for Visual Studio 2017`.
+Set the environment variable `msbuild_HOME` to the Folder containing `vcvars64.bat`(Standard destination: "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build")
+
+To check everything is installed correctly use where/dir:
 ```batch
-cd C:\path\to\build\directory
-cmake C:\path\to\generated\project\source -G "MinGW Makefiles"
-make
+> where cmake
+C:\Program Files\CMake\bin\cmake.exe
+> dir /b "%Armadillo_HOME%\include"
+armadillo
+armadillo.h
+...
+> dir /b "%msbuild_HOME%"
+vcvars32.bat
+vcvars64.bat
+...
+> call "%msbuild_HOME%\vcvars64.bat"
+**********************************************************************
+** Visual Studio 2017 Developer Command Prompt v15.0
+** Copyright (c) 2017 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+
+> where msbuild
+C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe
 ```
+
 
 Please note: It is highly recommended, you stick to the exact versions as stated above. Otherwise you might run into trouble regarding the interplay between cmake/make and the Armadillo library. In particular problems have been reported using Cygwin.
 
 ### Projects with roscpp generator
-Only for generated projects that contain a ROS adapter(e.g. -g=cpp,roscpp).
+Only for generated projects that contain a ROS adapter(e.g. "generators":["cpp","roscpp"]).
 ROS Kinetic currently only supports Linux and the installation is described [here](http://wiki.ros.org/kinetic/Installation/Ubuntu).
+Set the environment varialble `ROS_HOME` to the base of your ROS installation.
+
+### Projects with ros2cpp/rclcpp generator
+Only for generated projects that contain a ROS2 adapter(e.g. "generators":["cpp","rclcpp"]).
+Tested under ROS2 Bouncy and Crystal with Windows 10 and Ubuntu 18.04 respectively and the installation is described [here](https://index.ros.org/doc/ros2/Installation/).
+ROS2 under Windows can only be compiled with msbuild.
+Set the environment varialble `ROS2_HOME` to the base of your ROS2 installation.
 
 ## Usage
 ### CLI
@@ -117,20 +140,11 @@ Look at [GenerationTest::testMiddlewareGenerator](https://git.rwth-aachen.de/mon
 #### Use-case 2: Creating multiple executables for distributed systems
 Look at [GenerationTest::testDistributedTargetGenerator](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/src/test/java/de/monticore/lang/monticar/generator/middleware/GenerationTest.java). The component is defined in [src/test/resources/dist/DistComp.emam](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/src/test/resources/tests/dist/DistComp.emam) and the tags for the connection to ros are defined in [src/test/resources/tests/dist/SimpleDist.tag](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/src/test/resources/tests/dist/SimpleDist.tag)
 
-#### Compile and run the generated ROS Projects
-1. install needed software:
-    * ROS Kinetic(http://wiki.ros.org/kinetic/Installation)
-    * CMake(https://cmake.org/)
-    * Armadillo 8 or higher( www.arma.sourceforge.net)
-        * creating a copy of the library named armadillo.h might be necessary.
-1. source your ros environment(http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment , 2.)
-1. a) run src/test/resources/TargetCompilation.sh from **this project's** root
-1. or b) compile a single project by
-    * changing to the **generated project's** root
-    * create a folder build/ and change into it
-    * run: cmake ../src
-    * run: make
-1. Start ros and the other nodes
-    * minimal working example: run: roscore
-1. If the project was created by a MiddlewareGenerator, run the executable(s) at build/coordinator(/<subcomp.name>)/Coordinator_<(sub)component.name>
+## Running the Integration tests locally
+To run the integration tests locally, `docker` needs to be installed. Install instructions can be found [here](https://docs.docker.com/install/).
 
+Run the tests by executing [dockerLocalIntegrationTestRos.sh](src/test/bash/dockerLocalIntegrationTestRos.sh) or [dockerLocalIntegrationTestRos2.sh](src/test/bash/dockerLocalIntegrationTestRos2.sh) as root:
+```bash
+sudo src/test/bash/dockerLocalIntegrationTestRos.sh
+sudo src/test/bash/dockerLocalIntegrationTestRos2.sh
+```
