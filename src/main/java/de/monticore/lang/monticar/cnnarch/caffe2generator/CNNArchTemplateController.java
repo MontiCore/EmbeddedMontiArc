@@ -37,6 +37,7 @@ public class CNNArchTemplateController {
 
     private LayerNameCreator nameManager;
     private ArchitectureSymbol architecture;
+    private String loss;
 
     //temporary attributes. They are set after calling process()
     private Writer writer;
@@ -44,8 +45,6 @@ public class CNNArchTemplateController {
     private Target targetLanguage;
     private ArchitectureElementData dataElement;
 
-
-    public String loss;
     public static final String CROSS_ENTROPY = "cross_entropy";
     public static final String EUCLIDEAN = "euclidean";
 
