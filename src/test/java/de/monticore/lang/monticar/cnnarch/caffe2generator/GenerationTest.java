@@ -169,6 +169,20 @@ public class GenerationTest extends AbstractSymtabTest{
                         "CNNTrainer_emptyConfig.py"));
     }
 
+    @Test
+    public void testUnsupportedTrainParameters() throws IOException {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+        CNNTrain2Caffe2 trainGenerator = new CNNTrain2Caffe2();
+        trainGenerator.generate(modelPath, "UnsupportedConfig");
+
+        assertTrue(Log.getFindings().size() == 6);
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "CNNTrainer_unsupportedConfig.py"));
+    }
 
     @Test
     public void testCMakeGeneration() {

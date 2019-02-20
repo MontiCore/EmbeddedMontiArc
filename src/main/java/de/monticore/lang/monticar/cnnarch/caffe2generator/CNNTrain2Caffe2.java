@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.OptimizerSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.symboltable.GlobalScope;
@@ -49,7 +50,8 @@ public class CNNTrain2Caffe2 implements CNNTrainGenerator {
             ASTOptimizerEntry astOptimizer = (ASTOptimizerEntry) configuration.getOptimizer().getAstNode().get();
             astOptimizer.accept(funcChecker);
             if (funcChecker.getUnsupportedElemList().contains(funcChecker.unsupportedOptFlag)) {
-                configuration.setOptimizer(null);
+                OptimizerSymbol adamOptimizer = new OptimizerSymbol("adam");
+                configuration.setOptimizer(adamOptimizer); //Set default as adam optimizer
             }else {
                 Iterator it = configuration.getOptimizer().getOptimizerParamMap().keySet().iterator();
                 while (it.hasNext()) {
