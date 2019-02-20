@@ -34,19 +34,10 @@ BranchJobLinux:
 
 IntegrationJob:
   stage: integration
-  image: ros:kinetic
+  image: ema-ros-kinectic
   dependencies:
     - BranchJobLinux
   except:
   - master
   script:
-  - apt-get update
-  - apt-get install -y openjdk-8-jdk maven wget unzip
-  - apt-get install -y g++
-  - apt-get install -y libopenblas-dev libhdf5-serial-dev
-  - export PATH="/usr/lib/x86_64-linux-gnu/:${PATH}"
-  - wget -O /root/armadillo.zip -q --show-progress "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.10.24-armadillo-linux&files=armadillo-8.500.1-linux.zip"
-  - unzip /root/armadillo.zip -d /root/
-  - export Armadillo_HOME=/root/armadillo-8.500.1-linux
-  - source /opt/ros/kinetic/setup.bash
   - ./src/test/resources/TargetCompilation.sh
