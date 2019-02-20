@@ -40,4 +40,4 @@ IntegrationJob:
   except:
   - master
   script:
-  - ./src/test/resources/TargetCompilation.sh
+  - ./src/test/bash/integrationTestRos.sh
