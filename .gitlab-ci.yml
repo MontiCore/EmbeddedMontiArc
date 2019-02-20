@@ -55,6 +55,6 @@ Ros2IntegrationJob:
   stage: integration
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2middleware/ema-ros-crystal
   dependencies:
-    - BranchJobLinux
+    - CompileJobLinux
   script:
   - ./src/test/bash/integrationTestRos2.sh
