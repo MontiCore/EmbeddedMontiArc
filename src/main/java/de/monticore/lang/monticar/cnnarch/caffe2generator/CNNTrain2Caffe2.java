@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.OptimizerSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.symboltable.GlobalScope;
@@ -37,7 +38,9 @@ public class CNNTrain2Caffe2 implements CNNTrainGenerator {
         it = configuration.getEntryMap().keySet().iterator();
         while (it.hasNext()) {
             String key = it.next().toString();
-            if (funcChecker.getUnsupportedElemList().contains(key)) it.remove();
+            if (funcChecker.getUnsupportedElemList().contains(key)) {
+                it.remove();
+            }
         }
     }
 
@@ -47,15 +50,23 @@ public class CNNTrain2Caffe2 implements CNNTrainGenerator {
             ASTOptimizerEntry astOptimizer = (ASTOptimizerEntry) configuration.getOptimizer().getAstNode().get();
             astOptimizer.accept(funcChecker);
             if (funcChecker.getUnsupportedElemList().contains(funcChecker.unsupportedOptFlag)) {
-                configuration.setOptimizer(null);
+                OptimizerSymbol adamOptimizer = new OptimizerSymbol("adam");
+                configuration.setOptimizer(adamOptimizer); //Set default as adam optimizer
             }else {
                 Iterator it = configuration.getOptimizer().getOptimizerParamMap().keySet().iterator();
                 while (it.hasNext()) {
                     String key = it.next().toString();
-                    if (funcChecker.getUnsupportedElemList().contains(key)) it.remove();
+                    if (funcChecker.getUnsupportedElemList().contains(key)) {
+                        it.remove();
+                    }
                 }
             }
         }
+    }
+
+    private static void quitGeneration(){
+        Log.error("Code generation is aborted");
+        System.exit(1);
     }
 
     public CNNTrain2Caffe2() {
@@ -89,7 +100,7 @@ public class CNNTrain2Caffe2 implements CNNTrainGenerator {
         Optional<CNNTrainCompilationUnitSymbol> compilationUnit = scope.resolve(rootModelName, CNNTrainCompilationUnitSymbol.KIND);
         if (!compilationUnit.isPresent()) {
             Log.error("could not resolve training configuration " + rootModelName);
-            System.exit(1);
+            quitGeneration();
         }
         setInstanceName(compilationUnit.get().getFullName());
         CNNTrainCocos.checkAll(compilationUnit.get());
@@ -107,7 +118,7 @@ public class CNNTrain2Caffe2 implements CNNTrainGenerator {
                 genCPP.generateFile(new FileContent(fileContents.get(fileName), fileName));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error("CNNTrainer file could not be generated" + e.getMessage());
         }
     }
 

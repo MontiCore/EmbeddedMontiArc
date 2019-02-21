@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 import lmdb
+
 class CNNCreator_CifarClassifierNetwork:
 
     module = None
@@ -58,182 +59,84 @@ class CNNCreator_CifarClassifierNetwork:
 
             return data, label, dataset_size
 
-    def create_model(self, model, data, device_opts):
+    def create_model(self, model, data, device_opts, is_test):
     	with core.DeviceScope(device_opts):
 
     		data = data
     		# data, output shape: {[3,32,32]}
-      		conv2_1_ = brew.conv(model, data, 'conv2_1_', dim_in=3, dim_out=8, kernel=3, stride=1)
+    		conv2_1_ = brew.conv(model, data, 'conv2_1_', dim_in=3, dim_out=8, kernel=3, stride=1, pad=1)
     		# conv2_1_, output shape: {[8,32,32]}
-    		batchnorm2_1_ = mx.symbol.BatchNorm(data=conv2_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm2_1_")
     		relu2_1_ = brew.relu(model, batchnorm2_1_, batchnorm2_1_)
-      		conv3_1_ = brew.conv(model, relu2_1_, 'conv3_1_', dim_in=8, dim_out=8, kernel=3, stride=1)
+    		conv3_1_ = brew.conv(model, relu2_1_, 'conv3_1_', dim_in=8, dim_out=8, kernel=3, stride=1, pad=1)
     		# conv3_1_, output shape: {[8,32,32]}
-    		batchnorm3_1_ = mx.symbol.BatchNorm(data=conv3_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm3_1_")
-    		conv2_2_ = brew.conv(model, data, 'conv2_2_', dim_in=3, dim_out=8, kernel=1, stride=1)
+    		conv2_2_ = brew.conv(model, data, 'conv2_2_', dim_in=3, dim_out=8, kernel=1, stride=1, pad=1)
     		# conv2_2_, output shape: {[8,32,32]}
-    		batchnorm2_2_ = mx.symbol.BatchNorm(data=conv2_2_,
-    		    fix_gamma=True,
-    		    name="batchnorm2_2_")
-    		add4_ = batchnorm3_1_ + batchnorm2_2_
-    		# add4_, output shape: {[8,32,32]}
     		relu4_ = brew.relu(model, add4_, add4_)
-      		conv5_1_ = brew.conv(model, relu4_, 'conv5_1_', dim_in=8, dim_out=16, kernel=3, stride=2)
+    		conv5_1_ = brew.conv(model, relu4_, 'conv5_1_', dim_in=8, dim_out=16, kernel=3, stride=2, pad=1)
     		# conv5_1_, output shape: {[16,16,16]}
-    		batchnorm5_1_ = mx.symbol.BatchNorm(data=conv5_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm5_1_")
     		relu5_1_ = brew.relu(model, batchnorm5_1_, batchnorm5_1_)
-      		conv6_1_ = brew.conv(model, relu5_1_, 'conv6_1_', dim_in=16, dim_out=16, kernel=3, stride=1)
+    		conv6_1_ = brew.conv(model, relu5_1_, 'conv6_1_', dim_in=16, dim_out=16, kernel=3, stride=1, pad=1)
     		# conv6_1_, output shape: {[16,16,16]}
-    		batchnorm6_1_ = mx.symbol.BatchNorm(data=conv6_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm6_1_")
-    		conv5_2_ = brew.conv(model, relu4_, 'conv5_2_', dim_in=8, dim_out=16, kernel=1, stride=2)
+    		conv5_2_ = brew.conv(model, relu4_, 'conv5_2_', dim_in=8, dim_out=16, kernel=1, stride=2, pad=1)
     		# conv5_2_, output shape: {[16,16,16]}
-    		batchnorm5_2_ = mx.symbol.BatchNorm(data=conv5_2_,
-    		    fix_gamma=True,
-    		    name="batchnorm5_2_")
-    		add7_ = batchnorm6_1_ + batchnorm5_2_
-    		# add7_, output shape: {[16,16,16]}
     		relu7_ = brew.relu(model, add7_, add7_)
-      		conv8_1_ = brew.conv(model, relu7_, 'conv8_1_', dim_in=16, dim_out=16, kernel=3, stride=1)
+    		conv8_1_ = brew.conv(model, relu7_, 'conv8_1_', dim_in=16, dim_out=16, kernel=3, stride=1, pad=1)
     		# conv8_1_, output shape: {[16,16,16]}
-    		batchnorm8_1_ = mx.symbol.BatchNorm(data=conv8_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm8_1_")
     		relu8_1_ = brew.relu(model, batchnorm8_1_, batchnorm8_1_)
-      		conv9_1_ = brew.conv(model, relu8_1_, 'conv9_1_', dim_in=16, dim_out=16, kernel=3, stride=1)
+    		conv9_1_ = brew.conv(model, relu8_1_, 'conv9_1_', dim_in=16, dim_out=16, kernel=3, stride=1, pad=1)
     		# conv9_1_, output shape: {[16,16,16]}
-    		batchnorm9_1_ = mx.symbol.BatchNorm(data=conv9_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm9_1_")
-    		add10_ = batchnorm9_1_ + relu7_
-    		# add10_, output shape: {[16,16,16]}
     		relu10_ = brew.relu(model, add10_, add10_)
-      		conv11_1_ = brew.conv(model, relu10_, 'conv11_1_', dim_in=16, dim_out=16, kernel=3, stride=1)
+    		conv11_1_ = brew.conv(model, relu10_, 'conv11_1_', dim_in=16, dim_out=16, kernel=3, stride=1, pad=1)
     		# conv11_1_, output shape: {[16,16,16]}
-    		batchnorm11_1_ = mx.symbol.BatchNorm(data=conv11_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm11_1_")
     		relu11_1_ = brew.relu(model, batchnorm11_1_, batchnorm11_1_)
-      		conv12_1_ = brew.conv(model, relu11_1_, 'conv12_1_', dim_in=16, dim_out=16, kernel=3, stride=1)
+    		conv12_1_ = brew.conv(model, relu11_1_, 'conv12_1_', dim_in=16, dim_out=16, kernel=3, stride=1, pad=1)
     		# conv12_1_, output shape: {[16,16,16]}
-    		batchnorm12_1_ = mx.symbol.BatchNorm(data=conv12_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm12_1_")
-    		add13_ = batchnorm12_1_ + relu10_
-    		# add13_, output shape: {[16,16,16]}
     		relu13_ = brew.relu(model, add13_, add13_)
-      		conv14_1_ = brew.conv(model, relu13_, 'conv14_1_', dim_in=16, dim_out=32, kernel=3, stride=2)
+    		conv14_1_ = brew.conv(model, relu13_, 'conv14_1_', dim_in=16, dim_out=32, kernel=3, stride=2, pad=1)
     		# conv14_1_, output shape: {[32,8,8]}
-    		batchnorm14_1_ = mx.symbol.BatchNorm(data=conv14_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm14_1_")
     		relu14_1_ = brew.relu(model, batchnorm14_1_, batchnorm14_1_)
-      		conv15_1_ = brew.conv(model, relu14_1_, 'conv15_1_', dim_in=32, dim_out=32, kernel=3, stride=1)
+    		conv15_1_ = brew.conv(model, relu14_1_, 'conv15_1_', dim_in=32, dim_out=32, kernel=3, stride=1, pad=1)
     		# conv15_1_, output shape: {[32,8,8]}
-    		batchnorm15_1_ = mx.symbol.BatchNorm(data=conv15_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm15_1_")
-    		conv14_2_ = brew.conv(model, relu13_, 'conv14_2_', dim_in=16, dim_out=32, kernel=1, stride=2)
+    		conv14_2_ = brew.conv(model, relu13_, 'conv14_2_', dim_in=16, dim_out=32, kernel=1, stride=2, pad=1)
     		# conv14_2_, output shape: {[32,8,8]}
-    		batchnorm14_2_ = mx.symbol.BatchNorm(data=conv14_2_,
-    		    fix_gamma=True,
-    		    name="batchnorm14_2_")
-    		add16_ = batchnorm15_1_ + batchnorm14_2_
-    		# add16_, output shape: {[32,8,8]}
     		relu16_ = brew.relu(model, add16_, add16_)
-      		conv17_1_ = brew.conv(model, relu16_, 'conv17_1_', dim_in=32, dim_out=32, kernel=3, stride=1)
+    		conv17_1_ = brew.conv(model, relu16_, 'conv17_1_', dim_in=32, dim_out=32, kernel=3, stride=1, pad=1)
     		# conv17_1_, output shape: {[32,8,8]}
-    		batchnorm17_1_ = mx.symbol.BatchNorm(data=conv17_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm17_1_")
     		relu17_1_ = brew.relu(model, batchnorm17_1_, batchnorm17_1_)
-      		conv18_1_ = brew.conv(model, relu17_1_, 'conv18_1_', dim_in=32, dim_out=32, kernel=3, stride=1)
+    		conv18_1_ = brew.conv(model, relu17_1_, 'conv18_1_', dim_in=32, dim_out=32, kernel=3, stride=1, pad=1)
     		# conv18_1_, output shape: {[32,8,8]}
-    		batchnorm18_1_ = mx.symbol.BatchNorm(data=conv18_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm18_1_")
-    		add19_ = batchnorm18_1_ + relu16_
-    		# add19_, output shape: {[32,8,8]}
     		relu19_ = brew.relu(model, add19_, add19_)
-      		conv20_1_ = brew.conv(model, relu19_, 'conv20_1_', dim_in=32, dim_out=32, kernel=3, stride=1)
+    		conv20_1_ = brew.conv(model, relu19_, 'conv20_1_', dim_in=32, dim_out=32, kernel=3, stride=1, pad=1)
     		# conv20_1_, output shape: {[32,8,8]}
-    		batchnorm20_1_ = mx.symbol.BatchNorm(data=conv20_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm20_1_")
     		relu20_1_ = brew.relu(model, batchnorm20_1_, batchnorm20_1_)
-      		conv21_1_ = brew.conv(model, relu20_1_, 'conv21_1_', dim_in=32, dim_out=32, kernel=3, stride=1)
+    		conv21_1_ = brew.conv(model, relu20_1_, 'conv21_1_', dim_in=32, dim_out=32, kernel=3, stride=1, pad=1)
     		# conv21_1_, output shape: {[32,8,8]}
-    		batchnorm21_1_ = mx.symbol.BatchNorm(data=conv21_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm21_1_")
-    		add22_ = batchnorm21_1_ + relu19_
-    		# add22_, output shape: {[32,8,8]}
     		relu22_ = brew.relu(model, add22_, add22_)
-      		conv23_1_ = brew.conv(model, relu22_, 'conv23_1_', dim_in=32, dim_out=64, kernel=3, stride=2)
+    		conv23_1_ = brew.conv(model, relu22_, 'conv23_1_', dim_in=32, dim_out=64, kernel=3, stride=2, pad=1)
     		# conv23_1_, output shape: {[64,4,4]}
-    		batchnorm23_1_ = mx.symbol.BatchNorm(data=conv23_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm23_1_")
     		relu23_1_ = brew.relu(model, batchnorm23_1_, batchnorm23_1_)
-      		conv24_1_ = brew.conv(model, relu23_1_, 'conv24_1_', dim_in=64, dim_out=64, kernel=3, stride=1)
+    		conv24_1_ = brew.conv(model, relu23_1_, 'conv24_1_', dim_in=64, dim_out=64, kernel=3, stride=1, pad=1)
     		# conv24_1_, output shape: {[64,4,4]}
-    		batchnorm24_1_ = mx.symbol.BatchNorm(data=conv24_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm24_1_")
-    		conv23_2_ = brew.conv(model, relu22_, 'conv23_2_', dim_in=32, dim_out=64, kernel=1, stride=2)
+    		conv23_2_ = brew.conv(model, relu22_, 'conv23_2_', dim_in=32, dim_out=64, kernel=1, stride=2, pad=1)
     		# conv23_2_, output shape: {[64,4,4]}
-    		batchnorm23_2_ = mx.symbol.BatchNorm(data=conv23_2_,
-    		    fix_gamma=True,
-    		    name="batchnorm23_2_")
-    		add25_ = batchnorm24_1_ + batchnorm23_2_
-    		# add25_, output shape: {[64,4,4]}
     		relu25_ = brew.relu(model, add25_, add25_)
-      		conv26_1_ = brew.conv(model, relu25_, 'conv26_1_', dim_in=64, dim_out=64, kernel=3, stride=1)
+    		conv26_1_ = brew.conv(model, relu25_, 'conv26_1_', dim_in=64, dim_out=64, kernel=3, stride=1, pad=1)
     		# conv26_1_, output shape: {[64,4,4]}
-    		batchnorm26_1_ = mx.symbol.BatchNorm(data=conv26_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm26_1_")
     		relu26_1_ = brew.relu(model, batchnorm26_1_, batchnorm26_1_)
-      		conv27_1_ = brew.conv(model, relu26_1_, 'conv27_1_', dim_in=64, dim_out=64, kernel=3, stride=1)
+    		conv27_1_ = brew.conv(model, relu26_1_, 'conv27_1_', dim_in=64, dim_out=64, kernel=3, stride=1, pad=1)
     		# conv27_1_, output shape: {[64,4,4]}
-    		batchnorm27_1_ = mx.symbol.BatchNorm(data=conv27_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm27_1_")
-    		add28_ = batchnorm27_1_ + relu25_
-    		# add28_, output shape: {[64,4,4]}
     		relu28_ = brew.relu(model, add28_, add28_)
-      		conv29_1_ = brew.conv(model, relu28_, 'conv29_1_', dim_in=64, dim_out=64, kernel=3, stride=1)
+    		conv29_1_ = brew.conv(model, relu28_, 'conv29_1_', dim_in=64, dim_out=64, kernel=3, stride=1, pad=1)
     		# conv29_1_, output shape: {[64,4,4]}
-    		batchnorm29_1_ = mx.symbol.BatchNorm(data=conv29_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm29_1_")
     		relu29_1_ = brew.relu(model, batchnorm29_1_, batchnorm29_1_)
-      		conv30_1_ = brew.conv(model, relu29_1_, 'conv30_1_', dim_in=64, dim_out=64, kernel=3, stride=1)
+    		conv30_1_ = brew.conv(model, relu29_1_, 'conv30_1_', dim_in=64, dim_out=64, kernel=3, stride=1, pad=1)
     		# conv30_1_, output shape: {[64,4,4]}
-    		batchnorm30_1_ = mx.symbol.BatchNorm(data=conv30_1_,
-    		    fix_gamma=True,
-    		    name="batchnorm30_1_")
-    		add31_ = batchnorm30_1_ + relu28_
-    		# add31_, output shape: {[64,4,4]}
     		relu31_ = brew.relu(model, add31_, add31_)
-    		globalpooling31_ = mx.symbol.Pooling(data=relu31_,
-    		    global_pool=True,
-    		    kernel=(1,1),
-    		    pool_type="avg",
-    		    name="globalpooling31_")
+    		globalpooling31_ = brew.average_pool(model, relu31_, 'globalpooling31_', global_pooling=True)
     		# globalpooling31_, output shape: {[64,1,1]}
     		fc31_ = brew.fc(model, globalpooling31_, 'fc31_', dim_in=64, dim_out=128)
     		# fc31_, output shape: {[128,1,1]}
-    		dropout31_ = mx.symbol.Dropout(data=fc31_,
-    		    p=0.5,
-    		    name="dropout31_")
+    		dropout31_ = brew.dropout(model, fc31_, 'dropout31_', ratio=0.5, is_test=False)
     		fc32_ = brew.fc(model, dropout31_, 'fc32_', dim_in=128, dim_out=10)
     		# fc32_, output shape: {[10,1,1]}
     		softmax = brew.softmax(model, fc32_, 'softmax')
@@ -295,7 +198,7 @@ class CNNCreator_CifarClassifierNetwork:
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
     	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'train_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	softmax = self.create_model(train_model, data, device_opts=device_opts)
+    	softmax = self.create_model(train_model, data, device_opts=device_opts, is_test=False)
     	self.add_training_operators(train_model, softmax, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	self.add_accuracy(train_model, softmax, label, device_opts, eval_metric)
     	with core.DeviceScope(device_opts):
@@ -318,7 +221,7 @@ class CNNCreator_CifarClassifierNetwork:
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
     	data, label, test_dataset_size = self.add_input(test_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'test_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	softmax = self.create_model(test_model, data, device_opts=device_opts)
+    	softmax = self.create_model(test_model, data, device_opts=device_opts, is_test=True)
     	self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
     	workspace.CreateNet(test_model.net, overwrite=True)
@@ -336,7 +239,7 @@ class CNNCreator_CifarClassifierNetwork:
     	# == Deployment model. ==
     	# We simply need the main AddModel part.
     	deploy_model = model_helper.ModelHelper(name="deploy_net", arg_scope=arg_scope, init_params=False)
-    	self.create_model(deploy_model, "data", device_opts)
+    	self.create_model(deploy_model, "data", device_opts, is_test=True)
 
     	print("Saving deploy model")
     	self.save_net(self._init_net_, self._predict_net_, deploy_model)

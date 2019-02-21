@@ -26,7 +26,6 @@ import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.IOSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
@@ -53,18 +52,18 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
     private boolean isSupportedLayer(ArchitectureElementSymbol element, LayerSupportChecker layerChecker){
         List<ArchitectureElementSymbol> constructLayerElemList;
 
-        if (!(element instanceof IOSymbol) && (element.getResolvedThis().get() instanceof CompositeElementSymbol))
-        {
+        if (element.getResolvedThis().get() instanceof CompositeElementSymbol) {
             constructLayerElemList = ((CompositeElementSymbol)element.getResolvedThis().get()).getElements();
             for (ArchitectureElementSymbol constructedLayerElement : constructLayerElemList) {
-                if (!isSupportedLayer(constructedLayerElement, layerChecker)) return false;
+                if (!isSupportedLayer(constructedLayerElement, layerChecker)) {
+                    return false;
+                }
             }
         }
         if (!layerChecker.isSupported(element.toString())) {
             Log.error("Unsupported layer " + "'" + element.getName() + "'" + " for the backend CAFFE2.");
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -72,7 +71,9 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
     private boolean supportCheck(ArchitectureSymbol architecture){
         LayerSupportChecker layerChecker = new LayerSupportChecker();
         for (ArchitectureElementSymbol element : ((CompositeElementSymbol)architecture.getBody()).getElements()){
-            if(!isSupportedLayer(element, layerChecker)) return false;
+            if(!isSupportedLayer(element, layerChecker)) {
+                return false;
+            }
         }
         return true;
     }
@@ -83,6 +84,11 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
 
     public void setModelPath(Path modelPath){
         this.modelPath = modelPath.toString();
+    }
+    
+    private static void quitGeneration(){
+        Log.error("Code generation is aborted");
+        System.exit(1);
     }
 
     public CNNArch2Caffe2() {
@@ -116,13 +122,12 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         Optional<CNNArchCompilationUnitSymbol> compilationUnit = scope.resolve(rootModelName, CNNArchCompilationUnitSymbol.KIND);
         if (!compilationUnit.isPresent()){
             Log.error("could not resolve architecture " + rootModelName);
-            System.exit(1);
+            quitGeneration();
         }
 
         CNNArchCocos.checkAll(compilationUnit.get());
         if (!supportCheck(compilationUnit.get().getArchitecture())){
-            Log.error("Code generation aborted.");
-            System.exit(1);
+            quitGeneration();
         }
 
         try{
@@ -132,8 +137,7 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
             compilationUnit.get().getArchitecture().setDataPath(dataPath);
             compilationUnit.get().getArchitecture().setComponentName(rootModelName);
             generateFiles(compilationUnit.get().getArchitecture());
-        }
-        catch (IOException e){
+        } catch (IOException e){
             Log.error(e.toString());
         }
     }
@@ -188,7 +192,7 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         try {
             generateFromFilecontentsMap(fileContentMap);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error("CMake file could not be generated" + e.getMessage());
         }
     }
 
@@ -211,8 +215,8 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} -lprotobuf -lglog -lgflags)");
         cMakeConfig.addCMakeCommand("find_package(CUDA)" + "\n"
                                         + "set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS})" + "\n"
-                                        + "set(LIBS ${LIBS} ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})" + "\n"); //Needed since CUDA cannot be found correctly (including CUDA_curand_LIBRARY) and as optional using CMakeFindModule
-
+                                        + "set(LIBS ${LIBS} ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})" + "\n");
+                                        //Needed since CUDA cannot be found correctly (including CUDA_curand_LIBRARY)
 
         cMakeConfig.addCMakeCommand("if(CUDA_FOUND)" + "\n" + "  set(LIBS ${LIBS} caffe2 caffe2_gpu)"
                                         + "\n" + "else()" + "\n" + "  set(LIBS ${LIBS} caffe2)" + "\n" + "endif()");

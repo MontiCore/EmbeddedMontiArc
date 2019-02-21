@@ -67,6 +67,13 @@ public class ConfigurationData {
         return getConfiguration().getEntry("eval_metric").getValue().toString();
     }
 
+    public String getLoss() {
+        if (!getConfiguration().getEntryMap().containsKey("loss")) {
+            return null;
+        }
+        return getConfiguration().getEntry("loss").getValue().toString();
+    }
+
     public String getOptimizerName() {
         if (getConfiguration().getOptimizer() == null) {
             return null;
@@ -89,8 +96,7 @@ public class ConfigurationData {
             Class realClass = entry.getValue().getValue().getValue().getClass();
             if (realClass == Boolean.class) {
                 valueAsString = (Boolean) entry.getValue().getValue().getValue() ? "True" : "False";
-            }
-            else if (lrPolicyClasses.contains(realClass)) {
+            } else if (lrPolicyClasses.contains(realClass)) {
                 valueAsString = "'" + valueAsString + "'";
             }
             mapToStrings.put(paramName, valueAsString);

@@ -29,10 +29,13 @@ if __name__ == "__main__":
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric}',
 </#if>
+<#if (config.loss)??>
+        loss='${config.loss}',
+</#if>
 <#if (config.configuration.optimizer)??>
-        opt_type='${config.optimizerName}',
+        opt_type='${config.optimizerName}'<#if config.optimizerParams?has_content>,
 <#list config.optimizerParams?keys as param>
-    <#--To adapt parameter names since parameter names in Caffe2 are different than in CNNTrainLang-->
+    <#--To adapt parameter names to Caffe2 since they are different than in CNNTrainLang-->
     <#assign paramName = param>
     <#if param == "learning_rate">
         <#assign paramName = "base_learning_rate">
@@ -41,10 +44,13 @@ if __name__ == "__main__":
     <#elseif param == "step_size">
         <#assign paramName = "stepsize">
     <#elseif param == "gamma1">
+        <#assign paramName = "gamma1">
+    <#elseif param == "learning_rate_decay">
         <#assign paramName = "gamma">
     </#if>
         ${paramName}=${config.optimizerParams[param]}<#sep>,
 </#list>
+</#if>
 </#if>
 
     )

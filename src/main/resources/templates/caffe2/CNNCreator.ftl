@@ -3,10 +3,12 @@ from caffe2.python.predictor import mobile_exporter
 from caffe2.proto import caffe2_pb2
 import numpy as np
 import math
+import datetime
 import logging
 import os
 import sys
 import lmdb
+
 class ${tc.fileNameWithoutEnding}:
 
     module = None
@@ -27,6 +29,15 @@ class ${tc.fileNameWithoutEnding}:
 
         return iterations_int
 
+    def get_epoch_as_iter(self, num_epoch, batch_size, dataset_size):   #To print metric durint training process
+        #Force floating point calculation
+        batch_size_float = float(batch_size)
+        dataset_size_float = float(dataset_size)
+
+        epoch_float = math.ceil(dataset_size_float/batch_size_float)
+        epoch_int = int(epoch_float)
+
+        return epoch_int
 
     def add_input(self, model, batch_size, db, db_type, device_opts):
         with core.DeviceScope(device_opts):
@@ -58,16 +69,20 @@ class ${tc.fileNameWithoutEnding}:
 
             return data, label, dataset_size
 
-    def create_model(self, model, data, device_opts):
+    def create_model(self, model, data, device_opts, is_test):
     	with core.DeviceScope(device_opts):
 
 ${tc.include(tc.architecture.body)}
 
     # this adds the loss and optimizer
-    def add_training_operators(self, model, output, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum) :
+    def add_training_operators(self, model, output, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum) :
     	with core.DeviceScope(device_opts):
-    		xent = model.LabelCrossEntropy([output, label], 'xent')
-    		loss = model.AveragedLoss(xent, "loss")
+    		if loss == 'cross_entropy':
+    		    xent = model.LabelCrossEntropy([output, label], 'xent')
+    		    loss = model.AveragedLoss(xent, "loss")
+    		elif loss == 'euclidean':
+    		    dist = model.net.SquaredL2Distance([label, output], 'dist')
+    		    loss = dist.AveragedLoss([], ['loss'])
 
     		model.AddGradientOperators([loss])
 
@@ -104,7 +119,7 @@ ${tc.include(tc.architecture.body)}
                 accuracy = brew.accuracy(model, [output, label], "accuracy", top_k=3)
             return accuracy
 
-    def train(self, num_epoch=1000, batch_size=64, context='gpu', eval_metric='accuracy', opt_type='adam', base_learning_rate=0.001, weight_decay=0.001, policy='fixed', stepsize=1, epsilon=1E-8, beta1=0.9, beta2=0.999, gamma=0.999, momentum=0.9) :
+    def train(self, num_epoch=1000, batch_size=64, context='gpu', eval_metric='accuracy', loss='${tc.architectureLoss}', opt_type='adam', base_learning_rate=0.001, weight_decay=0.001, policy='fixed', stepsize=1, epsilon=1E-8, beta1=0.9, beta2=0.999, gamma=0.999, momentum=0.9) :
         if context == 'cpu':
             device_opts = core.DeviceOption(caffe2_pb2.CPU, 0)
             print("CPU mode selected")
@@ -118,9 +133,10 @@ ${tc.include(tc.architecture.body)}
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
     	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'train_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	${tc.join(tc.architectureOutputs, ",", "","")} = self.create_model(train_model, data, device_opts=device_opts)
-    	self.add_training_operators(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
-    	self.add_accuracy(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, eval_metric)
+    	${tc.join(tc.architectureOutputs, ",", "","")} = self.create_model(train_model, data, device_opts=device_opts, is_test=False)
+    	self.add_training_operators(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
+    	if not loss == 'euclidean':
+    		self.add_accuracy(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, eval_metric)
     	with core.DeviceScope(device_opts):
     		brew.add_weight_decay(train_model, weight_decay)
 
@@ -130,38 +146,62 @@ ${tc.include(tc.architecture.body)}
 
     	# Main Training Loop
     	iterations = self.get_total_num_iter(num_epoch, batch_size, train_dataset_size)
-        print("** Starting Training for " + str(num_epoch) + " epochs = " + str(iterations) + " iterations **")
+        epoch_as_iter = self.get_epoch_as_iter(num_epoch, batch_size, train_dataset_size)
+        print("\n*** Starting Training for " + str(num_epoch) + " epochs = " + str(iterations) + " iterations ***")
+        start_date = datetime.datetime.now()
     	for i in range(iterations):
     		workspace.RunNet(train_model.net)
-    		if i % 50 == 0:
-    			print 'Iter ' + str(i) + ': ' + 'Loss ' + str(workspace.FetchBlob("loss")) + ' - ' + 'Accuracy ' + str(workspace.FetchBlob('accuracy'))
-    	print("Training done")
+    		if i % 50 == 0 or i % epoch_as_iter == 0:
+    			if not loss == 'euclidean':
+    				print 'Iter ' + str(i) + ': ' + 'Loss ' + str(workspace.FetchBlob("loss")) + ' - ' + 'Accuracy ' + str(workspace.FetchBlob('accuracy'))
+    			else:
+    				print 'Iter ' + str(i) + ': ' + 'Loss ' + str(workspace.FetchBlob("loss"))
 
-    	print("== Running Test model ==")
+    			current_time = datetime.datetime.now()
+    			elapsed_time = current_time - start_date
+    			print 'Progress: ' + str(i) + '/' + str(iterations) + ', ' +'Current time spent: ' + str(elapsed_time)
+        current_time = datetime.datetime.now()
+        elapsed_time = current_time - start_date
+        print 'Progress: ' + str(iterations) + '/' + str(iterations) + ' Training done' + ', ' + 'Total time spent: ' + str(elapsed_time)
+
+    	print("\n*** Running Test model ***")
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
     	data, label, test_dataset_size = self.add_input(test_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'test_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	${tc.join(tc.architectureOutputs, ",", "","")} = self.create_model(test_model, data, device_opts=device_opts)
-    	self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
+    	${tc.join(tc.architectureOutputs, ",", "","")} = self.create_model(test_model, data, device_opts=device_opts, is_test=True)
+    	if not loss == 'euclidean':
+    		self.add_accuracy(test_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
     	workspace.CreateNet(test_model.net, overwrite=True)
 
     	# Main Testing Loop
     	test_accuracy = np.zeros(test_dataset_size/batch_size)
+        start_date = datetime.datetime.now()
     	for i in range(test_dataset_size/batch_size):
     		# Run a forward pass of the net on the current batch
     		workspace.RunNet(test_model.net)
     		# Collect the batch accuracy from the workspace
-    		test_accuracy[i] = workspace.FetchBlob('accuracy')
+    		if not loss == 'euclidean':
+    			test_accuracy[i] = workspace.FetchBlob('accuracy')
+    			print 'Iter ' + str(i) + ': ' + 'Accuracy ' + str(workspace.FetchBlob("accuracy"))
+    		else:
+    			test_accuracy[i] = workspace.FetchBlob("loss")
+    			print 'Iter ' + str(i) + ': ' + 'Loss ' + str(workspace.FetchBlob("loss"))
 
-    	print('Test_accuracy: {:.4f}'.format(test_accuracy.mean()))
+    		current_time = datetime.datetime.now()
+    		elapsed_time = current_time - start_date
+    		print 'Progress: ' + str(i) + '/' + str(test_dataset_size/batch_size) + ', ' +'Current time spent: ' + str(elapsed_time)
+        current_time = datetime.datetime.now()
+        elapsed_time = current_time - start_date
+        print 'Progress: ' + str(test_dataset_size/batch_size) + '/' + str(test_dataset_size/batch_size) + ' Testing done' + ', ' + 'Total time spent: ' + str(elapsed_time)
+    	print('Test accuracy mean: {:.9f}'.format(test_accuracy.mean()))
 
     	# == Deployment model. ==
     	# We simply need the main AddModel part.
     	deploy_model = model_helper.ModelHelper(name="deploy_net", arg_scope=arg_scope, init_params=False)
-    	self.create_model(deploy_model, "data", device_opts)
+    	self.create_model(deploy_model, "data", device_opts, is_test=True)
 
-    	print("Saving deploy model")
+    	print("\n*** Saving deploy model ***")
     	self.save_net(self._init_net_, self._predict_net_, deploy_model)
 
     def save_net(self, init_net_path, predict_net_path, model):
@@ -184,7 +224,7 @@ ${tc.include(tc.architecture.body)}
     	with open(init_net_path, 'wb') as f:
     		f.write(init_net.SerializeToString())
 
-    	print("Save the model to init_net.pbtxt and predict_net.pbtxt")
+    	print("Save the model to init_net.pbtxt and predict_net.pbtxt as additional information")
 
     	with open(init_net_path.replace('.pb','.pbtxt'), 'w') as f:
     		f.write(str(init_net))
@@ -193,7 +233,6 @@ ${tc.include(tc.architecture.body)}
     	print("== Saved init_net and predict_net ==")
 
     def load_net(self, init_net_path, predict_net_path, device_opts):
-        <#--#TODO: Verify that paths ends in '.pb' and not in '.pbtxt'. The extension '.pbtxt' is not supported at the moment.-->
         if not os.path.isfile(init_net_path):
             logging.error("Network loading failure. File '" + os.path.abspath(init_net_path) + "' does not exist.")
             sys.exit(1)
@@ -212,4 +251,4 @@ ${tc.include(tc.architecture.body)}
     		net_def.ParseFromString(f.read())
     		net_def.device_option.CopyFrom(device_opts)
     		workspace.CreateNet(net_def.SerializeToString(), overwrite=True)
-    	print("== Loaded init_net and predict_net ==")
+    	print("*** Loaded init_net and predict_net ***")

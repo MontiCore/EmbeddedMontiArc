@@ -43,6 +43,11 @@ public class TemplateConfiguration {
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
     }
 
+    private static void quitGeneration(){
+        Log.error("Code generation is aborted");
+        System.exit(1);
+    }
+
     public Configuration getConfiguration() {
         return configuration;
     }
@@ -58,14 +63,12 @@ public class TemplateConfiguration {
         try{
             Template template = TemplateConfiguration.get().getTemplate(templatePath);
             template.process(ftlContext, writer);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.error("Freemarker could not find template " + templatePath + " :\n" + e.getMessage());
-            System.exit(1);
-        }
-        catch (TemplateException e){
+            quitGeneration();
+        } catch (TemplateException e){
             Log.error("An exception occured in template " + templatePath + " :\n" + e.getMessage());
-            System.exit(1);
+            quitGeneration();
         }
     }
 

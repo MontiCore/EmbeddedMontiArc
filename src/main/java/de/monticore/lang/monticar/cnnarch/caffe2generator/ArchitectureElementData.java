@@ -20,14 +20,12 @@
  */
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.se_rwth.commons.logging.Log;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.List;
 
 public class ArchitectureElementData {
@@ -165,31 +163,21 @@ public class ArchitectureElementData {
     }
 
     @Nullable
-    public List<Integer> getPadding(){
+    public Integer getPadding(){
         return getPadding((LayerSymbol) getElement());
     }
 
     @Nullable
-    public List<Integer> getPadding(LayerSymbol layer){
-        List<Integer> kernel = layer.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get();
-        List<Integer> stride = layer.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
-        ArchTypeSymbol inputType = layer.getInputTypes().get(0);
-        ArchTypeSymbol outputType = layer.getOutputTypes().get(0);
+    public Integer getPadding(LayerSymbol layer){
+        String padding_type = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.PADDING_NAME).get();
+        Integer pad=0;
 
-        int heightWithPad = kernel.get(0) + stride.get(0)*(outputType.getHeight() - 1);
-        int widthWithPad = kernel.get(1) + stride.get(1)*(outputType.getWidth() - 1);
-        int heightPad = Math.max(0, heightWithPad - inputType.getHeight());
-        int widthPad = Math.max(0, widthWithPad - inputType.getWidth());
-
-        int topPad = (int)Math.ceil(heightPad / 2.0);
-        int bottomPad = (int)Math.floor(heightPad / 2.0);
-        int leftPad = (int)Math.ceil(widthPad / 2.0);
-        int rightPad = (int)Math.floor(widthPad / 2.0);
-
-        if (topPad == 0 && bottomPad == 0 && leftPad == 0 && rightPad == 0){
-            return null;
+        if (padding_type.equals(AllPredefinedLayers.PADDING_VALID)){
+            pad = 0;
+        } else if (padding_type.equals(AllPredefinedLayers.PADDING_SAME)){
+            pad = 1;
         }
 
-        return Arrays.asList(0,0,0,0,topPad,bottomPad,leftPad,rightPad);
+        return pad;
     }
 }

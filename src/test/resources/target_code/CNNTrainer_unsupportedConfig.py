@@ -4,7 +4,7 @@ from caffe2.proto import caffe2_pb2
 
 import numpy as np
 import logging
-import CNNCreator_fullConfig
+import CNNCreator_unsupportedConfig
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
@@ -12,19 +12,10 @@ if __name__ == "__main__":
     handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
     logger.addHandler(handler)
 
-    fullConfig = CNNCreator_fullConfig.CNNCreator_fullConfig()
-    fullConfig.train(
+    unsupportedConfig = CNNCreator_unsupportedConfig.CNNCreator_unsupportedConfig()
+    unsupportedConfig.train(
         num_epoch=5,
         batch_size=100,
         context='gpu',
-        eval_metric='mse',
-        loss='cross_entropy',
-        opt_type='rmsprop',
-        epsilon=1.0E-6,
-        weight_decay=0.01,
-        gamma1=0.9,
-        policy='step',
-        base_learning_rate=0.001,
-        gamma=0.9,
-        stepsize=1000
+        opt_type='adam'
     )

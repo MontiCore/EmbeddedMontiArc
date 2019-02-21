@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
+import org.apache.commons.cli.ParseException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import org.junit.contrib.java.lang.system.Assertion;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import static junit.framework.TestCase.assertTrue;
 
@@ -62,26 +64,33 @@ public class GenerationTest extends AbstractSymtabTest{
     }
 
     @Test
-    public void testCifar10Classifier() throws IOException, TemplateException {
+    public void testUnsupportedLayersCifar10Classifier() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "CifarClassifierNetwork", "-o", "./target/generated-sources-cnnarch/"};
         exit.expectSystemExit();
+        exit.checkAssertionAfterwards(new Assertion() {
+            public void checkAssertion() {
+                assertTrue(Log.getFindings().size() == 2);
+            }
+        });
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
-    public void testAlexnetGeneration() throws IOException, TemplateException {
+    public void testUnsupportedLayersAlexnet() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "Alexnet", "-o", "./target/generated-sources-cnnarch/"};
         exit.expectSystemExit();
+        exit.checkAssertionAfterwards(new Assertion() {
+            public void checkAssertion() {
+                assertTrue(Log.getFindings().size() == 2);
+            }
+        });
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 2);
-
     }
 
     @Test
-    public void testGeneratorVGG16() throws IOException, TemplateException {
+    public void testGeneratorVGG16Generation() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "VGG16", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2Caffe2Cli.main(args);
@@ -102,25 +111,38 @@ public class GenerationTest extends AbstractSymtabTest{
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
         exit.expectSystemExit();
+        exit.checkAssertionAfterwards(new Assertion() {
+            public void checkAssertion() {
+                assertTrue(Log.getFindings().size() == 2);
+            }
+        });
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
-    public void testResNeXtGeneration() throws IOException, TemplateException {
+    public void testUnsupportedLayersResNeXt() throws IOException, TemplateException {
         Log.getFindings().clear();;
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ResNeXt50"};
         exit.expectSystemExit();
+        exit.checkAssertionAfterwards(new Assertion() {
+            public void checkAssertion() {
+                assertTrue(Log.getFindings().size() == 2);
+            }
+        });
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
     public void testMultipleOutputs() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
+        exit.expectSystemExit();
+        exit.checkAssertionAfterwards(new Assertion() {
+            public void checkAssertion() {
+                assertTrue(Log.getFindings().size() == 2);
+            }
+        });
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 3);
     }
 
     @Test
@@ -130,7 +152,7 @@ public class GenerationTest extends AbstractSymtabTest{
         CNNTrain2Caffe2 trainGenerator = new CNNTrain2Caffe2();
         trainGenerator.generate(Paths.get(sourcePath), "FullConfig");
 
-        assertTrue(Log.getFindings().size() == 9);
+        assertTrue(Log.getFindings().size() == 8);
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
@@ -169,6 +191,20 @@ public class GenerationTest extends AbstractSymtabTest{
                         "CNNTrainer_emptyConfig.py"));
     }
 
+    @Test
+    public void testUnsupportedTrainParameters() throws IOException {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+        CNNTrain2Caffe2 trainGenerator = new CNNTrain2Caffe2();
+        trainGenerator.generate(modelPath, "UnsupportedConfig");
+
+        assertTrue(Log.getFindings().size() == 6);
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "CNNTrainer_unsupportedConfig.py"));
+    }
 
     @Test
     public void testCMakeGeneration() {
@@ -176,7 +212,9 @@ public class GenerationTest extends AbstractSymtabTest{
         String rootModelName = "alexnet";
         CNNArch2Caffe2 generator = new CNNArch2Caffe2();
         generator.setGenerationTargetPath("./target/generated-sources-cnnarch");
-        generator.generateCMake(rootModelName);
+        if(generator.isCMakeRequired()){
+            generator.generateCMake(rootModelName);
+        }
 
         assertTrue(Log.getFindings().isEmpty());
 
@@ -191,6 +229,19 @@ public class GenerationTest extends AbstractSymtabTest{
                 Paths.get("./src/test/resources/target_code/cmake"),
                 Arrays.asList(
                         "FindArmadillo.cmake"));
+    }
+
+    @Test
+    public void testWrongArgumentCNNArch2Caffe2Cli() throws ParseException {
+        Log.getFindings().clear();
+        String[] args = {"-x", "src/test/resources/architectures", "-y", "LeNet", "-z", "./target/generated-sources-cnnarch/"};
+        exit.expectSystemExit();
+        exit.checkAssertionAfterwards(new Assertion() {
+            public void checkAssertion() {
+                assertTrue(Log.getFindings().size() == 2);
+            }
+        });
+        CNNArch2Caffe2Cli.main(args);
     }
 
 }

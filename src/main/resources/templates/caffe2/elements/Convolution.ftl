@@ -3,8 +3,14 @@
 <#assign strideWidth = element.stride[1]>
 <#assign kernelHeight = element.kernel[0]>
 <#assign kernelWidth = element.kernel[1]>
-<#if element.padding??>  <#-- Check wheather padding null is. -->
-    		<#-- TODO: check how to adapt CNNArchLang argument pad_width=${element.padding[0]} -->
+<#if element.padding??>
+	<#if element.padding == 0>
+		<#assign padParameter = ""><#--Don't add anything since "valid" is the default padding of Caffe2-->
+	<#elseif element.padding == 1>
+		<#assign padParameter = ", pad=1">
+	</#if>
+<#else>
+	<#assign padParameter = ", pad=1">
 </#if>
 <#if strideHeight == strideWidth>
 	<#assign strideParameter = "stride=${strideHeight}">
@@ -16,6 +22,5 @@
 <#else>
 	<#assign kernelParameter = "kernel=[${kernelHeight},${kernelWidth}]">
 </#if>
-    		${element.name} = brew.conv(model, ${input}, '${element.name}', dim_in=${element.element.inputTypes[0].channels?c}, dim_out=${element.channels?c}, ${kernelParameter}, ${strideParameter})
-    		<#-- TODO: check how to adapt CNNArchLang argument no_bias=${element.noBias?string("True","False")} -->
+    		${element.name} = brew.conv(model, ${input}, '${element.name}', dim_in=${element.element.inputTypes[0].channels?c}, dim_out=${element.channels?c}, ${kernelParameter}, ${strideParameter}${padParameter})
 <#include "OutputShape.ftl">

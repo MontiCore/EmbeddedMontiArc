@@ -1,6 +1,7 @@
-    		${element.name} = mx.symbol.Pooling(data=${element.inputs[0]},
-    		    global_pool=True,
-    		    kernel=(1,1),
-    		    pool_type="${element.poolType}",
-    		    name="${element.name}")
+<#assign input = element.inputs[0]>
+<#if element.poolType == "max">
+    		${element.name} = brew.max_pool(model, ${input}, '${element.name}', global_pooling=True)
+<#elseif element.poolType == "avg">
+    		${element.name} = brew.average_pool(model, ${input}, '${element.name}', global_pooling=True)
+</#if>
 <#include "OutputShape.ftl">
