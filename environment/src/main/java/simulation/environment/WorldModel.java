@@ -67,7 +67,7 @@ public class WorldModel implements World{
     }
 
     public static World init(String map, WeatherSettings weatherSettings) throws Exception {
-        ourInstance = new WorldModel(new ParserSettings(map, ParserSettings.ZCoordinates.ALLZERO), weatherSettings);
+        ourInstance = new WorldModel(new ParserSettings(map, ParserSettings.ZCoordinates.FROM_FILE), weatherSettings);
         return ourInstance;
     }
 
