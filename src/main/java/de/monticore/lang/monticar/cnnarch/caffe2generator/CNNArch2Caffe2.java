@@ -51,8 +51,7 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
     private boolean isSupportedLayer(ArchitectureElementSymbol element, LayerSupportChecker layerChecker){
         List<ArchitectureElementSymbol> constructLayerElemList;
 
-        //first part of if condition ensures that element is not an IOSymbol
-        if (element instanceof LayerSymbol && (element.getResolvedThis().get() instanceof CompositeElementSymbol)) {
+        if (element.getResolvedThis().get() instanceof CompositeElementSymbol) {
             constructLayerElemList = ((CompositeElementSymbol)element.getResolvedThis().get()).getElements();
             for (ArchitectureElementSymbol constructedLayerElement : constructLayerElemList) {
                 if (!isSupportedLayer(constructedLayerElement, layerChecker)) {

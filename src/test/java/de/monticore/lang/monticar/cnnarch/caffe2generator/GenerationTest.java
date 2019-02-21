@@ -136,8 +136,13 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testMultipleOutputs() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
+        exit.expectSystemExit();
+        exit.checkAssertionAfterwards(new Assertion() {
+            public void checkAssertion() {
+                assertTrue(Log.getFindings().size() == 2);
+            }
+        });
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 3);
     }
 
     @Test
