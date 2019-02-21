@@ -26,7 +26,6 @@ import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.IOSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.generator.FileContent;
@@ -51,7 +50,7 @@ public class CNNArch2MxNet implements CNNArchGenerator {
     private boolean isSupportedLayer(ArchitectureElementSymbol element, LayerSupportChecker layerChecker){
         List<ArchitectureElementSymbol> constructLayerElemList;
 
-        if (!(element instanceof IOSymbol) && (element.getResolvedThis().get() instanceof CompositeElementSymbol)) {
+        if (element.getResolvedThis().get() instanceof CompositeElementSymbol) {
             constructLayerElemList = ((CompositeElementSymbol)element.getResolvedThis().get()).getElements();
             for (ArchitectureElementSymbol constructedLayerElement : constructLayerElemList) {
                 if (!isSupportedLayer(constructedLayerElement, layerChecker)) {
