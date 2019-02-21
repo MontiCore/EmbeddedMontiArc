@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 project(alexnet LANGUAGES CXX)
 
@@ -16,8 +16,8 @@ set(LIBS ${LIBS} mxnet)
 
 # create static library
 include_directories(${INCLUDE_DIRS})
-add_library(alexnet alexnet.h)
-target_include_directories(alexnet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(alexnet alexnet.cpp)
+target_include_directories(alexnet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${INCLUDE_DIRS})
 target_link_libraries(alexnet PUBLIC ${LIBS})
 set_target_properties(alexnet PROPERTIES LINKER_LANGUAGE CXX)
 
