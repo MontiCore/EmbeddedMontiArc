@@ -18,8 +18,8 @@
 #include <iostream>
 #include <map>
 
-CAFFE2_DEFINE_string(init_net, "./model/LeNet/init_net.pb", "The given path to the init protobuffer.");
-CAFFE2_DEFINE_string(predict_net, "./model/LeNet/predict_net.pb", "The given path to the predict protobuffer.");
+CAFFE2_DEFINE_string(init_net_CNNPredictor_LeNet, "./model/LeNet/init_net.pb", "The given path to the init protobuffer.");
+CAFFE2_DEFINE_string(predict_net_CNNPredictor_LeNet, "./model/LeNet/predict_net.pb", "The given path to the predict protobuffer.");
 
 using namespace caffe2;
 
@@ -43,21 +43,21 @@ class CNNPredictor_LeNet{
             char **a[1];
             caffe2::GlobalInit(&n, a);
 
-            if (!std::ifstream(FLAGS_init_net).good()) {
-                std::cerr << "\nNetwork loading failure, init_net file '" << FLAGS_init_net << "' does not exist." << std::endl;
+            if (!std::ifstream(FLAGS_init_net_CNNPredictor_LeNet).good()) {
+                std::cerr << "\nNetwork loading failure, init_net file '" << FLAGS_init_net_CNNPredictor_LeNet << "' does not exist." << std::endl;
                 exit(1);
             }
 
-            if (!std::ifstream(FLAGS_predict_net).good()) {
-                std::cerr << "\nNetwork loading failure, predict_net file '" << FLAGS_predict_net << "' does not exist." << std::endl;
+            if (!std::ifstream(FLAGS_predict_net_CNNPredictor_LeNet).good()) {
+                std::cerr << "\nNetwork loading failure, predict_net file '" << FLAGS_predict_net_CNNPredictor_LeNet << "' does not exist." << std::endl;
                 exit(1);
             }
 
             std::cout << "\nLoading network..." << std::endl;
 
             // Read protobuf
-            CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_init_net, &initNet));
-            CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_predict_net, &predictNet));
+            CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_init_net_CNNPredictor_LeNet, &initNet));
+            CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_predict_net_CNNPredictor_LeNet, &predictNet));
 
             // Set device type
             #ifdef USE_GPU

@@ -18,8 +18,8 @@
 #include <iostream>
 #include <map>
 
-CAFFE2_DEFINE_string(init_net, "./model/${tc.fullArchitectureName}/init_net.pb", "The given path to the init protobuffer.");
-CAFFE2_DEFINE_string(predict_net, "./model/${tc.fullArchitectureName}/predict_net.pb", "The given path to the predict protobuffer.");
+CAFFE2_DEFINE_string(init_net_${tc.fileNameWithoutEnding}, "./model/${tc.componentName}/init_net.pb", "The given path to the init protobuffer.");
+CAFFE2_DEFINE_string(predict_net_${tc.fileNameWithoutEnding}, "./model/${tc.componentName}/predict_net.pb", "The given path to the predict protobuffer.");
 
 using namespace caffe2;
 
@@ -43,21 +43,21 @@ class ${tc.fileNameWithoutEnding}{
             char **a[1];
             caffe2::GlobalInit(&n, a);
 
-            if (!std::ifstream(FLAGS_init_net).good()) {
-                std::cerr << "\nNetwork loading failure, init_net file '" << FLAGS_init_net << "' does not exist." << std::endl;
+            if (!std::ifstream(FLAGS_init_net_${tc.fileNameWithoutEnding}).good()) {
+                std::cerr << "\nNetwork loading failure, init_net file '" << FLAGS_init_net_${tc.fileNameWithoutEnding} << "' does not exist." << std::endl;
                 exit(1);
             }
 
-            if (!std::ifstream(FLAGS_predict_net).good()) {
-                std::cerr << "\nNetwork loading failure, predict_net file '" << FLAGS_predict_net << "' does not exist." << std::endl;
+            if (!std::ifstream(FLAGS_predict_net_${tc.fileNameWithoutEnding}).good()) {
+                std::cerr << "\nNetwork loading failure, predict_net file '" << FLAGS_predict_net_${tc.fileNameWithoutEnding} << "' does not exist." << std::endl;
                 exit(1);
             }
 
             std::cout << "\nLoading network..." << std::endl;
 
             // Read protobuf
-            CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_init_net, &initNet));
-            CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_predict_net, &predictNet));
+            CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_init_net_${tc.fileNameWithoutEnding}, &initNet));
+            CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_predict_net_${tc.fileNameWithoutEnding}, &predictNet));
 
             // Set device type
             #ifdef USE_GPU
