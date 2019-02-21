@@ -20,6 +20,7 @@
  */
 package simulation.environment.visualisationadapter.implementation;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import simulation.environment.visualisationadapter.interfaces.*;
 import java.util.Collection;
@@ -38,7 +39,10 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
 
     private Point3D midPoint;
     private double[][] heightMap;
-
+    private double heightMapDeltaX;
+    private double heightMapDeltaY;
+    private Point2D heightMapMinPoint;
+    private Point2D heightMapMaxPoint;
 
     public EnvironmentContainer2D(EnvBounds bounds, Collection<EnvStreet> streets, Collection<Building> buildings) {
         this.bounds = bounds;
@@ -80,6 +84,36 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
     @Override
     public double[][] getHeightMap() {
         return this.heightMap;
+    }
+
+    @Override
+    public Point2D getHeightMapMinPoint() {
+        return heightMapMinPoint;
+    }
+
+    @Override
+    public Point2D getHeightMapMaxPoint() {
+        return heightMapMaxPoint;
+    }
+
+    @Override
+    public double getHeightMapDeltaX() {
+        return heightMapDeltaX;
+    }
+
+    @Override
+    public double getHeightMapDeltaY() {
+        return heightMapDeltaY;
+    }
+
+    public void setHeightMapDelta(double deltaX, double deltaY) {
+        heightMapDeltaX = deltaX;
+        heightMapDeltaY = deltaY;
+    }
+
+    public void setHeightMapMinMax(Point2D minPoint, Point2D maxPoint) {
+        heightMapMinPoint = minPoint;
+        heightMapMaxPoint = maxPoint;
     }
 
     public void setHeightMap(double[][] heightMap) {
