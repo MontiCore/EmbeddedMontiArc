@@ -32,7 +32,7 @@ import freemarker.template.TemplateExceptionHandler;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +69,7 @@ public class CMakeConfig {
 
     private CMakeListsCPPViewModel cMakeListsViewModel = new CMakeListsCPPViewModel();
 
-    private HashSet<CMakeFindModule> moduleList = new HashSet<>();
+    private LinkedHashSet<CMakeFindModule> moduleList = new LinkedHashSet<>();
 
     private List<String> cmakeCommandList = new ArrayList<>();
 
