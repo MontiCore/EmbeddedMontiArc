@@ -150,5 +150,14 @@ public class WorldModelTest extends TestCase {
                 }
             }
         }
+
+        WorldModel.init(new ParserSettings("/map_ahornstrasse.osm", ParserSettings.ZCoordinates.FROM_FILE),
+                new WeatherSettings());
+        world = WorldModel.getInstance();
+        assertNotNull(world.getContainer().getHeightMap());
+        assertNotNull(world.getContainer().getHeightMapMinPoint());
+        assertNotNull(world.getContainer().getHeightMapMaxPoint());
+        assertNotSame(0.0, world.getContainer().getHeightMapDeltaX());
+        assertNotSame(0.0, world.getContainer().getHeightMapDeltaY());
     }
 }

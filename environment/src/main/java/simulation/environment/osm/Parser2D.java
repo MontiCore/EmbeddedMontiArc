@@ -213,11 +213,21 @@ public class Parser2D implements IParser {
         addSomeRandomTrees();
         generateZCoordinates();
 
+        EnvironmentContainerConverter converter;
+
+        // Convert values to meter
         if (minLong != Double.MAX_VALUE && minLat != Double.MAX_VALUE) {
-            convertLatLongToMeters(minLong, minLat);
+            converter = new EnvironmentContainerConverter(this.container, minLong, minLat);
         } else {
-            convertLatLongToMeters();
+            converter = new EnvironmentContainerConverter(this.container);
         }
+        this.containerM = converter.getContainer();
+
+        // Set relevant data for height map
+        ZCoordinateGenerator.setLongLatToMetersConverter(converter.getApproximateConverter());
+        this.containerM.setHeightMap(ZCoordinateGenerator.getHeightMap());
+        this.containerM.setHeightMapDelta(ZCoordinateGenerator.getHeightMapDeltaX(), ZCoordinateGenerator.getHeightMapDeltaY());
+        this.containerM.setHeightMapMinMax(ZCoordinateGenerator.getHeightMapMinPoint(), ZCoordinateGenerator.getHeightMapMaxPoint());
 
         addStreetSigns();
     }
@@ -239,17 +249,6 @@ public class Parser2D implements IParser {
         trees.add(new Node2D(40, 50, 60));
         this.container.setTrees(trees);
     }
-
-    private void convertLatLongToMeters() {
-        this.containerM = new EnvironmentContainerConverter(this.container).getContainer();
-        this.containerM.setHeightMap(container.getHeightMap());
-    }
-
-    private void convertLatLongToMeters(double minLong, double minLat) {
-        this.containerM = new EnvironmentContainerConverter(this.container, minLong, minLat).getContainer();
-        this.containerM.setHeightMap(container.getHeightMap());
-    }
-
 
     private void buildContainer() {
         this.container = new simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D(
