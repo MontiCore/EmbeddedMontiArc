@@ -20,6 +20,7 @@
  */
 package simulation.environment.osm;
 
+import javafx.geometry.Point2D;
 import simulation.environment.geometry.height.*;
 import simulation.environment.visualisationadapter.implementation.Bounds2D;
 import simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D;
@@ -28,8 +29,6 @@ import simulation.environment.visualisationadapter.interfaces.Building;
 import simulation.environment.visualisationadapter.interfaces.EnvBounds;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
-
-import java.io.File;
 
 /**
  * Created by lukas on 16.02.17.
@@ -47,7 +46,7 @@ public class ZCoordinateGenerator {
 
     public static void generateZCoordinates(EnvironmentContainer2D container, ParserSettings.ZCoordinates strategy) {
         if(strategy == ParserSettings.ZCoordinates.ALLZERO) {
-            heightGenerator = new AllZeroGenerator();
+            heightGenerator = new AllZeroGenerator(container.getBounds());
         } else if(strategy == ParserSettings.ZCoordinates.STATIC) {
             heightGenerator = new StaticHeightGenerator(container.getBounds());
         } else if (strategy == ParserSettings.ZCoordinates.FROM_FILE) {
@@ -129,4 +128,41 @@ public class ZCoordinateGenerator {
         return heightGenerator.toHeightMap();
     }
 
+    public static void setLongLatToMetersConverter(ApproximateConverter longLatToMeterConverter) {
+        if (heightGenerator != null) {
+            heightGenerator.setLongLatToMetersConverter(longLatToMeterConverter);
+        }
+    }
+
+    public static double getHeightMapDeltaX() {
+        if (heightGenerator != null) {
+            return heightGenerator.getHeightMapDeltaX();
+        }
+
+        return 1.0;
+    }
+
+    public static double getHeightMapDeltaY() {
+        if (heightGenerator != null) {
+            return heightGenerator.getHeightMapDeltaY();
+        }
+
+        return 1.0;
+    }
+
+    public static Point2D getHeightMapMinPoint() {
+        if (heightGenerator != null) {
+            return heightGenerator.getHeightMapMinPoint();
+        }
+
+        return new Point2D(0,0);
+    }
+
+    public static Point2D getHeightMapMaxPoint() {
+        if (heightGenerator != null) {
+            return heightGenerator.getHeightMapMaxPoint();
+        }
+
+        return new Point2D(0,0);
+    }
 }

@@ -20,6 +20,8 @@
  */
 package simulation.environment.geometry.height;
 
+import javafx.geometry.Point2D;
+import simulation.environment.osm.ApproximateConverter;
 import simulation.util.Log;
 
 import java.io.IOException;
@@ -48,6 +50,7 @@ public class SRTMHeightGenerator implements HeightGenerator {
     private double minLongitude;
     private double maxLatitude;
     private double maxLongitude;
+    private ApproximateConverter longLatToMeterConverter;
 
     public SRTMHeightGenerator() {
         // Read in height map from file
@@ -70,6 +73,11 @@ public class SRTMHeightGenerator implements HeightGenerator {
         // Determine max lat/long
         maxLatitude = getLatitudeFromRow(NUM_SAMPLES - 1);
         maxLongitude = getLongitudeFromColumn(NUM_SAMPLES - 1);
+    }
+
+    @Override
+    public void setLongLatToMetersConverter(ApproximateConverter longLatToMeterConverter) {
+        this.longLatToMeterConverter = longLatToMeterConverter;
     }
 
     // NOTE: We need to get longitude and latitude, otherwise getting the value from height matrix will fail
@@ -100,6 +108,38 @@ public class SRTMHeightGenerator implements HeightGenerator {
     @Override
     public double[][] toHeightMap() {
         return heightMap;
+    }
+
+    @Override
+    public Point2D getHeightMapMinPoint() {
+        double x = longLatToMeterConverter.convertLongToMeters(minLongitude, minLatitude);
+        double y = longLatToMeterConverter.convertLatToMeters(minLatitude);
+
+        return new Point2D(x, y);
+    }
+
+    @Override
+    public Point2D getHeightMapMaxPoint() {
+        double x = longLatToMeterConverter.convertLongToMeters(maxLongitude, maxLatitude);
+        double y = longLatToMeterConverter.convertLatToMeters(maxLatitude);
+
+        return new Point2D(x, y);
+    }
+
+    @Override
+    public double getHeightMapDeltaX() {
+        double minX = getHeightMapMinPoint().getX();
+        double maxX = getHeightMapMaxPoint().getX();
+
+        return (maxX - minX) / NUM_SAMPLES;
+    }
+
+    @Override
+    public double getHeightMapDeltaY() {
+        double minY = getHeightMapMinPoint().getY();
+        double maxY = getHeightMapMaxPoint().getY();
+
+        return (maxY - minY) / NUM_SAMPLES;
     }
 
     private static double[][] getHeightMapFromFile(InputStream heightDataStream) {
