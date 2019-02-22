@@ -88,6 +88,11 @@ public class SRTMHeightGenerator implements HeightGenerator {
         int flooredRow = getRowInHeightMap(latitude, true);
         int ceiledRow = getRowInHeightMap(latitude, false);
 
+        if (flooredColumn == -1 || ceiledColumn == -1 || flooredRow == -1 || ceiledRow == -1) {
+            // If one value is invalid, just return 0 as we can not return a valid height
+            return 0.0;
+        }
+
         double flooredLong = getLongitudeFromColumn(flooredColumn);
         double ceiledLong = getLongitudeFromColumn(ceiledColumn);
         double flooredLat = getLatitudeFromRow(flooredRow);
@@ -181,6 +186,11 @@ public class SRTMHeightGenerator implements HeightGenerator {
 
     private static int getColumnInHeightMap(double longitude, boolean useFloor) {
         long longDeg = (long)longitude;
+        if (longDeg != 6) { // For now only allow longitude degree of 6, because only one file is deployed
+            // TODO: Remove this and adapt to multiple height files
+            return -1;
+        }
+
         double unroundedColumn = (longitude - longDeg) / SRTM_RESOLUTION;
 
         return (int)(useFloor ? Math.floor(unroundedColumn) : Math.ceil(unroundedColumn));
@@ -188,6 +198,10 @@ public class SRTMHeightGenerator implements HeightGenerator {
 
     private static int getRowInHeightMap(double latitude, boolean useFloor) {
         long latDeg = (long)latitude;
+        if (latDeg != 50) { // For now only allow latitude degree of 50, because only one file is deployed
+            // TODO: Remove this and adapt to multiple height files
+            return -1;
+        }
         double unroundedRow = (latitude - latDeg) / SRTM_RESOLUTION;
 
         return (int)(useFloor ? Math.floor(unroundedRow) : Math.ceil(unroundedRow));
