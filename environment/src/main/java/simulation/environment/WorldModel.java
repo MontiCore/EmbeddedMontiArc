@@ -403,13 +403,20 @@ public class WorldModel implements World{
 
     @Override
     public boolean isPointOnStreet(double x, double y, double z) {
-        EnvNode n = new Node2D(x, y, z);
-        GeomStreet minStreet = getMinimumStreetForNode(n);
-        double streetZ = minStreet.getGround(x, y, z);
+        // check for every street wether the requested point is on it.
+        for(GeomStreet street : this.streets) {
+            // the getter for the wheel position coordinates returns position of the wheel center so the z-coordinate
+            // has to be set to the ground coordinatefor correcht checking
+            double streetZ = street.getGround(x, y, z);
+            Node2D n1 = new Node2D(x, y, streetZ);
 
-        Node2D n1 = new Node2D(x, y, streetZ);
-
-        return minStreet.contains(n1);
+            // check if node is on street
+            if(street.contains(n1)) {
+                return true;
+            }
+        }
+        // returns false if no street has been found
+        return false;
     }
 
     public boolean isPointOnStreet(RealVector v) {

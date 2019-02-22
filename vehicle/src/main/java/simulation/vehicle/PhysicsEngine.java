@@ -272,7 +272,7 @@ public class PhysicsEngine{
     }
 
     public static double calcRollingResistance(RealVector v, double pressure, double forceRoadFrictionBackFrontNorm) {
-
+        double defaultValue = 0.005 + (1 / pressure) * (0.01 + 0.0095 * (forceRoadFrictionBackFrontNorm * 3.6 / 100) * (forceRoadFrictionBackFrontNorm * 3.6 / 100));
         try{
         StreetPavements streetPavement = WorldModel.getInstance().getSurfaceType(v);
         boolean isItRaining = WorldModel.getInstance().isItRaining();
@@ -320,11 +320,12 @@ public class PhysicsEngine{
                     }
 
                 default:
-                    return 0.005 + (1 / pressure) * (0.01 + 0.0095 * (forceRoadFrictionBackFrontNorm * 3.6 / 100) * (forceRoadFrictionBackFrontNorm * 3.6 / 100));
+                    return defaultValue;
             }
         }catch (IOException e) {
             e.printStackTrace();
         }
-        return 1;
+
+        return defaultValue;
     }
 }
