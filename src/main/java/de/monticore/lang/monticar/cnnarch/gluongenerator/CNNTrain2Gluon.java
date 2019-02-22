@@ -37,7 +37,9 @@ public class CNNTrain2Gluon implements CNNTrainGenerator {
         it = configuration.getEntryMap().keySet().iterator();
         while (it.hasNext()) {
             String key = it.next().toString();
-            if (funcChecker.getUnsupportedElemList().contains(key)) it.remove();
+            if (funcChecker.getUnsupportedElemList().contains(key)) {
+                it.remove();
+            }
         }
     }
 
@@ -52,10 +54,17 @@ public class CNNTrain2Gluon implements CNNTrainGenerator {
                 Iterator it = configuration.getOptimizer().getOptimizerParamMap().keySet().iterator();
                 while (it.hasNext()) {
                     String key = it.next().toString();
-                    if (funcChecker.getUnsupportedElemList().contains(key)) it.remove();
+                    if (funcChecker.getUnsupportedElemList().contains(key)) {
+                        it.remove();
+                    }
                 }
             }
         }
+    }
+
+    private static void quitGeneration(){
+        Log.error("Code generation is aborted");
+        System.exit(1);
     }
 
     public CNNTrain2Gluon() {
@@ -89,7 +98,7 @@ public class CNNTrain2Gluon implements CNNTrainGenerator {
         Optional<CNNTrainCompilationUnitSymbol> compilationUnit = scope.resolve(rootModelName, CNNTrainCompilationUnitSymbol.KIND);
         if (!compilationUnit.isPresent()) {
             Log.error("could not resolve training configuration " + rootModelName);
-            System.exit(1);
+            quitGeneration();
         }
         setInstanceName(compilationUnit.get().getFullName());
         CNNTrainCocos.checkAll(compilationUnit.get());
@@ -107,7 +116,7 @@ public class CNNTrain2Gluon implements CNNTrainGenerator {
                 genCPP.generateFile(new FileContent(fileContents.get(fileName), fileName));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error("CNNTrainer file could not be generated" + e.getMessage());
         }
     }
 
