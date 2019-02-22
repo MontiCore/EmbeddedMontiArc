@@ -22,8 +22,8 @@
         <embedded-montiarc.version>0.1.9-SNAPSHOT</embedded-montiarc.version>
         <Embedded-montiarc-math-generator.version>0.1.5-SNAPSHOT</Embedded-montiarc-math-generator.version>
         <Embedded-montiarc-math-roscpp-generator.version>0.1.3-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
-        <EMADL2CPP.version>0.2.7-SNAPSHOT</EMADL2CPP.version>
-        <EMADL.version>0.2.5</EMADL.version>
+        <EMADL2CPP.version>0.2.8</EMADL2CPP.version>
+        <EMADL.version>0.2.6</EMADL.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
