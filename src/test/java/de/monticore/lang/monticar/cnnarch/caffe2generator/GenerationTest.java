@@ -206,7 +206,7 @@ public class GenerationTest extends AbstractSymtabTest{
                         "CNNTrainer_unsupportedConfig.py"));
     }
 
-    /*@Test
+    @Test
     public void testCMakeGeneration() {
         Log.getFindings().clear();
         String rootModelName = "alexnet";
@@ -229,7 +229,7 @@ public class GenerationTest extends AbstractSymtabTest{
                 Paths.get("./src/test/resources/target_code/cmake"),
                 Arrays.asList(
                         "FindArmadillo.cmake"));
-    }*/
+    }
 
     @Test
     public void testWrongArgumentCNNArch2Caffe2Cli() throws ParseException {

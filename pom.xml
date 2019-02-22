@@ -17,7 +17,7 @@
     <!-- .. SE-Libraries .................................................. -->
       <CNNArch.version>0.2.8</CNNArch.version>
       <CNNTrain.version>0.2.6</CNNTrain.version>
-      <embedded-montiarc-math-opt-generator>0.1.3</embedded-montiarc-math-opt-generator>
+      <embedded-montiarc-math-opt-generator>0.1.4</embedded-montiarc-math-opt-generator>
     
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
