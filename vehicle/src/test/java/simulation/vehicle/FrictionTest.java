@@ -20,6 +20,13 @@
  */
 package simulation.vehicle;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
 import simulation.environment.WorldModel;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetPavements;
@@ -58,12 +65,40 @@ public class FrictionTest {
         ModelicaPhysicalVehicle physicalVehicle1 = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
         ModelicaPhysicalVehicle physicalVehicle2 = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
 
-        // puts physicalVehicle1 onto a position on the map that is known to be paved, physicalVehicle2 is initialized with such a position
+        // puts physicalVehicle1 onto a position on the map that is known to be paved, physicalVehicle2 is already initialized with a position
+        // that is known to be unpaved
         physicalVehicle1.putOnSurface(843, 236, 0.0);
         physicalVehicle1.computePhysics(1);
         physicalVehicle2.computePhysics(1);
 
         Assert.assertEquals(PhysicsEngine.calcFrictionCoefficient(StreetPavements.PAVED, WorldModel.getInstance().isItRaining()), physicalVehicle1.getVDM().getValue("mu_1"), 0);
         Assert.assertEquals(PhysicsEngine.calcFrictionCoefficient(StreetPavements.UNPAVED, WorldModel.getInstance().isItRaining()), physicalVehicle2.getVDM().getValue("mu_1"), 0);
+
+        //physicalVehicle1.putOnSurface(200, 236, 0.0);
+
+        System.out.println(physicalVehicle1);
+        physicalVehicle1.computePhysics(4);
+        System.out.println(physicalVehicle1);
+    }
+
+    public void mockSimulation() {
+        RealVector expectedPosition = new ArrayRealVector(new double[]{843, 236, 0.0});
+        RealVector setVelocity = new ArrayRealVector(new double[]{50.0, 0.0, 0.0});
+        RealVector setAngularVelocity = new ArrayRealVector(new double[]{7.0, -2.5, 11.75});
+
+        // Build vehicle
+        ModelicaPhysicalVehicleBuilder builder = new ModelicaPhysicalVehicleBuilder();
+        builder.setPosition(expectedPosition);
+        builder.setVelocity(setVelocity);
+        builder.setAngularVelocity(setAngularVelocity);
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) builder.buildPhysicalVehicle();
+
+        physicalVehicle.computePhysics(1);
+        System.out.println(physicalVehicle);
+        System.out.println(physicalVehicle.getVDM().getValue("mu_1"));
+        physicalVehicle.computePhysics(2000);
+        System.out.println(physicalVehicle);
+        System.out.println(physicalVehicle.getVDM().getValue("mu_1"));
+        // TODO: Print all values to use them in a graph
     }
 }
