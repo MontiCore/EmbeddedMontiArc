@@ -39,7 +39,7 @@
       <id>se-nexus</id>
       <username>cibuild</username>
       <password>${env.cibuild}</password>
-    </server>
+    </server>     
   </servers>
 
   <mirrors>
@@ -47,7 +47,7 @@
       <id>se-nexus</id>
       <mirrorOf>external:*</mirrorOf>
       <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
-    </mirror>
+    </mirror>	 
   </mirrors>
 
   <profiles>
@@ -93,5 +93,5 @@
 
   <activeProfiles>
     <activeProfile>se-nexus</activeProfile>
-  </activeProfiles>
+  </activeProfiles>  
 </settings>

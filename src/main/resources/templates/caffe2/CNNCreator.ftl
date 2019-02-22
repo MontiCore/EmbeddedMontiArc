@@ -13,8 +13,8 @@ class ${tc.fileNameWithoutEnding}:
 
     module = None
     _current_dir_ = os.path.join('./')
-    _data_dir_    = os.path.join(_current_dir_, '${tc.dataPath}')
-    _model_dir_   = os.path.join(_current_dir_, 'model', '${tc.componentName}')
+    _data_dir_    = os.path.join(_current_dir_, 'data', '${tc.fullArchitectureName}')
+    _model_dir_   = os.path.join(_current_dir_, 'model', '${tc.fullArchitectureName}')
 
     _init_net_    = os.path.join(_model_dir_, 'init_net.pb')
     _predict_net_ = os.path.join(_model_dir_, 'predict_net.pb')

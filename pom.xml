@@ -8,15 +8,15 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-caffe2-generator</artifactId>
-  <version>0.2.8</version>
+  <version>0.2.8-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-      <CNNArch.version>0.2.8</CNNArch.version>
-      <CNNTrain.version>0.2.6</CNNTrain.version>
+      <CNNArch.version>0.2.7</CNNArch.version>
+      <CNNTrain.version>0.2.6-SNAPSHOT</CNNTrain.version>
       <embedded-montiarc-math-generator>0.1.2-SNAPSHOT</embedded-montiarc-math-generator>
     
         <!-- .. Libraries .................................................. -->
