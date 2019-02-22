@@ -25,12 +25,14 @@ public class TrainParamSupportChecker implements CNNTrainVisitor {
     public TrainParamSupportChecker() {
     }
 
-    public String unsupportedOptFlag = "unsupported_optimizer";
+    public static final String unsupportedOptFlag = "unsupported_optimizer";
 
     public List getUnsupportedElemList(){
         return this.unsupportedElemList;
     }
 
+    //Empty visit method denotes that the corresponding training parameter is supported.
+    //To set a training parameter as unsupported, add the corresponding node to the unsupportedElemList
     public void visit(ASTNumEpochEntry node){}
 
     public void visit(ASTBatchSizeEntry node){}
