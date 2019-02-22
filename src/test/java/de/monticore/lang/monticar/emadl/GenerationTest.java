@@ -52,6 +52,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./target/generated-sources-emadl"),
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
+                        "cifar10_cifar10Classifier.cpp",
                         "cifar10_cifar10Classifier.h",
                         "CNNCreator_cifar10_cifar10Classifier_net.py",
                         "CNNBufferFile.h",
@@ -124,5 +125,26 @@ public class GenerationTest extends AbstractSymtabTest {
         String[] args = {"-m", "src/test/resources/models/", "-r", "InstanceTest.MainB", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testMnistClassifier() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/models/", "-r", "mnist.MnistClassifier", "-b", "CAFFE2"};
+        EMADLGeneratorCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-emadl"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "mnist_mnistClassifier.cpp",
+                        "mnist_mnistClassifier.h",
+                        "CNNCreator_mnist_mnistClassifier_net.py",
+                        "CNNPredictor_mnist_mnistClassifier_net.h",
+                        "mnist_mnistClassifier_net.h",
+                        "CNNTranslator.h",
+                        "mnist_mnistClassifier_calculateClass.h",
+                        "CNNTrainer_mnist_mnistClassifier_net.py"));
     }
 }
