@@ -20,32 +20,26 @@
  */
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
-import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
-public class CNNArch2MxNet implements CNNArchGenerator {
-
-    private String generationTargetPath;
+public class CNNArch2MxNet extends CNNArchGenerator {
 
     private boolean isSupportedLayer(ArchitectureElementSymbol element, LayerSupportChecker layerChecker){
         List<ArchitectureElementSymbol> constructLayerElemList;
@@ -76,35 +70,8 @@ public class CNNArch2MxNet implements CNNArchGenerator {
         return true;
     }
 
-    private static void quitGeneration(){
-        Log.error("Code generation is aborted");
-        System.exit(1);
-    }
-
     public CNNArch2MxNet() {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
-    }
-
-    @Override
-    public boolean isCMakeRequired() {
-        return true;
-    }
-
-    public String getGenerationTargetPath() {
-        if (generationTargetPath.charAt(generationTargetPath.length() - 1) != '/') {
-            this.generationTargetPath = generationTargetPath + "/";
-        }
-        return generationTargetPath;
-    }
-
-    public void setGenerationTargetPath(String generationTargetPath) {
-        this.generationTargetPath = generationTargetPath;
-    }
-
-    public void generate(Path modelsDirPath, String rootModelName){
-        final ModelPath mp = new ModelPath(modelsDirPath);
-        GlobalScope scope = new GlobalScope(mp, new CNNArchLanguage());
-        generate(scope, rootModelName);
     }
 
     public void generate(Scope scope, String rootModelName){
@@ -149,41 +116,7 @@ public class CNNArch2MxNet implements CNNArchGenerator {
         return fileContentMap;
     }
 
-    private void checkValidGeneration(ArchitectureSymbol architecture){
-        if (architecture.getInputs().size() > 1){
-            Log.error("This cnn architecture has multiple inputs, " +
-                            "which is currently not supported by the mxnetgenerator. "
-                    , architecture.getSourcePosition());
-        }
-        if (architecture.getOutputs().size() > 1){
-            Log.error("This cnn architecture has multiple outputs, " +
-                            "which is currently not supported by the mxnetgenerator. "
-                    , architecture.getSourcePosition());
-        }
-        if (architecture.getOutputs().get(0).getDefinition().getType().getWidth() != 1 ||
-                architecture.getOutputs().get(0).getDefinition().getType().getHeight() != 1){
-            Log.error("This cnn architecture has a multi-dimensional output, " +
-                            "which is currently not supported by the mxnetgenerator."
-                    , architecture.getSourcePosition());
-        }
-    }
-
-    //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
-    public void generateFiles(ArchitectureSymbol architecture) throws IOException{
-        Map<String, String> fileContentMap = generateStrings(architecture);
-        generateFromFilecontentsMap(fileContentMap);
-    }
-
-    public void generateCMake(String rootModelName) {
-        Map<String, String> fileContentMap = generateCMakeContent(rootModelName);
-        try {
-            generateFromFilecontentsMap(fileContentMap);
-        } catch (IOException e) {
-            Log.error("CMake file could not be generated" + e.getMessage());
-        }
-    }
-
-    private void generateFromFilecontentsMap(Map<String, String> fileContentMap) throws IOException {
+    public void generateFromFilecontentsMap(Map<String, String> fileContentMap) throws IOException {
         GeneratorCPP genCPP = new GeneratorCPP();
         genCPP.setGenerationTargetPath(getGenerationTargetPath());
         for (String fileName : fileContentMap.keySet()){
