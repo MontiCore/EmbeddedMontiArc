@@ -4,14 +4,14 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <armadillo>
-#include <string> //Check if it can be removed
+#include <string>
 #include <iostream>
 #include <map>
 
 int main(int argc, char** argv) {
     std::vector<std::string> classNames = {"0","1","2","3","4","5","6","7","8","9"};
 
-    if(argc < 2){ //Note: argc=1 if no arguments are provided
+    if(argc < 2){
         std::cout << "Missing argument: Path to test image must be provided " << std::endl;
         exit(1);
     }
