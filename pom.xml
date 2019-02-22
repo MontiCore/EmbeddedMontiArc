@@ -8,16 +8,16 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-caffe2-generator</artifactId>
-  <version>0.2.8-SNAPSHOT</version>
+  <version>0.2.9-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-      <CNNArch.version>0.2.7</CNNArch.version>
-      <CNNTrain.version>0.2.6-SNAPSHOT</CNNTrain.version>
-      <embedded-montiarc-math-generator>0.1.2-SNAPSHOT</embedded-montiarc-math-generator>
+      <CNNArch.version>0.2.8</CNNArch.version>
+      <CNNTrain.version>0.2.6</CNNTrain.version>
+      <embedded-montiarc-math-opt-generator>0.1.4</embedded-montiarc-math-opt-generator>
     
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -89,8 +89,8 @@
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math-generator</artifactId>
-            <version>${embedded-montiarc-math-generator}</version>
+            <artifactId>embedded-montiarc-math-opt-generator</artifactId>
+            <version>${embedded-montiarc-math-opt-generator}</version>
         </dependency>
 
 
