@@ -17,7 +17,7 @@
     <!-- .. SE-Libraries .................................................. -->
       <CNNArch.version>0.2.7</CNNArch.version>
       <CNNTrain.version>0.2.5</CNNTrain.version>
-      <embedded-montiarc-math-generator>0.0.25-20180812.120330-2</embedded-montiarc-math-generator>
+      <embedded-montiarc-math-opt-generator>0.1.4</embedded-montiarc-math-opt-generator>
     
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -89,8 +89,8 @@
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math-generator</artifactId>
-            <version>${embedded-montiarc-math-generator}</version>
+            <artifactId>embedded-montiarc-math-opt-generator</artifactId>
+            <version>${embedded-montiarc-math-opt-generator}</version>
         </dependency>
 
 
