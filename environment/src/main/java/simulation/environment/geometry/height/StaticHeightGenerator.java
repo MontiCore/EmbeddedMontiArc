@@ -20,6 +20,8 @@
  */
 package simulation.environment.geometry.height;
 
+import javafx.geometry.Point2D;
+import simulation.environment.osm.ApproximateConverter;
 import simulation.environment.visualisationadapter.interfaces.EnvBounds;
 
 /**
@@ -44,5 +46,30 @@ public class StaticHeightGenerator implements HeightGenerator {
     @Override
     public double[][] toHeightMap() {
         return this.generator.toHeightMap();
+    }
+
+    @Override
+    public Point2D getHeightMapMinPoint() {
+        return new Point2D(0,0);
+    }
+
+    @Override
+    public Point2D getHeightMapMaxPoint() {
+        return new Point2D(2,0);
+    }
+
+    @Override
+    public double getHeightMapDeltaX() {
+        return 1.0;
+    }
+
+    @Override
+    public double getHeightMapDeltaY() {
+        return 1.0;
+    }
+
+    @Override
+    public void setLongLatToMetersConverter(ApproximateConverter longLatToMeterConverter) {
+        // Empty
     }
 }

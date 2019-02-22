@@ -92,7 +92,6 @@ public class Parser2D implements IParser {
      * @throws Exception
      */
     public void parse() throws Exception {
-
         if(this.in == null) {
             if (!StringUtils.isBlank(this.filePath)) {
                 this.in = new FileInputStream(filePath);
@@ -100,15 +99,37 @@ public class Parser2D implements IParser {
                 throw new IllegalArgumentException("No Input");
             }
         }
-        try {
-            /*
+        /*
+        //Automatic call of OSM-Data. Currently not used cause of manually changes in Map-Data.
+        OSMConnector connector = new OSMConnector();
+        //Call Area you want to load. Further instructions in class doc.
+
+        //TODO: For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
+        Document mapData = connector.getXML(6.05892134,50.77828146,10);
+
+        //Create temp file for loaded data.
+        DOMSource source = new DOMSource(mapData);
+        FileWriter writer = new FileWriter(new File("/tmp/output.xml"));
+        StreamResult result = new StreamResult(writer);
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.transform(source, result);
+
+        this.in = new FileInputStream("/tmp/output.xml");
+        */
+
+        executeParsing();
+
+    }
+
+    public void parseCertainArea(double lon, double lat, double vicinityRange) throws Exception {
             //Automatic call of OSM-Data. Currently not used cause of manually changes in Map-Data.
             OSMConnector connector = new OSMConnector();
             //Call Area you want to load. Further instructions in class doc.
 
             //TODO: For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
-            Document mapData = connector.getXML(6.05892134,50.77828146,10);
-
+            Document mapData = connector.getXML(lon, lat, vicinityRange);
             //Create temp file for loaded data.
             DOMSource source = new DOMSource(mapData);
             FileWriter writer = new FileWriter(new File("/tmp/output.xml"));
@@ -119,8 +140,12 @@ public class Parser2D implements IParser {
             transformer.transform(source, result);
 
             this.in = new FileInputStream("/tmp/output.xml");
-            */
 
+            executeParsing();
+    }
+
+    private void executeParsing() throws Exception {
+        try {
             OsmReader reader = new OsmXmlReader(in, false);
             this.dataSet = MapDataSetLoader.read(reader, true, true, true);
 
@@ -133,113 +158,9 @@ public class Parser2D implements IParser {
                 String highway = tags.get("highway");
                 String building = tags.get("building");
                 String waterway = tags.get("waterway");
-              //  System.out.println("PARSE FUNCTION   "+highway);
-               // System.out.println("");System.out.println(" ");
+                
                 if (highway == null && building == null && waterway == null) {
-                    continue;
-                }
-
-                for (int i = 0; i < way.getNumberOfNodes(); i++) {
-                    OsmNode node = this.dataSet.getNode(way.getNodeId(i));
-
-                    double nLat = node.getLatitude();
-                    double nLong = node.getLongitude();
-
-                    if (nLat <= minLat) {
-                        minLat = nLat;
-                    }
-
-                    if (nLong <= minLong) {
-                        minLong = nLong;
-                    }
-                }
-            }
-
-            // Only OsmWays are used after this step, so its fine to leave Nodes / Relations unfiltered
-            LinkedList<Long> removeListOsmWayMapIDs = new LinkedList<>();
-
-            for (Long osmWayMapID : this.dataSet.getWays().keys()) {
-
-                OsmWay way = this.dataSet.getWay(osmWayMapID);
-
-                for (int i = 0; i < way.getNumberOfTags(); ++i) {
-                    OsmTag tag = way.getTag(i);
-                    String key = tag.getKey();
-                    String val = tag.getValue();
-
-
-                    // Filter key:highway with values in: footway, bridleway, steps, path, cycleway, pedestrian, track, elevator
-                    if (key.equals("highway") && (val.equals("footway") || val.equals("bridleway") || val.equals("steps") || val.equals("path") || val.equals("cycleway") || val.equals("pedestrian") || val.equals("track") || val.equals("elevator"))) {
-
-
-//                        removeListOsmWayMapIDs.add(osmWayMapID);
-                        break;
-                    }
-                }
-            }
-
-            // Remove marked IDs from dataset
-            for (Long removeOsmWayMapID : removeListOsmWayMapIDs) {
-                this.dataSet.getWays().remove(removeOsmWayMapID);
-            }
-
-
-        } catch (OsmInputException e) {
-            e.printStackTrace();
-        }
-
-
-        findIntersections();
-        mapIntersections();
-        try {
-            parseObjects();
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-        buildContainer();
-        addSomeRandomTrees();
-
-        if (minLong != Double.MAX_VALUE && minLat != Double.MAX_VALUE) {
-            convertLatLongToMeters(minLong, minLat);
-        } else {
-            convertLatLongToMeters();
-        }
-
-        generateZCoordinates();
-        addStreetSigns();
-    }
-
-    public void parseCertainArea(double lon, double lat, double vicinityRange) throws Exception {
-        try {
-            //Automatic call of OSM-Data. Currently not used cause of manually changes in Map-Data.
-            OSMConnector connector = new OSMConnector();
-            //Call Area you want to load. Further instructions in class doc.
-
-            //TODO: For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
-            Document mapData = connector.getXML(lon,lat,vicinityRange);
-            //Create temp file for loaded data.
-            DOMSource source = new DOMSource(mapData);
-            FileWriter writer = new FileWriter(new File("/tmp/output.xml"));
-            StreamResult result = new StreamResult(writer);
-
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.transform(source, result);
-
-            this.in = new FileInputStream("/tmp/output.xml");
-
-            OsmReader reader = new OsmXmlReader(in, false);
-            this.dataSet = MapDataSetLoader.read(reader, true, true, true);
-
-            // Manually filter dataSet, can not really use OsmTagFilter for that since it is too inflexible
-            // Compute minLong and minLat on all unfiltered OsmWays with key highway
-            // first to ensure that the same coordinates are generated by conversion from longitude / latitude to metric units
-            for (OsmWay way : this.dataSet.getWays().valueCollection()) {
-
-                Map<String, String> tags = OsmModelUtil.getTagsAsMap(way);
-                String highway = tags.get("highway");
-                if (highway == null) {
-                    continue;
+                   continue;
                 }
 
                 for (int i = 0; i < way.getNumberOfNodes(); i++) {
@@ -295,14 +216,24 @@ public class Parser2D implements IParser {
         }
         buildContainer();
         addSomeRandomTrees();
-
-        if (minLong != Double.MAX_VALUE && minLat != Double.MAX_VALUE) {
-            convertLatLongToMeters(minLong, minLat);
-        } else {
-            convertLatLongToMeters();
-        }
-
         generateZCoordinates();
+
+        EnvironmentContainerConverter converter;
+
+        // Convert values to meter
+        if (minLong != Double.MAX_VALUE && minLat != Double.MAX_VALUE) {
+            converter = new EnvironmentContainerConverter(this.container, minLong, minLat);
+        } else {
+            converter = new EnvironmentContainerConverter(this.container);
+        }
+        this.containerM = converter.getContainer();
+
+        // Set relevant data for height map
+        ZCoordinateGenerator.setLongLatToMetersConverter(converter.getApproximateConverter());
+        this.containerM.setHeightMap(ZCoordinateGenerator.getHeightMap());
+        this.containerM.setHeightMapDelta(ZCoordinateGenerator.getHeightMapDeltaX(), ZCoordinateGenerator.getHeightMapDeltaY());
+        this.containerM.setHeightMapMinMax(ZCoordinateGenerator.getHeightMapMinPoint(), ZCoordinateGenerator.getHeightMapMaxPoint());
+
         addStreetSigns();
     }
 
@@ -312,8 +243,8 @@ public class Parser2D implements IParser {
     }
 
     private void generateZCoordinates() {
-        ZCoordinateGenerator.generateZCoordinates(containerM, this.z);
-        containerM.setHeightMap(ZCoordinateGenerator.getHeightMap());
+        ZCoordinateGenerator.generateZCoordinates(container, this.z);
+        container.setHeightMap(ZCoordinateGenerator.getHeightMap());
     }
 
     private void addSomeRandomTrees() {
@@ -323,15 +254,6 @@ public class Parser2D implements IParser {
         trees.add(new Node2D(40, 50, 60));
         this.container.setTrees(trees);
     }
-
-    private void convertLatLongToMeters() {
-        this.containerM = new EnvironmentContainerConverter(this.container).getContainer();
-    }
-
-    private void convertLatLongToMeters(double minLong, double minLat) {
-        this.containerM = new EnvironmentContainerConverter(this.container, minLong, minLat).getContainer();
-    }
-
 
     private void buildContainer() {
 
