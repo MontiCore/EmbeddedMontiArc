@@ -24,7 +24,6 @@ import commons.simulation.PhysicalObject;
 import commons.simulation.PhysicalObjectType;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.WorldModel;
@@ -214,48 +213,64 @@ public class PhysicsEngine{
     }
 
     public static double calcFrictionCoefficient(StreetPavements streetPavement, boolean isItRaining) {
-        /*try {
-            Reader in = new FileReader("vehicle/src/main/java/simulation/vehicle/FrictionCoefficient.csv");
-            CSVParser parser = new CSVParser(in, CSVFormat.EXCEL.withHeader().withIgnoreHeaderCase());
+        try {
+            InputStream input = PhysicsEngine.class.getResourceAsStream("/FrictionCoefficient.csv");
+            Reader in = new InputStreamReader(input);
+            CSVParser csvParser = new CSVParser(in, CSVFormat.DEFAULT);
 
-            parser.getRecords().;
+            switch(streetPavement) {
+                case QUALITY: // Asphalt
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(1).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(1).get(2));
+                    }
+
+                case STONE:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(2).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(2).get(2));
+                    }
+
+                case PAVED:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(3).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(3).get(2));
+                    }
+
+                case DIRT:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(4).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(4).get(2));
+                    }
+
+                case UNPAVED:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(5).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(5).get(2));
+                    }
+
+                case GRASS:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(6).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(6).get(2));
+                    }
+
+                default:
+                    return 1;
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
-        // TODO CSV
-        switch(streetPavement) {
-            case QUALITY: // Asphalt
-                if (isItRaining) {
-                    return 0.75;
-                } else {
-                    return 0.9;
-                }
-
-            case STONE: case PAVED:
-                if (isItRaining) {
-                    return 0.4;
-                } else {
-                    return 0.6;
-                }
-
-            case DIRT: case UNPAVED:
-                if (isItRaining) {
-                    return  0.55;
-                } else {
-                    return 0.65;
-                }
-
-            case GRASS:
-                if (isItRaining) {
-                    return 0.25; // provisional value
-                } else {
-                    return 0.35;
-                }
-
-            default:
-                return 1;
         }
+
+        return 1;
     }
+
     public static double calcRollingResistance(RealVector v, double pressure, double forceRoadFrictionBackFrontNorm){
 
         StreetPavements streetPavement = WorldModel.getInstance().getSurfaceType(v);
