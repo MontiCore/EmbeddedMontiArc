@@ -271,33 +271,60 @@ public class PhysicsEngine{
         return 1;
     }
 
-    public static double calcRollingResistance(RealVector v, double pressure, double forceRoadFrictionBackFrontNorm){
+    public static double calcRollingResistance(RealVector v, double pressure, double forceRoadFrictionBackFrontNorm) {
 
+        try{
         StreetPavements streetPavement = WorldModel.getInstance().getSurfaceType(v);
         boolean isItRaining = WorldModel.getInstance().isItRaining();
+        InputStream input = PhysicsEngine.class.getResourceAsStream("/FrictionCoefficient.csv");
+        Reader in = new InputStreamReader(input);
+        CSVParser csvParser = new CSVParser(in, CSVFormat.DEFAULT);
 
-        switch(streetPavement) {
-            case QUALITY: case STONE: case PAVED:// Asphalt
-                if (isItRaining) {
-                    return 0.017;
-                } else {
-                    return 0.014;
-                }
-            case DIRT: case UNPAVED:
-                if(isItRaining) {
-                    return 0.030;
-                } else{
-                    return 0.020;
-                }
-            case GRASS:
-                if (isItRaining) {
-                    return 0.080; // provisional value
-                } else {
-                    return 0.050;
-                }
 
-            default:
-                return 0.005 + (1 / pressure) * (0.01 + 0.0095 * (forceRoadFrictionBackFrontNorm * 3.6 / 100) * (forceRoadFrictionBackFrontNorm * 3.6 / 100));
+            switch (streetPavement) {
+                case QUALITY:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(1).get(3));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(1).get(4));
+                    }
+                case STONE:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(2).get(3));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(2).get(4));
+                    }
+                case PAVED:// Asphalt
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(3).get(3));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(3).get(4));
+                    }
+                case DIRT:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(4).get(3));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(4).get(4));
+                    }
+                case UNPAVED:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(5).get(3));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(5).get(4));
+                    }
+                case GRASS:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(6).get(3)); // provisional value
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(6).get(4));
+                    }
+
+                default:
+                    return 0.005 + (1 / pressure) * (0.01 + 0.0095 * (forceRoadFrictionBackFrontNorm * 3.6 / 100) * (forceRoadFrictionBackFrontNorm * 3.6 / 100));
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
         }
+        return 1;
     }
 }
