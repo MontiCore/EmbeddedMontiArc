@@ -28,7 +28,6 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
-import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
@@ -47,7 +46,6 @@ import java.util.List;
 public class CNNArch2Caffe2 implements CNNArchGenerator{
 
     private String generationTargetPath;
-    private String modelPath;
 
     private boolean isSupportedLayer(ArchitectureElementSymbol element, LayerSupportChecker layerChecker){
         List<ArchitectureElementSymbol> constructLayerElemList;
@@ -78,14 +76,6 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         return true;
     }
 
-    public String getModelPath(){
-        return modelPath;
-    }
-
-    public void setModelPath(Path modelPath){
-        this.modelPath = modelPath.toString();
-    }
-    
     private static void quitGeneration(){
         Log.error("Code generation is aborted");
         System.exit(1);
@@ -114,7 +104,6 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
     public void generate(Path modelsDirPath, String rootModelName){
         final ModelPath mp = new ModelPath(modelsDirPath);
         GlobalScope scope = new GlobalScope(mp, new CNNArchLanguage());
-        setModelPath(modelsDirPath);  
         generate(scope, rootModelName);
     }
 
@@ -131,11 +120,6 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         }
 
         try{
-            String confPath = getModelPath() + "/data_paths.txt";
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(confPath);
-            String dataPath = newParserConfig.getDataPath(rootModelName);
-            compilationUnit.get().getArchitecture().setDataPath(dataPath);
-            compilationUnit.get().getArchitecture().setComponentName(rootModelName);
             generateFiles(compilationUnit.get().getArchitecture());
         } catch (IOException e){
             Log.error(e.toString());

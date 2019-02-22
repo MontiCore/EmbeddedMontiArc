@@ -12,7 +12,7 @@ class CNNCreator_Alexnet:
 
     module = None
     _current_dir_ = os.path.join('./')
-    _data_dir_    = os.path.join(_current_dir_, 'data/Alexnet')
+    _data_dir_    = os.path.join(_current_dir_, 'data', 'Alexnet')
     _model_dir_   = os.path.join(_current_dir_, 'model', 'Alexnet')
 
     _init_net_    = os.path.join(_model_dir_, 'init_net.pb')
