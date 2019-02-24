@@ -1,6 +1,6 @@
 package de.rwth.cmplib.basicLibrary;
 
-component GreaterEquals_TestWrapper {
+component GE_TestWrapper {
     port
         in Z in11,
         in Z in12,
@@ -10,8 +10,8 @@ component GreaterEquals_TestWrapper {
         in Q in22,
         out B out2;
 
-    instance GreaterEquals<Z> geInstanceZ;
-    instance GreaterEquals<Q> geInstanceQ;
+    instance GE<Z> geInstanceZ;
+    instance GE<Q> geInstanceQ;
 
     connect in11 -> geInstanceZ.in1;
     connect in12 -> geInstanceZ.in2;

@@ -1,10 +1,8 @@
-package de.rwth.cmplib.advancedLibrary.trigger;
-
-import de.rwth.cmplib.basicLibrary.*;
+package de.rwth.cmplib.aL;
 
 // u1 = Einschaltschwelle
 // u2 = Ausschaltschwelle
-component SchmittTriggerQ (Q u1, Q u2) {
+component STQ (Q u1, Q u2) {
     port
         in Q inValue,
         out B outValue;

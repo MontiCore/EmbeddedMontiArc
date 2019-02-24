@@ -1,8 +1,8 @@
-package de.rwth.cmplib.advancedLibrary.trigger;
+package de.rwth.cmplib.aL;
 
 
 
-stream SchmittTriggerQ_TestWrapperStream for SchmittTriggerQ_TestWrapper {
+stream STQ_TestWrapperStream for STQ_TestWrapper {
     in1: 0.1 tick 0.5 tick 1 tick 0.9 tick 0.75 tick 0.6;
 
     out1: false tick false tick true tick true tick true tick false;
