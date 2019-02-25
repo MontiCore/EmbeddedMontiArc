@@ -7,10 +7,7 @@ import de.monticore.lang.monticar.generator.middleware.clustering.FlattenArchite
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
@@ -117,14 +114,14 @@ public class FlattenAlgorithmTest {
     }
 
     private static void assertEqualEMAComponentInstanceSymbol(EMAComponentInstanceSymbol symbol1, EMAComponentInstanceSymbol symbol2) {
-        List<String> symbol1Subcomponents = new ArrayList();
-        List<String> symbol2Subcomponents = new ArrayList();
+        HashSet<String> symbol1Subcomponents = new HashSet<>();
+        HashSet<String> symbol2Subcomponents = new HashSet<>();
 
-        List<String> symbol1Ports = new ArrayList();
-        List<String> symbol2Ports = new ArrayList();
+        HashSet<String> symbol1Ports = new HashSet<>();
+        HashSet<String> symbol2Ports = new HashSet<>();
 
-        List<String> symbol1Connectors = new ArrayList();
-        List<String> symbol2Connectors = new ArrayList();
+        HashSet<String> symbol1Connectors = new HashSet<>();
+        HashSet<String> symbol2Connectors = new HashSet<>();
 
         for (EMAComponentInstanceSymbol s : symbol1.getSubComponents()) {
             symbol1Subcomponents.add(s.getName());
@@ -149,6 +146,19 @@ public class FlattenAlgorithmTest {
         for (EMAPortInstanceSymbol p : symbol2.getPortInstanceList()) {
             symbol2Ports.add(p.getName());
         }
+
+        assertTrue(symbol1Subcomponents.size() == symbol2Subcomponents.size());
+        Iterator<EMAComponentInstanceSymbol> comp1Iterator = symbol1.getSubComponents().iterator();
+        Iterator<EMAComponentInstanceSymbol> comp2Iterator = symbol2.getSubComponents().iterator();
+        if (symbol1Subcomponents.size() > 0) {
+            for (int i = 0; i < symbol1Subcomponents.size(); i++) {
+                assertEqualEMAComponentInstanceSymbol(comp1Iterator.next(), comp2Iterator.next());
+            }
+        }else assertTrue(symbol1Subcomponents.equals(symbol2Subcomponents));
+
+
+        assertTrue(symbol1Connectors.equals(symbol2Connectors));
+        assertTrue(symbol1Ports.equals(symbol2Ports));
 
         assertTrue(symbol1Ports.containsAll(symbol2Ports));
         assertTrue(symbol2Ports.containsAll(symbol1Ports));
