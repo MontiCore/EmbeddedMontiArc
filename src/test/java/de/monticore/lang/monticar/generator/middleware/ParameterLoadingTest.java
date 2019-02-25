@@ -159,13 +159,11 @@ public class ParameterLoadingTest {
         DynamicSpectralClusteringCliParameters dynmSpectralList = (DynamicSpectralClusteringCliParameters) dynm.get(0);
         assertTrue(dynmSpectralList.isValid());
 
-        assertEquals(3, dynmSpectralList.getNumberOfClusters().getAllAsInt().size());
-        assertEquals(4, dynmSpectralList.getL().getAllAsInt().size());
-        assertEquals(1, dynmSpectralList.getSigma().getAllAsInt().size());
+        assertEquals(5, dynmSpectralList.getNumberOfClusters().getAllAsInt().size());
 
         List<AlgorithmCliParameters> spectrals = dynmSpectralList.getAll();
 
-        assertEquals(3 * 4 * 1 ,spectrals.size());
+        assertEquals(5 ,spectrals.size());
 
         for(AlgorithmCliParameters s : spectrals){
             System.out.println(s);
