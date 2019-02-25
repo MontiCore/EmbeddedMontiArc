@@ -8,7 +8,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-gluon-generator</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.3-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -17,6 +17,7 @@
     <!-- .. SE-Libraries .................................................. -->
       <CNNArch.version>0.3.0-SNAPSHOT</CNNArch.version>
       <CNNTrain.version>0.2.6</CNNTrain.version>
+      <CNNArch2MXNet.version>0.2.14-SNAPSHOT</CNNArch2MXNet.version>
       <embedded-montiarc-math-opt-generator>0.1.4</embedded-montiarc-math-opt-generator>
     
         <!-- .. Libraries .................................................. -->
@@ -58,6 +59,12 @@
         </dependency>
 
         <!-- MontiCore Dependencies -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>cnnarch-mxnet-generator</artifactId>
+            <version>${CNNArch2MXNet.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>

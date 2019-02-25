@@ -32,7 +32,7 @@ import java.util.*;
 
 import static junit.framework.TestCase.assertTrue;
 
-public class GenerationTest extends AbstractSymtabTest{
+public class GenerationTest extends AbstractSymtabTest {
 
     @Before
     public void setUp() {
@@ -104,7 +104,7 @@ public class GenerationTest extends AbstractSymtabTest{
 
     @Test
     public void testResNeXtGeneration() throws IOException, TemplateException {
-        Log.getFindings().clear();;
+        Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ResNeXt50"};
         CNNArch2GluonCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
