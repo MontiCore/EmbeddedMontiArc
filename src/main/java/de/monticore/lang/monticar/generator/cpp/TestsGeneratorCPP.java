@@ -139,6 +139,12 @@ public final class TestsGeneratorCPP {
             cmake.addCMakeCommandEnd("target_link_libraries(" + compName + execuatablePostFix + "  PUBLIC " + compName + ")");
         }
         cmake.addCMakeCommandEnd("set_target_properties(" + compName + execuatablePostFix + "  PROPERTIES LINKER_LANGUAGE CXX)");
+
+        String executeTestTplt = "\n# execute tests\n" +
+                "add_custom_target(run_<name>_StreamTests ALL\n" +
+                "                  COMMAND <name>_StreamTests\n" +
+                "                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})";
+        cmake.addCMakeCommandEnd(executeTestTplt.replace("<name>",compName));
     }
 
     private String getExistingComponentNames() {

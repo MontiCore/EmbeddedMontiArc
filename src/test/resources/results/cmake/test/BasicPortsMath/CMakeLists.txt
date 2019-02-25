@@ -29,3 +29,8 @@ add_executable(test_basicPortsMath_StreamTests  test/tests_main.cpp)
 target_compile_definitions(test_basicPortsMath_StreamTests PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)
 target_link_libraries(test_basicPortsMath_StreamTests  PUBLIC test_basicPortsMath)
 set_target_properties(test_basicPortsMath_StreamTests  PROPERTIES LINKER_LANGUAGE CXX)
+
+# execute tests
+add_custom_target(run_test_basicPortsMath_StreamTests ALL
+                  COMMAND test_basicPortsMath_StreamTests
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
