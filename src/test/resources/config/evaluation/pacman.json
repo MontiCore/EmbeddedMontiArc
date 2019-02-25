@@ -10,6 +10,17 @@
       {
         "name":"SpectralClustering",
         "numberOfClusters":3
+      },{
+        "name":"SpectralClustering",
+        "numberOfClusters":25
+      },{
+        "name":"SpectralClustering",
+        "numberOfClusters":72
+      },{
+        "name":"Markov"
+      },
+      {
+        "name":"AffinityPropagation"
       }
     ]
   }

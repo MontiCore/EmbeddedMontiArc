@@ -111,6 +111,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
                 Optional<Integer> nOpt = clusteringParameters.getNumberOfClusters();
                 for(ClusteringResult c : clusteringResults){
                     String prefix = nOpt.isPresent() && !c.hasNumberOfClusters(nOpt.get()) ? "[IGNORED]" : "";
+                    c.saveAsJson(generationTargetPath +"emam/", "clusteringResults.json");
                     System.out.println(prefix + "Score was " + c.getScore() + " for " + c.getParameters().toString());
                 }
 
