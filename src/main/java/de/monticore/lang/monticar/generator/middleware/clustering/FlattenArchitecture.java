@@ -310,6 +310,11 @@ public class FlattenArchitecture {
                                                                  List<EMAPortSymbol> ports) {
         Set<ResolvingFilter<? extends Symbol>> resolvingFilters = enclosingComponent.getSpannedScope().getResolvingFilters();
 
+        newSubcomponents.forEach(sc -> {
+            ((CommonScope) sc.getSpannedScope()).setResolvingFilters(resolvingFilters);
+            sc.setEnclosingScope(null);
+        });
+
         newSubcomponents.forEach(sc -> ((CommonScope) sc.getSpannedScope()).setResolvingFilters(resolvingFilters));
         EMAComponentInstanceSymbol res = new EMAComponentInstanceBuilder()
                 .setName(name)
