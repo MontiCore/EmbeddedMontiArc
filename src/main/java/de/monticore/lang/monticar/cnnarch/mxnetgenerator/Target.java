@@ -33,5 +33,5 @@ public enum Target {
         public String toString() {
             return ".h";
         }
-    };
+    }
 }

@@ -121,13 +121,13 @@ public class CNNTrain2MxNet implements CNNTrainGenerator {
     }
 
     public Map<String, String> generateStrings(ConfigurationSymbol configuration) {
+        TemplateConfiguration templateConfiguration = new MxNetTemplateConfiguration();
         ConfigurationData configData = new ConfigurationData(configuration, getInstanceName());
         List<ConfigurationData> configDataList = new ArrayList<>();
         configDataList.add(configData);
         Map<String, Object> ftlContext = Collections.singletonMap("configurations", configDataList);
 
-        String templateContent = TemplateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
+        String templateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
         return Collections.singletonMap("CNNTrainer_" + getInstanceName() + ".py", templateContent);
     }
-
 }
