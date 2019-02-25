@@ -4,11 +4,11 @@
 */
 package de.monticore.lang.montisim;
 
-grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar.Ranges {
+grammar Weather extends de.monticore.NumberUnit, de.monticore.lang.monticar.Ranges {
 
-  Coordinate = "(" posX:UnitNumber "," posY:UnitNumber ")";
-  UnitNumberList = "[" UnitNumber ("," UnitNumber)* "]";
-  AlternativeInput = (UnitNumber | UnitNumberList | Range);
+  Coordinate = "(" posX:NumberWithUnit "," posY:NumberWithUnit ")";
+  NumberWithUnitList = "[" NumberWithUnit ("," NumberWithUnit)* "]";
+  AlternativeInput = (NumberWithUnit | NumberWithUnitList | Range);
 
   interface WeatherSetting;
   interface WeatherEntity;

@@ -1,6 +1,6 @@
 package de.monticore.lang.montisim.util.types;
 
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 
 public class NumberUnit {
   private String numberUnit;
@@ -29,10 +29,10 @@ public class NumberUnit {
     this.numberUnit = number+unit;
   }
 
-  public NumberUnit(ASTUnitNumber astUN) {
+  public NumberUnit(ASTNumberWithUnit astUN) {
     this.number = astUN.getNumber().get().floatValue();
-    if(astUN.getUnit().isPresent()) {
-      this.unit = astUN.getUnit().get().toString();
+    if(astUN.getUnit() != null) {
+      this.unit = astUN.getUnit().toString();
     } else {
       this.unit = "";
     }

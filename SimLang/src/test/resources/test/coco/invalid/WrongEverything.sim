@@ -8,7 +8,7 @@ sim WrongEverything {
   sim_type maxfps;
   sim_type realtime;
   weather fixed {temperature 290s;
-                 humidity 0.2l;
+                 humidity 0.2;
                  pressure 100m;
                  wind_strength 2km;
                  wind_direction 38.0s;
@@ -57,20 +57,20 @@ sim WrongEverything {
   vehicle 1234s (-150s, -150s) -> (500s, 600s);
 
   fixed channel LTE {
-    transfer_rate -20 bit;
-    latency -10l;
+    transfer_rate -20Hz;
+    latency -10;
     outage 3Pa;
     area global;
-    transfer_rate -20 bit;
-    latency -10l;
+    transfer_rate -20Hz;
+    latency -10;
     outage 3Pa;
     area global;
   };
 
   bound channel LTE {
-    transfer_rate 2bit/s;
+    transfer_rate 2Hz;
     latency 1s;
-    outage 99%;
+    outage 0.99;
     area (10,10) 30;
   };
 }

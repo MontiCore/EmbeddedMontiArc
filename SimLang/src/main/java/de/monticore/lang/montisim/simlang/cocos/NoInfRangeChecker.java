@@ -13,7 +13,7 @@ public class NoInfRangeChecker implements RangesASTRangeCoCo {
   
   @Override
   public void check(ASTRange obj) {
-    if(obj.getStartInf().isPresent() || obj.getEndInf().isPresent()) {
+    if(obj.hasNoLowerLimit() || obj.hasNoUpperLimit()) {
       Log.warn("Range Error: Infinite start/end are not allowed.");
     }
   }

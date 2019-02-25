@@ -145,7 +145,8 @@ public class SimLangTool {
    */
   public static Scope createSymbolTable(SimLangLang lang, ASTSimLangCompilationUnit ast) {
     final ResolvingConfiguration resolverConfiguration = new ResolvingConfiguration();
-    resolverConfiguration.addTopScopeResolvers(lang.getResolvers());
+    // resolverConfiguration.addTopScopeResolvers(lang.getResolvers());
+    resolverConfiguration.addDefaultFilters(lang.getResolvingFilters());
 
     GlobalScope globalScope = new GlobalScope(new ModelPath(), lang, resolverConfiguration);
 
@@ -165,7 +166,7 @@ public class SimLangTool {
     final ASTSimLangCompilationUnit ast = parse(model);
     final Scope modelTopScope = createSymbolTable(lang, ast);
     checkDefaultCoCos(ast);
-    return new SimLangContainer(modelTopScope, String.join(".",ast.getPackage()), ast.getSimulation().getName());
+    return new SimLangContainer(modelTopScope, String.join(".",ast.getPackageList()), ast.getSimulation().getName());
   }
   /*
   public static SimLangContainer parseIntoContainer(String simModel, String carModel) {

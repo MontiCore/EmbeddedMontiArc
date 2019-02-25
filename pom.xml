@@ -6,132 +6,136 @@
 
     <artifactId>SimulationLanguage</artifactId>
     <groupId>de.monticore.lang.montisim</groupId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
-    
+
     <modules>
         <module>Util</module>
-        <module>NumberUnit</module>
         <module>Weather</module>
         <module>SimLang</module>
     </modules>
-    
+
     <properties>
-      <!-- .. SE-Libraries .................................................. -->
-      <monticore.version>4.5.3-SNAPSHOT</monticore.version>
-      <se-commons.version>1.7.7</se-commons.version>
-      <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
+        <!-- .. SE-Libraries .................................................. -->
+        <monticore.version>5.0.0</monticore.version>
+        <se-commons.version>1.7.7</se-commons.version>
+        <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
 
-      <!-- .. Libraries .................................................. -->
-      <guava.version>18.0</guava.version>
-      <junit.version>4.12</junit.version>
-      <logback.version>1.1.2</logback.version>
-      <jscience.version>4.3.1</jscience.version>
-      <antlr.version>4.5.1</antlr.version>
+        <!-- .. Libraries .................................................. -->
+        <guava.version>18.0</guava.version>
+        <junit.version>4.12</junit.version>
+        <logback.version>1.1.2</logback.version>
+        <jscience.version>4.3.1</jscience.version>
+        <antlr.version>4.7.1</antlr.version>
 
-      <!-- .. Plugins ....................................................... -->
-      <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
-      <assembly.plugin>2.5.4</assembly.plugin>
-      <compiler.plugin>3.3</compiler.plugin>
-      <source.plugin>2.4</source.plugin>
-      <shade.plugin>2.4.3</shade.plugin>
-      <surefire.version>2.20.1</surefire.version>
+        <!-- .. Plugins ....................................................... -->
+        <monticore.plugin>5.0.0</monticore.plugin>
+        <assembly.plugin>2.5.4</assembly.plugin>
+        <compiler.plugin>3.3</compiler.plugin>
+        <source.plugin>2.4</source.plugin>
+        <shade.plugin>2.4.3</shade.plugin>
+        <surefire.version>3.0.0-M3</surefire.version>
 
-      <!-- Classifiers -->
-      <grammars.classifier>grammars</grammars.classifier>
-      <cli.classifier>cli</cli.classifier>
+        <!-- Classifiers -->
+        <grammars.classifier>grammars</grammars.classifier>
+        <cli.classifier>cli</cli.classifier>
 
 
-      <!-- ..Languages....................................................... -->
-      <langcommon.version>0.0.10-SNAPSHOT</langcommon.version>
-      <numberunit.version>0.0.11</numberunit.version>
-      <carlang.version>0.0.1-SNAPSHOT</carlang.version>
+        <!-- ..Languages....................................................... -->
+        <langcommon.version>0.0.17-SNAPSHOT</langcommon.version>
+        <carlang.version>0.0.1-SNAPSHOT</carlang.version>
 
-      <!-- Set file encoding -->
-      <java.version>1.8</java.version>
-      <maven.compiler.source>1.8</maven.compiler.source>
-      <maven.compiler.target>1.8</maven.compiler.target>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Set file encoding -->
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-    
+
     <dependencies>
         <dependency>
-      <groupId>de.se_rwth.commons</groupId>
-      <artifactId>se-commons-logging</artifactId>
-      <version>${se-commons.version}</version>
+            <groupId>de.se_rwth.commons</groupId>
+            <artifactId>se-commons-logging</artifactId>
+            <version>${se-commons.version}</version>
         </dependency>
 
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>de.se_rwth.commons</groupId>
+            <artifactId>se-commons-utilities</artifactId>
+            <version>${se-commons.version}</version>
+        </dependency>
 
-    <!-- MontiCore Dependencies -->
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-runtime</artifactId>
-      <version>${monticore.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-grammar</artifactId>
-      <version>${monticore.version}</version>
-    </dependency>
+        <!-- MontiCore Dependencies -->
+        <dependency>
+            <groupId>de.monticore</groupId>
+            <artifactId>monticore-runtime</artifactId>
+            <version>${monticore.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-grammar</artifactId>
-      <version>${monticore.version}</version>
-      <classifier>${grammars.classifier}</classifier>
-      <scope>provided</scope>
-    </dependency>
+        <dependency>
+            <groupId>de.monticore</groupId>
+            <artifactId>monticore-grammar</artifactId>
+            <version>${monticore.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>de.se_rwth.commons</groupId>
-      <artifactId>se-commons-groovy</artifactId>
-      <version>${se-commons.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>de.monticore</groupId>
+            <artifactId>monticore-grammar</artifactId>
+            <version>${monticore.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+        </dependency>
 
-    <!-- .. Test Libraries ............................................... -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>de.se_rwth.commons</groupId>
+            <artifactId>se-commons-groovy</artifactId>
+            <version>${se-commons.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-runtime</artifactId>
-      <version>${monticore.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
+        <!-- .. Test Libraries ............................................... -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
-    </dependency>
-  
-    <dependency>
-      <groupId>org.jscience</groupId>
-      <artifactId>jscience</artifactId>
-      <version>${jscience.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>de.monticore</groupId>
+            <artifactId>monticore-runtime</artifactId>
+            <version>${monticore.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 
-    <!-- .. Languages .................................................... -->
-    
-    
-    <!-- .. asdf ...-->
-    <dependency>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr4-runtime</artifactId>
-        <version>${antlr.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jscience</groupId>
+            <artifactId>jscience</artifactId>
+            <version>${jscience.version}</version>
+        </dependency>
+
+        <!-- .. Languages .................................................... -->
+
+
+        <!-- .. asdf ...-->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
@@ -145,23 +149,16 @@
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
-        <!-- <dependency>
-            <groupId>de.monticore.lang.montisim</groupId>
-            <artifactId>CarLang</artifactId>
-            <version>${carlang.version}</version>
-        </dependency> -->
-        <!-- this may actually not be needed? -->
-        <!-- <dependency>
-            <groupId>de.monticore.lang.montisim</groupId>
-            <artifactId>CarLang</artifactId>
-            <version>${carlang.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency> -->
     </dependencies>
 
-<build>
+    <build>
         <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire.version}</version>
+			</plugin>
+		
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.1</version>
@@ -173,7 +170,7 @@
                 <artifactId>monticore-maven-plugin</artifactId>
                 <version>${monticore.plugin}</version>
                 <configuration>
-                    <skip>false</skip>
+                    <skip>true</skip>
                     <script>de/monticore/monticore_noemf.groovy</script>
                 </configuration>
                 <dependencies>
@@ -258,7 +255,7 @@
                     </execution>
                 </executions>
             </plugin>
-                 <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
@@ -282,23 +279,22 @@
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
                 </configuration>
-			</plugin>
+            </plugin>
         </plugins>
     </build>
 
- <!-- == DISTRIBUTION ==================================================== -->
+    <!-- == DISTRIBUTION ==================================================== -->
 
-  <distributionManagement>
-    <repository>
-      <id>se-nexus</id>
-      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>se-nexus</id>
-      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 
-    
 </project>
