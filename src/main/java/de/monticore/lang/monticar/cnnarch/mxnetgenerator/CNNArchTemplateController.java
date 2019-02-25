@@ -132,6 +132,10 @@ public abstract class CNNArchTemplateController {
         return getArchitecture().getEnclosingScope().getSpanningSymbol().get().getFullName().replaceAll("\\.","_");
     }
 
+    public String getDataPath(){
+        return getArchitecture().getDataPath();
+    }
+
     public List<String> getLayerInputs(ArchitectureElementSymbol layer){
         List<String> inputNames = new ArrayList<>();
 
@@ -168,7 +172,11 @@ public abstract class CNNArchTemplateController {
         return list;
     }
 
-    public void include(String relativePath, String templateWithoutFileEnding, Writer writer) {
+    public String getComponentName(){
+        return getArchitecture().getComponentName();
+    }
+
+    public void include(String relativePath, String templateWithoutFileEnding, Writer writer){
         String templatePath = relativePath + templateWithoutFileEnding + FTL_FILE_ENDING;
         Map<String, Object> ftlContext = new HashMap<>();
         ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);

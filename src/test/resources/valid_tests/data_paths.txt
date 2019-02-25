@@ -1,0 +1,2 @@
+CifarClassifierNetwork data/CifarClassifierNetwork
+MultipleOutputs data/MultipleOutputs

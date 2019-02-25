@@ -20,7 +20,7 @@ class CNNCreator_Alexnet:
     module = None
     _data_dir_ = "data/Alexnet/"
     _model_dir_ = "model/Alexnet/"
-    _model_prefix_ = "Alexnet"
+    _model_prefix_ = "model"
     _input_names_ = ['data']
     _input_shapes_ = [(3,224,224)]
     _output_names_ = ['predictions_label']

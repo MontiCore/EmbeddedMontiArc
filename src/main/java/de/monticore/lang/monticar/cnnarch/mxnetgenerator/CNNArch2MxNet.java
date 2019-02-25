@@ -26,6 +26,8 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
+import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
@@ -34,6 +36,8 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
+import java.lang.System;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -87,6 +91,11 @@ public class CNNArch2MxNet extends CNNArchGenerator {
         }
 
         try{
+            String confPath = getModelsDirPath() + "/data_paths.txt";
+            DataPathConfigParser newParserConfig = new DataPathConfigParser(confPath);
+            String dataPath = newParserConfig.getDataPath(rootModelName);
+            compilationUnit.get().getArchitecture().setDataPath(dataPath);
+            compilationUnit.get().getArchitecture().setComponentName(rootModelName);
             generateFiles(compilationUnit.get().getArchitecture());
         } catch (IOException e){
             Log.error(e.toString());
