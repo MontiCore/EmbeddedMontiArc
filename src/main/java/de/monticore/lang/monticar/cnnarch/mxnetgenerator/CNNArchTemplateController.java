@@ -95,8 +95,7 @@ public class CNNArchTemplateController {
 
         if (isSoftmaxOutput(layer) || isLogisticRegressionOutput(layer)){
             inputNames = getLayerInputs(layer.getInputElement().get());
-        }
-        else {
+        } else {
             for (ArchitectureElementSymbol input : layer.getPrevious()) {
                 if (input.getOutputTypes().size() == 1) {
                     inputNames.add(getName(input));
@@ -146,12 +145,10 @@ public class CNNArchTemplateController {
         if (ioElement.isAtomic()){
             if (ioElement.isInput()){
                 include(TEMPLATE_ELEMENTS_DIR_PATH, "Input", writer);
-            }
-            else {
+            } else {
                 include(TEMPLATE_ELEMENTS_DIR_PATH, "Output", writer);
             }
-        }
-        else {
+        } else {
             include(ioElement.getResolvedThis().get(), writer);
         }
 
@@ -168,8 +165,7 @@ public class CNNArchTemplateController {
                 String templateName = layer.getDeclaration().getName();
                 include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer);
             }
-        }
-        else {
+        } else {
             include(layer.getResolvedThis().get(), writer);
         }
 
@@ -190,11 +186,9 @@ public class CNNArchTemplateController {
     public void include(ArchitectureElementSymbol architectureElement, Writer writer){
         if (architectureElement instanceof CompositeElementSymbol){
             include((CompositeElementSymbol) architectureElement, writer);
-        }
-        else if (architectureElement instanceof LayerSymbol){
+        } else if (architectureElement instanceof LayerSymbol){
             include((LayerSymbol) architectureElement, writer);
-        }
-        else {
+        } else {
             include((IOSymbol) architectureElement, writer);
         }
     }
@@ -207,15 +201,15 @@ public class CNNArchTemplateController {
     }
 
     public Map.Entry<String,String> process(String templateNameWithoutEnding, Target targetLanguage){
-        StringWriter writer = new StringWriter();
+        StringWriter newWriter = new StringWriter();
         this.mainTemplateNameWithoutEnding = templateNameWithoutEnding;
         this.targetLanguage = targetLanguage;
-        this.writer = writer;
+        this.writer = newWriter;
 
-        include("", templateNameWithoutEnding, writer);
+        include("", templateNameWithoutEnding, newWriter);
         String fileEnding = targetLanguage.toString();
         String fileName = getFileNameWithoutEnding() + fileEnding;
-        Map.Entry<String,String> fileContent = new AbstractMap.SimpleEntry<>(fileName, writer.toString());
+        Map.Entry<String,String> fileContent = new AbstractMap.SimpleEntry<>(fileName, newWriter.toString());
 
         this.mainTemplateNameWithoutEnding = null;
         this.targetLanguage = null;
@@ -259,12 +253,12 @@ public class CNNArchTemplateController {
     }
 
     private boolean isTOutput(Class inputPredefinedLayerClass, ArchitectureElementSymbol architectureElement){
-        if (architectureElement.isOutput()){
-            if (architectureElement.getInputElement().isPresent() && architectureElement.getInputElement().get() instanceof LayerSymbol){
-                LayerSymbol inputLayer = (LayerSymbol) architectureElement.getInputElement().get();
-                if (inputPredefinedLayerClass.isInstance(inputLayer.getDeclaration())){
-                    return true;
-                }
+        if (architectureElement.isOutput()
+                && architectureElement.getInputElement().isPresent()
+                && architectureElement.getInputElement().get() instanceof LayerSymbol){
+            LayerSymbol inputLayer = (LayerSymbol) architectureElement.getInputElement().get();
+            if (inputPredefinedLayerClass.isInstance(inputLayer.getDeclaration())){
+                return true;
             }
         }
         return false;

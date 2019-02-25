@@ -47,17 +47,14 @@ public class LayerNameCreator {
     protected int name(ArchitectureElementSymbol architectureElement, int stage, List<Integer> streamIndices){
         if (architectureElement instanceof CompositeElementSymbol){
             return nameComposite((CompositeElementSymbol) architectureElement, stage, streamIndices);
-        }
-        else{
+        } else{
             if (architectureElement.isAtomic()){
                 if (architectureElement.getMaxSerialLength().get() > 0){
                     return add(architectureElement, stage, streamIndices);
-                }
-                else {
+                } else {
                     return stage;
                 }
-            }
-            else {
+            } else {
                 ArchitectureElementSymbol resolvedElement = architectureElement.getResolvedThis().get();
                 return name(resolvedElement, stage, streamIndices);
             }
@@ -78,8 +75,7 @@ public class LayerNameCreator {
 
             streamIndices.remove(lastIndex);
             return Collections.max(endStages) + 1;
-        }
-        else {
+        } else {
             int endStage = stage;
             for (ArchitectureElementSymbol subElement : compositeElement.getElements()){
                 endStage = name(subElement, endStage, streamIndices);
@@ -113,8 +109,7 @@ public class LayerNameCreator {
                 name = name + "_" + arrayAccess + "_";
             }
             return name;
-        }
-        else {
+        } else {
             return createBaseName(architectureElement) + stage + createStreamPostfix(streamIndices) + "_";
         }
     }
@@ -132,11 +127,9 @@ public class LayerNameCreator {
             } else {
                 return layerDeclaration.getName().toLowerCase();
             }
-        }
-        else if (architectureElement instanceof CompositeElementSymbol){
+        } else if (architectureElement instanceof CompositeElementSymbol){
             return "group";
-        }
-        else {
+        } else {
             return architectureElement.getName();
         }
     }

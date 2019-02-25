@@ -89,8 +89,7 @@ public class ConfigurationData {
             Class realClass = entry.getValue().getValue().getValue().getClass();
             if (realClass == Boolean.class) {
                 valueAsString = (Boolean) entry.getValue().getValue().getValue() ? "True" : "False";
-            }
-            else if (lrPolicyClasses.contains(realClass)) {
+            } else if (lrPolicyClasses.contains(realClass)) {
                 valueAsString = "'" + valueAsString + "'";
             }
             mapToStrings.put(paramName, valueAsString);
