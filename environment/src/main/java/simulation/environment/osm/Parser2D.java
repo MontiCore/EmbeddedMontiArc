@@ -346,6 +346,7 @@ public class Parser2D implements IParser {
         for (OsmWay way : dataSet.getWays().valueCollection()) {
             Map<String, String> tags = OsmModelUtil.getTagsAsMap(way);
             String highway = tags.get("highway");
+            String surface = tags.get("surface");
             if (highway != null) {
                 // Check if way is marked as oneWayRoad
                 boolean isOneWay = false;
@@ -354,8 +355,9 @@ public class Parser2D implements IParser {
                     isOneWay = true;
                 }
 
-                constructStreet(way, isOneWay, highway);
+                constructStreet(way, isOneWay, highway, surface);
             }
+
         }
     }
 
@@ -366,6 +368,17 @@ public class Parser2D implements IParser {
      * @param highway
      * @throws EntityNotFoundException
      */
+    private void constructStreet(OsmWay way, boolean isOneWay, String highway, String surface) throws EntityNotFoundException {
+        List<EnvNode> nodes = new ArrayList<>();
+
+        for (int i = 0; i < way.getNumberOfNodes(); i++) {
+            OsmNode node = dataSet.getNode(way.getNodeId(i));
+            nodes.add(new Node2D(node.getLongitude(), node.getLatitude(), 0, way.getNodeId(i)));
+        }
+
+        this.streets.add(new Street2D(nodes, 50.d, mapper.getIntersectionsForWay(way), way.getId(), isOneWay, parseStreetType(highway), parseStreetPavement(surface)));
+    }
+
     private void constructStreet(OsmWay way, boolean isOneWay, String highway) throws EntityNotFoundException {
         List<EnvNode> nodes = new ArrayList<>();
 
@@ -410,6 +423,32 @@ public class Parser2D implements IParser {
             return EnvStreet.StreetTypes.LIVING_STREET;
         } else {
             return EnvStreet.StreetTypes.A_ROAD;    //Default
+        }
+    }
+
+
+
+    /**
+     * converts String streetpavement in enum
+     * @param s as streetpavement
+     */
+    public EnvStreet.StreetPavements parseStreetPavement(String s) {
+        if (s != null) {
+            if (s.equals("paved")) {
+                return EnvStreet.StreetPavements.PAVED;
+            } else if (s.equals("unpaved")) {
+                return EnvStreet.StreetPavements.UNPAVED;
+            } else if (s.equals("asphalt") || s.equals("concrete")) {
+                return EnvStreet.StreetPavements.QUALITY;
+            } else if (s.equals("cobblestone") || s.equals("sett") || s.equals("paving_stone")) {
+                return EnvStreet.StreetPavements.STONE;
+            } else if (s.equals("compacted") || s.equals("gravel") || s.equals("dirt")) {
+                return EnvStreet.StreetPavements.DIRT;
+            } else {
+                return EnvStreet.StreetPavements.GRASS;    //als default gut wählbar?
+            }
+        } else {
+            return EnvStreet.StreetPavements.PAVED;
         }
     }
 }

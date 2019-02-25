@@ -49,4 +49,6 @@ public abstract class AbstractSensor implements Sensor {
      */
     protected abstract void calculateValue();
 
+
+
 }

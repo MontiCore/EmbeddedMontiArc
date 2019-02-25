@@ -86,7 +86,7 @@ public class EnvironmentContainerConverter {
                 intersections.add(new Intersection2D(mX, mY, mZ, osmId));
             }
 
-            meterStreets.add(new Street2D(nodes, longLatStreet.getSpeedLimit(), intersections, longLatStreet.getOsmId(), longLatStreet.isOneWay(), longLatStreet.getStreetType()));
+            meterStreets.add(new Street2D(nodes, longLatStreet.getSpeedLimit(), intersections, longLatStreet.getOsmId(), longLatStreet.isOneWay(), longLatStreet.getStreetType(), longLatStreet.getStreetPavement()));
         }
         computeMinMax(meterStreets);
         containerMeters = new EnvironmentContainer2D(bounds, meterStreets, new ArrayList<>());

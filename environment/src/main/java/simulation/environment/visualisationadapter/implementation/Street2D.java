@@ -39,6 +39,9 @@ public class Street2D extends EnvObject2D implements EnvStreet {
     private Number speedLimit;
     private ArrayList<EnvNode> intersections;
     private StreetTypes streetType;
+    private StreetPavements streetPavements;
+
+
 
     public Street2D(List<EnvNode> nodes, Number speedLimit, Collection<EnvIntersection> intersections, boolean isOneWay) {
         super(nodes, EnvTag.STREET);
@@ -50,9 +53,16 @@ public class Street2D extends EnvObject2D implements EnvStreet {
         init(speedLimit, intersections, isOneWay);
     }
 
+
     public Street2D(List<EnvNode> nodes, Number speedLimit, Collection<EnvIntersection> intersections, long osmId, boolean isOneWay, StreetTypes streetType) {
         super(nodes, EnvTag.STREET, osmId);
         init(speedLimit, intersections, isOneWay, streetType);
+    }
+
+
+    public Street2D(List<EnvNode> nodes, Number speedLimit, Collection<EnvIntersection> intersections, long osmId, boolean isOneWay, StreetTypes streetType, StreetPavements streetPavements) {
+        super(nodes, EnvTag.STREET, osmId);
+        init(speedLimit, intersections, isOneWay, streetType, streetPavements);
     }
 
     private void init(Number speedLimit, Collection<EnvIntersection> intersections, boolean isOneWay) {
@@ -65,10 +75,23 @@ public class Street2D extends EnvObject2D implements EnvStreet {
         }
     }
 
+
     private void init(Number speedLimit, Collection<EnvIntersection> intersections, boolean isOneWay, StreetTypes streetType) {
         this.speedLimit = speedLimit;
         this.isOneWay = isOneWay;
         this.streetType = streetType;
+        if (intersections == null) {
+            this.intersections = new ArrayList<>();
+        } else {
+            this.intersections = new ArrayList<>(intersections);
+        }
+    }
+
+    private void init(Number speedLimit, Collection<EnvIntersection> intersections, boolean isOneWay, StreetTypes streetType, StreetPavements streetPavements) {
+        this.speedLimit = speedLimit;
+        this.isOneWay = isOneWay;
+        this.streetType = streetType;
+        this.streetPavements = streetPavements;
         if (intersections == null) {
             this.intersections = new ArrayList<>();
         } else {
@@ -102,4 +125,8 @@ public class Street2D extends EnvObject2D implements EnvStreet {
 
     @Override
     public StreetTypes getStreetType(){ return streetType; }
+
+    @Override
+    public StreetPavements getStreetPavement() { return streetPavements; }
+
 }

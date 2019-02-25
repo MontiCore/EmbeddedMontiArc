@@ -40,6 +40,7 @@ import simulation.environment.pedestrians.PedestrianContainer;
 import simulation.environment.visualisationadapter.implementation.Node2D;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
+import simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetPavements;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
 import simulation.environment.weather.Weather;
 import simulation.environment.weather.WeatherSettings;
@@ -273,6 +274,13 @@ public class WorldModel implements World{
         return minStreet;
     }
 
+    public GeomStreet getMinimumStreetForRealVector(RealVector pos) {
+        EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
+        GeomStreet minStreet = getMinimumStreetForNode(n);
+
+        return minStreet;
+    }
+
     /**
      *
      * @param o
@@ -380,7 +388,7 @@ public class WorldModel implements World{
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistanceToLeft(v);
+        return minStreet.getDistanceToRight(v);
     }
 
     @Override
@@ -390,7 +398,38 @@ public class WorldModel implements World{
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistanceToLeft(v);
+        return minStreet.getDistanceToRight(v);
+    }
+
+    @Override
+    public boolean isPointOnStreet(double x, double y, double z) {
+        // check for every street wether the requested point is on it.
+        for(GeomStreet street : this.streets) {
+            // the getter for the wheel position coordinates returns position of the wheel center so the z-coordinate
+            // has to be set to the ground coordinatefor correcht checking
+            double streetZ = street.getGround(x, y, z);
+            Node2D n1 = new Node2D(x, y, streetZ);
+
+            // check if node is on street
+            if(street.contains(n1)) {
+                return true;
+            }
+        }
+        // returns false if no street has been found
+        return false;
+    }
+
+    public boolean isPointOnStreet(RealVector v) {
+        return isPointOnStreet(v.getEntry(0), v.getEntry(1), v.getEntry(2));
+    } 
+
+    @Override
+    public StreetPavements getSurfaceType(RealVector v) {
+        if(isPointOnStreet(v)) {
+            return ((EnvStreet) getMinimumStreetForRealVector(v).getObject()).getStreetPavement();
+        } else {
+            return StreetPavements.UNPAVED;
+        }
     }
 
     @Override
