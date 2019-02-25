@@ -8,7 +8,7 @@ import java.util.List;
 
 public class TrainParamSupportChecker implements CNNTrainVisitor {
 
-    private List<String> unsupportedElemList = new ArrayList();
+    private List<String> unsupportedElemList = new ArrayList<>();
 
     private void printUnsupportedEntryParam(String nodeName){
         Log.warn("Unsupported training parameter " + "'" + nodeName + "'" + " for the backend MXNet. It will be ignored.");

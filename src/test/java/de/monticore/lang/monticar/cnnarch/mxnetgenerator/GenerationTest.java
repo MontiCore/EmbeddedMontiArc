@@ -101,7 +101,7 @@ public class GenerationTest extends AbstractSymtabTest{
 
     @Test
     public void testResNeXtGeneration() throws IOException, TemplateException {
-        Log.getFindings().clear();;
+        Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ResNeXt50"};
         CNNArch2MxNetCli.main(args);
         assertTrue(Log.getFindings().isEmpty());

@@ -104,8 +104,11 @@ public class CNNArch2MxNet extends CNNArchGenerator {
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public Map<String, String> generateStrings(ArchitectureSymbol architecture){
+        TemplateConfiguration templateConfiguration = new MxNetTemplateConfiguration();
+
         Map<String, String> fileContentMap = new HashMap<>();
-        CNNArchTemplateController archTc = new CNNArchTemplateController(architecture);
+        CNNArch2MxNetTemplateController archTc
+                = new CNNArch2MxNetTemplateController(architecture, templateConfiguration);
         Map.Entry<String, String> temp;
 
         temp = archTc.process("CNNPredictor", Target.CPP);

@@ -28,12 +28,14 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 
-public class CNNArchTemplateController {
+public abstract class CNNArchTemplateController {
 
     public static final String FTL_FILE_ENDING = ".ftl";
     public static final String TEMPLATE_ELEMENTS_DIR_PATH = "elements/";
     public static final String TEMPLATE_CONTROLLER_KEY = "tc";
     public static final String ELEMENT_DATA_KEY = "element";
+
+    private final TemplateConfiguration templateConfiguration;
 
     private LayerNameCreator nameManager;
     private ArchitectureSymbol architecture;
@@ -44,9 +46,53 @@ public class CNNArchTemplateController {
     private Target targetLanguage;
     private ArchitectureElementData dataElement;
 
-
-    public CNNArchTemplateController(ArchitectureSymbol architecture) {
+    protected CNNArchTemplateController(ArchitectureSymbol architecture, TemplateConfiguration templateConfiguration) {
         setArchitecture(architecture);
+        this.templateConfiguration = templateConfiguration;
+    }
+
+    protected TemplateConfiguration getTemplateConfiguration() {
+        return templateConfiguration;
+    }
+
+    protected LayerNameCreator getNameManager() {
+        return nameManager;
+    }
+
+    protected void setNameManager(LayerNameCreator nameManager) {
+        this.nameManager = nameManager;
+    }
+
+    protected Writer getWriter() {
+        return writer;
+    }
+
+    protected void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+
+    protected String getMainTemplateNameWithoutEnding() {
+        return mainTemplateNameWithoutEnding;
+    }
+
+    protected void setMainTemplateNameWithoutEnding(String mainTemplateNameWithoutEnding) {
+        this.mainTemplateNameWithoutEnding = mainTemplateNameWithoutEnding;
+    }
+
+    protected Target getTargetLanguage() {
+        return targetLanguage;
+    }
+
+    protected void setTargetLanguage(Target targetLanguage) {
+        this.targetLanguage = targetLanguage;
+    }
+
+    protected ArchitectureElementData getDataElement() {
+        return dataElement;
+    }
+
+    protected void setDataElement(ArchitectureElementData dataElement) {
+        this.dataElement = dataElement;
     }
 
     public String getFileNameWithoutEnding() {
@@ -135,69 +181,7 @@ public class CNNArchTemplateController {
         Map<String, Object> ftlContext = new HashMap<>();
         ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
         ftlContext.put(ELEMENT_DATA_KEY, getCurrentElement());
-        TemplateConfiguration.processTemplate(ftlContext, templatePath, writer);
-    }
-
-    public void include(IOSymbol ioElement, Writer writer){
-        ArchitectureElementData previousElement = getCurrentElement();
-        setCurrentElement(ioElement);
-
-        if (ioElement.isAtomic()){
-            if (ioElement.isInput()){
-                include(TEMPLATE_ELEMENTS_DIR_PATH, "Input", writer);
-            } else {
-                include(TEMPLATE_ELEMENTS_DIR_PATH, "Output", writer);
-            }
-        } else {
-            include(ioElement.getResolvedThis().get(), writer);
-        }
-
-        setCurrentElement(previousElement);
-    }
-
-    public void include(LayerSymbol layer, Writer writer){
-        ArchitectureElementData previousElement = getCurrentElement();
-        setCurrentElement(layer);
-
-        if (layer.isAtomic()){
-            ArchitectureElementSymbol nextElement = layer.getOutputElement().get();
-            if (!isSoftmaxOutput(nextElement) && !isLogisticRegressionOutput(nextElement)){
-                String templateName = layer.getDeclaration().getName();
-                include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer);
-            }
-        } else {
-            include(layer.getResolvedThis().get(), writer);
-        }
-
-        setCurrentElement(previousElement);
-    }
-
-    public void include(CompositeElementSymbol compositeElement, Writer writer){
-        ArchitectureElementData previousElement = getCurrentElement();
-        setCurrentElement(compositeElement);
-
-        for (ArchitectureElementSymbol element : compositeElement.getElements()){
-            include(element, writer);
-        }
-
-        setCurrentElement(previousElement);
-    }
-
-    public void include(ArchitectureElementSymbol architectureElement, Writer writer){
-        if (architectureElement instanceof CompositeElementSymbol){
-            include((CompositeElementSymbol) architectureElement, writer);
-        } else if (architectureElement instanceof LayerSymbol){
-            include((LayerSymbol) architectureElement, writer);
-        } else {
-            include((IOSymbol) architectureElement, writer);
-        }
-    }
-
-    public void include(ArchitectureElementSymbol architectureElement){
-        if (writer == null){
-            throw new IllegalStateException("missing writer");
-        }
-        include(architectureElement, writer);
+        templateConfiguration.processTemplate(ftlContext, templatePath, writer);
     }
 
     public Map.Entry<String,String> process(String templateNameWithoutEnding, Target targetLanguage){
@@ -257,9 +241,7 @@ public class CNNArchTemplateController {
                 && architectureElement.getInputElement().isPresent()
                 && architectureElement.getInputElement().get() instanceof LayerSymbol){
             LayerSymbol inputLayer = (LayerSymbol) architectureElement.getInputElement().get();
-            if (inputPredefinedLayerClass.isInstance(inputLayer.getDeclaration())){
-                return true;
-            }
+            return inputPredefinedLayerClass.isInstance(inputLayer.getDeclaration());
         }
         return false;
     }
