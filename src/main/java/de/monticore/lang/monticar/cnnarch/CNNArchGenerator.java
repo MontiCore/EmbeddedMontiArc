@@ -34,6 +34,7 @@ import java.util.Map;
 public abstract class CNNArchGenerator {
 
     private String generationTargetPath;
+    private String modelsDirPath;
 
     public static void quitGeneration(){
         Log.error("Code generation is aborted");
@@ -55,7 +56,12 @@ public abstract class CNNArchGenerator {
         this.generationTargetPath = generationTargetPath;
     }
 
+    protected String getModelsDirPath() {
+        return this.modelsDirPath;
+    }
+
     public void generate(Path modelsDirPath, String rootModelName){
+        this.modelsDirPath = modelsDirPath.toString();
         final ModelPath mp = new ModelPath(modelsDirPath);
         GlobalScope scope = new GlobalScope(mp, new CNNArchLanguage());
         generate(scope, rootModelName);
