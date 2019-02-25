@@ -55,9 +55,8 @@ public class AbstractSymtabTest {
         for (String m : modelPath) {
             mp.addEntry(Paths.get(m));
         }
-        GlobalScope scope = new GlobalScope(mp, fam);
 
-        return scope;
+        return new GlobalScope(mp, fam);
     }
 
     protected static CNNArchCompilationUnitSymbol getCompilationUnitSymbol(String modelPath, String model) {
