@@ -34,7 +34,7 @@
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>
         <shade.plugin>2.4.3</shade.plugin>
-        <surefire.version>2.20.1</surefire.version>
+        <surefire.version>3.0.0-M3</surefire.version>
 
         <!-- Classifiers -->
         <grammars.classifier>grammars</grammars.classifier>
@@ -153,6 +153,12 @@
 
     <build>
         <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire.version}</version>
+			</plugin>
+		
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.1</version>
