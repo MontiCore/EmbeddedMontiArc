@@ -5,7 +5,7 @@ import de.monticore.lang.montisim.util.types.*;
 
 import de.monticore.lang.montisim.weather._ast.*;
 import de.monticore.lang.montisim.weather.symboltable.*;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.*;
 
 import de.se_rwth.commons.Names;
@@ -27,13 +27,13 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
         super(resolvingConfig, scopeStack);
   }
 
-  private Float nullOrFloat(Optional<ASTUnitNumber> opt) {
+  private Float nullOrFloat(Optional<ASTNumberWithUnit> opt) {
     if(opt.isPresent()) {
       return opt.get().getNumber().get().floatValue();
     }
     return null;
   }
-  private Integer nullOrInteger(Optional<ASTUnitNumber> opt) {
+  private Integer nullOrInteger(Optional<ASTNumberWithUnit> opt) {
     if(opt.isPresent()) {
       return opt.get().getNumber().get().intValue();
     }
@@ -43,8 +43,8 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   // Scope Symbols
   @Override
   public void visit(ASTSimLangCompilationUnit node) {
-    String packageQualifiedName = Names.getQualifiedName(node.getPackage());
-    List<ImportStatement> imports = node.getImportStatements()
+    String packageQualifiedName = Names.getQualifiedName(node.getPackageList());
+    List<ImportStatement> imports = node.getImportStatementList()
             .stream()
             .map(imprt -> {
                 String qualifiedImport = Names.getQualifiedName(imprt.getImportList());
@@ -90,10 +90,10 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   @Override
   public void endVisit(final ASTWeather node) {
     ArrayList<Weather> weathers = new ArrayList<>();
-    if(node.getSingleWeather().isPresent()) {
-      weathers.add(astToWeather(node.getSingleWeather().get()));
-    } else if(node.getWeatherList().isPresent()) {
-      for(ASTSingleWeather sw : node.getWeatherList().get().getSingleWeathers())
+    if(node.isPresentSingleWeather()) {
+      weathers.add(astToWeather(node.getSingleWeather()));
+    } else if(node.isPresentWeatherList()) {
+      for(ASTSingleWeather sw : node.getWeatherList().getSingleWeatherList())
         weathers.add(astToWeather(sw));
     }
     ((WeatherSymbol)node.getSymbol().get()).setWeathers(weathers);
@@ -101,21 +101,21 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
 
   private Weather astToWeather(ASTSingleWeather weather) {
     Weather ret;
-    if(weather.getFixedWeather().isPresent()) {
-      ret = new Weather(new FixedWeather(resolveWeather(weather.getFixedWeather().get().getWeatherScope())));
-    } else if(weather.getSequenceWeather().isPresent()) {
+    if(weather.isPresentFixedWeather()) {
+      ret = new Weather(new FixedWeather(resolveWeather(weather.getFixedWeather().getWeatherScope())));
+    } else if(weather.isPresentSequenceWeather()) {
       ArrayList<ConcreteWeather> we = new ArrayList<>();
       ArrayList<NumberUnit> durs = new ArrayList<>();
-      for(ASTWeatherScope wO : weather.getSequenceWeather().get().getWeatherScopes()){
+      for(ASTWeatherScope wO : weather.getSequenceWeather().getWeatherScopeList()){
         we.add(resolveWeather(wO));
       }
-      for(ASTUnitNumber dur : weather.getSequenceWeather().get().getUnitNumbers()) {
+      for(ASTNumberWithUnit dur : weather.getSequenceWeather().getNumberWithUnitList()) {
         durs.add(new NumberUnit(dur));
       }
       ret = new Weather(new SequenceWeather(we, durs));
     } else {
-      if(weather.getRandomWeather().get().getUnitNumber().isPresent()) {
-        ret = new Weather(new RandomWeather(new NumberUnit(weather.getRandomWeather().get().getUnitNumber().get())));
+      if(weather.getRandomWeather().getNumberWithUnitOpt().isPresent()) {
+        ret = new Weather(new RandomWeather(new NumberUnit(weather.getRandomWeather().getNumberWithUnit())));
       }
       else {
         ret = new Weather(new RandomWeather());
@@ -255,7 +255,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   }
   @Override
   public void visit(final ASTSight node) {
-    final SightSymbol symbol = node.isUnlimited() ? new SightSymbol("sight", new Sight()) : new SightSymbol("sight", new Sight(getUsedAlternative(node.getAlternativeInput().get())));
+    final SightSymbol symbol = node.isUnlimited() ? new SightSymbol("sight", new Sight()) : new SightSymbol("sight", new Sight(getUsedAlternative(node.getAlternativeInput())));
     addToScopeAndLinkWithNode(symbol, node);
   }
 
@@ -277,9 +277,9 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
         case ASTConstantsWeather.THUNDERSTORM: tmpPhen = SimLangEnums.WeatherPhenomenas.THUNDERSTORM; break;
         default: tmpPhen = SimLangEnums.WeatherPhenomenas.FOG;
       }
-      tmpCoord = node.coordinateIsPresent() ?
-              new Point2D.Float(node.getCoordinate().get().getPosX().getNumber().get().floatValue(),
-                      node.getCoordinate().get().getPosY().getNumber().get().floatValue())
+      tmpCoord = node.isPresentCoordinate() ?
+              new Point2D.Float(node.getCoordinate().getPosX().getNumber().get().floatValue(),
+                      node.getCoordinate().getPosY().getNumber().get().floatValue())
               : null;
 
     final WeatherPhenomenaSymbol symbol = new WeatherPhenomenaSymbol("weather_phenomena", new WeatherPhenomenaInstance(tmpPhen, tmpCoord));
@@ -372,15 +372,15 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     Area area;
     if(node.isGlobal()) {
       area = new Area();
-    } else if(node.getRadius().isPresent()) {
-      area = new Area(new Point2D.Float(node.getPoint1().get().getPosX().getNumber().get().floatValue(),
-                                        node.getPoint1().get().getPosY().getNumber().get().floatValue()),
-                      new NumberUnit(node.getRadius().get()));
+    } else if(node.isPresentRadius()) {
+      area = new Area(new Point2D.Float(node.getPoint1().getPosX().getNumber().get().floatValue(),
+                                        node.getPoint1().getPosY().getNumber().get().floatValue()),
+                      new NumberUnit(node.getRadius()));
     } else {
-      area = new Area(new Point2D.Float(node.getPoint1().get().getPosX().getNumber().get().floatValue(),
-              node.getPoint1().get().getPosY().getNumber().get().floatValue()),
-              new Point2D.Float(node.getPoint2().get().getPosX().getNumber().get().floatValue(),
-                      node.getPoint2().get().getPosY().getNumber().get().floatValue()));
+      area = new Area(new Point2D.Float(node.getPoint1().getPosX().getNumber().get().floatValue(),
+              node.getPoint1().getPosY().getNumber().get().floatValue()),
+              new Point2D.Float(node.getPoint2().getPosX().getNumber().get().floatValue(),
+                      node.getPoint2().getPosY().getNumber().get().floatValue()));
     }
     final AreaSymbol symbol = new AreaSymbol("area", area);
     addToScopeAndLinkWithNode(symbol, node);
@@ -389,20 +389,20 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   // Standard Symbols
 
   private AlternativeInput getUsedAlternative(ASTAlternativeInput node) {
-    if (node.unitNumberIsPresent()) {
-      return new AlternativeInput(new NumberUnit(node.getUnitNumber().get()));
+    if (node.isPresentNumberWithUnit()) {
+      return new AlternativeInput(new NumberUnit(node.getNumberWithUnit()));
     }
-    else if(node.unitNumberListIsPresent()) {
+    else if(node.isPresentNumberWithUnitList()) {
       ArrayList<NumberUnit> tmplist = new ArrayList<>();
-      for(ASTUnitNumber un : node.getUnitNumberList().get().getUnitNumbers()) {
+      for(ASTNumberWithUnit un : node.getNumberWithUnitList().getNumberWithUnitList()) {
         tmplist.add(new NumberUnit(un));
       }
       return new AlternativeInput(tmplist);
     }
-    else if(node.rangeIsPresent()) {
-      NumberUnit start = new NumberUnit(node.getRange().get().getStartValue().floatValue(), node.getRange().get().getStartUnit().toString());
-      NumberUnit step = new NumberUnit(node.getRange().get().getStepValue().floatValue(), node.getRange().get().getStepUnit().toString());
-      NumberUnit end = new NumberUnit(node.getRange().get().getEndValue().floatValue(), node.getRange().get().getEndUnit().toString());
+    else if(node.isPresentRange()) {
+      NumberUnit start = new NumberUnit(node.getRange().getStartValue().floatValue(), node.getRange().getStartUnit().toString());
+      NumberUnit step = new NumberUnit(node.getRange().getStepValue().floatValue(), node.getRange().getStepUnit().toString());
+      NumberUnit end = new NumberUnit(node.getRange().getEndValue().floatValue(), node.getRange().getEndUnit().toString());
       return new AlternativeInput(new Range(start, step, end));
     }
     else {
@@ -446,20 +446,20 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   public void visit(final ASTTime node) {
     final TimeSymbol symbol;
     ArrayList<Time> list = new ArrayList<>();
-    if(node.getSingleTime().isPresent()) {
-      Time val = new Time(node.getSingleTime().get().getHours().getNumber().get().intValue(),
-                          node.getSingleTime().get().getMinutes().getNumber().get().intValue(),
-                          nullOrInteger(node.getSingleTime().get().getSeconds()),
-                          nullOrInteger(node.getSingleTime().get().getMilliseconds()));
+    if(node.isPresentSingleTime()) {
+      Time val = new Time(node.getSingleTime().getHours().getNumber().get().intValue(),
+                          node.getSingleTime().getMinutes().getNumber().get().intValue(),
+                          nullOrInteger(node.getSingleTime().getSecondsOpt()),
+                          nullOrInteger(node.getSingleTime().getMillisecondsOpt()));
       list.add(val);
       symbol = new TimeSymbol("time", list);
     }
     else {
-      for(ASTSingleTime ele : node.getTimeList().get().getSingleTimes()) {
+      for(ASTSingleTime ele : node.getTimeList().getSingleTimeList()) {
         list.add(new Time(ele.getHours().getNumber().get().intValue(),
                           ele.getMinutes().getNumber().get().intValue(),
-                          nullOrInteger(ele.getSeconds()),
-                          nullOrInteger(ele.getMilliseconds())));
+                          nullOrInteger(ele.getSecondsOpt()),
+                          nullOrInteger(ele.getMillisecondsOpt())));
       }
       symbol = new TimeSymbol("time", list);
     }
@@ -475,8 +475,8 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   }
   public void visit(final ASTMapHeight node) {
     final MapHeightSymbol symbol;
-    if(node.getCustomHeight().isPresent()) {
-      symbol = new MapHeightSymbol("map_height", new MapHeight(node.getCustomHeight()));
+    if(node.isPresentCustomHeight()) {
+      symbol = new MapHeightSymbol("map_height", new MapHeight(node.getCustomHeightOpt()));
     }
     else {
       switch(node.getHeightMode()) {
@@ -528,8 +528,8 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
                     node.getStartY().getNumber().get().floatValue(),
                     node.getDestX().getNumber().get().floatValue(),
                     node.getDestY().getNumber().get().floatValue(),
-                    nullOrFloat(node.getStartZ()),
-                    nullOrFloat(node.getDestZ())
+                    nullOrFloat(node.getStartZOpt()),
+                    nullOrFloat(node.getDestZOpt())
                     ));
     addToScopeAndLinkWithNode(symbol, node);
   }
@@ -542,7 +542,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
                     node.getDestX().getNumber().get().floatValue(),
                     node.getDestY().getNumber().get().floatValue(),
                     node.getStartRot().getNumber().get().floatValue(),
-                    nullOrFloat(node.getDestZ())
+                    nullOrFloat(node.getDestZOpt())
     ));
     addToScopeAndLinkWithNode(symbol, node);
   }
@@ -554,17 +554,17 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
                     node.getDestX().getNumber().get().floatValue(),
                     node.getDestY().getNumber().get().floatValue(),
                     new NumberUnit(node.getDestRadius()),
-                    nullOrFloat(node.getAmount())
+                    nullOrFloat(node.getAmountOpt())
             ));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(ASTRandomVehicle node) {
     final RandomVehicleSymbol symbol = new RandomVehicleSymbol("random_vehicle",
               new RandomVehicle(node.getAmount().getNumber().get().floatValue(),
-                      nullOrFloat(node.getStartX()),
-                      nullOrFloat(node.getStartY()),
-                      nullOrFloat(node.getDestX()),
-                      nullOrFloat(node.getDestY())
+                      nullOrFloat(node.getStartXOpt()),
+                      nullOrFloat(node.getStartYOpt()),
+                      nullOrFloat(node.getDestXOpt()),
+                      nullOrFloat(node.getDestYOpt())
                       ));
     addToScopeAndLinkWithNode(symbol, node);
   }

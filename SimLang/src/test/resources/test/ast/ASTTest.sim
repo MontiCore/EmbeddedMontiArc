@@ -35,14 +35,14 @@ sim ASTTest {
   vehicle 1234 (-150, -150) -> (500, 600);
   
   fixed channel LTE {
-    transfer_rate 20 bit/s;
+    transfer_rate 20Hz;
     latency 10ms;
     outage 0.001;
     area global;
   };
   
   bound channel ICE {
-    transfer_rate 2bit/s;
+    transfer_rate 2Hz;
     latency 1s;
     outage 0.99;
     area (10,10) 30;

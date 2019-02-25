@@ -9,7 +9,7 @@ import de.monticore.lang.montisim.simlang._ast.ASTSingleTime;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTSingleTimeCoCo;
 import de.monticore.lang.montisim.util.cocos.NumberUnitChecker;
 import de.monticore.lang.montisim.util.types.NumberUnit;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
 import java.util.Optional;
 
@@ -35,8 +35,8 @@ public class TimeChecker implements SimLangASTSingleTimeCoCo {
     int hours = (int)timeHours.getNumber();
     int minutes = (int)timeMinutes.getNumber();
     
-    Optional<ASTUnitNumber> timeSeconds = node.getSeconds();
-    Optional<ASTUnitNumber> timeMilliseconds = node.getMilliseconds();
+    Optional<ASTNumberWithUnit> timeSeconds = node.getSecondsOpt();
+    Optional<ASTNumberWithUnit> timeMilliseconds = node.getMillisecondsOpt();
     
     if(hours < 0 || 23 < hours) {
       Log.warn("Range Error: Time:hours must be within [0,23].");

@@ -159,7 +159,7 @@ public class SymboltableTest {
     for(ChannelSymbol sym : ch) {
       if(sym.getChannel().getName().equals("LTE")) {
         assert sym.getChannel().getType().equals(SimLangEnums.ChannelTypes.FIXED);
-        assert sym.getChannel().getTransferRate().getNUnit().get().getNumberUnit().equals("20.0bit/s");
+        assert sym.getChannel().getTransferRate().getNUnit().get().getNumberUnit().equals("20.0Hz");
         assert sym.getChannel().getLatency().getNUnit().get().getNumberUnit().equals("10.0ms");
         assert sym.getChannel().getOutage().getNUnit().get().getNumber() == 0.001f;
         assert sym.getChannel().getArea().isGlobal();
@@ -167,7 +167,7 @@ public class SymboltableTest {
 
       else if(sym.getChannel().getName().equals("ICE")) {
         assert sym.getChannel().getType().equals(SimLangEnums.ChannelTypes.BOUND);
-        assert sym.getChannel().getTransferRate().getNUnit().get().getNumberUnit().equals("2.0bit/s");
+        assert sym.getChannel().getTransferRate().getNUnit().get().getNumberUnit().equals("2.0Hz");
         assert sym.getChannel().getLatency().getNUnit().get().getNumberUnit().equals("1.0s");
         assert sym.getChannel().getOutage().getNUnit().get().getNumber() == 0.99f;
         assert sym.getChannel().getArea().getPoint1().get().x == 10f;

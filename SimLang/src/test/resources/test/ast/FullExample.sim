@@ -3,11 +3,11 @@ sim FullExample {
   sim_loop_frequency (60m:1m:80m);
   sim_duration [50m,4h,5h,6h];
   sim_type maxfps;
-  weather fixed {temperature 290°C;
+  weather fixed {temperature 290;
                  humidity 0.2;
                  pressure 100Pa;
                  wind_strength 2km/h;
-                 wind_direction 38.0°;
+                 wind_direction 38.0;
                  precipitation_type snow;
                  precipitation_amount 5mm;
                  clouding stratus;
@@ -33,16 +33,16 @@ sim FullExample {
   vehicle 1234 (-150, -150) -> (500, 600);
   
   fixed channel LTE {
-    transfer_rate 20000bit/s;
+    transfer_rate 20000Hz;
     latency 10ms;
     outage 0.001;
     area global;
   };
   
   bound channel ICE {
-    transfer_rate 2bit/s;
+    transfer_rate 2Hz;
     latency 1s;
-    outage 99%;
+    outage 0.99;
     area (10,10) 30;
   };
 }
