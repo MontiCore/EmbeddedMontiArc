@@ -11,8 +11,8 @@
 
 class CNNPredictor_CifarClassifierNetwork{
 public:
-    const std::string json_file = "model/CifarClassifierNetwork/CifarClassifierNetwork_newest-symbol.json";
-    const std::string param_file = "model/CifarClassifierNetwork/CifarClassifierNetwork_newest-0000.params";
+    const std::string json_file = "model/CifarClassifierNetwork/model_newest-symbol.json";
+    const std::string param_file = "model/CifarClassifierNetwork/model_newest-0000.params";
     //const std::vector<std::string> input_keys = {"data"};
     const std::vector<std::string> input_keys = {"data"};
     const std::vector<std::vector<mx_uint>> input_shapes = {{1,3,32,32}};
