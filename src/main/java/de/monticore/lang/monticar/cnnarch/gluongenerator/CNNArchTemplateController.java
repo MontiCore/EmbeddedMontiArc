@@ -87,6 +87,10 @@ public class CNNArchTemplateController {
         return getArchitecture().getEnclosingScope().getSpanningSymbol().get().getFullName().replaceAll("\\.","_");
     }
 
+    public String getDataPath(){
+        return getArchitecture().getDataPath();
+    }
+
     public List<String> getLayerInputs(ArchitectureElementSymbol layer){
         List<String> inputNames = new ArrayList<>();
 
@@ -121,6 +125,10 @@ public class CNNArchTemplateController {
             list.add(nameManager.getName(ioElement));
         }
         return list;
+    }
+
+    public String getComponentName(){
+        return getArchitecture().getComponentName();
     }
 
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer, NetDefinitionMode netDefinitionMode){
