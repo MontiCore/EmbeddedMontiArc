@@ -79,14 +79,6 @@
     <profile>
       <id>se-nexus</id>
       <repositories>
-	<repository>
-          <id>local-maven-repo</id>
-          <url>file:///home/maurice/local-maven-repo/</url>
-          <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-          </snapshots>
-        </repository>
         <repository>
           <id>central</id>
           <url>http://central</url>
