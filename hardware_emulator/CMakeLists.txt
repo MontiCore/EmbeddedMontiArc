@@ -5,10 +5,22 @@ project(hardware-emulator)
 find_package(Threads)
 
 #Find java binary, extract directory to use JNI.
-find_package(Java COMPONENTS Development)
-get_filename_component(JAVA_BIN_DIR "${Java_JAVA_EXECUTABLE}" PATH)
-set(JAVA_DIR "${JAVA_BIN_DIR}/..")
-message("JAVA_DIR: ${JAVA_DIR}")
+# find_package(Java COMPONENTS Development)
+# get_filename_component(JAVA_BIN_DIR "${Java_JAVAC_EXECUTABLE}" PATH)
+# set(JAVA_DIR "${JAVA_BIN_DIR}/..")
+# message("JAVA_DIR: ${JAVA_DIR}")
+
+find_package(JNI)
+if (JNI_FOUND)
+message("JAVA_INCLUDE_PATH: ${JAVA_INCLUDE_PATH}")
+message("JAVA_INCLUDE_PATH2: ${JAVA_INCLUDE_PATH2}")
+message("JAVA_AWT_LIBRARY: ${JAVA_AWT_LIBRARY}")
+message("JAVA_JVM_LIBRARY: ${JAVA_JVM_LIBRARY}")
+endif()
+
+if (NOT JNI_FOUND)
+message("Could not find JNI")
+endif()
 
 #Name of the resulting library that is loaded in the autopilot RMIServer.
 set(AUTOPILO_ADAPTER_NAME "HardwareEmulator")
@@ -114,8 +126,8 @@ if ( CMAKE_COMPILER_IS_GNUCC )
   list(APPEND HARDWARE_EMU_INCLUDE_DIRS
     ../zydis/build
     ../zydis/dependencies/zycore/build
-    "${JAVA_DIR}/include"
-    "${JAVA_DIR}/include/linux"
+    "${JAVA_INCLUDE_PATH}"
+    "${JAVA_INCLUDE_PATH2}"
   )
   list(APPEND HARDWARE_EMU_LIB_DIRS
     "../pe-parse/${CMAKE_BUILD_TYPE}/pe-parser-library"
@@ -125,6 +137,7 @@ if ( CMAKE_COMPILER_IS_GNUCC )
   message("Added lib dir: \"../pe-parse/${CMAKE_BUILD_TYPE}/pe-parser-library\"")
   list(APPEND HARDWARE_EMU_LIBRARIES
     pthread
+    stdc++fs
   )
 endif()
 
@@ -149,12 +162,9 @@ endif()
 
 #AutopilotAdapter specific include/lib dirs and library dependencies
 if ( CMAKE_COMPILER_IS_GNUCC )
-  list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIB_DIRS
-    "${JAVA_DIR}/lib"
-  )
   list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES
-    jawt
-    java
+    "${JAVA_AWT_LIBRARY}"
+    "${JAVA_JVM_LIBRARY}"
   )
 endif()
 if ( MSVC )

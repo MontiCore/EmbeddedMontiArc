@@ -10,7 +10,9 @@
 #include "config.h"
 
 #include <unordered_map>
-#include <filesystem>
+#include <experimental/filesystem>
+
+namespace fs = std::experimental::filesystem::v1;
 
 struct EmulatorManager;
 struct HardwareEmulator {
@@ -35,7 +37,7 @@ struct HardwareEmulator {
     std::string module_name;
     std::string os_name;
     std::string file_name;
-    std::filesystem::path path;
+    fs::path path;
     
     OS::Windows os_windows;
     OS::Linux os_linux;

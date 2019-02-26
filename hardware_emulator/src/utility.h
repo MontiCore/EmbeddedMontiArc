@@ -784,6 +784,9 @@ namespace ConsoleColor {
         const char *get() {
             return val;
         }
+        bool operator!=(const Color &other){
+            return val != other.val;
+        }
     };
     
     struct Console {

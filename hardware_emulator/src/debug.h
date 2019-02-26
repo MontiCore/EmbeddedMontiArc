@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include "computer/memory.h"
 #include "computer/registers.h"
 #include "computer/system_calls.h"

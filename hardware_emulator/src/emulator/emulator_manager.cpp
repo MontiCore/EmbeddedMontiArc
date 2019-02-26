@@ -2,8 +2,6 @@
 #include "config.h"
 #include <thread>
 
-namespace fs = std::filesystem;
-
 EmulatorManager EmulatorManager::instance;
 
 void worker( HardwareEmulator *emu ) {
@@ -16,8 +14,10 @@ bool EmulatorManager::init() {
     //std::cout << "Available threads: " << available_threads << std::endl;
     //std::cout << "Available autopilots: " << std::endl;
     path = "./";
+    //std::experimental::filesystem::v1::__cxx11::directory_entry e;
+
     for ( const auto &entry : fs::directory_iterator( path ) ) {
-        if ( entry.is_regular_file() ) {
+        if ( entry.status().type() == fs::file_type::regular ) {
             auto &p = entry.path();
             std::string ext = p.extension().generic_string();
             //std::cout << p << "\t" << p.filename() << "\t" << ext/*p.extension()*/ << std::endl;

@@ -1,15 +1,16 @@
 #pragma once
 #include "hardware_emulator.h"
 #include <list>
-#include <filesystem>
+#include <experimental/filesystem>
 
+namespace fs = std::experimental::filesystem::v1;
 
-struct EmulatorManager {
+struct EmulatorManager {    
     static EmulatorManager instance;
     Array<std::unique_ptr<HardwareEmulator>> emulators;
     uint emulator_count;
     
-    std::list<std::filesystem::directory_entry> entries;
+    std::list<fs::directory_entry> entries;
     std::string available_autopilots;
     uint available_threads;
     std::string path;

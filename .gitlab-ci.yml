@@ -32,15 +32,12 @@ linux_build:
   image: maven:3-jdk-8
 
   script: 
-  - sudo apt-get install build-essential
-  - sudo apt-get -y install cmake
-  - docs/build.sh
+  - apt install build-essential
+  - apt install cmake
+  - docs/build_all.sh
   artifacts:
     paths:
       - hardware_emulator/build/hardware-emulator-test
-      - hardware_emulator/bin/AutopilotModel.dll
-      - hardware_emulator/bin/loaded_dll.dll
-      - hardware_emulator/bin/SampleDLL.dll
 
 #test_linux:
 #  stage: test

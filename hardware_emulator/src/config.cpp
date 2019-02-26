@@ -62,7 +62,7 @@ std::string MessageParser::get_string() {
         return std::string();
     to_non_ws();
     if ( *rest == '\0' || *rest == '\n' )
-        return false;
+        return std::string();
     auto str_start = rest;
     to_comma();
     if ( rest == str_start )
