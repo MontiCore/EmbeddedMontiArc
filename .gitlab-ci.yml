@@ -31,13 +31,11 @@ linux_build:
   stage: build
   image: maven:3-jdk-8
 
-  script: 
-  - apt update
-  - apt-get install -y software-properties-common
-  - add-apt-repository ppa:ubuntu-toolchain-r/test
+  script:
   - apt update
   - apt install g++-7 -y
-
+  - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-7 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-7 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-7
+  
   - apt --assume-yes install make
   - apt --assume-yes install python
   - apt --assume-yes install cmake
