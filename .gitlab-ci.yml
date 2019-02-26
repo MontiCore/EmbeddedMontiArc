@@ -88,13 +88,13 @@ linux_build:
     paths:
       - hardware_emulator/Release/hardware-emulator-test
 
-#test_linux:
-#  stage: test
-#  tags:
-#  - linux
-#  script:
-#    - mv hardware_emulator/build/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
-#    - cd hardware_emulator/bin
-#    - hardware-emulator-test
-#  dependencies:
-#    - linux_build
+test_linux:
+  stage: test
+  tags:
+  - linux
+  script:
+    - mv hardware_emulator/build/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
+    - cd hardware_emulator/bin
+    - hardware-emulator-test
+  dependencies:
+    - linux_build
