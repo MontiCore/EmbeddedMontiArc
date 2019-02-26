@@ -33,9 +33,13 @@ linux_build:
 
   script: 
   - apt update
+  - apt-get install -y software-properties-common
+  - add-apt-repository ppa:ubuntu-toolchain-r/test
+  - apt update
+  - apt install g++-7 -y
+
   - apt --assume-yes install make
   - apt --assume-yes install python
-  - apt --assume-yes install g++
   - apt --assume-yes install cmake
   - g++ --version
   
