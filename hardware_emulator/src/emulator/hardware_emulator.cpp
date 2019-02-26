@@ -236,11 +236,11 @@ uint64_t HardwareEmulator::resolve( const std::string &name ) {
 void HardwareEmulator::init_ports( Array<Port> &ports, const char *get_count,
                                    const char *get_name, const char *get_type, const char *port_prefix ) {
     computer.call( resolve( get_count ) );
-    int port_count = ( uint ) computer.fast_call.get_return();
+    uint port_count = ( uint ) computer.fast_call.get_return();
     ports.init( port_count );
     auto get_name_addr = resolve( get_name );
     auto get_type_addr = resolve( get_type );
-    for ( auto i : Range( port_count ) ) {
+    for ( auto i : urange( port_count ) ) {
         auto &port = ports[i];
         
         computer.fast_call.set_params( i );

@@ -51,14 +51,14 @@ const char *Registers::regs_names[Registers::BUFFER_SIZE] = {
 
 void Registers::init( void *uc ) {
     this->internal_uc = uc;
-    for ( auto i : Range( BUFFER_SIZE ) )
+    for ( auto i : urange( BUFFER_SIZE ) )
         regs_old[( uint )i] = 0;
 }
 
 
 void Registers::print_registers() {
     char buff[128];
-    for ( auto i : Range( 18 ) ) {
+    for ( auto i : urange( 18 ) ) {
         uc_reg_read( static_cast<uc_engine *>( internal_uc ), Registers::regs_id[i], &reg );
         Log::reg << "      ";
         sprintf( buff,  "%16s   ", Registers::regs_names[i] );
@@ -67,12 +67,12 @@ void Registers::print_registers() {
 }
 
 void Registers::print_changed_registers() {
-    for ( auto i : Range( 18 ) ) {
+    for ( auto i : urange( 18 ) ) {
         uc_reg_read( static_cast<uc_engine *>( internal_uc ), Registers::regs_id[i], &reg );
         regs[i] = reg;
     }
     char buff[128];
-    for ( auto i : Range( 18 ) ) {
+    for ( auto i : urange( 18 ) ) {
         if ( Registers::regs_id[i] == UC_X86_REG_RIP && ( regs_old[i] != 0 ) )
             continue;
         if ( regs[i] != regs_old[i] ) {
@@ -82,7 +82,7 @@ void Registers::print_changed_registers() {
             Log::new_val << to_hex( regs[i] ) << "\n";
         }
     }
-    for ( auto i : Range( 18 ) )
+    for ( auto i : urange( 18 ) )
         regs_old[i] = regs[i];
 }
 

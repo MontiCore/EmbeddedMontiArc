@@ -20,7 +20,7 @@ uint AnnotationCollection::new_annotation( ulong base, Annotation const &annotat
     return annotation_pos++;
 }
 Annotation &AnnotationCollection::get_annotation( std::string const &name, uint type_mask ) {
-    for ( uint i : Range( annotation_pos ) ) {
+    for ( uint i : urange( annotation_pos ) ) {
         auto &note = annotations[i];
         if ( note.type & type_mask )
             if ( note.name == name )
@@ -48,7 +48,7 @@ void SectionAnnotation::add_annotation( MemoryRange range, Annotation const &ann
     throw_assert( loaded(), "SectionAnnotation::add_annotation() on uninitialized SectionAnnotation" );
     auto note_id = collection->new_annotation( range.start_address, annotation );
     auto start_index = address_range.get_local_index( range.start_address );
-    for ( auto i : Range( start_index, start_index + range.size ) ) {
+    for ( auto i : urange( start_index, start_index + range.size ) ) {
         annotated[i] = true;
         annotation_id[i] = note_id;
     }
@@ -202,7 +202,7 @@ uint8_t *Memory::read_memory( ulong address, ulong size ) {
 
 void Memory::write_memory( ulong address, ulong size, uchar *data ) {
     auto s = size > BUFFER_SIZE ? BUFFER_SIZE : size;
-    for ( uint i : Range( ( uint )s ) )
+    for ( uint i : urange( ( uint )s ) )
         buffer[i] = data[i];
     uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), s );
 }
@@ -223,7 +223,7 @@ MemorySection &Memory::new_section() {
 }
 
 MemorySection *Memory::get_section( ulong virtual_address ) {
-    for ( uint i : Range( section_pos ) ) {
+    for ( uint i : urange( section_pos ) ) {
         if ( sections[i].address_range.contains( virtual_address ) )
             return sections.begin() + i;
     }
@@ -317,7 +317,7 @@ uchar *Memory::read_str( ulong address ) {
 void Memory::write_str( ulong address, std::string const &text ) {
     char *buff = ( char * )buffer.begin();
     uint size = ( uint )text.size();
-    for ( uint i : Range( size ) )
+    for ( uint i : urange( size ) )
         buff[i] = text[i];
     buff[size] = 0;
     uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, size + 1 );
@@ -326,7 +326,7 @@ void Memory::write_str( ulong address, std::string const &text ) {
 void Memory::write_wstr( ulong address, std::string const &text ) {
     wchar_t *buff = ( wchar_t * )buffer.begin();
     uint size = ( uint )text.size();
-    for ( uint i : Range( size ) ) {
+    for ( uint i : urange( size ) ) {
         wchar_t t = 0;
         *( char * )&t = text[i];
         buff[i] = t;
@@ -395,7 +395,7 @@ bool VirtualHeap::alloc( ulong size, ulong &address ) {
         if ( count >= target_blocks ) {
             address = ComputerLayout::HEAP_ADDRESS + ( pos * BLOCK_SIZE );
             size_map[pos] = ( uint )target_blocks;
-            for ( auto i : Range( ( uint ) target_blocks ) )
+            for ( auto i : urange( ( uint ) target_blocks ) )
                 free_map[pos + i] = true;
             return true;
         }
@@ -406,7 +406,7 @@ bool VirtualHeap::alloc( ulong size, ulong &address ) {
 
 bool VirtualHeap::free( ulong &address ) {
     uint pos = section->address_range.get_local_index( address ) / BLOCK_SIZE;
-    for ( auto i : Range( size_map[pos] ) )
+    for ( auto i : urange( size_map[pos] ) )
         free_map[pos + i] = false;
     size_map[pos] = 0;
     return true;

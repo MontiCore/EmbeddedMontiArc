@@ -66,7 +66,7 @@ struct SegmentDescriptor {
         Set zero before setting up value
     */
     void set_zero() {
-        for ( auto i : Range( 8 ) )
+        for ( auto i : urange( 8 ) )
             data[i] = 0;
     }
     

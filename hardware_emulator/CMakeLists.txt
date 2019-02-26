@@ -190,7 +190,7 @@ target_link_libraries(${PROJECT_NAME}-test ${HARDWARE_EMU_LIBRARIES})
 #Compiler options
 if ( CMAKE_COMPILER_IS_GNUCC )
   add_definitions(
-    -std=c++17
+    #-std=c++17
     /DZYDIS_STATIC_DEFINE
   )
 endif()

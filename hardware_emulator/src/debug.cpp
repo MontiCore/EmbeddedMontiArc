@@ -41,7 +41,7 @@ void ComputerDebug::debug_code( ulong addr, uint size ) {
         Log::code << to_hex( addr ) << "   ";
         
         std::string res;
-        for ( uint i : Range( size ) )
+        for ( uint i : urange( size ) )
             res += to_hex( ( uint64_t )( decoder->code[i] ), 2 );
         char buff[128];
         sprintf( buff, "%-21s", res.c_str() );
@@ -88,7 +88,7 @@ void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val 
         uint32_t s = size;
         auto data = mem->read_memory( addr, s );
         std::string res;
-        for ( uint64_t i : Range( s ) ) {
+        for ( uint64_t i : ulrange( s ) ) {
             uint8_t v = *( ( uint8_t * ) & ( data[s - 1 - i] ) );
             res += to_hex( ( uint64_t )v, 2 );
         }

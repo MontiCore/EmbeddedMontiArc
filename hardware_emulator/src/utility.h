@@ -113,12 +113,12 @@ struct RangeIterator {
 };
 
 template<typename T>
-class Range {
+class range {
     public:
     
-        Range( T start, T end ) : m_start( start ), m_end( end ) {}
-        Range() : m_start( 0 ), m_end( 0 ) {}
-        Range( T size ) : m_start( 0 ), m_end( size ) {}
+        range( T start, T end ) : m_start( start ), m_end( end ) {}
+        range() : m_start( 0 ), m_end( 0 ) {}
+        range( T size ) : m_start( 0 ), m_end( size ) {}
         RangeIterator<T> begin() {
             return m_start;
         }
@@ -131,7 +131,15 @@ class Range {
         T m_end;
 };
 //
-template<typename T, typename V> Range( T, V )->Range<V>;
+//template<typename T, typename V> Range( T, V )->Range<V>;
+using urange = range<uint>;
+using irange = range<sint>;
+using srange = range<sshort>;
+using usrange = range<ushort>;
+using lrange = range<slong>;
+using ulrange = range<ulong>;
+using crange = range<schar>;
+using ucrange = range<uchar>;
 
 
 
@@ -245,7 +253,7 @@ class Array {
             UniqueArray<T> new_data = UniqueArray<T>( new T[new_size] );
             uint min_size = new_size < m_size ? new_size : m_size;
             
-            for ( uint i : Range( min_size ) )
+            for ( uint i : urange( min_size ) )
                 new_data[i] = std::move( data[i] );
                 
             data.reset();
@@ -256,7 +264,7 @@ class Array {
         void copy( Array &other ) {
             if ( m_size != other.size() )
                 init( other.size() );
-            for ( uint i : Range( m_size ) )
+            for ( uint i : urange( m_size ) )
                 data[i] = other[i];
         }
         void mem_copy( Array &other ) {
@@ -342,7 +350,7 @@ class ArraySlice {
             return ref[i];
         }
         void set_zero() {
-            for ( uint i : Range( m_size ) )
+            for ( uint i : urange( m_size ) )
                 ref[i] = 0;
         }
         T *begin() {
@@ -538,7 +546,7 @@ class IndexArray {
         void fill_oneToOne() {
             throw_assert( target != nullptr, "Empty IndexArray" );
             
-            for ( uint i : Range( m_size ) )
+            for ( uint i : urange( m_size ) )
                 setIndex( i, i );
         }
         
@@ -833,15 +841,15 @@ inline std::string to_hex( ulong val, uchar size = 16, bool prefix = false ) {
     char buff[24];
     if ( size == 0 ) {
         if ( prefix )
-            sprintf( buff, "%#llX", val );
+            sprintf( buff, "%#lX", val );
         else
-            sprintf( buff, "%llX",  val );
+            sprintf( buff, "%lX",  val );
     }
     else {
         if ( prefix )
-            sprintf( buff, "%#0*llX", size, val );
+            sprintf( buff, "%#0*lX", size, val );
         else
-            sprintf( buff, "%0*llX", size, val );
+            sprintf( buff, "%0*lX", size, val );
     }
     return buff;
 }

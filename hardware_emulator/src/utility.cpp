@@ -19,7 +19,7 @@ uint BIT_MASKS[] = {
 
 
 void Utility::write_uint64_t( char *mem_pos, uint64_t value ) {
-    for ( auto i : Range( sizeof( uint64_t ) ) ) {
+    for ( auto i : ulrange( sizeof( uint64_t ) ) ) {
         uint64_t sub = ( value >> ( i * 8 ) ) & BIT_MASKS[8];
         mem_pos[i] = *( ( char * )&sub );
     }
@@ -27,7 +27,7 @@ void Utility::write_uint64_t( char *mem_pos, uint64_t value ) {
 
 uint64_t Utility::read_uint64_t( char *mem_pos ) {
     uint64_t res = 0;
-    for ( auto i : Range( sizeof( uint64_t ) ) ) {
+    for ( auto i : ulrange( sizeof( uint64_t ) ) ) {
         uint64_t sub = 0;
         *( ( char * )&sub ) = mem_pos[i];
         res |= sub << ( i * 8 );
