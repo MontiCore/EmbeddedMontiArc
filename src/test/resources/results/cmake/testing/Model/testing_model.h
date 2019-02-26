@@ -3,7 +3,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-#include "armadillo.h"
+#include "armadillo"
 #include "testing_model_modelColor.h"
 using namespace arma;
 class testing_model{

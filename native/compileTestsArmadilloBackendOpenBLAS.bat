@@ -33,5 +33,5 @@ g++ -std=c++11 ^
    -L"%HOME%\lib\win" ^
    -o "%2\TestsForCurrentModel.exe" ^
    "%1/test/tests_main.cpp" ^
-   -include %ARMADILLO_HOME%\include\armadillo.h ^
+   -include %ARMADILLO_HOME%\include\armadillo ^
    -DARMA_DONT_USE_WRAPPER -lgdi32 -lopenblas -llibarpack-2

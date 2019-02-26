@@ -3,7 +3,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-#include "armadillo.h"
+#include "armadillo"
 #include "paper_mathUnit8_matrixModifier_1_.h"
 using namespace arma;
 class paper_mathUnit8{
