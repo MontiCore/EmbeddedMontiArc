@@ -31,7 +31,9 @@ import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import de.topobyte.osm4j.core.resolve.EntityNotFoundException;
 import de.topobyte.osm4j.xml.dynsax.OsmXmlReader;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.w3c.dom.Document;
+import simulation.environment.object.House;
 import simulation.environment.visualisationadapter.implementation.Bounds2D;
 import simulation.environment.visualisationadapter.implementation.Node2D;
 import simulation.environment.visualisationadapter.implementation.Street2D;
@@ -324,9 +326,16 @@ public class Parser2D implements IParser {
 
 
     private void buildContainer() {
+        // TODO add real houses from map
+
+        ArrayList<House> houses = new ArrayList<>();
+        House house = new House();
+        house.setGeometryPosition(new ArrayRealVector(new double[]{0, 0, 0}));
+        houses.add(house);
+
         this.container = new simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D(
                 new Bounds2D(this.dataSet.getBounds().getLeft(), this.dataSet.getBounds().getRight(), this.dataSet.getBounds().getBottom(), this.dataSet.getBounds().getTop(), 0, 0),
-                this.streets, this.buildings);
+                this.streets, houses);
     }
 
     private void findIntersections() {
