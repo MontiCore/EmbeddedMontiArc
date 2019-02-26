@@ -77,9 +77,9 @@ void ConsoleColor::Console::set_color( Color which ) {
 }
 
 void ConsoleColor::Console::test_color() {
-    for ( uint i : Range( 16 ) ) {
+    for ( uint i : urange( 16 ) ) {
         std::cout << '\t';
-        for ( uint j : Range( 16 ) ) {
+        for ( uint j : urange( 16 ) ) {
             uint v = i + j * 16;
             ConsoleColor::Console::set_color( Color( ( ColorValue )i, ( ColorValue )j ) );
             std::cout << " ";

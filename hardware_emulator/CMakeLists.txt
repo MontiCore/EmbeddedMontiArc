@@ -12,10 +12,10 @@ find_package(Threads)
 
 find_package(JNI)
 if (JNI_FOUND)
-message("JAVA_INCLUDE_PATH: ${JAVA_INCLUDE_PATH}")
-message("JAVA_INCLUDE_PATH2: ${JAVA_INCLUDE_PATH2}")
-message("JAVA_AWT_LIBRARY: ${JAVA_AWT_LIBRARY}")
-message("JAVA_JVM_LIBRARY: ${JAVA_JVM_LIBRARY}")
+#message("JAVA_INCLUDE_PATH: ${JAVA_INCLUDE_PATH}")
+#message("JAVA_INCLUDE_PATH2: ${JAVA_INCLUDE_PATH2}")
+#message("JAVA_AWT_LIBRARY: ${JAVA_AWT_LIBRARY}")
+#message("JAVA_JVM_LIBRARY: ${JAVA_JVM_LIBRARY}")
 endif()
 
 if (NOT JNI_FOUND)
@@ -145,8 +145,8 @@ endif()
 if ( MSVC )
   list(APPEND HARDWARE_EMU_INCLUDE_DIRS
     ../zydis/msvc
-    "${JAVA_DIR}/include/win32"
-    "${JAVA_DIR}/include"
+    "${JAVA_INCLUDE_PATH}"
+    "${JAVA_INCLUDE_PATH2}"
   )
   list(APPEND HARDWARE_EMU_LIB_DIRS
     ../pe-parse/build/pe-parser-library
@@ -160,25 +160,11 @@ if ( MSVC )
 endif()
 
 
-#AutopilotAdapter specific include/lib dirs and library dependencies
-if ( CMAKE_COMPILER_IS_GNUCC )
-  list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES
-    "${JAVA_AWT_LIBRARY}"
-    "${JAVA_JVM_LIBRARY}"
-  )
-endif()
-if ( MSVC )
-  list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIB_DIRS
-    "${JAVA_DIR}/lib"
-  )
-  list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES
-    jawt
-    jvm
-  )
-endif()
-list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_INCLUDE_DIRS
-  
+list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES
+  "${JAVA_AWT_LIBRARY}"
+  "${JAVA_JVM_LIBRARY}"
 )
+
 
 
 #Test project

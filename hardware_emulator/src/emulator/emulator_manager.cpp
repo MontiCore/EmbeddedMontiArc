@@ -15,7 +15,7 @@ bool EmulatorManager::init() {
     //std::cout << "Available autopilots: " << std::endl;
     path = "./";
     //std::experimental::filesystem::v1::__cxx11::directory_entry e;
-    std::experimental::filesystem::v1::__cxx11::directory_iterator it;
+    //std::experimental::filesystem::v1::__cxx11::directory_iterator it;
 
     for ( const auto &entry : fs::directory_iterator( path ) ) {
         if ( entry.status().type() == fs::file_type::regular ) {
