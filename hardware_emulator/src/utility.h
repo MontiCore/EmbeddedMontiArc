@@ -841,15 +841,15 @@ inline std::string to_hex( ulong val, uchar size = 16, bool prefix = false ) {
     char buff[24];
     if ( size == 0 ) {
         if ( prefix )
-            sprintf( buff, "%#lX", val );
+            sprintf( buff, "%#" PRIX64, val );
         else
-            sprintf( buff, "%lX",  val );
+            sprintf( buff, "%" PRIX64,  val );
     }
     else {
         if ( prefix )
-            sprintf( buff, "%#0*lX", size, val );
+            sprintf( buff, "%#0*" PRIX64, size, val );
         else
-            sprintf( buff, "%0*lX", size, val );
+            sprintf( buff, "%0*" PRIX64, size, val );
     }
     return buff;
 }

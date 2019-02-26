@@ -12,9 +12,9 @@ windows_build:
   artifacts:
     paths:
       - hardware_emulator/build/Debug/hardware-emulator-test.exe
-      - hardware_emulator/bin/AutopilotModel.dll
-      - hardware_emulator/bin/loaded_dll.dll
-      - hardware_emulator/bin/SampleDLL.dll
+#      - hardware_emulator/bin/AutopilotModel.dll
+#      - hardware_emulator/bin/loaded_dll.dll
+#      - hardware_emulator/bin/SampleDLL.dll
 
 test_windows:
   stage: test
@@ -65,11 +65,11 @@ linux_build:
   - cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../
   - make
   - cd ..
-  - mkdir Debug
-  - cd Debug
-  - cmake -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" ../
-  - make
-  - cd ..
+#  - mkdir Debug
+#  - cd Debug
+#  - cmake -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" ../
+#  - make
+#  - cd ..
   - cd ..
   
   - cd hardware_emulator
@@ -78,15 +78,15 @@ linux_build:
   - cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../
   - make
   - cd ..
-  - mkdir Debug
-  - cd Debug
-  - cmake -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" ../
-  - make
-  - cd ..
+#  - mkdir Debug
+#  - cd Debug
+#  - cmake -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" ../
+#  - make
+#  - cd ..
   - cd ..
   artifacts:
     paths:
-      - hardware_emulator/build/hardware-emulator-test
+      - hardware_emulator/Release/hardware-emulator-test
 
 #test_linux:
 #  stage: test
