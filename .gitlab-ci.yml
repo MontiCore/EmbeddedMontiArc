@@ -33,8 +33,8 @@ linux_build:
 
   script: 
   - apt update
-  - apt install build-essential
-  - apt install cmake
+  - apt --assume-yes install build-essential
+  - apt --assume-yes install cmake
   - docs/build_all.sh
   artifacts:
     paths:
