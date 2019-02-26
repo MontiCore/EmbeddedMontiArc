@@ -33,7 +33,9 @@ linux_build:
 
   script: 
   - apt update
-  - apt --assume-yes install build-essential
+  - apt --assume-yes install make
+  - apt --assume-yes install python
+  - apt --assume-yes install g++
   - apt --assume-yes install cmake
   - g++ --version
   
