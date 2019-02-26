@@ -3,7 +3,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-#include "armadillo.h"
+#include "armadillo"
 #include "detection_objectDetector1_spectralClusterer_similarity.h"
 #include "detection_objectDetector1_spectralClusterer_normalizedLaplacian.h"
 #include "detection_objectDetector1_spectralClusterer_eigenSolver.h"

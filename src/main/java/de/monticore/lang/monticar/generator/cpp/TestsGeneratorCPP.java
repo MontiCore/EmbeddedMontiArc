@@ -105,7 +105,6 @@ public final class TestsGeneratorCPP {
             if (!MathConverter.curBackend.getBackendName().equals(OctaveBackend.NAME))
                 isOctaveBackend = false;
             files.add(new FileContent(AllTemplates.generateMainEntry(viewModelForMain, isOctaveBackend), TESTS_DIRECTORY_NAME + "/tests_main.cpp"));
-            files.add(getCatchLib());
         }
         //files.add(new FileContent(getTestedComponentsString(), TESTS_DIRECTORY_NAME + "/testedComponents.txt"));
         if (generator.isCheckModelDir()) {
@@ -139,6 +138,12 @@ public final class TestsGeneratorCPP {
             cmake.addCMakeCommandEnd("target_link_libraries(" + compName + execuatablePostFix + "  PUBLIC " + compName + ")");
         }
         cmake.addCMakeCommandEnd("set_target_properties(" + compName + execuatablePostFix + "  PROPERTIES LINKER_LANGUAGE CXX)");
+
+        String executeTestTplt = "\n# execute tests\n" +
+                "add_custom_target(run_<name>_StreamTests ALL\n" +
+                "                  COMMAND <name>_StreamTests\n" +
+                "                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})";
+        cmake.addCMakeCommandEnd(executeTestTplt.replace("<name>",compName));
     }
 
     private String getExistingComponentNames() {
@@ -347,13 +352,6 @@ public final class TestsGeneratorCPP {
         if (converter.getResult() != null) {
             vm.getOutputPortName2Check().put(portName, converter.getResult());
         }
-    }
-
-    private static FileContent getCatchLib() {
-        return FileUtil.getResourceAsFile(
-                "/vendor/catch.hpp",
-                TESTS_DIRECTORY_NAME + "/catch.hpp"
-        );
     }
 
     private static String getFileName(ComponentStreamTestViewModel viewModel) {

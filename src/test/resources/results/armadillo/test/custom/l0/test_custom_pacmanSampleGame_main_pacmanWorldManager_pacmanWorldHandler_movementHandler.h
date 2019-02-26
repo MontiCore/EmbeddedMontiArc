@@ -3,7 +3,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-#include "armadillo.h"
+#include "armadillo"
 #include "test_custom_pacmanSampleGame_main_pacmanWorldManager_pacmanWorldHandler_movementHandler_pacmanMovementPositionCalculator.h"
 #include "test_custom_pacmanSampleGame_main_pacmanWorldManager_pacmanWorldHandler_movementHandler_pacmanMovementCollisionChecker.h"
 #include "test_custom_pacmanSampleGame_main_pacmanWorldManager_pacmanWorldHandler_movementHandler_controller.h"

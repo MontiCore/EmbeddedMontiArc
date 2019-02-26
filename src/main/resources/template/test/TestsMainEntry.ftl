@@ -1,26 +1,21 @@
+//created by TestsMainEntry.ftl
 <#include "/Common.ftl">
 #ifndef TESTS_MAIN
 #define TESTS_MAIN
-
-#include "../Helper.h"
-#define CATCH_CONFIG_RUNNER
-#include "catch.hpp"
-
-int main(int argc, char* argv[]) {
-    Helper::init();
-    Catch::Session session;
-    int returnCode = session.applyCommandLine(argc, argv);
-    if (returnCode != 0) {
-        octave_quit();
-        return returnCode;
-    }
-    int numFailed = session.run();
-    octave_quit();
-    return numFailed;
-}
+#include <iostream>
 
 <#list viewModel.includes as i>
 #include "${i}"
 </#list>
+
+int main(){
+    std::cout << "=================Start stream testing=================" << std::endl;
+    int errorCode = 0;
+<#list viewModel.includes as i>
+    errorCode += ${i?replace(".hpp","")}::runTest();
+</#list>
+    std::cout << "==================End stream testing==================" << std::endl;
+    exit(errorCode);
+}
 
 #endif

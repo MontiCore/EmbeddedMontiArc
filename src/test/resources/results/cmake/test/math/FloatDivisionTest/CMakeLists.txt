@@ -29,3 +29,8 @@ add_executable(test_math_floatDivisionTest_StreamTests  test/tests_main.cpp)
 target_compile_definitions(test_math_floatDivisionTest_StreamTests PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)
 target_link_libraries(test_math_floatDivisionTest_StreamTests  PUBLIC test_math_floatDivisionTest)
 set_target_properties(test_math_floatDivisionTest_StreamTests  PROPERTIES LINKER_LANGUAGE CXX)
+
+# execute tests
+add_custom_target(run_test_math_floatDivisionTest_StreamTests ALL
+                  COMMAND test_math_floatDivisionTest_StreamTests
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})

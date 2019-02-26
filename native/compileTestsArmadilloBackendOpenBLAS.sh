@@ -34,7 +34,6 @@ g++ -std=c++11 \
    -I"${ARMADILLO_HOME}/include" \
    -L"${HOME}/lib/linux" \
    -o "${2}/TestsForCurrentModel" \
-   "${ARMADILLO_HOME}/include/catch_tests_main.cpp"  \
    "${1}/test/tests_main.cpp" \
-   -include "${ARMADILLO_HOME}/include/armadillo.h" \
+   -include "${ARMADILLO_HOME}/include/armadillo" \
    -DARMA_DONT_USE_WRAPPER -lopenblas
