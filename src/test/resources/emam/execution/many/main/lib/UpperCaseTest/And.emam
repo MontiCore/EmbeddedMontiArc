@@ -1,4 +1,4 @@
-package de.rwth.cmplib.basicLibrary.UpperCaseTest;
+package lib.UpperCaseTest;
 
 component And {
 

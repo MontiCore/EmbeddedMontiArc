@@ -1,6 +1,4 @@
-package de.rwth.cmplib.basicLibrary;
-
-
+package lib;
 
 stream And_TestWrapperStream2 for And_TestWrapper {
     in1: true tick true ;

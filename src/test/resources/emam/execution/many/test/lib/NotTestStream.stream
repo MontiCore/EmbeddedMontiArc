@@ -1,5 +1,4 @@
-package de.rwth.cmplib.basicLibrary;
-
+package lib;
 
 stream NotTestStream for Not {
     in1: true tick false;

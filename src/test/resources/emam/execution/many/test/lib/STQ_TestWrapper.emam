@@ -1,4 +1,4 @@
-package de.rwth.cmplib.aL;
+package lib;
 
 // u1 = Einschaltschwelle
 // u2 = Ausschaltschwelle

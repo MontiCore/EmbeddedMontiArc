@@ -1,6 +1,4 @@
-package de.rwth.cmplib.aL;
-
-
+package lib;
 
 stream STQ_TestWrapperStream for STQ_TestWrapper {
     in1: 0.1 tick 0.5 tick 1 tick 0.9 tick 0.75 tick 0.6;

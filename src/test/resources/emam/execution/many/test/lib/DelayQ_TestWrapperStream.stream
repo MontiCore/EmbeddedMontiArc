@@ -1,5 +1,4 @@
-package de.rwth.cmplib.basicLibrary;
-
+package lib;
 
 stream DelayQ_TestWrapperStream for DelayQ_TestWrapper {
     in1: 1 tick 2 tick 3 tick 4;

@@ -1,4 +1,4 @@
-package de.rwth.cmplib.basicLibrary;
+package lib;
 
 stream Or_TestWrapperStream for Or_TestWrapper {
     in1: true tick true tick false tick false;

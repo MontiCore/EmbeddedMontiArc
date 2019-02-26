@@ -1,4 +1,4 @@
-package de.rwth.cmplib.basicLibrary.UpperCaseTest;
+package lib.UpperCaseTest;
 
 stream AndStreamTest for And {
     in1: true tick true tick false tick false ;
