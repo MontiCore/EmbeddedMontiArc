@@ -96,6 +96,6 @@ test_linux:
   script:
     - mv hardware_emulator/Release/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
     - cd hardware_emulator/bin
-    - hardware-emulator-test
+    - ./hardware-emulator-test
   dependencies:
     - linux_build
