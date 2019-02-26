@@ -1,12 +1,16 @@
+//created by ComponentStreamTest2.ftl
 #ifndef TEST_BASICPORTSMATH_TEST
 #define TEST_BASICPORTSMATH_TEST
 
-#include "catch.hpp"
+//#include "catch.hpp"
 #include "../test_basicPortsMath.h"
 #include <iostream>
 #include <fstream>
 #include <string>
-/*void toFileString(std::ofstream& myfile, mat A){
+
+namespace test_basicPortsMath_test{
+
+void toFileString(std::ofstream& myfile, mat A){
     myfile << "[";
     for (int i = 0; i < A.n_rows; i++){
         for (int j = 0; j < A.n_cols; j++){
@@ -33,7 +37,8 @@ void toFileString(std::ofstream& myfile, int A){
 void toFileString(std::ofstream& myfile, bool A){
     myfile << A;
 }
-bool Is_close(mat& X, mat& Y, double tol)
+
+bool isClose(mat& X, mat& Y, double tol)
 {
     // abs returns a mat type then max checks columns and returns a row_vec
     // max used again will return the biggest element in the row_vec
@@ -44,20 +49,59 @@ bool Is_close(mat& X, mat& Y, double tol)
     }
     return close;
 }
+
+int overallAssertions = 0;
+int overallFailedAssertions = 0;
+int assertions = 0;
+int failedAssertions = 0;
+
+void require_is_close(mat& A, mat& lower, double tol){
+    assertions++;
+    if(!isClose(A, lower, tol)){
+        std::cout << "Failed at: isClose(" << A << ", " << lower << ", " << tol << std::endl;
+        failedAssertions++;
+    }
+}
+
+void require_boolean(bool a){
+    assertions++;
+    if(!a){
+        std::cout << "Failed at: " << a << " != true" << std::endl;
+        failedAssertions++;
+    }
+}
+
+void require_boolean_false(bool a){
+    assertions++;
+    if(a){
+        std::cout << "Failed at: " << a << " != false" << std::endl;
+        failedAssertions++;
+    }
+}
+
+void require_lower_or_equals(double a, double b){
+    assertions++;
+    if(a > b){
+        std::cout << "Failed at: " << a << " <= " << b << std::endl;
+        failedAssertions++;
+    }
+}
+
 void rangeValueCheck(double A, double lower, double upper){
-    REQUIRE( A >= lower );
-    REQUIRE( A <= upper );
+    require_lower_or_equals(lower, A);
+    require_lower_or_equals(A, upper);
 }
 
 void rangeValueCheck(int A, double lower, double upper){
-    REQUIRE( A >= lower );
-    REQUIRE( A <= upper );
+    require_lower_or_equals(lower, A);
+    require_lower_or_equals(A, upper);
 }
 void rangeValueCheck(mat& A, mat& lower , mat& upper){
-    REQUIRE(Is_close(A, lower, 0.0001));
-    REQUIRE(Is_close(A, upper, 0.0001));
-}*/
-TEST_CASE("test.BasicPortsMath", "[test_basicPortsMath]") {
+    require_is_close(A, lower, 0.0001);
+    require_is_close(A, upper, 0.0001);
+}
+
+void test_case_test_BasicPortsMath(){
     mat tmpA;
     mat tmpB;
     test_basicPortsMath component;
@@ -111,6 +155,22 @@ TEST_CASE("test.BasicPortsMath", "[test_basicPortsMath]") {
     std::cout << "test.BasicPortsMath: success\n";
 }
 
+int runTest(){
+    assertions = 0;
+    failedAssertions = 0;
 
+    test_case_test_BasicPortsMath();
+
+    overallAssertions += assertions;
+    overallFailedAssertions += failedAssertions;
+    if(overallFailedAssertions == 0){
+        std::cout << "All tests passed! Made " << overallAssertions << " assertions." << std::endl;
+        return 0;
+    }else{
+        std::cout << "There are failed tests! Failed " << overallFailedAssertions << " of " << overallAssertions << " assertions." << std::endl;
+        return 1;
+    }
+}
+}
 #endif
 

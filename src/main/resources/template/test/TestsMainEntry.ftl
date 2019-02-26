@@ -5,7 +5,7 @@
 #include <iostream>
 
 <#list viewModel.includes as i>
-    #include "${i}"
+#include "${i}"
 </#list>
 
 int main(){
