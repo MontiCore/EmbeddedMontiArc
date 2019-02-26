@@ -139,7 +139,7 @@ public final class DistributedTargetGeneratorCli {
         }
 
         if (generators.contains(GENERATOR_CPP)) {
-            generator.add(new CPPGenImpl(), "cpp");
+            generator.add(new CPPGenImpl(cliParameters.getModelsDir()), "cpp");
         }
 
         if (generators.contains(GENERATOR_EMADL)) {

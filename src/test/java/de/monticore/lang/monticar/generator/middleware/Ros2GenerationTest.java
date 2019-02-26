@@ -29,7 +29,7 @@ public class Ros2GenerationTest extends AbstractSymtabTest {
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath(OUT_BASE + "addComp/src");
-        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH),"cpp");
         distributedTargetGenerator.add(new RclCppGenImpl(), "rclcpp");
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
@@ -48,7 +48,7 @@ public class Ros2GenerationTest extends AbstractSymtabTest {
         String generationTargetPath = OUT_BASE + "system/src/";
         distributedTargetGenerator.setGenerationTargetPath(generationTargetPath);
         //distributedTargetGenerator.setGenDebug(true);
-        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         distributedTargetGenerator.add(new RclCppGenImpl(), "rclcpp");
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
@@ -67,7 +67,7 @@ public class Ros2GenerationTest extends AbstractSymtabTest {
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath(OUT_BASE +  "distributed/src/");
 
-        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         distributedTargetGenerator.add(new RclCppGenImpl(), "rclcpp");
 
         distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
@@ -86,7 +86,7 @@ public class Ros2GenerationTest extends AbstractSymtabTest {
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath(OUT_BASE + "distributedStruct/src/");
 
-        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         distributedTargetGenerator.add(new RclCppGenImpl(), "rclcpp");
 
         distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
