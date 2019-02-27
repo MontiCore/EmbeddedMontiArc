@@ -20,34 +20,27 @@
  */
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
-import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
-import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
-public class CNNArch2Caffe2 implements CNNArchGenerator{
-
-    private String generationTargetPath;
-    private String modelPath;
+public class CNNArch2Caffe2 extends CNNArchGenerator{
 
     private boolean isSupportedLayer(ArchitectureElementSymbol element, LayerSupportChecker layerChecker){
         List<ArchitectureElementSymbol> constructLayerElemList;
@@ -78,44 +71,8 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         return true;
     }
 
-    public String getModelPath(){
-        return modelPath;
-    }
-
-    public void setModelPath(Path modelPath){
-        this.modelPath = modelPath.toString();
-    }
-    
-    private static void quitGeneration(){
-        Log.error("Code generation is aborted");
-        System.exit(1);
-    }
-
     public CNNArch2Caffe2() {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
-    }
-
-    @Override
-    public boolean isCMakeRequired() {
-        return true;
-    }
-
-    public String getGenerationTargetPath() {
-        if (generationTargetPath.charAt(generationTargetPath.length() - 1) != '/') {
-            this.generationTargetPath = generationTargetPath + "/";
-        }
-        return generationTargetPath;
-    }
-
-    public void setGenerationTargetPath(String generationTargetPath) {
-        this.generationTargetPath = generationTargetPath;
-    }
-
-    public void generate(Path modelsDirPath, String rootModelName){
-        final ModelPath mp = new ModelPath(modelsDirPath);
-        GlobalScope scope = new GlobalScope(mp, new CNNArchLanguage());
-        setModelPath(modelsDirPath);  
-        generate(scope, rootModelName);
     }
 
     public void generate(Scope scope, String rootModelName){
@@ -131,7 +88,7 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         }
 
         try{
-            String confPath = getModelPath() + "/data_paths.txt";
+            String confPath = getModelsDirPath() + "/data_paths.txt";
             DataPathConfigParser newParserConfig = new DataPathConfigParser(confPath);
             String dataPath = newParserConfig.getDataPath(rootModelName);
             compilationUnit.get().getArchitecture().setDataPath(dataPath);
@@ -162,41 +119,7 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         return fileContentMap;
     }
 
-    private void checkValidGeneration(ArchitectureSymbol architecture){
-        if (architecture.getInputs().size() > 1){
-            Log.error("This cnn architecture has multiple inputs, " +
-                            "which is currently not supported by the caffe2generator. "
-                    , architecture.getSourcePosition());
-        }
-        if (architecture.getOutputs().size() > 1){
-            Log.error("This cnn architecture has multiple outputs, " +
-                            "which is currently not supported by the caffe2generator. "
-                    , architecture.getSourcePosition());
-        }
-        if (architecture.getOutputs().get(0).getDefinition().getType().getWidth() != 1 ||
-                architecture.getOutputs().get(0).getDefinition().getType().getHeight() != 1){
-            Log.error("This cnn architecture has a multi-dimensional output, " +
-                            "which is currently not supported by the caffe2generator."
-                    , architecture.getSourcePosition());
-        }
-    }
-
-    //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
-    public void generateFiles(ArchitectureSymbol architecture) throws IOException{
-        Map<String, String> fileContentMap = generateStrings(architecture);
-        generateFromFilecontentsMap(fileContentMap);
-    }
-
-    public void generateCMake(String rootModelName) {
-        Map<String, String> fileContentMap = generateCMakeContent(rootModelName);
-        try {
-            generateFromFilecontentsMap(fileContentMap);
-        } catch (IOException e) {
-            Log.error("CMake file could not be generated" + e.getMessage());
-        }
-    }
-
-    private void generateFromFilecontentsMap(Map<String, String> fileContentMap) throws IOException {
+    public void generateFromFilecontentsMap(Map<String, String> fileContentMap) throws IOException {
         GeneratorCPP genCPP = new GeneratorCPP();
         genCPP.setGenerationTargetPath(getGenerationTargetPath());
         for (String fileName : fileContentMap.keySet()){
