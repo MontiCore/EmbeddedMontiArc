@@ -32,17 +32,6 @@ DeployJobLinux:
   only:
   - master
 
-FakeDeployJobLinux:
-  stage: linuxDeploy
-  image: maven:3-jdk-8
-  dependencies:
-    - CompileJobLinux
-  script:
-  - echo "branch != master => skipping deploy"
-  - ls target
-  except:
-  - master
-
 RosIntegrationJob:
   stage: integration
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2middleware/ema-ros-kinetic

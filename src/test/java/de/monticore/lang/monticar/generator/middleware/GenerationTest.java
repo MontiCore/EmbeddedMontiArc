@@ -1,11 +1,8 @@
 package de.monticore.lang.monticar.generator.middleware;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
@@ -20,13 +17,10 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class GenerationTest extends AbstractSymtabTest {
 
@@ -43,7 +37,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
         StarBridgeGenerator starBridgeGenerator = new StarBridgeGenerator();
         starBridgeGenerator.setGenerationTargetPath("./target/generated-sources-emam/basicGeneration/src/");
-        starBridgeGenerator.add(new CPPGenImpl(), "cpp");
+        starBridgeGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
 
         starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
@@ -60,7 +54,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
         CMakeGenerator cmakeGenerator = new CMakeGenerator();
         cmakeGenerator.setGenerationTargetPath("./target/generated-sources-cmake-no-build/CMakeGeneration/src/");
-        cmakeGenerator.add(new CPPGenImpl(), "cpp");
+        cmakeGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         cmakeGenerator.add(new RosCppGenImpl(), "roscpp");
 
         cmakeGenerator.generate(componentInstanceSymbol, taggingResolver);
@@ -75,7 +69,7 @@ public class GenerationTest extends AbstractSymtabTest {
         MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
         String generationTargetPath = "./target/generated-sources-cmake/CMakeCppOnly/src/";
         middlewareGenerator.setGenerationTargetPath(generationTargetPath);
-        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        middlewareGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
 
         List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
@@ -98,7 +92,7 @@ public class GenerationTest extends AbstractSymtabTest {
         String generationTargetPath = "./target/generated-sources-cmake/system/src/";
         distributedTargetGenerator.setGenerationTargetPath(generationTargetPath);
         //distributedTargetGenerator.setGenDebug(true);
-        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
@@ -118,7 +112,7 @@ public class GenerationTest extends AbstractSymtabTest {
         MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
         middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/middlewareGenerator/src/");
         //generator for component itself
-        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        middlewareGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         //generator for the ros connection
         middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
         //generator for a dummy to test support for multiple middleware at the same time
@@ -140,7 +134,7 @@ public class GenerationTest extends AbstractSymtabTest {
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/distributed/src/");
 
-        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
 
         distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
@@ -159,7 +153,7 @@ public class GenerationTest extends AbstractSymtabTest {
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/distributedStruct/src/");
 
-        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
 
         distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
@@ -175,7 +169,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/paramInit/src/");
-        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
@@ -222,7 +216,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/" + relPath + "/src/");
-        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
         distributedTargetGenerator.add(new DummyMiddlewareGenImpl(), "dummy");
 
@@ -253,7 +247,7 @@ public class GenerationTest extends AbstractSymtabTest {
         MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
         middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/threeDimMatrixComp/src/");
         //generator for component itself
-        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        middlewareGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         //generator for the ros connection
         middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
 
@@ -274,7 +268,7 @@ public class GenerationTest extends AbstractSymtabTest {
         MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
         middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/twoDimMatrixComp/src/");
         //generator for component itself
-        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        middlewareGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         //generator for the ros connection
         middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
 
@@ -328,7 +322,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/noRosMsg/src");
-        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH),"cpp");
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
 
