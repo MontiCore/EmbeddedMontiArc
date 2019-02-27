@@ -13,7 +13,7 @@ class CNNCreator_LeNet:
 
     module = None
     _current_dir_ = os.path.join('./')
-    _data_dir_    = os.path.join(_current_dir_, 'data', 'LeNet')
+    _data_dir_    = os.path.join(_current_dir_, 'data/LeNet')
     _model_dir_   = os.path.join(_current_dir_, 'model', 'LeNet')
 
     _init_net_    = os.path.join(_model_dir_, 'init_net.pb')

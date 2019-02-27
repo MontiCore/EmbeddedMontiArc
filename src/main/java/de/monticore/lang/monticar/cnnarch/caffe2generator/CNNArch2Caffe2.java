@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
@@ -87,6 +88,11 @@ public class CNNArch2Caffe2 extends CNNArchGenerator{
         }
 
         try{
+            String confPath = getModelsDirPath() + "/data_paths.txt";
+            DataPathConfigParser newParserConfig = new DataPathConfigParser(confPath);
+            String dataPath = newParserConfig.getDataPath(rootModelName);
+            compilationUnit.get().getArchitecture().setDataPath(dataPath);
+            compilationUnit.get().getArchitecture().setComponentName(rootModelName);
             generateFiles(compilationUnit.get().getArchitecture());
         } catch (IOException e){
             Log.error(e.toString());
