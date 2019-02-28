@@ -1,3 +1,9 @@
+if [ "${PWD##*/}" = "docs" ] 
+then 
+    cd .. 
+fi
+
+
 echo Cleaning Unicorn
 cd unicorn
 make clean

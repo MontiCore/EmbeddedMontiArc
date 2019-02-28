@@ -160,6 +160,19 @@ enum class ElfMachineType {
 };
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 
 PROGRAM HEADER
@@ -226,6 +239,19 @@ struct Elf64_ProgramHeader {
         return p_flags & static_cast<Elf64_Word>( perm );
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -336,6 +362,19 @@ struct Elf64_SectionHeader {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
     ELF HEADER
 */
@@ -441,6 +480,20 @@ static_assert( sizeof( Elf64_Header ) == 64 );
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 
     SYMBOL TABLE
@@ -451,6 +504,7 @@ enum class ElfSymbolBind {
     STB_LOCAL  = 0,
     STB_GLOBAL = 1,
     STB_WEAK   = 2,
+    STB_NUM
 };
 enum class ElfSymbolType {
     STT_NOTYPE  = 0,
@@ -460,7 +514,12 @@ enum class ElfSymbolType {
     STT_FILE    = 4,
     STT_COMMON  = 5,
     STT_TLS     = 6,
+    STT_NUM
 };
+
+
+extern ValueName elf_sym_bind_name[static_cast<uint>( ElfSymbolBind::STB_NUM )];
+extern ValueName elf_sym_type_name[static_cast<uint>( ElfSymbolType::STT_NUM )];
 
 struct Elf32_Symbol {
     Elf32_Word    st_name;
@@ -470,11 +529,20 @@ struct Elf32_Symbol {
     unsigned char st_other;
     Elf32_Half    st_shndx;
     
+    uint get_bind_raw(){
+        return (uint) (( st_info ) >> 4);
+    }
+
+    uint get_type_raw(){
+        return ( ( uint )st_info ) & 0xf;
+    }
+
+
     ElfSymbolBind get_bind() {
-        return static_cast<ElfSymbolBind>( ( st_info ) >> 4 );
+        return static_cast<ElfSymbolBind>( get_bind_raw() );
     }
     ElfSymbolType get_type() {
-        return static_cast<ElfSymbolType>( ( ( unsigned int )st_info ) & 0xf );
+        return static_cast<ElfSymbolType>( get_type_raw() );
     }
 };
 
@@ -486,11 +554,20 @@ struct Elf64_Symbol {
     Elf64_Addr st_value;      /* Value of the symbol */
     Elf64_Xword st_size;      /* Associated symbol size */
     
+    uint get_bind_raw(){
+        return (uint) (( st_info ) >> 4);
+    }
+
+    uint get_type_raw(){
+        return ( ( uint )st_info ) & 0xf;
+    }
+
+
     ElfSymbolBind get_bind() {
-        return static_cast<ElfSymbolBind>( ( st_info ) >> 4 );
+        return static_cast<ElfSymbolBind>( get_bind_raw() );
     }
     ElfSymbolType get_type() {
-        return static_cast<ElfSymbolType>( ( ( unsigned int )st_info ) & 0xf );
+        return static_cast<ElfSymbolType>( get_type_raw() );
     }
 };
 
@@ -498,6 +575,68 @@ struct Elf64_Symbol {
 
 
 
+
+
+
+
+
+
+
+
+
+/*
+        RELOCATIONS
+*/
+
+struct Elf32_Rel {
+    Elf32_Addr    r_offset;
+    Elf32_Word    r_info;
+
+    uint get_sym_raw(){
+        return r_info >> 8;
+    }
+    uint get_type_raw(){
+        return r_info & 0xff;
+    }
+};
+
+struct Elf64_Rel {
+    Elf64_Addr r_offset;  /* Location at which to apply the action */
+    Elf64_Xword r_info;   /* index and type of relocation */
+
+    uint get_sym_raw(){
+        return r_info >> 32;
+    }
+    uint get_type_raw(){
+        return r_info & 0xffffffff;
+    }
+};
+
+struct Elf32_Rela {
+    Elf32_Addr    r_offset;
+    Elf32_Word    r_info;
+    Elf32_Sword   r_addend;
+
+    uint get_sym_raw(){
+        return r_info >> 8;
+    }
+    uint get_type_raw(){
+        return r_info & 0xff;
+    }
+};
+
+struct Elf64_Rela {
+    Elf64_Addr r_offset;  /* Location at which to apply the action */
+    Elf64_Xword r_info;   /* index and type of relocation */
+    Elf64_Sxword r_addend;    /* Constant addend used to compute value */
+
+    uint get_sym_raw(){
+        return r_info >> 32;
+    }
+    uint get_type_raw(){
+        return r_info & 0xffffffff;
+    }
+};
 
 
 
@@ -546,8 +685,18 @@ struct ElfFile {
     void print();
     
     void print_sections();
-    void print_segments();
     void print_symbols();
+    void print_relocations();
+    void print_segments();
+
+
+    template<typename T, typename V>
+    ArraySlice<T> get_section_as_table(V &sh){
+        ArraySlice<T> table;
+        auto symbol_count = ( uint )( sh.sh_size / sizeof( T ) );
+        table.init( ( T * )( data.begin() + sh.sh_offset ), 0, symbol_count );
+        return table;
+    }
 };
 
 

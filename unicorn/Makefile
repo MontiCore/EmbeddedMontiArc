@@ -228,7 +228,8 @@ qemu/config-host.h-timestamp:
 	$(MAKE) -C qemu $(SMP_MFLAGS)
 	$(eval UC_TARGET_OBJ += $$(wildcard qemu/util/*.o) $$(wildcard qemu/*.o) $$(wildcard qemu/qom/*.o) $$(wildcard qemu/hw/core/*.o) $$(wildcard qemu/qapi/*.o) $$(wildcard qemu/qobject/*.o))
 
-unicorn: $(LIBRARY) $(ARCHIVE)
+# unicorn: $(LIBRARY) $(ARCHIVE)
+unicorn: $(ARCHIVE)
 
 $(LIBRARY): qemu/config-host.h-timestamp
 ifeq ($(UNICORN_SHARED),yes)

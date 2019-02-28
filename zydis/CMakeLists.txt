@@ -68,6 +68,16 @@ else ()
     add_library("Zydis" STATIC)
 endif ()
 
+get_target_property(TEMP "Zydis" COMPILE_FLAGS)
+if(TEMP STREQUAL "TEMP-NOTFOUND")
+  SET(TEMP "") # Set to empty string
+else()
+  SET(TEMP "${TEMP} ") # A space to cleanly separate from existing content
+endif()
+# Append our values
+SET(TEMP "${TEMP}-fPIC" )
+set_target_properties("Zydis" PROPERTIES COMPILE_FLAGS ${TEMP} )
+
 zyan_set_common_flags("Zydis")
 target_link_libraries("Zydis" PRIVATE "Zycore")
 target_include_directories("Zydis"

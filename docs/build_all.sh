@@ -1,3 +1,8 @@
+if [ "${PWD##*/}" = "docs" ] 
+then
+    cd ..
+fi
+
 echo ""
 echo "**************************************"
 echo "           Making Unicorn"

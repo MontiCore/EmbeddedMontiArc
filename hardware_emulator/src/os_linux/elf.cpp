@@ -21,6 +21,26 @@ ValueName elf_sec_type_name[static_cast<uint>( ElfSecType::SHT_NUM )] = {
     ValueName( ElfSecType::SHT_SYMTAB_SHNDX, "SYMTAB_S" ),
 };
 
+ValueName elf_sym_bind_name[static_cast<uint>( ElfSymbolBind::STB_NUM )] = {
+    ValueName( ElfSymbolBind::STB_LOCAL,    "LOCAL " ),
+    ValueName( ElfSymbolBind::STB_GLOBAL,   "GLOBAL" ),
+    ValueName( ElfSymbolBind::STB_WEAK,     "WEAK  " ),
+};
+ValueName elf_sym_type_name[static_cast<uint>( ElfSymbolType::STT_NUM )] = {
+    ValueName( ElfSymbolType::STT_NOTYPE,   "NOTYPE " ),
+    ValueName( ElfSymbolType::STT_OBJECT,   "OBJECT " ),
+    ValueName( ElfSymbolType::STT_FUNC,     "FUNC   " ),
+    ValueName( ElfSymbolType::STT_SECTION,  "SECTION" ),
+    ValueName( ElfSymbolType::STT_FILE,     "FILE   " ),
+    ValueName( ElfSymbolType::STT_COMMON,   "COMMON " ),
+    ValueName( ElfSymbolType::STT_TLS,      "TLS    " ),
+};
+
+void hlp_print_line(){
+    printf( "========================================" );
+    printf( "========================================\n" );
+}
+
 const char *ElfMag::MAG = "\177ELF";
 
 bool ElfFile::parse() {
@@ -124,16 +144,15 @@ void ElfFile::print() {
         header32().print();
     print_sections();
     print_symbols();
+    print_relocations();
     print_segments();
 }
 
 void ElfFile::print_sections() {
-    printf( "========================================" );
-    printf( "========================================\n" );
+    hlp_print_line();
     printf( " idx offset     load-addr  size       algn"
             " flags      type       section\n" );
-    printf( "========================================" );
-    printf( "========================================\n" );
+    hlp_print_line();
     if ( is_64bit ) {
         for ( auto i : urange( sh64.size() ) ) {
             printf( " %03d ", i );
@@ -146,13 +165,21 @@ void ElfFile::print_sections() {
             sh32[i].print( sec_name_table );
         }
     }
-    printf( "========================================" );
-    printf( "========================================\n" );
+    hlp_print_line();
     printf( "\n" );
 }
 
 void ElfFile::print_segments() {
 }
+
+void hlpsym_print_header(){
+    hlp_print_line();
+    printf(" value      size     shid bind   type    name\n");
+    hlp_print_line();
+}
+
+
+
 
 void ElfFile::print_symbols() {
     if ( is_64bit ) {
@@ -169,15 +196,18 @@ void ElfFile::print_symbols() {
                 auto &str_sh = sh64[sh.sh_link];
                 str_table.init( ( char * )data.begin(), ( uint )str_sh.sh_offset, ( uint )str_sh.sh_size );
                 
-                printf( "%d symbols\n", symbol_count );
-                
-                for ( i = 0; i < symbol_count; i++ ) {
-                    auto &sym = sym64[i];
-                    printf( "0x%08lx ", sym.st_value );
-                    printf( "0x%02x ", sym.get_bind() );
-                    printf( "0x%02x ", sym.get_type() );
+                printf( " %d symbols\n", symbol_count );
+                hlpsym_print_header();
+                for ( auto j : urange(symbol_count) ) {
+                    auto &sym = sym64[j];
+                    printf( " 0x%08" PRIx64 " ", sym.st_value );
+                    printf( "%8" PRIx64 " ", sym.st_size );
+                    printf( "%04" PRIx32 " ", sym.st_shndx );
+                    printf("%s ", elf_sym_bind_name[sym.get_bind_raw()].name);
+                    printf("%s ", elf_sym_type_name[sym.get_type_raw()].name);
                     printf( "%s\n", str_table.begin() + sym.st_name );
                 }
+                hlp_print_line();
             }
         }
     }
@@ -195,17 +225,71 @@ void ElfFile::print_symbols() {
                 auto &str_sh = sh32[sh.sh_link];
                 str_table.init( ( char * )data.begin(), ( uint )str_sh.sh_offset, ( uint )str_sh.sh_size );
                 
-                printf( "%d symbols\n", symbol_count );
-                
-                for ( i = 0; i < symbol_count; i++ ) {
-                    auto &sym = sym32[i];
-                    printf( "0x%08lx ", sym.st_value );
-                    printf( "0x%02x ", sym.get_bind() );
-                    printf( "0x%02x ", sym.get_type() );
-                    printf( "%s\n", str_table[sym.st_name] );
+                printf( " %d symbols\n", symbol_count );
+                hlpsym_print_header();
+                for ( auto j : urange(symbol_count) ) {
+                    auto &sym = sym32[j];
+                    printf( " 0x%08" PRIx32 " ", sym.st_value );
+                    printf( "%8" PRIx32 " ", sym.st_size );
+                    printf( "%04" PRIx32 " ", sym.st_shndx );
+                    printf("%s ", elf_sym_bind_name[sym.get_bind_raw()].name);
+                    printf("%s ", elf_sym_type_name[sym.get_type_raw()].name);
+                    printf( "%s\n", str_table.begin() + sym.st_name );
                 }
+                hlp_print_line();
             }
         }
+    }
+    
+}
+
+void hlprel_print_header(){
+    hlp_print_line();
+    printf(" offset     addend     sym  type symbol-name\n");
+    hlp_print_line();
+}
+
+void ElfFile::print_relocations() {
+    if ( is_64bit ) {
+        for ( auto i : urange( sh64.size() ) ) {
+            auto &sh = sh64[i];
+            auto type = sh.get_type();
+            if ( type == ElfSecType::SHT_RELA ) {
+                printf( "\n[Section %03d]", i );
+
+                //Relocation table
+                auto rela = get_section_as_table<Elf64_Rela>(sh);
+                
+                //Corresponding symbol table
+                auto &sym_sh = sh64[sh.sh_link];
+                auto sym = get_section_as_table<Elf64_Symbol>(sym_sh);
+                //Symbol table string table
+                auto sym_str = get_section_as_table<char>(sh64[sym_sh.sh_link]);
+
+                //Target section
+                auto &target = sh64[sh.sh_info];
+                printf( " %d relocations", rela.size() );
+                printf(" link (sym_table): %03x", sh.sh_link);
+                printf(" info (target): %03x\n", sh.sh_info);
+                hlprel_print_header();
+                for ( auto j : urange(rela.size()) ) {
+                    auto &r = rela[j];
+                    printf( " 0x%08" PRIx64 " ", r.r_offset );
+                    printf( "0x%08" PRIx64 " ", r.r_addend );
+                    printf( "%4" PRIx32 " ", r.get_sym_raw() );
+                    printf( "%04" PRIx32 " ", r.get_type_raw());
+                    auto &s = sym[r.get_sym_raw()];
+                    printf( "%s", sym_str.begin() + s.st_name );
+                    printf("\n");
+                }
+                hlp_print_line();
+            } else if (type == ElfSecType::SHT_REL){
+                printf("TODO SHT_REL 64\n");
+            }
+        }
+    }
+    else {
+        printf("TODO REL / RELA 32\n");
     }
     
 }

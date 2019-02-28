@@ -21,7 +21,7 @@ bool test_simple_dll() {
     interf.os_windows.init( interf.computer );
     WindowsCalls calls;
     calls.add_windows_calls( interf.computer.sys_calls, interf.os_windows );
-    if ( !interf.os_windows.load_file( "SampleDLL.dll" ) )
+    if ( !interf.os_windows.load_file( "sample_dll.dll" ) )
         return false;
         
         
@@ -280,19 +280,7 @@ bool test_autopilot_dll() {
 
 bool test_linux_elf_info() {
     FileReader fr;
-    if ( fr.open( "linux-exec" ) ) {
-        ElfFile elf;
-        fr.read( elf.data );
-        
-        if ( !elf.parse() )
-            return false;
-            
-            
-        //elf.print();
-    }
-    else
-        return false;
-    if ( fr.open( "libLinux.so" ) ) {
+    if ( fr.open( "sample_elf.so" ) ) {
         ElfFile elf;
         fr.read( elf.data );
         
