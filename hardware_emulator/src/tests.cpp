@@ -3,6 +3,7 @@
 #include "emulator/emulator_manager.h"
 #include "os_windows/windows_calls.h"
 #include "config.h"
+#include "os_linux/elf.h"
 
 bool test_simple_dll() {
     ADD_DLL::DllInterface interf;
@@ -274,5 +275,34 @@ bool test_autopilot_dll() {
         
     Log::debug << "Result: [engine=" << engine << ", steering=" << steering << ", brakes=" << brakes << "]\n";
     
+    return true;
+}
+
+bool test_linux_elf_info() {
+    FileReader fr;
+    if ( fr.open( "linux-exec" ) ) {
+        ElfFile elf;
+        fr.read( elf.data );
+        
+        if ( !elf.parse() )
+            return false;
+            
+            
+        //elf.print();
+    }
+    else
+        return false;
+    if ( fr.open( "libLinux.so" ) ) {
+        ElfFile elf;
+        fr.read( elf.data );
+        
+        if ( !elf.parse() )
+            return false;
+            
+            
+        elf.print();
+    }
+    else
+        return false;
     return true;
 }

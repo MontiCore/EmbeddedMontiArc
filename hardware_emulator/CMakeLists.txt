@@ -70,8 +70,10 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   src/os_windows/windows_calls.h
   src/os_windows/windows_calls.cpp
   
-  src/os_linux/so_loader.h
-  src/os_linux/so_loader.cpp
+  src/os_linux/elf.h
+  src/os_linux/elf.cpp
+  src/os_linux/elf_loader.h
+  src/os_linux/elf_loader.cpp
   src/os_linux/os_linux.h
   src/os_linux/os_linux.cpp
   src/os_linux/linux_calls.h

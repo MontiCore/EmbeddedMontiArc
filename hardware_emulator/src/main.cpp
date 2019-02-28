@@ -30,6 +30,9 @@ int main( int argc, char **argv ) {
     if ( !test_case( "Autopilot DLL", test_autopilot_dll ) )
         return 4;
         
+    if ( !test_case( "ELF read", test_linux_elf_info ) )
+        return 5;
+        
     ConsoleColor::Console::drop();
     return 0;
 }

@@ -332,9 +332,17 @@ class ArraySlice {
                 m_size = size;
             }
         }
+        void init( T *reference, uint start, uint size ) {
+            drop();
+            m_start = start;
+            ref = reference + start;
+            m_size = size;
+            
+        }
         void drop() {
             ref = nullptr;
             m_start = 0;
+            m_size = 0;
             m_filler = 0;
         }
         uint size() const {
@@ -792,7 +800,7 @@ namespace ConsoleColor {
         const char *get() {
             return val;
         }
-        bool operator!=(const Color &other){
+        bool operator!=( const Color &other ) {
             return val != other.val;
         }
     };
@@ -827,6 +835,16 @@ struct FileReader {
         target.init( size + 1 );
         file.seekg( 0, std::ios::beg );
         file.read( target.begin(), size );
+        file.close();
+        target[size] = '\0';
+    }
+    
+    void read( Array<uchar> &target ) {
+        auto pos = file.tellg();
+        uint size = ( uint )pos;
+        target.init( size + 1 );
+        file.seekg( 0, std::ios::beg );
+        file.read( ( char * )target.begin(), size );
         file.close();
         target[size] = '\0';
     }
