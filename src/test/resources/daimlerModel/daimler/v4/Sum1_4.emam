@@ -1,0 +1,9 @@
+package daimler.v4;
+      component Sum1_4 {
+        port
+          in Number in2,
+          in Number in3,
+          out Number out1,
+          in (0 km/h: 1 km/h: 250 km/h) v_Vehicle_kmh;
+      }
+

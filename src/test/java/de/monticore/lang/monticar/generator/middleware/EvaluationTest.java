@@ -21,9 +21,15 @@ public class EvaluationTest {
         DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/evaluation/supermario.json"});
     }
 
-    @Ignore("Fails on Spectral")
+    @Ignore("Spectral: isolated vertex")
     @Test
     public void testSimulatorModel() {
         DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/evaluation/simulatormodel.json"});
+    }
+
+    @Ignore("Spectral: isolated vertex")
+    @Test
+    public void testDaimlerModel() {
+        DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/evaluation/daimler.json"});
     }
 }

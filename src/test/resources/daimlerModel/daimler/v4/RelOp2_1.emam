@@ -1,0 +1,8 @@
+package daimler.v4;
+                component RelOp2_1 {
+                  port
+                    out B acusti_warn_b,
+                    in Number in1,
+                    in Number in2;
+                }
+

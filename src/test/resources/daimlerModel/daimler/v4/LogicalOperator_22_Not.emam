@@ -1,0 +1,7 @@
+package daimler.v4;
+      component LogicalOperator_22_Not {
+        port
+          in B in1,
+          out B out1;
+      }
+

@@ -1,0 +1,8 @@
+package daimler.v4;
+                component Mul2 {
+                  port
+                    in (0:100) decelerator_pc,
+                    out (0:100) decelerator_pcOut1,
+                    in Number in2;
+                }
+

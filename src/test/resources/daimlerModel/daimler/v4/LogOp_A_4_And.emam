@@ -1,0 +1,8 @@
+package daimler.v4;
+                    component LogOp_A_4_And {
+                      port
+                        in B in1,
+                        in B in2,
+                        out B out1;
+                    }
+

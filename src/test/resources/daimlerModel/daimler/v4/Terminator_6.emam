@@ -1,0 +1,6 @@
+package daimler.v4;
+      component Terminator_6 {
+        port
+          in B in1;
+      }
+

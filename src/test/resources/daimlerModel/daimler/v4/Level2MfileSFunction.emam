@@ -1,0 +1,9 @@
+package daimler.v4;
+        component Level2MfileSFunction {
+          port
+            in Number in1,
+            out Number tsRTimeEffective,
+            out Number tsRTime,
+            out Number tsSim;
+        }
+

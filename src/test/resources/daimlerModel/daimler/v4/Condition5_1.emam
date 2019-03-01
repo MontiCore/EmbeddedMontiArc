@@ -1,0 +1,9 @@
+package daimler.v4;
+              component Condition5_1 {
+                port
+                  in Number in1,
+                  in B in2,
+                  in B in3,
+                  out B out1;
+              }
+

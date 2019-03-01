@@ -1,0 +1,8 @@
+package daimler.v4;
+        component RelOp4_4_GreaterEquals {
+          port
+            in Number in1,
+            in Number in2,
+            out B out1;
+        }
+

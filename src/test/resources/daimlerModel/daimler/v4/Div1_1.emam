@@ -1,0 +1,8 @@
+package daimler.v4;
+                component Div1_1 {
+                  port
+                    in Number in1,
+                    in Number in2,
+                    out Number out1;
+                }
+
