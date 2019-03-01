@@ -103,6 +103,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
                 }else {
                     componentInstanceSymbol = FlattenArchitecture.flattenArchitecture(genComp);
                 }
+                System.out.println("Subcomponents after flatten: " + componentInstanceSymbol.getSubComponents().size());
             }
 
             //Cluster

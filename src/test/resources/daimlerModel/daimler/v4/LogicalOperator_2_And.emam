@@ -1,0 +1,8 @@
+package daimler.v4;
+                    component LogicalOperator_2_And {
+                      port
+                        in B limiter_active_b,
+                        in B limiter_active_bIn2,
+                        out B limiter_active_bOut1;
+                    }
+

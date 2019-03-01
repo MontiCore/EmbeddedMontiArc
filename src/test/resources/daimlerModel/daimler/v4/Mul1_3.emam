@@ -1,0 +1,8 @@
+package daimler.v4;
+                component Mul1_3 {
+                  port
+                    in (0:100) brakeForce_Distronic_pc,
+                    out (0:100) brakeForce_Distronic_pcOut1,
+                    in Number in2;
+                }
+

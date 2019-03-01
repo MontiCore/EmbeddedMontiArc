@@ -1,0 +1,6 @@
+package daimler.v4;
+                      component Constant1_19_value_1 {
+                        port
+                          out Number out1;
+                      }
+

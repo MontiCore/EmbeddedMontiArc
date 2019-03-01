@@ -1,0 +1,6 @@
+package daimler.v4;
+                    component One_S_3 {
+                      port
+                        out B out1;
+                    }
+
