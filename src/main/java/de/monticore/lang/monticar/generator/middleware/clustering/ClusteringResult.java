@@ -119,6 +119,7 @@ public class ClusteringResult {
             jsonArray.add(result);
         }
         try {
+            file.getParentFile().mkdirs();
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(jsonArray.toString());
             fileWriter.flush();
