@@ -12,6 +12,10 @@ import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.CommonSymbol;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.ConnectivityInspector;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
 
 import java.util.Collection;
 import java.util.List;
@@ -41,6 +45,52 @@ public class AutomaticClusteringHelper {
 
 
         return res;
+    }
+
+    public static double[][] guaranteedConnectedAdjacencyMatrix(List<EMAComponentInstanceSymbol> subcomps, Collection<EMAConnectorInstanceSymbol> connectors, Map<String, Integer> subcompLabels){
+
+
+        double[][] res = createAdjacencyMatrix(subcomps, connectors, subcompLabels);
+        List<Set<EMAComponentInstanceSymbol>> connectedSubcomponentSets = getConnectedSubcomponentSets(subcomps, connectors);
+
+        double max = 0;
+        for (double[] doubles : res) {
+            for (double adj : doubles) {
+                if(adj > max){
+                    max = adj;
+                }
+            }
+        }
+
+        double unconnectedCost = Math.max(1000 * max, 1000);
+
+        List<Integer> representativeLabels = connectedSubcomponentSets.stream()
+                .map(s -> subcompLabels.get(s.iterator().next().getFullName()))
+                .collect(Collectors.toList());
+
+        for (Integer a : representativeLabels) {
+            for (Integer b : representativeLabels) {
+                if(!a.equals(b)){
+                    res[a][b] = unconnectedCost;
+                }
+            }
+        }
+
+        return res;
+    }
+    
+    
+    public static List<Set<EMAComponentInstanceSymbol>> getConnectedSubcomponentSets(List<EMAComponentInstanceSymbol> subcomps, Collection<EMAConnectorInstanceSymbol> connectors){
+        Graph<EMAComponentInstanceSymbol, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
+
+        subcomps.forEach(graph::addVertex);
+        connectors.stream()
+            .filter(c -> subcomps.contains(c.getSourcePort().getComponentInstance()))
+            .filter(c -> subcomps.contains(c.getTargetPort().getComponentInstance()))
+            .forEach(c -> graph.addEdge(c.getSourcePort().getComponentInstance(), c.getTargetPort().getComponentInstance()));
+
+        ConnectivityInspector<EMAComponentInstanceSymbol, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(graph);
+        return connectivityInspector.connectedSets();
     }
 
     public static double[][] adjacencyMatrix2transitionMatrix(double[][] adjacencyMatrix) {

@@ -149,7 +149,7 @@ public class MarkovClusteringAlgorithm implements ClusteringAlgorithm {
         } else {
             List<EMAComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(component);
             Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
-            double[][] adjMatrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
+            double[][] adjMatrix = AutomaticClusteringHelper.guaranteedConnectedAdjacencyMatrix(subcompsOrderedByName,
                     ComponentHelper.getInnerConnectors(component),
                     labelsForSubcomps);
 
