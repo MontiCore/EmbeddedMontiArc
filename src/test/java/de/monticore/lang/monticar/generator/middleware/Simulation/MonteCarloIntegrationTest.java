@@ -12,7 +12,6 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Set;
 
-import static de.monticore.lang.monticar.generator.middleware.Simulation.MonteCarloIntegration.calculateCostOfClusters;
 import static org.junit.Assert.*;
 
 public class MonteCarloIntegrationTest {
@@ -20,26 +19,27 @@ public class MonteCarloIntegrationTest {
     public static final String TEST_PATH = "src/test/resources/";
 
     @Test
-    public void costTest(){
+    public void costRandomClustering(){
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
         //ClustersWithSingleConnection
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
+        System.out.println("Size of Subcomponents: " + componentInstanceSymbol.getSubComponents().size());
+        System.out.println("Components: \n" + componentInstanceSymbol);
+        //System.out.println(componentInstanceSymbol);
+        List<Set<EMAComponentInstanceSymbol>> clusters = MonteCarloIntegration.randomClustering(componentInstanceSymbol, 2);
 
-        SpectralClusteringAlgorithm spectralClusteringAlgorithm = new SpectralClusteringAlgorithm();
-        Object[] params = new Object[]{SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, 3};
-        List<Set<EMAComponentInstanceSymbol>> spectralClusters = spectralClusteringAlgorithm.cluster(flattenedComponent, params);
-        AutomaticClusteringHelper.annotateComponentWithRosTagsForClusters(flattenedComponent, spectralClusters);
 
-        double cost = calculateCostOfClusters(componentInstanceSymbol, spectralClusters);
-        System.out.println("Size of Nodes "+ componentInstanceSymbol.getSubComponents().size());
-        System.out.println("Cost: "+ cost);
-
-        assertTrue(cost == 10);
+        System.out.println(" ------------------");
+        System.out.println(" ");
+        System.out.println("Clusters: \n" + clusters);
+        assertTrue(clusters.size() == 2);
+        assertTrue(clusters.get(0).size()>=1);
+        assertTrue(clusters.get(1).size()>=1);
     }
+
 
     @Test
     public void mcSimulationTest(){
@@ -49,7 +49,8 @@ public class MonteCarloIntegrationTest {
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        double cost = MonteCarloIntegration.simulate(10, componentInstanceSymbol);
-        assertTrue(cost == 10);
+        double cost = MonteCarloIntegration.simulate(100, componentInstanceSymbol, 2);
+        System.out.println("Cost: "+cost);
+        assertTrue(cost >= 10);
     }
 }
