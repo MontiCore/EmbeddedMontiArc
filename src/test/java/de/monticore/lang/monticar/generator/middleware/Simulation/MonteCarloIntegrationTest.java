@@ -2,10 +2,6 @@ package de.monticore.lang.monticar.generator.middleware.Simulation;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.AbstractSymtabTest;
-import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
-import de.monticore.lang.monticar.generator.middleware.clustering.FlattenArchitecture;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringAlgorithm;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringBuilder;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
@@ -17,6 +13,7 @@ import static org.junit.Assert.*;
 public class MonteCarloIntegrationTest {
 
     public static final String TEST_PATH = "src/test/resources/";
+    public static final String TEST_PATH_PACMAN = "src/test/resources/pacman/";
 
     @Test
     public void costRandomClustering(){
@@ -26,20 +23,12 @@ public class MonteCarloIntegrationTest {
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        System.out.println("Size of Subcomponents: " + componentInstanceSymbol.getSubComponents().size());
-        System.out.println("Components: \n" + componentInstanceSymbol);
-        //System.out.println(componentInstanceSymbol);
         List<Set<EMAComponentInstanceSymbol>> clusters = MonteCarloIntegration.randomClustering(componentInstanceSymbol, 2);
 
-
-        System.out.println(" ------------------");
-        System.out.println(" ");
-        System.out.println("Clusters: \n" + clusters);
-        assertTrue(clusters.size() == 2);
-        assertTrue(clusters.get(0).size()>=1);
-        assertTrue(clusters.get(1).size()>=1);
+        assertTrue("Too many or less clusters created.", clusters.size() == 2);
+        assertTrue("Subcomponent 1 is not distributed evenly/correctly!", clusters.get(0).size()>=1);
+        assertTrue("Subcomponent 2 is not distributed evenly/correctly!",clusters.get(1).size()>=1);
     }
-
 
     @Test
     public void mcSimulationTest(){
@@ -49,8 +38,24 @@ public class MonteCarloIntegrationTest {
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        double cost = MonteCarloIntegration.simulate(100, componentInstanceSymbol, 2);
-        System.out.println("Cost: "+cost);
+        EMAComponentInstanceSymbol componentInstanceSymbol2 = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        // random clustering
+        double cost = MonteCarloIntegration.simulate(100, componentInstanceSymbol, 2, 2);
+
         assertTrue(cost >= 10);
     }
+
+    @Test
+    public void mcSimulationPacmanTest(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH_PACMAN);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("de.rwth.pacman.heithoff2.controller", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        // simulation with random Clustering
+        double cost = MonteCarloIntegration.simulate(10, componentInstanceSymbol, 10, 2);
+    }
+
+
 }
