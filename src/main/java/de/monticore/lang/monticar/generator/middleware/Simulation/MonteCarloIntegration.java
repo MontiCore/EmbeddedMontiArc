@@ -1,39 +1,40 @@
 package de.monticore.lang.monticar.generator.middleware.Simulation;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.clustering.FlattenArchitecture;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringBuilder;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class MonteCarloIntegration {
 
-    public static double simulate(int iterations, EMAComponentInstanceSymbol componentInstanceSymbol){
+    public static double simulate(int iterations, EMAComponentInstanceSymbol componentInstanceSymbol, int numberOfClusters){
         EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
 
         double sum = 0;
 
         for(int i = 0; i<iterations; i++){
-            // Cluster with Spectral + save the cost: Parameter(Number of clusters, data)
-            int randNumClusters = randomNumberInRange(2, componentInstanceSymbol.getSubComponents().size());
 
+            /*
+            // This would be with Spectral Clustering
             SpectralClusteringAlgorithm spectralClusteringAlgorithm = new SpectralClusteringAlgorithm();
-            Object[] params = new Object[]{SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, randNumClusters};
-            List<Set<EMAComponentInstanceSymbol>> spectralClusters = spectralClusteringAlgorithm.cluster(flattenedComponent, params);
-            AutomaticClusteringHelper.annotateComponentWithRosTagsForClusters(flattenedComponent, spectralClusters);
+            Object[] params = new Object[]{SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, numberOfClusters};
+            List<Set<EMAComponentInstanceSymbol>> clusters = spectralClusteringAlgorithm.cluster(flattenedComponent, params);
+            */
+
+            // Let's random cluster the model
+            List<Set<EMAComponentInstanceSymbol>> clusters = randomClustering(flattenedComponent, numberOfClusters);
 
             //iterate through all clusters and add all cost of the ROS Tags between clusters
-            sum+=calculateCostOfClusters(componentInstanceSymbol, spectralClusters);
+            sum += AutomaticClusteringHelper.getTypeCostHeuristic(flattenedComponent, clusters);
         }
 
         // return average costs of clustering with spectral
-        return sum/iterations;
+        double res = sum/iterations;
+        System.out.println("Result: " + res);
+        return res;
     }
 
     public static int randomNumberInRange(int min, int max) {
@@ -41,37 +42,44 @@ public class MonteCarloIntegration {
         return random.nextInt((max - min) + 1) + min;
     }
 
-    public static double calculateCostOfClusters(EMAComponentInstanceSymbol componentInstanceSymbol, List<Set<EMAComponentInstanceSymbol>> clusters) {
-        Collection<EMAConnectorInstanceSymbol> connectors = componentInstanceSymbol.getConnectorInstances();
+    public static List<Set<EMAComponentInstanceSymbol>> randomClustering(EMAComponentInstanceSymbol componentInstanceSymbol, int numberOfClusters){
+        List<Set<EMAComponentInstanceSymbol>> clusters = new ArrayList<>();
 
-        double sum = 0;
-
-        for(EMAConnectorInstanceSymbol con : connectors){
-            System.out.println("Connector size "+connectors.size());
-            System.out.println("Con: "+con);
-            // -1 = super comp
-            int sourceClusterLabel = -1;
-            int targetClusterLabel = -1;
-
-            EMAComponentInstanceSymbol sourceComp = con.getSourcePort().getComponentInstance();
-            EMAComponentInstanceSymbol targetComp = con.getTargetPort().getComponentInstance();
-
-            for(int i = 0; i < clusters.size(); i++){
-                if(clusters.get(i).contains(sourceComp)){
-                    sourceClusterLabel = i;
-                }
-
-                if(clusters.get(i).contains(targetComp)){
-                    targetClusterLabel = i;
-                }
-            }
-            if(sourceClusterLabel != targetClusterLabel){
-                sum +=AutomaticClusteringHelper.getTypeCostHeuristic(con.getSourcePort());
-                System.out.println("CostSub: " + AutomaticClusteringHelper.getTypeCostHeuristic(con.getSourcePort()));
-            }
-
+        for(int i = 0; i<numberOfClusters; i++){
+            clusters.add(new HashSet<>());
         }
 
-        return sum;
+        // All subcomponents of the Symbol
+        Collection<EMAComponentInstanceSymbol> subcomponents = componentInstanceSymbol.getSubComponents();
+
+        // Put subcomponents into an ArrayList
+        ArrayList<EMAComponentInstanceSymbol> arrayListSubComponent = new ArrayList<>();
+        for (EMAComponentInstanceSymbol subcomp : subcomponents) {
+            arrayListSubComponent.add(subcomp);
+        }
+
+        System.out.println("ArrayList: " + arrayListSubComponent);
+
+        // Distribute randomly!
+        // First of all, give each of the clusters one element randomly
+        for(int j = 0; j < clusters.size(); j++){
+            if(!arrayListSubComponent.isEmpty()) {
+                int randN = randomNumberInRange(0, arrayListSubComponent.size()-1);
+                clusters.get(j).add(arrayListSubComponent.get(randN));
+                arrayListSubComponent.remove(randN);
+            }
+        }
+
+        int numberOfSubcomponents = arrayListSubComponent.size();
+        // Then, a random element is assigned to a random cluster until every element is assigned
+        for(int h = 0; h<numberOfSubcomponents; h++){
+            int randElement = randomNumberInRange(0,arrayListSubComponent.size()-1);
+            int randCluster = randomNumberInRange(0,clusters.size()-1);
+
+            clusters.get(randCluster).add(arrayListSubComponent.get(randElement));
+            arrayListSubComponent.remove(randElement);
+        }
+
+        return clusters;
     }
 }
