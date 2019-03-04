@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.middleware.Simulation;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.AbstractSymtabTest;
+import de.monticore.lang.monticar.generator.middleware.clustering.FlattenArchitecture;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
@@ -16,14 +17,16 @@ public class MonteCarloIntegrationTest {
     public static final String TEST_PATH_PACMAN = "src/test/resources/pacman/";
 
     @Test
-    public void costRandomClustering(){
+    public void randomClusteringTest(){
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
         //ClustersWithSingleConnection
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        List<Set<EMAComponentInstanceSymbol>> clusters = MonteCarloIntegration.randomClustering(componentInstanceSymbol, 2);
+        EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
+
+        List<Set<EMAComponentInstanceSymbol>> clusters = MonteCarloIntegration.randomClustering(flattenedComponent, 2);
 
         assertTrue("Too many or less clusters created.", clusters.size() == 2);
         assertTrue("Subcomponent 1 is not distributed evenly/correctly!", clusters.get(0).size()>=1);
@@ -31,30 +34,41 @@ public class MonteCarloIntegrationTest {
     }
 
     @Test
-    public void mcSimulationTest(){
+    public void monteCarloSimulationTest(){
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
         //ClustersWithSingleConnection
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        EMAComponentInstanceSymbol componentInstanceSymbol2 = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
+        EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
 
         // random clustering
-        double cost = MonteCarloIntegration.simulate(100, componentInstanceSymbol, 2, 2);
+        double cost = MonteCarloIntegration.simulate(100, flattenedComponent, 2, 2);
 
-        assertTrue(cost >= 10);
+        // spectral clustering
+        double cost2 = MonteCarloIntegration.simulate(100, flattenedComponent, 2, 1);
+
+        assertTrue(cost >= cost2);
     }
 
     @Test
-    public void mcSimulationPacmanTest(){
+    public void monteCarloSimulationPacmanTest(){
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH_PACMAN);
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("de.rwth.pacman.heithoff2.controller", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
+        EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
+
+        // simulation with spectral Clustering
+        double costS = MonteCarloIntegration.simulate(10, flattenedComponent, 10, 1);
+        System.out.println("Cost Spectral Clustering: "+costS);
+
         // simulation with random Clustering
-        double cost = MonteCarloIntegration.simulate(10, componentInstanceSymbol, 10, 2);
+        double costR = MonteCarloIntegration.simulate(10, flattenedComponent, 10, 2);
+        System.out.println("Cost Random Clustering: "+costR);
+
+        assertTrue(costR >= costS);
     }
 
 
