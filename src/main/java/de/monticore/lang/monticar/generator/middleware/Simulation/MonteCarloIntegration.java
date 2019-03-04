@@ -13,7 +13,7 @@ public class MonteCarloIntegration {
     // index 1: Spectral Clustering
     // Index 2: Random Clustering
     public static double simulate(int iterations, EMAComponentInstanceSymbol componentInstanceSymbol, int numberOfClusters, int index){
-        EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
+        //EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
 
         double sum = 0;
 
@@ -22,24 +22,24 @@ public class MonteCarloIntegration {
                 // This would be with Spectral Clustering
                 SpectralClusteringAlgorithm spectralClusteringAlgorithm = new SpectralClusteringAlgorithm();
                 Object[] params = new Object[]{SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, numberOfClusters};
-                List<Set<EMAComponentInstanceSymbol>> clusters = spectralClusteringAlgorithm.cluster(flattenedComponent, params);
+                List<Set<EMAComponentInstanceSymbol>> clusters = spectralClusteringAlgorithm.cluster(componentInstanceSymbol, params);
 
                 //iterate through all clusters and add all cost of the ROS Tags between clusters
-                sum += AutomaticClusteringHelper.getTypeCostHeuristic(flattenedComponent, clusters);
+                sum += AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol, clusters);
             }
         }
         else if(index == 2) {
             for (int j = 0; j < iterations; j++) {
                 // Let's Random cluster the model
-                List<Set<EMAComponentInstanceSymbol>> clusters = randomClustering(flattenedComponent, numberOfClusters);
+                List<Set<EMAComponentInstanceSymbol>> clusters = randomClustering(componentInstanceSymbol, numberOfClusters);
 
                 //iterate through all clusters and add all cost of the ROS Tags between clusters
-                sum += AutomaticClusteringHelper.getTypeCostHeuristic(flattenedComponent, clusters);
+                sum += AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol, clusters);
             }
         }
         // return average costs of clustering with spectral
         double res = sum/iterations;
-        System.out.println("Average Costs: " + res);
+        //System.out.println("Average Costs: " + res);
         return res;
     }
 
@@ -83,7 +83,6 @@ public class MonteCarloIntegration {
             clusters.get(randCluster).add(arrayListSubComponent.get(randElement));
             arrayListSubComponent.remove(randElement);
         }
-
         return clusters;
     }
 }
