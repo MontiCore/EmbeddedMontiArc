@@ -16,6 +16,10 @@
         "numberOfClusters":10
       },
       {
+        "name":"SpectralClustering",
+        "numberOfClusters":457
+      },
+      {
         "name":"Markov"
       },
       {
