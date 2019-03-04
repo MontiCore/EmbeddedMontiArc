@@ -7,6 +7,7 @@ import de.monticore.lang.monticar.generator.middleware.cli.ResultChoosingStrateg
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.*;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicAlgorithmCliParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicSpectralClusteringCliParameters;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -168,6 +169,20 @@ public class ParameterLoadingTest {
         for(AlgorithmCliParameters s : spectrals){
             System.out.println(s);
         }
+    }
+
+    @Test
+    public void testInvalidFieldName() throws FileNotFoundException {
+        Log.enableFailQuick(false);
+        Log.getFindings().clear();
+
+        loadCliParameters("invalidFieldName");
+
+        assertEquals(1, Log.getErrorCount());
+        assertTrue(Log.getFindings().get(0).getMsg().contains("0x9DB6E"));
+
+        Log.getFindings().clear();
+        Log.enableFailQuick(true);
     }
 
 
