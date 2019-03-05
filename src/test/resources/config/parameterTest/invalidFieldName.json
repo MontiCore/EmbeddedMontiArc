@@ -1,6 +1,5 @@
 {
   "mmodelsDir": "src/test/resources/pacman/",
-  "modelsDir": "src/test/resources/pacman/",
   "outputDir": "target/cliTest/allAlgos/",
   "rootModel": "de.rwth.pacman.heithoff2.controller",
   "generators": ["cpp","roscpp"]
