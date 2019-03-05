@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CliParametersLoader {
@@ -45,17 +46,19 @@ public class CliParametersLoader {
                 .create();
 
 
-        JsonDeserializer<DynamicSpectralClusteringCliParameters> desCliParameters = new StrictJsonDeserializer<>(Arrays.asList("modelsDir","outputDir","rootModel","generators","emadlBackend","writeTagFile","clusteringParameters"), delegateGson);
+        JsonDeserializer<CliParameters> desCliParameters = new StrictJsonDeserializer<>(Arrays.asList("emadlBackend","writeTagFile","clusteringParameters","modelsDir","outputDir","rootModel","generators"), delegateGson);
         JsonDeserializer<ClusteringParameters> desClustering = new StrictJsonDeserializer<>(Arrays.asList("numberOfClusters","flatten","flattenLevel","chooseBy","algorithmParameters"), delegateGson);
 
         JsonDeserializer<DynamicSpectralClusteringCliParameters> desSpectral = new StrictJsonDeserializer<>(Arrays.asList("numberOfClusters","l","sigma"), delegateGson);
-        JsonDeserializer<DynamicSpectralClusteringCliParameters> desMarkov = new StrictJsonDeserializer<>(Arrays.asList("max_residual","gamma_exp","loop_gain","zero_max"), delegateGson);
-        JsonDeserializer<DynamicSpectralClusteringCliParameters> desDBScan = new StrictJsonDeserializer<>(Arrays.asList("min_pts","radius"), delegateGson);
+        JsonDeserializer<DynamicMarkovCliParameters> desMarkov = new StrictJsonDeserializer<>(Arrays.asList("max_residual","gamma_exp","loop_gain","zero_max"), delegateGson);
+        JsonDeserializer<DynamicDBScanCliParameters> desDBScan = new StrictJsonDeserializer<>(Arrays.asList("min_pts","radius"), delegateGson);
+        JsonDeserializer<DynamicAffinityPropagationCliParameters> desAff = new StrictJsonDeserializer<>(Collections.emptyList(), delegateGson);
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(DynamicSpectralClusteringCliParameters.class, desSpectral)
                 .registerTypeAdapter(DynamicMarkovCliParameters.class, desMarkov)
                 .registerTypeAdapter(DynamicDBScanCliParameters.class, desDBScan)
+                .registerTypeAdapter(DynamicAffinityPropagationCliParameters.class, desAff)
                 .registerTypeAdapter(CliParameters.class, desCliParameters)
                 .registerTypeAdapter(ClusteringParameters.class, desClustering)
                 .create();
