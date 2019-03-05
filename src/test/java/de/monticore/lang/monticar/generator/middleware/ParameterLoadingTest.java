@@ -186,19 +186,4 @@ public class ParameterLoadingTest {
     }
 
 
-    @Test
-    public void testMissingRequiredField() throws FileNotFoundException {
-        Log.enableFailQuick(false);
-        Log.getFindings().clear();
-
-        loadCliParameters("missingRequiredField");
-
-        assertEquals(1, Log.getErrorCount());
-        assertTrue(Log.getFindings().get(0).getMsg().contains("0x4C433"));
-
-        Log.getFindings().clear();
-        Log.enableFailQuick(true);
-    }
-
-
 }
