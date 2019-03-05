@@ -29,13 +29,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>sensors</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
@@ -46,21 +46,21 @@
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>util</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
 
         <!-- Sensors have dependency to environment -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>environment</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
 
         <!-- Sensors have dependency to vehicle -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>vehicle</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
 
         <!-- Sensors have dependency to commons -->
