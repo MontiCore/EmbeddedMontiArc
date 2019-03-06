@@ -46,7 +46,7 @@ public class GenerationTest extends AbstractSymtabTest {
     private void createHashFile() {
         try {
             cifarTrainingHashFile.toFile().getParentFile().mkdirs();
-            List<String> lines = Arrays.asList("AF9A637D700CB002266D20BF242F4A59#B87F2C80B19CABE0899C30FA66763A47#C4C23549E737A759721D6694C75D9771#5AF0CE68E408E8C1F000E49D72AC214A");
+            List<String> lines = Arrays.asList("AF9A637D700CB002266D20BF242F4A59#27150AFBB0093AE0914C701ECA0E0040#C4C23549E737A759721D6694C75D9771#5AF0CE68E408E8C1F000E49D72AC214A");
             Files.write(cifarTrainingHashFile, lines, Charset.forName("UTF-8"));
         }
         catch(Exception e) {
@@ -73,7 +73,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testCifar10Generation() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python", "-f", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
@@ -95,7 +95,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testSimulatorGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "simulator.MainController", "-b", "MXNET", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "simulator.MainController", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python", "-f", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -103,7 +103,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testAddGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "Add", "-b", "MXNET", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "Add", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python", "-f", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -111,7 +111,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testAlexnetGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "Alexnet", "-b", "MXNET", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "Alexnet", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python", "-f", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -119,7 +119,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testResNeXtGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "ResNeXt50", "-b", "MXNET", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "ResNeXt50", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python", "-f", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -127,7 +127,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testThreeInputGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "ThreeInputCNN_M14", "-b", "MXNET", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "ThreeInputCNN_M14", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python", "-f", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
     }
@@ -135,7 +135,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testMultipleOutputsGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "MultipleOutputs", "-b", "MXNET", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "MultipleOutputs", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python", "-f", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
     }
@@ -143,7 +143,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testVGGGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "VGG16", "-b", "MXNET", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "VGG16", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python", "-f", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -152,7 +152,7 @@ public class GenerationTest extends AbstractSymtabTest {
     public void testMultipleInstances() throws IOException, TemplateException {
         try {
             Log.getFindings().clear();
-            String[] args = {"-m", "src/test/resources/models/", "-r", "InstanceTest.MainB", "-b", "MXNET", "-f", "n"};
+            String[] args = {"-m", "src/test/resources/models/", "-r", "InstanceTest.MainB", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python", "-f", "n"};
             EMADLGeneratorCli.main(args);
             assertTrue(Log.getFindings().isEmpty());
         }
@@ -197,7 +197,7 @@ public class GenerationTest extends AbstractSymtabTest {
     public void testDontRetrain1() {
         // The training hash is stored during the first training, so the second one is skipped
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
         
@@ -215,9 +215,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         createHashFile();
 
-        System.out.println("============ Test 2 started ===============");
-
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
         assertTrue(Log.getFindings().get(0).getMsg().contains("skipped"));
@@ -229,7 +227,7 @@ public class GenerationTest extends AbstractSymtabTest {
     public void testDontRetrain3() {
         // Multiple instances of the first NN are used. Only the first one should cause a training
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "instanceTestCifar.MainC", "-b", "MXNET"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "instanceTestCifar.MainC", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
         assertTrue(Log.getFindings().get(0).getMsg().contains("skipped"));
@@ -241,7 +239,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         createHashFile();
 
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET", "-f", "y"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET", "-p", "/home/christopher/anaconda3/bin/python", "-f", "y"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 

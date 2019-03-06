@@ -235,7 +235,6 @@ public class EMADLGenerator {
             }
             String trainingHash = emadlHash + "#" + cnntHash + "#" + trainingDataHash + "#" + testDataHash;
 
-            System.out.println("Hash: " + trainingHash);
             boolean alreadyTrained = newHashes.contains(trainingHash) || isAlreadyTrained(trainingHash, componentInstance);
             if(alreadyTrained && !forced.equals("y")) {
                 Log.warn("Training of model " + componentInstance.getFullName() + " skipped");
