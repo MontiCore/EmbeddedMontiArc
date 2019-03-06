@@ -37,7 +37,6 @@ testJobLinux:
   stage: linux
   image: maven:3-jdk-8
   script:
-  - pip install mxnet | echo "Pip install failed"
   - apt-get update
   - apt-get install -y wget python gcc
   - wget https://bootstrap.pypa.io/get-pip.py
