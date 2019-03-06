@@ -38,6 +38,11 @@ testJobLinux:
   image: maven:3-jdk-8
   script:
   - apt-get update
+  - apt-get install -y git
+  - git clone https://github.com/apache/incubator-mxnet.git mxnet-source
+  - cp -r mxnet-source/include/mxnet /usr/include/mxnet
+  - ls /usr/include/
+  - ls /usr/include/mxnet
   - apt-get install -y wget python gcc
   - wget https://bootstrap.pypa.io/get-pip.py
   - python get-pip.py
