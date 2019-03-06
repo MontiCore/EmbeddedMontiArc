@@ -2,7 +2,7 @@ configuration CifarNetwork{
      num_epoch:10
      batch_size:5
      normalize:true
-     context:gpu
+     context:cpu
      load_checkpoint:false
      optimizer:adam{
          learning_rate:0.01
