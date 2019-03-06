@@ -215,6 +215,8 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         createHashFile();
 
+        System.out.println("============ Test 2 started ===============");
+
         String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);

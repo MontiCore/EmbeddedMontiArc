@@ -221,7 +221,6 @@ public class EMADLGenerator {
             String emadlHash = getChecksumForFile(emadlPath);
             String cnntHash = getChecksumForFile(cnntPath);
 
-            // This is not the real path to the training data! Adapt accordingly once sub-task 4 is solved
             String componentConfigFilename = componentInstance.getComponentType().getReferencedSymbol().getFullName().replaceAll("\\.", "/");
 
             String b = backend.getBackendString(backend);
@@ -236,6 +235,7 @@ public class EMADLGenerator {
             }
             String trainingHash = emadlHash + "#" + cnntHash + "#" + trainingDataHash + "#" + testDataHash;
 
+            System.out.println("Hash: " + trainingHash);
             boolean alreadyTrained = newHashes.contains(trainingHash) || isAlreadyTrained(trainingHash, componentInstance);
             if(alreadyTrained && !forced.equals("y")) {
                 Log.warn("Training of model " + componentInstance.getFullName() + " skipped");
