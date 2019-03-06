@@ -13,7 +13,7 @@ if __name__ == "__main__":
         batch_size=5,
         num_epoch=10,
         load_checkpoint=False,
-        context='gpu',
+        context='cpu',
         normalize=True,
         optimizer='adam',
         optimizer_params={
