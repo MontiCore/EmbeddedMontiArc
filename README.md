@@ -73,7 +73,7 @@ configuration VGG16{
     }
 }
 ```
-3. Generate C code using neural networks which were trained using the specified deep learning backend. The generator receives the following command line parameters:
+3. Generate C code which uses neural networks that were trained using the specified deep learning backend. The generator receives the following command line parameters:
     * `-m`    path to directory with EMADL models
     * `-r`    name of the root model
     * `-o`    output path
@@ -83,5 +83,3 @@ configuration VGG16{
 
     Assuming both the architecture definition `VGG16.emadl` and the corresponding training configuration `VGG16.cnnt` are located in a folder `models` and the target code should be generated in  a `target` folder using the `MXNet` backend, an example of a command is then:  
     ```java -jar embedded-montiarc-emadl-generator-0.2.4-SNAPSHOT-jar-with-dependencies.jar -m models -r VGG16 -o target -b MXNET```
-
-    You can find the EMADL2CPP jar [here](doc/embedded-montiarc-emadl-generator-0.2.4-SNAPSHOT-jar-with-dependencies.jar)
