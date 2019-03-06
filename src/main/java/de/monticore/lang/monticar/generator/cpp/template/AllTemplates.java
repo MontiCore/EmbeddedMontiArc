@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.cpp.template;
 
-import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterDataModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ComponentStreamTestViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.EnumViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
@@ -43,7 +43,8 @@ public final class AllTemplates {
     private static final Template TESTS_MAIN_ENTRY_ARMADILLO;
     private static final Template STRUCT;
     private static final Template ENUM;
-    private static final Template AUTOPILOT_ADAPTER;
+    private static final Template AUTOPILOT_ADAPTER_CPP;
+    private static final Template AUTOPILOT_ADAPTER_H;
     private static final Template SERVER_WRAPPER;
 
     private static final Template DYNAMICS_EVENT_PortValueCheker;
@@ -62,7 +63,8 @@ public final class AllTemplates {
             TESTS_MAIN_ENTRY_ARMADILLO = conf.getTemplate("/test/TestsMainEntryArmadillo.ftl");
             STRUCT = conf.getTemplate("/type/Struct.ftl");
             ENUM = conf.getTemplate("/type/Enum.ftl");
-            AUTOPILOT_ADAPTER = conf.getTemplate("/autopilotadapter/AutopilotAdapter.ftl");
+            AUTOPILOT_ADAPTER_CPP = conf.getTemplate("/autopilotadapter/AutopilotAdapterCpp.ftl");
+            AUTOPILOT_ADAPTER_H = conf.getTemplate("/autopilotadapter/AutopilotAdapterH.ftl");
             SERVER_WRAPPER = conf.getTemplate("/serverwrapper/ServerWrapper.ftl");
             DYNAMICS_EVENT_PortValueCheker = conf.getTemplate("/dynamics/events_port_value_check_h.ftl");
             DYNAMICS_EVENT_DynamicHelper = conf.getTemplate("/dynamics/dynamic_port_request_connect_helper_h.ftl");
@@ -95,8 +97,11 @@ public final class AllTemplates {
         return generate(ENUM, viewModel);
     }
 
-    public static String generateAutopilotAdapter(AutopilotAdapterViewModel viewModel) {
-        return generate(AUTOPILOT_ADAPTER, viewModel);
+    public static String generateAutopilotAdapterCpp(AutopilotAdapterDataModel viewModel) {
+        return generate(AUTOPILOT_ADAPTER_CPP, viewModel);
+    }
+    public static String generateAutopilotAdapterH(AutopilotAdapterDataModel viewModel) {
+        return generate(AUTOPILOT_ADAPTER_H, viewModel);
     }
 
     public static String generateServerWrapper(ServerWrapperViewModel viewModel) {

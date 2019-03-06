@@ -23,6 +23,7 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.ma2cfg.helper.Names;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
@@ -36,7 +37,7 @@ import de.monticore.lang.monticar.generator.cpp.converter.OptimizationSymbolHand
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
-import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterDataModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
 import de.monticore.lang.monticar.generator.testing.StreamTestGenerator;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
@@ -482,15 +483,29 @@ public class GeneratorCPP implements Generator {
 
     private static List<FileContent> getAutopilotAdapterFiles(EMAComponentInstanceSymbol componentSymbol) {
         List<FileContent> result = new ArrayList<>();
-        result.add(FileUtil.getResourceAsFile("/template/autopilotadapter/AutopilotAdapter.h", "AutopilotAdapter.h"));
-        result.add(generateAutopilotAdapter(componentSymbol));
+
+        AutopilotAdapterDataModel dm = new AutopilotAdapterDataModel();
+        dm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
+        dm.setInputCount(componentSymbol.getIncomingPortInstances().size());
+        dm.setOutputCount(componentSymbol.getOutgoingPortInstances().size());
+        for ( EMAPortInstanceSymbol port : componentSymbol.getIncomingPortInstances()){
+            dm.addInput(port.getName(), port.getTypeReference().getName());
+        }
+        for ( EMAPortInstanceSymbol port : componentSymbol.getOutgoingPortInstances()){
+            dm.addOutput(port.getName(), port.getTypeReference().getName());
+        }
+
+        result.add(generateAutopilotAdapterH(dm));
+        result.add(generateAutopilotAdapterCpp(dm));
         return result;
     }
 
-    private static FileContent generateAutopilotAdapter(EMAComponentInstanceSymbol componentSymbol) {
-        AutopilotAdapterViewModel vm = new AutopilotAdapterViewModel();
-        vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
-        String fileContents = AllTemplates.generateAutopilotAdapter(vm);
+    private static FileContent generateAutopilotAdapterH(AutopilotAdapterDataModel dm) {
+        String fileContents = AllTemplates.generateAutopilotAdapterH(dm);
+        return new FileContent(fileContents, "AutopilotAdapter.h");
+    }
+    private static FileContent generateAutopilotAdapterCpp(AutopilotAdapterDataModel dm) {
+        String fileContents = AllTemplates.generateAutopilotAdapterCpp(dm);
         if (currentInstance.generateCMake)
             addAutopilotAdapterCMakeConfig();
         return new FileContent(fileContents, "AutopilotAdapter.cpp");
