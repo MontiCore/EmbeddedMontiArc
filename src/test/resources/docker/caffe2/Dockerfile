@@ -42,3 +42,10 @@ RUN cd pytorch && cd build && make install
 
 RUN python -c 'from caffe2.python import core' 2>/dev/null && echo "Success" || echo "Failure"
 
+RUN pip install lmdb
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        liblapack-dev libblas-dev libboost-dev libarmadillo-dev && \
+    rm -rf /var/lib/apt/lists/* 
+
