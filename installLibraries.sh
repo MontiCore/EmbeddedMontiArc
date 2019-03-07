@@ -22,7 +22,6 @@ COINCAR_DOWNLOAD_LINK="https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?
 mkdir -p "$ARMADILLO_INSTALL_DIR/"
 wget -O /tmp/download.zip "$ARMADILLO_DOWNLOAD_LINK"
 unzip -q /tmp/download.zip -d "$ARMADILLO_INSTALL_DIR/"
-echo "export Armadillo_HOME='$ARMADILLO_INSTALL_DIR/armadillo-8.500.1-linux'" >> ~/.bashrc
 rm /tmp/download.zip
 
 # install coincar_sim
@@ -30,11 +29,16 @@ rm /tmp/download.zip
 mkdir -p "$COINCAR_INSTALL_DIR/"
 wget -O /tmp/download.zip "$COINCAR_DOWNLOAD_LINK"
 unzip -q /tmp/download.zip -d "$COINCAR_INSTALL_DIR/"
-echo "export COINCAR_SIM_HOME='$COINCAR_INSTALL_DIR/RosSimulationFramework'" >> ~/.bashrc
 rm /tmp/download.zip
 
-# add ROS_HOME
+# add everything to .bashrc
+echo "# Begin EMA Libraries" >> ~/.bashrc
+echo "export Armadillo_HOME='$ARMADILLO_INSTALL_DIR/armadillo-8.500.1-linux'" >> ~/.bashrc
+echo "export COINCAR_SIM_HOME='$COINCAR_INSTALL_DIR/RosSimulationFramework'" >> ~/.bashrc
 echo "export ROS_HOME='/opt/ros/kinetic" >> ~/.bashrc
+echo "# End EMA Libraries" >> ~/.bashrc
+
+source ~/.bashrc
 
 # compile coincar_sim
 cd "$COINCAR_INSTALL_DIR/RosSimulationFramework"
