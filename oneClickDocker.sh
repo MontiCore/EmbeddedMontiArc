@@ -14,6 +14,6 @@ docker run -it --rm \
         -v $XAUTH:$XAUTH:rw \
         -e XAUTHORITY=${XAUTH} \
         -e DISPLAY \
-        ema-coincar bash -c "cd project; ./compile.sh; ./startAll.sh"
+        registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/cooperativeintersection/emam-coincar bash -c "cd project; ./compile.sh; ./startAll.sh"
 
 chown -R `who am i | awk '{print $1}'` "$curDir/target/"
