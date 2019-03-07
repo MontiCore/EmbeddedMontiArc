@@ -1,0 +1,6 @@
+{
+  "modelsDir": "src/main/emam/",
+  "outputDir": "target/",
+  "rootModel": "ba.system",
+  "generators": ["cpp","roscpp"]
+}
