@@ -17,7 +17,7 @@ Warning: This will take long, since a lot of packages are installed and the simu
 Uninstall note: these scripts will add multiple lines to your .bashrc, which you should delete after deleting the downloaded libraries
 
 ## Usage
-0. (Make changes the EMAM-Model)
+0. (Make changes to the EMAM-Model)
 1. Run `sudo ./oneClickDocker.sh`(if you installed using docker) or `./oneClick.sh`(if you installed native) from the root of this Project
     * The project will be generated,
     * compiled,
