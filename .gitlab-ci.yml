@@ -33,28 +33,26 @@ masterJobLinux:
   only:
   - master
 
-testJobLinux:
+integrationMXNetJobLinux:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/mxnet:v0.0.1
   script:
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -Dtest=IntegrationMXNetTest
   only:
   - oneclick_nn_training 
   
 masterJobWindows:
   stage: windows
   script:
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -Dtest=!IntegrationMXNetTest
   tags:
   - Windows10
-  except:
-  - oneclick_nn_training
 
 BranchJobLinux:
   stage: linux
   image: maven:3-jdk-8
   script: 
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -Dtest=!IntegrationMXNetTest
   - cat target/site/jacoco/index.html
   except:
   - master
