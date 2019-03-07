@@ -1,8 +1,8 @@
 package cNNCalculator;
 
-component Network<Z(2:oo) classes = 10>{
+component Network{
     ports in Z(0:255)^{1, 28, 28} image,
-         out Q(0:1)^{classes} predictions;
+         out Q(0:1)^{10} predictions;
 
     implementation CNN {
         image ->
@@ -12,7 +12,7 @@ component Network<Z(2:oo) classes = 10>{
         Pooling(pool_type="max", kernel=(2,2), stride=(2,2), padding="valid") ->
         FullyConnected(units=500) ->
         Relu() ->
-        FullyConnected(units=classes) ->
+        FullyConnected(units=10) ->
         Softmax() ->
         predictions
 
