@@ -6,7 +6,7 @@ component CifarNetwork<Z(2:oo) classes = 10>{
 
     implementation CNN {
         def conv(kernel, channels, stride=1, act=true){
-            Convolution(kernel=(kernel,kernel), channels=channels, stride=(stride,stride)) ->
+            Convolution(kernel=(kernel,kernel), channels=channels, stride=(stride,stride))
         }
         def resLayer(channels, stride=1, addSkipConv=false){
             (
@@ -15,7 +15,7 @@ component CifarNetwork<Z(2:oo) classes = 10>{
             |
                 conv(kernel=1, channels=channels, stride=stride, act=false, ? = addSkipConv)
             ) ->
-            Add() ->
+            Add()
         }
 
         data ->
