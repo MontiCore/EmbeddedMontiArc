@@ -49,3 +49,4 @@ RUN apt-get update && \
         liblapack-dev libblas-dev libboost-dev libarmadillo-dev && \
     rm -rf /var/lib/apt/lists/* 
 
+RUN python -c 'import lmdb' && echo "LMDB success" || echo "LMDB failure"
