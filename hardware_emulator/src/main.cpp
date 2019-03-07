@@ -1,7 +1,6 @@
 #include "tests.h"
 #include "utility.h"
 
-
 bool test_case( const char *name, bool( *test )( void ) ) {
     Log::white << "Testing " << name  << "\n";
     if ( !test() ) {
@@ -32,6 +31,17 @@ int main( int argc, char **argv ) {
         
     if ( !test_case( "ELF read", test_linux_elf_info ) )
         return 5;
+        
+    if ( !test_case( "Simple ELF", test_simple_elf ) )
+        return 6;
+        
+    if ( !test_case( "Syscall ELF", test_syscall_elf ) )
+        return 7;
+        
+    if ( !test_case( "Autopilot ELF", test_autopilot_elf ) )
+        return 8;
+        
+        
         
     ConsoleColor::Console::drop();
     return 0;

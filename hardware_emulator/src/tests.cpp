@@ -1,31 +1,32 @@
 #include "tests.h"
 #include "dll_interface.h"
 #include "emulator/emulator_manager.h"
-#include "os_windows/windows_calls.h"
+#include "os_windows/os_windows.h"
+#include "os_linux/os_linux.h"
 #include "config.h"
 #include "os_linux/elf.h"
 
-bool test_simple_dll() {
-    ADD_DLL::DllInterface interf;
-    interf.computer.debug.debug = true;
-    interf.computer.debug.d_mem = false;
-    interf.computer.debug.d_regs = false;
-    interf.computer.debug.d_reg_update = false;
-    interf.computer.debug.d_syscalls = false;
+bool test_simple_sample( OS::OS *os, bool windows ) {
+    Computer computer;
+    computer.debug.debug = true;
+    computer.debug.d_code = false;
+    computer.debug.d_mem = false;
+    computer.debug.d_regs = false;
+    computer.debug.d_reg_update = false;
+    computer.debug.d_syscalls = false;
     
-    interf.computer.init();
-    if ( !interf.computer.loaded() )
+    computer.init();
+    if ( !computer.loaded() )
         return false;
         
         
-    interf.os_windows.init( interf.computer );
-    WindowsCalls calls;
-    calls.add_windows_calls( interf.computer.sys_calls, interf.os_windows );
-    if ( !interf.os_windows.load_file( "sample_dll.dll" ) )
+    computer.set_os( os );
+    
+    
+    ADD_DLL::Interface interf;
+    if ( !interf.init( computer, windows ) )
         return false;
         
-        
-    interf.init();
     Log::debug << "add(2,3):\n";
     auto res = interf.add( 2, 3 );
     Log::debug << "Result=" << res << "\n";
@@ -33,31 +34,40 @@ bool test_simple_dll() {
     return interf.call_success;
 }
 
-bool test_syscall_dll() {
-    LOADED_DLL::DllInterface interf;
-    interf.computer.debug.debug = true;
-    interf.computer.debug.d_mem = false;
-    interf.computer.debug.d_regs = false;
-    interf.computer.debug.d_reg_update = false;
-    interf.computer.debug.d_syscalls = false;
+bool test_syscall_sample( OS::OS *os ) {
+    Computer computer;
+    computer.debug.debug = true;
+    computer.debug.d_code = false;
+    computer.debug.d_mem = false;
+    computer.debug.d_regs = false;
+    computer.debug.d_reg_update = false;
+    computer.debug.d_syscalls = false;
     
-    interf.computer.init();
-    if ( !interf.computer.loaded() )
-        return false;
-    interf.os_windows.init( interf.computer );
-    
-    
-    WindowsCalls calls;
-    calls.add_windows_calls( interf.computer.sys_calls, interf.os_windows );
-    if ( !interf.os_windows.load_file( "loaded_dll.dll" ) )
+    computer.init();
+    if ( !computer.loaded() )
         return false;
         
+    computer.set_os( os );
+    
+    
+    
+    LOADED_DLL::Interface interf;
+    if ( !interf.init( computer ) )
+        return false;
         
-    interf.init();
     Log::debug << "test_method()\n";
     interf.test_method();
     
     return interf.call_success;
+}
+
+
+bool test_simple_dll() {
+    return test_simple_sample( new OS::Windows(), true );
+}
+
+bool test_syscall_dll() {
+    return test_syscall_sample( new OS::Windows() );
 }
 
 bool test_hardware_manager_querries() {
@@ -199,6 +209,7 @@ bool test_output_double( HardwareEmulator &emulator, const char *name, double &t
     return true;
 }
 
+
 bool test_autopilot_dll() {
     EmulatorManager manager;
     if ( !manager.init() ) {
@@ -228,7 +239,7 @@ bool test_autopilot_dll() {
     auto &emulator = *manager.emulators[id];
     
     
-    emulator.call_void( emulator.init_address );
+    emulator.call_void( emulator.init_address, "init" );
     if ( !emulator.call_success ) {
         Log::err << "Error calling init()\n";
         return false;
@@ -259,7 +270,7 @@ bool test_autopilot_dll() {
     if ( !test_input_double_array( emulator, "trajectory_y", y, 6 ) )
         return false;
         
-    emulator.call_void( emulator.execute_address );
+    emulator.call_void( emulator.execute_address, "execute" );
     if ( !emulator.call_success ) {
         Log::err << "Error calling execute()\n";
         return false;
@@ -280,7 +291,7 @@ bool test_autopilot_dll() {
 
 bool test_linux_elf_info() {
     FileReader fr;
-    if ( fr.open( "sample_elf.so" ) ) {
+    if ( fr.open( "AutopilotAdapter.so" ) ) {
         ElfFile elf;
         fr.read( elf.data );
         
@@ -288,9 +299,96 @@ bool test_linux_elf_info() {
             return false;
             
             
-        elf.print();
+        //elf.print();
     }
     else
         return false;
     return true;
 }
+
+bool test_simple_elf() {
+    return test_simple_sample( new OS::Linux(), false );
+}
+
+bool test_syscall_elf() {
+    return test_syscall_sample( new OS::Linux() );
+}
+bool test_autopilot_elf() {
+    EmulatorManager manager;
+    if ( !manager.init() ) {
+        Log::err << "Could not initiate EmulatorManager\n";
+        return false;
+    }
+    
+    MessageBuilder builder;
+    builder.add( "autopilot", "AutopilotAdapter" );
+    builder.add( "os", "linux" );
+    //builder.add( "debug", "code,syscalls,mem,reg_update" );
+    
+    auto id = manager.alloc_emulator( builder.res.c_str() );
+    
+    if ( id < 0 ) {
+        Log::err << "Error allocating Emulator: \n";
+        auto q = manager.querry( "get_error_msg" );
+        MessageParser p( q.c_str() );
+        if ( !p.has_next() || !p.is_cmd( "error_msg" ) )
+            Log::err << "Could not querry 'error_msg'\n";
+        else
+            Log::err << p.get_string() << "\n";
+        return false;
+    }
+    
+    
+    auto &emulator = *manager.emulators[id];
+    
+    
+    emulator.call_void( emulator.init_address, "init" );
+    if ( !emulator.call_success ) {
+        Log::err << "Error calling init()\n";
+        return false;
+    }
+    
+    if ( !test_input_double( emulator, "timeIncrement", 1 ) )
+        return false;
+    if ( !test_input_double( emulator, "currentVelocity", 0 ) )
+        return false;
+    if ( !test_input_double( emulator, "x", 0.01 ) )
+        return false;
+    if ( !test_input_double( emulator, "y", 0.01 ) )
+        return false;
+    if ( !test_input_double( emulator, "compass", 0 ) )
+        return false;
+    if ( !test_input_double( emulator, "currentEngine", 0 ) )
+        return false;
+    if ( !test_input_double( emulator, "currentSteering", 0 ) )
+        return false;
+    if ( !test_input_double( emulator, "currentBrakes", 0 ) )
+        return false;
+    if ( !test_input_int( emulator, "trajectory_length", 5 ) )
+        return false;
+    double x[6] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06 };
+    double y[6] = { 0.01, 0.01, 0.02, 0.02, 0.01, 0.01 };
+    if ( !test_input_double_array( emulator, "trajectory_x", x, 6 ) )
+        return false;
+    if ( !test_input_double_array( emulator, "trajectory_y", y, 6 ) )
+        return false;
+        
+    emulator.call_void( emulator.execute_address, "execute" );
+    if ( !emulator.call_success ) {
+        Log::err << "Error calling execute()\n";
+        return false;
+    }
+    
+    double engine, steering, brakes;
+    if ( !test_output_double( emulator, "engine", engine ) )
+        return false;
+    if ( !test_output_double( emulator, "steering", steering ) )
+        return false;
+    if ( !test_output_double( emulator, "brakes", brakes ) )
+        return false;
+        
+    Log::debug << "Result: [engine=" << engine << ", steering=" << steering << ", brakes=" << brakes << "]\n";
+    
+    return true;
+}
+

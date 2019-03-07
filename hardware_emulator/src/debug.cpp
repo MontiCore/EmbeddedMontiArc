@@ -86,7 +86,7 @@ void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val 
         *os << to_hex( val ) << "     ";
     else {
         uint32_t s = size;
-        auto data = mem->read_memory( addr, s );
+        uchar *data = ( uchar * ) mem->read_memory( addr, s );
         std::string res;
         for ( uint64_t i : ulrange( s ) ) {
             uint8_t v = *( ( uint8_t * ) & ( data[s - 1 - i] ) );

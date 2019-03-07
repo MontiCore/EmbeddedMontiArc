@@ -1,7 +1,14 @@
 #pragma once
-#include "computer/computer.h"
+#include <string>
+struct Computer;
+struct MemorySection;
 
 namespace OS {
+
+    struct SectionInfo {
+        MemorySection *mem;
+    };
+    
     struct OS {
         Computer *computer;
         
@@ -14,6 +21,8 @@ namespace OS {
             return computer != nullptr;
         }
         
+        //File without extension
         virtual bool load_file( const char *file ) = 0;
+        virtual ~OS() {}
     };
 }

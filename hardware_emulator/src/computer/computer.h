@@ -3,15 +3,18 @@
 #include "registers.h"
 #include "debug.h"
 #include "system_calls.h"
-#include "method_calling.h"
-#include "computer/instruction_time.h"
+#include "function_calling.h"
+#include "instruction_time.h"
+#include "symbols.h"
+#include "os.h"
 
 #include <Zydis/Zydis.h>
 
 struct InternalComputer;
 
 
-/*
+/**
+    @class Computer
     The Computer structure is a representation of our OS-less virtual computer.
     It handles the creation of the Unicorn engine, which emulates virtual memory and cpu instructions.
     Computer has hooks into the emulator for Code (every instruction before their execution),
@@ -43,10 +46,18 @@ struct InternalComputer;
 
 
     Computer gives the entry point for code emulation through the call() method.
+
+    @see call()
+    @see Memory
+    @see Registers
+    @see FastCall
+
 */
 struct Computer {
 
     InternalComputer *internal;
+    
+    Symbols symbols;
     
     VirtualHeap heap;
     VirtualStack stack;
@@ -58,13 +69,16 @@ struct Computer {
     
     CodeDecoder decoder;
     
-    ComputerDebug debug;
+    std::unique_ptr<OS::OS> os;
+    std::unique_ptr<FunctionCalling> func_call;
     
-    FastCall fast_call;
+    ComputerDebug debug;
     
     ulong computing_time;
     
-    Computer() : internal( nullptr ), fast_call( registers ), computing_time( 0 ) {}
+    MemoryRange io_slot;
+    
+    Computer() : internal( nullptr ), computing_time( 0 ) {}
     ~Computer() {
         drop();
     }
@@ -76,7 +90,9 @@ struct Computer {
         return internal != nullptr;
     }
     
-    bool call( ulong address );
+    bool call( ulong address, const char *name );
+    
+    void set_os( OS::OS *os );
     
     static void hook_code( void *uc, ulong addr, uint size, void *data );
     static bool hook_mem( void *uc, uint type, ulong addr, uint size, slong value, void *data );

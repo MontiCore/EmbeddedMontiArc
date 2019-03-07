@@ -13,6 +13,8 @@ namespace Utility {
     void write_uint64_t( char *mem_pos, uint64_t value );
     uint64_t read_uint64_t( char *mem_pos );
     
+    void write_uint32_t( char *mem_pos, uint32_t value );
+    uint32_t read_uint32_t( char *mem_pos );
 }
 
 

@@ -35,6 +35,23 @@ uint64_t Utility::read_uint64_t( char *mem_pos ) {
     return res;
 }
 
+void Utility::write_uint32_t( char *mem_pos, uint32_t value ) {
+    for ( auto i : ulrange( sizeof( uint32_t ) ) ) {
+        uint32_t sub = ( value >> ( i * 8 ) ) & BIT_MASKS[8];
+        mem_pos[i] = *( ( char * )&sub );
+    }
+}
+
+uint32_t Utility::read_uint32_t( char *mem_pos ) {
+    uint32_t res = 0;
+    for ( auto i : ulrange( sizeof( uint32_t ) ) ) {
+        uint32_t sub = 0;
+        *( ( char * )&sub ) = mem_pos[i];
+        res |= sub << ( i * 8 );
+    }
+    return res;
+}
+
 
 void Array<bool>::resize( uint new_size ) {
     if ( new_size == m_size )

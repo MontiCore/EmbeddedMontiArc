@@ -146,6 +146,11 @@ ulong Registers::get_rsi() {
     return reg;
 }
 
+ulong Registers::get_rdi() {
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_RDI, &reg );
+    return reg;
+}
+
 ulong Registers::get_rip() {
     uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_RIP, &reg );
     return reg;
@@ -217,6 +222,11 @@ void Registers::set_rsp( ulong val ) {
 void Registers::set_rsi( ulong val ) {
     reg = val;
     uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_RSI, &reg );
+}
+
+void Registers::set_rdi( ulong val ) {
+    reg = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_RDI, &reg );
 }
 
 void Registers::set_rip( ulong val ) {

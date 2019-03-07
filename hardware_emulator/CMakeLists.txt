@@ -58,8 +58,10 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   src/computer/registers.cpp
   src/computer/system_calls.h
   src/computer/system_calls.cpp
-  src/computer/method_calling.h
-  src/computer/method_calling.cpp
+  src/computer/symbols.h
+  src/computer/symbols.cpp
+  src/computer/function_calling.h
+  src/computer/function_calling.cpp
   src/computer/os.h
   src/computer/os.cpp
   

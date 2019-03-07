@@ -55,10 +55,9 @@ struct MemoryRange {
 struct Annotation {
     enum Type {
         NONE,
-        HANDLE = BIT( 1 ),
-        PROC = BIT( 2 ),
-        SYMBOL = BIT( 3 ),
-        LIBRARY_EXPORT = BIT( 4 )
+        HANDLE,
+        FUNC,
+        OBJECT,
     };
     ulong base;
     std::string name;
@@ -73,7 +72,7 @@ struct Annotation {
     The AnnotationCollection structure is used by SectionAnnotation to store annotations
     and is used to look through all annotations. (But it uses linear search).
 */
-struct AnnotationCollection {
+struct AnnotationTable {
 
     static constexpr ulong DEFAULT_ANNOTATION_SIZE = 128;
     Array<Annotation> annotations;
@@ -83,8 +82,6 @@ struct AnnotationCollection {
     void init();
     
     uint new_annotation( ulong base, Annotation const &annotation );
-    Annotation &get_annotation( std::string const &name, uint type_mask );
-    uint64_t get_handle( std::string const &name, uint type_mask );
 };
 
 /*
@@ -93,21 +90,21 @@ struct AnnotationCollection {
     get_annotation() returns nullptr when no annotation exists at the given address.
 */
 struct SectionAnnotation {
-    AnnotationCollection *collection;
+    AnnotationTable *annotation_table;
     MemoryRange address_range;
     Array<bool> annotated;
     Array<uint> annotation_id;
     
-    SectionAnnotation() : collection( nullptr ) {}
+    SectionAnnotation() : annotation_table( nullptr ) {}
     
-    void init( AnnotationCollection *annotation_collection, MemoryRange address_range );
+    void init( AnnotationTable *annotation_table, MemoryRange address_range );
     
     void add_annotation( MemoryRange range, Annotation const &annotation );
     void add_annotation( ulong address, Annotation const &annotation );
     Annotation *get_annotation( ulong address );
     
     bool loaded() {
-        return collection != nullptr;
+        return annotation_table != nullptr;
     }
 };
 
@@ -145,9 +142,10 @@ struct MemorySection {
     bool init( MemoryRange address_range, std::string const &name, std::string const &mod,
                bool execute, bool read, bool write );
     bool upload( char *data, uint64_t size );
+    bool upload( ulong address, char *data, uint64_t size );
     
-    uchar *read( ulong address, ulong size );
-    void write( ulong address, ulong size, uchar *data );
+    void *read( ulong address, ulong size );
+    void write( ulong address, ulong size, void *data );
     
     void link( void *uc, ulong page_size, Memory &mem );
     void set_file_range( MemoryRange file_range ) {
@@ -181,18 +179,22 @@ struct MemorySection {
     get_8byte_slot() allocates a 8 byte slot on top of the stack.
 */
 struct SectionStack {
-    uint pos;
-    MemorySection *mem;
-    
-    SectionStack() : mem( nullptr ), pos( 0 ) {}
-    void init( MemorySection *mem );
-    
-    bool loaded() {
-        return mem != nullptr;
-    }
-    
-    MemoryRange get_range( uint size );
-    uint64_t get_8byte_slot();
+        uint pos;
+        MemorySection *mem;
+        
+        SectionStack() : mem( nullptr ), pos( 0 ) {}
+        void init( MemorySection *mem );
+        
+        bool loaded() {
+            return mem != nullptr;
+        }
+        
+        MemoryRange get_annotated( uint size, const std::string &name, Annotation::Type type = Annotation::NONE );
+        uint64_t get_annotated_8byte( const std::string &name, Annotation::Type type = Annotation::NONE );
+        
+    private:
+        MemoryRange get_range( uint size );
+        uint64_t get_8byte_slot();
 };
 
 
@@ -214,7 +216,7 @@ struct Memory {
     void *internal_uc;
     ulong page_size;
     
-    AnnotationCollection annotation_collection;
+    AnnotationTable annotation_table;
     Array<MemorySection> sections;
     uint section_pos;
     
@@ -230,11 +232,11 @@ struct Memory {
         return internal_uc != nullptr;
     }
     
-    uchar *read_memory( ulong address, ulong size );
-    void write_memory( ulong address, ulong size, uchar *data );
+    void *read_memory( ulong address, ulong size );
+    void write_memory( ulong address, ulong size, void *data );
     
-    uchar *read_memory( MemoryRange range );
-    void write_memory( MemoryRange range, uchar *data );
+    void *read_memory( MemoryRange range );
+    void write_memory( MemoryRange range, void *data );
     
     MemorySection &new_section();
     MemorySection *get_section( ulong virtual_address );
@@ -269,7 +271,7 @@ struct Handles {
         return section != nullptr;
     }
     
-    ulong get_handle( const char *name );
+    //ulong get_handle( const char *name );
     ulong add_handle( const char *name );
 };
 
@@ -318,4 +320,6 @@ struct VirtualStack {
     
     ulong pop_long();
     void push_long( ulong val );
+    uint pop_int();
+    void push_int( uint val );
 };

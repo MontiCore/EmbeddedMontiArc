@@ -36,7 +36,19 @@ ValueName elf_sym_type_name[static_cast<uint>( ElfSymbolType::STT_NUM )] = {
     ValueName( ElfSymbolType::STT_TLS,      "TLS    " ),
 };
 
-void hlp_print_line(){
+
+ValueName elf_seg_type_name[static_cast<uint>( ElfSegType::PT_NUM )] = {
+    ValueName( ElfSegType::PT_NULL,      "NULL   " ),
+    ValueName( ElfSegType::PT_LOAD,      "LOAD   " ),
+    ValueName( ElfSegType::PT_DYNAMIC,   "DYNAMIC" ),
+    ValueName( ElfSegType::PT_INTERP,    "INTERP " ),
+    ValueName( ElfSegType::PT_NOTE,      "NOTE   " ),
+    ValueName( ElfSegType::PT_SHLIB,     "SHLIB  " ),
+    ValueName( ElfSegType::PT_PHDR,      "PHDR   " ),
+    ValueName( ElfSegType::PT_TLS,       "TLS    " ),
+};
+
+void hlp_print_line() {
     printf( "========================================" );
     printf( "========================================\n" );
 }
@@ -170,11 +182,29 @@ void ElfFile::print_sections() {
 }
 
 void ElfFile::print_segments() {
+    printf( "Segments\n" );
+    hlp_print_line();
+    printf( " idx  vaddr      mem-size   offset     file-size    align  flags      type\n" );
+    hlp_print_line();
+    if ( is_64bit ) {
+        for ( auto i : urange( ph64.size() ) ) {
+            printf( " %03d ", i );
+            ph64[i].print();
+        }
+    }
+    else {
+        for ( auto i : urange( ph32.size() ) ) {
+            printf( " %03d ", i );
+            ph32[i].print();
+        }
+    }
+    hlp_print_line();
+    printf( "\n" );
 }
 
-void hlpsym_print_header(){
+void hlpsym_print_header() {
     hlp_print_line();
-    printf(" value      size     shid bind   type    name\n");
+    printf( " value      size     shid bind   type    name\n" );
     hlp_print_line();
 }
 
@@ -198,13 +228,13 @@ void ElfFile::print_symbols() {
                 
                 printf( " %d symbols\n", symbol_count );
                 hlpsym_print_header();
-                for ( auto j : urange(symbol_count) ) {
+                for ( auto j : urange( symbol_count ) ) {
                     auto &sym = sym64[j];
                     printf( " 0x%08" PRIx64 " ", sym.st_value );
                     printf( "%8" PRIx64 " ", sym.st_size );
                     printf( "%04" PRIx32 " ", sym.st_shndx );
-                    printf("%s ", elf_sym_bind_name[sym.get_bind_raw()].name);
-                    printf("%s ", elf_sym_type_name[sym.get_type_raw()].name);
+                    printf( "%s ", elf_sym_bind_name[sym.get_bind_raw()].name );
+                    printf( "%s ", elf_sym_type_name[sym.get_type_raw()].name );
                     printf( "%s\n", str_table.begin() + sym.st_name );
                 }
                 hlp_print_line();
@@ -227,13 +257,13 @@ void ElfFile::print_symbols() {
                 
                 printf( " %d symbols\n", symbol_count );
                 hlpsym_print_header();
-                for ( auto j : urange(symbol_count) ) {
+                for ( auto j : urange( symbol_count ) ) {
                     auto &sym = sym32[j];
                     printf( " 0x%08" PRIx32 " ", sym.st_value );
                     printf( "%8" PRIx32 " ", sym.st_size );
                     printf( "%04" PRIx32 " ", sym.st_shndx );
-                    printf("%s ", elf_sym_bind_name[sym.get_bind_raw()].name);
-                    printf("%s ", elf_sym_type_name[sym.get_type_raw()].name);
+                    printf( "%s ", elf_sym_bind_name[sym.get_bind_raw()].name );
+                    printf( "%s ", elf_sym_type_name[sym.get_type_raw()].name );
                     printf( "%s\n", str_table.begin() + sym.st_name );
                 }
                 hlp_print_line();
@@ -243,9 +273,9 @@ void ElfFile::print_symbols() {
     
 }
 
-void hlprel_print_header(){
+void hlprel_print_header() {
     hlp_print_line();
-    printf(" offset     addend     sym  type symbol-name\n");
+    printf( " offset     addend     sym  type symbol-name\n" );
     hlp_print_line();
 }
 
@@ -256,42 +286,41 @@ void ElfFile::print_relocations() {
             auto type = sh.get_type();
             if ( type == ElfSecType::SHT_RELA ) {
                 printf( "\n[Section %03d]", i );
-
+                
                 //Relocation table
-                auto rela = get_section_as_table<Elf64_Rela>(sh);
+                auto rela = get_section_as_table<Elf64_Rela>( sh );
                 
                 //Corresponding symbol table
                 auto &sym_sh = sh64[sh.sh_link];
-                auto sym = get_section_as_table<Elf64_Symbol>(sym_sh);
+                auto sym = get_section_as_table<Elf64_Symbol>( sym_sh );
                 //Symbol table string table
-                auto sym_str = get_section_as_table<char>(sh64[sym_sh.sh_link]);
-
+                auto sym_str = get_section_as_table<char>( sh64[sym_sh.sh_link] );
+                
                 //Target section
                 auto &target = sh64[sh.sh_info];
                 printf( " %d relocations", rela.size() );
-                printf(" link (sym_table): %03x", sh.sh_link);
-                printf(" info (target): %03x\n", sh.sh_info);
+                printf( " link (sym_table): %03x", sh.sh_link );
+                printf( " info (target): %03x\n", sh.sh_info );
                 hlprel_print_header();
-                for ( auto j : urange(rela.size()) ) {
+                for ( auto j : urange( rela.size() ) ) {
                     auto &r = rela[j];
                     printf( " 0x%08" PRIx64 " ", r.r_offset );
                     printf( "0x%08" PRIx64 " ", r.r_addend );
                     printf( "%4" PRIx32 " ", r.get_sym_raw() );
-                    printf( "%04" PRIx32 " ", r.get_type_raw());
+                    printf( "%04" PRIx32 " ", r.get_type_raw() );
                     auto &s = sym[r.get_sym_raw()];
                     printf( "%s", sym_str.begin() + s.st_name );
-                    printf("\n");
+                    printf( "\n" );
                 }
                 hlp_print_line();
-            } else if (type == ElfSecType::SHT_REL){
-                printf("TODO SHT_REL 64\n");
             }
+            else if ( type == ElfSecType::SHT_REL )
+                printf( "TODO SHT_REL 64\n" );
         }
     }
-    else {
-        printf("TODO REL / RELA 32\n");
-    }
-    
+    else
+        printf( "TODO REL / RELA 32\n" );
+        
 }
 
 
@@ -521,7 +550,16 @@ void Elf32_SectionHeader::print( ArraySlice<char> &sec_name_table ) {
     printf( "0x%08x ", sh_size );
     printf( "%4d ", sh_addralign );
     printf( "0x%08x ", sh_flags );
-    printf( "0x%08x ", sh_type );
+    bool need = true;
+    for ( auto &vn : elf_sec_type_name ) {
+        if ( vn.value == sh_type ) {
+            printf( "%s ", vn.name );
+            need = false;
+            break;
+        }
+    }
+    if ( need )
+        printf( "%4" PRIx64 " ", sh_type );
     printf( "%s\t", ( sec_name_table.begin() + sh_name ) );
     printf( "\n" );
 }
@@ -532,12 +570,57 @@ void Elf64_SectionHeader::print( ArraySlice<char> &sec_name_table ) {
     printf( "0x%08" PRIx64 " ", sh_size );
     printf( "%4" PRId64 " ", sh_addralign );
     printf( "0x%08" PRIx64 " ", sh_flags );
+    bool need = true;
     for ( auto &vn : elf_sec_type_name ) {
         if ( vn.value == sh_type ) {
             printf( "%s ", vn.name );
+            need = false;
             break;
         }
     }
+    if ( need )
+        printf( "%4" PRIx64 " ", sh_type );
     printf( "%s\t", ( sec_name_table.begin() + sh_name ) );
+    printf( "\n" );
+}
+
+void Elf32_ProgramHeader::print() {
+    printf( "0x%08" PRIx32 " ", p_vaddr );
+    printf( "0x%08" PRIx32 " ", p_memsz );
+    printf( "0x%08" PRIx32 " ", p_offset );
+    printf( "0x%08" PRIx32 " ", p_filesz );
+    printf( "%8" PRId32 " ", p_align );
+    printf( "0x%08" PRIx32 " ", p_flags );
+    bool need = true;
+    for ( auto &vn : elf_seg_type_name ) {
+        if ( vn.value == p_type ) {
+            printf( "%s ", vn.name );
+            need = false;
+            break;
+        }
+    }
+    if ( need )
+        printf( "%8" PRIx32 " ", p_type );
+    printf( "\n" );
+}
+
+void Elf64_ProgramHeader::print() {
+    printf( "0x%08" PRIx64 " ", p_vaddr );
+    printf( "0x%08" PRIx64 " ", p_memsz );
+    printf( "0x%08" PRIx64 " ", p_offset );
+    printf( "0x%08" PRIx64 " ", p_filesz );
+    printf( "%8" PRId64 " ", p_align );
+    printf( "0x%08" PRIx32 " ", p_flags );
+    bool need = true;
+    for ( auto &vn : elf_seg_type_name ) {
+        if ( vn.value == p_type ) {
+            printf( "%s ", vn.name );
+            need = false;
+            break;
+        }
+    }
+    if ( need )
+        printf( "%8" PRIx32 " ", p_type );
+        
     printf( "\n" );
 }

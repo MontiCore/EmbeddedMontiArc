@@ -28,7 +28,7 @@ void Computer::init() {
     
     heap.init( memory, handles );
     stack.init( memory, registers );
-    sys_calls.init( memory, debug );
+    sys_calls.init( memory, debug, symbols );
     
     uc_hook_add( internal->uc, &internal->trace1, UC_HOOK_CODE, ( void * )Computer::hook_code, this, 1, 0 );
     uc_hook_add( internal->uc, &internal->trace2, UC_HOOK_MEM_VALID, ( void * )Computer::hook_mem, this, 1, 0 );
@@ -47,11 +47,11 @@ void Computer::drop() {
 }
 
 
-bool Computer::call( ulong address ) {
+bool Computer::call( ulong address, const char *name ) {
+    //Log::info << name << "()\n";
     stopped = false;
-    registers.set_rsp( stack.stack_start );
     stack.push_long( exit_code_addr );
-    internal->err = uc_emu_start( internal->uc, address, 0, 0, 0 );
+    internal->err = uc_emu_start( internal->uc, address, 0xFFFFFFFFFFFFFFFF, 0, 0 );
     if ( internal->err ) {
         Log::err << Log::tag << "Failed on uc_emu_start() with error returned "
                  << internal->err
@@ -61,6 +61,11 @@ bool Computer::call( ulong address ) {
         return false;
     }
     return true;
+}
+
+void Computer::set_os( OS::OS *os ) {
+    this->os = std::unique_ptr<OS::OS>( os );
+    os->init( *this );
 }
 
 void Computer::cb_code( ulong addr, uint size ) {
@@ -73,7 +78,7 @@ void Computer::cb_code( ulong addr, uint size ) {
     if ( sys_calls.section->address_range.contains( addr ) ) {
         //Use memory annotation system to find external procedure.
         auto note_ptr = sys_calls.section->annotations.get_annotation( addr );
-        if ( note_ptr == nullptr || note_ptr->type != Annotation::PROC ) {
+        if ( note_ptr == nullptr || note_ptr->type != Annotation::FUNC ) {
             std::cerr << "Instruction pointer in invalid PROC region" << std::endl;
             return;
         }
@@ -81,7 +86,7 @@ void Computer::cb_code( ulong addr, uint size ) {
         auto &call = sys_calls.sys_calls[( uint )note.param];
         debug.debug_syscall( call, note.param );
         if ( call.type != SysCall::SUPPORTED || !call.callback( *this, call ) )
-            fast_call.set_return( 0 ); //No external syscall registered or syscall error.
+            func_call->set_return( 0 ); //No external syscall registered or syscall error.
             
         if ( !stopped ) { //Do not change stack and instruction pointers if exit() was called on the unicorn engine (it cancels uc_emu_stop())
             //Return to code (simulate 'ret' code)
@@ -93,15 +98,15 @@ void Computer::cb_code( ulong addr, uint size ) {
     }
     else {
         decoder.length = size;
-        decoder.code = memory.read_memory( addr, size );
+        decoder.code = ( uchar * )memory.read_memory( addr, size );
         decoder.succeeded = ZYAN_SUCCESS(
                                 ZydisDecoderDecodeBuffer( &decoder.decoder, decoder.code, decoder.length, &decoder.instruction )
                             );
         if ( decoder.succeeded )
             computer_time = get_instruction_ticks( decoder.instruction );
             
-        if ( computer_time == 1000 )
-            debug.debug_code( addr, size );
+        //if ( computer_time == 1000 )
+        debug.debug_code( addr, size );
     }
     //computing_time += computer_time;
 }

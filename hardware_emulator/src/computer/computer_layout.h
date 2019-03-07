@@ -6,7 +6,7 @@
 */
 namespace ComputerLayout {
     //A section to allocate system owned data passed to the emulated code (can be read/written to).
-    constexpr ulong SYSPAGE_ADDRESS = 0x1000;
+    constexpr ulong SYSPAGE_ADDRESS = 0x01000000;
     constexpr ulong SYSPAGE_RANGE = 0x4000;
     //A section for allocatable external handles.
     constexpr ulong HANDLES_ADDRESS = SYSPAGE_ADDRESS + SYSPAGE_RANGE;

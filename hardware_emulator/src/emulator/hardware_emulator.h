@@ -3,8 +3,6 @@
 
 #include "utility.h"
 #include "computer/computer.h"
-#include "os_windows/os_windows.h"
-#include "os_linux/os_linux.h"
 
 #include "function_value.h"
 #include "config.h"
@@ -33,14 +31,10 @@ struct HardwareEmulator {
     uint64_t execute_address;
     
     Computer computer;
-    OS::OS *current_os;
-    std::string module_name;
     std::string os_name;
-    std::string file_name;
+    std::string autopilot_name;
     fs::path path;
     
-    OS::Windows os_windows;
-    OS::Linux os_linux;
     MemoryRange buffer_slot;
     
     ulong simulation_time;
@@ -68,11 +62,11 @@ struct HardwareEmulator {
     
     void call_input( uint func_id );
     void call_output( uint func_id );
-    void call_void( uint64_t address );
+    void call_void( uint64_t address, const char *name );
     
-    uint64_t resolve( const std::string &name );
+    bool resolve( const std::string &name, uint64_t &target );
     
-    void init_ports( Array<Port> &ports, const char *get_count, const char *get_name, const char *get_type,
+    bool init_ports( Array<Port> &ports, const char *get_count, const char *get_name, const char *get_type,
                      const char *port_prefix );
                      
     void setup_debug( MessageParser &parser );

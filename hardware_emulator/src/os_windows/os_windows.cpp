@@ -1,8 +1,7 @@
 #include "os_windows/os_windows.h"
-#include "computer/computer_layout.h"
+//#include "computer/computer_layout.h"
 #include <unicorn/unicorn.h>
-
-MemoryRange OS::io_slot;
+#include "windows_calls.h"
 
 struct LOCAL_EXCEPTION_REGISTRATION_RECORD {
     LOCAL_EXCEPTION_REGISTRATION_RECORD *Next;
@@ -117,10 +116,12 @@ void OS::Windows::init( Computer &computer ) {
     
     
     constexpr uint gdt_size = 2;
-    auto gdt_slot = section_stack->get_range( sizeof( SegmentDescriptor ) * gdt_size );
-    auto tib_slot = section_stack->get_range( sizeof( LOCAL_TIB ) );
-    auto eer_slot = section_stack->get_range( sizeof( LOCAL_EXCEPTION_REGISTRATION_RECORD ) );
-    
+    auto gdt_slot = section_stack->get_annotated( sizeof( SegmentDescriptor ) * gdt_size, "Global Descriptor Table",
+                    Annotation::OBJECT );
+    auto tib_slot = section_stack->get_annotated( sizeof( LOCAL_TIB ), "Thread Information Block", Annotation::OBJECT );
+    auto eer_slot = section_stack->get_annotated( sizeof( LOCAL_EXCEPTION_REGISTRATION_RECORD ),
+                    "Exception Registration Record", Annotation::OBJECT );
+                    
     //Setup TIB
     LOCAL_TIB thread_info_block;
     thread_info_block.ExceptionList = ( LOCAL_EXCEPTION_REGISTRATION_RECORD * )eer_slot.start_address;
@@ -131,13 +132,11 @@ void OS::Windows::init( Computer &computer ) {
     thread_info_block.FiberData = 0;
     thread_info_block.Self = ( LOCAL_TIB * )tib_slot.start_address;
     LOCAL_EXCEPTION_REGISTRATION_RECORD eer;
-    eer.ExceptionRountineHandler = ( void * )computer.handles.get_handle( "ExceptionRountineHandler" );
+    eer.ExceptionRountineHandler = ( void * )computer.handles.add_handle( "ExceptionRountineHandler" );
     eer.Next = 0;
     
     computer.memory.write_memory( tib_slot, ( uchar * )&thread_info_block );
-    section->annotations.add_annotation( tib_slot, Annotation( "Thread Information Block", Annotation::SYMBOL ) );
     computer.memory.write_memory( eer_slot, ( uchar * )&eer );
-    section->annotations.add_annotation( eer_slot, Annotation( "Exception Registration Record", Annotation::SYMBOL ) );
     
     //Setup Segment Descriptor Table
     SegmentDescriptor table[gdt_size];
@@ -145,7 +144,6 @@ void OS::Windows::init( Computer &computer ) {
     table[1].set_standard_segment( tib_slot.start_address, 0xFFF, false );
     
     computer.memory.write_memory( gdt_slot, ( uchar * )table );
-    section->annotations.add_annotation( gdt_slot, Annotation( "Global Descriptor Table", Annotation::SYMBOL ) );
     
     //Set Segment register to link to DescriptorTable
     uc_x86_mmr v;
@@ -161,20 +159,19 @@ void OS::Windows::init( Computer &computer ) {
     
     //Set command line
     std::string cmd_line = "program_name";
-    cmd_line_wstr = section_stack->get_range( ( ( uint )cmd_line.size() + 2 ) * 2 );
-    cmd_line_str = section_stack->get_range( ( uint )cmd_line.size() + 2 );
+    cmd_line_wstr = section_stack->get_annotated( ( ( uint )cmd_line.size() + 2 ) * 2, "Command Line WSTR",
+                    Annotation::OBJECT );
+    cmd_line_str = section_stack->get_annotated( ( uint )cmd_line.size() + 2, "Command Line STR", Annotation::OBJECT );
     
     computer.memory.write_wstr( cmd_line_wstr.start_address, cmd_line );
-    section->annotations.add_annotation( cmd_line_wstr, Annotation( "Command Line WSTR", Annotation::SYMBOL ) );
     computer.memory.write_str( cmd_line_str.start_address, cmd_line );
-    section->annotations.add_annotation( cmd_line_str, Annotation( "Command Line STR", Annotation::SYMBOL ) );
     
-    auto cout_ptr_addr = add_symbol( "MSVCP140.DLL", "?cout@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A",
-                                     8, Annotation::PROC );
-    auto cout_slot = section_stack->get_range( sizeof( std::cout ) );
-    computer.memory.write_memory( cout_ptr_addr, 8, ( uchar * )&cout_slot.start_address );
-    section->annotations.add_annotation( cout_ptr_addr, Annotation( "Cout pointer", Annotation::SYMBOL ) );
-    section->annotations.add_annotation( cout_slot, Annotation( "STD::COUT", Annotation::SYMBOL ) );
+    auto cout_ptr_slot = section_stack->get_annotated( 8, "std::cout ptr", Annotation::OBJECT );
+    computer.symbols.add_symbol( "?cout@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A", Symbols::Symbol::OBJECT,
+                                 cout_ptr_slot.start_address );
+                                 
+    auto cout_slot = section_stack->get_annotated( sizeof( std::cout ), "STD::COUT", Annotation::OBJECT );
+    computer.memory.write_memory( cout_ptr_slot, ( uchar * )&cout_slot.start_address );
     
     typedef struct {
         short level;
@@ -188,39 +185,69 @@ void OS::Windows::init( Computer &computer ) {
         unsigned istemp;
     } FILE;
     FILE io_files[3] = {};
-    io_slot = section_stack->get_range( sizeof( io_files ) );
-    io_stdin = MemoryRange( io_slot.start_address, sizeof( FILE ) );
-    io_stdout = MemoryRange( io_slot.start_address + sizeof( FILE ), sizeof( FILE ) );
-    io_stderr = MemoryRange( io_slot.start_address + sizeof( FILE ) * 2, sizeof( FILE ) );
-    section->annotations.add_annotation( io_stdin, Annotation( "io_stdin", Annotation::SYMBOL ) );
-    section->annotations.add_annotation( io_stdout, Annotation( "io_stdout", Annotation::SYMBOL ) );
-    section->annotations.add_annotation( io_stderr, Annotation( "io_stderr", Annotation::SYMBOL ) );
-    computer.memory.write_memory( io_slot, ( uchar * )io_files );
+    io_stdin = section_stack->get_annotated( sizeof( FILE ), "io_stdin", Annotation::OBJECT );
+    io_stdout = section_stack->get_annotated( sizeof( FILE ), "io_stdin", Annotation::OBJECT );
+    io_stderr = section_stack->get_annotated( sizeof( FILE ), "io_stdin", Annotation::OBJECT );
+    computer.memory.write_memory( io_stdin, &io_files[0] );
+    computer.memory.write_memory( io_stdout, &io_files[1] );
+    computer.memory.write_memory( io_stderr, &io_files[2] );
+    computer.io_slot.start_address = io_stdin.start_address;
+    
+    WindowsCalls::add_windows_calls( computer.sys_calls, *this );
+    computer.func_call = std::unique_ptr<FunctionCalling>( new WindowsFastCall( computer.registers ) );
 }
 
 bool OS::Windows::load_file( const char *file ) {
-    if ( !dll.init( file, computer->sys_calls, computer->memory ) )
+    if ( !dll.init( file, computer->sys_calls, computer->memory, computer->symbols ) )
         return false;
     dll.dll_main( *computer );
     
     return true;
 }
 
-ulong OS::Windows::add_symbol( const std::string &mod, const std::string &name, uint size, Annotation::Type type ) {
-    std::string res_name = mod + "!" + name;
-    auto proc_handle = section_stack->get_range( size );
-    section->annotations.add_annotation( proc_handle, Annotation( res_name, type ) );
-    
-    /*Utility::color_mem_write();
-    std::cout << "Added Symbol: " << mod << "!" << name;
-    printf( "  %03" PRIx32 "\n", section->address_range.get_local_index( proc_handle.start_address ) );*/
-    
-    
-    if ( undercorate_function_name( name, name_buffer )
-            && name.compare( name_buffer.begin() ) != 0 ) {
-        // UnDecorateSymbolName returned success
-        /*Utility::color_reg();
-        printf( "%s\n", name_buffer.begin() );*/
+
+namespace OS {
+    void WindowsFastCall::set_params( ulong p1 ) {
+        registers.set_rcx( p1 );
     }
-    return proc_handle.start_address;
+    
+    void WindowsFastCall::set_params( ulong p1, ulong p2 ) {
+        registers.set_rcx( p1 );
+        registers.set_rdx( p2 );
+    }
+    void WindowsFastCall::set_params( ulong p1, ulong p2, ulong p3 ) {
+        registers.set_rcx( p1 );
+        registers.set_rdx( p2 );
+        registers.set_r8( p3 );
+    }
+    void WindowsFastCall::set_params( ulong p1, ulong p2, ulong p3, ulong p4 ) {
+        registers.set_rcx( p1 );
+        registers.set_rdx( p2 );
+        registers.set_r8( p3 );
+        registers.set_r9( p4 );
+    }
+    
+    ulong WindowsFastCall::get_param1() {
+        return registers.get_rcx();
+    }
+    
+    ulong WindowsFastCall::get_param2() {
+        return registers.get_rdx();
+    }
+    
+    ulong WindowsFastCall::get_param3() {
+        return registers.get_r8();
+    }
+    ulong WindowsFastCall::get_param4() {
+        return registers.get_r9();
+    }
+    
+    
+    
+    ulong WindowsFastCall::get_return() {
+        return registers.get_rax();
+    }
+    void WindowsFastCall::set_return( ulong r ) {
+        registers.set_rax( r );
+    }
 }

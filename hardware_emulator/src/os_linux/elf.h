@@ -189,6 +189,7 @@ enum class ElfSegType {
     PT_SHLIB = 5,
     PT_PHDR = 6,
     PT_TLS = 7,              /* Thread local storage segment */
+    PT_NUM,
     PT_LOOS = 0x60000000,     /* OS-specific */
     PT_HIOS = 0x6fffffff,     /* OS-specific */
     PT_LOPROC = 0x70000000,
@@ -197,6 +198,8 @@ enum class ElfSegType {
     
     PT_GNU_STACK = ( PT_LOOS + 0x474e551 )
 };
+extern ValueName elf_seg_type_name[static_cast<uint>( ElfSegType::PT_NUM )];
+
 
 enum class Elf32_ProgramPerm {
     PF_R = 0x4,
@@ -220,6 +223,8 @@ struct Elf32_ProgramHeader {
     bool has_perm( Elf32_ProgramPerm perm ) {
         return p_flags & static_cast<Elf32_Word>( perm );
     }
+    
+    void print();
 };
 
 struct Elf64_ProgramHeader {
@@ -238,6 +243,7 @@ struct Elf64_ProgramHeader {
     bool has_perm( Elf32_ProgramPerm perm ) {
         return p_flags & static_cast<Elf64_Word>( perm );
     }
+    void print();
 };
 
 
@@ -529,15 +535,15 @@ struct Elf32_Symbol {
     unsigned char st_other;
     Elf32_Half    st_shndx;
     
-    uint get_bind_raw(){
-        return (uint) (( st_info ) >> 4);
+    uint get_bind_raw() {
+        return ( uint ) ( ( st_info ) >> 4 );
     }
-
-    uint get_type_raw(){
+    
+    uint get_type_raw() {
         return ( ( uint )st_info ) & 0xf;
     }
-
-
+    
+    
     ElfSymbolBind get_bind() {
         return static_cast<ElfSymbolBind>( get_bind_raw() );
     }
@@ -554,15 +560,15 @@ struct Elf64_Symbol {
     Elf64_Addr st_value;      /* Value of the symbol */
     Elf64_Xword st_size;      /* Associated symbol size */
     
-    uint get_bind_raw(){
-        return (uint) (( st_info ) >> 4);
+    uint get_bind_raw() {
+        return ( uint ) ( ( st_info ) >> 4 );
     }
-
-    uint get_type_raw(){
+    
+    uint get_type_raw() {
         return ( ( uint )st_info ) & 0xf;
     }
-
-
+    
+    
     ElfSymbolBind get_bind() {
         return static_cast<ElfSymbolBind>( get_bind_raw() );
     }
@@ -588,27 +594,49 @@ struct Elf64_Symbol {
         RELOCATIONS
 */
 
+
+enum class ElfRelType {
+    R_386_GOT32 = 3,
+    R_386_PLT32 = 4,
+    R_386_COPY = 5,
+    R_386_GLOB_DAT = 6,
+    R_386_JMP_SLOT = 7,
+    R_386_RELATIVE = 8,
+    R_386_GOTOFF = 9,
+    R_386_GOTPC = 10
+};
+
+
+
 struct Elf32_Rel {
     Elf32_Addr    r_offset;
     Elf32_Word    r_info;
-
-    uint get_sym_raw(){
+    
+    uint get_sym_raw() {
         return r_info >> 8;
     }
-    uint get_type_raw(){
+    uint get_type_raw() {
         return r_info & 0xff;
+    }
+    
+    ElfRelType get_type() {
+        return static_cast<ElfRelType>( get_type_raw() );
     }
 };
 
 struct Elf64_Rel {
     Elf64_Addr r_offset;  /* Location at which to apply the action */
     Elf64_Xword r_info;   /* index and type of relocation */
-
-    uint get_sym_raw(){
+    
+    uint get_sym_raw() {
         return r_info >> 32;
     }
-    uint get_type_raw(){
+    uint get_type_raw() {
         return r_info & 0xffffffff;
+    }
+    
+    ElfRelType get_type() {
+        return static_cast<ElfRelType>( get_type_raw() );
     }
 };
 
@@ -616,12 +644,16 @@ struct Elf32_Rela {
     Elf32_Addr    r_offset;
     Elf32_Word    r_info;
     Elf32_Sword   r_addend;
-
-    uint get_sym_raw(){
+    
+    uint get_sym_raw() {
         return r_info >> 8;
     }
-    uint get_type_raw(){
+    uint get_type_raw() {
         return r_info & 0xff;
+    }
+    
+    ElfRelType get_type() {
+        return static_cast<ElfRelType>( get_type_raw() );
     }
 };
 
@@ -629,25 +661,74 @@ struct Elf64_Rela {
     Elf64_Addr r_offset;  /* Location at which to apply the action */
     Elf64_Xword r_info;   /* index and type of relocation */
     Elf64_Sxword r_addend;    /* Constant addend used to compute value */
-
-    uint get_sym_raw(){
+    
+    uint get_sym_raw() {
         return r_info >> 32;
     }
-    uint get_type_raw(){
+    uint get_type_raw() {
         return r_info & 0xffffffff;
+    }
+    
+    ElfRelType get_type() {
+        return static_cast<ElfRelType>( get_type_raw() );
     }
 };
 
 
 
 
+/*
+
+        DYNAMIC
+
+*/
 
 
 
+enum class ElfDynType {
+    DT_NULL     = 0,
+    DT_NEEDED   = 1,
+    DT_PLTRELSZ = 2,
+    DT_PLTGOT   = 3,
+    DT_HASH     = 4,
+    DT_STRTAB   = 5,
+    DT_SYMTAB   = 6,
+    DT_RELA     = 7,
+    DT_RELASZ   = 8,
+    DT_RELAENT  = 9,
+    DT_STRSZ    = 10,
+    DT_SYMENT   = 11,
+    DT_INIT     = 12,
+    DT_FINI     = 13,
+    DT_SONAME   = 14,
+    DT_RPATH    = 15,
+    DT_SYMBOLIC = 16,
+    DT_REL      = 17,
+    DT_RELSZ    = 18,
+    DT_RELENT   = 19,
+    DT_PLTREL   = 20,
+    DT_DEBUG    = 21,
+    DT_TEXTREL  = 22,
+    DT_JMPREL   = 23,
+    DT_ENCODING = 32,
+};
 
 
+struct Elf32_Dyn {
+    Elf32_Sword d_tag;
+    union {
+        Elf32_Sword d_val;
+        Elf32_Addr  d_ptr;
+    } d_un;
+};
 
-
+struct Elf64_Dyn {
+    Elf64_Sxword d_tag;       /* entry tag value */
+    union {
+        Elf64_Xword d_val;
+        Elf64_Addr d_ptr;
+    } d_un;
+};
 
 
 
@@ -688,10 +769,10 @@ struct ElfFile {
     void print_symbols();
     void print_relocations();
     void print_segments();
-
-
+    
+    
     template<typename T, typename V>
-    ArraySlice<T> get_section_as_table(V &sh){
+    ArraySlice<T> get_section_as_table( V &sh ) {
         ArraySlice<T> table;
         auto symbol_count = ( uint )( sh.sh_size / sizeof( T ) );
         table.init( ( T * )( data.begin() + sh.sh_offset ), 0, symbol_count );

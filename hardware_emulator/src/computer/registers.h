@@ -40,6 +40,7 @@ struct Registers {
     
     ulong get_rsp();
     ulong get_rsi();
+    ulong get_rdi();
     ulong get_rip();
     
     ulong get_gs();
@@ -62,6 +63,7 @@ struct Registers {
     
     void set_rsp( ulong val );
     void set_rsi( ulong val );
+    void set_rdi( ulong val );
     void set_rip( ulong val );
     
     void set_gs( ulong val );

@@ -4,6 +4,8 @@
 #include "computer/system_calls.h"
 #include "computer/memory.h"
 #include "computer/computer.h"
+#include "computer/os.h"
+#include "computer/symbols.h"
 
 namespace OS {
 
@@ -18,9 +20,6 @@ namespace OS {
         void load_values( void *pe );
     };
     
-    struct SectionInfo {
-        MemorySection *mem;
-    };
     
     struct DLLLoader {
         void *pe;
@@ -30,6 +29,7 @@ namespace OS {
         bool module_name_set;
         
         SystemCalls *sys_calls;
+        Symbols *symbols;
         Memory *mem;
         
         DLLInfo info;
@@ -37,12 +37,13 @@ namespace OS {
         Array<SectionInfo> sections;
         uint section_pos;
         
-        DLLLoader() : pe( nullptr ), sys_calls( nullptr ), mem( nullptr ) {}
+        DLLLoader() : pe( nullptr ), sys_calls( nullptr ), mem( nullptr ), symbols( nullptr ) {}
         ~DLLLoader() {
             drop();
         }
         
-        bool init( const std::string &file_name, SystemCalls &sys_calls, Memory &mem );
+        //File without extension
+        bool init( const std::string &file_name, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
         void drop();
         bool loaded() {
             return pe != nullptr;

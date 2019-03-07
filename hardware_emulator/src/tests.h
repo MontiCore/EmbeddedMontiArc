@@ -10,3 +10,9 @@ bool test_hardware_manager_querries();
 bool test_autopilot_dll();
 
 bool test_linux_elf_info();
+
+bool test_simple_elf();
+
+bool test_syscall_elf();
+
+bool test_autopilot_elf();

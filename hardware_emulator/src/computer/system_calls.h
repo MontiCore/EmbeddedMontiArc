@@ -1,6 +1,7 @@
 #pragma once
 #include "memory.h"
 #include "computer_layout.h"
+#include "symbols.h"
 
 struct Computer;
 struct SysCall;
@@ -44,6 +45,7 @@ struct SysCall {
 */
 struct SystemCalls {
     MemorySection *section;
+    Symbols *symbols;
     SectionStack syscall_stack;
     
     
@@ -53,14 +55,13 @@ struct SystemCalls {
     Array<SysCall> sys_calls;
     uint sys_call_pos;
     
-    SystemCalls() : section( nullptr ) {}
+    SystemCalls() : section( nullptr ), symbols( nullptr ) {}
     
     bool loaded() {
         return section != nullptr;
     }
     
-    void init( Memory &mem, ComputerDebug &debug );
+    void init( Memory &mem, ComputerDebug &debug, Symbols &symbols );
     
-    ulong get_syscall( const std::string &mod, const std::string &name );
     ulong add_syscall( SysCall const &call );
 };

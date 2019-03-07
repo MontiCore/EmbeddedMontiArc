@@ -1,41 +1,37 @@
 #pragma once
-#include "os_windows/os_windows.h"
 #include "computer/computer.h"
+
+struct ProgramInterface {
+    Computer *computer;
+    void init( Computer &computer ) {
+        this->computer = &computer;
+    }
+    Array<uint64_t> addresses;
+    bool call_success;
+};
 
 namespace ADD_DLL {
 
-    struct DllInterface {
-        Computer computer;
-        OS::Windows os_windows;
-        Array<uint64_t> addresses;
+    struct Interface : public ProgramInterface {
         enum Functions {
             ADD,
             FUNCTION_COUNT
         };
-        void init();
+        bool init( Computer &computer, bool windows );
         int add( int a, int b );
-        bool call_success;
     };
-    
-    
 }
 
 namespace LOADED_DLL {
 
-    struct DllInterface {
-        Computer computer;
-        OS::Windows os_windows;
-        Array<uint64_t> addresses;
+    struct Interface : public ProgramInterface {
         enum Functions {
             TEST_METHOD,
             FUNCTION_COUNT
         };
-        void init();
+        bool init( Computer &computer );
         void test_method( void );
-        bool call_success;
     };
-    
-    
 }
 
 

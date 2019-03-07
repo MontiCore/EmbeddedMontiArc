@@ -1,29 +1,46 @@
 #include "dll_interface.h"
 #include "utility.h"
-#include "os_windows/windows_calls.h"
 
 using namespace std;
 
+bool add_symbol( uint64_t &target, const std::string &name, Computer &computer ) {
+    auto add_sym = computer.symbols.get_symbol( name );
+    if ( add_sym.type == Symbols::Symbol::EMPTY )
+        return false;
+    target = add_sym.addr;
+    return true;
+}
 
-void LOADED_DLL::DllInterface::init() {
+bool ADD_DLL::Interface::init( Computer &computer, bool windows ) {
+    ProgramInterface::init( computer );
+    if ( !computer.os->load_file( "sample_simple" ) )
+        return false;
     addresses.init( FUNCTION_COUNT );
-    addresses[TEST_METHOD] = computer.sys_calls.get_syscall( "loaded_dll.dll", "test_method" );
+    if ( !add_symbol( addresses[ADD], windows ? "?add@@YAHHH@Z" : "add", computer ) )
+        return false;
+    return true;
 }
 
-
-void LOADED_DLL::DllInterface::test_method() {
-    call_success = computer.call( addresses[TEST_METHOD] );
-}
-
-void ADD_DLL::DllInterface::init() {
-    addresses.init( FUNCTION_COUNT );
-    addresses[ADD] = computer.sys_calls.get_syscall( "SampleDLL.dll", "?add@@YAHHH@Z" );
-}
-
-int ADD_DLL::DllInterface::add( int a, int b ) {
-    computer.fast_call.set_params( *( ( uint32_t * )&a ), *( ( uint32_t * )&b ) );
-    call_success = computer.call( addresses[ADD] );
-    auto res = computer.fast_call.get_return();
+int ADD_DLL::Interface::add( int a, int b ) {
+    computer->func_call->set_params( *( ( uint32_t * )&a ), *( ( uint32_t * )&b ) );
+    call_success = computer->call( addresses[ADD], "add" );
+    auto res = computer->func_call->get_return();
     return *( ( int * ) & ( res ) );
 }
+
+
+
+bool LOADED_DLL::Interface::init( Computer &computer ) {
+    ProgramInterface::init( computer );
+    if ( !computer.os->load_file( "sample_syscall" ) )
+        return false;
+    addresses.init( FUNCTION_COUNT );
+    if ( !add_symbol( addresses[TEST_METHOD], "test_method", computer ) )
+        return false;
+    return true;
+}
+void LOADED_DLL::Interface::test_method() {
+    call_success = computer->call( addresses[TEST_METHOD], "test_method" );
+}
+
 

@@ -10,21 +10,19 @@ using namespace peparse;
 
 int iter_exports( void *data, VA address, std::string &module_name, std::string &symbol_name ) {
     auto &loader = *static_cast<OS::DLLLoader *>( data );
-    SysCall call( symbol_name, module_name, address );
-    if ( !loader.module_name_set ) {
-        loader.module_name_set = true;
-        loader.module_name = module_name;
-    }
-    loader.sys_calls->add_syscall( call );
+    loader.symbols->add_symbol( symbol_name, Symbols::Symbol::EXPORT, address );
     return 0;
 }
 int iter_imports( void *data, VA address, const std::string &module_name, const std::string &symbol_name ) {
     auto &loader = *static_cast<OS::DLLLoader *>( data );
     SysCall call( symbol_name, module_name, nullptr );
-    auto existing_call = loader.sys_calls->get_syscall( module_name, symbol_name );
-    if ( existing_call == 0 )
-        existing_call = loader.sys_calls->add_syscall( call );
-    loader.mem->write_long_word( address, existing_call );
+    ulong func_addr;
+    auto sym = loader.symbols->get_symbol( symbol_name );
+    if ( sym.type != Symbols::Symbol::SYSCALL )
+        func_addr = loader.sys_calls->add_syscall( call );
+    else
+        func_addr = sym.addr;
+    loader.mem->write_long_word( address, func_addr );
     return 0;
 }
 int iter_sections( void *data, VA secBase, std::string &name, image_section_header header, bounded_buffer *b ) {
@@ -53,16 +51,18 @@ int iter_symbols( void *data, std::string &str_name, uint32_t &value, int16_t &s
     auto &mem = *sec.mem;
     if ( !mem.has_annotations() )
         mem.init_annotations();
-    mem.annotations.add_annotation( mem.address_range.start_address + value, Annotation( str_name, Annotation::SYMBOL ) );
+    mem.annotations.add_annotation( mem.address_range.start_address + value, Annotation( str_name, Annotation::OBJECT ) );
     return 0;
 }
 
-bool OS::DLLLoader::init( const std::string &file_name, SystemCalls &sys_calls, Memory &mem ) {
+//File without extension
+bool OS::DLLLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
     drop();
     
     this->sys_calls = &sys_calls;
     this->mem = &mem;
-    this->file_name = file_name;
+    this->symbols = &symbols;
+    file_name = fn + ".dll";
     
     FileReader fr;
     if ( !fr.open( file_name ) ) {
@@ -111,8 +111,8 @@ void OS::DLLLoader::drop() {
 
 void OS::DLLLoader::dll_main( Computer &computer ) {
     throw_assert( loaded(), "DLLLoader::dll_main() on uninitialized DLLLoader." );
-    computer.fast_call.set_params( 0x18C, 1, 0x10C ); //DLL_PROCESS_ATTACH
-    computer.call( info.base_address + info.entry_point );
+    computer.func_call->set_params( 0x18C, 1, 0x10C ); //DLL_PROCESS_ATTACH
+    computer.call( info.base_address + info.entry_point, "dll_main" );
 }
 
 
