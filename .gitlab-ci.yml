@@ -1,0 +1,20 @@
+stages:
+- generate
+- compile
+
+gen:
+  image: maven:3-jdk-8
+  stage: generate
+  artifacts:
+    paths:
+    - target/
+  script:
+  - ./generate.sh
+
+comp:
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/cooperativeintersection/emam-coincar
+  stage: compile
+  dependencies:
+    - gen
+  script:
+    - ./compile.sh
