@@ -46,7 +46,7 @@ public class IntegrationCaffe2Test extends AbstractSymtabTest {
     private void createHashFile() {
         try {
             netTrainingHashFile.toFile().getParentFile().mkdirs();
-            List<String> lines = Arrays.asList("7A7FBAC4E0AD84993C1C5F8B4F431055#D85A46E95F839BBEE22D9AC3E6A4BC5C#6BE4AED3D0DA1940B750FEA8088A7D21#6BE4AED3D0DA1940B750FEA8088A7D21");
+            List<String> lines = Arrays.asList("2F846688B0685A3A3F78B3F247F33EA3#8C92571AA244293955423248FCCCC886#6BE4AED3D0DA1940B750FEA8088A7D21#6BE4AED3D0DA1940B750FEA8088A7D21");
             Files.write(netTrainingHashFile, lines, Charset.forName("UTF-8"));
         }
         catch(Exception e) {
@@ -98,5 +98,8 @@ public class IntegrationCaffe2Test extends AbstractSymtabTest {
 
         deleteHashFile();
     }
+
+
+    
     
 }
