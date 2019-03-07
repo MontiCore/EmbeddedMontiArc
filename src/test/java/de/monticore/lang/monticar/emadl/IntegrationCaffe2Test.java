@@ -74,7 +74,7 @@ public class IntegrationCaffe2Test extends AbstractSymtabTest {
     public void testDontRetrain1() {
         // The training hash is stored during the first training, so the second one is skipped
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cNNCalculator.Network", "-b", "CAFFE2"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "CAFFE2"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
         
@@ -86,18 +86,18 @@ public class IntegrationCaffe2Test extends AbstractSymtabTest {
         deleteHashFile();
     }
 
-    @Test
-    public void testForceRetrain() {
-        // The training hash is written manually, but training is forced
-        Log.getFindings().clear();
-        createHashFile();
-
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cNNCalculator.Network", "-b", "CAFFE2", "-f", "y"};
-        EMADLGeneratorCli.main(args);
-        assertTrue(Log.getFindings().isEmpty());
-
-        deleteHashFile();
-    }
+//    @Test
+//    public void testForceRetrain() {
+//        // The training hash is written manually, but training is forced
+//        Log.getFindings().clear();
+//        createHashFile();
+//
+//        String[] args = {"-m", "src/test/resources/models/", "-r", "cNNCalculator.Network", "-b", "CAFFE2", "-f", "y"};
+//        EMADLGeneratorCli.main(args);
+//        assertTrue(Log.getFindings().isEmpty());
+//
+//        deleteHashFile();
+//    }
 
 
     
