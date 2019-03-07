@@ -1,6 +1,6 @@
 
 cifar10.CifarNetwork src/test/resources/training_data
-cNNCalculator.Network src/test/resources/training_data
+cNNCalculator.VGG16 src/test/resources/training_data
 MultipleOutputs data/MultipleOutputs
 InstanceTest.NetworkB data/InstanceTest.NetworkB
 Alexnet data/Alexnet

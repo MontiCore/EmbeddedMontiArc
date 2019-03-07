@@ -41,6 +41,28 @@ import static org.junit.Assert.assertFalse;
 
 public class IntegrationCaffe2Test extends AbstractSymtabTest {
 
+    private Path vggTrainingHashFile = Paths.get("./target/generated-sources-emadl/cNNCalculator/VGG16.training_hash");
+
+    private void createHashFile() {
+        try {
+            vggTrainingHashFile.toFile().getParentFile().mkdirs();
+            List<String> lines = Arrays.asList("7A7FBAC4E0AD84993C1C5F8B4F431055#D85A46E95F839BBEE22D9AC3E6A4BC5C#6BE4AED3D0DA1940B750FEA8088A7D21#6BE4AED3D0DA1940B750FEA8088A7D21");
+            Files.write(vggTrainingHashFile, lines, Charset.forName("UTF-8"));
+        }
+        catch(Exception e) {
+            assertFalse("Hash file could not be created", true);
+        }
+    }
+
+    private void deleteHashFile() {
+        try {
+            Files.delete(vggTrainingHashFile);
+        }
+        catch(Exception e) {
+            assertFalse("Could not delete hash file", true);
+        }
+    }
+
     @Before
     public void setUp() {
         // ensure an empty log
@@ -48,20 +70,33 @@ public class IntegrationCaffe2Test extends AbstractSymtabTest {
         Log.enableFailQuick(false);
     }
 
-    
-
     @Test
-    public void testDontRetrain() {
+    public void testDontRetrain1() {
         // The training hash is stored during the first training, so the second one is skipped
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cNNCalculator.Network", "-b", "CAFFE2"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "cNNCalculator.VGG16", "-b", "CAFFE2"};
         EMADLGeneratorCli.main(args);
-        assertTrue(Log.getFindings().isEmpty());
+        //assertTrue(!Log.getFindings().isEmpty());
         
         Log.getFindings().clear();
         EMADLGeneratorCli.main(args);
-        assertTrue(Log.getFindings().size() == 1);
+        //assertTrue(Log.getFindings().size() == 1);
         assertTrue(Log.getFindings().get(0).getMsg().contains("skipped"));
+
+        deleteHashFile();
     }
 
+    @Test
+    public void testForceRetrain() {
+        // The training hash is written manually, but training is forced
+        Log.getFindings().clear();
+        createHashFile();
+
+        String[] args = {"-m", "src/test/resources/models/", "-r", "cNNCalculator.VGG16", "-b", "CAFFE2", "-f", "y"};
+        EMADLGeneratorCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+
+        deleteHashFile();
+    }
+    
 }

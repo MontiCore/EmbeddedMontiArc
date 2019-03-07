@@ -13,8 +13,8 @@ class CNNCreator_mnist_mnistClassifier_net:
 
     module = None
     _current_dir_ = os.path.join('./')
-    _data_dir_    = os.path.join(_current_dir_, 'data', 'mnist_mnistClassifier_net')
-    _model_dir_   = os.path.join(_current_dir_, 'model', 'mnist_mnistClassifier_net')
+    _data_dir_    = os.path.join(_current_dir_, 'data/mnist.LeNetNetwork')
+    _model_dir_   = os.path.join(_current_dir_, 'model', 'mnist.LeNetNetwork')
 
     _init_net_    = os.path.join(_model_dir_, 'init_net.pb')
     _predict_net_ = os.path.join(_model_dir_, 'predict_net.pb')
