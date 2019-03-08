@@ -27,8 +27,8 @@ TestMXNET:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/mxnet:v0.0.3
   script: 
   - cd example
-  - prepare.sh
-  - build.sh
+  - ./prepare.sh
+  - ./build.sh
   
 
 TestCAFFE2:
@@ -36,5 +36,5 @@ TestCAFFE2:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/caffe2:v0.0.3
   script: 
   - cd example_caffe2
-  - build.sh
+  - ./build.sh
   
