@@ -11,7 +11,7 @@ See example project [EMADL-Demo](https://git.rwth-aachen.de/thomas.timmermanns/E
 # Development and training of a CNN component using EMADL2CPP
 
 ## Prerequisites
-* Linux. Ubuntu Linux 16.04 and 18.04 were used during testing.
+* Linux. Ubuntu Linux 16.04 and 18.04 were used during testing. The docker files can be found [here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMADL2CPP/tree/oneclick_nn_training/src/test/resources/docker) 
 * Deep learning backend:
     * MXNet
         * training - generated is Python code. Required is Python 2.7 or higher, Python packages `h5py`, `mxnet` (for training on CPU) or e.g. `mxnet-cu75` for CUDA 7.5 (for training on GPU with CUDA, concrete package should be selected according to CUDA version). Follow [official instructions on MXNet site](https://mxnet.incubator.apache.org/install/index.html?platform=Linux&language=Python&processor=CPU)
