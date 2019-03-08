@@ -41,12 +41,12 @@ import static org.junit.Assert.assertFalse;
 
 public class IntegrationCaffe2Test extends AbstractSymtabTest {
 
-    private Path netTrainingHashFile = Paths.get("./target/generated-sources-emadl/cNNCalculator/Network.training_hash");
+    private Path netTrainingHashFile = Paths.get("./target/generated-sources-emadl/simpleCifar10/CifarNetwork.training_hash");
 
     private void createHashFile() {
         try {
             netTrainingHashFile.toFile().getParentFile().mkdirs();
-            List<String> lines = Arrays.asList("2F846688B0685A3A3F78B3F247F33EA3#8C92571AA244293955423248FCCCC886#6BE4AED3D0DA1940B750FEA8088A7D21#6BE4AED3D0DA1940B750FEA8088A7D21");
+            List<String> lines = Arrays.asList("39253EC049D4A4E5FA0536AD34874B9D#1DBAEE1B1BD83FB7CB5F70AE91B29638#13D139510DC5681639AA91D7250288D3#1A42D4842D0664937A9F6B727BD60CEF");
             Files.write(netTrainingHashFile, lines, Charset.forName("UTF-8"));
         }
         catch(Exception e) {
