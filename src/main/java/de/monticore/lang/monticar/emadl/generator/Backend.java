@@ -47,4 +47,13 @@ public enum Backend {
                 return Optional.empty();
         }
     }
+
+    public static String getBackendString(Backend backend){
+        switch (backend){
+            case CAFFE2:
+                return "CAFFE2";
+            default:
+                return "MXNET";
+        }
+    }
 }

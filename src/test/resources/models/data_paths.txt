@@ -1,0 +1,12 @@
+
+cifar10.CifarNetwork src/test/resources/training_data
+simpleCifar10.CifarNetwork src/test/resources/training_data
+cNNCalculator.Network src/test/resources/training_data
+MultipleOutputs data/MultipleOutputs
+InstanceTest.NetworkB data/InstanceTest.NetworkB
+Alexnet data/Alexnet
+ThreeInputCNN_M14 data/ThreeInputCNN_M14
+VGG16 data/VGG16
+ResNeXt50 data/ResNeXt50
+instanceTestCifar.CifarNetwork src/test/resources/training_data
+mnist.LeNetNetwork data/mnist.LeNetNetwork

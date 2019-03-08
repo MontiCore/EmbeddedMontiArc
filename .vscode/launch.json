@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - EMADLGeneratorCli",
+            "request": "launch",
+            "mainClass": "de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli",
+            "projectName": "embedded-montiarc-emadl-generator"
+        }
+    ]
+}
