@@ -1,3 +1,0 @@
-TestA.add
-TestA.calculator
-TestA.argmaxs

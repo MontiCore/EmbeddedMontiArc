@@ -1,7 +1,0 @@
-package TestA;
-
-stream GetNumberStream for GetNumber {
-    digits: [0,1,2] tick [1,2,3];
-
-    numb: 12 tick 123;
-}

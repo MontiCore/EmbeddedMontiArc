@@ -1,2 +1,0 @@
-/usr/bin/ar qc libTestA_add.a  
-/usr/bin/ranlib libTestA_add.a

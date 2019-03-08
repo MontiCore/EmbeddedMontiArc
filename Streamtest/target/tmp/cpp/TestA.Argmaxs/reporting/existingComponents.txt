@@ -1,5 +1,0 @@
-Components:
-    TestA.GetNumber
-    TestA.Add
-    TestA.Calculator
-    TestA.Argmaxs

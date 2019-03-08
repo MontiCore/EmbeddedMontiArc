@@ -1,2 +1,0 @@
-/usr/bin/ar qc libTestA_calculator.a  
-/usr/bin/ranlib libTestA_calculator.a

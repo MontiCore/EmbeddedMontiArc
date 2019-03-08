@@ -1,6 +1,0 @@
-Streams for component TestA.Add:
-    TestA.AddStream
-Streams for component TestA.Calculator:
-    TestA.CalculatorStream
-Streams for component TestA.Argmaxs:
-    TestA.ArgmaxStream

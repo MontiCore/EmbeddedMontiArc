@@ -1,8 +1,0 @@
-package TestA;
-
-stream AddStream for Add {
-    num1: 1;
-    num2: 2;
-
-    sum: 3;
-}

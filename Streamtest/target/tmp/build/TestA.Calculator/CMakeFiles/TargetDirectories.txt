@@ -1,4 +1,0 @@
-/home/nils/Documents/Uni/WS18_19/SPP/test2/mnistcalculator/target/tmp/build/TestA.Calculator/CMakeFiles/edit_cache.dir
-/home/nils/Documents/Uni/WS18_19/SPP/test2/mnistcalculator/target/tmp/build/TestA.Calculator/CMakeFiles/rebuild_cache.dir
-/home/nils/Documents/Uni/WS18_19/SPP/test2/mnistcalculator/target/tmp/build/TestA.Calculator/CMakeFiles/StreamTests.dir
-/home/nils/Documents/Uni/WS18_19/SPP/test2/mnistcalculator/target/tmp/build/TestA.Calculator/CMakeFiles/TestA_calculator.dir
