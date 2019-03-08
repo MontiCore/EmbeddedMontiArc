@@ -20,7 +20,7 @@ Finally, navigate to the target directory in order to run the calculator as foll
 ./build/src/cpp/DigitCalculator ./test_img/3.jpg
 ```
 
-You can try different images from the provided `/test_img` directory or even create your own images for testing. Note that the application program DigitClassifier will automatically rescale the given input image to the size 28x28.
+You can try different images from the provided `/test_img` directory or even create your own images for testing. Note that the application program DigitCalculator will automatically rescale the given input image to the size 28x28.
 
 
 ## Troubleshooting Help
