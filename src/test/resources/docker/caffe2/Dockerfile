@@ -51,19 +51,9 @@ RUN apt-get update && \
 
 RUN python -c 'import lmdb' && echo "LMDB success" || echo "LMDB failure"
 
-
-
 RUN apt remove nvidia-*
 RUN apt update
 RUN apt-key adv --fetch-keys  http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
 RUN bash -c 'echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/cuda.list'
 RUN apt update
 RUN apt install -y cuda-toolkit-9.2
-
-
-ENV CUDNN_TAR_FILE="cudnn-8.0-linux-x64-v6.0.tgz"
-RUN wget http://developer.download.nvidia.com/compute/redist/cudnn/v6.0/${CUDNN_TAR_FILE}
-RUN tar -xzvf ${CUDNN_TAR_FILE}
-RUN cp -P cuda/include/cudnn.h /usr/local/cuda/include
-RUN cp -P cuda/lib64/libcudnn* /usr/local/cuda/lib64/
-RUN chmod a+r /usr/local/cuda/lib64/libcudnn*
