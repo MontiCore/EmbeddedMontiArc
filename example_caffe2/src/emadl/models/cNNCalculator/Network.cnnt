@@ -1,7 +1,7 @@
 configuration Network{
      num_epoch:11
      batch_size:64
-     context:gpu
+     context:cpu
      eval_metric:accuracy
      optimizer:adam{
          learning_rate:0.001
