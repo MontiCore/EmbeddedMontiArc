@@ -46,7 +46,7 @@ public class IntegrationMXNetTest extends AbstractSymtabTest {
     private void createHashFile() {
         try {
             cifarTrainingHashFile.toFile().getParentFile().mkdirs();
-            List<String> lines = Arrays.asList("AF9A637D700CB002266D20BF242F4A59#27150AFBB0093AE0914C701ECA0E0040#C4C23549E737A759721D6694C75D9771#5AF0CE68E408E8C1F000E49D72AC214A");
+            List<String> lines = Arrays.asList("39253EC049D4A4E5FA0536AD34874B9D#1DBAEE1B1BD83FB7CB5F70AE91B29638#C4C23549E737A759721D6694C75D9771#5AF0CE68E408E8C1F000E49D72AC214A");
             Files.write(cifarTrainingHashFile, lines, Charset.forName("UTF-8"));
         }
         catch(Exception e) {

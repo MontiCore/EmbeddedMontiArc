@@ -74,7 +74,7 @@ public class IntegrationCaffe2Test extends AbstractSymtabTest {
     public void testDontRetrain1() {
         // The training hash is stored during the first training, so the second one is skipped
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "simplesimpleCifar10.Cifar10Classifier", "-b", "CAFFE2"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "simpleCifar10.Cifar10Classifier", "-b", "CAFFE2"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
         
