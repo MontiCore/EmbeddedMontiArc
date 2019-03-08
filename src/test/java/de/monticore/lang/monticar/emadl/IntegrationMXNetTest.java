@@ -41,7 +41,7 @@ import static org.junit.Assert.assertFalse;
 
 public class IntegrationMXNetTest extends AbstractSymtabTest {
 
-    private Path cifarTrainingHashFile = Paths.get("./target/generated-sources-emadl/cifar10/CifarNetwork.training_hash");
+    private Path cifarTrainingHashFile = Paths.get("./target/generated-sources-emadl/simpleCifar10/CifarNetwork.training_hash");
 
     private void createHashFile() {
         try {
@@ -76,7 +76,7 @@ public class IntegrationMXNetTest extends AbstractSymtabTest {
     public void testDontRetrain1() {
         // The training hash is stored during the first training, so the second one is skipped
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "simpleCifar10.Cifar10Classifier", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
         
@@ -94,7 +94,7 @@ public class IntegrationMXNetTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         createHashFile();
 
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "simpleCifar10.Cifar10Classifier", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
         assertTrue(Log.getFindings().get(0).getMsg().contains("skipped"));
@@ -118,7 +118,7 @@ public class IntegrationMXNetTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         createHashFile();
 
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET", "-f", "y"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "simpleCifar10.Cifar10Classifier", "-b", "MXNET", "-f", "y"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
