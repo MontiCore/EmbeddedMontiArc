@@ -52,6 +52,10 @@ public class EnvironmentContainerConverter {
         convertLatLongToMeters();
     }
 
+    public ApproximateConverter getApproximateConverter() {
+        return converter;
+    }
+
     /**
      * converts all Street Nodes in the container to kilometric units
      */
