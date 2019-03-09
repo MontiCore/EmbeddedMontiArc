@@ -65,10 +65,17 @@ public class EMADLGeneratorCli {
             .build();
 
     public static final Option OPTION_RESTRAINED_TRAINING = Option.builder("f")
-    		.longOpt("forced")
-    		.desc("no training or a forced training. Options: y (a forced training), n (no training)")
-    		.hasArg(true)
-    		.required(false)
+            .longOpt("forced")
+            .desc("no training or a forced training. Options: y (a forced training), n (no training)")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_COMPILE = Option.builder("c")
+            .longOpt("compile")
+            .desc("Compile the generated c code. Needs to be disabled eg. on Windows. Options: y (compile), n (don't compile). Default is y")
+            .hasArg(true)
+            .required(false)
             .build();
 
 
@@ -92,6 +99,7 @@ public class EMADLGeneratorCli {
         options.addOption(OPTION_BACKEND);
         options.addOption(OPTION_RESTRAINED_TRAINING);
         options.addOption(OPTION_TRAINING_PYTHON_PATH);
+        options.addOption(OPTION_COMPILE);
         return options;
     }
 
@@ -113,8 +121,10 @@ public class EMADLGeneratorCli {
         String backendString = cliArgs.getOptionValue(OPTION_BACKEND.getOpt());
         String forced = cliArgs.getOptionValue(OPTION_RESTRAINED_TRAINING.getOpt());
         String pythonPath = cliArgs.getOptionValue(OPTION_TRAINING_PYTHON_PATH.getOpt());
+        String compile = cliArgs.getOptionValue(OPTION_COMPILE.getOpt());
         final String DEFAULT_BACKEND = "MXNET";
         final String DEFAULT_FORCED = "UNSET";
+        final String DEFAULT_COMPILE = "y";
 
         if (backendString == null) {
             Log.warn("backend not specified. backend set to default value " + DEFAULT_BACKEND);
@@ -138,13 +148,22 @@ public class EMADLGeneratorCli {
             Log.error("specified setting ("+forced+") for forcing/preventing training not supported. set to default value " + DEFAULT_FORCED);
             forced = DEFAULT_FORCED;
         }
+
         EMADLGenerator generator = new EMADLGenerator(backend.get());
+
+        if (compile == null) {
+            compile = DEFAULT_COMPILE;
+        }
+        else if(!compile.equals("y") && !compile.equals("n")) {
+            Log.error("specified setting ("+compile+") for skipping the compilation not supported. set to default value " + DEFAULT_COMPILE);
+            compile = DEFAULT_COMPILE;
+        }
 
         if (outputPath != null){
             generator.setGenerationTargetPath(outputPath);
         }
         try{
-            generator.generate(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()), rootModelName, pythonPath, forced);
+            generator.generate(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()), rootModelName, pythonPath, forced, compile.equals("y"));
         }
         catch (IOException e){
             Log.error("io error during generation", e);
