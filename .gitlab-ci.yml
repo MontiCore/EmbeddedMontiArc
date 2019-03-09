@@ -30,12 +30,12 @@ TestMXNET:
   - ./prepare.sh
   - ./build.sh
   - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
-  - "if [[ $RES != *\"SUM: 579\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
+  - "if [[ $RES != *\"SUM: 679\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
 
 
 TestCAFFE2:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/caffe2:v0.0.1
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/caffe2:v0.0.2
   script: 
   - cd example_caffe2
   - ./build.sh
