@@ -35,7 +35,7 @@ TestMXNET:
 
 TestCAFFE2:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/caffe2:v0.0.3
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/caffe2:v0.0.1
   script: 
   - cd example_caffe2
   - ./build.sh
