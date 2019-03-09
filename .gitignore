@@ -1,7 +1,5 @@
 build
 bindings
 hardware-emulator-test.exe
-Debug
-Release
-.vscode
-!libs/
+#Debug
+#Release
