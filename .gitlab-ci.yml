@@ -11,11 +11,8 @@ windows_build:
   - Windows10
   artifacts:
     paths:
-      - hardware_emulator/build/Debug/hardware-emulator-test.exe
-      - hardware_emulator/build/Debug/HardwareEmulator.dll
-#      - hardware_emulator/bin/AutopilotModel.dll
-#      - hardware_emulator/bin/loaded_dll.dll
-#      - hardware_emulator/bin/SampleDLL.dll
+      - hardware_emulator/build/Release/hardware-emulator-test.exe
+      - hardware_emulator/build/Release/HardwareEmulator.dll
 
 test_windows:
   stage: test
@@ -55,8 +52,6 @@ linux_build:
   - cd build
   - cmake -G "Unix Makefiles" ../
   - make
-  #- cmake -G "Unix Makefiles" -DZYDIS_BUILD_SHARED_LIB=ON ../
-  #- make
   - cd ..
   - cd ..
   
