@@ -111,13 +111,6 @@ list(APPEND HARDWARE_EMU_INCLUDE_DIRS
   ../zydis/dependencies/zycore/include
 )
 
-#Library directories
-list(APPEND HARDWARE_EMU_LIB_DIRS
-  ../zydis/build
-  ../unicorn/build
-  ../unicorn/build/qemu
-)
-
 #Library dependencies
 list(APPEND HARDWARE_EMU_LIBRARIES
     unicorn
@@ -134,6 +127,7 @@ if ( CMAKE_COMPILER_IS_GNUCC )
     "${JAVA_INCLUDE_PATH2}"
   )
   list(APPEND HARDWARE_EMU_LIB_DIRS
+    ../zydis/build
     "../pe-parse/${CMAKE_BUILD_TYPE}/pe-parser-library"
     ../unicorn
     ../unicorn/qemu
@@ -152,10 +146,14 @@ if ( MSVC )
     "${JAVA_INCLUDE_PATH}"
     "${JAVA_INCLUDE_PATH2}"
   )
+  #list(APPEND HARDWARE_EMU_LIB_DIRS
+  #  ../zydis/build
+  #  ../pe-parse/build/pe-parser-library
+  #  ../unicorn/build
+  #  ../unicorn/build/qemu
+  #)
   list(APPEND HARDWARE_EMU_LIB_DIRS
-    ../pe-parse/build/pe-parser-library
-    ../unicorn/build
-    ../unicorn/build/qemu
+    libs
   )
   list(APPEND HARDWARE_EMU_LIBRARIES
     Dbghelp

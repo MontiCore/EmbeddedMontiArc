@@ -6,7 +6,7 @@ windows_build:
   stage: build
   script: 
   - call VsDevCmd.bat
-  - call docs\build_all_msvc.bat
+  - call docs\build_release.bat
   tags:
   - Windows10
   artifacts:
@@ -55,8 +55,8 @@ linux_build:
   - cd build
   - cmake -G "Unix Makefiles" ../
   - make
-  - cmake -G "Unix Makefiles" -DZYDIS_BUILD_SHARED_LIB=ON ../
-  - make
+  #- cmake -G "Unix Makefiles" -DZYDIS_BUILD_SHARED_LIB=ON ../
+  #- make
   - cd ..
   - cd ..
   
@@ -66,11 +66,6 @@ linux_build:
   - cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../
   - make
   - cd ..
-#  - mkdir Debug
-#  - cd Debug
-#  - cmake -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" ../
-#  - make
-#  - cd ..
   - cd ..
   
   - cd hardware_emulator
@@ -79,11 +74,6 @@ linux_build:
   - cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../
   - make
   - cd ..
-#  - mkdir Debug
-#  - cd Debug
-#  - cmake -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" ../
-#  - make
-#  - cd ..
   - cd ..
   artifacts:
     paths:

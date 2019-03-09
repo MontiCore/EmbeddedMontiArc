@@ -189,7 +189,6 @@ void HardwareEmulator::call_output( uint func_id ) {
     call_success = computer.call( addr, output_ports[func_id].name.c_str() );
     if ( !call_success )
         return;
-    ulong temp_v;
     switch ( output.type ) {
         case VALUE_TYPE::DOUBLE:
             output.double_value = computer.func_call->get_return_double();

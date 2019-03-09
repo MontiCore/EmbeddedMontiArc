@@ -559,7 +559,7 @@ void Elf32_SectionHeader::print( ArraySlice<char> &sec_name_table ) {
         }
     }
     if ( need )
-        printf( "%4" PRIx64 " ", sh_type );
+        printf( "%4" PRIx32 " ", sh_type );
     printf( "%s\t", ( sec_name_table.begin() + sh_name ) );
     printf( "\n" );
 }
@@ -579,7 +579,7 @@ void Elf64_SectionHeader::print( ArraySlice<char> &sec_name_table ) {
         }
     }
     if ( need )
-        printf( "%4" PRIx64 " ", sh_type );
+        printf( "%4" PRIx32 " ", sh_type );
     printf( "%s\t", ( sec_name_table.begin() + sh_name ) );
     printf( "\n" );
 }
