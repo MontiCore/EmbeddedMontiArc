@@ -24,7 +24,7 @@ stages:
 
 TestMXNET:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.2
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
   script: 
   - cd example
   - ./prepare.sh

@@ -27,3 +27,5 @@ RUN cd OpenCV && \
 RUN cd OpenCV/build && make -j4
 RUN cd OpenCV/build && make install
 RUN cd OpenCV/build && ldconfig
+
+RUN apt-get install -y libopenblas-dev
