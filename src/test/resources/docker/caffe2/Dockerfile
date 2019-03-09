@@ -50,10 +50,3 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* 
 
 RUN python -c 'import lmdb' && echo "LMDB success" || echo "LMDB failure"
-
-RUN apt remove nvidia-*
-RUN apt update
-RUN apt-key adv --fetch-keys  http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
-RUN bash -c 'echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/cuda.list'
-RUN apt update
-RUN apt install -y cuda-toolkit-9.2
