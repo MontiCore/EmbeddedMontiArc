@@ -7,3 +7,6 @@
 3. Deep Learning Framework **MXNet**.
 4. Armadillo (at least armadillo version 6.600 must be used) [Official instructions at Armadillo Website](http://arma.sourceforge.net/download.html).
 4. OpenCV
+
+## MXNet and Caffe2
+For detailed instructions on how to run the MXNet and Caffe2 example, see the README in the corresponding folder.
