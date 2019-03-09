@@ -1,5 +1,5 @@
 configuration Network{
-     num_epoch:5
+     num_epoch:1
      batch_size:100
      normalize:true
      context:cpu
