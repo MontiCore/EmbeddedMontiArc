@@ -17,11 +17,11 @@ set(LIBS ${LIBS} ${Caffe2_LIBRARIES})
 # additional commands
 set(LIBS ${LIBS} -lprotobuf -lglog -lgflags)
 find_package(CUDA)
-set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS})
-set(LIBS ${LIBS} ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})
 
 if(CUDA_FOUND)
   set(LIBS ${LIBS} caffe2 caffe2_gpu)
+  set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS})
+  set(LIBS ${LIBS} ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})
 else()
   set(LIBS ${LIBS} caffe2)
 endif()
