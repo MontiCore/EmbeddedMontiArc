@@ -39,4 +39,5 @@ TestCAFFE2:
   script: 
   - cd example_caffe2
   - ./build.sh
-  
+  - RES=$(./build/src/cpp/DigitCalculator test_img/2.jpg test_img/3.jpg test_img/4.png test_img/6.png test_img/2.jpg test_img/3.jpg)
+  - "if [[ $RES != *\"SUM: 857\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
