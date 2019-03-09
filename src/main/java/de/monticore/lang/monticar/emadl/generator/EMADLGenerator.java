@@ -134,39 +134,42 @@ public class EMADLGenerator {
     }
 
     public void executeCommands() throws IOException {
-
-      File tempScript = createTempScript();
-
-      try {
-          ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
-          pb.inheritIO();
-          Process process = pb.start();
-          process.waitFor();
-      }catch(Exception e){
-          System.out.println(e);
-      } finally {
-          tempScript.delete();
-      }
+        File tempScript = createTempScript();
+        try {
+            ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
+            pb.inheritIO();
+            Process process = pb.start();
+            int returnCode = process.waitFor();
+            if(returnCode != 0) {
+                Log.error("During compilation, an error occured. See above for more details.");
+                System.exit(1);
+            }
+        }catch(Exception e){
+            Log.error("During compilation, the following error occured: '" + e.toString() + "'");
+            System.exit(1);
+        } finally {
+            tempScript.delete();
+        }
     }
 
     public File createTempScript() throws IOException{
-      File tempScript = File.createTempFile("script", null);
-      try{
-        Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+        File tempScript = File.createTempFile("script", null);
+        try{
+            Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
                 tempScript));
-        PrintWriter printWriter = new PrintWriter(streamWriter);
+            PrintWriter printWriter = new PrintWriter(streamWriter);
 
-        printWriter.println("#!/bin/bash");
-        printWriter.println("cd " + getGenerationTargetPath());
-        printWriter.println("mkdir --parents build");
-	    printWriter.println("cd build");
-        printWriter.println("cmake ..");
-        printWriter.println("make");
+            printWriter.println("#!/bin/bash");
+            printWriter.println("csssd " + getGenerationTargetPath());
+            printWriter.println("mkdir --parents build");
+            printWriter.println("cd build");
+            printWriter.println("cmake ..");
+            printWriter.println("make");
 
-        printWriter.close();
-      }catch(Exception e){
-        System.out.println(e);
-      }
+            printWriter.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
 
         return tempScript;
     }
