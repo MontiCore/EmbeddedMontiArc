@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(DigitCalculator CXX)
 set(CMAKE_CXX_STANDARD 11)
 
-option(MXNET_PATH "Path to libmxnet.so", "/usr/local/lib/python2.7/dist-packages/mxnet/libmxnet.so")
+option(MXNET_PATH "Path to libmxnet.so")
 
 
 add_executable(DigitCalculator DigitCalculator.cpp)
