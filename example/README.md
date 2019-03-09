@@ -22,7 +22,7 @@ Generate and build the code for the EMADL model by executing:
 bash build.sh
 ```
 
-Finally, navigate to the target directory in order to run the calculator as follows:
+Finally, run the calculator as follows:
 ```
 ./build/src/cpp/DigitCalculator ./test_img/3.jpg
 ```
