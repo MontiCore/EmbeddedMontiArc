@@ -19,7 +19,7 @@ test_windows:
   tags:
   - Windows10
   script:
-    - copy "hardware_emulator\build\Debug\hardware-emulator-test.exe" "hardware_emulator\bin"
+    - copy "hardware_emulator\build\Release\hardware-emulator-test.exe" "hardware_emulator\bin"
     - cd hardware_emulator\bin
     - hardware-emulator-test
   dependencies:
