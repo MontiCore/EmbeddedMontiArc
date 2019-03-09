@@ -136,13 +136,16 @@ public class CNNArch2Caffe2 extends CNNArchGenerator{
         cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
         cMakeConfig.addModuleDependency(new CMakeFindModule("Caffe2", true));
         cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} -lprotobuf -lglog -lgflags)");
-        cMakeConfig.addCMakeCommand("find_package(CUDA)" + "\n"
-                                        + "set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS})" + "\n"
-                                        + "set(LIBS ${LIBS} ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})" + "\n");
+        cMakeConfig.addCMakeCommand("find_package(CUDA)" + "\n");
                                         //Needed since CUDA cannot be found correctly (including CUDA_curand_LIBRARY)
 
-        cMakeConfig.addCMakeCommand("if(CUDA_FOUND)" + "\n" + "  set(LIBS ${LIBS} caffe2 caffe2_gpu)"
-                                        + "\n" + "else()" + "\n" + "  set(LIBS ${LIBS} caffe2)" + "\n" + "endif()");
+        cMakeConfig.addCMakeCommand("if(CUDA_FOUND)" + "\n"
+                                    + "  set(LIBS ${LIBS} caffe2 caffe2_gpu)" + "\n"
+                                    + "  set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS})" + "\n"
+                                    + "  set(LIBS ${LIBS} ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})" + "\n"
+                                    + "else()" + "\n" 
+                                    + "  set(LIBS ${LIBS} caffe2)" + "\n" 
+                                    + "endif()");
 
         Map<String,String> fileContentMap = new HashMap<>();
         for (FileContent fileContent : cMakeConfig.generateCMakeFiles()){
