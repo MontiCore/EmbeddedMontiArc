@@ -108,7 +108,7 @@ public class EMADLGenerator {
         return emamGen;
     }
 
-    public void generate(String modelPath, String qualifiedName, String pythonPath, String forced) throws IOException, TemplateException {
+    public void generate(String modelPath, String qualifiedName, String pythonPath, String forced, boolean doCompile) throws IOException, TemplateException {
         setModelsPath( modelPath );
         TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
         EMAComponentSymbol component = symtab.<EMAComponentSymbol>resolve(qualifiedName, EMAComponentSymbol.KIND).orElse(null);
@@ -126,14 +126,13 @@ public class EMADLGenerator {
 
 
         generateFiles(symtab, instance, symtab, pythonPath, forced);
-        try{
-          executeCommands();
-        }catch(Exception e){
-          System.out.println(e);
+        
+        if (doCompile) {
+            compile();
         }
     }
 
-    public void executeCommands() throws IOException {
+    public void compile() throws IOException {
         File tempScript = createTempScript();
         try {
             ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
@@ -160,7 +159,7 @@ public class EMADLGenerator {
             PrintWriter printWriter = new PrintWriter(streamWriter);
 
             printWriter.println("#!/bin/bash");
-            printWriter.println("csssd " + getGenerationTargetPath());
+            printWriter.println("cd " + getGenerationTargetPath());
             printWriter.println("mkdir --parents build");
             printWriter.println("cd build");
             printWriter.println("cmake ..");
@@ -255,15 +254,13 @@ public class EMADLGenerator {
                         exitCode = p.waitFor();
                     }
                     catch(InterruptedException e) {
-                        //throw new Exception("Error: Training aborted" + e.toString());
-                        System.out.println("Error: Training aborted" + e.toString());
-                        continue;
+                        Log.error("Training aborted: exit code " + Integer.toString(exitCode));
+                        System.exit(1);
                     }
 
                     if(exitCode != 0) {
-                        //throw new Exception("Error: Training error");
-                        System.out.println("Error: Training failed" + Integer.toString(exitCode));
-                        continue;
+                        Log.error("Training failed: exit code " + Integer.toString(exitCode));
+                        System.exit(1);
                     }
 
                     fileContentsTrainingHashes.add(new FileContent(trainingHash, componentConfigFilename + ".training_hash"));
