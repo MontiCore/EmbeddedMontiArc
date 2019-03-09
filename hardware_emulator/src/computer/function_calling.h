@@ -3,19 +3,58 @@
 #include "computer/memory.h"
 
 struct FunctionCalling {
-
-    virtual void set_params( ulong p1 ) = 0;
-    virtual void set_params( ulong p1, ulong p2 ) = 0;
-    virtual void set_params( ulong p1, ulong p2, ulong p3 ) = 0;
-    virtual void set_params( ulong p1, ulong p2, ulong p3, ulong p4 ) = 0;
+    //Caller
+    virtual void set_params_64( ulong p1 ) = 0;
+    virtual void set_params_64( ulong p1, ulong p2 ) = 0;
+    virtual void set_params_64( ulong p1, ulong p2, ulong p3 ) = 0;
+    virtual void set_params_64( ulong p1, ulong p2, ulong p3, ulong p4 ) = 0;
     
-    virtual ulong get_param1() = 0;
-    virtual ulong get_param2() = 0;
-    virtual ulong get_param3() = 0;
-    virtual ulong get_param4() = 0;
+    virtual void set_params_32( uint p1 ) = 0;
+    virtual void set_params_32( uint p1, uint p2 ) = 0;
+    virtual void set_params_32( uint p1, uint p2, uint p3 ) = 0;
+    virtual void set_params_32( uint p1, uint p2, uint p3, uint p4 ) = 0;
     
-    virtual ulong get_return() = 0;
-    virtual void set_return( ulong r ) = 0;
+    virtual void set_param1_64( ulong p ) = 0;
+    virtual void set_param2_64( ulong p ) = 0;
+    virtual void set_param3_64( ulong p ) = 0;
+    virtual void set_param4_64( ulong p ) = 0;
+    
+    virtual void set_param1_32( uint p ) = 0;
+    virtual void set_param2_32( uint p ) = 0;
+    virtual void set_param3_32( uint p ) = 0;
+    virtual void set_param4_32( uint p ) = 0;
+    
+    virtual void set_param1_double( double p ) = 0;
+    virtual void set_param2_double( double p ) = 0;
+    virtual void set_param3_double( double p ) = 0;
+    virtual void set_param4_double( double p ) = 0;
+    
+    virtual ulong get_return_64() = 0;
+    virtual uint get_return_32() = 0;
+    virtual double get_return_double() = 0;
+    
+    
+    //Callee
+    virtual ulong get_param1_64() = 0;
+    virtual ulong get_param2_64() = 0;
+    virtual ulong get_param3_64() = 0;
+    virtual ulong get_param4_64() = 0;
+    
+    virtual uint get_param1_32() = 0;
+    virtual uint get_param2_32() = 0;
+    virtual uint get_param3_32() = 0;
+    virtual uint get_param4_32() = 0;
+    
+    virtual double get_param1_double() = 0;
+    virtual double get_param2_double() = 0;
+    virtual double get_param3_double() = 0;
+    virtual double get_param4_double() = 0;
+    
+    virtual void set_return_64( ulong r ) = 0;
+    virtual void set_return_32( uint r ) = 0;
+    virtual void set_return_double( double r ) = 0;
+    
+    
     virtual ~FunctionCalling() {}
 };
 

@@ -86,7 +86,7 @@ void Computer::cb_code( ulong addr, uint size ) {
         auto &call = sys_calls.sys_calls[( uint )note.param];
         debug.debug_syscall( call, note.param );
         if ( call.type != SysCall::SUPPORTED || !call.callback( *this, call ) )
-            func_call->set_return( 0 ); //No external syscall registered or syscall error.
+            func_call->set_return_64( 0 ); //No external syscall registered or syscall error.
             
         if ( !stopped ) { //Do not change stack and instruction pointers if exit() was called on the unicorn engine (it cancels uc_emu_stop())
             //Return to code (simulate 'ret' code)

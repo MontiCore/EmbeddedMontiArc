@@ -1,48 +1,35 @@
 #include "tests.h"
 #include "utility.h"
 
-bool test_case( const char *name, bool( *test )( void ) ) {
-    Log::white << "Testing " << name  << "\n";
-    if ( !test() ) {
-        Log::err << "Test failed\n";
-        return false;
-    }
-    Log::test << "Test succeeded\n\n";
-    return true;
-}
+
+TestCase test_cases[8] = {
+    TestCase( "Simple DLL", test_simple_dll ),
+    TestCase( "Syscall DLL", test_syscall_dll ),
+    TestCase( "Hardware Manager querries", test_hardware_manager_querries ),
+    TestCase( "Autopilot DLL", test_autopilot_dll ),
+    TestCase( "ELF read", test_linux_elf_info ),
+    TestCase( "Simple ELF", test_simple_elf ),
+    TestCase( "Syscall ELF", test_syscall_elf ),
+    TestCase( "Autopilot ELF", test_autopilot_elf ),
+};
+
+
 
 
 int main( int argc, char **argv ) {
     ConsoleColor::Console::init();
     //ConsoleColor::Console::test_color();
-    
-    
-    if ( !test_case( "Simple DLL", test_simple_dll ) )
-        return 1;
-        
-    if ( !test_case( "Syscall DLL", test_syscall_dll ) )
-        return 2;
-        
-    if ( !test_case( "Hardware Manager querries", test_hardware_manager_querries ) )
-        return 3;
-        
-    if ( !test_case( "Autopilot DLL", test_autopilot_dll ) )
-        return 4;
-        
-    if ( !test_case( "ELF read", test_linux_elf_info ) )
-        return 5;
-        
-    if ( !test_case( "Simple ELF", test_simple_elf ) )
-        return 6;
-        
-    if ( !test_case( "Syscall ELF", test_syscall_elf ) )
-        return 7;
-        
-    if ( !test_case( "Autopilot ELF", test_autopilot_elf ) )
-        return 8;
-        
-        
-        
+    int test_id = 1;
+    for ( auto &tc : test_cases ) {
+        Log::white << "Testing " << tc.name << "\n";
+        if ( !tc.func() ) {
+            Log::err << "Test failed\n";
+            return test_id;
+        }
+        ++test_id;
+        Log::test << "Test succeeded\n\n";
+    }
+    Log::test << "All " << ( test_id - 1 ) << " tests complete\n";
     ConsoleColor::Console::drop();
     return 0;
 }

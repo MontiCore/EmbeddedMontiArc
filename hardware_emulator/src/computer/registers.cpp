@@ -136,6 +136,11 @@ ulong Registers::get_r9() {
     return reg;
 }
 
+double Registers::get_xmm0() {
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM0, &reg );
+    return *( double * ) & ( reg );
+}
+
 ulong Registers::get_rsp() {
     uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_RSP, &reg );
     return reg;
@@ -212,6 +217,11 @@ void Registers::set_r8( ulong val ) {
 void Registers::set_r9( ulong val ) {
     reg = val;
     uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_R9, &reg );
+}
+
+void Registers::set_xmm0( double val ) {
+    *( double * ) & ( reg ) = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM0, &reg );
 }
 
 void Registers::set_rsp( ulong val ) {

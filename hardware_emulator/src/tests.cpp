@@ -324,6 +324,7 @@ bool test_autopilot_elf() {
     builder.add( "autopilot", "AutopilotAdapter" );
     builder.add( "os", "linux" );
     //builder.add( "debug", "code,syscalls,mem,reg_update" );
+    //builder.add( "debug", "code,syscalls" );
     
     auto id = manager.alloc_emulator( builder.res.c_str() );
     
@@ -366,7 +367,7 @@ bool test_autopilot_elf() {
         return false;
     if ( !test_input_int( emulator, "trajectory_length", 5 ) )
         return false;
-    double x[6] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06 };
+    double x[6] = { 0.015, 0.02, 0.03, 0.04, 0.05, 0.06 };
     double y[6] = { 0.01, 0.01, 0.02, 0.02, 0.01, 0.01 };
     if ( !test_input_double_array( emulator, "trajectory_x", x, 6 ) )
         return false;

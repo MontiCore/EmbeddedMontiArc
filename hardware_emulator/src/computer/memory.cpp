@@ -102,9 +102,9 @@ bool MemorySection::init( MemoryRange address_range, std::string const &name, st
     auto err = uc_mem_map( static_cast<uc_engine *>( internal_uc ), this->address_range.start_address,
                            this->address_range.size, prot );
     if ( err ) {
-        printf( "Error mapping emulator memory!\n" );
+        Log::err << Log::tag << "Error mapping emulator memory!\n";
         if ( err == UC_ERR_ARG )
-            printf( "\tAlignment Error\n" );
+            Log::err << Log::tag << "\tAlignment Error\n\n";
         return false;
     }
     return true;
@@ -115,7 +115,7 @@ bool MemorySection::upload( char *data, uint64_t size ) {
     throw_assert( linked(), "MemorySection::upload() on unlinked MemorySection." );
     throw_assert( size <= address_range.size, "MemorySection::upload() outside section." );
     if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address_range.start_address, data, size ) ) {
-        printf( "Failed to write emulation code to memory, quit!\n" );
+        Log::err << Log::tag << "Failed to write emulation code to memory, quit!\n";
         return false;
     }
     return true;
@@ -127,7 +127,7 @@ bool MemorySection::upload( ulong address, char *data, uint64_t size ) {
     throw_assert( address_range.get_local_index( address ) + size <= address_range.size,
                   "MemorySection::upload() outside section." );
     if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, data, size ) ) {
-        printf( "Failed to write emulation code to memory, quit!\n" );
+        Log::err << Log::tag << "Failed to write emulation code to memory, quit!\n";
         return false;
     }
     return true;
@@ -244,7 +244,10 @@ void Memory::init( void *uc ) {
 void *Memory::read_memory( ulong address, ulong size ) {
     if ( size > BUFFER_SIZE )
         size = BUFFER_SIZE;
-    uc_mem_read( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), size );
+    if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), size ) ) {
+        Log::err << Log::tag << "Error reading from memory at address " << address << " with size " << size << "\n";
+        buffer[0] = 0;
+    }
     return buffer.begin();
 }
 
@@ -253,7 +256,8 @@ void Memory::write_memory( ulong address, ulong size, void *data ) {
     uchar *ptr = ( uchar * )data;
     for ( uint i : urange( ( uint )s ) )
         buffer[i] = ptr[i];
-    uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), s );
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), s ) )
+        Log::err << Log::tag << "Error writing to memory at address " << address << " with size " << size << "\n";
 }
 
 void *Memory::read_memory( MemoryRange range ) {
@@ -326,7 +330,11 @@ wchar_t *Memory::read_wstr( ulong address ) {
     uint size = 0;
     wchar_t c;
     do {
-        uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.begin() + size, 2 );
+        if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.begin() + size, 2 ) ) {
+            Log::err << Log::tag << "Error reading wstr at address " << address << "\n";
+            size = 2;
+            break;
+        }
         c = *( wchar_t * )( buffer.begin() + size );
         size += 2;
     } while ( c != 0 && size < BUFFER_SIZE );
@@ -353,7 +361,11 @@ uchar *Memory::read_str( ulong address ) {
     uint size = 0;
     uchar c;
     do {
-        uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.begin() + size, 1 );
+        if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.begin() + size, 1 ) ) {
+            Log::err << Log::tag << "Error reading str at address " << address << "\n";
+            size = 1;
+            break;
+        }
         c = buffer[size];
         ++size;
     } while ( c != 0 && size < BUFFER_SIZE );
@@ -369,7 +381,8 @@ void Memory::write_str( ulong address, std::string const &text ) {
     for ( uint i : urange( size ) )
         buff[i] = text[i];
     buff[size] = 0;
-    uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, size + 1 );
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, size + 1 ) )
+        Log::err << Log::tag << "Error writing str at address " << address << "\n";
 }
 
 void Memory::write_wstr( ulong address, std::string const &text ) {
@@ -381,7 +394,8 @@ void Memory::write_wstr( ulong address, std::string const &text ) {
         buff[i] = t;
     }
     buff[size] = 0;
-    uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, ( size + 1 ) * sizeof( wchar_t ) );
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, ( size + 1 ) * sizeof( wchar_t ) ) )
+        Log::err << Log::tag << "Error writing wstr at address " << address << "\n";
 }
 
 void Memory::write_long_word( ulong address, ulong value ) {

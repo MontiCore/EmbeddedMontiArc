@@ -111,7 +111,7 @@ void OS::DLLLoader::drop() {
 
 void OS::DLLLoader::dll_main( Computer &computer ) {
     throw_assert( loaded(), "DLLLoader::dll_main() on uninitialized DLLLoader." );
-    computer.func_call->set_params( 0x18C, 1, 0x10C ); //DLL_PROCESS_ATTACH
+    computer.func_call->set_params_64( 0x18C, 1, 0x10C ); //DLL_PROCESS_ATTACH
     computer.call( info.base_address + info.entry_point, "dll_main" );
 }
 

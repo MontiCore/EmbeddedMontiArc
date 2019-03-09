@@ -8,12 +8,12 @@ void LinuxCalls::add_linux_calls( SystemCalls &sys_calls ) {
 }
 
 bool LinuxCalls::malloc( Computer &inter, SysCall &syscall ) {
-    auto byte_count = inter.func_call->get_param1();
+    auto byte_count = inter.func_call->get_param1_64();
     //cout << "malloc(" << byte_count << ")" << endl;
     uint64_t addr;
     if ( inter.heap.alloc( byte_count, addr ) )
-        inter.func_call->set_return( addr );
+        inter.func_call->set_return_64( addr );
     else
-        inter.func_call->set_return( 0 );
+        inter.func_call->set_return_64( 0 );
     return true;
 }

@@ -162,10 +162,10 @@ void HardwareEmulator::call_input( uint func_id ) {
     
     switch ( input.type ) {
         case VALUE_TYPE::DOUBLE:
-            computer.func_call->set_params( *( ulong * )&input.double_value );
+            computer.func_call->set_param1_double( input.double_value );
             break;
         case VALUE_TYPE::INT:
-            computer.func_call->set_params( ( ulong )input.int_value );
+            computer.func_call->set_param1_32( *( uint * )&input.int_value );
             break;
         case VALUE_TYPE::DOUBLE_ARRAY:
             if ( input.double_array.size * sizeof( double ) > buffer_slot.size ) {
@@ -175,7 +175,7 @@ void HardwareEmulator::call_input( uint func_id ) {
             }
             computer.memory.write_memory( buffer_slot.start_address, input.double_array.size * sizeof( double ),
                                           ( uchar * )input.double_array.data.begin() );
-            computer.func_call->set_params( buffer_slot.start_address, ( ulong )input.double_array.size );
+            computer.func_call->set_params_64( buffer_slot.start_address, ( ulong )input.double_array.size );
             break;
     }
     
@@ -192,8 +192,7 @@ void HardwareEmulator::call_output( uint func_id ) {
     ulong temp_v;
     switch ( output.type ) {
         case VALUE_TYPE::DOUBLE:
-            temp_v = computer.func_call->get_return();
-            output.double_value = *( double * ) & ( temp_v );
+            output.double_value = computer.func_call->get_return_double();
             break;
     }
 }
@@ -219,20 +218,20 @@ bool HardwareEmulator::init_ports( Array<Port> &ports, const char *get_count,
         return false;
         
     computer.call( get_count_addr, get_count );
-    uint port_count = ( uint )computer.func_call->get_return();
+    uint port_count = computer.func_call->get_return_32();
     ports.init( port_count );
     for ( auto i : urange( port_count ) ) {
         auto &port = ports[i];
         
-        computer.func_call->set_params( i );
+        computer.func_call->set_param1_32( i );
         computer.call( get_name_addr, get_name );
-        port.name = ( char * )computer.memory.read_str( computer.func_call->get_return() );
+        port.name = ( char * )computer.memory.read_str( computer.func_call->get_return_64() );
         
         port_id.emplace( port.name, i );
         
-        computer.func_call->set_params( i );
+        computer.func_call->set_param1_32( i );
         computer.call( get_type_addr, get_type );
-        char *type = ( char * )computer.memory.read_str( computer.func_call->get_return() );
+        char *type = ( char * )computer.memory.read_str( computer.func_call->get_return_64() );
         
         port.buffer.init( FunctionValue::get_type( type ) );
         port.updated = false;

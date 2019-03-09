@@ -1,5 +1,14 @@
 #pragma once
 
+struct TestCase {
+    const char *name;
+    bool( *func )();
+    
+    TestCase() : name( nullptr ), func( nullptr ) {}
+    TestCase( const char *name, bool( *func )() ) : name( name ), func( func ) {}
+};
+
+
 
 bool test_simple_dll();
 

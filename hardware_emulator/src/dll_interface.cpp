@@ -22,9 +22,9 @@ bool ADD_DLL::Interface::init( Computer &computer, bool windows ) {
 }
 
 int ADD_DLL::Interface::add( int a, int b ) {
-    computer->func_call->set_params( *( ( uint32_t * )&a ), *( ( uint32_t * )&b ) );
+    computer->func_call->set_params_32( *( ( uint32_t * )&a ), *( ( uint32_t * )&b ) );
     call_success = computer->call( addresses[ADD], "add" );
-    auto res = computer->func_call->get_return();
+    auto res = computer->func_call->get_return_32();
     return *( ( int * ) & ( res ) );
 }
 

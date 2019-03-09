@@ -37,6 +37,8 @@ struct Registers {
     ulong get_r8();
     ulong get_r9();
     
+    double get_xmm0();
+    
     
     ulong get_rsp();
     ulong get_rsi();
@@ -60,6 +62,8 @@ struct Registers {
     
     void set_r8( ulong val );
     void set_r9( ulong val );
+    
+    void set_xmm0( double val );
     
     void set_rsp( ulong val );
     void set_rsi( ulong val );
