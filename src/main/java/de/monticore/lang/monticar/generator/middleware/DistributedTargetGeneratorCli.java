@@ -134,6 +134,12 @@ public final class DistributedTargetGeneratorCli {
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve(cliParameters.getRootModel(), EMAComponentInstanceSymbol.KIND).orElse(null);
 
         if (componentInstanceSymbol == null) {
+            String[] parts = cliParameters.getRootModel().split("\\.");
+            String componentInstanceName = parts[parts.length - 1];
+            if(Character.isUpperCase(componentInstanceName.charAt(0))){
+                parts[parts.length - 1] = componentInstanceName.substring(0,1).toLowerCase() + componentInstanceName.substring(1);
+                Log.warn("The given ComponentInstance name "  + componentInstanceName + " starts with an upper case letter(Invalid). Did you mean " + String.join(".", parts) + "?");
+            }
             Log.error("0x5FFAE: The given component cannot be resolved.");
             return;
         }

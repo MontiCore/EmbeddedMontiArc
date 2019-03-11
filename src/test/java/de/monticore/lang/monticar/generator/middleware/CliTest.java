@@ -4,7 +4,10 @@ import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.ArrayUtils;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,7 +27,7 @@ public class CliTest {
     private static final List<String> VALID_GENERATOR_ALL_OPTION = Arrays.asList("cpp", "roscpp", "odv");
 
     private static final String INVALID_MODELS_DIR_OPTION = "src/invalid/resources/";
-    private static final String INVALID_ROOT_MODEL_OPTION = "invalid.invalid.addComp";
+    private static final String INVALID_ROOT_MODEL_OPTION = "invalid.invalid.AddComp";
     private static final List<String> INVALID_GENERATOR_OPTION = Arrays.asList("invalid");
     private static final List<String> INVALID_GENERATOR_EMPTY_OPTION = new ArrayList<>();
     public static final String RESNET_MODELNAME = "tests.emadlTests.resNet34";
