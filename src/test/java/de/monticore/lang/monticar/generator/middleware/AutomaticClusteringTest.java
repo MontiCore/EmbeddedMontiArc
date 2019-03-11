@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.*;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.*;
+import de.monticore.lang.monticar.generator.middleware.clustering.qualityMetric.SilhouetteIndex;
 import de.monticore.lang.monticar.generator.middleware.clustering.visualization.ModelVisualizer;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
@@ -141,6 +142,41 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
             }
         }
 
+    }
+
+
+    @Test
+    public void testSilhouetteIndex(){
+        // graph:
+        // a,b close to each other
+        // c,d close to each other
+        // big difference between a and c as well as b and d
+
+        double[][] adjMat = {
+                {0, 10, 1000, 1000},
+                {10, 0, 1000, 1000},
+                {1000, 1000, 0, 10},
+                {1000, 1000, 10, 0}
+        };
+
+        double[][] dist = AutomaticClusteringHelper.getDistanceMatrix(adjMat);
+
+        int[] correctCustering = {0,0,1,1};
+        SilhouetteIndex index1 = new SilhouetteIndex(dist, correctCustering);
+        assertTrue(index1.S(0) > 0.5);
+        assertTrue(index1.S(1) > 0.5);
+        assertTrue(index1.S(2) > 0.5);
+        assertTrue(index1.S(3) > 0.5);
+
+
+        int[] badClustering = {0,0,0,1};
+        SilhouetteIndex index2 = new SilhouetteIndex(dist, badClustering);
+        assertTrue(index2.S(0) > 0.5);
+        assertTrue(index2.S(1) > 0.5);
+        assertTrue(index2.S(2) < -0.5);
+        assertTrue(index2.S(3) > 0.5);
+
+        assertTrue(index1.getSilhouetteScore() > index2.getSilhouetteScore());
     }
 
 
