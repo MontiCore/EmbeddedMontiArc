@@ -21,6 +21,7 @@ import net.sf.javaml.core.Instance;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.graphstream.graph.Graph;
+import org.junit.Ignore;
 import org.junit.Test;
 import smile.clustering.DBSCAN;
 import smile.clustering.SpectralClustering;
@@ -145,6 +146,18 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         assertTrue( labels[1] != labels[2]);
         assertTrue( labels[1] != labels[3]);
 
+    }
+
+    @Ignore
+    @Test
+    public void testSpectralClusteringIsolatedVertex(){
+        double[][] adjMatrix =  {
+                                {0, 1, 1, 0},
+                                {1, 0, 0, 0},
+                                {1, 0, 0, 0},
+                                {0, 0, 0, 0}};
+
+        SpectralClustering clustering = new SpectralClustering(adjMatrix,2);
     }
 
 
