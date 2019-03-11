@@ -116,6 +116,35 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
 
     @Test
+    public void testDistanceMatrixCreation(){
+        // a -(10)-> b -(20)-> c    |    d
+
+        double[][] adj = {
+                            {0, 10, 0, 0},
+                            {10, 0, 20, 0},
+                            {0, 20, 0, 0},
+                            {0, 0, 0, 0}};
+
+        double[][] dist = AutomaticClusteringHelper.getDistanceMatrix(adj);
+
+        double m = Double.MAX_VALUE;
+        double[][] expDist = {
+                {0, 10, 30, m},
+                {10, 0, 20, m},
+                {30, 20, 0, m},
+                {m, m, m, 0}};
+
+
+        for(int i = 0; i< expDist.length; i++){
+            for(int j = 0; j < expDist[i].length;j++){
+                assertTrue(expDist[i][j] == dist[i][j]);
+            }
+        }
+
+    }
+
+
+    @Test
     public void testSpectralClustering(){
         
         // 0 1 0 0

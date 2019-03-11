@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 public class AutomaticClusteringHelper {
 
-//    public static double[][] createAdjacencyMatrix(List<ExpandedComponentInstanceSymbol> subcomps, Collection<ConnectorSymbol> connectors, Map<String, Integer> subcompLabels) {
     public static double[][] createAdjacencyMatrix(List<EMAComponentInstanceSymbol> subcomps, Collection<EMAConnectorInstanceSymbol> connectors, Map<String, Integer> subcompLabels) {
         // Nodes = subcomponents
         // Verts = connectors between subcomponents
@@ -37,18 +36,18 @@ public class AutomaticClusteringHelper {
             EMAComponentInstanceSymbol sourceCompOpt = con.getSourcePort().getComponentInstance();
             EMAComponentInstanceSymbol targetCompOpt = con.getTargetPort().getComponentInstance();
 
-                int index1 = subcompLabels.get(sourceCompOpt.getFullName());
-                int index2 = subcompLabels.get(targetCompOpt.getFullName());
+            int index1 = subcompLabels.get(sourceCompOpt.getFullName());
+            int index2 = subcompLabels.get(targetCompOpt.getFullName());
 
-                res[index1][index2] += getTypeCostHeuristic(con.getSourcePort());
-                res[index2][index1] += getTypeCostHeuristic(con.getSourcePort());
+            res[index1][index2] += getTypeCostHeuristic(con.getSourcePort());
+            res[index2][index1] += getTypeCostHeuristic(con.getSourcePort());
         });
 
 
         return res;
     }
 
-    public static double[][] guaranteedConnectedAdjacencyMatrix(List<EMAComponentInstanceSymbol> subcomps, Collection<EMAConnectorInstanceSymbol> connectors, Map<String, Integer> subcompLabels){
+    public static double[][] guaranteedConnectedAdjacencyMatrix(List<EMAComponentInstanceSymbol> subcomps, Collection<EMAConnectorInstanceSymbol> connectors, Map<String, Integer> subcompLabels) {
 
 
         double[][] res = createAdjacencyMatrix(subcomps, connectors, subcompLabels);
@@ -57,7 +56,7 @@ public class AutomaticClusteringHelper {
         double max = 0;
         for (double[] doubles : res) {
             for (double adj : doubles) {
-                if(adj > max){
+                if (adj > max) {
                     max = adj;
                 }
             }
@@ -71,7 +70,7 @@ public class AutomaticClusteringHelper {
 
         for (Integer a : representativeLabels) {
             for (Integer b : representativeLabels) {
-                if(!a.equals(b)){
+                if (!a.equals(b)) {
                     res[a][b] = unconnectedCost;
                 }
             }
@@ -79,32 +78,60 @@ public class AutomaticClusteringHelper {
 
         return res;
     }
-    
-    
-    public static List<Set<EMAComponentInstanceSymbol>> getConnectedSubcomponentSets(List<EMAComponentInstanceSymbol> subcomps, Collection<EMAConnectorInstanceSymbol> connectors){
+
+    public static double[][] getDistanceMatrix(double[][] adjacencyMatrix) {
+        //Uses Floyd–Warshall
+        double[][] res = new double[adjacencyMatrix.length][adjacencyMatrix[0].length];
+        for (int i = 0; i < adjacencyMatrix.length; i++) {
+            for (int j = 0; j < adjacencyMatrix[0].length; j++) {
+                if (i != j) {
+                    double curVal = adjacencyMatrix[i][j];
+                    res[i][j] = Math.abs(curVal) <= 0.00000001d ? Double.MAX_VALUE : curVal;
+                } else {
+                    res[i][i] = 0d;
+                }
+            }
+        }
+
+        for (int k = 0; k < adjacencyMatrix.length; k++) {
+            for (int i = 0; i < adjacencyMatrix.length; i++) {
+                for (int j = 0; j < adjacencyMatrix.length; j++) {
+                    if (res[i][j] > res[i][k] + res[k][j]) {
+                        res[i][j] = res[i][k] + res[k][j];
+                    }
+                }
+
+            }
+        }
+
+        return res;
+    }
+
+
+    public static List<Set<EMAComponentInstanceSymbol>> getConnectedSubcomponentSets(List<EMAComponentInstanceSymbol> subcomps, Collection<EMAConnectorInstanceSymbol> connectors) {
         Graph<EMAComponentInstanceSymbol, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
 
         subcomps.forEach(graph::addVertex);
         connectors.stream()
-            .filter(c -> subcomps.contains(c.getSourcePort().getComponentInstance()))
-            .filter(c -> subcomps.contains(c.getTargetPort().getComponentInstance()))
-            .forEach(c -> graph.addEdge(c.getSourcePort().getComponentInstance(), c.getTargetPort().getComponentInstance()));
+                .filter(c -> subcomps.contains(c.getSourcePort().getComponentInstance()))
+                .filter(c -> subcomps.contains(c.getTargetPort().getComponentInstance()))
+                .forEach(c -> graph.addEdge(c.getSourcePort().getComponentInstance(), c.getTargetPort().getComponentInstance()));
 
         ConnectivityInspector<EMAComponentInstanceSymbol, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(graph);
         return connectivityInspector.connectedSets();
     }
 
     public static double[][] adjacencyMatrix2transitionMatrix(double[][] adjacencyMatrix) {
-        double[][] transitionMatrix= adjacencyMatrix;
+        double[][] transitionMatrix = adjacencyMatrix;
 
         int degree;
-        for(int i = 0; i < adjacencyMatrix[0].length; i++) {
-            degree= 0;
-            for(int j = 0; j < adjacencyMatrix[0].length; j++) {
+        for (int i = 0; i < adjacencyMatrix[0].length; i++) {
+            degree = 0;
+            for (int j = 0; j < adjacencyMatrix[0].length; j++) {
                 if (adjacencyMatrix[i][j] == 1) degree++;
             }
-            for(int j = 0; j < adjacencyMatrix[0].length; j++) {
-                if (adjacencyMatrix[i][j] == 1) transitionMatrix[i][j] = 1.0/degree;
+            for (int j = 0; j < adjacencyMatrix[0].length; j++) {
+                if (adjacencyMatrix[i][j] == 1) transitionMatrix[i][j] = 1.0 / degree;
             }
         }
 
@@ -114,18 +141,18 @@ public class AutomaticClusteringHelper {
 
     // generic matrix normalizer
     public static double[][] normalizeMatrix(double[][] matrix) {
-        double[][] normalizedMatrix= matrix;
+        double[][] normalizedMatrix = matrix;
 
         double normalizer;
         double sum;
-        for(int i = 0; i < matrix[0].length; i++) {
-            normalizer= 0;
-            sum= 0;
-            for(int j = 0; j < matrix[0].length; j++) {
-                sum+= normalizedMatrix[i][j];
+        for (int i = 0; i < matrix[0].length; i++) {
+            normalizer = 0;
+            sum = 0;
+            for (int j = 0; j < matrix[0].length; j++) {
+                sum += normalizedMatrix[i][j];
             }
-            if (sum>0) normalizer= 1.0/sum;
-            for(int j = 0; j < matrix[0].length; j++) {
+            if (sum > 0) normalizer = 1.0 / sum;
+            for (int j = 0; j < matrix[0].length; j++) {
                 normalizedMatrix[i][j] = matrix[i][j] * normalizer;
             }
         }
@@ -136,11 +163,11 @@ public class AutomaticClusteringHelper {
     // calculate the inverse probabilities of a transition matrix
     // (regard zero as immutable zero probability)
     public static double[][] inverseProbabilitiesMatrix(double[][] matrix) {
-        double[][] inverseProbabilityMatrix= matrix;
+        double[][] inverseProbabilityMatrix = matrix;
 
-        for(int i = 0; i < matrix[0].length; i++) {
+        for (int i = 0; i < matrix[0].length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
-                if (matrix[i][j] > 0) inverseProbabilityMatrix[i][j] = 1.0/matrix[i][j];
+                if (matrix[i][j] > 0) inverseProbabilityMatrix[i][j] = 1.0 / matrix[i][j];
             }
         }
 
@@ -164,17 +191,17 @@ public class AutomaticClusteringHelper {
             EMAComponentInstanceSymbol sourceComp = con.getSourcePort().getComponentInstance();
             EMAComponentInstanceSymbol targetComp = con.getTargetPort().getComponentInstance();
 
-            for(int i = 0; i < clusters.size(); i++){
-                if(clusters.get(i).contains(sourceComp)){
+            for (int i = 0; i < clusters.size(); i++) {
+                if (clusters.get(i).contains(sourceComp)) {
                     sourceClusterLabel = i;
                 }
 
-                if(clusters.get(i).contains(targetComp)){
+                if (clusters.get(i).contains(targetComp)) {
                     targetClusterLabel = i;
                 }
             }
 
-            if(sourceClusterLabel != targetClusterLabel){
+            if (sourceClusterLabel != targetClusterLabel) {
                 con.getSourcePort().setMiddlewareSymbol(new RosConnectionSymbol());
                 con.getTargetPort().setMiddlewareSymbol(new RosConnectionSymbol());
             }
@@ -183,7 +210,7 @@ public class AutomaticClusteringHelper {
 
     }
 
-    public static double getTypeCostHeuristic(EMAComponentInstanceSymbol componentInstanceSymbol, List<Set<EMAComponentInstanceSymbol>> clustering){
+    public static double getTypeCostHeuristic(EMAComponentInstanceSymbol componentInstanceSymbol, List<Set<EMAComponentInstanceSymbol>> clustering) {
         List<EMAConnectorInstanceSymbol> interClusterConnectors = getInterClusterConnectors(componentInstanceSymbol, clustering);
 
         return interClusterConnectors.stream()
@@ -222,18 +249,18 @@ public class AutomaticClusteringHelper {
                 .collect(Collectors.toList());
     }
 
-    public static double getTypeCostHeuristic(EMAPortSymbol port){
+    public static double getTypeCostHeuristic(EMAPortSymbol port) {
         return getTypeCostHeuristic(port.getTypeReference());
     }
 
     public static double getTypeCostHeuristic(MCTypeReference<? extends MCTypeSymbol> typeReference) {
-        if (typeReference.getName().equals("CommonMatrixType")){
+        if (typeReference.getName().equals("CommonMatrixType")) {
             double value = getTypeCostHeuristicHelper(
-                    ((ASTCommonMatrixType)((MCASTTypeSymbolReference)typeReference).getAstType()).getElementType().getName());
+                    ((ASTCommonMatrixType) ((MCASTTypeSymbolReference) typeReference).getAstType()).getElementType().getName());
             double res = 0;
             List<ASTExpression> vectors = ((ASTCommonMatrixType) ((MCASTTypeSymbolReference) typeReference).
                     getAstType()).getDimension().getDimensionList();
-            for (ASTExpression expression : vectors){
+            for (ASTExpression expression : vectors) {
                 if (((ASTNumberExpression) expression).getNumberWithUnit().getNumber().isPresent()) {
                     res += value * ((ASTNumberExpression) expression).getNumberWithUnit().getNumber().get();
                 }
@@ -267,11 +294,11 @@ public class AutomaticClusteringHelper {
     public static ClusteringResultList executeClusteringFromParams(EMAComponentInstanceSymbol emaComponentInstance, List<AlgorithmCliParameters> algoParams) {
         ClusteringResultList res = new ClusteringResultList();
         for (int i = 0; i < algoParams.size(); i++) {
-            System.out.println("Clustering with algorithm " + (i+1) + "/" + algoParams.size() + ": " +algoParams.get(i).toString());
+            System.out.println("Clustering with algorithm " + (i + 1) + "/" + algoParams.size() + ": " + algoParams.get(i).toString());
             ClusteringResult result = ClusteringResult.fromParameters(emaComponentInstance, algoParams.get(i));
-            if(result.isValid()){
+            if (result.isValid()) {
                 res.add(result);
-            }else{
+            } else {
                 Log.warn("Ignoring the result! It is invalid!");
             }
         }
