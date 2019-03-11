@@ -3,12 +3,10 @@ package de.monticore.lang.monticar.generator.middleware;
 import com.clust4j.algo.AffinityPropagation;
 import com.clust4j.algo.AffinityPropagationParameters;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.*;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.*;
 import de.monticore.lang.monticar.generator.middleware.clustering.visualization.ModelVisualizer;
-import de.monticore.lang.monticar.generator.middleware.clustering.visualization.SimpleModelViewer;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
@@ -22,16 +20,10 @@ import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.stream.file.FileSinkImages;
-import org.junit.Assert;
 import org.junit.Test;
 import smile.clustering.DBSCAN;
 import smile.clustering.SpectralClustering;
-import smile.plot.Palette;
 
 import java.io.IOException;
 import java.util.*;
@@ -83,11 +75,11 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
 
         //sorted by full name: alex, combine, dinhAn, michael, philipp
-        double[][] expRes = {{0,10,0,0,0}
-                            ,{10,0,10,10,10}
-                            ,{0,10,0,0,0}
-                            ,{0,10,0,0,0}
-                            ,{0,10,0,0,0}};
+        double[][] expRes = {{0,8,0,0,0}
+                            ,{8,0,8,8,8}
+                            ,{0,8,0,0,0}
+                            ,{0,8,0,0,0}
+                            ,{0,8,0,0,0}};
 
         for(int i = 0; i< expRes.length; i++){
             for(int j = 0; j < expRes[i].length;j++){
@@ -110,9 +102,9 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
 
         //sorted full name: sub1, sub2, sub3
-        double[][] expRes = {{0,10,20}  //sub1
-                            ,{10,0,0}  //sub2
-                            ,{20,0,0}}; //sub3
+        double[][] expRes = {{0,8,16}  //sub1
+                            ,{8,0,0}  //sub2
+                            ,{16,0,0}}; //sub3
 
         for(int i = 0; i< expRes.length; i++){
             for(int j = 0; j < expRes[i].length;j++){

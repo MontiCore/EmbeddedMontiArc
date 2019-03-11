@@ -245,10 +245,11 @@ public class AutomaticClusteringHelper {
     }
 
     private static double getTypeCostHeuristicHelper(String name) {
+        // use cost in bytes as used by ROS(http://wiki.ros.org/msg#Field_Types)
         double bool = 1;
-        double z = 5;
-        double q = 10;
-        double c = 20;
+        double z = 4;
+        double q = 8;
+        double c = 16;
         switch (name) {
             case "B":
                 return bool;
