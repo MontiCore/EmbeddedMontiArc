@@ -68,6 +68,11 @@ public class SpectralClusteringCliParameters extends AlgorithmCliParameters {
         return numberOfClusters != null;
     }
 
+    @Override
+    public Optional<Integer> expectedClusterCount() {
+        return Optional.of(getNumberOfClusters().get());
+    }
+
     public Optional<Integer> getNumberOfClusters() {
         return Optional.ofNullable(numberOfClusters);
     }

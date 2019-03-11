@@ -12,6 +12,7 @@ import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.CommonSymbol;
+import de.se_rwth.commons.logging.Log;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
@@ -266,7 +267,12 @@ public class AutomaticClusteringHelper {
         ClusteringResultList res = new ClusteringResultList();
         for (int i = 0; i < algoParams.size(); i++) {
             System.out.println("Clustering with algorithm " + (i+1) + "/" + algoParams.size() + ": " +algoParams.get(i).toString());
-            res.add(ClusteringResult.fromParameters(emaComponentInstance, algoParams.get(i)));
+            ClusteringResult result = ClusteringResult.fromParameters(emaComponentInstance, algoParams.get(i));
+            if(result.isValid()){
+                res.add(result);
+            }else{
+                Log.warn("Ignoring the result! It is invalid!");
+            }
         }
         return res;
     }

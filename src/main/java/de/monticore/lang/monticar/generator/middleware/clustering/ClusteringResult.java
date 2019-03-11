@@ -15,7 +15,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class ClusteringResult {
@@ -23,27 +25,51 @@ public class ClusteringResult {
     private EMAComponentInstanceSymbol component;
     private AlgorithmCliParameters parameters;
     private List<Set<EMAComponentInstanceSymbol>> clustering;
-    private long durration;
+    private long duration;
     private int componentNumber;
+    private boolean valid;
 
     private ClusteringResult(EMAComponentInstanceSymbol component, AlgorithmCliParameters parameters,
-                             List<Set<EMAComponentInstanceSymbol>> clustering, long durration, int componentNumber) {
+                             List<Set<EMAComponentInstanceSymbol>> clustering, long duration, int componentNumber, boolean valid) {
         this.component = component;
         this.parameters = parameters;
         this.clustering = clustering;
-        this.durration = durration;
+        this.duration = duration;
         this.componentNumber = componentNumber;
+        this.valid = valid;
     }
 
-    public static ClusteringResult fromParameters(EMAComponentInstanceSymbol component, AlgorithmCliParameters parameters){
+    public static ClusteringResult fromParameters(EMAComponentInstanceSymbol component, AlgorithmCliParameters parameters) {
+        List<Set<EMAComponentInstanceSymbol>> res;
         long startTime = System.currentTimeMillis();
-        List<Set<EMAComponentInstanceSymbol>> res = parameters.asClusteringAlgorithm().clusterWithState(component);
+
+        try {
+            res = parameters.asClusteringAlgorithm().clusterWithState(component);
+        } catch (Exception e) {
+            Log.warn("Marking this result as invalid. Error clustering the component.", e);
+            return new ClusteringResult(component, parameters, new ArrayList<>(), -1, component.getSubComponents().size(), false);
+        }
+
         long endTime = System.currentTimeMillis();
+        boolean curValid = true;
+
+        int clustersBefore = res.size();
+        res.removeIf(Set::isEmpty);
+        if (clustersBefore != res.size()) {
+            Log.warn("Removed " + (clustersBefore - res.size()) + " empty clusters for algorithm " + parameters.toString());
+        }
+
+        Optional<Integer> expClusters = parameters.expectedClusterCount();
+        if(expClusters.isPresent() && !expClusters.get().equals(res.size())){
+            curValid = false;
+            Log.warn("Marking this result as invalid. The actual number of clusters(" + res.size() + ") does not equal the expected number(" + expClusters.get() +")");
+        }
+
         int componentNumber = 0;
         for (Set<EMAComponentInstanceSymbol> cluster : res) {
             componentNumber += cluster.size();
         }
-        return new ClusteringResult(component, parameters, res, endTime - startTime, componentNumber);
+        return new ClusteringResult(component, parameters, res, endTime - startTime, componentNumber, curValid);
     }
 
     public double getScore(){
@@ -69,8 +95,8 @@ public class ClusteringResult {
         return clustering.size();
     }
 
-    private long getDurration() {
-        return this.durration;
+    private long getDuration() {
+        return this.duration;
     }
 
     public int getComponentNumber() {
@@ -87,7 +113,7 @@ public class ClusteringResult {
         String prefix = "//Algorithm: " + this.getParameters().toString() + "\n" +
                         "//Number of clusters: " + this.getNumberOfClusters() + "\n" +
                         "//Score: " + this.getScore() + "\n" +
-                        "//Durration in ms: " + this.getDurration() + "\n";
+                        "//Durration in ms: " + this.getDuration() + "\n";
 
         String content = MiddlewareTagGenImpl.getFileContent(component, this.clustering);
         res.setFileContent(prefix + content);
@@ -133,9 +159,16 @@ public class ClusteringResult {
         result.addProperty("Algorithm", this.getParameters().toString());
         result.addProperty("NumberOfClusters", this.getNumberOfClusters());
         result.addProperty("Score", this.getScore());
-        result.addProperty("DurationInMs", this.getDurration());
+        result.addProperty("DurationInMs", this.getDuration());
         result.addProperty("ComponentNumber", this.getComponentNumber());
         return result;
     }
 
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
 }

@@ -2,6 +2,8 @@ package de.monticore.lang.monticar.generator.middleware.cli.algorithms;
 
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
 
+import java.util.Optional;
+
 public abstract class AlgorithmCliParameters {
     public static final String TYPE_SPECTRAL_CLUSTERING = "SpectralClustering";
     public static final String TYPE_UNKOWN = "Unkown";
@@ -22,4 +24,8 @@ public abstract class AlgorithmCliParameters {
     public abstract Object[] asAlgorithmArgs();
 
     public abstract boolean isValid();
+
+    public Optional<Integer> expectedClusterCount(){
+        return Optional.empty();
+    }
 }
