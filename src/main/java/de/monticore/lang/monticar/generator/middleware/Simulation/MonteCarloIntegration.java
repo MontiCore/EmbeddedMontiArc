@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator.middleware.Simulation;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
-import de.monticore.lang.monticar.generator.middleware.clustering.FlattenArchitecture;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringInput;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringBuilder;
 

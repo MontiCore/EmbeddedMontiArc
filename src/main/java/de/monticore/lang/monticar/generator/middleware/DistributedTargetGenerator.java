@@ -108,7 +108,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
             //Cluster
             if(clusteringParameters.getAlgorithmParameters().size() > 0) {
-                clusteringResults = AutomaticClusteringHelper.executeClusteringFromParams(componentInstanceSymbol, clusteringParameters.getAlgorithmParameters());
+                clusteringResults = ClusteringResultList.fromParametersList(componentInstanceSymbol, clusteringParameters.getAlgorithmParameters());
                 Optional<Integer> nOpt = clusteringParameters.getNumberOfClusters();
                 for(ClusteringResult c : clusteringResults){
                     String prefix = nOpt.isPresent() && !c.hasNumberOfClusters(nOpt.get()) ? "[IGNORED]" : "";

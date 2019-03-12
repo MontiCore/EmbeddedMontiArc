@@ -22,16 +22,16 @@ import java.util.Set;
 
 public class ClusteringResult {
     Double score = null;
-    private EMAComponentInstanceSymbol component;
+    private ClusteringInput clusteringInput;
     private AlgorithmCliParameters parameters;
     private List<Set<EMAComponentInstanceSymbol>> clustering;
     private long duration;
     private int componentNumber;
     private boolean valid;
 
-    private ClusteringResult(EMAComponentInstanceSymbol component, AlgorithmCliParameters parameters,
+    private ClusteringResult(ClusteringInput clusteringInput, AlgorithmCliParameters parameters,
                              List<Set<EMAComponentInstanceSymbol>> clustering, long duration, int componentNumber, boolean valid) {
-        this.component = component;
+        this.clusteringInput = clusteringInput;
         this.parameters = parameters;
         this.clustering = clustering;
         this.duration = duration;
@@ -39,15 +39,15 @@ public class ClusteringResult {
         this.valid = valid;
     }
 
-    public static ClusteringResult fromParameters(EMAComponentInstanceSymbol component, AlgorithmCliParameters parameters) {
+    public static ClusteringResult fromParameters(ClusteringInput clusteringInput, AlgorithmCliParameters parameters) {
         List<Set<EMAComponentInstanceSymbol>> res;
         long startTime = System.currentTimeMillis();
 
         try {
-            res = parameters.asClusteringAlgorithm().clusterWithState(component);
+            res = parameters.asClusteringAlgorithm().clusterWithState(clusteringInput);
         } catch (Exception e) {
             Log.warn("Marking this result as invalid. Error clustering the component.", e);
-            return new ClusteringResult(component, parameters, new ArrayList<>(), -1, component.getSubComponents().size(), false);
+            return new ClusteringResult(clusteringInput, parameters, new ArrayList<>(), -1, clusteringInput.getComponent().getSubComponents().size(), false);
         }
 
         long endTime = System.currentTimeMillis();
@@ -69,18 +69,22 @@ public class ClusteringResult {
         for (Set<EMAComponentInstanceSymbol> cluster : res) {
             componentNumber += cluster.size();
         }
-        return new ClusteringResult(component, parameters, res, endTime - startTime, componentNumber, curValid);
+        return new ClusteringResult(clusteringInput, parameters, res, endTime - startTime, componentNumber, curValid);
     }
 
     public double getScore(){
         if(score == null){
-            score = AutomaticClusteringHelper.getTypeCostHeuristic(component, clustering);
+            score = AutomaticClusteringHelper.getTypeCostHeuristic(clusteringInput.getComponent(), clustering);
         }
         return score;
     }
 
     public EMAComponentInstanceSymbol getComponent() {
-        return component;
+        return clusteringInput.getComponent();
+    }
+
+    public ClusteringInput getClusteringInput() {
+        return clusteringInput;
     }
 
     public AlgorithmCliParameters getParameters() {
@@ -115,15 +119,15 @@ public class ClusteringResult {
                         "//Score: " + this.getScore() + "\n" +
                         "//Durration in ms: " + this.getDuration() + "\n";
 
-        String content = MiddlewareTagGenImpl.getFileContent(component, this.clustering);
+        String content = MiddlewareTagGenImpl.getFileContent(clusteringInput.getComponent(), this.clustering);
         res.setFileContent(prefix + content);
         return res;
     }
 
     //TODO: refactor to File?
     public void saveVisualization(String path, String fileName){
-        Graph g = ModelVisualizer.buildGraph(component, parameters.toString());
-        ModelVisualizer.visualizeClustering(g, clustering, component);
+        Graph g = ModelVisualizer.buildGraph(clusteringInput.getComponent(), parameters.toString());
+        ModelVisualizer.visualizeClustering(g, clustering, clusteringInput.getComponent());
         ModelVisualizer.saveGraphAsImage(g, path, fileName);
     }
 

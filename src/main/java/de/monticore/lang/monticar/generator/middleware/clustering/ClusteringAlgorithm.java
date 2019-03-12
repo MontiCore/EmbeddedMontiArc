@@ -7,12 +7,12 @@ import java.util.Set;
 
 // product if for clustering factory
 public interface ClusteringAlgorithm {
-    List<Set<EMAComponentInstanceSymbol>> cluster(EMAComponentInstanceSymbol component, Object... args);
+    List<Set<EMAComponentInstanceSymbol>> cluster(ClusteringInput clusteringInput, Object... args);
 
     //TODO: add arguments as typed state of the algorithms(instead of untyped)
-    default List<Set<EMAComponentInstanceSymbol>> clusterWithState(EMAComponentInstanceSymbol component){
+    default List<Set<EMAComponentInstanceSymbol>> clusterWithState(ClusteringInput clusteringInput){
         Object[] args = getArgs();
-        return cluster(component, args);
+        return cluster(clusteringInput, args);
     }
 
     default Object[] getArgs(){
