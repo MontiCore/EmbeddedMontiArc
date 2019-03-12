@@ -8,10 +8,7 @@ import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringInpu
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class AffinityPropagationAlgorithm implements ClusteringAlgorithm {
 
@@ -31,7 +28,13 @@ public class AffinityPropagationAlgorithm implements ClusteringAlgorithm {
 
         RealMatrix mat = new Array2DRowRealMatrix(clusteringInput.getAdjacencyMatrix());
 
-        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        AffinityPropagation clustering;
+        if(args.length == 2 && args[0] == AffinityPropagationBuilder.AffinityPropagationParameters.SEED){
+            clustering = new AffinityPropagationParameters().setSeed(new Random((Long) args[1])).fitNewModel(mat);
+        }else{
+            clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        }
+
         final int[] labels = clustering.getLabels();
 
 

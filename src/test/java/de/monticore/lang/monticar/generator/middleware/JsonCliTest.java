@@ -4,6 +4,7 @@ import de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGene
 import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("Not a test, does not assert anything")
 public class JsonCliTest {
 
     @Test
