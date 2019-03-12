@@ -92,7 +92,6 @@ struct AnnotationTable {
 struct SectionAnnotation {
     AnnotationTable *annotation_table;
     MemoryRange address_range;
-    Array<bool> annotated;
     Array<uint> annotation_id;
     
     SectionAnnotation() : annotation_table( nullptr ) {}

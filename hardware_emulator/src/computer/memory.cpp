@@ -8,7 +8,7 @@
 void AnnotationTable::init() {
     annotations.init( DEFAULT_ANNOTATION_SIZE );
     annotation_pos = 0;
-    new_annotation( 0, Annotation( "NO-NOTE", Annotation::NONE ) );
+    new_annotation( 0, Annotation( "NULL-NOTE", Annotation::NONE ) );
 }
 
 uint AnnotationTable::new_annotation( ulong base, Annotation const &annotation ) {
@@ -19,55 +19,35 @@ uint AnnotationTable::new_annotation( ulong base, Annotation const &annotation )
     target.base = base;
     return annotation_pos++;
 }
-//Annotation &AnnotationCollection::get_annotation( std::string const &name, uint type_mask ) {
-//    for ( uint i : urange( annotation_pos ) ) {
-//        auto &note = annotations[i];
-//        if ( note.type & type_mask )
-//            if ( note.name == name )
-//                return note;
-//    }
-//    return annotations[0];
-//}
-//uint64_t AnnotationCollection::get_handle( std::string const &name, uint type_mask ) {
-//    return get_annotation( name, type_mask ).base;
-//}
-
-
-
-
 
 
 void SectionAnnotation::init( AnnotationTable *annotation_table, MemoryRange address_range ) {
     this->annotation_table = annotation_table;
     this->address_range = address_range;
-    annotated.init( address_range.size );
-    annotation_id.init( address_range.size );
+    annotation_id.init( address_range.size >> 3 );
 }
 
 void SectionAnnotation::add_annotation( MemoryRange range, Annotation const &annotation ) {
     throw_assert( loaded(), "SectionAnnotation::add_annotation() on uninitialized SectionAnnotation" );
     auto note_id = annotation_table->new_annotation( range.start_address, annotation );
     auto start_index = address_range.get_local_index( range.start_address );
-    for ( auto i : urange( start_index, start_index + range.size ) ) {
-        annotated[i] = true;
+    for ( auto i : urange( start_index >> 3, ( start_index + range.size ) >> 3 ) )
         annotation_id[i] = note_id;
-    }
 }
 
 void SectionAnnotation::add_annotation( ulong address, Annotation const &annotation ) {
     throw_assert( loaded(), "SectionAnnotation::add_annotation() on uninitialized SectionAnnotation" );
     auto note_id = annotation_table->new_annotation( address, annotation );
-    auto index = address_range.get_local_index( address );
-    annotated[index] = true;
+    auto index = address_range.get_local_index( address ) >> 3;
     annotation_id[index] = note_id;
 }
 
 Annotation *SectionAnnotation::get_annotation( ulong address ) {
     throw_assert( loaded(), "SectionAnnotation::get_annotation() on uninitialized SectionAnnotation" );
-    auto local_address = address_range.get_local_index( address );
-    if ( !annotated[local_address] )
-        return nullptr;
-    return &( annotation_table->annotations[annotation_id[local_address]] );
+    auto note_id = annotation_id[address_range.get_local_index( address ) >> 3];
+    if ( note_id != 0 )
+        return &( annotation_table->annotations[note_id] );
+    return nullptr;
 }
 
 

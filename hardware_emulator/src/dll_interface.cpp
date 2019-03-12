@@ -5,7 +5,7 @@ using namespace std;
 
 bool add_symbol( uint64_t &target, const std::string &name, Computer &computer ) {
     auto add_sym = computer.symbols.get_symbol( name );
-    if ( add_sym.type == Symbols::Symbol::EMPTY )
+    if ( add_sym.type == Symbols::Symbol::NONE )
         return false;
     target = add_sym.addr;
     return true;

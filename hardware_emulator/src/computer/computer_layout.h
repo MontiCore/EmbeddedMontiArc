@@ -5,8 +5,9 @@
     Contains the virtual memory layout for the computer.
 */
 namespace ComputerLayout {
+    constexpr ulong BASE_ADDRESS = 0x01000000;
     //A section to allocate system owned data passed to the emulated code (can be read/written to).
-    constexpr ulong SYSPAGE_ADDRESS = 0x01000000;
+    constexpr ulong SYSPAGE_ADDRESS = BASE_ADDRESS;
     constexpr ulong SYSPAGE_RANGE = 0x4000;
     //A section for allocatable external handles.
     constexpr ulong HANDLES_ADDRESS = SYSPAGE_ADDRESS + SYSPAGE_RANGE;
