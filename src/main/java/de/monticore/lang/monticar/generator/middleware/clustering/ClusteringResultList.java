@@ -1,6 +1,8 @@
 package de.monticore.lang.monticar.generator.middleware.clustering;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.middleware.cli.algorithms.AlgorithmCliParameters;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -12,6 +14,24 @@ public class ClusteringResultList extends ArrayList<ClusteringResult> {
 
     public ClusteringResultList() {
         super();
+    }
+
+    public static ClusteringResultList fromParametersList(EMAComponentInstanceSymbol emaComponentInstance, List<AlgorithmCliParameters> algoParams) {
+        ClusteringResultList res = new ClusteringResultList();
+        ClusteringInput clusteringInput = new ClusteringInput(emaComponentInstance);
+        //create AdjacencyMatrix to make execution speed comparision fairer
+        clusteringInput.getAdjacencyMatrix();
+
+        for (int i = 0; i < algoParams.size(); i++) {
+            System.out.println("Clustering with algorithm " + (i + 1) + "/" + algoParams.size() + ": " + algoParams.get(i).toString());
+            ClusteringResult result = ClusteringResult.fromParameters(clusteringInput, algoParams.get(i));
+            if (result.isValid()) {
+                res.add(result);
+            } else {
+                Log.warn("Ignoring the result! It is invalid!");
+            }
+        }
+        return res;
     }
 
     public Optional<ClusteringResult> getBestResultWithFittingN(int n){

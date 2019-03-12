@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator.middleware.Simulation;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
-import de.monticore.lang.monticar.generator.middleware.clustering.FlattenArchitecture;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringInput;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringBuilder;
 
@@ -18,11 +18,12 @@ public class MonteCarloIntegration {
         double sum = 0;
 
         if(index == 1){
+            ClusteringInput clusteringInput = new ClusteringInput(componentInstanceSymbol);
             for(int i = 0; i<iterations; i++){
                 // This would be with Spectral Clustering
                 SpectralClusteringAlgorithm spectralClusteringAlgorithm = new SpectralClusteringAlgorithm();
                 Object[] params = new Object[]{SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, numberOfClusters};
-                List<Set<EMAComponentInstanceSymbol>> clusters = spectralClusteringAlgorithm.cluster(componentInstanceSymbol, params);
+                List<Set<EMAComponentInstanceSymbol>> clusters = spectralClusteringAlgorithm.cluster(clusteringInput, params);
 
                 //iterate through all clusters and add all cost of the ROS Tags between clusters
                 sum += AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol, clusters);

@@ -49,7 +49,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         SpectralClusteringAlgorithm clusteringAlgorithm = new SpectralClusteringAlgorithm();
         Object[] params = new Object[]{SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, 2};
-        List<Set<EMAComponentInstanceSymbol>> clusters = clusteringAlgorithm.cluster(flattendComponent, params);
+        List<Set<EMAComponentInstanceSymbol>> clusters = clusteringAlgorithm.cluster(new ClusteringInput(flattendComponent), params);
 
         AutomaticClusteringHelper.annotateComponentWithRosTagsForClusters(flattendComponent, clusters);
 
@@ -570,8 +570,12 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         assertNotNull(componentInstanceSymbol);
 
         List<Set<EMAComponentInstanceSymbol>> clusters = null;
-        if (params != null) clusters = algorithm.cluster(componentInstanceSymbol, params); else
-            clusters = algorithm.cluster(componentInstanceSymbol);
+        ClusteringInput clusteringInput = new ClusteringInput(componentInstanceSymbol);
+        if (params != null){
+            clusters = algorithm.cluster(clusteringInput, params);
+        }else{
+            clusters = algorithm.cluster(clusteringInput);
+        }
 
         Graph graph = ModelVisualizer.buildGraph(componentInstanceSymbol, algoNameShort);
         ModelVisualizer.visualizeClustering(graph, clusters, componentInstanceSymbol);

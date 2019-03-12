@@ -3,7 +3,7 @@ package de.monticore.lang.monticar.generator.middleware.clustering.algorithms;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
-import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringInput;
 import de.se_rwth.commons.logging.Log;
 import net.sf.javaml.clustering.mcl.SparseMatrix;
 import net.sf.javaml.core.Dataset;
@@ -78,7 +78,7 @@ public class MarkovClusteringAlgorithm implements ClusteringAlgorithm {
     }
 
     @Override
-    public List<Set<EMAComponentInstanceSymbol>> cluster(EMAComponentInstanceSymbol component, Object... args) {
+    public List<Set<EMAComponentInstanceSymbol>> cluster(ClusteringInput clusteringInput, Object... args) {
 
         List<Set<EMAComponentInstanceSymbol>> res = new ArrayList<>();
 
@@ -147,11 +147,7 @@ public class MarkovClusteringAlgorithm implements ClusteringAlgorithm {
         if (error) {
             Log.error("MarkovClusteringAlgorithm: Mandatory parameter(s) missing!");
         } else {
-            List<EMAComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(component);
-            Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
-            double[][] adjMatrix = AutomaticClusteringHelper.guaranteedConnectedAdjacencyMatrix(subcompsOrderedByName,
-                    ComponentHelper.getInnerConnectors(component),
-                    labelsForSubcomps);
+            double[][] adjMatrix = clusteringInput.getAdjacencyMatrix();
 
             // |nodes| instances of data with one attribute denoting the node order
             Dataset original_ds= new DefaultDataset();
@@ -181,8 +177,8 @@ public class MarkovClusteringAlgorithm implements ClusteringAlgorithm {
                 res.add(new HashSet<>());
             }
 
-            subcompsOrderedByName.forEach(sc -> {
-                int curClusterLabel = labels[labelsForSubcomps.get(sc.getFullName())];
+            clusteringInput.getSubcompsOrderedByName().forEach(sc -> {
+                int curClusterLabel = labels[clusteringInput.getLabelsForSubcomps().get(sc.getFullName())];
                 res.get(curClusterLabel).add(sc);
             });
         }
