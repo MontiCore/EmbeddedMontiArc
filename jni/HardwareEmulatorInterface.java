@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class HardwareEmulatorInterface {
 	
 	static {
-        // make sure the corresponding DLL is on the classpath
+        // make sure the corresponding DLL or SO is on the classpath
         // when the java app with simulation is started
         System.loadLibrary("HardwareEmulator");
     }
@@ -19,13 +19,12 @@ public class HardwareEmulatorInterface {
         for (HashMap.Entry<String, Serializable> entry : inputs.entrySet()){
 		    add_one_input(id, entry.getKey(), entry.getValue());
         }
-
     }
     
     public native void start_tick(long time_delta);
     public native void end_tick();
     
-    public HashMap<String, Serializable> get_outputs(int id){
+    public  {
         HashMap<String, Serializable> outputs = new HashMap<String, Serializable>();
 		querry_outputs(id, outputs);
 		return outputs;	
