@@ -583,6 +583,10 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
                             DBSCANClusteringBuilder.DBSCANParameters.DBSCAN_RADIUS, 10.0
                     };
                     break;
+                case AFFINITY_CLUSTERER:
+                    params= new Object[]{
+                            AffinityPropagationBuilder.AffinityPropagationParameters.SEED, 104L
+                    };
             }
             testCreateClusters(ClusteringAlgorithmFactory.getFromKind(kind), params, componentInstanceSymbol, modelName);
         }
@@ -920,7 +924,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         RealMatrix mat = new Array2DRowRealMatrix(adjMatrix);
 
-        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        AffinityPropagation clustering = new AffinityPropagationParameters().setSeed(new Random(104)).fitNewModel(mat);
         final int[] labels = clustering.getLabels();
 
         for (int label : labels) {
@@ -949,7 +953,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         RealMatrix mat = new Array2DRowRealMatrix(adjMatrix);
 
-        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        AffinityPropagation clustering = new AffinityPropagationParameters().setSeed(new Random(104)).fitNewModel(mat);
         final int[] labels = clustering.getLabels();
 
         for (int label : labels) {
@@ -979,7 +983,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         RealMatrix mat = new Array2DRowRealMatrix(adjMatrix);
 
-        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        AffinityPropagation clustering = new AffinityPropagationParameters().setSeed(new Random(104)).fitNewModel(mat);
         final int[] labels = clustering.getLabels();
 
         for (int label : labels) {
