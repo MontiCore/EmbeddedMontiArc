@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.AlgorithmCliParameters;
+import de.monticore.lang.monticar.generator.middleware.clustering.qualityMetric.Metric;
 import de.monticore.lang.monticar.generator.middleware.clustering.visualization.ModelVisualizer;
 import de.monticore.lang.monticar.generator.middleware.impls.MiddlewareTagGenImpl;
 import de.se_rwth.commons.logging.Log;
@@ -21,25 +22,26 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ClusteringResult {
-    Double score = null;
     private ClusteringInput clusteringInput;
     private AlgorithmCliParameters parameters;
     private List<Set<EMAComponentInstanceSymbol>> clustering;
     private long duration;
     private int componentNumber;
     private boolean valid;
+    private Metric metric;
 
     private ClusteringResult(ClusteringInput clusteringInput, AlgorithmCliParameters parameters,
-                             List<Set<EMAComponentInstanceSymbol>> clustering, long duration, int componentNumber, boolean valid) {
+                             List<Set<EMAComponentInstanceSymbol>> clustering, long duration, int componentNumber, boolean valid, Metric metric) {
         this.clusteringInput = clusteringInput;
         this.parameters = parameters;
         this.clustering = clustering;
         this.duration = duration;
         this.componentNumber = componentNumber;
         this.valid = valid;
+        this.metric = metric;
     }
 
-    public static ClusteringResult fromParameters(ClusteringInput clusteringInput, AlgorithmCliParameters parameters) {
+    public static ClusteringResult fromParameters(ClusteringInput clusteringInput, AlgorithmCliParameters parameters, Metric metric) {
         List<Set<EMAComponentInstanceSymbol>> res;
         long startTime = System.currentTimeMillis();
 
@@ -47,7 +49,7 @@ public class ClusteringResult {
             res = parameters.asClusteringAlgorithm().clusterWithState(clusteringInput);
         } catch (Exception e) {
             Log.warn("Marking this result as invalid. Error clustering the component.", e);
-            return new ClusteringResult(clusteringInput, parameters, new ArrayList<>(), -1, clusteringInput.getComponent().getSubComponents().size(), false);
+            return new ClusteringResult(clusteringInput, parameters, new ArrayList<>(), -1, clusteringInput.getComponent().getSubComponents().size(), false, metric);
         }
 
         long endTime = System.currentTimeMillis();
@@ -69,14 +71,20 @@ public class ClusteringResult {
         for (Set<EMAComponentInstanceSymbol> cluster : res) {
             componentNumber += cluster.size();
         }
-        return new ClusteringResult(clusteringInput, parameters, res, endTime - startTime, componentNumber, curValid);
+        return new ClusteringResult(clusteringInput, parameters, res, endTime - startTime, componentNumber, curValid, metric);
+    }
+
+
+    public Metric getMetric() {
+        return metric;
+    }
+
+    public void setMetric(Metric metric){
+        this.metric = metric;
     }
 
     public double getScore(){
-        if(score == null){
-            score = AutomaticClusteringHelper.getTypeCostHeuristic(clusteringInput.getComponent(), clustering);
-        }
-        return score;
+        return metric.getScore(this);
     }
 
     public EMAComponentInstanceSymbol getComponent() {
