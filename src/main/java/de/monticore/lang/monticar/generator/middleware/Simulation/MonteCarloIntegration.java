@@ -9,16 +9,37 @@ import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.Spe
 import java.util.*;
 
 public class MonteCarloIntegration {
+    private static double[] averages;
+    private static double[] costs;
+    private static int iterations;
+    private static int numberOfClusters;
 
+    public MonteCarloIntegration(int iterations, int numberOfClusters){
+        this.iterations = iterations;
+        this.numberOfClusters = numberOfClusters;
+        this.averages = new double[this.iterations];
+        this.costs = new double[this.iterations];
+    }
 
-    // index 1: Spectral Clustering
-    // Index 2: Random Clustering
-    public static double simulate(int iterations, EMAComponentInstanceSymbol componentInstanceSymbol, int numberOfClusters) {
+    public static double[] getAverages() {
+        return averages;
+    }
+
+    public static int getIterations() {
+        return iterations;
+    }
+
+    public int getNumberOfClusters() {
+        return numberOfClusters;
+    }
+
+    public static double[] getCosts(){
+        return costs;
+    }
+
+    public static double simulate(EMAComponentInstanceSymbol componentInstanceSymbol) {
         //EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
-
         double sum = 0;
-
-        double[] costs = new double[iterations];
 
         for (int i = 0; i < iterations; i++) {
              /*
@@ -34,17 +55,8 @@ public class MonteCarloIntegration {
             costs[i] = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol, clusters);
             //iterate through all clusters and add all cost of the ROS Tags between clusters
             sum = getCostAtN(i+1, costs);
-            System.out.println("Average(" + (i + 1) + ")=" + sum);
-            /*
-            if(i==iterations-1){
-                System.out.println("Costlist: "+ Arrays.toString(costs));
-            }
-            */
+            averages[i]=sum;
         }
-
-        System.out.println("Final Result: " + sum);
-        System.out.println("Minimum: "+ getMinValue(costs));
-        System.out.println("Maximum: "+ getMaxValue(costs));
         // Plot(x,y) would be Plot(iterations, getCostAtN(i+1
         return sum;
     }
@@ -55,22 +67,22 @@ public class MonteCarloIntegration {
     }
 
     // getting the maximum value
-    public static double getMaxValue(double[] array) {
-        double maxValue = array[0];
-        for (int i = 1; i < array.length; i++) {
-            if (array[i] > maxValue) {
-                maxValue = array[i];
+    public static double getMaxValue() {
+        double maxValue = costs[0];
+        for (int i = 1; i < costs.length; i++) {
+            if (costs[i] > maxValue) {
+                maxValue = costs[i];
             }
         }
         return maxValue;
     }
 
     // getting the miniumum value
-    public static double getMinValue(double[] array) {
-        double minValue = array[0];
-        for (int i = 1; i < array.length; i++) {
-            if (array[i] < minValue) {
-                minValue = array[i];
+    public static double getMinValue() {
+        double minValue = costs[0];
+        for (int i = 1; i < costs.length; i++) {
+            if (costs[i] < minValue) {
+                minValue = costs[i];
             }
         }
         return minValue;
@@ -115,11 +127,11 @@ public class MonteCarloIntegration {
     }
 
     // iteration step n, costs: Array of all costs before
-    public static double getCostAtN(int n, double[] costs) {
+    public static double getCostAtN(int n, double[] array) {
         double sum = 0;
 
         for (int i = 0; i < n ; i++) {
-            sum += costs[i];
+            sum += array[i];
         }
 
         return sum /n;
