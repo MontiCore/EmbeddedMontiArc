@@ -1,6 +1,9 @@
 package de.monticore.lang.monticar.generator.middleware.clustering;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.middleware.cli.algorithms.AlgorithmCliParameters;
+import de.monticore.lang.monticar.generator.middleware.clustering.qualityMetric.Metric;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -12,6 +15,24 @@ public class ClusteringResultList extends ArrayList<ClusteringResult> {
 
     public ClusteringResultList() {
         super();
+    }
+
+    public static ClusteringResultList fromParametersList(EMAComponentInstanceSymbol emaComponentInstance, List<AlgorithmCliParameters> algoParams, Metric metric) {
+        ClusteringResultList res = new ClusteringResultList();
+        ClusteringInput clusteringInput = new ClusteringInput(emaComponentInstance);
+        //create AdjacencyMatrix to make execution speed comparision fairer
+        clusteringInput.getAdjacencyMatrix();
+
+        for (int i = 0; i < algoParams.size(); i++) {
+            System.out.println("Clustering with algorithm " + (i + 1) + "/" + algoParams.size() + ": " + algoParams.get(i).toString());
+            ClusteringResult result = ClusteringResult.fromParameters(clusteringInput, algoParams.get(i), metric);
+            if (result.isValid()) {
+                res.add(result);
+            } else {
+                Log.warn("Ignoring the result! It is invalid!");
+            }
+        }
+        return res;
     }
 
     public Optional<ClusteringResult> getBestResultWithFittingN(int n){
@@ -28,8 +49,16 @@ public class ClusteringResultList extends ArrayList<ClusteringResult> {
     }
 
     public Optional<ClusteringResult> getBestResultOverall(){
-        this.sort(Comparator.comparing(ClusteringResult::getScore));
-        return this.size() == 0 ? Optional.empty() : Optional.of(this.get(0));
+        if(this.isEmpty()){
+            return Optional.empty();
+        }
+
+        ClusteringResultList copiedList = new ClusteringResultList();
+        copiedList.addAll(this);
+        copiedList.sort(Comparator.comparing(ClusteringResult::getScore));
+
+        int index = copiedList.get(0).getMetric().higherIsBetter() ? copiedList.size() - 1 : 0;
+        return Optional.of(copiedList.get(index));
     }
 
     public List<FileContent> getAllTagFiles(String baseName){

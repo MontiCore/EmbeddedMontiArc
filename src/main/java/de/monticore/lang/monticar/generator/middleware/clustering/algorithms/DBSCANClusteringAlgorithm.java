@@ -1,9 +1,8 @@
 package de.monticore.lang.monticar.generator.middleware.clustering.algorithms;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
-import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringInput;
 import de.se_rwth.commons.logging.Log;
 import smile.clustering.DBSCAN;
 
@@ -23,7 +22,7 @@ public class DBSCANClusteringAlgorithm implements ClusteringAlgorithm {
     }
 
     @Override
-    public List<Set<EMAComponentInstanceSymbol>> cluster(EMAComponentInstanceSymbol component, Object... args) {
+    public List<Set<EMAComponentInstanceSymbol>> cluster(ClusteringInput clusteringInput, Object... args) {
 
         List<Set<EMAComponentInstanceSymbol>> res = new ArrayList<>();
 
@@ -80,24 +79,19 @@ public class DBSCANClusteringAlgorithm implements ClusteringAlgorithm {
         if (error) {
             Log.error("DBSCANClusteringAlgorithm: Mandatory parameter(s) missing!");
         } else {
-            List<EMAComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(component);
-            Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
-            double[][] adjMatrix = AutomaticClusteringHelper.guaranteedConnectedAdjacencyMatrix(subcompsOrderedByName,
-                    ComponentHelper.getInnerConnectors(component),
-                    labelsForSubcomps);
-
+            double[][] adjMatrix = clusteringInput.getAdjacencyMatrix();
             DBSCAN clustering;
             DBSCANClusteringBuilder builder = new DBSCANClusteringBuilder(adjMatrix, minPts, radius);
-            clustering = builder.build();
 
+            clustering = builder.build();
             int[] labels = clustering.getClusterLabel();
 
             for (int i = 0; i < clustering.getNumClusters(); i++) {
                 res.add(new HashSet<>());
             }
 
-            subcompsOrderedByName.forEach(sc -> {
-                int curClusterLabel = labels[labelsForSubcomps.get(sc.getFullName())];
+            clusteringInput.getSubcompsOrderedByName().forEach(sc -> {
+                int curClusterLabel = labels[clusteringInput.getLabelsForSubcomps().get(sc.getFullName())];
                 res.get(curClusterLabel).add(sc);
             });
         }

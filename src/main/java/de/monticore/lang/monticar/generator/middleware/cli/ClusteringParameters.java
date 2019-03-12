@@ -1,11 +1,12 @@
 package de.monticore.lang.monticar.generator.middleware.cli;
 
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.AlgorithmCliParameters;
-import de.monticore.lang.monticar.generator.middleware.cli.algorithms.SpectralClusteringCliParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicAlgorithmCliParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicParameter;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicSpectralClusteringCliParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.ListParameter;
+import de.monticore.lang.monticar.generator.middleware.clustering.qualityMetric.Metric;
+import de.monticore.lang.monticar.generator.middleware.clustering.qualityMetric.MetricType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class ClusteringParameters {
     private Integer flattenLevel;
     private ResultChoosingStrategy chooseBy = ResultChoosingStrategy.bestWithFittingN;
     private List<DynamicAlgorithmCliParameters> algorithmParameters = new ArrayList<>();
+    private MetricType metric;
 
     public ClusteringParameters() {
     }
@@ -53,5 +55,13 @@ public class ClusteringParameters {
 
     public Optional<Integer> getFlattenLevel() {
         return Optional.ofNullable(flattenLevel);
+    }
+
+    public Metric getMetric() {
+        if(metric == null){
+            return MetricType.CommunicationCost.toMetric();
+        }else{
+            return metric.toMetric();
+        }
     }
 }

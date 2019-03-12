@@ -3,9 +3,8 @@ package de.monticore.lang.monticar.generator.middleware.clustering.algorithms;
 import com.clust4j.algo.AffinityPropagation;
 import com.clust4j.algo.AffinityPropagationParameters;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
-import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringInput;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -25,17 +24,17 @@ public class AffinityPropagationAlgorithm implements ClusteringAlgorithm {
     }
 
     @Override
-    public List<Set<EMAComponentInstanceSymbol>> cluster(EMAComponentInstanceSymbol component, Object... args) {
+    public List<Set<EMAComponentInstanceSymbol>> cluster(ClusteringInput clusteringInput, Object... args) {
 
-        List<EMAComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(component);
-        Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
-        double[][] adjMatrix = AutomaticClusteringHelper.guaranteedConnectedAdjacencyMatrix(subcompsOrderedByName,
-                ComponentHelper.getInnerConnectors(component),
-                labelsForSubcomps);
+        RealMatrix mat = new Array2DRowRealMatrix(clusteringInput.getAdjacencyMatrix());
 
-        RealMatrix mat = new Array2DRowRealMatrix(adjMatrix);
+        AffinityPropagation clustering;
+        if(args.length == 2 && args[0] == AffinityPropagationBuilder.AffinityPropagationParameters.SEED){
+            clustering = new AffinityPropagationParameters().setSeed(new Random((Long) args[1])).fitNewModel(mat);
+        }else{
+            clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        }
 
-        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
         final int[] labels = clustering.getLabels();
 
 
@@ -45,8 +44,8 @@ public class AffinityPropagationAlgorithm implements ClusteringAlgorithm {
             res.add(new HashSet<>());
         }
 
-        subcompsOrderedByName.forEach(sc -> {
-            int curClusterLabel = labels[labelsForSubcomps.get(sc.getFullName())];
+        clusteringInput.getSubcompsOrderedByName().forEach(sc -> {
+            int curClusterLabel = labels[clusteringInput.getLabelsForSubcomps().get(sc.getFullName())];
             res.get(curClusterLabel).add(sc);
         });
 

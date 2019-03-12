@@ -4,6 +4,7 @@ import de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGene
 import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("Used for evaluation, nothing gets asserted")
 public class EvaluationTest {
 
     @Test
@@ -12,13 +13,28 @@ public class EvaluationTest {
     }
 
     @Test
+    public void testPacmanSilhouette() {
+        DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/evaluation/pacmanSilhouette.json"});
+    }
+
+    @Test
     public void testAutopilot() {
         DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/evaluation/autopilot.json"});
     }
 
     @Test
+    public void testAutopilotSilhouette() {
+        DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/evaluation/autopilotSilhouette.json"});
+    }
+
+    @Test
     public void testSupermario() {
         DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/evaluation/supermario.json"});
+    }
+
+    @Test
+    public void testSupermarioSilhouette() {
+        DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/evaluation/supermarioSilhouette.json"});
     }
 
     @Ignore("Very long runtime(30min+)")

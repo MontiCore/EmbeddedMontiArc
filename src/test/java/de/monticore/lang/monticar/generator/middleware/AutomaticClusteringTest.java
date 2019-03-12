@@ -3,12 +3,11 @@ package de.monticore.lang.monticar.generator.middleware;
 import com.clust4j.algo.AffinityPropagation;
 import com.clust4j.algo.AffinityPropagationParameters;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.*;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.*;
+import de.monticore.lang.monticar.generator.middleware.clustering.qualityMetric.SilhouetteIndex;
 import de.monticore.lang.monticar.generator.middleware.clustering.visualization.ModelVisualizer;
-import de.monticore.lang.monticar.generator.middleware.clustering.visualization.SimpleModelViewer;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
@@ -22,16 +21,11 @@ import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.stream.file.FileSinkImages;
-import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import smile.clustering.DBSCAN;
 import smile.clustering.SpectralClustering;
-import smile.plot.Palette;
 
 import java.io.IOException;
 import java.util.*;
@@ -55,7 +49,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         SpectralClusteringAlgorithm clusteringAlgorithm = new SpectralClusteringAlgorithm();
         Object[] params = new Object[]{SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, 2};
-        List<Set<EMAComponentInstanceSymbol>> clusters = clusteringAlgorithm.cluster(flattendComponent, params);
+        List<Set<EMAComponentInstanceSymbol>> clusters = clusteringAlgorithm.cluster(new ClusteringInput(flattendComponent), params);
 
         AutomaticClusteringHelper.annotateComponentWithRosTagsForClusters(flattendComponent, clusters);
 
@@ -83,11 +77,11 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
 
         //sorted by full name: alex, combine, dinhAn, michael, philipp
-        double[][] expRes = {{0,10,0,0,0}
-                            ,{10,0,10,10,10}
-                            ,{0,10,0,0,0}
-                            ,{0,10,0,0,0}
-                            ,{0,10,0,0,0}};
+        double[][] expRes = {{0,8,0,0,0}
+                            ,{8,0,8,8,8}
+                            ,{0,8,0,0,0}
+                            ,{0,8,0,0,0}
+                            ,{0,8,0,0,0}};
 
         for(int i = 0; i< expRes.length; i++){
             for(int j = 0; j < expRes[i].length;j++){
@@ -110,15 +104,79 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
 
         //sorted full name: sub1, sub2, sub3
-        double[][] expRes = {{0,10,20}  //sub1
-                            ,{10,0,0}  //sub2
-                            ,{20,0,0}}; //sub3
+        double[][] expRes = {{0,8,16}  //sub1
+                            ,{8,0,0}  //sub2
+                            ,{16,0,0}}; //sub3
 
         for(int i = 0; i< expRes.length; i++){
             for(int j = 0; j < expRes[i].length;j++){
                 assertTrue(expRes[i][j] == matrix[i][j]);
             }
         }
+    }
+
+
+    @Test
+    public void testDistanceMatrixCreation(){
+        // a -(10)-> b -(20)-> c    |    d
+
+        double[][] adj = {
+                            {0, 10, 0, 0},
+                            {10, 0, 20, 0},
+                            {0, 20, 0, 0},
+                            {0, 0, 0, 0}};
+
+        double[][] dist = AutomaticClusteringHelper.getDistanceMatrix(adj);
+
+        double m = Double.MAX_VALUE;
+        double[][] expDist = {
+                {0, 10, 30, m},
+                {10, 0, 20, m},
+                {30, 20, 0, m},
+                {m, m, m, 0}};
+
+
+        for(int i = 0; i< expDist.length; i++){
+            for(int j = 0; j < expDist[i].length;j++){
+                assertTrue(expDist[i][j] == dist[i][j]);
+            }
+        }
+
+    }
+
+
+    @Test
+    public void testSilhouetteIndex(){
+        // graph:
+        // a,b close to each other
+        // c,d close to each other
+        // big difference between a and c as well as b and d
+
+        double[][] adjMat = {
+                {0, 10, 1000, 1000},
+                {10, 0, 1000, 1000},
+                {1000, 1000, 0, 10},
+                {1000, 1000, 10, 0}
+        };
+
+        double[][] dist = AutomaticClusteringHelper.getDistanceMatrix(adjMat);
+
+        int[] correctCustering = {0,0,1,1};
+        SilhouetteIndex index1 = new SilhouetteIndex(dist, correctCustering);
+        assertTrue(index1.S(0) > 0.5);
+        assertTrue(index1.S(1) > 0.5);
+        assertTrue(index1.S(2) > 0.5);
+        assertTrue(index1.S(3) > 0.5);
+
+
+        int[] badClustering = {0,0,0,1};
+        SilhouetteIndex index2 = new SilhouetteIndex(dist, badClustering);
+        assertTrue(index2.S(0) > 0.5);
+        assertTrue(index2.S(1) > 0.5);
+        assertTrue(index2.S(2) < -0.5);
+        assertTrue(index2.S(3) > 0.5);
+
+        assertTrue(index1.getSilhouetteScore() > index2.getSilhouetteScore());
     }
 
 
@@ -153,6 +211,18 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         assertTrue( labels[1] != labels[2]);
         assertTrue( labels[1] != labels[3]);
 
+    }
+
+    @Ignore
+    @Test
+    public void testSpectralClusteringIsolatedVertex(){
+        double[][] adjMatrix =  {
+                                {0, 1, 1, 0},
+                                {1, 0, 0, 0},
+                                {1, 0, 0, 0},
+                                {0, 0, 0, 0}};
+
+        SpectralClustering clustering = new SpectralClustering(adjMatrix,2);
     }
 
 
@@ -486,6 +556,10 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
                             DBSCANClusteringBuilder.DBSCANParameters.DBSCAN_RADIUS, 10.0
                     };
                     break;
+                case AFFINITY_CLUSTERER:
+                    params= new Object[]{
+                            AffinityPropagationBuilder.AffinityPropagationParameters.SEED, 104L
+                    };
             }
             testCreateClusters(ClusteringAlgorithmFactory.getFromKind(kind), params, componentInstanceSymbol, modelName);
         }
@@ -500,8 +574,12 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         assertNotNull(componentInstanceSymbol);
 
         List<Set<EMAComponentInstanceSymbol>> clusters = null;
-        if (params != null) clusters = algorithm.cluster(componentInstanceSymbol, params); else
-            clusters = algorithm.cluster(componentInstanceSymbol);
+        ClusteringInput clusteringInput = new ClusteringInput(componentInstanceSymbol);
+        if (params != null){
+            clusters = algorithm.cluster(clusteringInput, params);
+        }else{
+            clusters = algorithm.cluster(clusteringInput);
+        }
 
         Graph graph = ModelVisualizer.buildGraph(componentInstanceSymbol, algoNameShort);
         ModelVisualizer.visualizeClustering(graph, clusters, componentInstanceSymbol);
@@ -750,7 +828,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         RealMatrix mat = new Array2DRowRealMatrix(adjMatrix);
 
-        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        AffinityPropagation clustering = new AffinityPropagationParameters().setSeed(new Random(104)).fitNewModel(mat);
         final int[] labels = clustering.getLabels();
 
         for (int label : labels) {
@@ -779,7 +857,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         RealMatrix mat = new Array2DRowRealMatrix(adjMatrix);
 
-        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        AffinityPropagation clustering = new AffinityPropagationParameters().setSeed(new Random(104)).fitNewModel(mat);
         final int[] labels = clustering.getLabels();
 
         for (int label : labels) {
@@ -809,7 +887,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         RealMatrix mat = new Array2DRowRealMatrix(adjMatrix);
 
-        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        AffinityPropagation clustering = new AffinityPropagationParameters().setSeed(new Random(104)).fitNewModel(mat);
         final int[] labels = clustering.getLabels();
 
         for (int label : labels) {
