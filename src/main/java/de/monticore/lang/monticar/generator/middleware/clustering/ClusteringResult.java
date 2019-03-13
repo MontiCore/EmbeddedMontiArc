@@ -29,6 +29,8 @@ public class ClusteringResult {
     private int componentNumber;
     private boolean valid;
     private Metric metric;
+    private double score;
+    private boolean sameMetric = false;
 
     private ClusteringResult(ClusteringInput clusteringInput, AlgorithmCliParameters parameters,
                              List<Set<EMAComponentInstanceSymbol>> clustering, long duration, int componentNumber, boolean valid, Metric metric) {
@@ -80,11 +82,18 @@ public class ClusteringResult {
     }
 
     public void setMetric(Metric metric){
-        this.metric = metric;
+        if (this.metric != metric) {
+            this.metric = metric;
+            sameMetric = false;
+        }
     }
 
     public double getScore(){
-        return metric.getScore(this);
+        if (!sameMetric) {
+            sameMetric = true;
+            score = metric.getScore(this);
+        }
+        return score;
     }
 
     public EMAComponentInstanceSymbol getComponent() {
