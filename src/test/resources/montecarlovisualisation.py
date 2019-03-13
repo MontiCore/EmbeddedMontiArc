@@ -45,37 +45,63 @@ while i < 101:
     daimler_montecarlodata.append(daimler_data[0]["MCResult(" + str(i) + ")"])
     i = i + 1
 	
+autopilot_minmax = (autopilot_data[0]["MaxValueMC"],autopilot_data[0]["MinValueMC"])
+pacman_minmax = (pacman_data[0]["MaxValueMC"],pacman_data[0]["MinValueMC"])
+supermario_minmax = (supermario_data[0]["MaxValueMC"],supermario_data[0]["MinValueMC"])
+daimler_minmax = (daimler_data[0]["MaxValueMC"],daimler_data[0]["MinValueMC"])
+
+	
 t = np.arange(1,1001,1)
 
 fig, ax = plt.subplots()
 ax.plot(t, autopilot_montecarlodata)
-
 ax.set(xlabel='Iterations', ylabel='Score',
        title='Montecarlo Clustering of Autopilotmodel with 3 Clusters')
 ax.grid()
+textstr = '\n'.join((
+    "MaxValueMC = " + str(autopilot_minmax[1]),
+    "MinValueMC = " + str(autopilot_minmax[0])))
+props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+ax.text(0.95, 0.05, textstr, transform=ax.transAxes, fontsize=14,
+        verticalalignment='bottom', ha='right', bbox=props)
 plt.show()
 
 fig, ax = plt.subplots()
 ax.plot(t, pacman_montecarlodata)
-
 ax.set(xlabel='Iterations', ylabel='Score',
        title='Montecarlo Clustering of Pacmanmodel with 3 Clusters')
 ax.grid()
+textstr = '\n'.join((
+    "MaxValueMC = " + str(pacman_minmax[1]),
+    "MinValueMC = " + str(pacman_minmax[0])))
+props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+ax.text(0.95, 0.05, textstr, transform=ax.transAxes, fontsize=14,
+        verticalalignment='bottom', ha='right', bbox=props)
 plt.show()
 
 fig, ax = plt.subplots()
 ax.plot(t, supermario_montecarlodata)
-
 ax.set(xlabel='Iterations', ylabel='Score',
        title='Montecarlo Clustering of Supermariomodel with 3 Clusters')
 ax.grid()
+textstr = '\n'.join((
+    "MaxValueMC = " + str(supermario_minmax[1]),
+    "MinValueMC = " + str(supermario_minmax[0])))
+props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+ax.text(0.95, 0.05, textstr, transform=ax.transAxes, fontsize=14,
+        verticalalignment='bottom', ha='right', bbox=props)
 plt.show()
 
 t = np.arange(0,100,1)
 fig, ax = plt.subplots()
 ax.plot(t, daimler_montecarlodata)
-
 ax.set(xlabel='Iterations', ylabel='Score',
        title='Montecarlo Clustering of Daimlermodel')
 ax.grid()
+textstr = '\n'.join((
+    "MaxValueMC = " + str(daimler_minmax[1]),
+    "MinValueMC = " + str(daimler_minmax[0])))
+props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+ax.text(0.95, 0.05, textstr, transform=ax.transAxes, fontsize=14,
+        verticalalignment='bottom', ha='right', bbox=props)
 plt.show()
