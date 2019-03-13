@@ -84,10 +84,6 @@ daimler_durationdata = []
 daimler_componentNumber = 0
 i = 0
 while i < len(daimler_data):
-    if i == 2:
-        daimler_clusterdata.append(0)
-        daimler_scoredata.append(0)
-        daimler_durationdata.append(0)
     daimler_algorithmdata.append(daimler_data[i]["Algorithm"])
     daimler_clusterdata.append(daimler_data[i]["NumberOfClusters"])
     daimler_scoredata.append(int(daimler_data[i]["Score"]))
@@ -99,21 +95,21 @@ daimler_clusterdata.append(daimler_componentNumber)
 
 cluster_dataspectral1 = (autopilot_data[0]["NumberOfClusters"], pacman_data[0]["NumberOfClusters"], supermario_data[0]["NumberOfClusters"], daimler_data[0]["NumberOfClusters"])
 cluster_dataspectral2 = (autopilot_data[1]["NumberOfClusters"], pacman_data[1]["NumberOfClusters"], supermario_data[1]["NumberOfClusters"], daimler_data[1]["NumberOfClusters"])
-cluster_dataspectral3 = (autopilot_data[2]["NumberOfClusters"], pacman_data[2]["NumberOfClusters"], supermario_data[2]["NumberOfClusters"], 0)
-cluster_datamarkov    = (autopilot_data[3]["NumberOfClusters"], pacman_data[3]["NumberOfClusters"], supermario_data[3]["NumberOfClusters"], daimler_data[2]["NumberOfClusters"])
-cluster_dataaffinity  = (autopilot_data[4]["NumberOfClusters"], pacman_data[4]["NumberOfClusters"], supermario_data[4]["NumberOfClusters"], daimler_data[3]["NumberOfClusters"])
+cluster_dataspectral3 = (autopilot_data[2]["NumberOfClusters"], pacman_data[2]["NumberOfClusters"], supermario_data[2]["NumberOfClusters"], daimler_data[2]["NumberOfClusters"])
+cluster_datamarkov    = (autopilot_data[3]["NumberOfClusters"], pacman_data[3]["NumberOfClusters"], supermario_data[3]["NumberOfClusters"], daimler_data[3]["NumberOfClusters"])
+cluster_dataaffinity  = (autopilot_data[4]["NumberOfClusters"], pacman_data[4]["NumberOfClusters"], supermario_data[4]["NumberOfClusters"], daimler_data[4]["NumberOfClusters"])
 
 score_dataspectral1 = (int(autopilot_data[0]["Score"]), int(pacman_data[0]["Score"]), int(supermario_data[0]["Score"]), int(daimler_data[0]["Score"]))
 score_dataspectral2 = (int(autopilot_data[1]["Score"]), int(pacman_data[1]["Score"]), int(supermario_data[1]["Score"]), int(daimler_data[1]["Score"]))
-score_dataspectral3 = (int(autopilot_data[2]["Score"]), int(pacman_data[2]["Score"]), int(supermario_data[2]["Score"]), 0)
-score_datamarkov    = (int(autopilot_data[3]["Score"]), int(pacman_data[3]["Score"]), int(supermario_data[3]["Score"]), int(daimler_data[2]["Score"]))
-score_dataaffinity  = (int(autopilot_data[4]["Score"]), int(pacman_data[4]["Score"]), int(supermario_data[4]["Score"]), int(daimler_data[3]["Score"]))
+score_dataspectral3 = (int(autopilot_data[2]["Score"]), int(pacman_data[2]["Score"]), int(supermario_data[2]["Score"]), int(daimler_data[2]["Score"]))
+score_datamarkov    = (int(autopilot_data[3]["Score"]), int(pacman_data[3]["Score"]), int(supermario_data[3]["Score"]), int(daimler_data[3]["Score"]))
+score_dataaffinity  = (int(autopilot_data[4]["Score"]), int(pacman_data[4]["Score"]), int(supermario_data[4]["Score"]), int(daimler_data[4]["Score"]))
 
 duration_dataspectral1 = (autopilot_data[0]["DurationInMs"], pacman_data[0]["DurationInMs"], supermario_data[0]["DurationInMs"], daimler_data[0]["DurationInMs"])
 duration_dataspectral2 = (autopilot_data[1]["DurationInMs"], pacman_data[1]["DurationInMs"], supermario_data[1]["DurationInMs"], daimler_data[1]["DurationInMs"])
-duration_dataspectral3 = (autopilot_data[2]["DurationInMs"], pacman_data[2]["DurationInMs"], supermario_data[2]["DurationInMs"], 0)
-duration_datamarkov    = (autopilot_data[3]["DurationInMs"], pacman_data[3]["DurationInMs"], supermario_data[3]["DurationInMs"], daimler_data[2]["DurationInMs"])
-duration_dataaffinity  = (autopilot_data[4]["DurationInMs"], pacman_data[4]["DurationInMs"], supermario_data[4]["DurationInMs"], daimler_data[3]["DurationInMs"])
+duration_dataspectral3 = (autopilot_data[2]["DurationInMs"], pacman_data[2]["DurationInMs"], supermario_data[2]["DurationInMs"], daimler_data[2]["DurationInMs"])
+duration_datamarkov    = (autopilot_data[3]["DurationInMs"], pacman_data[3]["DurationInMs"], supermario_data[3]["DurationInMs"], daimler_data[3]["DurationInMs"])
+duration_dataaffinity  = (autopilot_data[4]["DurationInMs"], pacman_data[4]["DurationInMs"], supermario_data[4]["DurationInMs"], daimler_data[4]["DurationInMs"])
 
 componentNumbers = (autopilot_componentNumber, pacman_componentNumber, supermario_componentNumber, daimler_componentNumber)
 
