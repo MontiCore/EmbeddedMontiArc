@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     simulator_integration_HardwareEmulatorInterface
  * Method:    init
- * Signature: ()Z
+ * Signature: (Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_simulator_integration_HardwareEmulatorInterface_init
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     simulator_integration_HardwareEmulatorInterface

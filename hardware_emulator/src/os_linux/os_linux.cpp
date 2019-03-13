@@ -85,13 +85,13 @@ namespace OS {
         registers.set_xmm0( p );
     }
     void LinuxFastCall::set_param2_double( double p ) {
-        Log::err << "TODO set_param2_double() LinuxFastCall\n";
+        registers.set_xmm1( p );
     }
     void LinuxFastCall::set_param3_double( double p ) {
-        Log::err << "TODO set_param3_double() LinuxFastCall\n";
+        registers.set_xmm2( p );
     }
     void LinuxFastCall::set_param4_double( double p ) {
-        Log::err << "TODO set_param4_double() LinuxFastCall\n";
+        registers.set_xmm3( p );
     }
     ulong LinuxFastCall::get_return_64() {
         return registers.get_rax();
@@ -137,16 +137,13 @@ namespace OS {
         return registers.get_xmm0();
     }
     double LinuxFastCall::get_param2_double() {
-        Log::err << "TODO get_param2_double() LinuxFastCall\n";
-        return 0.0;
+        return registers.get_xmm1();
     }
     double LinuxFastCall::get_param3_double() {
-        Log::err << "TODO get_param3_double() LinuxFastCall\n";
-        return 0.0;
+        return registers.get_xmm2();
     }
     double LinuxFastCall::get_param4_double() {
-        Log::err << "TODO get_param4_double() LinuxFastCall\n";
-        return 0.0;
+        return registers.get_xmm3();
     }
     void LinuxFastCall::set_return_64( ulong r ) {
         registers.set_rax( r );

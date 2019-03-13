@@ -27,6 +27,7 @@ struct WindowsCalls {
     static bool virtual_query( Computer &inter, SysCall &syscall );
     static bool virtual_protect( Computer &inter, SysCall &syscall );
     static bool malloc( Computer &inter, SysCall &syscall );
+    static bool memcpy( Computer &inter, SysCall &syscall );
 };
 
 

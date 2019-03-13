@@ -3,16 +3,10 @@
 using namespace std;
 
 void ComputerDebug::init( Memory &mem, Registers &regs, CodeDecoder &decoder ) {
-    this->mem = &mem;
-    this->regs = &regs;
+    this->memory = &mem;
+    this->registers = &regs;
     this->decoder = &decoder;
     ZydisFormatterInit( &formatter, ZYDIS_FORMATTER_STYLE_INTEL );
-    /*this->debug = true;
-    this->d_code = true;
-    this->d_regs = false;
-    this->d_reg_update = true;
-    this->d_mem = true;
-    this->d_syscalls = true;*/
 }
 
 void ComputerDebug::debug_syscall( SysCall &sys_call, ulong id ) {
@@ -31,9 +25,9 @@ void ComputerDebug::debug_code( ulong addr, uint size ) {
         return;
         
     if ( d_regs )
-        regs->print_registers();
+        registers->print_registers();
     else if ( d_reg_update )
-        regs->print_changed_registers();
+        registers->print_changed_registers();
         
     Log::code << Log::tag;
     if ( decoder->succeeded ) {
@@ -52,7 +46,7 @@ void ComputerDebug::debug_code( ulong addr, uint size ) {
         sprintf( buff, "%-40s", buffer.begin() );
         Log::code << buff;
     }
-    mem->print_annotation( addr );
+    memory->print_annotation( addr );
     Log::info << "\n";
 }
 
@@ -65,7 +59,7 @@ void ComputerDebug::debug_mem_err( MemAccess type, MemAccessError err, ulong add
     if ( type == MemAccess::WRITE )
         Log::err << " with value " << val;
     Log::err << " of size " << size << " ";
-    mem->print_address_info( addr );
+    memory->print_address_info( addr );
     Log::err << "\n";
 }
 
@@ -86,7 +80,7 @@ void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val 
         *os << to_hex( val ) << "     ";
     else {
         uint32_t s = size;
-        uchar *data = ( uchar * ) mem->read_memory( addr, s );
+        uchar *data = ( uchar * ) memory->read_memory( addr, s );
         std::string res;
         for ( uint64_t i : ulrange( s ) ) {
             uint8_t v = *( ( uint8_t * ) & ( data[s - 1 - i] ) );
@@ -97,15 +91,21 @@ void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val 
         *os << buff;
     }
     
-    mem->print_address_info( addr );
+    memory->print_address_info( addr );
     Log::info << "\n";
 }
 
-void ComputerDebug::debug_register_syscall( SysCall const &call, ulong addr ) {
+void ComputerDebug::debug_call( ulong address, const char *name ) {
+    if ( call() )
+        Log::debug << "[CALL] " << name << "() at " << to_hex ( address ) << "\n";
+}
+
+void ComputerDebug::debug_register_syscall( SysCall const &call, ulong addr, const char *reason ) {
     if ( !debug || !d_syscalls )
         return;
         
-    Log::sys << Log::tag << "Added Syscall: " << call.module << "!" << call.name << "  " << to_hex( ( ulong ) addr,
+    Log::sys << Log::tag << "Added Syscall for " << reason  << ": " << call.module << "!" << call.name << "  " << to_hex( (
+                 ulong ) addr,
              3 ) << "\n";
              
     if ( undercorate_function_name( call.name, buffer )

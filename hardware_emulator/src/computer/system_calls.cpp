@@ -14,15 +14,15 @@ void SystemCalls::init( Memory &mem, ComputerDebug &debug, Symbols &symbols ) {
     syscall_stack.init( section );
 }
 
-ulong SystemCalls::add_syscall( SysCall const &call ) {
+ulong SystemCalls::add_syscall( SysCall const &call, const char *reason ) {
     //Not using module names right now
     //std::string res_name = call.module + "!" + call.name;
     
-    auto proc_handle = syscall_stack.get_annotated_8byte( call.name, Annotation::FUNC );
     auto id = sys_call_pos++;
+    auto proc_handle = syscall_stack.get_annotated_8byte( call.name, Annotation::FUNC, id );
     
     sys_calls[id] = call;
-    debug->debug_register_syscall( call, section->address_range.get_local_index( proc_handle ) );
+    debug->debug_register_syscall( call, section->address_range.get_local_index( proc_handle ), reason );
     
     symbols->add_symbol( call.name, Symbols::Symbol::SYSCALL, proc_handle, id );
     

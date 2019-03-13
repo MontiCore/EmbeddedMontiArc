@@ -185,10 +185,10 @@ MemoryRange SectionStack::get_annotated( uint size, const std::string &name, Ann
     //}
     return r;
 }
-uint64_t SectionStack::get_annotated_8byte( const std::string &name, Annotation::Type type ) {
+uint64_t SectionStack::get_annotated_8byte( const std::string &name, Annotation::Type type, ulong param ) {
     auto r = get_8byte_slot();
     if ( mem->has_annotations() )
-        mem->annotations.add_annotation( r, Annotation( name, type ) );
+        mem->annotations.add_annotation( r, Annotation( name, type, param ) );
     else
         Log::err << Log::tag << "get_annotated_8byte() on section with no annotations\n";
     return r;

@@ -4,19 +4,25 @@
 
 EmulatorManager EmulatorManager::instance;
 
-void worker( HardwareEmulator *emu ) {
-    emu->exec();
+void worker( HardwareEmulator *emu, long long time_delta ) {
+    emu->exec( time_delta );
 }
 
-bool EmulatorManager::init() {
+bool EmulatorManager::init( const char *config ) {
     available_threads = std::thread::hardware_concurrency();
     available_autopilots = "";
-    //std::cout << "Available threads: " << available_threads << std::endl;
-    //std::cout << "Available autopilots: " << std::endl;
-    path = "./";
-    //std::experimental::filesystem::v1::__cxx11::directory_entry e;
-    //std::experimental::filesystem::v1::__cxx11::directory_iterator it;
-
+    
+    path = fs::canonical( "./" );
+    MessageParser parser( config );
+    while ( parser.has_next() ) {
+        if ( parser.is_cmd( "autopilots_folder" ) )
+            path = fs::canonical( parser.get_string() );
+        else
+            parser.unknown();
+    }
+    
+    Log::info << Log::tag << "autopilots_folder path: " << path << "\n";
+    
     for ( const auto &entry : fs::directory_iterator( path ) ) {
         if ( entry.status().type() == fs::file_type::regular ) {
             auto &p = entry.path();
@@ -65,11 +71,7 @@ void EmulatorManager::free_emulator( int id ) {
 void EmulatorManager::start_tick( long long time_delta ) {
     for ( auto &pt : emulators ) {
         if ( pt )
-            pt->add_time( time_delta );
-    }
-    for ( auto &pt : emulators ) {
-        if ( pt )
-            pt->thread = std::thread( worker, pt.get() );
+            pt->thread = std::thread( worker, pt.get(), time_delta );
     }
 }
 
@@ -78,8 +80,6 @@ void EmulatorManager::end_tick() {
         if ( pt )
             pt->thread.join();
     }
-    
-    //Write outputs if any
 }
 
 std::string EmulatorManager::querry( const char *msg ) {
@@ -88,10 +88,14 @@ std::string EmulatorManager::querry( const char *msg ) {
     while ( parser.has_next() ) {
         if ( parser.is_cmd( "get_error_msg" ) )
             builder.add( "error_msg", error_msg );
-        if ( parser.is_cmd( "get_available_autopilots" ) )
+        else if ( parser.is_cmd( "get_available_autopilots" ) )
             builder.add( "available_autopilots", available_autopilots );
-        if ( parser.is_cmd( "get_available_threads" ) )
+        else if ( parser.is_cmd( "get_available_threads" ) )
             builder.add( "available_threads", std::to_string( available_threads ) );
+        else if ( parser.is_cmd( "get_autopilots_folder" ) )
+            builder.add( "autopilots_folder", path.string() );
+        else
+            parser.unknown();
     }
     return builder.res;
 }

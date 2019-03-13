@@ -17,6 +17,8 @@ struct MessageParser {
     
     void to_non_ws();
     void to_comma();
+    
+    void unknown();
 };
 
 struct MessageBuilder {

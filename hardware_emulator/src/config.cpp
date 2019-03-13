@@ -83,6 +83,10 @@ void MessageParser::to_comma() {
         ++rest;
 }
 
+void MessageParser::unknown() {
+    Log::err << Log::tag << "Unknown command: " << std::string( line_start ).substr( 0, cmd_size ) << "\n";
+}
+
 void MessageBuilder::add( const std::string &cmd, const std::string &param ) {
     if ( res.size() > 0 )
         res += '\n';

@@ -63,5 +63,5 @@ struct SystemCalls {
     
     void init( Memory &mem, ComputerDebug &debug, Symbols &symbols );
     
-    ulong add_syscall( SysCall const &call );
+    ulong add_syscall( SysCall const &call, const char *reason );
 };

@@ -5,7 +5,7 @@
 
 namespace fs = std::experimental::filesystem::v1;
 
-struct EmulatorManager {    
+struct EmulatorManager {
     static EmulatorManager instance;
     Array<std::unique_ptr<HardwareEmulator>> emulators;
     uint emulator_count;
@@ -13,10 +13,10 @@ struct EmulatorManager {
     std::list<fs::directory_entry> entries;
     std::string available_autopilots;
     uint available_threads;
-    std::string path;
+    fs::path path;
     
     std::string error_msg;
-    bool init();
+    bool init( const char *config );
     
     int alloc_emulator( const char *config );
     void free_emulator( int id );

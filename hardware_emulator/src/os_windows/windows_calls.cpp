@@ -5,27 +5,29 @@ using namespace std;
 
 
 void WindowsCalls::add_windows_calls( SystemCalls &sys_calls, OS::Windows &windows ) {
-    sys_calls.add_syscall( SysCall( "LoadLibraryExW", "KERNEL32.DLL", load_library_exw ) );
-    sys_calls.add_syscall( SysCall( "GetProcAddress", "KERNEL32.DLL", get_proc_address ) );
-    sys_calls.add_syscall( SysCall( "GetProcessHeap", "KERNEL32.DLL", get_proc_heap ) );
-    sys_calls.add_syscall( SysCall( "HeapAlloc", "KERNEL32.DLL", heap_alloc ) );
-    sys_calls.add_syscall( SysCall( "HeapFree", "KERNEL32.DLL", heap_free ) );
-    /*sys_calls.add_syscall( SysCall( "GetCommandLineA", "KERNEL32.DLL", get_cmd_line_a ) );
-    sys_calls.add_syscall( SysCall( "GetCommandLineW", "KERNEL32.DLL", get_cmd_line_w ) );*/
-    sys_calls.add_syscall( SysCall( "GetModuleHandleW", "KERNEL32.DLL", get_module_handle ) );
-    sys_calls.add_syscall( SysCall( "GetCurrentProcessId", "KERNEL32.DLL", get_current_process_id ) );
-    sys_calls.add_syscall( SysCall( "GetSystemTimeAsFileTime", "KERNEL32.DLL", get_sys_time_as_file_time ) );
-    sys_calls.add_syscall( SysCall( "QueryPerformanceCounter", "KERNEL32.DLL", query_perf_counter ) );
-    sys_calls.add_syscall( SysCall( "GetCurrentThreadId", "KERNEL32.DLL", get_current_thread_id ) );
+    const char *reason = "windows";
+    sys_calls.add_syscall( SysCall( "LoadLibraryExW", "KERNEL32.DLL", load_library_exw ), reason );
+    sys_calls.add_syscall( SysCall( "GetProcAddress", "KERNEL32.DLL", get_proc_address ), reason );
+    sys_calls.add_syscall( SysCall( "GetProcessHeap", "KERNEL32.DLL", get_proc_heap ), reason );
+    sys_calls.add_syscall( SysCall( "HeapAlloc", "KERNEL32.DLL", heap_alloc ), reason );
+    sys_calls.add_syscall( SysCall( "HeapFree", "KERNEL32.DLL", heap_free ), reason );
+    /*sys_calls.add_syscall( SysCall( "GetCommandLineA", "KERNEL32.DLL", get_cmd_line_a ), reason );
+    sys_calls.add_syscall( SysCall( "GetCommandLineW", "KERNEL32.DLL", get_cmd_line_w ), reason );*/
+    sys_calls.add_syscall( SysCall( "GetModuleHandleW", "KERNEL32.DLL", get_module_handle ), reason );
+    sys_calls.add_syscall( SysCall( "GetCurrentProcessId", "KERNEL32.DLL", get_current_process_id ), reason );
+    sys_calls.add_syscall( SysCall( "GetSystemTimeAsFileTime", "KERNEL32.DLL", get_sys_time_as_file_time ), reason );
+    sys_calls.add_syscall( SysCall( "QueryPerformanceCounter", "KERNEL32.DLL", query_perf_counter ), reason );
+    sys_calls.add_syscall( SysCall( "GetCurrentThreadId", "KERNEL32.DLL", get_current_thread_id ), reason );
     
-    sys_calls.add_syscall( SysCall( "strlen", "MSVCRT.DLL", strlen ) );
-    sys_calls.add_syscall( SysCall( "strncmp", "MSVCRT.DLL", strncmp ) );
-    sys_calls.add_syscall( SysCall( "__iob_func", "MSVCRT.DLL", iob_func ) );
-    sys_calls.add_syscall( SysCall( "abort", "MSVCRT.DLL", abort ) );
-    sys_calls.add_syscall( SysCall( "fwrite", "MSVCRT.DLL", fwrite ) );
-    sys_calls.add_syscall( SysCall( "VirtualQuery", "KERNEL32.DLL", virtual_query ) );
-    sys_calls.add_syscall( SysCall( "VirtualProtect", "KERNEL32.DLL", virtual_protect ) );
-    sys_calls.add_syscall( SysCall( "malloc", "MSVCRT.DLL", malloc ) );
+    sys_calls.add_syscall( SysCall( "strlen", "MSVCRT.DLL", strlen ), reason );
+    sys_calls.add_syscall( SysCall( "strncmp", "MSVCRT.DLL", strncmp ), reason );
+    sys_calls.add_syscall( SysCall( "__iob_func", "MSVCRT.DLL", iob_func ), reason );
+    sys_calls.add_syscall( SysCall( "abort", "MSVCRT.DLL", abort ), reason );
+    sys_calls.add_syscall( SysCall( "fwrite", "MSVCRT.DLL", fwrite ), reason );
+    sys_calls.add_syscall( SysCall( "VirtualQuery", "KERNEL32.DLL", virtual_query ), reason );
+    sys_calls.add_syscall( SysCall( "VirtualProtect", "KERNEL32.DLL", virtual_protect ), reason );
+    sys_calls.add_syscall( SysCall( "malloc", "MSVCRT.DLL", malloc ), reason );
+    sys_calls.add_syscall( SysCall( "memcpy", "MSVCRT.DLL", memcpy ), reason );
 }
 
 bool WindowsCalls::load_library_exw( Computer &computer, SysCall &syscall ) {
@@ -69,7 +71,7 @@ bool WindowsCalls::get_proc_address( Computer &computer, SysCall &syscall ) {
     if ( sym.type == Symbols::Symbol::SYSCALL )
         call_addr = sym.addr;
     else
-        call_addr = computer.sys_calls.add_syscall( SysCall( name, "", nullptr ) );
+        call_addr = computer.sys_calls.add_syscall( SysCall( name, "", nullptr ), "get_proc_address resolve" );
     computer.func_call->set_return_64( call_addr );
     return true;
 }
@@ -254,5 +256,16 @@ bool WindowsCalls::malloc( Computer &computer, SysCall &syscall ) {
         computer.func_call->set_return_64( addr );
     else
         computer.func_call->set_return_64( 0 );
+    return true;
+}
+
+bool WindowsCalls::memcpy( Computer &computer, SysCall &syscall ) {
+    auto target_pointer = computer.func_call->get_param1_64();
+    auto source_pointer = computer.func_call->get_param2_64();
+    auto size = computer.func_call->get_param3_64();
+    if ( computer.debug.syscalls() )
+        Log::sys << "memcpy(" << to_hex( target_pointer ) << ", " << to_hex( source_pointer ) << ", " << size << ")\n";
+    auto r = computer.memory.read_memory( source_pointer, size );
+    computer.memory.write_memory( target_pointer, size, r );
     return true;
 }

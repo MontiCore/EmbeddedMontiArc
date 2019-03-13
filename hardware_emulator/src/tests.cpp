@@ -8,7 +8,7 @@
 
 bool test_simple_sample( OS::OS *os, bool windows ) {
     Computer computer;
-    computer.debug.debug = true;
+    //computer.debug.debug = true;
     computer.debug.d_code = false;
     computer.debug.d_mem = false;
     computer.debug.d_regs = false;
@@ -36,7 +36,7 @@ bool test_simple_sample( OS::OS *os, bool windows ) {
 
 bool test_syscall_sample( OS::OS *os ) {
     Computer computer;
-    computer.debug.debug = true;
+    computer.debug.debug = false;
     computer.debug.d_code = false;
     computer.debug.d_mem = false;
     computer.debug.d_regs = false;
@@ -72,7 +72,7 @@ bool test_syscall_dll() {
 
 bool test_hardware_manager_querries() {
     EmulatorManager manager;
-    if ( !manager.init() ) {
+    if ( !manager.init( "" ) ) {
         Log::err << "Could not initiate EmulatorManager\n";
         return false;
     }
@@ -212,7 +212,7 @@ bool test_output_double( HardwareEmulator &emulator, const char *name, double &t
 
 bool test_autopilot_dll() {
     EmulatorManager manager;
-    if ( !manager.init() ) {
+    if ( !manager.init( "" ) ) {
         Log::err << "Could not initiate EmulatorManager\n";
         return false;
     }
@@ -220,6 +220,7 @@ bool test_autopilot_dll() {
     MessageBuilder builder;
     builder.add( "autopilot", "AutopilotAdapter" );
     builder.add( "os", "windows" );
+    builder.add( "debug", "syscalls" );
     //builder.add( "debug", "" );
     
     auto id = manager.alloc_emulator( builder.res.c_str() );
@@ -238,8 +239,6 @@ bool test_autopilot_dll() {
     
     auto &emulator = *manager.emulators[id];
     
-    
-    emulator.call_void( emulator.init_address, "init" );
     if ( !emulator.call_success ) {
         Log::err << "Error calling init()\n";
         return false;
@@ -315,7 +314,7 @@ bool test_syscall_elf() {
 }
 bool test_autopilot_elf() {
     EmulatorManager manager;
-    if ( !manager.init() ) {
+    if ( !manager.init( "" ) ) {
         Log::err << "Could not initiate EmulatorManager\n";
         return false;
     }
@@ -324,7 +323,7 @@ bool test_autopilot_elf() {
     builder.add( "autopilot", "AutopilotAdapter" );
     builder.add( "os", "linux" );
     //builder.add( "debug", "code,syscalls,mem,reg_update" );
-    //builder.add( "debug", "code,syscalls" );
+    builder.add( "debug", "syscalls" );
     
     auto id = manager.alloc_emulator( builder.res.c_str() );
     
@@ -343,11 +342,86 @@ bool test_autopilot_elf() {
     auto &emulator = *manager.emulators[id];
     
     
-    emulator.call_void( emulator.init_address, "init" );
     if ( !emulator.call_success ) {
         Log::err << "Error calling init()\n";
         return false;
     }
+    
+    if ( !test_input_double( emulator, "timeIncrement", 1 ) )
+        return false;
+    if ( !test_input_double( emulator, "currentVelocity", 0 ) )
+        return false;
+    if ( !test_input_double( emulator, "x", 0.01 ) )
+        return false;
+    if ( !test_input_double( emulator, "y", 0.01 ) )
+        return false;
+    if ( !test_input_double( emulator, "compass", 0 ) )
+        return false;
+    if ( !test_input_double( emulator, "currentEngine", 0 ) )
+        return false;
+    if ( !test_input_double( emulator, "currentSteering", 0 ) )
+        return false;
+    if ( !test_input_double( emulator, "currentBrakes", 0 ) )
+        return false;
+    if ( !test_input_int( emulator, "trajectory_length", 5 ) )
+        return false;
+    double x[6] = { 0.015, 0.02, 0.03, 0.04, 0.05, 0.06 };
+    double y[6] = { 0.01, 0.01, 0.02, 0.02, 0.01, 0.01 };
+    if ( !test_input_double_array( emulator, "trajectory_x", x, 6 ) )
+        return false;
+    if ( !test_input_double_array( emulator, "trajectory_y", y, 6 ) )
+        return false;
+        
+    //emulator.computer.debug.d_code = true;
+    emulator.call_void( emulator.execute_address, "execute" );
+    if ( !emulator.call_success ) {
+        Log::err << "Error calling execute()\n";
+        return false;
+    }
+    
+    double engine, steering, brakes;
+    if ( !test_output_double( emulator, "engine", engine ) )
+        return false;
+    if ( !test_output_double( emulator, "steering", steering ) )
+        return false;
+    if ( !test_output_double( emulator, "brakes", brakes ) )
+        return false;
+        
+    Log::debug << "Result: [engine=" << engine << ", steering=" << steering << ", brakes=" << brakes << "]\n";
+    
+    return true;
+}
+
+bool test_autopilot_elf_timed() {
+    EmulatorManager manager;
+    if ( !manager.init( "" ) ) {
+        Log::err << "Could not initiate EmulatorManager\n";
+        return false;
+    }
+    
+    MessageBuilder builder;
+    builder.add( "autopilot", "AutopilotAdapter" );
+    builder.add( "os", "linux" );
+    //builder.add( "debug", "code,syscalls,mem,reg_update" );
+    builder.add( "debug", "syscalls,call" );
+    
+    auto id = manager.alloc_emulator( builder.res.c_str() );
+    
+    if ( id < 0 ) {
+        Log::err << "Error allocating Emulator: \n";
+        auto q = manager.querry( "get_error_msg" );
+        MessageParser p( q.c_str() );
+        if ( !p.has_next() || !p.is_cmd( "error_msg" ) )
+            Log::err << "Could not querry 'error_msg'\n";
+        else
+            Log::err << p.get_string() << "\n";
+        return false;
+    }
+    
+    
+    auto &emulator = *manager.emulators[id];
+    
+    
     
     if ( !test_input_double( emulator, "timeIncrement", 1 ) )
         return false;

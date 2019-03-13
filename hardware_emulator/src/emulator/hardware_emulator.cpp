@@ -11,17 +11,27 @@ using namespace std;
 
 
 std::string HardwareEmulator::querry( const char *msg ) {
-    return std::string();
+    MessageParser parser( msg );
+    MessageBuilder builder;
+    while ( parser.has_next() ) {
+        if ( parser.is_cmd( "get_avg_runtime" ) )
+            builder.add( "avg_runtime", std::to_string( avg_runtime.mean_avg() ) );
+        else if ( parser.is_cmd( "is_computing" ) )
+            builder.add( "computing", std::to_string( computing() ? 1 : 0 ) );
+        else
+            parser.unknown();
+    }
+    return builder.res;
 }
 
 bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
 
     autopilot_name = "AutopilotAdapter";
     os_name = "";
+    computer.time.use_time = true;
+    computer.debug.debug = false;
     
     MessageParser parser( config );
-    
-    computer.debug.debug = false;
     while ( parser.has_next() ) {
         if ( parser.is_cmd( "autopilot" ) )
             autopilot_name = parser.get_string();
@@ -29,6 +39,17 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
             os_name = parser.get_string();
         else if ( parser.is_cmd( "debug" ) )
             setup_debug( parser );
+        else if ( parser.is_cmd( "cpu_frequency" ) ) {
+            slong cpu_frequency;
+            if ( parser.get_long( cpu_frequency ) )
+                computer.time.set_frequency( cpu_frequency );
+            else
+                Log::err << "Could not read cpu_frequency config value\n";
+        }
+        else if ( parser.is_cmd( "no_time" ) )
+            computer.time.use_time = false;
+        else
+            parser.unknown();
     }
     
     if ( autopilot_name.size() == 0 ) {
@@ -36,12 +57,8 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
         return false;
     }
     
-    
-    
     if ( !resolve_autopilot_os( manager ) )
         return false;
-        
-        
         
     computer.init();
     if ( !computer.loaded() ) {
@@ -75,9 +92,9 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
         return false;
         
     //TODO check if seperate call
-    //computer.call( init_address );
+    call_success = computer.call( init_address, "init" );
     
-    simulation_time = computer.computing_time;
+    computer.time.reset();
     
     auto &section = computer.memory.sys_section;
     auto &section_stack = computer.memory.sys_section_stack;
@@ -87,7 +104,7 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
 
 bool HardwareEmulator::resolve_autopilot_os( EmulatorManager &manager ) {
 
-    path = manager.path + autopilot_name;
+    path = manager.path.append( autopilot_name );
     
     
     if ( os_name.size() == 0 ) {
@@ -124,30 +141,24 @@ bool HardwareEmulator::resolve_autopilot_os( EmulatorManager &manager ) {
 }
 
 
-void HardwareEmulator::exec() {
+void HardwareEmulator::exec( ulong micro_delta ) {
     if ( !computing() ) {
-        /*if ( did_run ) {
-            did_run = false;
-            get_outputs();
-        }
-        
-        set_inputs();
-        call_void( exec_address );
-        
-        if ( computing() )
-            did_run = true;
-        else
-            get_outputs();*/
+        for ( uint i : urange( input_ports.size() ) )
+            call_input( i );
+        call_void( execute_address, "execute" );
     }
+    
+    //Upate time
+    if ( computer.time.micro_time <= micro_delta ) {
+        computer.time.reset();
+        //Upate outputs
+        for ( uint i : urange( output_ports.size() ) )
+            call_output( i );
+    }
+    else
+        computer.time.micro_time -= micro_delta;
 }
 
-
-void HardwareEmulator::add_time( ulong delta ) {
-    //If computer did not use all the available time, set its time 'starting point' to the current simulation time.
-    if ( computer.computing_time < simulation_time )
-        computer.computing_time = simulation_time;
-    simulation_time += delta;
-}
 
 int HardwareEmulator::get_port_id( const char *port_name ) {
     auto res = port_id.find( port_name );
@@ -183,8 +194,10 @@ void HardwareEmulator::call_input( uint func_id ) {
 }
 
 void HardwareEmulator::call_output( uint func_id ) {
-    auto &addr = output_ports[func_id].function_address;
-    auto &output = output_ports[func_id].buffer;
+    auto &port = output_ports[func_id];
+    auto &addr = port.function_address;
+    auto &output = port.buffer;
+    port.updated = true;
     
     call_success = computer.call( addr, output_ports[func_id].name.c_str() );
     if ( !call_success )
@@ -247,6 +260,7 @@ void HardwareEmulator::setup_debug( MessageParser &parser ) {
     computer.debug.d_regs = false;
     computer.debug.d_reg_update = false;
     computer.debug.d_syscalls = false;
+    computer.debug.d_call = false;
     
     do {
         auto next = parser.get_string();
@@ -262,5 +276,7 @@ void HardwareEmulator::setup_debug( MessageParser &parser ) {
             computer.debug.d_syscalls = true;
         else if ( next.compare( "code" ) == 0 )
             computer.debug.d_code = true;
+        else if ( next.compare( "call" ) == 0 )
+            computer.debug.d_call = true;
     } while ( true );
 }

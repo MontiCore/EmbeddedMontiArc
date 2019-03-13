@@ -189,7 +189,7 @@ struct SectionStack {
         }
         
         MemoryRange get_annotated( uint size, const std::string &name, Annotation::Type type = Annotation::NONE );
-        uint64_t get_annotated_8byte( const std::string &name, Annotation::Type type = Annotation::NONE );
+        uint64_t get_annotated_8byte( const std::string &name, Annotation::Type type = Annotation::NONE, ulong param = 0 );
         
     private:
         MemoryRange get_range( uint size );

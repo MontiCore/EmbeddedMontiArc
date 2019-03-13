@@ -18,8 +18,8 @@ int iter_imports( void *data, VA address, const std::string &module_name, const 
     SysCall call( symbol_name, module_name, nullptr );
     ulong func_addr;
     auto sym = loader.symbols->get_symbol( symbol_name );
-    if ( sym.type != Symbols::Symbol::SYSCALL )
-        func_addr = loader.sys_calls->add_syscall( call );
+    if ( sym.type == Symbols::Symbol::NONE )
+        func_addr = loader.sys_calls->add_syscall( call, "dll resolve" );
     else
         func_addr = sym.addr;
     loader.mem->write_long_word( address, func_addr );

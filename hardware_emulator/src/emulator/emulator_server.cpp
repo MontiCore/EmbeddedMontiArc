@@ -3,8 +3,11 @@
 
 
 JNIEXPORT jboolean JNICALL Java_simulator_integration_HardwareEmulatorInterface_init
-( JNIEnv *, jobject ) {
-    return EmulatorManager::instance.init();
+( JNIEnv *jni, jobject, jstring string ) {
+    auto message = jni->GetStringUTFChars( string, 0 );
+    auto res = EmulatorManager::instance.init( message );
+    jni->ReleaseStringUTFChars( string, message );
+    return res;
 }
 
 JNIEXPORT jint JNICALL Java_simulator_integration_HardwareEmulatorInterface_alloc_1autopilot
@@ -57,13 +60,19 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
     auto &port_buffer = emulator.input_ports[port_id].buffer;
     if ( port_buffer.type == VALUE_TYPE::DOUBLE ) {
         static jclass cls = jni->GetObjectClass( value );
-        static jmethodID doubleValue = jni->GetMethodID( cls, "doubleValue", "(V)D" );
-        port_buffer.init( jni->CallDoubleMethod( value, doubleValue ) );
+        static jmethodID doubleValue = jni->GetMethodID( cls, "doubleValue", "()D" );
+        if ( doubleValue != 0 )
+            port_buffer.init( jni->CallDoubleMethod( value, doubleValue ) );
+        else
+            Log::err << "Could not resolve doubleValue method from Java Double\n";
     }
     else if ( port_buffer.type == VALUE_TYPE::INT ) {
         static jclass cls = jni->GetObjectClass( value );
-        static jmethodID intValue = jni->GetMethodID( cls, "intValue", "(D)I" );
-        port_buffer.init( jni->CallIntMethod( value, intValue ) );
+        static jmethodID intValue = jni->GetMethodID( cls, "intValue", "()I" );
+        if ( intValue != 0 )
+            port_buffer.init( jni->CallIntMethod( value, intValue ) );
+        else
+            Log::err << "Could not resolve intValue method from Java Integer\n";
     }
     else if ( port_buffer.type == VALUE_TYPE::DOUBLE_ARRAY ) {
         uint count = jni->GetArrayLength( ( jdoubleArray )value );
@@ -83,13 +92,24 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_quer
                                   
     auto &emulator = *EmulatorManager::instance.emulators[id];
     
+    static jclass double_class = env->FindClass( "java/lang/Double" );
+    if ( double_class == 0 ) {
+        Log::err << "Could not resolve Double java class\n";
+        return;
+    }
+    static jmethodID double_constructor = env->GetMethodID( double_class, "<init>", "(D)V" );
+    if ( double_constructor == 0 ) {
+        Log::err << "Could not resolve Double constructor method\n";
+        return;
+    }
+    
     for ( auto &output_port : emulator.output_ports ) {
         if ( output_port.updated ) {
             output_port.updated = false;
-            jobject key = env->NewStringUTF( output_port.name.c_str() );
+            jstring key = env->NewStringUTF( output_port.name.c_str() );
             if ( output_port.buffer.type == VALUE_TYPE::DOUBLE ) {
                 jdouble value = output_port.buffer.double_value;
-                env->CallVoidMethod( obj, add_output, opaque_hashmap, key, value );
+                env->CallVoidMethod( obj, add_output, opaque_hashmap, key, env->NewObject( double_class, double_constructor, value ) );
             }
         }
         

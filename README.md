@@ -2,7 +2,7 @@
 
 ## Build
 
-This project builds upon [unicorn](unicorn/README.md), [pe-parse](pe-parse/README.md) and (Zydis)[zydis/README.md]. It requires `cmake`,`python`, `java` and a valid `JAVA_PATH`.
+This project builds upon [unicorn](unicorn/README.md), [pe-parse](pe-parse/README.md) and [Zydis](zydis/README.md). It requires `cmake`,`python`, `java` and a valid `JAVA_PATH`.
 
 ### Windows
 

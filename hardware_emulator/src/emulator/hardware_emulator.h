@@ -37,14 +37,14 @@ struct HardwareEmulator {
     
     MemoryRange buffer_slot;
     
-    ulong simulation_time;
+    MeanAvgCollector avg_runtime;
     
     bool call_success;
     
     std::string error_msg;
     
     bool computing() { //True when virtual computer still running in virtual time
-        return simulation_time < computer.computing_time;
+        return computer.time.micro_time > 0;
     }
     
     std::string querry( const char *msg );
@@ -52,9 +52,8 @@ struct HardwareEmulator {
     bool init( EmulatorManager &manager, const char *config );
     bool resolve_autopilot_os( EmulatorManager &manager );
     
-    void exec();
+    void exec( ulong micro_delta );
     
-    void add_time( ulong delta ); //Check if computer stopped running => update outputs
     
     //-1 => not found
     int get_port_id( const char *port_name );

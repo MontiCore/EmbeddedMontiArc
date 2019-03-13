@@ -10,7 +10,7 @@ public class HardwareEmulatorInterface {
         System.loadLibrary("HardwareEmulator");
     }
     
-    public native boolean init();
+    public native boolean init(String config);
     
     public native int alloc_autopilot(String config);
     public native void free_autopilot(int id);
@@ -24,7 +24,7 @@ public class HardwareEmulatorInterface {
     public native void start_tick(long time_delta);
     public native void end_tick();
     
-    public  {
+    public HashMap<String, Serializable> get_outputs(int id) {
         HashMap<String, Serializable> outputs = new HashMap<String, Serializable>();
 		querry_outputs(id, outputs);
 		return outputs;	

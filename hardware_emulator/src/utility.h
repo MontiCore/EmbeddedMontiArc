@@ -713,3 +713,24 @@ struct Log {
         static LogStream test;
         
 };
+
+
+struct MeanAvgCollector {
+    ulong count;
+    ulong sum;
+    MeanAvgCollector() : count( 0 ), sum( 0 ) {}
+    ulong mean_avg() {
+        if ( count > 0 )
+            return sum / count;
+        else
+            return 0;
+    }
+    void add( ulong value ) {
+        sum += value;
+        ++count;
+    }
+    void reset() {
+        count = 0;
+        sum = 0;
+    }
+};

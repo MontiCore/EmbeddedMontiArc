@@ -34,7 +34,7 @@ void Computer::init() {
     uc_hook_add( internal->uc, &internal->trace2, UC_HOOK_MEM_VALID, ( void * )Computer::hook_mem, this, 1, 0 );
     uc_hook_add( internal->uc, &internal->trace3, UC_HOOK_MEM_INVALID, ( void * )Computer::hook_mem_err, this, 1, 0 );
     
-    exit_code_addr = sys_calls.add_syscall( SysCall( "exit", "SYSTEM", exit_callback ) );
+    exit_code_addr = sys_calls.add_syscall( SysCall( "exit", "SYSTEM", exit_callback ), "Computer" );
     
 }
 
@@ -48,6 +48,7 @@ void Computer::drop() {
 
 
 bool Computer::call( ulong address, const char *name ) {
+    debug.debug_call( address, name );
     //Log::info << name << "()\n";
     stopped = false;
     stack.push_long( exit_code_addr );
@@ -70,7 +71,6 @@ void Computer::set_os( OS::OS *os ) {
 
 void Computer::cb_code( ulong addr, uint size ) {
 
-    uint computer_time = 1000;
     /*
         Check if the instruction is in the SystemCalls memory range. If so, it means call (ASM) was called
         with a registered sytem call function address.
@@ -103,8 +103,9 @@ void Computer::cb_code( ulong addr, uint size ) {
                                 ZydisDecoderDecodeBuffer( &decoder.decoder, decoder.code, decoder.length, &decoder.instruction )
                             );
         if ( decoder.succeeded )
-            computer_time = get_instruction_ticks( decoder.instruction );
-            
+            time.add_ticks( get_instruction_ticks( decoder.instruction ) );
+        else
+            time.add_ticks( 1000 );
         //if ( computer_time == 1000 )
         debug.debug_code( addr, size );
     }
@@ -112,6 +113,7 @@ void Computer::cb_code( ulong addr, uint size ) {
 }
 
 void Computer::cb_mem( MemAccess type, ulong addr, uint size, slong value ) {
+    //TODO caching model=> add time
     debug.debug_mem( type, addr, size, value );
 }
 

@@ -105,10 +105,10 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
                         ulong func_addr;
                         
                         auto sym = symbols.get_symbol( name );
-                        if ( sym.type == sym.SYSCALL || sym.type == sym.EXPORT )
+                        if ( sym.type != Symbols::Symbol::NONE )
                             func_addr = sym.addr;
                         else
-                            func_addr = sys_calls.add_syscall( SysCall( name, "", nullptr ) );
+                            func_addr = sys_calls.add_syscall( SysCall( name, "", nullptr ), "elf resolve" );
                         mem.write_long_word( r.r_offset, func_addr );
                     }
                     if ( r.get_type() == ElfRelType::R_386_GLOB_DAT ) {
