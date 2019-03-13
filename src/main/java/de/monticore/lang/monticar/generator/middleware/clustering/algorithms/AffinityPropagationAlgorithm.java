@@ -29,7 +29,7 @@ public class AffinityPropagationAlgorithm implements ClusteringAlgorithm {
         RealMatrix mat = new Array2DRowRealMatrix(clusteringInput.getAdjacencyMatrix());
 
         AffinityPropagation clustering;
-        if(args.length == 2 && args[0] == AffinityPropagationBuilder.AffinityPropagationParameters.SEED){
+        if (args != null && args.length == 2 && args[0] == AffinityPropagationBuilder.AffinityPropagationParameters.SEED) {
             clustering = new AffinityPropagationParameters().setSeed(new Random((Long) args[1])).fitNewModel(mat);
         }else{
             clustering = new AffinityPropagationParameters().fitNewModel(mat);
