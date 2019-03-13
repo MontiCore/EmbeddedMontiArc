@@ -42,4 +42,9 @@ public class EvaluationTest {
     public void testDaimlerModel() {
         DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/evaluation/daimler.json"});
     }
+
+    @Test
+    public void testDaimlerModelSilhouette() {
+        DistributedTargetGeneratorCli.main(new String[]{"./src/test/resources/config/evaluation/daimlerSilhouette.json"});
+    }
 }
