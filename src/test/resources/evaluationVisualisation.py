@@ -16,16 +16,16 @@ parser.add_argument('daimler', metavar='daimler',
 
 args = parser.parse_args()
 
-#'D:\\Software\\Praktikum\\EMAM2Middleware\\target\\evaluation\\autopilot\\emam\\clusteringResults.json'
+
 with open(args.autopilot) as data_file:
     autopilot_data = json.load(data_file)
-#'D:\\Software\\Praktikum\\EMAM2Middleware\\target\\evaluation\\pacman\\emam\\clusteringResults.json'
+
 with open(args.pacman) as data_file:
     pacman_data = json.load(data_file)
-#'D:\\Software\\Praktikum\\EMAM2Middleware\\target\\evaluation\\supermario\\emam\\clusteringResults.json'
+
 with open(args.supermario) as data_file:
     supermario_data = json.load(data_file)
-#'D:\\Software\\Praktikum\\clusteringResults.json'
+
 with open(args.daimler) as data_file:
     daimler_data = json.load(data_file)
 
