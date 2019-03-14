@@ -160,9 +160,23 @@ Affinity Propagation:
 |------|--------|----------|----------------------------------|
 | name | String | ✔️        | must equal "AffinityPropagation" |
 
-    
 
-### Defining the connection between a component and the middleware
+### Visulization of clustering results
+There are 3 scripts available to visualise the results of the clustering process. They all create graphs for each of the 4 evaluation models:
+1. [evaluationVisualisation.py](src/test/resources/evaluationVisualisation.py): bar graphs that compare the size of clusters, distance score, and time taken in ms
+2. [montecarlovisualisation.py](src/test/resources/montecarlovisualisation.py): line graph visualising the average distance cost for random clustering(with Monte Carlo)
+3. [silhouetteVisualisation.py](src/test/resources/silhouetteVisualisation.py): point graph visualising the silhouette score of different clusterings sorted by cluster size
+
+Execute them by running from the root of the project after executing all test in `EvaluationTest` or `MonteCarloIntegrationTest`:
+```bash
+python3 src/test/resources/evaluationVisualisation.py target/evaluation/autopilot/emam/clusteringResults.json target/evaluation/pacman/emam/clusteringResults.json target/evaluation/supermario/emam/clusteringResults.json target/evaluation/daimler/emam/clusteringResults.json
+```
+or
+```bash
+python3 src/test/resources/silhouetteVisualisation.py target/evaluation/autopilotSilhouette/emam/clusteringResults.json target/evaluation/pacmanSilhouette/emam/clusteringResults.json target/evaluation/supermarioSilhouette/emam/clusteringResults.json target/evaluation/daimlerSilhouette/emam/clusteringResults.json
+```
+
+## Defining the connection between a component and the middleware
 The connection between middleware and the component is defined as tags on Ports in .tag files.
 ### Example with ROS Middleware:
 Tags of the type RosConnection can either be simple tags(see Example 3) or define a topic(http://wiki.ros.org/Topics) with name, type and optional msgField(http://wiki.ros.org/msg , 2.)
