@@ -167,9 +167,15 @@ There are 3 scripts available to visualise the results of the clustering process
 2. [montecarlovisualisation.py](src/test/resources/montecarlovisualisation.py): line graph visualising the average distance cost for random clustering(with Monte Carlo)
 3. [silhouetteVisualisation.py](src/test/resources/silhouetteVisualisation.py): point graph visualising the silhouette score of different clusterings sorted by cluster size
 
-Execute them by running from the root of the project after executing all test in `EvaluationTest` or `MonteCarloIntegrationTest`:
+Before using them install Python 3+ and the packages `matplotlib` and `numpy`.
+
+After running `EvaluationTest`(Warning: very long runtime) you can visualise the results by calling(from the project root):
 ```bash
 python3 src/test/resources/evaluationVisualisation.py target/evaluation/autopilot/emam/clusteringResults.json target/evaluation/pacman/emam/clusteringResults.json target/evaluation/supermario/emam/clusteringResults.json target/evaluation/daimler/emam/clusteringResults.json
+```
+or
+```bash
+python3 src/test/resources/montecarlovisualisation.py target/evaluation/autopilotMC/monteCarloResults.json target/evaluation/pacmanMC/monteCarloResults.json target/evaluation/supermarioMC/monteCarloResults.json target/evaluation/daimlerMC/monteCarloResults.json
 ```
 or
 ```bash
