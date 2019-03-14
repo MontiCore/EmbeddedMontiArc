@@ -5,21 +5,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.se_rwth.commons.logging.Log;
+
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
 
 public class MonteCarloResult {
     private EMAComponentInstanceSymbol component;
-    private static int iterations;
-    private static int numberOfClustersMC;
+    private MonteCarloIntegration sim;
 
-    public MonteCarloResult(EMAComponentInstanceSymbol component, int iterations, int numberOfClustersMC) {
+    public MonteCarloResult(EMAComponentInstanceSymbol component, MonteCarloIntegration sim) {
         this.component = component;
-        this.iterations = iterations;
-        this.numberOfClustersMC = numberOfClustersMC;
+        this.sim = sim;
     }
 
     public EMAComponentInstanceSymbol getComponent() {
@@ -27,11 +25,11 @@ public class MonteCarloResult {
     }
 
     public int getNumberOfClustersMC() {
-        return numberOfClustersMC;
+        return sim.getNumberOfClusters();
     }
 
     public int getIterations() {
-        return iterations;
+        return sim.getIterations();
     }
 
     public void saveAsJson(String path, String filename) {
@@ -39,18 +37,9 @@ public class MonteCarloResult {
         File dir = new File(path);
         File file = new File(dir, filename);
         JsonArray jsonArray = new JsonArray();
-        if (file.exists() && !file.isDirectory()) {
-            try {
-                jsonArray = (JsonArray) parser.parse(new FileReader(file));
-                JsonObject result = createJsonResultObject();
-                jsonArray.add(result);
-            } catch (IOException e) {
-                Log.warn("Could not open clustering result file " + filename);
-            }
-        } else {
-            JsonObject result = createJsonResultObject();
-            jsonArray.add(result);
-        }
+        JsonObject result = createJsonResultObject();
+        jsonArray.add(result);
+
         try {
             file.getParentFile().mkdirs();
             FileWriter fileWriter = new FileWriter(file);
@@ -65,12 +54,12 @@ public class MonteCarloResult {
         JsonObject result = new JsonObject();
         result.addProperty("Iterations", this.getIterations());
         result.addProperty("NumberOfClusters", this.getNumberOfClustersMC());
-        result.addProperty("MaxValueMC", MonteCarloIntegration.getMaxValue());
-        result.addProperty("MinValueMC", MonteCarloIntegration.getMinValue());
+        result.addProperty("MaxValueMC", sim.getMaxValue());
+        result.addProperty("MinValueMC", sim.getMinValue());
         for (int i = 0; i < this.getIterations(); i++) {
-            result.addProperty("MCResult(" + (i + 1) + ")", MonteCarloIntegration.getAverages()[i]);
+            result.addProperty("MCResult(" + (i + 1) + ")", sim.getAverages()[i]);
         }
-        result.addProperty("MCAverageResult", MonteCarloIntegration.getAverages()[this.getIterations()-1]);
+        result.addProperty("MCAverageResult", sim.getAverages()[this.getIterations() - 1]);
 
         return result;
     }

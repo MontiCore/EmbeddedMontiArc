@@ -9,10 +9,10 @@ import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.Spe
 import java.util.*;
 
 public class MonteCarloIntegration {
-    private static double[] averages;
-    private static double[] costs;
-    private static int iterations;
-    private static int numberOfClusters;
+    private double[] averages;
+    private double[] costs;
+    private int iterations;
+    private int numberOfClusters;
 
     public MonteCarloIntegration(int iterations, int numberOfClusters){
         this.iterations = iterations;
@@ -21,11 +21,11 @@ public class MonteCarloIntegration {
         this.costs = new double[this.iterations];
     }
 
-    public static double[] getAverages() {
+    public double[] getAverages() {
         return averages;
     }
 
-    public static int getIterations() {
+    public int getIterations() {
         return iterations;
     }
 
@@ -33,11 +33,11 @@ public class MonteCarloIntegration {
         return numberOfClusters;
     }
 
-    public static double[] getCosts(){
+    public double[] getCosts() {
         return costs;
     }
 
-    public static double simulate(EMAComponentInstanceSymbol componentInstanceSymbol) {
+    public double simulate(EMAComponentInstanceSymbol componentInstanceSymbol) {
         //EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
         double sum = 0;
 
@@ -67,7 +67,7 @@ public class MonteCarloIntegration {
     }
 
     // getting the maximum value
-    public static double getMaxValue() {
+    public double getMaxValue() {
         double maxValue = costs[0];
         for (int i = 1; i < costs.length; i++) {
             if (costs[i] > maxValue) {
@@ -78,7 +78,7 @@ public class MonteCarloIntegration {
     }
 
     // getting the miniumum value
-    public static double getMinValue() {
+    public double getMinValue() {
         double minValue = costs[0];
         for (int i = 1; i < costs.length; i++) {
             if (costs[i] < minValue) {
