@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class MonteCarloIntegrationTest {
@@ -47,9 +47,9 @@ public class MonteCarloIntegrationTest {
 
         //Random Clustering
         MonteCarloIntegration sim = new MonteCarloIntegration(1000, 3);
-        double costRandom = MonteCarloIntegration.simulate(flattenedComponent);
-        double[] averages = MonteCarloIntegration.getAverages();
-        double[] costs = MonteCarloIntegration.getCosts();
+        double costRandom = sim.simulate(flattenedComponent);
+        double[] averages = sim.getAverages();
+        double[] costs = sim.getCosts();
 
         assertTrue(averages[1]== (costs[0]+costs[1])/2);
         assertTrue(averages[2]== (costs[0]+costs[1]+costs[2])/3);
@@ -69,9 +69,9 @@ public class MonteCarloIntegrationTest {
 
         //Random Clustering
         MonteCarloIntegration sim = new MonteCarloIntegration(1000, 3);
-        double costRandom = MonteCarloIntegration.simulate(flattenedComponent);
+        double costRandom = sim.simulate(flattenedComponent);
 
-        MonteCarloResult res = new MonteCarloResult(flattenedComponent, 1000, 3);
+        MonteCarloResult res = new MonteCarloResult(flattenedComponent, sim);
 
         res.saveAsJson("target/evaluation/montecarlo", "autopilot.json");
 
