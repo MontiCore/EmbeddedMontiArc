@@ -2,10 +2,7 @@ package de.monticore.lang.monticar.generator.middleware.Simulation;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.AbstractSymtabTest;
-import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.clustering.FlattenArchitecture;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringAlgorithm;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringBuilder;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 public class MonteCarloIntegrationTest {
 
     public static final String TEST_PATH = "src/test/resources/";
+    public static final String TEST_PATH_AUTOPILOT = "src/test/resources/autopilot/";
 
     @Test
     public void randomClusteringTest(){
@@ -57,4 +55,27 @@ public class MonteCarloIntegrationTest {
         assertTrue(averages[2]== (costs[0]+costs[1]+costs[2])/3);
         assertTrue(averages[3]== (costs[0]+costs[1]+costs[2]+costs[3])/4);
     }
+
+    @Ignore
+    @Test
+    public void generateJSONFileAutopilot(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        //ClustersWithSingleConnection
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("de.rwth.armin.modeling.autopilot.autopilot", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
+
+        //Random Clustering
+        MonteCarloIntegration sim = new MonteCarloIntegration(1000, 3);
+        double costRandom = MonteCarloIntegration.simulate(flattenedComponent);
+
+        MonteCarloResult res = new MonteCarloResult(flattenedComponent, 1000, 3);
+
+        res.saveAsJson("target/evaluation/montecarlo", "autopilot.json");
+
+    }
+
+
 }
