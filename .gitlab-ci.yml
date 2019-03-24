@@ -1,6 +1,8 @@
 stages:
-- build
-- test
+- build-windows
+- build-linux
+- test-windows
+- test-linux
  
 windows_build:
   stage: build-windows
