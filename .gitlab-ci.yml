@@ -1,11 +1,9 @@
 stages:
-- build-windows
-- build-linux
-- test-windows
-- test-linux
+- build
+- test
  
 windows_build:
-  stage: build-windows
+  stage: build
   script: 
   - call VsDevCmd.bat
   - cd hardware_emulator
@@ -18,7 +16,7 @@ windows_build:
       - hardware_emulator/build/Release/HardwareEmulator.dll
 
 test_windows:
-  stage: test-windows
+  stage: test
   tags:
   - Windows10
   script:
@@ -29,10 +27,9 @@ test_windows:
     - windows_build
 
 linux_build:
-  stage: build-linux
+  stage: build
   image: maven:3-jdk-8
-
-  script:
+  before_script:
   - apt update
   - apt --assume-yes install make
   - apt --assume-yes install python
@@ -40,6 +37,7 @@ linux_build:
   - apt --assume-yes install cmake
   - g++ --version
   
+  script:
   - cd hardware_emulator
   - mkdir Release
   - cd Release
@@ -53,7 +51,7 @@ linux_build:
       - hardware_emulator/Release/libHardwareEmulator.so
 
 test_linux:
-  stage: test-linux
+  stage: test
   image: maven:3-jdk-8
   script:
     - mv hardware_emulator/Release/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
