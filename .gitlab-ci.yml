@@ -3,7 +3,7 @@ stages:
 - test
  
 windows_build:
-  stage: build
+  stage: build-windows
   script: 
   - call VsDevCmd.bat
   - cd hardware_emulator
@@ -16,7 +16,7 @@ windows_build:
       - hardware_emulator/build/Release/HardwareEmulator.dll
 
 test_windows:
-  stage: test
+  stage: test-windows
   tags:
   - Windows10
   script:
@@ -27,7 +27,7 @@ test_windows:
     - windows_build
 
 linux_build:
-  stage: build
+  stage: build-linux
   image: maven:3-jdk-8
 
   script:
@@ -51,7 +51,7 @@ linux_build:
       - hardware_emulator/Release/libHardwareEmulator.so
 
 test_linux:
-  stage: test
+  stage: test-linux
   image: maven:3-jdk-8
   script:
     - mv hardware_emulator/Release/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
