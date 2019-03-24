@@ -23,6 +23,12 @@ int Registers::regs_id[Registers::BUFFER_SIZE] = {
     
     UC_X86_REG_RIP,
     UC_X86_REG_EFLAGS,
+    
+    
+    UC_X86_REG_XMM0,
+    UC_X86_REG_XMM1,
+    UC_X86_REG_XMM2,
+    UC_X86_REG_XMM3,
 };
 
 const char *Registers::regs_names[Registers::BUFFER_SIZE] = {
@@ -46,6 +52,11 @@ const char *Registers::regs_names[Registers::BUFFER_SIZE] = {
     
     "RIP",
     "EFLAGS",
+    
+    "XMM0",
+    "XMM1",
+    "XMM2",
+    "XMM3",
 };
 
 
@@ -58,7 +69,7 @@ void Registers::init( void *uc ) {
 
 void Registers::print_registers() {
     char buff[128];
-    for ( auto i : urange( 18 ) ) {
+    for ( auto i : urange( 22 ) ) {
         uc_reg_read( static_cast<uc_engine *>( internal_uc ), Registers::regs_id[i], &reg );
         Log::reg << "      ";
         sprintf( buff,  "%16s   ", Registers::regs_names[i] );
@@ -67,12 +78,12 @@ void Registers::print_registers() {
 }
 
 void Registers::print_changed_registers() {
-    for ( auto i : urange( 18 ) ) {
+    for ( auto i : urange( 22 ) ) {
         uc_reg_read( static_cast<uc_engine *>( internal_uc ), Registers::regs_id[i], &reg );
         regs[i] = reg;
     }
     char buff[128];
-    for ( auto i : urange( 18 ) ) {
+    for ( auto i : urange( 22 ) ) {
         if ( Registers::regs_id[i] == UC_X86_REG_RIP && ( regs_old[i] != 0 ) )
             continue;
         if ( regs[i] != regs_old[i] ) {
@@ -82,7 +93,7 @@ void Registers::print_changed_registers() {
             Log::new_val << to_hex( regs[i] ) << "\n";
         }
     }
-    for ( auto i : urange( 18 ) )
+    for ( auto i : urange( 22 ) )
         regs_old[i] = regs[i];
 }
 
@@ -137,23 +148,43 @@ ulong Registers::get_r9() {
 }
 
 double Registers::get_xmm0() {
-    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM0, &reg );
-    return *( double * ) & ( reg );
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM0, mini_buff );
+    return *( double * )mini_buff;
 }
 
 double Registers::get_xmm1() {
-    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM1, &reg );
-    return *( double * ) & ( reg );
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM1, mini_buff );
+    return *( double * )mini_buff;
 }
 
 double Registers::get_xmm2() {
-    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM2, &reg );
-    return *( double * ) & ( reg );
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM2, mini_buff );
+    return *( double * )mini_buff;
 }
 
 double Registers::get_xmm3() {
-    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM3, &reg );
-    return *( double * ) & ( reg );
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM3, mini_buff );
+    return *( double * )mini_buff;
+}
+
+float Registers::get_xmm0_f() {
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM0, mini_buff );
+    return *( float * )mini_buff;
+}
+
+float Registers::get_xmm1_f() {
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM1, mini_buff );
+    return *( float * )mini_buff;
+}
+
+float Registers::get_xmm2_f() {
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM2, mini_buff );
+    return *( float * )mini_buff;
+}
+
+float Registers::get_xmm3_f() {
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM3, mini_buff );
+    return *( float * )mini_buff;
 }
 
 ulong Registers::get_rsp() {
@@ -235,23 +266,44 @@ void Registers::set_r9( ulong val ) {
 }
 
 void Registers::set_xmm0( double val ) {
-    *( double * ) & ( reg ) = val;
-    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM0, &reg );
+
+    *( double * )mini_buff = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM0, mini_buff );
 }
 
 void Registers::set_xmm1( double val ) {
-    *( double * ) & ( reg ) = val;
-    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM1, &reg );
+    *( double * )mini_buff = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM1, mini_buff );
 }
 
 void Registers::set_xmm2( double val ) {
-    *( double * ) & ( reg ) = val;
-    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM2, &reg );
+    *( double * )mini_buff = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM2, mini_buff );
 }
 
 void Registers::set_xmm3( double val ) {
-    *( double * ) & ( reg ) = val;
-    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM3, &reg );
+    *( double * )mini_buff = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM3, mini_buff );
+}
+
+void Registers::set_xmm0_f( float val ) {
+    *( float * )mini_buff = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM0, mini_buff );
+}
+
+void Registers::set_xmm1_f( float val ) {
+    *( float * )mini_buff = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM1, mini_buff );
+}
+
+void Registers::set_xmm2_f( float val ) {
+    *( float * )mini_buff = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM2, mini_buff );
+}
+
+void Registers::set_xmm3_f( float val ) {
+    *( float * )mini_buff = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_XMM3, mini_buff );
 }
 
 void Registers::set_rsp( ulong val ) {

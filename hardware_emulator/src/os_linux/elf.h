@@ -28,138 +28,6 @@ typedef uint64_t    Elf64_Xword;
 typedef int64_t     Elf64_Sxword;
 
 
-/*
-
-    IDENT
-
-*/
-
-
-struct ElfMag {
-    static constexpr uchar MAG0 = 0x7f;
-    static constexpr uchar MAG1 = 'E';
-    static constexpr uchar MAG2 = 'L';
-    static constexpr uchar MAG3 = 'F';
-    static const char *MAG;
-};
-
-
-enum class ElfClass {
-    CLASS_NONE = 0,
-    CLASS_32 = 1,
-    CLASS_64 = 2,
-    CLASS_NUM = 3,
-};
-
-using ElfArchitectureSize = ElfClass;
-
-enum class ElfData {
-    DATA_NONE = 0, //None
-    DATA_LSB = 1, //Little endian
-    DATA_MSB = 2 //Big Endian
-};
-
-using ElfEndianness = ElfData;
-
-
-enum class ElfVersion {
-    NONE = 0,
-    CURRENT = 1
-};
-
-enum class ElfAbi {
-    ELFOSABI_NONE = 0,
-    
-    ELFOSABI_SYSV = 0,
-    ELFOSABI_HPUX = 1,
-    ELFOSABI_NETBSD = 2,
-    ELFOSABI_LINUX = 3,
-    ELFOSABI_HURD = 4,
-    ELFOSABI_86OPEN = 5,
-    ELFOSABI_SOLARIS = 6,
-    ELFOSABI_MONTEREY = 7,
-    ELFOSABI_AIX = 7,
-    ELFOSABI_IRIX = 8,
-    ELFOSABI_FREEBSD = 9,
-    ELFOSABI_TRU64 = 10,
-    ELFOSABI_MODESTO = 11,
-    ELFOSABI_OPENBSD = 12,
-    ELFOSABI_NON_STOP = 13,
-    ELFOSABI_OPENVMS = 14,
-    ELFOSABI_AROS = 15,
-    ELFOSABI_FENIXOS = 16,
-    ELFOSABI_CLOUDABI = 17,
-    ELFOSABI_ARM = 97,
-    ELFOSABI_STANDALONE = 255,
-};
-
-enum class ElfFileType {
-    ET_NONE = 0,
-    ET_REL = 1,
-    ET_EXEC = 2,
-    ET_DYN = 3,
-    ET_CORE = 4,
-    ET_LOPROC = 0xff00,
-    ET_HIPROC = 0xffff,
-};
-
-enum class ElfMachineType {
-    EM_NONE = 0,
-    EM_M32 = 1,
-    EM_SPARC = 2,
-    EM_386 = 3,
-    EM_68K = 4,
-    EM_88K = 5,
-    EM_486 = 6,  /* Perhaps disused */
-    EM_860 = 7,
-    EM_MIPS = 8,  /* MIPS R3000 (officially, big-endian only) */
-    /* Next two are historical and binaries and
-    modules of these types will be rejected by
-    Linux.  */
-    EM_MIPS_RS3_LE = 10, /* MIPS R3000 little-endian */
-    EM_MIPS_RS4_BE = 10, /* MIPS R4000 big-endian */
-    EM_PARISC = 15, /* HPPA */
-    EM_SPARC32PLUS = 18, /* Sun's "v8plus" */
-    EM_PPC = 20, /* PowerPC */
-    EM_PPC64 = 21,  /* PowerPC64 */
-    EM_SPU = 23, /* Cell BE SPU */
-    EM_ARM = 40, /* ARM 32 bit */
-    EM_SH = 42, /* SuperH */
-    EM_SPARCV9 = 43, /* SPARC v9 64-bit */
-    EM_H8_300 = 46, /* Renesas H8/300 */
-    EM_IA_64 = 50, /* HP/Intel IA-64 */
-    EM_X86_64 = 62, /* AMD x86-64 */
-    EM_S390 = 22, /* IBM S/390 */
-    EM_CRIS = 76, /* Axis Communications 32-bit embedded processor */
-    EM_M32R = 88, /* Renesas M32R */
-    EM_MN10300 = 89, /* Panasonic/MEI MN10300, AM33 */
-    EM_OPENRISC = 92,    /* OpenRISC 32-bit embedded processor */
-    EM_XTENSA = 94, /* Tensilica Xtensa Architecture */
-    EM_BLACKFIN = 106,    /* ADI Blackfin Processor */
-    EM_ALTERA_NIOS2 = 113, /* Altera Nios II soft-core processor */
-    EM_TI_C6000 = 140, /* TI C6X DSPs */
-    EM_AARCH64 = 183, /* ARM 64 bit */
-    EM_TILEPRO = 188, /* Tilera TILEPro */
-    EM_MICROBLAZE = 189, /* Xilinx MicroBlaze */
-    EM_TILEGX = 191, /* Tilera TILE-Gx */
-    EM_RISCV = 243, /* RISC-V */
-    EM_BPF = 247, /* Linux BPF - in-kernel virtual machine */
-    EM_CSKY = 252, /* C-SKY */
-    EM_FRV = 0x5441, /* Fujitsu FR-V */
-    /*
-    * This is an interim value that we will use until the committee comes
-    * up with a final number.
-    */
-    EM_ALPHA = 0x9026,
-    /* Bogus old m32r magic number, used by old tools. */
-    EM_CYGNUS_M32R = 0x9041,
-    /* This is the old interim value for S/390 architecture */
-    EM_S390_OLD = 0xA390,
-    /* Also Panasonic/MEI MN10300, AM33 */
-    EM_CYGNUS_MN10300 = 0xbeef,
-};
-
-
 
 
 
@@ -376,113 +244,6 @@ struct Elf64_SectionHeader {
 
 
 
-
-
-
-
-
-/*
-    ELF HEADER
-*/
-
-
-struct ElfIdent {
-    uchar       mag0;
-    uchar       mag1;
-    uchar       mag2;
-    uchar       mag3;
-    uchar       clss;
-    uchar       data;
-    uchar       version;
-    uchar       os_abi;
-    uchar       abi_version;
-    uchar       pad[7];
-    
-    bool is_elf() {
-        return mag0 == ElfMag::MAG0 &&
-               mag1 == ElfMag::MAG1 &&
-               mag2 == ElfMag::MAG2 &&
-               mag3 == ElfMag::MAG3;
-    }
-    ElfClass get_class() {
-        return static_cast<ElfClass>( clss );
-    }
-    ElfData get_endianness() {
-        return static_cast<ElfData>( data );
-    }
-    ElfVersion get_version() {
-        return static_cast<ElfVersion>( version );
-    }
-    ElfAbi get_abi() {
-        return static_cast<ElfAbi>( os_abi );
-    }
-    void print();
-};
-static_assert( sizeof( ElfIdent ) == 16 );
-
-struct Elf32_Header {
-    ElfIdent        e_ident;
-    Elf32_Half      e_type;
-    Elf32_Half      e_machine;
-    Elf32_Word      e_version;
-    Elf32_Addr      e_entry;
-    Elf32_Off       e_phoff;
-    Elf32_Off       e_shoff;
-    Elf32_Word      e_flags;
-    Elf32_Half      e_ehsize;
-    Elf32_Half      e_phentsize;
-    Elf32_Half      e_phnum;
-    Elf32_Half      e_shentsize;
-    Elf32_Half      e_shnum;
-    Elf32_Half      e_shstrndx;
-    bool section_header_size_valid() {
-        return e_shentsize == sizeof( Elf32_SectionHeader );
-    }
-    bool program_header_size_valid() {
-        return e_phentsize == sizeof( Elf32_ProgramHeader );
-    }
-    ElfFileType get_file_type() {
-        return static_cast<ElfFileType> ( e_type );
-    }
-    ElfMachineType get_machine_type() {
-        return static_cast<ElfMachineType> ( e_machine );
-    }
-    void print();
-};
-static_assert( sizeof( Elf32_Header ) == 52 );
-
-
-struct Elf64_Header {
-    ElfIdent        e_ident;
-    Elf64_Half      e_type;
-    Elf64_Half      e_machine;
-    Elf64_Word      e_version;
-    Elf64_Addr      e_entry;
-    Elf64_Off       e_phoff;
-    Elf64_Off       e_shoff;
-    Elf64_Word      e_flags;
-    Elf64_Half      e_ehsize;
-    Elf64_Half      e_phentsize;
-    Elf64_Half      e_phnum;
-    Elf64_Half      e_shentsize;
-    Elf64_Half      e_shnum;
-    Elf64_Half      e_shstrndx;
-    
-    bool section_header_size_valid() {
-        return e_shentsize == sizeof( Elf64_SectionHeader );
-    }
-    bool program_header_size_valid() {
-        return e_phentsize == sizeof( Elf64_ProgramHeader );
-    }
-    ElfFileType get_file_type() {
-        return static_cast<ElfFileType> ( e_type );
-    }
-    ElfMachineType get_machine_type() {
-        return static_cast<ElfMachineType> ( e_machine );
-    }
-    void print();
-};
-static_assert( sizeof( Elf64_Header ) == 64 );
 
 
 
@@ -734,6 +495,272 @@ struct Elf64_Dyn {
 
 
 
+
+/*
+
+IDENT
+
+*/
+
+
+struct ElfMag {
+    static constexpr uchar MAG0 = 0x7f;
+    static constexpr uchar MAG1 = 'E';
+    static constexpr uchar MAG2 = 'L';
+    static constexpr uchar MAG3 = 'F';
+    static const char *MAG;
+};
+
+
+enum class ElfClass {
+    CLASS_NONE = 0,
+    CLASS_32 = 1,
+    CLASS_64 = 2,
+    CLASS_NUM = 3,
+};
+
+using ElfArchitectureSize = ElfClass;
+
+enum class ElfData {
+    DATA_NONE = 0, //None
+    DATA_LSB = 1, //Little endian
+    DATA_MSB = 2 //Big Endian
+};
+
+using ElfEndianness = ElfData;
+
+
+enum class ElfVersion {
+    NONE = 0,
+    CURRENT = 1
+};
+
+enum class ElfAbi {
+    ELFOSABI_NONE = 0,
+    
+    ELFOSABI_SYSV = 0,
+    ELFOSABI_HPUX = 1,
+    ELFOSABI_NETBSD = 2,
+    ELFOSABI_LINUX = 3,
+    ELFOSABI_HURD = 4,
+    ELFOSABI_86OPEN = 5,
+    ELFOSABI_SOLARIS = 6,
+    ELFOSABI_MONTEREY = 7,
+    ELFOSABI_AIX = 7,
+    ELFOSABI_IRIX = 8,
+    ELFOSABI_FREEBSD = 9,
+    ELFOSABI_TRU64 = 10,
+    ELFOSABI_MODESTO = 11,
+    ELFOSABI_OPENBSD = 12,
+    ELFOSABI_NON_STOP = 13,
+    ELFOSABI_OPENVMS = 14,
+    ELFOSABI_AROS = 15,
+    ELFOSABI_FENIXOS = 16,
+    ELFOSABI_CLOUDABI = 17,
+    ELFOSABI_ARM = 97,
+    ELFOSABI_STANDALONE = 255,
+};
+
+enum class ElfFileType {
+    ET_NONE = 0,
+    ET_REL = 1,
+    ET_EXEC = 2,
+    ET_DYN = 3,
+    ET_CORE = 4,
+    ET_LOPROC = 0xff00,
+    ET_HIPROC = 0xffff,
+};
+
+enum class ElfMachineType {
+    EM_NONE = 0,
+    EM_M32 = 1,
+    EM_SPARC = 2,
+    EM_386 = 3,
+    EM_68K = 4,
+    EM_88K = 5,
+    EM_486 = 6,  /* Perhaps disused */
+    EM_860 = 7,
+    EM_MIPS = 8,  /* MIPS R3000 (officially, big-endian only) */
+    /* Next two are historical and binaries and
+    modules of these types will be rejected by
+    Linux.  */
+    EM_MIPS_RS3_LE = 10, /* MIPS R3000 little-endian */
+    EM_MIPS_RS4_BE = 10, /* MIPS R4000 big-endian */
+    EM_PARISC = 15, /* HPPA */
+    EM_SPARC32PLUS = 18, /* Sun's "v8plus" */
+    EM_PPC = 20, /* PowerPC */
+    EM_PPC64 = 21,  /* PowerPC64 */
+    EM_SPU = 23, /* Cell BE SPU */
+    EM_ARM = 40, /* ARM 32 bit */
+    EM_SH = 42, /* SuperH */
+    EM_SPARCV9 = 43, /* SPARC v9 64-bit */
+    EM_H8_300 = 46, /* Renesas H8/300 */
+    EM_IA_64 = 50, /* HP/Intel IA-64 */
+    EM_X86_64 = 62, /* AMD x86-64 */
+    EM_S390 = 22, /* IBM S/390 */
+    EM_CRIS = 76, /* Axis Communications 32-bit embedded processor */
+    EM_M32R = 88, /* Renesas M32R */
+    EM_MN10300 = 89, /* Panasonic/MEI MN10300, AM33 */
+    EM_OPENRISC = 92,    /* OpenRISC 32-bit embedded processor */
+    EM_XTENSA = 94, /* Tensilica Xtensa Architecture */
+    EM_BLACKFIN = 106,    /* ADI Blackfin Processor */
+    EM_ALTERA_NIOS2 = 113, /* Altera Nios II soft-core processor */
+    EM_TI_C6000 = 140, /* TI C6X DSPs */
+    EM_AARCH64 = 183, /* ARM 64 bit */
+    EM_TILEPRO = 188, /* Tilera TILEPro */
+    EM_MICROBLAZE = 189, /* Xilinx MicroBlaze */
+    EM_TILEGX = 191, /* Tilera TILE-Gx */
+    EM_RISCV = 243, /* RISC-V */
+    EM_BPF = 247, /* Linux BPF - in-kernel virtual machine */
+    EM_CSKY = 252, /* C-SKY */
+    EM_FRV = 0x5441, /* Fujitsu FR-V */
+    /*
+    * This is an interim value that we will use until the committee comes
+    * up with a final number.
+    */
+    EM_ALPHA = 0x9026,
+    /* Bogus old m32r magic number, used by old tools. */
+    EM_CYGNUS_M32R = 0x9041,
+    /* This is the old interim value for S/390 architecture */
+    EM_S390_OLD = 0xA390,
+    /* Also Panasonic/MEI MN10300, AM33 */
+    EM_CYGNUS_MN10300 = 0xbeef,
+};
+
+
+
+struct ElfIdent {
+    uchar       mag0;
+    uchar       mag1;
+    uchar       mag2;
+    uchar       mag3;
+    uchar       clss;
+    uchar       data;
+    uchar       version;
+    uchar       os_abi;
+    uchar       abi_version;
+    uchar       pad[7];
+    
+    bool is_elf() {
+        return mag0 == ElfMag::MAG0 &&
+               mag1 == ElfMag::MAG1 &&
+               mag2 == ElfMag::MAG2 &&
+               mag3 == ElfMag::MAG3;
+    }
+    ElfClass get_class() {
+        return static_cast<ElfClass>( clss );
+    }
+    ElfData get_endianness() {
+        return static_cast<ElfData>( data );
+    }
+    ElfVersion get_version() {
+        return static_cast<ElfVersion>( version );
+    }
+    ElfAbi get_abi() {
+        return static_cast<ElfAbi>( os_abi );
+    }
+    void print();
+};
+static_assert( sizeof( ElfIdent ) == 16 );
+
+
+
+/*
+ELF HEADER
+*/
+
+
+
+
+struct Elf32_Header {
+    ElfIdent        e_ident;
+    Elf32_Half      e_type;
+    Elf32_Half      e_machine;
+    Elf32_Word      e_version;
+    Elf32_Addr      e_entry;
+    Elf32_Off       e_phoff;
+    Elf32_Off       e_shoff;
+    Elf32_Word      e_flags;
+    Elf32_Half      e_ehsize;
+    Elf32_Half      e_phentsize;
+    Elf32_Half      e_phnum;
+    Elf32_Half      e_shentsize;
+    Elf32_Half      e_shnum;
+    Elf32_Half      e_shstrndx;
+    bool section_header_size_valid() {
+        return e_shentsize == sizeof( Elf32_SectionHeader );
+    }
+    bool program_header_size_valid() {
+        return e_phentsize == sizeof( Elf32_ProgramHeader );
+    }
+    ElfFileType get_file_type() {
+        return static_cast<ElfFileType> ( e_type );
+    }
+    ElfMachineType get_machine_type() {
+        return static_cast<ElfMachineType> ( e_machine );
+    }
+    void print();
+};
+static_assert( sizeof( Elf32_Header ) == 52 );
+
+
+struct Elf64_Header {
+    ElfIdent        e_ident;
+    Elf64_Half      e_type;
+    Elf64_Half      e_machine;
+    Elf64_Word      e_version;
+    Elf64_Addr      e_entry;
+    Elf64_Off       e_phoff;
+    Elf64_Off       e_shoff;
+    Elf64_Word      e_flags;
+    Elf64_Half      e_ehsize;
+    Elf64_Half      e_phentsize;
+    Elf64_Half      e_phnum;
+    Elf64_Half      e_shentsize;
+    Elf64_Half      e_shnum;
+    Elf64_Half      e_shstrndx;
+    
+    bool section_header_size_valid() {
+        return e_shentsize == sizeof( Elf64_SectionHeader );
+    }
+    bool program_header_size_valid() {
+        return e_phentsize == sizeof( Elf64_ProgramHeader );
+    }
+    ElfFileType get_file_type() {
+        return static_cast<ElfFileType> ( e_type );
+    }
+    ElfMachineType get_machine_type() {
+        return static_cast<ElfMachineType> ( e_machine );
+    }
+    void print();
+};
+static_assert( sizeof( Elf64_Header ) == 64 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 struct ElfFile {
     Array<uchar> data;
     ElfIdent *ident_ptr;
@@ -744,9 +771,6 @@ struct ElfFile {
     ArraySlice<Elf64_SectionHeader> sh64;
     ArraySlice<Elf32_ProgramHeader> ph32;
     ArraySlice<Elf64_ProgramHeader> ph64;
-    //ArraySlice<Elf32_Symbol> sym32;
-    //ArraySlice<Elf64_Symbol> sym64;
-    //ArraySlice<char> str_table;
     ArraySlice<char> sec_name_table;
     
     bool parse();

@@ -1,0 +1,1 @@
+g++ -shared -fPIC  -o "sample_syscall.dll"  "base.cpp" 

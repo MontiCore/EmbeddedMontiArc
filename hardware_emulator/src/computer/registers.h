@@ -11,6 +11,7 @@
 struct Registers {
     static constexpr ulong BUFFER_SIZE = 32;
     void *internal_uc;
+    uchar mini_buff[16];
     ulong reg;
     ulong reg2;
     ulong regs[BUFFER_SIZE];
@@ -42,6 +43,11 @@ struct Registers {
     double get_xmm2();
     double get_xmm3();
     
+    float get_xmm0_f();
+    float get_xmm1_f();
+    float get_xmm2_f();
+    float get_xmm3_f();
+    
     
     ulong get_rsp();
     ulong get_rsi();
@@ -70,6 +76,11 @@ struct Registers {
     void set_xmm1( double val );
     void set_xmm2( double val );
     void set_xmm3( double val );
+    
+    void set_xmm0_f( float val );
+    void set_xmm1_f( float val );
+    void set_xmm2_f( float val );
+    void set_xmm3_f( float val );
     
     void set_rsp( ulong val );
     void set_rsi( ulong val );

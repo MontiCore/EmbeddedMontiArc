@@ -30,7 +30,7 @@ void WindowsCalls::add_windows_calls( SystemCalls &sys_calls, OS::Windows &windo
     sys_calls.add_syscall( SysCall( "memcpy", "MSVCRT.DLL", memcpy ), reason );
 }
 
-bool WindowsCalls::load_library_exw( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::load_library_exw( Computer &computer ) {
     auto name_addr = computer.func_call->get_param1_64();
     auto name_str = computer.memory.read_wstr_as_str( name_addr );
     string name = ( char * )name_str;
@@ -50,7 +50,7 @@ bool WindowsCalls::load_library_exw( Computer &computer, SysCall &syscall ) {
     computer.func_call->set_return_64( handle );
     return true;
 }
-bool WindowsCalls::get_proc_address( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::get_proc_address( Computer &computer ) {
     auto mod = computer.func_call->get_param1_64();
     auto sec_ptr = computer.memory.get_section( mod );
     if ( sec_ptr == nullptr || sec_ptr != computer.handles.section ) {
@@ -76,14 +76,14 @@ bool WindowsCalls::get_proc_address( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool WindowsCalls::get_proc_heap( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::get_proc_heap( Computer &computer ) {
     computer.func_call->set_return_64( computer.heap.heap_handle );
     return true;
 }
 
 
 
-bool WindowsCalls::heap_alloc( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::heap_alloc( Computer &computer ) {
     auto heap_handle = computer.func_call->get_param1_64();
     if ( computer.heap.heap_handle != heap_handle ) {
         Log::err << "Trying to alloc on non-existing heap\n";
@@ -99,7 +99,7 @@ bool WindowsCalls::heap_alloc( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool WindowsCalls::heap_free( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::heap_free( Computer &computer ) {
     auto heap_handle = computer.func_call->get_param1_64();
     if ( computer.heap.heap_handle != heap_handle ) {
         Log::err << "Trying to alloc on non-existing heap\n";
@@ -114,17 +114,17 @@ bool WindowsCalls::heap_free( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-//bool WindowsCalls::get_cmd_line_a( Computer &computer, SysCall &syscall ) {
+//bool WindowsCalls::get_cmd_line_a( Computer &computer ) {
 //    computer.func_call->set_return( computer.cmd_line_str );
 //    return true;
 //}
 //
-//bool WindowsCalls::get_cmd_line_w( Computer &computer, SysCall &syscall ) {
+//bool WindowsCalls::get_cmd_line_w( Computer &computer ) {
 //    computer.func_call->set_return( computer.cmd_line_wstr );
 //    return true;
 //}
 
-bool WindowsCalls::get_module_handle( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::get_module_handle( Computer &computer ) {
     auto name_addr = computer.func_call->get_param1_64();
     auto name_str = computer.memory.read_wstr_as_str( name_addr );
     string name = ( char * )name_str;
@@ -136,29 +136,29 @@ bool WindowsCalls::get_module_handle( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool WindowsCalls::get_current_process_id( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::get_current_process_id( Computer &computer ) {
     computer.func_call->set_return_64( 0x25 );
     return true;
 }
 
-bool WindowsCalls::get_sys_time_as_file_time( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::get_sys_time_as_file_time( Computer &computer ) {
     auto addr = computer.func_call->get_param1_64();
     computer.memory.write_long_word( addr, 0x123 );
     return true;
 }
 
-bool WindowsCalls::query_perf_counter( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::query_perf_counter( Computer &computer ) {
     auto addr = computer.func_call->get_param1_64();
     computer.memory.write_long_word( addr, 0x456 );
     return true;
 }
 
-bool WindowsCalls::get_current_thread_id( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::get_current_thread_id( Computer &computer ) {
     computer.func_call->set_return_64( 0x29 );
     return true;
 }
 
-bool WindowsCalls::strlen( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::strlen( Computer &computer ) {
     auto addr = computer.func_call->get_param1_64();
     auto name_str = computer.memory.read_str( addr );
     string name = ( char * )name_str;
@@ -168,7 +168,7 @@ bool WindowsCalls::strlen( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool WindowsCalls::strncmp( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::strncmp( Computer &computer ) {
     auto addr1 = computer.func_call->get_param1_64();
     auto addr2 = computer.func_call->get_param2_64();
     auto count = computer.func_call->get_param3_64();
@@ -181,17 +181,17 @@ bool WindowsCalls::strncmp( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool WindowsCalls::iob_func( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::iob_func( Computer &computer ) {
     computer.func_call->set_return_64( computer.io_slot.start_address );
     return true;
 }
 
-bool WindowsCalls::abort( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::abort( Computer &computer ) {
     computer.exit_emulation();
     return true;
 }
 
-bool WindowsCalls::fwrite( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::fwrite( Computer &computer ) {
     //size_t fwrite ( const void * ptr, size_t size, size_t count, FILE * stream );
     auto data = computer.func_call->get_param1_64();
     auto size = computer.func_call->get_param2_64();
@@ -203,7 +203,7 @@ bool WindowsCalls::fwrite( Computer &computer, SysCall &syscall ) {
     return false;
 }
 
-bool WindowsCalls::virtual_query( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::virtual_query( Computer &computer ) {
     typedef struct _MEMORY_BASIC_INFORMATION {
         ulong  BaseAddress;
         ulong  AllocationBase;
@@ -239,7 +239,7 @@ bool WindowsCalls::virtual_query( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool WindowsCalls::virtual_protect( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::virtual_protect( Computer &computer ) {
     auto lpaddr = computer.func_call->get_param1_64();
     auto size = computer.func_call->get_param2_64();
     auto protect = computer.func_call->get_param3_64();
@@ -248,7 +248,7 @@ bool WindowsCalls::virtual_protect( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool WindowsCalls::malloc( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::malloc( Computer &computer ) {
     auto byte_count = computer.func_call->get_param1_64();
     //cout << "malloc(" << byte_count << ")" << endl;
     uint64_t addr;
@@ -259,7 +259,7 @@ bool WindowsCalls::malloc( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool WindowsCalls::memcpy( Computer &computer, SysCall &syscall ) {
+bool WindowsCalls::memcpy( Computer &computer ) {
     auto target_pointer = computer.func_call->get_param1_64();
     auto source_pointer = computer.func_call->get_param2_64();
     auto size = computer.func_call->get_param3_64();

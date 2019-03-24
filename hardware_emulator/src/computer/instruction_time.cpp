@@ -1,5 +1,8 @@
 #include "instruction_time.h"
 
+#include "computer/memory.h"
+#include "computer/computer.h"
+
 uint get_instruction_ticks( ZydisDecodedInstruction &instruction ) {
     switch ( instruction.mnemonic ) {
         case ZYDIS_MNEMONIC_MOV: return 1;
@@ -137,4 +140,49 @@ uint get_instruction_ticks( ZydisDecodedInstruction &instruction ) {
         default: return 1000;
     }
     return 0;
+}
+
+void CodeDecoder::init( Memory &memory, ComputerTime &computer_time ) {
+    this->computer_time = &computer_time;
+    this->memory = &memory;
+    ZydisDecoderInit( &decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_ADDRESS_WIDTH_64 );
+}
+
+ulong CodeDecoder::handle_instruction( ulong addr, uint size ) {
+    length = size;
+    code = ( uchar * )memory->read_memory( addr, size );
+    succeeded = ZYAN_SUCCESS( ZydisDecoderDecodeBuffer( &decoder, code, length, &instruction ) );
+    ulong ticks = 1000;
+    if ( succeeded )
+        ticks = get_instruction_ticks( instruction );
+    computer_time->add_ticks( ticks );
+    return ticks;
+}
+
+void MemoryModel::init( Memory &memory, ComputerTime &computer_time ) {
+    this->computer_time = &computer_time;
+    this->memory = &memory;
+    
+    memory_layers.init( 5 );
+    instruction_memory = &base_time;
+    data_memory = &base_time;
+    mem_layer_count = 0;
+}
+
+ulong MemoryModel::handle_access( MemAccess type, ulong addr ) {
+    uint sec_id = memory->section_lookup[MemoryRange( addr, 1 )];
+    ulong time = 0;
+    switch ( type ) {
+        case MemAccess::READ:
+            time = data_memory->read( addr, sec_id );
+            break;
+        case MemAccess::WRITE:
+            time = data_memory->write( addr, sec_id );
+            break;
+        case MemAccess::FETCH:
+            time = instruction_memory->read( addr, sec_id );
+            break;
+    }
+    computer_time->add_pico_time( time );
+    return time;
 }

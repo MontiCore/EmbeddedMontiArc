@@ -16,7 +16,7 @@ bool ADD_DLL::Interface::init( Computer &computer, bool windows ) {
     if ( !computer.os->load_file( "sample_simple" ) )
         return false;
     addresses.init( FUNCTION_COUNT );
-    if ( !add_symbol( addresses[ADD], windows ? "?add@@YAHHH@Z" : "add", computer ) )
+    if ( !add_symbol( addresses[ADD], windows ? "add" : "add", computer ) )
         return false;
     return true;
 }

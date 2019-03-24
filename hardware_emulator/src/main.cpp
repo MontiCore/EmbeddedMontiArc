@@ -2,13 +2,15 @@
 #include "utility.h"
 
 
-TestCase test_cases[8] = {
+TestCase test_cases[] = {
     TestCase( "Simple DLL", test_simple_dll ),
+    TestCase( "Function Calling DLL", test_funccalling_dll ),
     TestCase( "Syscall DLL", test_syscall_dll ),
     TestCase( "Hardware Manager querries", test_hardware_manager_querries ),
     TestCase( "Autopilot DLL", test_autopilot_dll ),
     TestCase( "ELF read", test_linux_elf_info ),
     TestCase( "Simple ELF", test_simple_elf ),
+    TestCase( "Function Calling ELF", test_funccalling_elf ),
     TestCase( "Syscall ELF", test_syscall_elf ),
     TestCase( "Autopilot ELF", test_autopilot_elf ),
 };

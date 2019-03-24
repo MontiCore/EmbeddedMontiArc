@@ -48,16 +48,17 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
             if ( seg.get_type() == ElfSegType::PT_LOAD ) {
                 if ( seg.p_memsz == 0 )
                     continue;
-                auto &sec = mem.new_section();
-                
-                sec.init( MemoryRange( seg.p_vaddr, ( uint )seg.p_memsz ), "seg" + std::to_string( section_pos ), file_name,
-                          seg.has_perm( Elf32_ProgramPerm::PF_X ),
-                          seg.has_perm( Elf32_ProgramPerm::PF_R ),
-                          seg.has_perm( Elf32_ProgramPerm::PF_W ) );
-                          
+                auto &sec = mem.new_section(
+                                MemoryRange( seg.p_vaddr, ( uint )seg.p_memsz ), "seg" + std::to_string( section_pos ),
+                                file_name,
+                                seg.has_perm( Elf32_ProgramPerm::PF_X ),
+                                seg.has_perm( Elf32_ProgramPerm::PF_R ),
+                                seg.has_perm( Elf32_ProgramPerm::PF_W ) );
+                                
+                                
                 if ( seg.p_filesz > 0 ) {
-                    sec.set_file_range( MemoryRange( seg.p_offset, ( uint )seg.p_filesz ) );
-                    sec.upload( seg.p_vaddr, ( char * ) ( elf.data.begin() + seg.p_offset ), seg.p_filesz );
+                    sec.set_mapped_range( MemoryRange( seg.p_vaddr, ( uint )seg.p_filesz ), seg.p_offset );
+                    sec.upload( MemoryRange( seg.p_vaddr, ( uint )seg.p_filesz ), ( char * ) ( elf.data.begin() + seg.p_offset ) );
                 }
                 
                 auto &sec_info = sections[section_pos++];
@@ -79,6 +80,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
                     }
                 }
             }
+            //OPTIONAL annotate all symbols
         }
         
         //Log::info << "Resolving imports\n";
@@ -126,39 +128,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
         }
     }
     else {
-        for ( auto &seg : elf.ph32 ) {
-            if ( seg.get_type() == ElfSegType::PT_LOAD ) {
-                if ( seg.p_memsz == 0 )
-                    continue;
-                auto &sec = mem.new_section();
-                
-                //Try to find section in which the segment lies
-                std::string name = "unknown";
-                if ( seg.p_offset > 0 ) {
-                    for ( auto &s : elf.sh32 ) {
-                        if ( MemoryRange( s.sh_offset, s.sh_size ).contains( seg.p_offset ) ) {
-                            name = elf.sec_name_table.begin() + s.sh_name;
-                            break;
-                        }
-                    }
-                }
-                
-                sec.init( MemoryRange( seg.p_vaddr, seg.p_memsz ), name, file_name,
-                          seg.has_perm( Elf32_ProgramPerm::PF_X ),
-                          seg.has_perm( Elf32_ProgramPerm::PF_R ),
-                          seg.has_perm( Elf32_ProgramPerm::PF_W ) );
-                          
-                if ( seg.p_filesz > 0 ) {
-                    sec.set_file_range( MemoryRange( seg.p_offset, seg.p_filesz ) );
-                    sec.upload( ( char * )( elf.data.begin() + seg.p_offset ), seg.p_filesz );
-                }
-                
-                auto &sec_info = sections[section_pos++];
-                sec_info.mem = &sec;
-            }
-        }
-        
-        //TODO symbols
+        //TODO
     }
     
     elf.data.drop();
@@ -174,7 +144,4 @@ void OS::ElfLoader::elf_main( Computer &computer ) {
         computer.call( init.addr, "_init" );
     else
         Log::err << "Could not locate _init function of ELF\n";
-}
-
-void OS::ElfInfo::load_values( ElfFile *pe ) {
 }

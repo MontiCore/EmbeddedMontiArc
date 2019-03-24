@@ -13,14 +13,14 @@ void ComputerDebug::debug_syscall( SysCall &sys_call, ulong id ) {
     if ( !debug || !d_syscalls )
         return;
     Log::sys << Log::tag;
-    if ( sys_call.type == SysCall::SUPPORTED )
+    if ( sys_call.supported() )
         Log::sys << "Supported";
     else
         Log::sys << "Unsupported";
     Log::sys << " sys_call: " << to_string( id ) << " " << sys_call.module << "!" << sys_call.name << "\n";
 }
 
-void ComputerDebug::debug_code( ulong addr, uint size ) {
+void ComputerDebug::debug_code( ulong addr, uint size, ulong ticks, ulong time ) {
     if ( !debug || !d_code )
         return;
         
@@ -46,6 +46,7 @@ void ComputerDebug::debug_code( ulong addr, uint size ) {
         sprintf( buff, "%-40s", buffer.begin() );
         Log::code << buff;
     }
+    Log::info << "ticks: " << ticks << " (time: " << ( time / 1000 ) << "ns)    ";
     memory->print_annotation( addr );
     Log::info << "\n";
 }
@@ -63,7 +64,7 @@ void ComputerDebug::debug_mem_err( MemAccess type, MemAccessError err, ulong add
     Log::err << "\n";
 }
 
-void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val ) {
+void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val, ulong time ) {
     if ( !debug || !d_mem )
         return;
     Log::LogStream *os;
@@ -90,7 +91,7 @@ void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val 
         sprintf( buff, "%-21s", res.c_str() );
         *os << buff;
     }
-    
+    Log::info << "time: " << ( time / 1000 ) << "ns     ";
     memory->print_address_info( addr );
     Log::info << "\n";
 }

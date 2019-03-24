@@ -64,6 +64,8 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   src/computer/function_calling.cpp
   src/computer/os.h
   src/computer/os.cpp
+  src/computer/caching.h
+  src/computer/caching.cpp
   
   src/os_windows/dll_loader.h
   src/os_windows/dll_loader.cpp

@@ -16,7 +16,7 @@ echo "**************************************"
 echo "             Making Zydis"
 echo "**************************************"
 cd zydis
-../docs/build_zydis.sh
+./build.sh
 cd ..
 
 echo ""
@@ -24,13 +24,13 @@ echo "**************************************"
 echo "       Making pe-parse Release"
 echo "**************************************"
 cd pe-parse
-../docs/build.sh Release
+../scripts/build.sh Release
 
 echo ""
 echo "**************************************"
 echo "        Making pe-parse Debug"
 echo "**************************************"
-../docs/build.sh Debug
+../scripts/build.sh Debug
 cd ..
 
 echo ""
@@ -38,11 +38,11 @@ echo "**************************************"
 echo "   Making hardware_emulator Release"
 echo "**************************************"
 cd hardware_emulator
-../docs/build.sh Release
+../scripts/build.sh Release
 
 echo ""
 echo "**************************************"
 echo "    Making hardware_emulator Debug"
 echo "**************************************"
-../docs/build.sh Debug
+../scripts/build.sh Debug
 cd ..

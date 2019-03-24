@@ -8,8 +8,6 @@
 using namespace std;
 
 
-
-
 std::string HardwareEmulator::querry( const char *msg ) {
     MessageParser parser( msg );
     MessageBuilder builder;
@@ -25,7 +23,7 @@ std::string HardwareEmulator::querry( const char *msg ) {
 }
 
 bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
-
+    test_real = false;
     autopilot_name = "AutopilotAdapter";
     os_name = "";
     computer.time.use_time = true;
@@ -48,6 +46,8 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
         }
         else if ( parser.is_cmd( "no_time" ) )
             computer.time.use_time = false;
+        else if ( parser.is_cmd( "test_real" ) )
+            test_real = true;
         else
             parser.unknown();
     }
@@ -67,10 +67,16 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
     }
     
     
-    if ( os_name.compare( "windows" ) == 0 )
+    if ( os_name.compare( "windows" ) == 0 ) {
         computer.set_os( new OS::Windows() );
-    else if ( os_name.compare( "linux" ) == 0 )
+        if ( Library::type != Library::OsType::WINDOWS )
+            test_real = false;
+    }
+    else if ( os_name.compare( "linux" ) == 0 ) {
         computer.set_os( new OS::Linux() );
+        if ( Library::type != Library::OsType::LINUX )
+            test_real = false;
+    }
     else
         return false;
         
@@ -78,6 +84,13 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
     if ( !computer.os->load_file( path.string().c_str() ) ) {
         error_msg = "Error loading autopilot";
         return false;
+    }
+    
+    if ( test_real ) {
+        if ( !real_program.init( path.string().c_str() ) ) {
+            error_msg = "Could not load real program";
+            return false;
+        }
     }
     
     
@@ -91,14 +104,21 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
     if ( !resolve( "init", init_address ) || !resolve( "execute", execute_address ) )
         return false;
         
+    if ( test_real )
+        if ( !resolve_real( "init", real_init ) || !resolve_real( "execute", real_exec ) )
+            return false;
+            
     //TODO check if seperate call
-    call_success = computer.call( init_address, "init" );
+    call_init();
+    
     
     computer.time.reset();
     
     auto &section = computer.memory.sys_section;
     auto &section_stack = computer.memory.sys_section_stack;
     buffer_slot = section_stack.get_annotated( 1024, "Port Exchange buffer", Annotation::OBJECT );
+    
+    cache_settings.setup_computer( computer );
     return true;
 }
 
@@ -145,11 +165,12 @@ void HardwareEmulator::exec( ulong micro_delta ) {
     if ( !computing() ) {
         for ( uint i : urange( input_ports.size() ) )
             call_input( i );
-        call_void( execute_address, "execute" );
+        call_execute();
     }
     
     //Upate time
-    if ( computer.time.micro_time <= micro_delta ) {
+    if ( !computer.time.use_time || computer.time.micro_time <= micro_delta ) {
+        avg_runtime.add( computer.time.micro_time );
         computer.time.reset();
         //Upate outputs
         for ( uint i : urange( output_ports.size() ) )
@@ -168,15 +189,24 @@ int HardwareEmulator::get_port_id( const char *port_name ) {
 }
 
 void HardwareEmulator::call_input( uint func_id ) {
-    auto &addr = input_ports[func_id].function_address;
-    auto &input = input_ports[func_id].buffer;
+    auto &port = input_ports[func_id];
+    auto &addr = port.function_address;
+    auto &input = port.buffer;
     
     switch ( input.type ) {
         case VALUE_TYPE::DOUBLE:
             computer.func_call->set_param1_double( input.double_value );
+            if ( test_real ) {
+                using DoubleInputFunc = void( * )( double );
+                ( ( DoubleInputFunc )port.real_function )( input.double_value );
+            }
             break;
         case VALUE_TYPE::INT:
             computer.func_call->set_param1_32( *( uint * )&input.int_value );
+            if ( test_real ) {
+                using IntInputFunc = void( * )( int );
+                ( ( IntInputFunc )port.real_function )( *( uint * )&input.int_value );
+            }
             break;
         case VALUE_TYPE::DOUBLE_ARRAY:
             if ( input.double_array.size * sizeof( double ) > buffer_slot.size ) {
@@ -187,10 +217,20 @@ void HardwareEmulator::call_input( uint func_id ) {
             computer.memory.write_memory( buffer_slot.start_address, input.double_array.size * sizeof( double ),
                                           ( uchar * )input.double_array.data.begin() );
             computer.func_call->set_params_64( buffer_slot.start_address, ( ulong )input.double_array.size );
+            if ( test_real ) {
+                using DoubleArrayInputFunc = void( * )( double *, int );
+                ( ( DoubleArrayInputFunc )port.real_function )( input.double_array.data.begin(), input.double_array.size );
+            }
             break;
     }
     
     call_success = computer.call( addr, input_ports[func_id].name.c_str() );
+}
+
+void compare_results( double real_value, double emulated_value, const char *port_name ) {
+    if ( real_value != emulated_value )
+        Log::err << Log::tag << "Desyncronisation detected on " << port_name << ". Real: " << real_value << " Emulated: " <<
+                 emulated_value << "\n";
 }
 
 void HardwareEmulator::call_output( uint func_id ) {
@@ -205,19 +245,46 @@ void HardwareEmulator::call_output( uint func_id ) {
     switch ( output.type ) {
         case VALUE_TYPE::DOUBLE:
             output.double_value = computer.func_call->get_return_double();
+            if ( test_real ) {
+                using DoubleOutputFunc = double( * )();
+                compare_results( ( ( DoubleOutputFunc )port.real_function )(), output.double_value, port.name.c_str() );
+            }
             break;
     }
 }
 
-void HardwareEmulator::call_void( uint64_t address, const char *name ) {
-    call_success = computer.call( address, name );
+void HardwareEmulator::call_execute() {
+    call_success = computer.call( execute_address, "execute" );
+    if ( test_real ) {
+        using ExecFunc = void( * )();
+        ( ( ExecFunc )real_exec )();
+    }
+}
+
+void HardwareEmulator::call_init() {
+    call_success = computer.call( init_address, "init" );
+    if ( test_real ) {
+        using InitFunc = void( * )();
+        ( ( InitFunc )real_init )();
+    }
 }
 
 bool HardwareEmulator::resolve( const std::string &name, uint64_t &target ) {
     auto sym = computer.symbols.get_symbol( name );
-    if ( sym.type != Symbols::Symbol::EXPORT )
+    if ( sym.type != Symbols::Symbol::EXPORT ) {
+        error_msg = "Could not resolve function: " + name;
         return false;
+    }
     target = sym.addr;
+    return true;
+}
+
+bool HardwareEmulator::resolve_real( const std::string &name, void *&target ) {
+    target = real_program.get_function( name.c_str() );
+    if ( target == nullptr ) {
+        error_msg = "Could not resolve real function: " + name;
+        return false;
+    }
     return true;
 }
 
@@ -247,8 +314,13 @@ bool HardwareEmulator::init_ports( Array<Port> &ports, const char *get_count,
         
         port.buffer.init( FunctionValue::get_type( type ) );
         port.updated = false;
-        if ( !resolve( port_prefix + port.name, port.function_address ) )
+        auto func_name = port_prefix + port.name;
+        if ( !resolve( func_name, port.function_address ) )
             return false;
+        if ( test_real ) {
+            if ( !resolve_real( func_name, port.real_function ) )
+                return false;
+        }
     }
     return true;
 }
@@ -279,4 +351,23 @@ void HardwareEmulator::setup_debug( MessageParser &parser ) {
         else if ( next.compare( "call" ) == 0 )
             computer.debug.d_call = true;
     } while ( true );
+}
+
+MemoryAccessInterface *setup_cache( Computer &computer, CacheSettings::Cache &cache ) {
+    auto cache_layer = new FifoCache( computer.memory, cache.size );
+    cache_layer->block_size = cache.block_size;
+    cache_layer->read_time = cache.read_time;
+    cache_layer->write_time = cache.write_time;
+    return cache_layer;
+}
+
+void CacheSettings::setup_computer( Computer &computer ) {
+    if ( L3.used )
+        computer.mem_model.add_common_interface( setup_cache( computer, L3 ) );
+    if ( L2.used )
+        computer.mem_model.add_common_interface( setup_cache( computer, L2 ) );
+    if ( DL1.used )
+        computer.mem_model.add_data_interface( setup_cache( computer, DL1 ) );
+    if ( IL1.used )
+        computer.mem_model.add_instruction_interface( setup_cache( computer, IL1 ) );
 }

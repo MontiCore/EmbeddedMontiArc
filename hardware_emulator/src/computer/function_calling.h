@@ -14,6 +14,16 @@ struct FunctionCalling {
     virtual void set_params_32( uint p1, uint p2, uint p3 ) = 0;
     virtual void set_params_32( uint p1, uint p2, uint p3, uint p4 ) = 0;
     
+    virtual void set_params_double( double p1 ) = 0;
+    virtual void set_params_double( double p1, double p2 ) = 0;
+    virtual void set_params_double( double p1, double p2, double p3 ) = 0;
+    virtual void set_params_double( double p1, double p2, double p3, double p4 ) = 0;
+    
+    virtual void set_params_float( float p1 ) = 0;
+    virtual void set_params_float( float p1, float p2 ) = 0;
+    virtual void set_params_float( float p1, float p2, float p3 ) = 0;
+    virtual void set_params_float( float p1, float p2, float p3, float p4 ) = 0;
+    
     virtual void set_param1_64( ulong p ) = 0;
     virtual void set_param2_64( ulong p ) = 0;
     virtual void set_param3_64( ulong p ) = 0;
@@ -29,9 +39,16 @@ struct FunctionCalling {
     virtual void set_param3_double( double p ) = 0;
     virtual void set_param4_double( double p ) = 0;
     
+    virtual void set_param1_float( float p ) = 0;
+    virtual void set_param2_float( float p ) = 0;
+    virtual void set_param3_float( float p ) = 0;
+    virtual void set_param4_float( float p ) = 0;
+    
     virtual ulong get_return_64() = 0;
     virtual uint get_return_32() = 0;
     virtual double get_return_double() = 0;
+    virtual float get_return_float() = 0;
+    virtual char get_return_char() = 0;
     
     
     //Callee
@@ -49,6 +66,11 @@ struct FunctionCalling {
     virtual double get_param2_double() = 0;
     virtual double get_param3_double() = 0;
     virtual double get_param4_double() = 0;
+    
+    virtual float get_param1_float() = 0;
+    virtual float get_param2_float() = 0;
+    virtual float get_param3_float() = 0;
+    virtual float get_param4_float() = 0;
     
     virtual void set_return_64( ulong r ) = 0;
     virtual void set_return_32( uint r ) = 0;

@@ -168,3 +168,47 @@ Log::LogStream Log::note( ConsoleColor::PINK, "[N]" );
 Log::LogStream Log::white( ConsoleColor::WHITE, "" );
 Log::LogStream Log::test( ConsoleColor::GREEN, "" );
 
+
+#if defined _WIN32 || defined _WIN64
+
+bool Library::init( const char *name ) {
+    handle = LoadLibraryA( name );
+    return loaded();
+}
+
+void *Library::get_function( const char *name ) {
+    if ( loaded() )
+        return GetProcAddress( ( HMODULE )handle, name );
+    return nullptr;
+}
+
+Library::~Library() {
+    if ( loaded() ) {
+        FreeLibrary( ( HMODULE ) handle );
+        handle = nullptr;
+    }
+}
+
+#else
+
+bool Library::init( const char *name ) {
+    handle = dlopen( name, RTLD_NOW );
+    return loaded();
+}
+
+void *Library::get_function( const char *name ) {
+    if ( loaded() )
+        return dlsym( handle, name );
+    return nullptr;
+}
+
+Library::~Library() {
+    if ( loaded() ) {
+        dlclose( handle );
+        handle = nullptr;
+    }
+}
+
+#endif
+
+

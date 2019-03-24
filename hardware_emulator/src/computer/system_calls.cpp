@@ -1,17 +1,41 @@
 #include "computer/system_calls.h"
 #include "computer/computer_layout.h"
+#include "computer.h"
 #include "debug.h"
 
-void SystemCalls::init( Memory &mem, ComputerDebug &debug, Symbols &symbols ) {
+void SystemCalls::init( Computer &computer ) {
+    this->computer = &computer;
     sys_calls.init( ComputerLayout::SYSCALLS_RANGE );
-    this->debug = &debug;
-    this->symbols = &symbols;
-    section = &mem.new_section();
-    section->init( MemoryRange( ComputerLayout::SYSCALLS_ADDRESS, ComputerLayout::SYSCALLS_RANGE ), "SYSCALLS", "System",
-                   true, false, false );
+    section = &computer.memory.new_section( MemoryRange( ComputerLayout::SYSCALLS_ADDRESS, ComputerLayout::SYSCALLS_RANGE ),
+                                            "SYSCALLS",
+                                            "System",
+                                            true, false, false );
     section->init_annotations();
     sys_call_pos = 0;
     syscall_stack.init( section );
+}
+
+void SystemCalls::handle_call( ulong addr ) {
+    //Use memory annotation system to find external procedure.
+    auto note_ptr = section->annotations.get_annotation( addr );
+    if ( note_ptr == nullptr || note_ptr->type != Annotation::FUNC ) {
+        Log::err << Log::tag << "Instruction pointer at invalid system call address" << "\n";
+        //Execution will stop and return an error since the syscall section does not allow code execution.
+        return;
+    }
+    auto &note = *note_ptr;
+    auto &call = sys_calls[( uint )note.param];
+    computer->debug.debug_syscall( call, note.param );
+    if ( !call.supported() || !call.callback( *computer ) )
+        computer->func_call->set_return_64( 0 ); //No external syscall registered or syscall error.
+        
+    if ( !computer->stopped ) { //Do not change stack and instruction pointers if exit() was called on the unicorn engine (it cancels uc_emu_stop())
+        //Return to code (simulate 'ret' code)
+        auto ret_address = computer->stack.pop_long();
+        computer->registers.set_rip( ret_address ); //Set instruction pointer to popped address
+    }
+    
+    //TODO add computer time
 }
 
 ulong SystemCalls::add_syscall( SysCall const &call, const char *reason ) {
@@ -22,9 +46,9 @@ ulong SystemCalls::add_syscall( SysCall const &call, const char *reason ) {
     auto proc_handle = syscall_stack.get_annotated_8byte( call.name, Annotation::FUNC, id );
     
     sys_calls[id] = call;
-    debug->debug_register_syscall( call, section->address_range.get_local_index( proc_handle ), reason );
+    computer->debug.debug_register_syscall( call, section->address_range.get_local_index( proc_handle ), reason );
     
-    symbols->add_symbol( call.name, Symbols::Symbol::SYSCALL, proc_handle, id );
+    computer->symbols.add_symbol( call.name, Symbols::Symbol::SYSCALL, proc_handle );
     
     return proc_handle;
 }

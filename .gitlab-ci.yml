@@ -6,7 +6,8 @@ windows_build:
   stage: build
   script: 
   - call VsDevCmd.bat
-  - call docs\build_release.bat
+  - cd hardware_emulator
+  - call build_release.bat
   tags:
   - Windows10
   artifacts:

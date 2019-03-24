@@ -24,16 +24,16 @@ struct ComputerDebug {
     bool d_reg_update;
     bool d_call;
     
-    ComputerDebug() : memory( nullptr ), registers( nullptr ), buffer( BUFFER_SIZE ), debug( true ), d_code( true ),
+    ComputerDebug() : memory( nullptr ), registers( nullptr ), buffer( BUFFER_SIZE ), debug( false ), d_code( true ),
         d_mem( true ),
         d_regs( false ), d_syscalls( true ), d_call( true ), d_reg_update( true ), decoder( nullptr ) {}
         
     void init( Memory &mem, Registers &regs, CodeDecoder &decoder );
     
     void debug_syscall( SysCall &sys_call, ulong id );
-    void debug_code( ulong addr, uint size );
+    void debug_code( ulong addr, uint size, ulong ticks, ulong time );
     void debug_mem_err( MemAccess type, MemAccessError err, ulong addr, uint size, slong val );
-    void debug_mem( MemAccess type, ulong addr, uint size, slong val );
+    void debug_mem( MemAccess type, ulong addr, uint size, slong val, ulong time );
     void debug_call( ulong address, const char *name );
     
     void debug_register_syscall( SysCall const &call, ulong addr, const char *reason );

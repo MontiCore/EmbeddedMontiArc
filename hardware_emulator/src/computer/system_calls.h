@@ -7,7 +7,7 @@ struct Computer;
 struct SysCall;
 struct ComputerDebug;
 
-using SystemCallback = bool( * )( Computer &, SysCall &syscall );
+using SystemCallback = bool( * )( Computer &computer );
 
 
 /*
@@ -17,24 +17,15 @@ using SystemCallback = bool( * )( Computer &, SysCall &syscall );
     the named function.
 */
 struct SysCall {
-    enum Type {
-        UNSUPPORTED,
-        SUPPORTED,
-        LIBRARY_EXPORT
-    };
-    Type type;
     std::string name;
     std::string module;
     SystemCallback callback;
-    ulong addr;
-    void *user_data;
-    SysCall() : type( UNSUPPORTED ), addr( 0 ), user_data( nullptr ) {}
-    SysCall( std::string const &name, std::string const &module,  SystemCallback const callback,
-             void *user_data = nullptr ) :
-        type( callback != nullptr ? SUPPORTED : UNSUPPORTED ), user_data( user_data ),
-        name( name ), module( module ), callback( callback ), addr( 0 ) {}
-    SysCall( std::string const &name, std::string const &module, ulong addr, void *user_data = nullptr ) :
-        type( LIBRARY_EXPORT ), name( name ), module( module ), callback( nullptr ), addr( addr ), user_data( user_data ) {}
+    SysCall() : callback( nullptr ) {}
+    SysCall( std::string const &name, std::string const &module,  SystemCallback const callback ) :
+        name( name ), module( module ), callback( callback ) {}
+    bool supported() {
+        return callback != nullptr;
+    }
 };
 
 /*
@@ -43,25 +34,34 @@ struct SysCall {
     Use add_syscall() to register a SysCall.
     Both return the virtual address of the function handle.
 */
+struct Computer;
 struct SystemCalls {
+    Computer *computer;
+    
+    
     MemorySection *section;
-    Symbols *symbols;
     SectionStack syscall_stack;
-    
-    
-    ComputerDebug *debug;
-    
     
     Array<SysCall> sys_calls;
     uint sys_call_pos;
     
-    SystemCalls() : section( nullptr ), symbols( nullptr ) {}
+    SystemCalls() : section( nullptr ), computer( nullptr ) {}
     
     bool loaded() {
         return section != nullptr;
     }
     
-    void init( Memory &mem, ComputerDebug &debug, Symbols &symbols );
+    void init( Computer &computer );
+    
+    inline bool is_syscall( ulong addr ) {
+        /*
+        Check if the instruction is in the SystemCalls memory range. If so, it means 'call' (ASM) was called
+        with a registered sytem call function address.
+        */
+        return section->address_range.contains( addr );
+    }
+    
+    void handle_call( ulong addr );
     
     ulong add_syscall( SysCall const &call, const char *reason );
 };

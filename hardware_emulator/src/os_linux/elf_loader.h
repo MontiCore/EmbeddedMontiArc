@@ -8,17 +8,6 @@
 
 namespace OS {
 
-    struct ElfInfo {
-        ulong base_address;
-        ulong image_size;
-        ulong base_of_code;
-        ulong entry_point;
-        ulong section_align;
-        uint size_of_headers;
-        
-        void load_values( ElfFile *pe );
-    };
-    
     struct ElfLoader {
         bool loaded;
         ElfFile elf;

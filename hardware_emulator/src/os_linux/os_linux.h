@@ -19,6 +19,16 @@ namespace OS {
         void set_params_32( uint p1, uint p2, uint p3 );
         void set_params_32( uint p1, uint p2, uint p3, uint p4 );
         
+        void set_params_double( double p1 );
+        void set_params_double( double p1, double p2 );
+        void set_params_double( double p1, double p2, double p3 );
+        void set_params_double( double p1, double p2, double p3, double p4 );
+        
+        void set_params_float( float p1 );
+        void set_params_float( float p1, float p2 );
+        void set_params_float( float p1, float p2, float p3 );
+        void set_params_float( float p1, float p2, float p3, float p4 );
+        
         void set_param1_64( ulong p );
         void set_param2_64( ulong p );
         void set_param3_64( ulong p );
@@ -34,9 +44,16 @@ namespace OS {
         void set_param3_double( double p );
         void set_param4_double( double p );
         
+        void set_param1_float( float p );
+        void set_param2_float( float p );
+        void set_param3_float( float p );
+        void set_param4_float( float p );
+        
         ulong get_return_64();
         uint get_return_32();
         double get_return_double();
+        float get_return_float();
+        char get_return_char();
         
         
         //Callee
@@ -54,6 +71,11 @@ namespace OS {
         double get_param2_double();
         double get_param3_double();
         double get_param4_double();
+        
+        float get_param1_float();
+        float get_param2_float();
+        float get_param3_float();
+        float get_param4_float();
         
         void set_return_64( ulong r );
         void set_return_32( uint r );

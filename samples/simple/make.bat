@@ -1,0 +1,1 @@
+g++ -shared -fPIC  -o "sample_simple.dll"  "base.cpp" 

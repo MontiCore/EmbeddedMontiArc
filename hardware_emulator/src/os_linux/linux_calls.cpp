@@ -1,4 +1,5 @@
 #include "linux_calls.h"
+#include <cmath>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ void LinuxCalls::add_linux_calls( SystemCalls &sys_calls ) {
     sys_calls.add_syscall( SysCall( "memcpy", mod, memcpy ), reason );
 }
 
-bool LinuxCalls::malloc( Computer &computer, SysCall &syscall ) {
+bool LinuxCalls::malloc( Computer &computer ) {
     auto byte_count = computer.func_call->get_param1_64();
     //cout << "malloc(" << byte_count << ")" << endl;
     uint64_t addr;
@@ -28,18 +29,18 @@ bool LinuxCalls::malloc( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool LinuxCalls::time( Computer &computer, SysCall &syscall ) {
+bool LinuxCalls::time( Computer &computer ) {
     computer.func_call->set_return_64( 0x10203040 );
     return true;
 }
 
-bool LinuxCalls::srand( Computer &computer, SysCall &syscall ) {
+bool LinuxCalls::srand( Computer &computer ) {
     auto t = computer.func_call->get_param1_64();
-    ::srand( t );
+    ::srand( ( uint )t );
     return true;
 }
 
-bool LinuxCalls::posix_memalign( Computer &computer, SysCall &syscall ) {
+bool LinuxCalls::posix_memalign( Computer &computer ) {
     auto target_pointer = computer.func_call->get_param1_64();
     auto alignment = computer.func_call->get_param2_64();
     auto size = computer.func_call->get_param3_64();
@@ -56,7 +57,7 @@ bool LinuxCalls::posix_memalign( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool LinuxCalls::sqrt( Computer &computer, SysCall &syscall ) {
+bool LinuxCalls::sqrt( Computer &computer ) {
     double v = computer.func_call->get_param1_double();
     if ( computer.debug.syscalls() )
         Log::sys << "sqrt(" << v << ")\n";
@@ -64,7 +65,7 @@ bool LinuxCalls::sqrt( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool LinuxCalls::sin( Computer &computer, SysCall &syscall ) {
+bool LinuxCalls::sin( Computer &computer ) {
     double v = computer.func_call->get_param1_double();
     if ( computer.debug.syscalls() )
         Log::sys << "sin(" << v << ")\n";
@@ -72,7 +73,7 @@ bool LinuxCalls::sin( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool LinuxCalls::cos( Computer &computer, SysCall &syscall ) {
+bool LinuxCalls::cos( Computer &computer ) {
     double v = computer.func_call->get_param1_double();
     if ( computer.debug.syscalls() )
         Log::sys << "cos(" << v << ")\n";
@@ -80,7 +81,7 @@ bool LinuxCalls::cos( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool LinuxCalls::log( Computer &computer, SysCall &syscall ) {
+bool LinuxCalls::log( Computer &computer ) {
     double v = computer.func_call->get_param1_double();
     if ( computer.debug.syscalls() )
         Log::sys << "log(" << v << ")\n";
@@ -88,7 +89,7 @@ bool LinuxCalls::log( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool LinuxCalls::atan2( Computer &computer, SysCall &syscall ) {
+bool LinuxCalls::atan2( Computer &computer ) {
     double v1 = computer.func_call->get_param1_double();
     double v2 = computer.func_call->get_param2_double();
     if ( computer.debug.syscalls() )
@@ -97,7 +98,7 @@ bool LinuxCalls::atan2( Computer &computer, SysCall &syscall ) {
     return true;
 }
 
-bool LinuxCalls::memcpy( Computer &computer, SysCall &syscall ) {
+bool LinuxCalls::memcpy( Computer &computer ) {
     auto target_pointer = computer.func_call->get_param1_64();
     auto source_pointer = computer.func_call->get_param2_64();
     auto size = computer.func_call->get_param3_64();

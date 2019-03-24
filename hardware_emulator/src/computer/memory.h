@@ -1,7 +1,7 @@
 #pragma once
 #include "utility.h"
 #include "computer/computer_layout.h"
-
+#include <map>
 
 enum class MemAccess {
     NONE,
@@ -23,7 +23,7 @@ enum class MemAccessError {
 struct MemoryRange {
     ulong start_address;
     uint size;
-    inline bool contains( ulong address ) {
+    inline bool contains( ulong address ) const {
         return address >= start_address && address < start_address + ( ulong ) size;
     }
     
@@ -34,6 +34,11 @@ struct MemoryRange {
     
     MemoryRange() : start_address( 0 ), size( 0 ) {}
     MemoryRange( ulong start_address, uint size ) : start_address( start_address ), size( size ) {}
+    
+    //Used for range sorting
+    bool operator<( const MemoryRange &other ) const {
+        return start_address + ( ulong )size <= other.start_address;
+    }
 };
 
 
@@ -69,7 +74,7 @@ struct Annotation {
 };
 
 /*
-    The AnnotationCollection structure is used by SectionAnnotation to store annotations
+    The AnnotationCollection structure is used by SectionAnnotations to store annotations
     and is used to look through all annotations. (But it uses linear search).
 */
 struct AnnotationTable {
@@ -85,16 +90,16 @@ struct AnnotationTable {
 };
 
 /*
-    A SectionAnnotation is to be used in combination with a MemorySection in order to annotated it.
+    A SectionAnnotations is to be used in combination with a MemorySection in order to annotated it.
     An Annotation can be added for a address or an address range.
     get_annotation() returns nullptr when no annotation exists at the given address.
 */
-struct SectionAnnotation {
+struct SectionAnnotations {
     AnnotationTable *annotation_table;
     MemoryRange address_range;
     Array<uint> annotation_id;
     
-    SectionAnnotation() : annotation_table( nullptr ) {}
+    SectionAnnotations() : annotation_table( nullptr ) {}
     
     void init( AnnotationTable *annotation_table, MemoryRange address_range );
     
@@ -128,27 +133,25 @@ struct MemorySection {
     std::string mod;
     std::string name;
     MemoryRange address_range;
-    MemoryRange file_range;
+    MemoryRange mapped_range;
+    ulong file_pos;
     ulong page_size;
     bool p_execute;
     bool p_read;
     bool p_write;
     
-    SectionAnnotation annotations;
+    SectionAnnotations annotations;
     
     MemorySection() : internal_uc( nullptr ), mem( nullptr ) {}
     
     bool init( MemoryRange address_range, std::string const &name, std::string const &mod,
                bool execute, bool read, bool write );
-    bool upload( char *data, uint64_t size );
-    bool upload( ulong address, char *data, uint64_t size );
-    
-    void *read( ulong address, ulong size );
-    void write( ulong address, ulong size, void *data );
+    bool upload( MemoryRange range, char *data );
     
     void link( void *uc, ulong page_size, Memory &mem );
-    void set_file_range( MemoryRange file_range ) {
-        this->file_range = file_range;
+    void set_mapped_range( MemoryRange mapped_range, ulong file_pos ) {
+        this->mapped_range = mapped_range;
+        this->file_pos = file_pos;
     }
     
     uint64_t address_to_file( uint64_t virtual_address );
@@ -168,6 +171,7 @@ struct MemorySection {
     
     void print_address_info( ulong virtual_address );
     void print_annotation( ulong virtual_address );
+    
 };
 
 
@@ -211,20 +215,19 @@ struct SectionStack {
 */
 struct Memory {
     static constexpr ulong BUFFER_SIZE = 4096;
-    static constexpr ulong SECTION_SIZE = 128;
     void *internal_uc;
     ulong page_size;
     
     AnnotationTable annotation_table;
-    Array<MemorySection> sections;
-    uint section_pos;
+    Array<std::unique_ptr<MemorySection>> sections;
+    uint section_count;
+    std::map<MemoryRange, uint> section_lookup; //Sorts the section ids by their addresses
     
     Array<uint8_t> buffer;
-    
     MemorySection *sys_section;
     SectionStack sys_section_stack;
     
-    Memory() : internal_uc( nullptr ), section_pos( 0 ) {}
+    Memory() : internal_uc( nullptr ), section_count( 0 ) {}
     
     void init( void *uc );
     bool loaded() {
@@ -237,7 +240,8 @@ struct Memory {
     void *read_memory( MemoryRange range );
     void write_memory( MemoryRange range, void *data );
     
-    MemorySection &new_section();
+    MemorySection &new_section( MemoryRange range, const std::string &name, const std::string &mode, bool exec, bool read,
+                                bool write );
     MemorySection *get_section( ulong virtual_address );
     
     void print_address_info( ulong virtual_address );
@@ -251,6 +255,10 @@ struct Memory {
     void write_str( ulong address, std::string const &text );
     
     void write_long_word( ulong address, ulong value );
+    
+    
+    static MemAccess get_mem_access( uint type );
+    static MemAccessError get_mem_err( uint type );
 };
 
 /*

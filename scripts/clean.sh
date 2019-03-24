@@ -1,4 +1,4 @@
-if [ "${PWD##*/}" = "docs" ] 
+if [ "${PWD##*/}" = "scripts" ] 
 then 
     cd .. 
 fi

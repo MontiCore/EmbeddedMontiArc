@@ -57,6 +57,42 @@ namespace OS {
         set_param3_32( p3 );
         set_param4_32( p4 );
     }
+    void LinuxFastCall::set_params_double( double p1 ) {
+        set_param1_double( p1 );
+    }
+    void LinuxFastCall::set_params_double( double p1, double p2 ) {
+        set_param1_double( p1 );
+        set_param2_double( p2 );
+    }
+    void LinuxFastCall::set_params_double( double p1, double p2, double p3 ) {
+        set_param1_double( p1 );
+        set_param2_double( p2 );
+        set_param3_double( p3 );
+    }
+    void LinuxFastCall::set_params_double( double p1, double p2, double p3, double p4 ) {
+        set_param1_double( p1 );
+        set_param2_double( p2 );
+        set_param3_double( p3 );
+        set_param4_double( p4 );
+    }
+    void LinuxFastCall::set_params_float( float p1 ) {
+        set_param1_float( p1 );
+    }
+    void LinuxFastCall::set_params_float( float p1, float p2 ) {
+        set_param1_float( p1 );
+        set_param2_float( p2 );
+    }
+    void LinuxFastCall::set_params_float( float p1, float p2, float p3 ) {
+        set_param1_float( p1 );
+        set_param2_float( p2 );
+        set_param3_float( p3 );
+    }
+    void LinuxFastCall::set_params_float( float p1, float p2, float p3, float p4 ) {
+        set_param1_float( p1 );
+        set_param2_float( p2 );
+        set_param3_float( p3 );
+        set_param4_float( p4 );
+    }
     void LinuxFastCall::set_param1_64( ulong p ) {
         registers.set_rdi( p );
     }
@@ -93,6 +129,18 @@ namespace OS {
     void LinuxFastCall::set_param4_double( double p ) {
         registers.set_xmm3( p );
     }
+    void LinuxFastCall::set_param1_float( float p ) {
+        registers.set_xmm0_f( p );
+    }
+    void LinuxFastCall::set_param2_float( float p ) {
+        registers.set_xmm1_f( p );
+    }
+    void LinuxFastCall::set_param3_float( float p ) {
+        registers.set_xmm2_f( p );
+    }
+    void LinuxFastCall::set_param4_float( float p ) {
+        registers.set_xmm3_f( p );
+    }
     ulong LinuxFastCall::get_return_64() {
         return registers.get_rax();
     }
@@ -101,6 +149,14 @@ namespace OS {
     }
     double LinuxFastCall::get_return_double() {
         return registers.get_xmm0();
+    }
+    
+    float LinuxFastCall::get_return_float() {
+        return registers.get_xmm0_f();
+    }
+    
+    char LinuxFastCall::get_return_char() {
+        return ( char )registers.get_rax();
     }
     
     
@@ -144,6 +200,18 @@ namespace OS {
     }
     double LinuxFastCall::get_param4_double() {
         return registers.get_xmm3();
+    }
+    float LinuxFastCall::get_param1_float() {
+        return registers.get_xmm0_f();
+    }
+    float LinuxFastCall::get_param2_float() {
+        return registers.get_xmm1_f();
+    }
+    float LinuxFastCall::get_param3_float() {
+        return registers.get_xmm2_f();
+    }
+    float LinuxFastCall::get_param4_float() {
+        return registers.get_xmm3_f();
     }
     void LinuxFastCall::set_return_64( ulong r ) {
         registers.set_rax( r );

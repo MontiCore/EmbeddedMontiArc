@@ -7,45 +7,12 @@
 #include "instruction_time.h"
 #include "symbols.h"
 #include "os.h"
+#include "caching.h"
 
-#include <Zydis/Zydis.h>
 
 struct InternalComputer;
 
-struct ComputerTime {
-    bool use_time;
-    ulong pico_time;
-    ulong micro_time;
-    ulong cpu_frequency;
-    ulong tick_time_pico;
-    
-    ComputerTime() : micro_time( 0 ), cpu_frequency( 1000000 ), pico_time( 0 ), tick_time_pico( 0 ), use_time( false ) {}
-    
-    void set_frequency( ulong cpu_frequency ) {
-        this->cpu_frequency = cpu_frequency;
-        this->tick_time_pico = 1000000000000UL / cpu_frequency;
-    }
-    
-    void add_ticks( ulong tick_count ) {
-        if ( use_time )
-            add_pico_time( tick_time_pico * tick_count );
-    }
-    
-    void add_pico_time( ulong delta ) {
-        if ( use_time ) {
-            pico_time += delta;
-            if ( pico_time >= 1000000 ) {
-                micro_time += pico_time / 1000000;
-                pico_time %= 1000000;
-            }
-        }
-    }
-    
-    void reset() {
-        pico_time = 0;
-        micro_time = 0;
-    }
-};
+
 
 /**
     @class Computer
@@ -109,6 +76,8 @@ struct Computer {
     ComputerDebug debug;
     
     ComputerTime time;
+    MemoryModel mem_model;
+    
     
     MemoryRange io_slot;
     
@@ -136,10 +105,8 @@ struct Computer {
     void cb_mem( MemAccess type, ulong addr, uint size, slong value );
     void cb_mem_err( MemAccess type, MemAccessError err, ulong addr, uint size, slong value );
     
-    static MemAccess get_mem_access( uint type );
-    static MemAccessError get_mem_err( uint type );
     
-    static bool exit_callback( Computer &inter, SysCall &syscall );
+    static bool exit_callback( Computer &inter );
     void exit_emulation();
     ulong exit_code_addr;
     bool stopped;

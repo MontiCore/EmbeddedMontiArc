@@ -21,7 +21,7 @@ namespace OS {
     };
     
     
-    struct DLLLoader {
+    struct DllLoader {
         void *pe;
         Array<char> file;
         std::string file_name;
@@ -37,8 +37,8 @@ namespace OS {
         Array<SectionInfo> sections;
         uint section_pos;
         
-        DLLLoader() : pe( nullptr ), sys_calls( nullptr ), mem( nullptr ), symbols( nullptr ) {}
-        ~DLLLoader() {
+        DllLoader() : pe( nullptr ), sys_calls( nullptr ), mem( nullptr ), symbols( nullptr ) {}
+        ~DllLoader() {
             drop();
         }
         

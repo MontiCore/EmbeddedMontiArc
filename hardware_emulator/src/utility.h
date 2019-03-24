@@ -516,8 +516,6 @@ class Array < bool> {
 
 
 
-
-
 namespace ConsoleColor {
     #if defined _WIN32 || defined _WIN64
     enum ColorValue {
@@ -734,3 +732,30 @@ struct MeanAvgCollector {
         sum = 0;
     }
 };
+
+
+
+
+
+struct Library {
+    enum class OsType {
+        WINDOWS,
+        LINUX
+    };
+    #if defined _WIN32 || defined _WIN64
+    static constexpr OsType type = OsType::WINDOWS;
+    #else
+    static constexpr OsType type = OsType::LINUX;
+    #endif
+    void *handle;
+    Library() : handle( nullptr ) {}
+    bool init( const char *name );
+    bool loaded() {
+        return handle != nullptr;
+    }
+    
+    void *get_function( const char *name );
+    
+    ~Library();
+};
+

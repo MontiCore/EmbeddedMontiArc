@@ -33,6 +33,14 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_free
 
 /*
  * Class:     simulator_integration_HardwareEmulatorInterface
+ * Method:    execute_one
+ * Signature: (IJ)V
+ */
+JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_execute_1one
+  (JNIEnv *, jobject, jint, jlong);
+
+/*
+ * Class:     simulator_integration_HardwareEmulatorInterface
  * Method:    start_tick
  * Signature: (J)V
  */

@@ -186,8 +186,8 @@ void OS::Windows::init( Computer &computer ) {
     } FILE;
     FILE io_files[3] = {};
     io_stdin = section_stack->get_annotated( sizeof( FILE ), "io_stdin", Annotation::OBJECT );
-    io_stdout = section_stack->get_annotated( sizeof( FILE ), "io_stdin", Annotation::OBJECT );
-    io_stderr = section_stack->get_annotated( sizeof( FILE ), "io_stdin", Annotation::OBJECT );
+    io_stdout = section_stack->get_annotated( sizeof( FILE ), "io_stdout", Annotation::OBJECT );
+    io_stderr = section_stack->get_annotated( sizeof( FILE ), "io_stderr", Annotation::OBJECT );
     computer.memory.write_memory( io_stdin, &io_files[0] );
     computer.memory.write_memory( io_stdout, &io_files[1] );
     computer.memory.write_memory( io_stderr, &io_files[2] );
@@ -245,6 +245,42 @@ namespace OS {
         set_param3_32( p3 );
         set_param4_32( p4 );
     }
+    void WindowsFastCall::set_params_double( double p1 ) {
+        set_param1_double( p1 );
+    }
+    void WindowsFastCall::set_params_double( double p1, double p2 ) {
+        set_param1_double( p1 );
+        set_param2_double( p2 );
+    }
+    void WindowsFastCall::set_params_double( double p1, double p2, double p3 ) {
+        set_param1_double( p1 );
+        set_param2_double( p2 );
+        set_param3_double( p3 );
+    }
+    void WindowsFastCall::set_params_double( double p1, double p2, double p3, double p4 ) {
+        set_param1_double( p1 );
+        set_param2_double( p2 );
+        set_param3_double( p3 );
+        set_param4_double( p4 );
+    }
+    void WindowsFastCall::set_params_float( float p1 ) {
+        set_param1_float( p1 );
+    }
+    void WindowsFastCall::set_params_float( float p1, float p2 ) {
+        set_param1_float( p1 );
+        set_param2_float( p2 );
+    }
+    void WindowsFastCall::set_params_float( float p1, float p2, float p3 ) {
+        set_param1_float( p1 );
+        set_param2_float( p2 );
+        set_param3_float( p3 );
+    }
+    void WindowsFastCall::set_params_float( float p1, float p2, float p3, float p4 ) {
+        set_param1_float( p1 );
+        set_param2_float( p2 );
+        set_param3_float( p3 );
+        set_param4_float( p4 );
+    }
     void WindowsFastCall::set_param1_64( ulong p ) {
         registers.set_rcx( p );
     }
@@ -270,16 +306,28 @@ namespace OS {
         registers.set_r9( p );
     }
     void WindowsFastCall::set_param1_double( double p ) {
-        registers.set_rcx( *( ulong * )&p );
+        registers.set_xmm0( p );
     }
     void WindowsFastCall::set_param2_double( double p ) {
-        registers.set_rdx( *( ulong * )&p );
+        registers.set_xmm1( p );
     }
     void WindowsFastCall::set_param3_double( double p ) {
-        registers.set_r8( *( ulong * )&p );
+        registers.set_xmm2( p );
     }
     void WindowsFastCall::set_param4_double( double p ) {
-        registers.set_r9( *( ulong * )&p );
+        registers.set_xmm3( p );
+    }
+    void WindowsFastCall::set_param1_float( float p ) {
+        registers.set_xmm0_f( p );
+    }
+    void WindowsFastCall::set_param2_float( float p ) {
+        registers.set_xmm1_f( p );
+    }
+    void WindowsFastCall::set_param3_float( float p ) {
+        registers.set_xmm2_f( p );
+    }
+    void WindowsFastCall::set_param4_float( float p ) {
+        registers.set_xmm3_f( p );
     }
     ulong WindowsFastCall::get_return_64() {
         return registers.get_rax();
@@ -288,8 +336,15 @@ namespace OS {
         return ( uint )registers.get_rax();
     }
     double WindowsFastCall::get_return_double() {
-        auto v = registers.get_rax();
-        return *( double * )&v;
+        return registers.get_xmm0();
+    }
+    
+    float WindowsFastCall::get_return_float() {
+        return registers.get_xmm0_f();
+    }
+    
+    char WindowsFastCall::get_return_char() {
+        return ( char )registers.get_rax();
     }
     
     
@@ -319,20 +374,28 @@ namespace OS {
         return ( uint )registers.get_r9();
     }
     double WindowsFastCall::get_param1_double() {
-        auto v = registers.get_rcx();
-        return *( double * ) &v;
+        return registers.get_xmm0();
     }
     double WindowsFastCall::get_param2_double() {
-        auto v = registers.get_rdx();
-        return *( double * )&v;
+        return registers.get_xmm1();
     }
     double WindowsFastCall::get_param3_double() {
-        auto v = registers.get_r8();
-        return *( double * )&v;
+        return registers.get_xmm2();
     }
     double WindowsFastCall::get_param4_double() {
-        auto v = registers.get_r9();
-        return *( double * )&v;
+        return registers.get_xmm3();
+    }
+    float WindowsFastCall::get_param1_float() {
+        return registers.get_xmm0_f();
+    }
+    float WindowsFastCall::get_param2_float() {
+        return registers.get_xmm1_f();
+    }
+    float WindowsFastCall::get_param3_float() {
+        return registers.get_xmm2_f();
+    }
+    float WindowsFastCall::get_param4_float() {
+        return registers.get_xmm3_f();
     }
     void WindowsFastCall::set_return_64( ulong r ) {
         registers.set_rax( r );
@@ -341,6 +404,6 @@ namespace OS {
         registers.set_rax( r );
     }
     void WindowsFastCall::set_return_double( double r ) {
-        registers.set_rax( *( ulong * )&r );
+        registers.set_xmm0( r );
     }
 }
