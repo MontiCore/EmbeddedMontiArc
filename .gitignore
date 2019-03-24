@@ -1,4 +1,4 @@
-build
+build/
 bindings
 hardware-emulator-test.exe
 hardware_emulator/Release/
