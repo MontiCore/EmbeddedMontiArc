@@ -11,8 +11,12 @@ cd ..
 
 echo Cleaning Zydis
 cd zydis
-rm -r build
-cd ..
+rm -r Release
+rm -r Debug
+cd dependencies/zycore
+rm -r Release
+rm -r Debug
+cd ../../..
 
 echo Cleaning pe-parse
 cd pe-parse

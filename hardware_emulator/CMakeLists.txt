@@ -111,6 +111,8 @@ list(APPEND HARDWARE_EMU_INCLUDE_DIRS
   ../pe-parse/pe-parser-library/include
   ../zydis/include
   ../zydis/dependencies/zycore/include
+  "${JAVA_INCLUDE_PATH}"
+  "${JAVA_INCLUDE_PATH2}"
 )
 
 #Library dependencies
@@ -123,21 +125,23 @@ list(APPEND HARDWARE_EMU_LIBRARIES
 #Linux include/lib dirs and library dependencies
 if ( CMAKE_COMPILER_IS_GNUCC )
   list(APPEND HARDWARE_EMU_INCLUDE_DIRS
-    ../zydis/build
-    ../zydis/dependencies/zycore/build
-    "${JAVA_INCLUDE_PATH}"
-    "${JAVA_INCLUDE_PATH2}"
+    ../zydis/gnucc
   )
+  #If not using precompiled libraries: (or use 'build_dependencies' which copies the build libraries to 'libs')
+  #list(APPEND HARDWARE_EMU_LIB_DIRS
+  #  ../zydis/build
+  #  "../pe-parse/${CMAKE_BUILD_TYPE}/pe-parser-library"
+  #  ../unicorn
+  #  ../unicorn/qemu
+  #)
   list(APPEND HARDWARE_EMU_LIB_DIRS
-    ../zydis/build
-    "../pe-parse/${CMAKE_BUILD_TYPE}/pe-parser-library"
-    ../unicorn
-    ../unicorn/qemu
+    "libs/${CMAKE_BUILD_TYPE}"
   )
-  message("Added lib dir: \"../pe-parse/${CMAKE_BUILD_TYPE}/pe-parser-library\"")
+  #message("Added lib dir: \"../pe-parse/${CMAKE_BUILD_TYPE}/pe-parser-library\"")
   list(APPEND HARDWARE_EMU_LIBRARIES
     pthread
     stdc++fs
+    dl
   )
 endif()
 
@@ -145,9 +149,8 @@ endif()
 if ( MSVC )
   list(APPEND HARDWARE_EMU_INCLUDE_DIRS
     ../zydis/msvc
-    "${JAVA_INCLUDE_PATH}"
-    "${JAVA_INCLUDE_PATH2}"
   )
+  #If not using precompiled libraries: (or use 'build_dependencies' which copies the build libraries to 'libs')
   #list(APPEND HARDWARE_EMU_LIB_DIRS
   #  ../zydis/build
   #  ../pe-parse/build/pe-parser-library

@@ -103,7 +103,7 @@ namespace OS {
         registers.set_rdx( p );
     }
     void LinuxFastCall::set_param4_64( ulong p ) {
-        Log::err << "TODO set_param4_64() LinuxFastCall\n";
+        registers.set_rcx(p);
     }
     void LinuxFastCall::set_param1_32( uint p ) {
         registers.set_rdi( p );
@@ -115,7 +115,7 @@ namespace OS {
         registers.set_rdx( p );
     }
     void LinuxFastCall::set_param4_32( uint p ) {
-        Log::err << "TODO set_param4_32() LinuxFastCall\n";
+        registers.set_rcx(p);
     }
     void LinuxFastCall::set_param1_double( double p ) {
         registers.set_xmm0( p );
@@ -173,8 +173,7 @@ namespace OS {
         return registers.get_rdx();
     }
     ulong LinuxFastCall::get_param4_64() {
-        Log::err << "TODO get_param4_64() LinuxFastCall\n";
-        return 0;
+        return registers.get_rcx();
     }
     uint LinuxFastCall::get_param1_32() {
         return ( uint ) registers.get_rdi();
@@ -186,8 +185,7 @@ namespace OS {
         return ( uint )registers.get_rdx();
     }
     uint LinuxFastCall::get_param4_32() {
-        Log::err << "TODO get_param4_32() LinuxFastCall\n";
-        return 0;
+        return (uint) registers.get_rcx();
     }
     double LinuxFastCall::get_param1_double() {
         return registers.get_xmm0();

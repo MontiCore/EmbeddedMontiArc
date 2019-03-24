@@ -44,14 +44,14 @@ linux_build:
   
   - cd zydis
   - cd dependencies/zycore
-  - mkdir build
-  - cd build
-  - cmake -G "Unix Makefiles" ../
+  - mkdir Release
+  - cd Release
+  - cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../
   - make
   - cd ../../..
-  - mkdir build
-  - cd build
-  - cmake -G "Unix Makefiles" ../
+  - mkdir Release
+  - cd Release
+  - cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../
   - make
   - cd ..
   - cd ..

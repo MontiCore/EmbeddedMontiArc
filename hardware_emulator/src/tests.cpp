@@ -81,30 +81,30 @@ bool test_funccalling_sample( OS::OS *os ) {
     TEST_FUNCCALL( int_one, 32, int32_t, 24 );
     TEST_FUNCCALL( int_two, 32, int32_t, 24, 13 );
     TEST_FUNCCALL( int_three, 32, int32_t, 24, 13, 11 );
-    TEST_FUNCCALL( int_four, 32, int32_t, 24, 13, 11, 8 );
+    TEST_FUNCCALL( int_four, 32, int32_t, 24, 13, 11, 31 );
+    /* computer.debug.debug = true;
+    computer.debug.d_code = true;
+    computer.debug.d_mem = true;
+    computer.debug.d_reg_update = true;
+    computer.debug.d_syscalls = true; */
     
     TEST_FUNCCALL( long_one, 64, int64_t, 24 );
     TEST_FUNCCALL( long_two, 64, int64_t, 24, 13 );
     TEST_FUNCCALL( long_three, 64, int64_t, 24, 13, 11 );
-    TEST_FUNCCALL( long_four, 64, int64_t, 24, 13, 11, 8 );
+    TEST_FUNCCALL( long_four, 64, int64_t, 24, 13, 11, 31 );
     
     
     TEST_FUNCCALL( float_one, float, float, 24 );
     
-    /*computer.debug.debug = true;
-    computer.debug.d_code = true;
-    computer.debug.d_mem = true;
-    computer.debug.d_reg_update = true;
-    computer.debug.d_syscalls = true;*/
     
     TEST_FUNCCALL( float_two, float, float, 24, 13 );
     TEST_FUNCCALL( float_three, float, float, 24, 13, 11 );
-    TEST_FUNCCALL( float_four, float, float, 24, 13, 11, 8 );
+    TEST_FUNCCALL( float_four, float, float, 24, 13, 11, 31 );
     
     TEST_FUNCCALL( double_one, double, double, 24 );
     TEST_FUNCCALL( double_two, double, double, 24, 13 );
     TEST_FUNCCALL( double_three, double, double, 24, 13, 11 );
-    TEST_FUNCCALL( double_four, double, double, 24, 13, 11, 8 );
+    TEST_FUNCCALL( double_four, double, double, 24, 13, 11, 31 );
     
 #undef TEST_FUNCCALL
     

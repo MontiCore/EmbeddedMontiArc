@@ -191,9 +191,16 @@ Library::~Library() {
 
 #else
 
+#include <dlfcn.h>
+
 bool Library::init( const char *name ) {
-    handle = dlopen( name, RTLD_NOW );
-    return loaded();
+    auto n = name + std::string(".so");
+    handle = dlopen( n.c_str(), RTLD_NOW );
+    if (!loaded()){
+        Log::err << Log::tag << "dlopen() error: " << dlerror() << "\n";
+        return false;
+    }
+    return true;
 }
 
 void *Library::get_function( const char *name ) {
