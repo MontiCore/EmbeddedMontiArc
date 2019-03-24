@@ -1,5 +1,11 @@
 build
 bindings
 hardware-emulator-test.exe
-#Debug
-#Release
+hardware_emulator/Release/
+hardware_emulator/Debug/
+pe-parse/Debug/
+pe-parse/Release/
+zydis/Debug/
+zydis/Release/
+zydis/dependencies/zycore/Debug/
+zydis/dependencies/zycore/Release/
