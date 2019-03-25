@@ -1,19 +1,19 @@
 package de.monticore.lang.montisim.util.types;
 
 public class Coordinate {
-  private float x;
-  private float y;
+  private float latitude;
+  private float longitude;
 
-  public Coordinate(float x, float y) {
-    this.x = x;
-    this.y = y;
+  public Coordinate(float latitude, float longitude) {
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
 
-  public float getX() {
-    return x;
+  public float getLatitude() {
+    return latitude;
   }
 
-  public float getY() {
-    return y;
+  public float getLongitude() {
+    return longitude;
   }
 }

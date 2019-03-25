@@ -524,10 +524,10 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
 
   public void visit(ASTPedestrians node) {
     final PedestrianSymbol symbol = new PedestrianSymbol("pedestrian",
-            new Pedestrian(node.getStartX().getNumber().get().floatValue(),
-                    node.getStartY().getNumber().get().floatValue(),
-                    node.getDestX().getNumber().get().floatValue(),
-                    node.getDestY().getNumber().get().floatValue(),
+            new Pedestrian(node.getStartLat().getNumber().get().floatValue(),
+                    node.getStartLong().getNumber().get().floatValue(),
+                    node.getDestLat().getNumber().get().floatValue(),
+                    node.getDestLong().getNumber().get().floatValue(),
                     nullOrFloat(node.getStartZOpt()),
                     nullOrFloat(node.getDestZOpt())
                     ));
@@ -537,10 +537,10 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   public void visit(ASTExplicitVehicle node) {
     final ExplicitVehicleSymbol symbol = new ExplicitVehicleSymbol("explicit_vehicle",
             new ExplicitVehicle(node.getName(),
-                    node.getStartX().getNumber().get().floatValue(),
-                    node.getStartY().getNumber().get().floatValue(),
-                    node.getDestX().getNumber().get().floatValue(),
-                    node.getDestY().getNumber().get().floatValue(),
+                    node.getStartLat().getNumber().get().floatValue(),
+                    node.getStartLong().getNumber().get().floatValue(),
+                    node.getDestLat().getNumber().get().floatValue(),
+                    node.getDestLong().getNumber().get().floatValue(),
                     node.getStartRot().getNumber().get().floatValue(),
                     nullOrFloat(node.getDestZOpt())
     ));
@@ -548,11 +548,11 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   }
   public void visit(ASTPathedVehicle node) {
     final PathedVehicleSymbol symbol = new PathedVehicleSymbol("pathed_vehicle",
-            new PathedVehicle(node.getStartX().getNumber().get().floatValue(),
-                    node.getStartY().getNumber().get().floatValue(),
+            new PathedVehicle(node.getStartLat().getNumber().get().floatValue(),
+                    node.getStartLong().getNumber().get().floatValue(),
                     new NumberUnit(node.getSpawnRadius()),
-                    node.getDestX().getNumber().get().floatValue(),
-                    node.getDestY().getNumber().get().floatValue(),
+                    node.getDestLat().getNumber().get().floatValue(),
+                    node.getDestLong().getNumber().get().floatValue(),
                     new NumberUnit(node.getDestRadius()),
                     nullOrFloat(node.getAmountOpt())
             ));
@@ -561,10 +561,10 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   public void visit(ASTRandomVehicle node) {
     final RandomVehicleSymbol symbol = new RandomVehicleSymbol("random_vehicle",
               new RandomVehicle(node.getAmount().getNumber().get().floatValue(),
-                      nullOrFloat(node.getStartXOpt()),
-                      nullOrFloat(node.getStartYOpt()),
-                      nullOrFloat(node.getDestXOpt()),
-                      nullOrFloat(node.getDestYOpt())
+                      nullOrFloat(node.getStartLatOpt()),
+                      nullOrFloat(node.getStartLongOpt()),
+                      nullOrFloat(node.getDestLatOpt()),
+                      nullOrFloat(node.getDestLongOpt())
                       ));
     addToScopeAndLinkWithNode(symbol, node);
   }

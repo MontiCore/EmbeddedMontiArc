@@ -8,13 +8,13 @@ public class PathedVehicle {
   private NumberUnit destRad;
   private Optional<Float> amount = Optional.empty();
 
-  public PathedVehicle(float startX, float startY, NumberUnit startRad, float destX, float destY, NumberUnit destRad) {
-    this.path = new Path2D(startX, startY, destX, destY);
+  public PathedVehicle(float startLat, float startLong, NumberUnit startRad, float destLat, float destLong, NumberUnit destRad) {
+    this.path = new Path2D(startLat, startLong, destLat, destLong);
     this.startRad = startRad;
     this.destRad = destRad;
   }
-  public PathedVehicle(float startX, float startY, NumberUnit startRad, float destX, float destY, NumberUnit destRad, Float amount) {
-    this.path = new Path2D(startX, startY, destX, destY);
+  public PathedVehicle(float startLat, float startLong, NumberUnit startRad, float destLat, float destLong, NumberUnit destRad, Float amount) {
+    this.path = new Path2D(startLat, startLong, destLat, destLong);
     this.startRad = startRad;
     this.destRad = destRad;
     if(amount != null) {

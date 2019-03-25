@@ -9,10 +9,10 @@ public class RandomVehicle {
   public RandomVehicle(float amount) {
     this.amount = amount;
   }
-  public RandomVehicle(float amount, Float startX, Float startY, Float destX, Float destY) {
+  public RandomVehicle(float amount, Float startLat, Float startLong, Float destLat, Float destLong) {
     this.amount = amount;
-    if(startX != null) {
-      this.path = Optional.of(new Path2D(startX, startY, destX, destY));
+    if(startLat != null) {
+      this.path = Optional.of(new Path2D(startLat, startLong, destLat, destLong));
     }
   }
 

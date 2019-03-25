@@ -1,7 +1,6 @@
 package de.monticore.lang.montisim.simlang;
 
 import de.monticore.lang.montisim.simlang.adapter.SimLangContainer;
-import de.monticore.lang.montisim.util.types.SimLangEnums;
 
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -83,27 +82,28 @@ public class SimLangContainerTest {
     assert adapter.getPedestrianDensity().get().getNUnit().get().getNumberUnit().equals("2.0");
 
     assert adapter.getPedestrians().isPresent();
-    assert adapter.getPedestrians().get().get(0).getStartX() == 10.10f;
-    assert adapter.getPedestrians().get().get(0).getStartY() == 10.0f;
+    assert adapter.getPedestrians().get().get(0).getStartLat() == 10.10f;
+    assert adapter.getPedestrians().get().get(0).getStartLong() == 10.0f;
     assert adapter.getPedestrians().get().get(0).getStartZ().get() == 10.0f;
-    assert adapter.getPedestrians().get().get(0).getDestX() == 0.0f;
-    assert adapter.getPedestrians().get().get(0).getDestY() == 20.0f;
+    System.out.println(adapter.getPedestrians().get().get(0).getDestLat());
+    assert adapter.getPedestrians().get().get(0).getDestLat() == 0.0f;
+    assert adapter.getPedestrians().get().get(0).getDestLong() == 20.0f;
     assert adapter.getPedestrians().get().get(0).getDestZ().get() == 0.0f;
 
     assert adapter.getExplicitVehicles().isPresent();
     assert adapter.getExplicitVehicles().get().get(0).getName().equals("car1");
-    assert adapter.getExplicitVehicles().get().get(0).getPath().getStartX() == -22.0f;
-    assert adapter.getExplicitVehicles().get().get(0).getPath().getStartY() == -34.0f;
-    assert adapter.getExplicitVehicles().get().get(0).getPath().getDestX() == -1.0f;
-    assert adapter.getExplicitVehicles().get().get(0).getPath().getDestY() == 0.0f;
+    assert adapter.getExplicitVehicles().get().get(0).getPath().getStartLat() == -22.0f;
+    assert adapter.getExplicitVehicles().get().get(0).getPath().getStartLong() == -34.0f;
+    assert adapter.getExplicitVehicles().get().get(0).getPath().getDestLat() == -1.0f;
+    assert adapter.getExplicitVehicles().get().get(0).getPath().getDestLong() == 0.0f;
     assert adapter.getExplicitVehicles().get().get(0).getStartRot() == 90.0f;
     assert adapter.getExplicitVehicles().get().get(0).getDestZ().get() == 10.0f;
 
     assert adapter.getPathedVehicles().isPresent();
-    assert adapter.getPathedVehicles().get().get(0).getPath().getStartX() == 123.0f;
-    assert adapter.getPathedVehicles().get().get(0).getPath().getStartY() == -94.0f;
-    assert adapter.getPathedVehicles().get().get(0).getPath().getDestX() == 1024.0f;
-    assert adapter.getPathedVehicles().get().get(0).getPath().getDestY() == 960.0f;
+    assert adapter.getPathedVehicles().get().get(0).getPath().getStartLat() == 123.0f;
+    assert adapter.getPathedVehicles().get().get(0).getPath().getStartLong() == -94.0f;
+    assert adapter.getPathedVehicles().get().get(0).getPath().getDestLat() == 1024.0f;
+    assert adapter.getPathedVehicles().get().get(0).getPath().getDestLong() == 960.0f;
     assert adapter.getPathedVehicles().get().get(0).getStartRad().getNumberUnit().equals("201.0");
     assert adapter.getPathedVehicles().get().get(0).getDestRad().getNumberUnit().equals("200.0");
 

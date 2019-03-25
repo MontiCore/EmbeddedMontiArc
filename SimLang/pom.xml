@@ -8,7 +8,7 @@
     <parent>
         <groupId>de.monticore.lang.montisim</groupId>
         <artifactId>SimulationLanguage</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>SimLang</artifactId>

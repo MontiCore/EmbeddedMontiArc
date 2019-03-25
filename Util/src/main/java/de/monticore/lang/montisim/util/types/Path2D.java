@@ -6,9 +6,9 @@ public class Path2D {
   private Point2D.Float start;
   private Point2D.Float dest;
 
-  public Path2D(float startX, float startY, float destX, float destY) {
-    this.start = new Point2D.Float(startX,startY);
-    this.dest = new Point2D.Float(destX,destY);
+  public Path2D(float startLat, float startLong, float destLat, float destLong) {
+    this.start = new Point2D.Float(startLat,startLong);
+    this.dest = new Point2D.Float(destLat,destLong);
   }
 
   public Point2D.Float getStart() {
@@ -19,16 +19,16 @@ public class Path2D {
     return dest;
   }
 
-  public float getStartX() {
+  public float getStartLat() {
     return this.start.x;
   }
-  public float getStartY() {
+  public float getStartLong() {
     return this.start.y;
   }
-  public float getDestX() {
+  public float getDestLat() {
     return this.dest.x;
   }
-  public float getDestY() {
+  public float getDestLong() {
     return this.dest.y;
   }
 }
