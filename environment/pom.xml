@@ -29,13 +29,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>environment</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 
     <!-- Repository for osm4j -->
     <repositories>
@@ -52,14 +52,14 @@
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>util</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </dependency>
 
         <!-- Dependency to commons -->
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </dependency>
 
         <dependency>
