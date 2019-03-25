@@ -63,7 +63,7 @@ public class LinearSplineDeterminator extends SplineDeterminator{
                 }
 
                 if(p.getY() < minY) {
-                    minY = p.getX();
+                    minY = p.getY();
                 }
 
                 if(p.getZ() < minZ) {

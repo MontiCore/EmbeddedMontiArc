@@ -25,8 +25,10 @@ import commons.map.IControllerNode;
 import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObject;
 import javafx.geometry.Point3D;
+import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.geometry.osmadapter.GeomStreet;
 import simulation.environment.pedestrians.PedestrianContainer;
+import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
 import java.util.List;
 
@@ -100,6 +102,20 @@ public interface World {
      * @return the Distance to the right border of the street for the right back wheel
      */
     public abstract Number getDistanceBackRightWheelToRightStreetBorder(IPhysicalVehicle v);
+
+    /**
+     * @param x x-Coordinate
+     * @param y y-Coordinate
+     * @param z z-Coordinate
+     * @return wether given cordinates correspond to a point on a street
+     */
+    boolean isPointOnStreet(double x, double y, double z);
+
+    /**
+     * @param v
+     * @return returns surface of the point corresponding to the given coordinate vector
+     */
+    EnvStreet.StreetPavements getSurfaceType(RealVector v);
 
     /**
      * @param o
