@@ -95,19 +95,19 @@ Definable once.
 Sets the amount of random pedestrians being spawned.
 Definable once.
 
-### "<p>" "(" [startX] "," [startY] ")" "->" "(" [destX] "," [destY] ("," [destZ])? ")"
+### "<p>" "(" [startLat] "," [startLong] ")" "->" "(" [destLat] "," [destLong] ("," [destZ])? ")"
 Creates a concrete pedestrian, who follows the given path.
 Definable arbitrarily often.
 
-### [vehicleName] "(" [startX] "," [startY] "," [startRot] ")" "->" "(" [destX] "," [destY] ("," [destZ])? ")"
+### [vehicleName] "(" [startLat] "," [startLong] "," [startRot] ")" "->" "(" [destLat] "," [destLong] ("," [destZ])? ")"
 Creates an instance of the given vehicle at the given coordinates, which will then follow the given path.
 Definable arbitrarily often.
 
-### "<v>" "(" [startX] "," [startY] "," [startRadius] ")" "->" "(" [destX] "," [destY] "," [destRadius] ")" ([NumberOfVehicles])?
+### "<v>" "(" [startLat] "," [startLong] "," [startRadius] ")" "->" "(" [destLat] "," [destLong] "," [destRadius] ")" ([NumberOfVehicles])?
 Creates random vehicles spawning somewhere within a circle at the given coordinates and radius, moving to somewhere within thge given destination circle.
 Definable arbitrarily often.
 
-### "<v>" [Number > 0] ("(" [startX] "," [startY] "," [destX] "," [destY] ")")?
+### "<v>" [Number > 0] ("(" [startLat] "," [startLong] "," [destLat] "," [destLong] ")")?
 Creates completely random vehicle spawns and destinations with optional avoidance of a given path.
 Definable arbitrarily often.
 

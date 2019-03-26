@@ -110,30 +110,30 @@ public class SymboltableTest {
 
     final Collection<PedestrianSymbol> peds = symtab.resolveMany("simlang.test.ASTTest.pedestrian", PedestrianSymbol.KIND);
     assert !peds.isEmpty();
-    assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getStartX() == 10.10f;
-    assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getStartY() == 10.0f;
+    assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getStartLat() == 10.10f;
+    assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getStartLong() == 10.0f;
     assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getStartZ().get() == 10f;
-    assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getDestX() == 0f;
-    assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getDestY() == 20f;
+    assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getDestLat() == 0f;
+    assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getDestLong() == 20f;
     assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getDestZ().get() == 0f;
 
     final Collection<ExplicitVehicleSymbol> exVe = symtab.resolveMany("simlang.test.ASTTest.explicit_vehicle", ExplicitVehicleSymbol.KIND);
     assert !exVe.isEmpty();
     assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getName().equals("car1");
-    assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getPath().getStartX() == -22f;
-    assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getPath().getStartY() == -34f;
+    assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getPath().getStartLat() == -22f;
+    assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getPath().getStartLong() == -34f;
     assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getStartRot() == 90f;
-    assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getPath().getDestX() == -1f;
-    assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getPath().getDestY() == 0f;
+    assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getPath().getDestLat() == -1f;
+    assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getPath().getDestLong() == 0f;
     assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getDestZ().get() == 10f;
 
     final Collection<PathedVehicleSymbol> paVe = symtab.resolveMany("simlang.test.ASTTest.pathed_vehicle", PathedVehicleSymbol.KIND);
     assert !paVe.isEmpty();
-    assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getPath().getStartX() == 123f;
-    assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getPath().getStartY() == -94f;
+    assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getPath().getStartLat() == 123f;
+    assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getPath().getStartLong() == -94f;
     assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getStartRad().getNumber() == 201f;
-    assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getPath().getDestX() == 1024f;
-    assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getPath().getDestY() == 960f;
+    assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getPath().getDestLat() == 1024f;
+    assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getPath().getDestLong() == 960f;
     assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getDestRad().getNumber() == 200f;
     assert !((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getAmount().isPresent();
 
@@ -144,10 +144,10 @@ public class SymboltableTest {
         //ok
       }
       else if(sym.getVehicle().getAmount() == 1234f) {
-        assert sym.getVehicle().getPath().get().getStartX()  == -150f;
-        assert sym.getVehicle().getPath().get().getStartY() == -150f;
-        assert sym.getVehicle().getPath().get().getDestX() == 500f;
-        assert sym.getVehicle().getPath().get().getDestY() == 600f;
+        assert sym.getVehicle().getPath().get().getStartLat()  == -150f;
+        assert sym.getVehicle().getPath().get().getStartLong() == -150f;
+        assert sym.getVehicle().getPath().get().getDestLat() == 500f;
+        assert sym.getVehicle().getPath().get().getDestLong() == 600f;
       }
       else {
         Log.error("Unaccounted for random vehicle symbol appeared.");

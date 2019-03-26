@@ -6,7 +6,7 @@
 
     <artifactId>SimulationLanguage</artifactId>
     <groupId>de.monticore.lang.montisim</groupId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>

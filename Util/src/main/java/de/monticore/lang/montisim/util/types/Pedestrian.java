@@ -3,24 +3,24 @@ package de.monticore.lang.montisim.util.types;
 import java.util.Optional;
 
 public class Pedestrian {
-  private float startX;
-  private float startY;
+  private float startLat;
+  private float startLong;
   private Optional<Float> startZ = Optional.empty();
-  private float destX;
-  private float destY;
+  private float destLat;
+  private float destLong;
   private Optional<Float> destZ = Optional.empty();
 
-  public Pedestrian(float startX, float startY, float destX, float destY) {
-    this.startX = startX;
-    this.startY = startY;
-    this.destX = destX;
-    this.destY = destY;
+  public Pedestrian(float startLat, float startLong, float destLat, float destLong) {
+    this.startLat = startLat;
+    this.startLong = startLong;
+    this.destLat = destLat;
+    this.destLong = destLong;
   }
-  public Pedestrian(float startX, float startY, float destX, float destY, Float startZ, Float destZ) {
-    this.startX = startX;
-    this.startY = startY;
-    this.destX = destX;
-    this.destY = destY;
+  public Pedestrian(float startLat, float startLong, float destLat, float destLong, Float startZ, Float destZ) {
+    this.startLat = startLat;
+    this.startLong = startLong;
+    this.destLat = destLat;
+    this.destLong = destLong;
 
     if(startZ != null) {
       this.startZ = Optional.of(startZ);
@@ -30,24 +30,24 @@ public class Pedestrian {
     }
   }
 
-  public float getStartX() {
-    return startX;
+  public float getStartLat() {
+    return startLat;
   }
 
-  public float getStartY() {
-    return startY;
+  public float getStartLong() {
+    return startLong;
   }
 
   public Optional<Float> getStartZ() {
     return startZ;
   }
 
-  public float getDestX() {
-    return destX;
+  public float getDestLat() {
+    return destLat;
   }
 
-  public float getDestY() {
-    return destY;
+  public float getDestLong() {
+    return destLong;
   }
 
   public Optional<Float> getDestZ() {
