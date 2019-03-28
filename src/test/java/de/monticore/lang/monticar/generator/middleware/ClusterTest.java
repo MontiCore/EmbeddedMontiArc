@@ -3,7 +3,7 @@ package de.monticore.lang.monticar.generator.middleware;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
-import de.monticore.lang.monticar.generator.middleware.clustering.ClusterFromTagsHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.ClusterFromTagsHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;

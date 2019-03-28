@@ -26,11 +26,6 @@
             <mirrorOf>external:*</mirrorOf>
             <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
         </mirror>
-        <mirror>
-            <id>icm-repository</id>
-            <mirrorOf>icm</mirrorOf>
-            <url>http://maven.icm.edu.pl/artifactory/repo/</url>
-        </mirror>
     </mirrors>
 
     <profiles>
@@ -59,12 +54,6 @@
                 <repository>
                     <id>central</id>
                     <url>http://central</url>
-                    <releases><enabled /></releases>
-                    <snapshots><enabled /></snapshots>
-                </repository>
-                <repository>
-                    <id>icm</id>
-                    <url>http://maven.icm.edu.pl/artifactory/repo/</url>
                     <releases><enabled /></releases>
                     <snapshots><enabled /></snapshots>
                 </repository>
