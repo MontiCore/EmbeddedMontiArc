@@ -26,10 +26,13 @@ void SystemCalls::handle_call( ulong addr ) {
     auto &note = *note_ptr;
     auto &call = sys_calls[( uint )note.param];
     computer->debug.debug_syscall( call, note.param );
-    if ( !call.supported() || !call.callback( *computer ) )
+    if ( !call.supported() || !call.callback( *computer ) ) {
+        if ( computer->debug.unsupported_syscalls() )
+            computer->debug.debug_unsupp_syscall( call );
         computer->func_call->set_return_64( 0 ); //No external syscall registered or syscall error.
-        
-    if ( !computer->stopped ) { //Do not change stack and instruction pointers if exit() was called on the unicorn engine (it cancels uc_emu_stop())
+    }
+    
+    if ( !computer->was_stopped() ) { //Do not change stack and instruction pointers if exit() was called on the unicorn engine (it cancels uc_emu_stop())
         //Return to code (simulate 'ret' code)
         auto ret_address = computer->stack.pop_long();
         computer->registers.set_rip( ret_address ); //Set instruction pointer to popped address

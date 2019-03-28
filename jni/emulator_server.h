@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     simulator_integration_HardwareEmulatorInterface
  * Method:    init
- * Signature: (Ljava/lang/String;)Z
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_simulator_integration_HardwareEmulatorInterface_init
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject, jstring, jstring);
 
 /*
  * Class:     simulator_integration_HardwareEmulatorInterface
@@ -57,18 +57,18 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_end_
 
 /*
  * Class:     simulator_integration_HardwareEmulatorInterface
- * Method:    querry
+ * Method:    query
  * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_querry
+JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_query
   (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     simulator_integration_HardwareEmulatorInterface
- * Method:    querry_autopilot
+ * Method:    query_autopilot
  * Signature: (ILjava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_querry_1autopilot
+JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_query_1autopilot
   (JNIEnv *, jobject, jint, jstring);
 
 /*
@@ -81,10 +81,10 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
 
 /*
  * Class:     simulator_integration_HardwareEmulatorInterface
- * Method:    querry_outputs
+ * Method:    query_outputs
  * Signature: (ILjava/util/HashMap;)V
  */
-JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_querry_1outputs
+JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_query_1outputs
   (JNIEnv *, jobject, jint, jobject);
 
 #ifdef __cplusplus

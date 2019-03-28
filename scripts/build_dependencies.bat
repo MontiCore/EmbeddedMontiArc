@@ -42,8 +42,9 @@ copy "pe-parse\build\pe-parser-library\Debug\pe-parser-library.pdb" "hardware_em
 
 copy "unicorn\build\Release\unicorn.lib" "hardware_emulator\libs\Release\unicorn.lib"
 copy "unicorn\build\qemu\Release\x86_64-softmmu.lib" "hardware_emulator\libs\Release\x86_64-softmmu.lib"
-copy "unicorn\build\Debug\unicorn.lib" "hardware_emulator\libs\Debug\unicorn.lib"
 copy "unicorn\build\qemu\Debug\x86_64-softmmu.lib" "hardware_emulator\libs\Debug\x86_64-softmmu.lib"
+copy "unicorn\build\qemu\Debug\x86_64-softmmu.pdb" "hardware_emulator\libs\Debug\x86_64-softmmu.pdb"
+copy "unicorn\build\Debug\unicorn.lib" "hardware_emulator\libs\Debug\unicorn.lib"
 copy "unicorn\build\Debug\unicorn.pdb" "hardware_emulator\libs\Debug\unicorn.pdb"
 
 copy "zydis\build\Release\Zydis.lib" "hardware_emulator\libs\Release\Zydis.lib"

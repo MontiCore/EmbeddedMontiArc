@@ -13,6 +13,8 @@ void LinuxCalls::add_linux_calls( SystemCalls &sys_calls ) {
     sys_calls.add_syscall( SysCall( "sqrt", mod, sqrt ), reason );
     sys_calls.add_syscall( SysCall( "sin", mod, sin ), reason );
     sys_calls.add_syscall( SysCall( "cos", mod, cos ), reason );
+    sys_calls.add_syscall( SysCall( "acos", mod, acos ), reason );
+    sys_calls.add_syscall( SysCall( "exp", mod, exp ), reason );
     sys_calls.add_syscall( SysCall( "log", mod, log ), reason );
     sys_calls.add_syscall( SysCall( "atan2", mod, atan2 ), reason );
     sys_calls.add_syscall( SysCall( "memcpy", mod, memcpy ), reason );
@@ -78,6 +80,22 @@ bool LinuxCalls::cos( Computer &computer ) {
     if ( computer.debug.syscalls() )
         Log::sys << "cos(" << v << ")\n";
     computer.func_call->set_return_double( ::cos( v ) );
+    return true;
+}
+
+bool LinuxCalls::acos( Computer &computer ) {
+    double v = computer.func_call->get_param1_double();
+    if ( computer.debug.syscalls() )
+        Log::sys << "acos(" << v << ")\n";
+    computer.func_call->set_return_double( ::acos( v ) );
+    return true;
+}
+
+bool LinuxCalls::exp( Computer &computer ) {
+    double v = computer.func_call->get_param1_double();
+    if ( computer.debug.syscalls() )
+        Log::sys << "exp(" << v << ")\n";
+    computer.func_call->set_return_double( ::exp( v ) );
     return true;
 }
 

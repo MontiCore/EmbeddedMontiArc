@@ -1,6 +1,12 @@
 #pragma once
 #include "computer/computer.h"
 
+/*
+    The structures implementing ProgramInterface provide a simple interface to
+    an program by resolving and storing the addresses of the functions
+    and providing proxy functions that handle the argument passing and calling of the
+    emulated function.
+*/
 struct ProgramInterface {
     Computer *computer;
     void init( Computer &computer ) {

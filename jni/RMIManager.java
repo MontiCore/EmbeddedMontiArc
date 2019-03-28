@@ -41,6 +41,6 @@ public interface RMIManager {
     public HashMap<String, Serializable> get_outputs(int id) throws RemoteException;
 
 
-    public String querry(String msg) throws RemoteException;
-    public String querry_autopilot(int id, String msg) throws RemoteException;
+    public String query(String msg) throws RemoteException;
+    public String query_autopilot(int id, String msg) throws RemoteException;
 }

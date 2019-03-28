@@ -66,7 +66,7 @@ bool OS::DllLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
     this->sys_calls = &sys_calls;
     this->mem = &mem;
     this->symbols = &symbols;
-    file_name = fn + ".dll";
+    file_name = fn;
     
     FileReader fr;
     if ( !fr.open( file_name ) ) {
@@ -120,7 +120,7 @@ void OS::DllLoader::dll_main( Computer &computer ) {
 
 
 
-void OS::DLLInfo::load_values( void *pe ) {
+void OS::DllLoader::DLLInfo::load_values( void *pe ) {
     if ( static_cast<peparse::parsed_pe *>( pe )->peHeader.nt.OptionalMagic == NT_OPTIONAL_32_MAGIC ) {
         base_address = GET_OH( pe, ImageBase );
         image_size = GET_OH( pe, SizeOfImage );

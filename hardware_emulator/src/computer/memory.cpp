@@ -253,7 +253,7 @@ void MemorySection::print_address_info( ulong virtual_address ) {
     Log::info << ":";
     Log::note << name;
     if ( file_address != virtual_address )
-        Log::white << to_hex( file_address, 16, true );
+        Log::white << "F:" << to_hex( file_address, 16, true );
     Log::info << "] ";
     print_annotation( virtual_address );
 }
@@ -470,11 +470,12 @@ void VirtualStack::init( Memory &mem, Registers &regs ) {
     stack_size = 0x1000 * 0x10;
     
     section = &mem.new_section(
-                  MemoryRange( ComputerLayout::STACK_ADDRESS, ( uint )stack_size ),
+                  MemoryRange( ComputerLayout::STACK_ADDRESS + ComputerLayout::STACK_MAX_SIZE - stack_size,
+                               ( uint )stack_size ),
                   "STACK", "System",
                   false, true, true
               );
-    stack_start = ComputerLayout::STACK_ADDRESS + stack_size - 0x100;
+    stack_start = ComputerLayout::STACK_ADDRESS + ComputerLayout::STACK_MAX_SIZE - 0x100;
     regs.set_rsp( stack_start );
     this->registers = &regs;
     regs.set_rsp( stack_start );

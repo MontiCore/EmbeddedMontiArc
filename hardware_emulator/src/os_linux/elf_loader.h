@@ -8,6 +8,11 @@
 
 namespace OS {
 
+    /*
+        The ELFLoader can load a Linux shared object into the computer memory and resolve its
+        symbols such as internal objects and system functions.
+        It also registers the function of the program in the Symbol table.
+    */
     struct ElfLoader {
         bool loaded;
         ElfFile elf;
@@ -18,14 +23,11 @@ namespace OS {
         Symbols *symbols;
         Memory *mem;
         
-        //ElfInfo info;
-        
         Array<SectionInfo> sections;
         uint section_pos;
         
         ElfLoader() : sys_calls( nullptr ), mem( nullptr ), loaded( false ), symbols( nullptr ) {}
         
-        //File without extension
         bool init( const std::string &file_name, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
         
         void elf_main( Computer &computer );

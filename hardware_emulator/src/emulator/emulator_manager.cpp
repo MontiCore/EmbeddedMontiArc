@@ -8,7 +8,8 @@ void worker( HardwareEmulator *emu, long long time_delta ) {
     emu->exec( time_delta );
 }
 
-bool EmulatorManager::init( const char *config ) {
+bool EmulatorManager::init( const char *config, const char *default_config ) {
+    this->default_config = default_config;
     available_threads = std::thread::hardware_concurrency();
     available_autopilots = "";
     
@@ -22,6 +23,7 @@ bool EmulatorManager::init( const char *config ) {
     }
     
     Log::info << Log::tag << "autopilots_folder path: " << path << "\n";
+    Log::info << Log::tag << "Default config:\n" << default_config;
     
     for ( const auto &entry : fs::directory_iterator( path ) ) {
         if ( entry.status().type() == fs::file_type::regular ) {
@@ -47,10 +49,12 @@ int EmulatorManager::alloc_emulator( const char *config ) {
     for ( auto i : urange( emulators.size() ) ) {
         if ( !emulators[i] ) {
             auto *emu = new HardwareEmulator();
-            auto res = emu->init( *this, config );
+            auto conf = default_config + config;
+            auto res = emu->init( *this, conf.c_str() );
             if ( res ) {
                 emulators[i] = std::unique_ptr<HardwareEmulator>( emu );
                 emulator_count++;
+                Log::info << Log::tag << "Emulator allocated with id " << i << "\n";
                 return i;
             }
             else {
@@ -64,6 +68,7 @@ int EmulatorManager::alloc_emulator( const char *config ) {
 }
 
 void EmulatorManager::free_emulator( int id ) {
+    Log::info << Log::tag << "Emulator " << id << " freed\n";
     emulator_count--;
     emulators[id].reset();
 }
@@ -82,7 +87,7 @@ void EmulatorManager::end_tick() {
     }
 }
 
-std::string EmulatorManager::querry( const char *msg ) {
+std::string EmulatorManager::query( const char *msg ) {
     MessageParser parser( msg );
     MessageBuilder builder;
     while ( parser.has_next() ) {

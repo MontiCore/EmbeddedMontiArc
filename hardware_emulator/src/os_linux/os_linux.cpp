@@ -12,7 +12,7 @@ namespace OS {
     
     
     bool Linux::load_file( const char *file ) {
-        if ( !elf.init( file, computer->sys_calls, computer->memory, computer->symbols ) )
+        if ( !elf.init( std::string( file ) +  ".so", computer->sys_calls, computer->memory, computer->symbols ) )
             return false;
         elf.elf_main( *computer );
         
@@ -103,7 +103,7 @@ namespace OS {
         registers.set_rdx( p );
     }
     void LinuxFastCall::set_param4_64( ulong p ) {
-        registers.set_rcx(p);
+        registers.set_rcx( p );
     }
     void LinuxFastCall::set_param1_32( uint p ) {
         registers.set_rdi( p );
@@ -115,7 +115,7 @@ namespace OS {
         registers.set_rdx( p );
     }
     void LinuxFastCall::set_param4_32( uint p ) {
-        registers.set_rcx(p);
+        registers.set_rcx( p );
     }
     void LinuxFastCall::set_param1_double( double p ) {
         registers.set_xmm0( p );
@@ -185,7 +185,7 @@ namespace OS {
         return ( uint )registers.get_rdx();
     }
     uint LinuxFastCall::get_param4_32() {
-        return (uint) registers.get_rcx();
+        return ( uint ) registers.get_rcx();
     }
     double LinuxFastCall::get_param1_double() {
         return registers.get_xmm0();

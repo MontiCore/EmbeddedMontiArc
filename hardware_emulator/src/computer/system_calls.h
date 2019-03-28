@@ -33,6 +33,9 @@ struct SysCall {
     Use get_syscall() to get a registered SysCall by module and name.
     Use add_syscall() to register a SysCall.
     Both return the virtual address of the function handle.
+
+    SysCalls can be registered without a callback managing the function. These are called
+    "unsupported system calls" and do nothing except returning 0.
 */
 struct Computer;
 struct SystemCalls {
@@ -56,7 +59,7 @@ struct SystemCalls {
     inline bool is_syscall( ulong addr ) {
         /*
         Check if the instruction is in the SystemCalls memory range. If so, it means 'call' (ASM) was called
-        with a registered sytem call function address.
+        with a registered sytem function address.
         */
         return section->address_range.contains( addr );
     }

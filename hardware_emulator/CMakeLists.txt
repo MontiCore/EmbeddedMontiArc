@@ -82,6 +82,8 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   src/os_linux/os_linux.cpp
   src/os_linux/linux_calls.h
   src/os_linux/linux_calls.cpp
+  
+  src/timetable/skylake.txt
 )
 
 #Source files for the test project

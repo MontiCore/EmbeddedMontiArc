@@ -75,9 +75,12 @@ void Computer::cb_code( ulong addr, uint size ) {
     if ( sys_calls.is_syscall( addr ) )
         sys_calls.handle_call( addr );
     else {
-        auto ticks = decoder.handle_instruction( addr, size );
+        ulong ticks;
+        bool no_val = decoder.handle_instruction( addr, size, ticks );
         auto m_time = mem_model.handle_access( MemAccess::FETCH, addr );
-        debug.debug_code( addr, size, ticks, time.tick_time_pico * ticks + m_time );
+        debug.debug_code( addr, size, ticks, time.cpu_tick_time_pico * ticks + m_time );
+        if ( no_val )
+            debug.debug_code_noval( addr, size );
     }
 }
 

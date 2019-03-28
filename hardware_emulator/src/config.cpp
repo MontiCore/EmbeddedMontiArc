@@ -16,27 +16,48 @@ MessageParser::MessageParser( const char *msg ) {
 }
 
 bool MessageParser::has_next() {
+    //Go to next line with content
+    while ( *next == ' ' || *next == '\t' || *next == '\n' )
+        ++next;
+    //Check if at end of message
     if ( *next == 0 )
         return false;
+        
     line_start = next;
-    while ( *next != 0 && *next != '=' && *next != '\n' )
+    //Search the command name
+    while ( *next != 0 && *next != '=' && *next != '\n' && *next != ' ' && *next != '\t' )
         ++next;
     if ( line_start == next )
-        return false;
+        return false; //no command before '='
+    cmd_size = ( uint )( next - line_start );
+    //line_start[0;cmd_size] is now the command name
+    
+    while ( *next == ' ' || *next == '\t' ) //Skip optional whitespace
+        ++next;
+    //Check if the line has parameters
     if ( *next == '=' )
         this->rest = next + 1;
     else
         this->rest = nullptr;
-    cmd_size = ( uint ) ( next - line_start );
+        
+    //Get the end of line
     while ( *next != 0 && *next != '\n' )
-        ++next;
-    if ( *next != 0 )
         ++next;
     return true;
 }
 
 bool MessageParser::is_cmd( const char *cmd ) {
     return str_equal( line_start, cmd_size, cmd );
+}
+
+bool MessageParser::cmd_starts_with( const char *cmd ) {
+    for ( uint i : urange( cmd_size ) ) {
+        if ( cmd[i] == '\0' )
+            return true;
+        if ( cmd[i] != line_start[i] )
+            return false;
+    }
+    return cmd[cmd_size] == '\0';
 }
 
 bool MessageParser::get_long( slong &target ) {
@@ -73,8 +94,12 @@ std::string MessageParser::get_string() {
     return res;
 }
 
+std::string MessageParser::get_cmd() {
+    return std::string( line_start, cmd_size );
+}
+
 void MessageParser::to_non_ws() {
-    while ( *rest == ' ' )
+    while ( *rest == ' ' || *rest == '\t' )
         ++rest;
 }
 

@@ -2,6 +2,28 @@
 #include "computer/registers.h"
 #include "computer/memory.h"
 
+/*
+    This interface must be implemented and registered in the computer by the OS emulations.
+    This interface abstracts how arguments are passed to functions and how the return value is read.
+
+    //A possible modification could be to have a non interface FunctionCalling object that has an
+    arrays containing the UC_X86_REG_* values of the register corresponding to a data type and argument position.
+    The OSs would then just have to fill the arrays with the correct register ids.
+    Ex:
+    uc_x86_reg integer_registers[] = { UC_X86_REG_RDI, UC_X86_REG_RSI, UC_X86_REG_RDX, UC_X86_REG_RCX }
+    for Linux
+    uc_x86_reg integer_registers[] = { UC_X86_REG_RCX, UC_X86_REG_RDX, UC_X86_REG_R8, UC_X86_REG_R9 }
+    for Windows
+
+    and
+    uc_x86_reg floating_point_registers[] = { UC_X86_REG_XMM0, UC_X86_REG_XMM1, UC_X86_REG_XMM2, UC_X86_REG_XMM3 }
+    uc_x86_reg floating_point_return_register = UC_X86_REG_XMM0;
+    uc_x86_reg integer_return_register = UC_X86_REG_RAX;
+    for both Linux and Windows
+
+    This interface might have to be updated/changed if new arguments appear in autopilots that are not passed by registers
+    but on the stack.
+*/
 struct FunctionCalling {
     //Caller
     virtual void set_params_64( ulong p1 ) = 0;
@@ -87,7 +109,9 @@ struct FunctionCalling {
 
 
 
-
+/*
+    This might be used by arguments that must be passed on the stack rather than through registers
+*/
 struct StackCall {
     Registers &registers;
     VirtualStack &stack;

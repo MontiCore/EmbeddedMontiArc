@@ -20,7 +20,9 @@ namespace Utility {
 
 
 #include <cstdint>
-
+/*
+    Short mnemonics for signed and unsigned integers
+*/
 using schar = int8_t;
 using sbyte = int8_t;
 using sshort = int16_t;
@@ -34,12 +36,12 @@ using uint = uint32_t;
 using ulong = uint64_t;
 
 /*
-Bit manipulation macros
-BIT(pos)            gives a number with the pos'th bit at 1
-isBit[High/Low]     check if the pos-th bit in var is high/low
-setBit[High/Low]    sets the pos-th bit in var high/low
-isFlagHigh          checks if a bit true in flag is also true in var
-setFlag[HighLow]    sets the bits true in flag as high/low in var
+    Bit manipulation macros
+    BIT(pos)            gives a number with the pos'th bit at 1
+    isBit[High/Low]     check if the pos-th bit in var is high/low
+    setBit[High/Low]    sets the pos-th bit in var high/low
+    isFlagHigh          checks if a bit true in flag is also true in var
+    setFlag[HighLow]    sets the bits true in flag as high/low in var
 */
 #define             BIT(pos)                ((ulong)1 << (pos))
 
@@ -91,13 +93,7 @@ struct AssertionFailureException : public std::exception {
 
 
 
-/*
 
-
-RANGE
-
-
-*/
 template<typename T>
 struct RangeIterator {
     T val;
@@ -113,7 +109,17 @@ struct RangeIterator {
         return other.val != val;
     }
 };
+/*
+    RANGE
 
+    Describes a range of numbers that implements the begin() and end() functions, which allows the range
+    to be used as follows in 'for' loops:
+
+    for (auto i : range<T>(1,4)){
+        ...
+    }
+
+*/
 template<typename T>
 class range {
     public:
@@ -132,8 +138,10 @@ class range {
         T m_start;
         T m_end;
 };
-//
-//template<typename T, typename V> Range( T, V )->Range<V>;
+
+/*
+    Mnemonics for various range iterator types
+*/
 using urange = range<uint>;
 using irange = range<sint>;
 using srange = range<sshort>;
@@ -153,15 +161,13 @@ using ucrange = range<uchar>;
 //Type definition for a unique_ptr referencing an array.
 template <typename T>
 using UniqueArray = std::unique_ptr<T[], std::default_delete<T[]>>;
-
-
-
-
-
 /*
-A Array is a static sized array for a given template type <T>, with the operator[] overloaded.
-Use setZero() to set all bytes (independent of type) to 0.
-Use begin() and end() return the iterator boundaries.
+    An Array is a static sized array for a given template type <T>, with the operator[] overloaded.
+    Use set_zero() to set all bytes (independent of type) to 0.
+    Use begin() and end() return the iterator boundaries. This means the Array can be used in for loops:
+    for(auto &e : array) {...}
+    It is non copyable.
+    It can be emptied with drop()
 */
 template<typename T>
 class Array {
@@ -291,7 +297,10 @@ class Array {
         bool empty() { return m_size == 0; }
 };
 
-
+/*
+    An ArraySlice proxies the content or a part of the content of an other array or array slice.
+    It overloads the operator[] and the iteration functions.
+*/
 template<typename T>
 class ArraySlice {
         T *ref;
@@ -398,7 +407,9 @@ class ArraySlice {
 
 
 
-
+/*
+    Optimization of the Array type for booleans: they are stored bitwise in 64 bit integers
+*/
 template<>
 class Array < bool> {
         class BoolMirror {
@@ -515,7 +526,14 @@ class Array < bool> {
 };
 
 
+/*
+    The functions and objects in this namespace allow the color formatting of the console output.
 
+    use ConsoleColor::Console::init() and ConsoleColor::Console::drop() at the start and end of the program
+    to ensure the coloring works under Windows.
+
+    ConsoleColor::Console::set_color(Color) will then change the color of the output for the next writes to the console.
+*/
 namespace ConsoleColor {
     #if defined _WIN32 || defined _WIN64
     enum ColorValue {
@@ -613,6 +631,12 @@ namespace ConsoleColor {
     
 }
 
+/*
+    The FileReader struct provides helper functions to open a file, verify that it was correctly opened and dump its content into an
+    Array object.
+    The file is closed once the content has been read to the array.
+    The read() function initiates the array with the size of the file and fills it with its content.
+*/
 struct FileReader {
     std::ifstream       file;
     bool open( std::string name ) {
@@ -641,11 +665,17 @@ struct FileReader {
     }
 };
 
-
+/*
+    This function undecorates the C++ style name decoration of library functions.
+    Only has an effect on Windows.
+*/
 bool undercorate_function_name( const std::string &name, Array<char> &buffer );
 
 #include <iomanip>
 
+/*
+    Returns a string containing the formatted hexadecimal representation of the input.
+*/
 inline std::string to_hex( ulong val, uchar size = 16, bool prefix = false ) {
     char buff[24];
     if ( size == 0 ) {
@@ -655,6 +685,8 @@ inline std::string to_hex( ulong val, uchar size = 16, bool prefix = false ) {
             sprintf( buff, "%" PRIX64,  val );
     }
     else {
+        if ( size > 16 )
+            size = 16;
         if ( prefix )
             sprintf( buff, "%#0*" PRIX64, size, val );
         else
@@ -662,7 +694,15 @@ inline std::string to_hex( ulong val, uchar size = 16, bool prefix = false ) {
     }
     return buff;
 }
+/*
+    The log struct can be used to print preformatted output to the console.
+    The different LogStreams available have different prefixes and colors.
+    The prefix has to be explicitely included using Log::tag
+    Use "\n" for new lines
 
+    Ex.
+    Log::err << Log::tag << "An error occured\n";
+*/
 struct Log {
         static ConsoleColor::Color current_color;
         struct TagStruct {};
@@ -712,7 +752,12 @@ struct Log {
         
 };
 
-
+/*
+    Allows to progressively add values together and get the mean average of
+    all of them.
+    The mean_avg() can be called anytime and will give the average of the values that were
+    registered with add().
+*/
 struct MeanAvgCollector {
     ulong count;
     ulong sum;
@@ -736,7 +781,16 @@ struct MeanAvgCollector {
 
 
 
+/*
+    Multi-platform wrapping of a dynamically loaded library.
+    init() will attempt to load a dynamic library from its name.
+    The OS tries to locate the library first within the working directory of the program
+    then in the system PATH.
+    A full path and name can also be used.
 
+    get_function() returns a pointer to the named function of the library or
+    nullptr on error.
+*/
 struct Library {
     enum class OsType {
         WINDOWS,
@@ -759,3 +813,142 @@ struct Library {
     ~Library();
 };
 
+/*
+Vector of length 2 and type <T>.
+Members are accessed through x and y or the operator[].
+Use length() to get the cartesian length of the vector.
+A vector supports component-wise operations (+, -, *, /, %) for scalar values
+and supports addition and substraction between vectors.
+*/
+template<typename T>
+struct vec2 {
+    union {
+        struct {
+            T x;
+            T y;
+        };
+        T data[2];
+        struct {
+            T min;
+            T max;
+        };
+    };
+    vec2<T>( T x, T y ) : x( x ), y( y ) {}
+    vec2<T>( T *data ) : x( data[0] ), y( data[1] ) {}
+    vec2<T>() {}
+    vec2<T>( T val ) : x( val ), y( val ) {}
+    
+    
+    vec2<T> operator+( const vec2<T> &add ) const {
+        return vec2<T>( x + add.x, y + add.y );
+    }
+    vec2<T> operator-( const vec2<T> &sub ) const {
+        return vec2<T>( x - sub.x, y - sub.y );
+    }
+    
+    vec2<T> &operator += ( const vec2<T> &add ) {
+        x += add.x;
+        y += add.y;
+        return *this;
+    }
+    vec2<T> &operator -= ( const vec2<T> &sub ) {
+        x -= sub.x;
+        y -= sub.y;
+        return *this;
+    }
+    
+    vec2<T> operator-() const {
+        return vec2<T>( -x, -y );
+    }
+    
+#define vec_scalar_op(OP) vec2<T> operator OP ( const T& val ) const { return vec2<T>(x OP val, y OP val); }
+    vec_scalar_op( * )
+    vec_scalar_op( / )
+    vec_scalar_op( + )
+    vec_scalar_op( - )
+    vec_scalar_op( % )
+#undef vec_scalar_op
+    
+#define vec_scalar_op(OP) vec2<T> &operator OP ( const T& val ) { x OP val; y OP val; return *this; }
+    vec_scalar_op( *= )
+    vec_scalar_op( /= )
+    vec_scalar_op( += )
+    vec_scalar_op( -= )
+    vec_scalar_op( %= )
+#undef vec_scalar_op
+    
+    T length() const {
+        return ( T )sqrt( x * x + y * y );
+    }
+    inline T &operator[]( uint i ) {
+        throw_assert( i < 2, "Vector data access param too big" );
+        return data[i];
+    }
+    inline const T &operator[]( uint i ) const {
+        throw_assert( i < 2, "Vector data access param too big" );
+        return data[i];
+    }
+    
+    template<typename A>
+    explicit operator vec2<A>() const {
+        return vec2<A>( ( A )x, ( A )y );
+    }
+};
+
+
+
+using  dvec2 = vec2<double>;
+
+/*
+    dot product of 2 vectors
+*/
+template<typename T>
+inline T dot( const vec2<T> &v1, const vec2<T> &v2 ) {
+    return v1.x * v2.x + v1.y * v2.y;
+}
+
+/*
+    Returns the normalized <v> vector.
+    Returns the zero vector if given the zero vector.
+*/
+template<template<typename> typename U, typename T>
+inline U<T> normalize( const U<T> &v ) {
+    T l = v.length();
+    
+    if ( l == 0 )
+        return v;
+        
+    return v / l;
+}
+
+template<typename T>
+inline T min_t( const T a, const T b ) {
+    return a < b ? a : b;
+}
+template<typename T>
+inline T max_t( const T a, const T b ) {
+    return a > b ? a : b;
+}
+template<typename T>
+inline void maximize( T &target, const T val ) {
+    if ( val > target )
+        target = val;
+}
+template<typename T>
+inline void minimize( T &target, const T val ) {
+    if ( val < target )
+        target = val;
+}
+
+template<typename T>
+inline T abs_t( const T &val ) {
+    if ( val >= 0 )
+        return val;
+    return -val;
+}
+
+template<typename T>
+inline void minimize_abs( T &target, const T val ) {
+    if ( abs_t( val ) < abs_t( target ) )
+        target = val;
+}

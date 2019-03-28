@@ -8,6 +8,11 @@ enum class VALUE_TYPE {
     INT,
     DOUBLE_ARRAY
 };
+
+/*
+    This structure holds a data type and a buffer for the data type.
+    New data types require update of this buffer structure.
+*/
 struct FunctionValue {
     VALUE_TYPE type;
     struct {

@@ -9,18 +9,14 @@
 
 namespace OS {
 
-    struct DLLInfo {
-        ulong base_address;
-        ulong image_size;
-        ulong base_of_code;
-        ulong entry_point;
-        ulong section_align;
-        uint size_of_headers;
-        
-        void load_values( void *pe );
-    };
+
+
+    /*
+        This component is responsible for loading a DLL file into the computer memory
+        and expose the symbols (functions) of the file.
     
-    
+        dll_main() calls the entry point of DLLs.
+    */
     struct DllLoader {
         void *pe;
         Array<char> file;
@@ -32,7 +28,18 @@ namespace OS {
         Symbols *symbols;
         Memory *mem;
         
-        DLLInfo info;
+        struct DLLInfo {
+            ulong base_address;
+            ulong image_size;
+            ulong base_of_code;
+            ulong entry_point;
+            ulong section_align;
+            uint size_of_headers;
+            
+            void load_values( void *pe );
+        } info;
+        
+        
         
         Array<SectionInfo> sections;
         uint section_pos;
@@ -53,8 +60,5 @@ namespace OS {
         
         
     };
-    
-    
-    
     
 }

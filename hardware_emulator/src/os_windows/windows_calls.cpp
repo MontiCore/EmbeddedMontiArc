@@ -1,4 +1,5 @@
 #include "os_windows/windows_calls.h"
+#include <cmath>
 
 using namespace std;
 
@@ -28,6 +29,7 @@ void WindowsCalls::add_windows_calls( SystemCalls &sys_calls, OS::Windows &windo
     sys_calls.add_syscall( SysCall( "VirtualProtect", "KERNEL32.DLL", virtual_protect ), reason );
     sys_calls.add_syscall( SysCall( "malloc", "MSVCRT.DLL", malloc ), reason );
     sys_calls.add_syscall( SysCall( "memcpy", "MSVCRT.DLL", memcpy ), reason );
+    sys_calls.add_syscall( SysCall( "acos", "MSVCRT.DLL", acos ), reason );
 }
 
 bool WindowsCalls::load_library_exw( Computer &computer ) {
@@ -267,5 +269,10 @@ bool WindowsCalls::memcpy( Computer &computer ) {
         Log::sys << "memcpy(" << to_hex( target_pointer ) << ", " << to_hex( source_pointer ) << ", " << size << ")\n";
     auto r = computer.memory.read_memory( source_pointer, size );
     computer.memory.write_memory( target_pointer, size, r );
+    return true;
+}
+
+bool WindowsCalls::acos( Computer &computer ) {
+    computer.func_call->set_return_double( ::acos( computer.func_call->get_param1_double() ) );
     return true;
 }

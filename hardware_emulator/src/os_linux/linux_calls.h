@@ -1,8 +1,14 @@
 #pragma once
 #include "computer/computer.h"
 
+/*
+    The system function implementations for Linux.
+    If a new unregistered function calls is necessary for the functionning of the autopilot,
+    it has to be implemented and registered here.
+*/
 struct LinuxCalls {
 
+    //Registering function.
     static void add_linux_calls( SystemCalls &sys_calls );
     
     static bool malloc( Computer &computer );
@@ -12,6 +18,8 @@ struct LinuxCalls {
     static bool sqrt( Computer &computer );
     static bool sin( Computer &computer );
     static bool cos( Computer &computer );
+    static bool acos( Computer &computer );
+    static bool exp( Computer &computer );
     static bool log( Computer &computer );
     static bool atan2( Computer &computer );
     static bool memcpy( Computer &computer );

@@ -9,7 +9,6 @@ struct TestCase {
 };
 
 
-
 bool test_simple_dll();
 
 bool test_funccalling_dll();

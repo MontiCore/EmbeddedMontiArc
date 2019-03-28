@@ -5,6 +5,15 @@
 
 namespace OS {
 
+    /*
+        This is the implementation of the FunctionCalling interface for the Linux FastCall calling convention.
+    
+        The integer and pointer arguments are passed from left to right into the RDI, RSI, RDX, RCX registers
+        The return value for integers and pointers is passed in the RAX register.
+    
+        For floating-point arguments, they are placed inside the XMM0, XMM1, XMM2, ... registers.
+        The return value is in the XMM0 register.
+    */
     struct LinuxFastCall : public FunctionCalling {
         Registers &registers;
         
@@ -84,6 +93,13 @@ namespace OS {
         LinuxFastCall( Registers &registers ) : registers( registers ) {}
     };
     
+    /*
+        The Linux operating system implementation.
+    
+        It registers the LinuxFastCall implementation in the computer, registers the Linux system functions.
+    
+        load_file() loads a Linux program into the computer memory and exposes its functions.
+    */
     struct Linux : public OS {
         MemorySection *section;
         SectionStack *section_stack;

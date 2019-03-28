@@ -9,7 +9,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
     this->sys_calls = &sys_calls;
     this->mem = &mem;
     this->symbols = &symbols;
-    file_name = fn + ".so";
+    file_name = fn;
     
     module_name = "SYSTEM";
     
@@ -77,10 +77,17 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
                     if ( sym.st_value != 0 && ( t == ElfSymbolType::STT_FUNC || t == ElfSymbolType::STT_OBJECT ) ) {
                         auto type = t == ElfSymbolType::STT_FUNC ? Symbols::Symbol::EXPORT : Symbols::Symbol::OBJECT;
                         symbols.add_symbol( str_table.begin() + sym.st_name, type, sym.st_value );
+                        
+                        auto sec = mem.get_section( sym.st_value );
+                        if ( sec ) {
+                            auto &mem = *sec;
+                            if ( !mem.has_annotations() )
+                                mem.init_annotations();
+                            mem.annotations.add_annotation( sym.st_value, Annotation( str_table.begin() + sym.st_name, Annotation::OBJECT ) );
+                        }
                     }
                 }
             }
-            //OPTIONAL annotate all symbols
         }
         
         //Log::info << "Resolving imports\n";

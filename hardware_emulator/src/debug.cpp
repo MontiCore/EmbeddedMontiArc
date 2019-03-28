@@ -20,10 +20,17 @@ void ComputerDebug::debug_syscall( SysCall &sys_call, ulong id ) {
     Log::sys << " sys_call: " << to_string( id ) << " " << sys_call.module << "!" << sys_call.name << "\n";
 }
 
+void ComputerDebug::debug_unsupp_syscall( SysCall &sys_call ) {
+    if ( !unsupported_syscalls() )
+        return;
+    Log::sys << Log::tag << "Unsupported sys_call: " << sys_call.module << "!" << sys_call.name << "\n";
+}
+
 void ComputerDebug::debug_code( ulong addr, uint size, ulong ticks, ulong time ) {
     if ( !debug || !d_code )
         return;
         
+    //Print the register updates now, since there is no callback for after an instruction execution.
     if ( d_regs )
         registers->print_registers();
     else if ( d_reg_update )
@@ -34,6 +41,7 @@ void ComputerDebug::debug_code( ulong addr, uint size, ulong ticks, ulong time )
         // Print current instruction pointer.
         Log::code << to_hex( addr ) << "   ";
         
+        // Print binary instruction code.
         std::string res;
         for ( uint i : urange( size ) )
             res += to_hex( ( uint64_t )( decoder->code[i] ), 2 );
@@ -49,6 +57,13 @@ void ComputerDebug::debug_code( ulong addr, uint size, ulong ticks, ulong time )
     Log::info << "ticks: " << ticks << " (time: " << ( time / 1000 ) << "ns)    ";
     memory->print_annotation( addr );
     Log::info << "\n";
+}
+
+void ComputerDebug::debug_code_noval( ulong addr, uint size ) {
+    if ( decoder->succeeded ) {
+        ZydisFormatterFormatInstruction( &formatter, &decoder->instruction, buffer.begin(), buffer.size(), addr );
+        Log::code << "No time for instruction: " << buffer.begin() << "\n";
+    }
 }
 
 void ComputerDebug::debug_mem_err( MemAccess type, MemAccessError err, ulong addr, uint size, slong val ) {
@@ -67,6 +82,7 @@ void ComputerDebug::debug_mem_err( MemAccess type, MemAccessError err, ulong add
 void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val, ulong time ) {
     if ( !debug || !d_mem )
         return;
+    //Print memory access type
     Log::LogStream *os;
     switch ( type ) {
         case MemAccess::READ: os = &Log::mem_read; break;
@@ -76,10 +92,12 @@ void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val,
     }
     *os << Log::tag;
     
+    //Print memory address
     Log::info << to_hex( addr ) << "   ";
     if ( type == MemAccess::WRITE )
         *os << to_hex( val ) << "     ";
     else {
+        //Print memory content
         uint32_t s = size;
         uchar *data = ( uchar * ) memory->read_memory( addr, s );
         std::string res;

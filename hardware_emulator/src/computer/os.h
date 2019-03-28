@@ -3,6 +3,10 @@
 struct Computer;
 struct MemorySection;
 
+/*
+    This interface must be implemented by operating system emulations.
+    The init() function must register an implementation of the FunctionCalling interface.
+*/
 namespace OS {
 
     struct SectionInfo {

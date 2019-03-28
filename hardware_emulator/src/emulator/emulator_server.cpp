@@ -1,12 +1,22 @@
 #include "emulator_server.h"
 #include "emulator_manager.h"
 
+/*
+    Implementations of the JNI functions that are called from within the RMIModelServer
+
+    add_one_input (Java_simulator_integration_HardwareEmulatorInterface_add_1one_1input)
+    must be updated when new data types need to be converted from Java types to C types.
+    Same for query_outputs (Java_simulator_integration_HardwareEmulatorInterface_query_1outputs)
+    if new data types must be converted from C types to Java types.
+*/
 
 JNIEXPORT jboolean JNICALL Java_simulator_integration_HardwareEmulatorInterface_init
-( JNIEnv *jni, jobject, jstring string ) {
-    auto message = jni->GetStringUTFChars( string, 0 );
-    auto res = EmulatorManager::instance.init( message );
-    jni->ReleaseStringUTFChars( string, message );
+( JNIEnv *jni, jobject, jstring string1, jstring string2 ) {
+    auto config = jni->GetStringUTFChars( string1, 0 );
+    auto default_config = jni->GetStringUTFChars( string2, 0 );
+    auto res = EmulatorManager::instance.init( config, default_config );
+    jni->ReleaseStringUTFChars( string1, config );
+    jni->ReleaseStringUTFChars( string2, default_config );
     return res;
 }
 
@@ -38,18 +48,18 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_end_
     EmulatorManager::instance.end_tick();
 }
 
-JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_querry
+JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_query
 ( JNIEnv *jni, jobject, jstring string ) {
     auto message = jni->GetStringUTFChars( string, 0 );
-    auto res = EmulatorManager::instance.querry( message );
+    auto res = EmulatorManager::instance.query( message );
     jni->ReleaseStringUTFChars( string, message );
     return jni->NewStringUTF( res.c_str() );
 }
 
-JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_querry_1autopilot
+JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_query_1autopilot
 ( JNIEnv *jni, jobject, jint id, jstring string ) {
     auto message = jni->GetStringUTFChars( string, 0 );
-    auto res = EmulatorManager::instance.emulators[id]->querry( message );
+    auto res = EmulatorManager::instance.emulators[id]->query( message );
     jni->ReleaseStringUTFChars( string, message );
     return jni->NewStringUTF( res.c_str() );
 }
@@ -59,11 +69,11 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
     auto &emulator = *EmulatorManager::instance.emulators[id];
     auto port_name = jni->GetStringUTFChars( key, 0 );
     //Log::info << Log::tag << "Received input for port " << port_name;
-    int port_id = emulator.get_port_id( port_name );
+    auto port = emulator.get_port( port_name );
     jni->ReleaseStringUTFChars( key, port_name );
-    if ( port_id < 0 )
+    if ( port == nullptr )
         return;
-    auto &port_buffer = emulator.input_ports[port_id].buffer;
+    auto &port_buffer = port->buffer;
     if ( port_buffer.type == VALUE_TYPE::DOUBLE ) {
         static jclass cls = jni->GetObjectClass( value );
         static jmethodID doubleValue = jni->GetMethodID( cls, "doubleValue", "()D" );
@@ -91,19 +101,31 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
         if ( count <= 0 )
             return;
         double *data = jni->GetDoubleArrayElements( ( jdoubleArray )value, 0 );
-        /*Log::info << ": {";
-        for ( uint i : urange( count ) ) {
-            if ( i > 0 )
-                Log::info << ", ";
-            Log::info << data[i];
+        
+        /*bool same_val = count == port_buffer.double_array.size;
+        if ( same_val ) {
+            for ( uint i : urange( count ) ) {
+                if ( data[i] != port_buffer.double_array.data[i] ) {
+                    same_val = false;
+                    break;
+                }
+            }
         }
-        Log::info << "}\n";*/
+        if ( !same_val ) {
+            Log::info << emulator.input_ports[port_id].name << ": {";
+            for ( uint i : urange( count ) ) {
+                if ( i > 0 )
+                    Log::info << ", ";
+                Log::info << data[i];
+            }
+            Log::info << "}\n";
+        }*/
         port_buffer.init( count, data );
         jni->ReleaseDoubleArrayElements( ( jdoubleArray )value, data, 0 );
     }
 }
 
-JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_querry_1outputs
+JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_query_1outputs
 ( JNIEnv *env, jobject obj, jint id, jobject opaque_hashmap ) {
     static jclass cls = env->GetObjectClass( obj );
     if ( cls == 0 ) {

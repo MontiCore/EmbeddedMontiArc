@@ -6,11 +6,14 @@
 namespace OS {
 
     /*
-    A Simple wrapper for the Fast Call standard, putting the parameters of a function call in the
-    correct registers.
-    Also give the return value from function calls.
-    All the parameters and return values are 64bit unsigned longs, which are read/copied as-is
-    in the registers.
+        Implementation of the FunctionCalling interface that represents the Windows FastCall convention,
+        putting the parameters of a function call in the correct registers.
+    
+        The integer and pointer arguments are passed from left to right into the RCX, RDX, R8, R9 registers
+        The return value for integers and pointers is passed in the RAX register.
+    
+        For floating-point arguments, they are placed inside the XMM0, XMM1, XMM2, ... registers.
+        The return value is in the XMM0 register.
     */
     struct WindowsFastCall : public FunctionCalling {
         Registers &registers;
@@ -91,7 +94,10 @@ namespace OS {
         WindowsFastCall( Registers &registers ) : registers( registers ) {}
     };
     
-    
+    /*
+        The Windows component sets up the Windows system function, the WindowsFastCall implementation and various
+        objects needed by autopilots running under Windows.
+    */
     struct Windows : public OS {
         MemorySection *section;
         SectionStack *section_stack;

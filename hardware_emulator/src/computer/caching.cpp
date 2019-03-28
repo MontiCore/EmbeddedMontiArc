@@ -3,6 +3,11 @@
 
 
 
+void FifoCache::set_ticks( ComputerTime &time, uint read_ticks, uint write_ticks ) {
+    read_time = read_ticks * time.cpu_tick_time_pico;
+    write_time = write_ticks * time.cpu_tick_time_pico;
+}
+
 ulong FifoCache::read( ulong address, uint sec_id ) {
     auto &tags = *section_tags[sec_id];
     auto local_index = tags.range.get_local_index( address ) / block_size;

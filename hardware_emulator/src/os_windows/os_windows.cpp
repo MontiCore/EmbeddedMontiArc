@@ -198,7 +198,7 @@ void OS::Windows::init( Computer &computer ) {
 }
 
 bool OS::Windows::load_file( const char *file ) {
-    if ( !dll.init( file, computer->sys_calls, computer->memory, computer->symbols ) )
+    if ( !dll.init( std::string( file ) + ".dll", computer->sys_calls, computer->memory, computer->symbols ) )
         return false;
     dll.dll_main( *computer );
     

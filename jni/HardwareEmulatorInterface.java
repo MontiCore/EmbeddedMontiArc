@@ -40,16 +40,16 @@ public class HardwareEmulatorInterface implements RMIManager {
         try {// Load AutopilotAdapter.dll from libraryPath
             File b = new File(libraryPath);
             String absolute = b.getCanonicalPath();
-            init("autopilots_folder=" + absolute);
+            init("autopilots_folder=" + absolute, "");
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Could not initiate the Hardware Emulator");
-            init("");
+            init("", "");
         }
 
     }
 
-    private native boolean init(String config);
+    private native boolean init(String config, String default_config);
     @Override
     public native int alloc_autopilot(String config);
     @Override
@@ -68,7 +68,7 @@ public class HardwareEmulatorInterface implements RMIManager {
         }
         execute_one(id, time_delta);
         HashMap<String, Serializable> outputs = new HashMap<String, Serializable>();
-        querry_outputs(id, outputs);
+        query_outputs(id, outputs);
         return outputs;
     }
     private native void execute_one(int id, long time_delta);
@@ -82,18 +82,18 @@ public class HardwareEmulatorInterface implements RMIManager {
     @Override
     public HashMap<String, Serializable> get_outputs(int id) {
         HashMap<String, Serializable> outputs = new HashMap<String, Serializable>();
-		querry_outputs(id, outputs);
+		query_outputs(id, outputs);
 		return outputs;	
     }
 
     @Override
-    public native String querry(String msg);
+    public native String query(String msg);
     @Override
-    public native String querry_autopilot(int id, String msg);
+    public native String query_autopilot(int id, String msg);
     
     
     private native void add_one_input(int id, String key, Serializable value);
-    private native void querry_outputs(int id, HashMap<String, Serializable> opaque_hashmap);
+    private native void query_outputs(int id, HashMap<String, Serializable> opaque_hashmap);
     private void add_one_output(HashMap<String, Serializable> opaque_hashmap, String key, Serializable value) {
         opaque_hashmap.put(key, value);
     }

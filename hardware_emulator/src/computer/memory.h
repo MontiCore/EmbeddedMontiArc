@@ -12,8 +12,8 @@ enum class MemAccess {
 
 enum class MemAccessError {
     NONE,
-    PROT,
-    MAPPED
+    PROT, //The section does not allow the given memory access
+    MAPPED //The address is not mapped to a section
 };
 
 /*
@@ -45,17 +45,15 @@ struct MemoryRange {
 /*
     Annotations are used to mark memory addresses or ranges.
     An Annotation has a name, a type and an optional param (ulong).
-    The param is used for instance by the syscall system to give the index into the SysCall
-    array storing name and procedure of syscall implementations.
+    The param is used for example by the syscall system to give the index into the SysCall
+    array storing name and procedure of system function implementations.
 
     The HANDLE type is used by the Handles section.
-    The PROC (procedure) type is used by the syscall annotations.
-    The SYMBOL type is used to annotate System symbols and DLL symbols.
-    The LIBRARY_EXPORT type is used by the code loader to annotate (and thus list) exported
-    library functions (entry points for the different functions of a DLL/Archive)
+    The FUNC (function) type is used to mark function symbols (addresses).
+    The OBJECT type is used to mark object symbols from the system or the loaded program.
 
     Annotations can be easily search for by address (from the section) or by type and name
-    from the Annotations structure (which holds old the annotations).
+    from the Annotations structure (which holds all the annotations).
 */
 struct Annotation {
     enum Type {
@@ -74,8 +72,7 @@ struct Annotation {
 };
 
 /*
-    The AnnotationCollection structure is used by SectionAnnotations to store annotations
-    and is used to look through all annotations. (But it uses linear search).
+    The AnnotationTable structure is used by SectionAnnotations to store annotations.
 */
 struct AnnotationTable {
 
@@ -86,12 +83,13 @@ struct AnnotationTable {
     
     void init();
     
+    //Return the id into the table of the new annotation
     uint new_annotation( ulong base, Annotation const &annotation );
 };
 
 /*
-    A SectionAnnotations is to be used in combination with a MemorySection in order to annotated it.
-    An Annotation can be added for a address or an address range.
+    A SectionAnnotations is used in combination with a MemorySection in order to annotated it.
+    An Annotation can be added for an address or an address range.
     get_annotation() returns nullptr when no annotation exists at the given address.
 */
 struct SectionAnnotations {
@@ -116,16 +114,14 @@ struct Memory;
 
 /*
     A MemorySection represents a Virtual memory section in the Unicorn engine.
-    link() the section before using any method.
+    link() the section before using any method (performed by the Memory when allocating the section).
     Use init() to declare the section in virtual memory with given execute/read/write rights.
     Use upload() to write the data of the section to the engine memory. (Starting at section start)
+    Use set_mapped_range() to specify that the content of the section comes from a loaded file.
 
-    Use write() to write data to a custom location within the section.
-    Use read() to write data from a custom location within the section.
-    read() uses the Memory::read() function, which stores the result in a unique buffer, meaning subsequent
-    calls to read() invalidate the data from previous calls.
-
-    To get numbers from the byte stream use the Utility (namespace) functions.
+    The Annotations are not enabled by default. Use init_annotations() to do so.
+    print_annotation() will output annotation information about an address (if the address has an annotation)
+    print_address_info() will print information about the section before printing the information from print_annotation()
 */
 struct MemorySection {
     void *internal_uc;
@@ -177,9 +173,9 @@ struct MemorySection {
 
 
 /*
-    A Simple allocating Stack structure on top of a MemorySection.
-    get_range(size) allocates 'size' bytes on top of the stack.
-    get_8byte_slot() allocates a 8 byte slot on top of the stack.
+    A Simple allocation stack structure on top of a MemorySection.
+    get_annotated(size) allocates 'size' bytes on top of the stack.
+    get_annotated_8byte() allocates a 8 byte slot on top of the stack.
 */
 struct SectionStack {
         uint pos;
@@ -205,10 +201,11 @@ struct SectionStack {
 
 /*
     The Memory structure handles the creation of MemorySections, writing/reading memory,
-    helper read/write methods for strings and printing virtual addresses info for debuggin.
+    has helper read/write methods for strings and helper function for printing virtual
+    addresses info for debugging.
 
     MemorySections are created by the VirtualHeap, VirtualStack, SystemCalls, Handles and
-    by the DLL/Archive loader for each library section.
+    by the DLL/ELF loader for each library section.
 
     The read methods return the data in a unique buffer, so subsequent calls to any read method
     invalidates the data from the previous call.
@@ -263,8 +260,8 @@ struct Memory {
 
 /*
     The Handle structure creates a section in virtual memory where emulated system functions can allocate
-    dummy handles to give back to the calling code (the *address* of these dummies is returned, allowing to
-    catch a potential memory access is the handle section).
+    dummy handles to give back to the calling code (the virtual address of these dummies is returned, allowing to
+    catch a potential memory access in the handle section).
 */
 struct Handles {
     MemorySection *section;
@@ -278,12 +275,12 @@ struct Handles {
         return section != nullptr;
     }
     
-    //ulong get_handle( const char *name );
     ulong add_handle( const char *name );
 };
 
 /*
     VirtualHeap is a simple implementation of a heap used by the alloc/free system call functions.
+    It allocates in block of BLOCK_SIZE bytes.
 */
 struct VirtualHeap {
     MemorySection *section;
