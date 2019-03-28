@@ -1,7 +1,7 @@
 #ifndef MACMAKETEST_ADMAT_H
 #define MACMAKETEST_ADMAT_H
 
-#include<armadillo>
+#include<armadillo.h>
 #include<cppad/ipopt/solve.hpp>
 
 using namespace arma;
