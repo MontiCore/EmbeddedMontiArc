@@ -25,7 +25,7 @@
         <EMADL.version>0.2.4</EMADL.version>
         <EMADL2CPP.version>0.2.6-SNAPSHOT</EMADL2CPP.version>
         <embedded-montiarc-component-clustering.version>0.0.1-SNAPSHOT</embedded-montiarc-component-clustering.version>
-g
+
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
         <junit.version>4.12</junit.version>
