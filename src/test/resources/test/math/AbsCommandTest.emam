@@ -1,7 +1,0 @@
-package test.math;
-
-component AbsCommandTest{
-    implementation Math{
-        Q a = abs(-1);
-    }
-}

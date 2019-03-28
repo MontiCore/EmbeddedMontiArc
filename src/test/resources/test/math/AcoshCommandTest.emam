@@ -1,7 +1,0 @@
-package test.math;
-
-component AcoshCommandTest{
-    implementation Math{
-        Q a = acosh(0.5);
-    }
-}

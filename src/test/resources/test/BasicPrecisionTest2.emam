@@ -1,5 +1,0 @@
-package test;
-
-component BasicPrecisionTest2{
-    ports in N1 in1;
-}

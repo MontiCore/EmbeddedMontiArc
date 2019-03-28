@@ -1,9 +1,0 @@
-package test.math;
-
-component ColumnVectorMathSectionTest{
-
-    implementation Math{
-        Q^{10,1} a;
-    }
-
-}

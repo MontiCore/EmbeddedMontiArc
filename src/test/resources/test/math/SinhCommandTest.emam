@@ -1,7 +1,0 @@
-package test.math;
-
-component SinhCommandTest{
-    implementation Math{
-        Q a = sinh(0.5);
-    }
-}

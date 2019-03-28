@@ -1,5 +1,0 @@
-{
-  "outputDir": "target/cliTest/validConfigFile",
-  "rootModel": "tests.a.addComp",
-  "generators": ["cpp","roscpp"]
-}

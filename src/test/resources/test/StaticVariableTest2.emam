@@ -1,8 +1,0 @@
-package test;
-
-component StaticVariableTest2{
-    implementation Math{
-        static Q storage;
-        storage = 3;
-    }
-}

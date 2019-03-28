@@ -1,6 +1,0 @@
-package ba.struct;
-
-struct Point{
-    Q posX;
-    Q posY;
-}

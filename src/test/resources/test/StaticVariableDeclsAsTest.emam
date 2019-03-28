@@ -1,7 +1,0 @@
-package test;
-
-component StaticVariableDeclAsTest{
-    implementation Math{
-        static Q storage = 2;
-    }
-}
