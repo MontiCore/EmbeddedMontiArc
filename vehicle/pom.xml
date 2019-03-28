@@ -36,7 +36,7 @@
     <!-- OUR OWN PROJECT -->
     <artifactId>vehicle</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5-SNAPSHOT</version>
         </dependency>
 
         <!-- Vehicle has dependency to fmu-wrapper-->
