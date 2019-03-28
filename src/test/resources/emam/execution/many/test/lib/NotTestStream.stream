@@ -1,0 +1,7 @@
+package lib;
+
+stream NotTestStream for Not {
+    in1: true tick false;
+
+    out1: false tick true;
+}

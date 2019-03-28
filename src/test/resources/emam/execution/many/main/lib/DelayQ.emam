@@ -1,0 +1,13 @@
+package lib;
+
+component DelayQ (Q valueQ) {
+	port
+		in Q in1,
+		out Q out1;
+
+	implementation Math {
+        static T prev = valueQ;
+        out1 = prev;
+        prev = in1;
+	}
+}
