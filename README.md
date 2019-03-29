@@ -1,5 +1,5 @@
 For more information see Wiki:
-[Link](./wikis/home)
+[Link](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/maven-streamtest/wikis/home)
 
 ## Plugin Include 
 
