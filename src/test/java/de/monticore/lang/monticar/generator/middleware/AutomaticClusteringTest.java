@@ -46,7 +46,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         distributedTargetGenerator.setGenerateMiddlewareTags(true);
         distributedTargetGenerator.setGenerationTargetPath("target/generated-sources-clustering/pacman/src/");
 
-        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH_PACMAN), "cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(),"roscpp");
 
         distributedTargetGenerator.generate(flattendComponent,taggingResolver);
@@ -98,7 +98,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-clustering/ClusterToRosConnections/src/");
 
-        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(),"roscpp");
 
         distributedTargetGenerator.generate(componentInstanceSymbol,taggingResolver);

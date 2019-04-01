@@ -349,7 +349,7 @@ public class GenerationTest extends AbstractSymtabTest {
         DistributedTargetGenerator middlewareGenerator = new DistributedTargetGenerator();
         middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/lab/src/");
         //generator for component itself
-        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        middlewareGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         //generator for the ros connection
         middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
 
@@ -371,7 +371,7 @@ public class GenerationTest extends AbstractSymtabTest {
         DistributedTargetGenerator middlewareGenerator = new DistributedTargetGenerator();
         middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/labWithTags/src/");
         //generator for component itself
-        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        middlewareGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
         //generator for the ros connection
         middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
         middlewareGenerator.setGenerateMiddlewareTags(true);

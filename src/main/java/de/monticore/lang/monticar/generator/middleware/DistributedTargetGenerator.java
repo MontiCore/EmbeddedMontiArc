@@ -1,16 +1,22 @@
 package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.monticar.clustering.*;
+import de.monticore.lang.monticar.clustering.AutomaticClusteringHelper;
+import de.monticore.lang.monticar.clustering.ClusteringResult;
+import de.monticore.lang.monticar.clustering.ClusteringResultList;
+import de.monticore.lang.monticar.clustering.FlattenArchitecture;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.cli.ClusteringParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.ResultChoosingStrategy;
 import de.monticore.lang.monticar.generator.middleware.compile.CompilationGenerator;
-import de.monticore.lang.monticar.generator.middleware.helpers.*;
+import de.monticore.lang.monticar.generator.middleware.helpers.ClusterFromTagsHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.RosHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.MiddlewareTagGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RclCppGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.MiddlewareTagGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -135,12 +141,6 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
         fixComponentInstance(componentInstanceSymbol);
         return componentInstanceSymbol;
-    }
-
-    private File generateRosMsgGen() throws IOException {
-        File file = new File(generationTargetPath + "rosMsg/CMakeLists.txt");
-        FileUtils.write(file, TemplateHelper.getStruct_msgsCmakeTemplate());
-        return file;
     }
 
     private GeneratorImpl createFullGenerator(String subdir) {
