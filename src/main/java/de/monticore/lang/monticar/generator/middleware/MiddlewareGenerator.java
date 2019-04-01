@@ -24,13 +24,22 @@ public class MiddlewareGenerator extends CMakeGenerator {
         }, subdir);
         List<File> files = super.generate(componentInstanceSymbol, taggingResolver);
 
-        files.add(FileHelper.generateFile(generationTargetPath + subdir, generateIAdapter(componentInstanceSymbol)));
+        files.add(FileHelper.generateFile(generationTargetPath + subdir, generateIAdapterHeader(componentInstanceSymbol)));
+        files.add(FileHelper.generateFile(generationTargetPath + subdir, generateIAdapterCpp(componentInstanceSymbol)));
         files.add(FileHelper.generateFile(generationTargetPath + subdir, generateCoordinator(componentInstanceSymbol, files)));
         files.add(FileHelper.generateFile(generationTargetPath + subdir, generateCoordinatorCMakeList(componentInstanceSymbol, files)));
         return files;
     }
 
-    private FileContent generateIAdapter(EMAComponentInstanceSymbol componentInstanceSymbol) {
+    private FileContent generateIAdapterCpp(EMAComponentInstanceSymbol componentInstanceSymbol) {
+        FileContent res = new FileContent();
+        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
+        res.setFileName("IAdapter_" + name + ".cpp");
+        res.setFileContent("#include \"IAdapter_" + name + ".h\"");
+        return res;
+    }
+
+    private FileContent generateIAdapterHeader(EMAComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();
         String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         res.setFileName("IAdapter_" + name + ".h");

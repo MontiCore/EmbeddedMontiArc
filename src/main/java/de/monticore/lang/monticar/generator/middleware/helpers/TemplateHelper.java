@@ -32,10 +32,6 @@ public class TemplateHelper {
         return getTemplate("coordinatorTemplate.ftl");
     }
 
-    public static String getStruct_msgsCmakeTemplate() {
-        return getTemplate("struct_msgsCmakeTemplate.ftl");
-    }
-
     public static String getDummyCmakeTemplate() {
         return getTemplate("dummyCmakeTemplate.ftl");
     }
@@ -51,5 +47,22 @@ public class TemplateHelper {
     public static String getCoordinatorCmakeListsTemplate() {
         return getTemplate("coordinatorCmakeListsTemplate.ftl");
     }
+
+    public static String getCompilationBashTemplate(){
+        return getTemplate("compile.sh.template");
+    }
+
+    public static String getCompilationMingwTemplate(){
+        return getTemplate("compileMingw.bat.template");
+    }
+
+    public static String getCompilationMsbuildTemplate(){
+        return getTemplate("compileMsbuild.bat.template");
+    }
+
+    public static String getSubstTemplate(){
+        return getTemplate("subst.bat.template");
+    }
+
 
 }

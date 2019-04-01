@@ -7,6 +7,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileHelper {
 
@@ -23,5 +25,13 @@ public class FileHelper {
         bufferedWriter.write(fileContent.getFileContent(), 0, fileContent.getFileContent().length());
         bufferedWriter.close();
         return f;
+    }
+
+    public static List<File> generateFiles(String targetPath, List<FileContent> fileContents) throws IOException {
+        ArrayList<File> files = new ArrayList<>();
+        for (FileContent fc : fileContents) {
+            files.add(generateFile(targetPath, fc));
+        }
+        return files;
     }
 }

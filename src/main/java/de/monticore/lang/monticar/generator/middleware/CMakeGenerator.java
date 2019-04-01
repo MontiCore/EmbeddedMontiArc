@@ -38,7 +38,7 @@ public class CMakeGenerator extends StarBridgeGenerator {
         content.append("cmake_minimum_required(VERSION 3.5)\n");
         //TODO setProjectName?
         content.append("project (default)\n");
-        content.append("set (CMAKE_CXX_STANDARD 11)\n");
+        content.append("set (CMAKE_CXX_STANDARD 14)\n");
 
         getGeneratorImpls().stream()
                 .filter(gen -> gen.willAccept(componentInstanceSymbol))

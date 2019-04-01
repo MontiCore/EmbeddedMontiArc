@@ -1,0 +1,20 @@
+@ECHO Off
+:: add *_HOME to PATH temporarily
+<additional_executables>
+
+:: check if needed programs are in PATH
+<executable_checks>
+
+:: source additional environment variables
+<additional_env>
+
+:: Post source check if needed programs are in PATH
+<post_executable_checks>
+
+:: cmake
+cmake -B./build/ -G "MinGW Makefiles" %* ./src
+
+:: make
+cd .\build
+make -j4
+cd ..

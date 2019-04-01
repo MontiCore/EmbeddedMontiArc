@@ -16,30 +16,29 @@ public class RosHelper {
     }
 
 
-    public static void fixRosConnectionSymbols(EMAComponentInstanceSymbol componentInstanceSymbol) {
+    public static void fixRosConnectionSymbols(EMAComponentInstanceSymbol componentInstanceSymbol, boolean ros2mode) {
         componentInstanceSymbol.getConnectorInstances().stream()
                 .filter(connectorSymbol -> connectorSymbol.getSourcePort().isRosPort() && connectorSymbol.getTargetPort().isRosPort())
                 .forEach(connectorSymbol -> {
                     if (Objects.equals(connectorSymbol.getSourcePort().getComponentInstance(), componentInstanceSymbol)) {
                         //In port of supercomp
                         inferRosConnectionIfPossible(connectorSymbol);
-                        generateRosConnectionIfPossible(connectorSymbol);
+                        generateRosConnectionIfPossible(connectorSymbol, ros2mode);
                     } else if (Objects.equals(connectorSymbol.getTargetPort().getComponentInstance(), componentInstanceSymbol)) {
                         //out port of supercomp
                         inferRosConnectionIfPossible(connectorSymbol);
-                        generateRosConnectionIfPossible(connectorSymbol);
+                        generateRosConnectionIfPossible(connectorSymbol, ros2mode);
                     } else {
                         //In between subcomps
                         inferRosConnectionIfPossible(connectorSymbol);
-                        generateRosConnectionIfPossible(connectorSymbol);
+                        generateRosConnectionIfPossible(connectorSymbol, ros2mode);
                     }
 
                 });
     }
 
     //Cannot be moved to GeneratorRosCpp: target port name needed for topic name
-
-    private static void generateRosConnectionIfPossible(EMAConnectorInstanceSymbol connectorSymbol) {
+    private static void generateRosConnectionIfPossible(EMAConnectorInstanceSymbol connectorSymbol, boolean ros2mode) {
         MiddlewareSymbol sourceTag = connectorSymbol.getSourcePort().getMiddlewareSymbol().orElse(null);
         MiddlewareSymbol targetTag = connectorSymbol.getTargetPort().getMiddlewareSymbol().orElse(null);
         if (sourceTag == null || targetTag == null || !sourceTag.isKindOf(RosConnectionSymbol.KIND) || !targetTag.isKindOf(RosConnectionSymbol.KIND)) {
@@ -56,8 +55,8 @@ public class RosHelper {
 
         //target port name is unique: each in port can only have one connection!
         String topicName = NameHelper.getNameTargetLanguage(connectorSymbol.getTargetPort().getFullName());
-        RosMsg rosTypeA = GeneratorRosMsg.getRosType("struct_msgs", connectorSymbol.getTargetPort().getTypeReference());
-        RosMsg rosTypeB = GeneratorRosMsg.getRosType("struct_msgs", connectorSymbol.getSourcePort().getTypeReference());
+        RosMsg rosTypeA = GeneratorRosMsg.getRosType("struct_msgs", connectorSymbol.getTargetPort().getTypeReference(), ros2mode);
+        RosMsg rosTypeB = GeneratorRosMsg.getRosType("struct_msgs", connectorSymbol.getSourcePort().getTypeReference(), ros2mode);
         if (!rosTypeA.equals(rosTypeB)) {
             Log.error("topicType mismatch! "
                     + connectorSymbol.getSourcePort().getFullName() + " has " + rosTypeB + " and "

@@ -108,7 +108,7 @@ public class ClusterTest extends AbstractSymtabTest {
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/multiCompCluster/src/");
-        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new CPPGenImpl("src/test/resources/"), "cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);

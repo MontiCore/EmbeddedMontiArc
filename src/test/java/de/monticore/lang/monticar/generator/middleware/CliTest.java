@@ -5,7 +5,10 @@ import de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGene
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.ArrayUtils;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,7 +29,7 @@ public class CliTest {
     private static final List<String> VALID_GENERATOR_ALL_OPTION = Arrays.asList("cpp", "roscpp", "odv");
 
     private static final String INVALID_MODELS_DIR_OPTION = "src/invalid/resources/";
-    private static final String INVALID_ROOT_MODEL_OPTION = "invalid.invalid.addComp";
+    private static final String INVALID_ROOT_MODEL_OPTION = "invalid.invalid.AddComp";
     private static final List<String> INVALID_GENERATOR_OPTION = Arrays.asList("invalid");
     private static final List<String> INVALID_GENERATOR_EMPTY_OPTION = new ArrayList<>();
     public static final String RESNET_MODELNAME = "tests.emadlTests.resNet34";
@@ -122,7 +125,7 @@ public class CliTest {
         };
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -142,7 +145,7 @@ public class CliTest {
         String[] positiveFileNames = getEMADLGeneratedFilesList(false);
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -161,7 +164,7 @@ public class CliTest {
         String[] positiveFileNames = getEMADLGeneratedFilesList(true);
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -173,7 +176,7 @@ public class CliTest {
         String[] positiveFileNames = getEMADLGeneratedFilesList(true);
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -227,7 +230,7 @@ public class CliTest {
         };
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get("target/cliTest/validConfigFile/" + positiveFileName)));
+            assertTrue(Files.exists(Paths.get("target/cliTest/validConfigFile/src/" + positiveFileName)));
         }
     }
 
@@ -253,7 +256,7 @@ public class CliTest {
         };
 
         for (String positiveFileName : positiveFileNames) {
-            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
         }
     }
 
@@ -321,4 +324,57 @@ public class CliTest {
     private boolean logContains(String errorCode) {
         return LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains(errorCode));
     }
+
+    @Test
+    public void testRclcppGenerator(){
+        String targetDir = "target/cliTest/AllGenerators/";
+        String json = buildParameterJson(
+                VALID_MODELS_DIR_OPTION,
+                VALID_ROOT_MODEL_OPTION,
+                Arrays.asList("cpp","rclcpp"),
+                targetDir);
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
+
+        String[] positiveFileNames = {
+                "CMakeLists.txt",
+                "tests_a_addComp/cpp/tests_a_addComp.h",
+                "tests_a_addComp/cpp/CMakeLists.txt",
+                "tests_a_addComp/coordinator/CMakeLists.txt",
+                "tests_a_addComp/coordinator/Coordinator_tests_a_addComp.cpp",
+                "tests_a_addComp/rclcpp/RosAdapter_tests_a_addComp.h",
+                "tests_a_addComp/rclcpp/CMakeLists.txt",
+        };
+
+        for (String positiveFileName : positiveFileNames) {
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
+        }
+    }
+
+    @Test
+    public void testRos2cppGenerator(){
+        String targetDir = "target/cliTest/AllGenerators/";
+        String json = buildParameterJson(
+                VALID_MODELS_DIR_OPTION,
+                VALID_ROOT_MODEL_OPTION,
+                Arrays.asList("cpp","ros2cpp"),
+                targetDir);
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
+
+        String[] positiveFileNames = {
+                "CMakeLists.txt",
+                "tests_a_addComp/cpp/tests_a_addComp.h",
+                "tests_a_addComp/cpp/CMakeLists.txt",
+                "tests_a_addComp/coordinator/CMakeLists.txt",
+                "tests_a_addComp/coordinator/Coordinator_tests_a_addComp.cpp",
+                "tests_a_addComp/rclcpp/RosAdapter_tests_a_addComp.h",
+                "tests_a_addComp/rclcpp/CMakeLists.txt",
+        };
+
+        for (String positiveFileName : positiveFileNames) {
+            assertTrue(Files.exists(Paths.get(targetDir + "src/" + positiveFileName)));
+        }
+    }
+
 }

@@ -9,6 +9,7 @@ import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.EMADLGeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -45,6 +46,9 @@ public final class DistributedTargetGeneratorCli {
     public static final String GENERATOR_EMADL = "emadlcpp";
     public static final String GENERATOR_ROSCPP = "roscpp";
     public static final String GENERATOR_ODV = "odv";
+    //ros2cpp is an alias for rclcpp
+    public static final String GENERATOR_RCLCPP = "rclcpp";
+    public static final String GENERATOR_ROS2CPP = "ros2cpp";
 
     private DistributedTargetGeneratorCli() {}
 
@@ -81,6 +85,8 @@ public final class DistributedTargetGeneratorCli {
         res.add(GENERATOR_EMADL);
         res.add(GENERATOR_ROSCPP);
         res.add(GENERATOR_ODV);
+        res.add(GENERATOR_ROS2CPP);
+        res.add(GENERATOR_RCLCPP);
         return res;
     }
 
@@ -91,7 +97,8 @@ public final class DistributedTargetGeneratorCli {
         }
         String fullModelsDirPath = expandHomeDir(cliParameters.getModelsDir());
 
-        if(cliParameters.getGenerators().size() == 0){
+        Set<String> generators = cliParameters.getGenerators();
+        if(generators.size() == 0){
             Log.error("0x6178E: No generator was specified!");
             return;
         }
@@ -102,7 +109,7 @@ public final class DistributedTargetGeneratorCli {
         }
 
         TaggingResolver taggingResolver;
-        if (cliParameters.getGenerators().contains(GENERATOR_EMADL)) {
+        if (generators.contains(GENERATOR_EMADL)) {
             taggingResolver = EMADLAbstractSymtab.createSymTabAndTaggingResolver(fullModelsDirPath);
         }
         else{
@@ -115,9 +122,13 @@ public final class DistributedTargetGeneratorCli {
 
         Set<String> validGenNames = getGeneratorNames();
 
-        cliParameters.getGenerators().forEach(genName -> {
+        generators.forEach(genName -> {
             if (validGenNames.contains(genName)) {
-                Log.warn("Using generator " + genName);
+                if(genName.equals(GENERATOR_ROS2CPP)) {
+                    Log.warn("Using generator " + GENERATOR_RCLCPP + " since " + genName + " is an alias!");
+                }else {
+                    Log.warn("Using generator " + genName);
+                }
             } else {
                 Log.error("0xE28B6: Not a valid generator Name:" + genName  +".");
                 return;
@@ -127,15 +138,21 @@ public final class DistributedTargetGeneratorCli {
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve(cliParameters.getRootModel(), EMAComponentInstanceSymbol.KIND).orElse(null);
 
         if (componentInstanceSymbol == null) {
+            String[] parts = cliParameters.getRootModel().split("\\.");
+            String componentInstanceName = parts[parts.length - 1];
+            if(Character.isUpperCase(componentInstanceName.charAt(0))){
+                parts[parts.length - 1] = componentInstanceName.substring(0,1).toLowerCase() + componentInstanceName.substring(1);
+                Log.warn("The given ComponentInstance name "  + componentInstanceName + " starts with an upper case letter(Invalid). Did you mean " + String.join(".", parts) + "?");
+            }
             Log.error("0x5FFAE: The given component cannot be resolved.");
             return;
         }
 
-        if (cliParameters.getGenerators().contains(GENERATOR_CPP)) {
-            generator.add(new CPPGenImpl(), "cpp");
+        if (generators.contains(GENERATOR_CPP)) {
+            generator.add(new CPPGenImpl(cliParameters.getModelsDir()), "cpp");
         }
 
-        if (cliParameters.getGenerators().contains(GENERATOR_EMADL)) {
+        if (generators.contains(GENERATOR_EMADL)) {
             if(cliParameters.getEmadlBackend() != null && !cliParameters.getEmadlBackend().equals("")) {
                 generator.add(new EMADLGeneratorImpl(fullModelsDirPath, cliParameters.getEmadlBackend()), "cpp");
             }else{
@@ -144,13 +161,19 @@ public final class DistributedTargetGeneratorCli {
             }
         }
 
-        if (cliParameters.getGenerators().contains(GENERATOR_ROSCPP)) {
+        if (generators.contains(GENERATOR_ROSCPP)) {
             generator.add(new RosCppGenImpl(), "roscpp");
             RosToEmamTagSchema.registerTagTypes(taggingResolver);
             TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
         }
 
-        if (cliParameters.getGenerators().contains(GENERATOR_ODV)) {
+        if (generators.contains(GENERATOR_RCLCPP) || generators.contains(GENERATOR_ROS2CPP)) {
+            generator.add(new RclCppGenImpl(), "rclcpp");
+            RosToEmamTagSchema.registerTagTypes(taggingResolver);
+            TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+        }
+
+        if (generators.contains(GENERATOR_ODV)) {
             generator.add(new ODVGenImpl(), "odv");
         }
 
