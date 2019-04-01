@@ -1,12 +1,12 @@
 package de.monticore.lang.monticar.generator.middleware.cli;
 
-import de.monticore.lang.monticar.generator.middleware.cli.algorithms.AlgorithmCliParameters;
-import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicAlgorithmCliParameters;
-import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicParameter;
-import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicSpectralClusteringCliParameters;
-import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.ListParameter;
-import de.monticore.lang.monticar.generator.middleware.clustering.qualityMetric.Metric;
-import de.monticore.lang.monticar.generator.middleware.clustering.qualityMetric.MetricType;
+import de.monticore.lang.monticar.clustering.cli.algorithms.AlgorithmCliParameters;
+import de.monticore.lang.monticar.clustering.cli.algorithms.dynamic.DynamicAlgorithmCliParameters;
+import de.monticore.lang.monticar.clustering.cli.algorithms.dynamic.DynamicParameter;
+import de.monticore.lang.monticar.clustering.cli.algorithms.dynamic.DynamicSpectralClusteringCliParameters;
+import de.monticore.lang.monticar.clustering.cli.algorithms.dynamic.ListParameter;
+import de.monticore.lang.monticar.clustering.qualityMetric.Metric;
+import de.monticore.lang.monticar.clustering.qualityMetric.MetricType;
 
 import java.util.ArrayList;
 import java.util.List;

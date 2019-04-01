@@ -24,6 +24,7 @@
         <Embedded-montiarc-math-roscpp-generator.version>0.1.1-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
         <EMADL.version>0.2.4</EMADL.version>
         <EMADL2CPP.version>0.2.6-SNAPSHOT</EMADL2CPP.version>
+        <embedded-montiarc-component-clustering.version>0.0.1-SNAPSHOT</embedded-montiarc-component-clustering.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -65,35 +66,11 @@
         </dependency>
 
         <dependency>
-            <groupId>net.sourceforge</groupId>
-            <artifactId>javaml</artifactId>
-            <version>0.1.5</version>
-        </dependency>
-        <!--dependency>
-            <groupId>be.abeel</groupId>
-            <artifactId>ajt</artifactId>
-            <version>2.9</version>
-        </dependency-->
-        <dependency>
-            <groupId>com.github.haifengl</groupId>
-            <artifactId>smile-core</artifactId>
-            <version>1.5.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.haifengl</groupId>
-            <artifactId>smile-plot</artifactId>
-            <version>1.5.2</version>
-        </dependency>
-        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
-        <!--<dependency>
-            <groupId>com.clust4j</groupId>
-            <artifactId>clust4j</artifactId>
-            <version>1.2.4-SNAPSHOT</version>
-        </dependency>-->
+
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
@@ -129,13 +106,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.graphstream</groupId>
-            <artifactId>gs-core</artifactId>
-            <version>1.3</version>
-            <optional>false</optional>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math</artifactId>
             <version>2.1</version>
@@ -152,6 +122,12 @@
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-emadl-generator</artifactId>
             <version>${EMADL2CPP.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-component-clustering</artifactId>
+            <version>${embedded-montiarc-component-clustering.version}</version>
         </dependency>
 
         <!-- MontiCore Dependencies -->
@@ -182,16 +158,6 @@
         </dependency>
 
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>java-ds</id>
-            <!--
-                        <url>https://raw.githubusercontent.com/alexeygrigorev/maven-repo/master/</url>
-            -->
-            <url>https://raw.githubusercontent.com/mgbeyer/maven-repo/master/</url>
-        </repository>
-    </repositories>
 
     <!-- == PROJECT BUILD SETTINGS =========================================== -->
 

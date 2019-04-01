@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator.middleware.cli;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
-import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.*;
+import de.monticore.lang.monticar.clustering.cli.algorithms.dynamic.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.FileNotFoundException;

@@ -1,14 +1,11 @@
 package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.monticar.clustering.*;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.cli.ClusteringParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.ResultChoosingStrategy;
-import de.monticore.lang.monticar.generator.middleware.clustering.*;
-import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
-import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
-import de.monticore.lang.monticar.generator.middleware.helpers.RosHelper;
-import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.*;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.MiddlewareTagGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;

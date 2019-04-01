@@ -59,11 +59,12 @@ ax.set(xlabel='Iterations', ylabel='Score',
        title='Montecarlo Clustering of Autopilotmodel with 3 Clusters')
 ax.grid()
 textstr = '\n'.join((
-    "MaxValueMC = " + str(autopilot_minmax[1]),
-    "MinValueMC = " + str(autopilot_minmax[0])))
+    "MaxValueMC = " + str(autopilot_minmax[0]),
+    "MinValueMC = " + str(autopilot_minmax[1])))
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
 ax.text(0.95, 0.05, textstr, transform=ax.transAxes, fontsize=14,
         verticalalignment='bottom', ha='right', bbox=props)
+ax.set_xlim(xmin=1)
 plt.show()
 
 fig, ax = plt.subplots()
@@ -72,11 +73,12 @@ ax.set(xlabel='Iterations', ylabel='Score',
        title='Montecarlo Clustering of Pacmanmodel with 3 Clusters')
 ax.grid()
 textstr = '\n'.join((
-    "MaxValueMC = " + str(pacman_minmax[1]),
-    "MinValueMC = " + str(pacman_minmax[0])))
+    "MaxValueMC = " + str(pacman_minmax[0]),
+    "MinValueMC = " + str(pacman_minmax[1])))
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
 ax.text(0.95, 0.05, textstr, transform=ax.transAxes, fontsize=14,
         verticalalignment='bottom', ha='right', bbox=props)
+ax.set_xlim(xmin=1)
 plt.show()
 
 fig, ax = plt.subplots()
@@ -85,11 +87,12 @@ ax.set(xlabel='Iterations', ylabel='Score',
        title='Montecarlo Clustering of Supermariomodel with 3 Clusters')
 ax.grid()
 textstr = '\n'.join((
-    "MaxValueMC = " + str(supermario_minmax[1]),
-    "MinValueMC = " + str(supermario_minmax[0])))
+    "MaxValueMC = " + str(supermario_minmax[0]),
+    "MinValueMC = " + str(supermario_minmax[1])))
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
 ax.text(0.95, 0.05, textstr, transform=ax.transAxes, fontsize=14,
         verticalalignment='bottom', ha='right', bbox=props)
+ax.set_xlim(xmin=1)
 plt.show()
 
 t = np.arange(0,100,1)
@@ -99,9 +102,10 @@ ax.set(xlabel='Iterations', ylabel='Score',
        title='Montecarlo Clustering of Daimlermodel')
 ax.grid()
 textstr = '\n'.join((
-    "MaxValueMC = " + str(daimler_minmax[1]),
-    "MinValueMC = " + str(daimler_minmax[0])))
+    "MaxValueMC = " + str(daimler_minmax[0]),
+    "MinValueMC = " + str(daimler_minmax[1])))
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
 ax.text(0.95, 0.05, textstr, transform=ax.transAxes, fontsize=14,
         verticalalignment='bottom', ha='right', bbox=props)
+ax.set_xlim(xmin=1)
 plt.show()

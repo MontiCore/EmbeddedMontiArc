@@ -5,7 +5,7 @@
 This generator takes an EMAM or EMADL model and connects it to a middleware library. If all Ports of two connected Components are marked as middleware Ports, the generator will create 2 executables that can be deployed on different machines.
 All communication of these 2 Components will then be tunneled trough the specified middleware:
 ![MiddlewareAdapter](/uploads/6e9c69e6b56554579551769174df3697/MiddlewareAdapter.png)
-
+It also supports automatic clustering of the subcomponents to deploy on different machines.
 
 ## Writing your own Middleware Generator
 see [TUTORIAL_ADD_MIDDLEWARE.md](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/TUTORIAL_ADD_MIDDLEWARE.md)
@@ -214,22 +214,5 @@ Look at [GenerationTest::testDistributedTargetGenerator](https://git.rwth-aachen
     * minimal working example: run: roscore
 1. If the project was created by a MiddlewareGenerator, run the executable(s) at build/coordinator(/<subcomp.name>)/Coordinator_<(sub)component.name>
 2.
-
-## Automatic Clustering
-To simplify the creation of distributed systems, the generator can automatically split the model into a given number of clusters.
-
-Supported:
-* Spectral Clustering
-* ...
-
-Procedure:
-* Convert the Symbol Table of a Component into a adjacency matrix
-* (Add costs given by type to matrix. E.g. float is cheaper than Matrix of floats)
-* Feed into ml library(e.g. [smile ml](https://github.com/haifengl/smile)) with the selected clustering algorithm
-* (Compare the result of different algorithms)
-* Generate Middleware tags seperating the clusters
-* Feed into existing manual clustering architecture
-* (generate)
-
 
 

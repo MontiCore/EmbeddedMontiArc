@@ -1,12 +1,12 @@
 package de.monticore.lang.monticar.generator.middleware;
 
+import de.monticore.lang.monticar.clustering.cli.algorithms.*;
+import de.monticore.lang.monticar.clustering.cli.algorithms.dynamic.DynamicAlgorithmCliParameters;
+import de.monticore.lang.monticar.clustering.cli.algorithms.dynamic.DynamicSpectralClusteringCliParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.CliParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.CliParametersLoader;
 import de.monticore.lang.monticar.generator.middleware.cli.ClusteringParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.ResultChoosingStrategy;
-import de.monticore.lang.monticar.generator.middleware.cli.algorithms.*;
-import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicAlgorithmCliParameters;
-import de.monticore.lang.monticar.generator.middleware.cli.algorithms.dynamic.DynamicSpectralClusteringCliParameters;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
 
