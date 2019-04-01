@@ -1,0 +1,7 @@
+package daimler.v4;
+              component LookUpTable1_3 {
+                port
+                  in Number in1,
+                  out Number out1;
+              }
+

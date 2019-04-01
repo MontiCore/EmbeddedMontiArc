@@ -1,0 +1,9 @@
+package daimler.v4;
+                        component SwitchBlock_20 {
+                          port
+                            in B condition,
+                            in B elseIn,
+                            in B ifIn,
+                            out B out1;
+                        }
+

@@ -1,0 +1,8 @@
+package daimler.v4;
+                          component Compare_55_Equals {
+                            port
+                              in B in1,
+                              in Number in2,
+                              out B out1;
+                          }
+

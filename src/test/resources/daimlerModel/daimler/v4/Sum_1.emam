@@ -1,0 +1,9 @@
+package daimler.v4;
+                component Sum_1 {
+                  port
+                    in Number in1,
+                    in Number in2,
+                    in Number in3,
+                    out Number out1;
+                }
+

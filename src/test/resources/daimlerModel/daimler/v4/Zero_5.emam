@@ -1,0 +1,6 @@
+package daimler.v4;
+                    component Zero_5 {
+                      port
+                        out B out1;
+                    }
+

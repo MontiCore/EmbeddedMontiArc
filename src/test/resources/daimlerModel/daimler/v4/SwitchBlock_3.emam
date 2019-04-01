@@ -1,0 +1,9 @@
+package daimler.v4;
+                component SwitchBlock_3 {
+                  port
+                    out (0:100) brakeForce_Distronic_pc,
+                    in B condition,
+                    in Number elseIn,
+                    in Number ifIn;
+                }
+
