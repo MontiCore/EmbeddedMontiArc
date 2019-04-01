@@ -7,9 +7,13 @@ import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.monticar.enumlang._ast.ASTEnumLangCompilationUnit;
+import de.monticore.lang.monticar.enumlang._symboltable.EnumDeclarationSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.streamunits._ast.ASTStreamUnitsCompilationUnit;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
+import de.monticore.lang.monticar.struct._ast.ASTStructCompilationUnit;
+import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
@@ -165,15 +169,25 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                         modelName = modelNameCalculator(f.getValue(),"emam", ast.getPackageList());
                         Optional<EMAComponentSymbol> comp = scope.<EMAComponentSymbol>resolve(modelName, EMAComponentSymbol.KIND);
                         resolved = comp.isPresent();
-                    }else if(ending.equalsIgnoreCase("stream")){
-                        ASTStreamUnitsCompilationUnit ast = (ASTStreamUnitsCompilationUnit)node.get();
+                    }else if(ending.equalsIgnoreCase("stream")) {
+                        ASTStreamUnitsCompilationUnit ast = (ASTStreamUnitsCompilationUnit) node.get();
 
                         modelName = modelNameCalculator(f.getValue(), "stream", ast.getPackageList());
                         Optional<ComponentStreamUnitsSymbol> comp = scope.<ComponentStreamUnitsSymbol>resolve(modelName, ComponentStreamUnitsSymbol.KIND);
                         resolved = comp.isPresent();
+                    }else if(ending.equalsIgnoreCase("struct")) {
+                        ASTStructCompilationUnit ast = (ASTStructCompilationUnit) node.get();
+                        modelName = modelNameCalculator(f.getValue(), "struct", ast.getPackageList());
+                        Optional<StructSymbol> structSym = scope.resolve(modelName, StructSymbol.KIND);
+                        resolved = structSym.isPresent();
+                    }else if(ending.equalsIgnoreCase("enum")){
+                        ASTEnumLangCompilationUnit ast = (ASTEnumLangCompilationUnit)node.get();
+                        modelName = modelNameCalculator(f.getValue(), "enum", ast.getPackageList());
+                        Optional<EnumDeclarationSymbol> enumSym = scope.resolve(modelName, EnumDeclarationSymbol.KIND);
+                        resolved = enumSym.isPresent();
                     }else{
                         //TODO:
-                        logWarn("   -> No resolving for "+ending+"implemented at the moment.");
+                        logWarn("   -> No resolving for "+ending+" implemented at the moment.");
                     }
 
                     if(resolved){
