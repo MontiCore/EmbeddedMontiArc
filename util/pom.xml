@@ -36,7 +36,7 @@
     <!-- OUR OWN PROJECT -->
     <artifactId>util</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>

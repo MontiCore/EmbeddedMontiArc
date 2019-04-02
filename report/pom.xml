@@ -36,7 +36,7 @@
     <!-- OUR OWN PROJECT -->
     <artifactId>coverage-report</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>simulator</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6</version>
         </dependency>
     </dependencies>
 
