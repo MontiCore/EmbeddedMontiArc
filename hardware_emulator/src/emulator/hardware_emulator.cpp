@@ -268,7 +268,7 @@ void HardwareEmulator::call_input( Port &port ) {
 }
 
 void compare_results( double real_value, double emulated_value, const char *port_name ) {
-    if ( abs( real_value - emulated_value ) > 0.0001 )
+    if ( abs_t( real_value - emulated_value ) > 0.0001 )
         Log::err << Log::tag << "Desyncronisation detected on " << port_name << ". Real: " << real_value << " Emulated: " <<
                  emulated_value << "\n";
 }
