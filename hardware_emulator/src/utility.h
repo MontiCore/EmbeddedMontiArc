@@ -7,6 +7,7 @@
 #include <fstream>
 #include <memory>
 #include <cstring>
+#include <cmath>
 
 namespace Utility {
 
