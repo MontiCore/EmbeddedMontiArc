@@ -6,6 +6,10 @@ This generator takes an EMAM or EMADL model and connects it to a middleware libr
 All communication of these 2 Components will then be tunneled trough the specified middleware:
 ![MiddlewareAdapter](/uploads/6e9c69e6b56554579551769174df3697/MiddlewareAdapter.png)
 
+## Quickstart
+If you want to use the generator for your project, check out [QUICKSTART_USER.md](QUICKSTART_USER.md).
+
+If you want to add features to this generator, check out [QUICKSTART_DEVELOPER.md](QUICKSTART_DEVELOPER.md)
 
 ## Writing your own Middleware Generator
 see [TUTORIAL_ADD_MIDDLEWARE.md](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/TUTORIAL_ADD_MIDDLEWARE.md)
