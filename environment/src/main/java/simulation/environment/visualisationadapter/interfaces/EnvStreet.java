@@ -40,6 +40,12 @@ public interface EnvStreet extends EnvObject {
      */
     public final double STREET_WIDTH = 6;
 
+
+    /**
+     * Lists Pavements of Streets
+     */
+    public enum StreetPavements {PAVED, UNPAVED, QUALITY, STONE, DIRT, GRASS};
+
     /**
      *
      * @return the speedlimit on this street
@@ -69,4 +75,10 @@ public interface EnvStreet extends EnvObject {
      * @return The Type of the Street
      */
     public abstract StreetTypes getStreetType();
+
+    /**
+     *
+     * @return The Pavement of the Street
+     */
+    public abstract StreetPavements getStreetPavement();
 }

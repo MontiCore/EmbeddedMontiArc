@@ -25,11 +25,13 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
+import simulation.environment.visualisationadapter.implementation.Street2D;
+import simulation.environment.visualisationadapter.interfaces.EnvNode;
+import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.util.MathHelper;
-import java.util.AbstractMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 import static simulation.vehicle.VehicleActuatorType.*;
 import static simulation.vehicle.VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING;
 
@@ -565,7 +567,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         double brakeAcceleration1 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).getActuatorValueCurrent();
         double brakeAcceleration2 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
         double brakeAcceleration3 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).getActuatorValueCurrent();
-        double brakeAcceleration4 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
+        double brakeAcceleration4 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).getActuatorValueCurrent();
         double brakeForce1 = (m/4) * brakeAcceleration1;
         double brakeForce2 = (m/4) * brakeAcceleration2;
         double brakeForce3 = (m/4) * brakeAcceleration3;
@@ -590,12 +592,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         vehicleDynamicsModel.setInput("F_ext_y", localForce.getEntry(1));
 
         // Take the wheel positions and get the frictions coefficients
-        //TODO: Let the physical vehicle look up the ground type and not only the weather
-        double frictionCoefficient = ((WorldModel.getInstance().isItRaining()) ? PhysicsEngine.ROAD_FRICTION_WET : PhysicsEngine.ROAD_FRICTION_DRY);
-        vehicleDynamicsModel.setInput("mu_1", frictionCoefficient);
-        vehicleDynamicsModel.setInput("mu_2", frictionCoefficient);
-        vehicleDynamicsModel.setInput("mu_3", frictionCoefficient);
-        vehicleDynamicsModel.setInput("mu_4", frictionCoefficient);
+        vehicleDynamicsModel.setInput("mu_1", PhysicsEngine.calcFrictionCoefficient(getFrontLeftWheelGeometryPosition()));
+        vehicleDynamicsModel.setInput("mu_2", PhysicsEngine.calcFrictionCoefficient(getFrontRightWheelGeometryPosition()));
+        vehicleDynamicsModel.setInput("mu_3", PhysicsEngine.calcFrictionCoefficient(getBackLeftWheelGeometryPosition()));
+        vehicleDynamicsModel.setInput("mu_4", PhysicsEngine.calcFrictionCoefficient(getBackRightWheelGeometryPosition()));
 
         // Store z coordinate for interpolation later
         double oldZ = vehicleDynamicsModel.getValue("z");

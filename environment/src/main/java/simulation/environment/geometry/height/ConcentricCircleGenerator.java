@@ -23,6 +23,7 @@ package simulation.environment.geometry.height;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import simulation.environment.osm.ApproximateConverter;
 import simulation.environment.visualisationadapter.interfaces.EnvBounds;
 import java.util.ArrayList;
 
@@ -195,6 +196,31 @@ public class ConcentricCircleGenerator implements HeightGenerator{
             result[2][i] = this.length;
         }
         return result;
+    }
+
+    @Override
+    public Point2D getHeightMapMinPoint() {
+        return new Point2D(0,0);
+    }
+
+    @Override
+    public Point2D getHeightMapMaxPoint() {
+        return new Point2D(2,circles.size());
+    }
+
+    @Override
+    public double getHeightMapDeltaX() {
+        return 1.0;
+    }
+
+    @Override
+    public double getHeightMapDeltaY() {
+        return 1.0;
+    }
+
+    @Override
+    public void setLongLatToMetersConverter(ApproximateConverter longLatToMeterConverter) {
+        // Empty
     }
 
 

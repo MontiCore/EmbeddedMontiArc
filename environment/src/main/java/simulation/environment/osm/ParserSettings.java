@@ -29,7 +29,7 @@ import java.io.InputStream;
  */
 public class ParserSettings {
     public enum ZCoordinates {
-        ALLZERO, RANDOM, STATIC;
+        ALLZERO, RANDOM, STATIC, FROM_FILE
     }
 
     public InputStream in;
