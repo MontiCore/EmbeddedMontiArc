@@ -36,7 +36,7 @@ public interface FunctionBlockInterface {
     /**
      * main method
      */
-    public abstract void execute();
+    public abstract void execute(double timeDelta);
 
     /***************************************************************************
      *  Getter and Setter to emulate the Input and Output of a function block  *
