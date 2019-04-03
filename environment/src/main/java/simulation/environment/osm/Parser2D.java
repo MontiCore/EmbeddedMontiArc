@@ -158,6 +158,7 @@ public class Parser2D implements IParser {
                 String highway = tags.get("highway");
                 String building = tags.get("building");
                 String waterway = tags.get("waterway");
+                String surface = tags.get("surface");
                 
                 if (highway == null && building == null && waterway == null) {
                    continue;
