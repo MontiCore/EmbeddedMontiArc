@@ -22,11 +22,15 @@ package simulation.environment;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import simulation.environment.osm.IParser;
+import simulation.environment.osm.Parser2D;
 import simulation.environment.osm.ParserSettings;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.environment.visualisationadapter.interfaces.SignTypeAndState;
 import simulation.environment.weather.WeatherSettings;
+
+import java.io.InputStream;
 
 public class WorldModelTest extends TestCase {
     @Test
@@ -86,11 +90,24 @@ public class WorldModelTest extends TestCase {
         assertFalse(allZero);
 
 
-        WorldModel.init(new ParserSettings(getClass().getResourceAsStream("/map_ahornstrasse.osm"),
+        WorldModel.init(new ParserSettings(getClass().getResourceAsStream("/main_resources_aachen.osm"),
                 ParserSettings.ZCoordinates.ALLZERO), new WeatherSettings());
 
         world = WorldModel.getInstance();
 
+        System.out.println("Map Building test");
+        System.out.println(" Building Nodes");
+
+        System.out.println(world.getContainer().getStreets().size());
+        System.out.println(world.getContainer().getBuildings().size());
+        System.out.println(world.getContainer().getWaterway().size());
+
+        //System.out.println(" Street Nodes");
+
+       // System.out.println(world.getContainer().getStreets());
+
+
+        assertTrue(world.getContainer().getBuildings().size() > 0);
         assertTrue(world.getContainer().getBounds().getMinX() < 0);
         assertTrue(world.getContainer().getBounds().getMinY() < 0);
         assertTrue(world.getContainer().getBounds().getMinZ() == 0);
@@ -99,6 +116,8 @@ public class WorldModelTest extends TestCase {
                 ParserSettings.ZCoordinates.STATIC), new WeatherSettings());
 
         world = WorldModel.getInstance();
+
+
         assertTrue(world.getContainer().getBounds().getMinX() < 0);
         assertTrue(world.getContainer().getBounds().getMinY() < 0);
         assertTrue(world.getContainer().getBounds().getMinZ() >= 0);

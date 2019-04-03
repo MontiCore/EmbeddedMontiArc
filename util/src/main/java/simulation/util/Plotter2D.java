@@ -21,7 +21,6 @@
 package simulation.util;
 
 import commons.simulation.IPhysicalVehicle;
-import jdk.nashorn.internal.runtime.StoredScript;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;

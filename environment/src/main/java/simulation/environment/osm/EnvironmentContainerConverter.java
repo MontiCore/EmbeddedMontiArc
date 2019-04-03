@@ -61,6 +61,8 @@ public class EnvironmentContainerConverter {
      */
     private void convertLatLongToMeters() {
         ArrayList<EnvStreet> meterStreets = new ArrayList<>();
+        ArrayList<Building> meterBuildings = new ArrayList<>();
+        ArrayList<Waterway> meterWaterway = new ArrayList<>();
         for(EnvStreet longLatStreet : containerLongLat.getStreets()) {
             ArrayList<EnvNode> nodes = new ArrayList<>();
             for(EnvNode node : longLatStreet.getNodes()) {
@@ -92,18 +94,53 @@ public class EnvironmentContainerConverter {
 
             meterStreets.add(new Street2D(nodes, longLatStreet.getSpeedLimit(), intersections, longLatStreet.getOsmId(), longLatStreet.isOneWay(), longLatStreet.getStreetType(), longLatStreet.getStreetPavement()));
         }
-        computeMinMax(meterStreets);
-        containerMeters = new EnvironmentContainer2D(bounds, meterStreets, new ArrayList<>());
+        for(Building longLatBuilding : containerLongLat.getBuildings()) {
+            ArrayList<EnvNode> nodes = new ArrayList<>();
+            for (EnvNode node : longLatBuilding.getNodes()) {
+                double nLong = node.getX().doubleValue();
+                double nLat = node.getY().doubleValue();
+
+
+                double mY = converter.convertLatToMeters(nLat);
+                double mX = converter.convertLongToMeters(nLong, nLat);
+
+                double mZ = node.getZ().doubleValue();
+                long osmId = node.getOsmId();
+                nodes.add(new Node2D(mX, mY, mZ, osmId));
+            }
+
+            meterBuildings.add(new BuildingImpl(nodes, longLatBuilding.getOsmId()));
+        }
+
+        for(Waterway longLatWaterway : containerLongLat.getWaterway()) {
+            ArrayList<EnvNode> nodes = new ArrayList<>();
+            for (EnvNode node : longLatWaterway.getNodes()) {
+                double nLong = node.getX().doubleValue();
+                double nLat = node.getY().doubleValue();
+
+
+                double mY = converter.convertLatToMeters(nLat);
+                double mX = converter.convertLongToMeters(nLong, nLat);
+
+                double mZ = node.getZ().doubleValue();
+                long osmId = node.getOsmId();
+                nodes.add(new Node2D(mX, mY, mZ, osmId));
+            }
+
+            meterWaterway.add(new Waterway2D(nodes, longLatWaterway.getOsmId()));
+        }
+        computeMinMax(meterStreets, meterBuildings, meterWaterway);
+        containerMeters = new EnvironmentContainer2D(bounds,meterStreets, meterBuildings, meterWaterway);
     }
 
     /**
      * computes the min and max values for x,y,z and thus the bounds of the environment
      * @param streets
      */
-    private void computeMinMax(ArrayList<EnvStreet> streets) {
+    private void computeMinMax(ArrayList<EnvStreet> streets,ArrayList<Building> buildings, ArrayList<Waterway> waterways) {
         //assure that every street (including pavements lies in the bounds of the environment
-        double minX = 0 - EnvStreet.STREET_WIDTH;
-        double minY = 0 - EnvStreet.STREET_WIDTH;
+        double minX = 0 - Waterway.RIVER_WIDTH;
+        double minY = 0 - Waterway.RIVER_WIDTH;
         double minZ = 0;
 
         double maxX = Double.MIN_VALUE;
@@ -125,9 +162,40 @@ public class EnvironmentContainerConverter {
                 }
             }
         }
+        for(Building building: buildings) {
+            for(EnvNode nodes: building.getNodes()) {
+                if(nodes.getX().doubleValue() > maxX) {
+                    maxX = nodes.getX().doubleValue();
+                }
+
+                if(nodes.getY().doubleValue() > maxY) {
+                    maxY = nodes.getY().doubleValue();
+                }
+
+                if(nodes.getZ().doubleValue() > maxZ) {
+                    maxZ = nodes.getZ().doubleValue();
+                }
+            }
+        }
+        for(Waterway waterway: waterways) {
+            for(EnvNode nodes: waterway.getNodes()) {
+                if(nodes.getX().doubleValue() > maxX) {
+                    maxX = nodes.getX().doubleValue();
+                }
+
+                if(nodes.getY().doubleValue() > maxY) {
+                    maxY = nodes.getY().doubleValue();
+                }
+
+                if(nodes.getZ().doubleValue() > maxZ) {
+                    maxZ = nodes.getZ().doubleValue();
+                }
+            }
+        }
 
         this.bounds = new Bounds2D(minX, maxX, minY, maxY, minZ, maxZ);
     }
+
 
     /**
      * computes the minimum longitude and latitude and initialises the converter
