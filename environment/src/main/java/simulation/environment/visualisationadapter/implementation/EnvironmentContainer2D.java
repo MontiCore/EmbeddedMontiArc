@@ -58,6 +58,7 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
         this.streets = streets;
         this.buildings = buildings;
         this.waterway = waterway;
+    }    
 
     public Collection<IPhysicalVehicle> getVehicles(){
         return this.vehicles;
