@@ -283,6 +283,9 @@ public class Parser2D implements IParser {
             String highway = tags.get("highway");
             String building = tags.get("building");
             String waterway = tags.get("waterway");
+            String surface = tags.get("surface");
+
+
 
         //  System.out.println("PARSE OBJECTS FUNCTION  "+highway);
           //  System.out.println(waterway);
