@@ -26,3 +26,10 @@ The settings are:
 To quickly debug the simulator, a simulation can be configured and executed without starting up the server. An example is given in the `firstTest()` jUnit test in the `SimulatieVehicleTest` test class.
 
 The debug plotter can be used to visualize a simulation that contains only __one__ physical vehicle. A use case for the debug plotter is also given in `firstTest()`. The plotter is registered to the simulation as an observer and is then generating one visualisation chart for each loop iteration.
+
+# Height data
+Height data is read from SRTM files, which are documented [here](https://dds.cr.usgs.gov/srtm/version2_1/Documentation/SRTM_Topo.pdf). Additional height data files can be downloaded from [this source](https://dds.cr.usgs.gov/srtm/version2_1/SRTM3/), where you need to select the continent and then search for the file you need. The file name format is dependent on latitude/longitude and defined as `[N/S][<LAT>][O/W][<LONG>].hgt`.
+
+Each file contains data until the next higher latitude/longitude. For example file N50E006.hgt will cover all pairs of (latitude,longitude) from (50,6) to (51,7) (with resolution 3/3600=0.000833).
+
+To determine min/max latitude/longitude, the file names of all loaded height data files need to be parsed according to the described format and then compared to find the lowest/highest values. Let's say N50E006.hgt and N51E006.hgt are loaded, then you would get minLat=50, minLong=6, maxLat=52, maxLong=7.

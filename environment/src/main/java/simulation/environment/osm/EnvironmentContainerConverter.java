@@ -92,7 +92,7 @@ public class EnvironmentContainerConverter {
                 intersections.add(new Intersection2D(mX, mY, mZ, osmId));
             }
 
-            meterStreets.add(new Street2D(nodes, longLatStreet.getSpeedLimit(), intersections, longLatStreet.getOsmId(), longLatStreet.isOneWay(), longLatStreet.getStreetType()));
+            meterStreets.add(new Street2D(nodes, longLatStreet.getSpeedLimit(), intersections, longLatStreet.getOsmId(), longLatStreet.isOneWay(), longLatStreet.getStreetType(), longLatStreet.getStreetPavement()));
         }
         for(Building longLatBuilding : containerLongLat.getBuildings()) {
             ArrayList<EnvNode> nodes = new ArrayList<>();

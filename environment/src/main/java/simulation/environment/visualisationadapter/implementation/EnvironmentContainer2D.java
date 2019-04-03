@@ -20,9 +20,13 @@
  */
 package simulation.environment.visualisationadapter.implementation;
 
+import commons.simulation.IPhysicalVehicle;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
+import simulation.environment.object.House;
 import simulation.environment.visualisationadapter.interfaces.*;
+
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -34,9 +38,13 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
 
     private Collection<EnvStreet> streets;
     private Collection<Building> buildings;
+    private Collection<House> houses;
+
     private Collection<EnvNode> trees;
     private Collection<Waterway> waterway;
     private EnvBounds bounds = null;
+
+    private Collection<IPhysicalVehicle> vehicles;
 
     private Point3D midPoint;
     private double[][] heightMap;
@@ -51,6 +59,8 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
         this.buildings = buildings;
         this.waterway = waterway;
 
+    public Collection<IPhysicalVehicle> getVehicles(){
+        return this.vehicles;
     }
 
 
@@ -65,23 +75,19 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
     }
 
     @Override
-    public Collection<Building> getBuildings() {
-        return this.buildings;
-    }
+    public Collection<Building> getBuildings() { return this.buildings; }
+
+    public Collection<House> getHouses() { return this.houses; }
 
     @Override
-    public Collection<EnvNode> getTrees() {
-        return trees;
-    }
+    public Collection<EnvNode> getTrees() { return this.trees; }
 
     public void setTrees(Collection<EnvNode> trees) {
         this.trees = trees;
     }
 
     @Override
-    public EnvBounds getBounds() {
-        return this.bounds;
-    }
+    public EnvBounds getBounds() { return this.bounds; }
 
     @Override
     public Point3D getMidpoint() {

@@ -55,6 +55,12 @@
             <artifactId>environment</artifactId>
             <version>1.0.4</version>
         </dependency>
+        <!-- Sensors have dependency to simulator -->
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>simulator</artifactId>
+            <version>1.0.4</version>
+        </dependency>
 
         <!-- Sensors have dependency to vehicle -->
         <dependency>

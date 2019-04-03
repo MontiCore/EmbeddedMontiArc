@@ -1084,7 +1084,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             RealVector forceRoadFrictionBackFront = mpVelocityWheels.mapMultiply(-1.0);
             double forceRoadFrictionBackFrontNorm = forceRoadFrictionBackFront.getNorm();
             double pressure = (mp.getPressure() > 0.0 ? mp.getPressure() : VEHICLE_DEFAULT_TIRE_PRESSURE);
-            double rollingCoefficient = 0.005 + (1 / pressure) * (0.01 + 0.0095 * (forceRoadFrictionBackFrontNorm * 3.6 / 100) * (forceRoadFrictionBackFrontNorm * 3.6 / 100));
+            double rollingCoefficient = PhysicsEngine.calcRollingResistance(getPosition(), pressure, forceRoadFrictionBackFrontNorm);
 
             if (forceRoadFrictionBackFrontNorm > 0.0) {
                 forceRoadFrictionBackFront = forceRoadFrictionBackFront.mapDivide(forceRoadFrictionBackFrontNorm);
@@ -1109,7 +1109,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
                 forceRoadFrictionLeftRight = forceRoadFrictionLeftRight.mapDivide(forceRoadFrictionLeftRightNorm);
             }
 
-            double forceRoadFrictionLeftRightAmount = ((WorldModel.getInstance().isItRaining()) ? PhysicsEngine.ROAD_FRICTION_WET : PhysicsEngine.ROAD_FRICTION_DRY) * forceNormalLengthLeftRight;
+            double forceRoadFrictionLeftRightAmount = PhysicsEngine.calcFrictionCoefficient(getPosition());
 
             // Scale force down when near zero velocity to avoid permanent positive / negative changes
             if (forceRoadFrictionLeftRightNorm >= 0.0 && forceRoadFrictionLeftRightNorm < 0.35) {
