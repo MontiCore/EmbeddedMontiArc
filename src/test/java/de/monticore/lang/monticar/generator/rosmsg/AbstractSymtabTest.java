@@ -17,6 +17,7 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Assert;
 
 import java.io.File;

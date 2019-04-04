@@ -3,7 +3,9 @@ package de.monticore.lang.monticar.generator.rosmsg;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
+import de.monticore.lang.monticar.generator.rosmsg.util.CMakeListsViewModel;
 import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
+import de.monticore.lang.monticar.generator.rosmsg.util.RosMsgTemplates;
 import de.monticore.lang.monticar.struct._symboltable.StructFieldDefinitionSymbol;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
@@ -16,7 +18,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,7 +82,7 @@ public class GeneratorRosMsg {
 
         String definition = structSymbol.getStructFieldDefinitions().stream()
                 .filter(sfds -> sfds.getType().existsReferencedSymbol())
-                .map(sfds -> getInMsgRosType(currentPackageName, sfds.getType().getReferencedSymbol(), ros2mode) + " " + getFieldName(sfds,ros2mode))
+                .map(sfds -> getInMsgRosType(currentPackageName, sfds.getType().getReferencedSymbol(), ros2mode) + " " + getFieldName(sfds, ros2mode))
                 .collect(Collectors.joining("\n"));
 
         FileContent fc = new FileContent();
@@ -269,80 +270,15 @@ public class GeneratorRosMsg {
     }
 
     private FileContent getRos2CMakeLists(ArrayList<FileContent> res) {
-        FileContent cmakeLists = new FileContent();
-        cmakeLists.setFileName("CMakeLists.txt");
-
-        StringBuilder content = new StringBuilder();
-        content.append("cmake_minimum_required(VERSION 3.5)\n");
-        content.append("project(struct_msgs)\n");
-        content.append("find_package(ament_cmake REQUIRED)\n");
-        content.append("find_package(rosidl_default_generators REQUIRED)\n");
-
-        content.append("# declare the message files to generate code for\n");
-
-        for (FileContent fc : res) {
-            content.append("LIST(APPEND msg_files \"")
-                    .append(fc.getFileName())
-                    .append("\")\n");
-        }
-
-        content.append("rosidl_generate_interfaces(${PROJECT_NAME} ${msg_files})\n");
-        content.append("ament_export_dependencies(rosidl_default_runtime)\n");
-        content.append("ament_package()\n");
-
-        content.append("set(struct_msgs_LIBRARIES struct_msgs__rosidl_typesupport_cpp struct_msgs__rosidl_typesupport_fastrtps_cpp struct_msgs__rosidl_typesupport_introspection_cpp PARENT_SCOPE)\n");
-        content.append("export(TARGETS struct_msgs__rosidl_typesupport_cpp struct_msgs__rosidl_typesupport_fastrtps_cpp struct_msgs__rosidl_typesupport_introspection_cpp FILE struct_msgs.cmake)\n");
-
-        cmakeLists.setFileContent(content.toString());
-        return cmakeLists;
+        return new FileContent("CMakeLists.txt", RosMsgTemplates.generateRos2CMakeLists(new CMakeListsViewModel(res)));
     }
 
-    private FileContent getRos2PackageXml(){
-        String res = "<?xml version=\"1.0\"?>\n" +
-                "<?xml-model href=\"http://download.ros.org/schema/package_format2.xsd\" schematypens=\"http://www.w3.org/2001/XMLSchema\"?>\n" +
-                "<package format=\"3\">\n" +
-                "  <name>struct_msgs</name>\n" +
-                "  <version>0.0.0</version>\n" +
-                "  <description>Generated Messages from Struct</description>\n" +
-                "  <maintainer email=\"unknown@unknown.com\">Unknown</maintainer>\n" +
-                "  <license>Unknown</license>\n" +
-                "\n" +
-                "  <buildtool_depend>ament_cmake</buildtool_depend>\n" +
-                "  <buildtool_depend>rosidl_default_generators</buildtool_depend>\n" +
-                "  <exec_depend>rosidl_default_runtime</exec_depend>\n" +
-                "\n" +
-                "  <export>\n" +
-                "    <build_type>ament_cmake</build_type>\n" +
-                "  </export>\n" +
-                "  <member_of_group>rosidl_interface_packages</member_of_group>\n" +
-                "</package>";
-
-        FileContent fileContent = new FileContent();
-        fileContent.setFileName("package.xml");
-        fileContent.setFileContent(res);
-        return fileContent;
+    private FileContent getRos2PackageXml() {
+        return new FileContent("package.xml", RosMsgTemplates.generateRos2Package());
     }
 
     private FileContent getRosCMakeLists(ArrayList<FileContent> res) {
-        FileContent cmakeLists = new FileContent();
-        cmakeLists.setFileName("CMakeLists.txt");
-
-        StringBuilder content = new StringBuilder();
-        content.append("cmake_minimum_required(VERSION 2.8.12)\n");
-        content.append("project(struct_msgs)\n");
-        content.append("find_package(genmsg REQUIRED)\n\n");
-
-        res.stream()
-                .map(FileContent::getFileName)
-                .map(fn -> Paths.get(fn).getFileName().toString())
-                .map(fn -> "add_message_files(FILES " + fn + ")\n")
-                .forEach(content::append);
-
-        content.append("generate_messages()\n");
-        content.append("set(struct_msgs_INCLUDE_DIRS ${struct_msgs_INCLUDE_DIRS} PARENT_SCOPE)\n");
-
-        cmakeLists.setFileContent(content.toString());
-        return cmakeLists;
+        return new FileContent("CMakeLists.txt", RosMsgTemplates.generateRosCMakeLists(new CMakeListsViewModel(res)));
     }
 
     public List<File> generateProject(List<MCTypeReference<? extends MCTypeSymbol>> typeReferences) throws IOException {
