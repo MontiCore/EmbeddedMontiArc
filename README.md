@@ -10,7 +10,7 @@ For more information see Wiki:
         <plugin>
             <groupId>de.monticore.lang.monticar.utilities</groupId>
             <artifactId>maven-streamtest</artifactId>
-            <version>0.0.5-SNAPSHOT</version>
+            <version>0.0.5</version>
             <configuration>
                 <pathMain>./src/main/emam</pathMain>
                 <pathTest>./src/test/emam</pathTest>
