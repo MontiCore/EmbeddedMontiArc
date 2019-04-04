@@ -20,7 +20,7 @@ class MyConstant(mx.init.Initializer):
 
 class ${tc.fileNameWithoutEnding}:
 
-    _data_dir_ = "${tc.dataPath}"
+    _data_dir_ = "${tc.dataPath}/"
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
     _input_names_ = [${tc.join(tc.architectureInputs, ",", "'", "'")}]
