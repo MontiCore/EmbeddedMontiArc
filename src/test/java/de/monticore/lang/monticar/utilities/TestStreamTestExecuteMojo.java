@@ -31,6 +31,12 @@ public class TestStreamTestExecuteMojo  {
     }
 
     @Test
+    public void Test_05_valid_struct(){
+        int r = BaseTest.validExecution("./src/test/resources/emam/struct", "./target/tmp/generator/05");
+        assertTrue("Execution-05: Execution is invalid.["+r+"]", r==0);
+    }
+
+    @Test
     public void Test_10_reRun(){
         Test_01_execution_valid();
         Test_02_execution_invalid();

@@ -105,7 +105,7 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
 
             if(this.middlewareGenerator.contains(MiddlewareGenerator.cpp)) {
                 logInfo("   -> Adding cpp generator");
-                generator.add(new CPPGenImpl(), "cpp");
+                generator.add(new CPPGenImpl(this.getPathTmpOutEMAM()), "cpp");
             }
             if(this.middlewareGenerator.contains(MiddlewareGenerator.roscpp)){
                 logInfo("   -> Adding roscpp generator");

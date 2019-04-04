@@ -1,3 +1,4 @@
+
 For more information see Wiki:
 [Link](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/maven-streamtest/wikis/home)
 
@@ -9,7 +10,7 @@ For more information see Wiki:
         <plugin>
             <groupId>de.monticore.lang.monticar.utilities</groupId>
             <artifactId>maven-streamtest</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
+            <version>0.0.5</version>
             <configuration>
                 <pathMain>./src/main/emam</pathMain>
                 <pathTest>./src/test/emam</pathTest>
@@ -83,6 +84,5 @@ For more information see Wiki:
 
 ### Middleware
 
-{:start="4"}
 1. **streamtest-middleare-generate** : generates cpp / roscpp / odv code for the given emam models 
 1. **streamtest-middleare-build** : runs cmake and make for generated c++ code

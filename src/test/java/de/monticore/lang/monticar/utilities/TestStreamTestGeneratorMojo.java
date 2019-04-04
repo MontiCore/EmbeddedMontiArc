@@ -39,6 +39,11 @@ public class TestStreamTestGeneratorMojo {
         assertTrue("Generator-04: Generator is invalid.["+r+"]", r==1);
     }
 
+    @Test
+    public void Test_05_valid_struct(){
+        int r = BaseTest.validGenerator("./src/test/resources/emam/struct", "./target/tmp/generator/05");
+        assertTrue("Generator-05: Generator is invalid.["+r+"]", r==0);
+    }
 
     @Test
     public void Test_10_reRun(){
