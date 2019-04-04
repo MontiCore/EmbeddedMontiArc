@@ -1,5 +1,7 @@
 package de.monticore.lang.monticar.generator.rosmsg;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
 import de.monticore.lang.monticar.struct._symboltable.StructFieldDefinitionSymbol;
@@ -8,11 +10,13 @@ import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.symboltable.references.SymbolReference;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,7 +57,7 @@ public class GeneratorRosMsg {
 
     public List<FileContent> generateStrings(MCTypeReference<? extends MCTypeSymbol> typeReference) {
         //is typeReference basic type or struct?
-        if (getRosType(currentPackageName, typeReference) != null) {
+        if (getRosType(currentPackageName, typeReference, ros2mode) != null) {
             MCTypeSymbol type = typeReference.getReferencedSymbol();
             List<FileContent> res = new ArrayList<>();
             if (type instanceof StructSymbol) {
@@ -77,7 +81,7 @@ public class GeneratorRosMsg {
 
         String definition = structSymbol.getStructFieldDefinitions().stream()
                 .filter(sfds -> sfds.getType().existsReferencedSymbol())
-                .map(sfds -> getInMsgRosType(currentPackageName, sfds.getType().getReferencedSymbol(), ros2mode) + " " + sfds.getName())
+                .map(sfds -> getInMsgRosType(currentPackageName, sfds.getType().getReferencedSymbol(), ros2mode) + " " + getFieldName(sfds,ros2mode))
                 .collect(Collectors.joining("\n"));
 
         FileContent fc = new FileContent();
@@ -114,10 +118,9 @@ public class GeneratorRosMsg {
     }
 
     private static String getFieldName(StructFieldDefinitionSymbol sfds, boolean ros2mode) {
-        if (ros2mode){
+        if (ros2mode) {
             return sfds.getName().toLowerCase();
-        }
-        else{
+        } else {
             return sfds.getName();
         }
 
@@ -229,18 +232,137 @@ public class GeneratorRosMsg {
     }
 
     private static String getTargetName(StructSymbol structSymbol, boolean ros2mode) {
-        if (ros2mode){
+        if (ros2mode) {
             return Arrays.stream(structSymbol.getFullName()
                     .split("\\."))
                     .map(fn -> fn.substring(0, 1).toUpperCase() + fn.substring(1))
                     .collect(Collectors.joining());
-        }
-        else{
+        } else {
             return structSymbol.getFullName().replace(".", "_");
         }
     }
 
     private static String getFullTargetName(String packageName, StructSymbol structSymbol, boolean ros2mode) {
         return ros2mode ? packageName + "/msg/" + getTargetName(structSymbol, ros2mode) : packageName + "/" + getTargetName(structSymbol, ros2mode);
+    }
+
+    public List<FileContent> generateProjectStrings(List<MCTypeReference<? extends MCTypeSymbol>> typeReferences) {
+        ArrayList<FileContent> res = new ArrayList<>();
+
+        // .msg files
+        for (MCTypeReference<? extends MCTypeSymbol> tr : typeReferences) {
+            for (FileContent fc : generateStrings(tr)) {
+                fc.setFileName("msg/" + fc.getFileName());
+                res.add(fc);
+            }
+        }
+
+        if (!ros2mode) {
+            res.add(getRosCMakeLists(res));
+        } else {
+            res.add(getRos2CMakeLists(res));
+            res.add(getRos2PackageXml());
+        }
+
+
+        return res;
+    }
+
+    private FileContent getRos2CMakeLists(ArrayList<FileContent> res) {
+        FileContent cmakeLists = new FileContent();
+        cmakeLists.setFileName("CMakeLists.txt");
+
+        StringBuilder content = new StringBuilder();
+        content.append("cmake_minimum_required(VERSION 3.5)\n");
+        content.append("project(struct_msgs)\n");
+        content.append("find_package(ament_cmake REQUIRED)\n");
+        content.append("find_package(rosidl_default_generators REQUIRED)\n");
+
+        content.append("# declare the message files to generate code for\n");
+
+        for (FileContent fc : res) {
+            content.append("LIST(APPEND msg_files \"")
+                    .append(fc.getFileName())
+                    .append("\")\n");
+        }
+
+        content.append("rosidl_generate_interfaces(${PROJECT_NAME} ${msg_files})\n");
+        content.append("ament_export_dependencies(rosidl_default_runtime)\n");
+        content.append("ament_package()\n");
+
+        content.append("set(struct_msgs_LIBRARIES struct_msgs__rosidl_typesupport_cpp struct_msgs__rosidl_typesupport_fastrtps_cpp struct_msgs__rosidl_typesupport_introspection_cpp PARENT_SCOPE)\n");
+        content.append("export(TARGETS struct_msgs__rosidl_typesupport_cpp struct_msgs__rosidl_typesupport_fastrtps_cpp struct_msgs__rosidl_typesupport_introspection_cpp FILE struct_msgs.cmake)\n");
+
+        cmakeLists.setFileContent(content.toString());
+        return cmakeLists;
+    }
+
+    private FileContent getRos2PackageXml(){
+        String res = "<?xml version=\"1.0\"?>\n" +
+                "<?xml-model href=\"http://download.ros.org/schema/package_format2.xsd\" schematypens=\"http://www.w3.org/2001/XMLSchema\"?>\n" +
+                "<package format=\"3\">\n" +
+                "  <name>struct_msgs</name>\n" +
+                "  <version>0.0.0</version>\n" +
+                "  <description>Generated Messages from Struct</description>\n" +
+                "  <maintainer email=\"unknown@unknown.com\">Unknown</maintainer>\n" +
+                "  <license>Unknown</license>\n" +
+                "\n" +
+                "  <buildtool_depend>ament_cmake</buildtool_depend>\n" +
+                "  <buildtool_depend>rosidl_default_generators</buildtool_depend>\n" +
+                "  <exec_depend>rosidl_default_runtime</exec_depend>\n" +
+                "\n" +
+                "  <export>\n" +
+                "    <build_type>ament_cmake</build_type>\n" +
+                "  </export>\n" +
+                "  <member_of_group>rosidl_interface_packages</member_of_group>\n" +
+                "</package>";
+
+        FileContent fileContent = new FileContent();
+        fileContent.setFileName("package.xml");
+        fileContent.setFileContent(res);
+        return fileContent;
+    }
+
+    private FileContent getRosCMakeLists(ArrayList<FileContent> res) {
+        FileContent cmakeLists = new FileContent();
+        cmakeLists.setFileName("CMakeLists.txt");
+
+        StringBuilder content = new StringBuilder();
+        content.append("cmake_minimum_required(VERSION 2.8.12)\n");
+        content.append("project(struct_msgs)\n");
+        content.append("find_package(genmsg REQUIRED)\n\n");
+
+        res.stream()
+                .map(FileContent::getFileName)
+                .map(fn -> Paths.get(fn).getFileName().toString())
+                .map(fn -> "add_message_files(FILES " + fn + ")\n")
+                .forEach(content::append);
+
+        content.append("generate_messages()\n");
+        content.append("set(struct_msgs_INCLUDE_DIRS ${struct_msgs_INCLUDE_DIRS} PARENT_SCOPE)\n");
+
+        cmakeLists.setFileContent(content.toString());
+        return cmakeLists;
+    }
+
+    public List<File> generateProject(List<MCTypeReference<? extends MCTypeSymbol>> typeReferences) throws IOException {
+        List<File> res = new ArrayList<>();
+        List<FileContent> fileContents = generateProjectStrings(typeReferences);
+        for (FileContent fileContent : fileContents) {
+            File file = new File(path + "/" + fileContent.getFileName());
+            FileUtils.write(file, fileContent.getFileContent());
+            res.add(file);
+        }
+        return res;
+    }
+
+    public List<File> generateProject(EMAComponentInstanceSymbol component) throws IOException {
+        List<MCTypeReference<? extends MCTypeSymbol>> typeReferences = component.getPortInstanceList().stream()
+                .map(EMAPortInstanceSymbol::getTypeReference)
+                .filter(SymbolReference::existsReferencedSymbol)
+                .filter(mcTypeReference -> mcTypeReference.getReferencedSymbol() instanceof StructSymbol)
+                .collect(Collectors.toList());
+
+        return generateProject(typeReferences);
     }
 }
