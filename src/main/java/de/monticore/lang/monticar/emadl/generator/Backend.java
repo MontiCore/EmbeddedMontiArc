@@ -2,6 +2,8 @@ package de.monticore.lang.monticar.emadl.generator;
 
 
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNTrain2Gluon;
 import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNArch2MxNet;
 import de.monticore.lang.monticar.cnnarch.caffe2generator.CNNArch2Caffe2;
 import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNTrain2MxNet;
@@ -30,6 +32,16 @@ public enum Backend {
         public CNNTrainGenerator getCNNTrainGenerator() {
             return new CNNTrain2Caffe2();
         }
+    },
+    GLUON{
+        @Override
+        public CNNArchGenerator getCNNArchGenerator() {
+            return new CNNArch2Gluon();
+        }
+        @Override
+        public CNNTrainGenerator getCNNTrainGenerator() {
+            return new CNNTrain2Gluon();
+        }
     };
 
     public abstract CNNArchGenerator getCNNArchGenerator();
@@ -43,6 +55,9 @@ public enum Backend {
             case "CAFFE2":
                 return Optional.of(CAFFE2);
 
+            case "GLUON":
+                return Optional.of(GLUON);
+
             default:
                 return Optional.empty();
         }
@@ -52,6 +67,8 @@ public enum Backend {
         switch (backend){
             case CAFFE2:
                 return "CAFFE2";
+            case GLUON:
+                return "GLUON";
             default:
                 return "MXNET";
         }
