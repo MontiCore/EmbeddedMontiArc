@@ -19,11 +19,46 @@ class RosAdapter_tests_msg_multiNestedStructComp: public IAdapter_tests_msg_mult
 		int i = 0;
 		ros::init(i, &tmp, "RosAdapter_tests_msg_multiNestedStructComp_node");
 		ros::NodeHandle node_handle = ros::NodeHandle();
-		topic5Subscriber = node_handle.subscribe("topic5" ,5,&RosAdapter_tests_msg_multiNestedStructComp::topic5Callback, this, ros::TransportHints().tcpNoDelay());
+		topic5Subscriber = node_handle.subscribe("topic5", 5, &RosAdapter_tests_msg_multiNestedStructComp::topic5Callback, this, ros::TransportHints().tcpNoDelay());
 		topic6Publisher = node_handle.advertise<struct_msgs::tests_structs_MultiNestedStruct>("topic6",5);
 		ros::spin();
 	}
-	
+
+    void topic5Callback(const struct_msgs::tests_structs_MultiNestedStruct::ConstPtr& msg){
+        component->inMultiNested.fieldMultiNested1.fieldB = msg->fieldMultiNested1.fieldB;
+        component->inMultiNested.fieldMultiNested1.fieldNested1.fieldB1 = msg->fieldMultiNested1.fieldNested1.fieldB1;
+        component->inMultiNested.fieldMultiNested1.fieldNested1.fieldQ1 = msg->fieldMultiNested1.fieldNested1.fieldQ1;
+        component->inMultiNested.fieldMultiNested1.fieldNested1.fieldQ2 = msg->fieldMultiNested1.fieldNested1.fieldQ2;
+        component->inMultiNested.fieldMultiNested1.fieldNested1.fieldZ1 = msg->fieldMultiNested1.fieldNested1.fieldZ1;
+        component->inMultiNested.fieldMultiNested1.fieldNested1.fieldZ2 = msg->fieldMultiNested1.fieldNested1.fieldZ2;
+        component->inMultiNested.fieldMultiNested1.fieldNested2.fieldB1 = msg->fieldMultiNested1.fieldNested2.fieldB1;
+        component->inMultiNested.fieldMultiNested1.fieldNested2.fieldQ1 = msg->fieldMultiNested1.fieldNested2.fieldQ1;
+        component->inMultiNested.fieldMultiNested1.fieldNested2.fieldQ2 = msg->fieldMultiNested1.fieldNested2.fieldQ2;
+        component->inMultiNested.fieldMultiNested1.fieldNested2.fieldZ1 = msg->fieldMultiNested1.fieldNested2.fieldZ1;
+        component->inMultiNested.fieldMultiNested1.fieldNested2.fieldZ2 = msg->fieldMultiNested1.fieldNested2.fieldZ2;
+        component->inMultiNested.fieldMultiNested1.fieldQ = msg->fieldMultiNested1.fieldQ;
+        component->inMultiNested.fieldMultiNested1.fieldZ = msg->fieldMultiNested1.fieldZ;
+        component->inMultiNested.fieldMultiNested2.fieldB = msg->fieldMultiNested2.fieldB;
+        component->inMultiNested.fieldMultiNested2.fieldNested1.fieldB1 = msg->fieldMultiNested2.fieldNested1.fieldB1;
+        component->inMultiNested.fieldMultiNested2.fieldNested1.fieldQ1 = msg->fieldMultiNested2.fieldNested1.fieldQ1;
+        component->inMultiNested.fieldMultiNested2.fieldNested1.fieldQ2 = msg->fieldMultiNested2.fieldNested1.fieldQ2;
+        component->inMultiNested.fieldMultiNested2.fieldNested1.fieldZ1 = msg->fieldMultiNested2.fieldNested1.fieldZ1;
+        component->inMultiNested.fieldMultiNested2.fieldNested1.fieldZ2 = msg->fieldMultiNested2.fieldNested1.fieldZ2;
+        component->inMultiNested.fieldMultiNested2.fieldNested2.fieldB1 = msg->fieldMultiNested2.fieldNested2.fieldB1;
+        component->inMultiNested.fieldMultiNested2.fieldNested2.fieldQ1 = msg->fieldMultiNested2.fieldNested2.fieldQ1;
+        component->inMultiNested.fieldMultiNested2.fieldNested2.fieldQ2 = msg->fieldMultiNested2.fieldNested2.fieldQ2;
+        component->inMultiNested.fieldMultiNested2.fieldNested2.fieldZ1 = msg->fieldMultiNested2.fieldNested2.fieldZ1;
+        component->inMultiNested.fieldMultiNested2.fieldNested2.fieldZ2 = msg->fieldMultiNested2.fieldNested2.fieldZ2;
+        component->inMultiNested.fieldMultiNested2.fieldQ = msg->fieldMultiNested2.fieldQ;
+        component->inMultiNested.fieldMultiNested2.fieldZ = msg->fieldMultiNested2.fieldZ;
+        component->inMultiNested.fieldNested.fieldB1 = msg->fieldNested.fieldB1;
+        component->inMultiNested.fieldNested.fieldQ1 = msg->fieldNested.fieldQ1;
+        component->inMultiNested.fieldNested.fieldQ2 = msg->fieldNested.fieldQ2;
+        component->inMultiNested.fieldNested.fieldZ1 = msg->fieldNested.fieldZ1;
+        component->inMultiNested.fieldNested.fieldZ2 = msg->fieldNested.fieldZ2;
+        component->inMultiNested.fieldQ = msg->fieldQ;
+    }
+
 	void publishtopic6Publisher(){
 		struct_msgs::tests_structs_MultiNestedStruct tmpMsg;
 		tmpMsg.fieldMultiNested1.fieldB = component->outMultiNested.fieldMultiNested1.fieldB;
@@ -60,44 +95,9 @@ class RosAdapter_tests_msg_multiNestedStructComp: public IAdapter_tests_msg_mult
 		tmpMsg.fieldQ = component->outMultiNested.fieldQ;
 		topic6Publisher.publish(tmpMsg);
 	}
-	
-	void tick(){
-		publishtopic6Publisher();
-	}
-	
-	void topic5Callback(const struct_msgs::tests_structs_MultiNestedStruct::ConstPtr& msg){
-		component->inMultiNested.fieldMultiNested1.fieldB = msg->fieldMultiNested1.fieldB;
-		component->inMultiNested.fieldMultiNested1.fieldNested1.fieldB1 = msg->fieldMultiNested1.fieldNested1.fieldB1;
-		component->inMultiNested.fieldMultiNested1.fieldNested1.fieldQ1 = msg->fieldMultiNested1.fieldNested1.fieldQ1;
-		component->inMultiNested.fieldMultiNested1.fieldNested1.fieldQ2 = msg->fieldMultiNested1.fieldNested1.fieldQ2;
-		component->inMultiNested.fieldMultiNested1.fieldNested1.fieldZ1 = msg->fieldMultiNested1.fieldNested1.fieldZ1;
-		component->inMultiNested.fieldMultiNested1.fieldNested1.fieldZ2 = msg->fieldMultiNested1.fieldNested1.fieldZ2;
-		component->inMultiNested.fieldMultiNested1.fieldNested2.fieldB1 = msg->fieldMultiNested1.fieldNested2.fieldB1;
-		component->inMultiNested.fieldMultiNested1.fieldNested2.fieldQ1 = msg->fieldMultiNested1.fieldNested2.fieldQ1;
-		component->inMultiNested.fieldMultiNested1.fieldNested2.fieldQ2 = msg->fieldMultiNested1.fieldNested2.fieldQ2;
-		component->inMultiNested.fieldMultiNested1.fieldNested2.fieldZ1 = msg->fieldMultiNested1.fieldNested2.fieldZ1;
-		component->inMultiNested.fieldMultiNested1.fieldNested2.fieldZ2 = msg->fieldMultiNested1.fieldNested2.fieldZ2;
-		component->inMultiNested.fieldMultiNested1.fieldQ = msg->fieldMultiNested1.fieldQ;
-		component->inMultiNested.fieldMultiNested1.fieldZ = msg->fieldMultiNested1.fieldZ;
-		component->inMultiNested.fieldMultiNested2.fieldB = msg->fieldMultiNested2.fieldB;
-		component->inMultiNested.fieldMultiNested2.fieldNested1.fieldB1 = msg->fieldMultiNested2.fieldNested1.fieldB1;
-		component->inMultiNested.fieldMultiNested2.fieldNested1.fieldQ1 = msg->fieldMultiNested2.fieldNested1.fieldQ1;
-		component->inMultiNested.fieldMultiNested2.fieldNested1.fieldQ2 = msg->fieldMultiNested2.fieldNested1.fieldQ2;
-		component->inMultiNested.fieldMultiNested2.fieldNested1.fieldZ1 = msg->fieldMultiNested2.fieldNested1.fieldZ1;
-		component->inMultiNested.fieldMultiNested2.fieldNested1.fieldZ2 = msg->fieldMultiNested2.fieldNested1.fieldZ2;
-		component->inMultiNested.fieldMultiNested2.fieldNested2.fieldB1 = msg->fieldMultiNested2.fieldNested2.fieldB1;
-		component->inMultiNested.fieldMultiNested2.fieldNested2.fieldQ1 = msg->fieldMultiNested2.fieldNested2.fieldQ1;
-		component->inMultiNested.fieldMultiNested2.fieldNested2.fieldQ2 = msg->fieldMultiNested2.fieldNested2.fieldQ2;
-		component->inMultiNested.fieldMultiNested2.fieldNested2.fieldZ1 = msg->fieldMultiNested2.fieldNested2.fieldZ1;
-		component->inMultiNested.fieldMultiNested2.fieldNested2.fieldZ2 = msg->fieldMultiNested2.fieldNested2.fieldZ2;
-		component->inMultiNested.fieldMultiNested2.fieldQ = msg->fieldMultiNested2.fieldQ;
-		component->inMultiNested.fieldMultiNested2.fieldZ = msg->fieldMultiNested2.fieldZ;
-		component->inMultiNested.fieldNested.fieldB1 = msg->fieldNested.fieldB1;
-		component->inMultiNested.fieldNested.fieldQ1 = msg->fieldNested.fieldQ1;
-		component->inMultiNested.fieldNested.fieldQ2 = msg->fieldNested.fieldQ2;
-		component->inMultiNested.fieldNested.fieldZ1 = msg->fieldNested.fieldZ1;
-		component->inMultiNested.fieldNested.fieldZ2 = msg->fieldNested.fieldZ2;
-		component->inMultiNested.fieldQ = msg->fieldQ;
-	}
+
+    void tick(){
+        publishtopic6Publisher();
+    }
 	
 };

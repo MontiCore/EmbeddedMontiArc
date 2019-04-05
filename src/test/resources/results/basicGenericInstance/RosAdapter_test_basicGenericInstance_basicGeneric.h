@@ -3,8 +3,10 @@
 #include "test_basicGenericInstance_basicGeneric.h"
 #include <ros/ros.h>
 #include <std_msgs/Float64MultiArray.h>
+
 class RosAdapter_test_basicGenericInstance_basicGeneric: public IAdapter_test_basicGenericInstance_basicGeneric{
 	const int n = 3;
+	
 	test_basicGenericInstance_basicGeneric* component;
 	ros::Subscriber _name1Subscriber;
 	ros::Publisher _name1Publisher;
@@ -13,29 +15,31 @@ class RosAdapter_test_basicGenericInstance_basicGeneric: public IAdapter_test_ba
 	RosAdapter_test_basicGenericInstance_basicGeneric(){
 		
 	}
-	
-	void _name1Callback(const std_msgs::Float64MultiArray::ConstPtr& msg){
-		int counter = 0;
-		for(int i0 = 0; i0 < n; i0++){
-			for(int i1 = 0; i1 < n; i1++){
-				(component->mat1)(i0, i1) = msg->data[counter];
-				counter++;
-			}
-		}
-		
-	}
-	
+
 	void init(test_basicGenericInstance_basicGeneric* comp){
 		this->component = comp;
 		char* tmp = strdup("");
 		int i = 0;
 		ros::init(i, &tmp, "RosAdapter_test_basicGenericInstance_basicGeneric_node");
 		ros::NodeHandle node_handle = ros::NodeHandle();
-		_name1Subscriber = node_handle.subscribe("/name1" ,5,&RosAdapter_test_basicGenericInstance_basicGeneric::_name1Callback, this, ros::TransportHints().tcpNoDelay());
+		
+		_name1Subscriber = node_handle.subscribe("/name1", 5, &RosAdapter_test_basicGenericInstance_basicGeneric::_name1Callback, this, ros::TransportHints().tcpNoDelay());
+		
 		_name1Publisher = node_handle.advertise<std_msgs::Float64MultiArray>("/name1",5);
+		
 		ros::spin();
 	}
-	
+
+    void _name1Callback(const std_msgs::Float64MultiArray::ConstPtr& msg){
+        int counter = 0;
+        for(int i0 = 0; i0 < n; i0++){
+            for(int i1 = 0; i1 < n; i1++){
+                (component->mat1)(i0, i1) = msg->data[counter];
+                counter++;
+            }
+        }
+    }
+
 	void publish_name1Publisher(){
 		std_msgs::Float64MultiArray tmpMsg;
 		tmpMsg.data.resize(n * n);

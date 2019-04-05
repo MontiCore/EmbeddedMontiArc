@@ -17,7 +17,7 @@ public:
 	}
 
 	RosAdapter_ba_intersection_intersectionController(ros::NodeHandle node_handle, ros::NodeHandle private_node_handle){
-		_sim_objects_ground_truthSubscriber = node_handle.subscribe("/sim/objects_ground_truth" ,5,&RosAdapter_ba_intersection_intersectionController::_sim_objects_ground_truthCallback, this, ros::TransportHints().tcpNoDelay());
+		_sim_objects_ground_truthSubscriber = node_handle.subscribe("/sim/objects_ground_truth", 5, &RosAdapter_ba_intersection_intersectionController::_sim_objects_ground_truthCallback, this, ros::TransportHints().tcpNoDelay());
 		_stopPublisher = node_handle.advertise<sim_intersection::BoolWithId>("/stop",5);
 	}
 

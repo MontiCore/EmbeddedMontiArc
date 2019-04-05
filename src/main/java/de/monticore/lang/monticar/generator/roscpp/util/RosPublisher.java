@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp.util;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
+import de.monticore.lang.monticar.generator.roscpp.instructions.SetStructMsgInstruction;
 import de.se_rwth.commons.logging.Log;
 
 public class RosPublisher extends RosInterface {
@@ -26,5 +27,15 @@ public class RosPublisher extends RosInterface {
     @Override
     public String getMethodName() {
         return "publish" + getNameInTargetLanguage();
+    }
+
+    @Override
+    public String getRosSetStructInstruction() {
+        return SetStructMsgInstruction.getInstruction(getPort(), getRosMsg());
+    }
+
+    @Override
+    public String getRos2SetStructInstruction() {
+        return SetStructMsgInstruction.getInstruction(getPort(), getRos2Msg());
     }
 }

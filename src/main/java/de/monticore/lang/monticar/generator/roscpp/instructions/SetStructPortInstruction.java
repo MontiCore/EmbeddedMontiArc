@@ -2,7 +2,6 @@ package de.monticore.lang.monticar.generator.roscpp.instructions;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
-import de.monticore.lang.monticar.generator.roscpp.util.TargetCodeInstruction;
 import de.monticore.lang.monticar.generator.roscpp.helper.IndexHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
@@ -15,38 +14,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SetStructPortInstruction extends TargetCodeInstruction {
-    public SetStructPortInstruction(EMAPortSymbol port, RosMsg rosMsg) {
+public class SetStructPortInstruction{
+    private SetStructPortInstruction() {
+    }
+
+    public static String getInstruction(EMAPortSymbol port, RosMsg rosMsg) {
+        String inst;
         if (rosMsg.getName().startsWith("std_msgs/")) {
             if (rosMsg.getName().endsWith("MultiArray")) {
                 ASTCommonMatrixType matrixType = (ASTCommonMatrixType) ((MCASTTypeSymbol) port.getTypeReference().getReferencedSymbol()).getAstType();
                 List<String> dimSizes = IndexHelper.getDimSizesOfMatrixType(matrixType);
 
-                this.instruction = "";
-                this.instruction += "int counter = 0;\n";
+                inst = "";
+                inst += "int counter = 0;\n";
                 String indexString = "";
                 for (int i = 0; i < dimSizes.size(); i++) {
                     String curInd = "i" + i;
                     indexString += (i == 0 ? "" : ", ") + curInd;
-                    this.instruction += "for(int " + curInd + " = 0; " + curInd + " < " + dimSizes.get(i) + "; " + curInd + "++){\n";
+                    inst += "for(int " + curInd + " = 0; " + curInd + " < " + dimSizes.get(i) + "; " + curInd + "++){\n";
                 }
 
-                this.instruction += "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = msg->data[counter]";
+                inst += "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = msg->data[counter]";
                 //TODO: check type not name
                 if (rosMsg.getName().equals("std_msgs/ByteMultiArray")) {
                     //is a bool msg
-                    this.instruction += " != 0";
+                    inst += " != 0";
                 }
-                this.instruction += ";\n";
-                this.instruction += "counter++;\n";
+                inst += ";\n";
+                inst += "counter++;\n";
 
                 for (int i = 0; i < dimSizes.size(); i++) {
-                    this.instruction += "}\n";
+                    inst += "}\n";
                 }
 
 
             } else {
-                this.instruction = NameHelper.getAllFieldNames(rosMsg).stream()
+                inst = NameHelper.getAllFieldNames(rosMsg).stream()
                         .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + " = msg->" + field + ";")
                         .sorted()
                         .collect(Collectors.joining("\n"));
@@ -82,11 +85,12 @@ public class SetStructPortInstruction extends TargetCodeInstruction {
                 }
             }
 
-            this.instruction = structFieldNames.stream()
+            inst = structFieldNames.stream()
                     .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + "." + field + " = msg->" + structToMsgField.get(field) + ";")
                     .sorted()
                     .collect(Collectors.joining("\n"));
         }
+        return inst;
     }
 
 }

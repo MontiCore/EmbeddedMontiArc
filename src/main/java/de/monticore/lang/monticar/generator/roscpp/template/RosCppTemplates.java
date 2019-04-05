@@ -17,6 +17,7 @@ public class RosCppTemplates {
     }
 
     private static final Template ROSCPP_CMAKELISTS;
+    private static final Template ROS_ADAPTER;
 
     static {
         Configuration conf = new Configuration(Configuration.VERSION_2_3_23);
@@ -26,6 +27,7 @@ public class RosCppTemplates {
         conf.setClassForTemplateLoading(RosCppTemplates.class, "");
         try {
             ROSCPP_CMAKELISTS = conf.getTemplate("CMakeLists.ftl");
+            ROS_ADAPTER = conf.getTemplate("Adapter.ftl");
         } catch (IOException e) {
             String msg = "could not load template";
             Log.error(msg, e);
@@ -37,6 +39,12 @@ public class RosCppTemplates {
         HashMap<String, Object> data = new HashMap<>();
         data.put("model", model);
         return generate(ROSCPP_CMAKELISTS, data);
+    }
+
+    public static String generateRosAdapter(RosAdapterModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(ROS_ADAPTER, data);
     }
 
     private static String generate(Template template, Map dataForTemplate) {

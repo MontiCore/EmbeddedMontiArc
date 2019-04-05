@@ -34,14 +34,6 @@ public class NameHelper {
         return fixName(portSymbol.getName());
     }
 
-    public static String getFixedMsgFieldName(String name) {
-        if (!(name.contains("[") && name.contains("]"))) {
-            throw new IllegalArgumentException("The MsgField " + name + "is not part of an array!");
-        }
-
-        return fixName(name);
-    }
-
     private static String fixName(String name) {
         String shortName = name.substring(0, name.lastIndexOf('['));
         String indexString = name.substring(name.lastIndexOf('['), name.lastIndexOf(']') + 1);
@@ -126,15 +118,6 @@ public class NameHelper {
         return String.join("/", parts);
     }
 
-    public static void lowercaseMsgFieldNames(List<FileContent> tmpFileContents) {
-        tmpFileContents.forEach(fc -> {
-            String fixedFileContent = Arrays.stream(fc.getFileContent().split("\\r?\\n"))
-                    .map(line -> line.substring(0, line.indexOf(" ")) + line.substring(line.indexOf(" ")).toLowerCase())
-                    .collect(Collectors.joining("\n"));
-            fc.setFileContent(fixedFileContent);
-        });
-    }
-
     public static String getTopicNameTargetLanguage(String topicName) {
         return topicName.replace("/", "_")
                 .replace("[", "_")
@@ -143,11 +126,5 @@ public class NameHelper {
 
     public static String getFullRosType(RosConnectionSymbol rosConnectionSymbol) {
         return rosConnectionSymbol.getTopicType().get().replace("/", "::");
-    }
-
-    public static String getFullRos2Type(RosConnectionSymbol rosConnectionSymbol) {
-        String topicType = rosConnectionSymbol.getTopicType().get();
-        topicType = addMsgToMsgType(topicType);
-        return topicType.replace("/", "::");
     }
 }
