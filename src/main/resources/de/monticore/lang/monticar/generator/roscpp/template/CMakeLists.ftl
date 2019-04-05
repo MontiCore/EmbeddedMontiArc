@@ -4,20 +4,22 @@ set (CMAKE_CXX_STANDARD 14)
 set (AMENT_CMAKE_UNINSTALL_TARGET FALSE)
 
 <#list model.getPackages() as pack>
-    find_package(${pack} REQUIRED)
+    <#if pack != "struct_msgs">
+find_package(${pack} REQUIRED)
+    </#if>
 </#list>
 
 add_library(${model.name} ${model.name}.cpp)
 
 list(APPEND LIBRARIES ${model.compName})
 list(APPEND LIBRARIES IAdapter_${model.compName})
-<#list model.getAdditionalLibraries() as lib>
+<#list model.getPackages() as lib>
     list(APPEND LIBRARIES ${r"${"}${lib}_LIBRARIES})
 </#list>
 target_link_libraries(${model.name} <#noparse>${LIBRARIES}</#noparse>)
 
 list(APPEND INCLUDE_DIRS <#noparse>${CMAKE_CURRENT_SOURCE_DIR}</#noparse>)
-<#list model.getAdditionalIncludes() as incl>
+<#list model.getPackages() as incl>
     list(APPEND INCLUDE_DIRS ${r"${"}${incl}_INCLUDE_DIRS})
 </#list>
 target_include_directories(${model.name} PUBLIC <#noparse>${INCLUDE_DIRS}</#noparse>)

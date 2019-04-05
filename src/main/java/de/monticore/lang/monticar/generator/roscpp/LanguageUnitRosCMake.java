@@ -11,7 +11,6 @@ import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class LanguageUnitRosCMake {
 
@@ -20,13 +19,8 @@ public class LanguageUnitRosCMake {
         String name = NameHelper.getAdapterName(component);
         RosCppCMakeListsModel model = new RosCppCMakeListsModel(name, compName);
 
-
         List<String> allPackages = new ArrayList<>();
-        if (!ros2Mode) {
-            allPackages.add("roscpp");
-        } else {
-            allPackages.add("rclcpp");
-        }
+        allPackages.add(ros2Mode ? "rclcpp" : "roscpp");
 
         rosInterfaces.stream()
                 .map(RosInterface::getRosConnectionSymbol)
@@ -35,33 +29,11 @@ public class LanguageUnitRosCMake {
                 .map(n -> n.split("/")[0])
                 .forEach(allPackages::add);
 
-        List<String> distinctSortedPackages = allPackages.stream()
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
-
-        distinctSortedPackages.stream()
-                .filter(p -> !p.equals("struct_msgs"))
-                .forEach(model::addPackage);
-
-        distinctSortedPackages
-                .forEach(model::addInclude);
-
-        distinctSortedPackages
-                .forEach(model::addLibrary);
+        allPackages.forEach(model::addPackage);
 
         List<FileContent> result = new ArrayList<>();
-
-        FileContent fileContent = new FileContent();
-        fileContent.setFileName("CMakeLists.txt");
-        fileContent.setFileContent(RosCppTemplates.generateRosCMakeLists(model));
-        result.add(fileContent);
-
-        FileContent cppFile = new FileContent();
-        cppFile.setFileName(name + ".cpp");
-        cppFile.setFileContent("#include \"" + name + ".h\"");
-        result.add(cppFile);
-
+        result.add(new FileContent("CMakeLists.txt", RosCppTemplates.generateRosCMakeLists(model)));
+        result.add(new FileContent(name + ".cpp","#include \"" + name + ".h\""));
         return result;
     }
 }
