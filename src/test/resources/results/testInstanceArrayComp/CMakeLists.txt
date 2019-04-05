@@ -6,9 +6,14 @@ set (AMENT_CMAKE_UNINSTALL_TARGET FALSE)
 find_package(roscpp REQUIRED)
 
 add_library(RosAdapter_test_instanceArrayComp_basicPorts_1_ RosAdapter_test_instanceArrayComp_basicPorts_1_.cpp)
-set_target_properties(RosAdapter_test_instanceArrayComp_basicPorts_1_ PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(RosAdapter_test_instanceArrayComp_basicPorts_1_ test_instanceArrayComp_basicPorts_1_ IAdapter_test_instanceArrayComp_basicPorts_1_ ${roscpp_LIBRARIES})
-target_include_directories(RosAdapter_test_instanceArrayComp_basicPorts_1_ PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${roscpp_INCLUDE_DIRS})
 
+list(APPEND LIBRARIES test_instanceArrayComp_basicPorts_1_)
+list(APPEND LIBRARIES IAdapter_test_instanceArrayComp_basicPorts_1_)
+list(APPEND LIBRARIES ${roscpp_LIBRARIES})
+target_link_libraries(RosAdapter_test_instanceArrayComp_basicPorts_1_ ${LIBRARIES})
+
+list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
+list(APPEND INCLUDE_DIRS ${roscpp_INCLUDE_DIRS})
+target_include_directories(RosAdapter_test_instanceArrayComp_basicPorts_1_ PUBLIC ${INCLUDE_DIRS})
 
 export(TARGETS RosAdapter_test_instanceArrayComp_basicPorts_1_ FILE RosAdapter_test_instanceArrayComp_basicPorts_1_.cmake)

@@ -1,13 +1,17 @@
 package de.monticore.lang.monticar.generator.roscpp.helper;
 
+import de.monticore.lang.monticar.generator.roscpp.util.BluePrintCPP;
 import de.monticore.lang.monticar.generator.roscpp.util.Instruction;
 import de.monticore.lang.monticar.generator.roscpp.util.Method;
 import de.monticore.lang.monticar.generator.roscpp.util.Variable;
-import de.monticore.lang.monticar.generator.roscpp.util.BluePrintCPP;
+import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
+import de.se_rwth.commons.logging.Log;
 
-import java.util.Arrays;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
 public class PrinterHelper {
 
@@ -31,15 +35,11 @@ public class PrinterHelper {
         if (method.getParameters().size() > 0)
             res = res.substring(0, res.length() - 2);
         res += ")";
-        if (method.getInstructions().size() == 0) {
-            res += ";\n";
-        } else {
-            res += "{\n";
-            for (Instruction instr : method.getInstructions()) {
-                res += "\t\t" + instr.getTargetLanguageInstruction() + "\n";
-            }
-            res += "\t}\n";
+        res += "{\n";
+        for (Instruction instr : method.getInstructions()) {
+            res += "\t\t" + instr.getTargetLanguageInstruction() + "\n";
         }
+        res += "\t}\n";
         return res;
     }
 
@@ -69,5 +69,20 @@ public class PrinterHelper {
         builder.append("};");
 
         return builder.toString();
+    }
+
+    public static File generateFile(FileContent fileContent, String targetPath) throws IOException {
+        File f = new File(targetPath + fileContent.getFileName());
+        Log.info(f.getName(), "FileCreation:");
+        if (!f.exists()) {
+            f.getParentFile().mkdirs();
+            if (!f.createNewFile()) {
+                Log.error("File could not be created");
+            }
+        }
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(f));
+        bufferedWriter.write(fileContent.getFileContent(), 0, fileContent.getFileContent().length());
+        bufferedWriter.close();
+        return f;
     }
 }

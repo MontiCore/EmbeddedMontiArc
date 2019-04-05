@@ -1,13 +1,17 @@
 package de.monticore.lang.monticar.generator.roscpp.helper;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
+import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NameHelper {
 
@@ -120,5 +124,30 @@ public class NameHelper {
         // After: replace A with _a
         parts[parts.length - 1] = parts[parts.length - 1].replaceAll("([A-Z])", "_$1").toLowerCase();
         return String.join("/", parts);
+    }
+
+    public static void lowercaseMsgFieldNames(List<FileContent> tmpFileContents) {
+        tmpFileContents.forEach(fc -> {
+            String fixedFileContent = Arrays.stream(fc.getFileContent().split("\\r?\\n"))
+                    .map(line -> line.substring(0, line.indexOf(" ")) + line.substring(line.indexOf(" ")).toLowerCase())
+                    .collect(Collectors.joining("\n"));
+            fc.setFileContent(fixedFileContent);
+        });
+    }
+
+    public static String getTopicNameTargetLanguage(String topicName) {
+        return topicName.replace("/", "_")
+                .replace("[", "_")
+                .replace("]", "_");
+    }
+
+    public static String getFullRosType(RosConnectionSymbol rosConnectionSymbol) {
+        return rosConnectionSymbol.getTopicType().get().replace("/", "::");
+    }
+
+    public static String getFullRos2Type(RosConnectionSymbol rosConnectionSymbol) {
+        String topicType = rosConnectionSymbol.getTopicType().get();
+        topicType = addMsgToMsgType(topicType);
+        return topicType.replace("/", "::");
     }
 }

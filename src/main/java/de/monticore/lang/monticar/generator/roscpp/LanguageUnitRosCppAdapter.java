@@ -1,14 +1,14 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
+import de.monticore.lang.monticar.generator.roscpp.converters.*;
 import de.monticore.lang.monticar.generator.roscpp.helper.InitHelper;
-import de.monticore.lang.monticar.generator.roscpp.util.*;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
-import de.monticore.lang.monticar.generator.roscpp.instructions.*;
-import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
+import de.monticore.lang.monticar.generator.roscpp.instructions.CallMethodInstruction;
+import de.monticore.lang.monticar.generator.roscpp.util.*;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
@@ -18,13 +18,15 @@ import java.util.stream.Collectors;
 
 public class LanguageUnitRosCppAdapter {
 
-    private Map<Variable, RosConnectionSymbol> subscribers = new HashMap<>();
-    private Map<Variable, RosConnectionSymbol> publishers = new HashMap<>();
-    private List<Method> publishMethods = new ArrayList<>();
-    private List<MsgConverter> msgConverts = new ArrayList<>();
+    private List<DirectMsgConverter> msgConverts = new ArrayList<>();
     private List<String> additionalPackages = new ArrayList<>();
     private Map<RosMsg, MCTypeReference<? extends MCTypeSymbol>> usedRosMsgs = new HashMap<>();
     private boolean ros2Mode = false;
+    private List<RosInterface> interfaces;
+
+    public LanguageUnitRosCppAdapter(boolean ros2Mode) {
+        this.ros2Mode = ros2Mode;
+    }
 
     public boolean isRos2Mode() {
         return ros2Mode;
@@ -38,298 +40,161 @@ public class LanguageUnitRosCppAdapter {
         return additionalPackages;
     }
 
-    public Optional<BluePrintCPP> generateBluePrint(EMAComponentInstanceSymbol componentSymbol) {
+    public Optional<AdapterBluePrint> generateBluePrint(EMAComponentInstanceSymbol componentSymbol) {
 
-        BluePrintCPP currentBluePrint = null;
+        AdapterBluePrint bluePrint = null;
 
         if (TagHelper.rosConnectionsValid(componentSymbol)) {
 
             String name = NameHelper.getAdapterName(componentSymbol);
-            currentBluePrint = new BluePrintCPP(name);
+            bluePrint = new AdapterBluePrint(name, NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName()));
             List<EMAPortSymbol> rosPorts = componentSymbol.getPortInstanceList().stream()
                     .filter(EMAPortSymbol::isRosPort)
                     .collect(Collectors.toList());
 
-            generateFields(componentSymbol, rosPorts, currentBluePrint);
-            generateCallbacks(rosPorts, currentBluePrint);
-            generateConstructor(name, currentBluePrint);
-            generateInit(name, NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName()), currentBluePrint);
-            generatePublishMethods(rosPorts, currentBluePrint);
-            generateTick(currentBluePrint);
-            generateIncludes(componentSymbol, rosPorts, currentBluePrint);
+            List<RosSubscriber> rosSubscribers = rosPorts.stream()
+                    .filter(EMAPortSymbol::isIncoming)
+                    .map(RosSubscriber::new)
+                    .collect(Collectors.toList());
+
+            List<RosPublisher> rosPublishers = rosPorts.stream()
+                    .filter(EMAPortSymbol::isOutgoing)
+                    .map(RosPublisher::new)
+                    .collect(Collectors.toList());
+
+            List<RosInterface> rosInterfaces = new ArrayList<>();
+            rosInterfaces.addAll(rosSubscribers);
+            rosInterfaces.addAll(rosPublishers);
+            interfaces = rosInterfaces;
+
+            SubscriberConverter subscriberConverter;
+            PublisherConverter publisherConverter;
+            if (ros2Mode) {
+                subscriberConverter = new Ros2SubscriberConverter();
+                publisherConverter = new Ros2PublisherConverter();
+            } else {
+                subscriberConverter = new RosSubscriberConverter();
+                publisherConverter = new RosPublisherConverter();
+            }
+
+            generateFields(componentSymbol, rosSubscribers, rosPublishers, bluePrint, subscriberConverter, publisherConverter);
+            generateCallbacks(rosSubscribers, bluePrint, subscriberConverter);
+            generateInit(name, rosSubscribers, rosPublishers, bluePrint, subscriberConverter, publisherConverter);
+            generatePublishMethods(rosPublishers, bluePrint, publisherConverter);
+            generateTick(rosPublishers, bluePrint);
+            generateIncludes(componentSymbol, rosInterfaces, bluePrint);
         }
 
-        return Optional.ofNullable(currentBluePrint);
+        return Optional.ofNullable(bluePrint);
 
     }
 
-    private void generateIncludes(EMAComponentInstanceSymbol componentSymbol, List<EMAPortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
-        if(!isRos2Mode()) {
-            currentBluePrint.addAdditionalIncludeString("<ros/ros.h>");
-            String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
-            currentBluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
-            currentBluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
-            //Add each msg include exactly once
+    private void generateIncludes(EMAComponentInstanceSymbol componentSymbol, List<RosInterface> rosInterfaces, AdapterBluePrint bluePrint) {
 
-            rosPorts.stream()
-                    .map(EMAPortSymbol::getMiddlewareSymbol)
-                    .map(Optional::get)
-                    .map(mws -> (RosConnectionSymbol) mws)
-                    .map(RosConnectionSymbol::getTopicType)
-                    .map(Optional::get)
-                    .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
-                    .map(type -> "<" + type + ".h>")
-                    .forEach(currentBluePrint::addAdditionalIncludeString);
+        List<String> topicTypes = rosInterfaces.stream()
+                .map(RosInterface::getRosConnectionSymbol)
+                .map(RosConnectionSymbol::getTopicType)
+                .map(Optional::get)
+                .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
+                .collect(Collectors.toList());
+
+        if (!isRos2Mode()) {
+            rosIncludes(componentSymbol, bluePrint, topicTypes);
         }else{
-            currentBluePrint.addAdditionalIncludeString("<rclcpp/rclcpp.hpp>");
-            String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
-            currentBluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
-            currentBluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
-            //Add each msg include exactly once
-
-            rosPorts.stream()
-                    .map(EMAPortSymbol::getMiddlewareSymbol)
-                    .map(Optional::get)
-                    .map(mws -> (RosConnectionSymbol) mws)
-                    .map(RosConnectionSymbol::getTopicType)
-                    .map(Optional::get)
-                    .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
-                    .map(type ->{
-                        if(ros2Mode) {
-                            return NameHelper.msgTypeToSnakecase(NameHelper.addMsgToMsgType(type));
-                        }else{
-                            return type;
-                        }
-                    })
-                    .map(type -> "<" + type + ".hpp>")
-                    .forEach(currentBluePrint::addAdditionalIncludeString);
+            ros2Includes(componentSymbol, bluePrint, topicTypes);
         }
 
         msgConverts.stream()
-                .map(MsgConverter::getAdditionalIncludes)
+                .map(DirectMsgConverter::getAdditionalIncludes)
                 .flatMap(Collection::stream)
                 .distinct()
-                .forEach(currentBluePrint::addAdditionalIncludeString);
+                .forEach(bluePrint::addAdditionalIncludeString);
     }
 
-    private void generatePublishMethods(List<EMAPortSymbol> rosPorts, BluePrintCPP  currentBluePrint) {
-        Map<String, Method> topicToMethod = new HashMap<>();
+    private void rosIncludes(EMAComponentInstanceSymbol componentSymbol, AdapterBluePrint bluePrint, List<String> topicTypes) {
+        bluePrint.addAdditionalIncludeString("<ros/ros.h>");
+        String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
+        bluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
+        bluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
+        //Add each msg include exactly once
 
-        publishers.keySet().forEach(var -> {
-            Method method = new Method("publish" + var.getNameTargetLanguageFormat(), "void");
-            method.addInstruction(new CreateTmpMsgInstruction(getFullRosType(publishers.get(var))));
-            topicToMethod.put(publishers.get(var).getTopicName().get(), method);
-            publishMethods.add(method);
-        });
+        topicTypes.stream()
+                .map(type -> "<" + type + ".h>")
+                .forEach(bluePrint::addAdditionalIncludeString);
+    }
 
-        rosPorts.stream()
-                .filter(EMAPortSymbol::isOutgoing)
-                .sorted(Comparator.comparing(EMAPortSymbol::getName))
-                .forEachOrdered(p -> {
-                    RosConnectionSymbol rcs = (RosConnectionSymbol) p.getMiddlewareSymbol().get();
-                    Method method = topicToMethod.get(rcs.getTopicName().get());
+    private void ros2Includes(EMAComponentInstanceSymbol componentSymbol, AdapterBluePrint bluePrint, List<String> topicTypes) {
+        bluePrint.addAdditionalIncludeString("<rclcpp/rclcpp.hpp>");
+        String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
+        bluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
+        bluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
+        //Add each msg include exactly once
 
-                    String packageName = Arrays.stream(rcs.getTopicType().get().split("/")).findFirst().get();
-                    RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, p.getTypeReference(), ros2Mode);
-                    usedRosMsgs.put(rosMsg, p.getTypeReference());
-                    if (!rcs.getMsgField().isPresent()) {
-                        method.addInstruction(new SetStructMsgInstruction(p, rosMsg));
+        topicTypes.stream()
+                .map(type -> {
+                    if (ros2Mode) {
+                        return NameHelper.msgTypeToSnakecase(NameHelper.addMsgToMsgType(type));
                     } else {
-                        SetMsgFieldInstruction tmpInstr = new SetMsgFieldInstruction(p, getMsgConverter(rcs.getMsgField().get(), p.isIncoming()));
-                        method.addInstruction(tmpInstr);
+                        return type;
                     }
-                });
-
-        publishers.keySet().forEach(var -> {
-            Method method = topicToMethod.get(publishers.get(var).getTopicName().get());
-            method.addInstruction(new PublishInstruction(var, ros2Mode));
-            currentBluePrint.addMethod(method);
-        });
+                })
+                .map(type -> "<" + type + ".hpp>")
+                .forEach(bluePrint::addAdditionalIncludeString);
     }
 
-    private String getTopicNameTargetLanguage(String topicName) {
-        return topicName.replace("/", "_")
-                .replace("[", "_")
-                .replace("]", "_");
+    private void generatePublishMethods(List<RosPublisher> rosPublishers, AdapterBluePrint bluePrint, PublisherConverter publisherConverter) {
+        rosPublishers.stream()
+                .sorted(Comparator.comparing(a -> a.getPort().getName()))
+                .forEachOrdered(p -> publisherConverter.convertToPublishMethod(p, bluePrint));
     }
 
-    private void generateConstructor(String classname, BluePrintCPP  currentBluePrint) {
-        Method constructorMethod = new Method(classname, "");
-        constructorMethod.addInstruction(new TargetCodeInstruction(""));
-        currentBluePrint.addMethod(constructorMethod);
-    }
 
-    public void generateInit(String classname, String componentName, BluePrintCPP  currentBluePrint) {
-        Method initMethod = new Method("init", "void");
-
-        Variable compPointer = new Variable();
-        compPointer.setTypeNameTargetLanguage(componentName + "*");
-        compPointer.setName("comp");
-        initMethod.addParameter(compPointer);
-
+    public void generateInit(String classname, List<RosSubscriber> subscribers, List<RosPublisher> publishers, AdapterBluePrint bluePrint, SubscriberConverter subscriberConverter, PublisherConverter publisherConverter) {
+        Method initMethod = bluePrint.getInit();
         InitHelper.getInitInstructions(classname,isRos2Mode()).forEach(initMethod::addInstruction);
 
         //subs
-        subscribers.keySet().stream()
-                .map(var -> new SubscribeInstruction(classname, var, subscribers.get(var).getTopicName().get(), getTopicNameTargetLanguage(subscribers.get(var).getTopicName().get()) + "Callback", isRos2Mode(), getFullRosType(subscribers.get(var))))
-                .distinct()
-                .sorted(Comparator.comparing(SubscribeInstruction::getTargetLanguageInstruction))
-                .forEach(initMethod::addInstruction);
+        subscribers.stream()
+                .sorted(Comparator.comparing(RosInterface::getNameInTargetLanguage))
+                .forEach(s -> subscriberConverter.convertToInit(s, classname, bluePrint));
 
-        publishers.keySet().stream()
-                .map(var -> new AdvertiseInstruction(var, getFullRosType(publishers.get(var)), publishers.get(var).getTopicName().get(),isRos2Mode()))
-                .distinct()
-                .sorted(Comparator.comparing(AdvertiseInstruction::getTargetLanguageInstruction))
-                .forEach(initMethod::addInstruction);
+        publishers.stream()
+                .sorted(Comparator.comparing(RosInterface::getNameInTargetLanguage))
+                .forEach(p -> publisherConverter.convertToInit(p, bluePrint));
+
         if(!isRos2Mode()) {
             initMethod.addInstruction(new TargetCodeInstruction("ros::spin();"));
         }else{
             initMethod.addInstruction(new TargetCodeInstruction("rclcpp::spin(node_handle);"));
         }
-
-        currentBluePrint.addMethod(initMethod);
     }
 
-    private void generateFields(EMAComponentInstanceSymbol symbol, List<EMAPortSymbol> rosPorts, BluePrintCPP currBluePrint) {
-        currBluePrint.addDefineGenerics(symbol);
-        //component
-        Variable componentField = new Variable();
-        componentField.setName("component");
-        //TODO: get from generator
-        componentField.setTypeNameTargetLanguage(NameHelper.getComponentNameTargetLanguage(symbol.getFullName()) + "*");
-        currBluePrint.addVariable(componentField);
-
-        Map<String, Variable> uniqueSubFields = new HashMap<>();
-        Map<String, Variable> uniquePubFields = new HashMap<>();
-
-        //subs
-        rosPorts.stream()
-                .filter(EMAPortSymbol::isIncoming)
-                .map(p -> (RosConnectionSymbol) p.getMiddlewareSymbol().get())
-                .forEach(rosConnectionSymbol -> {
-                    String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName().get()).toLowerCase() + "Subscriber";
-                    if (!uniqueSubFields.containsKey(name)) {
-                        Variable field = new Variable();
-                        if(!isRos2Mode()) {
-                            field.setTypeNameTargetLanguage("ros::Subscriber");
-                        }else{
-                            field.setTypeNameTargetLanguage("rclcpp::Subscription<" + getFullRosType(rosConnectionSymbol) + ">::SharedPtr");
-                        }
-                        field.setName(name);
-                        uniqueSubFields.put(name, field);
-                        currBluePrint.addVariable(field);
-                        subscribers.put(field, rosConnectionSymbol);
-                    }
-                });
-
-        //pubs
-        rosPorts.stream()
-                .filter(EMAPortSymbol::isOutgoing)
-                .map(p -> (RosConnectionSymbol) p.getMiddlewareSymbol().get())
-                .forEach(rosConnectionSymbol -> {
-                    String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName().get()).toLowerCase() + "Publisher";
-                    if (!uniquePubFields.containsKey(name)) {
-                        Variable field = new Variable();
-                        if(!isRos2Mode()) {
-                            field.setTypeNameTargetLanguage("ros::Publisher");
-                        }else{
-                            field.setTypeNameTargetLanguage("rclcpp::Publisher<" + getFullRosType(rosConnectionSymbol) + ">::SharedPtr");
-                        }
-                        field.setName(name);
-                        uniquePubFields.put(name, field);
-                        currBluePrint.addVariable(field);
-                        publishers.put(field, rosConnectionSymbol);
-                    }
-                });
-
+    private void generateFields(EMAComponentInstanceSymbol symbol, List<RosSubscriber> rosSubscribers, List<RosPublisher> rosPublishers, AdapterBluePrint bluePrint, SubscriberConverter subscriberConverter, PublisherConverter publisherConverter) {
+        bluePrint.addDefineGenerics(symbol);
+        rosSubscribers.forEach(rosSubscriber -> subscriberConverter.convertToField(rosSubscriber, bluePrint));
+        rosPublishers.forEach(rosPublisher -> publisherConverter.convertToField(rosPublisher, bluePrint));
     }
 
 
-    private void generateTick(BluePrintCPP  currentBluePrint) {
-        Method tickMethod = new Method("tick", "void");
+    private void generateTick(List<RosPublisher> publishers, AdapterBluePrint bluePrint) {
+        Method tickMethod = bluePrint.getTick();
 
-        publishMethods.stream()
-                .sorted(Comparator.comparing(Method::getName))
+        publishers.stream()
+                .map(RosPublisher::getMethodName)
+                .sorted()
                 .map(CallMethodInstruction::new)
                 .forEachOrdered(tickMethod::addInstruction);
-
-        if (tickMethod.getInstructions().size() == 0)
-            tickMethod.addInstruction(new TargetCodeInstruction(""));
-
-        currentBluePrint.addMethod(tickMethod);
     }
 
-
-    private String getFullRosType(RosConnectionSymbol rosConnectionSymbol) {
-        String topicType = rosConnectionSymbol.getTopicType().get();
-        if(ros2Mode){
-            topicType = NameHelper.addMsgToMsgType(topicType);
-        }
-        return topicType.replace("/", "::");
-    }
-
-    private void generateCallbacks(List<EMAPortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
-
-        Map<String, Method> uniqueMethods = new HashMap<>();
-
-
-        rosPorts.stream()
-                .filter(EMAPortSymbol::isIncoming)
-                .forEachOrdered(portSymbol -> {
-                    RosConnectionSymbol rosCon = (RosConnectionSymbol) portSymbol.getMiddlewareSymbol().get();
-                    if (!uniqueMethods.containsKey(rosCon.getTopicName().get())) {
-                        Method method = new Method(getTopicNameTargetLanguage(rosCon.getTopicName().get()) + "Callback", "void");
-                        Variable tmpParam = new Variable();
-                        tmpParam.setName("msg");
-                        if(!isRos2Mode())
-                        {
-                            tmpParam.setTypeNameTargetLanguage("const " + getFullRosType(rosCon) + "::ConstPtr&");
-                        }else{
-                            tmpParam.setTypeNameTargetLanguage("const " + getFullRosType(rosCon) + "::SharedPtr");
-                        }
-                        method.addParameter(tmpParam);
-                        uniqueMethods.put(rosCon.getTopicName().get(), method);
-                    }
-
-                    Method method = uniqueMethods.get(rosCon.getTopicName().get());
-
-                    String msgField = rosCon.getMsgField().orElse(null);
-
-                    if (msgField == null) {
-                        //TODO: checks?
-                        String packageName = Arrays.stream(rosCon.getTopicType().get().split("/")).findFirst().get();
-                        RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, portSymbol.getTypeReference(), ros2Mode);
-                        usedRosMsgs.put(rosMsg, portSymbol.getTypeReference());
-                        method.addInstruction(new SetStructPortInstruction(portSymbol, rosMsg));
-                    } else {
-                        method.addInstruction(new SetPortInstruction(portSymbol, getMsgConverter(msgField, portSymbol.isIncoming())));
-                    }
-
-                    if (method.getInstructions().size() > 0) {
-                        //make instructions unique and sorted
-                        method.setInstructions(method.getInstructions().stream()
-                                .distinct()
-                                .sorted(Comparator.comparing(Instruction::getTargetLanguageInstruction))
-                                .collect(Collectors.toList()));
-                        currentBluePrint.addMethod(method);
-                    }
-                });
-
-    }
-
-    private MsgConverter getMsgConverter(String msgField, boolean incoming) {
-        MsgConverter tmpMsgConverter;
-        if (!msgField.contains("::")) {
-            tmpMsgConverter = new DirectMsgConverter(msgField, incoming);
-        } else {
-            String className = msgField.substring(0, msgField.lastIndexOf("::"));
-            tmpMsgConverter = new MethodMsgConverter(msgField, "\"" + className + ".h\"", incoming);
-        }
-        msgConverts.add(tmpMsgConverter);
-        return tmpMsgConverter;
+    private void generateCallbacks(List<RosSubscriber> rosSubscribers, AdapterBluePrint bluePrint, SubscriberConverter subscriberConverter) {
+        rosSubscribers.forEach(s -> subscriberConverter.convertToCallback(s, bluePrint));
     }
 
     public Map<RosMsg, MCTypeReference<? extends MCTypeSymbol>> getUsedRosMsgs() {
         return usedRosMsgs;
+    }
+
+    public List<RosInterface> getRosInterfaces() {
+        return interfaces;
     }
 }

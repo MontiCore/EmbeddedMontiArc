@@ -1,18 +1,17 @@
 package de.monticore.lang.monticar.generator.roscpp.instructions;
 
 import de.monticore.lang.monticar.generator.roscpp.util.TargetCodeInstruction;
-import de.monticore.lang.monticar.generator.roscpp.util.Variable;
 
 import java.util.Objects;
 
 public class SubscribeInstruction extends TargetCodeInstruction {
     private static final int MSG_QUEUE_SIZE = 5;
 
-    public SubscribeInstruction(String className, Variable subscriber, String topicName, String callback, boolean isRos2, String fullRosType) {
+    public SubscribeInstruction(String className, String nameInTargetFormat, String topicName, String callback, boolean isRos2, String fullRosType) {
         if (!isRos2) {
-            this.instruction = subscriber.getNameTargetLanguageFormat() + " = node_handle.subscribe(\"" + topicName + "\" ," + MSG_QUEUE_SIZE + ",&" + className + "::" + callback + ", this, ros::TransportHints().tcpNoDelay());";
+            this.instruction = nameInTargetFormat + " = node_handle.subscribe(\"" + topicName + "\" ," + MSG_QUEUE_SIZE + ",&" + className + "::" + callback + ", this, ros::TransportHints().tcpNoDelay());";
         } else {
-            this.instruction = subscriber.getNameTargetLanguageFormat() + " = node_handle->create_subscription<" + fullRosType + ">(\"" + topicName + "\", std::bind(&" + className + "::" + callback + ", this, std::placeholders::_1));";
+            this.instruction = nameInTargetFormat + " = node_handle->create_subscription<" + fullRosType + ">(\"" + topicName + "\", std::bind(&" + className + "::" + callback + ", this, std::placeholders::_1));";
         }
     }
     @Override

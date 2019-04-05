@@ -1,3 +1,0 @@
-# Generate .h files from .msg files
-add_custom_target(gen_<name>_<struct_replaced> ALL
-COMMAND python /opt/ros/kinetic/lib/gencpp/gen_cpp.py ${CMAKE_CURRENT_SOURCE_DIR}/<struct>.msg -Istruct_msgs:${CMAKE_CURRENT_SOURCE_DIR}/struct_msgs -p struct_msgs -o ${CMAKE_CURRENT_SOURCE_DIR}/struct_msgs -e /opt/ros/kinetic/share/gencpp/)
