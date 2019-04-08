@@ -1,7 +1,9 @@
 import logging
 import mxnet as mx
+import supervised_trainer
 <#list configurations as config>
 import CNNCreator_${config.instanceName}
+import CNNDataLoader_${config.instanceName}
 </#list>
 
 if __name__ == "__main__":
@@ -11,8 +13,12 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
 <#list configurations as config>
-    ${config.instanceName} = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
-    ${config.instanceName}.train(
+    ${config.instanceName}_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    ${config.instanceName}_loader = CNNDataLoader_${config.instanceName}.${config.instanceName}DataLoader()
+    ${config.instanceName}_trainer = supervised_trainer.CNNSupervisedTrainer(${config.instanceName}_loader,
+        ${config.instanceName}_creator)
+
+    ${config.instanceName}_trainer.train(
 <#if (config.batchSize)??>
         batch_size=${config.batchSize},
 </#if>
