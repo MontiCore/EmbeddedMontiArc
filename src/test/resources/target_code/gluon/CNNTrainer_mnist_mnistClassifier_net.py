@@ -1,6 +1,8 @@
 import logging
 import mxnet as mx
+import supervised_trainer
 import CNNCreator_mnist_mnistClassifier_net
+import CNNDataLoader_mnist_mnistClassifier_net
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
@@ -8,8 +10,12 @@ if __name__ == "__main__":
     handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
     logger.addHandler(handler)
 
-    mnist_mnistClassifier_net = CNNCreator_mnist_mnistClassifier_net.CNNCreator_mnist_mnistClassifier_net()
-    mnist_mnistClassifier_net.train(
+    mnist_mnistClassifier_net_creator = CNNCreator_mnist_mnistClassifier_net.CNNCreator_mnist_mnistClassifier_net()
+    mnist_mnistClassifier_net_loader = CNNDataLoader_mnist_mnistClassifier_net.mnist_mnistClassifier_netDataLoader()
+    mnist_mnistClassifier_net_trainer = supervised_trainer.CNNSupervisedTrainer(mnist_mnistClassifier_net_loader,
+        mnist_mnistClassifier_net_creator)
+
+    mnist_mnistClassifier_net_trainer.train(
         batch_size=64,
         num_epoch=11,
         context='gpu',

@@ -177,6 +177,8 @@ public class GenerationTest extends AbstractSymtabTest {
                         "mnist_mnistClassifier.h",
                         "CNNCreator_mnist_mnistClassifier_net.py",
                         "CNNPredictor_mnist_mnistClassifier_net.h",
+                        "CNNDataLoader_mnist_mnistClassifier_net.py",
+                        "supervised_trainer.py",
                         "mnist_mnistClassifier_net.h",
                         "HelperA.h",
                         "CNNTranslator.h",
