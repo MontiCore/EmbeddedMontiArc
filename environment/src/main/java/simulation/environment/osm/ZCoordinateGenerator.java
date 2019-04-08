@@ -116,6 +116,10 @@ public class ZCoordinateGenerator {
      * @return Ground in the environment for given x and y
      */
     public static double getGround(double x, double y) {
+        // This code generates a SRTMHeightGenerator, when no height generator was found.
+        // Given x,y coordinates in meters are temporarily converted to lat/long values
+        // and getGround() is called. This happens, because the object, created from
+        // generateZCoordinates() (according to strategy) gets lost while executing SmartFoxServer.
         if (heightGenerator == null) {
             heightGenerator = new SRTMHeightGenerator();
             Log.info("Created new height generator as no reference existed!");
