@@ -29,6 +29,7 @@ import simulation.environment.visualisationadapter.interfaces.Building;
 import simulation.environment.visualisationadapter.interfaces.EnvBounds;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
+import simulation.util.Log;
 
 /**
  * Created by lukas on 16.02.17.
@@ -115,10 +116,30 @@ public class ZCoordinateGenerator {
      * @return Ground in the environment for given x and y
      */
     public static double getGround(double x, double y) {
+        if (heightGenerator == null) {
+            heightGenerator = new SRTMHeightGenerator();
+            Log.info("Created new height generator as no reference existed!");
+        }
+
+        double minLat=50.7767081,minLong=6.052651;
+        double LAT_CONSTANT = 110.574;
+        double LONG_CONSTANT = 111.320;
+        double lat = y/(1000*LAT_CONSTANT) + minLat;
+        double longi = x/(1000*LONG_CONSTANT*Math.cos(Math.toRadians(lat))) + minLong;
+
         if(heightGenerator != null) {
-            return heightGenerator.getGround(x, y);
+            //Log.info("Height at " + heightGenerator.getGround(x, y));
+            double z = 0;
+            try {
+                z = heightGenerator.getGround(longi, lat);
+            }
+            catch (ArrayIndexOutOfBoundsException ex) {
+                Log.info("IndexOutOfBounds: x=" + x + "->long=" + longi + ",y=" + y + "->lat=" + lat);
+            }
+            return z;
         } else {
             //this case should never occur!
+            //Log.warning("ZCoordinateGenerator has no height generator reference!");
             return 0.d;
         }
 

@@ -20,11 +20,32 @@
  */
 package simulation.environment.visualisationadapter.interfaces;
 
-/**
- * Created by lukas on 15.12.16.
- *
- * An enum type for defining the type of an Environment Object
- */
-public enum EnvTag {
-    BUILDING, STREET, TREE, TRAFFIC_SIGNAL, WATERWAY
+import java.util.Collection;
+
+public interface Waterway extends EnvObject {
+    //TODO: This should be moved to commons, controller needs to be able to access these constant values
+    /**
+     * Lists Type of Streets
+     */
+    public enum WaterTypes {RIVER, STREAM, DITCH};
+
+    /**
+     * set STREET_WIDTH to 6 meters
+     */
+    public final double RIVER_WIDTH = 9;
+
+
+
+    /**
+     *
+     * @return the width of this Waterway
+     */
+    public abstract Number getWaterwayWidth();
+
+
+    /**
+     *
+     * @return The Type of the Street
+     */
+    public abstract WaterTypes getWaterType();
 }

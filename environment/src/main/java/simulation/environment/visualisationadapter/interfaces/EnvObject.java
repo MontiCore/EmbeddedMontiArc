@@ -23,7 +23,7 @@ package simulation.environment.visualisationadapter.interfaces;
 import java.util.List;
 
 /**
- * Created by lukas on 15.12.16.
+ * Created by Danilo 07.02.2019.
  *
  * An interface for all Objects in the environment
  */

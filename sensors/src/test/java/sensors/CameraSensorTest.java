@@ -92,7 +92,7 @@ public class CameraSensorTest {
 
     @Test
     public void testBuildings() throws Exception {
-        Simulator.resetSimulator();
+     /*   Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
         sim.setSimulationDuration(1000);
 
@@ -134,6 +134,7 @@ public class CameraSensorTest {
             //ImageIO.write(filteredImage, "JPEG", new FileOutputStream("/Users/christapujun/Desktop/SPP/blurred_scene.jpeg"));
             //ImageIO.write(awgnImage, "JPEG", new FileOutputStream("/Users/christapujun/Desktop/SPP/awgn_scene.jpeg"));
           }
+          */
     }
     private PhysicalVehicle setupDefaultVehicle() {
         // Create a new vehicle

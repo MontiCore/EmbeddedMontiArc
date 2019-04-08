@@ -121,7 +121,7 @@ public class Node2D implements EnvNode {
     }
 
     public String toString() {
-        return "Osm-ID: " + this.osmId + "\n\t" + this.point.toString() ;
+        return "Osm-ID: " + this.osmId + "\n\t" + this.point.toString();
     }
 
 }

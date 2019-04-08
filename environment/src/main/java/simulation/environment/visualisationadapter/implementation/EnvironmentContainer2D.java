@@ -41,6 +41,7 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
     private Collection<House> houses;
 
     private Collection<EnvNode> trees;
+    private Collection<Waterway> waterway;
     private EnvBounds bounds = null;
 
     private Collection<IPhysicalVehicle> vehicles;
@@ -52,19 +53,22 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
     private Point2D heightMapMinPoint;
     private Point2D heightMapMaxPoint;
 
-
-    public EnvironmentContainer2D(EnvBounds bounds, Collection<EnvStreet> streets, Collection<House> houses) {
+    public EnvironmentContainer2D(EnvBounds bounds, Collection<EnvStreet> streets, Collection<Building> buildings, Collection<Waterway> waterway) {
         this.bounds = bounds;
         this.streets = streets;
-        this.houses = houses;
-        this.buildings = new ArrayList<>();
-        this.trees = new ArrayList<>();
-    }
+        this.buildings = buildings;
+        this.waterway = waterway;
+    }    
 
     public Collection<IPhysicalVehicle> getVehicles(){
         return this.vehicles;
     }
 
+
+    @Override
+    public Collection<Waterway> getWaterway() {
+        return this.waterway;
+    }
 
     @Override
     public Collection<EnvStreet> getStreets() {

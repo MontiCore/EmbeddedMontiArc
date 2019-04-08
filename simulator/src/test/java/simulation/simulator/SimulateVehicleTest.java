@@ -22,7 +22,6 @@ package simulation.simulator;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import simulation.util.Log;
 import simulation.vehicle.*;
 
