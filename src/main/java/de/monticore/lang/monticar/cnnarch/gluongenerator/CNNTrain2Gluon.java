@@ -21,7 +21,14 @@ public class CNNTrain2Gluon extends CNNTrain2MxNet {
         configDataList.add(configData);
         Map<String, Object> ftlContext = Collections.singletonMap("configurations", configDataList);
 
-        String templateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
-        return Collections.singletonMap("CNNTrainer_" + getInstanceName() + ".py", templateContent);
+        Map<String, String> fileContentMap = new HashMap<>();
+
+        String cnnTrainTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
+        fileContentMap.put("CNNTrainer_" + getInstanceName() + ".py", cnnTrainTemplateContent);
+
+        String cnnSupervisedTrainerContent = templateConfiguration.processTemplate(ftlContext, "CNNSupervisedTrainer.ftl");
+        fileContentMap.put("supervised_trainer.py", cnnSupervisedTrainerContent);
+
+        return fileContentMap;
     }
 }

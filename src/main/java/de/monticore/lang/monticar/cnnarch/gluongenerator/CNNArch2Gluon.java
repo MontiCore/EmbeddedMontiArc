@@ -47,6 +47,9 @@ public class CNNArch2Gluon extends CNNArch2MxNet {
         temp = archTc.process("CNNNet", Target.PYTHON);
         fileContentMap.put(temp.getKey(), temp.getValue());
 
+        temp = archTc.process("CNNDataLoader", Target.PYTHON);
+        fileContentMap.put(temp.getKey(), temp.getValue());
+
         temp = archTc.process("CNNCreator", Target.PYTHON);
         fileContentMap.put(temp.getKey(), temp.getValue());
 

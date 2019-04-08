@@ -54,6 +54,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Arrays.asList(
                 "CNNCreator_CifarClassifierNetwork.py",
                 "CNNNet_CifarClassifierNetwork.py",
+                "CNNDataLoader_CifarClassifierNetwork.py",
                 "CNNPredictor_CifarClassifierNetwork.h",
                 "execute_CifarClassifierNetwork",
                 "CNNBufferFile.h"));
@@ -72,6 +73,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Arrays.asList(
                         "CNNCreator_Alexnet.py",
                         "CNNNet_Alexnet.py",
+                        "CNNDataLoader_Alexnet.py",
                         "CNNPredictor_Alexnet.h",
                         "execute_Alexnet"));
     }
@@ -89,6 +91,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Arrays.asList(
                         "CNNCreator_VGG16.py",
                         "CNNNet_VGG16.py",
+                        "CNNDataLoader_VGG16.py",
                         "CNNPredictor_VGG16.h",
                         "execute_VGG16"));
     }
@@ -130,7 +133,8 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
-                        "CNNTrainer_fullConfig.py"));
+                        "CNNTrainer_fullConfig.py",
+                        "supervised_trainer.py"));
     }
 
     @Test
@@ -146,7 +150,8 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
-                        "CNNTrainer_simpleConfig.py"));
+                        "CNNTrainer_simpleConfig.py",
+                        "supervised_trainer.py"));
     }
 
     @Test
@@ -161,7 +166,8 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
-                        "CNNTrainer_emptyConfig.py"));
+                        "CNNTrainer_emptyConfig.py",
+                        "supervised_trainer.py"));
     }
 
 
