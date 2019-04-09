@@ -12,6 +12,7 @@ import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -27,6 +28,11 @@ import static org.junit.Assert.*;
 public class GenerationTest extends AbstractSymtabTest {
 
     public static final String TEST_PATH = "src/test/resources/";
+
+    @Before
+    public void resetLog(){
+        Log.getFindings().clear();
+    }
 
     @Test
     public void testBasicGeneration() throws IOException {
