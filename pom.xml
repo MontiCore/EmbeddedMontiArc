@@ -30,7 +30,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-deeplearning</artifactId>
-    <version>0.2.6</version>
+    <version>0.2.7-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -42,12 +42,12 @@
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
         <Common-MontiCar.version>0.0.14-20180704.113055-2</Common-MontiCar.version>
         <Embedded-MontiArc.version>0.1.9-SNAPSHOT</Embedded-MontiArc.version>
-        <Embedded-MontiArc-Math.version>0.1.7-SNAPSHOT</Embedded-MontiArc-Math.version>
-        <Embedded-MontiArc-Behaviour.version>0.0.15-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
+        <Embedded-MontiArc-Math.version>0.1.9-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <Embedded-MontiArc-Behaviour.version>0.0.16-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
         <CNNArch.version>0.2.9</CNNArch.version>
         <Math.version>0.0.19-SNAPSHOT</Math.version>
         <MathOpt.version>0.1.1-SNAPSHOT</MathOpt.version>
-        <embedded-montiarc-dynamics.version>0.0.2-SNAPSHOT</embedded-montiarc-dynamics.version>
+        <embedded-montiarc-dynamics.version>0.0.4-SNAPSHOT</embedded-montiarc-dynamics.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
