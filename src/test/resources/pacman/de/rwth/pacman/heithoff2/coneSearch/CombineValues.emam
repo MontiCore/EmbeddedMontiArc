@@ -7,11 +7,11 @@ component CombineValues {
       in Z valueCoins,
       in Z valueEnemies,
       
-      out Z value;
+      out Z val;
       
     implementation Math {
         // some weightning here
         
-        value = valueCoins + valueEnemies;
+        val = valueCoins + valueEnemies;
     }
 }
