@@ -8,6 +8,9 @@ VALUE_TYPE FunctionValue::get_type( const char *type_name ) {
         return VALUE_TYPE::INT;
     else if ( strcmp( type_name, "CommonMatrixType" ) == 0 )
         return VALUE_TYPE::DOUBLE_ARRAY;
-    else
+    else {
+        Log::err << Log::tag << "Unsupported EMA Port type: " << type_name <<
+                 ". \nAdd type in \"FunctionValue\", \"VALUE_TYPE\" (emulator/function_value.h/.cpp) and \"HardwareEmulator\"\n";
         return VALUE_TYPE::NONE;
+    }
 }

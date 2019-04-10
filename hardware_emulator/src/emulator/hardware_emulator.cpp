@@ -262,6 +262,9 @@ void HardwareEmulator::call_input( Port &port ) {
                 ( ( DoubleArrayInputFunc )port.real_function )( input.double_array.data.begin(), input.double_array.size );
             }
             break;
+        default:
+            Log::err << Log::tag << "Add Port type support in HardwareEmulator::call_input().\n";
+            break;
     }
     
     call_success = computer.call( addr, port.name.c_str() );
@@ -269,8 +272,8 @@ void HardwareEmulator::call_input( Port &port ) {
 
 void compare_results( double real_value, double emulated_value, const char *port_name ) {
     if ( abs_t( real_value - emulated_value ) > 0.0001 )
-        Log::err << Log::tag << "Desyncronisation detected on " << port_name << ". Real: " << real_value << " Emulated: " <<
-                 emulated_value << "\n";
+        Log::err << Log::tag << "Desyncronisation detected on port " << port_name << ". "
+                 "Real: " << real_value << " Emulated: " << emulated_value << "\n";
 }
 
 void HardwareEmulator::call_output( Port &port ) {
@@ -288,6 +291,9 @@ void HardwareEmulator::call_output( Port &port ) {
                 using DoubleOutputFunc = double( * )();
                 compare_results( ( ( DoubleOutputFunc )port.real_function )(), output.double_value, port.name.c_str() );
             }
+            break;
+        default:
+            Log::err << Log::tag << "Add Port type support in HardwareEmulator::call_output().\n";
             break;
     }
 }
