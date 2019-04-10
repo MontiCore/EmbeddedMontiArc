@@ -228,12 +228,14 @@ public class EMADLGenerator {
             String b = backend.getBackendString(backend);
             String trainingDataHash = "";
             String testDataHash = "";
-            if(b.equals("CAFFE2")){
-                trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train_lmdb/data.mdb");
-                testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test_lmdb/data.mdb");
-            }else{
-                trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train.h5");
-                testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test.h5");
+            if (architecture.get().getDataPath() != null) {
+                if (b.equals("CAFFE2")) {
+                    trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train_lmdb/data.mdb");
+                    testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test_lmdb/data.mdb");
+                } else {
+                    trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train.h5");
+                    testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test.h5");
+                }
             }
             String trainingHash = emadlHash + "#" + cnntHash + "#" + trainingDataHash + "#" + testDataHash;
 
@@ -360,8 +362,14 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
-            String dPath = newParserConfig.getDataPath(EMAComponentSymbol.getFullName());
+            String dPath = null;
+            Path dataPathDefinition = Paths.get(getModelsPath(), "data_paths.txt");
+            if (dataPathDefinition.toFile().exists()) {
+                DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
+                dPath = newParserConfig.getDataPath(EMAComponentSymbol.getFullName());
+            } else {
+                Log.warn("No data path definition found in " + dataPathDefinition + " found: No generation of data loader");
+            }
 
             /*String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "data_paths.txt", componentSymbol.getFullName());*/
             architecture.get().setDataPath(dPath);
