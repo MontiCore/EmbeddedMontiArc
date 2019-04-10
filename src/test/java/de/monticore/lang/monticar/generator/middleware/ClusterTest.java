@@ -3,7 +3,7 @@ package de.monticore.lang.monticar.generator.middleware;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
-import de.monticore.lang.monticar.generator.middleware.helpers.ClusterHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.ClusterFromTagsHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
@@ -33,7 +33,7 @@ public class ClusterTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
-        List<Set<EMAComponentInstanceSymbol>> clusters = ClusterHelper.getClusters(componentInstanceSymbol);
+        List<Set<EMAComponentInstanceSymbol>> clusters =  ClusterFromTagsHelper.getClusters(componentInstanceSymbol);
         assertTrue(clusters.size() == 2);
 
         Set<EMAComponentInstanceSymbol> cluster1 = new HashSet<>();
@@ -55,7 +55,7 @@ public class ClusterTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
-        List<Set<EMAComponentInstanceSymbol>> clusters = ClusterHelper.getClusters(componentInstanceSymbol);
+        List<Set<EMAComponentInstanceSymbol>> clusters = ClusterFromTagsHelper.getClusters(componentInstanceSymbol);
 
         Set<EMAComponentInstanceSymbol> cluster1 = new HashSet<>();
         Set<EMAComponentInstanceSymbol> cluster2 = new HashSet<>();
@@ -67,7 +67,7 @@ public class ClusterTest extends AbstractSymtabTest {
         assertTrue(clusters.contains(cluster1));
         assertTrue(clusters.contains(cluster2));
 
-        List<EMAComponentInstanceSymbol> clusterComps = ClusterHelper.getClusterSubcomponents(componentInstanceSymbol);
+        List<EMAComponentInstanceSymbol> clusterComps = ClusterFromTagsHelper.getClusterSubcomponents(componentInstanceSymbol);
         assertTrue(clusterComps.size() == 2);
 
         EMAComponentInstanceSymbol clusterComp1 = clusterComps.get(0);
@@ -126,7 +126,7 @@ public class ClusterTest extends AbstractSymtabTest {
         Log.enableFailQuick(false);
         Log.getFindings().clear();
 
-        ClusterHelper.getClusters(componentInstanceSymbol);
+        ClusterFromTagsHelper.getClusters(componentInstanceSymbol);
 
         List<Finding> findings = Log.getFindings();
 
@@ -145,7 +145,7 @@ public class ClusterTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
-        List<Set<EMAComponentInstanceSymbol>> clusters = ClusterHelper.getClusters(componentInstanceSymbol);
+        List<Set<EMAComponentInstanceSymbol>> clusters = ClusterFromTagsHelper.getClusters(componentInstanceSymbol);
         assertTrue(clusters.size() == 1);
 
         Set<EMAComponentInstanceSymbol> cluster1 = new HashSet<>();

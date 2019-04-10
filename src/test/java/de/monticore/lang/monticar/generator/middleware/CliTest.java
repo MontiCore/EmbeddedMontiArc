@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.LogConfig;
+import de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGeneratorCli;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.ArrayUtils;
@@ -17,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
@@ -33,10 +35,10 @@ public class CliTest {
     public static final String RESNET_MODELNAME = "tests.emadlTests.resNet34";
 
     private String buildParameterJson(String modelsDir, String rootModel, Collection<String> generators, String outputDir) {
-        return buildParameterJson(modelsDir, rootModel, generators, outputDir, null);
+        return buildParameterJson(modelsDir, rootModel, generators, outputDir, null, false);
     }
 
-    private String buildParameterJson(String modelsDir, String rootModel, Collection<String> generators, String outputDir, String emadlBackend) {
+    private String buildParameterJson(String modelsDir, String rootModel, Collection<String> generators, String outputDir, String emadlBackend, boolean writeTagFile) {
         String result = "{";
         result += "'modelsDir': '" + modelsDir + "', ";
         result += "'rootModel': '" + rootModel + "', ";
@@ -44,7 +46,7 @@ public class CliTest {
         if (emadlBackend != null) {
             result += "'emadlBackend': '" + emadlBackend + "', ";
         }
-
+        result += "'writeTagFile':'" + writeTagFile + "',";
         result += "'outputDir': '" + outputDir + "'";
         result += "}";
         return result;
@@ -135,7 +137,8 @@ public class CliTest {
                 RESNET_MODELNAME,
                 Arrays.asList("emadlcpp"),
                 targetDir,
-                "MXNET");
+                "MXNET",
+                false);
 
         DistributedTargetGeneratorCli.main(new String[]{"-r", json});
 
@@ -154,7 +157,8 @@ public class CliTest {
                 RESNET_MODELNAME,
                 Arrays.asList("emadlcpp","roscpp"),
                 targetDir,
-                "MXNET");
+                "MXNET",
+                false);
 
         DistributedTargetGeneratorCli.main(new String[]{"-r", json});
         String[] positiveFileNames = getEMADLGeneratedFilesList(true);
@@ -285,6 +289,37 @@ public class CliTest {
         assertTrue(logContains("0x6444B"));
     }
 
+    @Test
+    public void testWriteTagFile() {
+        String targetDir="target/cliTest/TagFile/";
+        String json = buildParameterJson(
+                VALID_MODELS_DIR_OPTION,
+                VALID_ROOT_MODEL_OPTION,
+                VALID_GENERATOR_ALL_OPTION,
+                targetDir,
+                null,
+                true);
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
+
+        assertTrue(Files.exists(Paths.get(targetDir, "emam","RosConnections.tag")));
+    }
+
+    @Test
+    public void testWriteTagFileDisabled() {
+        String targetDir="target/cliTest/TagFileDisabled/";
+        String json = buildParameterJson(
+                VALID_MODELS_DIR_OPTION,
+                VALID_ROOT_MODEL_OPTION,
+                VALID_GENERATOR_ALL_OPTION,
+                targetDir,
+                null,
+                false);
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
+
+        assertFalse(Files.exists(Paths.get(targetDir, "emam","RosConnections.tag")));
+    }
 
     private boolean logContains(String errorCode) {
         return LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains(errorCode));

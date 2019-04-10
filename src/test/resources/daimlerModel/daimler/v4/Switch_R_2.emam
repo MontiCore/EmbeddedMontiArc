@@ -1,0 +1,9 @@
+package daimler.v4;
+                    component Switch_R_2 {
+                      port
+                        in B condition,
+                        in B elseIn,
+                        in B ifIn,
+                        out B out1;
+                    }
+

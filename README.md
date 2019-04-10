@@ -5,6 +5,7 @@
 This generator takes an EMAM or EMADL model and connects it to a middleware library. If all Ports of two connected Components are marked as middleware Ports, the generator will create 2 executables that can be deployed on different machines.
 All communication of these 2 Components will then be tunneled trough the specified middleware:
 ![MiddlewareAdapter](/uploads/6e9c69e6b56554579551769174df3697/MiddlewareAdapter.png)
+It also supports automatic clustering of the subcomponents to deploy on different machines.
 
 ## Other important documents
 ### Quickstart
@@ -21,29 +22,109 @@ See [INSTALL_DEPENDENCIES.md](INSTALL_DEPENDENCIES.md)
 ## Usage
 ### CLI
 Maven generates the jar `embedded-montiarc-math-middleware-generator-{Version}-jar-with-dependencies.jar`
-and the cli is located in `de.monticore.lang.monticar.generator.middleware.DistributedTargetGeneratorCli`.
+and the cli is located in `de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGeneratorCli`.
 
 Parameters: `${file path to config json}` OR `-r ${raw json config string}`
-```
-Schema of config json:
-{
-    'modelsDir':'<path to directory with EMAM models>',
-    'outputDir':'<path to output directory for generated files>',
-    'rootModel':'<fully qualified name of the root model>',
-    'generators':['<identifier for first generator>', '<identifier for second generator>',...],
-    'emadlBackend':'<deep-learning-framework backend. Options: MXNET, CAFFE2>'
+
+Example: [CliUsage.sh](src/test/resources/CliUsage.sh)
+
+An example config file with all clustering algorithms: [config](src/test/resources/config/parameterTest/clusterParamsAllAlgos.json)
+
+| Name                 | Type   | Required | Description                                                                               |
+|----------------------|--------|----------|-------------------------------------------------------------------------------------------|
+| modelsDir            | String |     ✅    | path to directory with EMAM models                                                        |
+| outputDir            | String |     ✅    | path to output directory for generated files                                              |
+| rootModel            | String |     ✅    | fully qualified name of the root model                                                    |
+| generators           | List   |     ✅    | List of generator identfiers<br> 'cpp', 'emadlcpp', 'roscpp', 'rclcpp'                    |
+| emadlBackend         | String |     ❓    | deep-learning-framework backend<br> 'MXNET'(Default), 'CAFFE2'                                     |
+| writeTagFile         | Bool   |     ❓    | Writes a .tag file with all Middleware tags into the generated code<br> Defaults to false |
+| clusteringParameters | Object |     ❓    | Options to cluster the component before generating<br> See below                          |
+
+Clustering Parameters:
+
+| Name                | Type         | Required | Description                                                                                                                                                                                                                                       |
+|---------------------|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| numberOfClusters    | int          | ❓        | Number of clusters the subcomponents should be divided into<br> Overrides numberOfClusters in algorithmParameters                                                                                                                                 |
+| flatten             | bool         | ❓        | Replace all components with their subcomponents execpt when it is atomic or the flatten level is reached                                                                                                                                          |
+| flattenLevel        | int          | ❓        | Maximal level of component flattening                                                                                                                                                                                                             |
+| metric            | String       | ❓        | Metric to evaluate the quality of the resulting clusters. Available: "CommunicationCost"(Default), "Silhouette"|
+| chooseBy            | String       | ❓        | Strategy to choose from the resulting clusterings<br> bestWithFittingN(Default): if numberOfClusters is set, all results with a different number of clusters are ignored<br> bestOverall: ignore numberOfClusters, choose result with best score |
+| algorithmParameters | List<Object> | ❓        | Used to specify which algorithms(and their parameters) are used for clustering                                                                                                                                                                    |
+
+There are 4 different Clustering Algorithms with distinct parameters
+
+Every parameter of the clustering algorithms can be dynamic, enabling automatic search for the best values. Available are lists and generators as seen in the example below:
+```json
+"sigma":[1,2,3]
+"sigma":{
+  "min":1,
+  "max":3,
+  "step":1
+}
+"sigma":{
+  "min":1,
+  "max":3,
+  "count":3
 }
 ```
-Generator Options:
-- Behaviour generators:
-    - 'cpp': EMAM2CPP
-    - 'emadlcpp': EMADL2CPP
-- Middleware generators:
-    - 'roscpp': EMAM2Roscpp
-    
-Example: [CliUsage.sh](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/src/test/resources/CliUsage.sh)
+Also see [clusterDynamic.json](src/test/resources/config/parameterTest/clusterDynamic.json) and [clusterDynamicList.json](src/test/resources/config/parameterTest/clusterDynamicList.json)
 
-### Defining the connection between a component and the middleware
+Spectral Clustering:
+
+| Name             | Type   | Required | Description                                                                     |
+|------------------|--------|----------|---------------------------------------------------------------------------------|
+| name             | String | ✅️        | must equal "SpectralClustering"                                                 |
+| numberOfClusters | int    | ✅️        | Number of clusters that are created<br> Overwritten by global numberOfClusters  |
+| l                | int    | ❓        |                                                                                 |
+| sigma            | double | ❓        |                                                                                 |
+
+DBScan:
+
+| Name    | Type   | Required | Description         |
+|---------|--------|----------|---------------------|
+| name    | String | ✔️        | must equal "DBScan" |
+| min_pts | int    | ✔️        |                     |
+| radius  | double | ✔️        |                     |
+
+Markov:
+
+| Name         | Type   | Required | Description         |
+|--------------|--------|----------|---------------------|
+| name         | String | ✔️     | must equal "Markov" |
+| max_residual | double | ❓        |                     |
+| gamma_exp    | double | ❓        |                     |
+| loop_gain    | double | ❓        |                     |
+| zero_max     | double | ❓        |                     |
+
+Affinity Propagation:
+
+| Name | Type   | Required | Description                      |
+|------|--------|----------|----------------------------------|
+| name | String | ✔️        | must equal "AffinityPropagation" |
+
+
+### Visulization of clustering results
+There are 3 scripts available to visualise the results of the clustering process. They all create graphs for each of the 4 evaluation models:
+1. [evaluationVisualisation.py](src/test/resources/evaluationVisualisation.py): bar graphs that compare the size of clusters, distance score, and time taken in ms
+2. [montecarlovisualisation.py](src/test/resources/montecarlovisualisation.py): line graph visualising the average distance cost for random clustering(with Monte Carlo)
+3. [silhouetteVisualisation.py](src/test/resources/silhouetteVisualisation.py): point graph visualising the silhouette score of different clusterings sorted by cluster size
+
+Before using them install Python 3+ and the packages `matplotlib` and `numpy`.
+
+After running `EvaluationTest`(Warning: very long runtime) you can visualise the results by calling(from the project root):
+```bash
+python3 src/test/resources/evaluationVisualisation.py target/evaluation/autopilot/emam/clusteringResults.json target/evaluation/pacman/emam/clusteringResults.json target/evaluation/supermario/emam/clusteringResults.json target/evaluation/daimler/emam/clusteringResults.json
+```
+or
+```bash
+python3 src/test/resources/montecarlovisualisation.py target/evaluation/autopilotMC/monteCarloResults.json target/evaluation/pacmanMC/monteCarloResults.json target/evaluation/supermarioMC/monteCarloResults.json target/evaluation/daimlerMC/monteCarloResults.json
+```
+or
+```bash
+python3 src/test/resources/silhouetteVisualisation.py target/evaluation/autopilotSilhouette/emam/clusteringResults.json target/evaluation/pacmanSilhouette/emam/clusteringResults.json target/evaluation/supermarioSilhouette/emam/clusteringResults.json target/evaluation/daimlerSilhouette/emam/clusteringResults.json
+```
+
+## Defining the connection between a component and the middleware
 The connection between middleware and the component is defined as tags on Ports in .tag files.
 ### Example with ROS Middleware:
 Tags of the type RosConnection can either be simple tags(see Example 3) or define a topic(http://wiki.ros.org/Topics) with name, type and optional msgField(http://wiki.ros.org/msg , 2.)

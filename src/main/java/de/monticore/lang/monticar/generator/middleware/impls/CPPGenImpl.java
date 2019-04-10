@@ -24,7 +24,7 @@ public class CPPGenImpl implements GeneratorImpl {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(true);
         generatorCPP.setModelsDirPath(Paths.get(modelsDir));
-        generatorCPP.setGenerateTests(true);
+        //generatorCPP.setGenerateTests(true);
     }
 
     public void setGeneratorCPP(GeneratorCPP generatorCPP){

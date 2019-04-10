@@ -1,0 +1,5 @@
+package daimler.v4;
+              component VERSION_INFO_4 {
+instance Copyright_4 copyright_4;
+              }
+

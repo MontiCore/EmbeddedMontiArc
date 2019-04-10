@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
@@ -11,12 +12,14 @@ import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
@@ -25,6 +28,11 @@ import static org.junit.Assert.*;
 public class GenerationTest extends AbstractSymtabTest {
 
     public static final String TEST_PATH = "src/test/resources/";
+
+    @Before
+    public void resetLog(){
+        Log.getFindings().clear();
+    }
 
     @Test
     public void testBasicGeneration() throws IOException {
@@ -330,6 +338,51 @@ public class GenerationTest extends AbstractSymtabTest {
         List<String> filenames = files.stream().map(File::getAbsolutePath).map(name -> name.replace('\\','/')).collect(Collectors.toList());
 
         assertFalse(filenames.stream().anyMatch(fn -> fn.endsWith("rosMsg/CMakeLists.txt")));
+    }
+
+
+    @Test
+    public void testLabComp() throws IOException{
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("lab.system", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        //make sure the middleware tags are loaded
+        Map<EMAPortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+
+        DistributedTargetGenerator middlewareGenerator = new DistributedTargetGenerator();
+        middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/lab/src/");
+        //generator for component itself
+        middlewareGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
+        //generator for the ros connection
+        middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
+
+        middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+
+
+    }
+
+    @Test
+    public void testMiddlewareTagFileGeneration() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("lab.system", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        //make sure the middleware tags are loaded
+        Map<EMAPortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        DistributedTargetGenerator middlewareGenerator = new DistributedTargetGenerator();
+        middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/labWithTags/src/");
+        //generator for component itself
+        middlewareGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
+        //generator for the ros connection
+        middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
+        middlewareGenerator.setGenerateMiddlewareTags(true);
+
+        middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
 }
