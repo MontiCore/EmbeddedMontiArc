@@ -7,6 +7,7 @@ find_package(genmsg REQUIRED)
 add_message_files(FILES ${fileOnly})
 </#list>
 <#noparse>
+set(CATKIN_MESSAGE_GENERATORS gencpp)
 generate_messages()
 set(struct_msgs_INCLUDE_DIRS ${struct_msgs_INCLUDE_DIRS} PARENT_SCOPE)
 </#noparse>
