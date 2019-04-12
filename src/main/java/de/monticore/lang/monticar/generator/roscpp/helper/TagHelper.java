@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.roscpp.helper;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
@@ -10,10 +10,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TagHelper {
@@ -37,7 +34,7 @@ public class TagHelper {
         return generatorRosCpp.generateFiles(componentInstanceSymbol, taggingResolver);
     }
 
-    public static boolean rosConnectionsValid(EMAComponentInstanceSymbol instanceSymbol) {
+    public static boolean rosConnectionsValid(EMAComponentInstanceSymbol instanceSymbol, boolean ros2mode) {
         AtomicBoolean result = new AtomicBoolean(true);
 
         instanceSymbol.getPortInstanceList().stream()
@@ -48,11 +45,22 @@ public class TagHelper {
                     if(!rosConnectionSymbol.getTopicName().isPresent()){
                         result.set(false);
                         Log.error("0x9d80f: Port " + p.getFullName() + " has RosConnection but no topic name!");
+                        return;
                     }
 
                     if(!rosConnectionSymbol.getTopicType().isPresent()){
                         result.set(false);
                         Log.error("0x2cc67: Port " + p.getFullName() + " has RosConnection but no topic type!");
+                        return;
+                    }
+
+                    String topicType = rosConnectionSymbol.getTopicType().get();
+                    if (ros2mode && !topicType.contains("/msg/")) {
+                        List<String> parts = new ArrayList<>(Arrays.asList(topicType.split("/")));
+                        parts.add(parts.size() - 1, "msg");
+                        String fixed = String.join("/", parts);
+                        Log.warn("The port " + p.getFullName() + " has a Ros Topic without a msg qualifier. Was " + topicType + ", will now try with " + fixed);
+                        rosConnectionSymbol.setTopicType(fixed);
                     }
                 });
 
