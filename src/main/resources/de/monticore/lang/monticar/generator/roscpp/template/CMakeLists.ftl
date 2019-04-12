@@ -4,9 +4,7 @@ set (CMAKE_CXX_STANDARD 14)
 set (AMENT_CMAKE_UNINSTALL_TARGET FALSE)
 
 <#list model.getPackages() as pack>
-    <#if pack != "struct_msgs">
 find_package(${pack} REQUIRED)
-    </#if>
 </#list>
 
 add_library(${model.name} ${model.name}.cpp)
