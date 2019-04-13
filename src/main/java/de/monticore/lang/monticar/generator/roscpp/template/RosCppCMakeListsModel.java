@@ -9,6 +9,7 @@ public class RosCppCMakeListsModel {
     private String name;
     private String compName;
     private List<String> packages = new ArrayList<>();
+    private List<String> excludeFindPackages = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -23,6 +24,14 @@ public class RosCppCMakeListsModel {
                 .sorted()
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getExcludeFindPackages() {
+        return excludeFindPackages;
+    }
+
+    public void addExcludeFindPackage(String excludeFindPackage) {
+        this.excludeFindPackages.add(excludeFindPackage);
     }
 
     public RosCppCMakeListsModel(String name, String compName) {

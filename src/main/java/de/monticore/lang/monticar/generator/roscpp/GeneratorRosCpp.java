@@ -122,11 +122,12 @@ public class GeneratorRosCpp {
                 .map(RosConnectionSymbol::getTopicType)
                 .map(Optional::get)
                 .map(n -> n.split("/")[0])
-                //dont add struct_msgs if we are in ros1 mode
-                .filter(s -> ros2Mode || !s.equals("struct_msgs"))
                 .forEach(allPackages::add);
 
         allPackages.forEach(model::addPackage);
+        if(!ros2Mode){
+            model.addExcludeFindPackage("struct_msgs");
+        }
 
         List<FileContent> result = new ArrayList<>();
         result.add(new FileContent("CMakeLists.txt", RosCppTemplates.generateRosCMakeLists(model)));
