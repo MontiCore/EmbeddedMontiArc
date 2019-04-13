@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GeneratorRosMsg {
     private String path;
@@ -293,7 +294,9 @@ public class GeneratorRosMsg {
     }
 
     public List<File> generateProject(EMAComponentInstanceSymbol component) throws IOException {
-        List<MCTypeReference<? extends MCTypeSymbol>> typeReferences = component.getPortInstanceList().stream()
+        Stream<EMAPortInstanceSymbol> p = component.getPortInstanceList().stream();
+        Stream<EMAPortInstanceSymbol> subp = component.getSubComponents().stream().flatMap(sc -> sc.getPortInstanceList().stream());
+        List<MCTypeReference<? extends MCTypeSymbol>> typeReferences = Stream.concat(p, subp)
                 .map(EMAPortInstanceSymbol::getTypeReference)
                 .filter(SymbolReference::existsReferencedSymbol)
                 .filter(mcTypeReference -> mcTypeReference.getReferencedSymbol() instanceof StructSymbol)
