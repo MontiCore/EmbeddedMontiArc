@@ -1,13 +1,18 @@
 package de.monticore.lang.monticar.generator.rosmsg;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
+import de.monticore.lang.monticar.generator.rosmsg.util.CMakeListsViewModel;
 import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
+import de.monticore.lang.monticar.generator.rosmsg.util.RosMsgTemplates;
 import de.monticore.lang.monticar.struct._symboltable.StructFieldDefinitionSymbol;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.symboltable.references.SymbolReference;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 
@@ -15,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GeneratorRosMsg {
     private String path;
@@ -53,7 +59,7 @@ public class GeneratorRosMsg {
 
     public List<FileContent> generateStrings(MCTypeReference<? extends MCTypeSymbol> typeReference) {
         //is typeReference basic type or struct?
-        if (getRosType(currentPackageName, typeReference) != null) {
+        if (getRosType(currentPackageName, typeReference, ros2mode) != null) {
             MCTypeSymbol type = typeReference.getReferencedSymbol();
             List<FileContent> res = new ArrayList<>();
             if (type instanceof StructSymbol) {
@@ -77,7 +83,7 @@ public class GeneratorRosMsg {
 
         String definition = structSymbol.getStructFieldDefinitions().stream()
                 .filter(sfds -> sfds.getType().existsReferencedSymbol())
-                .map(sfds -> getInMsgRosType(currentPackageName, sfds.getType().getReferencedSymbol(), ros2mode) + " " + sfds.getName())
+                .map(sfds -> getInMsgRosType(currentPackageName, sfds.getType().getReferencedSymbol(), ros2mode) + " " + getFieldName(sfds, ros2mode))
                 .collect(Collectors.joining("\n"));
 
         FileContent fc = new FileContent();
@@ -114,10 +120,9 @@ public class GeneratorRosMsg {
     }
 
     private static String getFieldName(StructFieldDefinitionSymbol sfds, boolean ros2mode) {
-        if (ros2mode){
+        if (ros2mode) {
             return sfds.getName().toLowerCase();
-        }
-        else{
+        } else {
             return sfds.getName();
         }
 
@@ -229,18 +234,74 @@ public class GeneratorRosMsg {
     }
 
     private static String getTargetName(StructSymbol structSymbol, boolean ros2mode) {
-        if (ros2mode){
+        if (ros2mode) {
             return Arrays.stream(structSymbol.getFullName()
                     .split("\\."))
                     .map(fn -> fn.substring(0, 1).toUpperCase() + fn.substring(1))
                     .collect(Collectors.joining());
-        }
-        else{
+        } else {
             return structSymbol.getFullName().replace(".", "_");
         }
     }
 
     private static String getFullTargetName(String packageName, StructSymbol structSymbol, boolean ros2mode) {
         return ros2mode ? packageName + "/msg/" + getTargetName(structSymbol, ros2mode) : packageName + "/" + getTargetName(structSymbol, ros2mode);
+    }
+
+    public List<FileContent> generateProjectStrings(List<MCTypeReference<? extends MCTypeSymbol>> typeReferences) {
+        ArrayList<FileContent> res = new ArrayList<>();
+
+        // .msg files
+        for (MCTypeReference<? extends MCTypeSymbol> tr : typeReferences) {
+            for (FileContent fc : generateStrings(tr)) {
+                fc.setFileName("msg/" + fc.getFileName());
+                res.add(fc);
+            }
+        }
+
+        if (!ros2mode) {
+            res.add(getRosCMakeLists(res));
+        } else {
+            res.add(getRos2CMakeLists(res));
+            res.add(getRos2PackageXml());
+        }
+
+
+        return res;
+    }
+
+    private FileContent getRos2CMakeLists(ArrayList<FileContent> res) {
+        return new FileContent("CMakeLists.txt", RosMsgTemplates.generateRos2CMakeLists(new CMakeListsViewModel(res)));
+    }
+
+    private FileContent getRos2PackageXml() {
+        return new FileContent("package.xml", RosMsgTemplates.generateRos2Package());
+    }
+
+    private FileContent getRosCMakeLists(ArrayList<FileContent> res) {
+        return new FileContent("CMakeLists.txt", RosMsgTemplates.generateRosCMakeLists(new CMakeListsViewModel(res)));
+    }
+
+    public List<File> generateProject(List<MCTypeReference<? extends MCTypeSymbol>> typeReferences) throws IOException {
+        List<File> res = new ArrayList<>();
+        List<FileContent> fileContents = generateProjectStrings(typeReferences);
+        for (FileContent fileContent : fileContents) {
+            File file = new File(path + "/" + fileContent.getFileName());
+            FileUtils.write(file, fileContent.getFileContent());
+            res.add(file);
+        }
+        return res;
+    }
+
+    public List<File> generateProject(EMAComponentInstanceSymbol component) throws IOException {
+        Stream<EMAPortInstanceSymbol> p = component.getPortInstanceList().stream();
+        Stream<EMAPortInstanceSymbol> subp = component.getSubComponents().stream().flatMap(sc -> sc.getPortInstanceList().stream());
+        List<MCTypeReference<? extends MCTypeSymbol>> typeReferences = Stream.concat(p, subp)
+                .map(EMAPortInstanceSymbol::getTypeReference)
+                .filter(SymbolReference::existsReferencedSymbol)
+                .filter(mcTypeReference -> mcTypeReference.getReferencedSymbol() instanceof StructSymbol)
+                .collect(Collectors.toList());
+
+        return generateProject(typeReferences);
     }
 }

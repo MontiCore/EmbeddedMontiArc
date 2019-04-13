@@ -1,6 +1,0 @@
-cmake_minimum_required(VERSION 3.5)
-project(multinested)
-find_package(genmsg REQUIRED)
-FILE(GLOB MSG_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.msg)
-add_message_files(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} FILES ${MSG_FILES})
-generate_messages()

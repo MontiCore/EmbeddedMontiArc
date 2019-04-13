@@ -4,6 +4,14 @@ public class FileContent {
     private String fileName;
     private String fileContent;
 
+    public FileContent() {
+    }
+
+    public FileContent(String fileName, String fileContent) {
+        this.fileName = fileName;
+        this.fileContent = fileContent;
+    }
+
     public String getFileName() {
         return fileName;
     }
