@@ -87,3 +87,7 @@ Only for generated projects that contain a ROS2 adapter(e.g. "generators":["cpp"
 Tested under ROS2 Bouncy and Crystal with Windows 10 and Ubuntu 18.04 respectively and the installation is described [here](https://index.ros.org/doc/ros2/Installation/).
 ROS2 under Windows can only be compiled with msbuild.
 Set the environment varialble `ROS2_HOME` to the base of your ROS2 installation.
+If you use structs and message generation, you need to install colcon:
+```bash
+pip3 install -U colcon-common-extensions
+```
