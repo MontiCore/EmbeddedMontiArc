@@ -1,24 +1,25 @@
-package de.monticore.lang.monticar.generator.middleware.compile;
+package de.monticore.lang.monticar.generator.middleware.templates.compile;
 
-import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
+import de.monticore.lang.monticar.generator.middleware.templates.MiddlewareTemplates;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
+
+    @Override
+    public String getContent() {
+        return MiddlewareTemplates.generateCompileMsbuild(this);
+    }
+
     @Override
     public boolean supportsRos2() {
         return true;
     }
 
     @Override
-    protected String getScriptTemplate() {
-        return TemplateHelper.getCompilationMsbuildTemplate();
-    }
-
-    @Override
-    protected List<String> getAdditionalPathDirs() {
+    public List<String> getAdditionalPathDirs() {
         setAdditionalErrorMsg("vcvars64.bat", defaultErrorMsg("msbuild"));
         setAdditionalErrorMsg("ros2", defaultErrorMsg("ROS2"));
         return Arrays.asList("cmake","msbuild");
@@ -26,12 +27,12 @@ public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
 
 
     @Override
-    protected String getFileName() {
+    public String getFileName() {
         return "compileMsbuild.bat";
     }
 
     @Override
-    protected List<String> getPostSourceExecutables() {
+    public List<String> getPostSourceExecutables() {
         List<String> res = new ArrayList<>();
         res.add("msbuild");
         if(useRos2()){
@@ -41,7 +42,7 @@ public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
     }
 
     @Override
-    protected List<String> getEnvironmentFiles() {
+    public List<String> getEnvironmentFiles() {
         List<String> res = new ArrayList<>();
         res.add("vcvars64.bat");
         if(useRos2()){
@@ -51,7 +52,16 @@ public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
     }
 
     @Override
-    protected List<String> getExecutables() {
-        return Arrays.asList("cmake","vcvars64.bat");
+    public List<String> getExecutables() {
+        List<String> res = new ArrayList<>(Arrays.asList("cmake","vcvars64.bat"));
+        if(useRos2() && useStructMsgs()){
+            res.add("colcon");
+        }
+        return res;
+    }
+
+    @Override
+    public WinGenKind getKind() {
+        return WinGenKind.MSBUILD;
     }
 }

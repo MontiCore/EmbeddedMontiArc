@@ -15,7 +15,7 @@ public class TemplateHelper {
         }
 
         String tmpStr = "";
-        String resourceFileName = "/de/monticore/lang/monticar/generator/middleware/" + fileName;
+        String resourceFileName = "/de/monticore/lang/monticar/generator/middleware/templates/" + fileName;
 
         try {
             tmpStr = IOUtils.toString(TemplateHelper.class.getResourceAsStream(resourceFileName));
@@ -47,22 +47,5 @@ public class TemplateHelper {
     public static String getCoordinatorCmakeListsTemplate() {
         return getTemplate("coordinatorCmakeListsTemplate.ftl");
     }
-
-    public static String getCompilationBashTemplate(){
-        return getTemplate("compile.sh.template");
-    }
-
-    public static String getCompilationMingwTemplate(){
-        return getTemplate("compileMingw.bat.template");
-    }
-
-    public static String getCompilationMsbuildTemplate(){
-        return getTemplate("compileMsbuild.bat.template");
-    }
-
-    public static String getSubstTemplate(){
-        return getTemplate("subst.bat.template");
-    }
-
 
 }

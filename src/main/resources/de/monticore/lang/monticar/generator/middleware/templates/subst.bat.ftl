@@ -1,3 +1,4 @@
+@echo off
 :: Substituting the current dir with a drive letter to bypass windows path length limit
 :: Set environment variable EMA_SUBST_LETTER to change letter is used
 :: Default is N
@@ -16,7 +17,7 @@ subst %usedLetter%: "%curDir%"
 pushd .
 
 cd /d %usedLetter%:
-call <compile_script>
+call ${model.getFileName()}
 
 popd
 subst /d %usedLetter%:
