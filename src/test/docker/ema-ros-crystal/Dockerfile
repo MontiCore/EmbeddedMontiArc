@@ -7,4 +7,5 @@ ADD https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18
 RUN unzip /root/armadillo.zip -d /root/
 ENV Armadillo_HOME=/root/armadillo-8.500.1-linux
 ENV ROS2_HOME=/opt/ros/crystal
+RUN pip3 install -U colcon-common-extensions
 CMD ["bash"]

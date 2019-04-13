@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
+baseDir=$(readlink -f `dirname $0`/../../..)
 
-#./target/generated-sources-ros2/distributed/compile.sh
-#TODO: struct compilation
-#./target/generated-sources-ros2/distributedStruct/compile.sh
-./target/generated-sources-ros2/system/compile.sh
-#./target/generated-sources-ros2/addComp/compile.sh
+for f in `find $baseDir/target/generated-sources-ros2/ -name compile.sh`
+do
+	bash -H $f
+done
