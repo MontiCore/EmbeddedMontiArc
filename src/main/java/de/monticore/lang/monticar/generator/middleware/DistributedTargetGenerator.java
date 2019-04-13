@@ -18,8 +18,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 
 public class DistributedTargetGenerator{
@@ -192,20 +190,10 @@ public class DistributedTargetGenerator{
                     }
                 });
 
-        Set<PosixFilePermission> perms = new HashSet<>();
-        perms.add(PosixFilePermission.OWNER_READ);
-        perms.add(PosixFilePermission.OWNER_WRITE);
-        perms.add(PosixFilePermission.OWNER_EXECUTE);
-        perms.add(PosixFilePermission.GROUP_READ);
-        perms.add(PosixFilePermission.GROUP_WRITE);
-        perms.add(PosixFilePermission.GROUP_EXECUTE);
-        perms.add(PosixFilePermission.OTHERS_READ);
-        perms.add(PosixFilePermission.OTHERS_WRITE);
-        perms.add(PosixFilePermission.OTHERS_EXECUTE);
         for (File f : res) {
             try {
-                Files.setPosixFilePermissions(f.toPath(), perms);
-            } catch (IOException e) {
+                f.setExecutable(true, false);
+            } catch (Exception e) {
                 Log.warn("Could not set permissions of " + f.getAbsolutePath());
             }
         }
