@@ -7,8 +7,8 @@ stages:
 masterJobWindows:
   stage: windows
   script:
-    - call mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B dependency:purge-local-repository -DactTransitively=false --settings settings.xml
-    - call mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean install --settings settings.xml
+    - call mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B dependency:purge-local-repository -DactTransitively=false --settings settings.xml -U
+    - call mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean install --settings settings.xml -U
   tags:
   - Windows10
 
@@ -20,7 +20,7 @@ CompileJobLinux:
     - target/
     expire_in: 1 day
   script:
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -U
   - cat target/site/jacoco/index.html
 
 DeployJobLinux:
@@ -29,7 +29,7 @@ DeployJobLinux:
   dependencies:
     - CompileJobLinux
   script:
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B deploy --settings settings.xml
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B deploy --settings settings.xml -U
   only:
   - master
 
