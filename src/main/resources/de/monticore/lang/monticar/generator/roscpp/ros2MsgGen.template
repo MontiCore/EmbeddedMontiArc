@@ -1,3 +1,0 @@
-# Generate .h files from .msg files
-add_custom_target(gen_<name>_<struct_replaced> ALL
-COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generateMsgs.py)

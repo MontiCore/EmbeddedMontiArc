@@ -1,23 +1,23 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
+import de.monticore.lang.monticar.generator.roscpp.helper.*;
+import de.monticore.lang.monticar.generator.roscpp.template.RosAdapterModel;
+import de.monticore.lang.monticar.generator.roscpp.template.RosCppCMakeListsModel;
+import de.monticore.lang.monticar.generator.roscpp.template.RosCppTemplates;
+import de.monticore.lang.monticar.generator.roscpp.util.RosInterface;
+import de.monticore.lang.monticar.generator.roscpp.util.RosPublisher;
+import de.monticore.lang.monticar.generator.roscpp.util.RosSubscriber;
 import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
-import de.monticore.lang.monticar.generator.roscpp.util.BluePrintCPP;
-import de.monticore.lang.monticar.generator.roscpp.helper.FormatHelper;
-import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
-import de.monticore.lang.monticar.generator.roscpp.helper.PrinterHelper;
-import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
-import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
-import de.monticore.lang.monticar.ts.MCTypeSymbol;
-import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.se_rwth.commons.logging.Log;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GeneratorRosCpp {
@@ -43,37 +43,18 @@ public class GeneratorRosCpp {
     }
 
     public void setGenerationTargetPath(String generationTargetPath) {
-        this.generationTargetPath = generationTargetPath;
+        this.generationTargetPath = generationTargetPath.endsWith("/") ? generationTargetPath : generationTargetPath + "/";
     }
 
     public List<File> generateFiles(EMAComponentInstanceSymbol component, TaggingResolver symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(component);
 
-        if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
-            setGenerationTargetPath(getGenerationTargetPath() + "/");
-        }
         List<File> files = new ArrayList<>();
         for (FileContent fileContent : fileContents) {
-
-            files.add(generateFile(fileContent));
+            files.add(PrinterHelper.generateFile(fileContent, getGenerationTargetPath()));
         }
 
         return files;
-    }
-
-    public File generateFile(FileContent fileContent) throws IOException {
-        File f = new File(getGenerationTargetPath() + fileContent.getFileName());
-        Log.info(f.getName(), "FileCreation:");
-        if (!f.exists()) {
-            f.getParentFile().mkdirs();
-            if (!f.createNewFile()) {
-                Log.error("File could not be created");
-            }
-        }
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(f));
-        bufferedWriter.write(fileContent.getFileContent(), 0, fileContent.getFileContent().length());
-        bufferedWriter.close();
-        return f;
     }
 
     public List<FileContent> generateStrings(EMAComponentInstanceSymbol component) {
@@ -88,54 +69,70 @@ public class GeneratorRosCpp {
     private List<FileContent> generateRosAdapter(EMAComponentInstanceSymbol component) {
         List<FileContent> res = new ArrayList<>();
 
-        FileContent apdapter = new FileContent();
+        if (TagHelper.rosConnectionsValid(component, ros2Mode)) {
+            List<EMAPortSymbol> rosPorts = component.getPortInstanceList().stream()
+                    .filter(EMAPortSymbol::isRosPort)
+                    .collect(Collectors.toList());
 
-        LanguageUnitRosCppAdapter languageUnitRosCppAdapter = new LanguageUnitRosCppAdapter();
-        languageUnitRosCppAdapter.setRos2Mode(this.isRos2Mode());
-        Optional<BluePrintCPP> currentBluePrint = languageUnitRosCppAdapter.generateBluePrint(component);
+            List<RosSubscriber> rosSubscribers = rosPorts.stream()
+                    .filter(EMAPortSymbol::isIncoming)
+                    .map(RosSubscriber::new)
+                    .collect(Collectors.toList());
 
-        if(currentBluePrint.isPresent()) {
+            List<RosPublisher> rosPublishers = rosPorts.stream()
+                    .filter(EMAPortSymbol::isOutgoing)
+                    .map(RosPublisher::new)
+                    .collect(Collectors.toList());
 
-            String classname = currentBluePrint.get().getName();
-            apdapter.setFileName(classname + ".h");
-            String nameTargetLanguage = NameHelper.getComponentNameTargetLanguage(component.getFullName());
-            apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint.get(), ": public IAdapter_" + nameTargetLanguage));
-
-            GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
-            generatorRosMsg.setRos2mode(ros2Mode);
-            for (Map.Entry<RosMsg, MCTypeReference<? extends MCTypeSymbol>> entry : languageUnitRosCppAdapter.getUsedRosMsgs().entrySet()) {
-                String packageName = Arrays.stream(entry.getKey().getName().split("/")).findFirst().get();
-                if (packageName.equals("struct_msgs")) {
-                    String ros2extra = isRos2Mode() ? "msg/" : "";
-                    generatorRosMsg.setTarget(generationTargetPath + "/" + ros2extra + packageName, packageName);
-                    List<FileContent> tmpFileContents = generatorRosMsg.generateStrings(entry.getValue());
-                    tmpFileContents.forEach(fc -> fc.setFileName(packageName + "/" + ros2extra + fc.getFileName()));
-                    if(ros2Mode){
-                        lowercaseMsgFieldNames(tmpFileContents);
-                    }
-                    res.addAll(tmpFileContents);
-                }
-            }
+            List<RosInterface> rosInterfaces = new ArrayList<>();
+            rosInterfaces.addAll(rosSubscribers);
+            rosInterfaces.addAll(rosPublishers);
 
             if (generateCMake) {
-                LanguageUnitRosCMake languageUnitRosCMake = new LanguageUnitRosCMake();
-
-                List<RosMsg> rosMsgs = new ArrayList<>(languageUnitRosCppAdapter.getUsedRosMsgs().keySet());
-                res.addAll(languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages(), rosMsgs, isRos2Mode()));
+                res.addAll(generateCMakeFiles(component, rosInterfaces, isRos2Mode()));
             }
 
-            res.add(apdapter);
+            RosAdapterModel model = new RosAdapterModel(ros2Mode, NameHelper.getComponentNameTargetLanguage(component.getFullName()));
+            model.addPublishers(rosPublishers);
+            model.addSubscribers(rosSubscribers);
+            model.addGenerics(GenericsHelper.getGenericsDefinition(component));
+            if(ros2Mode) {
+                rosSubscribers.forEach(s -> model.addInclude(s.getRos2Include()));
+                rosPublishers.forEach(s -> model.addInclude(s.getRos2Include()));
+            }else{
+                rosSubscribers.forEach(s -> model.addInclude(s.getRosInclude()));
+                rosPublishers.forEach(s -> model.addInclude(s.getRosInclude()));
+            }
+            String s = RosCppTemplates.generateRosAdapter(model);
+            res.add(new FileContent("RosAdapter_" + NameHelper.getComponentNameTargetLanguage(component.getFullName()) + ".h",s));
         }
         return res;
     }
 
-    private void lowercaseMsgFieldNames(List<FileContent> tmpFileContents) {
-        tmpFileContents.forEach(fc ->{
-            String fixedFileContent = Arrays.stream(fc.getFileContent().split("\\r?\\n"))
-                    .map(line -> line.substring(0,line.indexOf(" ")) + line.substring(line.indexOf(" ")).toLowerCase())
-                    .collect(Collectors.joining("\n"));
-            fc.setFileContent(fixedFileContent);
-        });
+    public List<FileContent> generateCMakeFiles(EMAComponentInstanceSymbol component, List<RosInterface> rosInterfaces, boolean ros2Mode) {
+        String compName = NameHelper.getComponentNameTargetLanguage(component.getFullName());
+        String name = NameHelper.getAdapterName(component);
+        RosCppCMakeListsModel model = new RosCppCMakeListsModel(name, compName);
+
+        List<String> allPackages = new ArrayList<>();
+        allPackages.add(ros2Mode ? "rclcpp" : "roscpp");
+
+        rosInterfaces.stream()
+                .map(RosInterface::getRosConnectionSymbol)
+                .map(RosConnectionSymbol::getTopicType)
+                .map(Optional::get)
+                .map(n -> n.split("/")[0])
+                .forEach(allPackages::add);
+
+        allPackages.forEach(model::addPackage);
+        if(!ros2Mode){
+            model.addExcludeFindPackage("struct_msgs");
+        }
+
+        List<FileContent> result = new ArrayList<>();
+        result.add(new FileContent("CMakeLists.txt", RosCppTemplates.generateRosCMakeLists(model)));
+        result.add(new FileContent(name + ".cpp","#include \"" + name + ".h\""));
+        return result;
     }
 
 }

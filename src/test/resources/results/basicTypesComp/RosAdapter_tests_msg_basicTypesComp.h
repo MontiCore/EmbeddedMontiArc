@@ -25,49 +25,48 @@ class RosAdapter_tests_msg_basicTypesComp: public IAdapter_tests_msg_basicTypesC
 		int i = 0;
 		ros::init(i, &tmp, "RosAdapter_tests_msg_basicTypesComp_node");
 		ros::NodeHandle node_handle = ros::NodeHandle();
-		topic7Subscriber = node_handle.subscribe("topic7" ,5,&RosAdapter_tests_msg_basicTypesComp::topic7Callback, this, ros::TransportHints().tcpNoDelay());
-		topic8Subscriber = node_handle.subscribe("topic8" ,5,&RosAdapter_tests_msg_basicTypesComp::topic8Callback, this, ros::TransportHints().tcpNoDelay());
-		topic9Subscriber = node_handle.subscribe("topic9" ,5,&RosAdapter_tests_msg_basicTypesComp::topic9Callback, this, ros::TransportHints().tcpNoDelay());
+		topic7Subscriber = node_handle.subscribe("topic7", 5, &RosAdapter_tests_msg_basicTypesComp::topic7Callback, this, ros::TransportHints().tcpNoDelay());
+		topic8Subscriber = node_handle.subscribe("topic8", 5, &RosAdapter_tests_msg_basicTypesComp::topic8Callback, this, ros::TransportHints().tcpNoDelay());
+		topic9Subscriber = node_handle.subscribe("topic9", 5, &RosAdapter_tests_msg_basicTypesComp::topic9Callback, this, ros::TransportHints().tcpNoDelay());
 		topic7Publisher = node_handle.advertise<std_msgs::Float64>("topic7",5);
 		topic8Publisher = node_handle.advertise<std_msgs::Int32>("topic8",5);
 		topic9Publisher = node_handle.advertise<std_msgs::Bool>("topic9",5);
 		ros::spin();
 	}
-	
-	void publishtopic7Publisher(){
+
+    void topic7Callback(const std_msgs::Float64::ConstPtr& msg){
+        component->inQ = msg->data;
+    }
+
+    void topic8Callback(const std_msgs::Int32::ConstPtr& msg){
+        component->inZ = msg->data;
+    }
+
+    void topic9Callback(const std_msgs::Bool::ConstPtr& msg){
+        component->inB = msg->data;
+    }
+
+    void publishtopic7Publisher(){
 		std_msgs::Float64 tmpMsg;
 		tmpMsg.data = component->outQ;
 		topic7Publisher.publish(tmpMsg);
 	}
-	
+
 	void publishtopic8Publisher(){
 		std_msgs::Int32 tmpMsg;
 		tmpMsg.data = component->outZ;
 		topic8Publisher.publish(tmpMsg);
 	}
-	
+
 	void publishtopic9Publisher(){
 		std_msgs::Bool tmpMsg;
 		tmpMsg.data = component->outB;
 		topic9Publisher.publish(tmpMsg);
 	}
-	
-	void tick(){
-		publishtopic7Publisher();
-		publishtopic8Publisher();
-		publishtopic9Publisher();
-	}
-	
-	void topic7Callback(const std_msgs::Float64::ConstPtr& msg){
-		component->inQ = msg->data;
-	}
-	
-	void topic8Callback(const std_msgs::Int32::ConstPtr& msg){
-		component->inZ = msg->data;
-	}
-	
-	void topic9Callback(const std_msgs::Bool::ConstPtr& msg){
-		component->inB = msg->data;
-	}
-	
+
+    void tick(){
+        publishtopic7Publisher();
+        publishtopic8Publisher();
+        publishtopic9Publisher();
+    }
 };

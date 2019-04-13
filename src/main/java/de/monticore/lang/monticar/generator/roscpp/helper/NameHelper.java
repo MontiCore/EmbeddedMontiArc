@@ -1,13 +1,17 @@
 package de.monticore.lang.monticar.generator.roscpp.helper;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
+import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NameHelper {
 
@@ -28,14 +32,6 @@ public class NameHelper {
             throw new IllegalArgumentException("EMAPortSymbol " + portSymbol.getName() + " is not part of an array!");
 
         return fixName(portSymbol.getName());
-    }
-
-    public static String getFixedMsgFieldName(String name) {
-        if (!(name.contains("[") && name.contains("]"))) {
-            throw new IllegalArgumentException("The MsgField " + name + "is not part of an array!");
-        }
-
-        return fixName(name);
     }
 
     private static String fixName(String name) {
@@ -120,5 +116,15 @@ public class NameHelper {
         // After: replace A with _a
         parts[parts.length - 1] = parts[parts.length - 1].replaceAll("([A-Z])", "_$1").toLowerCase();
         return String.join("/", parts);
+    }
+
+    public static String getTopicNameTargetLanguage(String topicName) {
+        return topicName.replace("/", "_")
+                .replace("[", "_")
+                .replace("]", "_");
+    }
+
+    public static String getFullRosType(RosConnectionSymbol rosConnectionSymbol) {
+        return rosConnectionSymbol.getTopicType().get().replace("/", "::");
     }
 }

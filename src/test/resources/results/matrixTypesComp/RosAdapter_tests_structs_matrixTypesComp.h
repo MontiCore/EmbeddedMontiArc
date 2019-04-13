@@ -17,40 +17,40 @@ class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_ma
 		
 	}
 	
-	void _name1Callback(const std_msgs::Float64MultiArray::ConstPtr& msg){
-		int counter = 0;
-		for(int i0 = 0; i0 < 3; i0++){
-			for(int i1 = 0; i1 < 1; i1++){
-				(component->in1)(i0, i1) = msg->data[counter];
-				counter++;
-			}
-		}
-		
-	}
-	
-	void _name2Callback(const std_msgs::ByteMultiArray::ConstPtr& msg){
-		int counter = 0;
-		for(int i0 = 0; i0 < 4; i0++){
-			for(int i1 = 0; i1 < 4; i1++){
-				(component->in2)(i0, i1) = msg->data[counter] != 0;
-				counter++;
-			}
-		}
-		
-	}
-	
 	void init(tests_structs_matrixTypesComp* comp){
 		this->component = comp;
 		char* tmp = strdup("");
 		int i = 0;
 		ros::init(i, &tmp, "RosAdapter_tests_structs_matrixTypesComp_node");
 		ros::NodeHandle node_handle = ros::NodeHandle();
-		_name1Subscriber = node_handle.subscribe("/name1" ,5,&RosAdapter_tests_structs_matrixTypesComp::_name1Callback, this, ros::TransportHints().tcpNoDelay());
-		_name2Subscriber = node_handle.subscribe("/name2" ,5,&RosAdapter_tests_structs_matrixTypesComp::_name2Callback, this, ros::TransportHints().tcpNoDelay());
+		_name1Subscriber = node_handle.subscribe("/name1", 5, &RosAdapter_tests_structs_matrixTypesComp::_name1Callback, this, ros::TransportHints().tcpNoDelay());
+		_name2Subscriber = node_handle.subscribe("/name2", 5, &RosAdapter_tests_structs_matrixTypesComp::_name2Callback, this, ros::TransportHints().tcpNoDelay());
 		_name3Publisher = node_handle.advertise<std_msgs::ByteMultiArray>("/name3",5);
 		_name4Publisher = node_handle.advertise<std_msgs::Int32MultiArray>("/name4",5);
 		ros::spin();
 	}
+
+    void _name1Callback(const std_msgs::Float64MultiArray::ConstPtr& msg){
+        int counter = 0;
+        for(int i0 = 0; i0 < 3; i0++){
+            for(int i1 = 0; i1 < 1; i1++){
+                (component->in1)(i0, i1) = msg->data[counter];
+                counter++;
+            }
+        }
+
+    }
+
+    void _name2Callback(const std_msgs::ByteMultiArray::ConstPtr& msg){
+        int counter = 0;
+        for(int i0 = 0; i0 < 4; i0++){
+            for(int i1 = 0; i1 < 4; i1++){
+                (component->in2)(i0, i1) = msg->data[counter] != 0;
+                counter++;
+            }
+        }
+
+    }
 	
 	void publish_name3Publisher(){
 		std_msgs::ByteMultiArray tmpMsg;

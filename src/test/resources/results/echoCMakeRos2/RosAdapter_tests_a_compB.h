@@ -12,11 +12,7 @@ class RosAdapter_tests_a_compB: public IAdapter_tests_a_compB{
 	RosAdapter_tests_a_compB(){
 		
 	}
-	
-	void _clockCallback(const std_msgs::msg::Float64::SharedPtr msg){
-		component->rosIn = msg->data;
-	}
-	
+
 	void init(tests_a_compB* comp){
 		this->component = comp;
 		char* tmp = strdup("");
@@ -27,7 +23,11 @@ class RosAdapter_tests_a_compB: public IAdapter_tests_a_compB{
 		_echoPublisher = node_handle->create_publisher<std_msgs::msg::Float64>("/echo");
 		rclcpp::spin(node_handle);
 	}
-	
+
+    void _clockCallback(const std_msgs::msg::Float64::SharedPtr msg){
+        component->rosIn = msg->data;
+    }
+
 	void publish_echoPublisher(){
 		std_msgs::msg::Float64 tmpMsg;
 		tmpMsg.data = component->rosOut;

@@ -9,7 +9,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-roscpp-generator</artifactId>
-  <version>0.1.3-SNAPSHOT</version>
+  <version>0.1.4-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -18,13 +18,12 @@
     <!-- .. SE-Libraries .................................................. -->
     <se-commons.version>1.7.7</se-commons.version>
     <Embedded-MontiArc-Math.version>0.1.7-SNAPSHOT</Embedded-MontiArc-Math.version>
-    <Embedded-montiarc-math-rosmsg-generator.version>0.1.2-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
+    <Embedded-montiarc-math-rosmsg-generator.version>0.1.3-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
 
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
     <logback.version>1.1.2</logback.version>
-    <yamlbeans.version>1.12</yamlbeans.version>
 
     <!-- .. Plugins ....................................................... -->
     <assembly.plugin>2.5.4</assembly.plugin>
@@ -57,12 +56,6 @@
       <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>embedded-montiarc-math-rosmsg-generator</artifactId>
       <version>${Embedded-montiarc-math-rosmsg-generator.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.esotericsoftware.yamlbeans</groupId>
-      <artifactId>yamlbeans</artifactId>
-      <version>${yamlbeans.version}</version>
     </dependency>
 
     <!-- MontiCore Dependencies -->
@@ -193,6 +186,7 @@
           <maxmem>256m</maxmem>
           <!-- aggregated reports for multi-module projects -->
           <aggregate>true</aggregate>
+          <check/>
         </configuration>
       </plugin>
     </plugins>

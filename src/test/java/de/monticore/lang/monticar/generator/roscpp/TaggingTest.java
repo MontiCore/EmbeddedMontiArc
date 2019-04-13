@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -19,6 +20,11 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 public class TaggingTest extends AbstractSymtabTest {
+
+    @Before
+    public void clearLogs(){
+        Log.getFindings().clear();
+    }
 
     @Test
     public void testRosConnectionParsing() {

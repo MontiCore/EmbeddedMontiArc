@@ -25,7 +25,7 @@ class RosAdapter_tests_a_compA: public IAdapter_tests_a_compA{
 		int i = 0;
 		ros::init(i, &tmp, "RosAdapter_tests_a_compA_node");
 		ros::NodeHandle node_handle = ros::NodeHandle();
-		_clockSubscriber = node_handle.subscribe("/clock" ,5,&RosAdapter_tests_a_compA::_clockCallback, this, ros::TransportHints().tcpNoDelay());
+		_clockSubscriber = node_handle.subscribe("/clock", 5, &RosAdapter_tests_a_compA::_clockCallback, this, ros::TransportHints().tcpNoDelay());
 		_echoPublisher = node_handle.advertise<automated_driving_msgs::StampedFloat64>("/echo",5);
 		ros::spin();
 	}

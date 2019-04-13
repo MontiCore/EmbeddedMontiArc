@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.roscpp.util;
+package de.monticore.lang.monticar.generator.roscpp.helper;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
@@ -9,45 +9,15 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * @author Sascha Schneiders
- */
-public class BluePrintCPP extends BluePrint {
-    public List<String> additionalIncludeStrings = new ArrayList<>();
+public class GenericsHelper {
+    private GenericsHelper(){
 
-    public BluePrintCPP(String name) {
-        super(name);
     }
 
-
-    public List<String> getAdditionalIncludeStrings() {
-        return additionalIncludeStrings;
-    }
-
-    public void addAdditionalIncludeString(String includeString) {
-        if (!hasAdditionalIncludeString(includeString))
-            additionalIncludeStrings.add(includeString);
-    }
-
-    public boolean hasAdditionalIncludeString(String includeString) {
-        return additionalIncludeStrings.contains(includeString);
-    }
-
-
-    public List<String> getConsts() {
-        List<String> consts = new ArrayList<>();
-        for (Variable variable : genericsVariableList) {
-
-            String defineString = "const int ";
-            defineString += variable.getName();
-            defineString += " = " + variable.getConstantValue() + ";\n";
-            consts.add(defineString);
-        }
-        return consts;
-    }
-
-    public void addDefineGenerics(EMAComponentInstanceSymbol componentSymbol) {
+    public static List<String> getGenericsDefinition(EMAComponentInstanceSymbol componentSymbol) {
+        List<String> res = new ArrayList<>();
         if (componentSymbol.getInstanceInformation().isPresent()) {
             int index = 0;
             Log.info(componentSymbol.getName(), "HasInstanceInformation:");
@@ -69,17 +39,16 @@ public class BluePrintCPP extends BluePrint {
                     }
                 }
                 fixSubComponentInstanceNumbers(componentSymbol, resolutionDeclarationSymbol.getNameToResolve(), number, index);
-                Variable constVar = new Variable();
-                constVar.setName(resolutionDeclarationSymbol.getNameToResolve());
-                constVar.setConstantValue("" + number);
-                addGenericVariable(constVar);
+                res.add("const int " + resolutionDeclarationSymbol.getNameToResolve() + " = " + number + ";");
                 ++index;
 
             }
+            return res.stream().sorted().collect(Collectors.toList());
         }
+        return new ArrayList<>();
     }
 
-    public void fixSubComponentInstanceNumbers(EMAComponentInstanceSymbol componentInstanceSymbol, String nameToResolve, int numberToSet, int index) {
+    public static void fixSubComponentInstanceNumbers(EMAComponentInstanceSymbol componentInstanceSymbol, String nameToResolve, int numberToSet, int index) {
         for (EMAComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
 
             for (ResolutionDeclarationSymbol resolutionDeclarationSymbol : instanceSymbol.getResolutionDeclarationSymbols()) {
@@ -101,7 +70,4 @@ public class BluePrintCPP extends BluePrint {
         }
     }
 
-    public void addInstructionToMethod(Instruction instruction, String methodName) {
-        getMethod(methodName).get().addInstruction(instruction);
-    }
 }

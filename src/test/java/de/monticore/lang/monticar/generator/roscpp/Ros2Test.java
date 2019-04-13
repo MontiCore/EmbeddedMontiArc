@@ -4,7 +4,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -71,9 +70,6 @@ public class Ros2Test extends AbstractSymtabTest{
                 .collect(Collectors.toList());
 
         assertTrue(fileNames.contains("CMakeLists.txt"));
-        assertTrue(fileNames.contains("generateMsgs.py"));
-        assertTrue(fileNames.contains("rclcpp_msg_gen.json"));
-        assertTrue(fileNames.contains("TestsStructsPosition.msg"));
     }
 
     @Test
@@ -94,11 +90,6 @@ public class Ros2Test extends AbstractSymtabTest{
                 .collect(Collectors.toList());
 
         assertTrue(fileNames.contains("CMakeLists.txt"));
-        assertTrue(fileNames.contains("generateMsgs.py"));
-        assertTrue(fileNames.contains("rclcpp_msg_gen.json"));
-        assertTrue(fileNames.contains("TestsStructsPosition.msg"));
-        assertTrue(fileNames.contains("TestsStructsPositionWithDeltaTime.msg"));
-
     }
 
 
