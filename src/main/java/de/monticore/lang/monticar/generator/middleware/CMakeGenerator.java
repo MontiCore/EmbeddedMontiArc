@@ -43,7 +43,6 @@ public class CMakeGenerator extends StarBridgeGenerator {
         getGeneratorImpls().stream()
                 .filter(gen -> gen.willAccept(componentInstanceSymbol))
                 .map(this::getImplSubdir)
-                .sorted()
                 .forEach(subdir -> content.append("add_subdirectory(" + subdir + ")\n"));
 
 
