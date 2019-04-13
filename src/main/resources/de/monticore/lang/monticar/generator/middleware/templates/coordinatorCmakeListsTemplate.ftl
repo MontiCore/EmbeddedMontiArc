@@ -14,3 +14,5 @@ target_link_libraries(Coordinator_${compName} ${targets} Threads::Threads IAdapt
 target_include_directories(Coordinator_${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 export(TARGETS Coordinator_${compName} IAdapter_${compName} FILE Coordinator_${compName}.cmake)
+
+install(TARGETS Coordinator_${compName} DESTINATION bin)

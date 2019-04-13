@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.middleware.compile;
+package de.monticore.lang.monticar.generator.middleware.templates.compile;
 
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.AbstractSymtabTest;

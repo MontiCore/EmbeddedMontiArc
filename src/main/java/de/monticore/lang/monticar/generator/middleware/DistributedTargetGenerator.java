@@ -5,18 +5,14 @@ import de.monticore.lang.monticar.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.clustering.ClusteringResult;
 import de.monticore.lang.monticar.clustering.ClusteringResultList;
 import de.monticore.lang.monticar.clustering.FlattenArchitecture;
-import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.cli.ClusteringParameters;
 import de.monticore.lang.monticar.generator.middleware.cli.ResultChoosingStrategy;
-import de.monticore.lang.monticar.generator.middleware.compile.CompilationGenerator;
 import de.monticore.lang.monticar.generator.middleware.helpers.ClusterFromTagsHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.RosHelper;
-import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.MiddlewareTagGenImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.RclCppGenImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.*;
+import de.monticore.lang.monticar.generator.middleware.templates.compile.CompilationGenerator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -24,9 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class DistributedTargetGenerator extends CMakeGenerator {
+public class DistributedTargetGenerator{
     private boolean generateMiddlewareTags = false;
     private ClusteringResultList clusteringResults = new ClusteringResultList();
+    private CMakeGenerator generatorBlueprint = new CMakeGenerator();
+    private String generationTargetPath;
 
     public boolean isGenerateMiddlewareTags() {
         return generateMiddlewareTags;
@@ -35,8 +33,6 @@ public class DistributedTargetGenerator extends CMakeGenerator {
     public void setGenerateMiddlewareTags(boolean generateMiddlewareTags) {
         this.generateMiddlewareTags = generateMiddlewareTags;
     }
-
-    private Set<String> subDirs = new HashSet<>();
 
     private ClusteringParameters clusteringParameters;
 
@@ -51,7 +47,6 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         this.clusteringParameters = clusteringParameters;
     }
 
-    @Override
     public void setGenerationTargetPath(String path) {
         String res = path;
         if(res.endsWith("/") || res.endsWith("\\")){
@@ -60,32 +55,48 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         if(res.endsWith("/src") || res.endsWith("\\src")){
             res = res.substring(0, res.length() - 4);
         }
-        super.setGenerationTargetPath(res);
+        generationTargetPath = res + "/";
     }
 
-    @Override
     public List<File> generate(EMAComponentInstanceSymbol genComp, TaggingResolver taggingResolver) throws IOException {
-        Map<EMAComponentInstanceSymbol, GeneratorImpl> generatorMap = new HashMap<>();
-
         EMAComponentInstanceSymbol componentInstanceSymbol = preprocessing(genComp);
 
+        generatorBlueprint.setGenerationTargetPath(generationTargetPath);
+
+        StarBridgeGenerator completeGenerator = new CMakeGenerator();
+        completeGenerator.setGenerationTargetPath(generationTargetPath + "src/");
+
         List<EMAComponentInstanceSymbol> clusterSubcomponents = ClusterFromTagsHelper.getClusterSubcomponents(componentInstanceSymbol);
-        if (clusterSubcomponents.size() > 0) {
-            clusterSubcomponents.forEach(clusterECIS -> {
-                String nameTargetLanguage = NameHelper.getNameTargetLanguage(clusterECIS.getFullName());
-                generatorMap.put(clusterECIS, createFullGenerator(nameTargetLanguage));
-            });
-        } else {
-            String nameTargetLanguage = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
-            generatorMap.put(componentInstanceSymbol, createFullGenerator(nameTargetLanguage));
+        if (clusterSubcomponents.isEmpty()) {
+            clusterSubcomponents = Arrays.asList(componentInstanceSymbol);
+        }
+        for (EMAComponentInstanceSymbol clusterECIS : clusterSubcomponents) {
+            String nameTargetLanguage = NameHelper.getNameTargetLanguage(clusterECIS.getFullName());
+            StateGenerator stateGenerator = new StateGenerator(createFullGenerator(nameTargetLanguage), clusterECIS, taggingResolver);
+            completeGenerator.add(stateGenerator, nameTargetLanguage);
         }
 
         List<File> files = new ArrayList<>();
 
-        for (EMAComponentInstanceSymbol comp : generatorMap.keySet()) {
-            files.addAll(generatorMap.get(comp).generate(comp, taggingResolver));
-            //add empty generator to subDirs so that CMakeLists.txt will be generated correctly
-            subDirs.add(NameHelper.getNameTargetLanguage(comp.getFullName()));
+        boolean useStructMsgs = false;
+        if (generatorBlueprint.getGeneratorImpls().stream().anyMatch(gi -> gi instanceof RosCppGenImpl)) {
+            RosMsgGenImpl msgGen = new RosMsgGenImpl(false);
+            if(msgGen.willAccept(componentInstanceSymbol)) {
+                completeGenerator.add(msgGen, "struct_msgs", 0);
+                useStructMsgs = true;
+            }
+        }
+
+        if (generatorBlueprint.getGeneratorImpls().stream().anyMatch(gi -> gi instanceof RclCppGenImpl)) {
+            RosMsgGenImpl msgGen = new RosMsgGenImpl(true);
+            if(msgGen.willAccept(componentInstanceSymbol)) {
+                StarBridgeGenerator newGen = new StarBridgeGenerator();
+                newGen.setGenerationTargetPath(generationTargetPath + "src/");
+                newGen.add(completeGenerator, "comps");
+                completeGenerator = newGen;
+                completeGenerator.add(msgGen, "struct_msgs");
+                useStructMsgs = true;
+            }
         }
 
         if(generateMiddlewareTags){
@@ -95,8 +106,8 @@ public class DistributedTargetGenerator extends CMakeGenerator {
             files.addAll(middlewareTagGen.generate(componentInstanceSymbol,taggingResolver));
         }
 
-        files.add(generateCMake(componentInstanceSymbol));
-        files.addAll(generateCompileScripts());
+        files.addAll(completeGenerator.generate(componentInstanceSymbol, taggingResolver));
+        files.addAll(generateCompileScripts(useStructMsgs));
         return files;
     }
 
@@ -147,46 +158,25 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         MiddlewareGenerator res = new MiddlewareGenerator();
         res.setGenerationTargetPath(generationTargetPath + "src/" + (subdir.endsWith("/") ? subdir : subdir + "/"));
 
-        this.getGeneratorImpls().forEach(gen -> res.add(gen, this.getImplSubdir(gen)));
+        generatorBlueprint.getGeneratorImpls().forEach(gen -> res.add(gen, generatorBlueprint.getImplSubdir(gen)));
 
         return res;
     }
 
     private void fixComponentInstance(EMAComponentInstanceSymbol componentInstanceSymbol) {
-        RosHelper.fixRosConnectionSymbols(componentInstanceSymbol, this.getGeneratorImpls().stream().anyMatch(g -> g instanceof RclCppGenImpl));
+        RosHelper.fixRosConnectionSymbols(componentInstanceSymbol, generatorBlueprint.getGeneratorImpls().stream().anyMatch(g -> g instanceof RclCppGenImpl));
     }
 
-    @Override
-    protected File generateCMake(EMAComponentInstanceSymbol componentInstanceSymbol) throws IOException {
-        FileContent fileContent = new FileContent();
-        fileContent.setFileName("CMakeLists.txt");
-        StringBuilder content = new StringBuilder();
-        content.append("cmake_minimum_required(VERSION 3.5)\n");
-        content.append("project (default)\n");
-        content.append("set (CMAKE_CXX_STANDARD 11)\n");
-
-        subDirs.stream().filter(dir -> dir.equals("rosMsg")).forEach(
-                dir -> content.append("add_subdirectory(" + dir + ")\n")
-        );
-
-        subDirs.stream().filter(dir -> !dir.equals("rosMsg")).forEach(
-                dir -> content.append("add_subdirectory(" + dir + ")\n")
-        );
-
-        fileContent.setFileContent(content.toString());
-
-        return FileHelper.generateFile(generationTargetPath + "src/", fileContent);
-    }
-
-    protected List<File> generateCompileScripts(){
+    protected List<File> generateCompileScripts(boolean useStructMsgs){
         List<File> res = new ArrayList<>();
 
-        boolean useRos = this.getGeneratorImpls().stream().anyMatch(impl -> impl instanceof RosCppGenImpl);
-        boolean useRos2 = this.getGeneratorImpls().stream().anyMatch(impl -> impl instanceof RclCppGenImpl);
+        boolean useRos = generatorBlueprint.getGeneratorImpls().stream().anyMatch(impl -> impl instanceof RosCppGenImpl);
+        boolean useRos2 = generatorBlueprint.getGeneratorImpls().stream().anyMatch(impl -> impl instanceof RclCppGenImpl);
 
         List<CompilationGenerator> generators = CompilationGenerator.getInstanceOfAllGenerators();
         generators.forEach(g -> g.setUseRos(useRos));
         generators.forEach(g -> g.setUseRos2(useRos2));
+        generators.forEach(g -> g.setUseStructMsgs(useStructMsgs));
 
         generators.stream()
                 .peek(g -> g.setUseRos(useRos))
@@ -200,7 +190,19 @@ public class DistributedTargetGenerator extends CMakeGenerator {
                     }
                 });
 
+        for (File f : res) {
+            try {
+                f.setExecutable(true, false);
+            } catch (Exception e) {
+                Log.warn("Could not set permissions of " + f.getAbsolutePath());
+            }
+        }
+
+
         return res;
     }
 
+    public void add(GeneratorImpl generator, String subdir) {
+        generatorBlueprint.add(generator, subdir);
+    }
 }
