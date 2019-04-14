@@ -229,13 +229,6 @@ public class LanguageUnitCPP extends LanguageUnit {
         //method body start
         resultString += "{\n";
 
-        if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
-            resultString += "std::ofstream __LogExecutionFile;\n";
-            resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
-            resultString += "std::ofstream __ExeOrderFile;\n";
-            resultString += "__ExeOrderFile.open(\"stacktrace.log\", std::ios_base::out | std::ios_base::app);\n";
-        }
-
         for (Instruction instruction : method.getInstructions()) {
             if (instruction instanceof ConnectInstructionCPP) {
                 ConnectInstructionCPP connectInstructionCPP = (ConnectInstructionCPP) instruction;
@@ -250,15 +243,15 @@ public class LanguageUnitCPP extends LanguageUnit {
         }
 
         if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
-            for (Variable v : bluePrint.getVariables()) {
-                if (v.hasAdditionalInformation(Variable.ORIGINPORT)) {
-                    resultString += "__LogExecutionFile << \"" + v.getNameTargetLanguageFormat() + " : \";\n";
-                    resultString += "toFileString(__LogExecutionFile, " + v.getNameTargetLanguageFormat() + ");\n";
-                    resultString += "__LogExecutionFile << \"\\n\";\n";
-                }
-            }
-        }
-        if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+            resultString += "log();\n";
+            resultString += "}\n\n";
+
+            resultString += "void log(){\n";
+            resultString += "std::ofstream __LogExecutionFile;\n";
+            resultString += "std::ofstream __ExeOrderFile;\n";
+            resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
+            resultString += "__ExeOrderFile.open(\"stacktrace.log\", std::ios_base::out | std::ios_base::app);\n";
+
             resultString += "__ExeOrderFile << \"Breakpoint reached\" << std::endl;\n";
             EMAComponentInstanceSymbol curSym = bluePrint.getOriginalSymbol();
             while (curSym != null) {
@@ -271,23 +264,11 @@ public class LanguageUnitCPP extends LanguageUnit {
                 resultString += "__ExeOrderFile << \""+ res + "\" << std::endl;\n";
                 curSym = curSym.getParent().orElse(null);
             }
-            List<Variable> originPortsVars = bluePrint.getVariables().stream()
-                    .filter(v -> v.hasAdditionalInformation(Variable.ORIGINPORT))
-                    .collect(Collectors.toList());
 
-            resultString += "__ExeOrderFile << \"values: {\";\n";
-            for (Iterator<Variable> iterator = originPortsVars.iterator(); iterator.hasNext(); ) {
-                Variable v = iterator.next();
-                resultString += "__ExeOrderFile << \"\\\"" + v.getNameTargetLanguageFormat() + "\\\" : \\\"\";\n";
-                resultString += "toFileString(__ExeOrderFile, " + v.getNameTargetLanguageFormat() + ");\n";
-                resultString += "__ExeOrderFile << \"\\\"\";\n";
-                if(iterator.hasNext()){
-                    resultString += "__ExeOrderFile << \", \";\n";
-                }
-            }
-            resultString += "__ExeOrderFile << \"}\" << std::endl;\n";
-
-
+            //resultString += "addVariablesToStream(__LogExecutionFile);\n";
+            resultString += "addVariablesToStream(__ExeOrderFile);\n";
+            resultString += "__ExeOrderFile << \"endBreakpoint\" << std::endl;\n";
+            resultString += "addVariablesToStream(__LogExecutionFile);\n";
             resultString += "__ExeOrderFile.close();\n";
             resultString += "__LogExecutionFile.close();\n";
             resultString += "__EXECCOUNTER = __EXECCOUNTER + 1;\n";
@@ -298,6 +279,20 @@ public class LanguageUnitCPP extends LanguageUnit {
 
         //method body end
         resultString += "}\n";
+
+        if(generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")){
+            resultString += "\nvoid addVariablesToStream(std::ofstream& stream){\n";
+            for (Variable v : bluePrint.getVariables()) {
+                if (v.hasAdditionalInformation(Variable.ORIGINPORT)) {
+                    resultString += "\tstream << \"" + v.getNameTargetLanguageFormat() + " : \";\n";
+                    resultString += "\ttoFileString(stream, " + v.getNameTargetLanguageFormat() + ");\n";
+                    resultString += "\tstream << \"\\n\";\n";
+                }
+            }
+            resultString += "}\n";
+        }
+
+
         return resultString;
     }
 
