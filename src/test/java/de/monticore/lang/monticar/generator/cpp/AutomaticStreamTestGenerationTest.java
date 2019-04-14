@@ -249,14 +249,13 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
     @Test
     public void testLoggingExample2() throws Exception {
         AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
-        TaggingResolver symtab = generator.generateTests("",
+        generator.generateTests("",
                 "src/test/resources/emastudio/autopilot", OSHelper.getDirPrefix() + "/target/generated-sources-cpp/streamtest/autopilot/", "1", 10);
 
         testGenCPPFilesAndExecWithExecLogging("./target/generated-sources-cpp/streamtest", "/autopilot",
                 "./src/test/resources/emastudio/autopilot", "./target/generated-sources-cpp/streamtest/autopilot",
                 "de.rwth.armin.modeling.autopilot.motion.calculateEngineAndBrakes",
                 "de.rwth.armin.modeling.autopilot.motion.CalculateEngineAndBrakesTest1");
-
     }
 
     @Ignore //Does not work in maven for some reason

@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class AutomaticStreamTestGenerator extends AbstractSymtab {
 
-    public TaggingResolver generateTests(String fullComponentInstanceName, String basePath, String targetPath, String testNamePostFix, int amountTickValues) throws Exception {
+    public void generateTests(String fullComponentInstanceName, String basePath, String targetPath, String testNamePostFix, int amountTickValues) throws Exception {
         TaggingResolver symtab = createSymTabAndTaggingResolver(basePath);
         EMAComponentInstanceSymbol componentSymbol = null;
         if (fullComponentInstanceName.length() > 0) {
@@ -46,8 +46,7 @@ public class AutomaticStreamTestGenerator extends AbstractSymtab {
         generatorCPP.setGenerationTargetPath(targetPath);
         generatorCPP.useArmadilloBackend();
         generatorCPP.setModelsDirPath(Paths.get(basePath));
-        generatorCPP.setExecutionLoggingActive(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
-        return symtab;
+
     }
 }
