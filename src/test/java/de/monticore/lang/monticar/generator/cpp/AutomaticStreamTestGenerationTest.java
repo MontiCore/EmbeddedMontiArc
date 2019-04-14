@@ -257,8 +257,6 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
                 "de.rwth.armin.modeling.autopilot.motion.calculateEngineAndBrakes",
                 "de.rwth.armin.modeling.autopilot.motion.CalculateEngineAndBrakesTest1");
 
-        String s = StreamTestModifier.buildStackTrace("./target/generated-sources-cpp/streamtest/exec/", symtab);
-        System.out.println(s);
     }
 
     @Ignore //Does not work in maven for some reason

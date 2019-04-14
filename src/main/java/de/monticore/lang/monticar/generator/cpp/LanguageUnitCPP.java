@@ -31,10 +31,8 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Sascha Schneiders
@@ -235,8 +233,7 @@ public class LanguageUnitCPP extends LanguageUnit {
             resultString += "std::ofstream __LogExecutionFile;\n";
             resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
             resultString += "std::ofstream __ExeOrderFile;\n";
-            resultString += "__ExeOrderFile.open(\"TimeStamps.txt\", std::ios_base::out | std::ios_base::app);\n";
-
+            resultString += "__ExeOrderFile.open(\"stacktrace.log\", std::ios_base::out | std::ios_base::app);\n";
         }
 
         for (Instruction instruction : method.getInstructions()) {
@@ -262,8 +259,35 @@ public class LanguageUnitCPP extends LanguageUnit {
             }
         }
         if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
-            resultString += "__ExeOrderFile << \"execution\" + std::to_string(__EXECCOUNTER)"  + " ;\n";
-            resultString += "__ExeOrderFile << \"" + bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() + "\"  << std::endl ;\n";
+            resultString += "__ExeOrderFile << \"Breakpoint reached\" << std::endl;\n";
+            EMAComponentInstanceSymbol curSym = bluePrint.getOriginalSymbol();
+            while (curSym != null) {
+                String res = "\\tat " + curSym.getFullName() + "(";
+                res += curSym
+                        .getComponentType()
+                        .getReferencedSymbol()
+                        .getFullName().replace(".","/") + ".emam";
+                res += ":1)";
+                resultString += "__ExeOrderFile << \""+ res + "\" << std::endl;\n";
+                curSym = curSym.getParent().orElse(null);
+            }
+            List<Variable> originPortsVars = bluePrint.getVariables().stream()
+                    .filter(v -> v.hasAdditionalInformation(Variable.ORIGINPORT))
+                    .collect(Collectors.toList());
+
+            resultString += "__ExeOrderFile << \"values: {\";\n";
+            for (Iterator<Variable> iterator = originPortsVars.iterator(); iterator.hasNext(); ) {
+                Variable v = iterator.next();
+                resultString += "__ExeOrderFile << \"\\\"" + v.getNameTargetLanguageFormat() + "\\\" : \\\"\";\n";
+                resultString += "toFileString(__ExeOrderFile, " + v.getNameTargetLanguageFormat() + ");\n";
+                resultString += "__ExeOrderFile << \"\\\"\";\n";
+                if(iterator.hasNext()){
+                    resultString += "__ExeOrderFile << \", \";\n";
+                }
+            }
+            resultString += "__ExeOrderFile << \"}\" << std::endl;\n";
+
+
             resultString += "__ExeOrderFile.close();\n";
             resultString += "__LogExecutionFile.close();\n";
             resultString += "__EXECCOUNTER = __EXECCOUNTER + 1;\n";
