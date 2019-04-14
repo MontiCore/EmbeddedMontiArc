@@ -234,6 +234,8 @@ public class LanguageUnitCPP extends LanguageUnit {
         if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
             resultString += "std::ofstream __LogExecutionFile;\n";
             resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
+            resultString += "std::ofstream __ExeOrderFile;\n";
+            resultString += "__ExeOrderFile.open(\"TimeStamps.txt\", std::ios_base::out | std::ios_base::app);\n";
 
         }
 
@@ -260,6 +262,9 @@ public class LanguageUnitCPP extends LanguageUnit {
             }
         }
         if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+            resultString += "__ExeOrderFile << \"execution\" + std::to_string(__EXECCOUNTER)"  + " ;\n";
+            resultString += "__ExeOrderFile << \"" + bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() + "\"  << std::endl ;\n";
+            resultString += "__ExeOrderFile.close();\n";
             resultString += "__LogExecutionFile.close();\n";
             resultString += "__EXECCOUNTER = __EXECCOUNTER + 1;\n";
         }
