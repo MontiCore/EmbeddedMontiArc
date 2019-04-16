@@ -131,10 +131,13 @@ void test_case_${stream.name?replace(".","_")}(){
 </#list>
 
 int runTest(){
+    std::ofstream __StacktraceFile;
 <#list viewModel.streams as stream>
     assertions = 0;
     failedAssertions = 0;
-
+    __StacktraceFile.open("stacktrace.log", std::ios_base::out | std::ios_base::app);
+    __StacktraceFile << "~Entering ${stream.name}" << std::endl;
+    __StacktraceFile.close();
     test_case_${stream.name?replace(".","_")}();
 
     overallAssertions += assertions;

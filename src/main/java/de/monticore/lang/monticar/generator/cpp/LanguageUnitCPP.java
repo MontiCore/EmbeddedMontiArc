@@ -248,11 +248,11 @@ public class LanguageUnitCPP extends LanguageUnit {
 
             resultString += "void log(){\n";
             resultString += "std::ofstream __LogExecutionFile;\n";
-            resultString += "std::ofstream __ExeOrderFile;\n";
+            resultString += "std::ofstream __StacktraceFile;\n";
             resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
-            resultString += "__ExeOrderFile.open(\"stacktrace.log\", std::ios_base::out | std::ios_base::app);\n";
+            resultString += "__StacktraceFile.open(\"stacktrace.log\", std::ios_base::out | std::ios_base::app);\n";
 
-            resultString += "__ExeOrderFile << \"Breakpoint reached\" << std::endl;\n";
+            resultString += "__StacktraceFile << \"Breakpoint reached\" << std::endl;\n";
             EMAComponentInstanceSymbol curSym = bluePrint.getOriginalSymbol();
             while (curSym != null) {
                 String res = "\\tat " + curSym.getFullName() + "(";
@@ -261,15 +261,16 @@ public class LanguageUnitCPP extends LanguageUnit {
                         .getReferencedSymbol()
                         .getFullName().replace(".","/") + ".emam";
                 res += ":1)";
-                resultString += "__ExeOrderFile << \""+ res + "\" << std::endl;\n";
+                resultString += "__StacktraceFile << \""+ res + "\" << std::endl;\n";
                 curSym = curSym.getParent().orElse(null);
             }
 
-            //resultString += "addVariablesToStream(__LogExecutionFile);\n";
-            resultString += "addVariablesToStream(__ExeOrderFile);\n";
-            resultString += "__ExeOrderFile << \"endBreakpoint\" << std::endl;\n";
-            resultString += "addVariablesToStream(__LogExecutionFile);\n";
-            resultString += "__ExeOrderFile.close();\n";
+
+            resultString += "__StacktraceFile << \"#tick \" << __EXECCOUNTER << std::endl;\n";
+            resultString += "addVariablesToStream(__StacktraceFile, true);\n";
+            resultString += "__StacktraceFile << \"endBreakpoint\" << std::endl;\n";
+            resultString += "addVariablesToStream(__LogExecutionFile, false);\n";
+            resultString += "__StacktraceFile.close();\n";
             resultString += "__LogExecutionFile.close();\n";
             resultString += "__EXECCOUNTER = __EXECCOUNTER + 1;\n";
         }
@@ -281,9 +282,16 @@ public class LanguageUnitCPP extends LanguageUnit {
         resultString += "}\n";
 
         if(generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")){
-            resultString += "\nvoid addVariablesToStream(std::ofstream& stream){\n";
+            resultString += "\nvoid addVariablesToStream(std::ofstream& stream, bool type){\n";
             for (Variable v : bluePrint.getVariables()) {
                 if (v.hasAdditionalInformation(Variable.ORIGINPORT)) {
+                    String varMontiCoreType = "var";
+                    if(v.hasAdditionalInformation(Variable.INCOMING)){
+                        varMontiCoreType = "in";
+                    }else if(v.hasAdditionalInformation(Variable.OUTGOING)){
+                        varMontiCoreType = "out";
+                    }
+                    resultString += "\tstream << (type ? \""+ varMontiCoreType + " " +v.getVariableType().getTypeNameMontiCar()  +" \" : \"\");\n";
                     resultString += "\tstream << \"" + v.getNameTargetLanguageFormat() + " : \";\n";
                     resultString += "\ttoFileString(stream, " + v.getNameTargetLanguageFormat() + ");\n";
                     resultString += "\tstream << \"\\n\";\n";
