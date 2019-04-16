@@ -107,6 +107,12 @@ public final class GeneratorCppCli {
             .required(false)
             .build();
 
+    public static final Option OPTION_FLAG_CMAKE = Option.builder("a")
+            .longOpt("flag-use-cmake")
+            .desc("optional flag indicating if execution logging should be on")
+            .hasArg(false)
+            .required(false)
+            .build();
 
     public static final Option OPTION_FLAG_AUTOPILOT_ADAPTER = Option.builder()
             .longOpt("flag-generate-autopilot-adapter")
@@ -154,6 +160,7 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_ALGEBRAIC);
         options.addOption(OPTION_FLAG_THREADING);
         options.addOption(OPTION_FLAG_EXEC_LOGGING);
+        options.addOption(OPTION_FLAG_CMAKE);
         return options;
     }
 
@@ -193,6 +200,7 @@ public final class GeneratorCppCli {
         g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
         g.setUseThreadingOptimization(cliArgs.hasOption(OPTION_FLAG_THREADING.getLongOpt()));
         g.setExecutionLoggingActive(cliArgs.hasOption(OPTION_FLAG_EXEC_LOGGING.getLongOpt()));
+        g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
 
         try {
             if (componentSymbol != null) {
