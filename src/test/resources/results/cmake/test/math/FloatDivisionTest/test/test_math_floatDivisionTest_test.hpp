@@ -123,9 +123,12 @@ void test_case_test_math_FloatDivisionTest(){
 }
 
 int runTest(){
+    std::ofstream __StacktraceFile;
     assertions = 0;
     failedAssertions = 0;
-
+    __StacktraceFile.open("stacktrace.log", std::ios_base::out | std::ios_base::app);
+    __StacktraceFile << "~Entering test.math.FloatDivisionTest" << std::endl;
+    __StacktraceFile.close();
     test_case_test_math_FloatDivisionTest();
 
     overallAssertions += assertions;
