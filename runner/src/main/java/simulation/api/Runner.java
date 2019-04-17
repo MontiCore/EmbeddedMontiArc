@@ -47,7 +47,7 @@ public class Runner {
     private final long TARGET_OSM_NODE = 4188028027L;
     private final boolean USE_MODELICA_VEHICLE = false;
 
-    public void run(){
+    public double run(){
         try {
             WorldModel.init(
                     new ParserSettings(MAP_PATH, ParserSettings.ZCoordinates.ALLZERO),
@@ -97,11 +97,14 @@ public class Runner {
         simVehicle.addSensor(new StaticPlannedTrajectoryXSensor(trajectoryCoordinates.get("x")));
         simVehicle.addSensor(new StaticPlannedTrajectoryYSensor(trajectoryCoordinates.get("y")));
 
-        sim.registerLoopObserver(new Observer());
+        SimulationLoopNotifiable observer = new Observer();
+        sim.registerLoopObserver(observer);
         sim.setSynchronousSimulation(false);
         sim.setSimulationDuration(simulationDuration);
         sim.startSimulation();
         sim.waitUntilSimulationStopped();
+
+        return ((Observer) observer).distanceToTarget;
     }
 
     private static List<Vertex> computeTrajectory(long sourceOsmID, long targetOsmID){
@@ -155,6 +158,7 @@ public class Runner {
     }
 
     private static class Observer implements SimulationLoopNotifiable {
+        double distanceToTarget = 0;
 
         @Override
         public void willExecuteLoop(List<SimulationLoopExecutable> list, long l, long l1) {
@@ -184,6 +188,7 @@ public class Runner {
             double targetX = trajectoryX.get(trajectoryX.size() - 1);
             double targetY = trajectoryY.get(trajectoryY.size() - 1);
             double dist = Math.sqrt(Math.pow(targetX - position[0], 2) + Math.pow(targetY - position[1], 2));
+            distanceToTarget = dist;
 
             System.out.printf("id: %s, position: [%.8f, %.8f, %.6f], target: (%.8f, %.8f), dist: %.8f, engine: %.4f, brake: %.4f, steering: %.4f\n",
                     id, position[0], position[1], position[2], targetX, targetY, dist,
