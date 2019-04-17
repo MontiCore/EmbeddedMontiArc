@@ -1,0 +1,12 @@
+sim LowFriction {
+  sim_duration 4h;
+
+  time 12:00;
+
+  map_name straight.osm;
+
+  pedestrian_density 0;
+
+  car1(5.88133850,50.8354390,0)->(5.8813333,50.8355156,0);
+}
+

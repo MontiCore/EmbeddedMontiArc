@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+    ******************************************************************************
+     MontiCAR Modeling Family, www.se-rwth.de
+     Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+     All rights reserved.
+
+     This project is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public
+     License as published by the Free Software Foundation; either
+     version 3.0 of the License, or (at your option) any later version.
+     This library is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this project. If not, see <http://www.gnu.org/licenses/>.
+    *******************************************************************************
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--<parent>-->
+        <!--<artifactId>simulation</artifactId>-->
+        <!--<groupId>montisim</groupId>-->
+        <!--<version>1.0.3</version>-->
+    <!--</parent>-->
+    <properties>
+        <montisim.version>1.0.7</montisim.version>
+    </properties>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>api</artifactId>
+    <groupId>montisim</groupId>
+    <version>1.0.0</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>rmi-model-server</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+        <!-- All modules have dependency to util -->
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>util</artifactId>
+            <version>${montisim.version}</version>
+        </dependency>
+        <!-- Network has dependency to vehicle -->
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>vehicle</artifactId>
+            <version>${montisim.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>environment</artifactId>
+            <version>${montisim.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>simulator</artifactId>
+            <version>${montisim.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>sensors</artifactId>
+            <version>${montisim.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>network</artifactId>
+            <version>${montisim.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>commons</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>montisim-controller</groupId>
+            <artifactId>library</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>montisim-controller</groupId>
+            <artifactId>control</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>montisim-controller</groupId>
+            <artifactId>navigation</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>rpc</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
