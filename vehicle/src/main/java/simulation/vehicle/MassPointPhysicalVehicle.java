@@ -1109,10 +1109,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
                 forceRoadFrictionLeftRight = forceRoadFrictionLeftRight.mapDivide(forceRoadFrictionLeftRightNorm);
             }
 
-            // TODO calcFrictionCoefficient need fix
-//            double forceRoadFrictionLeftRightAmount = PhysicsEngine.calcFrictionCoefficient(getPosition());
-            final double WET_COEFFICIENT = 0.4, DRY_COEFFICIENT = 0.8;
-            double forceRoadFrictionLeftRightAmount = ((WorldModel.getInstance().isItRaining()) ? WET_COEFFICIENT : DRY_COEFFICIENT) * forceNormalLengthLeftRight;
+            double forceRoadFrictionLeftRightAmount = PhysicsEngine.calcFrictionCoefficient(getPosition()) * forceNormalLengthLeftRight;
 
             // Scale force down when near zero velocity to avoid permanent positive / negative changes
             if (forceRoadFrictionLeftRightNorm >= 0.0 && forceRoadFrictionLeftRightNorm < 0.35) {
