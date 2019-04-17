@@ -39,7 +39,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package simulation.api;
+package simulation.runner;
 
 import commons.controller.commons.BusEntry;
 import commons.controller.commons.Vertex;
