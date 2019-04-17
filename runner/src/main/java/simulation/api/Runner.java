@@ -1,4 +1,25 @@
 /**
+ * ====
+ *
+ *     ******************************************************************************
+ *      MontiCAR Modeling Family, www.se-rwth.de
+ *      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *      All rights reserved.
+ *
+ *      This project is free software; you can redistribute it and/or
+ *      modify it under the terms of the GNU Lesser General Public
+ *      License as published by the Free Software Foundation; either
+ *      version 3.0 of the License, or (at your option) any later version.
+ *      This library is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *      Lesser General Public License for more details.
+ *
+ *      You should have received a copy of the GNU Lesser General Public
+ *      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *     *******************************************************************************
+ * ====
+ *
  *
  * ******************************************************************************
  *  MontiCAR Modeling Family, www.se-rwth.de
@@ -39,32 +60,42 @@ import simulation.simulator.Simulator;
 import simulation.vehicle.*;
 import structures.Graph;
 
+import rwth.server.simulation.adapters.AutoPilot.AutopilotAdapterAsFunctionBlock;
+import rwth.server.simulation.adapters.util.RMIClient;
+
 import java.util.*;
 
 public class Runner {
-    private final String MAP_PATH = "/straight.osm";
-    private final long SOURCE_OSM_NODE = 5170132468L;
-    private final long TARGET_OSM_NODE = 4188028027L;
-    private final boolean USE_MODELICA_VEHICLE = false;
+    private  String mapPath;
+    private  long sourceOsmNode;
+    private  long targetOsmNode;
+    private  boolean useModelicaVehicle;
+
+    public Runner(String mapPath, long sourceOsmNode, long targetOsmNode, boolean useModelicaVehicle) {
+        this.mapPath = mapPath;
+        this.sourceOsmNode = sourceOsmNode;
+        this.targetOsmNode = targetOsmNode;
+        this.useModelicaVehicle = useModelicaVehicle;
+    }
 
     public double run(){
         try {
             WorldModel.init(
-                    new ParserSettings(MAP_PATH, ParserSettings.ZCoordinates.ALLZERO),
+                    new ParserSettings(mapPath, ParserSettings.ZCoordinates.ALLZERO),
                     new WeatherSettings()
             );
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        List<Vertex> trajectory = computeTrajectory(SOURCE_OSM_NODE, TARGET_OSM_NODE);
+        List<Vertex> trajectory = computeTrajectory(sourceOsmNode, targetOsmNode);
 
         RMIClient rmiClient = new RMIClient("localhost", 10101, "");
         AutopilotAdapterAsFunctionBlock mainBlockAdapter = new AutopilotAdapterAsFunctionBlock(rmiClient);
 
         // init model
         PhysicalVehicle physicalVehicle;
-        if(USE_MODELICA_VEHICLE){
+        if(useModelicaVehicle){
             ModelicaPhysicalVehicleBuilder vehicleBuilder = new ModelicaPhysicalVehicleBuilder();
             vehicleBuilder.setControllerBus(Optional.of(new DataBus()));
             vehicleBuilder.setController(Optional.of(mainBlockAdapter));
@@ -82,7 +113,7 @@ public class Runner {
         mainBlockAdapter.setVehicle(physicalVehicle);
         rmiClient.setVehicleId(physicalVehicle.getId());
 
-        long simulationDuration = 20000;
+        long simulationDuration = 15000;
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
         sim.registerAndPutObject(physicalVehicle,
