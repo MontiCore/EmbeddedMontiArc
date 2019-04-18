@@ -26,7 +26,8 @@ import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
-import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
+import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.LoggingViewModel;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
@@ -229,6 +230,10 @@ public class LanguageUnitCPP extends LanguageUnit {
         //method body start
         resultString += "{\n";
 
+        if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+            resultString += "logStart();\n";
+        }
+
         for (Instruction instruction : method.getInstructions()) {
             if (instruction instanceof ConnectInstructionCPP) {
                 ConnectInstructionCPP connectInstructionCPP = (ConnectInstructionCPP) instruction;
@@ -243,65 +248,20 @@ public class LanguageUnitCPP extends LanguageUnit {
         }
 
         if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
-            resultString += "log();\n";
-            resultString += "}\n\n";
-
-            resultString += "void log(){\n";
-            resultString += "std::ofstream __LogExecutionFile;\n";
-            resultString += "std::ofstream __StacktraceFile;\n";
-            resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
-            resultString += "__StacktraceFile.open(\"stacktrace.log\", std::ios_base::out | std::ios_base::app);\n";
-
-            resultString += "__StacktraceFile << \"Breakpoint reached\" << std::endl;\n";
-            EMAComponentInstanceSymbol curSym = bluePrint.getOriginalSymbol();
-            while (curSym != null) {
-                String res = "\\tat " + curSym.getFullName() + "(";
-                res += curSym
-                        .getComponentType()
-                        .getReferencedSymbol()
-                        .getFullName().replace(".","/") + ".emam";
-                res += ":1)";
-                resultString += "__StacktraceFile << \""+ res + "\" << std::endl;\n";
-                curSym = curSym.getParent().orElse(null);
-            }
-
-
-            resultString += "__StacktraceFile << \"#tick \" << __EXECCOUNTER << std::endl;\n";
-            resultString += "addVariablesToStream(__StacktraceFile, true);\n";
-            resultString += "__StacktraceFile << \"endBreakpoint\" << std::endl;\n";
-            resultString += "addVariablesToStream(__LogExecutionFile, false);\n";
-            resultString += "__StacktraceFile.close();\n";
-            resultString += "__LogExecutionFile.close();\n";
-            resultString += "__EXECCOUNTER = __EXECCOUNTER + 1;\n";
+            resultString += "logEnd();\n";
         }
+
         if (generatorCPP.isExecutionLoggingActive && method.getName().equals("init")) {
             resultString += "__EXECCOUNTER = 0;\n";
         }
 
-        //method body end
         resultString += "}\n";
 
-        if(generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")){
-            resultString += "\nvoid addVariablesToStream(std::ofstream& stream, bool type){\n";
-            for (Variable v : bluePrint.getVariables()) {
-                if (v.hasAdditionalInformation(Variable.ORIGINPORT)) {
-                    String varMontiCoreType = "var";
-                    if(v.hasAdditionalInformation(Variable.INCOMING)){
-                        varMontiCoreType = "in";
-                    }else if(v.hasAdditionalInformation(Variable.OUTGOING)){
-                        varMontiCoreType = "out";
-                    }
-                    resultString += "\tstream << (type ? \""+ varMontiCoreType + " " +v.getVariableType().getTypeNameMontiCar()  +" \" : \"\");\n";
-                    resultString += "\tstream << \"" + v.getNameTargetLanguageFormat() + " : \";\n";
-                    resultString += "\ttoFileString(stream, " + v.getNameTargetLanguageFormat() + ");\n";
-                    resultString += "\tstream << \"\\n\";\n";
-                }
-            }
-            resultString += "}\n";
+        if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+            resultString += AllTemplates.generateLogMethods(LoggingViewModel.fromBluePrint(bluePrint));
         }
 
 
         return resultString;
     }
-
 }
