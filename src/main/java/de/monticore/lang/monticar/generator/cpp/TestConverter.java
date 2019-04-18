@@ -84,9 +84,10 @@ public class TestConverter {
 
     public static String getDefaultContent(ComponentStreamUnitsSymbol symbol) {
         String fileContentString = "";
+        String filePostfix = MathConverter.curBackend.getIncludeHeaderName().equals("armadillo") ? "" : ".h";
         fileContentString += "#ifndef M_PI\n" +
                 "#define M_PI 3.14159265358979323846\n" +
-                "#endif\n" + "#include \"" + MathConverter.curBackend.getIncludeHeaderName() + ".h\"\n";
+                "#endif\n" + "#include \"" +  MathConverter.curBackend.getIncludeHeaderName() + filePostfix + "\"\n";
 
         if (MathConverter.curBackend.getBackendName().equals("OctaveBackend")) {
             fileContentString += "#include \"Helper.h\"\n";

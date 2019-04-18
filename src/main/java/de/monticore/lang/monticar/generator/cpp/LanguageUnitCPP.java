@@ -100,7 +100,7 @@ public class LanguageUnitCPP extends LanguageUnit {
             resultString += "#include \"octave/oct.h\"\n";
             alreadyGeneratedIncludes.add("octave/oct");
         } else if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
-            resultString += "#include \"" + MathConverter.curBackend.getIncludeHeaderName() + ".h\"\n";
+            resultString += "#include \"" + MathConverter.curBackend.getIncludeHeaderName() + "\"\n";
             alreadyGeneratedIncludes.add(MathConverter.curBackend.getIncludeHeaderName());
         }
         for (Variable v : bluePrint.getVariables()) {

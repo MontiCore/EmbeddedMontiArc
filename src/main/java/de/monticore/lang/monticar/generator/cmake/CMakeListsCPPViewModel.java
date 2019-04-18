@@ -23,7 +23,7 @@ package de.monticore.lang.monticar.generator.cmake;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -39,7 +39,7 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
     // fields
     private String compName;
 
-    private HashSet<CMakeFindModule> moduleDependencies;
+    private LinkedHashSet<CMakeFindModule> moduleDependencies;
 
     private List<String> cmakeCommandList = new ArrayList<>();
 
@@ -55,11 +55,11 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
         this.compName = compName;
     }
 
-    public HashSet<CMakeFindModule> getModuleDependencies() {
+    public LinkedHashSet<CMakeFindModule> getModuleDependencies() {
         return moduleDependencies;
     }
 
-    public void setModuleDependencies(HashSet<CMakeFindModule> moduleDependencies) {
+    public void setModuleDependencies(LinkedHashSet<CMakeFindModule> moduleDependencies) {
         this.moduleDependencies = moduleDependencies;
     }
 

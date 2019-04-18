@@ -58,6 +58,6 @@ public class TestsGenTest extends AbstractSymtabTest {
         Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol, symTab));
 
 //        assertEquals(18, files.size());
-        assertEquals(14, files.size()); // TODO: check if 14 is correct here?
+        assertEquals(13, files.size()); // TODO: check if 14 is correct here?
     }
 }
