@@ -97,10 +97,12 @@ public class LanguageUnitCPP extends LanguageUnit {
         //includes
         //add default include
         String backendName = MathConverter.curBackend.getBackendName();
-        if (backendName.equals("OctaveBackend") || backendName.equals("ArmadilloBackend")){
-            String includeHeaderName = MathConverter.curBackend.getIncludeHeaderName();
-            resultString += "#include \"" + includeHeaderName + ".h\"\n";
-            alreadyGeneratedIncludes.add(includeHeaderName);
+        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend")) {
+            resultString += "#include \"octave/oct.h\"\n";
+            alreadyGeneratedIncludes.add("octave/oct");
+        } else if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
+            resultString += "#include \"" + MathConverter.curBackend.getIncludeHeaderName() + "\"\n";
+            alreadyGeneratedIncludes.add(MathConverter.curBackend.getIncludeHeaderName());
         }
         for (Variable v : bluePrint.getVariables()) {
             //TODO remove multiple same includes

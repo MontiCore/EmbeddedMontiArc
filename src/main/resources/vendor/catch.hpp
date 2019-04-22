@@ -12013,7 +12013,7 @@ using Catch::Detail::Approx;
 
 #ifndef _FILESTRING_CONVERSION___A
 #define _FILESTRING_CONVERSION___A
-#include "armadillo.h"
+#include "armadillo"
 using namespace arma;
 void toFileString(std::ofstream& myfile, mat A){
     myfile << "[";

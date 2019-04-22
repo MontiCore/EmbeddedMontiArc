@@ -11,6 +11,7 @@ set(CMAKE_MODULE_PATH ${r"${CMAKE_MODULE_PATH}"} ${r"${CMAKE_CURRENT_SOURCE_DIR}
 find_package(${var.packageName} <#if var.required>REQUIRED<#else></#if>)
 <#if var.findPath>set(INCLUDE_DIRS ${r"${INCLUDE_DIRS}"} ${r"${"}${var.packageName}${r"_INCLUDE_DIRS}"})</#if>
 <#if var.findLibrary>set(LIBS ${r"${LIBS}"} ${r"${"}${var.packageName}${r"_LIBRARIES}"})</#if>
+<#if var.fortranQuadMath>set(LIBS ${r"${LIBS}"} "quadmath")</#if>
 </#list>
 
 # additional commands

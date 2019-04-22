@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "armadillo.h"
+#include "armadillo"
 
 
 void copy_double_array_to_mat(double *data, int size, mat &dest){

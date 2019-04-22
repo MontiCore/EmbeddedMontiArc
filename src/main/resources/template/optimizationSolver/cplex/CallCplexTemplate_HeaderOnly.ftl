@@ -2,7 +2,7 @@
 #define __${viewModel.callSolverName?upper_case}_H__
 
 #include <ilcplex/ilocplex.h>
-#include "armadillo.h"
+#include "armadillo"
 #include "CplexMat.h"
 
 

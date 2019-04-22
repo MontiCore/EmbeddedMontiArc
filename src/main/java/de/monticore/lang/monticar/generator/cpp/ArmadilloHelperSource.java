@@ -28,7 +28,7 @@ public class ArmadilloHelperSource {
     public static String armadilloHelperSourceCode = "#ifndef HELPERA_H\n" +
             "#define HELPERA_H\n" +
             "#include <iostream>\n" +
-            "#include \"armadillo.h\"\n" +
+            "#include \"armadillo\"\n" +
             "#include <stdarg.h>\n" +
             "#include <initializer_list>\n" +
             "#include <fstream>\n" +
