@@ -49,9 +49,7 @@ IntegrateionTest:
   tags:
     - docker
   stage: integration-test
-  image: docker:dind
   script:
-    - apk add --no-cache py-pip
     - pip install docker-compose
     - cd runner
     - docker build -t simulation-integration-test .
