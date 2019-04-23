@@ -51,6 +51,8 @@ IntegrateionTest:
   stage: integration-test
   image: docker:dind
   before_script:
+    - apk add --no-cache py-pip
+    - pip install docker-compose
     - cd runner
   script:
     - docker build -t simulation-integration-test .
