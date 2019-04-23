@@ -1,25 +1,4 @@
 /**
- * ====
- *
- *     ******************************************************************************
- *      MontiCAR Modeling Family, www.se-rwth.de
- *      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *      All rights reserved.
- *
- *      This project is free software; you can redistribute it and/or
- *      modify it under the terms of the GNU Lesser General Public
- *      License as published by the Free Software Foundation; either
- *      version 3.0 of the License, or (at your option) any later version.
- *      This library is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *      Lesser General Public License for more details.
- *
- *      You should have received a copy of the GNU Lesser General Public
- *      License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *     *******************************************************************************
- * ====
- *
  *
  * ******************************************************************************
  *  MontiCAR Modeling Family, www.se-rwth.de
@@ -71,11 +50,17 @@ public class Runner {
     private  long targetOsmNode;
     private  boolean useModelicaVehicle;
 
-    public Runner(String mapPath, long sourceOsmNode, long targetOsmNode, boolean useModelicaVehicle) {
+    // hostname and port of RMIServer
+    private String autopilotHost;
+    private int autopilotPort;
+
+    public Runner(String mapPath, long sourceOsmNode, long targetOsmNode, boolean useModelicaVehicle, String autopilotHost, int autopilotPort) {
         this.mapPath = mapPath;
         this.sourceOsmNode = sourceOsmNode;
         this.targetOsmNode = targetOsmNode;
         this.useModelicaVehicle = useModelicaVehicle;
+        this.autopilotHost = autopilotHost;
+        this.autopilotPort = autopilotPort;
     }
 
     public double run(){
@@ -90,7 +75,7 @@ public class Runner {
 
         List<Vertex> trajectory = computeTrajectory(sourceOsmNode, targetOsmNode);
 
-        RMIClient rmiClient = new RMIClient("localhost", 10101, "");
+        RMIClient rmiClient = new RMIClient(autopilotHost, autopilotPort, "");
         AutopilotAdapterAsFunctionBlock mainBlockAdapter = new AutopilotAdapterAsFunctionBlock(rmiClient);
 
         // init model

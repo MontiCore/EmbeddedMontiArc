@@ -47,20 +47,24 @@ public class RunnerTest {
 
     @Test
     public void run() {
-//        double finalDistanceToTarget = new Runner(
-//                "/straight.osm",
-//                5170132468L,
-//                4188028027L,
-//                false
-//        ) .run();
-//        assert  finalDistanceToTarget < 1;
-//
-//        finalDistanceToTarget = new Runner(
-//                "/straight.osm",
-//                5170132468L,
-//                4188028027L,
-//                true
-//        ) .run();
-//        assert  finalDistanceToTarget < 1;
+        double finalDistanceToTarget = new Runner(
+                "/straight.osm",
+                5170132468L,
+                4188028027L,
+                false,
+                "autopilot",
+                10101
+        ) .run();
+        assert  finalDistanceToTarget < 1;
+
+        finalDistanceToTarget = new Runner(
+                "/straight.osm",
+                5170132468L,
+                4188028027L,
+                true,
+                "autopilot",
+                10101
+        ) .run();
+        assert  finalDistanceToTarget < 1;
     }
 }
