@@ -1,6 +1,11 @@
-[![Packing Windows 64-bit portable application](https://ci.appveyor.com/api/projects/status/e6j0od439jh25ax9?svg=true)](https://ci.appveyor.com/project/vonwenckstern/emastudiobuilder)
+<!--[![Packing Windows 64-bit portable application](https://ci.appveyor.com/api/projects/status/e6j0od439jh25ax9?svg=true)](https://ci.appveyor.com/project/vonwenckstern/emastudiobuilder)-->
 
 # EMAStudioBuilder
+
+**This project is no longer supported and is classified as legacy software. [EMAStudioInstaller](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller) should be used instead.**
+
+<hr/>
+<hr/>
 
 **Important: Never delete any Github Release.** Also if you do not need the release anymore, please let it there otherwise the version control of `dependencies.txt` does not work. If you want to update any binary (e.g. jar), then just upload the new JAR in a new release and then update the link in the `dependencies.txt` file.
 
