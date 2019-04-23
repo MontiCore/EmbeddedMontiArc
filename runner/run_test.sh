@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #
+#
 # ******************************************************************************
 #  MontiCAR Modeling Family, www.se-rwth.de
 #  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -43,8 +44,8 @@ docker run \
     --network simulation-network \
     -v ${parent_dir}:/app \
     simulation-integration-test:latest \
-    mvn install -s settings.xml -DskipTests &&\
-    mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test
+    sh -c "mvn install -s settings.xml -DskipTests &&
+    mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test"
 
 # clean up
 rm -rf $current_dir/lib
