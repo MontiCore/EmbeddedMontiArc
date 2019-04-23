@@ -41,7 +41,7 @@ docker run \
 docker run \
     --rm \
     --network simulation-network \
-    -v ${parentdir}:/app \
+    -v ${parent_dir}:/app \
     simulation-integration-test:latest \
     mvn install -s settings.xml -DskipTests &&\
     mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test
