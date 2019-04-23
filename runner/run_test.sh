@@ -48,7 +48,7 @@ docker run \
     mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test"
 
 # clean up
-rm -rf $current_dir/lib
+rm  $current_dir/lib/*.fmu
 # remove the network that we just created
 docker network rm simulation-network
 # remove all containers
