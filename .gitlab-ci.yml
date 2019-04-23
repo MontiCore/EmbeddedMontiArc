@@ -20,8 +20,8 @@
 #
 
 stages:
-- windows
-#- linux
+#- windows
+- linux
 
 masterJobLinux:
   stage: linux
