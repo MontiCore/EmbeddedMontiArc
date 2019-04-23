@@ -21,9 +21,10 @@
 
 current_dir=$(pwd)
 parent_dir="$(dirname $current_dir)"
-cp -r ../lib/ ./lib
+cp -r $parent_dir/lib/ $current_dir/lib
 
 
+# create network for both autopilot and test containers
 docker network create simulation-network
 
 # start autopilot
@@ -45,8 +46,9 @@ docker run \
     simulation-integration-test:latest \
     sh -c "mvn install -s settings.xml -DskipTests && mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test"
 
-rm -rf ./lib
+# clean up
+rm -rf $current_dir/lib
 # remove all containers
-docker rm $(docker ps -a -q)
+docker rm $(docker ps -aq)
 # remove all images
 docker rmi $(docker images -q)
