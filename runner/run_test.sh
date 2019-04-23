@@ -40,7 +40,6 @@ docker run \
 # start integration test
 docker run \
     --rm \
-    -it \
     --network simulation-network \
     -v ${parentdir}:/app \
     simulation-integration-test:latest \
@@ -49,6 +48,8 @@ docker run \
 
 # clean up
 rm -rf $current_dir/lib
+# remove the network that we just created
+docker network rm simulation-network
 # remove all containers
 docker rm $(docker ps -aq)
 # remove all images
