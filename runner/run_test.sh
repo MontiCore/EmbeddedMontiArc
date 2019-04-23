@@ -44,7 +44,7 @@ docker run \
     -v ${parentdir}:/app \
     simulation-integration-test:latest \
     mvn install -s settings.xml -DskipTests &&\
-    mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test"
+    mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test
 
 # clean up
 rm -rf $current_dir/lib
