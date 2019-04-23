@@ -2,10 +2,17 @@
 
 This module contains a simple test to validate the behavior of the simulation.
 
-`mapPath`, `sourceOsmNode`, `targetOsmNode` and `useModelicaVehicle` can be configured as `Runner` is created to run different tests.
-different settings.
+`mapPath`, `sourceOsmNode`, `targetOsmNode` and `useModelicaVehicle`, `autopilotHost` and `autopilotPort` can be
+configured while constructing the `Runner` to run the test with different settings.
 
-Uncomment the code in *test/java/simulation/api/ControllerTest.java* to run the tests.
+To run the test with docker:
 
-__IMPORTANT__: To run the test, make sure a RMIClient is listening on localhost:10101. For further information please refer
+```bash
+$ docker build -t simulation-integration-test . && docker-compose up runner
+```
+
+To run it without docker: start a RMIServer in the background, set the `autopilotHost` and `autopilotPort`
+ in _runner/src/test/java/simulation/runner/RunnerTest.java_ accordingly.
+ 
+For further information about RMIModelServer please refer
 to [RMIModelServer](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/RMIModelServer).
