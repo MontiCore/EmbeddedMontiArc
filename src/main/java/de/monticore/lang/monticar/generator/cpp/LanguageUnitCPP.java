@@ -96,6 +96,7 @@ public class LanguageUnitCPP extends LanguageUnit {
         List<String> alreadyGeneratedIncludes = new ArrayList<>();
         //includes
         //add default include
+        String backendName = MathConverter.curBackend.getBackendName();
         if (MathConverter.curBackend.getBackendName().equals("OctaveBackend")) {
             resultString += "#include \"octave/oct.h\"\n";
             alreadyGeneratedIncludes.add("octave/oct");

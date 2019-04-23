@@ -129,10 +129,18 @@ public final class GeneratorCppCli {
             .required(false)
             .build();
 
+    public static final Option OPTION_FLAG_CMAKE = Option.builder()
+            .longOpt("flag-generate-cmake")
+            .desc("optional flag indicating if a CMake project should be generated to build the model")
+            .hasArg(false)
+            .required(false)
+            .build();
+
     private GeneratorCppCli() {
     }
 
     public static void main(String[] args) {
+        Log.initDEBUG();
         Options options = getOptions();
         CommandLineParser parser = new DefaultParser();
         CommandLine cliArgs = parseArgs(options, parser, args);
@@ -154,6 +162,7 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_ALGEBRAIC);
         options.addOption(OPTION_FLAG_THREADING);
         options.addOption(OPTION_FLAG_EXEC_LOGGING);
+        options.addOption(OPTION_FLAG_CMAKE);
         return options;
     }
 
@@ -193,6 +202,8 @@ public final class GeneratorCppCli {
         g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
         g.setUseThreadingOptimization(cliArgs.hasOption(OPTION_FLAG_THREADING.getLongOpt()));
         g.setExecutionLoggingActive(cliArgs.hasOption(OPTION_FLAG_EXEC_LOGGING.getLongOpt()));
+
+        g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
 
         try {
             if (componentSymbol != null) {

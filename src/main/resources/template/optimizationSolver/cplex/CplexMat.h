@@ -1,7 +1,7 @@
 #ifndef MACMAKETEST_CplexMat_H
 #define MACMAKETEST_CplexMat_H
 
-#include<armadillo.h>
+#include<armadillo>
 #include <ilcplex/ilocplex.h>
 
 using namespace arma;

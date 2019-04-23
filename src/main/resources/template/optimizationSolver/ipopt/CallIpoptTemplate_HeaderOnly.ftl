@@ -1,6 +1,6 @@
 #ifndef __${viewModel.callSolverName?upper_case}_H__
 #define __${viewModel.callSolverName?upper_case}_H__
-#include<armadillo>
+#include"armadillo"
 #include<cppad/ipopt/solve.hpp>
 #include "ADMat.h"
 

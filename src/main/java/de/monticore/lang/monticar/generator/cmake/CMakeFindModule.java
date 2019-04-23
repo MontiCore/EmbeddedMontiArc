@@ -41,6 +41,7 @@ public class CMakeFindModule extends ViewModelBase {
     private List<String> libPaths = new ArrayList<>();
     private Boolean findPath;
     private Boolean findLibrary;
+    private Boolean fortranQuadMath = false;
 
     private boolean required;
 
@@ -63,6 +64,8 @@ public class CMakeFindModule extends ViewModelBase {
         this.findPath = findPath;
         this.findLibrary = findLibrary;
         this.required = required;
+        if (packageName.equals("GFortran"))
+            this.fortranQuadMath = true;
     }
 
     // methods
@@ -134,4 +137,13 @@ public class CMakeFindModule extends ViewModelBase {
     public void setFindLibrary(Boolean findLibrary) {
         this.findLibrary = findLibrary;
     }
+
+    public Boolean getFortranQuadMath() {
+        return fortranQuadMath;
+    }
+
+    public void setFortranQuadMath(Boolean fortranQuadMath) {
+        this.fortranQuadMath = fortranQuadMath;
+    }
+
 }
