@@ -43,7 +43,7 @@ docker run \
     --network simulation-network \
     -v ${parentdir}:/app \
     simulation-integration-test:latest \
-    /bin/bash
+    sh -c "mvn install -s settings.xml -DskipTests && mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test"
 
 rm -rf ./lib
 # remove all containers
