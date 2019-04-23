@@ -50,6 +50,7 @@ IntegrateionTest:
     - docker
   stage: integration-test
   script:
+    - cd runner
     - docker build -t simulation-integration-test .
     - ./run_test.sh
   except:
