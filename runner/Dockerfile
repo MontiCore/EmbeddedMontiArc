@@ -46,7 +46,3 @@ WORKDIR /app
 
 RUN apt-get update &&\
     apt-get install -y openjfx
-
-COPY run_test.sh /bin/run_test.sh
-
-#CMD ["sh /bin/run_test.sh"]

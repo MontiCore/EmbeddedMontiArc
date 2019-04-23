@@ -50,10 +50,8 @@ IntegrateionTest:
     - docker
   stage: integration-test
   script:
-    - pip install docker-compose
-    - cd runner
     - docker build -t simulation-integration-test .
-    - docker-compose up runner
+    - ./run_test.sh
   except:
     - master
 
