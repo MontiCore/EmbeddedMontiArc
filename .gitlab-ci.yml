@@ -49,12 +49,11 @@ IntegrateionTest:
   tags:
     - docker
   stage: integration-test
-  image: docker:latest
-  before_script:
+  image: docker:dind
+  script:
     - apk add --no-cache py-pip
     - pip install docker-compose
     - cd runner
-  script:
     - docker build -t simulation-integration-test .
     - docker-compose up runner
   except:
