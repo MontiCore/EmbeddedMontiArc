@@ -6,11 +6,14 @@ from CNNNet_mnist_mnistClassifier_net import Net
 class CNNCreator_mnist_mnistClassifier_net:
     _model_dir_ = "model/mnist.LeNetNetwork/"
     _model_prefix_ = "model"
-    _input_shapes_ = [(1,28,28)]
+    _input_shapes_ = [(1,28,28,)]
 
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.net = None
+
+    def get_input_shapes(self):
+        return self._input_shapes_
 
     def load(self, context):
         lastEpoch = 0
