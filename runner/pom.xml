@@ -70,7 +70,7 @@
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>rmi-model-server</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
         </dependency>
 
         <!-- All modules have dependency to util -->
