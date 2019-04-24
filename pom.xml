@@ -9,13 +9,13 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-component-clustering</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
 
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
-        <embedded-montiarc-math.version>0.1.7-SNAPSHOT</embedded-montiarc-math.version>
+        <embedded-montiarc-math.version>0.1.9-SNAPSHOT</embedded-montiarc-math.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <se-commons.version>1.7.7</se-commons.version>

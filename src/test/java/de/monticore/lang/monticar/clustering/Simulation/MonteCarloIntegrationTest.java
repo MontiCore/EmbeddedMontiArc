@@ -26,7 +26,8 @@ public class MonteCarloIntegrationTest {
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
-        List<Set<EMAComponentInstanceSymbol>> clusters = MonteCarloIntegration.randomClustering(flattenedComponent, 2);
+        MonteCarloIntegration mc = new MonteCarloIntegration(1, 2);
+        List<Set<EMAComponentInstanceSymbol>> clusters = mc.randomClustering(flattenedComponent, 2);
 
 
         assertTrue("Too many or less clusters created.", clusters.size() == 2);
