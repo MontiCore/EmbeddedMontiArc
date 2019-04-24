@@ -36,9 +36,6 @@ stages:
 #  only:
 #  - master
  
-before_script:
-  - pwd
-  
 masterJobWindows:
   stage: windows
   script: 
@@ -48,10 +45,14 @@ masterJobWindows:
   only:
   - master
 
+
+  
 IntegrateionTest:
   tags:
     - docker
   stage: integration-test
+  before_script:
+    - pwd
   script:
     - cd runner
     - docker build -t simulation-integration-test .
