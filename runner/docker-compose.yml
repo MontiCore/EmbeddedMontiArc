@@ -1,4 +1,5 @@
 #
+#
 # ******************************************************************************
 #  MontiCAR Modeling Family, www.se-rwth.de
 #  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -38,7 +39,10 @@ services:
       - os=linux
 
   runner:
-    image: simulation-intergration-test:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: simulation-integration-test
     depends_on:
       - autopilot
     volumes:
