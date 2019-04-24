@@ -10,8 +10,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MonteCarloIntegrationTest {
 
@@ -26,13 +25,47 @@ public class MonteCarloIntegrationTest {
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
-        MonteCarloIntegration mc = new MonteCarloIntegration(1, 2);
-        List<Set<EMAComponentInstanceSymbol>> clusters = mc.randomClustering(flattenedComponent, 2);
+        MonteCarloRandomStrategy monteCarloRandomStrategy = new MonteCarloRandomStrategy();
+        List<Set<EMAComponentInstanceSymbol>> clusters = monteCarloRandomStrategy.randomClustering(flattenedComponent, 2);
 
 
         assertTrue("Too many or less clusters created.", clusters.size() == 2);
         assertTrue("Subcomponent 1 is not distributed evenly/correctly!", clusters.get(0).size()>=1);
         assertTrue("Subcomponent 2 is not distributed evenly/correctly!",clusters.get(1).size()>=1);
+    }
+
+    @Test
+    public void kragerRandomClusteringTest(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        //ClustersWithSingleConnection
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("clustering.clustersWithSingleConnection", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
+        MonteCarloKargerStrategy monteCarloKargerStrategy = new MonteCarloKargerStrategy();
+        List<Set<EMAComponentInstanceSymbol>> clusters = monteCarloKargerStrategy.randomClustering(flattenedComponent, 2);
+
+
+        assertTrue("Too many or less clusters created.", clusters.size() == 2);
+        assertTrue("Subcomponent 1 is not distributed evenly/correctly!", clusters.get(0).size()>=1);
+        assertTrue("Subcomponent 2 is not distributed evenly/correctly!",clusters.get(1).size()>=1);
+    }
+
+    @Test
+    public void kragerRandomClusteringBigModelTest(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH + "pacman/");
+
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("de.rwth.pacman.heithoff2.controller", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
+        MonteCarloKargerStrategy monteCarloKargerStrategy = new MonteCarloKargerStrategy();
+        for(int i = 2; i < 10; i++) {
+            List<Set<EMAComponentInstanceSymbol>> clusters = monteCarloKargerStrategy.randomClustering(flattenedComponent, i);
+            assertTrue("Too many or less clusters created.", clusters.size() == i);
+            for (Set<EMAComponentInstanceSymbol> cluster : clusters) {
+                assertFalse("Empty cluster!", cluster.isEmpty());
+            }
+        }
     }
 
     @Ignore
