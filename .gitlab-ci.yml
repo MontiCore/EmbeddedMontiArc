@@ -46,8 +46,8 @@ masterJobWindows:
   - master
 
 IntegrateionTest:
-#  tags:
-#    - docker
+  tags:
+    - docker
   stage: integration-test
   script:
     - cd runner
