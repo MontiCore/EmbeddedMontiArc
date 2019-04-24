@@ -35,6 +35,9 @@ stages:
 #  - cat report/target/coverage-report/html/index.html
 #  only:
 #  - master
+ 
+before_script:
+  - pwd
   
 masterJobWindows:
   stage: windows
