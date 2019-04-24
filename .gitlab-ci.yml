@@ -47,7 +47,7 @@ masterJobWindows:
 
 IntegrateionTest:
   tags:
-    - docker
+    - dind
   stage: integration-test
   script:
     - cd runner
