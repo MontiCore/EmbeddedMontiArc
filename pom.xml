@@ -30,7 +30,7 @@
     <!-- Packaging pom because there are no source files in this project -->
     <artifactId>simulation</artifactId>
     <groupId>montisim</groupId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
     <packaging>pom</packaging>
 
     <!-- MODULES -->
