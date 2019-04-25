@@ -25,7 +25,7 @@ stages:
 
 masterJobLinux:
   stage: linux
-  image: maven:3-jdk-8
+  image: maven:3.5.4-jdk-8-alpine
   before_script:
   - apt-get update
   - apt-get install -y openjfx
@@ -55,7 +55,7 @@ branchJobWindows:
 
 #BranchJobLinux:
 #  stage: linux
-#  image: maven:3-jdk-8
+#  image: maven:3.5.4-jdk-8-alpin
 #  before_script:
 #  - apt-get update
 #  - apt-get install -y openjfx
