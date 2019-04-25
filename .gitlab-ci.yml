@@ -22,7 +22,7 @@
 stages:
 - windows
 - linux
-#- integration-test
+- integration-test
 
 #masterJobLinux:
 #  stage: linux
@@ -45,8 +45,19 @@ masterJobWindows:
   only:
   - master
 
+BranchJobLinux:
+  stage: linux
+  image: maven:3-jdk-8
+  before_script:
+  - apt-get update
+  - apt-get install -y openjfx
+  script:
+  - mv lib/fmu_for_linux/*.fmu lib/
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+#  - cat report/target/coverage-report/html/index.html
+  except:
+  - master
 
-  
 #IntegrateionTest:
 #  tags:
 #    - docker
@@ -57,15 +68,3 @@ masterJobWindows:
 #    - ./run_test.sh
 #  except:
 #    - master
-
-BranchJobLinux:
-  stage: linux
-  image: maven:3-jdk-8
-  before_script:
-  - apt-get update
-  - apt-get install -y openjfx
-  script: 
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
-#  - cat report/target/coverage-report/html/index.html
-  except:
-  - master
