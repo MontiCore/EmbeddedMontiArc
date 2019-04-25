@@ -21,7 +21,7 @@
 
 stages:
 - windows
-#- linux
+- linux
 #- integration-test
 
 #masterJobLinux:
