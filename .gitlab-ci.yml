@@ -24,17 +24,18 @@ stages:
 - linux
 - integration-test
 
-#masterJobLinux:
-#  stage: linux
-#  image: maven:3.5.4-jdk-8-alpine
-#  before_script:
-#  - apt-get update
-#  - apt-get install -y openjfx
-#  script: 
-#  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy sonar:sonar --settings settings.xml
+masterJobLinux:
+  stage: linux
+  image: maven:3.6-jdk-8
+  before_script:
+  - apt-get update
+  - apt-get install -y openjfx
+  script: 
+  - mv lib/fmu_for_linux/*.fmu lib/
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy sonar:sonar --settings settings.xml
 #  - cat report/target/coverage-report/html/index.html
-#  only:
-#  - master
+  only:
+  - master
  
 masterJobWindows:
   stage: windows
