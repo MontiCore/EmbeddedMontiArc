@@ -1,0 +1,21 @@
+package cartpole.policy;
+
+component Greedy {
+    ports
+        in Q(-oo:oo)^{2} values,
+        out Z action;
+
+    implementation Math {
+        Q maxQValue = values(0);
+        Z maxValueAction = 0;
+
+        for i = 1:2
+            if maxQValue > values(i)
+                maxQValue = values(i);
+                maxValueAction = i-1;
+            end
+        end
+
+        action = maxValueAction;
+    }
+}

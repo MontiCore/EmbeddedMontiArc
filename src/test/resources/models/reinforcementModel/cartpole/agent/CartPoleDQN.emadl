@@ -1,0 +1,17 @@
+package cartpole.agent;
+
+component CartPoleDQN {
+    ports
+        in Q^{4} state,
+        out Q(-oo:oo)^{2} qvalues;
+
+    implementation CNN {
+        state ->
+        FullyConnected(units=256) ->
+        Relu() ->
+        FullyConnected(units=128) ->
+        Relu() ->
+        FullyConnected(units=2) ->
+        qvalues
+    }
+}

@@ -23,6 +23,7 @@ package de.monticore.lang.monticar.emadl;
 import de.monticore.lang.monticar.emadl.generator.Backend;
 import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
 import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
@@ -35,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -185,6 +187,14 @@ public class GenerationTest extends AbstractSymtabTest {
                         "mnist_mnistClassifier_calculateClass.h",
                         "CNNTrainer_mnist_mnistClassifier_net.py",
                         "mnist_mnistClassifier_net.h"));
+    }
+
+    @Test
+    public void testGluonReinforcementModel() {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "cartpole.Master", "-b", "GLUON", "-f", "n", "-c", "n"};
+        EMADLGeneratorCli.main(args);
+        assertTrue(Log.getFindings().stream().filter(Finding::isError).collect(Collectors.toList()).isEmpty());
     }
 
     @Test

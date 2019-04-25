@@ -1,0 +1,12 @@
+package cartpole.agent.reward;
+
+component Reward {
+    ports
+        in Q^{4} state,
+        out Q reward;
+
+    implementation Math {
+        Q rew = state(1);
+        reward = rew;
+    }
+}

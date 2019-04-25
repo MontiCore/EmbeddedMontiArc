@@ -30,6 +30,8 @@ import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNTrain2Gluon;
 import de.monticore.lang.monticar.cnntrain.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
@@ -495,6 +497,10 @@ public class EMADLGenerator {
                 String trainConfigFilename = getConfigFilename(mainComponentName, component.getFullName(), component.getName());
 
                 //should be removed when CNNTrain supports packages
+                cnnTrainGenerator.setGenerationTargetPath(getGenerationTargetPath());
+                if (cnnTrainGenerator instanceof CNNTrain2Gluon) {
+                    ((CNNTrain2Gluon) cnnTrainGenerator).setRootProjectModelsDir(getModelsPath());
+                }
                 List<String> names = Splitter.on("/").splitToList(trainConfigFilename);
                 trainConfigFilename = names.get(names.size()-1);
                 Path modelPath = Paths.get(getModelsPath() + Joiner.on("/").join(names.subList(0,names.size()-1)));
