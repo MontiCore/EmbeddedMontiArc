@@ -161,6 +161,33 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testMnistClassifierForGluon() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/models/", "-r", "mnist.MnistClassifier", "-b", "GLUON", "-f", "n", "-c", "n"};
+        EMADLGeneratorCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-emadl"),
+                Paths.get("./src/test/resources/target_code/gluon"),
+                Arrays.asList(
+                        "CNNBufferFile.h",
+                        "CNNNet_mnist_mnistClassifier_net.py",
+                        "mnist_mnistClassifier.cpp",
+                        "mnist_mnistClassifier.h",
+                        "CNNCreator_mnist_mnistClassifier_net.py",
+                        "CNNPredictor_mnist_mnistClassifier_net.h",
+                        "CNNDataLoader_mnist_mnistClassifier_net.py",
+                        "supervised_trainer.py",
+                        "mnist_mnistClassifier_net.h",
+                        "HelperA.h",
+                        "CNNTranslator.h",
+                        "mnist_mnistClassifier_calculateClass.h",
+                        "CNNTrainer_mnist_mnistClassifier_net.py",
+                        "mnist_mnistClassifier_net.h"));
+    }
+
+    @Test
     public void testHashFunction() {
         EMADLGenerator tester = new EMADLGenerator(Backend.MXNET);
         
