@@ -1,5 +1,26 @@
 #!/usr/bin/env bash
 #
+# ====
+#
+#     ******************************************************************************
+#      MontiCAR Modeling Family, www.se-rwth.de
+#      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+#      All rights reserved.
+#
+#      This project is free software; you can redistribute it and/or
+#      modify it under the terms of the GNU Lesser General Public
+#      License as published by the Free Software Foundation; either
+#      version 3.0 of the License, or (at your option) any later version.
+#      This library is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+#      Lesser General Public License for more details.
+#
+#      You should have received a copy of the GNU Lesser General Public
+#      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+#     *******************************************************************************
+# ====
+#
 #
 # ******************************************************************************
 #  MontiCAR Modeling Family, www.se-rwth.de
@@ -41,8 +62,8 @@ docker run \
 # start integration test
 docker run \
     --rm \
+    --name=integration-test \
     --network simulation-network \
-    -v ${parent_dir}:/app \
     simulation-integration-test:latest \
     sh -c "mvn install -s settings.xml -DskipTests &&
     mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test"
@@ -51,7 +72,5 @@ docker run \
 rm  $current_dir/lib/*.fmu
 # remove the network that we just created
 docker network rm simulation-network
-# remove all containers
-docker rm $(docker ps -aq)
-# remove all images
-docker rmi $(docker images -q)
+# remove test image
+docker rmi simulation-integration-test

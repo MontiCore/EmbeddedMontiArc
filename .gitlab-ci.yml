@@ -53,7 +53,7 @@ masterJobWindows:
 #  stage: integration-test
 #  script:
 #    - cd runner
-#    - docker build -t simulation-integration-test .
+#    - docker build -t simulation-integration-test -f Dockerfile ../
 #    - ./run_test.sh
 #  except:
 #    - master
