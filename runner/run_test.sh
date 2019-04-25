@@ -1,27 +1,5 @@
 #!/usr/bin/env bash
 #
-# ====
-#
-#     ******************************************************************************
-#      MontiCAR Modeling Family, www.se-rwth.de
-#      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
-#      All rights reserved.
-#
-#      This project is free software; you can redistribute it and/or
-#      modify it under the terms of the GNU Lesser General Public
-#      License as published by the Free Software Foundation; either
-#      version 3.0 of the License, or (at your option) any later version.
-#      This library is distributed in the hope that it will be useful,
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-#      Lesser General Public License for more details.
-#
-#      You should have received a copy of the GNU Lesser General Public
-#      License along with this project. If not, see <http://www.gnu.org/licenses/>.
-#     *******************************************************************************
-# ====
-#
-#
 # ******************************************************************************
 #  MontiCAR Modeling Family, www.se-rwth.de
 #  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -43,8 +21,16 @@
 
 current_dir=$(pwd)
 parent_dir="$(dirname $current_dir)"
-cp -r $parent_dir/lib/ $current_dir/lib
+cp -r $parent_dir/lib/fmu_for_linux/*.fmu $current_dir/lib/
 
+# kill the containers if they are still running
+docker kill integration-test
+docker rm integration-test
+docker kill autopilot
+docker rm autopilot
+
+# Build the image
+docker build -t simulation-integration-test -f $current_dir/Dockerfile ../
 
 # create network for both autopilot and test containers
 docker network create simulation-network
@@ -52,7 +38,7 @@ docker network create simulation-network
 # start autopilot
 docker run \
     --rm \
-    --network simulation-network \
+    --network=simulation-network \
     -d \
     --name=autopilot \
     registry.git.rwth-aachen.de/monticore/embeddedmontiarc/simulators/rmimodelserver:latest \
@@ -63,10 +49,9 @@ docker run \
 docker run \
     --rm \
     --name=integration-test \
-    --network simulation-network \
+    --network=simulation-network \
     simulation-integration-test:latest \
-    sh -c "mvn install -s settings.xml -DskipTests &&
-    mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test"
+    sh -c "mvn -f runner/pom.xml -s settings.xml -Dtests=RunnerTest test"
 
 # clean up
 rm  $current_dir/lib/*.fmu

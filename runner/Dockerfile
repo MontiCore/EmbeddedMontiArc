@@ -46,3 +46,7 @@ WORKDIR /app
 
 RUN apt-get update &&\
     apt-get install -y openjfx
+
+COPY ./ ./
+
+RUN mvn clean install -s settings.xml -DskipTests
