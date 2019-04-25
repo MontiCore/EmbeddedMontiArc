@@ -58,13 +58,12 @@ BranchJobLinux:
   except:
   - master
 
-#IntegrateionTest:
-#  tags:
-#    - docker
-#  stage: integration-test
-#  script:
-#    - cd runner
-#    - docker build -t simulation-integration-test -f Dockerfile ../
-#    - ./run_test.sh
-#  except:
-#    - master
+IntegrateionTest:
+  tags:
+    - docker
+  stage: integration-test
+  script:
+    - cd runner
+    - ./run_test.sh
+  except:
+    - master
