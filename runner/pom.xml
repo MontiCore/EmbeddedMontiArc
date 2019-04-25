@@ -51,7 +51,7 @@
         <version>1.0.8</version>
     </parent>
     <properties>
-        <montisim.version>1.0.7</montisim.version>
+        <montisim.version>1.0.8</montisim.version>
     </properties>
     <modelVersion>4.0.0</modelVersion>
 
@@ -78,32 +78,38 @@
             <groupId>montisim-simulation</groupId>
             <artifactId>util</artifactId>
             <version>${montisim.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- Network has dependency to vehicle -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>vehicle</artifactId>
             <version>${montisim.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>environment</artifactId>
             <version>${montisim.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>simulator</artifactId>
             <version>${montisim.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>sensors</artifactId>
             <version>${montisim.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>network</artifactId>
             <version>${montisim.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
