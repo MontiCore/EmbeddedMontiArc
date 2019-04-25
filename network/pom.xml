@@ -30,13 +30,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>network</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
@@ -45,14 +45,14 @@
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>util</artifactId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
 
         <!-- Network has dependency to vehicle -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>vehicle</artifactId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
 
         <!-- Network has dependency to commons -->

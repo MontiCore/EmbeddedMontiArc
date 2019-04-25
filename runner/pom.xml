@@ -48,7 +48,7 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
     </parent>
     <properties>
         <montisim.version>1.0.7</montisim.version>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>rmi-model-server</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
         </dependency>
 
         <!-- All modules have dependency to util -->
