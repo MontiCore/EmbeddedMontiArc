@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.clustering.Simulation;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.monticar.clustering.ClusteringInput;
 
 import java.util.*;
 
@@ -12,7 +13,7 @@ public class MonteCarloRandomStrategy implements MonteCarloStrategy {
     }
 
     @Override
-    public List<Set<EMAComponentInstanceSymbol>> randomClustering(EMAComponentInstanceSymbol componentSymbol, int numberOfClusters) {
+    public List<Set<EMAComponentInstanceSymbol>> randomClustering(ClusteringInput input, int numberOfClusters) {
         List<Set<EMAComponentInstanceSymbol>> clusters = new ArrayList<>();
 
         for (int i = 0; i < numberOfClusters; i++) {
@@ -20,20 +21,17 @@ public class MonteCarloRandomStrategy implements MonteCarloStrategy {
         }
 
         // All subcomponents of the Symbol
-        Collection<EMAComponentInstanceSymbol> subcomponents = componentSymbol.getSubComponents();
+        Collection<EMAComponentInstanceSymbol> subcomponents = input.getSubcompsOrderedByName();
 
         // Put subcomponents into an ArrayList
-        ArrayList<EMAComponentInstanceSymbol> arrayListSubComponent = new ArrayList<>();
-        for (EMAComponentInstanceSymbol subcomp : subcomponents) {
-            arrayListSubComponent.add(subcomp);
-        }
+        ArrayList<EMAComponentInstanceSymbol> arrayListSubComponent = new ArrayList<>(subcomponents);
 
         // Distribute randomly!
         // First of all, give each of the clusters one element randomly
-        for (int j = 0; j < clusters.size(); j++) {
+        for (Set<EMAComponentInstanceSymbol> cluster : clusters) {
             if (!arrayListSubComponent.isEmpty()) {
                 int randN = randomNumberInRange(0, arrayListSubComponent.size() - 1);
-                clusters.get(j).add(arrayListSubComponent.get(randN));
+                cluster.add(arrayListSubComponent.get(randN));
                 arrayListSubComponent.remove(randN);
             }
         }

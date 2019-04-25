@@ -2,13 +2,17 @@ package de.monticore.lang.monticar.clustering.Simulation;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.clustering.AbstractSymtabTest;
+import de.monticore.lang.monticar.clustering.ClusteringInput;
 import de.monticore.lang.monticar.clustering.FlattenArchitecture;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.CommonSymbol;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -26,7 +30,7 @@ public class MonteCarloIntegrationTest {
         assertNotNull(componentInstanceSymbol);
         EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
         MonteCarloRandomStrategy monteCarloRandomStrategy = new MonteCarloRandomStrategy();
-        List<Set<EMAComponentInstanceSymbol>> clusters = monteCarloRandomStrategy.randomClustering(flattenedComponent, 2);
+        List<Set<EMAComponentInstanceSymbol>> clusters = monteCarloRandomStrategy.randomClustering(new ClusteringInput(flattenedComponent), 2);
 
 
         assertTrue("Too many or less clusters created.", clusters.size() == 2);
@@ -43,7 +47,7 @@ public class MonteCarloIntegrationTest {
         assertNotNull(componentInstanceSymbol);
         EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
         MonteCarloKargerStrategy monteCarloKargerStrategy = new MonteCarloKargerStrategy();
-        List<Set<EMAComponentInstanceSymbol>> clusters = monteCarloKargerStrategy.randomClustering(flattenedComponent, 2);
+        List<Set<EMAComponentInstanceSymbol>> clusters = monteCarloKargerStrategy.randomClustering(new ClusteringInput(flattenedComponent), 2);
 
 
         assertTrue("Too many or less clusters created.", clusters.size() == 2);
@@ -60,11 +64,17 @@ public class MonteCarloIntegrationTest {
         EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
         MonteCarloKargerStrategy monteCarloKargerStrategy = new MonteCarloKargerStrategy();
         for(int i = 2; i < 10; i++) {
-            List<Set<EMAComponentInstanceSymbol>> clusters = monteCarloKargerStrategy.randomClustering(flattenedComponent, i);
+            List<Set<EMAComponentInstanceSymbol>> clusters = monteCarloKargerStrategy.randomClustering(new ClusteringInput(flattenedComponent), i);
             assertTrue("Too many or less clusters created.", clusters.size() == i);
             for (Set<EMAComponentInstanceSymbol> cluster : clusters) {
                 assertFalse("Empty cluster!", cluster.isEmpty());
             }
+
+            List<String> componentNamesBefore = flattenedComponent.getSubComponents().stream().map(CommonSymbol::getFullName).sorted().collect(Collectors.toList());
+            List<String> componentNamesAfter = clusters.stream().flatMap(Collection::stream).map(CommonSymbol::getFullName).sorted().collect(Collectors.toList());
+            assertEquals("Not all subcomponents are present or subcomponents are duplicated!", componentNamesBefore.size(), componentNamesAfter.size());
+            assertTrue(componentNamesBefore.containsAll(componentNamesAfter));
+            assertTrue(componentNamesAfter.containsAll(componentNamesBefore));
         }
     }
 

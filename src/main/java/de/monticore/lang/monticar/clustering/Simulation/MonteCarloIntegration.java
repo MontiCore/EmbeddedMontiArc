@@ -2,8 +2,11 @@ package de.monticore.lang.monticar.clustering.Simulation;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.clustering.AutomaticClusteringHelper;
+import de.monticore.lang.monticar.clustering.ClusteringInput;
+import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 public class MonteCarloIntegration{
     private double[] averages;
@@ -18,6 +21,14 @@ public class MonteCarloIntegration{
         this.averages = new double[this.iterations];
         this.costs = new double[this.iterations];
         this.clusteringDelegate = new MonteCarloRandomStrategy();
+    }
+
+    public MonteCarloStrategy getClusteringDelegate() {
+        return clusteringDelegate;
+    }
+
+    public void setClusteringDelegate(MonteCarloStrategy clusteringDelegate) {
+        this.clusteringDelegate = clusteringDelegate;
     }
 
     public double[] getAverages() {
@@ -37,17 +48,19 @@ public class MonteCarloIntegration{
     }
 
     public double simulate(EMAComponentInstanceSymbol componentInstanceSymbol) {
+        ClusteringInput input = new ClusteringInput(componentInstanceSymbol);
         //EMAComponentInstanceSymbol flattenedComponent = FlattenArchitecture.flattenArchitecture(componentInstanceSymbol);
         double sum = 0;
 
         for (int i = 0; i < iterations; i++) {
             // Let's Random cluster the model
-            List<Set<EMAComponentInstanceSymbol>> clusters = randomClustering(componentInstanceSymbol, numberOfClusters);
+            List<Set<EMAComponentInstanceSymbol>> clusters = randomClustering(input, numberOfClusters);
 
             costs[i] = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol, clusters);
             //iterate through all clusters and add all cost of the ROS Tags between clusters
             sum = getCostAtN(i+1, costs);
             averages[i]=sum;
+            Log.debug("Iteration " + i, "MonteCarlo");
         }
         // Plot(x,y) would be Plot(iterations, getCostAtN(i+1
         return sum;
@@ -77,8 +90,8 @@ public class MonteCarloIntegration{
         return minValue;
     }
 
-    public List<Set<EMAComponentInstanceSymbol>> randomClustering(EMAComponentInstanceSymbol componentInstanceSymbol, int numberOfClusters) {
-        return clusteringDelegate.randomClustering(componentInstanceSymbol, numberOfClusters);
+    public List<Set<EMAComponentInstanceSymbol>> randomClustering(ClusteringInput input, int numberOfClusters) {
+        return clusteringDelegate.randomClustering(input, numberOfClusters);
     }
 
     // iteration step n, costs: Array of all costs before
