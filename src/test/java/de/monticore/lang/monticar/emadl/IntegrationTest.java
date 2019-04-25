@@ -25,9 +25,13 @@ import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
 import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
+import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -43,6 +47,20 @@ public abstract class IntegrationTest extends AbstractSymtabTest {
 
     private String backend;
     private String trainingHash;
+
+    @BeforeClass
+    public static void setupClass() throws IOException {
+        if (new File("model").exists()) {
+            FileUtils.deleteDirectory(new File("model"));
+        }
+    }
+
+    @AfterClass
+    public static void tearDown() throws IOException {
+        if (new File("model").exists()) {
+            FileUtils.deleteDirectory(new File("model"));
+        }
+    }
 
     public IntegrationTest(String backend, String trainingHash) {
         this.backend = backend;
@@ -116,6 +134,18 @@ public abstract class IntegrationTest extends AbstractSymtabTest {
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
         assertTrue(Log.getFindings().get(0).getMsg().contains("skipped"));
+        deleteInstanceTestCifarHashFile();
+    }
+
+    private void deleteInstanceTestCifarHashFile() {
+        final Path instanceTestCifarHasFile
+                = Paths.get("./target/generated-sources-emadl/instanceTestCifar/CifarNetwork.training_hash");
+        try {
+            Files.delete(instanceTestCifarHasFile);
+        }
+        catch(Exception e) {
+            assertFalse("Could not delete hash file", true);
+        }
     }
 
     @Test
@@ -130,7 +160,4 @@ public abstract class IntegrationTest extends AbstractSymtabTest {
 
         deleteHashFile();
     }
-
-    
-    
 }

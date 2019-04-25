@@ -160,7 +160,7 @@ public class EMADLGenerator {
 
             printWriter.println("#!/bin/bash");
             printWriter.println("cd " + getGenerationTargetPath());
-            printWriter.println("mkdir --parents build");
+            printWriter.println("mkdir -p build");
             printWriter.println("cd build");
             printWriter.println("cmake ..");
             printWriter.println("make");
