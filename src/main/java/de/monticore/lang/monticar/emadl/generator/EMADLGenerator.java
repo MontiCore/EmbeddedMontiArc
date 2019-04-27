@@ -370,7 +370,9 @@ public class EMADLGenerator {
                 DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
                 dPath = newParserConfig.getDataPath(EMAComponentSymbol.getFullName());
             } else {
-                Log.warn("No data path definition found in " + dataPathDefinition + " found: No generation of data loader");
+                Log.warn("No data path definition found in " + dataPathDefinition + " found: "
+                        + "Set data path to default ./data path");
+                dPath = "data";
             }
 
             /*String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "data_paths.txt", componentSymbol.getFullName());*/
