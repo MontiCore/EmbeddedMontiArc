@@ -55,22 +55,22 @@ component ConeSearches {
     connect enemiesWeights.towardsPacMan -> enemiesTop.ghostFacingPacManWight, enemiesBottom.ghostFacingPacManWight, enemiesLeft.ghostFacingPacManWight, enemiesRight.ghostFacingPacManWight;
     connect enemiesWeights.eatable -> enemiesTop.ghostEatableWeight, enemiesBottom.ghostEatableWeight, enemiesLeft.ghostEatableWeight, enemiesRight.ghostEatableWeight;
     
-    connect coinsTop.value -> enhancer.valueIn[1];
-    connect coinsBottom.value -> enhancer.valueIn[2];
-    connect coinsLeft.value -> enhancer.valueIn[3];
-    connect coinsRight.value -> enhancer.valueIn[4];
+    connect coinsTop.val -> enhancer.valueIn[1];
+    connect coinsBottom.val -> enhancer.valueIn[2];
+    connect coinsLeft.val -> enhancer.valueIn[3];
+    connect coinsRight.val -> enhancer.valueIn[4];
     
     connect enhancer.valueOut[1] -> combine1.valueCoins;
     connect enhancer.valueOut[2] -> combine2.valueCoins;
     connect enhancer.valueOut[3] -> combine3.valueCoins;
     connect enhancer.valueOut[4] -> combine4.valueCoins;
-    connect enemiesTop.value -> combine1.valueEnemies;
-    connect enemiesBottom.value -> combine2.valueEnemies;
-    connect enemiesLeft.value -> combine3.valueEnemies;
-    connect enemiesRight.value -> combine4.valueEnemies;
+    connect enemiesTop.val -> combine1.valueEnemies;
+    connect enemiesBottom.val -> combine2.valueEnemies;
+    connect enemiesLeft.val -> combine3.valueEnemies;
+    connect enemiesRight.val -> combine4.valueEnemies;
     
-    connect combine1.value -> topValue;
-    connect combine2.value -> bottomValue;
-    connect combine3.value -> leftValue;
-    connect combine4.value -> rightValue;
+    connect combine1.val -> topValue;
+    connect combine2.val -> bottomValue;
+    connect combine3.val -> leftValue;
+    connect combine4.val -> rightValue;
 }

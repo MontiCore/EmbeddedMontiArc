@@ -8,10 +8,10 @@ component SearchCoinsBottom {
       in Z buiscuitWeight,
       in Z coinWeight,
       
-      out Z value;
+      out Z val;
       
     implementation Math {
-        value = 0;
+        val = 0;
         for i = 1:21
             Z indexY = round(currentY) + i + 1;
             if indexY < 22
@@ -27,7 +27,7 @@ component SearchCoinsBottom {
                                 multBy = coinWeight;
                             end
                             Q dist = sqrt(i*i + j*j);
-                            value = value + (multBy/(dist*dist));
+                            val = val + (multBy/(dist*dist));
                         end
                     end
                 end

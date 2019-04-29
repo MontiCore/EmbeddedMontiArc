@@ -1,6 +1,6 @@
 package de.rwth.pacman.heithoff2.coneSearch;
 
-// enhance the buiscuit and coin value if they are too far away
+// enhance the buiscuit and coin val if they are too far away
 // this way pacman finds distant buiscuits and coins as well
 
 component EnhanceCoinValue {
