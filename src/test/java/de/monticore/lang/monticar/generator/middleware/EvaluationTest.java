@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.middleware;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.clustering.FlattenArchitecture;
 import de.monticore.lang.monticar.clustering.Simulation.MonteCarloIntegration;
+import de.monticore.lang.monticar.clustering.Simulation.MonteCarloKargerStrategy;
 import de.monticore.lang.monticar.clustering.Simulation.MonteCarloResult;
 import de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGeneratorCli;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -96,6 +97,7 @@ public class EvaluationTest {
         //Random Clustering
         System.out.println("Starting Simulation");
         MonteCarloIntegration sim = new MonteCarloIntegration(iterations, 3);
+        sim.setClusteringDelegate(new MonteCarloKargerStrategy());
         sim.simulate(flattenedComponent);
 
         MonteCarloResult res = new MonteCarloResult(componentInstanceSymbol, sim);
