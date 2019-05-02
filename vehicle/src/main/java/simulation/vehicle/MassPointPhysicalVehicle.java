@@ -1109,7 +1109,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
                 forceRoadFrictionLeftRight = forceRoadFrictionLeftRight.mapDivide(forceRoadFrictionLeftRightNorm);
             }
 
-            double forceRoadFrictionLeftRightAmount = PhysicsEngine.calcFrictionCoefficient(getPosition());
+            double forceRoadFrictionLeftRightAmount = PhysicsEngine.calcFrictionCoefficient(getPosition()) * forceNormalLengthLeftRight;
 
             // Scale force down when near zero velocity to avoid permanent positive / negative changes
             if (forceRoadFrictionLeftRightNorm >= 0.0 && forceRoadFrictionLeftRightNorm < 0.35) {
