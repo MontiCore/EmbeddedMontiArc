@@ -3,10 +3,14 @@ package cartpole.agent.reward;
 component Reward {
     ports
         in Q^{4} state,
+        in B isTerminal,
         out Q reward;
 
     implementation Math {
-        Q rew = state(1);
-        reward = rew;
+        if isTerminal
+            reward = -1;
+        else
+            reward = 1;
+        end
     }
 }
