@@ -31,11 +31,11 @@ int main(int argc, char* argv[]) {
         std::cout << "== original image size: " << img.size() << " ==" << std::endl;
 
         // scale image to fit
-        cv::Size scale(32,32);
+        cv::Size scale(28,28);
         cv::resize(img, img, scale);
         std::cout << "== simply resize: " << img.size() << " ==" << std::endl;
 
-        size_t channels = 3;
+        size_t channels = 1;
         size_t height = img.rows;
         size_t width = img.cols;
         vector<float> data(channels*height*width);
