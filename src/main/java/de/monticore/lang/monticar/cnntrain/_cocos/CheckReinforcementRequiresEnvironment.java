@@ -20,32 +20,28 @@
  */
 package de.monticore.lang.monticar.cnntrain._cocos;
 
-import de.monticore.lang.monticar.cnntrain._ast.ASTEntry;
-import de.monticore.lang.monticar.cnntrain._ast.ASTGreedyEpsilonEntry;
+import de.monticore.lang.monticar.cnntrain._ast.ASTConfiguration;
+import de.monticore.lang.monticar.cnntrain._ast.ASTEnvironmentEntry;
+import de.monticore.lang.monticar.cnntrain._ast.ASTLearningMethodEntry;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.LearningMethod;
 import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.HashSet;
-import java.util.Set;
-
-public class CheckEntryRepetition implements CNNTrainASTEntryCoCo {
-
-    private Set<String> entryNameSet = new HashSet<>();
+/**
+ *
+ */
+public class CheckReinforcementRequiresEnvironment implements CNNTrainASTConfigurationCoCo {
+    private static final String PARAMETER_ENVIRONMENT = "environment";
 
     @Override
-    public void check(ASTEntry node) {
-        String parameterPrefix = "";
-        if (node instanceof ASTGreedyEpsilonEntry) {
-            parameterPrefix = "greedy_";
-        }
-        if (entryNameSet.contains(parameterPrefix + node.getName())){
-            Log.error("0" + ErrorCodes.ENTRY_REPETITION_CODE +" The parameter '" + node.getName() + "' has multiple values. " +
-                            "Multiple assignments of the same parameter are not allowed",
-                    node.get_SourcePositionStart());
-        }
-        else {
-            entryNameSet.add(parameterPrefix + node.getName());
+    public void check(ASTConfiguration node) {
+        boolean isReinforcementLearning = ASTConfigurationUtils.isReinforcementLearning(node);
+        boolean hasEnvironment = ASTConfigurationUtils.hasEnvironment(node);
+
+        if (isReinforcementLearning && !hasEnvironment) {
+            Log.error("0" + ErrorCodes.REQUIRED_PARAMETER_MISSING + " The required parameter "
+                    + PARAMETER_ENVIRONMENT + " is missing");
         }
     }
-
 }

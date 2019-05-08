@@ -1,0 +1,69 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
+package de.monticore.lang.monticar.cnntrain._cocos;
+
+import de.monticore.lang.monticar.cnntrain._ast.*;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.EntrySymbol;
+import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ *
+ */
+public class CheckFixTargetNetworkRequiresInterval implements CNNTrainASTConfigurationCoCo {
+    private static final String PARAMETER_USE_FIX_TARGET_NETWORK = "use_fix_target_network";
+    private static final String PARAMETER_TARGET_NETWORK_UPDATE_INTERVAL = "target_network_update_interval";
+
+    @Override
+    public void check(ASTConfiguration node) {
+        boolean useFixTargetNetwork = node.getEntriesList().stream()
+                .anyMatch(e -> e instanceof ASTUseFixTargetNetworkEntry
+                    && ((ASTUseFixTargetNetworkEntry)e).getValue().isPresentTRUE());
+        boolean hasTargetNetworkUpdateInterval = node.getEntriesList().stream()
+                .anyMatch(e -> (e instanceof ASTTargetNetworkUpdateIntervalEntry));
+
+        if (useFixTargetNetwork && !hasTargetNetworkUpdateInterval) {
+            ASTUseFixTargetNetworkEntry useFixTargetNetworkEntry = node.getEntriesList().stream()
+                    .filter(e -> e instanceof ASTUseFixTargetNetworkEntry)
+                    .map(e -> (ASTUseFixTargetNetworkEntry)e)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("ASTUseFixTargetNetwork entry must be available"));
+            Log.error("0" + ErrorCodes.REQUIRED_PARAMETER_MISSING + " Parameter " + Boolean.toString(useFixTargetNetwork)
+                    + " requires parameter " + PARAMETER_TARGET_NETWORK_UPDATE_INTERVAL,
+                    useFixTargetNetworkEntry.get_SourcePositionStart());
+        } else if (!useFixTargetNetwork && hasTargetNetworkUpdateInterval) {
+            ASTTargetNetworkUpdateIntervalEntry targetNetworkUpdateIntervalEntry = node.getEntriesList().stream()
+                    .filter(e -> e instanceof ASTTargetNetworkUpdateIntervalEntry)
+                    .map(e -> (ASTTargetNetworkUpdateIntervalEntry)e)
+                    .findFirst()
+                    .orElseThrow(
+                            () -> new IllegalStateException("ASTTargetNetworkUpdateInterval entry must be available"));
+            Log.error("0" + ErrorCodes.REQUIRED_PARAMETER_MISSING + " Parameter "
+                            + targetNetworkUpdateIntervalEntry.getName() + " requires that parameter "
+                            + PARAMETER_USE_FIX_TARGET_NETWORK + " to be true.",
+                    targetNetworkUpdateIntervalEntry.get_SourcePositionStart());
+        }
+    }
+}

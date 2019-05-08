@@ -18,27 +18,19 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._symboltable;
+package de.monticore.lang.monticar.cnntrain.annotations;
 
-public enum Loss {
-    EUCLIDEAN{
-        @Override
-        public String toString() {
-            return "euclidean";
-        }
-    },
-    CROSS_ENTROPY{
-        @Override
-        public String toString() {
-            return "cross_entropy";
-        }
-    },
-    L1 {
-        @Override
-        public String toString() { return "l1";}
-    },
-    HUBER_LOSS {
-        @Override
-        public String toString() { return "huber_loss";}
-    }
+import java.util.List;
+import java.util.Optional;
+
+/**
+ *
+ */
+public interface RewardFunctionParameter {
+    List<String> getInputNames();
+    List<String> getOutputNames();
+    Optional<String> getTypeOfInputPort(String portName);
+    Optional<String> getTypeOfOutputPort(String portName);
+    Optional<List<Integer>> getInputPortDimensionOfPort(String portName);
+    Optional<List<Integer>> getOutputPortDimensionOfPort(String portName);
 }

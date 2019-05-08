@@ -1,0 +1,13 @@
+configuration FixTargetNetworkRequiresInterval2 {
+    learning_method : reinforcement
+
+    agent_name : "reinforcement-agent"
+
+    environment : gym { name:"CartPole-v1" }
+
+    context : cpu
+
+    loss : huber_loss
+
+    target_network_update_interval : 100
+}

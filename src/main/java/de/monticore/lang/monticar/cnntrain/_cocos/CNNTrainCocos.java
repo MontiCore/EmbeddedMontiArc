@@ -29,7 +29,11 @@ public class CNNTrainCocos {
     public static CNNTrainCoCoChecker createChecker() {
         return new CNNTrainCoCoChecker()
                 .addCoCo(new CheckEntryRepetition())
-                .addCoCo(new CheckInteger());
+                .addCoCo(new CheckInteger())
+                .addCoCo(new CheckFixTargetNetworkRequiresInterval())
+                .addCoCo(new CheckReinforcementRequiresEnvironment())
+                .addCoCo(new CheckLearningParameterCombination())
+                .addCoCo(new CheckRosEnvironmentRequiresRewardFunction());
     }
 
     public static void checkAll(CNNTrainCompilationUnitSymbol compilationUnit){
@@ -37,5 +41,4 @@ public class CNNTrainCocos {
         int findings = Log.getFindings().size();
         createChecker().checkAll(node);
     }
-
 }

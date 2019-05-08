@@ -33,7 +33,10 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
                                                | rmse:"rmse"
                                                | topKAccuracy:"top_k_accuracy");
 
-    LossValue implements ConfigValue =(euclidean:"euclidean" | crossEntropy:"cross_entropy");
+    LossValue implements ConfigValue =(euclidean:"euclidean"
+                                           | l1: "l1"
+                                           | crossEntropy:"cross_entropy"
+                                           | huberLoss: "huber_loss");
 
     LRPolicyValue implements ConfigValue =(fixed:"fixed"
                                          | step:"step"
@@ -47,6 +50,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     DataVariable implements VariableReference = Name&;
     IntegerValue implements ConfigValue = NumberWithUnit;
     NumberValue implements ConfigValue = NumberWithUnit;
+    StringValue implements ConfigValue = StringLiteral;
     BooleanValue implements ConfigValue = (TRUE:"true" | FALSE:"false");
 
     interface OptimizerValue extends ConfigValue;
@@ -90,4 +94,72 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     ClipWeightsEntry implements RmsPropEntry = name:"clip_weights" ":" value:NumberValue;
     RhoEntry implements AdaDeltaEntry = name:"rho" ":" value:NumberValue;
 
+    // Reinforcement Extensions
+    interface MultiParamValue extends ConfigValue;
+
+    LearningMethodEntry implements ConfigEntry = name:"learning_method" ":" value:LearningMethodValue;
+    NumEpisodesEntry implements ConfigEntry = name:"num_episodes" ":" value:IntegerValue;
+    DiscountFactorEntry implements ConfigEntry = name:"discount_factor" ":" value:NumberValue;
+    NumMaxStepsEntry implements ConfigEntry = name:"num_max_steps" ":" value:IntegerValue;
+    TargetScoreEntry implements ConfigEntry = name:"target_score" ":" value:NumberValue;
+    TrainingIntervalEntry implements ConfigEntry = name:"training_interval" ":" value:IntegerValue;
+    UseFixTargetNetworkEntry implements ConfigEntry = name:"use_fix_target_network" ":" value:BooleanValue;
+    TargetNetworkUpdateIntervalEntry implements ConfigEntry = name:"target_network_update_interval" ":" value:IntegerValue;
+    SnapshotIntervalEntry implements ConfigEntry = name:"snapshot_interval" ":" value:IntegerValue;
+    AgentNameEntry implements ConfigEntry = name:"agent_name" ":" value:StringValue;
+    UseDoubleDQNEntry implements ConfigEntry = name:"use_double_dqn" ":" value:BooleanValue;
+    RewardFunctionEntry implements ConfigEntry = name:"reward_function" ":" value:ComponentNameValue;
+
+    ComponentNameValue implements ConfigValue = Name ("."Name)*;
+
+    LearningMethodValue implements ConfigValue = (supervisedLearning:"supervised" | reinforcement:"reinforcement");
+
+    interface MultiParamConfigEntry extends ConfigEntry;
+
+    // Replay Memory
+    ReplayMemoryEntry implements MultiParamConfigEntry = name:"replay_memory" ":" value:ReplayMemoryValue;
+    interface ReplayMemoryValue extends MultiParamValue;
+
+    interface ReplayMemoryBufferEntry extends Entry;
+    ReplayMemoryBufferValue implements ReplayMemoryValue = name:"buffer" ("{" params:ReplayMemoryBufferEntry* "}")?;
+
+    ReplayMemoryOnlineValue implements ReplayMemoryValue = name:"online";
+
+    interface ReplayMemoryCombinedEntry extends Entry;
+    ReplayMemoryCombinedValue implements ReplayMemoryValue = name:"combined" ("{" params:ReplayMemoryCombinedEntry* "}")?;
+
+    interface GeneralReplayMemoryEntry extends ReplayMemoryBufferEntry, ReplayMemoryCombinedEntry;
+
+    MemorySizeEntry implements GeneralReplayMemoryEntry = name:"memory_size" ":" value:IntegerValue;
+    SampleSizeEntry implements GeneralReplayMemoryEntry = name:"sample_size" ":" value:IntegerValue;
+
+    // Action Selection
+    ActionSelectionEntry implements MultiParamConfigEntry = name:"action_selection" ":" value:ActionSelectionValue;
+    interface ActionSelectionValue extends MultiParamValue;
+
+    interface ActionSelectionEpsGreedyEntry extends Entry;
+    ActionSelectionEpsGreedyValue implements ActionSelectionValue = name:"epsgreedy" ("{" params:ActionSelectionEpsGreedyEntry* "}")?;
+
+    GreedyEpsilonEntry implements ActionSelectionEpsGreedyEntry = name:"epsilon" ":" value:NumberValue;
+    MinEpsilonEntry implements ActionSelectionEpsGreedyEntry = name:"min_epsilon" ":" value:NumberValue;
+    EpsilonDecayMethodEntry implements ActionSelectionEpsGreedyEntry = name:"epsilon_decay_method" ":" value:EpsilonDecayMethodValue;
+    EpsilonDecayMethodValue implements ConfigValue = (linear:"linear" | no:"no");
+    EpsilonDecayEntry implements ActionSelectionEpsGreedyEntry = name:"epsilon_decay" ":" value:NumberValue;
+
+    // Environment
+    EnvironmentEntry implements MultiParamConfigEntry = name:"environment" ":" value:EnvironmentValue;
+    interface EnvironmentValue extends MultiParamValue;
+
+    interface GymEnvironmentEntry extends Entry;
+    GymEnvironmentValue implements EnvironmentValue = name:"gym" ("{" params:GymEnvironmentEntry* "}");
+    GymEnvironmentNameEntry implements GymEnvironmentEntry = name:"name" ":" value:StringValue;
+
+    interface RosEnvironmentEntry extends Entry;
+    RosEnvironmentValue implements EnvironmentValue = | name:"ros_interface" ("{" params:RosEnvironmentEntry* "}")?;
+    RosEnvironmentStateTopicEntry implements RosEnvironmentEntry = name:"state_topic" ":" value:StringValue;
+    RosEnvironmentActionTopicEntry implements RosEnvironmentEntry = name:"action_topic" ":" value:StringValue;
+    RosEnvironmentResetTopicEntry implements RosEnvironmentEntry = name:"reset_topic" ":" value:StringValue;
+    RosEnvironmentGreetingTopicEntry implements RosEnvironmentEntry = name:"greeting_topic" ":" value:StringValue;
+    RosEnvironmentMetaTopicEntry implements RosEnvironmentEntry = name:"meta_topic" ":" value:StringValue;
+    RosEnvironmentTerminalStateTopicEntry implements RosEnvironmentEntry = name:"terminal_state_topic" ":" value:StringValue;
 }

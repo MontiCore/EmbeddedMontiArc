@@ -20,25 +20,20 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-public enum Loss {
-    EUCLIDEAN{
+/**
+ *
+ */
+public enum LearningMethod {
+    SUPERVISED {
         @Override
         public String toString() {
-            return "euclidean";
+            return "supervised";
         }
     },
-    CROSS_ENTROPY{
+    REINFORCEMENT {
         @Override
         public String toString() {
-            return "cross_entropy";
+            return "reinforcement";
         }
-    },
-    L1 {
-        @Override
-        public String toString() { return "l1";}
-    },
-    HUBER_LOSS {
-        @Override
-        public String toString() { return "huber_loss";}
     }
 }

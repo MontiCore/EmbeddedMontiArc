@@ -20,25 +20,20 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-public enum Loss {
-    EUCLIDEAN{
+/**
+ *
+ */
+public enum EpsilonDecayMethod {
+    LINEAR {
         @Override
         public String toString() {
-            return "euclidean";
+            return "linear";
         }
     },
-    CROSS_ENTROPY{
+    NO {
         @Override
         public String toString() {
-            return "cross_entropy";
+            return "no";
         }
-    },
-    L1 {
-        @Override
-        public String toString() { return "l1";}
-    },
-    HUBER_LOSS {
-        @Override
-        public String toString() { return "huber_loss";}
     }
 }

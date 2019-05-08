@@ -26,4 +26,7 @@ public class ErrorCodes {
     public static final String NOT_INTEGER_CODE = "xC8851";
     public static final String UNKNOWN_VARIABLE_CODE = "xC8558";
     public static final String MISSING_PARAMETER_VALUE_CODE = "xC7293";
+    public static final String UNSUPPORTED_PARAMETER = "xC8854";
+    public static final String RANGE_ERROR = "xC8855";
+    public static final String REQUIRED_PARAMETER_MISSING = "xC8856";
 }

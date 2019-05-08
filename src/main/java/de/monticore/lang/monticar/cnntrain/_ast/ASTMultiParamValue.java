@@ -18,27 +18,17 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._symboltable;
+package de.monticore.lang.monticar.cnntrain._ast;
 
-public enum Loss {
-    EUCLIDEAN{
-        @Override
-        public String toString() {
-            return "euclidean";
-        }
-    },
-    CROSS_ENTROPY{
-        @Override
-        public String toString() {
-            return "cross_entropy";
-        }
-    },
-    L1 {
-        @Override
-        public String toString() { return "l1";}
-    },
-    HUBER_LOSS {
-        @Override
-        public String toString() { return "huber_loss";}
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ */
+public interface ASTMultiParamValue extends ASTMultiParamValueTOP {
+    String getName();
+    default List<? extends ASTEntry> getParamsList() {
+        return new ArrayList<>();
     }
 }
