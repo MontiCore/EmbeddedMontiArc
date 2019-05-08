@@ -7,13 +7,6 @@
 3. Armadillo (at least armadillo version 6.600 must be used) [Official instructions at Armadillo Website](http://arma.sourceforge.net/download.html).
 4. OpenCV
 
-## Prepare the data
-
-To create the data for training, execute:
-
-```
-bash ./prepare.sh
-```
 
 ## How to Run
 Generate and build the code for the EMADL model by executing:
@@ -29,7 +22,6 @@ Finally, run the calculator as follows:
 
 You can try different images from the provided `/resources/images` directory or even create your own images for testing. Note that the application program DigitCalculator will automatically rescale the given input image to the size 32x32.
 
-Note: Currently, the mxnet example uses CIFAR-10 data, not MNIST!
 
 
 ## Troubleshooting Help
