@@ -20,22 +20,22 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
+import com.google.common.collect.Lists;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
     private Map<String, EntrySymbol> entryMap = new HashMap<>();
     private OptimizerSymbol optimizer;
+    private RewardFunctionSymbol rlRewardFunctionSymbol;
 
     public static final ConfigurationSymbolKind KIND = new ConfigurationSymbolKind();
 
     public ConfigurationSymbol()  {
         super("", KIND);
+        rlRewardFunctionSymbol = null;
     }
 
     public OptimizerSymbol getOptimizer() {
@@ -46,6 +46,14 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         this.optimizer = optimizer;
     }
 
+    protected void setRlRewardFunction(RewardFunctionSymbol rlRewardFunctionSymbol) {
+        this.rlRewardFunctionSymbol = rlRewardFunctionSymbol;
+    }
+
+    public Optional<RewardFunctionSymbol> getRlRewardFunction() {
+        return Optional.ofNullable(this.rlRewardFunctionSymbol);
+    }
+
     public Map<String, EntrySymbol> getEntryMap() {
         return entryMap;
     }
@@ -54,4 +62,8 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         return getEntryMap().get(name);
     }
 
+    public LearningMethod getLearningMethod() {
+        return this.entryMap.containsKey("learning_method")
+                ? (LearningMethod)this.entryMap.get("learning_method").getValue().getValue() : LearningMethod.SUPERVISED;
+    }
 }

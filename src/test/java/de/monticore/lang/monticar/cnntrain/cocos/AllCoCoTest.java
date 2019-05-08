@@ -39,6 +39,8 @@ public class AllCoCoTest extends AbstractCoCoTest{
         checkValid("valid_tests","SimpleConfig2");
         checkValid("valid_tests","FullConfig");
         checkValid("valid_tests","FullConfig2");
+        checkValid("valid_tests", "ReinforcementConfig");
+        checkValid("valid_tests", "ReinforcementConfig2");
     }
 
     @Test
@@ -49,5 +51,29 @@ public class AllCoCoTest extends AbstractCoCoTest{
         checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckInteger()),
                 "invalid_cocos_tests", "IntegerTest",
                 new ExpectedErrorInfo(1, ErrorCodes.NOT_INTEGER_CODE));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckFixTargetNetworkRequiresInterval()),
+                "invalid_cocos_tests", "FixTargetNetworkRequiresInterval1",
+                new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckFixTargetNetworkRequiresInterval()),
+                "invalid_cocos_tests", "FixTargetNetworkRequiresInterval2",
+                new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckLearningParameterCombination()),
+                "invalid_cocos_tests", "CheckLearningParameterCombination1",
+                new ExpectedErrorInfo(1, ErrorCodes.UNSUPPORTED_PARAMETER));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckLearningParameterCombination()),
+                "invalid_cocos_tests", "CheckLearningParameterCombination2",
+                new ExpectedErrorInfo(3, ErrorCodes.UNSUPPORTED_PARAMETER));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckLearningParameterCombination()),
+                "invalid_cocos_tests", "CheckLearningParameterCombination3",
+                new ExpectedErrorInfo(2, ErrorCodes.UNSUPPORTED_PARAMETER));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckLearningParameterCombination()),
+                "invalid_cocos_tests", "CheckLearningParameterCombination4",
+                new ExpectedErrorInfo(5, ErrorCodes.UNSUPPORTED_PARAMETER));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckReinforcementRequiresEnvironment()),
+                "invalid_cocos_tests", "CheckReinforcementRequiresEnvironment",
+                new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckRosEnvironmentRequiresRewardFunction()),
+                "invalid_cocos_tests", "CheckRosEnvironmentRequiresRewardFunction",
+                new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
     }
 }

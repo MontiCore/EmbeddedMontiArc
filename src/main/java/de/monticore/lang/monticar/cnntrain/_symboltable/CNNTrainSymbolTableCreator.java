@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
+import de.monticore.ast.ASTCNode;
 import de.monticore.lang.monticar.cnntrain._ast.*;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
@@ -70,7 +71,6 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         compilationUnitSymbol.setConfiguration((ConfigurationSymbol) ast.getConfiguration().getSymbolOpt().get());
         setEnclosingScopeOfNodes(ast);
     }
-
 
     @Override
     public void visit(final ASTConfiguration node){
@@ -187,6 +187,10 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         }
         else if (node.getValue().isPresentCrossEntropy()){
             value.setValue(Loss.CROSS_ENTROPY);
+        } else if (node.getValue().isPresentHuberLoss()) {
+            value.setValue(Loss.HUBER_LOSS);
+        } else if (node.getValue().isPresentL1()) {
+            value.setValue(Loss.L1);
         }
         entry.setValue(value);
         addToScopeAndLinkWithNode(entry, node);
@@ -252,6 +256,13 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         return value;
     }
 
+    private ValueSymbol getValueSymbolForDouble(final ASTNumberValue astNumberValue) {
+        ValueSymbol valueSymbol = new ValueSymbol();
+        Double value = getDoubleFromNumber(astNumberValue);
+        valueSymbol.setValue(value);
+        return valueSymbol;
+    }
+
     private ValueSymbol getValueSymbolForBoolean(ASTBooleanValue astBooleanValue) {
         ValueSymbol value = new ValueSymbol();
         Boolean value_as_bool = getBooleanForValue(astBooleanValue);
@@ -259,12 +270,202 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         return value;
     }
 
+    private ValueSymbol getValueSymbolForString(ASTStringValue astStringValue) {
+        ValueSymbol value = new ValueSymbol();
+        String valueAsString = getStringFromStringValue(astStringValue);
+        value.setValue(valueAsString);
+        return value;
+    }
+
+    private String getStringFromStringValue(ASTStringValue value) {
+        return value.getStringLiteral().getValue();
+    }
+
     private int getIntegerFromNumber(ASTIntegerValue value) {
         return value.getNumberWithUnit().getNumber().get().intValue();
+    }
+
+    private double getDoubleFromNumber(final ASTNumberValue value) {
+        assert value.getNumberWithUnit().getNumber().isPresent() : "Number value is not present";
+        return value.getNumberWithUnit().getNumber().get();
     }
 
     private boolean getBooleanForValue(ASTBooleanValue value2) {
         return value2.isPresentTRUE();
     }
 
+    @Override
+    public void visit(ASTLearningMethodEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        ValueSymbol value = new ValueSymbol();
+
+        if (node.getValue().isPresentReinforcement()) {
+            value.setValue(LearningMethod.REINFORCEMENT);
+        } else if (node.getValue().isPresentSupervisedLearning()) {
+            value.setValue(LearningMethod.SUPERVISED);
+        }
+
+        entry.setValue(value);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTNumEpisodesEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTDiscountFactorEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForDouble(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTNumMaxStepsEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTTargetScoreEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForDouble(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTTrainingIntervalEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTUseFixTargetNetworkEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForBoolean(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTTargetNetworkUpdateIntervalEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTSnapshotIntervalEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTAgentNameEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForString(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTUseDoubleDQNEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForBoolean(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTReplayMemoryEntry node) {
+        processMultiParamConfigVisit(node, node.getValue().getName());
+    }
+
+    @Override
+    public void endVisit(ASTReplayMemoryEntry node) {
+        processMultiParamConfigEndVisit(node);
+    }
+
+    @Override
+    public void visit(ASTActionSelectionEntry node) {
+        processMultiParamConfigVisit(node, node.getValue().getName());
+    }
+
+    @Override
+    public void endVisit(ASTActionSelectionEntry node) {
+        processMultiParamConfigEndVisit(node);
+    }
+
+    @Override
+    public void visit(ASTEnvironmentEntry node) {
+        Environment environment;
+        environment = node.getValue().getName().equals("ros_interface") ? Environment.ROS_INTERFACE : Environment.GYM;
+        processMultiParamConfigVisit(node, environment);
+    }
+
+    @Override
+    public void endVisit(ASTEnvironmentEntry node) {
+        processMultiParamConfigEndVisit(node);
+    }
+
+    @Override
+    public void visit(ASTRewardFunctionEntry node) {
+        RewardFunctionSymbol symbol = new RewardFunctionSymbol(node.getName());
+        symbol.setRewardFunctionComponentName(node.getValue().getNameList());
+        configuration.setRlRewardFunction(symbol);
+        addToScopeAndLinkWithNode(symbol, node);
+    }
+
+    private void processMultiParamConfigVisit(ASTMultiParamConfigEntry node, Object value) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        MultiParamValueSymbol valueSymbol = new MultiParamValueSymbol();
+        valueSymbol.setValue(value);
+        entry.setValue(valueSymbol);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    private void processMultiParamConfigEndVisit(ASTMultiParamConfigEntry node) {
+        ValueSymbol valueSymbol = configuration.getEntryMap().get(node.getName()).getValue();
+        assert valueSymbol instanceof MultiParamValueSymbol : "Value symbol is not a multi parameter symbol";
+        MultiParamValueSymbol multiParamValueSymbol = (MultiParamValueSymbol)valueSymbol;
+        for (ASTEntry nodeParam : ((ASTMultiParamValue)node.getValue()).getParamsList()) {
+            multiParamValueSymbol.addParameter(nodeParam.getName(),
+                    retrievePrimitiveValueByConfigValue(nodeParam.getValue()));
+        }
+    }
+
+    private Object retrievePrimitiveValueByConfigValue(final ASTConfigValue configValue) {
+        if (configValue instanceof ASTIntegerValue) {
+            return getIntegerFromNumber((ASTIntegerValue)configValue);
+        } else if (configValue instanceof ASTNumberValue) {
+            return getDoubleFromNumber((ASTNumberValue)configValue);
+        } else if (configValue instanceof ASTBooleanValue) {
+            return getBooleanForValue((ASTBooleanValue)configValue);
+        } else if (configValue instanceof ASTStringValue) {
+            return getStringFromStringValue((ASTStringValue)configValue);
+        } else if (configValue instanceof ASTEpsilonDecayMethodValue) {
+            ASTEpsilonDecayMethodValue epsilonDecayMethodValue = (ASTEpsilonDecayMethodValue)configValue;
+            if (epsilonDecayMethodValue.isPresentLinear()) {
+                return EpsilonDecayMethod.LINEAR;
+            } else {
+                return EpsilonDecayMethod.NO;
+            }
+        }
+        throw new UnsupportedOperationException("Unknown Value type: " + configValue.getClass());
+    }
 }

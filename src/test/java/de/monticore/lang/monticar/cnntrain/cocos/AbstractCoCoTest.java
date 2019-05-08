@@ -48,13 +48,20 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
     private static final String MODEL_PATH = "src/test/resources/";
 
     protected static ASTCNNTrainCompilationUnit getAstNode(String modelPath, String model) {
+        return (ASTCNNTrainCompilationUnit)getCompilationUnitSymbol(modelPath, model).getAstNode().get();
+    }
 
+    protected static ASTCNNTrainCompilationUnit getAstNodeFromCompilationUnit(CNNTrainCompilationUnitSymbol comp) {
+        return (ASTCNNTrainCompilationUnit)comp.getAstNode().get();
+    }
+
+    protected static CNNTrainCompilationUnitSymbol getCompilationUnitSymbol(String modelPath, String model) {
         Scope symTab = createSymTab(MODEL_PATH + modelPath);
         CNNTrainCompilationUnitSymbol comp = symTab.<CNNTrainCompilationUnitSymbol> resolve(
                 model, CNNTrainCompilationUnitSymbol.KIND).orElse(null);
         assertNotNull("Could not resolve model " + model, comp);
 
-        return (ASTCNNTrainCompilationUnit) comp.getAstNode().get();
+        return comp;
     }
 
     /**
@@ -76,7 +83,8 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
      */
     protected static void checkValid(String modelPath, String model) {
         Log.getFindings().clear();
-        CNNTrainCocos.createChecker().checkAll(getAstNode(modelPath, model));
+        CNNTrainCompilationUnitSymbol comp = getCompilationUnitSymbol(modelPath, model);
+        CNNTrainCocos.createChecker().checkAll(getAstNodeFromCompilationUnit(comp));
         new ExpectedErrorInfo().checkOnlyExpectedPresent(Log.getFindings());
     }
 

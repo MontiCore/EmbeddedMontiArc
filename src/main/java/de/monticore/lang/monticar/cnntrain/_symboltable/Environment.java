@@ -20,25 +20,20 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-public enum Loss {
-    EUCLIDEAN{
+/**
+ *
+ */
+public enum Environment {
+    ROS_INTERFACE {
         @Override
         public String toString() {
-            return "euclidean";
+            return "ros-interface";
         }
     },
-    CROSS_ENTROPY{
+    GYM {
         @Override
         public String toString() {
-            return "cross_entropy";
+            return "gym";
         }
-    },
-    L1 {
-        @Override
-        public String toString() { return "l1";}
-    },
-    HUBER_LOSS {
-        @Override
-        public String toString() { return "huber_loss";}
     }
 }
