@@ -7,6 +7,10 @@ component Reward {
         out Q reward;
 
     implementation Math {
-        reward = 2;
+        if isTerminal
+            reward = -1;
+        else
+            reward = 1;
+        end
     }
 }
