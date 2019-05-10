@@ -190,11 +190,36 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testGluonReinforcementModel() {
+    public void testGluonReinforcementModelGymEnvironment() {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "cartpole.Master", "-b", "GLUON", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().stream().filter(Finding::isError).collect(Collectors.toList()).isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-emadl"),
+                Paths.get("./src/test/resources/target_code/gluon/reinforcementModel/cartpole"),
+                Arrays.asList(
+                        "cartpole_master.cpp",
+                        "cartpole_master.h",
+                        "cartpole_master_dqn.h",
+                        "cartpole_master_policy.h",
+                        "CMakeLists.txt",
+                        "CNNBufferFile.h",
+                        "CNNCreator_cartpole_master_dqn.py",
+                        "CNNNet_cartpole_master_dqn.py",
+                        "CNNPredictor_cartpole_master_dqn.h",
+                        "CNNTrainer_cartpole_master_dqn.py",
+                        "CNNTranslator.h",
+                        "HelperA.h",
+                        "start_training.sh",
+                        "reinforcement_learning/__init__.py",
+                        "reinforcement_learning/action_policy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py"
+                )
+        );
     }
 
     @Test

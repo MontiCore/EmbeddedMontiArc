@@ -6,11 +6,11 @@ component Greedy {
         out Z action;
 
     implementation Math {
-        Q maxQValue = values(0);
+        Q maxQValue = values(1);
         Z maxValueAction = 0;
 
         for i = 1:2
-            if maxQValue > values(i)
+            if values(i) > maxQValue
                 maxQValue = values(i);
                 maxValueAction = i-1;
             end

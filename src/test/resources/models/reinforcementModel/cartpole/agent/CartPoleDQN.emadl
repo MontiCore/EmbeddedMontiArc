@@ -7,10 +7,10 @@ component CartPoleDQN {
 
     implementation CNN {
         state ->
-        FullyConnected(units=256) ->
-        Relu() ->
         FullyConnected(units=128) ->
-        Relu() ->
+        Tanh() ->
+        FullyConnected(units=256) ->
+        Tanh() ->
         FullyConnected(units=2) ->
         qvalues
     }
