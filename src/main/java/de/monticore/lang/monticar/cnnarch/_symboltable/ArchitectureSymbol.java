@@ -37,7 +37,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public static final ArchitectureKind KIND = new ArchitectureKind();
 
-    private ArchitectureElementSymbol body;
+    private List<CompositeElementSymbol> streams;
     private List<IOSymbol> inputs = new ArrayList<>();
     private List<IOSymbol> outputs = new ArrayList<>();
     private Map<String, IODeclarationSymbol> ioDeclarationMap = new HashMap<>();
@@ -48,12 +48,12 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         super("", KIND);
     }
 
-    public ArchitectureElementSymbol getBody() {
-        return body;
+    public List<CompositeElementSymbol> getStreams() {
+        return streams;
     }
 
-    protected void setBody(ArchitectureElementSymbol body) {
-        this.body = body;
+    public void setStreams(List<CompositeElementSymbol> streams) {
+        this.streams = streams;
     }
 
     public String getDataPath() {
@@ -103,30 +103,44 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return getSpannedScope().resolveLocally(LayerDeclarationSymbol.KIND);
     }
 
+    public void resolve() {
+        for (CompositeElementSymbol stream : streams) {
+            stream.checkIfResolvable();
 
-    public void resolve(){
-        getBody().checkIfResolvable();
-        try{
-            getBody().resolveOrError();
-        }
-        catch (ArchResolveException e){
-            //do nothing; error is already logged
+            try {
+                stream.resolveOrError();
+            }
+            catch (ArchResolveException e) {
+                // Do nothing; error is already logged
+            }
         }
     }
 
-    public List<ArchitectureElementSymbol> getFirstElements(){
+    /*public List<ArchitectureElementSymbol> getFirstElements() {
         if (!getBody().isResolved()){
             resolve();
         }
         return getBody().getFirstAtomicElements();
-    }
+    }*/
 
     public boolean isResolved(){
-        return getBody().isResolved();
+        boolean resolved = true;
+
+        for (CompositeElementSymbol stream : streams) {
+            resolved &= stream.isResolved();
+        }
+
+        return resolved;
     }
 
     public boolean isResolvable(){
-        return getBody().isResolvable();
+        boolean resolvable = true;
+
+        for (CompositeElementSymbol stream : streams) {
+            resolvable &= stream.isResolvable();
+        }
+
+        return resolvable;
     }
 
     public void putInScope(Scope scope){
@@ -145,22 +159,32 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
      */
     public ArchitectureSymbol preResolveDeepCopy(Scope enclosingScopeOfCopy){
         ArchitectureSymbol copy = new ArchitectureSymbol();
-        copy.setBody(getBody().preResolveDeepCopy());
+
         if (getAstNode().isPresent()){
             copy.setAstNode(getAstNode().get());
         }
+
         copy.getSpannedScope().getAsMutableScope().add(AllPredefinedVariables.createTrueConstant());
         copy.getSpannedScope().getAsMutableScope().add(AllPredefinedVariables.createFalseConstant());
+
         for (LayerDeclarationSymbol layerDeclaration : AllPredefinedLayers.createList()){
             copy.getSpannedScope().getAsMutableScope().add(layerDeclaration);
         }
+
         for (LayerDeclarationSymbol layerDeclaration : getSpannedScope().<LayerDeclarationSymbol>resolveLocally(LayerDeclarationSymbol.KIND)){
             if (!layerDeclaration.isPredefined()) {
                 copy.getSpannedScope().getAsMutableScope().add(layerDeclaration.deepCopy());
             }
         }
 
-        copy.getBody().putInScope(copy.getSpannedScope());
+        List<CompositeElementSymbol> copyStreams = new ArrayList<>();
+        for (CompositeElementSymbol stream : streams) {
+            CompositeElementSymbol copyStream = stream.preResolveDeepCopy();
+            copyStream.putInScope(copy.getSpannedScope());
+            copyStreams.add(copyStream);
+        }
+        copy.setStreams(copyStreams);
+
         copy.putInScope(enclosingScopeOfCopy);
         return copy;
     }

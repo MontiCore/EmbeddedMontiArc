@@ -54,7 +54,7 @@ public class SymtabTest extends AbstractSymtabTest {
                 CNNArchCompilationUnitSymbol.KIND).orElse(null);
         assertNotNull(a);
         a.resolve();
-        a.getArchitecture().getBody().getOutputTypes();
+        a.getArchitecture().getStreams().get(0).getOutputTypes();
     }
 
     @Test
@@ -65,7 +65,7 @@ public class SymtabTest extends AbstractSymtabTest {
                 CNNArchCompilationUnitSymbol.KIND).orElse(null);
         assertNotNull(a);
         a.resolve();
-        a.getArchitecture().getBody().getOutputTypes();
+        a.getArchitecture().getStreams().get(0).getOutputTypes();
     }
 
     @Test
@@ -76,7 +76,7 @@ public class SymtabTest extends AbstractSymtabTest {
                 CNNArchCompilationUnitSymbol.KIND).orElse(null);
         assertNotNull(a);
         a.resolve();
-        a.getArchitecture().getBody().getOutputTypes();
+        a.getArchitecture().getStreams().get(0).getOutputTypes();
     }
 
 }

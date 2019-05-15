@@ -7,5 +7,5 @@ architecture UnknownVariableName(inputs=10){
     Tanh() ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    out1
+    out1;
 }

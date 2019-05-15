@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.cnnarch._cocos;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -28,10 +29,12 @@ public class CheckArchitectureFinished extends CNNArchSymbolCoCo {
 
     @Override
     public void check(ArchitectureSymbol architecture) {
-        if (!architecture.getBody().getOutputTypes().isEmpty()){
-            Log.error("0" + ErrorCodes.UNFINISHED_ARCHITECTURE + " The architecture is not finished. " +
-                            "There are still open streams at the end of the architecture. "
-                    , architecture.getSourcePosition());
+        for (CompositeElementSymbol stream : architecture.getStreams()) {
+            if (!stream.getOutputTypes().isEmpty()){
+                Log.error("0" + ErrorCodes.UNFINISHED_ARCHITECTURE + " The architecture is not finished. " +
+                                "There are still open streams at the end of the architecture. "
+                        , architecture.getSourcePosition());
+            }
         }
         if (architecture.getInputs().isEmpty()){
             Log.error("0" + ErrorCodes.UNFINISHED_ARCHITECTURE + " The architecture has no inputs. "

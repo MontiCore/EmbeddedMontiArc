@@ -42,8 +42,10 @@ public class ParserTest {
     public static final boolean ENABLE_FAIL_QUICK = false;
     private static List<String> expectedParseErrorModels = Arrays.asList(
             // incorrect argument name for a layer
+            "src/test/resources/architectures/RNNsearch.cnna",
             "src/test/resources/invalid_tests/MissingParallelBrackets.cnna",
-            "src/test/resources/invalid_tests/MissingLayerOperator.cnna")
+            "src/test/resources/invalid_tests/MissingLayerOperator.cnna",
+            "src/test/resources/invalid_tests/MissingSemicolon.cnna")
 
             .stream().map(s -> Paths.get(s).toString())
             .collect(Collectors.toList());

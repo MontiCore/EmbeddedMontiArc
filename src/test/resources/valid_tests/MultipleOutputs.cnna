@@ -16,6 +16,5 @@ architecture MultipleOutputs{
         FullyConnected(units=4, no_bias=true) ->
         Softmax()
     ) ->
-    pred
-
+    pred;
 }

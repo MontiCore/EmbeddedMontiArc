@@ -7,5 +7,5 @@ architecture WrongArgument(inputs=10, classes=2){
     Tanh(asd=1) ->
     FullyConnected(unit=classes) ->
     Softmax() ->
-    out1
+    out1;
 }

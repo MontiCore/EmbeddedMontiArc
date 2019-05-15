@@ -65,6 +65,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("valid_tests", "ResNeXt50_alt");
         checkValid("valid_tests", "Alexnet_alt2");
         checkValid("valid_tests", "MultipleOutputs");
+        checkValid("valid_tests", "MultipleStreams");
     }
 
     @Test
@@ -228,15 +229,6 @@ public class AllCoCoTest extends AbstractCoCoTest {
                 new CNNArchSymbolCoCoChecker(),
                 "invalid_tests", "IllegalName",
                 new ExpectedErrorInfo(2, ErrorCodes.ILLEGAL_NAME));
-    }
-
-    @Test
-    public void testUnfinishedArchitecture(){
-        checkInvalid(new CNNArchCoCoChecker(),
-                new CNNArchSymbolCoCoChecker(),
-                new CNNArchSymbolCoCoChecker().addCoCo(new CheckArchitectureFinished()),
-                "invalid_tests", "UnfinishedArchitecture",
-                new ExpectedErrorInfo(1, ErrorCodes.UNFINISHED_ARCHITECTURE));
     }
 
     @Test

@@ -12,5 +12,5 @@ architecture DuplicatedIONames(inputs=10, classes=2){
     fc() ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    out1
+    out1;
 }

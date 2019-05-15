@@ -145,8 +145,12 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     public void endVisit(final ASTArchitecture node) {
-        //ArchitectureSymbol architecture = (ArchitectureSymbol) node.getSymbolOpt().get();
-        architecture.setBody((ArchitectureElementSymbol) node.getBody().getSymbolOpt().get());
+        List<CompositeElementSymbol> streams = new ArrayList<>();
+        for (ASTInstruction astInstruction : node.getInstructionsList()){
+            ASTStream astStream = (ASTStream)astInstruction; // TODO: For now all instructions are streams
+            streams.add((CompositeElementSymbol) astStream.getSymbolOpt().get());
+        }
+        architecture.setStreams(streams);
 
         removeCurrentScope();
     }
@@ -326,8 +330,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         CompositeElementSymbol compositeElement = (CompositeElementSymbol) node.getSymbolOpt().get();
 
         List<ArchitectureElementSymbol> elements = new ArrayList<>();
-        for (ASTArchBody astBody : node.getGroupsList()){
-            elements.add((CompositeElementSymbol) astBody.getSymbolOpt().get());
+        for (ASTStream astStream : node.getGroupsList()){
+            elements.add((CompositeElementSymbol) astStream.getSymbolOpt().get());
         }
         compositeElement.setElements(elements);
 
@@ -335,16 +339,15 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     @Override
-    public void visit(ASTArchBody ast) {
+    public void visit(ASTStream ast) {
         CompositeElementSymbol compositeElement = new CompositeElementSymbol();
         compositeElement.setParallel(false);
         addToScopeAndLinkWithNode(compositeElement, ast);
     }
 
     @Override
-    public void endVisit(ASTArchBody ast) {
+    public void endVisit(ASTStream ast) {
         CompositeElementSymbol compositeElement = (CompositeElementSymbol) ast.getSymbolOpt().get();
-
         List<ArchitectureElementSymbol> elements = new ArrayList<>();
         for (ASTArchitectureElement astElement : ast.getElementsList()){
             elements.add((ArchitectureElementSymbol) astElement.getSymbolOpt().get());

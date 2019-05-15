@@ -7,5 +7,5 @@ architecture WrongIOType(inputs=10, classes=2){
     Tanh() ->
     FullyConnected(units=classes, no_bias=true) ->
     Relu() ->
-    out1
+    out1;
 }
