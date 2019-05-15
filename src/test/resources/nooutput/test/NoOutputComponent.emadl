@@ -1,0 +1,7 @@
+package test;
+
+component NoOutputComponent {
+    ports
+        in Q(-oo:oo) inp1,
+        in Q^{2,3,4} inp2;
+}
