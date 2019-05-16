@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
@@ -283,5 +284,13 @@ public class GenerationTest extends AbstractSymtabTest {
             assertTrue("Hash method should throw IOException on invalid path", false);
         } catch(IOException e){
         }
+    }
+
+    @Test
+    public void gluonDdpgTest() {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "mountaincar.Master", "-b", "GLUON", "-f", "n", "-c", "n"};
+        EMADLGeneratorCli.main(args);
+        assertEquals(0, Log.getFindings().stream().filter(Finding::isError).count());
     }
 }
