@@ -6,11 +6,14 @@ from CNNNet_${tc.fullArchitectureName} import Net
 class ${tc.fileNameWithoutEnding}:
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
-    _input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.definition.type.dimensions, ",")})</#list>]
+    _input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.definition.type.dimensions, ",")},)</#list>]
 
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.net = None
+
+    def get_input_shapes(self):
+        return self._input_shapes_
 
     def load(self, context):
         lastEpoch = 0

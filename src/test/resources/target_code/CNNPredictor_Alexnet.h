@@ -30,8 +30,7 @@ public:
 
     void predict(const std::vector<float> &data,
                  std::vector<float> &predictions){
-        MXPredSetInput(handle, "data", data.data(), data.size());
-        //MXPredSetInput(handle, "data", data.data(), data.size());
+        MXPredSetInput(handle, "data", data.data(), static_cast<mx_uint>(data.size()));
 
         MXPredForward(handle);
 
@@ -61,8 +60,6 @@ public:
         int dev_type = use_gpu ? 2 : 1;
         int dev_id = 0;
 
-        handle = 0;
-
         if (json_data.GetLength() == 0 ||
             param_data.GetLength() == 0) {
             std::exit(-1);
@@ -70,10 +67,8 @@ public:
 
         const mx_uint num_input_nodes = input_keys.size();
 
-        const char* input_keys_ptr[num_input_nodes];
-        for(mx_uint i = 0; i < num_input_nodes; i++){
-            input_keys_ptr[i] = input_keys[i].c_str();
-        }
+        const char* input_key[1] = { "data" };
+        const char** input_keys_ptr = input_key;
 
         mx_uint shape_data_size = 0;
         mx_uint input_shape_indptr[input_shapes.size() + 1];
@@ -92,8 +87,8 @@ public:
             }
         }
 
-        MXPredCreate((const char*)json_data.GetBuffer(),
-                     (const char*)param_data.GetBuffer(),
+        MXPredCreate(static_cast<const char*>(json_data.GetBuffer()),
+                     static_cast<const char*>(param_data.GetBuffer()),
                      static_cast<size_t>(param_data.GetLength()),
                      dev_type,
                      dev_id,

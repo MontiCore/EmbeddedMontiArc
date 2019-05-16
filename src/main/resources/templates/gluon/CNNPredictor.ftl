@@ -31,8 +31,7 @@ public:
     void predict(${tc.join(tc.architectureInputs, ", ", "const std::vector<float> &", "")},
                  ${tc.join(tc.architectureOutputs, ", ", "std::vector<float> &", "")}){
 <#list tc.architectureInputs as inputName>
-        MXPredSetInput(handle, "data", ${inputName}.data(), ${inputName}.size());
-        //MXPredSetInput(handle, "${inputName}", ${inputName}.data(), ${inputName}.size());
+        MXPredSetInput(handle, "data", ${inputName}.data(), static_cast<mx_uint>(${inputName}.size()));
 </#list>
 
         MXPredForward(handle);
@@ -65,8 +64,6 @@ public:
         int dev_type = use_gpu ? 2 : 1;
         int dev_id = 0;
 
-        handle = 0;
-
         if (json_data.GetLength() == 0 ||
             param_data.GetLength() == 0) {
             std::exit(-1);
@@ -74,10 +71,15 @@ public:
 
         const mx_uint num_input_nodes = input_keys.size();
 
+<#if (tc.architectureInputs?size >= 2)>
         const char* input_keys_ptr[num_input_nodes];
         for(mx_uint i = 0; i < num_input_nodes; i++){
             input_keys_ptr[i] = input_keys[i].c_str();
         }
+<#else>
+        const char* input_key[1] = { "data" };
+        const char** input_keys_ptr = input_key;
+</#if>
 
         mx_uint shape_data_size = 0;
         mx_uint input_shape_indptr[input_shapes.size() + 1];
@@ -96,8 +98,8 @@ public:
             }
         }
 
-        MXPredCreate((const char*)json_data.GetBuffer(),
-                     (const char*)param_data.GetBuffer(),
+        MXPredCreate(static_cast<const char*>(json_data.GetBuffer()),
+                     static_cast<const char*>(param_data.GetBuffer()),
                      static_cast<size_t>(param_data.GetLength()),
                      dev_type,
                      dev_id,
