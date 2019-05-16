@@ -6,11 +6,14 @@ from CNNNet_Alexnet import Net
 class CNNCreator_Alexnet:
     _model_dir_ = "model/Alexnet/"
     _model_prefix_ = "model"
-    _input_shapes_ = [(3,224,224)]
+    _input_shapes_ = [(3,224,224,)]
 
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.net = None
+
+    def get_input_shapes(self):
+        return self._input_shapes_
 
     def load(self, context):
         lastEpoch = 0

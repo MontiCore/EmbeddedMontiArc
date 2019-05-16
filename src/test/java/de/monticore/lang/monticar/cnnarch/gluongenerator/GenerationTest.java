@@ -20,6 +20,8 @@
  */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
+import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionSourceGenerator;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
@@ -29,16 +31,21 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class GenerationTest extends AbstractSymtabTest {
+    private RewardFunctionSourceGenerator rewardFunctionSourceGenerator;
 
     @Before
     public void setUp() {
         // ensure an empty log
         Log.getFindings().clear();
         Log.enableFailQuick(false);
+        rewardFunctionSourceGenerator = mock(RewardFunctionSourceGenerator.class);
     }
 
     @Test
@@ -125,7 +132,7 @@ public class GenerationTest extends AbstractSymtabTest {
     public void testFullCfgGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String sourcePath = "src/test/resources/valid_tests";
-        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon();
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
         trainGenerator.generate(Paths.get(sourcePath), "FullConfig");
 
         assertTrue(Log.getFindings().isEmpty());
@@ -141,7 +148,7 @@ public class GenerationTest extends AbstractSymtabTest {
     public void testSimpleCfgGeneration() throws IOException {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests");
-        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon();
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
 
         trainGenerator.generate(modelPath, "SimpleConfig");
 
@@ -158,7 +165,7 @@ public class GenerationTest extends AbstractSymtabTest {
     public void testEmptyCfgGeneration() throws IOException {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests");
-        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon();
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
         trainGenerator.generate(modelPath, "EmptyConfig");
 
         assertTrue(Log.getFindings().isEmpty());
@@ -168,6 +175,31 @@ public class GenerationTest extends AbstractSymtabTest {
                 Arrays.asList(
                         "CNNTrainer_emptyConfig.py",
                         "supervised_trainer.py"));
+    }
+
+    @Test
+    public void testReinforcementConfig2() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+
+        trainGenerator.generate(modelPath, "ReinforcementConfig2");
+
+        assertTrue(Log.getFindings().isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code/ReinforcementConfig2"),
+                Arrays.asList(
+                        "CNNTrainer_reinforcementConfig2.py",
+                        "start_training.sh",
+                        "reinforcement_learning/__init__.py",
+                        "reinforcement_learning/action_policy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py"
+                )
+        );
     }
 
 

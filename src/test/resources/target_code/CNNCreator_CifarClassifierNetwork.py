@@ -6,11 +6,14 @@ from CNNNet_CifarClassifierNetwork import Net
 class CNNCreator_CifarClassifierNetwork:
     _model_dir_ = "model/CifarClassifierNetwork/"
     _model_prefix_ = "model"
-    _input_shapes_ = [(3,32,32)]
+    _input_shapes_ = [(3,32,32,)]
 
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.net = None
+
+    def get_input_shapes(self):
+        return self._input_shapes_
 
     def load(self, context):
         lastEpoch = 0
