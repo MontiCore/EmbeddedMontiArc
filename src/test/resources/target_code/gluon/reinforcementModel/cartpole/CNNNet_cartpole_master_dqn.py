@@ -74,9 +74,9 @@ class Net(gluon.HybridBlock):
         with self.name_scope():
             if not data_mean is None:
                 assert(not data_std is None)
-                self.input_normalization = ZScoreNormalization(data_mean=data_mean, data_std=data_std)
+                self.state_input_normalization = ZScoreNormalization(data_mean=data_mean, data_std=data_std)
             else:
-                self.input_normalization = NoNormalization()
+                self.state_input_normalization = NoNormalization()
 
             self.fc1_ = gluon.nn.Dense(units=128, use_bias=True)
             # fc1_, output shape: {[128,1,1]}
@@ -93,8 +93,8 @@ class Net(gluon.HybridBlock):
         self.last_layer = 'linear'
 
 
-    def hybrid_forward(self, F, x):
-        state = self.input_normalization(x)
+    def hybrid_forward(self, F, state):
+        state = self.state_input_normalization(state)
         fc1_ = self.fc1_(state)
         tanh1_ = self.tanh1_(fc1_)
         fc2_ = self.fc2_(tanh1_)
