@@ -100,7 +100,7 @@ class DqnAgent(object):
         # Prepare output directory and logger
         self.__output_directory = output_directory\
             + '/' + self.__agent_name\
-            + '/' + time.strftime('%d-%m-%Y-%H-%M-%S', time.localtime(self.__creation_time))
+            + '/' + time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(self.__creation_time))
         self.__logger = self.__setup_logging()
         self.__logger.info('Agent created with following parameters: {}'.format(self.__make_config_dict()))
 
@@ -113,9 +113,8 @@ class DqnAgent(object):
         return cls(network, environment, ctx=ctx, **config_dict)
 
     @classmethod
-    def resume_from_session(cls, session_dir, network_type):
+    def resume_from_session(cls, session_dir, net, environment):
         import pickle
-        session_dir = os.path.join(session_dir, '.interrupted_session')
         if not os.path.exists(session_dir):
             raise ValueError('Session directory does not exist')
 
@@ -132,13 +131,14 @@ class DqnAgent(object):
         with open(files['agent'], 'rb') as f:
             agent = pickle.load(f)
 
-        agent.__qnet = network_type()
+        agent.__environment = environment
+        agent.__qnet = net
         agent.__qnet.load_parameters(files['q_net_params'], agent.__ctx)
         agent.__qnet.hybridize()
-        agent.__qnet(nd.ones((1,) + agent.__environment.state_dim))
-        agent.__best_net = network_type()
+        agent.__qnet(nd.random_normal(shape=((1,) + agent.__state_dim), ctx=agent.__ctx))
+        agent.__best_net = copy_net(agent.__qnet, agent.__state_dim, agent.__ctx)
         agent.__best_net.load_parameters(files['best_net_params'], agent.__ctx)
-        agent.__target_qnet = network_type()
+        agent.__target_qnet = copy_net(agent.__qnet, agent.__state_dim, agent.__ctx)
         agent.__target_qnet.load_parameters(files['target_net_params'], agent.__ctx)
 
         agent.__logger = agent.__setup_logging(append=True)
@@ -157,6 +157,8 @@ class DqnAgent(object):
         del self.__training_stats.logger
         logger = self.__logger
         self.__logger = None
+        self.__environment.close()
+        self.__environment = None
 
         self.__save_net(self.__qnet, 'qnet', session_dir)
         self.__qnet = None
@@ -169,7 +171,7 @@ class DqnAgent(object):
 
         with open(agent_session_file, 'wb') as f:
             pickle.dump(self, f)
-
+        self.__logger = logger
         logger.info('State successfully stored')
 
     @property
@@ -293,7 +295,7 @@ class DqnAgent(object):
         return loss
 
     def __do_snapshot_if_in_interval(self, episode):
-        do_snapshot = (episode % self.__snapshot_interval == 0)
+        do_snapshot = (episode != 0 and (episode % self.__snapshot_interval == 0))
         if do_snapshot:
             self.save_parameters(episode=episode)
             self.__evaluate()
@@ -318,6 +320,7 @@ class DqnAgent(object):
 
         # Implementation Deep Q Learning described by Mnih et. al. in Playing Atari with Deep Reinforcement Learning
         while self.__current_episode < episodes:
+            # Check interrupt flag
             if self.__interrupt_flag:
                 self.__interrupt_flag = False
                 self.__interrupt_training()

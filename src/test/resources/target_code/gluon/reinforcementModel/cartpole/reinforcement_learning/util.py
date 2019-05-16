@@ -37,13 +37,19 @@ class AgentSignalHandler(object):
     def __init__(self):
         signal.signal(signal.SIGINT, self.interrupt_training)
         self.__agent = None
+        self.__times_interrupted = 0
 
     def register_agent(self, agent):
         self.__agent = agent
 
     def interrupt_training(self, sig, frame):
-        if self.__agent:
-            self.__agent.set_interrupt_flag(True)
+        self.__times_interrupted = self.__times_interrupted + 1
+        if self.__times_interrupted <= 3:
+            if self.__agent:
+                self.__agent.set_interrupt_flag(True)
+        else:
+            print('Interrupt called three times: Force quit')
+            sys.exit(1)
 
 style.use('fivethirtyeight')
 class TrainingStats(object):

@@ -17,6 +17,10 @@ class Environment:
     def step(self, action):
         pass
 
+    @abc.abstractmethod
+    def close(self):
+        pass
+
 import gym
 class GymEnvironment(Environment):
     def __init__(self, env_name, **kwargs):

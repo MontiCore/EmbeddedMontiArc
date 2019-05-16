@@ -32,6 +32,10 @@ class Environment:
     def step(self, action):
         pass
 
+    @abc.abstractmethod
+    def close(self):
+        pass
+
 import rospy
 import thread
 import numpy as np
@@ -83,7 +87,8 @@ class RosEnvironment(Environment):
         reset_message.data = True
         self.__waiting_for_state_update = True
         self.__reset_publisher.publish(reset_message)
-        self.__wait_for_new_state(self.__reset_publisher, reset_message)
+        while self.__last_received_terminal:
+            self.__wait_for_new_state(self.__reset_publisher, reset_message)
         return self.__last_received_state
 
     def step(self, action):
@@ -118,6 +123,9 @@ class RosEnvironment(Environment):
                     rospy.logerr("Timeout 3 times in a row: Terminate application")
                     exit()
             time.sleep(100/1000)
+
+    def close(self):
+        rospy.signal_shutdown('Program ended!')
 
 
     def __state_callback(self, data):
