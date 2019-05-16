@@ -30,8 +30,8 @@ import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNTrain2Gluon;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.annotations.ArchitectureAdapter;
 import de.monticore.lang.monticar.cnntrain.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
@@ -507,6 +507,7 @@ public class EMADLGenerator {
                 trainConfigFilename = names.get(names.size()-1);
                 Path modelPath = Paths.get(getModelsPath() + Joiner.on("/").join(names.subList(0,names.size()-1)));
                 ConfigurationSymbol configuration = cnnTrainGenerator.getConfigurationSymbol(modelPath, trainConfigFilename);
+                configuration.setTrainedArchitecture(new ArchitectureAdapter(architecture.get()));
                 cnnTrainGenerator.setInstanceName(componentInstance.getFullName().replaceAll("\\.", "_"));
                 Map<String, String> fileContentMap =  cnnTrainGenerator.generateStrings(configuration);
                 for (String fileName : fileContentMap.keySet()){
