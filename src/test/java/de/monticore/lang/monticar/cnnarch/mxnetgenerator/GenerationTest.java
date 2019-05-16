@@ -107,6 +107,16 @@ public class GenerationTest extends AbstractSymtabTest{
         assertTrue(Log.getFindings().isEmpty());
     }
 
+    /* TODO: Change quitGeneration() call and maybe add Exception?
+    @Test
+    public void testMultipleStreams() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/invalid_tests", "-r", "MultipleStreams"};
+        CNNArch2MxNetCli.main(args);
+        //assertTrue(Log.getFindings().isEmpty());
+    }
+    */
+
     @Test
     public void testMultipleOutputs() throws IOException, TemplateException {
         Log.getFindings().clear();

@@ -42,5 +42,5 @@ architecture ResNeXt50_alt(img_height=224, img_width=224, img_channels=3, classe
     GlobalPooling(pool_type="avg") ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    predictions
+    predictions;
 }

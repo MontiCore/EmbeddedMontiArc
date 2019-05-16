@@ -28,5 +28,5 @@ architecture ThreeInputCNN_M14_alternative(img_height=200, img_width=300, img_ch
     Relu() ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    predictions
+    predictions;
 }

@@ -65,10 +65,20 @@ public class CNNArch2MxNet extends CNNArchGenerator {
     }
 
     private boolean supportCheck(ArchitectureSymbol architecture){
+        List<CompositeElementSymbol> streams = architecture.getStreams();
+
+        // This generator only supports one stream
+        if (streams.size() != 1)
+        {
+            return false;
+        }
+
         LayerSupportChecker layerChecker = new LayerSupportChecker();
-        for (ArchitectureElementSymbol element : ((CompositeElementSymbol)architecture.getBody()).getElements()){
-            if(!isSupportedLayer(element, layerChecker)) {
-                return false;
+        for (CompositeElementSymbol stream : streams) {
+            for (ArchitectureElementSymbol element : stream.getElements()) {
+                if (!isSupportedLayer(element, layerChecker)) {
+                    return false;
+                }
             }
         }
         return true;

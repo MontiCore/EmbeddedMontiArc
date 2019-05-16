@@ -33,7 +33,10 @@ public class LayerNameCreator {
     private Map<String, ArchitectureElementSymbol> nameToElement = new HashMap<>();
 
     public LayerNameCreator(ArchitectureSymbol architecture) {
-        name(architecture.getBody(), 1, new ArrayList<>());
+        int stage = 1;
+        for (CompositeElementSymbol stream : architecture.getStreams()) {
+            stage = name(stream, stage, new ArrayList<>());
+        }
     }
 
     public ArchitectureElementSymbol getArchitectureElement(String name){
