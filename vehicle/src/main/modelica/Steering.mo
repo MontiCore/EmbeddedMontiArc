@@ -25,8 +25,8 @@ model Steering
   
   //parameter Steering
   parameter Coefficient sr=15.9;
-  parameter Angle toe_f=0.3;
-  parameter Angle toe_r=0.25;
+  parameter Angle toe_f=0.2;
+  parameter Angle toe_r=0.15;
   parameter AngularForce compfy_f=0.0000012217;
   parameter AngularForce compfy_r=0.00000052360;
   parameter AngularTorque compmz_r=0.000027925;
@@ -69,7 +69,7 @@ initial equation
 equation
 delta_d= delta_int + d_sw*omega_sw;
 delta_1= -toe_f + (delta_d/sr) - compfy_f*F_y_1 + compmz_f*mz_1 + rollst_f*roll_angle;
-delta_2= -toe_f + (delta_d/sr) - compfy_f*F_y_2 + compmz_f*mz_2 + rollst_f*roll_angle;
-delta_3= -toe_r + (delta_d/sr) - compfy_r*F_y_3 + compmz_r*mz_3 + rollst_r*roll_angle;
-delta_4= -toe_r + (delta_d/sr) - compfy_r*F_y_4 + compmz_r*mz_4 + rollst_r*roll_angle;
+delta_2=  toe_f + (delta_d/sr) - compfy_f*F_y_2 + compmz_f*mz_2 + rollst_f*roll_angle;
+delta_3= -toe_r - compfy_r*F_y_3 + compmz_r*mz_3 + rollst_r*roll_angle;
+delta_4=  toe_r - compfy_r*F_y_3 + compmz_r*mz_3 + rollst_r*roll_angle;
 end Steering;

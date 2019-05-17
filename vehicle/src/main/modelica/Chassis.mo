@@ -51,23 +51,27 @@ model Chassis
   parameter AngularVelocity omega_x_0=0;
   parameter Velocity v_x_0=0;
   parameter Velocity v_y_0=0;
+  
   //Input Chassis from External
+  input Force F_ext_x;
+  input Force F_ext_y;
+  
+  //Input Chassis from Driveline
   input Torque tau_D_1;
   input Torque tau_D_2;
   input Torque tau_D_3;
   input Torque tau_D_4;
-  input Torque tau_B_1;
-  input Torque tau_B_2;
-  input Torque tau_B_3;
-  input Torque tau_B_4;
-  input Force F_ext_x;
-  input Force F_ext_y;
-  
   //Inputs Chassis from Steering
   input Angle delta_1;
   input Angle delta_2;
   input Angle delta_3;
   input Angle delta_4;
+  //Input Chassis from Brakes
+  input Torque tau_B_1;
+  input Torque tau_B_2;
+  input Torque tau_B_3;
+  input Torque tau_B_4;
+  
   //Inputs Chassis from Input Filter
   input Angle slope_d;
   input Angle bank_d;
@@ -157,7 +161,7 @@ equation
   F_x_1*sin(delta_1)+F_y_1*cos(delta_1)
   +F_x_2*sin(delta_2)+F_y_2*cos(delta_2)
   +F_x_3*sin(delta_3)+F_y_3*cos(delta_3)
-  +F_x_4*sin(delta_4)+F_y_1*cos(delta_4)
+  +F_x_4*sin(delta_4)+F_y_4*cos(delta_4)
   +m*g*sin(-bank_d)
   +F_ext_y
   =m*a_y;

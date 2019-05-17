@@ -117,6 +117,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      * Function that returns a copy of the center of mass position vector
      * @return Position vector of the center of mass
      */
+
     @Override
     public RealVector getPosition(){
         return  position.copy();
@@ -369,6 +370,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         }
         force = new ArrayRealVector(3);
         torque = new ArrayRealVector(3);
+
     }
 
     /**

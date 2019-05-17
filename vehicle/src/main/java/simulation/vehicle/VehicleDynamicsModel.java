@@ -261,6 +261,7 @@ public class VehicleDynamicsModel {
             // Input filter state variables
             case "slope_d":
             case "bank_d":
+            case "delta_sw":
                 inputFilter.write(name).with(value);
                 break;
             // Chassis inputs
@@ -312,8 +313,7 @@ public class VehicleDynamicsModel {
                 chassis.write(name).with(value);
                 tires.write(name).with(value);
                 break;*/
-            // Steering inputs
-            case "delta_sw":
+            // Steering input
             case "omega_sw":
                 // Steering state variables
             case "delta_d":
@@ -709,6 +709,14 @@ public class VehicleDynamicsModel {
         steering.write("mz_3").with(tires.read("mz_3").asDouble());
         steering.write("mz_4").with(tires.read("mz_4").asDouble());
         steering.write("delta_int").with(inputFilter.read("delta_int").asDouble());
+        chassis.write("tau_B_1").with(brakeSystem.read("brakingtorque_1").asDouble());
+        chassis.write("tau_B_2").with(brakeSystem.read("brakingtorque_2").asDouble());
+        chassis.write("tau_B_3").with(brakeSystem.read("brakingtorque_3").asDouble());
+        chassis.write("tau_B_4").with(brakeSystem.read("brakingtorque_4").asDouble());
+        chassis.write("tau_D_1").with(driveline.read("driving_t1").asDouble());
+        chassis.write("tau_D_2").with(driveline.read("driving_t2").asDouble());
+        chassis.write("tau_D_3").with(driveline.read("driving_t3").asDouble());
+        chassis.write("tau_D_4").with(driveline.read("driving_t4").asDouble());
         needsExchanging = false;
     }
 }

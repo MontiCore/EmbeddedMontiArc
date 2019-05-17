@@ -176,25 +176,25 @@ equation
   if psi_1<1 then
     F_1=-C*(-1+psi_1-psi_1^(2/3))*F_z_1;
   else
-    F_1=(muv_1 + (1-muv_1)*exp(-0.01*(psi_1-1)^2))*(mu_1*F_z_1)/max(S_1,0.1);
+    F_1=(muv_1 + (1-muv_1)*exp(-0.01*(psi_1-1)^2))*((mu_3*F_z_3)/S_1);
   end if;
   
   if psi_2<1 then
     F_2=-C*(-1+psi_2-psi_2^(2/3))*F_z_2;
   else
-    F_2=(muv_2 + (1-muv_2)*exp(-0.01*(psi_2-1)^2))*(mu_2*F_z_2)/max(S_2,0.1);
+    F_2=(muv_2 + (1-muv_2)*exp(-0.01*(psi_2-1)^2))*((mu_3*F_z_3)/S_2);
   end if;
   
   if psi_3<1 then
     F_3=-C*(-1+psi_3-psi_3^(2/3))*F_z_3;
   else
-    F_3=(muv_3 + (1-muv_3)*exp(-0.01*(psi_3-1)^2))*(mu_3*F_z_3)/max(S_3,0.1);
+    F_3=(muv_3 + (1-muv_3)*exp(-0.01*(psi_3-1)^2))*((mu_3*F_z_3)/S_3);
   end if;
   
   if psi_4<1 then
     F_4=-C*(-1+psi_4-psi_4^(2/3))*F_z_4;
   else
-    F_4=(muv_4 + (1-muv_4)*exp(-0.01*(psi_4-1)^2))*(mu_4*F_z_4)/max(S_4,0.1);
+    F_4=(muv_4 + (1-muv_4)*exp(-0.01*(psi_4-1)^2))*((mu_4*F_z_4)/S_4);
   end if;
   
   F_x_1_rlx = F_1 * S_x_1;

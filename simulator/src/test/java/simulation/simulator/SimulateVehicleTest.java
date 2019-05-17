@@ -43,7 +43,7 @@ public class SimulateVehicleTest {
         Log.setLogEnabled(true);
     }
 
-    private void setAccelerating(PhysicalVehicle physicalVehicle, double value) {
+    /*private void setAccelerating(PhysicalVehicle physicalVehicle, double value) {
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         VehicleActuator motor = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR);
@@ -77,15 +77,52 @@ public class SimulateVehicleTest {
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         VehicleActuator steering = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
-
+        
         steering.setActuatorValueTarget(value);
     }
+
+    private void setThrottle(PhysicalVehicle physicalVehicle, double value){
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+
+        VehicleActuator throttle = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE);
+
+        //throttle.setActuatorValueCurrent(value);
+        throttle.setActuatorValueTarget(value);
+    }
+
+    private void setBrakePressure(PhysicalVehicle physicalVehicle, double value){
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+
+        VehicleActuator brakepressure = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE);
+
+        brakepressure.setActuatorValueCurrent(value);
+        brakepressure.setActuatorValueTarget(value);
+    }
+
+    private void setGear(PhysicalVehicle physicalVehicle, double value){
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+
+        VehicleActuator gear = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR);
+
+        gear.setActuatorValueCurrent(value);
+        gear.setActuatorValueTarget(value);
+    }
+
+    private void setClutch(PhysicalVehicle physicalVehicle, double value){
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+
+        VehicleActuator clutch = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_CLUTCH);
+
+        clutch.setActuatorValueCurrent(value);
+        clutch.setActuatorValueTarget(value);
+    }
+
 
     @Test
     public void firstTest() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationDuration(10000);
+        sim.setSimulationDuration(20000);
 
         sim.registerLoopObserver(new SimulationDebugPlotter("ModelicaComparasion"));
 
@@ -95,9 +132,11 @@ public class SimulateVehicleTest {
         // Add physicalVehicle1 to simulation
         sim.registerAndPutObject(physicalVehicle1, 0.0, 0.0, 0.0);
 
-        setAccelerating(physicalVehicle1, Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
-        setBraking(physicalVehicle1, 0.0);
-        setSteering(physicalVehicle1, 0.0);
+        setClutch(physicalVehicle1, 0);
+        setThrottle(physicalVehicle1, 0.1);
+        setBrakePressure(physicalVehicle1, 0);
+        setSteering(physicalVehicle1, 6);
+        setGear(physicalVehicle1, 1);
 
         // Start simulation
         sim.setSimulationPauseTime(5000);
@@ -105,18 +144,22 @@ public class SimulateVehicleTest {
         sim.startSimulation();
         long firstRoundEndTime = System.nanoTime();
 
-        setAccelerating(physicalVehicle1, 0.0);
-        setBraking(physicalVehicle1, 5.0);
-        setSteering(physicalVehicle1, 0.0);
+        setThrottle(physicalVehicle1, 0.7);
+        setBrakePressure(physicalVehicle1, 0);
+        setSteering(physicalVehicle1, 3.0);
+        setGear(physicalVehicle1, 3);
+        setClutch(physicalVehicle1, 0);
 
         // Continue Simulation
         long secondRoundStartingTime = System.nanoTime();
-        sim.continueSimulation(1000);
+        sim.continueSimulation(5000);
         long secondRoundEndTime = System.nanoTime();
 
-        setAccelerating(physicalVehicle1, 0.0);
-        setBraking(physicalVehicle1, 5.0);
-        setSteering(physicalVehicle1, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX);
+        setThrottle(physicalVehicle1, 0.0);
+        setBrakePressure(physicalVehicle1, 0.0);
+        setSteering(physicalVehicle1, 3.0);
+        setGear(physicalVehicle1, 1);
+        setClutch(physicalVehicle1, 1);
 
         // Continue Simulation
         long thirdRoundStartingTime = System.nanoTime();
@@ -126,4 +169,66 @@ public class SimulateVehicleTest {
         System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime) + (thirdRoundEndTime - thirdRoundStartingTime));
 
     }
+    @Test
+    public void Masspointstraight(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(25000);
+
+        sim.registerLoopObserver(new SimulationDebugPlotter("MassPointStraight"));
+
+        // Create a new vehicle
+        PhysicalVehicle physicalVehicle2 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+
+        sim.registerAndPutObject(physicalVehicle2, 0.0, 0.0, 0.0);
+
+        setAccelerating(physicalVehicle2, 3.5);
+        setBraking(physicalVehicle2, 0);
+        setSteering(physicalVehicle2, 0);
+
+        sim.setSimulationPauseTime(10000);
+        sim.startSimulation();
+
+
+        setAccelerating(physicalVehicle2, 0);
+        setBraking(physicalVehicle2, 5);
+        setSteering(physicalVehicle2, 0);
+        sim.continueSimulation();
+
+    }
+
+    @Test
+    public void straighttest(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(10000);
+
+        sim.registerLoopObserver(new SimulationDebugPlotter("ModelicaStraight"));
+
+        // Create a new vehicle
+        PhysicalVehicle physicalVehicle1 = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+
+        // Add physicalVehicle1 to simulation
+        sim.registerAndPutObject(physicalVehicle1, 0.0, 0.0, 0.0);
+
+        //setClutch(physicalVehicle1, 0);
+        setThrottle(physicalVehicle1, 0.1);
+        setBrakePressure(physicalVehicle1, 0);
+        setSteering(physicalVehicle1, 6.0);
+        //setGear(physicalVehicle1, 1);
+
+       // sim.setSimulationPauseTime(10000);
+        sim.startSimulation();
+
+
+        //setClutch(physicalVehicle1, 1);
+        setThrottle(physicalVehicle1, 0.0);
+        setBrakePressure(physicalVehicle1, 0);
+        setSteering(physicalVehicle1, 0.0);
+        //setGear(physicalVehicle1, 1);
+
+        sim.continueSimulation();
+
+    }*/
+
 }

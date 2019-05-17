@@ -23,12 +23,13 @@ model BrakeSystem
   type RPM=Real(unit="rpm");
 
 //Parameters BrakeSystem
+parameter Real pi=2*Modelica.Math.asin(1.0);
 parameter Length disc_d_f= 0.302;
 parameter Length disc_d_r= 0.292;
 parameter Coefficient cf_pad= 0.35;
 parameter Area pad_area= 0.007;
 parameter Length piston_d= 0.06;
-parameter Pressure pressure_limit= 7000000;
+parameter Pressure pressure_limit= 7000;
 
 //External Input
 input Pressure b_input;
@@ -55,11 +56,11 @@ brake_press_r= b_input;
 else
 brake_press_r= pressure_limit;
 end if;
-brakingtorque_1= 2*(0.58*disc_d_f)*brake_press_f*10*(((2*Modelica.Math.asin(1.0)/4)*piston_d^2)/pad_area)*2*Modelica.Math.asin(1.0)*cf_pad*(disc_d_f^2 - (0.58*disc_d_f)^2)*tanh(omega_wheel_1);
+brakingtorque_1= 2*(0.58*disc_d_f)*brake_press_f*10*(((pi/4)*piston_d^2)/pad_area)*pi*cf_pad*(disc_d_f^2 - (0.58*disc_d_f)^2)*tanh(omega_wheel_1);
 
-brakingtorque_2= 2*(0.58*disc_d_f)*brake_press_f*10*(((2*Modelica.Math.asin(1.0)/4)*piston_d^2)/pad_area)*2*Modelica.Math.asin(1.0)*cf_pad*(disc_d_f^2 - (0.58*disc_d_f)^2)*tanh(omega_wheel_2);
+brakingtorque_2= 2*(0.58*disc_d_f)*brake_press_f*10*(((pi/4)*piston_d^2)/pad_area)*pi*cf_pad*(disc_d_f^2 - (0.58*disc_d_f)^2)*tanh(omega_wheel_2);
 
-brakingtorque_3= 2*(0.58*disc_d_r)*brake_press_r*10*(((2*Modelica.Math.asin(1.0)/4)*piston_d^2)/pad_area)*2*Modelica.Math.asin(1.0)*cf_pad*(disc_d_r^2 - (0.58*disc_d_r)^2)*tanh(omega_wheel_3);
+brakingtorque_3= 2*(0.58*disc_d_r)*brake_press_r*10*(((pi/4)*piston_d^2)/pad_area)*pi*cf_pad*(disc_d_r^2 - (0.58*disc_d_r)^2)*tanh(omega_wheel_3);
 
-brakingtorque_4= 2*(0.58*disc_d_r)*brake_press_r*10*(((2*Modelica.Math.asin(1.0)/4)*piston_d^2)/pad_area)*2*Modelica.Math.asin(1.0)*cf_pad*(disc_d_r^2 - (0.58*disc_d_r)^2)*tanh(omega_wheel_4);
+brakingtorque_4= 2*(0.58*disc_d_r)*brake_press_r*10*(((pi/4)*piston_d^2)/pad_area)*pi*cf_pad*(disc_d_r^2 - (0.58*disc_d_r)^2)*tanh(omega_wheel_4);
 end BrakeSystem;

@@ -68,8 +68,8 @@ public class MassPointBuilderTest {
         double expectedLength = Vehicle.VEHICLE_DEFAULT_LENGTH;
         double expectedHeight = Vehicle.VEHICLE_DEFAULT_HEIGHT;
         double expectedWheelRadius = Vehicle.VEHICLE_DEFAULT_WHEEL_RADIUS;
-        double expectedWheelDistLeftRightFrontSide = Vehicle.VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
-        double expectedWheelDistLeftRightBackSide = Vehicle.VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
+        double expectedWheelDistLeftRightFrontSide = Vehicle.VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_FRONT;
+        double expectedWheelDistLeftRightBackSide = Vehicle.VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_REAR;
         double expectedWheelDistToFront = Vehicle.VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT;
         double expectedWheelDistToBack = Vehicle.VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK;
         Optional<Bus> expectedControllerBus = Optional.empty();

@@ -81,13 +81,13 @@ equation
   
   omega_e_int= max(((omega_wheel_1 + omega_wheel_2)/2)*i_t, 73);
   
-  if i_t==0 or c_input > 0 then
+  if i_t==0 or c_input > 0.5 then
   omega_e= 680 - (1 - t_input)*(680 - 73);
   else
   omega_e= min(omega_e_int, 680);
   end if;
   
-  engine_tmax= 0.0000021486*omega_e^3 -     0.0000037390514*omega_e^2 + 1.8250297732*omega_e;
+  engine_tmax= 0.0000021486*omega_e^3 - 0.0000037390514*omega_e^2 + 1.8250297732*omega_e;
   
   engine_tmin= 0.0002152813*omega_e^2 - 0.2413794863*omega_e;
   
@@ -103,9 +103,9 @@ equation
   engine_t= engine_t_int;
   end if;
   
-  driving_t1= engine_t*trans_ratio*i_t*(-tanh(omega_e - 677) + 1)/2;
+  driving_t1= ((engine_t*trans_ratio*i_t)/2)*((-tanh(omega_e - 677) + 1)/2);
   
-  driving_t2= driving_t1;
+  driving_t2= ((engine_t*trans_ratio*i_t)/2)*((-tanh(omega_e - 677) + 1)/2);
   
   driving_t3= 0;
   

@@ -30,13 +30,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>1.0.3</version>
+        <version>1.0.4-SNAPSHOT</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>util</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
