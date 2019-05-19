@@ -72,7 +72,7 @@ class Net(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
         super(Net, self).__init__(**kwargs)
         with self.name_scope():
-${tc.include(tc.architecture.body, "ARCHITECTURE_DEFINITION")}
+${tc.include(tc.architecture.streams[0], "ARCHITECTURE_DEFINITION")}
 
     def hybrid_forward(self, F, x):
-${tc.include(tc.architecture.body, "FORWARD_FUNCTION")}
+${tc.include(tc.architecture.streams[0], "FORWARD_FUNCTION")}

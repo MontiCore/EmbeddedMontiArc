@@ -128,6 +128,16 @@ public class GenerationTest extends AbstractSymtabTest {
         assertTrue(Log.getFindings().size() == 3);
     }
 
+    /* TODO: Uncomment when multiple streams are implemented
+    @Test
+    public void testMultipleStreams() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleStreams"};
+        CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().size() == 3);
+    }
+    */
+
     @Test
     public void testFullCfgGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
