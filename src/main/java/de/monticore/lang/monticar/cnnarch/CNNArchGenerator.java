@@ -60,36 +60,17 @@ public abstract class CNNArchGenerator {
         return this.modelsDirPath;
     }
 
-    public void generate(Path modelsDirPath, String rootModelName){
+    public boolean generate(Path modelsDirPath, String rootModelName){
         this.modelsDirPath = modelsDirPath.toString();
         final ModelPath mp = new ModelPath(modelsDirPath);
         GlobalScope scope = new GlobalScope(mp, new CNNArchLanguage());
-        generate(scope, rootModelName);
+        return generate(scope, rootModelName);
     }
 
-    public abstract void generate(Scope scope, String rootModelName);
+    public abstract boolean generate(Scope scope, String rootModelName);
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public abstract Map<String, String> generateStrings(ArchitectureSymbol architecture);
-
-    public void checkValidGeneration(ArchitectureSymbol architecture){
-        if (architecture.getInputs().size() > 1){
-            Log.error("This cnn architecture has multiple inputs, " +
-                            "which is currently not supported by the code generator. "
-                    , architecture.getSourcePosition());
-        }
-        if (architecture.getOutputs().size() > 1){
-            Log.error("This cnn architecture has multiple outputs, " +
-                            "which is currently not supported by the code generator. "
-                    , architecture.getSourcePosition());
-        }
-        if (architecture.getOutputs().get(0).getDefinition().getType().getWidth() != 1 ||
-                architecture.getOutputs().get(0).getDefinition().getType().getHeight() != 1){
-            Log.error("This cnn architecture has a multi-dimensional output, " +
-                            "which is currently not supported by the code generator."
-                    , architecture.getSourcePosition());
-        }
-    }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public void generateFiles(ArchitectureSymbol architecture) throws IOException{
