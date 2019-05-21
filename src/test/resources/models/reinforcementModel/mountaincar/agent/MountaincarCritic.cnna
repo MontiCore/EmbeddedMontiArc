@@ -5,7 +5,7 @@ implementation Critic(state, action) {
         FullyConnected(units=300)
     |
     action ->
-        FullyConnected(units=300) ->
+        FullyConnected(units=300)
     ) ->
     Add() ->
     Relu() ->
