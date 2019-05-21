@@ -582,7 +582,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         // Take the wheel positions and get the frictions coefficients
         //TODO: Let the physical vehicle look up the ground type and not only the weather
-        double frictionCoefficient = ((WorldModel.getInstance().isItRaining()) ? PhysicsEngine.ROAD_FRICTION_WET : PhysicsEngine.ROAD_FRICTION_DRY);
+        double frictionCoefficient = PhysicsEngine.calcFrictionCoefficient(getPosition());
         vehicleDynamicsModel.setInput("mu_1", frictionCoefficient);
         vehicleDynamicsModel.setInput("mu_2", frictionCoefficient);
         vehicleDynamicsModel.setInput("mu_3", frictionCoefficient);

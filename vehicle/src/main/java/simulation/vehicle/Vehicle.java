@@ -847,7 +847,7 @@ public class Vehicle {
         controller.get().setInputs(controllerBus.get().getAllData());
 
         // Call controller to compute new values
-        controller.get().execute();
+        controller.get().execute(deltaT);
 
         //Pass the data of the mainControlBlock to the bus
         controllerBus.get().setAllData(controller.get().getOutputs());
@@ -915,7 +915,7 @@ public class Vehicle {
         navigationInputs.put(NavigationEntry.GPS_COORDINATES.toString(), gpsCoordinates);
         navigationInputs.put(NavigationEntry.TARGET_NODE.toString(), node);
         navigation.get().setInputs(navigationInputs);
-        navigation.get().execute();
+        navigation.get().execute(0);
 
         // Stop processing if trajectory or avoiding coordinate list is empty
         if (navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) == null) {
@@ -984,7 +984,7 @@ public class Vehicle {
         navigationInputsFiltered.put(NavigationEntry.GPS_COORDINATES.toString(), gpsCoordinates);
         navigationInputsFiltered.put(NavigationEntry.TARGET_NODE.toString(), node);
         navigation.get().setInputs(navigationInputsFiltered);
-        navigation.get().execute();
+        navigation.get().execute(0);
 
         // If trajectory with avoiding is null or empty, just set original result without avoiding
         if (navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) == null) {

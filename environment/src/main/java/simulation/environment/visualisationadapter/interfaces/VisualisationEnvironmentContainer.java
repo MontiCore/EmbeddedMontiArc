@@ -20,6 +20,7 @@
  */
 package simulation.environment.visualisationadapter.interfaces;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import java.util.Collection;
 
@@ -33,6 +34,11 @@ public interface VisualisationEnvironmentContainer {
      * @return a Collection of all streets in the container
      */
     public abstract Collection<EnvStreet> getStreets();
+
+    /**
+     * @return a Collection of all streets in the container
+     */
+    public abstract Collection<Waterway> getWaterway();
 
     /**
      * @return a Collection of all buildings in the container
@@ -58,4 +64,12 @@ public interface VisualisationEnvironmentContainer {
      * @return a two dimensional array with three rows, first row contains the circle height, second row the slope to the next circle, third row the distance to the next circle
      */
     public abstract double[][] getHeightMap();
+
+    public abstract Point2D getHeightMapMinPoint();
+
+    public abstract Point2D getHeightMapMaxPoint();
+
+    public abstract double getHeightMapDeltaX();
+
+    public abstract double getHeightMapDeltaY();
 }

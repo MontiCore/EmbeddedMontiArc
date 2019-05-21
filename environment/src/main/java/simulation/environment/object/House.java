@@ -356,6 +356,7 @@ public class House implements SimulationLoopExecutable, PhysicalObject {
      * @return List of pairs of 3D points, indicating a vector on the edges of the physical object
      */
     @Override
+    @Deprecated
     public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
         // Build relative vectors between vertices
         RealVector relVectorBackFront = new ArrayRealVector(new double[] {0.0, getLength(), 0.0});

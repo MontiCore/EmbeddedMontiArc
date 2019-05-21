@@ -1249,7 +1249,7 @@ public class SimulatorTest {
         }
         public void setPosition(RealVector position){}
         public RealMatrix getRotation(){
-            return new BlockRealMatrix(3, 3);
+            return MatrixUtils.createRealIdentityMatrix(3);
         }
         public void setRotation(RealMatrix rotation){}
         public RealVector getVelocity(){
@@ -1302,6 +1302,7 @@ public class SimulatorTest {
         public long getId(){
             return uniqueId;
         }
+        @Deprecated
         public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
             //TODO: Function is unnecessary with three dimensional collision detection
             return new ArrayList<>();

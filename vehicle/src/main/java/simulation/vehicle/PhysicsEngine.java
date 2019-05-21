@@ -22,11 +22,18 @@ package simulation.vehicle;
 
 import commons.simulation.PhysicalObject;
 import commons.simulation.PhysicalObjectType;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.environment.WorldModel;
+import simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetPavements;
 import simulation.util.MathHelper;
+import simulation.util.OrientedBoundingBox;
+
+import java.io.*;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * Physics calculations for simulation
@@ -36,10 +43,6 @@ public class PhysicsEngine{
     public static final double GRAVITY_EARTH = -9.81;
     /** Average air density */
     public static final double AIR_DENSITY = 1.225;
-    /** Average road friction coefficient for dry roads (no unit) */
-    public static final double ROAD_FRICTION_DRY = 0.8;
-    /** Average road friction coefficient for wet roads (no unit) */
-    public static final double ROAD_FRICTION_WET = 0.4;
 
     private PhysicsEngine(){
         // Private constructor to hide the implicit public one
@@ -74,7 +77,7 @@ public class PhysicsEngine{
         }
 
         // Do not compute collision if the object is not a car
-        if(object.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+        if(object.getPhysicalObjectType() != PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
             return;
         }
 
@@ -112,11 +115,12 @@ public class PhysicsEngine{
             return false;
         }
 
-        // Perform collision computation
-        //TODO: Use a three dimensional collision detection
-        List<Map.Entry<RealVector, RealVector>> boundariesA = objectA.getBoundaryVectors();
-        List<Map.Entry<RealVector, RealVector>> boundariesB = objectB.getBoundaryVectors();
-        return MathHelper.checkIntersection2D(boundariesA, boundariesB);
+        // Construct bounding boxes
+        OrientedBoundingBox boxA = new OrientedBoundingBox(objectA.getGeometryPosition(), objectA.getWidth(), objectA.getLength(), objectA.getHeight(), objectA.getRotation());
+        OrientedBoundingBox boxB = new OrientedBoundingBox(objectB.getGeometryPosition(), objectB.getWidth(), objectB.getLength(), objectB.getHeight(), objectB.getRotation());
+
+        // Perform collision computation and return result
+        return MathHelper.checkIntersection(boxA, boxB);
     }
 
     /**
@@ -199,5 +203,129 @@ public class PhysicsEngine{
             PhysicalVehicle vehicleB = (PhysicalVehicle) objectB;
             vehicleB.addForce(forceB);
         }
+    }
+
+    public static double calcFrictionCoefficient(RealVector v) {
+        StreetPavements streetPavement = WorldModel.getInstance().getSurfaceType(v);
+        boolean isItRaining = WorldModel.getInstance().isItRaining();
+
+        return calcFrictionCoefficient(streetPavement, isItRaining);
+    }
+
+    public static double calcFrictionCoefficient(StreetPavements streetPavement, boolean isItRaining) {
+        try {
+            InputStream input = PhysicsEngine.class.getResourceAsStream("/FrictionCoefficient.csv");
+            Reader in = new InputStreamReader(input);
+            CSVParser csvParser = new CSVParser(in, CSVFormat.DEFAULT);
+
+            switch(streetPavement) {
+                case QUALITY: // Asphalt
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(1).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(1).get(2));
+                    }
+
+                case STONE:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(2).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(2).get(2));
+                    }
+
+                case PAVED:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(3).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(3).get(2));
+                    }
+
+                case DIRT:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(4).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(4).get(2));
+                    }
+
+                case UNPAVED:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(5).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(5).get(2));
+                    }
+
+                case GRASS:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(6).get(1));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(6).get(2));
+                    }
+
+                default:
+                    return 1;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return 1;
+    }
+
+    public static double calcRollingResistance(RealVector v, double pressure, double forceRoadFrictionBackFrontNorm) {
+        double defaultValue = 0.005 + (1 / pressure) * (0.01 + 0.0095 * (forceRoadFrictionBackFrontNorm * 3.6 / 100) * (forceRoadFrictionBackFrontNorm * 3.6 / 100));
+        try{
+        StreetPavements streetPavement = WorldModel.getInstance().getSurfaceType(v);
+        boolean isItRaining = WorldModel.getInstance().isItRaining();
+        InputStream input = PhysicsEngine.class.getResourceAsStream("/FrictionCoefficient.csv");
+        Reader in = new InputStreamReader(input);
+        CSVParser csvParser = new CSVParser(in, CSVFormat.DEFAULT);
+
+
+            switch (streetPavement) {
+                case QUALITY:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(1).get(3));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(1).get(4));
+                    }
+                case STONE:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(2).get(3));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(2).get(4));
+                    }
+                case PAVED:// Asphalt
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(3).get(3));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(3).get(4));
+                    }
+                case DIRT:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(4).get(3));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(4).get(4));
+                    }
+                case UNPAVED:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(5).get(3));
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(5).get(4));
+                    }
+                case GRASS:
+                    if (isItRaining) {
+                        return Double.parseDouble(csvParser.getRecords().get(6).get(3)); // provisional value
+                    } else {
+                        return Double.parseDouble(csvParser.getRecords().get(6).get(4));
+                    }
+
+                default:
+                    return defaultValue;
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return defaultValue;
     }
 }

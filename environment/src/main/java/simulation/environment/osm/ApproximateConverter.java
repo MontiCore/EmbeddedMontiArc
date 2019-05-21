@@ -50,9 +50,21 @@ public class ApproximateConverter implements MetricConverter {
         return 1000*(lat - minLat) * LAT_CONSTANT;
     }
 
+    public double convertXToLong(double meterX, double meterY) {
+        return meterX / (1000 * LONG_CONSTANT * Math.cos(Math.toRadians(convertYToLat(meterY)))) + minLong;
+    }
+
+    public double convertYToLat(double meterY) {
+        return meterY / (1000 * LAT_CONSTANT) + minLat;
+    }
+
     @Override
     public Point3D convertLongLatPoint(Point3D p) {
         return new Point3D(convertLongToMeters(p.getX(), p.getY()), convertLatToMeters(p.getY()), p.getZ());
+    }
+
+    public Point3D convertXYPoint(Point3D p) {
+        return new Point3D(convertXToLong(p.getX(), p.getY()), convertYToLat(p.getY()), p.getZ());
     }
 
     public double getMinLong() {

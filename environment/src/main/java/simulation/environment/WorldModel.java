@@ -20,6 +20,7 @@
  */
 package simulation.environment;
 
+
 import commons.map.Adjacency;
 import commons.map.ControllerContainer;
 import commons.map.IAdjacency;
@@ -32,18 +33,20 @@ import simulation.environment.geometry.DetailedMapConstructor;
 import simulation.environment.geometry.StreetSignPositioner;
 import simulation.environment.geometry.osmadapter.GeomStreet;
 import simulation.environment.object.TrafficLightSwitcher;
-import simulation.environment.osm.IParser;
 import simulation.environment.osm.Parser2D;
 import simulation.environment.osm.ParserSettings;
 import simulation.environment.osm.ZCoordinateGenerator;
 import simulation.environment.pedestrians.PedestrianContainer;
 import simulation.environment.visualisationadapter.implementation.Node2D;
+import simulation.environment.visualisationadapter.interfaces.Building;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
+import simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetPavements;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
 import simulation.environment.weather.Weather;
 import simulation.environment.weather.WeatherSettings;
 import java.util.*;
+
 
 /**
  * Created by lukas on 02.02.17.
@@ -63,11 +66,12 @@ public class WorldModel implements World{
                 e.printStackTrace();
             }
         }
+
         return ourInstance;
     }
 
     public static World init(String map, WeatherSettings weatherSettings) throws Exception {
-        ourInstance = new WorldModel(new ParserSettings(map, ParserSettings.ZCoordinates.ALLZERO), weatherSettings);
+        ourInstance = new WorldModel(new ParserSettings(map, ParserSettings.ZCoordinates.FROM_FILE), weatherSettings);
         return ourInstance;
     }
 
@@ -90,7 +94,8 @@ public class WorldModel implements World{
      */
     public static World init(VisualisationEnvironmentContainer visContainer, WeatherSettings weatherSettings) {
     	ourInstance = new WorldModel(visContainer, weatherSettings);
-    	return ourInstance;
+
+        return ourInstance;
     }
     
     /**
@@ -121,6 +126,7 @@ public class WorldModel implements World{
     }
 
     private VisualisationEnvironmentContainer visualisationContainer;
+    private ArrayList<Building> buldings;
 
     private ArrayList<GeomStreet> streets;
 
@@ -132,7 +138,7 @@ public class WorldModel implements World{
 
     private ControllerContainer contContainer;
 
-    
+    private Parser2D parsing;
     private WorldModel(ParserSettings pSettings, WeatherSettings settings) throws Exception {
         this.pSettings = pSettings;
         parseWorld(pSettings);
@@ -224,9 +230,11 @@ public class WorldModel implements World{
     }
 
     private void parseWorld(ParserSettings pSettings) throws Exception {
-        IParser parser = new Parser2D(pSettings);
+        Parser2D parser = new Parser2D(pSettings);
         parser.parse();
+        this.parsing = parser;
         this.visualisationContainer = parser.getContainer();
+
     }
 
     private void constructGeomStreets() {
@@ -270,6 +278,13 @@ public class WorldModel implements World{
             }
 
         }
+        return minStreet;
+    }
+
+    public GeomStreet getMinimumStreetForRealVector(RealVector pos) {
+        EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
+        GeomStreet minStreet = getMinimumStreetForNode(n);
+
         return minStreet;
     }
 
@@ -380,7 +395,7 @@ public class WorldModel implements World{
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistanceToLeft(v);
+        return minStreet.getDistanceToRight(v);
     }
 
     @Override
@@ -390,14 +405,48 @@ public class WorldModel implements World{
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistanceToLeft(v);
+        return minStreet.getDistanceToRight(v);
+    }
+
+    @Override
+    public boolean isPointOnStreet(double x, double y, double z) {
+        // check for every street wether the requested point is on it.
+        for(GeomStreet street : this.streets) {
+            // the getter for the wheel position coordinates returns position of the wheel center so the z-coordinate
+            // has to be set to the ground coordinatefor correcht checking
+            double streetZ = street.getGround(x, y, z);
+            Node2D n1 = new Node2D(x, y, streetZ);
+
+            // check if node is on street
+            if(street.contains(n1)) {
+                return true;
+            }
+        }
+        // returns false if no street has been found
+        return false;
+    }
+
+    public boolean isPointOnStreet(RealVector v) {
+        return isPointOnStreet(v.getEntry(0), v.getEntry(1), v.getEntry(2));
+    } 
+
+    @Override
+    public StreetPavements getSurfaceType(RealVector v) {
+        if(isPointOnStreet(v)) {
+            return ((EnvStreet) getMinimumStreetForRealVector(v).getObject()).getStreetPavement();
+        } else {
+            return StreetPavements.UNPAVED;
+        }
     }
 
     @Override
     public VisualisationEnvironmentContainer getContainer() throws Exception {
         return this.visualisationContainer;
     }
-
+    @Override
+    public Parser2D getParser() throws Exception {
+        return this.parsing;
+    }
     @Override
     public boolean isItRaining() {
         return this.weather.isRain();
