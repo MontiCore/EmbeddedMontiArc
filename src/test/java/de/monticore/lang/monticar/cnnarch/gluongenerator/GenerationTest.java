@@ -103,13 +103,12 @@ public class GenerationTest extends AbstractSymtabTest {
                         "execute_VGG16"));
     }
 
-
     @Test
     public void testThreeInputCNNGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().size() == 1);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
@@ -123,20 +122,18 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testMultipleOutputs() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
+        String[] args = {"-m", "src/test/resources/invalid_tests", "-r", "MultipleOutputs"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().size() == 3);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
-    /* TODO: Uncomment when multiple streams are implemented
     @Test
     public void testMultipleStreams() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleStreams"};
+        String[] args = {"-m", "src/test/resources/invalid_tests", "-r", "MultipleStreams"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().size() == 3);
+        assertTrue(Log.getFindings().size() == 2);
     }
-    */
 
     @Test
     public void testFullCfgGeneration() throws IOException, TemplateException {
@@ -211,7 +208,6 @@ public class GenerationTest extends AbstractSymtabTest {
                 )
         );
     }
-
 
     @Test
     public void testCMakeGeneration() {

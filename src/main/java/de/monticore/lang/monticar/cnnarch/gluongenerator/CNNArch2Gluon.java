@@ -31,6 +31,13 @@ import java.util.Map;
 
 public class CNNArch2Gluon extends CNNArch2MxNet {
 
+    public CNNArch2Gluon() {
+        super();
+
+        architectureSupportChecker = new CNNArch2GluonArchitectureSupportChecker();
+        layerSupportChecker = new CNNArch2GluonLayerSupportChecker();
+    }
+
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     @Override
     public Map<String, String> generateStrings(ArchitectureSymbol architecture){
@@ -60,8 +67,6 @@ public class CNNArch2Gluon extends CNNArch2MxNet {
 
         temp = archTc.process("CNNBufferFile", Target.CPP);
         fileContentMap.put("CNNBufferFile.h", temp.getValue());
-
-        checkValidGeneration(architecture);
 
         return fileContentMap;
     }

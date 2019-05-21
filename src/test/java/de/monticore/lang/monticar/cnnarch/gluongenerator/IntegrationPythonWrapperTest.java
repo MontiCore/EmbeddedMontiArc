@@ -50,4 +50,5 @@ public class IntegrationPythonWrapperTest extends AbstractSymtabTest{
         );
         assertTrue(Paths.get("./target/generated-sources-cnnarch/reward/pylib").toFile().isDirectory());
     }
+
 }
