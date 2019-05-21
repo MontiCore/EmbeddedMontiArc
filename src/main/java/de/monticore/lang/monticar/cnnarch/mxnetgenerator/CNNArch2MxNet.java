@@ -45,59 +45,33 @@ import java.util.List;
 
 public class CNNArch2MxNet extends CNNArchGenerator {
 
-    private boolean isSupportedLayer(ArchitectureElementSymbol element, LayerSupportChecker layerChecker){
-        List<ArchitectureElementSymbol> constructLayerElemList;
-
-        if (element.getResolvedThis().get() instanceof CompositeElementSymbol) {
-            constructLayerElemList = ((CompositeElementSymbol)element.getResolvedThis().get()).getElements();
-            for (ArchitectureElementSymbol constructedLayerElement : constructLayerElemList) {
-                if (!isSupportedLayer(constructedLayerElement, layerChecker)) {
-                    return false;
-                }
-            }
-        }
-        if (!layerChecker.isSupported(element.toString())) {
-            Log.error("Unsupported layer " + "'" + element.getName() + "'" + " for the backend MXNET.");
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private boolean supportCheck(ArchitectureSymbol architecture){
-        List<CompositeElementSymbol> streams = architecture.getStreams();
-
-        // This generator only supports one stream
-        if (streams.size() != 1)
-        {
-            return false;
-        }
-
-        LayerSupportChecker layerChecker = new LayerSupportChecker();
-        for (CompositeElementSymbol stream : streams) {
-            for (ArchitectureElementSymbol element : stream.getElements()) {
-                if (!isSupportedLayer(element, layerChecker)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+    protected ArchitectureSupportChecker architectureSupportChecker;
+    protected LayerSupportChecker layerSupportChecker;
 
     public CNNArch2MxNet() {
+        architectureSupportChecker = new ArchitectureSupportChecker();
+        layerSupportChecker = new LayerSupportChecker();
+
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
     }
 
-    public void generate(Scope scope, String rootModelName){
+    public boolean generate(Scope scope, String rootModelName) {
         Optional<CNNArchCompilationUnitSymbol> compilationUnit = scope.resolve(rootModelName, CNNArchCompilationUnitSymbol.KIND);
         if (!compilationUnit.isPresent()){
             Log.error("could not resolve architecture " + rootModelName);
-            quitGeneration();
+            return false;
         }
 
         CNNArchCocos.checkAll(compilationUnit.get());
-        if (!supportCheck(compilationUnit.get().getArchitecture())){
-            quitGeneration();
+
+        ArchitectureSymbol architecture = compilationUnit.get().getArchitecture();
+
+        if (!architectureSupportChecker.check(architecture)) {
+            return false;
+        }
+
+        if (!layerSupportChecker.check(architecture)) {
+            return false;
         }
 
         try{
@@ -109,7 +83,10 @@ public class CNNArch2MxNet extends CNNArchGenerator {
             generateFiles(compilationUnit.get().getArchitecture());
         } catch (IOException e){
             Log.error(e.toString());
+            return false;
         }
+
+        return true;
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
@@ -132,8 +109,6 @@ public class CNNArch2MxNet extends CNNArchGenerator {
 
         temp = archTc.process("CNNBufferFile", Target.CPP);
         fileContentMap.put("CNNBufferFile.h", temp.getValue());
-
-        checkValidGeneration(architecture);
 
         return fileContentMap;
     }

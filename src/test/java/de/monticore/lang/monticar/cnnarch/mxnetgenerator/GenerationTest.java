@@ -96,7 +96,7 @@ public class GenerationTest extends AbstractSymtabTest{
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
         CNNArch2MxNetCli.main(args);
-        assertTrue(Log.getFindings().size() == 1);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
@@ -107,22 +107,20 @@ public class GenerationTest extends AbstractSymtabTest{
         assertTrue(Log.getFindings().isEmpty());
     }
 
-    /* TODO: Change quitGeneration() call and maybe add Exception?
     @Test
     public void testMultipleStreams() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/invalid_tests", "-r", "MultipleStreams"};
         CNNArch2MxNetCli.main(args);
-        //assertTrue(Log.getFindings().isEmpty());
+        assertTrue(Log.getFindings().size() == 2);
     }
-    */
 
     @Test
     public void testMultipleOutputs() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
+        String[] args = {"-m", "src/test/resources/invalid_tests", "-r", "MultipleOutputs"};
         CNNArch2MxNetCli.main(args);
-        assertTrue(Log.getFindings().size() == 3);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test

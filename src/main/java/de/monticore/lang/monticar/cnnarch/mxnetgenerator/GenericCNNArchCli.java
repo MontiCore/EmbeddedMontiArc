@@ -79,6 +79,9 @@ public class GenericCNNArchCli {
         if (outputPath != null){
             cnnArchGenerator.setGenerationTargetPath(outputPath);
         }
-        cnnArchGenerator.generate(modelsDirPath, rootModelName);
+
+        if (!cnnArchGenerator.generate(modelsDirPath, rootModelName)) {
+            Log.error("Code generation failed");
+        }
     }
 }
