@@ -4,9 +4,23 @@ A project that generates MQTT-Adapters for EmbeddedMontiArcMath components.
 
 ## Getting Started
 
-These instructions will get MQTT up and running on your computer
+These instructions will get MQTT up and running on your Ubuntu system
 
-First you need to [download](https://www.ubuntu.com/download/desktop) and install the newest version of Ubuntu
+### Installing project
+
+[Download](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2mqtt/-/archive/3-install-mqtt-linux/emam2mqtt-3-install-mqtt-linux.zip) this project to your computer
+
+[Download](https://maven.apache.org/guides/getting-started/) and install Maven
+
+[Download](https://www.eclipse.org/downloads/) and install Ecplise IDE
+
+Import the project as "Maven Project" in Eclipse
+
+In terminal run
+
+`mvn clean install -s settings.xml`
+
+### Installing MQTT (locally)
 
 In Ubuntu open terminal
 
