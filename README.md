@@ -1,5 +1,9 @@
-![](doc/media/images/emasinstallermanager.png)
-![](https://img.shields.io/badge/Version-2018.12.17-blue.svg?longCache=true&style=flat-square)
+<p align="center">
+    <img src="doc/media/images/emasinstallermanager.png" width="800"/>
+</p>
+<p align="center">
+    <img src="https://img.shields.io/badge/Version-2018.12.17-blue.svg?longCache=true&style=flat-square"/>
+</p>
 
 ## Table of Contents
 * [**Description**](#description)
