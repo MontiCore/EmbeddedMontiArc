@@ -1,4 +1,4 @@
-# EMASInstallerManager
+![](doc/media/images/emasinstallermanager.png)
 ![](https://img.shields.io/badge/Version-2018.12.17-blue.svg?longCache=true&style=flat-square)
 
 ## Table of Contents
