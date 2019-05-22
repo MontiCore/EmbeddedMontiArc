@@ -5,6 +5,6 @@ BranchJobLinux:
   stage: linux
   image: maven:3-jdk-8
   script:
-  - mvn -clean install -s settings.xml
+  - mvn clean install -s settings.xml
   except:
   - master
