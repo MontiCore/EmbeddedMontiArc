@@ -14,10 +14,13 @@ detailed explanation can be found
 [here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/blob/master/doc/GettingStarted.md#managing).
 
 ## Gallery
+
+### Videos
 | ![](doc/media/videos/demo.mp4) |
 | :---: |
 | Demonstration |
 
+### Images
 | ![](doc/media/images/welcome.png) | ![](doc/media/images/use-cases.png) | ![](doc/media/images/artifacts.png) |
 | :---: | :---: | :---: |
 | Welcome Page | Use Cases Page | Artifacts Page |
