@@ -1,8 +1,11 @@
-![](doc/images/elysium-emas.png)
-
-![](https://img.shields.io/badge/EmbeddedMontiArcStudio_Version-2.1.0-blue.svg?longCache=true&style=flat-square)
-![](https://img.shields.io/badge/Elysium_Version-2018.10.28-blue.svg?longCache=true&style=flat-square)
-![](https://img.shields.io/badge/Manager_Version-2018.12.17-blue.svg?longCache=true&style=flat-square)
+<p align="center">
+    <img src="doc/images/emastudioinstaller.png" width="800"/>
+</p>
+<p align="center">
+    <img src="https://img.shields.io/badge/EmbeddedMontiArcStudio_Version-2.1.0-blue.svg?longCache=true&style=flat-square"/>
+    <img src="https://img.shields.io/badge/Elysium_Version-2018.10.28-blue.svg?longCache=true&style=flat-square"/>
+    <img src="https://img.shields.io/badge/Manager_Version-2018.12.17-blue.svg?longCache=true&style=flat-square"/>
+</p>
 
 ## Table of Contents
 * [**Description**](#description)
