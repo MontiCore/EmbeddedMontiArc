@@ -33,4 +33,4 @@ set_target_properties(test_math_floatDivisionTest_StreamTests  PROPERTIES LINKER
 # execute tests
 add_custom_target(run_test_math_floatDivisionTest_StreamTests ALL
                   COMMAND test_math_floatDivisionTest_StreamTests
-                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})

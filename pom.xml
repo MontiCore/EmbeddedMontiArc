@@ -30,22 +30,11 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-generator</artifactId>
-    <version>0.1.9</version>
+    <version>0.1.10</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
-
-        <!-- .. SE-Libraries .................................................. -->
-        <!--<monticore.version>5.0.0</monticore.version>-->
-        <!--<se-commons.version>1.7.7</se-commons.version>-->
-        <!--<mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>-->
-        <!--<Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>-->
-        <!--<Embedded-MontiArc.version>0.0.18-SNAPSHOT</Embedded-MontiArc.version>-->
-        <!--<Embedded-MontiArc-Behaviour.version>0.0.14-SNAPSHOT</Embedded-MontiArc-Behaviour.version>-->
-        <!--<Math.version>0.0.19-SNAPSHOT</Math.version>-->
-        <!--<Embedded-MontiArc-Math.version>0.0.19-SNAPSHOT</Embedded-MontiArc-Math.version>-->
-        <!--<tagging.version>0.0.4</tagging.version>-->
 
         <Embedded-MontiArc-Math.version>0.1.9-SNAPSHOT</Embedded-MontiArc-Math.version>
 
@@ -56,7 +45,6 @@
         <jscience.version>4.3.1</jscience.version>
 
         <!-- .. Plugins ....................................................... -->
-        <!--<monticore.plugin>4.5.3.1</monticore.plugin>-->
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.8.0</compiler.plugin>
         <source.plugin>2.4</source.plugin>

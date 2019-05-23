@@ -85,6 +85,7 @@ public class PortConverter {
         variable.setName(name);
         variable.setVariableType(TypeConverter.getVariableTypeForMontiCarTypeName(typeNameMontiCar, variable, portSymbol).get());
         variable.addAdditionalInformation(Variable.ORIGINPORT);
+        variable.addAdditionalInformation(portSymbol.isIncoming() ? Variable.INCOMING : Variable.OUTGOING);
         bluePrint.getMathInformationRegister().addVariable(variable);
 
         if(portSymbol instanceof EMADynamicPortInstanceSymbol){

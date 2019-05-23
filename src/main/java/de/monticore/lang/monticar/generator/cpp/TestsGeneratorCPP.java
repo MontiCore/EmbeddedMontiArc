@@ -142,7 +142,7 @@ public final class TestsGeneratorCPP {
         String executeTestTplt = "\n# execute tests\n" +
                 "add_custom_target(run_<name>_StreamTests ALL\n" +
                 "                  COMMAND <name>_StreamTests\n" +
-                "                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})";
+                "                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})";
         cmake.addCMakeCommandEnd(executeTestTplt.replace("<name>",compName));
     }
 

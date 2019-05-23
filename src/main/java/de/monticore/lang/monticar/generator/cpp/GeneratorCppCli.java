@@ -107,7 +107,6 @@ public final class GeneratorCppCli {
             .required(false)
             .build();
 
-
     public static final Option OPTION_FLAG_AUTOPILOT_ADAPTER = Option.builder()
             .longOpt("flag-generate-autopilot-adapter")
             .desc("optional flag indicating if autopilot adapter should be generated")
@@ -202,6 +201,7 @@ public final class GeneratorCppCli {
         g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
         g.setUseThreadingOptimization(cliArgs.hasOption(OPTION_FLAG_THREADING.getLongOpt()));
         g.setExecutionLoggingActive(cliArgs.hasOption(OPTION_FLAG_EXEC_LOGGING.getLongOpt()));
+        g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
 
         g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
 

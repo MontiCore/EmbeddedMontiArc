@@ -35,6 +35,8 @@ import java.util.Optional;
  * @author Sascha Schneiders
  */
 public class Variable {
+    public static final String INCOMING = "Incoming";
+    public static final String OUTGOING = "outgoing";
     public static String FORLOOPINFO = "ForLoopVariable";
     public static String VARIABLE = "Variable";
     public static String ORIGINPORT = "OriginPort";

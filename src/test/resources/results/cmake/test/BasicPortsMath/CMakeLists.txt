@@ -33,4 +33,4 @@ set_target_properties(test_basicPortsMath_StreamTests  PROPERTIES LINKER_LANGUAG
 # execute tests
 add_custom_target(run_test_basicPortsMath_StreamTests ALL
                   COMMAND test_basicPortsMath_StreamTests
-                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})

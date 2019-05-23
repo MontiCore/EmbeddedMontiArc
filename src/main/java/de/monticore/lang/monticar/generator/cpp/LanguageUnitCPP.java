@@ -26,15 +26,14 @@ import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
-import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
+import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.LoggingViewModel;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Sascha Schneiders
@@ -233,9 +232,7 @@ public class LanguageUnitCPP extends LanguageUnit {
         resultString += "{\n";
 
         if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
-            resultString += "std::ofstream __LogExecutionFile;\n";
-            resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
-
+            resultString += "logStart();\n";
         }
 
         for (Instruction instruction : method.getInstructions()) {
@@ -252,25 +249,20 @@ public class LanguageUnitCPP extends LanguageUnit {
         }
 
         if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
-            for (Variable v : bluePrint.getVariables()) {
-                if (v.hasAdditionalInformation(Variable.ORIGINPORT)) {
-                    resultString += "__LogExecutionFile << \"" + v.getNameTargetLanguageFormat() + " : \";\n";
-                    resultString += "toFileString(__LogExecutionFile, " + v.getNameTargetLanguageFormat() + ");\n";
-                    resultString += "__LogExecutionFile << \"\\n\";\n";
-                }
-            }
+            resultString += "logEnd();\n";
         }
-        if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
-            resultString += "__LogExecutionFile.close();\n";
-            resultString += "__EXECCOUNTER = __EXECCOUNTER + 1;\n";
-        }
+
         if (generatorCPP.isExecutionLoggingActive && method.getName().equals("init")) {
             resultString += "__EXECCOUNTER = 0;\n";
         }
 
-        //method body end
         resultString += "}\n";
+
+        if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+            resultString += AllTemplates.generateLogMethods(LoggingViewModel.fromBluePrint(bluePrint));
+        }
+
+
         return resultString;
     }
-
 }
