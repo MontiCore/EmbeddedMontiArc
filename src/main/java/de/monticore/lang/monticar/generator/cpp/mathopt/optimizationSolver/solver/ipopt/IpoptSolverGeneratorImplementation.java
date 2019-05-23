@@ -141,8 +141,9 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
         CMakeFindModule findCoinMumps = new CMakeFindModule("CoinMumps", "", "coinmumps", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
         CMakeFindModule findCoinLapack = new CMakeFindModule("CoinLapack", "", "coinlapack", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
         CMakeFindModule findCoinBlas = new CMakeFindModule("CoinBlas", "", "coinblas", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
+        CMakeFindModule findCoinMetis = new CMakeFindModule("CoinMetis", "", "coinmetis", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
         CMakeFindModule findGfortran = new CMakeFindModule("GFortran", "", "gfortran", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
-        return Arrays.asList(findCPPAD, findIPOpt, findCoinMumps, findCoinLapack, findCoinBlas, findGfortran);
+        return Arrays.asList(findCPPAD, findIPOpt, findCoinMumps, findCoinLapack, findCoinBlas, findCoinMetis, findGfortran);
     }
 
 }

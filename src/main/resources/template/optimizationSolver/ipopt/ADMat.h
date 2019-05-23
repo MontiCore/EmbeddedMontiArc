@@ -8,6 +8,12 @@ using namespace arma;
 
 typedef CppAD::AD<double> adouble;
 
+namespace std {
+  double abs(const adouble &ad) {
+      return abs(Value(ad));
+  }
+}
+
 class ADMat : public field<adouble> {
 
 public:
