@@ -13,6 +13,7 @@ npm install -g vsce
 if [ `command -v vsce` ]
 then
 	vsce package -o "${curDir}/emam-debug.vsix"
+	exit $?
 else
 	echo "Can not find vsce. Aborting!"
 	exit 1
