@@ -29,6 +29,6 @@ component VGG16{
         fc() ->
         FullyConnected(units=1000) ->
         Softmax() ->
-        predictions
+        predictions;
     }
 }
