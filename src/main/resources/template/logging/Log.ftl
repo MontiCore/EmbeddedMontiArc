@@ -3,7 +3,7 @@ void logStart(){
     __StacktraceFile.open("stacktrace.log", std::ios_base::out | std::ios_base::app);
     __StacktraceFile << "Breakpoint reached" << std::endl;
 <#list viewModel.getInstanceStack() as curSym>
-    __StacktraceFile << "\tat ${curSym.getFullName()}(${curSym.getComponentType().getReferencedSymbol().getFullName()?replace(".","/")}).emam:1" << std::endl;
+    __StacktraceFile << "\tat ${curSym.getFullName()}(${curSym.getComponentType().getReferencedSymbol().getFullName()?replace(".","/")}.emam:1)" << std::endl;
 </#list>
 
     __StacktraceFile << "#tick " << __EXECCOUNTER << std::endl;
@@ -25,7 +25,7 @@ void logEnd(){
     <#else>
         <#assign line="1"/>
     </#if>
-    __StacktraceFile << "\tat ${curSym.getFullName()}(${curSym.getComponentType().getReferencedSymbol().getFullName()?replace(".","/")}).emam:${line}" << std::endl;
+    __StacktraceFile << "\tat ${curSym.getFullName()}(${curSym.getComponentType().getReferencedSymbol().getFullName()?replace(".","/")}.emam:${line})" << std::endl;
 </#list>
 
     __StacktraceFile << "#tick " << __EXECCOUNTER << std::endl;
