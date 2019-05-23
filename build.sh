@@ -7,7 +7,13 @@ then
 	exit 1
 fi
 
-npm install
+npm install --unsafe-perm
+if [ ! $? ]
+then
+	echo "Error running npm install"
+	exit 1
+fi
+
 npm install -g vsce
 
 if [ `command -v vsce` ]
