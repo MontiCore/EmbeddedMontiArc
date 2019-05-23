@@ -1,0 +1,11 @@
+stages:
+  - build
+
+LinuxBuild:
+  image: node:latest
+  stage: build
+  artifacts:
+    paths:
+      - emam-debug.vsix
+  script:
+    - ./build.sh
