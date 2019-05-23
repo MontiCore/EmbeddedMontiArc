@@ -145,6 +145,9 @@ public final class GeneratorCppCli {
         CommandLine cliArgs = parseArgs(options, parser, args);
         if (cliArgs != null) {
             runGenerator(cliArgs);
+        }else{
+            Log.error("Error parsing cli arguments!");
+            System.exit(1);
         }
     }
 
