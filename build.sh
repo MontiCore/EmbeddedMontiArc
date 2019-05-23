@@ -4,7 +4,7 @@ curl -o "$fileName" "https://nexus.se.rwth-aachen.de/repository/public/de/montic
 if [ ! -f "${fileName}" ]
 then
 	echo "Can not find generator jar"
-	return 1
+	exit 1
 fi
 
 npm install
@@ -15,5 +15,5 @@ then
 	vsce package -o "${curDir}/emam-debug.vsix"
 else
 	echo "Can not find vsce. Aborting!"
-	return 1
+	exit 1
 fi
