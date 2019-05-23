@@ -1,7 +1,8 @@
 import { spawnSync } from 'child_process';
 import { createHash } from 'crypto';
 import { RuntimeLogger } from "./RuntimeLogger";
-import {window} from 'vscode';
+import { window } from 'vscode';
+import { existsSync } from 'fs';
 
 export class EMATestRunner{
 	private targetBasePath:string;
@@ -67,7 +68,12 @@ export class EMATestRunner{
 		const targetDir = this.getTargetDir(componentName);
 		this.execCommand("mkdir", [this.targetBasePath], process.cwd(), false);
 		this.execCommand("mkdir", [targetDir], process.cwd(), false);
-		return this.execCommand("java", ["-jar", this.generatorJarPath, "--models-dir=" + this.modelBasePath, "-o=" + targetDir, "--root-model=" + componentName, "--flag-generate-tests", "--flag-use-armadillo-backend", "--flag-use-exec-logging", "--flag-use-exec-logging", "--flag-use-cmake"], targetDir, true, true);
+		if(existsSync(this.generatorJarPath)){
+			return this.execCommand("java", ["-jar", this.generatorJarPath, "--models-dir=" + this.modelBasePath, "-o=" + targetDir, "--root-model=" + componentName, "--flag-generate-tests", "--flag-use-armadillo-backend", "--flag-use-exec-logging", "--flag-use-exec-logging", "--flag-use-cmake"], targetDir, true, true);
+		}else{
+			this.getLogger().log("Can not find generator jar: " + this.generatorJarPath);
+			return 1;
+		}
 	}
 
 	public buildAndRunTests(componentName: string) {
