@@ -22,7 +22,7 @@ In terminal run
 
 `mvn clean install -s settings.xml`
 
-### Installing MQTT (locally)
+### Installing MQTT (locally on Ubuntu)
 
 Open terminal
 
@@ -39,3 +39,11 @@ Install mosquitto and mosquitto-clients
 `sudo apt-get install mosquitto`
 
 `sudo apt-get install mosquitto-clients`
+
+### Installing MQTT (locally on Windows)
+
+[Download](https://mosquitto.org/files/binary/win64/mosquitto-1.6.2-install-windows-x64.exe) and install Mosquitto
+
+Restart your computer
+
+Mosquitto is now available and can be accessed via command line using `mosquitto -h`
