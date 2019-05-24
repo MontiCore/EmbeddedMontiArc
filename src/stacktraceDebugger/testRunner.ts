@@ -93,8 +93,8 @@ export class EMATestRunner {
 	public buildAndRunTests(componentName: string): boolean{
 		const targetDir = this.getTargetDir(componentName);
 		this.execCommand("mkdir", [targetDir + "/build"], process.cwd(), false);
-		let success = this.execCommand("cmake", ["-B" + targetDir + "/build", "-H" + targetDir], process.cwd());
-		if(success){
+		let returnCode = this.execCommand("cmake", ["-B" + targetDir + "/build", "-H" + targetDir], process.cwd());
+		if(returnCode == 0){
 			this.execCommand("cmake", ["--build", targetDir + "/build"], process.cwd());
 			return true;
 		}else{
