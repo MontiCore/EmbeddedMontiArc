@@ -16,7 +16,7 @@ export class TestCache {
 		const stacktraceFile = targetDir + "/build/stacktrace.log";
 		const lastDebugPath = targetDir + "/lastDebug.json";
 
-		this.testRunner.getLogger().log("Trying to load cached stacktraces...");
+		this.testRunner.getDebugConsoleLogger().log("Trying to load cached stacktraces...");
 		this.loadFileTimestamps(lastDebugPath, componentName);
 		let relevantFiles = this.getRelevantFiles(stacktraceFile, lastDebugPath, componentName);
 
@@ -26,7 +26,7 @@ export class TestCache {
 				return null;
 			}
 		}else{
-			this.testRunner.getLogger().log("Files have not changed => Using cache");
+			this.testRunner.getDebugConsoleLogger().log("Files have not changed => Using cache");
 		}
 
 		return parseStacktraces(stacktraceFile, this.testRunner.getModelBasePath());
@@ -34,7 +34,7 @@ export class TestCache {
 	}
 
 	private doRunTests(componentName: string, stacktraceFile: string, lastDebugPath: string): boolean{
-		this.testRunner.getLogger().log("Files have changed => Rerunning tests");
+		this.testRunner.getDebugConsoleLogger().log("Files have changed => Rerunning tests");
 		const testWasRun = this.testRunner.executeTests(componentName);
 		if(testWasRun){
 			this.hasChangedAndUpdate(stacktraceFile);
@@ -44,7 +44,7 @@ export class TestCache {
 			writeFileSync(lastDebugPath, JSON.stringify({"program":componentName, "fileModifiedStamps": this.lastModifiedMap}), {"encoding":"utf-8"});
 			return true;
 		}else{
-			this.testRunner.getLogger().log("Error getting stacktraces. Aborting!");
+			this.testRunner.getDebugConsoleLogger().log("Error getting stacktraces. Aborting!");
 			return false;
 		}
 	}
@@ -71,7 +71,7 @@ export class TestCache {
 			}
 		}
 		catch (e) {
-			this.testRunner.getLogger().log("Can not load cache =>  Recompiling!");
+			this.testRunner.getDebugConsoleLogger().log("Can not load cache =>  Recompiling!");
 		}
 
 		if(this.lastModifiedMap == null){

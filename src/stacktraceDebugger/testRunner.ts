@@ -12,7 +12,7 @@ export class EMATestRunner {
 	private modelBasePath: string;
 	private logger: RuntimeLogger;
 
-	public getLogger(): RuntimeLogger {
+	public getDebugConsoleLogger(): RuntimeLogger {
 		return this.logger;
 	}
 
@@ -58,8 +58,7 @@ export class EMATestRunner {
 		let returnCode = this.generateTests(componentName);
 		if (returnCode == 0) {
 			this.logger.log("Building and running tests...");
-			this.buildAndRunTests(componentName);
-			return true;
+			return this.buildAndRunTests(componentName);
 		} else {
 			this.logger.log("The generator returned a non-zero return code. Aborting!");
 			return false;
@@ -86,16 +85,22 @@ export class EMATestRunner {
 				],
 				targetDir, true, true);
 		} else {
-			this.getLogger().log("Can not find generator jar: " + this.generatorJarPath);
+			this.getDebugConsoleLogger().log("Can not find generator jar: " + this.generatorJarPath);
 			return 1;
 		}
 	}
 
-	public buildAndRunTests(componentName: string) {
+	public buildAndRunTests(componentName: string): boolean{
 		const targetDir = this.getTargetDir(componentName);
 		this.execCommand("mkdir", [targetDir + "/build"], process.cwd(), false);
-		this.execCommand("cmake", ["-B" + targetDir + "/build", "-H" + targetDir], process.cwd());
-		this.execCommand("cmake", ["--build", targetDir + "/build"], process.cwd());
+		let success = this.execCommand("cmake", ["-B" + targetDir + "/build", "-H" + targetDir], process.cwd());
+		if(success){
+			this.execCommand("cmake", ["--build", targetDir + "/build"], process.cwd());
+			return true;
+		}else{
+			this.getDebugConsoleLogger().log("Error configuring CMake. Aborting!");
+			return false;
+		}
 	}
 
 	public execCommand(command: string, args: string[], cwd, warn: boolean = true, popup: boolean = false): number {
