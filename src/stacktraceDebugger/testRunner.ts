@@ -3,6 +3,8 @@ import { createHash } from 'crypto';
 import { RuntimeLogger } from "./RuntimeLogger";
 import { window } from 'vscode';
 import { existsSync } from 'fs';
+import * as log4js from 'log4js';
+
 
 export class EMATestRunner {
 	private targetBasePath: string;
@@ -47,7 +49,7 @@ export class EMATestRunner {
 
 	public getTargetDir(componentName: string) {
 		let hash = createHash('md5').update(this.modelBasePath).update(componentName).digest("hex").substr(0, 6);
-		console.log("Hash for '" + componentName + "':" + hash);
+		log4js.getLogger().debug("Hash for '" + componentName + "':" + hash);
 		return this.targetBasePath + "/" + hash;
 	}
 
@@ -97,7 +99,6 @@ export class EMATestRunner {
 	}
 
 	public execCommand(command: string, args: string[], cwd, warn: boolean = true, popup: boolean = false): number {
-		console.log("EXEC COMMAND!");
 		const child = spawnSync(command, args,
 			{
 				cwd: cwd,
@@ -105,7 +106,7 @@ export class EMATestRunner {
 				stdio: 'pipe',
 				encoding: 'utf-8'
 			});
-		console.log("Command: " + command + " " + args.join(" "));
+		log4js.getLogger().debug("Command: " + command + " " + args.join(" "));
 		if (child.status != 0) {
 			const output = child.stdout.toString();
 			const errOutput = child.stderr.toString();

@@ -12,6 +12,7 @@ import {
 import {
 	basename, extname
 } from 'path';
+import * as log4js from 'log4js';
 
 export class StreamTestCodeLensProvider implements CodeLensProvider {
 	async provideCodeLenses(document: TextDocument): Promise<CodeLens[]> {
@@ -38,7 +39,7 @@ export function getConfigForCurrentFile(): EmamDebugConfiguration | null {
 
 	var tedit = window.activeTextEditor;
 	if (tedit) {
-		console.log("Cur test:" + tedit.document.fileName);
+		log4js.getLogger().debug("Cur test:" + tedit.document.fileName);
 		var editorContent = tedit.document.getText();
 
 		const fileName = basename(tedit.document.fileName);
@@ -56,16 +57,16 @@ export function getConfigForCurrentFile(): EmamDebugConfiguration | null {
 					.filter(c => c.type && c.type == "emam")
 					.filter(c => c.program && c.program == pack + "." + compName);
 				if (matchingConfigs.length > 0) {
-					console.log("Found existing config!");
+					log4js.getLogger().debug("Found existing config!");
 					res = matchingConfigs[0];
 				} else {
 					res = getDefaultLaunchConfig(fileName, pack, compName);
 					configurations.push(res);
-					launchConfig.update(configField, configurations, false).then(_ => console.log("Added new launch config!"));
+					launchConfig.update(configField, configurations, false).then(_ => log4js.getLogger().debug("Added new launch config!"));
 				}
 			}
 		} else {
-			console.log("Not the right extension: " + fileExt);
+			log4js.getLogger().debug("Not the right extension: " + fileExt);
 		}
 	}
 
@@ -74,7 +75,7 @@ export function getConfigForCurrentFile(): EmamDebugConfiguration | null {
 
 function doRunStreamTest(launchConfig: EmamDebugConfiguration) {
 	if(workspace.workspaceFolders){
-		debug.startDebugging(workspace.workspaceFolders[0], launchConfig.name).then(_ => console.log("Started debugging with command!"));
+		debug.startDebugging(workspace.workspaceFolders[0], launchConfig.name).then(_ => log4js.getLogger().debug("Started debugging with command!"));
 	}else{
 		window.showErrorMessage("Not in a workspace! Please open project as folder!");
 	}
@@ -89,7 +90,7 @@ function getModelPackage(content: string): string | null {
 			res = matchPack[1].trim();
 		}
 	} catch (err) {
-		console.log("Error getting the models package:" + err);
+		log4js.getLogger().debug("Error getting the models package:" + err);
 	}
 	return res;
 }
@@ -104,7 +105,7 @@ function getComponentName(content: string): string | null {
 			res = res[0].toLowerCase() + res.substring(1, res.length);
 		}
 	} catch (err) {
-		console.log("Error while parsing component name:" + err);
+		log4js.getLogger().error("Error while parsing component name:" + err);
 	}
 	return res;
 }

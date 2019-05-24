@@ -34,6 +34,7 @@
 	"dependencies": {
 		"await-notify": "1.0.1",
 		"cross-fetch": "^3.0.2",
+		"log4js": "^4.3.0",
 		"vscode-debugadapter": "1.33.0"
 	},
 	"devDependencies": {

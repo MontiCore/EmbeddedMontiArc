@@ -9,6 +9,7 @@ import { WorkspaceFolder, DebugConfiguration, ProviderResult, CancellationToken 
 import { EmamDebugSession } from './stacktraceDebugger/emamDebug';
 import * as Net from 'net';
 import { StreamTestCodeLensProvider, runCurrentStreamTest, getConfigForCurrentFile } from './codeLens/StreamTestCodeLensProvider';
+import * as log4js from 'log4js';
 
 /*
  * Set the following compile time flag to true if the
@@ -18,6 +19,7 @@ import { StreamTestCodeLensProvider, runCurrentStreamTest, getConfigForCurrentFi
 const EMBED_DEBUG_ADAPTER = true;
 
 export function activate(context: vscode.ExtensionContext) {
+	setupLog(context.extensionPath);
 
 	// register a configuration provider for 'emam' debug type
 	const provider = new EmamConfigurationProvider();
@@ -54,6 +56,20 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {
 	// nothing to do
+}
+
+function setupLog(extensionPath: string){
+	const logFileName = extensionPath + '/logs/emam-debug.log';
+	log4js.configure({
+		appenders: {
+		  out: { type: 'console' },
+		  app: { type: 'file', filename: logFileName, maxLogSize: 1000000, backups: 1 }
+		},
+		categories: {
+		  default: { appenders: [ 'out', 'app' ], level: 'debug' }
+		}
+	  });
+	log4js.getLogger().debug("Logger created! Will write to " + logFileName);
 }
 
 class EmamConfigurationProvider implements vscode.DebugConfigurationProvider {

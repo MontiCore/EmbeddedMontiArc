@@ -10,6 +10,7 @@ import { TestCache } from './testCache';
 import { EMATestRunner } from './testRunner';
 import { window } from 'vscode';
 import { RuntimeLogger } from './RuntimeLogger';
+import * as log4js from 'log4js';
 
 export interface EmamBreakpoint {
 	id: number;
@@ -105,8 +106,8 @@ export class EmamRuntime extends EventEmitter {
 	 * Continue execution to the end/beginning.
 	 */
 	public continue(reverse = false) {
-		console.log("continue!");
-		console.log("#breakpoints: " + this._breakPoints.size);
+		log4js.getLogger().trace("continue!");
+		log4js.getLogger().trace("#breakpoints: " + this._breakPoints.size);
 		this.run(reverse, undefined);
 	}
 
@@ -156,7 +157,7 @@ export class EmamRuntime extends EventEmitter {
 	 */
 	public setBreakPoint(rawPath: string, line: number): EmamBreakpoint {
 		let path = rawPath.replace("\/\/","/");
-		console.log("Set bp on " + path + ":" + line);
+		log4js.getLogger().debug("Set bp on " + path + ":" + line);
 		const bp = <EmamBreakpoint>{ verified: false, line, id: this._breakpointId++ };
 		let bps = this._breakPoints.get(path);
 		if (!bps) {
@@ -197,7 +198,7 @@ export class EmamRuntime extends EventEmitter {
 	 * If stepEvent is specified only run a single step and emit the stepEvent.
 	 */
 	private run(reverse = false, stepEvent?: string) {
-		console.log("run " + (stepEvent ? stepEvent : ""));
+		log4js.getLogger().trace("run " + (stepEvent ? stepEvent : ""));
 		if (reverse) {
 			for (let ln = this.current_stack_index - 1; ln >= 0; ln--) {
 				if (this.fireEventsForCurrentStacktrace(ln, stepEvent, reverse)) {
@@ -210,7 +211,7 @@ export class EmamRuntime extends EventEmitter {
 			this.sendEvent('stopOnEntry');
 		} else {
 			for (let st = this.current_stack_index + 1; st < this.stacktraces.length; st++) {
-				console.log("run for");
+				log4js.getLogger().trace("run for");
 				this.setSourceFile(this.modelbase + "/" + this.stacktraces[st][0].fileName);
 				if (this.fireEventsForCurrentStacktrace(st, stepEvent, reverse)) {
 					this.current_stack_index = st;
@@ -223,7 +224,7 @@ export class EmamRuntime extends EventEmitter {
 	}
 
 	private verifyBreakpoints(path: string): void {
-		console.log("Start ver for " + path);
+		log4js.getLogger().trace("Start ver for " + path);
 		let prefix = "";
 		if (path.startsWith("file:")) {
 			prefix = "file:"
@@ -258,11 +259,11 @@ export class EmamRuntime extends EventEmitter {
 					this.sendEvent('stopOnBreakpoint');
 					return true;
 				}else{
-					console.log("Mismatch! bp.line: " + bp.line + ", stLine: " + stLine);
+					log4js.getLogger().trace("Mismatch! bp.line: " + bp.line + ", stLine: " + stLine);
 				}
 			}
 		}else{
-			console.log("No breakpoints for " + this._sourceFile);
+			log4js.getLogger().trace("No breakpoints for " + this._sourceFile);
 		}
 
 		if (stepEvent) {

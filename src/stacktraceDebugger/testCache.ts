@@ -2,7 +2,7 @@ import { emaStacktraces, parseStacktraces } from "./stacktraceParser";
 import { readFileSync, statSync, readdirSync, writeFileSync } from "fs";
 import { isAbsolute } from "path";
 import { EMATestRunner } from "./testRunner";
-
+import * as log4js from 'log4js';
 export class TestCache {
 	private lastModifiedMap: Object;
 	private testRunner: EMATestRunner;
@@ -38,9 +38,9 @@ export class TestCache {
 		const testWasRun = this.testRunner.executeTests(componentName);
 		if(testWasRun){
 			this.hasChangedAndUpdate(stacktraceFile);
-			console.log("Writing lastDebug");
-			console.log(componentName);
-			console.log(this.lastModifiedMap);
+			log4js.getLogger().debug("Writing lastDebug");
+			log4js.getLogger().trace(componentName);
+			log4js.getLogger().trace(this.lastModifiedMap);
 			writeFileSync(lastDebugPath, JSON.stringify({"program":componentName, "fileModifiedStamps": this.lastModifiedMap}), {"encoding":"utf-8"});
 			return true;
 		}else{
@@ -101,7 +101,7 @@ export class TestCache {
 				const newLocal = Math.abs(this.lastModifiedMap[fullPath] - lastTime) < Number.EPSILON;
 				res = !newLocal;
 				if(res){
-					this.testRunner.getLogger().log("File " + fullPath + " changed! Timestamp was " + this.lastModifiedMap[fullPath] + " and is " + lastTime + "now");
+					log4js.getLogger().debug("File " + fullPath + " changed! Timestamp was " + this.lastModifiedMap[fullPath] + " and is " + lastTime + "now");
 				}
 			} else {
 				res = true;
@@ -110,7 +110,7 @@ export class TestCache {
 				this.lastModifiedMap[fullPath] = lastTime;
 			}
 		} catch (e) {
-			console.log("Error while checking file " + path + ":" + e)
+			log4js.getLogger().warn("Error while checking file " + path + ":" + e)
 		}
 		return res;
 	}

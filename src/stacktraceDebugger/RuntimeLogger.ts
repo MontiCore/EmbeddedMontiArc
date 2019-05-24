@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import * as log4js from 'log4js';
 export class RuntimeLogger {
 	private realThis: EventEmitter;
 	constructor($realThis: EventEmitter) {
@@ -6,7 +7,7 @@ export class RuntimeLogger {
 	}
 	public log(text: string): void {
 		setTimeout(() => {
-			console.log(text);
+			log4js.getLogger().info(text);
 			this.realThis.emit('output', text, "none", 1, 1);
 		}, 0);
 	}

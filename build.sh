@@ -1,6 +1,6 @@
 curDir=$(readlink -f `dirname $0`)
 fileName="${curDir}/resources/emam-generator.jar"
-curl -o "$fileName" "https://nexus.se.rwth-aachen.de/repository/public/de/monticore/lang/monticar/embedded-montiarc-math-generator/0.1.10/embedded-montiarc-math-generator-0.1.10-jar-with-dependencies.jar"
+curl -o "$fileName" "https://nexus.se.rwth-aachen.de/repository/public/de/monticore/lang/monticar/embedded-montiarc-math-generator/0.1.11-SNAPSHOT/embedded-montiarc-math-generator-0.1.11-20190523.153355-1-jar-with-dependencies.jar"
 if [ ! -f "${fileName}" ]
 then
 	echo "Can not find generator jar"
@@ -13,8 +13,10 @@ then
 	echo "Error running npm install"
 	exit 1
 fi
-
-npm install -g vsce
+if [ ! `command -v vsce` ]
+then
+	npm install -g vsce
+fi
 
 if [ `command -v vsce` ]
 then
