@@ -18,32 +18,23 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package simulation.runner;
+package com.mycompany.app;
+
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class RunnerTest {
-
+/**
+ * Unit test for simple App.
+ */
+public class AppTest 
+{
+    /**
+     * Rigorous Test :-)
+     */
     @Test
-    public void run() {
-        double finalDistanceToTarget = new Runner(
-                "/straight.osm",
-                5170132468L,
-                4188028027L,
-                false,
-                "autopilot",
-                10101
-        ) .run();
-        assert  finalDistanceToTarget < 1;
-
-        finalDistanceToTarget = new Runner(
-                "/straight.osm",
-                5170132468L,
-                4188028027L,
-                true,
-                "autopilot",
-                10101
-        ) .run();
-        assert  finalDistanceToTarget < 1;
+    public void shouldAnswerWithTrue()
+    {
+        assertTrue( true );
     }
 }

@@ -18,32 +18,9 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package simulation.runner;
+public class BusMessage {
 
-import org.junit.Test;
+    private Object message;
 
-public class RunnerTest {
-
-    @Test
-    public void run() {
-        double finalDistanceToTarget = new Runner(
-                "/straight.osm",
-                5170132468L,
-                4188028027L,
-                false,
-                "autopilot",
-                10101
-        ) .run();
-        assert  finalDistanceToTarget < 1;
-
-        finalDistanceToTarget = new Runner(
-                "/straight.osm",
-                5170132468L,
-                4188028027L,
-                true,
-                "autopilot",
-                10101
-        ) .run();
-        assert  finalDistanceToTarget < 1;
-    }
+    private int messageLen;
 }

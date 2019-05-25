@@ -18,32 +18,16 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package simulation.runner;
 
-import org.junit.Test;
+import java.util.*;
 
-public class RunnerTest {
+public interface Bus {
 
-    @Test
-    public void run() {
-        double finalDistanceToTarget = new Runner(
-                "/straight.osm",
-                5170132468L,
-                4188028027L,
-                false,
-                "autopilot",
-                10101
-        ) .run();
-        assert  finalDistanceToTarget < 1;
+    public int setData(String key, BusMessage msg);
 
-        finalDistanceToTarget = new Runner(
-                "/straight.osm",
-                5170132468L,
-                4188028027L,
-                true,
-                "autopilot",
-                10101
-        ) .run();
-        assert  finalDistanceToTarget < 1;
-    }
+    public BusMessage getData(String key);
+
+    public Map<String, BusMessage> getAllData();
+
+    public String[] getImportNames();
 }
