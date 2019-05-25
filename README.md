@@ -1,2 +1,23 @@
 # EMAM2SomeIP
 
+### Installing SOME/IP (locally):
+
+Get vsomeip from: https://github.com/GENIVI/vsomeip
+
+Build instruction is in the readme on the site, short summary:
+- A C++11 enabled compiler like gcc >= 4.8 is needed.
+- vsomeip uses CMake as buildsystem.
+- vsomeip uses Boost (boost.org), version has to be >= 1.55 and < 1.66:
+
+Installing boost 1.65 on ubuntu:
+```bash
+sudo apt-get install libboost-system1.65-dev libboost-thread1.65-dev libboost-log1.65-dev
+```
+If build fails, try to apply this fix:
+
+https://github.com/GENIVI/vsomeip/issues/25
+
+Summary of the fix: 
+Replace "return &sockaddr;" with "return reinterpret_cast<struct sockaddr*>(&sockaddr);" in:
+implementation/endpoints/include/netlink_connector.hpp
+
