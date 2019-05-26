@@ -67,26 +67,16 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testUnsupportedLayersCifar10Classifier() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "CifarClassifierNetwork", "-o", "./target/generated-sources-cnnarch/"};
-        exit.expectSystemExit();
-        exit.checkAssertionAfterwards(new Assertion() {
-            public void checkAssertion() {
-                assertTrue(Log.getFindings().size() == 2);
-            }
-        });
         CNNArch2Caffe2Cli.main(args);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
     public void testUnsupportedLayersAlexnet() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "Alexnet", "-o", "./target/generated-sources-cnnarch/"};
-        exit.expectSystemExit();
-        exit.checkAssertionAfterwards(new Assertion() {
-            public void checkAssertion() {
-                assertTrue(Log.getFindings().size() == 2);
-            }
-        });
         CNNArch2Caffe2Cli.main(args);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
@@ -110,39 +100,24 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testThreeInputCNNGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
-        exit.expectSystemExit();
-        exit.checkAssertionAfterwards(new Assertion() {
-            public void checkAssertion() {
-                assertTrue(Log.getFindings().size() == 2);
-            }
-        });
         CNNArch2Caffe2Cli.main(args);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
     public void testUnsupportedLayersResNeXt() throws IOException, TemplateException {
         Log.getFindings().clear();;
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ResNeXt50"};
-        exit.expectSystemExit();
-        exit.checkAssertionAfterwards(new Assertion() {
-            public void checkAssertion() {
-                assertTrue(Log.getFindings().size() == 2);
-            }
-        });
         CNNArch2Caffe2Cli.main(args);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test
     public void testMultipleOutputs() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
-        exit.expectSystemExit();
-        exit.checkAssertionAfterwards(new Assertion() {
-            public void checkAssertion() {
-                assertTrue(Log.getFindings().size() == 2);
-            }
-        });
         CNNArch2Caffe2Cli.main(args);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test

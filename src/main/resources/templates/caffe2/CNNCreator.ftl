@@ -72,7 +72,7 @@ class ${tc.fileNameWithoutEnding}:
     def create_model(self, model, data, device_opts, is_test):
     	with core.DeviceScope(device_opts):
 
-${tc.include(tc.architecture.body)}
+${tc.include(tc.architecture.streams[0])}
 
     # this adds the loss and optimizer
     def add_training_operators(self, model, output, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum) :

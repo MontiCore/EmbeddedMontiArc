@@ -20,7 +20,9 @@
  */
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
-import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNArch2MxNet;
+import de.monticore.lang.monticar.cnnarch.mxnetgenerator.Target;
+
 import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
@@ -31,72 +33,16 @@ import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.monticore.symboltable.Scope;
-import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.List;
 
-public class CNNArch2Caffe2 extends CNNArchGenerator{
-
-    private boolean isSupportedLayer(ArchitectureElementSymbol element, LayerSupportChecker layerChecker){
-        List<ArchitectureElementSymbol> constructLayerElemList;
-
-        if (element.getResolvedThis().get() instanceof CompositeElementSymbol) {
-            constructLayerElemList = ((CompositeElementSymbol)element.getResolvedThis().get()).getElements();
-            for (ArchitectureElementSymbol constructedLayerElement : constructLayerElemList) {
-                if (!isSupportedLayer(constructedLayerElement, layerChecker)) {
-                    return false;
-                }
-            }
-        }
-        if (!layerChecker.isSupported(element.toString())) {
-            Log.error("Unsupported layer " + "'" + element.getName() + "'" + " for the backend CAFFE2.");
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private boolean supportCheck(ArchitectureSymbol architecture){
-        LayerSupportChecker layerChecker = new LayerSupportChecker();
-        for (ArchitectureElementSymbol element : ((CompositeElementSymbol)architecture.getBody()).getElements()){
-            if(!isSupportedLayer(element, layerChecker)) {
-                return false;
-            }
-        }
-        return true;
-    }
+public class CNNArch2Caffe2 extends CNNArch2MxNet {
 
     public CNNArch2Caffe2() {
-        setGenerationTargetPath("./target/generated-sources-cnnarch/");
-    }
-
-    public void generate(Scope scope, String rootModelName){
-        Optional<CNNArchCompilationUnitSymbol> compilationUnit = scope.resolve(rootModelName, CNNArchCompilationUnitSymbol.KIND);
-        if (!compilationUnit.isPresent()){
-            Log.error("could not resolve architecture " + rootModelName);
-            quitGeneration();
-        }
-
-        CNNArchCocos.checkAll(compilationUnit.get());
-        if (!supportCheck(compilationUnit.get().getArchitecture())){
-            quitGeneration();
-        }
-
-        try{
-            String confPath = getModelsDirPath() + "/data_paths.txt";
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(confPath);
-            String dataPath = newParserConfig.getDataPath(rootModelName);
-            compilationUnit.get().getArchitecture().setDataPath(dataPath);
-            compilationUnit.get().getArchitecture().setComponentName(rootModelName);
-            generateFiles(compilationUnit.get().getArchitecture());
-        } catch (IOException e){
-            Log.error(e.toString());
-        }
+        architectureSupportChecker = new CNNArch2Caffe2ArchitectureSupportChecker();
+        layerSupportChecker = new CNNArch2Caffe2LayerSupportChecker();
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
@@ -114,17 +60,7 @@ public class CNNArch2Caffe2 extends CNNArchGenerator{
         temp = archTc.process("execute", Target.CPP);
         fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());
 
-        checkValidGeneration(architecture);
-
         return fileContentMap;
-    }
-
-    public void generateFromFilecontentsMap(Map<String, String> fileContentMap) throws IOException {
-        GeneratorCPP genCPP = new GeneratorCPP();
-        genCPP.setGenerationTargetPath(getGenerationTargetPath());
-        for (String fileName : fileContentMap.keySet()){
-            genCPP.generateFile(new FileContent(fileContentMap.get(fileName), fileName));
-        }
     }
 
     public Map<String, String> generateCMakeContent(String rootModelName) {

@@ -1,0 +1,9 @@
+package de.monticore.lang.monticar.cnnarch.caffe2generator;
+
+import de.monticore.lang.monticar.cnnarch.mxnetgenerator.ArchitectureSupportChecker;
+
+public class CNNArch2Caffe2ArchitectureSupportChecker extends ArchitectureSupportChecker {
+
+    public CNNArch2Caffe2ArchitectureSupportChecker() {}
+
+}
