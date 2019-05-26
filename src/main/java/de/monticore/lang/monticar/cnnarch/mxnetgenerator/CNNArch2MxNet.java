@@ -49,8 +49,8 @@ public class CNNArch2MxNet extends CNNArchGenerator {
     protected LayerSupportChecker layerSupportChecker;
 
     public CNNArch2MxNet() {
-        architectureSupportChecker = new ArchitectureSupportChecker();
-        layerSupportChecker = new LayerSupportChecker();
+        architectureSupportChecker = new CNNArch2MxNetArchitectureSupportChecker();
+        layerSupportChecker = new CNNArch2MxNetLayerSupportChecker();
 
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
     }
