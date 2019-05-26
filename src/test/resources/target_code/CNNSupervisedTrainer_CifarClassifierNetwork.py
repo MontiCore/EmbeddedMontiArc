@@ -6,7 +6,7 @@ import os
 import shutil
 from mxnet import gluon, autograd, nd
 
-class ${tc.fileNameWithoutEnding}:
+class CNNSupervisedTrainer_CifarClassifierNetwork:
     def __init__(self, data_loader, net_constructor, net=None):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -85,13 +85,11 @@ class ${tc.fileNameWithoutEnding}:
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
-                </#list>
+                data = batch.data[0].as_in_context(mx_context)
                 label = batch.label[0].as_in_context(mx_context)
 
                 with autograd.record():
-                    output = self._net(${tc.join(tc.architectureInputs, ",")})
+                    output = self._net(data)
                     loss = loss_function(output, label)
 
                 loss.backward()
@@ -115,12 +113,10 @@ class ${tc.fileNameWithoutEnding}:
             train_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(train_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
-                </#list>
+                data = batch.data[0].as_in_context(mx_context)
                 label = batch.label[0].as_in_context(mx_context)
 
-                output = self._net(${tc.join(tc.architectureInputs, ",")})
+                output = self._net(data)
                 predictions = mx.nd.argmax(output, axis=1)
                 metric.update(preds=predictions, labels=label)
             train_metric_score = metric.get()[1]
@@ -128,12 +124,10 @@ class ${tc.fileNameWithoutEnding}:
             test_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(test_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
-                </#list>
+                data = batch.data[0].as_in_context(mx_context)
                 label = batch.label[0].as_in_context(mx_context)
 
-                output = self._net(${tc.join(tc.architectureInputs, ",")})
+                output = self._net(data)
                 predictions = mx.nd.argmax(output, axis=1)
                 metric.update(preds=predictions, labels=label)
             test_metric_score = metric.get()[1]

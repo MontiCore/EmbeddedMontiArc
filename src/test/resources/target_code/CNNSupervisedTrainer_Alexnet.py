@@ -6,7 +6,7 @@ import os
 import shutil
 from mxnet import gluon, autograd, nd
 
-class CNNSupervisedTrainer(object):
+class CNNSupervisedTrainer_Alexnet:
     def __init__(self, data_loader, net_constructor, net=None):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -48,7 +48,7 @@ class CNNSupervisedTrainer(object):
         if self._net is None:
             if normalize:
                 self._net_creator.construct(
-                    context=mx_context, data_mean=nd.array(data_mean), data_std=nd.array(data_std))
+                    context=mx_context, data_mean=data_mean, data_std=data_std)
             else:
                 self._net_creator.construct(context=mx_context)
 
@@ -75,7 +75,7 @@ class CNNSupervisedTrainer(object):
             loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
         elif self._net.last_layer == 'linear':
             loss_function = mx.gluon.loss.L2Loss()
-        else: # TODO: Change default?
+        else:
             loss_function = mx.gluon.loss.L2Loss()
             logging.warning("Invalid last_layer, defaulting to L2 loss")
 
@@ -87,6 +87,7 @@ class CNNSupervisedTrainer(object):
             for batch_i, batch in enumerate(train_iter):
                 data = batch.data[0].as_in_context(mx_context)
                 label = batch.label[0].as_in_context(mx_context)
+
                 with autograd.record():
                     output = self._net(data)
                     loss = loss_function(output, label)
@@ -114,6 +115,7 @@ class CNNSupervisedTrainer(object):
             for batch_i, batch in enumerate(train_iter):
                 data = batch.data[0].as_in_context(mx_context)
                 label = batch.label[0].as_in_context(mx_context)
+
                 output = self._net(data)
                 predictions = mx.nd.argmax(output, axis=1)
                 metric.update(preds=predictions, labels=label)
@@ -124,6 +126,7 @@ class CNNSupervisedTrainer(object):
             for batch_i, batch in enumerate(test_iter):
                 data = batch.data[0].as_in_context(mx_context)
                 label = batch.label[0].as_in_context(mx_context)
+
                 output = self._net(data)
                 predictions = mx.nd.argmax(output, axis=1)
                 metric.update(preds=predictions, labels=label)

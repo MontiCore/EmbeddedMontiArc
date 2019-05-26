@@ -74,5 +74,5 @@ class Net(gluon.HybridBlock):
         with self.name_scope():
 ${tc.include(tc.architecture.streams[0], "ARCHITECTURE_DEFINITION")}
 
-    def hybrid_forward(self, F, x):
+    def hybrid_forward(self, F, ${tc.join(tc.architectureInputs, ", ")}):
 ${tc.include(tc.architecture.streams[0], "FORWARD_FUNCTION")}

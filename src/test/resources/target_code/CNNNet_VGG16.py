@@ -72,11 +72,12 @@ class Net(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
         super(Net, self).__init__(**kwargs)
         with self.name_scope():
-            if not data_mean is None:
-                assert(not data_std is None)
-                self.input_normalization = ZScoreNormalization(data_mean=data_mean, data_std=data_std)
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_data = ZScoreNormalization(data_mean=data_mean['data'],
+                                                                               data_std=data_std['data'])
             else:
-                self.input_normalization = NoNormalization()
+                self.input_normalization_data = NoNormalization()
 
             self.conv1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv1_ = gluon.nn.Conv2D(channels=64,
@@ -225,8 +226,8 @@ class Net(gluon.HybridBlock):
         self.last_layer = 'softmax'
 
 
-    def hybrid_forward(self, F, x):
-        data = self.input_normalization(x)
+    def hybrid_forward(self, F, data):
+        data = self.input_normalization_data(data)
         conv1_padding = self.conv1_padding(data)
         conv1_ = self.conv1_(conv1_padding)
         relu1_ = self.relu1_(conv1_)

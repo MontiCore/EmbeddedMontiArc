@@ -59,12 +59,13 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
-                "CNNCreator_CifarClassifierNetwork.py",
-                "CNNNet_CifarClassifierNetwork.py",
-                "CNNDataLoader_CifarClassifierNetwork.py",
-                "CNNPredictor_CifarClassifierNetwork.h",
-                "execute_CifarClassifierNetwork",
-                "CNNBufferFile.h"));
+                        "CNNCreator_CifarClassifierNetwork.py",
+                        "CNNNet_CifarClassifierNetwork.py",
+                        "CNNDataLoader_CifarClassifierNetwork.py",
+                        "CNNSupervisedTrainer_CifarClassifierNetwork.py",
+                        "CNNPredictor_CifarClassifierNetwork.h",
+                        "execute_CifarClassifierNetwork",
+                        "CNNBufferFile.h"));
     }
 
     @Test
@@ -81,6 +82,7 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNCreator_Alexnet.py",
                         "CNNNet_Alexnet.py",
                         "CNNDataLoader_Alexnet.py",
+                        "CNNSupervisedTrainer_Alexnet.py",
                         "CNNPredictor_Alexnet.h",
                         "execute_Alexnet"));
     }
@@ -99,6 +101,7 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNCreator_VGG16.py",
                         "CNNNet_VGG16.py",
                         "CNNDataLoader_VGG16.py",
+                        "CNNSupervisedTrainer_VGG16.py",
                         "CNNPredictor_VGG16.h",
                         "execute_VGG16"));
     }
@@ -108,7 +111,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().size() == 2);
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -146,9 +149,7 @@ public class GenerationTest extends AbstractSymtabTest {
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
-                Arrays.asList(
-                        "CNNTrainer_fullConfig.py",
-                        "supervised_trainer.py"));
+                Arrays.asList("CNNTrainer_fullConfig.py"));
     }
 
     @Test
@@ -163,9 +164,7 @@ public class GenerationTest extends AbstractSymtabTest {
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
-                Arrays.asList(
-                        "CNNTrainer_simpleConfig.py",
-                        "supervised_trainer.py"));
+                Arrays.asList("CNNTrainer_simpleConfig.py"));
     }
 
     @Test
@@ -179,9 +178,7 @@ public class GenerationTest extends AbstractSymtabTest {
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
-                Arrays.asList(
-                        "CNNTrainer_emptyConfig.py",
-                        "supervised_trainer.py"));
+                Arrays.asList("CNNTrainer_emptyConfig.py"));
     }
 
     @Test
@@ -222,14 +219,12 @@ public class GenerationTest extends AbstractSymtabTest {
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
-                Arrays.asList(
-                        "CMakeLists.txt"));
+                Arrays.asList("CMakeLists.txt"));
 
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch/cmake"),
                 Paths.get("./src/test/resources/target_code/cmake"),
-                Arrays.asList(
-                        "FindArmadillo.cmake"));
+                Arrays.asList("FindArmadillo.cmake"));
     }
 
 }

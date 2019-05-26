@@ -43,12 +43,11 @@ class ${tc.fileNameWithoutEnding}:
             self.net.load_parameters(self._model_dir_ + param_file)
             return lastEpoch
 
-
     def construct(self, context, data_mean=None, data_std=None):
         self.net = Net(data_mean=data_mean, data_std=data_std)
         self.net.collect_params().initialize(self.weight_initializer, ctx=context)
         self.net.hybridize()
-        self.net(mx.nd.zeros((1,)+self._input_shapes_[0], ctx=context))
+        self.net(<#list tc.architecture.inputs as input>mx.nd.zeros((1,) + self._input_shapes_[${input?index}], ctx=context)<#sep>, </#list>)
 
         if not os.path.exists(self._model_dir_):
             os.makedirs(self._model_dir_)

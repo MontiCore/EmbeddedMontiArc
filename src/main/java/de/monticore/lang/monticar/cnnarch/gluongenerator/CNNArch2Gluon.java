@@ -32,8 +32,6 @@ import java.util.Map;
 public class CNNArch2Gluon extends CNNArch2MxNet {
 
     public CNNArch2Gluon() {
-        super();
-
         architectureSupportChecker = new CNNArch2GluonArchitectureSupportChecker();
         layerSupportChecker = new CNNArch2GluonLayerSupportChecker();
     }
@@ -60,6 +58,9 @@ public class CNNArch2Gluon extends CNNArch2MxNet {
         }
 
         temp = archTc.process("CNNCreator", Target.PYTHON);
+        fileContentMap.put(temp.getKey(), temp.getValue());
+
+        temp = archTc.process("CNNSupervisedTrainer", Target.PYTHON);
         fileContentMap.put(temp.getKey(), temp.getValue());
 
         temp = archTc.process("execute", Target.CPP);
