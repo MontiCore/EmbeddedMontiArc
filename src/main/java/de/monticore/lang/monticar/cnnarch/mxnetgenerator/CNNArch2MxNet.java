@@ -55,24 +55,20 @@ public class CNNArch2MxNet extends CNNArchGenerator {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
     }
 
-    public boolean generate(Scope scope, String rootModelName) {
+    public void checkSupport(ArchitectureSymbol architecture) {
+        architectureSupportChecker.check(architecture);
+        layerSupportChecker.check(architecture);
+    }
+
+    public void generate(Scope scope, String rootModelName) {
         Optional<CNNArchCompilationUnitSymbol> compilationUnit = scope.resolve(rootModelName, CNNArchCompilationUnitSymbol.KIND);
         if (!compilationUnit.isPresent()){
             Log.error("could not resolve architecture " + rootModelName);
-            return false;
         }
 
         CNNArchCocos.checkAll(compilationUnit.get());
 
-        ArchitectureSymbol architecture = compilationUnit.get().getArchitecture();
-
-        if (!architectureSupportChecker.check(architecture)) {
-            return false;
-        }
-
-        if (!layerSupportChecker.check(architecture)) {
-            return false;
-        }
+        checkSupport(compilationUnit.get().getArchitecture());
 
         try{
             String confPath = getModelsDirPath() + "/data_paths.txt";
@@ -83,19 +79,13 @@ public class CNNArch2MxNet extends CNNArchGenerator {
             generateFiles(compilationUnit.get().getArchitecture());
         } catch (IOException e){
             Log.error(e.toString());
-            return false;
         }
-
-        return true;
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public Map<String, String> generateStrings(ArchitectureSymbol architecture){
-        TemplateConfiguration templateConfiguration = new MxNetTemplateConfiguration();
-
         Map<String, String> fileContentMap = new HashMap<>();
-        CNNArch2MxNetTemplateController archTc
-                = new CNNArch2MxNetTemplateController(architecture, templateConfiguration);
+        CNNArch2MxNetTemplateController archTc = new CNNArch2MxNetTemplateController(architecture);
         Map.Entry<String, String> temp;
 
         temp = archTc.process("CNNPredictor", Target.CPP);

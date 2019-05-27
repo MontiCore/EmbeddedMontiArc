@@ -9,9 +9,8 @@ import java.io.Writer;
  */
 public class CNNArch2MxNetTemplateController extends CNNArchTemplateController {
 
-    public CNNArch2MxNetTemplateController(ArchitectureSymbol architecture,
-                                           TemplateConfiguration templateConfiguration) {
-        super(architecture, templateConfiguration);
+    public CNNArch2MxNetTemplateController(ArchitectureSymbol architecture) {
+        super(architecture, new MxNetTemplateConfiguration());
     }
 
     public void include(IOSymbol ioElement, Writer writer){
