@@ -140,7 +140,7 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testMnistClassifier() throws IOException, TemplateException {
+    public void testMnistClassifierForCaffe2() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/models/", "-r", "mnist.MnistClassifier", "-b", "CAFFE2", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
@@ -178,7 +178,7 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNCreator_mnist_mnistClassifier_net.py",
                         "CNNPredictor_mnist_mnistClassifier_net.h",
                         "CNNDataLoader_mnist_mnistClassifier_net.py",
-                        "supervised_trainer.py",
+                        "CNNSupervisedTrainer_mnist_mnistClassifier_net.py",
                         "mnist_mnistClassifier_net.h",
                         "HelperA.h",
                         "CNNTranslator.h",

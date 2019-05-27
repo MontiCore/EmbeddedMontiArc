@@ -360,6 +360,8 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
+            cnnArchGenerator.checkSupport(architecture.get());
+
             DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
             String dPath = newParserConfig.getDataPath(EMAComponentSymbol.getFullName());
 

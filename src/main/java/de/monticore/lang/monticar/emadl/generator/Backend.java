@@ -40,7 +40,7 @@ public enum Backend {
         }
         @Override
         public CNNTrainGenerator getCNNTrainGenerator() {
-            return new CNNTrain2Gluon();
+            return new CNNTrain2Gluon(new RewardFunctionCppGenerator());
         }
     };
 

@@ -6,11 +6,14 @@ from CNNNet_mnist_mnistClassifier_net import Net
 class CNNCreator_mnist_mnistClassifier_net:
     _model_dir_ = "model/mnist.LeNetNetwork/"
     _model_prefix_ = "model"
-    _input_shapes_ = [(1,28,28)]
+    _input_shapes_ = [(1,28,28,)]
 
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.net = None
+
+    def get_input_shapes(self):
+        return self._input_shapes_
 
     def load(self, context):
         lastEpoch = 0
@@ -40,12 +43,11 @@ class CNNCreator_mnist_mnistClassifier_net:
             self.net.load_parameters(self._model_dir_ + param_file)
             return lastEpoch
 
-
     def construct(self, context, data_mean=None, data_std=None):
         self.net = Net(data_mean=data_mean, data_std=data_std)
         self.net.collect_params().initialize(self.weight_initializer, ctx=context)
         self.net.hybridize()
-        self.net(mx.nd.zeros((1,)+self._input_shapes_[0], ctx=context))
+        self.net(mx.nd.zeros((1,) + self._input_shapes_[0], ctx=context))
 
         if not os.path.exists(self._model_dir_):
             os.makedirs(self._model_dir_)

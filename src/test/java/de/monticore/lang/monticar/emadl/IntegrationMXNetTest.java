@@ -20,25 +20,6 @@
  */
 package de.monticore.lang.monticar.emadl;
 
-import de.monticore.lang.monticar.emadl.generator.Backend;
-import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
-import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
-import de.se_rwth.commons.logging.Log;
-import freemarker.template.TemplateException;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-
 public class IntegrationMXNetTest extends IntegrationTest {
     public IntegrationMXNetTest() {
         super("MXNET", "39253EC049D4A4E5FA0536AD34874B9D#1DBAEE1B1BD83FB7CB5F70AE91B29638#C4C23549E737A759721D6694C75D9771#5AF0CE68E408E8C1F000E49D72AC214A");
