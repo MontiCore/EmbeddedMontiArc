@@ -60,14 +60,16 @@ public abstract class CNNArchGenerator {
         return this.modelsDirPath;
     }
 
-    public boolean generate(Path modelsDirPath, String rootModelName){
+    public void generate(Path modelsDirPath, String rootModelName){
         this.modelsDirPath = modelsDirPath.toString();
         final ModelPath mp = new ModelPath(modelsDirPath);
         GlobalScope scope = new GlobalScope(mp, new CNNArchLanguage());
-        return generate(scope, rootModelName);
+        generate(scope, rootModelName);
     }
 
-    public abstract boolean generate(Scope scope, String rootModelName);
+    public abstract void checkSupport(ArchitectureSymbol architecture);
+
+    public abstract void generate(Scope scope, String rootModelName);
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public abstract Map<String, String> generateStrings(ArchitectureSymbol architecture);
