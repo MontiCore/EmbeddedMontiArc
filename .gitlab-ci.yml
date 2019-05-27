@@ -7,5 +7,6 @@ LinuxBuild:
   artifacts:
     paths:
       - emam-debug.vsix
+    expire_in: 8 weeks
   script:
     - ./build.sh
