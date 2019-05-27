@@ -20,7 +20,7 @@ fi
 
 if [ `command -v vsce` ]
 then
-	vsce package -o "${curDir}/emam-debug.vsix"
+	vsce package -o "${curDir}/emam-debug.vsix" --baseImagesUrl "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/emam-debugger-vscode/raw/master/"
 	exit $?
 else
 	echo "Can not find vsce. Aborting!"
