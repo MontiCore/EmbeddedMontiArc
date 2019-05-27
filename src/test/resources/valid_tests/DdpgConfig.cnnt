@@ -1,0 +1,6 @@
+configuration DdpgConfig {
+    learning_method : reinforcement
+    rl_algorithm : ddpg-algorithm
+    critic : path.to.component
+    environment : gym { name:"CartPole-v1" }
+}

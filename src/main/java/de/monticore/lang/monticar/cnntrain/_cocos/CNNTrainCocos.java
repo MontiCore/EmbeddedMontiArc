@@ -33,7 +33,8 @@ public class CNNTrainCocos {
                 .addCoCo(new CheckFixTargetNetworkRequiresInterval())
                 .addCoCo(new CheckReinforcementRequiresEnvironment())
                 .addCoCo(new CheckLearningParameterCombination())
-                .addCoCo(new CheckRosEnvironmentRequiresRewardFunction());
+                .addCoCo(new CheckRosEnvironmentRequiresRewardFunction())
+                .addCoCo(new CheckDdpgRequiresCriticNetwork());
     }
 
     public static void checkAll(CNNTrainCompilationUnitSymbol compilationUnit){
