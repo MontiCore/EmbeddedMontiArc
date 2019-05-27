@@ -68,7 +68,7 @@ public class GenerationTest extends AbstractSymtabTest{
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "CifarClassifierNetwork", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 2);
+        assertTrue(Log.getFindings().size() == 1);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class GenerationTest extends AbstractSymtabTest{
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "Alexnet", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 2);
+        assertTrue(Log.getFindings().size() == 1);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class GenerationTest extends AbstractSymtabTest{
         Log.getFindings().clear();;
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ResNeXt50"};
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 2);
+        assertTrue(Log.getFindings().size() == 1);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class GenerationTest extends AbstractSymtabTest{
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
         CNNArch2Caffe2Cli.main(args);
-        assertTrue(Log.getFindings().size() == 2);
+        assertTrue(Log.getFindings().size() == 4);
     }
 
     @Test
