@@ -61,6 +61,8 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
     );
     private final static List<Class> ALLOWED_REINFORCEMENT_LEARNING = Lists.newArrayList(
             ASTTrainContextEntry.class,
+            ASTRLAlgorithmEntry.class,
+            ASTCriticNetworkEntry.class,
             ASTOptimizerEntry.class,
             ASTRewardFunctionEntry.class,
             ASTMinimumLearningRateEntry.class,

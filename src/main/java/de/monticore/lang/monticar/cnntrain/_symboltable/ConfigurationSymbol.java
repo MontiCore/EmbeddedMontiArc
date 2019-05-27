@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 
 import java.util.*;
@@ -30,12 +31,14 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     private Map<String, EntrySymbol> entryMap = new HashMap<>();
     private OptimizerSymbol optimizer;
     private RewardFunctionSymbol rlRewardFunctionSymbol;
+    private TrainedArchitecture trainedArchitecture;
 
     public static final ConfigurationSymbolKind KIND = new ConfigurationSymbolKind();
 
     public ConfigurationSymbol()  {
         super("", KIND);
         rlRewardFunctionSymbol = null;
+        trainedArchitecture = null;
     }
 
     public OptimizerSymbol getOptimizer() {
@@ -52,6 +55,14 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
     public Optional<RewardFunctionSymbol> getRlRewardFunction() {
         return Optional.ofNullable(this.rlRewardFunctionSymbol);
+    }
+
+    public Optional<TrainedArchitecture> getTrainedArchitecture() {
+        return Optional.ofNullable(trainedArchitecture);
+    }
+
+    public void setTrainedArchitecture(TrainedArchitecture trainedArchitecture) {
+        this.trainedArchitecture = trainedArchitecture;
     }
 
     public Map<String, EntrySymbol> getEntryMap() {

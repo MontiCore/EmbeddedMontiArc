@@ -277,6 +277,19 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         return value;
     }
 
+    private ValueSymbol getValueSymbolForComponentName(ASTComponentNameValue astComponentNameValue) {
+        ValueSymbol value = new ValueSymbol();
+        List<String> valueAsList = astComponentNameValue.getNameList();
+        value.setValue(valueAsList);
+        return value;
+    }
+
+    private ValueSymbol getValueSymbolForComponentNameAsString(ASTComponentNameValue astComponentNameValue) {
+        ValueSymbol value = new ValueSymbol();
+        value.setValue(String.join(".", astComponentNameValue.getNameList()));
+        return value;
+    }
+
     private String getStringFromStringValue(ASTStringValue value) {
         return value.getStringLiteral().getValue();
     }
@@ -303,6 +316,22 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
             value.setValue(LearningMethod.REINFORCEMENT);
         } else if (node.getValue().isPresentSupervisedLearning()) {
             value.setValue(LearningMethod.SUPERVISED);
+        }
+
+        entry.setValue(value);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTRLAlgorithmEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        ValueSymbol value = new ValueSymbol();
+
+        if (node.getValue().isPresentDdpg()) {
+            value.setValue(RLAlgorithm.DDPG);
+        } else {
+            value.setValue(RLAlgorithm.DQN);
         }
 
         entry.setValue(value);
@@ -389,6 +418,16 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(entry, node);
         configuration.getEntryMap().put(node.getName(), entry);
     }
+
+    @Override
+    public void visit(ASTCriticNetworkEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForComponentNameAsString(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+
 
     @Override
     public void visit(ASTReplayMemoryEntry node) {

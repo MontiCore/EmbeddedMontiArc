@@ -98,6 +98,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     interface MultiParamValue extends ConfigValue;
 
     LearningMethodEntry implements ConfigEntry = name:"learning_method" ":" value:LearningMethodValue;
+    RLAlgorithmEntry implements ConfigEntry = name:"rl_algorithm" ":" value:RLAlgorithmValue;
     NumEpisodesEntry implements ConfigEntry = name:"num_episodes" ":" value:IntegerValue;
     DiscountFactorEntry implements ConfigEntry = name:"discount_factor" ":" value:NumberValue;
     NumMaxStepsEntry implements ConfigEntry = name:"num_max_steps" ":" value:IntegerValue;
@@ -109,10 +110,13 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     AgentNameEntry implements ConfigEntry = name:"agent_name" ":" value:StringValue;
     UseDoubleDQNEntry implements ConfigEntry = name:"use_double_dqn" ":" value:BooleanValue;
     RewardFunctionEntry implements ConfigEntry = name:"reward_function" ":" value:ComponentNameValue;
+    CriticNetworkEntry implements ConfigEntry = name:"critic" ":" value:ComponentNameValue;
 
     ComponentNameValue implements ConfigValue = Name ("."Name)*;
 
     LearningMethodValue implements ConfigValue = (supervisedLearning:"supervised" | reinforcement:"reinforcement");
+
+    RLAlgorithmValue implements ConfigValue = (dqn:"dqn-algorithm" | ddpg:"ddpg-algorithm");
 
     interface MultiParamConfigEntry extends ConfigEntry;
 

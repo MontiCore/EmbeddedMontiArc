@@ -18,20 +18,16 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._cocos;
+package de.monticore.lang.monticar.cnntrain.annotations;
 
-import de.monticore.lang.monticar.cnntrain._ast.ASTConfiguration;
-import de.monticore.lang.monticar.cnntrain._ast.ASTEnvironmentEntry;
-import de.monticore.lang.monticar.cnntrain._ast.ASTLearningMethodEntry;
+import java.util.List;
+import java.util.Map;
 
-class ASTConfigurationUtils {
-    static boolean isReinforcementLearning(final ASTConfiguration configuration) {
-        return configuration.getEntriesList().stream().anyMatch(e ->
-                (e instanceof ASTLearningMethodEntry)
-                        && ((ASTLearningMethodEntry)e).getValue().isPresentReinforcement());
-    }
+public interface TrainedArchitecture {
+    public List<String> getInputs();
+    public List<String> getOutputs();
+    public Map<String, List<Integer>> getDimensions();
+    public Map<String, Range> getRanges();
+    public Map<String, String> getTypes();
 
-    static boolean hasEnvironment(final ASTConfiguration configuration) {
-        return configuration.getEntriesList().stream().anyMatch(e -> e instanceof ASTEnvironmentEntry);
-    }
 }
