@@ -7,7 +7,7 @@ from mxnet import nd
 
 class ${tc.fileNameWithoutEnding}:
     _input_names_ = [${tc.join(tc.architectureInputs, ",", "'", "'")}]
-    _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "'")}]
+    _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "_label'")}]
 
     def __init__(self):
         self._data_dir = "${tc.dataPath}/"

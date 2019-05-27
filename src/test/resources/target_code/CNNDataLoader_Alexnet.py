@@ -7,7 +7,7 @@ from mxnet import nd
 
 class CNNDataLoader_Alexnet:
     _input_names_ = ['data']
-    _output_names_ = ['predictions']
+    _output_names_ = ['predictions_label']
 
     def __init__(self):
         self._data_dir = "data/Alexnet/"

@@ -7,7 +7,7 @@ from mxnet import nd
 
 class CNNDataLoader_CifarClassifierNetwork:
     _input_names_ = ['data']
-    _output_names_ = ['softmax']
+    _output_names_ = ['softmax_label']
 
     def __init__(self):
         self._data_dir = "data/CifarClassifierNetwork/"
