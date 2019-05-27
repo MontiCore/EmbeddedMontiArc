@@ -1,4 +1,5 @@
 # EmbeddedMontiArcMath debugger plugin for vscode
+Based on Microsoft's [VS Code Mock Debug](https://github.com/microsoft/vscode-mock-debug).
 
 ## Usage
 Open a project containing EMAM components and Steam tests as a folder and then navigate to one of your components. You can now navigate to one of your components and click on
@@ -38,3 +39,11 @@ Alternatively you can copy your local version of EMAM2CPP(jar with dependencies)
 npm install
 vsce package -o "emam-debug.vsix"
 ```
+
+## Debugging
+A log file is written to the logs directory inside the extension directory(e.g. `~/.vscode/extensions/se-rwth.emam-debug-0.0.1/logs` or `./logs` when debugging)
+
+To debug:
+- Open this directory in vscode
+- Navigate to View>Debug
+- Select `Extension` and press `Start Debugging`
