@@ -19,7 +19,7 @@
  * *******************************************************************************
  */
 
-import java.util.*;
+import java.util.Map;
 
 public interface Bus {
 
