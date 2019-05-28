@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11  -rdynamic CMakeFiles/hello_world_service.dir/hello_world_service.cpp.o  -o hello_world_service -Wl,-rpath,/home/markus/Desktop/Praktikum/vsomeip-master/build /home/markus/Desktop/Praktikum/vsomeip-master/build/libvsomeip.so.2.10.21 -lpthread 

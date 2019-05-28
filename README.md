@@ -13,11 +13,27 @@ Installing boost 1.65 on ubuntu:
 ```bash
 sudo apt-get install libboost-system1.65-dev libboost-thread1.65-dev libboost-log1.65-dev
 ```
+Build vsomeip from vsomeip main directory:
+```bash
+mkdir build
+cd build
+sudo cmake ..
+sudo make
+sudo make install
+```
+
 If build fails, try to apply this fix:
 
 https://github.com/GENIVI/vsomeip/issues/25
 
 Summary of the fix: 
-Replace "return &sockaddr;" with "return reinterpret_cast<struct sockaddr*>(&sockaddr);" in:
-implementation/endpoints/include/netlink_connector.hpp
+Replace "return &sockaddr;" with "return reinterpret_cast<struct sockaddr*>(&sockaddr);" 
+in: implementation/endpoints/include/netlink_connector.hpp
 
+#### Build the documentation:
+
+To build the documentation asciidoc, source-highlight, doxygen and graphviz is needed:
+```bash
+sudo apt-get install asciidoc source-highlight doxygen graphviz
+make doc
+'''
