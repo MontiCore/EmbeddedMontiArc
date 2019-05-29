@@ -1,4 +1,5 @@
 import java.util.Comparator;
+import java.util.Random;
 
 /**
  *
@@ -38,6 +39,15 @@ public class BusMessage {
     
     private int messageID;
     
+    private int finishTime;
+    
+    private boolean error;
+    
+	/**
+	 * Random number generator to determine a bit error
+	 */
+	Random bitError = new Random();
+    
     public BusMessage(Object message, int messageLen, int messageID, int requestTime, int controllerID) {
     	this.message = message;
     	this.messageLen = messageLen;
@@ -46,8 +56,19 @@ public class BusMessage {
     	this.controllerID = controllerID;
     	this.transmittedBytes = 0;
     	this.transmitted = false;
+    	this.finishTime = -1;
+    	this.error = false;
     }
     
+
+	public int getFinishTime() {
+		return finishTime;
+	}
+
+	public void setFinishTime(int finishTime) {
+		this.finishTime = finishTime;
+	}
+
 
 	public Object getMessage() {
 		return message;
@@ -105,17 +126,23 @@ public class BusMessage {
 		return transmitted;
 	}
 	
-	public int transmitBytes(int bytes) {
+	
+	public int transmitBytes(int bytes, double bitErrorRate) {
 		int res = -1;
 		if(bytes >= 0) {
 			if(this.messageLen - this.transmittedBytes - bytes <= 0) {
-				transmittedBytes = messageLen;
 				transmitted = true;
 				res = messageLen - this.transmittedBytes;
+				transmittedBytes = messageLen;
 			}
 			else {
 				transmittedBytes += bytes;
 				res = bytes;
+			}
+			//bound defines the probability of a bit error (1/bound)
+			int bound = Math.max(1, (int)((1/bitErrorRate)/(8*res)));
+			if(this.bitError.nextInt(bound) == 0) {
+				this.error = true;
 			}
 		}
 		return res;
