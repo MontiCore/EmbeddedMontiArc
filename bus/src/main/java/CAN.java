@@ -14,6 +14,15 @@ public class CANBus implements Bus {
     private Map<String, BusMessage> myMap;
     // BusMessage (also Object (message) und länge oder in der map ohne länge nur das objekt?
 
+    /*
+    static overhead per frame in bit
+     */
+    private final int OVERHEAD = 41;
+
+    /*
+    maximum payload per frame in byte
+     */
+    private final int MAX_PAYLOAD_LEN = 8;
 
     //dataRate in bit/ms
     //connections sind alle Anschlüsse an diesen Bus
@@ -53,8 +62,8 @@ public class CANBus implements Bus {
 
     //gibt upload delay in ms
     private int getDelay(BusMessage msg) {
-        //Annahme msg gibt größe in bit
-        double delay = msg.getMessageLen() / dataRate;// Zugriff auf die Dateigröße
+        int allData = msg.getMessageLen()*8 +(int) Math.ceil((double)msg.getMessageLen()/MAX_PAYLOAD_LEN)*OVERHEAD;
+        double delay = allData/ dataRate;
         delay = Math.ceil(delay);
         return (int(delay));
     }
