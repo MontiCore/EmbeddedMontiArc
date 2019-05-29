@@ -80,14 +80,14 @@ public class FlexRay implements Bus {
 	/**
 	 * @return The duration of a slot in microseconds
 	 */
-	private int getSlotSize() {
+	int getSlotSize() {
 		return (int) Math.ceil(((HEADER_SIZE + TRAILER_SIZE + MAX_PAYLOAD_LEN) * 8) / (double) mode.getDataRate());
 	}
 
 	/**
 	 * @return The duration of a cycle in microseconds
 	 */
-	private int getCycleTime() {
+	int getCycleTime() {
 		return this.getSlotSize() * (this.connectedComponents + DYNAMIC_SLOTS);
 	}
 
@@ -96,7 +96,7 @@ public class FlexRay implements Bus {
 	 * @param startTime Time where the simulation starts
 	 * @param deltaTime Time of the simulation
 	 */
-	private void simulateFor(int startTime, int deltaTime) {
+	void simulateFor(int startTime, int deltaTime) {
 		//index messages by start cycle
 		Map<Integer, List<BusMessage>> messagesByStartCycle = calculateStartCycles();
 		int maxStartCycle = Collections.max(messagesByStartCycle.keySet());
@@ -130,7 +130,7 @@ public class FlexRay implements Bus {
 	/**
 	 * @return Map with cycle number as key and a list of messages that start in this cycle as value
 	 */
-	private Map<Integer, List<BusMessage>> calculateStartCycles() {
+	Map<Integer, List<BusMessage>> calculateStartCycles() {
 		Map<Integer, List<BusMessage>> messagesByStartCycle = new HashMap<Integer, List<BusMessage>>();
 		for (BusMessage message : activeMessages) {
 			int startCycle = message.getRequestTime() / getCycleTime();
@@ -147,7 +147,7 @@ public class FlexRay implements Bus {
 	 * @param newMessages messages to be added to {@code messagesByControllerId}
 	 * @return {@code messagesByControllerId} with properly inserted messages from {@code newMessages}
 	 */
-	private Map<Integer, List<BusMessage>> insertNewMessages(Map<Integer, List<BusMessage>> messagesByControllerId,
+	Map<Integer, List<BusMessage>> insertNewMessages(Map<Integer, List<BusMessage>> messagesByControllerId,
 			List<BusMessage> newMessages) {
 		if (newMessages != null && messagesByControllerId != null) {
 			for (BusMessage message : newMessages) {
