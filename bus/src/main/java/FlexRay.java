@@ -67,6 +67,11 @@ public class FlexRay implements Bus {
 	 * The messages that should be transmitted by this bus
 	 */
 	private List<BusMessage> activeMessages = new ArrayList<BusMessage>();
+	
+	/**
+	 * Map with all transmitted messages
+	 */
+	public Map<Sting, BusMessage> transmittedMessages = new HashMap<String, BusMessage>();
 
 	/**
 	 * The mode in which this bus is configured {@link FlexRayOpterationMode}
@@ -211,25 +216,38 @@ public class FlexRay implements Bus {
 	@Override
 	public int setData(String key, BusMessage msg) {
 		// TODO Auto-generated method stub
-		return 0;
+		this.activeMessages.add(msg);
+		
+		return getDelay(deltaTime); //Zeit bis nächster rahmen gesendet wird
 	}
 
 	@Override
 	public BusMessage getData(String key) {
 		// TODO Auto-generated method stub
-		return null;
+		return transmittedMessages.get(key);
 	}
 
 	@Override
 	public Map<String, BusMessage> getAllData() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Auto-generated method stub	
+		return transmittedMessages;
 	}
 
 	@Override
 	public String[] getImportNames() {
 		// TODO Auto-generated method stub
-		return null;
+		Set keys = transmittedMessages.keySet();
+		return keys.toArray();
+	}
+	
+	
+	/**
+	 * @param deltaTime time until the next frame will be transmitted
+	 * @return time that message needs until it is transmitted
+	 */
+	public int getDelay(int deltaTime) {
+		int delay = deltaTime + getCycleTime();
+		return delay;
 	}
 
 }
