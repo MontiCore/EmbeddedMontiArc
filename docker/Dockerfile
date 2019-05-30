@@ -27,3 +27,12 @@ RUN make
 
 RUN make install
 
+WORKDIR /usr/src/emam2someip
+
+RUN rm -rf build
+
+WORKDIR /usr/src/emam2someip/example/build
+
+RUN cmake ..
+
+RUN make
