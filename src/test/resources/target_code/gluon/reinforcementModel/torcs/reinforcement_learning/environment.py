@@ -40,7 +40,7 @@ import rospy
 import thread
 import numpy as np
 import time
-from std_msgs.msg import Float32MultiArray, Bool, Int32
+from std_msgs.msg import Float32MultiArray, Bool, Int32, MultiArrayDimension
 
 class RosEnvironment(Environment):
     def __init__(self,

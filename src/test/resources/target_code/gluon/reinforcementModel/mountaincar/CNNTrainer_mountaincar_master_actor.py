@@ -1,8 +1,9 @@
-from reinforcement_learning.agent import DqnAgent
+from reinforcement_learning.agent import DdpgAgent
 from reinforcement_learning.util import AgentSignalHandler
 from reinforcement_learning.cnnarch_logger import ArchLogger
+from reinforcement_learning.CNNCreator_MountaincarCritic import CNNCreator_MountaincarCritic
 import reinforcement_learning.environment
-import CNNCreator_cartpole_master_dqn
+import CNNCreator_mountaincar_master_actor
 
 import os
 import sys
@@ -32,7 +33,7 @@ def resume_session():
 
 
 if __name__ == "__main__":
-    agent_name='cartpole_master_dqn'
+    agent_name='mountaincar_master_actor'
     # Prepare output directory and logger
     output_directory = 'model_output'\
         + '/' + agent_name\
@@ -42,48 +43,54 @@ if __name__ == "__main__":
     ArchLogger.set_logger_name(agent_name)
     ArchLogger.set_output_level(ArchLogger.INFO)
 
-    env = reinforcement_learning.environment.GymEnvironment('CartPole-v0')
+    env = reinforcement_learning.environment.GymEnvironment('MountainCarContinuous-v0')
 
     context = mx.cpu()
-    qnet_creator = CNNCreator_cartpole_master_dqn.CNNCreator_cartpole_master_dqn()
-    qnet_creator.construct(context)
+    actor_creator = CNNCreator_mountaincar_master_actor.CNNCreator_mountaincar_master_actor()
+    actor_creator.construct(context)
+    critic_creator = CNNCreator_MountaincarCritic.CNNCreator_MountaincarCritic()
+    critic_creator.construct(context)
 
     agent_params = {
         'environment': env,
         'replay_memory_params': {
             'method':'buffer',
-            'memory_size':10000,
-            'sample_size':32,
+            'memory_size':1000000,
+            'sample_size':64,
             'state_dtype':'float32',
             'action_dtype':'float32',
             'rewards_dtype':'float32'
         },
         'strategy_params': {
-            'method':'epsgreedy',
+            'method':'ornstein_uhlenbeck',
             'epsilon': 1,
             'min_epsilon': 0.01,
             'epsilon_decay_method': 'linear',
             'epsilon_decay': 0.01,
+            'action_low': -1
+            'action_high': 1
+            'mu': np.array([0])
+            'theta': np.array([0.15])
+            'sigma': np.array([0.3])
         },
         'agent_name': agent_name,
         'verbose': True,
-        'state_dim': (4,),
-        'action_dim': (2,),
+        'state_dim': (2,),
+        'action_dim': (1,),
         'ctx': 'cpu',
         'discount_factor': 0.999,
-        'training_episodes': 160,
+        'training_episodes': 200,
         'train_interval': 1,
         'snapshot_interval': 20,
-        'max_episode_step': 250,
-        'target_score': 185.5,
-        'qnet':qnet_creator.net,
-        'use_fix_target': True,
-        'target_update_interval': 200,
-        'loss_function': 'euclidean',
-        'optimizer': 'rmsprop',
-        'optimizer_params': {
-            'learning_rate': 0.001        },
-        'double_dqn': False,
+        'max_episode_step': 1000,
+        'actor': actor_creator.net,
+        'critic': critic_creator.net,
+        'actor_optimizer': 'adam',
+        'actor_optimizer_params': {
+            'learning_rate': 1.0E-4},
+        'critic_optimizer': 'adam',
+        'critic_optimizer_params': {
+            'learning_rate': 0.001},
     }
 
     resume, resume_directory = resume_session()
@@ -92,11 +99,12 @@ if __name__ == "__main__":
         resume_agent_params = {
             'session_dir': resume_directory,
             'environment': env,
-            'net': qnet_creator.net,
+            'actor': actor_creator.net,
+            'critic': critic_creator.net
         }
-        agent = DqnAgent.resume_from_session(**resume_agent_params)
+        agent = DdpgAgent.resume_from_session(**resume_agent_params)
     else:
-        agent = DqnAgent(**agent_params)
+        agent = DdpgAgent(**agent_params)
 
     signal_handler = AgentSignalHandler()
     signal_handler.register_agent(agent)
@@ -104,4 +112,4 @@ if __name__ == "__main__":
     train_successful = agent.train()
 
     if train_successful:
-        agent.save_best_network(qnet_creator._model_dir_ + qnet_creator._model_prefix_ + '_newest', epoch=0)
+        agent.save_best_network(actor_creator._model_dir_ + actor_creator._model_prefix_ + '_newest', epoch=0)

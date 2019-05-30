@@ -214,11 +214,12 @@ public class GenerationTest extends AbstractSymtabTest {
                         "HelperA.h",
                         "start_training.sh",
                         "reinforcement_learning/__init__.py",
-                        "reinforcement_learning/action_policy.py",
+                        "reinforcement_learning/strategy.py",
                         "reinforcement_learning/agent.py",
                         "reinforcement_learning/environment.py",
                         "reinforcement_learning/replay_memory.py",
-                        "reinforcement_learning/util.py"
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
                 )
         );
     }
@@ -262,11 +263,12 @@ public class GenerationTest extends AbstractSymtabTest {
                         "reward/pylib/armanpy/armanpy_3d.i",
                         "reward/pylib/armanpy/numpy.i",
                         "reinforcement_learning/__init__.py",
-                        "reinforcement_learning/action_policy.py",
+                        "reinforcement_learning/strategy.py",
                         "reinforcement_learning/agent.py",
                         "reinforcement_learning/environment.py",
                         "reinforcement_learning/replay_memory.py",
                         "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py",
                         "reinforcement_learning/torcs_agent_dqn_reward_executor.py"
                 )
         );
@@ -292,5 +294,33 @@ public class GenerationTest extends AbstractSymtabTest {
         String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "mountaincar.Master", "-b", "GLUON", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertEquals(0, Log.getFindings().stream().filter(Finding::isError).count());
+
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-emadl"),
+                Paths.get("./src/test/resources/target_code/gluon/reinforcementModel/mountaincar"),
+                Arrays.asList(
+                        "mountaincar_master.cpp",
+                        "mountaincar_master.h",
+                        "mountaincar_master_actor.h",
+                        "CMakeLists.txt",
+                        "CNNBufferFile.h",
+                        "CNNCreator_mountaincar_master_actor.py",
+                        "CNNNet_mountaincar_master_actor.py",
+                        "CNNPredictor_mountaincar_master_actor.h",
+                        "CNNTrainer_mountaincar_master_actor.py",
+                        "CNNTranslator.h",
+                        "HelperA.h",
+                        "start_training.sh",
+                        "reinforcement_learning/__init__.py",
+                        "reinforcement_learning/CNNCreator_MountaincarCritic.py",
+                        "reinforcement_learning/CNNNet_MountaincarCritic.py",
+                        "reinforcement_learning/strategy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
+                )
+        );
     }
 }

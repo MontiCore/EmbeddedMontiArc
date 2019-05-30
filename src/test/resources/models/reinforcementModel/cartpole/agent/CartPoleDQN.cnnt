@@ -24,7 +24,7 @@ configuration CartPoleDQN {
         sample_size : 32
     }
 
-    action_selection : epsgreedy{
+    strategy : epsgreedy{
         epsilon : 1.0
         min_epsilon : 0.01
         epsilon_decay_method: linear

@@ -14,21 +14,26 @@ configuration MountaincarActor {
 
     snapshot_interval : 20
 
-    loss : euclidean
-
     replay_memory : buffer{
-        memory_size : 10000
-        sample_size : 32
+        memory_size : 1000000
+        sample_size : 64
     }
 
-    action_selection : epsgreedy{
+    strategy : ornstein_uhlenbeck{
         epsilon : 1.0
         min_epsilon : 0.01
         epsilon_decay_method: linear
         epsilon_decay : 0.01
+        mu: (0.0)
+        theta: (0.15)
+        sigma: (0.3)
     }
 
-    optimizer : rmsprop{
+    actor_optimizer : adam {
+        learning_rate : 0.0001
+    }
+
+    critic_optimizer : adam {
         learning_rate : 0.001
     }
 }

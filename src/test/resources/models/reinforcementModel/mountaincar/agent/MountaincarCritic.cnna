@@ -8,8 +8,5 @@ implementation Critic(state, action) {
         FullyConnected(units=300)
     ) ->
     Add() ->
-    Relu() ->
-    FullyConnected(units=1) ->
-    Tanh() ->
-    critic
+    Relu()
 }
