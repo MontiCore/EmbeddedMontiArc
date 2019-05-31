@@ -320,6 +320,7 @@ public class EMADLGenerator {
 
     public List<FileContent> generateStrings(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab, Set<EMAComponentInstanceSymbol> allInstances, String forced){
         List<FileContent> fileContents = new ArrayList<>();
+        processedArchitecture = new HashMap<>();
 
         generateComponent(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
 
@@ -346,6 +347,7 @@ public class EMADLGenerator {
 
         fixArmadilloImports(fileContents);
 
+        processedArchitecture = null;
         return fileContents;
     }
 
