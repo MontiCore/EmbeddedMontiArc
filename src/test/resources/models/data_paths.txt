@@ -10,3 +10,4 @@ VGG16 data/VGG16
 ResNeXt50 data/ResNeXt50
 instanceTestCifar.CifarNetwork src/test/resources/training_data
 mnist.LeNetNetwork data/mnist.LeNetNetwork
+MultipleInputs src/test/resources/training_data/MultipleInputs
