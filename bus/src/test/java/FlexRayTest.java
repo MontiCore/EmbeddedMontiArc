@@ -18,23 +18,27 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package com.mycompany.app;
+import static org.junit.Assert.assertEquals;
 
-import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-{
-    /**
-     * Rigorous Test :-)
-     */
-    @Test
-    public void shouldAnswerWithTrue()
-    {
-        assertTrue( true );
-    }
+
+public class FlexRayTest {
+	
+	
+	@Test
+	public void testSlotSize() {
+		List<Object> components = new ArrayList<Object>();
+		FlexRay flexRay = new FlexRay(components);
+		flexRay.setMode(new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY));
+		int expected = (int)Math.ceil((262 * 8)/(double)10);
+		assertEquals(expected, flexRay.getSlotSize());
+		
+		flexRay.setMode(new FlexRayOperationMode(FlexRayOperationModeEnum.MAX_DATA));
+		expected = (int)Math.ceil((262 * 8)/(double)20);
+		assertEquals(expected, flexRay.getSlotSize());
+	}
 }
