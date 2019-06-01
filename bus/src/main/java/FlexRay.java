@@ -1,3 +1,4 @@
+
 /**
  *
  * ******************************************************************************
@@ -23,7 +24,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FlexRay implements Bus {
@@ -67,21 +70,127 @@ public class FlexRay implements Bus {
 	 * The messages that should be transmitted by this bus
 	 */
 	private List<BusMessage> activeMessages = new ArrayList<BusMessage>();
-	
+
 	/**
 	 * Map with all transmitted messages
 	 */
-	public Map<Sting, BusMessage> transmittedMessages = new HashMap<String, BusMessage>();
+	public Map<String, BusMessage> transmittedMessages = new HashMap<String, BusMessage>();
 
 	/**
 	 * The mode in which this bus is configured {@link FlexRayOpterationMode}
 	 */
-	FlexRayOperationMode mode = new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY);
+	private FlexRayOperationMode mode = new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY);
+
+	public FlexRay(List<Object> connectedComponents) {
+		if(connectedComponents != null) {
+			this.connectedComponents = connectedComponents.size();
+		}
+		else {
+			throw new IllegalArgumentException("connectedComponents can not be null");
+		}
+	}
 	
-	public FlexRay(int connectedComponents) {
-		this.connectedComponents = connectedComponents;
+	public FlexRayOperationMode getMode() {
+		return mode;
 	}
 
+	public void setMode(FlexRayOperationMode mode) {
+		this.mode = mode;
+	}
+
+	@Override
+	public void registerData(String key, BusMessage msg) {
+		// TODO Auto-generated method stub
+		this.activeMessages.add(msg);
+	}
+
+	@Override
+	public Optional<BusMessage> getData(String key) {
+		// TODO Auto-generated method stub
+		return Optional.of(transmittedMessages.get(key));
+	}
+
+	@Override
+	public Map<String, BusMessage> getAllData() {
+		// TODO Auto-generated method stub
+		return transmittedMessages;
+	}
+
+	@Override
+	public String[] getImportNames() {
+		// TODO Auto-generated method stub
+		Set keys = transmittedMessages.keySet();
+		return (String[]) keys.toArray();
+	}
+	
+	@Override
+	public void registerComponent(Object component) {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @param deltaTime time until the next frame will be transmitted
+	 * @return time that message needs until it is transmitted
+	 */
+	public int getDelay(int deltaTime) {
+		int delay = deltaTime + getCycleTime();
+		return delay;
+	}
+
+	/**
+	 * Simulate the transmission of data for a given time
+	 * 
+	 * @param startTime Time where the simulation starts
+	 * @param deltaTime Time of the simulation
+	 */
+	@Override
+	public List<BusMessage> simulateFor(int startTime, int duration) {
+		List<BusMessage> finishedMessages = new ArrayList<BusMessage>();
+		// index messages by start cycle
+		Map<Integer, List<BusMessage>> messagesByStartCycle = calculateStartCycles();
+		int maxStartCycle = Collections.max(messagesByStartCycle.keySet());
+		int maxCycle = (duration / this.getCycleTime());
+
+		// go through simulation cycle by cycle
+		Map<Integer, List<BusMessage>> messagesByControllerId = new HashMap<Integer, List<BusMessage>>();
+		for (int cycle = 0; cycle <= maxCycle
+				&& (cycle <= maxStartCycle || !messagesByControllerId.isEmpty()); cycle++) {
+			// add new messages in that arrived in this cycle (if any)
+			List<BusMessage> cycleMessages = messagesByStartCycle.remove(cycle);
+			messagesByControllerId = this.insertNewMessages(messagesByControllerId, cycleMessages);
+
+			// sent the frames for this cycle
+			int cycleEndTime = startTime + (cycle + 1) * this.getCycleTime();
+			List<BusMessage> res = this.fillStaticSegment(messagesByControllerId, cycleEndTime);
+			// remove messages that are successfully transmitted from map
+			for(BusMessage finishedMsg : res) {
+				List<BusMessage> controllerMsgs = messagesByControllerId.remove(finishedMsg.getControllerID());
+				controllerMsgs.remove(finishedMsg);
+				if(!controllerMsgs.isEmpty()) {
+					messagesByControllerId.put(finishedMsg.getControllerID(), controllerMsgs);
+				}
+			}
+			finishedMessages.addAll(res); 
+			List<BusMessage> allMessages = messagesByControllerId.values().stream().flatMap(List::stream)
+					.collect(Collectors.toList());
+			res = this.fillDynamicSegment(allMessages, cycleEndTime);
+			finishedMessages.addAll(res); 
+
+			// remove messages that are successfully transmitted from map
+			for(BusMessage finishedMsg : res) {
+				List<BusMessage> controllerMsgs = messagesByControllerId.remove(finishedMsg.getControllerID());
+				controllerMsgs.remove(finishedMsg);
+				if(!controllerMsgs.isEmpty()) {
+					messagesByControllerId.put(finishedMsg.getControllerID(), controllerMsgs);
+				}
+			}
+		}
+		for(BusMessage msg : finishedMessages) {
+			activeMessages.remove(msg);
+		}
+		return finishedMessages;
+	}
+	
 	/**
 	 * @return The duration of a slot in microseconds
 	 */
@@ -97,43 +206,8 @@ public class FlexRay implements Bus {
 	}
 
 	/**
-	 * Simulate the transmission of data for a given time
-	 * @param startTime Time where the simulation starts
-	 * @param deltaTime Time of the simulation
-	 */
-	void simulateFor(int startTime, int deltaTime) {
-		//index messages by start cycle
-		Map<Integer, List<BusMessage>> messagesByStartCycle = calculateStartCycles();
-		int maxStartCycle = Collections.max(messagesByStartCycle.keySet());
-		int maxCycle = ((deltaTime * 1000) / this.getCycleTime());
-
-		//go through simulation cycle by cycle
-		Map<Integer, List<BusMessage>> messagesByControllerId = new HashMap<Integer, List<BusMessage>>();
-		for (int cycle = 0; cycle <= maxCycle
-				&& (cycle <= maxStartCycle || !messagesByControllerId.isEmpty()); cycle++) {
-			//add new messages in that arrived in this cycle (if any)
-			List<BusMessage> cycleMessages = messagesByStartCycle.remove(cycle);
-			messagesByControllerId = this.insertNewMessages(messagesByControllerId, cycleMessages);
-
-			//sent the frames for this cycle
-			int cycleEndTime = startTime + (cycle + 1) * this.getCycleTime();
-			messagesByControllerId = this.fillStaticSegment(messagesByControllerId, cycleEndTime);
-			List<BusMessage> allMessages = messagesByControllerId.values().stream().flatMap(List::stream)
-					.collect(Collectors.toList());
-			this.fillDynamicSegment(allMessages, cycleEndTime);
-
-			// remove messages that are successfully transmitted from map
-			for (Map.Entry<Integer, List<BusMessage>> entry : messagesByControllerId.entrySet()) {
-				List<BusMessage> controllerMsgs = entry.getValue();
-				controllerMsgs.removeIf(msg -> msg.isTransmitted());
-				entry.setValue(controllerMsgs);
-			}
-		}
-		activeMessages.removeIf(msg  -> msg.isTransmitted());
-	}
-
-	/**
-	 * @return Map with cycle number as key and a list of messages that start in this cycle as value
+	 * @return Map with cycle number as key and a list of messages that start in
+	 *         this cycle as value
 	 */
 	Map<Integer, List<BusMessage>> calculateStartCycles() {
 		Map<Integer, List<BusMessage>> messagesByStartCycle = new HashMap<Integer, List<BusMessage>>();
@@ -147,10 +221,12 @@ public class FlexRay implements Bus {
 		return messagesByStartCycle;
 	}
 
-	/** 
+	/**
 	 * @param messagesByControllerId messages indexed by the id of the controller
-	 * @param newMessages messages to be added to {@code messagesByControllerId}
-	 * @return {@code messagesByControllerId} with properly inserted messages from {@code newMessages}
+	 * @param newMessages            messages to be added to
+	 *                               {@code messagesByControllerId}
+	 * @return {@code messagesByControllerId} with properly inserted messages from
+	 *         {@code newMessages}
 	 */
 	Map<Integer, List<BusMessage>> insertNewMessages(Map<Integer, List<BusMessage>> messagesByControllerId,
 			List<BusMessage> newMessages) {
@@ -167,37 +243,41 @@ public class FlexRay implements Bus {
 
 	/**
 	 * Transmit messages for each controller that wants to send
+	 * 
 	 * @param messagesByControllerId messages indexed by the id of the controller
-	 * @param cycleEndTime the end time of the current cycle
-	 * @return {@code messagesByControllerId} without the messages that were successful transmitted during this segment
+	 * @param cycleEndTime           the end time of the current cycle
+	 * @return messages that were successful transmitted during this segment
 	 */
-	Map<Integer, List<BusMessage>> fillStaticSegment(Map<Integer, List<BusMessage>> messagesByControllerId,
-			int cycleEndTime) {
+	List<BusMessage> fillStaticSegment(Map<Integer, List<BusMessage>> messagesByControllerId, int cycleEndTime) {
+		List<BusMessage> finishedMessages = new ArrayList<BusMessage>();
 		for (Map.Entry<Integer, List<BusMessage>> entry : messagesByControllerId.entrySet()) {
 			List<BusMessage> controllerMessages = entry.getValue();
 			int transmitted = 0;
-			while (!controllerMessages.isEmpty() && transmitted < STATIC_SLOTS*MAX_PAYLOAD_LEN) {
+			while (!controllerMessages.isEmpty() && transmitted < STATIC_SLOTS * MAX_PAYLOAD_LEN) {
 				controllerMessages.sort(COMP_ASC_ID);
 				BusMessage message = controllerMessages.get(0);
-				transmitted += message.transmitBytes(STATIC_SLOTS*MAX_PAYLOAD_LEN - transmitted, mode.getBitErrorRate());
+				transmitted += message.transmitBytes(STATIC_SLOTS * MAX_PAYLOAD_LEN - transmitted,
+						mode.getBitErrorRate());
 				if (transmitted >= 0) {
 					if (message.isTransmitted()) {
 						controllerMessages.remove(message);
+						finishedMessages.add(message);
 						message.setFinishTime(cycleEndTime);
 					}
 				}
 			}
 			entry.setValue(controllerMessages);
 		}
-		return messagesByControllerId;
+		return finishedMessages;
 	}
 
 	/**
-	 * @param allMessages messages that should be transmitted
+	 * @param allMessages  messages that should be transmitted
 	 * @param cycleEndTime the end time of the current cycle
-	 * @return {@code allMessages} without the messages that were successful transmitted during this segment
+	 * @return messages that were successful transmitted during this segment
 	 */
 	List<BusMessage> fillDynamicSegment(List<BusMessage> allMessages, int cycleEndTime) {
+		List<BusMessage> finishedMessages = new ArrayList<BusMessage>();
 		int transmitted = 0;
 		while (!allMessages.isEmpty() && transmitted < MAX_PAYLOAD_LEN * DYNAMIC_SLOTS) {
 			allMessages.sort(new BusMessageComparator());
@@ -206,48 +286,12 @@ public class FlexRay implements Bus {
 			if (transmitted >= 0) {
 				if (message.isTransmitted()) {
 					allMessages.remove(message);
+					finishedMessages.add(message);
 					message.setFinishTime(cycleEndTime);
 				}
 			}
 		}
 		return allMessages;
-	}
-
-	@Override
-	public int setData(String key, BusMessage msg) {
-		// TODO Auto-generated method stub
-		this.activeMessages.add(msg);
-		
-		return getDelay(deltaTime); //Zeit bis nächster rahmen gesendet wird
-	}
-
-	@Override
-	public BusMessage getData(String key) {
-		// TODO Auto-generated method stub
-		return transmittedMessages.get(key);
-	}
-
-	@Override
-	public Map<String, BusMessage> getAllData() {
-		// TODO Auto-generated method stub	
-		return transmittedMessages;
-	}
-
-	@Override
-	public String[] getImportNames() {
-		// TODO Auto-generated method stub
-		Set keys = transmittedMessages.keySet();
-		return keys.toArray();
-	}
-	
-	
-	/**
-	 * @param deltaTime time until the next frame will be transmitted
-	 * @return time that message needs until it is transmitted
-	 */
-	public int getDelay(int deltaTime) {
-		int delay = deltaTime + getCycleTime();
-		return delay;
 	}
 
 }

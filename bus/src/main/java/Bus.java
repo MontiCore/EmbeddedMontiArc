@@ -19,15 +19,26 @@
  * *******************************************************************************
  */
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface Bus {
+    
+    public void registerComponent(Object component);
 
-    public int setData(String key, BusMessage msg);
+    public void registerData(String key, BusMessage msg);
 
-    public BusMessage getData(String key);
+    public Optional<BusMessage> getData(String key);
 
     public Map<String, BusMessage> getAllData();
 
     public String[] getImportNames();
+    
+    /**
+     * @param startTime start of the simulation in microseconds
+     * @param duration duration of the simulation in microseconds
+     * @return
+     */
+    public List<BusMessage> simulateFor(int startTime, int duration);
 }

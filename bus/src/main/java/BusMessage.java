@@ -1,6 +1,8 @@
 import java.util.Comparator;
 import java.util.Random;
 
+import commons.controller.commons.BusEntry;
+
 /**
  *
  * ******************************************************************************
@@ -32,12 +34,14 @@ public class BusMessage {
     
     private boolean transmitted;
     
-    //in mikro s
+    /**
+     * Time the request to transmit the messages was placed. (in microseconds)
+     */
     private int requestTime;
     
     private int controllerID;
     
-    private int messageID;
+    private BusEntry messageID;
     
     private int finishTime;
     
@@ -48,7 +52,7 @@ public class BusMessage {
 	 */
 	Random bitError = new Random();
     
-    public BusMessage(Object message, int messageLen, int messageID, int requestTime, int controllerID) {
+    public BusMessage(Object message, int messageLen, BusEntry messageID, int requestTime, int controllerID) {
     	this.message = message;
     	this.messageLen = messageLen;
     	this.messageID = messageID;
@@ -103,12 +107,12 @@ public class BusMessage {
 	}
 
 
-	public int getMessageID() {
+	public BusEntry getMessageID() {
 		return messageID;
 	}
 
 
-	public void setMessageID(int messageID) {
+	public void setMessageID(BusEntry messageID) {
 		this.messageID = messageID;
 	}
 	
@@ -127,6 +131,11 @@ public class BusMessage {
 	}
 	
 	
+	public boolean isError() {
+		return error;
+	}
+
+
 	public int transmitBytes(int bytes, double bitErrorRate) {
 		int res = -1;
 		if(bytes >= 0) {
@@ -154,6 +163,6 @@ class BusMessageComparator implements Comparator<BusMessage>
     // Used for sorting in ascending order of 
     public int compare(BusMessage a, BusMessage b) 
     { 
-        return a.getMessageID() - b.getMessageID(); 
+        return a.getMessageID().compareTo( b.getMessageID()); 
     } 
 } 
