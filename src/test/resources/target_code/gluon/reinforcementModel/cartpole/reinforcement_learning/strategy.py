@@ -34,14 +34,14 @@ class StrategyBuilder(object):
             return EpsilonGreedyStrategy(
                 eps=epsilon, number_of_actions=action_dim[0],
                 decay_method=decay)
-        elif method == 'uhlenbeck_ornstein':
+        elif method == 'ornstein_uhlenbeck':
             assert action_dim is not None
             assert action_low is not None
             assert action_high is not None
             assert mu is not None
             assert theta is not None
             assert sigma is not None
-            return UhlenbeckOrnsteinStrategy(
+            return OrnsteinUhlenbeckStrategy(
                 action_dim, action_low, action_high, epsilon, mu, theta,
                 sigma, decay)
         else:
@@ -124,7 +124,7 @@ class GreedyStrategy(BaseStrategy):
         pass
 
 
-class UhlenbeckOrnsteinStrategy(BaseStrategy):
+class OrnsteinUhlenbeckStrategy(BaseStrategy):
     """
     Ornstein-Uhlenbeck process: dxt = theta * (mu - xt) * dt + sigma * dWt
     where Wt denotes the Wiener process.
@@ -140,7 +140,7 @@ class UhlenbeckOrnsteinStrategy(BaseStrategy):
         sigma=.3,
         decay=NoDecay()
     ):
-        super(UhlenbeckOrnsteinStrategy, self).__init__()
+        super(OrnsteinUhlenbeckStrategy, self).__init__()
         self.eps = eps
         self.cur_eps = eps
 
