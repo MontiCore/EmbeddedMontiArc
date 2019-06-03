@@ -42,6 +42,7 @@ public class AllCoCoTest extends AbstractCoCoTest{
         checkValid("valid_tests", "ReinforcementConfig");
         checkValid("valid_tests", "ReinforcementConfig2");
         checkValid("valid_tests", "DdpgConfig");
+        checkValid("valid_tests", "ReinforcementWithRosReward");
     }
 
     @Test
@@ -76,5 +77,23 @@ public class AllCoCoTest extends AbstractCoCoTest{
         checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckRosEnvironmentRequiresRewardFunction()),
                 "invalid_cocos_tests", "CheckRosEnvironmentRequiresRewardFunction",
                 new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckRlAlgorithmParameter()),
+                "invalid_cocos_tests", "CheckRLAlgorithmParameter1",
+                new ExpectedErrorInfo(1, ErrorCodes.UNSUPPORTED_PARAMETER));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckRlAlgorithmParameter()),
+                "invalid_cocos_tests", "CheckRLAlgorithmParameter2",
+                new ExpectedErrorInfo(1, ErrorCodes.UNSUPPORTED_PARAMETER));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckRlAlgorithmParameter()),
+                "invalid_cocos_tests", "CheckRLAlgorithmParameter3",
+                new ExpectedErrorInfo(1, ErrorCodes.UNSUPPORTED_PARAMETER));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckDiscreteRLAlgorithmUsesDiscreteStrategy()),
+                "invalid_cocos_tests", "CheckDiscreteRLAlgorithmUsesDiscreteStrategy",
+                new ExpectedErrorInfo(1, ErrorCodes.STRATEGY_NOT_APPLICABLE));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckContinuousRLAlgorithmUsesContinuousStrategy()),
+                "invalid_cocos_tests", "CheckContinuousRLAlgorithmUsesContinuousStrategy",
+                new ExpectedErrorInfo(1, ErrorCodes.STRATEGY_NOT_APPLICABLE));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckRosEnvironmentHasOnlyOneRewardSpecification()),
+                "invalid_cocos_tests", "CheckRosEnvironmentHasOnlyOneRewardSpecification",
+                new ExpectedErrorInfo(1, ErrorCodes.CONTRADICTING_PARAMETERS));
     }
 }

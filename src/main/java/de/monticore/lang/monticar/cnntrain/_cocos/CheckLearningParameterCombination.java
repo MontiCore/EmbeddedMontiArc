@@ -34,78 +34,7 @@ import java.util.Set;
  *
  */
 public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
-    private final static List<Class> ALLOWED_SUPERVISED_LEARNING = Lists.newArrayList(
-            ASTTrainContextEntry.class,
-            ASTBatchSizeEntry.class,
-            ASTOptimizerEntry.class,
-            ASTLearningRateEntry.class,
-            ASTLoadCheckpointEntry.class,
-            ASTEvalMetricEntry.class,
-            ASTLossEntry.class,
-            ASTNormalizeEntry.class,
-            ASTMinimumLearningRateEntry.class,
-            ASTLRDecayEntry.class,
-            ASTWeightDecayEntry.class,
-            ASTLRPolicyEntry.class,
-            ASTStepSizeEntry.class,
-            ASTRescaleGradEntry.class,
-            ASTClipGradEntry.class,
-            ASTGamma1Entry.class,
-            ASTGamma2Entry.class,
-            ASTEpsilonEntry.class,
-            ASTCenteredEntry.class,
-            ASTClipWeightsEntry.class,
-            ASTBeta1Entry.class,
-            ASTBeta2Entry.class,
-            ASTNumEpochEntry.class
-    );
-    private final static List<Class> ALLOWED_REINFORCEMENT_LEARNING = Lists.newArrayList(
-            ASTTrainContextEntry.class,
-            ASTRLAlgorithmEntry.class,
-            ASTCriticNetworkEntry.class,
-            ASTOptimizerEntry.class,
-            ASTRewardFunctionEntry.class,
-            ASTMinimumLearningRateEntry.class,
-            ASTLRDecayEntry.class,
-            ASTWeightDecayEntry.class,
-            ASTLRPolicyEntry.class,
-            ASTGamma1Entry.class,
-            ASTGamma2Entry.class,
-            ASTEpsilonEntry.class,
-            ASTClipGradEntry.class,
-            ASTRescaleGradEntry.class,
-            ASTStepSizeEntry.class,
-            ASTCenteredEntry.class,
-            ASTClipWeightsEntry.class,
-            ASTLearningRateEntry.class,
-            ASTDiscountFactorEntry.class,
-            ASTNumMaxStepsEntry.class,
-            ASTTargetScoreEntry.class,
-            ASTTrainingIntervalEntry.class,
-            ASTUseFixTargetNetworkEntry.class,
-            ASTTargetNetworkUpdateIntervalEntry.class,
-            ASTSnapshotIntervalEntry.class,
-            ASTAgentNameEntry.class,
-            ASTGymEnvironmentNameEntry.class,
-            ASTEnvironmentEntry.class,
-            ASTUseDoubleDQNEntry.class,
-            ASTLossEntry.class,
-            ASTReplayMemoryEntry.class,
-            ASTMemorySizeEntry.class,
-            ASTSampleSizeEntry.class,
-            ASTActionSelectionEntry.class,
-            ASTGreedyEpsilonEntry.class,
-            ASTMinEpsilonEntry.class,
-            ASTEpsilonDecayEntry.class,
-            ASTEpsilonDecayMethodEntry.class,
-            ASTNumEpisodesEntry.class,
-            ASTRosEnvironmentActionTopicEntry.class,
-            ASTRosEnvironmentStateTopicEntry.class,
-            ASTRosEnvironmentMetaTopicEntry.class,
-            ASTRosEnvironmentResetTopicEntry.class,
-            ASTRosEnvironmentTerminalStateTopicEntry.class,
-            ASTRosEnvironmentGreetingTopicEntry.class
-    );
+    private final ParameterAlgorithmMapping parameterAlgorithmMapping;
 
     private Set<ASTEntry> allEntries;
 
@@ -113,12 +42,13 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
     private LearningMethod learningMethod;
 
     public CheckLearningParameterCombination() {
-        this.allEntries = new HashSet<>();
-        this.learningMethodKnown = false;
+        allEntries = new HashSet<>();
+        learningMethodKnown = false;
+        parameterAlgorithmMapping = new ParameterAlgorithmMapping();
     }
 
     private Boolean isLearningMethodKnown() {
-        return this.learningMethodKnown;
+        return learningMethodKnown;
     }
 
     @Override
@@ -132,18 +62,20 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
 
     private void evaluateEntry(ASTEntry node) {
         allEntries.add(node);
-        final Boolean supervisedLearningParameter = ALLOWED_SUPERVISED_LEARNING.contains(node.getClass());
-        final Boolean reinforcementLearningParameter = ALLOWED_REINFORCEMENT_LEARNING.contains(node.getClass());
+        final boolean supervisedLearningParameter
+            = parameterAlgorithmMapping.isSupervisedLearningParameter(node.getClass());
+        final boolean reinforcementLearningParameter
+            = parameterAlgorithmMapping.isReinforcementLearningParameter(node.getClass());
 
-        assert (supervisedLearningParameter || reinforcementLearningParameter) :
+        assert (supervisedLearningParameter  || reinforcementLearningParameter) :
                 "Parameter " + node.getName() + " is not checkable, because it is unknown to Condition";
-        if (supervisedLearningParameter && reinforcementLearningParameter) {
-            return;
-        } else if (supervisedLearningParameter && !reinforcementLearningParameter) {
+
+        if (supervisedLearningParameter && !reinforcementLearningParameter) {
             setLearningMethodOrLogErrorIfActualLearningMethodIsNotSupervised(node);
-        } else if (!supervisedLearningParameter && reinforcementLearningParameter) {
+        } else if(!supervisedLearningParameter) {
             setLearningMethodOrLogErrorIfActualLearningMethodIsNotReinforcement(node);
         }
+
     }
 
     private void setLearningMethodOrLogErrorIfActualLearningMethodIsNotReinforcement(ASTEntry node) {
@@ -203,10 +135,11 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
 
     private List<Class> getAllowedParametersByLearningMethod(final LearningMethod learningMethod) {
         if (learningMethod.equals(LearningMethod.REINFORCEMENT)) {
-            return ALLOWED_REINFORCEMENT_LEARNING;
+            return parameterAlgorithmMapping.getAllReinforcementParameters();
         }
-        return ALLOWED_SUPERVISED_LEARNING;
+        return parameterAlgorithmMapping.getAllSupervisedParameters();
     }
+
 
     private void setLearningMethod(final LearningMethod learningMethod) {
         if (learningMethod.equals(LearningMethod.REINFORCEMENT)) {

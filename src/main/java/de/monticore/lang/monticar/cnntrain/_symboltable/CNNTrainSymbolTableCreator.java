@@ -29,6 +29,7 @@ import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
@@ -96,9 +97,27 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
             OptimizerParamSymbol param = new OptimizerParamSymbol();
             OptimizerParamValueSymbol valueSymbol = (OptimizerParamValueSymbol) nodeParam.getValue().getSymbolOpt().get();
             param.setValue(valueSymbol);
-            configuration.getOptimizer().getOptimizerParamMap().put(nodeParam.getName(), param);;
+            configuration.getOptimizer().getOptimizerParamMap().put(nodeParam.getName(), param);
         }
 
+    }
+
+    @Override
+    public void visit(ASTCriticOptimizerEntry node) {
+        OptimizerSymbol optimizerSymbol = new OptimizerSymbol(node.getValue().getName());
+        configuration.setCriticOptimizer(optimizerSymbol);
+        addToScopeAndLinkWithNode(optimizerSymbol, node);
+    }
+
+    @Override
+    public void endVisit(ASTCriticOptimizerEntry node) {
+        assert configuration.getCriticOptimizer().isPresent(): "Critic optimizer not present";
+        for (ASTEntry paramNode : node.getValue().getParamsList()) {
+            OptimizerParamSymbol param = new OptimizerParamSymbol();
+            OptimizerParamValueSymbol valueSymbol = (OptimizerParamValueSymbol)paramNode.getValue().getSymbolOpt().get();
+            param.setValue(valueSymbol);
+            configuration.getCriticOptimizer().get().getOptimizerParamMap().put(paramNode.getName(), param);
+        }
     }
 
     @Override
@@ -440,12 +459,12 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
-    public void visit(ASTActionSelectionEntry node) {
+    public void visit(ASTStrategyEntry node) {
         processMultiParamConfigVisit(node, node.getValue().getName());
     }
 
     @Override
-    public void endVisit(ASTActionSelectionEntry node) {
+    public void endVisit(ASTStrategyEntry node) {
         processMultiParamConfigEndVisit(node);
     }
 
@@ -467,6 +486,30 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         symbol.setRewardFunctionComponentName(node.getValue().getNameList());
         configuration.setRlRewardFunction(symbol);
         addToScopeAndLinkWithNode(symbol, node);
+    }
+
+    @Override
+    public void visit(ASTSoftTargetUpdateRateEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForDouble(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTStartTrainingAtEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTEvaluationSamplesEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
     }
 
     private void processMultiParamConfigVisit(ASTMultiParamConfigEntry node, Object value) {
@@ -504,6 +547,12 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
             } else {
                 return EpsilonDecayMethod.NO;
             }
+        } else if (configValue instanceof ASTDoubleVectorValue) {
+            ASTDoubleVectorValue astDoubleVectorValue = (ASTDoubleVectorValue)configValue;
+            return astDoubleVectorValue.getNumberList().stream()
+                .filter(n -> n.getNumber().isPresent())
+                .map(n -> n.getNumber().get())
+                .collect(Collectors.toList());
         }
         throw new UnsupportedOperationException("Unknown Value type: " + configValue.getClass());
     }

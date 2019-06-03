@@ -46,7 +46,8 @@ public class ParserTest {
             "src/test/resources/invalid_parser_tests/WrongParameterName2.cnnt",
             "src/test/resources/invalid_parser_tests/InvalidType.cnnt",
             "src/test/resources/invalid_parser_tests/InvalidOptimizer.cnnt",
-            "src/test/resources/invalid_parser_tests/MissingColon.cnnt")
+            "src/test/resources/invalid_parser_tests/MissingColon.cnnt",
+            "src/test/resources/invalid_parser_tests/WrongStrategyParameter.cnnt")
 
             .map(s -> Paths.get(s).toString())
             .collect(Collectors.toList());

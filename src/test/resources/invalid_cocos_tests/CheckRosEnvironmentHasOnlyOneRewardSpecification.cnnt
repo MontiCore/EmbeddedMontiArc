@@ -1,4 +1,4 @@
-configuration ReinforcementConfig2 {
+configuration CheckRosEnvironmentHasOnlyOneRewardSpecification {
     learning_method : reinforcement
 
     agent_name : "reinforcement-agent"
@@ -8,6 +8,7 @@ configuration ReinforcementConfig2 {
         action_topic : "action"
         reset_topic : "reset"
         terminal_state_topic : "is_terminal"
+        reward_topic: "reward"
     }
 
     reward_function : path.to.reward.component
