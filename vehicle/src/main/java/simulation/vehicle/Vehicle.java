@@ -853,9 +853,22 @@ public class Vehicle {
         controllerBus.get().setAllData(controller.get().getOutputs());
 
         // Read new values from bus
-        double motorValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_ENGINE.toString()));
-        double brakeValue = (Double)(controllerBus.get().getData(ACTUATOR_BRAKE.toString()));
-        double steeringValue = ((Double)(controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString())));
+        double motorValue = 0;
+        double brakeValue = 0;
+        double steeringValue = 0;
+
+        Object motorObj = controllerBus.get().getData(BusEntry.ACTUATOR_ENGINE.toString());
+        if (motorObj != null){
+            motorValue = (Double) motorObj;
+        }
+        Object brakeObj = controllerBus.get().getData(BusEntry.ACTUATOR_BRAKE.toString());
+        if (brakeObj != null){
+            brakeValue = (Double) brakeObj;
+        }
+        Object steeringObj = controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString());
+        if (steeringObj != null){
+            steeringValue = (Double) steeringObj;
+        }
 
         steering.setActuatorValueTarget(steeringValue);
 
