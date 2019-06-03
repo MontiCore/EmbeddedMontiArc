@@ -48,9 +48,10 @@ masterJobWindows:
 
 BranchJobLinux:
   stage: linux
-  image: maven:3.6-jdk-8
+  image: openjdk:jdk-8
   before_script:
   - apt-get update
+  - apt-get install -y maven
   - apt-get install -y openjfx
   script:
   - mv lib/fmu_for_linux/*.fmu lib/
