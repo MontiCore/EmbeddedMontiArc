@@ -76,10 +76,10 @@ sudo cmake --build build/ --target install
 open terminal, go to **mqtt_demo** directroy inside the project and run
 `cmake .`
 
-compile the project by running
+compile the demo by running
 `make`
 
-run the project afterwards with `./mqtt_demo`
+run the demo afterwards with `./mqtt_demo`
 
 ---
 
