@@ -100,25 +100,21 @@ public class FlexRay implements Bus {
 
 	@Override
 	public void registerData(String key, BusMessage msg) {
-		// TODO Auto-generated method stub
 		this.activeMessages.add(msg);
 	}
 
 	@Override
 	public Optional<BusMessage> getData(String key) {
-		// TODO Auto-generated method stub
 		return Optional.of(transmittedMessages.get(key));
 	}
 
 	@Override
 	public Map<String, BusMessage> getAllData() {
-		// TODO Auto-generated method stub
 		return transmittedMessages;
 	}
 
 	@Override
 	public String[] getImportNames() {
-		// TODO Auto-generated method stub
 		Set keys = transmittedMessages.keySet();
 		return (String[]) keys.toArray();
 	}

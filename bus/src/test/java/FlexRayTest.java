@@ -41,4 +41,22 @@ public class FlexRayTest {
 		expected = (int)Math.ceil((262 * 8)/(double)20);
 		assertEquals(expected, flexRay.getSlotSize());
 	}
+	
+	@Test
+	public void testCycleTime() {
+		List<Object> components = new ArrayList<Object>();
+		PhysicalVehicle car = new PhysicalVehicle();
+		CameraSensor cam = new CameraSensor(car);
+		CompassSensor com = new CompassSensor(car);
+		SpeedSensor speed = new SpeedSensor(car);
+		components.add(cam);
+		components.add(com);
+		components.add(speed);
+		FlexRay flexRay = new FlexRay(components);
+		int expected = (3 + 4);
+		assertEquals(expected, flexRay.getCycleTime());
+		
+	}
+	
+	
 }
