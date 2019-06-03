@@ -45,7 +45,7 @@ public class FlexRayTest {
 	@Test
 	public void testCycleTime() {
 		List<Object> components = new ArrayList<Object>();
-		PhysicalVehicle car = new PhysicalVehicle();
+		ModelicaPhysicalVehicle car = new ModelicaPhysicalVehicle();
 		CameraSensor cam = new CameraSensor(car);
 		CompassSensor com = new CompassSensor(car);
 		SpeedSensor speed = new SpeedSensor(car);
