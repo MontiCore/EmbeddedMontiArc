@@ -34,7 +34,11 @@ public class CNNTrainCocos {
                 .addCoCo(new CheckReinforcementRequiresEnvironment())
                 .addCoCo(new CheckLearningParameterCombination())
                 .addCoCo(new CheckRosEnvironmentRequiresRewardFunction())
-                .addCoCo(new CheckDdpgRequiresCriticNetwork());
+                .addCoCo(new CheckDdpgRequiresCriticNetwork())
+                .addCoCo(new CheckRlAlgorithmParameter())
+                .addCoCo(new CheckDiscreteRLAlgorithmUsesDiscreteStrategy())
+                .addCoCo(new CheckContinuousRLAlgorithmUsesContinuousStrategy())
+                .addCoCo(new CheckRosEnvironmentHasOnlyOneRewardSpecification());
     }
 
     public static void checkAll(CNNTrainCompilationUnitSymbol compilationUnit){

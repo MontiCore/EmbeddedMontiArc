@@ -24,12 +24,14 @@ import com.google.common.collect.Lists;
 import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
     private Map<String, EntrySymbol> entryMap = new HashMap<>();
     private OptimizerSymbol optimizer;
+    private OptimizerSymbol criticOptimizer;
     private RewardFunctionSymbol rlRewardFunctionSymbol;
     private TrainedArchitecture trainedArchitecture;
 
@@ -47,6 +49,14 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
     public void setOptimizer(OptimizerSymbol optimizer) {
         this.optimizer = optimizer;
+    }
+
+    public void setCriticOptimizer(OptimizerSymbol criticOptimizer) {
+        this.criticOptimizer = criticOptimizer;
+    }
+
+    public Optional<OptimizerSymbol> getCriticOptimizer() {
+        return Optional.ofNullable(criticOptimizer);
     }
 
     protected void setRlRewardFunction(RewardFunctionSymbol rlRewardFunctionSymbol) {

@@ -114,24 +114,31 @@ configuration ReinforcementConfig {
 
 ### Available Parameters for Reinforcement Learning
 
-| Parameter  |  Value | Default | Required | Description |
-|------------|--------|---------|----------|-------------|
-|learning_method| reinforcement,supervised | supervised | No | Determines that this CNNTrain configuration is a reinforcement or supervised learning configuration |
-| agent_name | String | "agent" | No | Names the agent (e.g. for logging output) |
-|environment | gym, ros_interface | Yes | / | If *ros_interface* is selected, then the agent and the environment communicates via [ROS](http://www.ros.org/). The gym environment comes with a set of environments which are listed [here](https://gym.openai.com/) |
-| context    | cpu, gpu | cpu | No | Determines whether the GPU is used during training or the CPU |
-| num_episodes | Integer | 50 | No | Number of episodes the agent is trained. An episode is a full passing of a game from an initial state to a terminal state.|
-| num_max_steps | Integer | 99999 | No | Number of steps within an episodes before the environment is forced to reset the state (e.g. to avoid a state in which the agent is stuck) |
-|discount_factor | Float | 0.9 | No | Discount factor |
-| target_score | Float | None | No | If set, the agent stops the training when the average score of the last 100 episodes is greater than the target score. |
-| training_interval | Integer | 1 | No | Number of steps between two trainings |
-| loss | euclidean, l1, softmax_cross_entropy, sigmoid_cross_entropy, huber_loss | euclidean | No | Selects the loss function
-| use_fix_target_network | bool | false | No  | If set, an extra network with fixed parameters is used to estimate the Q values |
-| target_network_update_interval | Integer | / | Yes, if fixed target network is true | If *use_fix_target_network* is set, it determines the number of steps after the target network is updated (Minh et. al. "Human Level Control through Deep Reinforcement Learning")|
+| Parameter  |  Value | Default | Required | Algorithm | Description |
+|------------|--------|---------|----------|-----------|-------------|
+|learning_method| reinforcement,supervised | supervised | No | All | Determines that this CNNTrain configuration is a reinforcement or supervised learning configuration |
+| rl_algorithm | ddpg-algorithm, dqn-algorithm | dqn-algorithm | No | All | Determines the RL algorithm that is used to train the agent
+| agent_name | String | "agent" | No | All | Names the agent (e.g. for logging output) |
+|environment | gym, ros_interface | Yes | / | All | If *ros_interface* is selected, then the agent and the environment communicates via [ROS](http://www.ros.org/). The gym environment comes with a set of environments which are listed [here](https://gym.openai.com/) |
+| context    | cpu, gpu | cpu | No | All | Determines whether the GPU is used during training or the CPU |
+| num_episodes | Integer | 50 | No | All | Number of episodes the agent is trained. An episode is a full passing of a game from an initial state to a terminal state.|
+| num_max_steps | Integer | 99999 | No | All | Number of steps within an episodes before the environment is forced to reset the state (e.g. to avoid a state in which the agent is stuck) |
+|discount_factor | Float | 0.9 | No | All | Discount factor |
+| target_score | Float | None | No | All | If set, the agent stops the training when the average score of the last 100 episodes is greater than the target score. |
+| training_interval | Integer | 1 | No | All | Number of steps between two trainings |
+| loss | euclidean, l1, softmax_cross_entropy, sigmoid_cross_entropy, huber_loss | euclidean | No | DQN | Selects the loss function
+| use_fix_target_network | bool | false | No | DQN | If set, an extra network with fixed parameters is used to estimate the Q values |
+| target_network_update_interval | Integer | / | DQN | Yes, if fixed target network is true | If *use_fix_target_network* is set, it determines the number of steps after the target network is updated (Minh et. al. "Human Level Control through Deep Reinforcement Learning")|
 | use_double_dqn | bool | false | No | If set, two value functions are used to determine the action values (Hasselt et. al. "Deep Reinforcement Learning with Double Q Learning") |
-| replay_memory | buffer, online, combined | buffer | No | Determines the behaviour of the replay memory |
-| action_selection | epsgreedy | epsgreedy | No |  Determines the action selection policy during the training |
-| reward_function | Full name of an EMAM component | / | Yes, if *ros_interface* is selected as the environment | The EMAM component that is used to calculate the reward. It must have two inputs, one for the current state and one boolean input that determines if the current state is terminal. It must also have exactly one output which represents the reward. |
+| replay_memory | buffer, online, combined | buffer | No | All | Determines the behaviour of the replay memory |
+| strategy | epsgreedy, ornstein_uhlenbeck | epsgreedy (discrete), ornstein_uhlenbeck (continuous) | No | All |  Determines the action selection policy during the training |
+| reward_function | Full name of an EMAM component | / | Yes, if *ros_interface* is selected as the environment  and no reward topic is given | All | The EMAM component that is used to calculate the reward. It must have two inputs, one for the current state and one boolean input that determines if the current state is terminal. It must also have exactly one output which represents the reward. |
+critic | Full name of architecture definition | / | Yes, if DDPG is selected | DDPG | The architecture definition which specifies the architecture of the critic network |
+soft_target_update_rate | Float | 0.001 | No | DDPG | Determines the update rate of the critic and actor target network |
+actor_optimizer | See supervised learning | adam with LR .0001 | No | DDPG | Determines the optimizer parameters of the actor network |
+critic_optimizer | See supervised learning | adam with LR .001 | No | DDPG | Determines the optimizer parameters of the critic network |
+| start_training_at | Integer | 0 | No | All | Determines at which episode the training starts |
+| evaluation_samples | Integer | 100 | No | All | Determines how many epsiodes are run when evaluating the network |
 
 #### Environment
 
@@ -169,18 +176,38 @@ No buffer is used. Only the current SARS tuple is used for taining.
 
 Combination of *online* and *buffer*. Both the current SARS tuple as well as a sample from the buffer are used for each training step. Parameters are the same as *buffer*.
 
-### Action Selection
+### Strategy
 
-Determines the behaviour when selecting an action based on the values. (Currently, only epsilon greedy is available.)
+Determines the behaviour when selecting an action based on the values.
 
 #### Option: epsgreedy
 
-Selects an action based on Epsilon-Greedy-Policy. This means, based on epsilon, either a random action is choosen or an action with the highest value. Additional parameters:
+This strategy is only available for discrete problems. It selects an action based on Epsilon-Greedy-Policy. This means, based on epsilon, either a random action is choosen or an action with the highest Q-value. Additional parameters:
 
 - **epsilon**: Probability of choosing an action randomly
 - **epsilon_decay_method**: Method which determines how epsilon decreases after each step. Can be *linear* for linear decrease or *no* for no decrease.
+- **epsilon_decay_start**: Number of Episodes after the decay of epsilon starts
 - **epsilon_decay**: The actual decay of epsilon after each step.
 - **min_epsilon**: After *min_epsilon* is reached, epsilon is not decreased further.
+
+
+#### Option: ornstein_uhlenbeck
+This strategy is only available for continuous problems. The action is selected based on the actor network. Based on the current epsilon, noise is added based on the [Ornstein-Uhlenbeck](https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process) process. Additional parameters:
+
+All epsilon parameters from epsgreedy strategy can be used. Additionally, **mu**, **theta**, and **sigma** needs to be specified. For each action output you can specify the corresponding value with a tuple-style notation: `(x,y,z)`
+
+Example: Given an actor network with action output of shape (3,), we can write
+
+```EMADL
+    strategy: ornstein_uhlenbeck{
+        ...
+        mu: (0.0, 0.1, 0.3)
+        theta: (0.5, 0.0, 0.8)
+        sigma: (0.3, 0.6, -0.9)
+    }
+```
+
+to specify the parameters for each place.
 
 ## Generation
 

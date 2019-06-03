@@ -29,4 +29,6 @@ public class ErrorCodes {
     public static final String UNSUPPORTED_PARAMETER = "xC8854";
     public static final String RANGE_ERROR = "xC8855";
     public static final String REQUIRED_PARAMETER_MISSING = "xC8856";
+    public static final String STRATEGY_NOT_APPLICABLE = "xC8857";
+    public static final String CONTRADICTING_PARAMETERS = "xC8858";
 }
