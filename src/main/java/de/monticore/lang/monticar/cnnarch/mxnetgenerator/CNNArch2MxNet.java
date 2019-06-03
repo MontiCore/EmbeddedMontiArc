@@ -21,13 +21,9 @@
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
-import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
+import de.monticore.lang.monticar.cnnarch.mxnetgenerator.checker.AllowAllLayerSupportChecker;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
@@ -36,67 +32,25 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
-import java.lang.System;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.List;
 
 public class CNNArch2MxNet extends CNNArchGenerator {
-
-    private boolean isSupportedLayer(ArchitectureElementSymbol element, LayerSupportChecker layerChecker){
-        List<ArchitectureElementSymbol> constructLayerElemList;
-
-        if (element.getResolvedThis().get() instanceof CompositeElementSymbol) {
-            constructLayerElemList = ((CompositeElementSymbol)element.getResolvedThis().get()).getElements();
-            for (ArchitectureElementSymbol constructedLayerElement : constructLayerElemList) {
-                if (!isSupportedLayer(constructedLayerElement, layerChecker)) {
-                    return false;
-                }
-            }
-        }
-        if (!layerChecker.isSupported(element.toString())) {
-            Log.error("Unsupported layer " + "'" + element.getName() + "'" + " for the backend MXNET.");
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private boolean supportCheck(ArchitectureSymbol architecture){
-        LayerSupportChecker layerChecker = new LayerSupportChecker();
-        for (ArchitectureElementSymbol element : ((CompositeElementSymbol)architecture.getBody()).getElements()){
-            if(!isSupportedLayer(element, layerChecker)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public CNNArch2MxNet() {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
     }
 
     public void generate(Scope scope, String rootModelName){
-        Optional<CNNArchCompilationUnitSymbol> compilationUnit = scope.resolve(rootModelName, CNNArchCompilationUnitSymbol.KIND);
-        if (!compilationUnit.isPresent()){
-            Log.error("could not resolve architecture " + rootModelName);
-            quitGeneration();
-        }
-
-        CNNArchCocos.checkAll(compilationUnit.get());
-        if (!supportCheck(compilationUnit.get().getArchitecture())){
-            quitGeneration();
-        }
+        CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(new AllowAllLayerSupportChecker());
+        ArchitectureSymbol architectureSymbol = symbolCompiler.compileArchitectureSymbol(scope, rootModelName);
 
         try{
             String confPath = getModelsDirPath() + "/data_paths.txt";
             DataPathConfigParser newParserConfig = new DataPathConfigParser(confPath);
             String dataPath = newParserConfig.getDataPath(rootModelName);
-            compilationUnit.get().getArchitecture().setDataPath(dataPath);
-            compilationUnit.get().getArchitecture().setComponentName(rootModelName);
-            generateFiles(compilationUnit.get().getArchitecture());
+            architectureSymbol.setDataPath(dataPath);
+            architectureSymbol.setComponentName(rootModelName);
+            generateFiles(architectureSymbol);
         } catch (IOException e){
             Log.error(e.toString());
         }
