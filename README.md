@@ -47,3 +47,44 @@ Install mosquitto and mosquitto-clients
 Restart your computer
 
 Mosquitto is now available and can be accessed via command line using `mosquitto -h`
+
+### Installing MQTT libraries (locally on Ubuntu)
+
+Open terminal and run
+
+`sudo apt-get install build-essential gcc make cmake cmake-gui cmake-curses-gui`
+
+#### Installing PahoMQTT C library
+run 
+```bash
+git clone https://github.com/eclipse/paho.mqtt.c.git
+cd paho.mqtt.c
+git checkout v1.2.1
+cmake -Bbuild -H. -DPAHO_WITH_SSL=ON
+sudo cmake --build build/ --target install
+sudo ldconfig
+```
+#### Installing PahoMQTT C++ library
+**after** installation of C library run
+```bash
+git clone https://github.com/eclipse/paho.mqtt.cpp
+cd paho.mqtt.cpp
+cmake -Bbuild -H.
+sudo cmake --build build/ --target install
+```
+### Installing MQTT Publisher/Subscriber demo
+open terminal, go to **mqtt_demo** directroy inside the project and run
+`cmake .`
+
+compile the project by running
+`make`
+
+run the project afterwards with `./mqtt_demo`
+
+---
+
+additionaly, you can also use `mosquitto_pub` and `mosquitto_sub` commands from mosquitto broker to subscribe/publish messages
+
+for example:
+subscribe to topic **/hello** with `mosquitto_sub -t /hello` and publish a message to this topic with `mosquitto_pub -t /hello -m "hi, how are you?"`
+
