@@ -66,17 +66,35 @@ public class Vehicle {
     public static final double VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE = 5.0;
 
     /** Minimum steering angle */
-    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_MIN = -0.785398;
+    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_MIN = -6;
 
     /** Maximum steering angle */
-    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_MAX = 0.785398;
+    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_MAX = 6;
 
     /** Rate at which the steering angle can change */
-    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_RATE = 0.5;
+    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_RATE = 3;
 
     /** Maximum velocity of the vehicle */
     public static final double VEHICLE_DEFAULT_APPROX_MAX_VELOCITY = 100.0;
 
+    /**Brakecyclinder min, max and changerate in KiloPascal*/
+
+    public static final double VEHICLE_DEFAULT_BRAKE_PRESSURE_MIN = 0;
+    public static final double VEHICLE_DEFAULT_BRAKE_PRESSURE_RATE = 5000;
+    public static final double VEHICLE_DEFAULT_BRAKE_PRESSURE_MAX = 17000;
+
+    /**ClutchPedal min, max and changerate*/
+    public static final double VEHICLE_DEFAULT_CLUTCH_POSITION_MIN = 0;
+    public static final double VEHICLE_DEFAULT_CLUTCH_POSITION_MAX = 1;
+    public static final double VEHICLE_DEFAULT_CLUTCH_POSITION_RATE = 0.5;
+    /**ThrottlePedal min, max and changerate*/
+    public static final double VEHICLE_DEFAULT_THROTTLE_POSITION_MIN = 0;
+    public static final double VEHICLE_DEFAULT_THROTTLE_POSITION_MAX = 1;
+    public static final double VEHICLE_DEFAULT_THROTTLE_POSITION_RATE = 0.2;
+    /**Gear min, max and changerate*/
+    public static final double VEHICLE_DEFAULT_GEAR_MIN = 0;
+    public static final double VEHICLE_DEFAULT_GEAR_MAX = 5;
+    public static final double VEHICLE_DEFAULT_GEAR_RATE = 1;
     /** Length of the vehicle in meters */
     public static final double VEHICLE_DEFAULT_LENGTH = 4.236423828125;
 
@@ -93,7 +111,10 @@ public class Vehicle {
     public static final double VEHICLE_DEFAULT_MASS = 1800.0;
 
     /** Distance between the left and the right wheels in meters */
-    public static final double VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT = 1.62025;
+    public static final double VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_FRONT = 1.62025;
+
+    /**Track width rear wheels in meters */
+    public static final double VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_REAR = 1.505;
 
     /** Distance between front and back wheels in meters */
     public static final double VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT = 1.379;
@@ -114,6 +135,12 @@ public class Vehicle {
 
     /** Steering of vehicle */
     private VehicleActuator steering;
+
+    /**Inputs of vehicle from controller*/
+    private  VehicleActuator gear;
+    private  VehicleActuator clutch;
+    private  VehicleActuator brakes;
+    private  VehicleActuator throttle;
 
     /** Status logging module */
     private StatusLogger statusLogger;
@@ -191,6 +218,11 @@ public class Vehicle {
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
         // Create the steering
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_STEERING, VEHICLE_DEFAULT_STEERING_ANGLE_MIN, VEHICLE_DEFAULT_STEERING_ANGLE_MAX, VEHICLE_DEFAULT_STEERING_ANGLE_RATE);
+        //Inputs from Controller
+        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKE, VEHICLE_DEFAULT_BRAKE_PRESSURE_MIN, VEHICLE_DEFAULT_BRAKE_PRESSURE_MAX, VEHICLE_DEFAULT_BRAKE_PRESSURE_RATE);
+        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_CLUTCH, VEHICLE_DEFAULT_CLUTCH_POSITION_MIN, VEHICLE_DEFAULT_CLUTCH_POSITION_MAX, VEHICLE_DEFAULT_CLUTCH_POSITION_RATE);
+        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_THROTTLE, VEHICLE_DEFAULT_THROTTLE_POSITION_MIN, VEHICLE_DEFAULT_THROTTLE_POSITION_MAX, VEHICLE_DEFAULT_THROTTLE_POSITION_RATE);
+        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_GEAR, VEHICLE_DEFAULT_GEAR_MIN, VEHICLE_DEFAULT_GEAR_MAX, VEHICLE_DEFAULT_GEAR_RATE);
         // Create the status logger
         this.statusLogger = new StatusLogger();
         // Create the sensor list
@@ -214,8 +246,8 @@ public class Vehicle {
         // Set wheel radius
         this.wheelRadius = VEHICLE_DEFAULT_WHEEL_RADIUS;
         // Set track
-        this.wheelDistLeftRightFrontSide = VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
-        this.wheelDistLeftRightBackSide = VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
+        this.wheelDistLeftRightFrontSide =VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_FRONT;
+        this.wheelDistLeftRightBackSide = VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_REAR;
         // Set wheel base
         this.wheelDistToFront = VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT;
         this.wheelDistToBack = VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK;
@@ -251,6 +283,14 @@ public class Vehicle {
                 return brakesBackRight;
             case VEHICLE_ACTUATOR_TYPE_STEERING:
                 return steering;
+            case VEHICLE_ACTUATOR_TYPE_GEAR:
+                return gear;
+            case VEHICLE_ACTUATOR_TYPE_BRAKE:
+                return brakes;
+            case VEHICLE_ACTUATOR_TYPE_CLUTCH:
+                return clutch;
+            case VEHICLE_ACTUATOR_TYPE_THROTTLE:
+                return throttle;
             default:
                 return null;
         }
@@ -283,6 +323,18 @@ public class Vehicle {
                 break;
             case VEHICLE_ACTUATOR_TYPE_STEERING:
                 steering = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                break;
+            case VEHICLE_ACTUATOR_TYPE_GEAR:
+                gear =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                break;
+            case VEHICLE_ACTUATOR_TYPE_BRAKE:
+                brakes =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                break;
+            case VEHICLE_ACTUATOR_TYPE_CLUTCH:
+                clutch =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                break;
+            case VEHICLE_ACTUATOR_TYPE_THROTTLE:
+                throttle =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
                 break;
             default:
                 break;
@@ -725,6 +777,7 @@ public class Vehicle {
      * Function that exchanges data with the controller
      *
      * @param deltaT Time difference of the last update loop in seconds
+     * TODO: Add remaining Actuators
      */
     protected void exchangeDataWithController(double deltaT) {
         // Skip if controller bus or controller are not available
@@ -799,26 +852,42 @@ public class Vehicle {
         //Pass the data of the mainControlBlock to the bus
         controllerBus.get().setAllData(controller.get().getOutputs());
 
-        // Read updates from bus
-        Object motorValueObject = controllerBus.get().getData(BusEntry.ACTUATOR_ENGINE.toString());
-        if (motorValueObject != null)
-            motor.setActuatorValueTarget( (double) motorValueObject);
+        // Read new values from bus
+        double motorValue = 0;
+        double brakeValue = 0;
+        double steeringValue = 0;
 
-        Object brakeValueObject = controllerBus.get().getData(BusEntry.ACTUATOR_BRAKE.toString());
-        if(brakeValueObject != null){
-            double brakeValue = (double)brakeValueObject;
-            brakesFrontLeft.setActuatorValueTarget(brakeValue);
-            brakesFrontRight.setActuatorValueTarget(brakeValue);
-            brakesBackLeft.setActuatorValueTarget(brakeValue);
-            brakesBackRight.setActuatorValueTarget(brakeValue);
+        Object motorObj = controllerBus.get().getData(BusEntry.ACTUATOR_ENGINE.toString());
+        if (motorObj != null){
+            motorValue = (Double) motorObj;
+        }
+        Object brakeObj = controllerBus.get().getData(BusEntry.ACTUATOR_BRAKE.toString());
+        if (brakeObj != null){
+            brakeValue = (Double) brakeObj;
+        }
+        Object steeringObj = controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString());
+        if (steeringObj != null){
+            steeringValue = (Double) steeringObj;
         }
 
-        Object steeringValueObject = controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString());
-        if (steeringValueObject != null)
-            steering.setActuatorValueTarget((double)steeringValueObject);
+        steering.setActuatorValueTarget(steeringValue);
 
         // Set new values from bus to actuators
+
+        if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+            motor.setActuatorValueTarget(motorValue);
+            brakesBackLeft.setActuatorValueTarget(brakeValue);
+            brakesBackRight.setActuatorValueTarget(brakeValue);
+            brakesFrontLeft.setActuatorValueTarget(brakeValue);
+            brakesFrontRight.setActuatorValueTarget(brakeValue);
+
+        } else {
+            throttle.setActuatorValueTarget(motorValue);
+            double brakePressure = brakeValue*brakes.getActuatorValueMax();
+            brakes.setActuatorValueTarget(brakePressure);
+        }
     }
+
 
     /**
      * Function that initiates or updates navigation of the vehicle to a specified point in the map
@@ -840,7 +909,7 @@ public class Vehicle {
      */
     public void navigateTo(IControllerNode node, List<RealVector> avoidCoordinates) {
         // Check for valid objects
-        if (!navigation.isPresent() || !controllerBus.isPresent() || !getSensorByType(BusEntry.SENSOR_GPS_COORDINATES).isPresent()) {
+        if (!navigation.isPresent() || !controllerBus.isPresent() || !getSensorByType(SENSOR_GPS_COORDINATES).isPresent()) {
             Log.warning("Vehicle: navigateTo called without valid navigation or controllerBus or GPS sensor");
             return;
         }
@@ -849,8 +918,8 @@ public class Vehicle {
         this.lastNavigationTarget = Optional.of(node);
 
         // Get current GPS coordinates from sensor
-        getSensorByType(BusEntry.SENSOR_GPS_COORDINATES).get().update();
-        Object gpsCoordinates = getSensorByType(BusEntry.SENSOR_GPS_COORDINATES).get().getValue();
+        getSensorByType(SENSOR_GPS_COORDINATES).get().update();
+        Object gpsCoordinates = getSensorByType(SENSOR_GPS_COORDINATES).get().getValue();
 
         // Process navigation target without avoiding coordinates for reference
         Map<String, Object> navigationInputs = new LinkedHashMap<>();

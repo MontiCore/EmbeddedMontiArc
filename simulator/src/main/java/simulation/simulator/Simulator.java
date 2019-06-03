@@ -26,8 +26,12 @@ import commons.simulation.SimulationLoopNotifiable;
 import commons.simulation.SimulationLoopExecutable;
 import simulation.vehicle.*;
 import commons.simulation.PhysicalObject;
+
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
  * Logic and object management of the simulation
@@ -112,6 +116,7 @@ public class Simulator {
     /** Times for which others wait using the waitFor() method */
     private final List<Long> waitTimers = Collections.synchronizedList(new LinkedList<Long>());
 
+
     /**
      * Simulator constructor. Should not be called directly but only by the initialization of "sharedInstance".
      */
@@ -144,6 +149,7 @@ public class Simulator {
      * continued.
      */
     public void startSimulation() {
+
         // Check for sane frequency
         if (simulationLoopFrequency <= 0) {
             throw  new IllegalStateException("Simulation loop frequency " + simulationLoopFrequency + " is not positive.");
@@ -218,6 +224,7 @@ public class Simulator {
             new Thread(this::runSimulation).start();
         }
     }
+
 
     /**
      * This method allows to pause the computation of the simulation after a specified amount

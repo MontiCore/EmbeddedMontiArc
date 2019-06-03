@@ -67,6 +67,7 @@ public class Parser2D implements IParser {
 
     private InputStream in;
 
+    EnvironmentContainerConverter converter;
     private EnvironmentContainer2D container;
 
     private ParserSettings.ZCoordinates z;
@@ -219,8 +220,6 @@ public class Parser2D implements IParser {
         buildContainer();
         addSomeRandomTrees();
         generateZCoordinates();
-
-        EnvironmentContainerConverter converter;
 
         // Convert values to meter
         if (minLong != Double.MAX_VALUE && minLat != Double.MAX_VALUE) {
@@ -386,6 +385,11 @@ public class Parser2D implements IParser {
 
     public InMemoryMapDataSet getDataSet() {
         return this.dataSet;
+    }
+
+
+    public EnvironmentContainerConverter getConverter() {
+        return converter;
     }
 
     public VisualisationEnvironmentContainer getContainer() {

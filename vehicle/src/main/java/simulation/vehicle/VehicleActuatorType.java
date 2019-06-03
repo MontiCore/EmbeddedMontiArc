@@ -33,6 +33,15 @@ public enum VehicleActuatorType {
     VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT,
     VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT,
 
-    /** A motor turing the steering wheel of the vehicle */
-    VEHICLE_ACTUATOR_TYPE_STEERING
+    /** A motor turning the steering wheel of the vehicle */
+    VEHICLE_ACTUATOR_TYPE_STEERING,
+
+    /**All the pedals inside the car*/
+    VEHICLE_ACTUATOR_TYPE_BRAKE,
+
+    VEHICLE_ACTUATOR_TYPE_THROTTLE,
+
+    VEHICLE_ACTUATOR_TYPE_CLUTCH,
+
+    VEHICLE_ACTUATOR_TYPE_GEAR,
 }

@@ -73,15 +73,13 @@ public final class Plotter2D{
 
         // Create XY series for storing the position
         XYSeries position = new XYSeries("x_y", false, true);
-        double tempPosition = 0.0;
 
-        RealVector newPosition = physicalVehicle.getPosition().add(physicalVehicle.getVelocity().mapMultiply(deltaT));
+        //RealVector newPosition = physicalVehicle.getPosition().add(physicalVehicle.getVelocity().mapMultiply(deltaT));
 
-        tempPosition = physicalVehicle.getPosition().getEntry(1);
-        position.add(physicalVehicle.getPosition().getEntry(0), tempPosition);
+        position.add(physicalVehicle.getPosition().getEntry(0), physicalVehicle.getPosition().getEntry(1));
+        //System.out.println(physicalVehicle.getPosition().getEntry(0)+ " und " + physicalVehicle.getPosition().getEntry(1));
 
-        tempPosition = newPosition.getEntry(1);
-        position.add(newPosition.getEntry(0), tempPosition);
+        //position.add(newPosition.getEntry(0), newPosition.getEntry(1));
 
         // Create XY series for storing the wheel positions
         XYSeries position1 = new XYSeries("x_y_1", false, true);
@@ -99,14 +97,19 @@ public final class Plotter2D{
         RealVector wheelFrontPosition = physicalVehicle.getFrontLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelFrontPositionLocal));
         RealVector wheelBackPosition = physicalVehicle.getFrontLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelBackPositionLocal));
 
+        //add left front wheel start and end points
+        double tempPosition = 0.0;
+
         tempPosition = wheelFrontPosition.getEntry(1);
         position1.add(wheelFrontPosition.getEntry(0), tempPosition);
         tempPosition = wheelBackPosition.getEntry(1);
         position1.add(wheelBackPosition.getEntry(0), tempPosition);
 
+
         wheelFrontPosition = physicalVehicle.getFrontRightWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelFrontPositionLocal));
         wheelBackPosition = physicalVehicle.getFrontRightWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelBackPositionLocal));
 
+        //add right front wheel start and end points
         tempPosition = wheelFrontPosition.getEntry(1);
         position2.add(wheelFrontPosition.getEntry(0), tempPosition);
         tempPosition = wheelBackPosition.getEntry(1);
@@ -118,6 +121,7 @@ public final class Plotter2D{
         wheelFrontPosition = physicalVehicle.getBackLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelFrontPositionLocal));
         wheelBackPosition = physicalVehicle.getBackLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelBackPositionLocal));
 
+        //add left back wheel start and end points
         tempPosition = wheelFrontPosition.getEntry(1);
         position3.add(wheelFrontPosition.getEntry(0), tempPosition);
         tempPosition = wheelBackPosition.getEntry(1);
@@ -126,6 +130,7 @@ public final class Plotter2D{
         wheelFrontPosition = physicalVehicle.getBackRightWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelFrontPositionLocal));
         wheelBackPosition = physicalVehicle.getBackRightWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelBackPositionLocal));
 
+        //add right back wheel start and end points
         tempPosition = wheelFrontPosition.getEntry(1);
         position4.add(wheelFrontPosition.getEntry(0), tempPosition);
         tempPosition = wheelBackPosition.getEntry(1);
