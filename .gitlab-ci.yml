@@ -50,12 +50,19 @@ BranchJobLinux:
   stage: linux
   image: mcr.microsoft.com/java/jdk:8u181-zulu-ubuntu
   before_script:
-  - apt-get update
-  - apt-get install -y maven
-  - apt-get install -y openjfx
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#  before_script:
+#  - apt-get update
+#  - apt-get install -y maven
+#  - apt-get install -y openjfx
   script:
-  - mv lib/fmu_for_linux/*.fmu lib/
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+    - ./build_builder.sh
+    - docker tag simulation-builder:latest $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag simulation-builder:latest $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+#  - mv lib/fmu_for_linux/*.fmu lib/
+#  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
 #  - cat report/target/coverage-report/html/index.html
   except:
   - master
