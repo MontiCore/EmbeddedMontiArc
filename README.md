@@ -22,7 +22,7 @@ In terminal run
 
 `mvn clean install -s settings.xml`
 
-### Installing MQTT (locally on Ubuntu)
+### Installing MQTT broker (locally on Ubuntu)
 
 Open terminal
 
@@ -40,7 +40,7 @@ Install mosquitto and mosquitto-clients
 
 `sudo apt-get install mosquitto-clients`
 
-### Installing MQTT (locally on Windows)
+### Installing MQTT broker (locally on Windows)
 
 [Download](https://mosquitto.org/files/binary/win64/mosquitto-1.6.2-install-windows-x64.exe) and install Mosquitto
 
