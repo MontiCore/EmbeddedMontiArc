@@ -48,7 +48,7 @@ masterJobWindows:
 
 BranchJobLinux:
   stage: linux
-  image: openjdk:jdk-8
+  image: openjdk:8-jdk
   before_script:
   - apt-get update
   - apt-get install -y maven
