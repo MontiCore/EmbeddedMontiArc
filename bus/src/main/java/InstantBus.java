@@ -28,51 +28,21 @@ import simulation.simulator.*;
 import java.awt.*;
 import java.util.*;
 import java.lang.Math;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.lang.IllegalArgumentException;
 
 
 public class InstantBus implements Bus {
     private CanBus bus;
     public InstantBus() {
-        bus = new CanBus(1, Optional.empty);
+        bus = new CanBus(1);
     }
 
     @overried
-    public void registerData(String key, BusMessage msg) {
-        msg.setFinishTime(msg.getRequestTime);
-        bus.registerData(key, msg);
-    }
-
-    @override
-    public BusMessage getData(String key) {
-        return bus.getData(key);
-    }
-
-    @override
-    public Map<String, BusMessage> getAllData() {
-        return bus.getAllData();
-    }
-
-    @override
-    public String[] getImportNames() {
-        bus.getImportNames();
-    }
-
-    @override
-    public void registerComponent(Object component) {
-        bus.registerComponent(component);
-    }
-
-    /**
-     * simulate the transmission of data for a given time
-     *
-     * @param startTime time when simulation starts
-     * @param duration  time of the simulation
-     * @return list of transmitted messages
-     */
-    @override
-    public List<BusMessage> simulateFor(int startTime, int duration) {
-
-        return bus.simulateFor(startTime, duration);
+    public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime){
+        bus.didExecuteLoop(simulationObjects, totalTime, deltaTime);
     }
 
 }
