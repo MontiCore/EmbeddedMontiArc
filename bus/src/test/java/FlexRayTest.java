@@ -86,7 +86,34 @@ public class FlexRayTest {
 	 */
 	@Test
 	public void testDidExectueLoop() {
+		//TODO
+	}
 
+	/**
+	 * test the List<BusMessage> getIncomingMessagesUnitl(long finalTime) function
+	 */
+	//TODO this test fails. Because of the test or because of the function?
+	@Test
+	public void testGetIncomingMessagesUntil() {
+		//flexray initialisation
+		FlexRay flexray = new FlexRay();
+		//total time in microsec.
+		final int totalTimeAmount = 50;
+
+		//example Data
+		BusMessage messageOne = new BusMessage("one", "one".length(), NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE, 1, 2);
+		BusMessage messageTwo = new BusMessage("two", "two".length(), NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE, 100, 1);
+		BusMessageTransmissionRequestEvent eventOne = new BusMessageTransmissionRequestEvent(messageOne);
+		BusMessageTransmissionRequestEvent eventTwo = new BusMessageTransmissionRequestEvent(messageTwo);
+		flexray.scheduleEvent(eventOne);
+		flexray.scheduleEvent(eventTwo);
+
+		//expected Data with finalTime = 50
+		List<BusMessage> expectedMessages = new ArrayList<BusMessage>();
+		expectedMessages.add(messageOne);
+
+		//actual function test
+		assertEquals(expectedMessages, flexray.getIncomingMessagesUnitl(totalTimeAmount*1000));
 	}
 
 	/**
