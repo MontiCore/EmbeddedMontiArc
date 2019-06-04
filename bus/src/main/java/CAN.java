@@ -19,7 +19,7 @@
  * *******************************************************************************
  */
 
-package Bus;
+//package Bus;
 
 
 import commons.controller.commons.BusEntry;
@@ -73,12 +73,7 @@ public class CanBus extends Bus {
         }
     }
 
-    /**
-     * Simulate the transmission of data for a given time
-     *
-     * @param startTime Time where the simulation starts
-     * @param deltaTime Time of the simulation
-     */
+    
 
     /**
      * Simulate the transmission of data for a given time
@@ -116,9 +111,11 @@ public class CanBus extends Bus {
                 finishedMessages.add(nextMsg);
                 transmittedMessages.add(nextMsg);
                 activeMessages.remove(nextMsg);
+
                 this.scheduleEvent(new BusMessageDeliveredEvent(nextMsg));
             }
         }
+
         super.didExecuteLoop(simulationObjects, totalTime, deltaTime);
     }
 
