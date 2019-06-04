@@ -1,0 +1,7 @@
+{
+  "modelsDir": "models/",
+  "outputDir": "target/",
+  "rootModel": "test.bumbBot",
+  "generators": ["cpp", "roscpp"]
+}
+

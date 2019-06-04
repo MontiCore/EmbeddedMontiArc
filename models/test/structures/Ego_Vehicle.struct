@@ -1,0 +1,6 @@
+package test.structures;
+
+struct Ego_Vehicle{
+	Q throttle;
+	Q steer;
+}

@@ -1,0 +1,12 @@
+package test;
+import test.structures.*;
+
+component BumbBot{
+	port out Q throttle;
+	port out Q steer;
+
+	implementation Math{
+		throttle = 1.0;
+		steer = 0.0;
+	}
+}
