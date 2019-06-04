@@ -53,7 +53,7 @@ public class FlexRayTest {
 		components.add(com);
 		components.add(speed);
 		FlexRay flexRay = new FlexRay(components);
-		int expected = (3 + 4);
+		int expected = flexRay.getSlotSize() * (3 + 4);
 		assertEquals(expected, flexRay.getCycleTime());
 		
 	}
