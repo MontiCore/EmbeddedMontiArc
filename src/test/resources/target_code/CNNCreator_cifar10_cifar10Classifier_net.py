@@ -18,7 +18,7 @@ class MyConstant(mx.init.Initializer):
 class CNNCreator_cifar10_cifar10Classifier_net:
 
     module = None
-    _data_dir_ = "src/test/resources/training_data/"
+    _data_dir_ = "src/test/resources/training_data/Cifar/"
     _model_dir_ = "model/cifar10.CifarNetwork/"
     _model_prefix_ = "model"
     _input_names_ = ['data']
