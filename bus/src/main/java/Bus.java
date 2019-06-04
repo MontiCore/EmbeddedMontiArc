@@ -19,26 +19,61 @@
  * *******************************************************************************
  */
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface Bus {
-    
-    public void registerComponent(Object component);
+import commons.controller.commons.BusEntry;
+import commons.simulation.DiscreteEvent;
+import commons.simulation.DiscreteEventSimulationNotifiable;
+import commons.simulation.DiscreteEventSimulator;
 
-    public void registerData(String key, BusMessage msg);
+public abstract class Bus extends DiscreteEventSimulator{
+	
+	protected Map<String, BusMessage> deliveredMessages = new HashMap<String, BusMessage>();
+	
+	protected List<BusMessage> activeMessages = new ArrayList<BusMessage>();
+	
+	protected int connectedComponents = 0;
+	
+	@Override
+    public void registerDiscreteEventSimulationNotifiable(DiscreteEventSimulationNotifiable simulationNotifiable) {
+		connectedComponents++;
+		super.registerDiscreteEventSimulationNotifiable(simulationNotifiable);
+    }
+	
+	@Override
+    public void unregisterDiscreteEventSimulationNotifiable(DiscreteEventSimulationNotifiable simulationNotifiable) {
+        this.connectedComponents--;
+		super.unregisterDiscreteEventSimulationNotifiable(simulationNotifiable);
+    }
+	
+	@Override
+	protected void processEvent(DiscreteEvent event) {
+		if(event instanceof BusMessageDeliveredEvent) {
+			BusMessageDeliveredEvent deliveredEvent = (BusMessageDeliveredEvent)event; 
+			deliveredMessages.put(deliveredEvent.getMessage().getMessageID().toString(), deliveredEvent.getMessage());
+		}
+		else if(event instanceof BusMessageTransmissionRequestEvent) {
+			BusMessageTransmissionRequestEvent requestEvent = (BusMessageTransmissionRequestEvent)event;
+			activeMessages.add(requestEvent.getMessage());
+		}
+		else {
+			throw new IllegalArgumentException("Event of wrong type. Expected a bus event but was a " + event.getClass().toString());
+		}
+	}
+	
+    public Optional<BusMessage> getData(String key) {
+		return Optional.ofNullable(this.deliveredMessages.get(key));
+	}
 
-    public Optional<BusMessage> getData(String key);
+    public Map<String, BusMessage> getDeliveredMessages(){
+    	return this.deliveredMessages;
+    }
 
-    public Map<String, BusMessage> getAllData();
-
-    public String[] getImportNames();
-    
-    /**
-     * @param startTime start of the simulation in microseconds
-     * @param duration duration of the simulation in microseconds
-     * @return
-     */
-    public List<BusMessage> simulateFor(int startTime, int duration);
+    public Set<String> getImportNames() { 
+    	 return this.deliveredMessages.keySet();
+    }
 }

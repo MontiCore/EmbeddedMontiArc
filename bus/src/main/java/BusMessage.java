@@ -23,7 +23,7 @@ import commons.controller.commons.BusEntry;
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-public class BusMessage {
+public class BusMessage{
 
 	private Object message;
 
@@ -37,13 +37,13 @@ public class BusMessage {
     /**
      * Time the request to transmit the messages was placed. (in microseconds)
      */
-    private int requestTime;
+    private long requestTime;
     
     private int controllerID;
     
     private BusEntry messageID;
     
-    private int finishTime;
+    private long finishTime;
     
     private boolean error;
     
@@ -60,16 +60,16 @@ public class BusMessage {
     	this.controllerID = controllerID;
     	this.transmittedBytes = 0;
     	this.transmitted = false;
-    	this.finishTime = -1;
+    	this.finishTime = -1l;
     	this.error = false;
     }
     
 
-	public int getFinishTime() {
+	public long getFinishTime() {
 		return finishTime;
 	}
 
-	public void setFinishTime(int finishTime) {
+	public void setFinishTime(long finishTime) {
 		this.finishTime = finishTime;
 	}
 
@@ -90,11 +90,11 @@ public class BusMessage {
 		this.messageLen = messageLen;
 	}
 
-	public int getRequestTime() {
+	public long getRequestTime() {
 		return requestTime;
 	}
 
-	public void setRequestTime(int requestTime) {
+	public void setRequestTime(long requestTime) {
 		this.requestTime = requestTime;
 	}
 
