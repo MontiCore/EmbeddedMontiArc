@@ -24,9 +24,17 @@ import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class IntegrationGluonTest extends IntegrationTest {
+
+    private Path multipleInputsHashFile = Paths.get("./target/generated-sources-emadl/MultipleInputs.training_hash");
+
     public IntegrationGluonTest() {
         super("GLUON", "39253EC049D4A4E5FA0536AD34874B9D#1DBAEE1B1BD83FB7CB5F70AE91B29638#C4C23549E737A759721D6694C75D9771#5AF0CE68E408E8C1F000E49D72AC214A");
     }
@@ -34,8 +42,21 @@ public class IntegrationGluonTest extends IntegrationTest {
     @Test
     public void testMultipleInputs() {
         Log.getFindings().clear();
+
+        deleteMultipleInputsHashFile();
+
         String[] args = {"-m", "src/test/resources/models/", "-r", "MultipleInputs", "-b", "GLUON"};
         EMADLGeneratorCli.main(args);
+
         assertTrue(Log.getFindings().isEmpty());
+    }
+
+    private void deleteMultipleInputsHashFile() {
+        try {
+            Files.delete(multipleInputsHashFile);
+        }
+        catch(Exception e) {
+            assertFalse("Could not delete hash file", true);
+        }
     }
 }
