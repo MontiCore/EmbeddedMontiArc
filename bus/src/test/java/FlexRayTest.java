@@ -88,7 +88,10 @@ public class FlexRayTest {
 	public void testDidExectueLoop() {
 
 	}
-	
+
+	/**
+	 * test the long getSlotSize() function
+	 */
 	@Test
 	public void testSlotSize() {
 		FlexRay flexRay = new FlexRay();
@@ -101,6 +104,9 @@ public class FlexRayTest {
 		assertEquals(expected, flexRay.getSlotSize());
 	}
 
+	/**
+	 * tests the long getCycleTime() function
+	 */
 	@Test
 	public void testCycleTime() {
 		FlexRay flexRay = new FlexRay();
@@ -108,6 +114,9 @@ public class FlexRayTest {
 		assertEquals(expected, flexRay.getCycleTime());
 	}
 
+	/**
+	 * tests the List<BusMessage> fillStaticSegment(Map<Integer, List<BusMessage>> messagesByControllerId, long cycleEndTime) function
+	 */
 	@Test
 	public void testFillStaticSegment()	{
 		FlexRay flexRay = new FlexRay();
@@ -145,6 +154,9 @@ public class FlexRayTest {
 		assertEquals(expected, flexRay.fillStaticSegment(map, flexRay.getCycleTime()));
 	}
 
+	/**
+	 * tests the List<BusMessage> fillDynamicSegment(List<BusMessage> allMessages, long cycleEndTime) function
+	 */
 	@Test
 	public void testFillDynamicSegment(){
 		FlexRay flexRay = new FlexRay();
