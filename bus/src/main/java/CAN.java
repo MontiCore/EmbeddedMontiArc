@@ -28,28 +28,26 @@ import simulation.simulator.*;
 import java.awt.*;
 import java.util.*;
 import java.lang.Math;
+import java.util.List;
+import java.util.ArrayList;
 
+public class CanBus extends Bus {
 
-public class CANBus implements Bus {
     /**
      * dataRate in bit per miliseconds
      */
     private int dataRate;
 
-    /**
-     * recognize plugged components
-     */
-    private List<String> components;
 
     /**
      * messages that should be transmitted by this bus
      */
-    private Map<String, BusMessage> activeMessages;
+    private List<BusMessage> activeMessages;
 
     /**
      * map with all messages transmitted by this bus
      */
-    private Map<String, BusMessage> transmittedMessages;
+    private List<BusMessage> transmittedMessages;
 
     /**
      * size overhead in bit
@@ -61,92 +59,110 @@ public class CANBus implements Bus {
      */
     private final int MAX_PAYLOAD_LEN = 8;
 
+
     /**
      *
-     * @param dataRate in bit per milliseconds
-     * @param connections all connected components
+     * @param dataRate
      */
-    public CANBus(int dataRate, Optional[] connections) {
+    public CanBus(int dataRate) {
         if(dataRate <= 0){
-            throw new IllegalArgumentExecption("dataRate has to be positive");
+            throw new IllegalArgumentException("dataRate has to be positive");
         }
         else{
             this.dataRate = dataRate;
         }
-
-        this.components = new List<String>;
-        for (int ix = 0; ix < connections.length; ix++) {
-            this.components.add(BusEntry.toString(connections[ix]));
-        }
-    }
-
-    @overried
-    public void registerData(String key, BusMessage msg) {
-        activeMessages.put(key, msg);
-    }
-
-    @override
-    public BusMessage getData(String key) {
-        return Optional.of(transmittedMessages.get(key));
-    }
-
-    @override
-    public Map<String, BusMessage> getAllData() {
-        return transmittedMessages;
-    }
-
-    @override
-    public String[] getImportNames() {
-        Set keys = transmittedMessages.keySet();
-        return (String[]) keys.toArray();
-    }
-
-    @override
-    public void registerComponent(Object component) {
-        this.components.add(BusEntry.toString(component));
     }
 
     /**
-     * simulate the transmission of data for a given time
+     * Simulate the transmission of data for a given time
      *
-     * @param startTime time when simulation starts
-     * @param duration time of the simulation
-     * @return list of transmitted messages
+     * @param startTime Time where the simulation starts
+     * @param deltaTime Time of the simulation
      */
-    @override
-    public List<BusMessage> simulateFor(int startTime, int duration){
-        List<BusMessages> finishedMessages = new ArrayList<BusMessage>();
-        int finishTime = startTime + duration;
-        int activeTime = startTime;
 
+    /**
+     * Simulate the transmission of data for a given time
+     * @param simulationObjects
+     * @param totalTime
+     * @param deltaTime
+     */
+    @Override
+    public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
+
+        List<BusMessage> finishedMessages = new ArrayList<BusMessage>();
+        long finishTime = totalTime + deltaTime;
+        long activeTime = totalTime;
+        activeMessages = getIncomingMessagesUnitl(finishTime);
 
         while (activeMessages != null){
 
-            String nextKey = getNextMessageKey();
-            BusMessage nextMsg = activeMessages.get(nextKey);
+            //String nextKey = getNextMessageKey();
+            BusMessage nextMsg = getNextMessage();
 
 
             //message already should be delivered, so we delete it
-            if(nextMsg.getFinishTime >0 && nextMsg.getFinishTime <startTime){
-                activeMessages.remove(nextKey);
+            if(nextMsg.getFinishTime() >0 && nextMsg.getFinishTime() < totalTime){
+                activeMessages.remove(nextMsg);
             }
 
             else{
-                if(nextMsg.getFinishTime < 0){
+                if(nextMsg.getFinishTime() < 0){
                     nextMsg.setFinishTime(activeTime + getDelay(nextMsg));
                 }
                 activeTime = nextMsg.getFinishTime();
                 if(activeTime > finishTime){
-                    return finishedMessages;
+                    break;
                 }
                 finishedMessages.add(nextMsg);
-                transmittedMessages.add(nextKey, nextMsg);
-                activeMessages.remove(nextKey);
+                transmittedMessages.add(nextMsg);
+                activeMessages.remove(nextMsg);
+                this.scheduleEvent(new BusMessageDeliveredEvent(nextMsg));
             }
         }
-
-        return finishedMessages;
+        super.didExecuteLoop(simulationObjects, totalTime, deltaTime);
     }
+
+
+    /**
+     * @param finalTime time in nanoseconds
+     * @return all incoming messages until time finalTime
+     */
+    List<BusMessage> getIncomingMessagesUnitl(long finalTime) {
+        List<BusMessage> res = new ArrayList<BusMessage>();
+        List<DiscreteEvent> events = this.getEventList();
+        Optional<BusMessageTransmissionRequestEvent> transmissionReq = Optional.empty();
+        if (!events.isEmpty()) {
+            DiscreteEvent event = events.get(0);
+            if (event.getEventTime() <= finalTime && event instanceof BusMessageTransmissionRequestEvent) {
+                transmissionReq = Optional.of((BusMessageTransmissionRequestEvent) event);
+                activeMessages.add(transmissionReq.get().getMessage());
+                res.add(transmissionReq.get().getMessage());
+            } else {
+                transmissionReq = Optional.empty();
+                if (!(event instanceof BusMessageTransmissionRequestEvent)) {
+                    // TODO: error!
+                }
+            }
+        }
+        while (!events.isEmpty() && transmissionReq.isPresent()) {
+            DiscreteEvent event = events.get(0);
+            if (event.getEventTime() <= finalTime && event instanceof BusMessageTransmissionRequestEvent) {
+                transmissionReq = Optional.of((BusMessageTransmissionRequestEvent) event);
+                activeMessages.add(transmissionReq.get().getMessage());
+                res.add(transmissionReq.get().getMessage());
+            } else {
+                transmissionReq = Optional.empty();
+                if (!(event instanceof BusMessageTransmissionRequestEvent)) {
+                    // TODO: error!
+                }
+            }
+        }
+        this.setEventList(events);
+        return res;
+    }
+
+
+
 
     /**
      *
@@ -157,25 +173,24 @@ public class CANBus implements Bus {
         int allData = msg.getMessageLen()*8 +(int) Math.ceil((double)msg.getMessageLen()/MAX_PAYLOAD_LEN)*OVERHEAD;
         double delay = allData/ dataRate;
         delay = Math.ceil(delay);
-        return (int(delay));
+        return (int)delay;
     }
 
     /**
      *
      * @return get key of message with lowest requestTime
      */
-    private String getNextMessageKey(){
-        String nextKey = "";
+    private BusMessage getNextMessage(){
+        BusMessage nextMsg = null;
         int nextStartTime = Integer.MAX_VALUE;
         int nextTime;
-        for(String key: activeMessages){
-            nextTime = (activeMessages.get(key)).getRequestTime();
-            if(nextTime < nextStratTime){
+        for(BusMessage msg: activeMessages){
+            nextTime = msg.getRequestTime();
+            if(nextTime < nextStartTime){
                 nextStartTime = nextTime;
-                nextKey = key;
+                nextMsg = msg;
             }
-            // if same repuestTime note priority (now: higher in list means higher priority)
         }
-        return nextKey;
+        return nextMsg;
     }
 }
