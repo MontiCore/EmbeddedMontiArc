@@ -66,14 +66,6 @@ public class FlexRay extends Bus {
 	 */
 	private FlexRayOperationMode mode = new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY);
 
-	public FlexRay(List<Object> connectedComponents) {
-		if (connectedComponents != null) {
-			this.connectedComponents = connectedComponents.size();
-		} else {
-			throw new IllegalArgumentException("connectedComponents can not be null");
-		}
-	}
-
 	public FlexRayOperationMode getMode() {
 		return mode;
 	}

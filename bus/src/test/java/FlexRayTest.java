@@ -25,14 +25,18 @@ import java.util.List;
 
 import org.junit.Test;
 
+import sensors.CameraSensor;
+import sensors.CompassSensor;
+import sensors.SpeedSensor;
+import simulation.vehicle.ModelicaPhysicalVehicle;
+
 
 public class FlexRayTest {
 	
 	
 	@Test
 	public void testSlotSize() {
-		List<Object> components = new ArrayList<Object>();
-		FlexRay flexRay = new FlexRay(components);
+		FlexRay flexRay = new FlexRay();
 		flexRay.setMode(new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY));
 		int expected = (int)Math.ceil((262 * 8 * 1000)/(double)10);
 		assertEquals(expected, flexRay.getSlotSize());
@@ -42,21 +46,21 @@ public class FlexRayTest {
 		assertEquals(expected, flexRay.getSlotSize());
 	}
 	
-//	@Test
-//	public void testCycleTime() {
-//		List<Object> components = new ArrayList<Object>();
-//		ModelicaPhysicalVehicle car = new ModelicaPhysicalVehicle();
-//		CameraSensor cam = new CameraSensor(car);
-//		CompassSensor com = new CompassSensor(car);
-//		SpeedSensor speed = new SpeedSensor(car);
-//		components.add(cam);
-//		components.add(com);
-//		components.add(speed);
-//		FlexRay flexRay = new FlexRay(components);
-//		int expected = flexRay.getSlotSize() * (3 + 4);
-//		assertEquals(expected, flexRay.getCycleTime());
-//		
-//	}
+	@Test
+	public void testCycleTime() {
+		List<Object> components = new ArrayList<Object>();
+		ModelicaPhysicalVehicle car = new ModelicaPhysicalVehicle();
+		CameraSensor cam = new CameraSensor(car);
+		CompassSensor com = new CompassSensor(car);
+		SpeedSensor speed = new SpeedSensor(car);
+		components.add(cam);
+		components.add(com);
+		components.add(speed);
+		FlexRay flexRay = new FlexRay();
+		long expected = flexRay.getSlotSize() * (3 + 4);
+		assertEquals(expected, flexRay.getCycleTime());
+		
+	}
 	
 	
 }
