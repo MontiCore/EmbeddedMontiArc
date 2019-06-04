@@ -2,11 +2,9 @@ package test;
 import test.structures.*;
 
 component BumbBot{
-	port out Q throttle;
-	port out Q steer;
+	port out Q (0.0 : 0.001 : 1.0) throttle;
 
 	implementation Math{
 		throttle = 1.0;
-		steer = 0.0;
 	}
 }
