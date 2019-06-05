@@ -73,7 +73,7 @@ cmake -Bbuild -H.
 sudo cmake --build build/ --target install
 ```
 ## Installing MQTT Publisher/Subscriber demo
-open terminal, go to **mqtt_demo** directroy inside the project and run
+open terminal, switch to **mqtt_demo** directroy inside the project and run
 `cmake .`
 
 compile the demo by running
