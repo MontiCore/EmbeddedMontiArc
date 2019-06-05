@@ -51,12 +51,6 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     interface OptimizerParamEntry extends Entry;
 
-    DataVariable implements VariableReference = Name&;
-    IntegerValue implements ConfigValue = NumberWithUnit;
-    NumberValue implements ConfigValue = NumberWithUnit;
-    StringValue implements ConfigValue = StringLiteral;
-    BooleanValue implements ConfigValue = (TRUE:"true" | FALSE:"false");
-
     interface LossValue extends ConfigValue;
 
     L1Loss implements LossValue = name:"l1" ("{" params:Entry* "}")?;

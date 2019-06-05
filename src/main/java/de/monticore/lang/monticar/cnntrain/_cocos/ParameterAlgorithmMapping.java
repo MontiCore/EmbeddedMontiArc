@@ -53,7 +53,12 @@ class ParameterAlgorithmMapping {
         ASTEvalMetricEntry.class,
         ASTNormalizeEntry.class,
         ASTNumEpochEntry.class,
-        ASTLossEntry.class
+        ASTLossEntry.class,
+        ASTSparseLabelEntry.class,
+        ASTFromLogitsEntry.class,
+        ASTMarginEntry.class,
+        ASTLabelFormatEntry.class,
+        ASTRhoEntry.class
     );
 
     private static final List<Class> GENERAL_REINFORCEMENT_PARAMETERS = Lists.newArrayList(
