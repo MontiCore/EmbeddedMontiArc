@@ -86,5 +86,6 @@ run the demo afterwards with `./mqtt_demo`
 additionaly, you can also use `mosquitto_pub` and `mosquitto_sub` commands from mosquitto broker to subscribe/publish messages
 
 for example:
-subscribe to topic **/hello** with `mosquitto_sub -t /hello` and publish a message to this topic with `mosquitto_pub -t /hello -m "hi, how are you?"`
+subscribe to topic **/hello** with `mosquitto_sub -t /hello` and publish a message to this topic with 
+`mosquitto_pub -t /hello -m "hi, how are you?"`
 
