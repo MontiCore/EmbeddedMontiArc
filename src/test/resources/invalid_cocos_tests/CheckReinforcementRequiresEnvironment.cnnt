@@ -11,7 +11,7 @@ configuration CheckReinforcementRequiresEnvironment {
     target_score : 1000
     training_interval : 10
 
-    loss : huber_loss
+    loss : huber
 
     use_fix_target_network : true
     target_network_update_interval : 100
