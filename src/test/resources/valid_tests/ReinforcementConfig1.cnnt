@@ -24,7 +24,9 @@ configuration ReinforcementConfig1 {
 
     use_double_dqn : true
 
-    loss : huber_loss
+    loss : huber{
+        rho: 0.9
+    }
 
     replay_memory : buffer{
         memory_size : 1000000

@@ -17,7 +17,7 @@ configuration ReinforcementConfig2 {
 
     use_double_dqn : false
 
-    loss : euclidean
+    loss : l2
 
     replay_memory : buffer{
         memory_size : 10000

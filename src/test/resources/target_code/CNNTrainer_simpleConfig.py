@@ -13,11 +13,12 @@ if __name__ == "__main__":
     simpleConfig_creator = CNNCreator_simpleConfig.CNNCreator_simpleConfig()
     simpleConfig_loader = CNNDataLoader_simpleConfig.simpleConfigDataLoader()
     simpleConfig_trainer = supervised_trainer.CNNSupervisedTrainer(simpleConfig_loader,
-        simpleConfig_creator)
+                                                                   simpleConfig_creator)
 
     simpleConfig_trainer.train(
         batch_size=100,
         num_epoch=50,
+        loss='cross_entropy',
         optimizer='adam',
         optimizer_params={
             'learning_rate': 0.001}

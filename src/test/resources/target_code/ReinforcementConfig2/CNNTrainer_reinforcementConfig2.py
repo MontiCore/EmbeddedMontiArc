@@ -67,7 +67,7 @@ if __name__ == "__main__":
             policy_params=policy_params,
             state_dim=net_creator.get_input_shapes()[0],
             discount_factor=0.999,
-            loss_function='euclidean',
+            loss='l2',
             optimizer='rmsprop',
             optimizer_params={
                 'weight_decay': 0.01,
@@ -82,7 +82,7 @@ if __name__ == "__main__":
                 'learning_rate_minimum': 1.0E-5,
                 'learning_rate_policy': 'step',
                 'learning_rate': 0.001,
-                'step_size': 1000            },
+                'step_size': 1000},
             training_episodes=200,
             train_interval=1,
             use_fix_target=False,

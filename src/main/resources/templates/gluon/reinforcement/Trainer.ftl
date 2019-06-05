@@ -127,8 +127,15 @@ if __name__ == "__main__":
 <#if (config.discountFactor)??>
             discount_factor=${config.discountFactor},
 </#if>
-<#if (config.loss)??>
-            loss_function='${config.loss}',
+<#if (config.configuration.loss)??>
+            loss='${config.lossName}',
+<#if (config.lossParams)??>
+            loss_params={
+<#list config.lossParams?keys as param>
+                '${param}': ${config.lossParams[param]}<#sep>,
+</#list>
+},
+</#if>
 </#if>
 <#if (config.configuration.optimizer)??>
             optimizer='${config.optimizerName}',
@@ -136,7 +143,7 @@ if __name__ == "__main__":
 <#list config.optimizerParams?keys as param>
                 '${param}': ${config.optimizerParams[param]}<#sep>,
 </#list>
-            },
+},
 </#if>
 <#if (config.numEpisodes)??>
             training_episodes=${config.numEpisodes},

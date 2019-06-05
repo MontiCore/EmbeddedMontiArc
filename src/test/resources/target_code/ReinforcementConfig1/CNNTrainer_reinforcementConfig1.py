@@ -73,10 +73,12 @@ if __name__ == "__main__":
             policy_params=policy_params,
             state_dim=net_creator.get_input_shapes()[0],
             discount_factor=0.99999,
-            loss_function='huber_loss',
+            loss='huber',
+            loss_params={
+                'rho': 0.9},
             optimizer='adam',
             optimizer_params={
-                'learning_rate': 0.001            },
+                'learning_rate': 0.001},
             training_episodes=1000,
             train_interval=1,
             use_fix_target=True,
