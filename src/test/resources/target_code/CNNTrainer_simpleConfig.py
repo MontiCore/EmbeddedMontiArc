@@ -12,6 +12,7 @@ if __name__ == "__main__":
     simpleConfig.train(
         batch_size=100,
         num_epoch=50,
+        loss='cross_entropy',
         optimizer='adam',
         optimizer_params={
             'learning_rate': 0.001}

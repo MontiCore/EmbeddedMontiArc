@@ -67,6 +67,33 @@ public class ConfigurationData {
         return getConfiguration().getEntry("eval_metric").getValue().toString();
     }
 
+    public String getLossName() {
+        if (getConfiguration().getLoss() == null) {
+            return null;
+        }
+        return getConfiguration().getLoss().getName();
+    }
+
+    public Map<String, String> getLossParams() {
+
+        Map<String, String>  mapToStrings = new HashMap<>();
+        Map<String, LossParamSymbol> lossParams = getConfiguration().getLoss().getLossParamMap();
+        for (Map.Entry<String, LossParamSymbol> entry : lossParams.entrySet()) {
+            String paramName = entry.getKey();
+            String valueAsString = entry.getValue().toString();
+            Class realClass = entry.getValue().getValue().getValue().getClass();
+            if (realClass == Boolean.class) {
+                valueAsString = (Boolean) entry.getValue().getValue().getValue() ? "True" : "False";
+            }
+            mapToStrings.put(paramName, valueAsString);
+        }
+        if (mapToStrings.isEmpty()){
+            return null;
+        } else{
+        return mapToStrings;}
+    }
+
+
     public String getOptimizerName() {
         if (getConfiguration().getOptimizer() == null) {
             return null;
