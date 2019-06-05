@@ -2,15 +2,18 @@ package de.monticore.reporting;
 
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.reporting.order.OrderTestResults;
-import de.monticore.reporting.svgTools.VisualisationHelper;
 import de.monticore.reporting.cocoReport.CheckCoCos;
 import de.monticore.reporting.testReport.CheckTests;
 import de.monticore.reporting.grammarReport.ReportGrammar;
 import de.monticore.reporting.cocoReport.helper.*;
 import de.monticore.reporting.testReport.TestsTestResultPrinter;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class Main {
@@ -20,21 +23,17 @@ public class Main {
         if (context.isTestCoCos()) {
             CheckCoCos tcc = new CheckCoCos();
             System.out.println("\n<================Test CoCos================>\n");
-            List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(), "ema", "emam");
+            List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), "ema", "emam");
             OrderTestResults<CheckCoCoResult> order = new OrderTestResults();
             order.orderTestResults(testResults, new CheckCoCoResultCreator());
             List<CheckCoCoResult> rootModels = order.getRootModels();
             List<CheckCoCoResult> mainPackages = order.getMainPackageModels();
 
-            if (context.isSvg()) {
-                System.out.println("\n<==============SVG Generation==============>\n");
-                VisualisationHelper.generateSVGs(testResults, rootModels, context.getOutput() + "SVG", context.isMerge());
-            }
-
             System.out.println("\n<============Write Test Results============>\n");
             CoCoTestResultPrinter.printTestResults(mainPackages, context.getOutput() + "data.json", context.isMerge(), true);
             CoCoTestResultPrinter.printTestResults(testResults, context.getOutput() + "dataExpanded.json", context.isMerge(), false);
             TestInfoPrinter.printInfo(testResults, context.getOutput() + "info.json", context.isMerge());
+            System.out.println("SUCCESS\n");
         }
         if (context.isTestsEndWithTest()) {
             CheckTests tewt = new CheckTests();
@@ -47,18 +46,32 @@ public class Main {
             System.out.println("\n<==============Grammar Report==============>\n");
             ReportGrammar.reportGrammars(context, context.getOutput() + "dataGrammars.json", context.isMerge());
         }
+
+        File dataDir = new File("report/data");
+        if (dataDir.exists()) {
+            try {
+                FileUtils.deleteDirectory(dataDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        dataDir.mkdir();
+        File out = new File(context.getOutput());
+        try {
+            FileUtils.copyDirectory(out, dataDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static class ReportContext {
         private boolean testsEndWithTest = false;
         private boolean testCoCos = false;
-        private String output = "report/data/";
         private String projectRoot = "";
-        private String zipName = "";
         private boolean merge = false;
-        private boolean svg = false;
         private boolean reportGrammar = false;
-        private String grammarZip = "";
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        private String output = "report/data_" + timeStamp + "/";
 
         public boolean isTestsEndWithTest() {
             return testsEndWithTest;
@@ -95,14 +108,6 @@ public class Main {
             this.projectRoot = projectRoot;
         }
 
-        public String getZipName() {
-            return zipName;
-        }
-
-        public void setZipName(String zipName) {
-            this.zipName = zipName;
-        }
-
         public boolean isMerge() {
             return merge;
         }
@@ -111,28 +116,12 @@ public class Main {
             this.merge = merge;
         }
 
-        public boolean isSvg() {
-            return svg;
-        }
-
-        public void setSvg(boolean svg) {
-            this.svg = svg;
-        }
-
         public boolean isReportGrammar() {
             return reportGrammar;
         }
 
         public void setReportGrammar(boolean reportGrammar) {
             this.reportGrammar = reportGrammar;
-        }
-
-        public String getGrammarZip() {
-            return grammarZip;
-        }
-
-        public void setGrammarZip(String grammarZip) {
-            this.grammarZip = grammarZip;
         }
     }
 
@@ -143,16 +132,11 @@ public class Main {
                         "  projectRoot         The directory with all projects in\n" +
                         "OPTIONS\n" +
                         "  -h --help           Prints this help page\n" +
-                        "  -tc                 Test CoCos\n" +
-                        "                        If this option is true [default] -zn must be set as well\n" +
-                        "    -zn  \"models.zip\"   The zip-file with all models in it\n" +
-                        "                        This zip must be hosted on \"github.com/EmbeddedMontiArc/reporting/\"\n" +
-                        "                        (Can be a Dummy.zip) \n" +
-                        "    -svg                Generate SVG-files (visualisation)          Default: true\n\n" +
-                        "  -tt                 Check whether all tests end with \"Test\"   Default: false\n" +
-                        "  -grammar            Creates a report for all grammars in the rootFile\n" +
-                        "    -gzn \"grammar.zip\"  The zip-file with all grammars in it\n\n" +
-                        "  -m                  Merge the output data                       Default: false\n\n";
+                        "  -testCoCos          Test CoCos\n                                Default: not set" +
+                        "  -testTests          Check whether all tests end with \"Test\"   Default: not set\n" +
+                        "  -grammar            Creates a report for all grammars in the directory\n" +
+                        "  -out \"directory\"    Output directory                            Default: report/data[CurrentTime]/" +
+                        "  -m                  Merge the output data                       Default: not set\n\n";
     }
 
     private static ReportContext getContext(String[] args) {
@@ -163,7 +147,6 @@ public class Main {
         }
 
         File projectRoot = new File(args[0]);
-
         if (!projectRoot.isDirectory() || !projectRoot.exists())
             Log.error("Cannot find dir: " + projectRoot.getAbsolutePath());
         context.setProjectRoot(projectRoot.getAbsolutePath());
@@ -173,45 +156,37 @@ public class Main {
                 case "-grammar":
                     context.setReportGrammar(true);
                     break;
-                case "-tc":
+                case "-testCoCos":
                     context.setTestCoCos(true);
                     break;
-                case "-tt":
+                case "-testTests":
                     context.setTestsEndWithTest(true);
                     break;
                 case "-m":
                     context.setMerge(true);
                     break;
-                case "-svg":
-                    context.setSvg(true);
-                    break;
-                case "-zn":
-                    context.setZipName(args[++i]);
-                    if (context.getZipName().equals(""))
-                        Log.error("Zip name is missing, see -h for help.");
-                    break;
-                case "-gzn":
-                    context.setGrammarZip(args[++i]);
-                    if (context.getGrammarZip().equals(""))
-                        Log.error("Zip name is missing, see -h for help.");
-                    break;
+                case "-out":
+                    context.setOutput(args[++i]);
                 case "-h":
-                case "-help":
+                case "--help":
                     System.out.println(help());
                     System.exit(0);
                 default:
-                    Log.error("Invalid arguments, see -h for help");
+                    System.out.println("Invalid arguments:\n" + help());
+                    System.exit(0);
             }
         }
 
-        if (context.isTestCoCos() && context.getZipName().equals(""))
-            Log.error("Invalid arguments, see -h for help");
         if (!context.isTestCoCos() && !context.isTestsEndWithTest() && !context.isReportGrammar())
             Log.error("No options found, see -h for help");
-        if (!context.isTestCoCos() && context.isSvg())
-            Log.error("Invalid arguments, see -h for help");
-        if (context.isReportGrammar() && context.getGrammarZip().equals(""))
-            Log.error("Invalid arguments, see -h for help");
+
+        File outDir = new File(context.getOutput());
+        if (outDir.exists() && !outDir.isDirectory())
+            Log.error("Output " + outDir.getAbsolutePath() + " already is a file");
+        if(!outDir.exists())
+            outDir.mkdirs();
+        context.setOutput(outDir.getAbsolutePath());
+
         return context;
     }
 }

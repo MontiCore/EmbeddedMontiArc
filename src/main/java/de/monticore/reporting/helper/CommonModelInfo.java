@@ -1,7 +1,8 @@
 package de.monticore.reporting.helper;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -14,11 +15,13 @@ public abstract class CommonModelInfo {
     private String qualifiedName = "";
     private String modelPath = "";
     private String fileType = "";
+    private String gitLabLink = "";
     private int parsed = 0;
     private int resolved = 0;
 
-    private ASTEMAMCompilationUnit unresolvedAST = null;
-    private ASTEmbeddedMontiArcNode resolvedAST = null;
+    private ASTEMACompilationUnit unresolvedAST = null;
+    private EMAComponentSymbol resolvedAST = null;
+    private ASTEmbeddedMontiArcNode resolvedASTNode = null;
 
     private List<String> errorMessage = new LinkedList<>();
 
@@ -78,19 +81,19 @@ public abstract class CommonModelInfo {
         this.resolved = resolved;
     }
 
-    public ASTEMAMCompilationUnit getUnresolvedAST() {
+    public ASTEMACompilationUnit getUnresolvedAST() {
         return unresolvedAST;
     }
 
-    public void setUnresolvedAST(ASTEMAMCompilationUnit unresolvedAST) {
+    public void setUnresolvedAST(ASTEMACompilationUnit unresolvedAST) {
         this.unresolvedAST = unresolvedAST;
     }
 
-    public ASTEmbeddedMontiArcNode getResolvedAST() {
+    public EMAComponentSymbol getResolvedAST() {
         return resolvedAST;
     }
 
-    public void setResolvedAST(ASTEmbeddedMontiArcNode resolvedAST) {
+    public void setResolvedAST(EMAComponentSymbol resolvedAST) {
         this.resolvedAST = resolvedAST;
     }
 
@@ -110,5 +113,21 @@ public abstract class CommonModelInfo {
 
     public void setQualifiedName(String qualifiedName) {
         this.qualifiedName = qualifiedName;
+    }
+
+    public ASTEmbeddedMontiArcNode getResolvedASTNode() {
+        return resolvedASTNode;
+    }
+
+    public void setResolvedASTNode(ASTEmbeddedMontiArcNode resolvedASTNode) {
+        this.resolvedASTNode = resolvedASTNode;
+    }
+
+    public String getGitLabLink() {
+        return gitLabLink;
+    }
+
+    public void setGitLabLink(String gitLabLink) {
+        this.gitLabLink = gitLabLink;
     }
 }

@@ -2,13 +2,13 @@ package de.monticore.reporting.cocoReport;
 
 import de.monticore.reporting.cocoReport.helper.RewriteWithoutArray;
 import de.monticore.reporting.tools.CustomPrinter;
+import de.monticore.reporting.tools.GitLabHelper;
 import de.monticore.reporting.tools.SearchFiles;
 import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.exec.environment.EnvironmentUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,7 +17,7 @@ import java.util.*;
 
 public class CheckCoCos {
 
-    public List<CheckCoCoResult> testAllCocos(File root, String zipName, String... fileType) {
+    public List<CheckCoCoResult> testAllCocos(File root, String... fileType) {
         List<CheckCoCoResult> testResults = new LinkedList<>();
 
         CustomPrinter.init();
@@ -35,20 +35,20 @@ public class CheckCoCos {
             max += filesMap.get(projectDir).size();
 
         for (File projectDir : filesMap.keySet()) {
-            String gitHubBranch = null;
+            String gitLabRoot = null;
             try {
-                gitHubBranch = getGitHubBranch(projectDir);
-            } catch (IOException e) {
+                gitLabRoot = GitLabHelper.getGitLabRoot(projectDir);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
             // Save original file
-            for(File file: filesMap.get(projectDir)){
-                String oldFilePath = file.getAbsolutePath();
-                String newFilePath = oldFilePath + "_temp";
-                file.renameTo(new File(newFilePath));
-                RewriteWithoutArray.rewrite(newFilePath, oldFilePath);
-            }
+//            for(File file: filesMap.get(projectDir)){
+//                String oldFilePath = file.getAbsolutePath();
+//                String newFilePath = oldFilePath + "_temp";
+//                file.renameTo(new File(newFilePath));
+//                RewriteWithoutArray.rewrite(newFilePath, oldFilePath);
+//            }
 
             for(File file: filesMap.get(projectDir)) {
                 CustomPrinter.println("[" + getFormattedNumber(z, max) + "/" + max + "]" +
@@ -60,64 +60,29 @@ public class CheckCoCos {
                 testResult = ccT.testCoCos(file.getAbsolutePath());
 
                 testResult.setModelFile(file);
-                testResult.setOnlineIDE(getVFSTag(projectDir, file, zipName));
                 String relativeProject = projectDir.getName();
                 testResult.setProject(relativeProject);
                 testResult.setRootFile1(root);
-                testResult.setZipName(zipName);
-                testResult.setGithubBranch(gitHubBranch);
+                String relativeModelPath = file.getAbsolutePath().substring(
+                        file.getAbsolutePath().lastIndexOf(relativeProject) + relativeProject.length() + 1)
+                        .replace("\\", "/");
+                testResult.setGitLabLink(gitLabRoot + relativeModelPath);
 
                 testResults.add(testResult);
             }
 
             // Reset original file
-            for(File file: filesMap.get(projectDir)){
-                File newFile = new File(file.getAbsolutePath() + "_temp");
-                if(file.exists() && newFile.exists())
-                    file.delete();
-                newFile.renameTo(file);
-            }
+//            for(File file: filesMap.get(projectDir)){
+//                File newFile = new File(file.getAbsolutePath() + "_temp");
+//                if(file.exists() && newFile.exists())
+//                    file.delete();
+//                newFile.renameTo(file);
+//            }
         }
 
         CustomPrinter.end();
 
         return testResults;
-    }
-
-    private String getGitHubBranch(File projectDir) throws IOException {
-        String[] args = { "git", "remote", "show", "origin" };
-        String command = "";
-        for(String str: args)
-            command += str + " ";
-        ByteArrayOutputStream stdoutOS = new ByteArrayOutputStream();
-        ByteArrayOutputStream stderrOS = new ByteArrayOutputStream();
-
-        DefaultExecutor executor = new DefaultExecutor();
-        PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(stdoutOS, stderrOS);
-        ExecuteWatchdog watchDog = new ExecuteWatchdog(10 * 1000);
-        executor.setStreamHandler(pumpStreamHandler);
-        executor.setWatchdog(watchDog);
-        executor.setWorkingDirectory(projectDir);
-        executor.execute(CommandLine.parse(command));
-
-        String branch = "";
-        String[] lines = stdoutOS.toString().split("\n");
-        boolean nextLineContainsHeadBranch = false;
-        for(String line: lines) {
-            if(nextLineContainsHeadBranch){
-                nextLineContainsHeadBranch = false;
-                branch = line.split(" ")[0];
-            }
-            if(line.toLowerCase().contains("head branch")){
-                String[] lines2 = line.split(" ");
-                if(lines2.length > 2)
-                    branch = lines2[lines2.length - 1];
-                else
-                    nextLineContainsHeadBranch = true;
-            }
-        }
-
-        return branch;
     }
 
     private String getVFSTag(File project, File file, String zipName) {

@@ -1,7 +1,0 @@
-#news-panel {
-    width:340px;
-    left:30px;
-    top:30px;
-    max-height:calc(100% - 167px);
-    overflow-y:auto;
-}

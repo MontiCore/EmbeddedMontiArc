@@ -2,11 +2,10 @@ package de.monticore.reporting.tools;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.embeddedmontiarc.LogConfig;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
@@ -31,27 +30,29 @@ public class ASTHelper {
         String fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()).toUpperCase();
         model.setFileType(fileType);
         boolean parse = false;
-        ASTEMAMCompilationUnit ast = null;
-        ASTEmbeddedMontiArcNode resolvedAST = null;
+        ASTEMACompilationUnit ast = null;
+        EMAComponentSymbol resolvedAST = null;
 
         EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
         try {
             model.addErrorMessage("[INFO] do Parser Test <br>=========================");
             ast = parser.parse(fileName).orElse(null);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            int i = 1;
+        }
         parse = ast != null;
 
         model.addErrorMessage(parse ? "[INFO] Parser Test success<br>" : "[ERROR] Parser Test failed");
         if(!parse){
             CustomPrinter.println("ERROR. Parser Test failed");
             for (Finding finding : Log.getFindings())
-                model.addErrorMessage(finding.getMsg());
+                model.addErrorMessage(finding.toString());
         }
 
         model.setParsed(parse?1:-1);
         if(parse) {
             model.setUnresolvedAST(ast);
-            String PackageName = Joiners.DOT.join(ast.getEMACompilationUnit().getPackage());
+            String PackageName = Joiners.DOT.join(ast.getPackageList());
             String FileName = fileName.substring(fileName.replace("\\", "/").lastIndexOf("/") + 1, fileName.length());
             String modelPath = fileName.substring(0, fileName.length() - (PackageName + "/" + FileName).length()); // package name + File name
             String modelName = PackageName + "." + FileName.replace(".emam", "").replace(".ema", "");
@@ -67,6 +68,7 @@ public class ASTHelper {
                 model.addErrorMessage("[INFO] do Resolve Test<br>=========================");
                 resolvedAST = getAstNode(modelPath, modelName, fileType);
                 model.setResolvedAST(resolvedAST);
+                model.setResolvedASTNode((ASTEmbeddedMontiArcNode) resolvedAST.getAstNode().get());
                 model.setResolved(1);
                 model.addErrorMessage("[INFO] Resolve Test success<br>");
             } catch (CouldNotResolveException e) {
@@ -74,7 +76,7 @@ public class ASTHelper {
                 model.setResolved(-1);
                 model.addErrorMessage("[ERROR] Resolve Test failed");
                 for (Finding finding : Log.getFindings())
-                    model.addErrorMessage(finding.getMsg());
+                    model.addErrorMessage(finding.toString());
             } catch (Exception e) {
                 CustomPrinter.println("ERROR. Something went wrong");
                 model.setResolved(-1);
@@ -87,23 +89,21 @@ public class ASTHelper {
 
     }
 
-    public static ASTEmbeddedMontiArcNode getAstNode(String modelPath, String model, String fileType) throws CouldNotResolveException {
+    public static EMAComponentSymbol getAstNode(String modelPath, String model, String fileType) throws CouldNotResolveException {
         try {
             Scope symTab = createSymTab(fileType, modelPath);
-            ComponentSymbol comp = symTab.<ComponentSymbol>resolve(
-                    model, ComponentSymbol.KIND).orElse(null);
-
-            return (ASTEmbeddedMontiArcNode) comp.getAstNode().get();
-        } catch (Exception e) {
+            EMAComponentSymbol comp = symTab.<EMAComponentSymbol>resolve(model, EMAComponentSymbol.KIND).orElse(null);
+            return comp;
+        } catch (Throwable  e) {
             throw new CouldNotResolveException();
         }
     }
 
-    public static ASTEmbeddedMontiArcNode getAstNode(String file) throws CouldNotResolveException, IOException {
+    public static EMAComponentSymbol getAstNode(String file) throws CouldNotResolveException, IOException {
         EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
-        ASTEMAMCompilationUnit ast = parser.parse(file).orElse(null);
+        ASTEMACompilationUnit ast = parser.parse(file).orElse(null);
         String fileType = file.substring(file.lastIndexOf(".") + 1, file.length()).toUpperCase();
-        String PackageName = Joiners.DOT.join(ast.getEMACompilationUnit().getPackage());
+        String PackageName = Joiners.DOT.join(ast.getPackageList());
         String FileName = file.substring(file.replace("\\", "/").lastIndexOf("/") + 1, file.length());
         String modelPath = file.substring(0, file.length() - (PackageName + "/" + FileName).length()); // package name + File name
         String modelName = PackageName + "." + FileName.replace(".emam", "").replace(".ema", "");
@@ -111,6 +111,16 @@ public class ASTHelper {
     }
 
     public static Scope createSymTab(String fileType, String... modelPath) {
+        ModelingLanguageFamily fam = getModelingLanguageFamily(fileType);
+        ModelPath mp = new ModelPath();
+        for (String m : modelPath)
+            mp.addEntry(Paths.get(m));
+        GlobalScope scope = new GlobalScope(mp, fam);
+        de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
+        return scope;
+    }
+
+    private static ModelingLanguageFamily getModelingLanguageFamily(String fileType) {
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
         if (fileType.equals("EMAM"))
             fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
@@ -120,14 +130,6 @@ public class ASTHelper {
             Log.error("Unknown file type: " + fileType);
         fam.addModelingLanguage(new StreamLanguage());
         fam.addModelingLanguage(new StructLanguage());
-        final ModelPath mp = new ModelPath();
-        for (String m : modelPath) {
-            mp.addEntry(Paths.get(m));
-        }
-        GlobalScope scope = new GlobalScope(mp, fam);
-
-        de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
-        LogConfig.init();
-        return scope;
+        return fam;
     }
 }

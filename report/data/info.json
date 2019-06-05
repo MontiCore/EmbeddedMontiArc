@@ -1,0 +1,12 @@
+{
+  "repositories": {
+    "Number": "97",
+    "Valid": "92",
+    "Invalid": "5"
+  },
+  " Errored_repositories": {
+    "Number": "0",
+    "Valid": "0",
+    "Invalid": "0"
+  }
+}

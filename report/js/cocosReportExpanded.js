@@ -69,18 +69,18 @@ function createTable(data, info) {
                 "data": "Name",
                 "bSortable": true,
             },
-            {
-                "data": "Visualisation",
-                "className": "visualisation",
-                "bSortable": true,
-                "sType": "vis"
-            },
-            {
-                "data": "OnlineIDE",
-                "className": "onlineIDE",
-                "orderable": false,
-                "visible": ide
-            },
+            // {
+            //     "data": "Visualisation",
+            //     "className": "visualisation",
+            //     "bSortable": true,
+            //     "sType": "vis"
+            // },
+            // {
+            //     "data": "OnlineIDE",
+            //     "className": "onlineIDE",
+            //     "orderable": false,
+            //     "visible": ide
+            // },
             {
                 "className": 'details-control',
                 "orderable": false,

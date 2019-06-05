@@ -37,31 +37,15 @@
     <properties>
 
         <!-- .. SE-Libraries .................................................. -->
-        <monticore.version>4.5.3-SNAPSHOT</monticore.version>
-        <se-commons.version>1.7.7</se-commons.version>
-        <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-        <SIUnit.version>0.0.6-SNAPSHOT</SIUnit.version>
-        <Common-MontiCar.version>0.0.3-SNAPSHOT</Common-MontiCar.version>
-        <Embedded-MontiArc.version>0.0.11-SNAPSHOT</Embedded-MontiArc.version>
-        <Embedded-MontiArc-Behaviour.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-        <Math.version>0.0.3-SNAPSHOT-REWORK</Math.version>
-        <Embedded-MontiArc-Math.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <Embedded-MontiArc-Math.version>0.1.9-SNAPSHOT</Embedded-MontiArc-Math.version>
         <!-- .. Libraries .................................................. -->
-        <guava.version>18.0</guava.version>
-        <junit.version>4.12</junit.version>
-        <logback.version>1.1.2</logback.version>
-        <jscience.version>4.3.1</jscience.version>
 
         <!-- .. Plugins ....................................................... -->
         <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
-        <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.3</compiler.plugin>
-        <source.plugin>2.4</source.plugin>
-        <shade.plugin>2.4.3</shade.plugin>
 
         <!-- Classifiers -->
         <grammars.classifier>grammars</grammars.classifier>
-        <cli.classifier>cli</cli.classifier>
 
         <!-- .. Misc .......................................................... -->
         <java.version>1.8</java.version>

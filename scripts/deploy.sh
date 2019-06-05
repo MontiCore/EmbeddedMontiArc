@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e # Exit with nonzero exit code if anything fails
 SOURCE_BRANCH="master"
-TARGET_BRANCH="gh-pages"
+TARGET_BRANCH="report"
 
 # Save some useful information
 REPO=`git config remote.origin.url`
@@ -16,46 +16,15 @@ git clone $REPO out
 cd out
 
 git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
-git config user.name "Travis CI"
-git config user.email "$COMMIT_AUTHOR_EMAIL"
-
-# deploy Zip
-git rm *.zip
-
-for var in "$@"
-do
-    mv ../$var $var
-done
-
-git add *.zip
-git commit -m "Deploy new Zips: ${SHA}"
+git config user.name "GitLab CI"
+git config user.email "malte.heithoff@rwth-aachen.de"
 
 # deploy reports
-git rm -rf report/css/* || exit 0
 git rm -rf report/data/* || exit 0
-git rm -rf report/images/* || exit 0
-git rm -rf report/js/* || exit 0
-git rm -rf report/*.html
-if [ ! -d "report" ]
-then
-  mkdir report
-fi
-mkdir report/css
-mkdir report/data
-mkdir report/images
-mkdir report/js
-mv ../report/css/* report/css
 mv ../report/data/* report/data
-mv ../report/images/* report/images
-mv ../report/js/* report/js
-mv ../report/componentQuality.html report/componentQuality.html
-mv ../report/cocosReportExpanded.html report/cocosReportExpanded.html
-mv ../report/cocosReport.html report/cocosReport.html
-mv ../report/grammarReport.html report/grammarReport.html
-mv ../report/testReport.html report/testReport.html
 
 git add report/.
-git commit -m "Deploy Reports to GitHub Pages: ${SHA}"
+git commit -m "Deploy reports to report branch: ${SHA}"
 
 git push $SSH_REPO $TARGET_BRANCH
 cd ..

@@ -1,43 +1,9 @@
 package de.monticore.reporting.cocoReport.helper;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
+import de.monticore.reporting.helper.OrderableModelInfo;
 import de.monticore.reporting.order.ChildElement;
-import de.monticore.reporting.svgTools.SVGInfo;
 
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
-
-public class CheckCoCoResult extends SVGInfo {
-
-//    private File modelFile;
-//    private File projectFile;
-//    private File rootFile;
-//
-//    private String modelPath = "";
-//    private String emaModelPath = "";
-//    private boolean emaModelPathAvailable = false;
-//    private String qualifiedName = "";
-//    private String modelName = "";
-//    private String pathToFile = "";
-//    private String project = "";
-//    private String fileType = "";
-//    private String svgPath = "";
-    private String onlineIDE = "";
-    private String zipName = "";
-//    private List<String> errorMessage = new LinkedList<>();
-//    private int parsed = 0;
-//    private int resolved = 0;
-//    private String emaToPrint = "";
-
-//    private ASTEMAMCompilationUnit unresolvedAST = null;
-//    private ASTEmbeddedMontiArcNode resolvedAST = null;
-
-//    private List<CheckCoCoResult> parents = new LinkedList<>();
-//    private List<ChildElement> children = new LinkedList<>();
-
-    private String githubBranch = "";
+public class CheckCoCoResult extends OrderableModelInfo {
 
     private int componentCapitalized = 0;
     private int componentInstanceNamesUnique = 0;
@@ -58,10 +24,6 @@ public class CheckCoCoResult extends SVGInfo {
     private int uniquePorts = 0;
     private int atomicComponent = 0;
 
-//    private boolean errorResult = false;
-//    private boolean mainPackage = false;
-
-
     public CheckCoCoResult(String pathToFile) {
         super(pathToFile);
     }
@@ -80,21 +42,6 @@ public class CheckCoCoResult extends SVGInfo {
                 this.getTypeParameterNamesUnique() != -1 && this.getUniquePorts() != -1 && this.getParsed() != -1 &&
                 this.getResolved() != -1;
     }
-
-    public String getVFSLink() {
-        String zipName_ = zipName;
-
-        String urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName_;
-        zipName_ = zipName_.substring(0, zipName_.lastIndexOf("."));
-        String name = getProject() +
-                getModelPath().substring(getModelPath().indexOf(getProject())) +
-                getModelName().replace(".", "/") +
-                "." + getFileType().toLowerCase();
-        String displayName = getModelName();
-        return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
-                + urlToZip + "&openFile=/" + name + "'>" + displayName + "</a>";
-    }
-
 
     public int getComponentCapitalized() {
         return componentCapitalized;
@@ -257,7 +204,7 @@ public class CheckCoCoResult extends SVGInfo {
                         .replace("\\", "&bsol;")
                         .replace("\0", "")
                         + "<br>";
-                if (!ms.contains("[ERROR]") && !ms.contains("[INFO]"))
+                if (!ms.contains("[ERROR]") && !ms.contains("[INFO]") && !ms.contains("[WARNING]"))
                     ms = "[ERROR] " + ms;
                 msg += ms;
             }
@@ -281,39 +228,6 @@ public class CheckCoCoResult extends SVGInfo {
         if (res.charAt(res.length() - 1) != '/')
             res = res + "/";
         super.setProject(res);
-    }
-
-    @Override
-    public String getSvgPath() {
-        if (super.getSvgPath().equals(""))
-            return "";
-
-        String str = super.getSvgPath().contains("report/") ? super.getSvgPath().substring("report/".length()) : super.getSvgPath();
-        if (str.contains("html"))
-            return str.replace("\\", "/");
-        else
-            return str.replace("\\", "/") + ".html";
-    }
-
-    @Override
-    public void setSvgPath(String svgPath) {
-        super.setSvgPath(svgPath.replace("\\", "/"));
-    }
-
-    public String getZipName() {
-        return zipName;
-    }
-
-    public void setZipName(String zipName) {
-        this.zipName = zipName;
-    }
-
-    public String getOnlineIDE() {
-        return onlineIDE;
-    }
-
-    public void setOnlineIDE(String onlineIDE) {
-        this.onlineIDE = onlineIDE;
     }
 
     public void setChildInfo() {
@@ -378,11 +292,4 @@ public class CheckCoCoResult extends SVGInfo {
         }
     }
 
-    public String getGithubBranch() {
-        return githubBranch;
-    }
-
-    public void setGithubBranch(String githubBranch) {
-        this.githubBranch = githubBranch;
-    }
 }

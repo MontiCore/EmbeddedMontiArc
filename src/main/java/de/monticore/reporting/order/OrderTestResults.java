@@ -2,20 +2,21 @@ package de.monticore.reporting.order;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTElement;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbolReference;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.reporting.helper.OrderableModelInfo;
 import de.monticore.reporting.helper.OrderableModelInfoCreator;
+import de.monticore.symboltable.ImportStatement;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
 
-public class OrderTestResults <T extends OrderableModelInfo>{
+public class OrderTestResults<T extends OrderableModelInfo> {
 
 
     private List<T> rootModels = new LinkedList<>();
@@ -27,7 +28,7 @@ public class OrderTestResults <T extends OrderableModelInfo>{
         Map<String, Map<String, T>> maps = mapTestResults(testResults);
         Map<String, Map<String, List<T>>> mainPackages = new HashMap<>();
 
-        T notParsed   = creator.createNewInstance("");
+        T notParsed = creator.createNewInstance("");
         T notResolved = creator.createNewInstance("");
         notParsed.setErrorResult(true);
         notResolved.setErrorResult(true);
@@ -40,70 +41,70 @@ public class OrderTestResults <T extends OrderableModelInfo>{
 
         for (T testResult : testResults) {
             if (testResult.getParsed() != 1) {
-                if(notParsed.getRootName1().equals(""))
+                if (notParsed.getRootName1().equals(""))
                     notParsed.setRootName1(OrderableModelInfo.erroredString + "_" + testResult.getRootName1());
                 testResult.setRootName1(notParsed.getRootName1());
                 notParsed.addChild(new ChildElement("", testResult));
                 testResult.addParent(notParsed);
             } else if (testResult.getResolved() != 1) {
-                if(notResolved.getRootName1().equals(""))
+                if (notResolved.getRootName1().equals(""))
                     notResolved.setRootName1(OrderableModelInfo.erroredString + "_" + testResult.getRootName1());
                 notResolved.addChild(new ChildElement("", testResult));
                 testResult.addParent(notResolved);
             } else {
 
-                ASTComponent ast = (ASTComponent) testResult.getResolvedAST();
+                EMAComponentSymbol ast = testResult.getResolvedAST();
                 String modelPath = testResult.getModelPath();
                 Map<String, T> modelPathMap = maps.get(modelPath);
 
-                for (ASTElement element : ast.getBody().getElements()) {
-                    if (element instanceof ASTSubComponent) {
-                        testResult.setAtomic(false);
-                        if (((ASTSubComponent) element).getInstances().size() > 0) {
+                for (ASTSubComponent element : ((ASTComponent) ast.getAstNode().get()).getSubComponents()) {
 
-                            ComponentInstanceSymbol instanceSymbol = (ComponentInstanceSymbol) element.getSymbol().get();
-                            ComponentSymbolReference symbolReference = instanceSymbol.getComponentType();
-                            ComponentSymbol commonSymbolReference = symbolReference.getReferencedSymbol();
+                    testResult.setAtomic(false);
 
-                            String name = commonSymbolReference.getFullName();
-                            if(!name.toLowerCase().contains(commonSymbolReference.getPackageName().toLowerCase())){
-                                name = commonSymbolReference.getPackageName() + "." + name;
-                            }
-                            OrderableModelInfo child = modelPathMap.get(name);
-
-                            if(child != null) {
-
-                                String referencedName = ((ASTSubComponent) element).getInstances().get(0).getName();
-                                ChildElement childElement = new ChildElement(referencedName, child);
-                                testResult.addChild(childElement);
-                                child.addParent(testResult);
-                            }
+                    String type = ((ASTSimpleReferenceType) element.getType()).getName(0);
+                    String name = "";
+                    for (ImportStatement importStatement: ast.getImports()) {
+                        if (importStatement.getStatement().substring(importStatement.getStatement().lastIndexOf("."))
+                                .equals(type)) {
+                            name = importStatement.getStatement();
+                            break;
                         }
                     }
+                    if (!name.contains(ast.getPackageName()))
+                        name = ast.getPackageName() + "." + name;
+                    OrderableModelInfo child = modelPathMap.get(name);
+
+                    if (child != null) {
+
+                        String referencedName = element.getInstancesList().get(0).getName();
+                        ChildElement childElement = new ChildElement(referencedName, child);
+                        testResult.addChild(childElement);
+                        child.addParent(testResult);
+                    }
+
                 }
             }
-            if(testResult.getParsed() == 1) {
+            if (testResult.getParsed() == 1) {
                 String modelName = testResult.getModelName();
-                if(modelName.startsWith("."))
+                if (modelName.startsWith("."))
                     modelName = modelName.substring(1);
                 String mainPackage = null;
                 try {
-                    mainPackage = modelName.substring(0,modelName.indexOf("."));
+                    mainPackage = modelName.substring(0, modelName.indexOf("."));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if(mainPackage == null){
+                if (mainPackage == null) {
                     mainPackage = "No Package";
-                }
-                else if(mainPackage.equals(""))
+                } else if (mainPackage.equals(""))
                     mainPackage = modelName.substring(1).substring(modelName.substring(1).indexOf("."));
 
-                if(mainPackages.get(testResult.getModelPath()) == null)
+                if (mainPackages.get(testResult.getModelPath()) == null)
                     mainPackages.put(testResult.getModelPath(), new HashMap<>());
                 Map<String, List<T>> modelPathModels = mainPackages.get(testResult.getModelPath());
 
-                if(modelPathModels.get(mainPackage) == null)
+                if (modelPathModels.get(mainPackage) == null)
                     modelPathModels.put(mainPackage, new LinkedList<>());
                 List<T> insideMainPackage = modelPathModels.get(mainPackage);
 
@@ -121,40 +122,45 @@ public class OrderTestResults <T extends OrderableModelInfo>{
                 getRootModels().add(testResult);
         }
 
-        if(notParsed.getChildren().size() > 0) {
+        if (notParsed.getChildren().size() > 0) {
             hasNoParentModels.add(notParsed);
             mainPackageModels.add(notParsed);
         }
-        if(notResolved.getChildren().size() > 0) {
+        if (notResolved.getChildren().size() > 0) {
             hasNoParentModels.add(notResolved);
             mainPackageModels.add(notResolved);
         }
 
-        for(String modelPath: mainPackages.keySet()){
+        for (String modelPath : mainPackages.keySet()) {
             Map<String, List<T>> modelPathModels = mainPackages.get(modelPath);
 
-            for(String mainPackage: modelPathModels.keySet()){
+            for (String mainPackage : modelPathModels.keySet()) {
                 List<T> insideMainPackage = modelPathModels.get(mainPackage);
 
                 T mainPackageResult = creator.createNewInstance(modelPath + "." + mainPackage);
                 mainPackageModels.add(mainPackageResult);
                 mainPackageResult.setMainPackage(true);
 
-                for(OrderableModelInfo testResult: insideMainPackage){
-                    if(mainPackageResult.getProject().equals("")) mainPackageResult.setProject(testResult.getProject());
+                for (OrderableModelInfo testResult : insideMainPackage) {
+                    if (mainPackageResult.getProject().equals(""))
+                        mainPackageResult.setProject(testResult.getProject());
                     mainPackageResult.addChild(new ChildElement(testResult.getModelName(), testResult));
-                    if(mainPackageResult.getRootFile1() == null) mainPackageResult.setRootFile1(testResult.getRootFile1());
-                    if(mainPackageResult.getRootName1().equals("")) mainPackageResult.setRootName1(testResult.getRootName1());
-                    if(mainPackageResult.getModelPath().equals("")) mainPackageResult.setModelPath(testResult.getModelPath());
+                    if (mainPackageResult.getRootFile1() == null)
+                        mainPackageResult.setRootFile1(testResult.getRootFile1());
+                    if (mainPackageResult.getRootName1().equals(""))
+                        mainPackageResult.setRootName1(testResult.getRootName1());
+                    if (mainPackageResult.getModelPath().equals(""))
+                        mainPackageResult.setModelPath(testResult.getModelPath());
 
-                    if(mainPackageResult.getFileType().equals("")) mainPackageResult.setFileType(testResult.getFileType());
-                    else if(!mainPackageResult.getFileType().equals("EMA/EMAM") && !mainPackageResult.getFileType().equals(testResult.getFileType()))
+                    if (mainPackageResult.getFileType().equals(""))
+                        mainPackageResult.setFileType(testResult.getFileType());
+                    else if (!mainPackageResult.getFileType().equals("EMA/EMAM") && !mainPackageResult.getFileType().equals(testResult.getFileType()))
                         mainPackageResult.setFileType("EMA/EMAM");
 
-                    if(testResult.getParsed() != 0 && testResult.getParsed() < mainPackageResult.getParsed() || mainPackageResult.getParsed() == 0) {
+                    if (testResult.getParsed() != 0 && testResult.getParsed() < mainPackageResult.getParsed() || mainPackageResult.getParsed() == 0) {
                         mainPackageResult.setParsed(testResult.getParsed());
                     }
-                    if(testResult.getResolved() != 0 && testResult.getResolved() < mainPackageResult.getResolved() || mainPackageResult.getResolved() == 0) {
+                    if (testResult.getResolved() != 0 && testResult.getResolved() < mainPackageResult.getResolved() || mainPackageResult.getResolved() == 0) {
                         mainPackageResult.setResolved(testResult.getResolved());
                     }
                     mainPackageResult.setChildInfo();
@@ -165,7 +171,50 @@ public class OrderTestResults <T extends OrderableModelInfo>{
                 }
             }
         }
+        makeMainModelNamesUnique();
+        fixMainModelNames();
+    }
 
+    private void fixMainModelNames() {
+        for (OrderableModelInfo mainModel: this.mainPackageModels)
+            mainModel.setModelName(mainModel.getModelName().replaceFirst(Pattern.quote("."), " - "));
+    }
+
+    private void makeMainModelNamesUnique() {
+        boolean allUnique = true;
+        Map<String, List<OrderableModelInfo>> mainPackagesMap = new HashMap<>();
+        for (OrderableModelInfo mainPackage: this.mainPackageModels) {
+            String name = mainPackage.getModelName();
+            if (mainPackagesMap.get(name) == null)
+                mainPackagesMap.put(name, new LinkedList<>());
+            mainPackagesMap.get(name).add(mainPackage);
+        }
+
+        for (String mainPackageName : mainPackagesMap.keySet()){
+            List<OrderableModelInfo> mainPackageWithEqualNames = mainPackagesMap.get(mainPackageName);
+            if (mainPackageWithEqualNames.size() > 1){
+                allUnique = false;
+                for (OrderableModelInfo mainPackage: mainPackageWithEqualNames){
+                    String project = mainPackage.getProject().replace("/","");
+                    String oldName = mainPackageName.substring(mainPackageName.indexOf(project) + project.length() + 1);
+                    String oldPrefix = ".";
+                    if(oldName.contains("."))
+                        oldPrefix = "." + oldName.substring(0, oldName.lastIndexOf("."));
+                    String newPref = mainPackage.getModelPath().substring(mainPackage.getModelPath().
+                            indexOf(mainPackage.getRootName1() + "/" + project) +
+                            (mainPackage.getRootName1() + "/" + project).length()).
+                            replace("/", ".");
+                    newPref = newPref.substring(0, newPref.lastIndexOf(oldPrefix));
+                    if (!newPref.equals(""))
+                        newPref = newPref.substring(newPref.lastIndexOf("."), newPref.length());
+                    mainPackage.setModelName(project + newPref + "." + oldName);
+                    int i = 1;
+                }
+            }
+        }
+
+        if (!allUnique)
+            makeMainModelNamesUnique();
     }
 
     private Map<String, Map<String, T>> mapTestResults(List<T> testResults) {

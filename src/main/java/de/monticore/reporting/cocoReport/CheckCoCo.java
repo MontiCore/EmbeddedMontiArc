@@ -25,13 +25,13 @@ public class CheckCoCo {
 
         if (testResult.getParsed() == 1 && testResult.getResolved() == 1) {
             String fileType = testResult.getFileType();
-            ASTEmbeddedMontiArcNode astToTest = testResult.getResolvedAST();
+            ASTEmbeddedMontiArcNode astToTest = testResult.getResolvedASTNode();
 
             testResult.addErrorMessage("[INFO] do CoCo Tests<br>=========================");
             Log.getFindings().clear();
             EmbeddedMontiArcMathCoCos.createChecker().checkAll(astToTest);
             for (Finding finding : Log.getFindings())
-                testResult.addErrorMessage(finding.getMsg());
+                testResult.addErrorMessage("[WARNING] " + finding.toString());
             boolean componentCapitalized = containsErrorCode("0xAC004");
             boolean componentInstanceNamesUnique = containsErrorCode("0xAC010");
             boolean componentWithTypeParametersHasInstance = containsErrorCode("0x79C00");
@@ -77,8 +77,7 @@ public class CheckCoCo {
             if (testResult.isValid()) {
                 testResult.addErrorMessage("[INFO] CoCo Test success <br>");
                 CustomPrinter.println("SUCCESS");
-            }
-            else {
+            } else {
                 testResult.addErrorMessage("[ERROR] CoCo Test failed <br>");
                 CustomPrinter.println("ERROR. CoCo Test failed");
             }

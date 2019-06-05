@@ -1,9 +1,8 @@
 package de.monticore.reporting.testReport;
 
-import de.monticore.reporting.tools.GitHubHelper;
+import de.monticore.reporting.tools.GitLabHelper;
 import de.monticore.reporting.tools.SearchFiles;
 import de.monticore.reporting.cocoReport.helper.CheckTestResult;
-import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,12 +16,12 @@ public class CheckTests {
     public List<CheckTestResult> testTestsEndWithTest(File projectRoot) {
         List<CheckTestResult> testResults = new LinkedList<>();
 
-        GitHubHelper ghh = new GitHubHelper();
+        GitLabHelper ghh = new GitLabHelper();
 
         for (File project : projectRoot.listFiles()) {
             File testDirectory = new File(project.getAbsoluteFile() + "/src/test/java");
             if (testDirectory.exists()) {
-                String gitHubRoot = ghh.getGitHubRoot(project);
+                String gitHubRoot = ghh.getGitLabRoot(project);
                 List<File> files = SearchFiles.searchFiles(testDirectory, "java");
                 for (File file : files) {
                     // Check whether the file contains @Test

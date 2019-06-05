@@ -18,8 +18,8 @@ public class CoCoTestResultPrinter {
             "\"ModelName\"",
             "\"Name\"",
             "\"Path\"",
-            "\"Visualisation\"",
-            "\"OnlineIDE\"",
+//            "\"Visualisation\"",
+//            "\"OnlineIDE\"",
             "\"LogNr\"",
             "\"LogOutput\"",
             "\"FileType\"",
@@ -88,7 +88,6 @@ public class CoCoTestResultPrinter {
 
     public static String printTestResults(List<CheckCoCoResult> testResults, boolean merge, String rootName, int depth, boolean expanded) {
         IndentPrinter ip = new IndentPrinter();
-        char c = 160;
         if (!merge)
             ip.println("[");
         ip.indent();
@@ -109,10 +108,10 @@ public class CoCoTestResultPrinter {
             ip.println(names[i++] + ": \"" + testResult.getProject() + "\",");
             ip.println(names[i++] + ": \"" + getDepthImage(testResult, depth) + "\",");
             ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
-            ip.println(names[i++] + ": \"" + getGithubLink(testResult, expanded) + "\",");
+            ip.println(names[i++] + ": \"" + getNameWithGitLabLink(testResult, expanded) + "\",");
             ip.println(names[i++] + ": \"" + getFilePath(testResult) + "\",");
-            ip.println(names[i++] + ": " + getVisulisationLink(testResult) + ",");
-            ip.println(names[i++] + ": " + getVFSTag(testResult) + ",");
+//            ip.println(names[i++] + ": " + getVisulisationLink(testResult) + ",");
+//            ip.println(names[i++] + ": " + getVFSTag(testResult) + ",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessages().size() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessage() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getFileType() + "\",");
@@ -167,56 +166,51 @@ public class CoCoTestResultPrinter {
         return "<div class=\'depthImage" + depth + "\'></div>";
     }
 
-    private static String getVFSTag(CheckCoCoResult testResult) {
-        if(testResult.isErrorResult() || testResult.isMainPackage()) return tagOf(0);
-        String zipName = testResult.getZipName();
-        File file = testResult.getModelFile();
-        File root = testResult.getRootFile1();
-        String urlToZip;
+//    private static String getVFSTag(CheckCoCoResult testResult) {
+//        if(testResult.isErrorResult() || testResult.isMainPackage()) return tagOf(0);
+//        String zipName = testResult.getZipName();
+//        File file = testResult.getModelFile();
+//        File root = testResult.getRootFile1();
+//        String urlToZip;
+//
+//        urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName;
+//        zipName = zipName.substring(0, zipName.lastIndexOf("."));
+//        String name = file.getAbsolutePath().substring(root.getAbsolutePath().length());
+//        String displayName = name;
+//        return ("\"<a class='ideLink' target='_blank' rel='noopener' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName + "&url="
+//                + urlToZip + "&openFile=/" + name + "'>" +
+//                "<img border='0' alt='" + displayName + "' src='images/favicon.ico' class='onlineIDEImage'>" +
+//                "</a>\"").replace("\\", "/");
+//    }
+//
+//    private static String getVisulisationLink(CheckCoCoResult testResult) {
+//        String displayName = testResult.getModelName();
+//
+//
+//        if (testResult.isErrorResult() || testResult.isMainPackage() || testResult.isAtomic())
+//            return "\"<div class='svgMinus'>" +
+//                    "<img alt='" + displayName + "' src='images/minus.jpg'>" +
+//                    "</div>\"";
+//        else if (testResult.getSvgPath().equals(""))
+//            return "\"<div class='svgNoEye'>" +
+//                    "<img alt='" + displayName + "' src='images/noEye.png'>" +
+//                    "</div>\"";
+//        else
+//            return "\"<a class='svgEye' target='_blank' rel='noopener' href='" +
+//                    testResult.getSvgPath() + "'>" +
+//                    "<img alt='" + displayName + "' src='images/eye.png'>" +
+//                    "</a>\"";
+//    }
 
-        urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName;
-        zipName = zipName.substring(0, zipName.lastIndexOf("."));
-        String name = file.getAbsolutePath().substring(root.getAbsolutePath().length());
-        String displayName = name;
-        return ("\"<a class='ideLink' target='_blank' rel='noopener' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName + "&url="
-                + urlToZip + "&openFile=/" + name + "'>" +
-                "<img border='0' alt='" + displayName + "' src='images/favicon.ico' class='onlineIDEImage'>" +
-                "</a>\"").replace("\\", "/");
-    }
-
-    private static String getVisulisationLink(CheckCoCoResult testResult) {
-        String displayName = testResult.getModelName();
-
-
-        if (testResult.isErrorResult() || testResult.isMainPackage() || testResult.isAtomic())
-            return "\"<div class='svgMinus'>" +
-                    "<img alt='" + displayName + "' src='images/minus.jpg'>" +
-                    "</div>\"";
-        else if (testResult.getSvgPath().equals(""))
-            return "\"<div class='svgNoEye'>" +
-                    "<img alt='" + displayName + "' src='images/noEye.png'>" +
-                    "</div>\"";
-        else
-            return "\"<a class='svgEye' target='_blank' rel='noopener' href='" +
-                    testResult.getSvgPath() + "'>" +
-                    "<img alt='" + displayName + "' src='images/eye.png'>" +
-                    "</a>\"";
-    }
-
-    private static String getGithubLink(CheckCoCoResult testResult, boolean expanded) {
+    private static String getNameWithGitLabLink(CheckCoCoResult testResult, boolean expanded) {
         if(testResult.isErrorResult() || testResult.isMainPackage()) return testResult.getModelName() + " (" + testResult.getChildren().size() + ")";
-        String ghLink = "https://github.com/" + testResult.getRootFile1().getName() + "/" + testResult.getProject()
-                + "blob/" + testResult.getGithubBranch() + "/"
-                + testResult.getModelFile().getAbsolutePath().substring(
-                        testResult.getRootFile1().getAbsolutePath().length() + testResult.getProject().length() + 1)
-                .replace("\\","/");
-        ghLink = ghLink.replace("\\","/");
+        String gLLink = testResult.getGitLabLink();
 
         String displayName = testResult.getModelName();
         if (expanded)
             displayName = testResult.getProject() + displayName;
 
-        String htmlTag = "<a class='ghLink' href='" + ghLink + "' target='_blank' rel='noopener'>"
+        String htmlTag = "<a class='ghLink' href='" + gLLink + "' target='_blank' rel='noopener'>"
                 + displayName + "</a>";
 
 

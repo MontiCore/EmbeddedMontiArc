@@ -26,7 +26,7 @@ public class ReportGrammar {
                     getAbsolutePath().length() + 1)
                     .replace(".mc4","").replace(".mc5", "")
                     .replace("\\","/");
-            String ideLink = generateIDELink(file, context.getGrammarZip(), new File(context.getProjectRoot()));
+            String ideLink = "";
             grammars.add(new GrammarInfo(file, name, ideLink));
         }
 
