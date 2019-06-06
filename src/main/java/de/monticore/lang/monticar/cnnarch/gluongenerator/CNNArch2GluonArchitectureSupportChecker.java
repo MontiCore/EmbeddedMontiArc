@@ -15,8 +15,8 @@ public class CNNArch2GluonArchitectureSupportChecker extends ArchitectureSupport
         return true;
     }
 
-    /*protected boolean checkMultipleOutputs(ArchitectureSymbol architecture) {
+    protected boolean checkMultipleOutputs(ArchitectureSymbol architecture) {
         return true;
-    }*/
+    }
 
 }

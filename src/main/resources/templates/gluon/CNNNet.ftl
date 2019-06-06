@@ -71,8 +71,15 @@ class NoNormalization(gluon.HybridBlock):
 class Net(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
         super(Net, self).__init__(**kwargs)
+        self.last_layers = {}
         with self.name_scope():
 ${tc.include(tc.architecture.streams[0], "ARCHITECTURE_DEFINITION")}
 
     def hybrid_forward(self, F, ${tc.join(tc.architectureInputs, ", ")}):
+        <#if tc.architectureOutputs?size gt 1>
+        outputs = []
+        </#if>
 ${tc.include(tc.architecture.streams[0], "FORWARD_FUNCTION")}
+        <#if tc.architectureOutputs?size gt 1>
+        return tuple(outputs)
+        </#if>

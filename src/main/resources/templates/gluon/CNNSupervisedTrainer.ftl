@@ -69,15 +69,18 @@ class ${tc.fileNameWithoutEnding}:
 
         trainer = mx.gluon.Trainer(self._net.collect_params(), optimizer, optimizer_params)
 
-        if self._net.last_layer == 'softmax':
-            loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss()
-        elif self._net.last_layer == 'sigmoid':
-            loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
-        elif self._net.last_layer == 'linear':
-            loss_function = mx.gluon.loss.L2Loss()
-        else:
-            loss_function = mx.gluon.loss.L2Loss()
-            logging.warning("Invalid last_layer, defaulting to L2 loss")
+        loss_functions = {}
+
+        for output_name, last_layer in self._net.last_layers.items():
+            if last_layer == 'softmax':
+                loss_functions[output_name] = mx.gluon.loss.SoftmaxCrossEntropyLoss()
+            elif last_layer == 'sigmoid':
+                loss_functions[output_name] = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
+            elif last_layer == 'linear':
+                loss_functions[output_name] = mx.gluon.loss.L2Loss()
+            else:
+                loss_functions[output_name] = mx.gluon.loss.L2Loss()
+                logging.warning("Invalid last layer, defaulting to L2 loss")
 
         speed_period = 50
         tic = None
@@ -86,13 +89,16 @@ class ${tc.fileNameWithoutEnding}:
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
+                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
                 </#list>
-                label = batch.label[0].as_in_context(mx_context)
+                <#list tc.architectureOutputs as output_name>
+                ${output_name}_label = batch.label[${output_name?index}].as_in_context(mx_context)
+                </#list>
 
                 with autograd.record():
-                    output = self._net(${tc.join(tc.architectureInputs, ",")})
-                    loss = loss_function(output, label)
+                    ${tc.join(tc.architectureOutputs, ", ", "", "_output")} = self._net(${tc.join(tc.architectureInputs, ", ", "", "_data")})
+
+                    loss = <#list tc.architectureOutputs as output_name>loss_functions['${output_name}'](${output_name}_output, ${output_name}_label)<#sep> + </#list>
 
                 loss.backward()
                 trainer.step(batch_size)
@@ -116,26 +122,40 @@ class ${tc.fileNameWithoutEnding}:
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(train_iter):
                 <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
+                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
                 </#list>
-                label = batch.label[0].as_in_context(mx_context)
 
-                output = self._net(${tc.join(tc.architectureInputs, ",")})
-                predictions = mx.nd.argmax(output, axis=1)
-                metric.update(preds=predictions, labels=label)
+                labels = [
+                    <#list tc.architectureOutputs as output_name>batch.label[${output_name?index}].as_in_context(mx_context)<#sep>, </#list>
+                ]
+
+                ${tc.join(tc.architectureOutputs, ", ", "", "_output")} = self._net(${tc.join(tc.architectureInputs, ", ", "", "_data")})
+
+                predictions = [
+                    <#list tc.architectureOutputs as output_name>mx.nd.argmax(${output_name}_output, axis=1)<#sep>, </#list>
+                ]
+
+                metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
 
             test_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(test_iter):
                 <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
+                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
                 </#list>
-                label = batch.label[0].as_in_context(mx_context)
 
-                output = self._net(${tc.join(tc.architectureInputs, ",")})
-                predictions = mx.nd.argmax(output, axis=1)
-                metric.update(preds=predictions, labels=label)
+                labels = [
+                    <#list tc.architectureOutputs as output_name>batch.label[${output_name?index}].as_in_context(mx_context)<#sep>, </#list>
+                ]
+
+                ${tc.join(tc.architectureOutputs, ", ", "", "_output")} = self._net(${tc.join(tc.architectureInputs, ", ", "", "_data")})
+
+                predictions = [
+                    <#list tc.architectureOutputs as output_name>mx.nd.argmax(${output_name}_output, axis=1)<#sep>, </#list>
+                ]
+
+                metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]
 
             logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))

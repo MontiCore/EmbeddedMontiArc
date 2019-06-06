@@ -127,7 +127,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/invalid_tests", "-r", "MultipleOutputs"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().size() == 3);
+        assertTrue(Log.getFindings().size() == 2);
     }
 
     @Test

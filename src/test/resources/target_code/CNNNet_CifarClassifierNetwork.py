@@ -71,6 +71,7 @@ class NoNormalization(gluon.HybridBlock):
 class Net(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
         super(Net, self).__init__(**kwargs)
+        self.last_layers = {}
         with self.name_scope():
             if data_mean:
                 assert(data_std)
@@ -345,8 +346,7 @@ class Net(gluon.HybridBlock):
             self.fc32_ = gluon.nn.Dense(units=10, use_bias=True)
             # fc32_, output shape: {[10,1,1]}
 
-
-        self.last_layer = 'softmax'
+        self.last_layers['softmax'] = 'softmax'
 
 
     def hybrid_forward(self, F, data):
@@ -454,3 +454,4 @@ class Net(gluon.HybridBlock):
         dropout31_ = self.dropout31_(fc31_)
         fc32_ = self.fc32_(dropout31_)
         return fc32_
+
