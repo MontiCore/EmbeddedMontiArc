@@ -2,9 +2,16 @@ package test;
 import test.structures.*;
 
 component BumbBot{
-	port out Q (0.0 : 0.001 : 1.0) throttle;
+
+	port out Ego_Vehicle test;
 
 	implementation Math{
-		throttle = 1.0;
+		test.throttle = 1.0;
+		test.steer = 0.0;
+		test.brake = 0.0;
+		test.hand_brake = false;
+		test.reverse = false;
+		test.gear = 1;
+		test.manual_gear_shift = false;		
 	}
 }

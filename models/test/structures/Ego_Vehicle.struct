@@ -3,4 +3,9 @@ package test.structures;
 struct Ego_Vehicle{
 	Q throttle;
 	Q steer;
+	Q brake;
+	B hand_brake;
+	B reverse;
+	Z gear;
+	B manual_gear_shift;
 }
