@@ -3,15 +3,32 @@ import test.structures.*;
 
 component BumpBot{
 
-	port out Ego_Vehicle test;
+	port 	out Ego_Vehicle test,
+		in Z lane_invasion,
+		in Z collision_actor_id;
 
 	implementation Math{
 		test.throttle = 1.0;
-		test.steer = 0.0;
 		test.brake = 0.0;
 		test.hand_brake = false;
 		test.reverse = false;
 		test.gear = 1;
 		test.manual_gear_shift = false;		
+		
+		if lane_invasion > 0 //if a lane was crossed change the steering direction 
+			if test.steer == 0.0
+				test.steer = 0.3;
+			else
+				test.steer = (-1) * test.steer;
+			end		
+		end
+
+		if collision_actor_id > 0 //if a collision occurred drive into the other direction
+			if test.reverse == false
+				test.reverse = true;
+			else 
+				test.reverse = false;
+			end
+		end
 	}
 }
