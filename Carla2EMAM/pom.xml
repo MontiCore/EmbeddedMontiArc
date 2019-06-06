@@ -29,7 +29,7 @@
           <generator>MinGW</generator>
           <pathMiddlewareOut>./target/middleware</pathMiddlewareOut>
           <middlewareRootModels>
-              <param>test.bumbBot</param>
+              <param>test.collisionDetection</param>
           </middlewareRootModels>
         </configuration>
         <executions>
