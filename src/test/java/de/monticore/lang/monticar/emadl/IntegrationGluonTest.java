@@ -53,7 +53,7 @@ public class IntegrationGluonTest extends IntegrationTest {
         assertTrue(Log.getFindings().isEmpty());
     }
 
-    /*@Test
+    @Test
     public void testMultipleOutputs() {
         Log.getFindings().clear();
 
@@ -63,7 +63,7 @@ public class IntegrationGluonTest extends IntegrationTest {
         EMADLGeneratorCli.main(args);
 
         assertTrue(Log.getFindings().isEmpty());
-    }*/
+    }
 
     private void deleteHashFile(Path hashFile) {
         try {
