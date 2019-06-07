@@ -5,6 +5,16 @@ buildLinux:
         stage: build
         image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/emam-carla-ros-bridge
         script:
+		- cd EMAM2Carla
                 - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean install --settings settings.xml -U
+
+
+buildLinux2:
+        stage: build
+        image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/emam-carla-ros-bridge
+        script:
+                - cd Carla2EMAM
+                - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean install --settings settings.xml -U
+
 
 
