@@ -7,21 +7,21 @@ import CNNCreator_cartpole_master_dqn
 import os
 import sys
 import re
-import logging
+import time
+import numpy as np
 import mxnet as mx
 
 
-def resume_session():
-    session_param_output = os.path.join(session_output_dir, agent_name)
+def resume_session(sessions_dir):
     resume_session = False
     resume_directory = None
-    if os.path.isdir(session_output_dir) and os.path.isdir(session_param_output):
+    if os.path.isdir(sessions_dir):
         regex = re.compile(r'\d\d\d\d-\d\d-\d\d-\d\d-\d\d')
-        dir_content = os.listdir(session_param_output)
+        dir_content = os.listdir(sessions_dir)
         session_files = filter(regex.search, dir_content)
         session_files.sort(reverse=True)
         for d in session_files:
-            interrupted_session_dir = os.path.join(session_param_output, d, '.interrupted_session')
+            interrupted_session_dir = os.path.join(sessions_dir, d, '.interrupted_session')
             if os.path.isdir(interrupted_session_dir):
                 resume = raw_input('Interrupted session from {} found. Do you want to resume? (y/n) '.format(d))
                 if resume == 'y':
@@ -32,12 +32,13 @@ def resume_session():
 
 
 if __name__ == "__main__":
-    agent_name='cartpole_master_dqn'
+    agent_name = 'cartpole_master_dqn'
     # Prepare output directory and logger
-    output_directory = 'model_output'\
-        + '/' + agent_name\
-        + '/' + time.strftime(
-            '%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
+    all_output_dir = os.path.join('model', agent_name)
+    output_directory = os.path.join(
+        all_output_dir,
+        time.strftime('%Y-%m-%d-%H-%M-%S',
+                      time.localtime(time.time())))
     ArchLogger.set_output_directory(output_directory)
     ArchLogger.set_logger_name(agent_name)
     ArchLogger.set_output_level(ArchLogger.INFO)
@@ -51,12 +52,12 @@ if __name__ == "__main__":
     agent_params = {
         'environment': env,
         'replay_memory_params': {
-            'method':'buffer',
-            'memory_size':10000,
-            'sample_size':32,
-            'state_dtype':'float32',
-            'action_dtype':'float32',
-            'rewards_dtype':'float32'
+            'method': 'buffer',
+            'memory_size': 10000,
+            'sample_size': 32,
+            'state_dtype': 'float32',
+            'action_dtype': 'float32',
+            'rewards_dtype': 'float32'
         },
         'strategy_params': {
             'method':'epsgreedy',
@@ -67,6 +68,7 @@ if __name__ == "__main__":
         },
         'agent_name': agent_name,
         'verbose': True,
+        'output_directory': output_directory,
         'state_dim': (4,),
         'action_dim': (2,),
         'ctx': 'cpu',
@@ -86,9 +88,11 @@ if __name__ == "__main__":
         'double_dqn': False,
     }
 
-    resume, resume_directory = resume_session()
+    resume, resume_directory = resume_session(all_output_dir)
 
     if resume:
+        output_directory, _ = os.path.split(resume_directory)
+        ArchLogger.set_output_directory(output_directory)
         resume_agent_params = {
             'session_dir': resume_directory,
             'environment': env,

@@ -140,7 +140,7 @@ class OrnsteinUhlenbeckStrategy(BaseStrategy):
         sigma=.3,
         decay=NoDecay()
     ):
-        super(OrnsteinUhlenbeckStrategy, self).__init__()
+        super(OrnsteinUhlenbeckStrategy, self).__init__(decay)
         self.eps = eps
         self.cur_eps = eps
 
@@ -150,9 +150,9 @@ class OrnsteinUhlenbeckStrategy(BaseStrategy):
         self._action_low = action_low
         self._action_high = action_high
 
-        self._mu = mu
-        self._theta = theta
-        self._sigma = sigma
+        self._mu = np.array(mu)
+        self._theta = np.array(theta)
+        self._sigma = np.array(sigma)
 
         self.state = np.ones(self._action_dim) * self._mu
 

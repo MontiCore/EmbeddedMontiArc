@@ -52,22 +52,24 @@ class ArchLogger(object):
             fmt=ArchLogger.__logformat, datefmt=ArchLogger.__dateformat)
 
         logger = logging.getLogger(ArchLogger.__logger_name)
-        logger.setLevel(ArchLogger.__output_level)
+        logger.propagate = False
 
-        stream_handler = logging.StreamHandler(sys.stdout)
-        stream_handler.setLevel(ArchLogger.__output_level)
-        stream_handler.setFormatter(formatter)
-        logger.addHandler(stream_handler)
+        if not logger.handlers:
+            logger.setLevel(ArchLogger.__output_level)
+            stream_handler = logging.StreamHandler(sys.stdout)
+            stream_handler.setLevel(ArchLogger.__output_level)
+            stream_handler.setFormatter(formatter)
+            logger.addHandler(stream_handler)
 
-        if make_log_file:
-            util.make_directory_if_not_exist(ArchLogger.__output_directory)
-            log_file = os.path.join(
-                ArchLogger.__output_directory,
-                ArchLogger.__logger_name + '.log')
-            file_handler = logging.FileHandler(log_file, mode=filemode)
-            file_handler.setLevel(ArchLogger.__output_level)
-            file_handler.setFormatter(formatter)
-            logger.addHandler(file_handler)
+            if make_log_file:
+                util.make_directory_if_not_exist(ArchLogger.__output_directory)
+                log_file = os.path.join(
+                    ArchLogger.__output_directory,
+                    ArchLogger.__logger_name + '.log')
+                file_handler = logging.FileHandler(log_file, mode=filemode)
+                file_handler.setLevel(ArchLogger.__output_level)
+                file_handler.setFormatter(formatter)
+                logger.addHandler(file_handler)
         ArchLogger._logger = logger
 
     @staticmethod
