@@ -12,13 +12,13 @@ Steps to build a component:
 
 ## Wie Bringe ich das auto zum Fahren und lese den collision sensor aus?
 
-Carla Starten
-unter PythonAPI/examples: `python manual_control.py --rolename=ego_vehicle`
+Carla Starten  
+Unter PythonAPI/examples: `python manual_control.py --rolename=ego_vehicle`  
+Zum Starten des Containers in den Ordner des Projektes (hier ein ausgechecktes Verzeichnis BumbBot_test) gehen:  
+`docker run -it --name emam2carla --rm -v $(pwd):/usr/src/project registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/emam-carla-ros-bridge`
 
-`docker run -it --rm -v $(pwd):/usr/src/project registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/emam-carla-ros-bridge`
+Dann in einem neuen Terminal um das Auto fahren zu lassen:  
+`docker exec -it emam2carla /bin/bash -c 'source /opt/ros/kinetic/setup.bash && cd /usr/src/project/ &&  java -jar ../mw-generator.jar valid.json && target/compile.sh && build/test_bumpBot/coordinator/Coordinator_test_bumpBot'`
 
-Dann in einem neuen Terminal um das Auto fahren zu lassen mit angepasster ContainerID:
-`docker exec -it 586a50f195d1 /bin/bash -c 'source /opt/ros/kinetic/setup.bash && cd /usr/src/project/ &&  java -jar ../mw-generator.jar valid.json && target/compile.sh && build/test_bumpBot/coordinator/Coordinator_test_bumpBot'`
-
-Um den Collision Sensor auszulesen in einem neuen Terminal:
-`docker exec -it 586a50f195d1 /bin/bash -c 'source /opt/ros/kinetic/setup.bash && source opt/carla-ros-bridge/devel/setup.bash && rostopic echo /carla/ego_vehicle/collision'`
+Um den Collision Sensor auszulesen in einem neuen Terminal:  
+`docker exec -it emam2carla /bin/bash -c 'source /opt/ros/kinetic/setup.bash && source opt/carla-ros-bridge/devel/setup.bash && rostopic echo /carla/ego_vehicle/collision'`
