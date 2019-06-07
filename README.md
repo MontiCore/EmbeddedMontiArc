@@ -5,4 +5,4 @@ Steps to build a component:
 * 3.) switch to the target directory (**cd target/**)
 * 4.) execute compile.sh (**./compile.sh**)
 * 5.) after successfull compiling the generated code switch to install/bin directory (**cd install/bin/**)
-* 6.) execute Coordinator_<model-package>_<component-name> (here it's **./Coordinator_test_bumpBot** or .**/Coordinator_test_collisionDetection**)
+* 6.) execute Coordinator_<model-package>_<component-name> (here it's **./Coordinator_test_bumpBot** or **./Coordinator_test_collisionDetection**)
