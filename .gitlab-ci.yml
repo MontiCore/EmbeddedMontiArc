@@ -6,6 +6,6 @@ buildLinux:
         image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/emam-carla-ros-bridge
         script:
                 - cd EMAM2Carla; java -jar ../mw-generator.jar valid.json; target/compile.sh
-                - cd Carla2EMAM; java -jar ../mw-generator.jar valid.json; target/compile.sh
+                - cd ../Carla2EMAM; java -jar ../mw-generator.jar valid.json; target/compile.sh
 
 
