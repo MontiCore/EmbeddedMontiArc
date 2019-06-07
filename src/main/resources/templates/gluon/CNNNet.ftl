@@ -74,5 +74,5 @@ class Net(gluon.HybridBlock):
         with self.name_scope():
 ${tc.include(tc.architecture.body, "ARCHITECTURE_DEFINITION")}
 
-    def hybrid_forward(self, F, x):
+    def hybrid_forward(self, F, <#list tc.architecture.inputs as input>${input}<#if input?has_next>, </#if></#list>):
 ${tc.include(tc.architecture.body, "FORWARD_FUNCTION")}

@@ -10,9 +10,11 @@ class RewardFunction(object):
         self.__reward_wrapper.init()
 
     def reward(self, state, terminal):
+        s = state.astype('double')
+        t = bool(terminal)
         inp = reward_rewardFunction_executor.reward_rewardFunction_input()
-        inp.state = state
-        inp.isTerminal = terminal
+        inp.state = s
+        inp.isTerminal = t
         output = self.__reward_wrapper.execute(inp)
         return output.reward
 
@@ -40,7 +42,7 @@ import rospy
 import thread
 import numpy as np
 import time
-from std_msgs.msg import Float32MultiArray, Bool, Int32
+from std_msgs.msg import Float32MultiArray, Bool, Int32, MultiArrayDimension, Float32
 
 class RosEnvironment(Environment):
     def __init__(self,
@@ -50,15 +52,13 @@ class RosEnvironment(Environment):
         action_topic='action',
         reset_topic='reset',
         terminal_state_topic='terminal',
-        meta_topic='meta',
-        greeting_topic='greeting'):
+        reward_topic='reward'):
         super(RosEnvironment, self).__init__()
         self.__timeout_in_s = timeout_in_s
-
         self.__waiting_for_state_update = False
         self.__waiting_for_terminal_update = False
         self.__last_received_state = 0
-        self.__last_received_terminal = 0
+        self.__last_received_terminal = True
 
         rospy.loginfo("Initialize node {0}".format(ros_node_name))
 
@@ -111,7 +111,8 @@ class RosEnvironment(Environment):
     def __wait_for_new_state(self, publisher, msg):
         time_of_timeout = time.time() + self.__timeout_in_s
         timeout_counter = 0
-        while(self.__waiting_for_state_update or self.__waiting_for_terminal_update):
+        while(self.__waiting_for_state_update
+              or self.__waiting_for_terminal_update):
             is_timeout = (time.time() > time_of_timeout)
             if (is_timeout):
                 if timeout_counter < 3:
@@ -127,9 +128,8 @@ class RosEnvironment(Environment):
     def close(self):
         rospy.signal_shutdown('Program ended!')
 
-
     def __state_callback(self, data):
-        self.__last_received_state = np.array(data.data, dtype='double')
+        self.__last_received_state = np.array(data.data, dtype='float32')
         rospy.logdebug('Received state: {}'.format(self.__last_received_state))
         self.__waiting_for_state_update = False
 

@@ -1,0 +1,14 @@
+implementation Critic(state, action) {
+    (state ->
+        FullyConnected(units=300) ->
+        Relu() ->
+        FullyConnected(units=600)
+    |
+
+    action ->
+        FullyConnected(units=600)
+    ) ->
+    Add() ->
+    FullyConnected(units=600) ->
+    Relu()
+}
