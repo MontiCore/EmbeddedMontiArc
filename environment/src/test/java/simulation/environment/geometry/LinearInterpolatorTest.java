@@ -43,6 +43,7 @@ public class LinearInterpolatorTest extends TestCase {
         return new TestSuite(LinearInterpolatorTest.class);
     }
 
+    @Ignore
     public void testApp() throws Exception {
         LinearInterpolator interpol = new LinearInterpolator(new Point3D(3,3,0), new Point3D(1,1,0), EnvStreet.STREET_WIDTH, -1l, -1l, true);
 
