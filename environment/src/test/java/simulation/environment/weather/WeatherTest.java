@@ -20,26 +20,16 @@
  */
 package simulation.environment.weather;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.*;
+import static  org.junit.Assert.*;
 
 /**
  * Created by lukas on 02.02.17.
  */
-public class WeatherTest extends TestCase {
-    public WeatherTest(String testName) {
-        super(testName);
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(WeatherTest.class);
-    }
+public class WeatherTest  {
 
 
+	@Test
     public void testApp() throws Exception {
         Weather w = new Weather(new WeatherSettings(10l));
 
@@ -51,7 +41,7 @@ public class WeatherTest extends TestCase {
         assertFalse(w.isRain());
         w.executeLoopIteration(Long.MAX_VALUE);
         assertFalse(w.isRain());
-        assertEquals(0.2, w.getWeather());
+        assertEquals(0.2, w.getWeather(), 0.0001);
 
         w = new Weather(new WeatherSettings());
         assertTrue(w.getNextWeatherChange() > 0);

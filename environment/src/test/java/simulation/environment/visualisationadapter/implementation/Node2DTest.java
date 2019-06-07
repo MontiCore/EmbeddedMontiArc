@@ -20,9 +20,8 @@
  */
 package simulation.environment.visualisationadapter.implementation;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.*;
+import org.junit.*;
 import simulation.environment.visualisationadapter.interfaces.EnvIntersection;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import java.util.ArrayList;
@@ -30,24 +29,9 @@ import java.util.ArrayList;
 /**
  * Created by lukas on 22.01.17.
  */
-public class Node2DTest extends TestCase {
-    /**
-    * Create the test case
-    *
-    * @param testName name of the test case
-    */
-    public Node2DTest(String testName) {
-        super(testName);
-    }
+public class Node2DTest  {
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(Node2DTest.class);
-    }
-
-
+	@Test
     public void testApp() throws Exception {
         EnvNode n1 = new Node2D(2,1,10);
         EnvNode n2 = new Node2D(2,1,10);

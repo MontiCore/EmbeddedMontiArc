@@ -20,8 +20,8 @@
  */
 package simulation.environment;
 
-import junit.framework.TestCase;
-import org.junit.Test;
+import org.junit.*;
+import static  org.junit.Assert.*;
 import simulation.environment.osm.IParser;
 import simulation.environment.osm.Parser2D;
 import simulation.environment.osm.ParserSettings;
@@ -32,8 +32,9 @@ import simulation.environment.weather.WeatherSettings;
 
 import java.io.InputStream;
 
-public class WorldModelTest extends TestCase {
-    @Test
+public class WorldModelTest{
+
+	@Test
     public void testApp() throws Exception {
         try {
             World world = WorldModel.getInstance();

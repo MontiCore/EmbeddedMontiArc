@@ -20,9 +20,8 @@
  */
 package simulation.environment.geometry;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.*;
+import static  org.junit.Assert.*;
 import simulation.environment.geometry.osmadapter.LinearSplineDeterminator;
 import simulation.environment.geometry.osmadapter.SplineDeterminator;
 import simulation.environment.osm.Parser2D;
@@ -37,16 +36,10 @@ import java.util.ArrayList;
 /**
  * Created by lukas on 31.01.17.
  */
-public class LinearSplineDeterminatorTest extends TestCase {
-    public LinearSplineDeterminatorTest(String testName) {
-        super(testName);
-    }
+public class LinearSplineDeterminatorTest {
 
-    public static Test suite() {
-        return new TestSuite(LinearSplineDeterminatorTest.class);
-    }
-
-    public void testApp() throws Exception {
+    @Test
+	public void testApp() throws Exception {
         InputStream in = getClass().getResourceAsStream("/min_intersection_test.osm");
         Parser2D p = new Parser2D(new ParserSettings(in, ParserSettings.ZCoordinates.ALLZERO));
 

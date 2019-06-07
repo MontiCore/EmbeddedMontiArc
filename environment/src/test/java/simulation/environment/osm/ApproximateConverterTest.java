@@ -20,24 +20,18 @@
  */
 package simulation.environment.osm;
 
+import org.junit.*;
 import javafx.geometry.Point3D;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import java.util.ArrayList;
+import static  org.junit.Assert.*;
 
 /**
  * Created by lukas on 26.01.17.
  */
-public class ApproximateConverterTest extends TestCase {
-    public ApproximateConverterTest(String testName) {
-        super(testName);
-    }
+public class ApproximateConverterTest {
 
-    public static Test suite() {
-        return new TestSuite(ApproximateConverterTest.class);
-    }
 
+	@Test
     public void testApp() throws Exception {
         ApproximateConverter converter = new ApproximateConverter(6.06132, 50.78026);
         ArrayList<Point3D> points = new ArrayList<>();
@@ -93,6 +87,7 @@ public class ApproximateConverterTest extends TestCase {
         assertEquals(63950, k3.distance(k4), 70);
     }
 
+	@Test
     public void testConvertXYToLonLat() {
         // First try to convert lon lat points into xy points
         // Then try to convert them back to check if the data are consistent
@@ -114,12 +109,12 @@ public class ApproximateConverterTest extends TestCase {
             Point3D p = points.get(i);
             Point3D k = kPoints.get(i);
 
-            assertEquals(p.getY(), converter.convertYToLat(k.getY()));
-            assertEquals(p.getX(), converter.convertXToLong(k.getX(), k.getY()));
+            assertEquals(p.getY(), converter.convertYToLat(k.getY()), 0.0001);
+            assertEquals(p.getX(), converter.convertXToLong(k.getX(), k.getY()), 0.0001);
 
             Point3D lonLatPointConvertedFromXYPoint = converter.convertXYPoint(k);
-            assertEquals(p.getX(), lonLatPointConvertedFromXYPoint.getX());
-            assertEquals(p.getY(), lonLatPointConvertedFromXYPoint.getY());
+            assertEquals(p.getX(), lonLatPointConvertedFromXYPoint.getX(), 0.0001);
+            assertEquals(p.getY(), lonLatPointConvertedFromXYPoint.getY(), 0.0001);
         }
     }
 }
