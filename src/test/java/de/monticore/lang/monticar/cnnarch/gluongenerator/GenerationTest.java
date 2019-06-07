@@ -20,7 +20,12 @@
  */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionSourceGenerator;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.util.TrainedArchitectureMockFactory;
+import de.monticore.lang.monticar.cnntrain.annotations.Range;
+import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
@@ -31,11 +36,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class GenerationTest extends AbstractSymtabTest {
     private RewardFunctionSourceGenerator rewardFunctionSourceGenerator;
@@ -179,11 +186,13 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testReinforcementConfig2() {
+        // given
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        TrainedArchitecture trainedArchitecture = TrainedArchitectureMockFactory.createTrainedArchitectureMock();
 
-        trainGenerator.generate(modelPath, "ReinforcementConfig2");
+        trainGenerator.generate(modelPath, "ReinforcementConfig2", trainedArchitecture);
 
         assertTrue(Log.getFindings().isEmpty());
         checkFilesAreEqual(
@@ -193,11 +202,40 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNTrainer_reinforcementConfig2.py",
                         "start_training.sh",
                         "reinforcement_learning/__init__.py",
-                        "reinforcement_learning/action_policy.py",
+                        "reinforcement_learning/strategy.py",
                         "reinforcement_learning/agent.py",
                         "reinforcement_learning/environment.py",
                         "reinforcement_learning/replay_memory.py",
-                        "reinforcement_learning/util.py"
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
+                )
+        );
+    }
+
+    @Test
+    public void testReinforcementConfig3() {
+        // given
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        TrainedArchitecture trainedArchitecture = TrainedArchitectureMockFactory.createTrainedArchitectureMock();
+
+        trainGenerator.generate(modelPath, "ReinforcementConfig3", trainedArchitecture);
+
+        assertTrue(Log.getFindings().isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code/ReinforcementConfig3"),
+                Arrays.asList(
+                        "CNNTrainer_reinforcementConfig3.py",
+                        "start_training.sh",
+                        "reinforcement_learning/__init__.py",
+                        "reinforcement_learning/strategy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
                 )
         );
     }
@@ -224,6 +262,63 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./src/test/resources/target_code/cmake"),
                 Arrays.asList(
                         "FindArmadillo.cmake"));
+    }
+
+    @Test
+    public void testDdpgConfig() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests/ddpg");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        TrainedArchitecture trainedArchitecture = TrainedArchitectureMockFactory.createTrainedArchitectureMock();
+
+        trainGenerator.generate(modelPath, "ActorNetwork", trainedArchitecture);
+
+        assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code/ddpg"),
+                Arrays.asList(
+                        "CNNTrainer_actorNetwork.py",
+                        "start_training.sh",
+                        "reinforcement_learning/CNNCreator_CriticNetwork.py",
+                        "reinforcement_learning/CNNNet_CriticNetwork.py",
+                        "reinforcement_learning/__init__.py",
+                        "reinforcement_learning/strategy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
+                )
+        );
+    }
+
+    @Test
+    public void testRosDdpgConfig() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests/ddpg-ros");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        TrainedArchitecture trainedArchitecture = TrainedArchitectureMockFactory.createTrainedArchitectureMock();
+
+        trainGenerator.generate(modelPath, "RosActorNetwork", trainedArchitecture);
+
+        assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code/ros-ddpg"),
+                Arrays.asList(
+                        "CNNTrainer_rosActorNetwork.py",
+                        "start_training.sh",
+                        "reinforcement_learning/CNNCreator_RosCriticNetwork.py",
+                        "reinforcement_learning/CNNNet_RosCriticNetwork.py",
+                        "reinforcement_learning/strategy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
+                )
+        );
     }
 
 }

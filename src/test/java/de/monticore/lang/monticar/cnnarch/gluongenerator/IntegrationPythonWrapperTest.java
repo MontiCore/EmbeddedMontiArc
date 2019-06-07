@@ -1,6 +1,8 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionSourceGenerator;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.util.TrainedArchitectureMockFactory;
+import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -31,7 +33,9 @@ public class IntegrationPythonWrapperTest extends AbstractSymtabTest{
         Path modelPath = Paths.get("src/test/resources/valid_tests");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
 
-        trainGenerator.generate(modelPath, "ReinforcementConfig1");
+        TrainedArchitecture trainedArchitecture = TrainedArchitectureMockFactory.createTrainedArchitectureMock();
+
+        trainGenerator.generate(modelPath, "ReinforcementConfig1", trainedArchitecture);
 
         assertTrue(Log.getFindings().stream().filter(Finding::isError).collect(Collectors.toList()).isEmpty());
         checkFilesAreEqual(
@@ -41,12 +45,12 @@ public class IntegrationPythonWrapperTest extends AbstractSymtabTest{
                         "CNNTrainer_reinforcementConfig1.py",
                         "start_training.sh",
                         "reinforcement_learning/__init__.py",
-                        "reinforcement_learning/action_policy.py",
+                        "reinforcement_learning/strategy.py",
                         "reinforcement_learning/agent.py",
                         "reinforcement_learning/environment.py",
                         "reinforcement_learning/replay_memory.py",
-                        "reinforcement_learning/util.py"
-                        )
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py")
         );
         assertTrue(Paths.get("./target/generated-sources-cnnarch/reward/pylib").toFile().isDirectory());
     }
