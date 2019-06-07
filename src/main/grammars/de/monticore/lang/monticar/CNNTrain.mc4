@@ -57,6 +57,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     L2Loss implements LossValue = name:"l2" ("{" params:Entry* "}")?;
 
+    LogCoshLoss implements LossValue = name:"log_cosh" ("{" params:Entry* "}")?;
+
     interface HuberEntry extends Entry;
     HuberLoss implements LossValue = name:"huber" ("{" params:HuberEntry* "}")?;
 
