@@ -2,8 +2,8 @@ package test;
 
 component CollisionDetection{
 
-	port in Z other_actor_id;
-	port out Z stdout;
+	port 	in Z other_actor_id,
+		out Z stdout;
 
 	connect other_actor_id -> stdout;
 }
