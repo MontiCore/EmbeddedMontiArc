@@ -64,9 +64,9 @@ public class VehicleDynamicsModel {
         chassis = new Simulation("lib/Chassis.fmu");
         suspension = new Simulation("lib/Suspension.fmu");
         tires = new Simulation("lib/Tires.fmu");
-        brakeSystem = new Simulation("lib/brakeSystem.fmu");
-        driveline = new Simulation("lib/driveline.fmu");
-        steering = new Simulation("lib/steering.fmu");
+        brakeSystem = new Simulation("lib/BrakeSystem.fmu");
+        driveline = new Simulation("lib/Driveline.fmu");
+        steering = new Simulation("lib/Steering.fmu");
         isInitialised = false;
         needsExchanging = false;
     }
