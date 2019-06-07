@@ -9,3 +9,16 @@ Steps to build a component:
 *       usually the path is something like "~/carla-ros-bridge/catkin_ws/devel/share/carla_msgs/cmake"
 * 6.) after successfull compiling the generated code switch to install/bin directory (**cd install/bin/**)
 * 7.) execute Coordinator_<model-package>_<component-name> (here it's **./Coordinator_test_bumpBot** or **./Coordinator_test_collisionDetection**)
+
+## Wie Bringe ich das auto zum Fahren und lese den collision sensor aus?
+
+Carla Starten
+unter PythonAPI/examples: ```python manual_control.py --rolename=ego_vehicle'''
+
+```docker run -it --rm -v $(pwd):/usr/src/project registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/emam-carla-ros-bridge'''
+
+Dann in einem neuen Terminal um das Auto fahren zu lassen mit angepasster ContainerID:
+```docker exec -it 586a50f195d1 /bin/bash -c 'source /opt/ros/kinetic/setup.bash && cd /usr/src/project/ &&  java -jar ../mw-generator.jar valid.json && target/compile.sh && build/test_bumpBot/coordinator/Coordinator_test_bumpBot''''
+
+Um den Collision Sensor auszulesen in einem neuen Terminal:
+```docker exec -it 586a50f195d1 /bin/bash -c 'source /opt/ros/kinetic/setup.bash && source opt/carla-ros-bridge/devel/setup.bash && rostopic echo /carla/ego_vehicle/collision''''
