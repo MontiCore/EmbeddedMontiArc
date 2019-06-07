@@ -34,7 +34,12 @@ void MqttAdapter_tests_a_compA::init(tests_a_compA *comp)
 void MqttAdapter_tests_a_compA::publish_echoPublisher()
 {
     mqtt::message tmpMsg;
-    tmpMsg.set_payload(std::to_string(component->rosOut));
+    
+    double value = component->rosOut;
+    uint8_t *buf = (uint8_t*)&value;
+    
+    tmpMsg.set_payload(buf, 8); // pointer to byte buffer of length 8
+    
     try {
         _echoPublisher->publish(tmpMsg);
         
