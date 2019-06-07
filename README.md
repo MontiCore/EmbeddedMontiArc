@@ -72,7 +72,7 @@ cd paho.mqtt.cpp
 cmake -Bbuild -H.
 sudo cmake --build build/ --target install
 ```
-## Installing MQTT Publisher/Subscriber demo
+## Installing MQTT Publisher/Subscriber demo (locally on Ubuntu)
 open terminal, switch to **mqtt_demo** directroy inside the project and run
 `cmake .`
 
