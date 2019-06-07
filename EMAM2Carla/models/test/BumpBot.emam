@@ -15,11 +15,7 @@ component BumpBot{
 		test.manual_gear_shift = false;		
 
 		if collision_actor_id > 0 //if a collision occurred drive into the other direction
-			if test.reverse == false
-				test.reverse = true;
-			else 
-				test.reverse = false;
-			end
+			test.reverse = true;
 		end
 	}
 }
