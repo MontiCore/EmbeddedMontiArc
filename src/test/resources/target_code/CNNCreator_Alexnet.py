@@ -168,6 +168,9 @@ class CNNCreator_Alexnet:
                 prediction = mx.symbol.log_softmax(prediction, axis=1)
             loss_func = mx.symbol.mean(label * (mx.symbol.log(label) - prediction), axis=0, exclude=True)
             loss_func = mx.symbol.MakeLoss(loss_func, name="kullback_leibler")
+        elif loss == 'log_cosh':
+            loss_func = mx.symbol.mean(mx.symbol.log(mx.symbol.cosh(prediction - label)), axis=0, exclude=True)
+            loss_func = mx.symbol.MakeLoss(loss_func, name="log_cosh")
         else:
             logging.error("Invalid loss parameter.")
 
