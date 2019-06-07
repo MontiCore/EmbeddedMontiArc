@@ -21,6 +21,10 @@ project(MQTT VERSION 1.0
 # Find mqtt packages using modules
 find_package(MQTT REQUIRED)
 
+# Find Pthread package
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 # Adding executable target
 add_executable(mqtt_demo main.cpp)
 
