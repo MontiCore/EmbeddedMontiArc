@@ -40,7 +40,7 @@ public class ConcentricCircleGeneratorTest extends TestCase {
         return new TestSuite(ConcentricCircleGeneratorTest.class);
     }
 
-
+    @Ignore
     @Test
     public void testApp() {
         ConcentricCircleGenerator.init(new Bounds2D(0, 2*Math.sqrt(2000), 0, 2*Math.sqrt(2000), 0, 0), true);
