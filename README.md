@@ -8,7 +8,7 @@ These instructions will get MQTT up and running on your **Ubuntu** system
 
 ### Installing project
 
-[Download](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2mqtt/-/archive/3-install-mqtt-linux/emam2mqtt-3-install-mqtt-linux.zip) this project to your computer
+[Download](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2mqtt/-/archive/8-handwrite-a-mqtt-adapter/emam2mqtt-3-install-mqtt-linux.zip) this project to your computer
 
 [Download](https://maven.apache.org/guides/getting-started/) and install Maven
 
@@ -73,7 +73,7 @@ cmake -Bbuild -H.
 sudo cmake --build build/ --target install
 ```
 ## Installing MQTT Publisher/Subscriber demo
-open terminal, go to **mqtt_demo** directroy inside the project and run
+open terminal, switch to **mqtt_demo** directroy inside the project and run
 `cmake .`
 
 compile the demo by running
@@ -86,5 +86,6 @@ run the demo afterwards with `./mqtt_demo`
 additionaly, you can also use `mosquitto_pub` and `mosquitto_sub` commands from mosquitto broker to subscribe/publish messages
 
 for example:
-subscribe to topic **/hello** with `mosquitto_sub -t /hello` and publish a message to this topic with `mosquitto_pub -t /hello -m "hi, how are you?"`
+subscribe to topic **/hello** with `mosquitto_sub -t /hello` and publish a message to this topic with 
+`mosquitto_pub -t /hello -m "hi, how are you?"`
 
