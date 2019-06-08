@@ -105,7 +105,7 @@ from std_msgs.msg import Float32MultiArray, Bool, Int32, MultiArrayDimension, Fl
 class RosEnvironment(Environment):
     def __init__(self,
         ros_node_name='RosTrainingAgent',
-        timeout_in_s=3,
+        timeout_in_s=60,
         state_topic='state',
         action_topic='action',
         reset_topic='reset',
