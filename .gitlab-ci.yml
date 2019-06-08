@@ -20,7 +20,7 @@
 #
 
 stages:
-- windows
+#- windows
 - linux
 - deploy
 
@@ -64,12 +64,12 @@ integrationPythonWrapperTest:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -Dtest=IntegrationPythonWrapperTest
 
 
-masterJobWindows:
-  stage: windows
-  script:
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean install --settings settings.xml -Dtest="GenerationTest,SymtabTest"
-  tags:
-  - Windows10
+#masterJobWindows:
+#  stage: windows
+#  script:
+#  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean install --settings settings.xml -Dtest="GenerationTest,SymtabTest"
+#  tags:
+#  - Windows10
 
 
 UnitTestJobLinux:
