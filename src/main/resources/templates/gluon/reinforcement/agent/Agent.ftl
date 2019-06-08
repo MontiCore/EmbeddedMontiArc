@@ -270,6 +270,7 @@ class Agent(object):
         filedir = self._output_directory if filedir is None else filedir
         filename = os.path.join(filedir, filename + '.params')
         net.save_parameters(filename)
+        net.export(filename, epoch=0)
 
     def save_best_network(self, path, epoch=0):
         self._logger.info(
