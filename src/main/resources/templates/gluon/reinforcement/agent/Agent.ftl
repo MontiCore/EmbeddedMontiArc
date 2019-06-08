@@ -177,6 +177,9 @@ class Agent(object):
         return states, actions, rewards, next_states, terminals
 
     def evaluate(self, target=None, sample_games=100, verbose=True):
+        if sample_games <= 0:
+            return 0
+
         target = self._target_score if target is None else target
         if target:
             target_achieved = 0
