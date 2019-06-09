@@ -114,6 +114,8 @@ class Agent(object):
         agent_session_file = os.path.join(session_dir, 'agent.p')
         logger = self._logger
 
+        self._training_stats.save_stats(self._output_directory, episode=self._current_episode)
+
         self._make_pickle_ready(session_dir)
 
         with open(agent_session_file, 'wb') as f:
