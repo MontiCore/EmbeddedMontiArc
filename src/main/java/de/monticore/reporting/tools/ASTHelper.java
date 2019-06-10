@@ -29,7 +29,6 @@ public class ASTHelper {
         String fileName = model.getModelFileAsString();
         String fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()).toUpperCase();
         model.setFileType(fileType);
-        boolean parse = false;
         ASTEMACompilationUnit ast = null;
         EMAComponentSymbol resolvedAST = null;
 
@@ -40,17 +39,17 @@ public class ASTHelper {
         } catch (Exception e) {
             int i = 1;
         }
-        parse = ast != null;
+        boolean parsingSuccessful = ast != null;
 
-        model.addErrorMessage(parse ? "[INFO] Parser Test success<br>" : "[ERROR] Parser Test failed");
-        if(!parse){
+        model.addErrorMessage(parsingSuccessful ? "[INFO] Parser Test success<br>" : "[ERROR] Parser Test failed");
+        if(!parsingSuccessful){
             CustomPrinter.println("ERROR. Parser Test failed");
             for (Finding finding : Log.getFindings())
                 model.addErrorMessage(finding.toString());
         }
 
-        model.setParsed(parse?1:-1);
-        if(parse) {
+        model.setParsed(parsingSuccessful?1:-1);
+        if(parsingSuccessful) {
             model.setUnresolvedAST(ast);
             String PackageName = Joiners.DOT.join(ast.getPackageList());
             String FileName = fileName.substring(fileName.replace("\\", "/").lastIndexOf("/") + 1, fileName.length());

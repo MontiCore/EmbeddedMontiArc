@@ -29,6 +29,7 @@ public class CheckCoCo {
 
             testResult.addErrorMessage("[INFO] do CoCo Tests<br>=========================");
             Log.getFindings().clear();
+            Log.enableFailQuick(false);
             EmbeddedMontiArcMathCoCos.createChecker().checkAll(astToTest);
             for (Finding finding : Log.getFindings())
                 testResult.addErrorMessage("[WARNING] " + finding.toString());
@@ -75,11 +76,11 @@ public class CheckCoCo {
                 testResult.setAtomicComponent(atomicComponent ? -1 : 1);
 
             if (testResult.isValid()) {
-                testResult.addErrorMessage("[INFO] CoCo Test success <br>");
+                testResult.addErrorMessage("[INFO] All CoCo tests successful <br>");
                 CustomPrinter.println("SUCCESS");
             } else {
-                testResult.addErrorMessage("[ERROR] CoCo Test failed <br>");
-                CustomPrinter.println("ERROR. CoCo Test failed");
+                testResult.addErrorMessage("[ERROR] Some CoCo test failed <br>");
+                CustomPrinter.println("ERROR. Some CoCo test failed");
             }
         }
         return testResult;

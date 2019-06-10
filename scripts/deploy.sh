@@ -15,13 +15,13 @@ fi
 git clone $REPO out
 cd out
 
-git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
+git checkout --track origin/$TARGET_BRANCH
 git config user.name "GitLab CI"
 git config user.email "malte.heithoff@rwth-aachen.de"
 
 # deploy reports
 git rm -rf report/data/* || exit 0
-mv ../report/data/* report/data
+mv ../report/data* report/
 
 git add report/.
 git commit -m "Deploy reports to report branch: ${SHA}"
