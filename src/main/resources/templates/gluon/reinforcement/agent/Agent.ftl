@@ -465,9 +465,9 @@ class DdpgAgent(Agent):
         else:
             self._training_stats = DdpgTrainingStats(episodes)
 
-        # Initialize target Q' and mu'
-        self._actor_target = self._copy_actor()
-        self._critic_target = self._copy_critic()
+            # Initialize target Q' and mu'
+            self._actor_target = self._copy_actor()
+            self._critic_target = self._copy_critic()
 
         # Initialize l2 loss for critic network
         l2_loss = gluon.loss.L2Loss()
