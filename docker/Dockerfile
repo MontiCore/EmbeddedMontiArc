@@ -9,17 +9,34 @@ RUN apt-get -y install cmake
 
 RUN apt-get -y install libboost-system1.58-dev libboost-thread1.58-dev libboost-log1.58-dev
 
+RUN apt-get update \
+    && apt-get -y install openjdk-8-jre \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+
+ENV PATH $JAVA_HOME/bin:$PATH
+
+RUN apt-get update
+
+RUN apt-get -y install maven
+
+RUN apt-get -y install git
+
 RUN mkdir /usr/src/emam2someip
 
-# Set the working directory to /emam2someip
 WORKDIR /usr/src/emam2someip
 
-# Copy the current directory contents into the container at /emam2someip
+RUN git clone https://github.com/GENIVI/vsomeip.git
+
+#copy example
 COPY . /usr/src/emam2someip
 
-RUN mkdir /usr/src/emam2someip/build
+WORKDIR /usr/src/emam2someip/vsomeip
 
-WORKDIR /usr/src/emam2someip/build
+RUN mkdir /usr/src/emam2someip/vsomeip/build
+
+WORKDIR /usr/src/emam2someip/vsomeip/build
 
 RUN cmake ..
 
@@ -27,7 +44,7 @@ RUN make
 
 RUN make install
 
-WORKDIR /usr/src/emam2someip
+WORKDIR /usr/src/emam2someip/vsomeip
 
 RUN rm -rf build
 
@@ -36,3 +53,5 @@ WORKDIR /usr/src/emam2someip/example/build
 RUN cmake ..
 
 RUN make
+
+
