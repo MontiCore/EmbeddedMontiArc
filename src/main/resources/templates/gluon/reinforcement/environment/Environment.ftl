@@ -212,7 +212,7 @@ class RosEnvironment(Environment):
         rospy.signal_shutdown('Program ended!')
 
     def __state_callback(self, data):
-        self.__last_received_state = np.array(data.data, dtype='float32')
+        self.__last_received_state = np.array(data.data, dtype='float32').reshape((<#list config.stateDim as d>${d},</#list>))
         rospy.logdebug('Received state: {}'.format(self.__last_received_state))
         self.__waiting_for_state_update = False
 
