@@ -1,6 +1,0 @@
-package de.rwth.pacman.common;
-
-component TrashBoolean {
-    ports
-        in Boolean in1;
-}
