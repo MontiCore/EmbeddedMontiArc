@@ -6,7 +6,7 @@ TARGET_BRANCH="report"
 
 # Save some useful information
 REPO='https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/reporting'
-PUSH_REPO='https://${GIT_USERNAME}:${DEPLOY_KEY}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/reporting'
+PUSH_REPO='https://${GIT_USERNAME}:${DEPLOY_KEY}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/reporting.git'
 SHA=`git rev-parse --verify HEAD`
 
 if [ -d "out" ]
