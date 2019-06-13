@@ -28,7 +28,7 @@ masterJobLinux:
   image: maven:3-jdk-8
   script:
     - chmod +x ./scripts/syncProjects.sh
-    - ./scripts/syncProjects.sh "EmbeddedMontiArc"
+    - ./scripts/syncProjects.sh "EmbeddedMontiArc/SuperMario"
     - mvn clean install --settings settings.xml
     - java -jar target/reporting-0.9-jar-with-dependencies.jar "EmbeddedMontiArc" "-testCoCos" "-timeout" "10" "-testTests" "-grammar"
     - echo "Report ready"
@@ -38,6 +38,7 @@ masterJobLinux:
 pages:
   stage: deploy
   script:
+  - ls
   - chmod +x ./scripts/deploy.sh
   - ./scripts/deploy.sh
   only:
