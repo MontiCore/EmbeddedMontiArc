@@ -70,6 +70,7 @@ public class Main {
             e.printStackTrace();
         }
         CustomPrinter.println("SUCCESS\n");
+        System.exit(0);
     }
 
     public static class ReportContext {
