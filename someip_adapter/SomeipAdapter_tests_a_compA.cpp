@@ -40,7 +40,9 @@ void SomeipAdapter_tests_a_compA::on_message(const std::shared_ptr<vsomeip::mess
     std::shared_ptr<vsomeip::payload> its_payload = _request->get_payload();
     vsomeip::length_t l = its_payload->get_length();
     
-    double final = *((double*)its_payload->get_data());
+    double dataFromMessage = *((double*)its_payload->get_data());
+    
+    component->rosIn = dataFromMessage;
 
     std::cout << "SERVICE: Received message from ["
         << std::setw(4) << std::setfill('0') << std::hex << _request->get_client() << "/"
