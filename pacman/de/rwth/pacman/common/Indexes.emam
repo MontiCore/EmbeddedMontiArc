@@ -1,0 +1,12 @@
+package de.rwth.pacman.common;
+
+component Indexes<N1 n = 1> {
+    ports
+        out N1 out1[n];
+    
+    implementation Math {
+        for i = 1:n
+            out1(i) = i;
+        end
+    }
+}

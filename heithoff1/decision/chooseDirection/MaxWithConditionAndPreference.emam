@@ -1,0 +1,54 @@
+package de.rwth.pacman.heithoff1.decision.chooseDirection;
+
+import de.rwth.pacman.common.Switch;
+import de.rwth.pacman.common.Constant;
+import de.rwth.pacman.common.GreaterEquals;
+import de.rwth.pacman.common.Or;
+import de.rwth.pacman.common.Not;
+import de.rwth.pacman.common.And;
+
+component MaxWithConditionAndPreference<N1 n1, N1 n2, N1 n3, N1 n4> {
+    ports
+        in Q val[4],
+        in Boolean cond[4],
+        
+        out Z dir;
+    
+    instance Constant<n1> dir1;
+    instance Constant<n2> dir2;
+    instance Constant<n3> dir3;
+    instance Constant<n4> dir4;
+    
+    instance Switch directionIsAvailable;
+    connect cond[1] -> directionIsAvailable.cond;
+    connect dir1.out1  -> directionIsAvailable.in1;
+    connect directionIsAvailable.out1 -> dir;
+
+    instance GreaterEquals secondBetterThanThird;
+    instance And<2> secondBest;
+    instance Or<2> secondBest2;
+    instance Not not1;
+    connect cond[2] -> secondBest.in1[1];
+    connect val[2] -> secondBetterThanThird.in1;
+    connect val[3] -> secondBetterThanThird.in2;
+    connect secondBetterThanThird.out1 -> secondBest2.in1[1];
+    connect cond[3] -> not1.in1;
+    connect not1.out1 -> secondBest2.in1[2];
+    connect secondBest2.out1 -> secondBest.in1[2];
+    
+    instance Switch chooseSecond;
+    connect secondBest.out1 -> chooseSecond.cond;
+    connect dir2.out1 -> chooseSecond.in1;
+    connect chooseSecond.out1 -> directionIsAvailable.in3;
+
+    instance Switch chooseThird;
+    connect cond[3] -> chooseThird.cond;
+    connect dir3.out1 -> chooseThird.in1;
+    connect chooseThird.out1 -> chooseSecond.in3;
+
+    instance Switch chooseFourth;
+    connect cond[4] -> chooseFourth.cond;
+    connect dir4.out1 -> chooseFourth.in1;
+    connect dir1.out1 -> chooseFourth.in3;
+    connect chooseFourth.out1 -> chooseThird.in3;
+}

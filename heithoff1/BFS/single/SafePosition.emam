@@ -1,0 +1,53 @@
+package de.rwth.pacman.heithoff1.BFS.single;
+
+import de.rwth.pacman.common.*;
+
+component SafePosition {
+    ports
+      in Q(0m: 20m)^{1,4} ghostX,
+      in Q(1m: 23m)^{1,4} ghostY,
+      in Z(0 : 1 : 3)^{1,4} ghostDirection,
+      in Boolean^{1,4} ghostEatable,
+      in Q(0m: 20m) currentX,
+      in Q(1m: 23m) currentY,
+      in Z oldDirection,
+      
+      out Boolean safe;
+
+    instance SafePositionOneGhost safeGhost1, safeGhost2, safeGhost3, safeGhost4;
+    instance SplitArray<4> splitGhostX, splitGhostY, splitGhostDirection;
+    instance SplitArrayBoolean<4> splitGhostEatable;
+    instance And<4> isSafe;
+
+    connect ghostX -> splitGhostX.in1;
+    connect ghostY -> splitGhostY.in1;
+    connect ghostDirection -> splitGhostDirection.in1;
+    connect ghostEatable -> splitGhostEatable.in1;
+    
+    connect splitGhostX.out1[1] -> safeGhost1.ghostX;
+    connect splitGhostX.out1[2] -> safeGhost2.ghostX;
+    connect splitGhostX.out1[3] -> safeGhost3.ghostX;
+    connect splitGhostX.out1[4] -> safeGhost4.ghostX;
+    connect splitGhostY.out1[1] -> safeGhost1.ghostY;
+    connect splitGhostY.out1[2] -> safeGhost2.ghostY;
+    connect splitGhostY.out1[3] -> safeGhost3.ghostY;
+    connect splitGhostY.out1[4] -> safeGhost4.ghostY;
+    connect splitGhostDirection.out1[1] -> safeGhost1.ghostDirection;
+    connect splitGhostDirection.out1[2] -> safeGhost2.ghostDirection;
+    connect splitGhostDirection.out1[3] -> safeGhost3.ghostDirection;
+    connect splitGhostDirection.out1[4] -> safeGhost4.ghostDirection;
+    connect splitGhostEatable.out1[1] -> safeGhost1.ghostEatable;
+    connect splitGhostEatable.out1[2] -> safeGhost2.ghostEatable;
+    connect splitGhostEatable.out1[3] -> safeGhost3.ghostEatable;
+    connect splitGhostEatable.out1[4] -> safeGhost4.ghostEatable;
+    connect currentX -> safeGhost1.currentX, safeGhost2.currentX, safeGhost3.currentX, safeGhost4.currentX;
+    connect currentY -> safeGhost1.currentY, safeGhost2.currentY, safeGhost3.currentY, safeGhost4.currentY;
+    connect oldDirection -> safeGhost1.oldDirection, safeGhost2.oldDirection, safeGhost3.oldDirection, safeGhost4.oldDirection;
+
+    connect safeGhost1.safe -> isSafe.in1[1];
+    connect safeGhost2.safe -> isSafe.in1[2];
+    connect safeGhost3.safe -> isSafe.in1[3];
+    connect safeGhost4.safe -> isSafe.in1[4];
+
+    connect isSafe.out1 -> safe;
+}

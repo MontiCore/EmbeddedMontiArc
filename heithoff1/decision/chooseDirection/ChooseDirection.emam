@@ -1,0 +1,86 @@
+package de.rwth.pacman.heithoff1.decision.chooseDirection;
+
+import de.rwth.pacman.common.And;
+import de.rwth.pacman.common.Switch;
+import de.rwth.pacman.common.Equals;
+import de.rwth.pacman.common.Constant;
+import de.rwth.pacman.common.TrashNumber;
+
+import de.rwth.pacman.heithoff1.common.MaxWithCondition;
+
+component ChooseDirection {
+    ports
+      in Boolean topSafe,
+      in Boolean bottomSafe,
+      in Boolean leftSafe,
+      in Boolean rightSafe,
+      in Z topValue,
+      in Z bottomValue,
+      in Z leftValue,
+      in Z rightValue,
+      in Boolean topPossible,
+      in Boolean bottomPossible,
+      in Boolean leftPossible,
+      in Boolean rightPossible,
+      
+      out Z newPacManDirection;
+      
+      instance And<2> condTop, condBottom, condLeft, condRight;
+      instance MaxWithCondition<4> max1;
+      
+      connect topSafe     -> condTop.in1[1], max1.cond[1];
+      connect topPossible -> condTop.in1[2];
+      connect bottomSafe     -> condBottom.in1[1], max1.cond[2];
+      connect bottomPossible -> condBottom.in1[2];
+      connect leftSafe     -> condLeft.in1[1], max1.cond[3];
+      connect leftPossible -> condLeft.in1[2];
+      connect rightSafe     -> condRight.in1[1], max1.cond[4];
+      connect rightPossible -> condRight.in1[2];
+      
+      instance MaxWithConditionAndPreference<0,2,3,1> bestTop;
+      instance MaxWithConditionAndPreference<1,2,3,0> bestBottom;
+      instance MaxWithConditionAndPreference<2,0,1,3> bestLeft;
+      instance MaxWithConditionAndPreference<3,0,1,2> bestRight;
+      connect topValue    -> max1.in1[1], bestTop.val[1], bestBottom.val[4], bestLeft.val[2], bestRight.val[2];
+      connect bottomValue -> max1.in1[2], bestTop.val[4], bestBottom.val[1], bestLeft.val[3], bestRight.val[3];
+      connect leftValue   -> max1.in1[3], bestTop.val[2], bestBottom.val[2], bestLeft.val[1], bestRight.val[4];
+      connect rightValue  -> max1.in1[4], bestTop.val[3], bestBottom.val[3], bestLeft.val[4], bestRight.val[1];
+
+      connect condTop.out1    -> bestTop.cond[1], bestBottom.cond[4], bestLeft.cond[2], bestRight.cond[2];
+      connect condBottom.out1 -> bestTop.cond[4], bestBottom.cond[1], bestLeft.cond[3], bestRight.cond[3];
+      connect condLeft.out1   -> bestTop.cond[2], bestBottom.cond[2], bestLeft.cond[1], bestRight.cond[4];
+      connect condRight.out1  -> bestTop.cond[3], bestBottom.cond[3], bestLeft.cond[4], bestRight.cond[1];
+      
+      instance Switch chooseTop, chooseBottom, chooseLeft, chooseRight;
+      instance Equals chooseTopCond, chooseBottomCond, chooseLeftCond, chooseRightCond;
+      instance Constant<0> fallBackDir;
+      instance Constant<1> topConstant;
+      instance Constant<2> bottomConstant;
+      instance Constant<3> leftConstant;
+      instance Constant<4> rightConstant;
+
+      connect max1.maxIndex -> chooseTopCond.in1, chooseBottomCond.in1, chooseLeftCond.in1, chooseRightCond.in1;
+      connect topConstant.out1 -> chooseTopCond.in2;
+      connect bottomConstant.out1 -> chooseBottomCond.in2;
+      connect leftConstant.out1 -> chooseLeftCond.in2;
+      connect rightConstant.out1 -> chooseRightCond.in2;
+      
+      connect chooseTopCond.out1 -> chooseTop.cond;
+      connect chooseBottomCond.out1 -> chooseBottom.cond;
+      connect chooseLeftCond.out1 -> chooseLeft.cond;
+      connect chooseRightCond.out1 -> chooseRight.cond;
+
+      connect bestTop.dir -> chooseTop.in1;
+      connect bestBottom.dir -> chooseBottom.in1;
+      connect bestLeft.dir -> chooseLeft.in1;
+      connect bestRight.dir -> chooseRight.in1;
+      connect chooseBottom.out1 -> chooseTop.in3;
+      connect chooseLeft.out1 -> chooseBottom.in3;
+      connect chooseRight.out1 -> chooseLeft.in3;
+      connect fallBackDir.out1 -> chooseRight.in3;
+      connect chooseTop.out1 -> newPacManDirection;
+
+      // Trash
+      instance TrashNumber trash1;
+      connect max1.maxValue -> trash1.in1;
+}

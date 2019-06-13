@@ -1,0 +1,69 @@
+package de.rwth.pacman.heithoff1.BFS.single;
+
+import de.rwth.pacman.common.*;
+
+component SearchFinished {
+    ports
+      in Z^{22,19} map,
+      in Q(0m: 20m) currentX,
+      in Q(1m: 23m) currentY,
+      in Boolean oldSafe,
+      in Boolean oldSafeFound,
+      
+      out Boolean safeFound,
+      out Boolean safe,
+      out Boolean finished;
+
+    instance Saturation<1,22> saturationY;
+    instance Saturation<1,19> saturationX;
+    instance Equals isInYBound, isInXBound;
+    instance And<2> isInBounds;
+    
+    connect currentY -> saturationY.in1, isInYBound.in1;
+    connect currentX -> saturationX.in1, isInXBound.in1;
+    connect saturationY.out1 -> isInYBound.in2;
+    connect saturationX.out1 -> isInXBound.in2;
+    connect isInYBound.out1 -> isInBounds.in1[1];
+    connect isInXBound.out1 -> isInBounds.in1[2];
+    
+    instance Switch currentTile;
+    instance PickFromMatrix<22,19> picker;
+    instance Constant<0> zero;
+    instance Constant<3> three;
+
+    connect isInBounds.out1 -> currentTile.cond;
+    connect map -> picker.mat;
+    connect currentY -> picker.indexY;
+    connect currentX -> picker.indexX;
+    connect picker.out1 -> currentTile.in1;
+    connect zero.out1 -> currentTile.in3;
+
+    instance Equals isWallTile, isEmptyTile;
+    instance Or<2> nothingToCheck, alreadyFinished;
+    instance Not isNotOldSafe;
+    
+    connect currentTile.out1 -> isWallTile.in1, isEmptyTile.in1;
+    connect zero.out1 -> isWallTile.in2;
+    connect three.out1 -> isEmptyTile.in2;
+    connect isWallTile.out1 -> nothingToCheck.in1[1];
+    connect isEmptyTile.out1 -> nothingToCheck.in1[2];
+    connect oldSafeFound -> alreadyFinished.in1[1];
+    connect oldSafe -> isNotOldSafe.in1;
+    connect isNotOldSafe.out1 -> alreadyFinished.in1[2];
+
+    instance SwitchBoolean safeFoundSwitch, safeSwitch, finishedSwitch1, finishedSwitch2;
+    instance ConstantBoolean<0> constantFalse;
+    instance ConstantBoolean<1> constantTrue;
+    
+    connect nothingToCheck.out1 -> safeFoundSwitch.cond, safeSwitch.cond, finishedSwitch1.cond;
+    connect alreadyFinished.out1 -> finishedSwitch2.cond;
+    connect safeFoundSwitch.out1 -> safeFound;
+    connect safeSwitch.out1 -> safe;
+    connect finishedSwitch1.out1 -> finished;
+    connect finishedSwitch2.out1 -> finishedSwitch1.in3;
+
+    connect constantTrue.out1 -> safeFoundSwitch.in1, safeSwitch.in1, finishedSwitch1.in1, finishedSwitch2.in1;
+    connect oldSafeFound -> safeFoundSwitch.in3;
+    connect oldSafe -> safeSwitch.in3;
+    connect constantFalse.out1 -> finishedSwitch2.in3;
+}

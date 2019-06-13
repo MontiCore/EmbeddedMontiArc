@@ -1,0 +1,33 @@
+package de.rwth.pacman.heithoff1.common;
+
+import de.rwth.pacman.common.Constant;
+import de.rwth.pacman.common.Sum;
+import de.rwth.pacman.common.Round;
+
+component IsDirectionFree<Q y = 0, Q x = 0> {
+    ports
+        in Z(-1m: 19m) indexX,
+        in Z(0m: 22m) indexY,
+        in Z^{22,19} map,
+        
+        out Boolean isDirFree;
+
+    instance Constant<y> addToY;
+    instance Constant<x> addToX;
+    instance Sum<2> addX, addY;
+    instance Round roundedX, roundedY;
+
+    connect indexX -> addX.in1[1];
+    connect indexY -> addY.in1[1];
+    connect addToX.out1 -> addX.in1[2];
+    connect addToY.out1 -> addY.in1[2];
+    connect addX.out1 -> roundedX.in1;
+    connect addY.out1 -> roundedY.in1;
+
+    instance IsFreeTile isFreeTile;
+
+    connect map -> isFreeTile.map;
+    connect roundedX.out1 -> isFreeTile.indexX;
+    connect roundedY.out1 -> isFreeTile.indexY;
+    connect isFreeTile.isFreeTile -> isDirFree;
+}

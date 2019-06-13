@@ -1,0 +1,73 @@
+package de.rwth.pacman.heithoff1.coneSearch.enemySearch;
+
+import de.rwth.pacman.common.Constant;
+import de.rwth.pacman.common.ConstantBoolean;
+import de.rwth.pacman.common.Greater;
+import de.rwth.pacman.common.GreaterEquals;
+import de.rwth.pacman.common.Or;
+import de.rwth.pacman.common.And;
+import de.rwth.pacman.common.Not;
+import de.rwth.pacman.common.Switch;
+import de.rwth.pacman.common.Abs;
+import de.rwth.pacman.common.Difference;
+
+component SearchEnemyTop {
+    ports
+      in Q(-1m: 19m) currentX,
+      in Q(0m: 22m) currentY,
+      in Q(-1m: 19m) ghostX,
+      in Q(0m: 22m) ghostY,
+      in Z ghostDirection,
+      in Boolean ghostEatable,
+      in Z ghostNormalWeight,
+      in Z ghostFacingPacManWight,
+      in Z ghostEatableWeight,
+      
+      out Z val;
+
+    instance Constant<0> zero;
+    instance ConstantBoolean<0> isDown;
+    instance Greater ghostIsBelowPM;
+    instance Or<2> correctYIntervalCond;
+    instance And<2> correctYIntervalCond1;
+    instance Not correctYIntervalCond2;
+    instance Switch correctYInterval;
+    instance Switch correctXInterval;
+    
+    connect ghostY -> ghostIsBelowPM.in1;
+    connect currentY -> ghostIsBelowPM.in2;
+    connect ghostIsBelowPM.out1 -> correctYIntervalCond1.in1[1];
+    connect isDown.out1 -> correctYIntervalCond1.in1[2];
+    connect correctYIntervalCond1.out1 -> correctYIntervalCond.in1[1];
+    connect isDown.out1 -> correctYIntervalCond2.in1;
+    connect correctYIntervalCond2.out1 -> correctYIntervalCond.in1[2];
+    connect correctYIntervalCond.out1 -> correctYInterval.cond;
+    connect zero.out1 -> correctYInterval.in3, correctXInterval.in3;
+    connect correctXInterval.out1 -> correctYInterval.in1;
+
+    instance Abs distY, distX;
+    instance Difference<2> distYIn, distXIn;
+    instance GreaterEquals correctXIntervalCond;
+    
+    connect currentY -> distYIn.in1[1];
+    connect currentX -> distXIn.in1[1];
+    connect ghostY   -> distYIn.in1[2];
+    connect ghostX   -> distXIn.in1[2];
+    connect distYIn.out1 -> distY.in1;
+    connect distXIn.out1 -> distX.in1;
+    connect distY.out1 -> correctXIntervalCond.in1;
+    connect distX.out1 -> correctXIntervalCond.in2;
+    connect correctXIntervalCond.out1 -> correctXInterval.cond;
+
+    connect correctYInterval.out1 -> val;
+      
+    instance ScoreGhost<1> score;
+    connect currentX -> score.currentX;
+    connect currentY -> score.currentY;
+    connect ghostX -> score.ghostX;
+    connect ghostY -> score.ghostY;
+    connect ghostDirection -> score.ghostDirection;
+    connect ghostEatable -> score.ghostEatable;
+    
+    connect score.val -> correctXInterval.in1;
+}

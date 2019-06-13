@@ -1,0 +1,15 @@
+package de.rwth.pacman.heithoff1.BFS.start;
+
+component StartValues{
+    ports
+        in Q pacManX,
+        in Q pacManY,
+        
+        out Boolean startSafe,
+        out Boolean startSafeFound;
+        
+    implementation Math {
+        startSafe = 1;
+        startSafeFound = 0;
+    }
+}

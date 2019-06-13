@@ -1,0 +1,6 @@
+package de.rwth.pacman.common;
+
+component TrashNumber {
+    ports
+        in Q in1;
+}

@@ -1,0 +1,13 @@
+package de.rwth.pacman.common;
+
+component ToArray<N1 n = 1> {
+    ports
+        in Q in1,
+        out Q out1[n];
+
+    implementation Math {
+        for i = 1:n
+            out1(i) = in1;
+        end
+    }
+}

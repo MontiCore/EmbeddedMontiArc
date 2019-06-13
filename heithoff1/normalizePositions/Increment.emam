@@ -1,0 +1,17 @@
+package de.rwth.pacman.heithoff1.normalizePositions;
+
+import de.rwth.pacman.common.Sum;
+import de.rwth.pacman.common.Constant;
+
+component Increment<N1 n = 1> {
+    ports
+        in Q in1,
+        out Q out1;
+
+    instance Constant<n> constant;
+    instance Sum<2> sum;
+
+    connect in1 -> sum.in1[1];
+    connect constant.out1 -> sum.in1[2];
+    connect sum.out1 -> out1;
+}

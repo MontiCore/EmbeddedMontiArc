@@ -1,0 +1,92 @@
+package de.rwth.pacman.heithoff1.BFS.single;
+
+import de.rwth.pacman.common.*;
+import de.rwth.pacman.heithoff1.common.OutgoingPaths;
+
+component CalcNewPosition {
+    ports
+      in Q(0m: 20m) currentX,
+      in Q(1m: 23m) currentY,
+      in Q(0m: 20m) oldX,
+      in Q(1m: 23m) oldY,
+      in Z^{22,19} map,
+      in Boolean searchFinished,
+      in Boolean positionIsSafe,
+      
+      out Q(0m: 20m) newX,
+      out Q(1m: 23m) newY,
+      out Z newDirection,
+      out Boolean safeFound;
+    
+    instance OutgoingPaths outgoingPaths;
+    connect currentX -> outgoingPaths.pacManX;
+    connect currentY -> outgoingPaths.pacManY;
+    connect map -> outgoingPaths.map;
+
+    instance Less isTopDir, isBottomDir, isLeftDir, isRightDir;
+    instance Not isNotTopDir, isNotBottomDir, isNotLeftDir, isNotRightDir;
+    connect currentX -> isLeftDir.in1, isRightDir.in2;
+    connect currentY -> isTopDir.in1, isBottomDir.in2;
+    connect oldX     -> isLeftDir.in2, isRightDir.in1;
+    connect oldY     -> isTopDir.in2, isBottomDir.in1;
+    connect isTopDir.out1 -> isNotTopDir.in1;
+    connect isBottomDir.out1 -> isNotBottomDir.in1;
+    connect isLeftDir.out1 -> isNotLeftDir.in1;
+    connect isRightDir.out1 -> isNotRightDir.in1;
+
+    instance And<2> xOff1Cond, xOff2Cond, yOff1Cond, yOff2Cond;
+    instance Switch xOff1, xOff2, yOff1, yOff2;
+    instance Constant<-1> minusOne;
+    instance Constant<0> zero;
+    instance Constant<1> one;
+    
+    connect outgoingPaths.isTopFree -> yOff1Cond.in1[1];
+    connect outgoingPaths.isBottomFree -> yOff2Cond.in1[1];
+    connect outgoingPaths.isLeftFree -> xOff1Cond.in1[1];
+    connect outgoingPaths.isRightFree -> xOff2Cond.in1[1];
+    connect isNotTopDir.out1 -> yOff1Cond.in1[2];
+    connect isNotBottomDir.out1 -> yOff2Cond.in1[2];
+    connect isNotLeftDir.out1 -> xOff1Cond.in1[2];
+    connect isNotRightDir.out1 -> xOff2Cond.in1[2];
+    connect yOff1Cond.out1 -> yOff1.cond;
+    connect yOff2Cond.out1 -> yOff2.cond;
+    connect xOff1Cond.out1 -> xOff1.cond;
+    connect xOff2Cond.out1 -> xOff2.cond;
+
+    connect minusOne.out1 -> yOff1.in1, xOff1.in1;
+    connect one.out1 -> yOff2.in1, xOff2.in1;
+    connect zero.out1 -> yOff2.in3, xOff2.in3;
+    connect yOff2.out1 -> yOff1.in3;
+    connect xOff2.out1 -> xOff1.in3;
+
+    instance Sum<2> newXSum, newYSum;
+    connect yOff1.out1 -> newYSum.in1[1];
+    connect yOff2.out1 -> newYSum.in1[2];
+    connect xOff1.out1 -> newXSum.in1[1];
+    connect xOff2.out1 -> newXSum.in1[2];
+
+    instance Switch newXSwitch, newYSwitch, safeFoundSwitch;
+    instance And<3> switchCond;
+    instance Not searchIsNotFinished;
+    instance Less noInterSectionFound;
+    instance Constant<2> two;
+    connect outgoingPaths.outgoingPaths -> noInterSectionFound.in1;
+    connect two.out1 -> noInterSectionFound.in2;
+    connect searchFinished -> searchIsNotFinished.in1;
+    connect searchIsNotFinished.out1 -> switchCond.in1[1];
+    connect positionIsSafe -> switchCond.in1[2];
+    connect noInterSectionFound.out1 -> switchCond.in1[3];
+
+    instance ConstantBoolean<0> constantFalse;
+    instance ConstantBoolean<1> constantTrue;
+    connect switchCond.out1 -> newXSwitch.cond, newYSwitch.cond, safeFoundSwitch.cond;
+    connect newXSum.out1 -> newXSwitch.in1;
+    connect newYSum.out1 -> newYSwitch.in1;
+    connect constantTrue.out1 -> safeFoundSwitch.in1;
+    connect currentX -> newXSwitch.in3;
+    connect currentY -> newYSwitch.in3;
+    connect constantTrue.out1 -> safeFoundSwitch.in3;
+    connect newXSwitch.out1 -> newX;
+    connect newYSwitch.out1 -> newY;
+    connect safeFoundSwitch.out1 -> safeFound;
+}

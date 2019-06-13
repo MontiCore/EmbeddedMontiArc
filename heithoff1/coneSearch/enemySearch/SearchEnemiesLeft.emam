@@ -1,0 +1,51 @@
+package de.rwth.pacman.heithoff1.coneSearch.enemySearch;
+
+import de.rwth.pacman.common.SplitArray;
+import de.rwth.pacman.common.Sum;
+
+component SearchEnemiesLeft {
+    ports
+      in Q(-1m: 19m) currentX,
+      in Q(0m: 22m) currentY,
+      in Q(-1m: 19m)^{1,4} ghostX,
+      in Q(0m: 22m)^{1,4} ghostY,
+      in Z^{1,4} ghostDirection,
+      in Boolean^{1,4} ghostEatable,
+      
+      out Z val;
+
+    instance SearchEnemyLeft search1, search2, search3, search4;
+    instance SplitArray<4> splitGhostX, splitGhostY, splitGhostDirection, splitGhostEatable;
+    instance Sum<4> sum;
+    
+    connect ghostX -> splitGhostX.in1;
+    connect ghostY -> splitGhostY.in1;
+    connect ghostDirection -> splitGhostDirection.in1;
+    connect ghostEatable -> splitGhostEatable.in1;
+
+    connect splitGhostX.out1[1] -> search1.ghostX;
+    connect splitGhostX.out1[2] -> search2.ghostX;
+    connect splitGhostX.out1[3] -> search3.ghostX;
+    connect splitGhostX.out1[4] -> search4.ghostX;
+    connect splitGhostY.out1[1] -> search1.ghostY;
+    connect splitGhostY.out1[2] -> search2.ghostY;
+    connect splitGhostY.out1[3] -> search3.ghostY;
+    connect splitGhostY.out1[4] -> search4.ghostY;
+    connect splitGhostDirection.out1[1] -> search1.ghostDirection;
+    connect splitGhostDirection.out1[2] -> search2.ghostDirection;
+    connect splitGhostDirection.out1[3] -> search3.ghostDirection;
+    connect splitGhostDirection.out1[4] -> search4.ghostDirection;
+    connect splitGhostEatable.out1[1] -> search1.ghostEatable;
+    connect splitGhostEatable.out1[2] -> search2.ghostEatable;
+    connect splitGhostEatable.out1[3] -> search3.ghostEatable;
+    connect splitGhostEatable.out1[4] -> search4.ghostEatable;
+
+    connect currentX -> search1.currentX, search2.currentX, search3.currentX, search4.currentX;
+    connect currentY -> search1.currentY, search2.currentY, search3.currentY, search4.currentY;
+    
+    connect search1.val -> sum.in1[1];
+    connect search2.val -> sum.in1[2];
+    connect search3.val -> sum.in1[3];
+    connect search4.val -> sum.in1[4];
+    connect sum.out1 -> val;
+}

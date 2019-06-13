@@ -1,0 +1,54 @@
+package de.rwth.pacman.heithoff1.coneSearch.enemySearch;
+
+import de.rwth.pacman.common.SplitArray;
+import de.rwth.pacman.common.Sum;
+
+component SearchEnemiesTop {
+    ports
+      in Q(-1m: 19m)^{1,4} ghostX,
+      in Q(0m: 22m)^{1,4} ghostY,
+      in Q(-1m: 19m) currentX,
+      in Q(0m: 22m) currentY,
+      in Z^{1,4} ghostDirection,
+      in Boolean^{1,4} ghostEatable,
+      
+      out Z val;
+      
+    instance SearchEnemyTop search11, search21, search31, search41;
+    instance SplitArray<4> splitGhostX, splitGhostY, splitGhostDirection, splitGhostEatable;
+    instance Sum<4> sum1;
+    
+    connect ghostX -> splitGhostX.in1;
+    connect ghostY -> splitGhostY.in1;
+    connect ghostDirection -> splitGhostDirection.in1;
+    connect ghostEatable -> splitGhostEatable.in1;
+
+    connect splitGhostX.out1[1] -> search11.ghostX;
+    connect splitGhostX.out1[2] -> search21.ghostX;
+    connect splitGhostX.out1[3] -> search31.ghostX;
+    connect splitGhostX.out1[4] -> search41.ghostX;
+    connect splitGhostY.out1[1] -> search11.ghostY;
+    connect splitGhostY.out1[2] -> search21.ghostY;
+    connect splitGhostY.out1[3] -> search31.ghostY;
+    connect splitGhostY.out1[4] -> search41.ghostY;
+    connect splitGhostDirection.out1[1] -> search11.ghostDirection;
+    connect splitGhostDirection.out1[2] -> search21.ghostDirection;
+    connect splitGhostDirection.out1[3] -> search31.ghostDirection;
+    connect splitGhostDirection.out1[4] -> search41.ghostDirection;
+    connect splitGhostEatable.out1[1] -> search11.ghostEatable;
+    connect splitGhostEatable.out1[2] -> search21.ghostEatable;
+    connect splitGhostEatable.out1[3] -> search31.ghostEatable;
+    connect splitGhostEatable.out1[4] -> search41.ghostEatable;
+
+    connect currentX -> search11.currentX, search21.currentX, search31.currentX, search41.currentX;
+    connect currentY -> search11.currentY, search21.currentY, search31.currentY, search41.currentY;
+    connect ghostNormalWeight -> search11.ghostNormalWeight, search21.ghostNormalWeight, search31.ghostNormalWeight, search41.ghostNormalWeight;
+    connect ghostFacingPacManWight -> search11.ghostFacingPacManWight, search21.ghostFacingPacManWight, search31.ghostFacingPacManWight, search41.ghostFacingPacManWight;
+    connect ghostEatableWeight -> search11.ghostEatableWeight, search21.ghostEatableWeight, search31.ghostEatableWeight, search41.ghostEatableWeight;
+
+    connect search11.val -> sum1.in1[1];
+    connect search21.val -> sum1.in1[2];
+    connect search31.val -> sum1.in1[3];
+    connect search41.val -> sum1.in1[4];
+    connect sum1.out1 -> val;
+}

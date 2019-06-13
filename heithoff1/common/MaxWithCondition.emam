@@ -1,0 +1,23 @@
+package de.rwth.pacman.heithoff1.common;
+
+component MaxWithCondition<N1 n = 2> {
+    ports
+		in Q in1[n],
+        in Boolean cond[n],
+        out Z maxIndex,
+		out Q maxValue;
+
+	implementation Math{
+	    Q maxVal = -1;
+        Z maxIn = 0;
+
+	    for i=1:n
+	        if (in1(i) > maxVal) && cond(i)
+                maxVal = in1(i);
+                maxIn  = i;
+            end
+	    end
+	    maxIndex = maxIn;
+        maxValue = maxVal;
+	}
+}

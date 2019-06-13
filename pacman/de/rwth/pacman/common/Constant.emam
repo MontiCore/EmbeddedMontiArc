@@ -1,0 +1,9 @@
+package de.rwth.pacman.common;
+
+component Constant<Q n = 0> {
+    port out Q out1;
+
+    implementation Math {
+        out1 = n;
+    }
+}

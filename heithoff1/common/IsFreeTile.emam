@@ -1,0 +1,41 @@
+package de.rwth.pacman.heithoff1.common;
+
+import de.rwth.pacman.common.PickFromMatrix;
+import de.rwth.pacman.common.Constant;
+import de.rwth.pacman.common.Equals;
+import de.rwth.pacman.common.Not;
+import de.rwth.pacman.common.And;
+
+component IsFreeTile {
+    ports
+        in Z(-1m: 19m) indexX,
+        in Z(0m: 22m) indexY,
+        in Z^{22,19} map,
+        
+        out Boolean isFreeTile;
+    
+    instance PickFromMatrix<22,19> picker;
+    
+    connect map -> picker.mat;
+    connect indexX -> picker.indexX;
+    connect indexY -> picker.indexY;
+    
+    instance Constant<0> zero;
+    instance Constant<3> three;
+    instance Equals eq1, eq2;
+    
+    connect picker.out1 -> eq1.in1, eq2.in1;
+    connect zero.out1 -> eq1.in2;
+    connect three.out1-> eq2.in2;
+
+    instance Not n1, n2;
+
+    connect eq1.out1 -> n1.in1;
+    connect eq2.out1 -> n2.in1;
+
+    instance And<2> and;
+
+    connect n1.out1 -> and.in1[1];
+    connect n2.out1 -> and.in1[2];
+    connect and.out1 -> isFreeTile;
+}

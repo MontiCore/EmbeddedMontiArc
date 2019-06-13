@@ -1,0 +1,13 @@
+package de.rwth.pacman.common;
+
+component Delay<Q val = 0> {
+	port 
+		in Q in1,
+		out Q out1;
+	
+	implementation Math {
+	   static Q prev = val;
+	   out1 = prev;
+	   prev = in1;
+	}
+}

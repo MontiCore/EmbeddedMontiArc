@@ -1,0 +1,12 @@
+package de.rwth.pacman.common;
+
+component GreaterEquals {
+	port
+		in Q in1,
+		in Q in2,
+		out Boolean out1;
+
+	implementation Math{
+	    out1=in1>=in2;
+	}
+}

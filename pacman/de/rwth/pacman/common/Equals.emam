@@ -1,0 +1,12 @@
+package de.rwth.pacman.common;
+
+component Equals {
+	port
+		in Q in1,
+		in Q in2,
+		out Boolean out1;
+
+		implementation Math{
+		    out1=equal(in1,in2);
+		}
+}

@@ -1,0 +1,66 @@
+package de.rwth.pacman.heithoff1.decision.verifyDirection;
+
+import de.rwth.pacman.heithoff1.decision.verifyDirection.OpposingVerticalCondition;
+import de.rwth.pacman.heithoff1.decision.verifyDirection.OpposingHorizontalCondition;
+
+import de.rwth.pacman.common.Switch;
+import de.rwth.pacman.common.Constant;
+import de.rwth.pacman.common.Delay;
+import de.rwth.pacman.common.TrashNumber;
+
+component VerifyDirection {
+    ports
+      in Z tryDirection,
+      in Boolean interSection,
+      in Boolean topSafe,
+      in Boolean bottomSafe,
+      in Boolean leftSafe,
+      in Boolean rightSafe,
+      in Boolean topPossible,
+      in Boolean bottomPossible,
+      in Boolean leftPossible,
+      in Boolean rightPossible,
+      
+      out Z newPacManDirection;
+      
+    // Should be Delay
+    // instance Delay<-1> lastDirection;
+    instance Constant<2> lastDirection;
+    instance TrashNumber lastDirectionDelay;
+    instance Switch newDir;
+
+    connect newDir.out1 -> newPacManDirection, lastDirectionDelay.in1;
+    connect tryDirection -> newDir.in1;
+    connect interSection -> newDir.cond;
+
+    instance Switch opposingVertical;
+    instance Switch opposingHorizontal;
+    
+    connect opposingVertical.out1 -> newDir.in3;
+    connect opposingHorizontal.out1 -> opposingVertical.in3;
+    connect tryDirection -> opposingHorizontal.in3;
+
+    instance OpposingVerticalCondition vC;
+    instance OpposingHorizontalCondition hC;
+
+    connect tryDirection -> vC.tryDirection, hC.tryDirection;
+    connect lastDirection.out1 -> vC.lastDirection, hC.lastDirection;
+    connect vC.cond -> opposingVertical.cond;
+    connect hC.cond -> opposingHorizontal.cond;
+
+    instance VerticalValue verticalValue;
+    instance HorizontalValue horizontalValue;
+    connect tryDirection   -> verticalValue.tryDirection, horizontalValue.tryDirection;
+    connect topSafe        -> verticalValue.topSafe, horizontalValue.topSafe;
+    connect bottomSafe     -> verticalValue.bottomSafe, horizontalValue.bottomSafe;
+    connect leftSafe       -> verticalValue.leftSafe, horizontalValue.leftSafe;
+    connect rightSafe      -> verticalValue.rightSafe, horizontalValue.rightSafe;
+    connect topPossible    -> verticalValue.topPossible, horizontalValue.topPossible;
+    connect bottomPossible -> verticalValue.bottomPossible, horizontalValue.bottomPossible;
+    connect leftPossible   -> verticalValue.leftPossible, horizontalValue.leftPossible;
+    connect rightPossible  -> verticalValue.rightPossible, horizontalValue.rightPossible;
+
+    connect verticalValue.newPacManDirection -> opposingVertical.in1;
+    connect horizontalValue.newPacManDirection -> opposingHorizontal.in1;
+
+}

@@ -1,0 +1,13 @@
+package de.rwth.pacman.common;
+
+/* The Saturation block imposes upper and lower bounds on a signal. When the input signal is within the range specified by the Lower limit and Upper limit parameters, the input signal passes through unchanged. When the input signal is outside these bounds, the signal is clipped to the upper or lower bound.
+*/
+component Saturation <Q minValue = 0, Q maxValue = 1>{
+	port 
+		in Q in1,
+		out Q out1;
+   
+    implementation Math {
+       out1 = min(max(in1, minValue), maxValue);
+    }
+}

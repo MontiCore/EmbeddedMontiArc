@@ -1,0 +1,57 @@
+package de.rwth.pacman.heithoff1.BFS.single;
+
+import de.rwth.pacman.common.*;
+
+component ControlFlow {
+    ports
+      in Q(0m: 20m) currentX,
+      in Q(1m: 23m) currentY,
+      in Boolean searchFinished,
+      in Boolean safeFromSearchFinished,
+      in Boolean safeFoundFromSearchFinished,
+      in Z oldDirection,
+      in Boolean positionIsSafe,
+      in Boolean safeFoundFromNewPosition,
+      in Q(0m: 20m) newXFromNewPosition,
+      in Q(1m: 23m) newYFromNewPosition,
+      in Z newDirectionFromNewPosition,
+      
+      out Q(0m: 20m) newX,
+      out Q(1m: 23m) newY,
+      out Boolean safeFound,
+      out Boolean safe,
+      out Z newDirection;
+
+    instance ConstantBoolean<0> constantFalse;
+    instance ConstantBoolean<1> constantTrue;
+    instance SwitchBoolean safeSwitch1, safeSwitch2, safeFoundSwitch1, safeFoundSwitch2;
+    instance Switch newXSwitch, newYSwitch, newDirectionSwitch;
+    instance Not positionIsNotSafe;
+    instance Or<2> or1;
+
+    connect searchFinished -> safeSwitch1.cond, safeFoundSwitch1.cond, or1.in1[1];
+    connect positionIsSafe -> positionIsNotSafe.in1;
+    connect positionIsNotSafe.out1 -> safeSwitch2.cond, safeFoundSwitch2.cond, or1.in1[2];
+    connect or1.out1 -> newXSwitch.cond, newYSwitch.cond, newDirectionSwitch.cond;
+    
+    connect safeSwitch2.out1 -> safeSwitch1.in3;
+    connect safeFoundSwitch2.out1 -> safeFoundSwitch1.in3;
+    connect safeSwitch1.out1 -> safe;
+    connect safeFoundSwitch1.out1 -> safeFound;
+    connect newXSwitch.out1 -> newX;
+    connect newYSwitch.out1 -> newY;
+    connect newDirectionSwitch.out1 -> newDirection;
+
+    connect oldDirection -> newDirectionSwitch.in1;
+    connect newDirectionFromNewPosition -> newDirectionSwitch.in3;
+    connect currentX -> newXSwitch.in1;
+    connect newXFromNewPosition -> newXSwitch.in3;
+    connect currentY -> newYSwitch.in1;
+    connect newYFromNewPosition -> newYSwitch.in3;
+
+    connect safeFromSearchFinished -> safeSwitch1.in1;
+    connect safeFoundFromSearchFinished -> safeFoundSwitch1.in1;
+    connect constantFalse.out1 -> safeSwitch1.in3, safeFoundSwitch1.in3;
+    connect constantTrue.out1 -> safeSwitch2.in3;
+    connect safeFoundFromNewPosition -> safeFoundSwitch2.in3;
+}

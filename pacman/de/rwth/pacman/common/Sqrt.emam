@@ -1,0 +1,11 @@
+package de.rwth.pacman.common;
+
+component Sqrt {
+	port 
+		in Q in1,
+		out Q out1;
+	
+	implementation Math {
+	   out1 = sqrt(in1);
+	}
+}

@@ -1,0 +1,60 @@
+package de.rwth.pacman.heithoff1.coneSearch.coinSearch;
+
+import de.rwth.pacman.common.Sum;
+
+component SearchRow<N1 indexY = 1, B isDown, B isRight> {
+    ports
+      in Z^{22,19} map,
+      in Q(-1m: 19m) currentX,
+      in Q(0m: 22m) currentY,
+      
+      out Q val;
+    
+    instance SearchPosition<indexY, 1, isDown, isRight>  p1;
+    instance SearchPosition<indexY, 2, isDown, isRight>  p2;
+    instance SearchPosition<indexY, 3, isDown, isRight>  p3;
+    instance SearchPosition<indexY, 4, isDown, isRight>  p4;
+    instance SearchPosition<indexY, 5, isDown, isRight>  p5;
+    instance SearchPosition<indexY, 6, isDown, isRight>  p6;
+    instance SearchPosition<indexY, 7, isDown, isRight>  p7;
+    instance SearchPosition<indexY, 8, isDown, isRight>  p8;
+    instance SearchPosition<indexY, 9, isDown, isRight>  p9;
+    instance SearchPosition<indexY, 10, isDown, isRight> p10;
+    instance SearchPosition<indexY, 11, isDown, isRight> p11;
+    instance SearchPosition<indexY, 12, isDown, isRight> p12;
+    instance SearchPosition<indexY, 13, isDown, isRight> p13;
+    instance SearchPosition<indexY, 14, isDown, isRight> p14;
+    instance SearchPosition<indexY, 15, isDown, isRight> p15;
+    instance SearchPosition<indexY, 16, isDown, isRight> p16;
+    instance SearchPosition<indexY, 17, isDown, isRight> p17;
+    instance SearchPosition<indexY, 18, isDown, isRight> p18;
+    instance SearchPosition<indexY, 19, isDown, isRight> p19;
+
+    connect map -> p1.map, p2.map, p3.map, p4.map, p5.map, p6.map, p7.map, p8.map, p9.map, p10.map, p11.map, p12.map, p13.map, p14.map, p15.map, p16.map, p17.map, p18.map, p19.map;
+    connect currentX -> p1.currentX, p2.currentX, p3.currentX, p4.currentX, p5.currentX, p6.currentX, p7.currentX, p8.currentX, p9.currentX, p10.currentX, p11.currentX, p12.currentX, p13.currentX, p14.currentX, p15.currentX, p16.currentX, p17.currentX, p18.currentX, p19.currentX;
+    connect currentY -> p1.currentY, p2.currentY, p3.currentY, p4.currentY, p5.currentY, p6.currentY, p7.currentY, p8.currentY, p9.currentY, p10.currentY, p11.currentY, p12.currentY, p13.currentY, p14.currentY, p15.currentY, p16.currentY, p17.currentY, p18.currentY, p19.currentY;
+    
+    instance Sum<19> sum;
+    
+    connect p1.val  -> sum.in1[1];
+    connect p2.val  -> sum.in1[2];
+    connect p3.val  -> sum.in1[3];
+    connect p4.val  -> sum.in1[4];
+    connect p5.val  -> sum.in1[5];
+    connect p6.val  -> sum.in1[6];
+    connect p7.val  -> sum.in1[7];
+    connect p8.val  -> sum.in1[8];
+    connect p9.val  -> sum.in1[9];
+    connect p10.val -> sum.in1[10];
+    connect p11.val -> sum.in1[11];
+    connect p12.val -> sum.in1[12];
+    connect p13.val -> sum.in1[13];
+    connect p14.val -> sum.in1[14];
+    connect p15.val -> sum.in1[15];
+    connect p16.val -> sum.in1[16];
+    connect p17.val -> sum.in1[17];
+    connect p18.val -> sum.in1[18];
+    connect p19.val -> sum.in1[19];
+
+    connect sum.out1 -> val;
+}

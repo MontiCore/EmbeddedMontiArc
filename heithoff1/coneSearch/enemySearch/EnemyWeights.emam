@@ -1,0 +1,18 @@
+package de.rwth.pacman.heithoff1.coneSearch.enemySearch;
+
+import de.rwth.pacman.common.Constant;
+
+component EnemyWeights {
+    ports
+      out Z normal,
+      out Z towardsPacMan,
+      out Z eatable;
+
+    instance Constant<-4> normalWeight;
+    instance Constant<-10> towardsPacManWeight;
+    instance Constant<5000> eatableWeight;
+      
+    connect normalWeight.out1 -> normal;
+    connect towardsPacManWeight.out1 -> towardsPacMan;
+    connect eatableWeight.out1 -> eatable;
+}

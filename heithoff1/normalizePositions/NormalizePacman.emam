@@ -1,0 +1,21 @@
+package de.rwth.pacman.heithoff1.normalizePositions;
+
+import de.rwth.pacman.common.Sum;
+import de.rwth.pacman.common.Constant;
+
+component NormalizePacman {
+    ports
+      in Q(-1m: 19m) pacManX,
+      in Q(0m: 22m) pacManY,
+      out Q(-1m: 19m) newPacManX,
+      out Q(0m: 22m) newPacManY;
+      
+    instance Increment<1> incr1;
+    instance Increment<1> incr2;
+
+    connect pacManX -> incr1.in1;
+    connect pacManY -> incr2.in1;
+
+    connect incr1.out1 -> newPacManX;
+    connect incr2.out1 -> newPacManY;
+}

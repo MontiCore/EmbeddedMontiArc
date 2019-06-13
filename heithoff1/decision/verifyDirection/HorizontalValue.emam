@@ -1,0 +1,57 @@
+package de.rwth.pacman.heithoff1.decision.verifyDirection;
+
+import de.rwth.pacman.common.Switch;
+import de.rwth.pacman.common.And;
+import de.rwth.pacman.common.Equals;
+import de.rwth.pacman.common.Constant;
+
+component HorizontalValue {
+    ports
+      in Z tryDirection,
+      in Boolean topSafe,
+      in Boolean bottomSafe,
+      in Boolean leftSafe,
+      in Boolean rightSafe,
+      in Boolean topPossible,
+      in Boolean bottomPossible,
+      in Boolean leftPossible,
+      in Boolean rightPossible,
+      
+      out Z newPacManDirection;
+
+    instance And<2> condTop, condBottom, condLeft, condLeft1, condRight;
+    instance Equals condLeft2;
+    instance Constant<0> topDirection;
+    instance Constant<1> bottomDirection;
+    instance Constant<2> leftDirection;
+    instance Constant<3> rightDirection;
+    connect topSafe        -> condTop.in1[1];
+    connect topPossible    -> condTop.in1[2];
+    connect bottomSafe     -> condBottom.in1[1];
+    connect bottomPossible -> condBottom.in1[2];
+    connect leftSafe       -> condLeft1.in1[1];
+    connect leftPossible   -> condLeft1.in1[2];
+    connect tryDirection   -> condLeft2.in1;
+    connect rightDirection.out1 -> condLeft2.in2;
+    connect condLeft1.out1  -> condLeft.in1[1];
+    connect condLeft2.out1  -> condLeft.in1[2];
+    connect rightSafe      -> condRight.in1[1];
+    connect rightPossible  -> condRight.in1[2];
+
+    instance Switch chooseTop, chooseBottom, chooseLeft, chooseRight;
+    connect condTop.out1 -> chooseTop.cond;
+    connect condBottom.out1 -> chooseBottom.cond;
+    connect condLeft.out1 -> chooseLeft.cond;
+    connect condRight.out1 -> chooseRight.cond;
+
+    connect leftDirection.out1 -> chooseLeft.in1;
+    connect chooseLeft.out1 -> chooseBottom.in3;
+    connect rightDirection.out1 -> chooseRight.in1;
+    connect chooseRight.out1 -> chooseLeft.in3;
+    connect topDirection.out1 -> chooseTop.in1;
+    connect chooseTop.out1 -> newPacManDirection;
+    connect bottomDirection.out1 -> chooseBottom.in1;
+    connect chooseBottom.out1 -> chooseTop.in3;
+    connect tryDirection -> chooseRight.in3;
+      
+}

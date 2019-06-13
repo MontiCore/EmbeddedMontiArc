@@ -1,0 +1,48 @@
+package de.rwth.pacman.heithoff1.BFS.single;
+
+import de.rwth.pacman.common.*;
+
+component SafePositionOneGhost {
+    ports
+      in Q(0m: 20m) ghostX,
+      in Q(1m: 23m) ghostY,
+      in Z(0 : 1 : 3) ghostDirection,
+      in Boolean ghostEatable,
+      in Q(0m: 20m) currentX,
+      in Q(1m: 23m) currentY,
+      in Z oldDirection,
+      
+      out Boolean safe;
+
+    instance Round xG, yG;
+    instance Round xC, yC;
+    instance Equals xMatch, yMatch, pointsAway;
+    instance Not isNotEatable, pointsNotAway;
+    instance And<4> notSafeCond;
+    instance SwitchBoolean isNotSafe;
+    instance ConstantBoolean<0> constantFalse;
+    instance ConstantBoolean<1> constantTrue;
+    
+    connect ghostX -> xG.in1;
+    connect ghostY -> yG.in1;
+    connect currentX -> xC.in1;
+    connect currentY -> yC.in1;
+    
+    connect xG.out1 -> xMatch.in1;
+    connect xC.out1 -> xMatch.in2;
+    connect yG.out1 -> yMatch.in1;
+    connect yC.out1 -> yMatch.in2;
+    connect ghostDirection -> pointsAway.in1;
+    connect oldDirection -> pointsAway.in1;
+    connect pointsAway.out1 -> pointsNotAway.in1;
+    connect ghostEatable -> isNotEatable.in1;
+
+    connect xMatch.out1 -> notSafeCond.in1[1];
+    connect yMatch.out1 -> notSafeCond.in1[2];
+    connect pointsNotAway.out1 -> notSafeCond.in1[3];
+    connect isNotEatable.out1 -> notSafeCond.in1[4];
+
+    connect notSafeCond.out1 -> isNotSafe.cond;
+    connect constantFalse.out1 -> isNotSafe.in1;
+    connect constantTrue.out1 -> isNotSafe.in3;
+}

@@ -1,0 +1,44 @@
+package de.rwth.pacman.heithoff1.BFS.single;
+
+import de.rwth.pacman.common.*;
+
+component ReenterMap {
+    ports
+      in Q(0m: 20m) currentX,
+      in Q(1m: 23m) currentY,
+      in Q(0m: 20m) oldX,
+      in Q(1m: 23m) oldY,
+      
+      out Q(0m: 20m) newCurrentX,
+      out Q(1m: 23m) newCurrentY,
+      out Q(0m: 20m) newOldX,
+      out Q(1m: 23m) newOldY;
+
+    instance Switch newCurrentXSwitch1, newCurrentXSwitch2, newOldXSwitch1, newOldXSwitch2;
+    instance Less leftOut, rightOut;
+    instance Constant<1> lefterBorder;
+    instance Constant<2> leftBorder;
+    instance Constant<18> rightBorder;
+    instance Constant<19> righterBorder;
+    
+    connect currentY -> newCurrentY;
+    connect oldY -> newOldY;
+
+    connect currentX -> leftOut.in1;
+    connect leftBorder.out1 -> leftOut.in2;
+    connect currentX -> rightOut.in2;
+    connect rightBorder.out1 -> rightOut.in1;
+    connect leftOut.out1 -> newCurrentXSwitch1.cond, newOldXSwitch1.cond;
+    connect rightOut.out1 -> newCurrentXSwitch2.cond, newOldXSwitch2.cond;
+    connect newCurrentXSwitch2.out1 -> newCurrentXSwitch1.in3;
+    connect newCurrentXSwitch1.out1 -> newCurrentX;
+    connect newOldXSwitch2.out1 -> newOldXSwitch1.in3;
+    connect newOldXSwitch1.out1 -> newOldX;
+
+    connect rightBorder.out1 -> newCurrentXSwitch1.in1;
+    connect righterBorder.out1 -> newOldXSwitch1.in1;
+    connect leftBorder.out1 -> newCurrentXSwitch2.in1;
+    connect lefterBorder.out1 -> newOldXSwitch2.in1;
+    connect currentX -> newCurrentXSwitch2.in3;
+    connect oldX -> newOldXSwitch2.in3;
+}

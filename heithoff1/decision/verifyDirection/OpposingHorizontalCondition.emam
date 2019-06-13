@@ -1,0 +1,32 @@
+package de.rwth.pacman.heithoff1.decision.verifyDirection;
+
+import de.rwth.pacman.common.And;
+import de.rwth.pacman.common.Or;
+import de.rwth.pacman.common.Constant;
+import de.rwth.pacman.common.Equals;
+
+component OpposingHorizontalCondition {
+    ports
+        in Z tryDirection,
+        in Z lastDirection,
+        out Boolean cond;
+
+    instance Or<2> condition;
+    instance And<2> condition1, condition2;
+    instance Equals condition11, condition12, condition21, condition22;
+    instance Constant<2> leftDir;
+    instance Constant<3> rightDir;
+
+    connect condition.out1 -> cond;
+    connect condition1.out1 -> condition.in1[1];
+    connect condition2.out1 -> condition.in1[2];
+    connect condition11.out1 -> condition1.in1[1];
+    connect condition12.out1 -> condition1.in1[2];
+    connect condition21.out1 -> condition2.in1[1];
+    connect condition22.out1 -> condition2.in1[2];
+    
+    connect tryDirection  -> condition11.in1, condition21.in1;
+    connect leftDir.out1  -> condition11.in2, condition22.in2;
+    connect lastDirection -> condition12.in1, condition22.in1;
+    connect rightDir.out1 -> condition12.in2, condition21.in2;
+}
