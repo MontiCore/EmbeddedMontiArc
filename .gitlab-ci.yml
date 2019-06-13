@@ -21,7 +21,7 @@
 
 stages:
 - linux
-- deply
+- deploy
 
 before_script:
   - git config user.name "gitlab-ci"
