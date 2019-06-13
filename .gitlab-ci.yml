@@ -1,0 +1,10 @@
+stages:
+- linux
+
+BranchJobLinux:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2someip
+  script:
+  - mvn clean install -s settings.xml
+  except:
+  - master
