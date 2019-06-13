@@ -71,6 +71,7 @@ public class CoCoTestResultPrinter {
 
     public static void printTestResults(List<CheckCoCoResult> testResults, String path, boolean merge, boolean group) {
         if (testResults.size() == 0) return;
+        progress = 0;
         int depth = group ? 0 : 1;
         if (merge) {
             try {
@@ -101,6 +102,7 @@ public class CoCoTestResultPrinter {
         int z = 0;
         boolean first = true;
         for (CheckCoCoResult testResult : testResults) {
+            z++;
             if (testResult == null) continue;
             int i = 0;
 
@@ -153,7 +155,7 @@ public class CoCoTestResultPrinter {
             ip.unindent();
             ip.print("}");
 
-            int currentProgress = (z / testResults.size()) * 100;
+            int currentProgress = (z * 100 / testResults.size());
             if (currentProgress > progress) {
                 for (int j = 0; j < currentProgress - progress; j++)
                     CustomPrinter.print("|");

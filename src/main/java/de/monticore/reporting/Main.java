@@ -42,14 +42,18 @@ public class Main {
             CheckTests tewt = new CheckTests();
             CustomPrinter.println("\n<================Test Tests================>\n");
             List<CheckTestResult> testResults = tewt.testTestsEndWithTest(new File(context.getProjectRoot()));
+            CustomPrinter.println("SUCCESS\n");
             CustomPrinter.println("\n<============Write Test Results============>\n");
             TestsTestResultPrinter.printTestsEndWithTestResults(testResults, context.getOutput() + "dataEWT.json", context.isMerge());
+            CustomPrinter.println("SUCCESS\n");
         }
         if (context.isReportGrammar()) {
             CustomPrinter.println("\n<==============Grammar Report==============>\n");
             ReportGrammar.reportGrammars(context, context.getOutput() + "dataGrammars.json", context.isMerge());
+            CustomPrinter.println("SUCCESS\n");
         }
 
+        CustomPrinter.println("\n<===========Copy Data Repository===========>\n");
         File dataDir = new File("report/data");
         if (dataDir.exists()) {
             try {
@@ -65,6 +69,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        CustomPrinter.println("SUCCESS\n");
     }
 
     public static class ReportContext {
