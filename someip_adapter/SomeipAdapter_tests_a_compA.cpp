@@ -6,6 +6,8 @@
 #define SAMPLE_EVENT_ID 0x2345
 #define SAMPLE_EVENTGROUP_ID 0x1456
 
+tests_a_compA* component;
+
 std::shared_ptr<vsomeip::application> _clockSubscriber;
 
 std::shared_ptr<vsomeip::application> _echoPublisher;
@@ -14,12 +16,14 @@ SomeipAdapter_tests_a_compA::SomeipAdapter_tests_a_compA() {}
 
 void SomeipAdapter_tests_a_compA::init(tests_a_compA *comp)
 {
+	this->component = comp;
+	
     _clockSubscriber = vsomeip::runtime::get()->create_application("Subscriber");
     _clockSubscriber->init();
-    _clockSubscriber->register_availability_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, on_availability);
+    //_clockSubscriber->register_availability_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, on_availability);
     _clockSubscriber->request_service(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID);
 
-    _clockSubscriber->register_message_handler(vsomeip::ANY_SERVICE, vsomeip::ANY_INSTANCE, vsomeip::ANY_METHOD, on_message);
+    _clockSubscriber->register_message_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_METHOD_ID, on_message);
 
   	std::unique_lock<std::mutex> its_lock(mutex);
 	
@@ -38,18 +42,10 @@ void SomeipAdapter_tests_a_compA::on_message(const std::shared_ptr<vsomeip::mess
     
     double final = *((double*)its_payload->get_data());
 
-    std::cout << "SERVICE: Received message with Client/Session ["
+    std::cout << "SERVICE: Received message from ["
         << std::setw(4) << std::setfill('0') << std::hex << _request->get_client() << "/"
         << std::setw(4) << std::setfill('0') << std::hex << _request->get_session() << "]: "
         << final << std::endl;
-}
-
-void SomeipAdapter_tests_a_compA::on_availability(vsomeip::service_t _service, vsomeip::instance_t _instance, bool _is_available) {
-    std::cout << "CLIENT: Service ["
-            << std::setw(4) << std::setfill('0') << std::hex << _service << "." << _instance
-            << "] is "
-            << (_is_available ? "available." : "NOT available.")
-            << std::endl;
 }
 
 void SomeipAdapter_tests_a_compA::publish_echoPublisher()
@@ -58,7 +54,7 @@ void SomeipAdapter_tests_a_compA::publish_echoPublisher()
    _echoPublisher->init();
    //app->register_message_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_METHOD_ID, on_message);
     
-   double d = 2.5;
+   double d = component->rosOut;
    uint8_t *byteArray = (uint8_t*)&d;
   
    vsomeip::byte_t *p;

@@ -8,8 +8,8 @@ using namespace std;
 class tests_a_compA {
     
 public:
-    double rosIn = 0;
-    double rosOut = 0;
+    double rosIn = 2.5;
+    double rosOut = 3.14;
 };
 
 #endif /* tests_a_compA_h */
