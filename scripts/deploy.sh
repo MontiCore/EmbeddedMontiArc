@@ -5,8 +5,8 @@ SOURCE_BRANCH="master"
 TARGET_BRANCH="report"
 
 # Save some useful information
-REPO=`git config remote.origin.url`
-SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
+REPO='https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/reporting'
+PUSH_REPO='https://${GIT_USERNAME}:${DEPLOY_KEY}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/reporting'
 SHA=`git rev-parse --verify HEAD`
 
 if [ -d "out" ]
@@ -27,5 +27,5 @@ mv ../report/data* report/
 git add report/.
 git commit -m "Deploy reports to report branch: ${SHA}"
 
-git push $SSH_REPO $TARGET_BRANCH
+git push $PUSH_REPO $TARGET_BRANCH
 cd ..

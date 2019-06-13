@@ -2,7 +2,7 @@
 #!/bin/sh
 BASE_PATH="https://git.rwth-aachen.de/"
 
-GITLAB_PRIVATE_TOKEN="zXKxi79T9iymW-FEHQgA"
+GITLAB_PRIVATE_TOKEN=$DEPLOY_KEY
 GROUP_NAME=$1
 
 if [ ! -d $GROUP_NAME ]
