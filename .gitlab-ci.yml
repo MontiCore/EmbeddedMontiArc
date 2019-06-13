@@ -31,6 +31,7 @@ masterJobLinux:
     - ./scripts/syncProjects.sh "EmbeddedMontiArc"
     - mvn clean install --settings settings.xml
     - java -jar target/reporting-0.9-jar-with-dependencies.jar "EmbeddedMontiArc" "-testCoCos" "-timeout" "10" "-testTests" "-grammar"
+    - echo "Report ready"
   only:
   - master
 
