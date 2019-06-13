@@ -17,10 +17,8 @@ import java.util.*;
 
 public class CheckCoCos {
 
-    public List<CheckCoCoResult> testAllCocos(File root, String... fileType) {
+    public List<CheckCoCoResult> testAllCocos(File root, int timeout, String... fileType) {
         List<CheckCoCoResult> testResults = new LinkedList<>();
-
-        CustomPrinter.init();
 
         Map<File, List<File>> filesMap = new HashMap<>();
         for (File projectDir : root.listFiles()) {
@@ -42,22 +40,17 @@ public class CheckCoCos {
                 e.printStackTrace();
             }
 
-            // Save original file
-//            for(File file: filesMap.get(projectDir)){
-//                String oldFilePath = file.getAbsolutePath();
-//                String newFilePath = oldFilePath + "_temp";
-//                file.renameTo(new File(newFilePath));
-//                RewriteWithoutArray.rewrite(newFilePath, oldFilePath);
-//            }
-
             for(File file: filesMap.get(projectDir)) {
                 CustomPrinter.println("[" + getFormattedNumber(z, max) + "/" + max + "]" +
                         " Test CoCos of file \"" + file.getAbsolutePath());
                 z++;
+                if(z == 70) {
+                    int i = 9;
+                }
                 CheckCoCo ccT = new CheckCoCo();
                 CheckCoCoResult testResult = null;
 
-                testResult = ccT.testCoCos(file.getAbsolutePath());
+                testResult = ccT.testCoCos(file.getAbsolutePath(), timeout);
 
                 testResult.setModelFile(file);
                 String relativeProject = projectDir.getName();
@@ -70,35 +63,9 @@ public class CheckCoCos {
 
                 testResults.add(testResult);
             }
-
-            // Reset original file
-//            for(File file: filesMap.get(projectDir)){
-//                File newFile = new File(file.getAbsolutePath() + "_temp");
-//                if(file.exists() && newFile.exists())
-//                    file.delete();
-//                newFile.renameTo(file);
-//            }
         }
 
-        CustomPrinter.end();
-
         return testResults;
-    }
-
-    private String getVFSTag(File project, File file, String zipName) {
-        String urlToZip;
-        String zipName_;
-        if (zipName == null)
-            zipName_ = "models1a6a7c6e450b6d996a79c701efdd4e69.zip";
-        else
-            zipName_ = zipName;
-
-        urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName_;
-        zipName_ = zipName_.substring(0, zipName_.lastIndexOf("."));
-        String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
-        String displayName = name;
-        return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
-                + urlToZip + "&openFile=/" + name + "'>" + displayName + "</a>";
     }
 
     private String getFormattedNumber(int z, int max) {

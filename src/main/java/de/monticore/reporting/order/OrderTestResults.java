@@ -49,6 +49,7 @@ public class OrderTestResults<T extends OrderableModelInfo> {
             } else if (testResult.getResolved() != 1) {
                 if (notResolved.getRootName1().equals(""))
                     notResolved.setRootName1(OrderableModelInfo.erroredString + "_" + testResult.getRootName1());
+                testResult.setRootName1(notResolved.getRootName1());
                 notResolved.addChild(new ChildElement("", testResult));
                 testResult.addParent(notResolved);
             } else {
@@ -64,8 +65,10 @@ public class OrderTestResults<T extends OrderableModelInfo> {
                     String type = ((ASTSimpleReferenceType) element.getType()).getName(0);
                     String name = "";
                     for (ImportStatement importStatement: ast.getImports()) {
-                        if (importStatement.getStatement().substring(importStatement.getStatement().lastIndexOf("."))
-                                .equals(type)) {
+                        if (importStatement.getStatement().contains(".") &&
+                                importStatement.getStatement().substring(importStatement
+                                .getStatement().lastIndexOf(".")).equals(type)
+                                || importStatement.getStatement().equals(type)) {
                             name = importStatement.getStatement();
                             break;
                         }

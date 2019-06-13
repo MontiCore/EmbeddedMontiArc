@@ -50,7 +50,7 @@ public class GitLabHelper {
                     branch = line.substring(line.indexOf("HEAD branch") + "HEAD branch: ".length());
             }
 
-            return url + "blob/" + branch + "/";
+            return url.replace(".git", "") + "blob/" + branch + "/";
         }
         return "";
     }

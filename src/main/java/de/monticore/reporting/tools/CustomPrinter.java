@@ -12,9 +12,7 @@ public class CustomPrinter {
     private PrintStream dummyStream;
 
     public static void init() {
-        if (instance == null)
-            instance = new CustomPrinter();
-        instance.doInit();
+        getInstance().doInit();
     }
 
     private void doInit() {
@@ -31,9 +29,7 @@ public class CustomPrinter {
     }
 
     public static void end() {
-        if (instance == null)
-            instance = new CustomPrinter();
-        instance.doEnd();
+        getInstance().doEnd();
     }
 
     private void doEnd() {
@@ -44,28 +40,30 @@ public class CustomPrinter {
     }
 
     public static void println(String msg) {
-        if (instance == null)
-            instance = new CustomPrinter();
-        instance.doPrintln(msg);
+        getInstance().doPrintln(msg);
     }
 
     private void doPrintln(String msg) {
         if (!isInit) return;
-        System.setOut(oldOut);
-        System.out.println(msg);
-        System.setOut(dummyStream);
+        this.oldOut.println(msg);
     }
 
     public static void print(String msg) {
-        if (instance == null)
-            instance = new CustomPrinter();
-        instance.doPrint(msg);
+        getInstance().doPrint(msg);
     }
 
     private void doPrint(String msg) {
         if (!isInit) return;
-        System.setOut(oldOut);
-        System.out.print(msg);
-        System.setOut(dummyStream);
+//        System.setOut(oldOut);
+        this.oldOut.print(msg);
+//        System.setOut(dummyStream);
+    }
+
+    private static CustomPrinter getInstance(){
+        if (instance == null) {
+            instance = new CustomPrinter();
+            return instance;
+        }
+        else return instance;
     }
 }

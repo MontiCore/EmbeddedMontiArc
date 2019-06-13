@@ -19,10 +19,12 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.concurrent.*;
 
 public class ASTHelper {
 
-    public static void setTestResultInfo(CommonModelInfo model) {
+    public static void setTestResultInfo(CommonModelInfo model, int timeout) {
+        Log.init();
         Log.enableFailQuick(false);
         Log.getFindings().clear();
 
@@ -42,14 +44,14 @@ public class ASTHelper {
         boolean parsingSuccessful = ast != null;
 
         model.addErrorMessage(parsingSuccessful ? "[INFO] Parser Test success<br>" : "[ERROR] Parser Test failed");
-        if(!parsingSuccessful){
+        if (!parsingSuccessful) {
             CustomPrinter.println("ERROR. Parser Test failed");
             for (Finding finding : Log.getFindings())
                 model.addErrorMessage(finding.toString());
         }
 
-        model.setParsed(parsingSuccessful?1:-1);
-        if(parsingSuccessful) {
+        model.setParsed(parsingSuccessful ? 1 : -1);
+        if (parsingSuccessful) {
             model.setUnresolvedAST(ast);
             String PackageName = Joiners.DOT.join(ast.getPackageList());
             String FileName = fileName.substring(fileName.replace("\\", "/").lastIndexOf("/") + 1, fileName.length());
@@ -65,7 +67,7 @@ public class ASTHelper {
             try {
                 Log.getFindings().clear();
                 model.addErrorMessage("[INFO] do Resolve Test<br>=========================");
-                resolvedAST = getAstNode(modelPath, modelName, fileType);
+                resolvedAST = getAstNode(modelPath, modelName, fileType, timeout);
                 model.setResolvedAST(resolvedAST);
                 model.setResolvedASTNode((ASTEmbeddedMontiArcNode) resolvedAST.getAstNode().get());
                 model.setResolved(1);
@@ -74,6 +76,12 @@ public class ASTHelper {
                 CustomPrinter.println("ERROR. Resolve Test failed");
                 model.setResolved(-1);
                 model.addErrorMessage("[ERROR] Resolve Test failed");
+                for (Finding finding : Log.getFindings())
+                    model.addErrorMessage(finding.toString());
+            } catch (ResolveTimeOutException e) {
+                CustomPrinter.println("ERROR. Resolve Test timed out");
+                model.setResolved(-2);
+                model.addErrorMessage("[ERROR] Resolve Test timed out");
                 for (Finding finding : Log.getFindings())
                     model.addErrorMessage(finding.toString());
             } catch (Exception e) {
@@ -88,17 +96,36 @@ public class ASTHelper {
 
     }
 
-    public static EMAComponentSymbol getAstNode(String modelPath, String model, String fileType) throws CouldNotResolveException {
+    public static EMAComponentSymbol getAstNode(String modelPath, String model, String fileType, int timeout) throws CouldNotResolveException, ResolveTimeOutException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<EMAComponentSymbol> task = new Callable<EMAComponentSymbol>() {
+            public EMAComponentSymbol call() {
+                Scope symTab = createSymTab(fileType, modelPath);
+                EMAComponentSymbol comp = symTab.<EMAComponentSymbol>resolve(model, EMAComponentSymbol.KIND).orElse(null);
+                return comp;
+            }
+        };
+
+        Future<EMAComponentSymbol> future = executor.submit(task);
         try {
-            Scope symTab = createSymTab(fileType, modelPath);
-            EMAComponentSymbol comp = symTab.<EMAComponentSymbol>resolve(model, EMAComponentSymbol.KIND).orElse(null);
-            return comp;
-        } catch (Throwable  e) {
+            return future.get(timeout, TimeUnit.SECONDS);
+        } catch (TimeoutException ex) {
+            future.cancel(true);
+            executor.shutdown();
+            executor.shutdownNow();
+            throw new ResolveTimeOutException();
+        } catch (InterruptedException e) {
+            future.cancel(true);
+            executor.shutdown();
+            executor.shutdownNow();
+            throw new ResolveTimeOutException();
+        } catch (Throwable e) {
+            future.cancel(true);
             throw new CouldNotResolveException();
         }
     }
 
-    public static EMAComponentSymbol getAstNode(String file) throws CouldNotResolveException, IOException {
+    public static EMAComponentSymbol getAstNode(String file, int timeout) throws CouldNotResolveException, IOException, ResolveTimeOutException {
         EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
         ASTEMACompilationUnit ast = parser.parse(file).orElse(null);
         String fileType = file.substring(file.lastIndexOf(".") + 1, file.length()).toUpperCase();
@@ -106,7 +133,7 @@ public class ASTHelper {
         String FileName = file.substring(file.replace("\\", "/").lastIndexOf("/") + 1, file.length());
         String modelPath = file.substring(0, file.length() - (PackageName + "/" + FileName).length()); // package name + File name
         String modelName = PackageName + "." + FileName.replace(".emam", "").replace(".ema", "");
-        return getAstNode(modelPath, modelName, fileType);
+        return getAstNode(modelPath, modelName, fileType, timeout);
     }
 
     public static Scope createSymTab(String fileType, String... modelPath) {
@@ -116,6 +143,8 @@ public class ASTHelper {
             mp.addEntry(Paths.get(m));
         GlobalScope scope = new GlobalScope(mp, fam);
         de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
+        Log.init();
+        Log.enableFailQuick(false);
         return scope;
     }
 

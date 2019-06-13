@@ -7,6 +7,7 @@ import de.monticore.reporting.testReport.CheckTests;
 import de.monticore.reporting.grammarReport.ReportGrammar;
 import de.monticore.reporting.cocoReport.helper.*;
 import de.monticore.reporting.testReport.TestsTestResultPrinter;
+import de.monticore.reporting.tools.CustomPrinter;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 
@@ -19,31 +20,33 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         LogConfig.init();
+        Log.init();
+        CustomPrinter.init();
         ReportContext context = getContext(args);
         if (context.isTestCoCos()) {
             CheckCoCos tcc = new CheckCoCos();
-            System.out.println("\n<================Test CoCos================>\n");
-            List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), "ema", "emam");
+            CustomPrinter.println("\n<================Test CoCos================>\n");
+            List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getTimeout(), "ema", "emam");
             OrderTestResults<CheckCoCoResult> order = new OrderTestResults();
             order.orderTestResults(testResults, new CheckCoCoResultCreator());
             List<CheckCoCoResult> rootModels = order.getRootModels();
             List<CheckCoCoResult> mainPackages = order.getMainPackageModels();
 
-            System.out.println("\n<============Write Test Results============>\n");
+            CustomPrinter.println("\n<============Write Test Results============>\n");
             CoCoTestResultPrinter.printTestResults(mainPackages, context.getOutput() + "data.json", context.isMerge(), true);
             CoCoTestResultPrinter.printTestResults(testResults, context.getOutput() + "dataExpanded.json", context.isMerge(), false);
             TestInfoPrinter.printInfo(testResults, context.getOutput() + "info.json", context.isMerge());
-            System.out.println("SUCCESS\n");
+            CustomPrinter.println("SUCCESS\n");
         }
         if (context.isTestsEndWithTest()) {
             CheckTests tewt = new CheckTests();
-            System.out.println("\n<================Test Tests================>\n");
+            CustomPrinter.println("\n<================Test Tests================>\n");
             List<CheckTestResult> testResults = tewt.testTestsEndWithTest(new File(context.getProjectRoot()));
-            System.out.println("\n<============Write Test Results============>\n");
+            CustomPrinter.println("\n<============Write Test Results============>\n");
             TestsTestResultPrinter.printTestsEndWithTestResults(testResults, context.getOutput() + "dataEWT.json", context.isMerge());
         }
         if (context.isReportGrammar()) {
-            System.out.println("\n<==============Grammar Report==============>\n");
+            CustomPrinter.println("\n<==============Grammar Report==============>\n");
             ReportGrammar.reportGrammars(context, context.getOutput() + "dataGrammars.json", context.isMerge());
         }
 
@@ -72,6 +75,7 @@ public class Main {
         private boolean reportGrammar = false;
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
         private String output = "report/data_" + timeStamp + "/";
+        private int timeout = 10;
 
         public boolean isTestsEndWithTest() {
             return testsEndWithTest;
@@ -123,6 +127,14 @@ public class Main {
         public void setReportGrammar(boolean reportGrammar) {
             this.reportGrammar = reportGrammar;
         }
+
+        public int getTimeout() {
+            return timeout;
+        }
+
+        public void setTimeout(int timeout) {
+            this.timeout = timeout;
+        }
     }
 
     private static String help() {
@@ -132,10 +144,11 @@ public class Main {
                         "  projectRoot         The directory with all projects in\n" +
                         "OPTIONS\n" +
                         "  -h --help           Prints this help page\n" +
-                        "  -testCoCos          Test CoCos\n                                Default: not set" +
+                        "  -testCoCos          Test CoCos                                  Default: not set\n" +
+                        "     -timeout \"t\"       Set timeout for symtab building           Default: 10s\n" +
                         "  -testTests          Check whether all tests end with \"Test\"   Default: not set\n" +
                         "  -grammar            Creates a report for all grammars in the directory\n" +
-                        "  -out \"directory\"    Output directory                            Default: report/data[CurrentTime]/" +
+                        "  -out \"directory\"    Output directory                            Default: report/data[CurrentTime]/\n" +
                         "  -m                  Merge the output data                       Default: not set\n\n";
     }
 
@@ -167,12 +180,16 @@ public class Main {
                     break;
                 case "-out":
                     context.setOutput(args[++i]);
+                    break;
                 case "-h":
                 case "--help":
                     System.out.println(help());
                     System.exit(0);
+                case "-timeout":
+                    context.setTimeout(Integer.parseInt(args[++i]));
+                    break;
                 default:
-                    System.out.println("Invalid arguments:\n" + help());
+                    System.out.println("Invalid arguments for \"" + args[i] + "\":\n" + help());
                     System.exit(0);
             }
         }

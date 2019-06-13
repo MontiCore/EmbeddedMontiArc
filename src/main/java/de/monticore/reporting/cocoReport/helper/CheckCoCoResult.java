@@ -40,7 +40,7 @@ public class CheckCoCoResult extends OrderableModelInfo {
                 this.getReferencedSubComponentExists() != -1 && this.getSimpleConnectorSourceExists() != -1 && this.getSourceTargetNumberMatch() != -1 &&
                 this.getSubComponentsConnected() != -1 && this.getTopLevelComponentHasNoInstanceName() != -1 &&
                 this.getTypeParameterNamesUnique() != -1 && this.getUniquePorts() != -1 && this.getParsed() != -1 &&
-                this.getResolved() != -1;
+                this.getResolved() != -1 && this.getResolved() != -2;
     }
 
     public int getComponentCapitalized() {

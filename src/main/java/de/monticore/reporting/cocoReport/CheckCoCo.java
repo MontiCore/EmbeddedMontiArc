@@ -1,8 +1,16 @@
 package de.monticore.reporting.cocoReport;
 
+import de.monticore.lang.embeddedmontiarc.cocos.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTConnectorCoCo;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._cocos.EmbeddedMontiArcMathCoCoChecker;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.AtomicComponentCoCo;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.ReferencedSubComponentExistsEMAM;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._cocos.DynamicComponentDynamicBodyElements;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._cocos.NoDynamicNewComponentAndPort;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._cocos.NoDynamicNewConnectsOutsideEventHandler;
 import de.monticore.reporting.tools.ASTHelper;
 import de.monticore.reporting.tools.CustomPrinter;
 import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
@@ -17,11 +25,12 @@ public class CheckCoCo {
         return Log.getFindings().stream().map(s -> s.getMsg()).collect(Collectors.joining(" ")).contains(errorCode);
     }
 
-    public CheckCoCoResult testCoCos(String fileName) {
+    public CheckCoCoResult testCoCos(String fileName, int timeout) {
+        Log.init();
         Log.enableFailQuick(false);
         Log.getFindings().clear();
         CheckCoCoResult testResult = new CheckCoCoResult(fileName);
-        ASTHelper.setTestResultInfo(testResult);
+        ASTHelper.setTestResultInfo(testResult, timeout);
 
         if (testResult.getParsed() == 1 && testResult.getResolved() == 1) {
             String fileType = testResult.getFileType();
@@ -30,7 +39,8 @@ public class CheckCoCo {
             testResult.addErrorMessage("[INFO] do CoCo Tests<br>=========================");
             Log.getFindings().clear();
             Log.enableFailQuick(false);
-            EmbeddedMontiArcMathCoCos.createChecker().checkAll(astToTest);
+            //EmbeddedMontiArcMathCoCos.createChecker().checkAll(astToTest);
+            createChecker().checkAll(astToTest);
             for (Finding finding : Log.getFindings())
                 testResult.addErrorMessage("[WARNING] " + finding.toString());
             boolean componentCapitalized = containsErrorCode("0xAC004");
@@ -84,5 +94,30 @@ public class CheckCoCo {
             }
         }
         return testResult;
+    }
+
+    private EmbeddedMontiArcMathCoCoChecker createChecker() {
+        return new EmbeddedMontiArcMathCoCoChecker()
+                //.addCoCo(new UniqueConstraint())
+                .addCoCo(new UniquePorts())
+                //.addCoCo(new ComponentInstanceNamesUnique())
+                //.addCoCo(new PortUsage())
+                .addCoCo(new SubComponentsConnected())
+                .addCoCo(new PackageLowerCase())
+                .addCoCo(new ComponentCapitalized())
+                .addCoCo(new DefaultParametersHaveCorrectOrder())
+                .addCoCo(new ComponentWithTypeParametersHasInstance())
+                .addCoCo(new TypeParameterNamesUnique())
+                .addCoCo(new ParameterNamesUnique())
+                .addCoCo(new TopLevelComponentHasNoInstanceName())
+                .addCoCo((EmbeddedMontiArcASTConnectorCoCo) new ConnectorEndPointCorrectlyQualified())
+                .addCoCo(new InPortUniqueSender())
+                .addCoCo(new ReferencedSubComponentExistsEMAM())
+                .addCoCo(new PortTypeOnlyBooleanOrSIUnit())
+                .addCoCo(new AtomicComponentCoCo())
+                //Dynamic Cocos
+                //.addCoCo(new DynamicComponentDynamicBodyElements())
+                //.addCoCo(new NoDynamicNewComponentAndPort())
+                .addCoCo(new NoDynamicNewConnectsOutsideEventHandler());
     }
 }

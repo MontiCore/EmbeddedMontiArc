@@ -2,6 +2,7 @@ package de.monticore.reporting.cocoReport.helper;
 
 import de.monticore.lang.monticar.helper.IndentPrinter;
 import de.monticore.reporting.order.ChildElement;
+import de.monticore.reporting.tools.CustomPrinter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -10,7 +11,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CoCoTestResultPrinter {
-    
+
+    private static int progress = 0;
+
     private static String[] names = {
             "\"Root\"",
             "\"Project\"",
@@ -49,9 +52,12 @@ public class CoCoTestResultPrinter {
     private static String tickTag = "\"<img src='images/tick.png'/>\"";
     private static String crossTag = "\"<img src='images/Red_cross_tick.png'/>\"";
     private static String noTag = "\"<img src='images/minus.jpg'/>\"";
+    private static String timeTag = "\"<img src='images/timeout.png'/>\"";
 
     private static String tagOf(int i) {
         switch (i) {
+            case -2:
+                return timeTag;
             case -1:
                 return crossTag;
             case 0:
@@ -92,6 +98,7 @@ public class CoCoTestResultPrinter {
             ip.println("[");
         ip.indent();
 
+        int z = 0;
         boolean first = true;
         for (CheckCoCoResult testResult : testResults) {
             if (testResult == null) continue;
@@ -138,13 +145,20 @@ public class CoCoTestResultPrinter {
             ip.println(names[i++] + ": " + tagOf(testResult.getUniquePorts()) + ",");
             ip.println(names[i++] + ": ");
             ip.indent();
-            if(depth == 0)
+            if (depth == 0)
                 ip.println(getChildData(testResult, testResult.getRootName1(), depth + 1));
             else
                 ip.println("[]");
             ip.unindent();
             ip.unindent();
             ip.print("}");
+
+            int currentProgress = (z / testResults.size()) * 100;
+            if (currentProgress > progress) {
+                for (int j = 0; j < currentProgress - progress; j++)
+                    CustomPrinter.print("|");
+                progress = currentProgress;
+            }
         }
         ip.println();
         ip.unindent();
@@ -155,55 +169,20 @@ public class CoCoTestResultPrinter {
 
     private static String getChildData(CheckCoCoResult testResult, String rootName, int depth) {
         List<CheckCoCoResult> childResults = new LinkedList<>();
-        for(ChildElement childElement: testResult.getChildren()){
+        for (ChildElement childElement : testResult.getChildren()) {
             childResults.add((CheckCoCoResult) childElement.getChild());
         }
         return printTestResults(childResults, false, rootName, depth, false);
     }
 
-    private static String getDepthImage(CheckCoCoResult testResult, int depth){
-        if(testResult.getChildren().size() == 0 || depth == 1) return "<div class=\'atomicImage" + depth + "\'></div>";
+    private static String getDepthImage(CheckCoCoResult testResult, int depth) {
+        if (testResult.getChildren().size() == 0 || depth == 1) return "<div class=\'atomicImage" + depth + "\'></div>";
         return "<div class=\'depthImage" + depth + "\'></div>";
     }
 
-//    private static String getVFSTag(CheckCoCoResult testResult) {
-//        if(testResult.isErrorResult() || testResult.isMainPackage()) return tagOf(0);
-//        String zipName = testResult.getZipName();
-//        File file = testResult.getModelFile();
-//        File root = testResult.getRootFile1();
-//        String urlToZip;
-//
-//        urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName;
-//        zipName = zipName.substring(0, zipName.lastIndexOf("."));
-//        String name = file.getAbsolutePath().substring(root.getAbsolutePath().length());
-//        String displayName = name;
-//        return ("\"<a class='ideLink' target='_blank' rel='noopener' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName + "&url="
-//                + urlToZip + "&openFile=/" + name + "'>" +
-//                "<img border='0' alt='" + displayName + "' src='images/favicon.ico' class='onlineIDEImage'>" +
-//                "</a>\"").replace("\\", "/");
-//    }
-//
-//    private static String getVisulisationLink(CheckCoCoResult testResult) {
-//        String displayName = testResult.getModelName();
-//
-//
-//        if (testResult.isErrorResult() || testResult.isMainPackage() || testResult.isAtomic())
-//            return "\"<div class='svgMinus'>" +
-//                    "<img alt='" + displayName + "' src='images/minus.jpg'>" +
-//                    "</div>\"";
-//        else if (testResult.getSvgPath().equals(""))
-//            return "\"<div class='svgNoEye'>" +
-//                    "<img alt='" + displayName + "' src='images/noEye.png'>" +
-//                    "</div>\"";
-//        else
-//            return "\"<a class='svgEye' target='_blank' rel='noopener' href='" +
-//                    testResult.getSvgPath() + "'>" +
-//                    "<img alt='" + displayName + "' src='images/eye.png'>" +
-//                    "</a>\"";
-//    }
-
     private static String getNameWithGitLabLink(CheckCoCoResult testResult, boolean expanded) {
-        if(testResult.isErrorResult() || testResult.isMainPackage()) return testResult.getModelName() + " (" + testResult.getChildren().size() + ")";
+        if (testResult.isErrorResult() || testResult.isMainPackage())
+            return testResult.getModelName() + " (" + testResult.getChildren().size() + ")";
         String gLLink = testResult.getGitLabLink();
 
         String displayName = testResult.getModelName();
@@ -218,11 +197,11 @@ public class CoCoTestResultPrinter {
     }
 
     private static String getFilePath(CheckCoCoResult testResult) {
-        if(testResult.isErrorResult()) return testResult.getModelName();
-        if(testResult.isMainPackage()) return testResult.getRootName1()+ "/" + testResult.getProject();
+        if (testResult.isErrorResult()) return testResult.getModelName();
+        if (testResult.isMainPackage()) return testResult.getRootName1() + "/" + testResult.getProject();
         File file = testResult.getModelFile();
         String name = file.getAbsolutePath().substring(testResult.getRootFile1().getAbsolutePath().length());
-        String displayName = name.replace("\\","/");
+        String displayName = name.replace("\\", "/");
         return displayName;
     }
 }
