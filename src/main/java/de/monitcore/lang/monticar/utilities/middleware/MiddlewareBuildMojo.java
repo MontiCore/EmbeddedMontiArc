@@ -121,7 +121,7 @@ public class MiddlewareBuildMojo extends MiddlewareMojoBase {
 
         List<String> command = new ArrayList<>();
         command.add("cmake");
-        command.add("..");
+        command.add("../src");
 
         logInfo("   # Run ("+buildPath.toString()+"): "+String.join(" ", command)+" ");
         long startTime = System.nanoTime();
