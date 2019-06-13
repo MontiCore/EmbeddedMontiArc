@@ -21,10 +21,10 @@ git config user.name "GitLab CI"
 git config user.email "malte.heithoff@rwth-aachen.de"
 
 # deploy reports
-git rm -rf report/data/* || exit 0
-mv ../report/data* report/
+git rm -rf public/report/data/* || exit 0
+mv ../report/data* public/report/
 
-git add report/.
+git add public/report/.
 git commit -m "Deploy reports to report branch: ${SHA}"
 
 git push $PUSH_REPO $TARGET_BRANCH
