@@ -21,7 +21,6 @@
 
 stages:
 - linux
-- deploy
 
 masterJobLinux:
   stage: linux
@@ -36,12 +35,5 @@ masterJobLinux:
     - ls
     - cd ..
     - ./scripts/deploy.sh
-  only:
-  - master
-
-pages:
-  stage: deploy
-  script:
-  - ls
   only:
   - master
