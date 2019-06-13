@@ -37,7 +37,7 @@ masterJobLinux:
 pages:
   stage: deploy
   script:
-  - sudo chmod +x ./scripts/deploy.sh
+  - chmod +x ./scripts/deploy.sh
   - ./scripts/deploy.sh
   only:
   - master

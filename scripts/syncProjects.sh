@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
+#!/bin/sh
 BASE_PATH="https://git.rwth-aachen.de/"
 
 GITLAB_PRIVATE_TOKEN="zXKxi79T9iymW-FEHQgA"
