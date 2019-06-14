@@ -25,6 +25,10 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                        parameters:(LayerParameter || ",")* ")" "{"
                        body:Stream  "}";
 
+    UnrollDeclaration =  "unroll" "<" timeParameter:LayerParameter ">"
+                         Name "(" parameters:(LayerParameter || ",")* ")"
+                        "{" body:Stream "}";
+
     IODeclaration =  "def"
                     (in:"input" | out:"output")
                     type:ArchType
@@ -53,7 +57,8 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
         @attribute body
                  The architecture of the neural network.
     */
-    Architecture = methodDeclaration:LayerDeclaration*
+    Architecture = unrollDeclarations:UnrollDeclaration*
+                   methodDeclaration:LayerDeclaration*
                    instructions:(Instruction || ";")+ ";";
 
     interface Instruction;
@@ -65,6 +70,8 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
     IOElement implements ArchitectureElement =  Name ("[" index:ArchSimpleExpression "]")?;
 
     Layer implements ArchitectureElement =  Name "(" arguments:(ArchArgument || ",")* ")";
+
+    Unroll implements ArchitectureElement =  Name "(" arguments:(ArchArgument || ",")* ")";
 
     ParallelBlock implements ArchitectureElement =  "("
                                                    groups:Stream  "|"

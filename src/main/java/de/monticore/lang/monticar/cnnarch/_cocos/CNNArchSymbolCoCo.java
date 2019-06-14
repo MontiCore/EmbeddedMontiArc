@@ -33,6 +33,9 @@ public class CNNArchSymbolCoCo {
         else if (sym instanceof LayerDeclarationSymbol){
             check((LayerDeclarationSymbol) sym);
         }
+        else if (sym instanceof UnrollDeclarationSymbol){
+            check((UnrollDeclarationSymbol) sym);
+        }
         else if (sym instanceof ArchitectureElementSymbol){
             check((ArchitectureElementSymbol) sym);
         }
@@ -69,6 +72,10 @@ public class CNNArchSymbolCoCo {
     }
 
     public void check(LayerDeclarationSymbol sym){
+        //Override if needed
+    }
+
+    public void check(UnrollDeclarationSymbol sym){
         //Override if needed
     }
 
