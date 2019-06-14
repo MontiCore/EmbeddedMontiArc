@@ -18,20 +18,31 @@ project(MqttAdapter VERSION 1.0
                   DESCRIPTION "MQTT adapter"
                   LANGUAGES CXX)
 
-# Find mqtt packages using modules
-find_package(MQTT REQUIRED)
+set(SEARCH_MQTT FALSE)
+
+# Check is environment variable was set
+IF(DEFINED ENV{MQTT_INCLUDE_DIR} AND DEFINED ENV{MQTT_LIBS})
+  message("...MQTT environment variables are set" )
+ELSE()
+  message("MQTT environment variables are not defined.")
+  # Find mqtt packages using modules
+  find_package(MQTT REQUIRED)
+  SET(SEARCH_MQTT TRUE)
+ENDIF()
 
 # Adding library as a target
 add_library(MqttAdapter_tests_a_compA MqttAdapter_tests_a_compA.cpp)
 
 # Checking if everything was found
-if (NOT MQTT_C_LIB OR NOT MQTT_A_LIB OR NOT MQTT_PP_LIB)
-  message(FATAL_ERROR "MQTT libraries not found!")
-elseif (NOT MQTT_INCLUDE_DIR)
-  message(FATAL_ERROR "MQTT includes not found!")
-else()
-  message("MQTT includes found in "${MQTT_INCLUDE_DIR})
-  message("MQTT libraries found in "${MQTT_LIBS})
+if(SEARCH_MQTT)
+  if (NOT MQTT_C_LIB OR NOT MQTT_A_LIB OR NOT MQTT_PP_LIB)
+    message(FATAL_ERROR "MQTT libraries not found!")
+  elseif (NOT MQTT_INCLUDE_DIR)
+    message(FATAL_ERROR "MQTT includes not found!")
+  else()
+    message("MQTT includes found in " ${MQTT_INCLUDE_DIR})
+    message("MQTT libraries found in " ${MQTT_LIBS})
+  endif()
 endif()
 
 # Adding include directory to a target
