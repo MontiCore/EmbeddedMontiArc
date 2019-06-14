@@ -906,4 +906,4 @@ class DqnAgent(Agent):
 
     def _save_current_as_best_net(self):
         self._best_net = copy_net(
-            self._qnet, (1,) + self._state_dim, ctx=self._ctx)
+            self._qnet, self._state_dim, ctx=self._ctx)
