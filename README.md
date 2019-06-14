@@ -73,14 +73,14 @@ cmake -Bbuild -H.
 sudo cmake --build build/ --target install
 ```
 #### Set environment variable from MQTT
-open terminal, and write
+additionaly, you can set the environment variables for MQTT libs and includes directroy by modifying the environment file on your system
 ```bash
 sudo nano /etc/environment
 ```
 in the file, add a new line and write
 ```bash
-MQTT_LIB = "/usr/local/include/"
-MQTT_INC = "/usr/local/lib/"
+MQTT_LIB = "PATH/to/libs"
+MQTT_INCLUDE_DIR = "PATH/to/includes"
 ```
 
 ## Installing MQTT Publisher/Subscriber demo (locally on Ubuntu)
