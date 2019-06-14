@@ -79,7 +79,7 @@ sudo nano /etc/environment
 ```
 in the file, add a new line and write
 ```bash
-MQTT_LIB = "PATH/to/libs"
+MQTT_LIBS = "PATH/to/libs"
 MQTT_INCLUDE_DIR = "PATH/to/includes"
 ```
 
