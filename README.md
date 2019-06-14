@@ -1,3 +1,24 @@
-# CarlaComponents
+Steps to build a component:
 
-EMAM Components for the Carla Simulator
+* 1.) move **mw-generator.jar** to the directory of the component you wish to build.
+* 2.) open shell, cd to the directory of the component and execute: **java -jar mw-generator.jar project.json** (in this case it's called **valid.json** for both components)
+* 3.) switch to the target directory (**cd target/**)
+* 4.) execute compile.sh (**./compile.sh**)
+* 5.) if the generator can't find carla_msgs message type: execute the following command and retry step 4
+*       export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:/path/to/rosbridge/catkin_ws/devel/share/carla_msgs/cmake
+*       usually the path is something like "~/carla-ros-bridge/catkin_ws/devel/share/carla_msgs/cmake"
+* 6.) after successfull compiling the generated code switch to install/bin directory (**cd install/bin/**)
+* 7.) execute Coordinator_<model-package>_<component-name> (here it's **./Coordinator_test_bumpBot** or **./Coordinator_test_collisionDetection**)
+
+## Wie bringe ich das Auto zum Fahren und lese den Kollisionssensor aus?
+
+Carla Starten  
+Unter PythonAPI/examples: `python manual_control.py --rolename=ego_vehicle`  
+Zum Starten des Containers in den Ordner des Projektes (hier ein ausgechecktes Verzeichnis BumbBot_test) gehen:  
+`docker/run.sh`
+
+Dann in einem neuen Terminal um das Auto fahren zu lassen:  
+`docker/compile_exec.sh`
+
+Um den Collision Sensor auszulesen in einem neuen Terminal:  
+`docker/open_shell.sh` und darin `rostopic echo /carla/ego_vehicle/collision`

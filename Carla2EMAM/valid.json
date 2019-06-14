@@ -1,0 +1,7 @@
+{
+  "modelsDir": "models/",
+  "outputDir": "target/",
+  "rootModel": "test.collisionDetection",
+  "generators": ["cpp", "roscpp"]
+}
+
