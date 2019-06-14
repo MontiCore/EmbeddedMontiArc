@@ -7,6 +7,8 @@
         self.last_layers['${element.name}'] = 'sigmoid'
     <#elseif element.linearRegressionOutput>
         self.last_layers['${element.name}'] = 'linear'
+    <#elseif element.oneHotOutput>
+        self.last_layers['${element.name}'] = 'softmax'
     </#if>
 </#if>
 <#if mode == "FORWARD_FUNCTION">
