@@ -97,6 +97,12 @@
                     <releases><enabled>true</enabled> </releases>
                     <snapshots><enabled>true</enabled> </snapshots>
                 </pluginRepository>
+                <pluginRepository>
+                    <id>icm</id>
+                    <url>http://maven.icm.edu.pl/artifactory/repo/</url>
+                    <releases><enabled>true</enabled> </releases>
+                    <snapshots><enabled>true</enabled> </snapshots>
+                </pluginRepository>
             </pluginRepositories>
         </profile>
     </profiles>
