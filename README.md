@@ -72,6 +72,17 @@ cd paho.mqtt.cpp
 cmake -Bbuild -H.
 sudo cmake --build build/ --target install
 ```
+#### Set environment variable from MQTT
+open terminal, and write
+```bash
+sudo nano /etc/environment
+```
+in the file, add a new line and write
+```bash
+MQTT_LIB = "/usr/local/include/"
+MQTT_INC = "/usr/local/lib/"
+```
+
 ## Installing MQTT Publisher/Subscriber demo (locally on Ubuntu)
 open terminal, switch to **mqtt_demo** directroy inside the project and run
 `cmake .`
