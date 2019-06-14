@@ -8,4 +8,7 @@
 <#elseif element.linearRegressionOutput>
         ${element.name} = mx.symbol.LinearRegressionOutput(data=${element.inputs[0]},
             name="${element.name}")
+<#elseif element.oneHotOutput>
+        ${element.name} = mx.symbol.SoftmaxOutput(data=${element.inputs[0]},
+            name="${element.name}")
 </#if>
