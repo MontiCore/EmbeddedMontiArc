@@ -1,3 +1,4 @@
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.Random;
 
@@ -37,13 +38,13 @@ public class BusMessage{
     /**
      * Time the request to transmit the messages was placed. (in microseconds)
      */
-    private long requestTime;
+    private Instant requestTime;
     
     private int controllerID;
     
     private BusEntry messageID;
     
-    private long finishTime;
+    private Instant finishTime;
     
     private boolean error;
     
@@ -52,7 +53,7 @@ public class BusMessage{
 	 */
 	Random bitError = new Random();
     
-    public BusMessage(Object message, int messageLen, BusEntry messageID, int requestTime, int controllerID) {
+    public BusMessage(Object message, int messageLen, BusEntry messageID, Instant requestTime, int controllerID) {
     	this.message = message;
     	this.messageLen = messageLen;
     	this.messageID = messageID;
@@ -60,16 +61,16 @@ public class BusMessage{
     	this.controllerID = controllerID;
     	this.transmittedBytes = 0;
     	this.transmitted = false;
-    	this.finishTime = -1l;
+    	this.finishTime = Instant.ofEpochMilli(0);
     	this.error = false;
     }
     
 
-	public long getFinishTime() {
+	public Instant getFinishTime() {
 		return finishTime;
 	}
 
-	public void setFinishTime(long finishTime) {
+	public void setFinishTime(Instant finishTime) {
 		this.finishTime = finishTime;
 	}
 
@@ -90,11 +91,11 @@ public class BusMessage{
 		this.messageLen = messageLen;
 	}
 
-	public long getRequestTime() {
+	public Instant getRequestTime() {
 		return requestTime;
 	}
 
-	public void setRequestTime(long requestTime) {
+	public void setRequestTime(Instant requestTime) {
 		this.requestTime = requestTime;
 	}
 
@@ -158,11 +159,20 @@ public class BusMessage{
 	}
 }
 
-class BusMessageComparator implements Comparator<BusMessage> 
+class BusMessageComparatorIdAsc implements Comparator<BusMessage> 
 { 
     // Used for sorting in ascending order of 
     public int compare(BusMessage a, BusMessage b) 
     { 
         return a.getMessageID().compareTo( b.getMessageID()); 
+    } 
+} 
+
+class BusMessageComparatorTimeAsc implements Comparator<BusMessage> 
+{ 
+    // Used for sorting in ascending order of 
+    public int compare(BusMessage a, BusMessage b) 
+    {
+    	return a.getRequestTime().compareTo(b.getRequestTime());
     } 
 } 

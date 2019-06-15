@@ -18,9 +18,11 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+import java.time.Instant;
+
 import commons.simulation.DiscreteEvent;
 
-public class BusMessageTransmissionRequestEvent implements DiscreteEvent{
+public class BusMessageTransmissionRequestEvent{
 
 	private BusMessage message;
 	
@@ -33,13 +35,11 @@ public class BusMessageTransmissionRequestEvent implements DiscreteEvent{
 	}
 	
 	
-	@Override
-	public long getEventTime() {
+	public Instant getEventTime() {
 		return this.message.getRequestTime();
 	}
 
 
-	@Override
 	public int getEventId() {
 		return this.message.getMessageID().ordinal();
 	}

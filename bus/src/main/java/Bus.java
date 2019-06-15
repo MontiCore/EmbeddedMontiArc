@@ -1,3 +1,4 @@
+
 /**
  *
  * ******************************************************************************
@@ -18,63 +19,33 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+import java.time.Duration;
+import java.time.Instant;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
-import commons.controller.commons.BusEntry;
-import commons.simulation.DiscreteEvent;
-import commons.simulation.DiscreteEventSimulationNotifiable;
-import commons.simulation.DiscreteEventSimulator;
 
-public abstract class Bus extends DiscreteEventSimulator{
-	
-	protected Map<String, BusMessage> deliveredMessages = new HashMap<String, BusMessage>();
-	
-	protected List<BusMessage> activeMessages = new ArrayList<BusMessage>();
-	
-	protected int connectedComponents = 0;
-	
-	@Override
-    public void registerDiscreteEventSimulationNotifiable(DiscreteEventSimulationNotifiable simulationNotifiable) {
-		connectedComponents++;
-		super.registerDiscreteEventSimulationNotifiable(simulationNotifiable);
-    }
-	
-	@Override
-    public void unregisterDiscreteEventSimulationNotifiable(DiscreteEventSimulationNotifiable simulationNotifiable) {
-        this.connectedComponents--;
-		super.unregisterDiscreteEventSimulationNotifiable(simulationNotifiable);
-    }
-	
-	@Override
-	protected void processEvent(DiscreteEvent event) {
-		if(event instanceof BusMessageDeliveredEvent) {
-			BusMessageDeliveredEvent deliveredEvent = (BusMessageDeliveredEvent)event; 
-			deliveredMessages.put(deliveredEvent.getMessage().getMessageID().toString(), deliveredEvent.getMessage());
-		}
-		else if(event instanceof BusMessageTransmissionRequestEvent) {
-			BusMessageTransmissionRequestEvent requestEvent = (BusMessageTransmissionRequestEvent)event;
-			activeMessages.add(requestEvent.getMessage());
-		}
-		else {
-			throw new IllegalArgumentException("Event of wrong type. Expected a bus event but was a " + event.getClass().toString());
-		}
+public abstract class Bus {
+
+	protected Instant currentTime;
+
+	protected void processEvent(BusMessageTransmissionRequestEvent requestEvent) {
+		this.simulateFor(Duration.between(currentTime, requestEvent.getEventTime()));
+		currentTime = requestEvent.getEventTime();
+		this.registerMessage(requestEvent.getMessage());
+		this.removeKeepAlive();
+		this.setKeepAlive();
 	}
 	
-    public Optional<BusMessage> getData(String key) {
-		return Optional.ofNullable(this.deliveredMessages.get(key));
+	protected void registerTransmittedEvent(BusMessage msg) {
+		
 	}
 
-    public Map<String, BusMessage> getDeliveredMessages(){
-    	return this.deliveredMessages;
-    }
+	abstract protected void simulateFor(Duration duration);
 
-    public Set<String> getImportNames() { 
-    	 return this.deliveredMessages.keySet();
-    }
+	abstract protected void removeKeepAlive();
+
+	abstract protected void setKeepAlive();
+
+	abstract protected void registerMessage(BusMessage msg);
+
 }
