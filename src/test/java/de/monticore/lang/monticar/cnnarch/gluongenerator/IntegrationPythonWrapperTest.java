@@ -28,7 +28,6 @@ public class IntegrationPythonWrapperTest extends AbstractSymtabTest{
         rewardFunctionSourceGenerator = mock(RewardFunctionSourceGenerator.class);
     }
 
-    @Ignore
     @Test
     public void testReinforcementConfigWithRewardGeneration() {
         Log.getFindings().clear();

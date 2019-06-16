@@ -200,7 +200,6 @@ public class GenerationTest extends AbstractSymtabTest {
                 Arrays.asList("CNNTrainer_emptyConfig.py"));
     }
 
-    @Ignore
     @Test
     public void testReinforcementConfig2() {
         // given
@@ -229,7 +228,6 @@ public class GenerationTest extends AbstractSymtabTest {
         );
     }
 
-    @Ignore
     @Test
     public void testReinforcementConfig3() {
         // given
@@ -279,7 +277,6 @@ public class GenerationTest extends AbstractSymtabTest {
                 Arrays.asList("FindArmadillo.cmake"));
     }
 
-    @Ignore
     @Test
     public void testDdpgConfig() {
         Log.getFindings().clear();
@@ -309,7 +306,6 @@ public class GenerationTest extends AbstractSymtabTest {
         );
     }
 
-    @Ignore
     @Test
     public void testRosDdpgConfig() {
         Log.getFindings().clear();
