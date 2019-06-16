@@ -6,7 +6,7 @@ from CNNNet_${tc.fullArchitectureName} import Net
 class ${tc.fileNameWithoutEnding}:
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
-    _input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.definition.type.dimensions, ",")},)<#if input?has_next>,</#if></#list>]
+    _input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.definition.type.dimensions, ",")},)<#sep>, </#list>]
 
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
@@ -43,12 +43,11 @@ class ${tc.fileNameWithoutEnding}:
             self.net.load_parameters(self._model_dir_ + param_file)
             return lastEpoch
 
-
     def construct(self, context, data_mean=None, data_std=None):
         self.net = Net(data_mean=data_mean, data_std=data_std)
         self.net.collect_params().initialize(self.weight_initializer, ctx=context)
         self.net.hybridize()
-        self.net(<#list tc.architecture.inputs as input>mx.nd.zeros((1,)+self._input_shapes_[${input?index}], ctx=context)<#if input?has_next>,</#if></#list>)
+        self.net(<#list tc.architecture.inputs as input>mx.nd.zeros((1,) + self._input_shapes_[${input?index}], ctx=context)<#sep>, </#list>)
 
         if not os.path.exists(self._model_dir_):
             os.makedirs(self._model_dir_)

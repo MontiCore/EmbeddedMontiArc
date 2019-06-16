@@ -6,7 +6,7 @@ import os
 import shutil
 from mxnet import gluon, autograd, nd
 
-class ${tc.fileNameWithoutEnding}:
+class CNNSupervisedTrainer_VGG16:
     def __init__(self, data_loader, net_constructor, net=None):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -88,17 +88,13 @@ class ${tc.fileNameWithoutEnding}:
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
-                </#list>
-                <#list tc.architectureOutputs as output_name>
-                ${output_name}_label = batch.label[${output_name?index}].as_in_context(mx_context)
-                </#list>
+                data_data = batch.data[0].as_in_context(mx_context)
+                predictions_label = batch.label[0].as_in_context(mx_context)
 
                 with autograd.record():
-                    ${tc.join(tc.architectureOutputs, ", ", "", "_output")} = self._net(${tc.join(tc.architectureInputs, ", ", "", "_data")})
+                    predictions_output = self._net(data_data)
 
-                    loss = <#list tc.architectureOutputs as output_name>loss_functions['${output_name}'](${output_name}_output, ${output_name}_label)<#sep> + </#list>
+                    loss = loss_functions['predictions'](predictions_output, predictions_label)
 
                 loss.backward()
                 trainer.step(batch_size)
@@ -121,18 +117,16 @@ class ${tc.fileNameWithoutEnding}:
             train_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(train_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
-                </#list>
+                data_data = batch.data[0].as_in_context(mx_context)
 
                 labels = [
-                    <#list tc.architectureOutputs as output_name>batch.label[${output_name?index}].as_in_context(mx_context)<#sep>, </#list>
+                    batch.label[0].as_in_context(mx_context)
                 ]
 
-                ${tc.join(tc.architectureOutputs, ", ", "", "_output")} = self._net(${tc.join(tc.architectureInputs, ", ", "", "_data")})
+                predictions_output = self._net(data_data)
 
                 predictions = [
-                    <#list tc.architectureOutputs as output_name>mx.nd.argmax(${output_name}_output, axis=1)<#sep>, </#list>
+                    mx.nd.argmax(predictions_output, axis=1)
                 ]
 
                 metric.update(preds=predictions, labels=labels)
@@ -141,18 +135,16 @@ class ${tc.fileNameWithoutEnding}:
             test_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(test_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
-                </#list>
+                data_data = batch.data[0].as_in_context(mx_context)
 
                 labels = [
-                    <#list tc.architectureOutputs as output_name>batch.label[${output_name?index}].as_in_context(mx_context)<#sep>, </#list>
+                    batch.label[0].as_in_context(mx_context)
                 ]
 
-                ${tc.join(tc.architectureOutputs, ", ", "", "_output")} = self._net(${tc.join(tc.architectureInputs, ", ", "", "_data")})
+                predictions_output = self._net(data_data)
 
                 predictions = [
-                    <#list tc.architectureOutputs as output_name>mx.nd.argmax(${output_name}_output, axis=1)<#sep>, </#list>
+                    mx.nd.argmax(predictions_output, axis=1)
                 ]
 
                 metric.update(preds=predictions, labels=labels)

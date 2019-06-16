@@ -2,6 +2,16 @@ import mxnet as mx
 import numpy as np
 from mxnet import gluon
 
+class OneHot(gluon.HybridBlock):
+    def __init__(self, size, **kwargs):
+        super(OneHot, self).__init__(**kwargs)
+        with self.name_scope():
+            self.size = size
+
+    def hybrid_forward(self, F, x):
+        return F.one_hot(indices=F.argmax(data=x, axis=1), depth=self.size)
+
+
 class Softmax(gluon.HybridBlock):
     def __init__(self, **kwargs):
         super(Softmax, self).__init__(**kwargs)
@@ -71,12 +81,14 @@ class NoNormalization(gluon.HybridBlock):
 class Net(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
         super(Net, self).__init__(**kwargs)
+        self.last_layers = {}
         with self.name_scope():
-            if not data_mean is None:
-                assert(not data_std is None)
-                self.data_input_normalization = ZScoreNormalization(data_mean=data_mean, data_std=data_std)
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_data = ZScoreNormalization(data_mean=data_mean['data'],
+                                                                               data_std=data_std['data'])
             else:
-                self.data_input_normalization = NoNormalization()
+                self.input_normalization_data = NoNormalization()
 
             self.conv1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv1_ = gluon.nn.Conv2D(channels=64,
@@ -221,12 +233,11 @@ class Net(gluon.HybridBlock):
             self.fc15_ = gluon.nn.Dense(units=1000, use_bias=True)
             # fc15_, output shape: {[1000,1,1]}
 
-
-        self.last_layer = 'softmax'
+        self.last_layers['predictions'] = 'softmax'
 
 
     def hybrid_forward(self, F, data):
-        data = self.data_input_normalization(data)
+        data = self.input_normalization_data(data)
         conv1_padding = self.conv1_padding(data)
         conv1_ = self.conv1_(conv1_padding)
         relu1_ = self.relu1_(conv1_)
@@ -280,3 +291,4 @@ class Net(gluon.HybridBlock):
         dropout15_ = self.dropout15_(relu15_)
         fc15_ = self.fc15_(dropout15_)
         return fc15_
+

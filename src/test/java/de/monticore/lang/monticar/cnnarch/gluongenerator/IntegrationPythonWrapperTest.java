@@ -6,6 +6,7 @@ import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Path;
@@ -27,6 +28,7 @@ public class IntegrationPythonWrapperTest extends AbstractSymtabTest{
         rewardFunctionSourceGenerator = mock(RewardFunctionSourceGenerator.class);
     }
 
+    @Ignore
     @Test
     public void testReinforcementConfigWithRewardGeneration() {
         Log.getFindings().clear();
@@ -54,4 +56,5 @@ public class IntegrationPythonWrapperTest extends AbstractSymtabTest{
         );
         assertTrue(Paths.get("./target/generated-sources-cnnarch/reward/pylib").toFile().isDirectory());
     }
+
 }

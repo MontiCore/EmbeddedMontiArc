@@ -6,7 +6,7 @@ import os
 import shutil
 from mxnet import gluon, autograd, nd
 
-class CNNSupervisedTrainer(object):
+class CNNSupervisedTrainer_Alexnet:
     def __init__(self, data_loader, net_constructor, net=None):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -48,7 +48,7 @@ class CNNSupervisedTrainer(object):
         if self._net is None:
             if normalize:
                 self._net_creator.construct(
-                    context=mx_context, data_mean=nd.array(data_mean), data_std=nd.array(data_std))
+                    context=mx_context, data_mean=data_mean, data_std=data_std)
             else:
                 self._net_creator.construct(context=mx_context)
 
@@ -69,15 +69,18 @@ class CNNSupervisedTrainer(object):
 
         trainer = mx.gluon.Trainer(self._net.collect_params(), optimizer, optimizer_params)
 
-        if self._net.last_layer == 'softmax':
-            loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss()
-        elif self._net.last_layer == 'sigmoid':
-            loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
-        elif self._net.last_layer == 'linear':
-            loss_function = mx.gluon.loss.L2Loss()
-        else: # TODO: Change default?
-            loss_function = mx.gluon.loss.L2Loss()
-            logging.warning("Invalid last_layer, defaulting to L2 loss")
+        loss_functions = {}
+
+        for output_name, last_layer in self._net.last_layers.items():
+            if last_layer == 'softmax':
+                loss_functions[output_name] = mx.gluon.loss.SoftmaxCrossEntropyLoss()
+            elif last_layer == 'sigmoid':
+                loss_functions[output_name] = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
+            elif last_layer == 'linear':
+                loss_functions[output_name] = mx.gluon.loss.L2Loss()
+            else:
+                loss_functions[output_name] = mx.gluon.loss.L2Loss()
+                logging.warning("Invalid last layer, defaulting to L2 loss")
 
         speed_period = 50
         tic = None
@@ -85,11 +88,13 @@ class CNNSupervisedTrainer(object):
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
-                data = batch.data[0].as_in_context(mx_context)
-                label = batch.label[0].as_in_context(mx_context)
+                data_data = batch.data[0].as_in_context(mx_context)
+                predictions_label = batch.label[0].as_in_context(mx_context)
+
                 with autograd.record():
-                    output = self._net(data)
-                    loss = loss_function(output, label)
+                    predictions_output = self._net(data_data)
+
+                    loss = loss_functions['predictions'](predictions_output, predictions_label)
 
                 loss.backward()
                 trainer.step(batch_size)
@@ -112,21 +117,37 @@ class CNNSupervisedTrainer(object):
             train_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(train_iter):
-                data = batch.data[0].as_in_context(mx_context)
-                label = batch.label[0].as_in_context(mx_context)
-                output = self._net(data)
-                predictions = mx.nd.argmax(output, axis=1)
-                metric.update(preds=predictions, labels=label)
+                data_data = batch.data[0].as_in_context(mx_context)
+
+                labels = [
+                    batch.label[0].as_in_context(mx_context)
+                ]
+
+                predictions_output = self._net(data_data)
+
+                predictions = [
+                    mx.nd.argmax(predictions_output, axis=1)
+                ]
+
+                metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
 
             test_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(test_iter):
-                data = batch.data[0].as_in_context(mx_context)
-                label = batch.label[0].as_in_context(mx_context)
-                output = self._net(data)
-                predictions = mx.nd.argmax(output, axis=1)
-                metric.update(preds=predictions, labels=label)
+                data_data = batch.data[0].as_in_context(mx_context)
+
+                labels = [
+                    batch.label[0].as_in_context(mx_context)
+                ]
+
+                predictions_output = self._net(data_data)
+
+                predictions = [
+                    mx.nd.argmax(predictions_output, axis=1)
+                ]
+
+                metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]
 
             logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))

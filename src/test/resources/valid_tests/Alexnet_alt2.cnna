@@ -35,5 +35,5 @@ architecture Alexnet_alt2(img_height=224, img_width=224, img_channels=3, classes
     fc(-> = 2) ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    predictions
+    predictions;
 }

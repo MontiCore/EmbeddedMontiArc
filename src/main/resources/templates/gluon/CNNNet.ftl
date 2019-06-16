@@ -2,6 +2,16 @@ import mxnet as mx
 import numpy as np
 from mxnet import gluon
 
+class OneHot(gluon.HybridBlock):
+    def __init__(self, size, **kwargs):
+        super(OneHot, self).__init__(**kwargs)
+        with self.name_scope():
+            self.size = size
+
+    def hybrid_forward(self, F, x):
+        return F.one_hot(indices=F.argmax(data=x, axis=1), depth=self.size)
+
+
 class Softmax(gluon.HybridBlock):
     def __init__(self, **kwargs):
         super(Softmax, self).__init__(**kwargs)
@@ -71,8 +81,15 @@ class NoNormalization(gluon.HybridBlock):
 class Net(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
         super(Net, self).__init__(**kwargs)
+        self.last_layers = {}
         with self.name_scope():
-${tc.include(tc.architecture.body, "ARCHITECTURE_DEFINITION")}
+${tc.include(tc.architecture.streams[0], "ARCHITECTURE_DEFINITION")}
 
-    def hybrid_forward(self, F, <#list tc.architecture.inputs as input>${input}<#if input?has_next>, </#if></#list>):
-${tc.include(tc.architecture.body, "FORWARD_FUNCTION")}
+    def hybrid_forward(self, F, ${tc.join(tc.architectureInputs, ", ")}):
+        <#if tc.architectureOutputs?size gt 1>
+        outputs = []
+        </#if>
+${tc.include(tc.architecture.streams[0], "FORWARD_FUNCTION")}
+        <#if tc.architectureOutputs?size gt 1>
+        return tuple(outputs)
+        </#if>

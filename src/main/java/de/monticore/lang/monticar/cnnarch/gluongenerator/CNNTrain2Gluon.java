@@ -114,9 +114,6 @@ public class CNNTrain2Gluon extends CNNTrain2MxNet {
         if (configData.isSupervisedLearning()) {
             String cnnTrainTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
             fileContentMap.put("CNNTrainer_" + getInstanceName() + ".py", cnnTrainTemplateContent);
-
-            String cnnSupervisedTrainerContent = templateConfiguration.processTemplate(ftlContext, "CNNSupervisedTrainer.ftl");
-            fileContentMap.put("supervised_trainer.py", cnnSupervisedTrainerContent);
         } else if (configData.isReinforcementLearning()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();
             final RLAlgorithm rlAlgorithm = configData.getRlAlgorithm();

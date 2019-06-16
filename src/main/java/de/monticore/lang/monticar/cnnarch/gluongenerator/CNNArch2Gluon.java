@@ -33,11 +33,15 @@ import java.util.Map;
 
 public class CNNArch2Gluon extends CNNArch2MxNet {
 
+    public CNNArch2Gluon() {
+        architectureSupportChecker = new CNNArch2GluonArchitectureSupportChecker();
+        layerSupportChecker = new CNNArch2GluonLayerSupportChecker();
+    }
+
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     @Override
     public Map<String, String> generateStrings(ArchitectureSymbol architecture){
         Map<String, String> fileContentMap = compileFileContentMap(architecture);
-        checkValidGeneration(architecture);
         return fileContentMap;
     }
 
@@ -83,6 +87,9 @@ public class CNNArch2Gluon extends CNNArch2MxNet {
         Map.Entry<String, String> temp;
 
         temp = controller.process("CNNPredictor", Target.CPP);
+        fileContentMap.put(temp.getKey(), temp.getValue());
+
+        temp = controller.process("CNNSupervisedTrainer", Target.PYTHON);
         fileContentMap.put(temp.getKey(), temp.getValue());
 
         temp = controller.process("execute", Target.CPP);
