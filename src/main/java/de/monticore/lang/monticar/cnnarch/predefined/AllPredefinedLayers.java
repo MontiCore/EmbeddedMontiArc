@@ -44,6 +44,7 @@ public class AllPredefinedLayers {
     public static final String ADD_NAME = "Add";
     public static final String CONCATENATE_NAME = "Concatenate";
     public static final String FLATTEN_NAME = "Flatten";
+    public static final String ONE_HOT_NAME = "OneHot";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -61,7 +62,7 @@ public class AllPredefinedLayers {
     public static final String BETA_NAME = "beta";
     public static final String PADDING_NAME = "padding";
     public static final String POOL_TYPE_NAME = "pool_type";
-
+    public static final String SIZE_NAME = "size";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
