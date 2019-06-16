@@ -36,13 +36,18 @@ import java.util.Map;
 
 public class CNNArch2MxNet extends CNNArchGenerator {
 
+    protected ArchitectureSupportChecker architectureSupportChecker;
+    protected LayerSupportChecker layerSupportChecker;
+
     public CNNArch2MxNet() {
+        architectureSupportChecker = new CNNArch2MxNetArchitectureSupportChecker();
+        layerSupportChecker = new CNNArch2MxNetLayerSupportChecker();
+
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
     }
 
     public void generate(Scope scope, String rootModelName){
-        CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(new CNNArch2MxNetArchitectureSupportChecker(),
-                                                                         new CNNArch2MxNetLayerSupportChecker());
+        CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(architectureSupportChecker, layerSupportChecker);
         ArchitectureSymbol architectureSymbol = symbolCompiler.compileArchitectureSymbol(scope, rootModelName);
 
         try{
