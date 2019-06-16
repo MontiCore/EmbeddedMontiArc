@@ -23,6 +23,7 @@ package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.predefined.Sigmoid;
 import de.monticore.lang.monticar.cnnarch.predefined.Softmax;
+import de.monticore.lang.monticar.cnnarch.predefined.OneHot;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -139,7 +140,7 @@ public abstract class CNNArchTemplateController {
     public List<String> getLayerInputs(ArchitectureElementSymbol layer){
         List<String> inputNames = new ArrayList<>();
 
-        if (isSoftmaxOutput(layer) || isLogisticRegressionOutput(layer)){
+        if (isSoftmaxOutput(layer) || isLogisticRegressionOutput(layer) || isOneHotOutput(layer)){
             inputNames = getLayerInputs(layer.getInputElement().get());
         } else {
             for (ArchitectureElementSymbol input : layer.getPrevious()) {
@@ -228,9 +229,13 @@ public abstract class CNNArchTemplateController {
     public boolean isLinearRegressionOutput(ArchitectureElementSymbol architectureElement){
         return architectureElement.isOutput()
                 && !isLogisticRegressionOutput(architectureElement)
-                && !isSoftmaxOutput(architectureElement);
+                && !isSoftmaxOutput(architectureElement)
+                && !isOneHotOutput(architectureElement);
     }
 
+    public boolean isOneHotOutput(ArchitectureElementSymbol architectureElement){
+        return isTOutput(OneHot.class, architectureElement);
+    }
 
     public boolean isSoftmaxOutput(ArchitectureElementSymbol architectureElement){
         return isTOutput(Softmax.class, architectureElement);

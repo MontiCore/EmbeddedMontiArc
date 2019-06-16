@@ -9,7 +9,6 @@ public class MxNetTemplateConfiguration extends TemplateConfiguration {
     private static Configuration configuration;
 
     public MxNetTemplateConfiguration() {
-        super();
         if (configuration == null) {
             configuration = super.createConfiguration();
         }

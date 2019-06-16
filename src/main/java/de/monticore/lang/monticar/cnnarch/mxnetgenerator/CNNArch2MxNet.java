@@ -23,7 +23,6 @@ package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.checker.AllowAllLayerSupportChecker;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
@@ -36,12 +35,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CNNArch2MxNet extends CNNArchGenerator {
+
     public CNNArch2MxNet() {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
     }
 
     public void generate(Scope scope, String rootModelName){
-        CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(new AllowAllLayerSupportChecker());
+        CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(new CNNArch2MxNetArchitectureSupportChecker(),
+                                                                         new CNNArch2MxNetLayerSupportChecker());
         ArchitectureSymbol architectureSymbol = symbolCompiler.compileArchitectureSymbol(scope, rootModelName);
 
         try{
@@ -58,11 +59,8 @@ public class CNNArch2MxNet extends CNNArchGenerator {
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public Map<String, String> generateStrings(ArchitectureSymbol architecture){
-        TemplateConfiguration templateConfiguration = new MxNetTemplateConfiguration();
-
         Map<String, String> fileContentMap = new HashMap<>();
-        CNNArch2MxNetTemplateController archTc
-                = new CNNArch2MxNetTemplateController(architecture, templateConfiguration);
+        CNNArch2MxNetTemplateController archTc = new CNNArch2MxNetTemplateController(architecture);
         Map.Entry<String, String> temp;
 
         temp = archTc.process("CNNPredictor", Target.CPP);
@@ -76,8 +74,6 @@ public class CNNArch2MxNet extends CNNArchGenerator {
 
         temp = archTc.process("CNNBufferFile", Target.CPP);
         fileContentMap.put("CNNBufferFile.h", temp.getValue());
-
-        checkValidGeneration(architecture);
 
         return fileContentMap;
     }

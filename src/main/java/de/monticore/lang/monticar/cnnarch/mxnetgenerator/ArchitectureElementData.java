@@ -90,6 +90,9 @@ public class ArchitectureElementData {
         return getTemplateController().isSoftmaxOutput(getElement());
     }
 
+    public boolean isOneHotOutput(){
+        return getTemplateController().isOneHotOutput(getElement());
+    }
 
 
 
@@ -156,6 +159,11 @@ public class ArchitectureElementData {
     public double getBeta(){
         return ((LayerSymbol) getElement())
                 .getDoubleValue(AllPredefinedLayers.BETA_NAME).get();
+    }
+
+    public int getSize(){
+        return ((LayerSymbol) getElement())
+                .getIntValue(AllPredefinedLayers.SIZE_NAME).get();
     }
 
     @Nullable
