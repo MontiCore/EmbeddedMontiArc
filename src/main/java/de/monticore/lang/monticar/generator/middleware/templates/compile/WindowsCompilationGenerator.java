@@ -13,11 +13,6 @@ public abstract class WindowsCompilationGenerator extends CompilationGenerator {
     }
 
     @Override
-    public boolean supportsRos() {
-        return false;
-    }
-
-    @Override
     public List<FileContent> getCompilationScripts() {
         ArrayList<FileContent> fileContents = new ArrayList<>();
         fileContents.addAll(super.getCompilationScripts());

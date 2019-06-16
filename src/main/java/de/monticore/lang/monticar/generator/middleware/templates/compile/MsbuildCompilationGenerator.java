@@ -13,6 +13,12 @@ public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
         return MiddlewareTemplates.generateCompileMsbuild(this);
     }
 
+
+    @Override
+    public boolean supportsRos() {
+        return true;
+    }
+
     @Override
     public boolean supportsRos2() {
         return true;
@@ -21,7 +27,12 @@ public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
     @Override
     public List<String> getAdditionalPathDirs() {
         setAdditionalErrorMsg("vcvars64.bat", defaultErrorMsg("msbuild"));
-        setAdditionalErrorMsg("ros2", defaultErrorMsg("ROS2"));
+        if(useRos()){
+            setAdditionalErrorMsg("ros", defaultErrorMsg("ROS"));
+        }
+        if(useRos2()) {
+            setAdditionalErrorMsg("ros2", defaultErrorMsg("ROS2"));
+        }
         return Arrays.asList("cmake","msbuild");
     }
 
@@ -35,6 +46,9 @@ public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
     public List<String> getPostSourceExecutables() {
         List<String> res = new ArrayList<>();
         res.add("msbuild");
+        if(useRos()){
+            res.add("roscore");
+        }
         if(useRos2()){
             res.add("ros2");
         }
@@ -45,6 +59,9 @@ public class MsbuildCompilationGenerator extends WindowsCompilationGenerator {
     public List<String> getEnvironmentFiles() {
         List<String> res = new ArrayList<>();
         res.add("vcvars64.bat");
+        if(useRos()){
+            res.add("%ROS_HOME%\\setup.bat");
+        }
         if(useRos2()){
             res.add("%ROS2_HOME%\\local_setup.bat");
         }
