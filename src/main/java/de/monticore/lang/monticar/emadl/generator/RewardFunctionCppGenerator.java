@@ -9,9 +9,6 @@ import de.se_rwth.commons.logging.Log;
 import java.io.IOException;
 import java.util.Optional;
 
-/**
- *
- */
 public class RewardFunctionCppGenerator implements RewardFunctionSourceGenerator {
     public RewardFunctionCppGenerator() {
     }

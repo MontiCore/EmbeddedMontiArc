@@ -370,6 +370,8 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
+            cnnArchGenerator.check(architecture.get());
+
             String dPath = null;
             Path dataPathDefinition = Paths.get(getModelsPath(), "data_paths.txt");
             if (dataPathDefinition.toFile().exists()) {

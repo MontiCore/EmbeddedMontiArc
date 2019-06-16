@@ -12,6 +12,6 @@ component TorcsDQN<Z(1:oo) discrete_actions = 2> {
         FullyConnected(units=256) ->
         Tanh() ->
         FullyConnected(units=discrete_actions) ->
-        qvalues
+        qvalues;
     }
 }

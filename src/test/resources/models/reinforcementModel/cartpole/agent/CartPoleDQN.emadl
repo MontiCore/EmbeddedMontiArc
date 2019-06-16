@@ -12,6 +12,6 @@ component CartPoleDQN {
         FullyConnected(units=256) ->
         Tanh() ->
         FullyConnected(units=2) ->
-        qvalues
+        qvalues;
     }
 }

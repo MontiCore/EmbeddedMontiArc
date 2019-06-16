@@ -13,6 +13,6 @@ component MountaincarActor {
         Relu() ->
         FullyConnected(units=1) ->
         Tanh() ->
-        action
+        action;
     }
 }

@@ -1,4 +1,4 @@
-configuration MultipleOutputs{
+configuration MultipleInputs{
      num_epoch:10
      batch_size:5
      context:cpu
