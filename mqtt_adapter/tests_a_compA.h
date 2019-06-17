@@ -1,8 +1,4 @@
-//  MqttAdapter
-//
-//  Created by Georg Vinogradov on 05.06.19.
-//  Copyright © 2019 Georg Vinogradov. All rights reserved.
-//
+#pragma once
 
 #ifndef tests_a_compA_h
 #define tests_a_compA_h
@@ -14,6 +10,7 @@ using namespace std;
 class tests_a_compA {
     
 public:
+    tests_a_compA(double value);
     double rosIn = 0;
     double rosOut = 0;
 };
