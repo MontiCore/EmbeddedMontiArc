@@ -33,8 +33,6 @@ void MqttAdapter_tests_a_compA::init(tests_a_compA *comp)
         cerr << exc.what() << endl;
     }
     
-    while(true);
-    
 }
 
 void MqttAdapter_tests_a_compA::publish_echoPublisher()
