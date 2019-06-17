@@ -73,7 +73,7 @@ cmake -Bbuild -H.
 sudo cmake --build build/ --target install
 ```
 #### Set environment variables for MQTT
-additionaly, you can set the environment variables for MQTT libs and includes directroy by modifying the environment file on your system
+additionaly, you can set the environment variables for MQTT libs and includes directory by modifying the environment file on your system
 ```bash
 sudo nano /etc/environment
 ```
