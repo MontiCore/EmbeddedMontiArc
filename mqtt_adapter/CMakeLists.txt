@@ -1,4 +1,3 @@
-# Created by Georg Vinogradov on 28.05.19
 
 # Setting cmake version
 cmake_minimum_required(VERSION 3.1...3.14)
@@ -31,7 +30,14 @@ ELSE()
 ENDIF()
 
 # Adding library as a target
-add_library(MqttAdapter_tests_a_compA MqttAdapter_tests_a_compA.cpp)
+add_library(MqttAdapter_tests_a_compA
+Callback.cpp
+MqttAdapter_tests_a_compA.cpp
+tests_a_compA.cpp
+Callback.hpp
+MqttAdapter_tests_a_compA.h
+tests_a_compA.h
+)
 
 # Checking if everything was found
 if(SEARCH_MQTT)
