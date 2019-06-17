@@ -38,7 +38,7 @@ public class OneHot extends PredefinedLayerDeclaration {
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
-                .channels(layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get())
+                .channels(layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get())
                 .height(1)
                 .width(1)
                 .elementType("0", "1")
@@ -54,7 +54,7 @@ public class OneHot extends PredefinedLayerDeclaration {
         OneHot declaration = new OneHot();
         List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new VariableSymbol.Builder()
-                        .name(AllPredefinedLayers.SIZE_NAME)
+                        .name(AllPredefinedLayers.ONE_HOT_SIZE_NAME)
                         .constraints(Constraints.POSITIVE, Constraints.INTEGER)
                         .build()));
         declaration.setParameters(parameters);
