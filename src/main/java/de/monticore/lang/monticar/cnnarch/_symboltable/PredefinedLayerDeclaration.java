@@ -53,6 +53,16 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         return true;
     }
 
+    /**
+     * This method is used to distinguish between neural networks like "source -> FullyConnected() -> target" and
+     * basic assignments like "1 -> OneHot() -> target". The generators use this to avoid creating an own
+     * network for each assignment. Override by predefined layers which are trainable.
+     */
+    @Override
+    public boolean isNetworkLayer() {
+        return false;
+    }
+
     abstract public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer);
 
     abstract public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer);

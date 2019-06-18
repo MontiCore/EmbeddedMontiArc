@@ -35,7 +35,7 @@ public class LayerDeclarationSymbol extends CommonScopeSpanningSymbol {
     public static final LayerDeclarationKind KIND = new LayerDeclarationKind();
 
     private List<VariableSymbol> parameters;
-    private CompositeElementSymbol body;
+    private SerialCompositeElementSymbol body;
 
 
     protected LayerDeclarationSymbol(String name) {
@@ -75,11 +75,15 @@ public class LayerDeclarationSymbol extends CommonScopeSpanningSymbol {
         }
     }
 
-    public CompositeElementSymbol getBody() {
+    public SerialCompositeElementSymbol getBody() {
         return body;
     }
 
-    protected void setBody(CompositeElementSymbol body) {
+    public boolean isNetworkLayer() {
+        return body.isNetwork();
+    }
+
+    protected void setBody(SerialCompositeElementSymbol body) {
         this.body = body;
     }
 
@@ -109,7 +113,7 @@ public class LayerDeclarationSymbol extends CommonScopeSpanningSymbol {
             reset();
             set(layer.getArguments());
 
-            CompositeElementSymbol copy = getBody().preResolveDeepCopy();
+            SerialCompositeElementSymbol copy = getBody().preResolveDeepCopy();
             copy.putInScope(getSpannedScope());
             copy.resolveOrError();
             getSpannedScope().remove(copy);

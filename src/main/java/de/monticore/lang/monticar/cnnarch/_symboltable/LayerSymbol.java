@@ -142,7 +142,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
 
                 if (!isActive() || maxSerialLength == 0) {
                     //set resolvedThis to empty composite to remove the layer.
-                    setResolvedThis(new CompositeElementSymbol.Builder().build());
+                    setResolvedThis(new SerialCompositeElementSymbol());
                 }
                 else if (parallelLength == 1 && maxSerialLength == 1) {
                     //resolve the layer call
@@ -186,10 +186,8 @@ public class LayerSymbol extends ArchitectureElementSymbol {
             for (List<ArchitectureElementSymbol> serialElements : elements) {
                 serialComposites.add(createSerialSequencePart(serialElements));
             }
-            CompositeElementSymbol parallelElement = new CompositeElementSymbol.Builder()
-                    .parallel(true)
-                    .elements(serialComposites)
-                    .build();
+            ParallelCompositeElementSymbol parallelElement = new ParallelCompositeElementSymbol();
+            parallelElement.setElements(serialComposites);
 
             if (getAstNode().isPresent()) {
                 parallelElement.setAstNode(getAstNode().get());
@@ -203,10 +201,8 @@ public class LayerSymbol extends ArchitectureElementSymbol {
             return elements.get(0);
         }
         else {
-            CompositeElementSymbol serialComposite = new CompositeElementSymbol.Builder()
-                    .parallel(false)
-                    .elements(elements)
-                    .build();
+            SerialCompositeElementSymbol serialComposite = new SerialCompositeElementSymbol();
+            serialComposite.setElements(elements);
 
             if (getAstNode().isPresent()){
                 serialComposite.setAstNode(getAstNode().get());

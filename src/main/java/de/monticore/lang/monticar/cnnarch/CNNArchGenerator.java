@@ -67,6 +67,8 @@ public abstract class CNNArchGenerator {
         generate(scope, rootModelName);
     }
 
+    public abstract boolean check(ArchitectureSymbol architecture);
+
     public abstract void generate(Scope scope, String rootModelName);
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.

@@ -33,6 +33,11 @@ public class BatchNorm extends PredefinedLayerDeclaration {
     }
 
     @Override
+    public boolean isNetworkLayer() {
+        return true;
+    }
+
+    @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
         return inputTypes;
     }

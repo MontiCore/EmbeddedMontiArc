@@ -145,10 +145,10 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     public void endVisit(final ASTArchitecture node) {
-        List<CompositeElementSymbol> streams = new ArrayList<>();
+        List<SerialCompositeElementSymbol> streams = new ArrayList<>();
         for (ASTInstruction astInstruction : node.getInstructionsList()){
             ASTStream astStream = (ASTStream)astInstruction; // TODO: For now all instructions are streams
-            streams.add((CompositeElementSymbol) astStream.getSymbolOpt().get());
+            streams.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
         }
         architecture.setStreams(streams);
 
@@ -230,7 +230,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     @Override
     public void endVisit(ASTLayerDeclaration ast) {
         LayerDeclarationSymbol layerDeclaration = (LayerDeclarationSymbol) ast.getSymbolOpt().get();
-        layerDeclaration.setBody((CompositeElementSymbol) ast.getBody().getSymbolOpt().get());
+        layerDeclaration.setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
 
         List<VariableSymbol> parameters = new ArrayList<>(4);
         for (ASTLayerParameter astParam : ast.getParametersList()){
@@ -320,18 +320,17 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void visit(ASTParallelBlock node) {
-        CompositeElementSymbol compositeElement = new CompositeElementSymbol();
-        compositeElement.setParallel(true);
+        ParallelCompositeElementSymbol compositeElement = new ParallelCompositeElementSymbol();
         addToScopeAndLinkWithNode(compositeElement, node);
     }
 
     @Override
     public void endVisit(ASTParallelBlock node) {
-        CompositeElementSymbol compositeElement = (CompositeElementSymbol) node.getSymbolOpt().get();
+        ParallelCompositeElementSymbol compositeElement = (ParallelCompositeElementSymbol) node.getSymbolOpt().get();
 
         List<ArchitectureElementSymbol> elements = new ArrayList<>();
         for (ASTStream astStream : node.getGroupsList()){
-            elements.add((CompositeElementSymbol) astStream.getSymbolOpt().get());
+            elements.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
         }
         compositeElement.setElements(elements);
 
@@ -340,14 +339,13 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void visit(ASTStream ast) {
-        CompositeElementSymbol compositeElement = new CompositeElementSymbol();
-        compositeElement.setParallel(false);
+        SerialCompositeElementSymbol compositeElement = new SerialCompositeElementSymbol();
         addToScopeAndLinkWithNode(compositeElement, ast);
     }
 
     @Override
     public void endVisit(ASTStream ast) {
-        CompositeElementSymbol compositeElement = (CompositeElementSymbol) ast.getSymbolOpt().get();
+        SerialCompositeElementSymbol compositeElement = (SerialCompositeElementSymbol) ast.getSymbolOpt().get();
         List<ArchitectureElementSymbol> elements = new ArrayList<>();
         for (ASTArchitectureElement astElement : ast.getElementsList()){
             elements.add((ArchitectureElementSymbol) astElement.getSymbolOpt().get());

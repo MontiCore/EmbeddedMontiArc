@@ -21,10 +21,7 @@
 package de.monticore.lang.monticar.cnnarch._cocos;
 
 import de.monticore.lang.monticar.cnnarch._ast.ASTLayerDeclaration;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 

@@ -34,6 +34,11 @@ public class GlobalPooling extends PredefinedLayerDeclaration {
     }
 
     @Override
+    public boolean isNetworkLayer() {
+        return true;
+    }
+
+    @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .height(1)
