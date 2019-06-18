@@ -62,7 +62,8 @@ public class AllPredefinedLayers {
     public static final String BETA_NAME = "beta";
     public static final String PADDING_NAME = "padding";
     public static final String POOL_TYPE_NAME = "pool_type";
-    public static final String SIZE_NAME = "size";
+    public static final String ONE_HOT_SIZE_NAME = "size";
+
 
     //possible String values
     public static final String PADDING_VALID = "valid";
@@ -90,7 +91,8 @@ public class AllPredefinedLayers {
                 Split.create(),
                 Get.create(),
                 Add.create(),
-                Concatenate.create());
+                Concatenate.create(),
+                OneHot.create());
     }
 
 }
