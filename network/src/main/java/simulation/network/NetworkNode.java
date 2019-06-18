@@ -242,7 +242,7 @@ public class NetworkNode implements NetworkEventHandler {
         }
 
         // Compute random start time for tasks with network settings
-        long startTime = MathHelper.randomLong(NetworkSimulator.getInstance().getNetworkSettings().getMinTaskStartTimeNs(), NetworkSimulator.getInstance().getNetworkSettings().getMaxTaskStartTimeNs());
+        Instant startTime = MathHelper.randomLong(NetworkSimulator.getInstance().getNetworkSettings().getMinTaskStartTimeNs(), NetworkSimulator.getInstance().getNetworkSettings().getMaxTaskStartTimeNs());
 
         // Create event for initial tasks with random start time and empty message
         NetworkMessage message = new NetworkMessage();

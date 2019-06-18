@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import commons.simulation.DiscreteEvent;
+
 
 public class EESimulator {
 
@@ -29,19 +31,19 @@ public class EESimulator {
      * @param event event to add
      */
     public void addEvent(DiscreteEvent event){          //change name to schedule event?
-        //event in the past
-        if(event.getRequestTime() < simulationTimeNs){
-            return;
-        }
-
-        int index = 0;
-        for(DiscreteEvent e : eventList){
-            if(e.getRequestTime() > event.getRequestTime()){
-                break;
-            }
-            index++;
-        }
-        eventList.add(index, event);
+//        //event in the past
+//        if(event.getRequestTime() < simulationTimeNs){
+//            return;
+//        }
+//
+//        int index = 0;
+//        for(DiscreteEvent e : eventList){
+//            if(e.getRequestTime() > event.getRequestTime()){
+//                break;
+//            }
+//            index++;
+//        }
+//        eventList.add(index, event);
 
     }
 
@@ -51,18 +53,18 @@ public class EESimulator {
      */
     public void simulateNextTick(Instant actualTime, Duration tick){                 //add time
 
-        for (DiscreteEvent event: eventList) {
-            if(event.getType() == MessageType.SEND){                //waiting for the updated bus interface
-                //TODO: send this event to bus
-
-
-            } else if(event.getType() == MessageType.RECEIVE){
-                eventList.get(0).getTarget().receiveData(eventList.get(0).getData());
-                eventList.remove(0);
-            }
-            simulationTimeNs = event.getRequestTime();
-            
-        }
+//        for (DiscreteEvent event: eventList) {
+//            if(event.getType() == MessageType.SEND){                //waiting for the updated bus interface
+//                //TODO: send this event to bus
+//
+//
+//            } else if(event.getType() == MessageType.RECEIVE){
+//                eventList.get(0).getTarget().receiveData(eventList.get(0).getData());
+//                eventList.remove(0);
+//            }
+//            simulationTimeNs = event.getRequestTime();
+//            
+//        }
     }
 
     /**

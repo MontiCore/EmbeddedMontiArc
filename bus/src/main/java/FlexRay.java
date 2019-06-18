@@ -73,9 +73,10 @@ public class FlexRay extends Bus {
 
 	private Map<String, PriorityQueue<BusMessage>> messagesByControllerId = new HashMap<String, PriorityQueue<BusMessage>>();
 
-	public FlexRay(List<String> controllerIds) {
-		for (String controllerId : controllerIds) {
-			messagesByControllerId.put(controllerId, new PriorityQueue<BusMessage>(COMP_TIME_ASC));
+	public FlexRay(EESimulator simulator, List<EEComponent> controllers) {
+		super(simulator, controllers);
+		for (EEComponent controller : controllers) {
+			messagesByControllerId.put(controller.getID().toString(), new PriorityQueue<BusMessage>(COMP_TIME_ASC));
 		}
 	}
 
@@ -170,7 +171,7 @@ public class FlexRay extends Bus {
 							res = true;
 							if(actual) {
 								message.setFinishTime(cycleEndTime);
-								this.registerTransmittedEvent(message);
+								this.registerEvent(message);
 							}
 						}
 					}
@@ -202,7 +203,7 @@ public class FlexRay extends Bus {
 					res = true;
 					if(actual) {
 						cur.get().setFinishTime(cycleEndTime);
-						this.registerTransmittedEvent(cur.get());
+						this.registerEvent(cur.get());
 					}
 				}
 			}

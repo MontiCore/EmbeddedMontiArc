@@ -20,6 +20,8 @@
  */
 package simulation.network;
 
+import java.time.Instant;
+
 import commons.simulation.DiscreteEvent;
 
 /**
@@ -27,8 +29,8 @@ import commons.simulation.DiscreteEvent;
  */
 public class NetworkDiscreteEvent implements DiscreteEvent {
 
-    /** Time of the event measured in nanoseconds */
-    private long eventTimeNs;
+    /** Time of the event */
+    private Instant eventTime;
 
     /** Type of the event */
     private NetworkDiscreteEventId eventId;
@@ -46,8 +48,8 @@ public class NetworkDiscreteEvent implements DiscreteEvent {
      * @param networkNode Network node related to this event
      * @param eventMessage Message of the event
      */
-    public NetworkDiscreteEvent(long eventTimeNs, NetworkDiscreteEventId eventId, NetworkNode networkNode, NetworkMessage eventMessage) {
-        this.eventTimeNs = eventTimeNs;
+    public NetworkDiscreteEvent(Instant eventTime, NetworkDiscreteEventId eventId, NetworkNode networkNode, NetworkMessage eventMessage) {
+        this.eventTime = eventTime;
         this.eventId = eventId;
         this.eventMessage = eventMessage;
         this.networkNode = networkNode;
@@ -86,8 +88,8 @@ public class NetworkDiscreteEvent implements DiscreteEvent {
      * @return Time of the event
      */
     @Override
-    public long getEventTime() {
-        return eventTimeNs;
+    public Instant getEventTime() {
+        return eventTime;
     }
 
     /**
@@ -96,8 +98,8 @@ public class NetworkDiscreteEvent implements DiscreteEvent {
      * @return Numeric identifier for the event
      */
     @Override
-    public int getEventId() {
-        return eventId.ordinal();
+    public String getEventId() {
+        return eventId.toString();
     }
 
     /**
@@ -108,7 +110,7 @@ public class NetworkDiscreteEvent implements DiscreteEvent {
     @Override
     public String toString() {
         return "NetworkDiscreteEvent{" +
-                "eventTimeNs=" + eventTimeNs +
+                "eventTime=" + eventTime +
                 ", eventId=" + eventId +
                 ", eventMessage=" + eventMessage +
                 ", networkNode=" + networkNode +
