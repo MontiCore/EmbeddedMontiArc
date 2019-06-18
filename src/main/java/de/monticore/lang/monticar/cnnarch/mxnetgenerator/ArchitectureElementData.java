@@ -163,7 +163,7 @@ public class ArchitectureElementData {
 
     public int getSize(){
         return ((LayerSymbol) getElement())
-                .getIntValue(AllPredefinedLayers.SIZE_NAME).get();
+                .getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get();
     }
 
     @Nullable
