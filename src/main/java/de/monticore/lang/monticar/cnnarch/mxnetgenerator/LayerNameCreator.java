@@ -34,7 +34,7 @@ public class LayerNameCreator {
 
     public LayerNameCreator(ArchitectureSymbol architecture) {
         int stage = 1;
-        for (CompositeElementSymbol stream : architecture.getStreams()) {
+        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
             stage = name(stream, stage, new ArrayList<>());
         }
     }
@@ -48,8 +48,10 @@ public class LayerNameCreator {
     }
 
     protected int name(ArchitectureElementSymbol architectureElement, int stage, List<Integer> streamIndices){
-        if (architectureElement instanceof CompositeElementSymbol){
-            return nameComposite((CompositeElementSymbol) architectureElement, stage, streamIndices);
+        if (architectureElement instanceof SerialCompositeElementSymbol) {
+            return nameSerialComposite((SerialCompositeElementSymbol) architectureElement, stage, streamIndices);
+        } else if (architectureElement instanceof ParallelCompositeElementSymbol){
+            return nameParallelComposite((ParallelCompositeElementSymbol) architectureElement, stage, streamIndices);
         } else{
             if (architectureElement.isAtomic()){
                 if (architectureElement.getMaxSerialLength().get() > 0){
@@ -64,27 +66,27 @@ public class LayerNameCreator {
         }
     }
 
-    protected int nameComposite(CompositeElementSymbol compositeElement, int stage, List<Integer> streamIndices){
-        if (compositeElement.isParallel()){
-            int startStage = stage + 1;
-            streamIndices.add(1);
-            int lastIndex = streamIndices.size() - 1;
-
-            List<Integer> endStages = new ArrayList<>();
-            for (ArchitectureElementSymbol subElement : compositeElement.getElements()){
-                endStages.add(name(subElement, startStage, streamIndices));
-                streamIndices.set(lastIndex, streamIndices.get(lastIndex) + 1);
-            }
-
-            streamIndices.remove(lastIndex);
-            return Collections.max(endStages) + 1;
-        } else {
-            int endStage = stage;
-            for (ArchitectureElementSymbol subElement : compositeElement.getElements()){
-                endStage = name(subElement, endStage, streamIndices);
-            }
-            return endStage;
+    protected int nameSerialComposite(SerialCompositeElementSymbol compositeElement, int stage, List<Integer> streamIndices){
+        int endStage = stage;
+        for (ArchitectureElementSymbol subElement : compositeElement.getElements()){
+            endStage = name(subElement, endStage, streamIndices);
         }
+        return endStage;
+    }
+
+    protected int nameParallelComposite(ParallelCompositeElementSymbol compositeElement, int stage, List<Integer> streamIndices){
+        int startStage = stage + 1;
+        streamIndices.add(1);
+        int lastIndex = streamIndices.size() - 1;
+
+        List<Integer> endStages = new ArrayList<>();
+        for (ArchitectureElementSymbol subElement : compositeElement.getElements()){
+            endStages.add(name(subElement, startStage, streamIndices));
+            streamIndices.set(lastIndex, streamIndices.get(lastIndex) + 1);
+        }
+
+        streamIndices.remove(lastIndex);
+        return Collections.max(endStages) + 1;
     }
 
     protected int add(ArchitectureElementSymbol architectureElement, int stage, List<Integer> streamIndices){

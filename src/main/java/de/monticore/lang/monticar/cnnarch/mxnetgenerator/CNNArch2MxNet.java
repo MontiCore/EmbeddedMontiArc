@@ -46,6 +46,11 @@ public class CNNArch2MxNet extends CNNArchGenerator {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
     }
 
+    // TODO: Rewrite so that CNNArchSymbolCompiler is used in EMADL2CPP instead of this method
+    public boolean check(ArchitectureSymbol architecture) {
+        return architectureSupportChecker.check(architecture) && layerSupportChecker.check(architecture);
+    }
+
     public void generate(Scope scope, String rootModelName){
         CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(architectureSupportChecker, layerSupportChecker);
         ArchitectureSymbol architectureSymbol = symbolCompiler.compileArchitectureSymbol(scope, rootModelName);
