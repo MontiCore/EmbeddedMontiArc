@@ -20,6 +20,8 @@
  */
 package commons.simulation;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -32,37 +34,37 @@ public interface SimulationLoopNotifiable {
      * Is called just before the simulation objects update their states.
      *
      * @param simulationObjects List of all simulation objects
-     * @param totalTime Total simulation time in milliseconds
-     * @param deltaTime Delta simulation time in milliseconds
+     * @param totalTime Total simulation time
+     * @param deltaTime Delta simulation time
      */
-    void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime);
+    void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime, Duration deltaTime);
 
     /**
      * Is called after the simulation objects updated their states.
      *
      * @param simulationObjects List of all simulation objects
-     * @param totalTime Total simulation time in milliseconds
-     * @param deltaTime Delta simulation time in milliseconds
+     * @param totalTime Total simulation time
+     * @param deltaTime Delta simulation time
      */
-    void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime);
+    void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime, Duration deltaTime);
 
     /**
      * Is called for each object just before the simulation objects update their states.
      *
      * @param simulationObject Object for which the loop will be executed
-     * @param totalTime Total simulation time in milliseconds
-     * @param deltaTime Delta simulation time in milliseconds
+     * @param totalTime Total simulation time
+     * @param deltaTime Delta simulation time
      */
-    void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime);
+    void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime, Duration deltaTime);
 
     /**
      * Is called for each object after the simulation objects updated their states.
      *
      * @param simulationObject Object for which the loop iteration has been completed
-     * @param totalTime Total simulation time in milliseconds
-     * @param deltaTime Delta simulation time in milliseconds
+     * @param totalTime Total simulation time
+     * @param deltaTime Delta simulation time
      */
-    void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime);
+    void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime, Duration deltaTime);
 
     /**
      * Is called just before the simulation starts
@@ -75,7 +77,7 @@ public interface SimulationLoopNotifiable {
      * Is called just after the simulation ends
      *
      * @param simulationObjects List of all simulation objects
-     * @param totalTime Total simulation time in milliseconds
+     * @param totalTime Total simulation time
      */
-    void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime);
+    void simulationStopped(List<SimulationLoopExecutable> simulationObjects, Instant totalTime);
 }

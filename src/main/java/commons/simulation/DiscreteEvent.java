@@ -20,6 +20,8 @@
  */
 package commons.simulation;
 
+import java.time.Instant;
+
 /**
  * Interface for a discrete event in a discrete event simulation
  */
@@ -30,12 +32,12 @@ public interface DiscreteEvent {
      *
      * @return Time of the event
      */
-    public long getEventTime();
+    public Instant getEventTime();
 
     /**
-     * Function that returns a numeric identifier for the event
+     * Function that returns an identifier for the event
      *
      * @return Numeric identifier for the event
      */
-    public int getEventId();
+    public String getEventId();
 }
