@@ -42,6 +42,7 @@
         <module>util</module>
         <module>vehicle</module>
         <module>report</module>
+        <module>batteryFeature</module>
     </modules>
 <properties>
         <assembly.plugin>2.5.4</assembly.plugin>
