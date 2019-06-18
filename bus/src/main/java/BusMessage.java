@@ -24,7 +24,7 @@ import commons.controller.commons.BusEntry;
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-public class BusMessage{
+public class BusMessage extends DiscreteEvent{
 
 	private Object message;
 
@@ -36,7 +36,7 @@ public class BusMessage{
     private boolean transmitted;
     
     /**
-     * Time the request to transmit the messages was placed. (in microseconds)
+     * Time the request to transmit the messages was placed.
      */
     private Instant requestTime;
     
@@ -47,28 +47,46 @@ public class BusMessage{
     private Instant finishTime;
     
     private boolean error;
+
+	/**
+	 * -----------Added Type, Target and Priority--------------
+	 * Changed constructor and getters/setters
+	 */
+	//private MessageType type;
+
+    //private EEComponent target;
+
+    private int priority;
+
+
+
     
 	/**
 	 * Random number generator to determine a bit error
 	 */
 	Random bitError = new Random();
     
-    public BusMessage(Object message, int messageLen, BusEntry messageID, Instant requestTime, int controllerID) {
+    public BusMessage(Object message, int messageLen, BusEntry messageID, Instant requestTime, MessageType type, EEComponent target) {
+    	super(type, target, requestTime);
     	this.message = message;
     	this.messageLen = messageLen;
     	this.messageID = messageID;
-    	this.requestTime = requestTime;
-    	this.controllerID = controllerID;
     	this.transmittedBytes = 0;
     	this.transmitted = false;
     	this.finishTime = Instant.EPOCH;
     	this.error = false;
     }
     
-
 	public Instant getFinishTime() {
 		return finishTime;
 	}
+
+	public MessageType getType() { return type;	}
+
+	public void setType(MessageType type) { this.type = type;	}
+
+	public EEComponent getTarget() { return target;	}
+
 
 	public void setFinishTime(Instant finishTime) {
 		this.finishTime = finishTime;

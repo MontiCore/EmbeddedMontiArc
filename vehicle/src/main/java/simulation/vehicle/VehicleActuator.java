@@ -20,10 +20,11 @@
  */
 package simulation.vehicle;
 
+
 /**
  * Class that represents an actuator of the vehicle
  */
-public class VehicleActuator {
+public class VehicleActuator{
 
     /** Type of the actuator */
     private VehicleActuatorType actuatorType;
@@ -184,4 +185,6 @@ public class VehicleActuator {
                 " , actuatorValueTarget: " + actuatorValueTarget +
                 " , actuatorChangeRate: " + actuatorChangeRate;
     }
+
+
 }
