@@ -19,7 +19,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-import java.time.Duration;		
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -31,7 +31,6 @@ import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
 import commons.simulation.DiscreteEvent;
-
 
 public class FlexRay extends Bus {
 
@@ -64,7 +63,7 @@ public class FlexRay extends Bus {
 	 * Comparator that sorts {@link BusMessages} ascending according to their id
 	 */
 	private static final BusMessageComparatorIdAsc COMP_ASC_ID = new BusMessageComparatorIdAsc();
-	
+
 	private static final BusMessageComparatorTimeAsc COMP_TIME_ASC = new BusMessageComparatorTimeAsc();
 
 	/**
@@ -72,12 +71,10 @@ public class FlexRay extends Bus {
 	 */
 	private FlexRayOperationMode mode = new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY);
 
-	private int connectedComponents;
-	
 	private Map<String, PriorityQueue<BusMessage>> messagesByControllerId = new HashMap<String, PriorityQueue<BusMessage>>();
-	
+
 	public FlexRay(List<String> controllerIds) {
-		for(String controllerId : controllerIds) {
+		for (String controllerId : controllerIds) {
 			messagesByControllerId.put(controllerId, new PriorityQueue<BusMessage>(COMP_TIME_ASC));
 		}
 	}
@@ -90,27 +87,47 @@ public class FlexRay extends Bus {
 		this.mode = mode;
 	}
 
-	/**
-	 * Simulate the transmission of data for a given time
-	 * 
-	 * @param startTime Time where the simulation starts
-	 * @param deltaTime Time of the simulation
-	 */
-
 	@Override
 	protected void simulateFor(Duration duration) {
-		long maxCycle = (duration.get(ChronoUnit.NANOS) / this.getCycleTime().get(ChronoUnit.NANOS));
+		long maxCycle = (duration.toNanos() / this.getCycleTime().toNanos());
 
 		// go through simulation cycle by cycle
 		Instant cycleEndTime = this.currentTime;
+		Duration cylceTime = this.getCycleTime();
+		// TODO take care of unnecessary cycles (no messages to send)
 		for (int cycle = 0; cycle <= maxCycle; cycle++) {
 			// sent the frames for this cycle
-			cycleEndTime = cycleEndTime.plusNanos(this.getCycleTime().get(ChronoUnit.NANOS));
-			this.fillStaticSegment(cycleEndTime);
-			this.fillDynamicSegment(cycleEndTime);
+			cycleEndTime = cycleEndTime.plusNanos(cylceTime.toNanos());
+			this.fillStaticSegment(cycleEndTime, true);
+			this.fillDynamicSegment(cycleEndTime, true);
 		}
 	}
-	
+
+	@Override
+	protected void registerMessage(BusMessage msg) {
+		if (messagesByControllerId.containsKey(msg.getMessageID().toString())) {
+			PriorityQueue<BusMessage> controllerMsgs = messagesByControllerId.get(msg.getMessageID().toString());
+			controllerMsgs.add(msg);
+			messagesByControllerId.put(msg.getMessageID().toString(), controllerMsgs);
+		} else {
+			throw new IllegalArgumentException("Message does not belong to a registered controller.");
+		}
+	}
+
+	@Override
+	protected Instant getNextFinishTime() {
+		Instant nextFinishTime = this.currentTime;
+		Duration cylceTime = this.getCycleTime();
+		boolean transmittedMessage = false;
+		// TODO take care of unnecessary cycles (no messages to send)
+		while (!transmittedMessage) {
+			// sent the frames for this cycle
+			nextFinishTime = nextFinishTime.plusNanos(cylceTime.toNanos());
+			transmittedMessage = this.fillStaticSegment(nextFinishTime, false);
+			transmittedMessage = this.fillDynamicSegment(nextFinishTime, false);
+		}
+		return nextFinishTime;
+	}
 
 	/**
 	 * @return The duration of a slot
@@ -124,113 +141,93 @@ public class FlexRay extends Bus {
 	 * @return The duration of a cycle
 	 */
 	Duration getCycleTime() {
-		long nanoseconds = this.getSlotSize().get(ChronoUnit.NANOS) * (this.connectedComponents + DYNAMIC_SLOTS);
+		long nanoseconds = this.getSlotSize().toNanos() * (this.messagesByControllerId.size() + DYNAMIC_SLOTS);
 		return Duration.ofNanos((long) Math.ceil(nanoseconds));
-	}
-
-
-	/**
-	 * @param messagesByControllerId messages indexed by the id of the controller
-	 * @param newMessages            messages to be added to
-	 *                               {@code messagesByControllerId}
-	 * @return {@code messagesByControllerId} with properly inserted messages from
-	 *         {@code newMessages}
-	 */
-	Map<Integer, List<BusMessage>> insertNewMessages(Map<Integer, List<BusMessage>> messagesByControllerId,
-			List<BusMessage> newMessages) {
-		if (newMessages != null && messagesByControllerId != null) {
-			for (BusMessage message : newMessages) {
-				List<BusMessage> controllerMessages = messagesByControllerId.getOrDefault(message.getControllerID(),
-						new ArrayList<BusMessage>());
-				controllerMessages.add(message);
-				messagesByControllerId.put(message.getControllerID(), controllerMessages);
-			}
-		}
-		return messagesByControllerId;
 	}
 
 	/**
 	 * Transmit messages for each controller that wants to send
 	 * 
-	 * @param messagesByControllerId messages indexed by the id of the controller
-	 * @param cycleEndTime           the end time of the current cycle in
-	 *                               nanoseconds
-	 * @return messages that were successful transmitted during this segment
+	 * @param cycleEndTime the end time of the current cycle
+	 * @param actual       true if this is called within an actual simulation. False
+	 *                     otherwise (for example when called to calculate the
+	 *                     finish time of the next message)
+	 * @return true if at least one message was finished in the static segment
 	 */
-	void fillStaticSegment(Instant cycleEndTime) {
+	boolean fillStaticSegment(Instant cycleEndTime, boolean actual) {
+		boolean res = false;
 		for (Map.Entry<String, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
 			PriorityQueue<BusMessage> controllerMessages = entry.getValue();
 			int transmitted = 0;
 			while (!controllerMessages.isEmpty() && transmitted < STATIC_SLOTS * MAX_PAYLOAD_LEN) {
 				BusMessage message = controllerMessages.poll();
-				if(!message.isTransmitted()) {
+				if (!message.isTransmitted()) {
+					// TODO transmitBytes may update bytes incorrectly
 					transmitted += message.transmitBytes(STATIC_SLOTS * MAX_PAYLOAD_LEN - transmitted,
 							mode.getBitErrorRate());
 					if (transmitted >= 0) {
 						if (message.isTransmitted()) {
-							message.setFinishTime(cycleEndTime);
-							this.registerTransmittedEvent(message);
+							res = true;
+							if(actual) {
+								message.setFinishTime(cycleEndTime);
+								this.registerTransmittedEvent(message);
+							}
 						}
 					}
 				}
 			}
 			entry.setValue(controllerMessages);
 		}
+		return res;
 	}
 
 	/**
-	 * @param allMessages  messages that should be transmitted
-	 * @param cycleEndTime the end time of the current cycle in nanoseconds
-	 * @return messages that were successful transmitted during this segment
+	 * Fill the dynamic segment with the messages with highest overall priority
+	 * 
+	 * @param cycleEndTime the end time of the current cycle
+	 * @param actual       true if this is called within an actual simulation. False
+	 *                     otherwise (for example when called to calculate the
+	 *                     finish time of the next message)
+	 * @return true if at least one message was finished in the dynamic segment
 	 */
-	void fillDynamicSegment(Instant cycleEndTime) {
+	boolean fillDynamicSegment(Instant cycleEndTime, boolean actual) {
+		boolean res = false;
 		int transmitted = 0;
 		Optional<BusMessage> cur = this.getNextDynamicMessage();
 		while (cur.isPresent() && transmitted < MAX_PAYLOAD_LEN * DYNAMIC_SLOTS) {
-			transmitted += cur.get().transmitBytes((MAX_PAYLOAD_LEN * DYNAMIC_SLOTS)- transmitted, mode.getBitErrorRate());
+			transmitted += cur.get().transmitBytes((MAX_PAYLOAD_LEN * DYNAMIC_SLOTS) - transmitted,
+					mode.getBitErrorRate());
 			if (transmitted >= 0) {
 				if (cur.get().isTransmitted()) {
-					cur.get().setFinishTime(cycleEndTime);
-					this.registerTransmittedEvent(cur.get());
-				}
-			}
-		}
-	}
-
-	private Optional<BusMessage> getNextDynamicMessage() {
-		Optional<BusMessage> res = Optional.ofNullable(null);
-		for (Map.Entry<String, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
-			PriorityQueue<BusMessage> controllerMessages = entry.getValue();
-			if(!controllerMessages.isEmpty()) {
-				BusMessage msg = controllerMessages.peek();
-				if(!msg.isTransmitted()) {
-					if(!res.isPresent() || COMP_TIME_ASC.compare(res.get(), msg) > 0) {
-						res = Optional.of(msg);
+					res = true;
+					if(actual) {
+						cur.get().setFinishTime(cycleEndTime);
+						this.registerTransmittedEvent(cur.get());
 					}
-				}
-				else {
-					controllerMessages.poll();
 				}
 			}
 		}
 		return res;
 	}
 
-	@Override
-	protected void removeKeepAlive() {
-		// TODO Auto-generated method stub	
+	/**
+	 * @return the message with the highest overall priority
+	 */
+	Optional<BusMessage> getNextDynamicMessage() {
+		Optional<BusMessage> res = Optional.ofNullable(null);
+		for (Map.Entry<String, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
+			PriorityQueue<BusMessage> controllerMessages = entry.getValue();
+			if (!controllerMessages.isEmpty()) {
+				BusMessage msg = controllerMessages.peek();
+				if (!msg.isTransmitted()) {
+					if (!res.isPresent() || COMP_TIME_ASC.compare(res.get(), msg) > 0) {
+						res = Optional.of(msg);
+					}
+				} else {
+					controllerMessages.poll();
+				}
+			}
+		}
+		return res;
 	}
-
-	@Override
-	protected void setKeepAlive() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void registerMessage(BusMessage msg) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

@@ -61,7 +61,7 @@ public class BusMessage{
     	this.controllerID = controllerID;
     	this.transmittedBytes = 0;
     	this.transmitted = false;
-    	this.finishTime = Instant.ofEpochMilli(0);
+    	this.finishTime = Instant.EPOCH;
     	this.error = false;
     }
     

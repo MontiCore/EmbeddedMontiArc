@@ -21,18 +21,27 @@
  */
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.PriorityQueue;
 
 
 
 public abstract class Bus {
 
+	List<EEComponent> connectedComponents;
+	
 	protected Instant currentTime;
+	
+	protected String newestKeepAlive;
+	
+	public Bus(List<EEComponent> connectedComponents) {
+		this.connectedComponents = connectedComponents;
+	}
 
 	protected void processEvent(BusMessageTransmissionRequestEvent requestEvent) {
 		this.simulateFor(Duration.between(currentTime, requestEvent.getEventTime()));
 		currentTime = requestEvent.getEventTime();
 		this.registerMessage(requestEvent.getMessage());
-		this.removeKeepAlive();
 		this.setKeepAlive();
 	}
 	
@@ -40,12 +49,16 @@ public abstract class Bus {
 		
 	}
 
+	
+	//register event
+	protected void setKeepAlive() {
+		Instant nextFinishTime = this.getNextFinishTime();
+	}
+	
 	abstract protected void simulateFor(Duration duration);
 
-	abstract protected void removeKeepAlive();
-
-	abstract protected void setKeepAlive();
-
 	abstract protected void registerMessage(BusMessage msg);
+	
+	abstract protected Instant getNextFinishTime();
 
 }
