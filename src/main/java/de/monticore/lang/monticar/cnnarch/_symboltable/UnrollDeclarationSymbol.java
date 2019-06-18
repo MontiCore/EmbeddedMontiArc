@@ -35,7 +35,7 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     public static final UnrollDeclarationKind KIND = new UnrollDeclarationKind();
 
     private List<VariableSymbol> parameters;
-    private CompositeElementSymbol body;
+    private SerialCompositeElementSymbol body;
 
 
     protected UnrollDeclarationSymbol(String name) {
@@ -75,11 +75,11 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
         }
     }
 
-    public CompositeElementSymbol getBody() {
+    public SerialCompositeElementSymbol getBody() {
         return body;
     }
 
-    protected void setBody(CompositeElementSymbol body) {
+    protected void setBody(SerialCompositeElementSymbol body) {
         this.body = body;
     }
 
@@ -109,7 +109,7 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
             reset();
             set(layer.getArguments());
 
-            CompositeElementSymbol copy = getBody().preResolveDeepCopy();
+            SerialCompositeElementSymbol copy = getBody().preResolveDeepCopy();
             copy.putInScope(getSpannedScope());
             copy.resolveOrError();
             getSpannedScope().remove(copy);

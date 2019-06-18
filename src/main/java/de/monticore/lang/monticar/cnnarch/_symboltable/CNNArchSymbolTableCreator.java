@@ -251,8 +251,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     @Override
     public void endVisit(ASTUnrollDeclaration ast) {
         UnrollDeclarationSymbol unrollDeclaration = (UnrollDeclarationSymbol) ast.getSymbolOpt().get();
-        unrollDeclaration.setBody((CompositeElementSymbol) ast.getBody().getSymbolOpt().get());
-
+        unrollDeclaration.setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
 
         List<VariableSymbol> parameters = new ArrayList<>(4);
         for (ASTLayerParameter astParam : ast.getParametersList()){

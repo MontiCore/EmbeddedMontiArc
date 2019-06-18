@@ -47,8 +47,7 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
             if (element instanceof CompositeElementSymbol) {
                 isNetwork |= ((CompositeElementSymbol) element).isNetwork();
             }
-            else if (element instanceof LayerSymbol)
-            {
+            else if (element instanceof LayerSymbol) {
                 isNetwork |= ((LayerSymbol) element).getDeclaration().isNetworkLayer();
             }
         }

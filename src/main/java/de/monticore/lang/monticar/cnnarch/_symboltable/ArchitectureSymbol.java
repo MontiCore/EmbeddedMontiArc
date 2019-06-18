@@ -37,7 +37,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public static final ArchitectureKind KIND = new ArchitectureKind();
 
-    private List<SerialCompositeElementSymbol> streams;
+    private List<SerialCompositeElementSymbol> streams = new ArrayList<>();
     private List<IOSymbol> inputs = new ArrayList<>();
     private List<IOSymbol> outputs = new ArrayList<>();
     private Map<String, IODeclarationSymbol> ioDeclarationMap = new HashMap<>();
@@ -50,6 +50,26 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public List<SerialCompositeElementSymbol> getStreams() {
         return streams;
+    }
+
+    public List<SerialCompositeElementSymbol> getNetworkStreams() {
+        List<SerialCompositeElementSymbol> networkStreams = new ArrayList<>();
+        for (SerialCompositeElementSymbol stream : streams) {
+            if (stream.isNetwork()) {
+                networkStreams.add(stream);
+            }
+        }
+        return networkStreams;
+    }
+
+    public List<SerialCompositeElementSymbol> getNonNetworkStreams() {
+        List<SerialCompositeElementSymbol> nonNetworkStreams = new ArrayList<>();
+        for (SerialCompositeElementSymbol stream : streams) {
+            if (!stream.isNetwork()) {
+                nonNetworkStreams.add(stream);
+            }
+        }
+        return nonNetworkStreams;
     }
 
     public void setStreams(List<SerialCompositeElementSymbol> streams) {
