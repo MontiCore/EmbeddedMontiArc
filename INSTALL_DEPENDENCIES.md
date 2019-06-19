@@ -1,6 +1,6 @@
 # Dependencies needed to compile the generated projects
 ## Note
-The generator creates compile scripts for all supported compilers. A project with ROS Middleware contains `compile.sh`, as only Linux is supported by ROS. A project with ROS2 contains `compile.sh` and `compileMsbuild.bat` as Linux and Windows(with Msbuild) are supported.
+The generator creates compile scripts for all supported compilers. A project with ROS or ROS2 contains `compile.sh` and `compileMsbuild.bat` as Linux and Windows(with Msbuild) are supported.
 If you are having problems compiling on Windows because of the path length limit, use `substCompileMsbuild.bat` or  `substCompileMingw.bat`.
 ## All generated projects
 CMake, Make, a C++ compiler, and Armadillo are required to compile the generated projects.
@@ -80,6 +80,18 @@ Please note: It is highly recommended, you stick to the exact versions as stated
 ## Projects with roscpp generator
 Only for generated projects that contain a ROS adapter(e.g. "generators":["cpp","roscpp"]).
 ROS Kinetic currently only supports Linux and the installation is described [here](http://wiki.ros.org/kinetic/Installation/Ubuntu).
+ROS Melodic is also supported on Windows and the installation is described [here](http://wiki.ros.org/Installation/Windows). You might need to patch the file `${ROS_HOME}\ros\console.h` like this:
+```C++
+extern ROSCONSOLE_DECL bool g_initialized;
+=>
+//extern ROSCONSOLE_DECL bool g_initialized;
+...
+if (ROS_UNLIKELY(!::ros::console::g_initialized)) \
+=>
+/*if (ROS_UNLIKELY(!::ros::console::g_initialized))*/ \
+```
+
+
 Set the environment varialble `ROS_HOME` to the base of your ROS installation.
 
 ## Projects with ros2cpp/rclcpp generator

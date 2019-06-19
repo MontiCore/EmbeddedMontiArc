@@ -19,6 +19,11 @@ public class MingwCompilationGenerator extends WindowsCompilationGenerator {
     }
 
     @Override
+    public boolean supportsRos() {
+        return false;
+    }
+
+    @Override
     public boolean supportsRos2() {
         return false;
     }
