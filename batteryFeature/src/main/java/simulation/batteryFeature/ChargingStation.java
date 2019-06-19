@@ -1,25 +1,8 @@
-/**
- *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
- */
-package simulation.batteryFeature;
+package rwth.server.simulation;
 
+import rwth.server.bo.util.Logger;
+import rwth.server.pojo.MapArea;
+import rwth.server.simulation.Car;
 import commons.simulation.IdGenerator;
 import commons.simulation.PhysicalObject;
 import commons.simulation.PhysicalObjectType;
@@ -27,11 +10,7 @@ import commons.simulation.SimulationLoopExecutable;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.BlockRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-import rwth.server.pojo.MapArea;
+import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
 import simulation.util.Log;
 import simulation.util.MathHelper;
@@ -40,23 +19,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Charging Station Class
  *
- * @author Markus Horlemann, Uta Skorzinski
+ * Questions: carObjectArray AND inUse?
+ * 			  PhysicalObject has its own idGenerator
+ *
  * @version 1.0
  * @since 2019-05-22
  */
 public class ChargingStation implements SimulationLoopExecutable, PhysicalObject{
-	private int id;
-	private static int idcount = 0;
-	private String name = "Charging Station ";
-	private double consumption = 0;
-	private boolean inUse = false;
-	private long sysTimeUntilFree = 0;
-	private long carID;
-	private MapArea area;
-
 	/** Variables for the PhysicalObject interface */
 	/** Position vector of the center of mass */
 	private RealVector position;
@@ -89,20 +62,52 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	/** Unique Id of the physical object */
 	private long uniqueId = IdGenerator.getSharedInstance().generateUniqueId();
 
+
+	private Car[] carObjects = new Car[2];
+	private static int idcount = 0;
+	private String name = "Charging Station ";
+	private double consumption = 0;
+	private boolean[] inUse = {false, false};
+
+	private long sysTimeUntilFree = 0;
+	//private long carID;
+	private MapArea area;
+
 	// ===================
 	// Constructor
 	// ===================
+	public ChargingStation(){
+		position = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+		Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
+		rotation = new BlockRealMatrix(rot.getMatrix());
+		velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+		angularVelocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+		force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+		torque = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+		mass = 0.0;
+		width = 1.0;
+		length = 1.0;
+		height = 0.5;
+		geometryPositionOffset = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+		physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_STREET_LANTERN;
+		error = false;
+		collision = false;
+	}
+
 	public ChargingStation(MapArea area) {
-		ChargingStation.idcount++;
-		this.id = idcount;
-		this.name = this.name + id;
+		ChargingStation();
+		//ChargingStation.idcount++;
+		//this.id = idcount;
+		//this.name = this.name + id;
 		this.area = area;
 	}
 
 	public ChargingStation(MapArea area, String name) {
-		ChargingStation.idcount++;
-		this.id = idcount;
-		this.name = this.name + id;
+		ChargingStation();
+		//ChargingStation.idcount++;
+		//this.id = idcount;
+		//this.name = this.name + id;
+		this.name=name;
 		this.area = area;
 	}
 
@@ -112,19 +117,29 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	/**
 	 * Method that should be called to start the charging process
 	 * 
-	 * @param carID
-	 *            ID of the current car
-	 * @param chargingTimeMillis
+	 * @param car
+	 *            current car
+	 * @param chargingtime
 	 *            time in milli secounds that it requires to charge (1s = 1000ms)
 	 * @return false if it is already in use
 	 */
-	public boolean startCharging(long carID, long chargingTimeMillis) {
-		if (this.inUse) {
+	public boolean startCharging(Car car, long chargingTimeMillis) {
+		if(inUse[1] && inUse[2]){
+			setError(false);
 			return false;
 		}
-		this.inUse = true;
+		else if(inUse[1]==false){
+			inUse[1] = true;
+			car[1] = car;
+		}
+		else if(inUse[2]==false){
+			inUse[2] = true;
+			car[2] = car;
+		}
+
+
 		this.sysTimeUntilFree = System.currentTimeMillis() + chargingTimeMillis;
-		this.carID = carID;
+		//this.carID = carID;
 
 		return true;
 	}
@@ -135,18 +150,22 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	 * @param consumption consumption Of charging process
 	 * @return false if not in use or car not found
 	 */
-	public boolean stopCharging(long carID, long consumption) {
-		if (!this.inUse) {
+	public boolean stopCharging(Car car, long consumption) {
+		if (!(carObjects[1] == car || carObjects[2] == car)) {
+			setError(false);
 			return false;
 		}
-		if (carID != this.carID) {
-			return false;
+		else if(carObjects[1] == car){
+			inUse[1]== false;
 		}
-		this.inUse = false;
-		this.consumption = this.consumption + consumption;
+		else if(carObjects[2] == car){
+			inUse[2] == false;
+		}
 
+		this.consumption = this.consumption + consumption;
 		return true;
 	}
+
 
 	// ===================
 	// Getter and Setter
@@ -177,6 +196,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	}
 
 	public long getSysTimeUntilFreeMillis() {
+		//compute
 		if (!this.inUse) {
 			return 0;
 		} else {
@@ -200,6 +220,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 			throw new Exception("Consumption < 0 is not possible!");
 		}
 	}
+
 
 	/**
 	 * Function that returns a copy of the center of mass position vector
@@ -423,9 +444,9 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	 */
 	@Override
 	public void setError(boolean error){
-		Log.warning("StreetLantern: setError - error: " + error + ", StreetLantern at start: " + this);
+		Log.warning("Charging Station: setError - error: " + error + ", Charging Station at start: " + this);
 		this.error = error;
-		Log.warning("StreetLantern: setError - error: " + error + ", StreetLantern at end: " + this);
+		Log.warning("Charging Station: setError - error: " + error + ", Charging Station at end: " + this);
 	}
 
 	/**
@@ -443,9 +464,9 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	 */
 	@Override
 	public void setCollision(boolean collision){
-		Log.warning("StreetLantern: setCollision - collision: " + collision + ", StreetLantern at start: " + this);
+		Log.warning("Charging Station: setCollision - collision: " + collision + ", Charging Station at start: " + this);
 		this.collision = collision;
-		Log.warning("StreetLantern: setCollision - collision: " + collision + ", StreetLantern at end: " + this);
+		Log.warning("Charging Station: setCollision - collision: " + collision + ", Charging Station at end: " + this);
 	}
 
 	/**
@@ -504,7 +525,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	 */
 	@Override
 	public void computePhysics(long deltaTms){
-		//No physics computations for street lanterns
+		//No physics computations for charging stations
 		force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
 		torque = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
 	}
@@ -530,6 +551,6 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	 */
 	@Override
 	public void executeLoopIteration(long timeDiffMs) {
-		// do nothing: street lanterns do not move
+		// do nothing: Charging stations do not move
 	}
 }
