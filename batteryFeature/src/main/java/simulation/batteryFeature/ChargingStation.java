@@ -64,7 +64,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 
 
 	private Car[] carObjects = new Car[2];
-	private static int idcount = 0;
+	//private static int idcount = 0;
 	private String name = "Charging Station ";
 	private double consumption = 0;
 	private boolean[] inUse = {false, false};
@@ -89,7 +89,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 		length = 1.0;
 		height = 0.5;
 		geometryPositionOffset = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-		physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_STREET_LANTERN;
+		//physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_STREET_LANTERN;
 		error = false;
 		collision = false;
 	}
@@ -195,16 +195,8 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 		return carID;
 	}
 
-	public long getSysTimeUntilFreeMillis() {
-		//compute
-		if (!this.inUse) {
-			return 0;
-		} else {
-			return sysTimeUntilFree;
-		}
-	}
-
 	public long getTimeUntilFreeMillis() {
+		//TODO: How much time needs the battery
 		long time = sysTimeUntilFree - System.currentTimeMillis();
 		if (time <= 0) {
 			return 0;
