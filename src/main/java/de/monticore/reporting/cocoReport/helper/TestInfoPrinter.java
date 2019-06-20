@@ -6,17 +6,20 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class TestInfoPrinter {
 
-    public static void printInfo(List<CheckCoCoResult> testResults, String infoPath, boolean merge){
+    public static void printInfo(List<CheckCoCoResult> testResults, String infoPath, Date date, boolean merge){
         if (testResults.size() == 0) return;
         if (merge) {
             try {
                 String first = FileUtils.readFileToString(new File(infoPath));
                 first = first.substring(0, first.length() - 3);
-                String str = first + ",\n" + getInfo(testResults, merge);
+                String str = first + ",\n" + getInfo(testResults, date, merge);
                 FileUtils.writeStringToFile(new File(infoPath),
                         str);
             } catch (IOException e) {
@@ -25,14 +28,14 @@ public class TestInfoPrinter {
         } else {
             try {
                 FileUtils.writeStringToFile(new File(infoPath),
-                        getInfo(testResults, merge));
+                        getInfo(testResults, date, merge));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private static String getInfo(List<CheckCoCoResult> testResults,  boolean merge){
+    private static String getInfo(List<CheckCoCoResult> testResults, Date date,  boolean merge){
         ValidInfo info = getValidInfo(testResults);
 
         IndentPrinter ip = new IndentPrinter();
@@ -56,9 +59,13 @@ public class TestInfoPrinter {
         ip.println("\"Valid\": \"" + 0 + "\",");
         ip.println("\"Invalid\": \"" + info.errored + "\"");
         ip.unindent();
-
-        ip.print("}");
+        ip.print("},");
         ip.println();
+
+        String formattedTimeStamp = (new SimpleDateFormat("dd.MM.yyyy HH:mm").format(date));
+        ip.print("\"date\": " + "\"" + formattedTimeStamp + "\"");
+        ip.println();
+
         ip.unindent();
         ip.println("}");
 

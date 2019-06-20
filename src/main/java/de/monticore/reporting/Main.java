@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class Main {
@@ -35,7 +36,7 @@ public class Main {
             CustomPrinter.println("\n<============Write Test Results============>\n");
             CoCoTestResultPrinter.printTestResults(mainPackages, context.getOutput() + "data.json", context.isMerge(), true);
             CoCoTestResultPrinter.printTestResults(testResults, context.getOutput() + "dataExpanded.json", context.isMerge(), false);
-            TestInfoPrinter.printInfo(testResults, context.getOutput() + "info.json", context.isMerge());
+            TestInfoPrinter.printInfo(testResults, context.getOutput() + "info.json", context.getDate(), context.isMerge());
             CustomPrinter.println("SUCCESS\n");
         }
         if (context.isTestsEndWithTest()) {
@@ -79,8 +80,8 @@ public class Main {
         private String projectRoot = "";
         private boolean merge = false;
         private boolean reportGrammar = false;
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-        private String output = "report/data_" + timeStamp + "/";
+        private Date date = Calendar.getInstance().getTime();
+        private String output = "report/data_" + (new SimpleDateFormat("yyyyMMdd_HHmmss").format(date)) + "/";
         private int timeout = 10;
 
         public boolean isTestsEndWithTest() {
@@ -141,6 +142,14 @@ public class Main {
         public void setTimeout(int timeout) {
             this.timeout = timeout;
         }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
+        }
     }
 
     private static String help() {
@@ -166,8 +175,10 @@ public class Main {
         }
 
         File projectRoot = new File(args[0]);
-        if (!projectRoot.isDirectory() || !projectRoot.exists())
+        if (!projectRoot.isDirectory() || !projectRoot.exists()) {
+            System.out.println("Cannot find dir: " + projectRoot.getAbsolutePath());
             Log.error("Cannot find dir: " + projectRoot.getAbsolutePath());
+        }
         context.setProjectRoot(projectRoot.getAbsolutePath());
 
         for (int i = 1; i < args.length; i++) {
