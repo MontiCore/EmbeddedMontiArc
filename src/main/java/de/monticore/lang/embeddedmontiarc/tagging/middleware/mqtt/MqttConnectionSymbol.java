@@ -40,7 +40,7 @@ public class MqttConnectionSymbol extends MiddlewareSymbol {
     }
 
     public void setTopicName(String topicName) {
-        this.value.set(0, Optional.ofNullable(topicName));
+        this.values.set(0, Optional.ofNullable(topicName));
     }
 
     public Optional<String> getMsgField() {

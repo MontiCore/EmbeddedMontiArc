@@ -96,6 +96,8 @@ public class MqttSymbolCreator implements TagSymbolCreator {
                                 });
                     });
 
+
+            /**
             //Tags with TagValue
             tagElements.stream()
                     .filter(t -> t.getTagValueOpt().isPresent())
@@ -114,6 +116,7 @@ public class MqttSymbolCreator implements TagSymbolCreator {
                                             p.setMiddlewareSymbol(tmpSymbol);
                                         }
                                     }));
+                **/
         }
     }
 
