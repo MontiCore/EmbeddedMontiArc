@@ -10,53 +10,69 @@ public class MqttConnectionSymbol extends MiddlewareSymbol {
     public static final MqttConnectionKind KIND = MqttConnectionKind.INSTANCE;
 
     public MqttConnectionSymbol() {
-        super(KIND, Optional.empty(), Optional.empty(), Optional.empty());
+        super(KIND, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
     }
 
-    public MqttConnectionSymbol(String topicName, String topicType) {
-        this(KIND, topicName, topicType);
+    public MqttConnectionSymbol(String id, String topicName) {
+        this(KIND, id, topicName);
     }
 
-    public MqttConnectionSymbol(MqttConnectionKind kind, String topicName, String topicType) {
-        super(kind, Optional.ofNullable(topicName), Optional.ofNullable(topicType), Optional.empty());
+    public MqttConnectionSymbol(MqttConnectionKind kind, String id, String topicName) {
+        super(kind, Optional.ofNullable(id), Optional.ofNullable(topicName), Optional.empty());
     }
 
-    public MqttConnectionSymbol(String topicName, String topicType, String msgField) {
-        this(KIND, topicName, topicType, msgField);
+    public MqttConnectionSymbol(String id, String topicName, int qoS) {
+        this(KIND, id, topicName, qoS);
     }
 
-    protected MqttConnectionSymbol(MqttConnectionKind kind, String topicName, String topicType, String msgField) {
-        super(kind, Optional.ofNullable(topicName), Optional.ofNullable(topicType), Optional.ofNullable(msgField));
+    public MqttConnectionSymbol(MqttConnectionKind kind, String id, String topicName, int qoS){
+        super(kind, Optional.ofNullable(id), Optional.ofNullable(topicName), Optional.ofNullable(qoS))
+    }
+
+    public MqttConnectionSymbol(String id, String topicName, int qoS, String msgField){
+        this(KIND, id, topicName, qoS, msgField);
+    }
+
+    protected MqttConnectionSymbol(MqttConnectionKind kind, String id, String topicName, int qoS, String msgField) {
+        super(kind, Optional.ofNullable(id), Optional.ofNullable(topicName), Optional.ofNullable(qoS), Optional.ofNullable(msgField));
     }
 
     @Override
     public String toString() {
-        return String.format("MqttConnection = (%s, %s), %s",
-                getTopicName(), getTopicType(), getMsgField());
+        return String.format("MqttConnection = %s, (%s, %d), %s",
+                getId(), getTopicName(), getQoS(), getMsgField());
     }
 
-    public Optional<String> getTopicName() {
+    public Optional<String> getId() {
         return getValue(0);
     }
 
-    public void setTopicName(String topicName) {
-        this.values.set(0, Optional.ofNullable(topicName));
+    public void setId(String id) {
+        this.value.set(0, Optional.ofNullable(id));
     }
 
-    public Optional<String> getTopicType() {
+    public Optional<String> getTopicName() {
         return getValue(1);
     }
 
-    public void setTopicType(String topicType) {
-        this.values.set(1, Optional.ofNullable(topicType));
+    public void setTopicName(String topicName) {
+        this.values.set(1, Optional.ofNullable(topicName));
     }
 
-    public Optional<String> getMsgField() {
+    public Optional<int> getQoS() {
         return getValue(2);
     }
 
+    public void setTopicType(String qoS) {
+        this.values.set(2, Optional.ofNullable(qoS));
+    }
+
+    public Optional<String> getMsgField() {
+        return getValue(3);
+    }
+
     public void setMsgField(String msgField) {
-        this.values.set(2, Optional.ofNullable(msgField));
+        this.values.set(3, Optional.ofNullable(msgField));
     }
 
     public static class MqttConnectionKind extends TagKind {

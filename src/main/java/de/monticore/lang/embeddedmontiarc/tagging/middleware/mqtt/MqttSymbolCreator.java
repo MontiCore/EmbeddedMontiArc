@@ -124,7 +124,7 @@ public class MqttSymbolCreator implements TagSymbolCreator {
         }
         Log.error(String.format("'%s' does not match the specified regex pattern '%s'",
                 regex,
-                "{topic = ({name}, {type}), msgField = {msgField}}"));
+                "{id = {name}, topic = ({name}, {type}), msgField = {msgField}}"));
         return null;
     }
 
