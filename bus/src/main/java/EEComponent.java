@@ -1,25 +1,22 @@
 import commons.controller.commons.BusEntry;
 import commons.simulation.DiscreteEvent;
 
-public interface EEComponent {
-    /**
-     * function that connects unit to the EESimulator and the bus
-     */
-    void connectToSimulator(EESimulator simulator);
+public abstract class EEComponent {
+	
+	protected EESimulator simulator;
+	
+	public EEComponent(EESimulator simulator) {
+		this.simulator = simulator;
+	}
 
     /**
-     * function that transmits data to the bus (via simulator)
+     * processes an incoming event
      */
-    void registerEvent(EESimulator simulator, DiscreteEvent event);
-
-    /**
-     * function that receives data from the bus (via simulator)
-     */
-    void processEvent(DiscreteEvent event);
+    public abstract void processEvent(DiscreteEvent event);
 
     /**
      *
-     * @return
+     * @return Id of this component. Can be a BusEntry or randomly generated ID
      */
-    BusEntry getID();
+    public abstract String getID();
 }

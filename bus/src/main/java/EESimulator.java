@@ -6,6 +6,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.Comparator;
 
+import commons.simulation.DiscreteEvent;
+
 
 public class EESimulator {
 
@@ -35,6 +37,7 @@ public class EESimulator {
      * function that adds event to eventList
      * @param event event to add
      */
+
     public void addEvent(DiscreteEvent event){
         eventList.offer(event);
     }
@@ -51,7 +54,7 @@ public class EESimulator {
                 
 
             } else if(event.getType() == MessageType.RECEIVE){
-
+                //TODO: send this event to actuator or next bus
             }
 
             

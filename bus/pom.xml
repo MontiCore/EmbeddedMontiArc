@@ -62,6 +62,13 @@
             <artifactId>vehicle</artifactId>
             <version>1.0.8</version>
         </dependency>
+		
+		<!-- Bus has dependency to sensors -->
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>sensors</artifactId>
+            <version>1.0.8</version>
+        </dependency>
 
     </dependencies>
 

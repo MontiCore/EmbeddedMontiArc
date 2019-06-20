@@ -1,3 +1,4 @@
+
 /**
  *
  * ******************************************************************************
@@ -19,57 +20,85 @@
  * *******************************************************************************
  */
 
-import java.util.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.UUID;
 
-import commons.controller.commons.BusEntry;
+
 import commons.simulation.DiscreteEvent;
-import commons.simulation.DiscreteEventSimulationNotifiable;
-import commons.simulation.DiscreteEventSimulator;
 
-public abstract class Bus extends DiscreteEventSimulator{
+
+
+public abstract class Bus extends EEComponent{
 	
-	protected Map<String, BusMessage> deliveredMessages = new HashMap<String, BusMessage>();
+	protected String ID;
 	
-	protected List<BusMessage> activeMessages = new ArrayList<BusMessage>();
+	protected List<EEComponent> connectedComponents;
 	
-	protected int connectedComponents = 0;
+	protected Instant currentTime;
 	
-	@Override
-    public void registerDiscreteEventSimulationNotifiable(DiscreteEventSimulationNotifiable simulationNotifiable) {
-		connectedComponents++;
-		super.registerDiscreteEventSimulationNotifiable(simulationNotifiable);
-    }
+	protected String currentKeepAliveID;
 	
-	@Override
-    public void unregisterDiscreteEventSimulationNotifiable(DiscreteEventSimulationNotifiable simulationNotifiable) {
-        this.connectedComponents--;
-		super.unregisterDiscreteEventSimulationNotifiable(simulationNotifiable);
-    }
+	public Bus(EESimulator simulator, List<EEComponent> connectedComponents) {
+		super(simulator);
+		this.connectedComponents = connectedComponents;
+		this.ID = "Bus" + UUID.randomUUID().toString();
+	}
 	
-	@Override
-	protected void processEvent(DiscreteEvent event) {
-		if(event instanceof BusMessageDeliveredEvent) {
-			BusMessageDeliveredEvent deliveredEvent = (BusMessageDeliveredEvent)event; 
-			deliveredMessages.put(deliveredEvent.getMessage().getMessageID().toString(), deliveredEvent.getMessage());
+	public String getID() {
+		return this.ID;
+	}
+
+	public void processEvent(DiscreteEvent evt) {
+		if(evt instanceof BusMessage) {
+			BusMessage msg = (BusMessage)evt;
+			if(msg.getType() == MessageType.SEND) {
+				this.simulateFor(Duration.between(currentTime, msg.getEventTime()));
+				currentTime = msg.getEventTime();
+				this.registerEvent(msg);
+				this.registerMessage(msg);
+				this.setKeepAlive();
+			}
+			else{
+				throw new IllegalArgumentException("Invalid MessageType. Expected SEND but was " + msg.getType().toString());
+			}
 		}
-		else if(event instanceof BusMessageTransmissionRequestEvent) {
-			BusMessageTransmissionRequestEvent requestEvent = (BusMessageTransmissionRequestEvent)event;
-			activeMessages.add(requestEvent.getMessage());
+		else if(evt instanceof KeepAliveEvent) {
+			if(evt.getEventId() == this.currentKeepAliveID) {
+				this.simulateFor(Duration.between(currentTime, evt.getEventTime()));
+				currentTime = evt.getEventTime();
+				this.setKeepAlive();
+			}
 		}
 		else {
-			throw new IllegalArgumentException("Event of wrong type. Expected a bus event but was a " + event.getClass().toString());
+			throw new IllegalArgumentException("Invalid event type. Expected KeepAliveEvent or BusMessage but was " + evt.getClass());
+		}
+		
+	}
+	
+	void setKeepAlive() {
+		KeepAliveEvent keepAlive = new KeepAliveEvent(this.getNextFinishTime());
+		currentKeepAliveID = keepAlive.getEventId();
+		this.simulator.addEvent(keepAlive);
+	}
+	
+	void registerEvent(BusMessage msg) {
+		if(msg.getTarget() instanceof Bus) {
+			msg.forwardToBus(this.ID);
+			this.simulator.addEvent(msg);
+		}
+		else {
+			msg.setType(MessageType.RECEIVE);
+			this.simulator.addEvent(msg);
 		}
 	}
 	
-    public Optional<BusMessage> getData(String key) {
-		return Optional.ofNullable(this.deliveredMessages.get(key));
-	}
+	abstract void simulateFor(Duration duration);
 
-    public Map<String, BusMessage> getDeliveredMessages(){
-    	return this.deliveredMessages;
-    }
+	abstract Instant getNextFinishTime();
+	
+	abstract void registerMessage(BusMessage msg); 
 
-    public Set<String> getImportNames() {
-    	 return this.deliveredMessages.keySet();
-    }
 }
