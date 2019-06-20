@@ -26,7 +26,7 @@ public class MqttConnectionSymbol extends MiddlewareSymbol {
     }
 
     public MqttConnectionSymbol(MqttConnectionKind kind, String id, String topicName, int qoS){
-        super(kind, Optional.ofNullable(id), Optional.ofNullable(topicName), Optional.ofNullable(qoS))
+        super(kind, Optional.ofNullable(id), Optional.ofNullable(topicName), Optional.ofNullable(qoS));
     }
 
     public MqttConnectionSymbol(String id, String topicName, int qoS, String msgField){
