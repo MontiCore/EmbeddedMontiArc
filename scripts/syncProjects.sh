@@ -20,7 +20,7 @@ echo "Cloning or pulling updates on all GitLab projects."
 
 FIELD_NAME="X-Total-Pages"
 
-TOTAL_PAGES=$(curl -s --head --header "PRIVATE-TOKEN: zXKxi79T9iymW-FEHQgA" "${BASE_PATH}api/v4/projects?membership=true" | grep "$FIELD_NAME:" | grep -o [[:digit:]])
+TOTAL_PAGES=$(curl -s --head --header "PRIVATE-TOKEN: zXKxi79T9iymW-FEHQgA" "${BASE_PATH}api/v4/projects" | grep "$FIELD_NAME:" | grep -o [[:digit:]])
 
 FIELD_NAME="http_url_to_repo"
 REPO_GIT_URLS=""
