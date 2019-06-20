@@ -5,35 +5,25 @@
 Reporting
 ========
 
-Creates a report of the quality of all models within a projects-root e.g. `EmbeddedMontiArc` / `MontiSim` / `MontiCore`.
-Each day, Travis automatically calculates the report for `EmbeddedMontiArc` and `MontiSim` and uploads it afterwards to gh-pages.
+Reporting
+========
 
-[Component Quality](https://embeddedmontiarc.github.io/reporting/report/componentQuality.html) : 
+Creates a report of the quality of all models within a projects-root e.g. `EmbeddedMontiArc`
+Each day, Travis automatically calculates the report for `EmbeddedMontiArc` and uploads it afterwards to gl-pages.
+
+[Component Quality](https://monticore.pages.rwth-aachen.de/EmbeddedMontiArc/utilities/reporting/report/componentQuality.html) : 
 Report for the CoCo tests of all components.
-
-[Grammars](https://embeddedmontiarc.github.io/reporting/report/grammarReport.html) : 
-Report of all grammars.
-
-[Test Quality](https://embeddedmontiarc.github.io/reporting/report/testReport.html) : 
-Report of all jUnit tests.
 
 ## How to add a new report
 
-- To add a new Repository Root e.g. `EmbeddedMontiArc`, add the following lines to the travis.yml
+- To add a new Repository Root e.g. `EmbeddedMontiArc`, add the following lines to the gitlab-ci.yml
     - `script`:
-        - -bash ./scripts/gitpull.sh `New_Repository_Root`
-    - `after success`:
-        - -`new_Zip_Var`=$(createZip `New_Repository_Root`)
-        - OR
-        - -`new_Zip_Var`=$(createGrammarZip `New_Repository_Root`)
-    - `after success`:
-        - -java -jar target/reporting-`current_Version`-jar-with-dependencies.jar `New_Repository_Root` `options` -m
-    - `after success`:
-        - -bash ./scripts/deploy.sh `oldZipVars` `$new_Zip_Var`
+        - ./scripts/syncProjects.sh "EmbeddedMontiArc"
+        - java -jar target/reporting-0.9-jar-with-dependencies.jar "EmbeddedMontiArc" "-testCoCos" "-timeout" "10"
     - the `options` are:
-        - `-tt` in order to add the Report for all jUnit tests
-        - `-tc` `-zn` `$newZipVar` in order to add the Report for the Coco tests of all components.
-            - `-svg` to also create the visualisation for all components
+        - `-testCoCos` in order to add the Report for the Coco tests of all components.
+            - `-timeout "t"` in order to set a time limit for building the symbol table 
+        - `-testTests` in order to add the Report for all jUnit tests
         - `-grammar` in order to add the Report for all grammars
         - `-m` **essential** : in order to add and not replace the report
 
