@@ -1,8 +1,10 @@
+import simulation.vehicle.VehicleActuator;
+import sun.management.Sensor;
+
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.Comparator;
 
 
 public class EESimulator {
@@ -16,33 +18,25 @@ public class EESimulator {
     /**
      * list of discrete events (in the future)
      */
-    private List<DiscreteEvent> eventList = Collections.synchronizedList(new LinkedList<>()); //change to prio queue
+    private static final EESimulatorComparator listComparator = new EESimulatorComparator();
+    private PriorityQueue<DiscreteEvent> eventList = new PriorityQueue<>(Integer.MAX_VALUE, listComparator);
 
     /**
-     * list of objects that can get addressed by messages
+     * lists of objects that can get addressed by messages
      */
-    private List<EEComponent> listenerList = Collections.synchronizedList(new LinkedList<>());      //split
+    private List<EEComponent> busList = Collections.synchronizedList(new LinkedList<>());
+
+    private List<EEComponent> sensorList = Collections.synchronizedList(new LinkedList<>());
+
+    private List<EEComponent> actuatorList = Collections.synchronizedList(new LinkedList<>());
 
 
     /**
      * function that adds event to eventList
      * @param event event to add
      */
-    public void addEvent(DiscreteEvent event){          //change name to schedule event?
-        //event in the past
-        if(event.getRequestTime() < simulationTimeNs){
-            return;
-        }
-
-        int index = 0;
-        for(DiscreteEvent e : eventList){
-            if(e.getRequestTime() > event.getRequestTime()){
-                break;
-            }
-            index++;
-        }
-        eventList.add(index, event);
-
+    public void addEvent(DiscreteEvent event){
+        eventList.offer(event);
     }
 
 
@@ -54,13 +48,12 @@ public class EESimulator {
         for (DiscreteEvent event: eventList) {
             if(event.getType() == MessageType.SEND){                //waiting for the updated bus interface
                 //TODO: send this event to bus
-
+                
 
             } else if(event.getType() == MessageType.RECEIVE){
-                eventList.get(0).getTarget().receiveData(eventList.get(0).getData());
-                eventList.remove(0);
+
             }
-            simulationTimeNs = event.getRequestTime();
+
             
         }
     }
@@ -70,7 +63,14 @@ public class EESimulator {
      * @param listener component to add
      */
     public void registerComponent(EEComponent listener){
-        listenerList.add(listener);
+        if (listener instanceof Bus){
+            busList.add(listener);
+        }
+        else if (listener instanceof VehicleActuator) {
+            actuatorList.add(listener);
+        } else if (listener instanceof Sensor){
+            sensorList.add(listener);
+        } else { return;}
     }
 
     public long getDeltaSimulationTimeNs() {
@@ -83,3 +83,15 @@ public class EESimulator {
 
 
 }
+
+class EESimulatorComparator implements Comparator<DiscreteEvent>
+{
+    // Used for sorting in ascending order of
+    public int compare(DiscreteEvent a, DiscreteEvent b)
+    {
+        if (a.getRequestTime() < b.getRequestTime()) {return -1;}
+        else if (a.getRequestTime() == b.getRequestTime()) {return 0;}
+        else {return 1;}
+    }
+}
+

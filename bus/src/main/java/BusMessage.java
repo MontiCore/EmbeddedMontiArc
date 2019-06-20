@@ -179,8 +179,5 @@ public class BusMessage extends DiscreteEvent{
 class BusMessageComparator implements Comparator<BusMessage> 
 { 
     // Used for sorting in ascending order of 
-    public int compare(BusMessage a, BusMessage b) 
-    { 
-        return a.getMessageID().compareTo( b.getMessageID()); 
-    } 
+    public int compare(BusMessage a, BusMessage b) { return a.getMessageID().compareTo( b.getMessageID()); }
 } 
