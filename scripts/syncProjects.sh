@@ -30,7 +30,7 @@ do
 done
 
 for REPO_GIT_URL in $REPO_GIT_URLS; do
-    REPO_GIT_URL = "https://oauth2:$GITLAB_PRIVATE_TOKEN@git.rwth-aachen.de/$REPO_GIT_URL.git"
+    REPO_GIT_URL="https://oauth2:$GITLAB_PRIVATE_TOKEN@git.rwth-aachen.de/$REPO_GIT_URL.git"
     THEPATH=$(echo "$REPO_GIT_URL" | awk -F'/' '{print $NF}' | awk -F'.' '{print $1}')
 
     if [ ! -d "$GROUP_NAME/$THEPATH" ]; then
