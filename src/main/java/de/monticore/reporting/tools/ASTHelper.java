@@ -54,7 +54,6 @@ public class ASTHelper {
             model.addErrorMessage("[INFO] Parser Test success<br>");
         }
 
-        model.setParsed(parsingSuccessful ? 1 : -1);
         if (parsingSuccessful) {
             model.setUnresolvedAST(ast);
             String PackageName = Joiners.DOT.join(ast.getPackageList());
