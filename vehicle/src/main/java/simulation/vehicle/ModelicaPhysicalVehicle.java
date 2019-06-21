@@ -30,6 +30,7 @@ import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.util.MathHelper;
 
+import java.time.Duration;
 import java.util.*;
 
 import static simulation.vehicle.VehicleActuatorType.*;
@@ -301,10 +302,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
     /**
      * Function that computes one step of the physical behaviour of the object
-     * @param deltaTms Duration of the current simulation step in milliseconds
+     * @param deltaTime Duration of the current simulation step
      */
     @Override
-    public void computePhysics(long deltaTms){
+    public void computePhysics(Duration deltaTime){
         if (!this.getError()) {
             // Calculate input values
             // Get values from VDM
@@ -317,13 +318,13 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             // Do calculation steps with maximum step size as long as possible
             long currentDeltaTms = 0;
             int stepSizems = 2;
-            while(currentDeltaTms + stepSizems <= deltaTms){
+            while(currentDeltaTms + stepSizems <= deltaTime.toMillis()){
                 doCalculationStep(stepSizems);
                 currentDeltaTms = currentDeltaTms + stepSizems;
             }
 
             // Do a calculation step with partial step size to fill the gap
-            long partialStepSize = deltaTms - currentDeltaTms;
+            long partialStepSize = deltaTime.toMillis() - currentDeltaTms;
             if(partialStepSize > 0) {
                 doCalculationStep(partialStepSize);
             }

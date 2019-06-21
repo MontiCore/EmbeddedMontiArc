@@ -20,6 +20,8 @@
  */
 package simulation.vehicle;
 
+import java.time.Duration;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
@@ -68,8 +70,8 @@ public class FrictionTest {
         // puts physicalVehicle1 onto a position on the map that is known to be paved, physicalVehicle2 is already initialized with a position
         // that is known to be unpaved
         physicalVehicle1.putOnSurface(843, 236, 0.0);
-        physicalVehicle1.computePhysics(1);
-        physicalVehicle2.computePhysics(1);
+        physicalVehicle1.computePhysics(Duration.ofMillis(1));
+        physicalVehicle2.computePhysics(Duration.ofMillis(1));
 
         Assert.assertEquals(PhysicsEngine.calcFrictionCoefficient(StreetPavements.PAVED, WorldModel.getInstance().isItRaining()), physicalVehicle1.getVDM().getValue("mu_1"), 0);
         Assert.assertEquals(PhysicsEngine.calcFrictionCoefficient(StreetPavements.UNPAVED, WorldModel.getInstance().isItRaining()), physicalVehicle2.getVDM().getValue("mu_1"), 0);
@@ -77,7 +79,7 @@ public class FrictionTest {
         //physicalVehicle1.putOnSurface(200, 236, 0.0);
 
         System.out.println(physicalVehicle1);
-        physicalVehicle1.computePhysics(4);
+        physicalVehicle1.computePhysics(Duration.ofMillis(4));
         System.out.println(physicalVehicle1);
     }
 
@@ -93,10 +95,10 @@ public class FrictionTest {
         builder.setAngularVelocity(setAngularVelocity);
         ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) builder.buildPhysicalVehicle();
 
-        physicalVehicle.computePhysics(1);
+        physicalVehicle.computePhysics(Duration.ofMillis(1));
         System.out.println(physicalVehicle);
         System.out.println(physicalVehicle.getVDM().getValue("mu_1"));
-        physicalVehicle.computePhysics(2000);
+        physicalVehicle.computePhysics(Duration.ofMillis(2000));
         System.out.println(physicalVehicle);
         System.out.println(physicalVehicle.getVDM().getValue("mu_1"));
         // TODO: Print all values to use them in a graph

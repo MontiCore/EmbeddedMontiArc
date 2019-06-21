@@ -29,6 +29,7 @@ import org.junit.Test;
 import simulation.environment.object.House;
 import simulation.util.Log;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -271,14 +272,14 @@ public class VehicleTest {
 
     @Test
     public void computePhysicsTest() {
-        long timeDiffMs = 10;
+        Duration timeDiff = Duration.ofMillis(10);
 
         // 2 colliding vehicles
         PhysicalObject vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
         PhysicalObject vehicle2 = new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {1, 0, 0})).buildPhysicalVehicle();
         List<PhysicalObject> physicalObjects = new ArrayList<>();
         physicalObjects.add(vehicle2);
-        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiffMs);
+        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(vehicle1.getCollision() && vehicle2.getCollision());
 
         // 2 non colliding vehicles
@@ -286,7 +287,7 @@ public class VehicleTest {
         vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
         vehicle2 = new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {10, 0, 0})).buildPhysicalVehicle();
         physicalObjects.add(vehicle2);
-        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiffMs);
+        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(!vehicle1.getCollision() && !vehicle2.getCollision());
 
         // Vehicle colliding with non vehicle
@@ -300,7 +301,7 @@ public class VehicleTest {
         house.setHeight(10.0);
         physicalObjects.add(vehicle2);
         physicalObjects.add(house);
-        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiffMs);
+        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(vehicle1.getCollision() && !vehicle2.getCollision());
     }
 }

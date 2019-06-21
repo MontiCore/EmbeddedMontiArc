@@ -23,6 +23,10 @@ package simulation.network.tasks;
 import simulation.network.*;
 import simulation.util.Log;
 import simulation.util.MathHelper;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import static simulation.network.NetworkDiscreteEventId.*;
 
@@ -124,7 +128,7 @@ public class TaskLinkCSMA extends NetworkTask {
             }
             case NETWORK_EVENT_ID_LINK_FORWARD_TO_PHY: {
                 long eventTime = forwardToPhyDoneTimeNs - 1;
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(eventTime, NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_SEND_START, networkNode, event.getEventMessage());
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(Instant.ofEpochSecond(0, eventTime), NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_SEND_START, networkNode, event.getEventMessage());
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }
@@ -136,13 +140,13 @@ public class TaskLinkCSMA extends NetworkTask {
 
                 // Put message in queue and check for channel status
                 messageQueue.add(0, event.getEventMessage());
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }
             case NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS: {
                 // Do not update if forwarding to PHY is in progress
-                if (forwardToPhyDoneTimeNs != 0L && NetworkUtils.simTimeWithDelay(0L) <= forwardToPhyDoneTimeNs) {
+                if (forwardToPhyDoneTimeNs != 0L && Instant.EPOCH.until(NetworkUtils.simTimeWithDelay(Duration.ZERO), ChronoUnit.NANOS) <= forwardToPhyDoneTimeNs) {
                     return;
                 }
 
@@ -179,7 +183,7 @@ public class TaskLinkCSMA extends NetworkTask {
 
                 // When waiting for backoff and channel is busy, then backoff was interrupted
                 if (sendingChannelsBusy && !waitingForDifs && waitingForBackoff && !waitingForBackoffInterrupted) {
-                    waitingBackoffInterruptTimeNs = NetworkUtils.simTimeWithDelay(0);
+                    waitingBackoffInterruptTimeNs = Instant.EPOCH.until(NetworkUtils.simTimeWithDelay(Duration.ZERO), ChronoUnit.NANOS);
                     waitingForBackoffInterrupted = true;
                 }
 
@@ -187,7 +191,7 @@ public class TaskLinkCSMA extends NetworkTask {
                 if (!messageQueue.isEmpty() && !sendingChannelsBusy && !waitingForDifs && !waitingForBackoff) {
                     waitingForDifs = true;
                     waitingDifsRemainingTimeNs = TASK_LINK_CSMA_DIFS_NS;
-                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(TASK_LINK_CSMA_WAIT_REFRESH_TIME_NS), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_WAIT_FOR_SENDING, networkNode, event.getEventMessage());
+                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ofNanos(TASK_LINK_CSMA_WAIT_REFRESH_TIME_NS)), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_WAIT_FOR_SENDING, networkNode, event.getEventMessage());
                     NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 }
 
@@ -213,7 +217,7 @@ public class TaskLinkCSMA extends NetworkTask {
                 if (waitingForBackoff && waitingForBackoffInterrupted) {
                     waitingForBackoff = false;
                     waitingForBackoffInterrupted = false;
-                    waitingBackoffRemainingTimeNs = Math.max(0L, waitingBackoffRemainingTimeNs - TASK_LINK_CSMA_WAIT_REFRESH_TIME_NS - (NetworkUtils.simTimeWithDelay(0) - waitingBackoffInterruptTimeNs));
+                    waitingBackoffRemainingTimeNs = Math.max(0L, waitingBackoffRemainingTimeNs - TASK_LINK_CSMA_WAIT_REFRESH_TIME_NS - (Instant.EPOCH.until(NetworkUtils.simTimeWithDelay(Duration.ZERO), ChronoUnit.NANOS) - waitingBackoffInterruptTimeNs));
                     waitingBackoffInterruptTimeNs = 0L;
                     return;
                 }
@@ -230,7 +234,7 @@ public class TaskLinkCSMA extends NetworkTask {
                         waitingBackoffInterruptTimeNs = 0L;
                     }
 
-                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(TASK_LINK_CSMA_WAIT_REFRESH_TIME_NS), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_WAIT_FOR_SENDING, networkNode, event.getEventMessage());
+                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ofNanos(TASK_LINK_CSMA_WAIT_REFRESH_TIME_NS)), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_WAIT_FOR_SENDING, networkNode, event.getEventMessage());
                     NetworkSimulator.getInstance().scheduleEvent(newEvent);
                     return;
                 }
@@ -247,14 +251,14 @@ public class TaskLinkCSMA extends NetworkTask {
                         if (!messageQueue.isEmpty()) {
                             NetworkMessage message = messageQueue.get(messageQueue.size() - 1);
                             messageQueue.remove(messageQueue.size() - 1);
-                            forwardToPhyDoneTimeNs = NetworkUtils.simTimeWithDelay(NetworkUtils.randomNextLayerSimulationTime()) + 1;
-                            NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_FORWARD_TO_PHY, networkNode, message);
+                            forwardToPhyDoneTimeNs = Instant.EPOCH.until(NetworkUtils.simTimeWithDelay(NetworkUtils.randomNextLayerSimulationTime()).plusNanos(1), ChronoUnit.NANOS);
+                            NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_FORWARD_TO_PHY, networkNode, message);
                             NetworkSimulator.getInstance().scheduleEvent(newEvent);
                         } else {
                             Log.warning("TaskLinkCSMA: No message in queue and forwarding to PHY failed! NetworkNode: " + networkNode);
                         }
                     } else {
-                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(TASK_LINK_CSMA_WAIT_REFRESH_TIME_NS), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_WAIT_FOR_SENDING, networkNode, event.getEventMessage());
+                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ofNanos(TASK_LINK_CSMA_WAIT_REFRESH_TIME_NS)), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_WAIT_FOR_SENDING, networkNode, event.getEventMessage());
                         NetworkSimulator.getInstance().scheduleEvent(newEvent);
                     }
 

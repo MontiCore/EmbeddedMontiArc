@@ -28,6 +28,8 @@ import org.apache.commons.math3.linear.RealVector;
 import simulation.util.Log;
 import static simulation.vehicle.VehicleActuatorType.*;
 
+import java.time.Duration;
+
 /**
  * Class that represents all physical properties of a vehicle and performs physics computations
  */
@@ -205,19 +207,19 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
 
     /**
      * Function that requests the called object to update its state for given time difference
-     * @param timeDiffMs Difference in time measured in milliseconds
+     * @param timeDiff Difference in time
      */
     @Override
-    public void executeLoopIteration(long timeDiffMs) {
+    public void executeLoopIteration(Duration timeDiff) {
         if (this.error) {
             Log.finest("PhysicalVehicle: Vehicle collided or had a computational error and will therefore not move anymore, PhysicalVehicle: " + this);
             return;
         }
-        Log.finest("PhysicalVehicle: executeLoopIteration - timeDiffMs: " + timeDiffMs + ", PhysicalVehicle at start: " + this);
+        Log.finest("PhysicalVehicle: executeLoopIteration - timeDiff: " + timeDiff + ", PhysicalVehicle at start: " + this);
 
         simulationVehicle.updateAllSensors();
 
-        final double deltaT = (timeDiffMs / 1000.0);
+        final double deltaT = (timeDiff.toMillis() / 1000.0);
 
         // Exchange data with controller
         simulationVehicle.exchangeDataWithController(deltaT);
@@ -240,7 +242,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).update(deltaT);
         this.collision = false;
 
-        Log.finest("PhysicalVehicle: executeLoopIteration - timeDiffMs: " + timeDiffMs +  ", PhysicalVehicle at end: " + this);
+        Log.finest("PhysicalVehicle: executeLoopIteration - timeDiff: " + timeDiff +  ", PhysicalVehicle at end: " + this);
     }
 
     /**

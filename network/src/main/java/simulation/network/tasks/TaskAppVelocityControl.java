@@ -39,6 +39,10 @@ import simulation.util.MathHelper;
 import simulation.util.OrientedBoundingBox;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.Vehicle;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import static simulation.network.NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_UPDATE;
@@ -219,13 +223,13 @@ public class TaskAppVelocityControl extends NetworkTask {
                         }
 
                         // Insert or update map entry
-                        Map.Entry<Long, List<Float>> mapEntry = new AbstractMap.SimpleEntry<>(event.getEventMessage().getSimReceiveTimeNs(), floatValues);
+                        Map.Entry<Long, List<Float>> mapEntry = new AbstractMap.SimpleEntry<>(Instant.EPOCH.until(event.getEventMessage().getSimReceiveTime(), ChronoUnit.NANOS), floatValues);
                         statusInfoMap.put(event.getEventMessage().getNetworkIpv6Sender(), mapEntry);
 
                     // Put trajectory message in map
                     } else if (event.getEventMessage().getTransportPortDestNumber() == TaskAppBeacon.APP_BEACON_PORT_NUMBER_TRAJECTORY_MSG) {
                         // Insert or update map entry
-                        Map.Entry<Long, List<Float>> mapEntry = new AbstractMap.SimpleEntry<>(event.getEventMessage().getSimReceiveTimeNs(), floatValues);
+                        Map.Entry<Long, List<Float>> mapEntry = new AbstractMap.SimpleEntry<>(Instant.EPOCH.until(event.getEventMessage().getSimReceiveTime(), ChronoUnit.NANOS), floatValues);
                         trajectoryInfoMap.put(event.getEventMessage().getNetworkIpv6Sender(), mapEntry);
                     }
 
@@ -234,7 +238,7 @@ public class TaskAppVelocityControl extends NetworkTask {
                         periodicUpdateScheduled = true;
                         NetworkMessage messageTaskName = new NetworkMessage();
                         messageTaskName.setMessageContent(getTaskId().name());
-                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(500000000L), NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);                       NetworkSimulator.getInstance().scheduleEvent(newEvent);
+                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ofMillis(500L)), NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);                       NetworkSimulator.getInstance().scheduleEvent(newEvent);
                     }
 
                     // Perform computation for velocity control
@@ -343,7 +347,7 @@ public class TaskAppVelocityControl extends NetworkTask {
         }
 
         // Handle deadlocks, ignore rules when priority is taken to resolve deadlocks
-        if (priorityTakenTime.get() != -1L && (NetworkUtils.simTimeWithDelay(0) - priorityTakenTime.get()) < VELOCITY_CONTROL_PRIORITY_MAX_VEHICLE_TIME_DELTA_DEADLOCK) {
+        if (priorityTakenTime.get() != -1L && (Instant.EPOCH.until(NetworkUtils.simTimeWithDelay(Duration.ZERO), ChronoUnit.NANOS) - priorityTakenTime.get()) < VELOCITY_CONTROL_PRIORITY_MAX_VEHICLE_TIME_DELTA_DEADLOCK) {
             return Double.MAX_VALUE;
         }
         priorityTakenTime.set(-1L);
@@ -567,7 +571,7 @@ public class TaskAppVelocityControl extends NetworkTask {
                 // In this case, take priority for this intersection
                 if (ipv6.equals(blockedNeighborIPv6.get(0))) {
                     priorityMap.values().remove(intersectionNodeOsmId);
-                    priorityTakenTime.set(NetworkUtils.simTimeWithDelay(0));
+                    priorityTakenTime.set(Instant.EPOCH.until(NetworkUtils.simTimeWithDelay(Duration.ZERO), ChronoUnit.NANOS));
                     return Double.MAX_VALUE;
                 }
             }

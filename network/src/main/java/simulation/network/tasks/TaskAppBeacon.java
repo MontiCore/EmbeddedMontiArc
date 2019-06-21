@@ -29,6 +29,8 @@ import simulation.network.*;
 import simulation.util.Log;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.Vehicle;
+
+import java.time.Duration;
 import java.util.*;
 import static commons.controller.commons.BusEntry.SENSOR_COMPASS;
 import static commons.controller.commons.BusEntry.SENSOR_GPS_COORDINATES;
@@ -78,7 +80,7 @@ public class TaskAppBeacon extends NetworkTask {
                 // Schedule periodic event
                 NetworkMessage messageTaskName = new NetworkMessage();
                 messageTaskName.setMessageContent(getTaskId().name());
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }
@@ -105,7 +107,7 @@ public class TaskAppBeacon extends NetworkTask {
                 }
 
                 // Redirect messages to other application tasks
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_UPDATE, networkNode, event.getEventMessage());
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_UPDATE, networkNode, event.getEventMessage());
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }
@@ -228,7 +230,7 @@ public class TaskAppBeacon extends NetworkTask {
             message.setNetworkIpv6Receiver(NetworkSimulator.getInstance().getNetworkSettings().getIpv6LinkLocalMulticastAddress());
 
             // Schedule event for sending
-            NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_SEND, networkNode, message);
+            NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_SEND, networkNode, message);
             NetworkSimulator.getInstance().scheduleEvent(newEvent);
         }
     }

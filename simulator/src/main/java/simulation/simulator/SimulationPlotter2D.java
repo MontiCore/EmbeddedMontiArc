@@ -26,6 +26,9 @@ import commons.simulation.SimulationLoopNotifiable;
 import simulation.util.Plotter2D;
 import simulation.vehicle.MassPointPhysicalVehicle;
 import simulation.vehicle.ModelicaPhysicalVehicle;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,7 +39,7 @@ import java.util.List;
 public class SimulationPlotter2D implements SimulationLoopNotifiable {
 
     // Lists to store the data separately for plotting later
-    private List<Long> simulationTimePoints = new LinkedList<>();
+    private List<Instant> simulationTimePoints = new LinkedList<>();
     private List<List<Double>> wheelRotationRates = new LinkedList<>();
     private List<RealVector> vehiclePosition = new LinkedList<>();
     private List<RealVector> vehicleVelocity= new LinkedList<>();
@@ -46,11 +49,11 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
      * This function retrieves data of the vehicle at every instant and stores it
      * for plotting by the Plotter2D function. To be executed for every iteration in the simulation
      * @param simulationObject PhysicalVehicle object that provides position and velocity data of the vehicle
-     * @param totalTime Total simulation time in milliseconds
-     * @param timeDiffms Delta simulation time in milliseconds
+     * @param totalTime Total simulation time
+     * @param timeDiffms Delta simulation time
      */
     @Override
-    public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long timeDiffms) {
+    public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime, Duration timeDiffms) {
 
         // Check if the argument is of type PhysicalVehicle
         if (simulationObject instanceof ModelicaPhysicalVehicle) {
@@ -109,18 +112,18 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
      * @param totalTime Total simulation time in milliseconds
      **/
     @Override
-    public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {
+    public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, Instant totalTime) {
         Plotter2D.plot(vehiclePosition, vehicleVelocity, wheelRotationRates, simulationTimePoints);
     }
 
     @Override
-    public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {}
+    public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime, Duration deltaTime) {}
 
     @Override
-    public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {}
+    public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime, Duration deltaTime) {}
 
     @Override
-    public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
+    public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime, Duration deltaTime) {}
 
     @Override
     public void simulationStarted(List<SimulationLoopExecutable> simulationObjects) {}

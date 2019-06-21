@@ -20,6 +20,8 @@
  */
 package simulation.environment.weather;
 
+import java.time.Duration;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -44,12 +46,12 @@ public class WeatherTest extends TestCase {
         Weather w = new Weather(new WeatherSettings(10l));
 
         double oldWeather = w.getWeather();
-        w.executeLoopIteration(10l);
+        w.executeLoopIteration(Duration.ofMillis(10l));
         assertFalse((oldWeather - w.getWeather() == 0));
 
         w = new Weather(new WeatherSettings(0.2));
         assertFalse(w.isRain());
-        w.executeLoopIteration(Long.MAX_VALUE);
+        w.executeLoopIteration(Duration.ofMillis(Long.MAX_VALUE));
         assertFalse(w.isRain());
         assertEquals(0.2, w.getWeather());
 
