@@ -9,7 +9,7 @@
 
 #include <CNNBufferFile.h>
 
-class ${tc.fileNameWithoutEnding}{
+class ${tc.fileNameWithoutEnding}_0{
 public:
     const std::string json_file = "model/${tc.componentName}/model_newest-symbol.json";
     const std::string param_file = "model/${tc.componentName}/model_newest-0000.params";
@@ -20,11 +20,11 @@ public:
 
     PredictorHandle handle;
 
-    explicit ${tc.fileNameWithoutEnding}(){
+    explicit ${tc.fileNameWithoutEnding}_0(){
         init(json_file, param_file, input_keys, input_shapes, use_gpu);
     }
 
-    ~${tc.fileNameWithoutEnding}(){
+    ~${tc.fileNameWithoutEnding}_0(){
         if(handle) MXPredFree(handle);
     }
 
