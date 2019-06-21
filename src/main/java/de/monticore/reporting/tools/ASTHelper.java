@@ -32,22 +32,26 @@ public class ASTHelper {
         String fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()).toUpperCase();
         model.setFileType(fileType);
         ASTEMACompilationUnit ast = null;
-        EMAComponentSymbol resolvedAST = null;
 
-        EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
         try {
             model.addErrorMessage("[INFO] do Parser Test <br>=========================");
-            ast = parser.parse(fileName).orElse(null);
-        } catch (Exception e) {
-            int i = 1;
-        }
-        boolean parsingSuccessful = ast != null;
-
-        model.addErrorMessage(parsingSuccessful ? "[INFO] Parser Test success<br>" : "[ERROR] Parser Test failed");
-        if (!parsingSuccessful) {
-            CustomPrinter.println("ERROR. Parser Test failed");
+            ast = getParsed(fileName, timeout);
+        } catch (ParsingTimeOutException e) {
+            CustomPrinter.println("ERROR. Parsing Test timed out");
+            model.setParsed(-2);
+            model.addErrorMessage("[ERROR] Parsing Test timed out");
             for (Finding finding : Log.getFindings())
                 model.addErrorMessage(finding.toString());
+        } catch (CouldNotParseException e) {
+            CustomPrinter.println("ERROR. Parsing Test failed");
+            model.setParsed(-1);
+            model.addErrorMessage("[ERROR] Parsing Test failed");
+            for (Finding finding : Log.getFindings())
+                model.addErrorMessage(finding.toString());
+        }
+        boolean parsingSuccessful = ast != null;
+        if (parsingSuccessful) {
+            model.addErrorMessage("[INFO] Parser Test success<br>");
         }
 
         model.setParsed(parsingSuccessful ? 1 : -1);
@@ -67,7 +71,7 @@ public class ASTHelper {
             try {
                 Log.getFindings().clear();
                 model.addErrorMessage("[INFO] do Resolve Test<br>=========================");
-                resolvedAST = getAstNode(modelPath, modelName, fileType, timeout);
+                EMAComponentSymbol resolvedAST = getAstNode(modelPath, modelName, fileType, timeout);
                 model.setResolvedAST(resolvedAST);
                 model.setResolvedASTNode((ASTEmbeddedMontiArcNode) resolvedAST.getAstNode().get());
                 model.setResolved(1);
@@ -94,6 +98,34 @@ public class ASTHelper {
             model.setModelName(FileName);
         }
 
+    }
+
+    public static ASTEMACompilationUnit getParsed(String fileName, int timeout) throws CouldNotParseException, ParsingTimeOutException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<ASTEMACompilationUnit> task = new Callable<ASTEMACompilationUnit>() {
+            public ASTEMACompilationUnit call() throws IOException {
+                EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
+                return parser.parse(fileName).orElse(null);
+            }
+        };
+
+        Future<ASTEMACompilationUnit> future = executor.submit(task);
+        try {
+            return future.get(timeout, TimeUnit.SECONDS);
+        } catch (TimeoutException ex) {
+            future.cancel(true);
+            executor.shutdown();
+            executor.shutdownNow();
+            throw new ParsingTimeOutException();
+        } catch (InterruptedException e) {
+            future.cancel(true);
+            executor.shutdown();
+            executor.shutdownNow();
+            throw new ParsingTimeOutException();
+        } catch (Throwable e) {
+            future.cancel(true);
+            throw new CouldNotParseException();
+        }
     }
 
     public static EMAComponentSymbol getAstNode(String modelPath, String model, String fileType, int timeout) throws CouldNotResolveException, ResolveTimeOutException {
