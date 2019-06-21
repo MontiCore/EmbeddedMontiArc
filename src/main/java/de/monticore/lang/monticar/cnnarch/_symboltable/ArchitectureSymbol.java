@@ -52,26 +52,6 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return streams;
     }
 
-    public List<SerialCompositeElementSymbol> getNetworkStreams() {
-        List<SerialCompositeElementSymbol> networkStreams = new ArrayList<>();
-        for (SerialCompositeElementSymbol stream : streams) {
-            if (stream.isNetwork()) {
-                networkStreams.add(stream);
-            }
-        }
-        return networkStreams;
-    }
-
-    public List<SerialCompositeElementSymbol> getNonNetworkStreams() {
-        List<SerialCompositeElementSymbol> nonNetworkStreams = new ArrayList<>();
-        for (SerialCompositeElementSymbol stream : streams) {
-            if (!stream.isNetwork()) {
-                nonNetworkStreams.add(stream);
-            }
-        }
-        return nonNetworkStreams;
-    }
-
     public void setStreams(List<SerialCompositeElementSymbol> streams) {
         this.streams = streams;
     }
