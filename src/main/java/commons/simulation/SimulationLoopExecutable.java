@@ -20,6 +20,8 @@
  */
 package commons.simulation;
 
+import java.time.Duration;
+
 /**
  * Should be implemented by all objects represented in the simulation that should
  * update their state during the simulation. To be updated, objects need to register
@@ -28,7 +30,7 @@ package commons.simulation;
 public interface SimulationLoopExecutable {
     /**
      * Function that requests the called object to update its state for given time difference
-     * @param timeDiffMs Difference in time measured in milliseconds
+     * @param timeDiffMs Difference in time
      */
-    void executeLoopIteration(long timeDiffMs);
+    void executeLoopIteration(Duration timeDiff);
 }

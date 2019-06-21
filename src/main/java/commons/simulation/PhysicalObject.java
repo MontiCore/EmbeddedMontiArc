@@ -22,6 +22,8 @@ package commons.simulation;
 
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -209,9 +211,9 @@ public interface PhysicalObject {
 
     /**
      * Function that computes one step of the physical behaviour of the object
-     * @param deltaTms Duration of the current simulation step in milliseconds
+     * @param deltaTime Duration of the current simulation step
      */
-    void computePhysics(long deltaTms);
+    void computePhysics(Duration deltaTime);
 
     /**
      * Function that sets the position of the center of mass and the rotation of the object, in order to place the object on the surface of the world.
