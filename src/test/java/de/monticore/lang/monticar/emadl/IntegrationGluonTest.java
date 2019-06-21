@@ -36,6 +36,7 @@ public class IntegrationGluonTest extends IntegrationTest {
 
     private Path multipleInputsHashFile = Paths.get("./target/generated-sources-emadl/MultipleInputs.training_hash");
     private Path multipleOutputsHashFile = Paths.get("./target/generated-sources-emadl/MultipleOutputs.training_hash");
+    private Path multipleStreamsHashFile = Paths.get("./target/generated-sources-emadl/MultipleStreams.training_hash");
 
     public IntegrationGluonTest() {
         super("GLUON", "39253EC049D4A4E5FA0536AD34874B9D#1DBAEE1B1BD83FB7CB5F70AE91B29638#C4C23549E737A759721D6694C75D9771#5AF0CE68E408E8C1F000E49D72AC214A");
@@ -60,6 +61,18 @@ public class IntegrationGluonTest extends IntegrationTest {
         deleteHashFile(multipleOutputsHashFile);
 
         String[] args = {"-m", "src/test/resources/models/", "-r", "MultipleOutputs", "-b", "GLUON"};
+        EMADLGeneratorCli.main(args);
+
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testMultipleStreams() {
+        Log.getFindings().clear();
+
+        deleteHashFile(multipleStreamsHashFile);
+
+        String[] args = {"-m", "src/test/resources/models/", "-r", "MultipleStreams", "-b", "GLUON"};
         EMADLGeneratorCli.main(args);
 
         assertTrue(Log.getFindings().isEmpty());

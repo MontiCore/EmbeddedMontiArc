@@ -9,10 +9,10 @@
 
 #include <CNNBufferFile.h>
 
-class CNNPredictor_mnist_mnistClassifier_net{
+class CNNPredictor_mnist_mnistClassifier_net_0{
 public:
-    const std::string json_file = "model/mnist.LeNetNetwork/model_newest-symbol.json";
-    const std::string param_file = "model/mnist.LeNetNetwork/model_newest-0000.params";
+    const std::string json_file = "model/mnist.LeNetNetwork/model_0_newest-symbol.json";
+    const std::string param_file = "model/mnist.LeNetNetwork/model_0_newest-0000.params";
     const std::vector<std::string> input_keys = {
         "data"
     };
@@ -21,11 +21,11 @@ public:
 
     PredictorHandle handle;
 
-    explicit CNNPredictor_mnist_mnistClassifier_net(){
+    explicit CNNPredictor_mnist_mnistClassifier_net_0(){
         init(json_file, param_file, input_keys, input_shapes, use_gpu);
     }
 
-    ~CNNPredictor_mnist_mnistClassifier_net(){
+    ~CNNPredictor_mnist_mnistClassifier_net_0(){
         if(handle) MXPredFree(handle);
     }
 

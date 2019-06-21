@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.emadl;
 import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Paths;

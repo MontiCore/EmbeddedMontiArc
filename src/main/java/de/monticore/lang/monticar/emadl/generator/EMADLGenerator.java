@@ -30,6 +30,7 @@ import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.SerialCompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNTrain2Gluon;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.annotations.ArchitectureAdapter;
 import de.monticore.lang.monticar.cnntrain.CNNTrainGenerator;
@@ -70,8 +71,6 @@ public class EMADLGenerator {
     private String modelsPath;
 
     private Map<String, ArchitectureSymbol> processedArchitecture;
-    
-
 
     public EMADLGenerator(Backend backend) {
         this.backend = backend;
@@ -421,7 +420,7 @@ public class EMADLGenerator {
 
         String component = emamGen.generateString(taggingResolver, instance, (MathStatementsSymbol) null);
         FileContent componentFileContent = new FileContent(
-                transformComponent(component, "CNNPredictor_" + fullName, executeMethod),
+                transformComponent(component, "CNNPredictor_" + fullName, executeMethod, architecture),
                 instance);
 
         for (String fileName : contentMap.keySet()){
@@ -431,18 +430,26 @@ public class EMADLGenerator {
         fileContents.add(new FileContent(readResource("CNNTranslator.h", Charsets.UTF_8), "CNNTranslator.h"));
     }
 
-    protected String transformComponent(String component, String predictorClassName, String executeMethod){
-        String networkVariableName = "_cnn_";
-
+    protected String transformComponent(String component, String predictorClassName, String executeMethod, ArchitectureSymbol architecture){
         //insert includes
         component = component.replaceFirst("using namespace",
                 "#include \"" + predictorClassName + ".h" + "\"\n" +
                         "#include \"CNNTranslator.h\"\n" +
                         "using namespace");
 
-        //insert network attribute
-        component = component.replaceFirst("public:",
-                "public:\n" + predictorClassName + " " + networkVariableName + ";");
+        //insert network attribute for predictor of each network
+        String networkAttributes = "public:";
+
+        int i = 0;
+        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
+            if (stream.isNetwork()) {
+                networkAttributes += "\n" + predictorClassName + "_" + i + " _predictor_" + i + "_;";
+            }
+
+            ++i;
+        }
+
+        component = component.replaceFirst("public:", networkAttributes);
 
         //insert execute method
         component = component.replaceFirst("void execute\\(\\)\\s\\{\\s\\}",

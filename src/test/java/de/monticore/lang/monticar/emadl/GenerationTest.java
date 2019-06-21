@@ -27,6 +27,7 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -234,6 +235,7 @@ public class GenerationTest extends AbstractSymtabTest {
         }
     }
 
+    @Ignore
     @Test
     public void gluonDdpgTest() {
         Log.getFindings().clear();
