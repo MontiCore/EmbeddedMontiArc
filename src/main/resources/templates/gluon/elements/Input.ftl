@@ -1,4 +1,3 @@
-<#assign mode = definition_mode.toString()>
 <#if mode == "ARCHITECTURE_DEFINITION">
             if data_mean:
                 assert(data_std)

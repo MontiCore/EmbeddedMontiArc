@@ -1,2 +1,0 @@
-MultipleStreams data/MultipleStreams
-MultipleOutputs data/MultipleOutputs

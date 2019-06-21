@@ -7,10 +7,10 @@ import shutil
 from mxnet import gluon, autograd, nd
 
 class CNNSupervisedTrainer_CifarClassifierNetwork:
-    def __init__(self, data_loader, net_constructor, net=None):
+    def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
-        self._net = net
+        self._networks = {}
 
     def train(self, batch_size=64,
               num_epoch=10,
@@ -45,12 +45,11 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
 
 
         train_iter, test_iter, data_mean, data_std = self._data_loader.load_data(batch_size)
-        if self._net is None:
-            if normalize:
-                self._net_creator.construct(
-                    context=mx_context, data_mean=data_mean, data_std=data_std)
-            else:
-                self._net_creator.construct(context=mx_context)
+
+        if normalize:
+            self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
+        else:
+            self._net_creator.construct(context=mx_context)
 
         begin_epoch = 0
         if load_checkpoint:
@@ -59,7 +58,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             if os.path.isdir(self._net_creator._model_dir_):
                 shutil.rmtree(self._net_creator._model_dir_)
 
-        self._net = self._net_creator.net
+        self._networks = self._net_creator.networks
 
         try:
             os.makedirs(self._net_creator._model_dir_)
@@ -67,20 +66,21 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             if not os.path.isdir(self._net_creator._model_dir_):
                 raise
 
-        trainer = mx.gluon.Trainer(self._net.collect_params(), optimizer, optimizer_params)
+        trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values()]
 
         loss_functions = {}
 
-        for output_name, last_layer in self._net.last_layers.items():
-            if last_layer == 'softmax':
-                loss_functions[output_name] = mx.gluon.loss.SoftmaxCrossEntropyLoss()
-            elif last_layer == 'sigmoid':
-                loss_functions[output_name] = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
-            elif last_layer == 'linear':
-                loss_functions[output_name] = mx.gluon.loss.L2Loss()
-            else:
-                loss_functions[output_name] = mx.gluon.loss.L2Loss()
-                logging.warning("Invalid last layer, defaulting to L2 loss")
+        for network in self._networks.values():
+            for output_name, last_layer in network.last_layers.items():
+                if last_layer == 'softmax':
+                    loss_functions[output_name] = mx.gluon.loss.SoftmaxCrossEntropyLoss()
+                elif last_layer == 'sigmoid':
+                    loss_functions[output_name] = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
+                elif last_layer == 'linear':
+                    loss_functions[output_name] = mx.gluon.loss.L2Loss()
+                else:
+                    loss_functions[output_name] = mx.gluon.loss.L2Loss()
+                    logging.warning("Invalid last layer, defaulting to L2 loss")
 
         speed_period = 50
         tic = None
@@ -92,12 +92,14 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 softmax_label = batch.label[0].as_in_context(mx_context)
 
                 with autograd.record():
-                    softmax_output = self._net(data_data)
+                    softmax_output = self._networks[0](data_data)
 
                     loss = loss_functions['softmax'](softmax_output, softmax_label)
 
                 loss.backward()
-                trainer.step(batch_size)
+
+                for trainer in trainers:
+                    trainer.step(batch_size)
 
                 if tic is None:
                     tic = time.time()
@@ -123,7 +125,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                softmax_output = self._net(data_data)
+                softmax_output = self._networks[0](data_data)
 
                 predictions = [
                     mx.nd.argmax(softmax_output, axis=1)
@@ -141,8 +143,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                softmax_output = self._net(data_data)
-
+                softmax_output = self._networks[0](data_data)
                 predictions = [
                     mx.nd.argmax(softmax_output, axis=1)
                 ]
@@ -153,10 +154,12 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
-                self._net.save_parameters(self.parameter_path() + '-' + str(epoch).zfill(4) + '.params')
+                for i, network in self._networks.items():
+                    network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
 
-        self._net.save_parameters(self.parameter_path() + '-' + str(num_epoch + begin_epoch).zfill(4) + '.params')
-        self._net.export(self.parameter_path() + '_newest', epoch=0)
+        for i, network in self._networks.items():
+            network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch).zfill(4) + '.params')
+            network.export(self.parameter_path(i) + '_newest', epoch=0)
 
-    def parameter_path(self):
-        return self._net_creator._model_dir_ + self._net_creator._model_prefix_
+    def parameter_path(self, index):
+        return self._net_creator._model_dir_ + self._net_creator._model_prefix_ + '_' + str(index)

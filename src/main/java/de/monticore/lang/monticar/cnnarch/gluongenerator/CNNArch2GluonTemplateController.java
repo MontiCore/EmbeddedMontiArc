@@ -30,7 +30,7 @@ import java.io.Writer;
 import java.util.*;
 
 public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
-    public static final String NET_DEFINITION_MODE_KEY = "definition_mode";
+    public static final String NET_DEFINITION_MODE_KEY = "mode";
 
     public CNNArch2GluonTemplateController(ArchitectureSymbol architecture,
                                            TemplateConfiguration templateConfiguration) {
@@ -42,7 +42,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         Map<String, Object> ftlContext = new HashMap<>();
         ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
         ftlContext.put(ELEMENT_DATA_KEY, getCurrentElement());
-        ftlContext.put(NET_DEFINITION_MODE_KEY, netDefinitionMode);
+        ftlContext.put(NET_DEFINITION_MODE_KEY, netDefinitionMode.toString());
         getTemplateConfiguration().processTemplate(ftlContext, templatePath, writer);
     }
 
@@ -115,5 +115,25 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             throw new IllegalStateException("missing writer");
         }
         include(architectureElement, getWriter(), netDefinitionMode);
+    }
+
+    public List<String> getStreamInputNames(SerialCompositeElementSymbol stream) {
+        List<String> names = new ArrayList<>();
+
+        for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
+            names.add(getName(element));
+        }
+
+        return names;
+    }
+
+    public List<String> getStreamOutputNames(SerialCompositeElementSymbol stream) {
+        List<String> names = new ArrayList<>();
+
+        for (ArchitectureElementSymbol element : stream.getLastAtomicElements()) {
+            names.add(getName(element));
+        }
+
+        return names;
     }
 }

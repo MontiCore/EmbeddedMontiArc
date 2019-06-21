@@ -1,4 +1,3 @@
-<#assign mode = definition_mode.toString()>
 <#assign rate = element.p?c>
 <#assign input = element.inputs[0]>
 <#if mode == "ARCHITECTURE_DEFINITION">

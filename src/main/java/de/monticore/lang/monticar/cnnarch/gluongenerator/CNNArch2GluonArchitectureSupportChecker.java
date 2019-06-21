@@ -7,9 +7,9 @@ public class CNNArch2GluonArchitectureSupportChecker extends ArchitectureSupport
 
     public CNNArch2GluonArchitectureSupportChecker() {}
 
-    /*protected boolean checkMultipleStreams(ArchitectureSymbol architecture) {
+    protected boolean checkMultipleStreams(ArchitectureSymbol architecture) {
         return true;
-    }*/
+    }
 
     protected boolean checkMultipleInputs(ArchitectureSymbol architecture) {
         return true;

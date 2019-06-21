@@ -1,5 +1,4 @@
 <#assign input = element.inputs[0]>
-<#assign mode = definition_mode.toString()>
 <#assign poolType = element.poolType>
 <#assign poolSize = "(" + tc.join(element.kernel, ",") + ")">
 <#assign strides = "(" + tc.join(element.stride, ",") + ")">

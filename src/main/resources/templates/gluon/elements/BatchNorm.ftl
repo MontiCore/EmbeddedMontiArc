@@ -1,4 +1,3 @@
-<#assign mode = definition_mode.toString()>
 <#assign input = element.inputs[0]>
 <#-- TODO: Find solution for the CNNArch fix_gamma parameter of BatchNorm. Gluon does not provide this parameter-->
 <#if mode == "ARCHITECTURE_DEFINITION">

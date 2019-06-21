@@ -137,24 +137,11 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testMultipleOutputs() throws IOException, TemplateException {
-        Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/invalid_tests", "-r", "MultipleOutputs"};
-        CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().size() == 2);
-    }
-
-    @Test
     public void testMultipleStreams() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/invalid_tests", "-r", "MultipleStreams"};
-        exit.expectSystemExit();
-        exit.checkAssertionAfterwards(new Assertion() {
-            public void checkAssertion() {
-                assertTrue(Log.getFindings().size() == 2);
-            }
-        });
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleStreams"};
         CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -277,6 +264,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Arrays.asList("FindArmadillo.cmake"));
     }
 
+    @Ignore
     @Test
     public void testDdpgConfig() {
         Log.getFindings().clear();
@@ -306,6 +294,7 @@ public class GenerationTest extends AbstractSymtabTest {
         );
     }
 
+    @Ignore
     @Test
     public void testRosDdpgConfig() {
         Log.getFindings().clear();

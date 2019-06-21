@@ -1,4 +1,3 @@
-<#assign mode = definition_mode.toString()>
 <#if mode == "ARCHITECTURE_DEFINITION">
             self.${element.name} = Concatenate(dim=1)
             <#include "OutputShape.ftl">

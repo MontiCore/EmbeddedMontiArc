@@ -1,5 +1,4 @@
 <#assign input = element.inputs[0]>
-<#assign mode = definition_mode.toString()>
 <#assign size = element.size>
 <#if mode == "ARCHITECTURE_DEFINITION">
             self.${element.name} = OneHot(size=${size})

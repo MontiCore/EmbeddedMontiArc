@@ -1,5 +1,4 @@
 <#assign input = element.inputs[0]>
-<#assign mode = definition_mode.toString()>
 <#if mode == "ARCHITECTURE_DEFINITION">
 <#if element.padding??>
             self.${element.name}padding = Padding(padding=(${tc.join(element.padding, ",")}))

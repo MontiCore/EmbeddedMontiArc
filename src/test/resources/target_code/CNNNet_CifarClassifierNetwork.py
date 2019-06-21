@@ -78,9 +78,9 @@ class NoNormalization(gluon.HybridBlock):
         return x
 
 
-class Net(gluon.HybridBlock):
+class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net, self).__init__(**kwargs)
+        super(Net_0, self).__init__(**kwargs)
         self.last_layers = {}
         with self.name_scope():
             if data_mean:
@@ -360,6 +360,7 @@ class Net(gluon.HybridBlock):
 
 
     def hybrid_forward(self, F, data):
+        outputs = []
         data = self.input_normalization_data(data)
         conv2_1_padding = self.conv2_1_padding(data)
         conv2_1_ = self.conv2_1_(conv2_1_padding)
@@ -463,5 +464,6 @@ class Net(gluon.HybridBlock):
         fc31_ = self.fc31_(globalpooling31_)
         dropout31_ = self.dropout31_(fc31_)
         fc32_ = self.fc32_(dropout31_)
-        return fc32_
+        outputs.append(fc32_)
 
+        return outputs[0]

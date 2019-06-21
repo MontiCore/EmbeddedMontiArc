@@ -1,5 +1,4 @@
 <#assign input = element.inputs[0]>
-<#assign mode = definition_mode.toString()>
 <#assign poolType = element.poolType>
 <#if poolType == "avg">
     <#assign poolFunctionType = "Avg">
