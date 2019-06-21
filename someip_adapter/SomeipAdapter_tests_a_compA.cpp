@@ -23,8 +23,8 @@ void SomeipAdapter_tests_a_compA::init(tests_a_compA *comp)
     //_clockSubscriber->register_availability_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, on_availability);
     _clockSubscriber->request_service(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID);
 
-    _clockSubscriber->register_message_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_METHOD_ID, on_message);
-    //_clockSubscriber->register_message_handler(vsomeip::ANY_SERVICE, vsomeip::ANY_INSTANCE, vsomeip::ANY_METHOD, on_message);
+    _clockSubscriber->register_message_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_METHOD_ID, std::bind(&SomeipAdapter_tests_a_compA::on_message, this, 		std::placeholders::_1));
+    //_clockSubscriber->register_message_handler(vsomeip::ANY_SERVICE, vsomeip::ANY_INSTANCE, vsomeip::ANY_METHOD, std::bind(&SomeipAdapter_tests_a_compA::on_message, this, 		std::placeholders::_1));
 	
   	std::set<vsomeip::eventgroup_t> its_groups;
   	its_groups.insert(SAMPLE_EVENTGROUP_ID);
@@ -53,14 +53,23 @@ void SomeipAdapter_tests_a_compA::on_message(const std::shared_ptr<vsomeip::mess
     std::cout << "SERVICE: Received message from ["
         << std::setw(4) << std::setfill('0') << std::hex << _request->get_client() << "/"
         << std::setw(4) << std::setfill('0') << std::hex << _request->get_session() << "]: "
-        << final << std::endl;
+        << dataFromMessage << std::endl;
 }
 
 void SomeipAdapter_tests_a_compA::publish_echoPublisher()
 {
-    const vsomeip::byte_t its_data[] = { 0x10 };	//component->rosOut
-    payload = vsomeip::runtime::get()->create_payload();
-	payload->set_data(its_data, sizeof(its_data));
+    double d = component->rosOut;
+   	uint8_t *byteArray = (uint8_t*)&d;
+  	
+   	vsomeip::byte_t *p;
+   	p = byteArray; 
+  	
+   	std::shared_ptr< vsomeip::payload > payload = vsomeip::runtime::get()->create_payload(p,8);
+
+    
+    //const vsomeip::byte_t its_data[] = component->rosOut;	//component->rosOut
+    //std::shared_ptr< vsomeip::payload > payload = vsomeip::runtime::get()->create_payload();
+	//payload->set_data(its_data, sizeof(its_data));
 	
 	std::set<vsomeip::eventgroup_t> its_groups;
 	its_groups.insert(SAMPLE_EVENTGROUP_ID);
