@@ -40,4 +40,5 @@ for REPO_GIT_URL in $REPO_GIT_URLS; do
         (cd "$GROUP_NAME/$THEPATH" && GIT_TERMINAL_PROMPT=0 git pull --quiet) &
     fi
 done
+(cd "$GROUP_NAME" && ls)
 wait
