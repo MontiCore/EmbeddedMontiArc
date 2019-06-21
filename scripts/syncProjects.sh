@@ -22,7 +22,7 @@ FIELD_NAME="X-Total-Pages"
 
 TOTAL_PAGES=$(curl -s --head --header "PRIVATE-TOKEN: zXKxi79T9iymW-FEHQgA" "${BASE_PATH}api/v4/projects" | grep "$FIELD_NAME:" | grep -o [[:digit:]])
 
-FIELD_NAME="http_url_to_repo"
+FIELD_NAME="path_with_namespace"
 REPO_GIT_URLS=""
 for I in 1 .. $TOTAL_PAGES
 do
@@ -30,6 +30,7 @@ do
 done
 
 for REPO_GIT_URL in $REPO_GIT_URLS; do
+    REPO_GIT_URL = "https://oauth2:$GITLAB_PRIVATE_TOKEN@git.rwth-aachen.de/$REPO_GIT_URL.git"
     THEPATH=$(echo "$REPO_GIT_URL" | awk -F'/' '{print $NF}' | awk -F'.' '{print $1}')
 
     if [ ! -d "$GROUP_NAME/$THEPATH" ]; then
