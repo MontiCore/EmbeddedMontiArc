@@ -23,7 +23,7 @@ CAFFE2_DEFINE_string(predict_net_CNNPredictor_LeNet, "./model/LeNet/predict_net.
 
 using namespace caffe2;
 
-class CNNPredictor_LeNet{
+class CNNPredictor_LeNet_0{
     private:
         TensorCPU input;
         Workspace workSpace;
@@ -32,11 +32,11 @@ class CNNPredictor_LeNet{
     public:
         const std::vector<TIndex> input_shapes = {{1,1,28,28}};
 
-        explicit CNNPredictor_LeNet(){
+        explicit CNNPredictor_LeNet_0(){
             init(input_shapes);
         }
 
-        ~CNNPredictor_LeNet(){};
+        ~CNNPredictor_LeNet_0(){};
 
         void init(const std::vector<TIndex> &input_shapes){
             int n = 0;

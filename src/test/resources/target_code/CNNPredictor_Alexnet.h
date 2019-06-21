@@ -23,7 +23,7 @@ CAFFE2_DEFINE_string(predict_net, "./model/Alexnet/predict_net.pb", "The given p
 
 using namespace caffe2;
 
-class CNNPredictor_Alexnet{
+class CNNPredictor_Alexnet_0{
     private:
         TensorCPU input;
         Workspace workSpace;
@@ -32,11 +32,11 @@ class CNNPredictor_Alexnet{
     public:
         const std::vector<TIndex> input_shapes = {{1,3,224,224}};
 
-        explicit CNNPredictor_Alexnet(){
+        explicit CNNPredictor_Alexnet_0(){
             init(input_shapes);
         }
 
-        ~CNNPredictor_Alexnet(){};
+        ~CNNPredictor_Alexnet_0(){};
 
         void init(const std::vector<TIndex> &input_shapes){
             int n = 0;

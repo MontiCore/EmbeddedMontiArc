@@ -3,7 +3,7 @@
     vector<float> CNN_${tc.getName(output)}(<#list shape as dim>${dim?c}<#if  dim?has_next>*</#if></#list>);
 </#list>
 
-    _cnn_.predict(<#list tc.architecture.inputs as input>CNNTranslator::translate(${input.name}<#if input.arrayAccess.isPresent()>[${input.arrayAccess.get().intValue.get()?c}]</#if>),
+    _predictor_0_.predict(<#list tc.architecture.inputs as input>CNNTranslator::translate(${input.name}<#if input.arrayAccess.isPresent()>[${input.arrayAccess.get().intValue.get()?c}]</#if>),
                 </#list><#list tc.architecture.outputs as output>CNN_${tc.getName(output)}<#if output?has_next>,
                 </#if></#list>);
 

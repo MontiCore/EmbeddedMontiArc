@@ -23,7 +23,7 @@ CAFFE2_DEFINE_string(predict_net_CNNPredictor_VGG16, "./model/VGG16/predict_net.
 
 using namespace caffe2;
 
-class CNNPredictor_VGG16{
+class CNNPredictor_VGG16_0{
     private:
         TensorCPU input;
         Workspace workSpace;
@@ -32,11 +32,11 @@ class CNNPredictor_VGG16{
     public:
         const std::vector<TIndex> input_shapes = {{1,3,224,224}};
 
-        explicit CNNPredictor_VGG16(){
+        explicit CNNPredictor_VGG16_0(){
             init(input_shapes);
         }
 
-        ~CNNPredictor_VGG16(){};
+        ~CNNPredictor_VGG16_0(){};
 
         void init(const std::vector<TIndex> &input_shapes){
             int n = 0;

@@ -23,7 +23,7 @@ CAFFE2_DEFINE_string(predict_net, "./model/CifarClassifierNetwork/predict_net.pb
 
 using namespace caffe2;
 
-class CNNPredictor_CifarClassifierNetwork{
+class CNNPredictor_CifarClassifierNetwork_0{
     private:
         TensorCPU input;
         Workspace workSpace;
@@ -32,11 +32,11 @@ class CNNPredictor_CifarClassifierNetwork{
     public:
         const std::vector<TIndex> input_shapes = {{1,3,32,32}};
 
-        explicit CNNPredictor_CifarClassifierNetwork(){
+        explicit CNNPredictor_CifarClassifierNetwork_0(){
             init(input_shapes);
         }
 
-        ~CNNPredictor_CifarClassifierNetwork(){};
+        ~CNNPredictor_CifarClassifierNetwork_0(){};
 
         void init(const std::vector<TIndex> &input_shapes){
             int n = 0;
