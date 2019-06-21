@@ -16,6 +16,9 @@ SomeipAdapter_tests_a_compA::SomeipAdapter_tests_a_compA() {}
 
 void SomeipAdapter_tests_a_compA::init(tests_a_compA *comp)
 {
+	std::unique_lock<std::mutex> its_lock(mutex);
+	condition.wait(its_lock);
+  
 	this->component = comp;
 	
     _clockSubscriber = vsomeip::runtime::get()->create_application("Subscriber");
@@ -24,14 +27,20 @@ void SomeipAdapter_tests_a_compA::init(tests_a_compA *comp)
     _clockSubscriber->request_service(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID);
 
     _clockSubscriber->register_message_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_METHOD_ID, on_message);
-
-  	std::unique_lock<std::mutex> its_lock(mutex);
+    //_clockSubscriber->register_message_handler(vsomeip::ANY_SERVICE, vsomeip::ANY_INSTANCE, vsomeip::ANY_METHOD, on_message);
 	
   	std::set<vsomeip::eventgroup_t> its_groups;
   	its_groups.insert(SAMPLE_EVENTGROUP_ID);
   	_clockSubscriber->request_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, its_groups, true);
   	_clockSubscriber->subscribe(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENTGROUP_ID);
     _clockSubscriber->start();
+    
+    
+    _echoPublisher = vsomeip::runtime::get()->create_application("Publisher");
+    _echoPublisher->init();
+    //_echoPublisher->register_message_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_METHOD_ID, on_message);
+    _echoPublisher->offer_service(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID);
+    _echoPublisher->start();
     
 }
 
@@ -52,24 +61,14 @@ void SomeipAdapter_tests_a_compA::on_message(const std::shared_ptr<vsomeip::mess
 
 void SomeipAdapter_tests_a_compA::publish_echoPublisher()
 {
-   _echoPublisher = vsomeip::runtime::get()->create_application("Publisher");
-   _echoPublisher->init();
-   //app->register_message_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_METHOD_ID, on_message);
-    
-   double d = component->rosOut;
-   uint8_t *byteArray = (uint8_t*)&d;
-  
-   vsomeip::byte_t *p;
-   p = byteArray; 
-  
-   std::shared_ptr< vsomeip::payload > its_payload = vsomeip::runtime::get()->create_payload(p,8);
+    const vsomeip::byte_t its_data[] = { 0x10 };	//component->rosOut
+    payload = vsomeip::runtime::get()->create_payload();
+	payload->set_data(its_data, sizeof(its_data));
 	
-   std::set<vsomeip::eventgroup_t> its_groups;
-   its_groups.insert(SAMPLE_EVENTGROUP_ID);
-   _echoPublisher->offer_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, its_groups, true);
-   _echoPublisher->notify(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, its_payload);
-   _echoPublisher->offer_service(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID);
-   _echoPublisher->start();
+	std::set<vsomeip::eventgroup_t> its_groups;
+	its_groups.insert(SAMPLE_EVENTGROUP_ID);
+	_echoPublisher->offer_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, its_groups, true);
+	_echoPublisher->notify(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, payload);
 }
 
 void SomeipAdapter_tests_a_compA::tick()
