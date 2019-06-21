@@ -16,9 +16,6 @@ SomeipAdapter_tests_a_compA::SomeipAdapter_tests_a_compA() {}
 
 void SomeipAdapter_tests_a_compA::init(tests_a_compA *comp)
 {
-	std::unique_lock<std::mutex> its_lock(mutex);
-	condition.wait(its_lock);
-  
 	this->component = comp;
 	
     _clockSubscriber = vsomeip::runtime::get()->create_application("Subscriber");
