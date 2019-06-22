@@ -13,7 +13,8 @@ import java.util.List;
 public class CoCoTestResultPrinter {
 
     private static int progress = 0;
-    private static int depthToCompareForProgress = 0;
+    private static int total = 0;
+    private static int z = 0;
 
     private static String[] names = {
             "\"Root\"",
@@ -73,8 +74,9 @@ public class CoCoTestResultPrinter {
     public static void printTestResults(List<CheckCoCoResult> testResults, String path, boolean merge, boolean group) {
         if (testResults.size() == 0) return;
         int depth = group ? 0 : 1;
+        z = 0;
         progress = 0;
-        depthToCompareForProgress = depth;
+        total = calcTotal(testResults, group);
         for (int j = 0; j < 50; j++)
             CustomPrinter.print("|");
         CustomPrinter.println("");
@@ -98,6 +100,7 @@ public class CoCoTestResultPrinter {
         }
 
         CustomPrinter.println("");
+        CustomPrinter.println("");
     }
 
     public static String printTestResults(List<CheckCoCoResult> testResults, boolean merge, String rootName, int depth, boolean expanded) {
@@ -106,11 +109,10 @@ public class CoCoTestResultPrinter {
             ip.println("[");
         ip.indent();
 
-        int z = 0;
         boolean first = true;
         for (CheckCoCoResult testResult : testResults) {
             if (testResult == null) continue;
-            if (depth == depthToCompareForProgress)
+            if (depth == 1)
                 z++;
             int i = 0;
 
@@ -163,17 +165,30 @@ public class CoCoTestResultPrinter {
             ip.unindent();
             ip.print("}");
 
-            int currentProgress = (z * 50 / testResults.size());
-            if (currentProgress > progress && depth == depthToCompareForProgress) {
-                for (int j = 0; j < currentProgress - progress; j++)
-                    CustomPrinter.print("|");
-                progress = currentProgress;
-            }
+            if (depth == 1)
+                printProgress();
         }
         ip.println();
         ip.unindent();
         ip.println("]");
         return ip.getContent();
+    }
+
+    private static int calcTotal(List<CheckCoCoResult> testResults, boolean group) {
+        if (!group) return testResults.size();
+        int i = 0;
+        for (CheckCoCoResult tr: testResults)
+            i += tr.getChildren().size();
+        return i;
+    }
+
+    private static void printProgress() {
+        int currentProgress = (z * 50 / total);
+        if (currentProgress > progress) {
+            for (int j = 0; j < currentProgress - progress; j++)
+                CustomPrinter.print("|");
+            progress = currentProgress;
+        }
     }
 
     private static String getChildData(CheckCoCoResult testResult, String rootName, int depth) {
