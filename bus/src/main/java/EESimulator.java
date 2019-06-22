@@ -1,3 +1,24 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
+import com.google.protobuf.Message;
 import simulation.vehicle.VehicleActuator;
 import sun.management.Sensor;
 
@@ -6,16 +27,26 @@ import java.time.Instant;
 import java.util.*;
 import java.util.Comparator;
 
+
 import commons.simulation.DiscreteEvent;
+
+import javax.swing.plaf.nimbus.AbstractRegionPainter;
 
 
 public class EESimulator {
 
-    /** time of simulation          */
-    private long simulationTimeNs = 0;
+    /** point of time of simulation          */
+    private Instant simulationTimeNs;
 
-    /** time between last simulation step     */
-    private long deltaSimulationTimeNs = 0;
+    /** point of time of last simulation step     */
+    private Instant deltaSimulationTimeNs;
+
+    /*
+    private long time = System.nanoTime();
+    speichert beim erstellen eine Zeit in ns. beim abfragen der Zeitdifferenz kann man dann (System.nanoTime() - time)
+    ist ggf etwas eleganter
+     */
+
 
     /**
      * list of discrete events (in the future)
@@ -32,6 +63,11 @@ public class EESimulator {
 
     private List<EEComponent> actuatorList = Collections.synchronizedList(new LinkedList<>());
 
+    public EESimulator(Instant simulationTimeNs) {
+        this.simulationTimeNs = simulationTimeNs;
+        this.deltaSimulationTimeNs = simulationTimeNs;
+    }
+
 
     /**
      * function that adds event to eventList
@@ -46,41 +82,56 @@ public class EESimulator {
     /**
      * simulate until eventList is empty or next event is in future
      */
-    public void simulateNextTick(Instant actualTime, Duration tick){                 //add time
-
+    public void simulateNextTick(Instant actualTime){
+        this.simulationTimeNs = actualTime;
         for (DiscreteEvent event: eventList) {
-            if(event.getType() == MessageType.SEND){                //waiting for the updated bus interface
-                //TODO: send this event to bus
-                
 
-            } else if(event.getType() == MessageType.RECEIVE){
-                //TODO: send this event to actuator or next bus
+            //check if event is in future
+            if (event.getEventTime().isAfter(simulationTimeNs)) {
+                this.deltaSimulationTimeNs=simulationTimeNs;
+                return;
             }
 
-            
+            //check if event is type BusMessage or KeepAliveEvent
+            if (event instanceof BusMessage){
+
+                if (((BusMessage) event).getType() == MessageType.SEND){
+                    //TODO: change bus which is chosen
+                    busList.get(0).processEvent(event);
+                    eventList.remove(event);
+                } else if (((BusMessage) event).getType() == MessageType.RECEIVE && ((BusMessage) event).getFinishTime().isBefore(simulationTimeNs)) {
+                    ((BusMessage) event).getTarget().processEvent(event);
+                    eventList.remove(event);
+                }
+
+            } else if (event instanceof KeepAliveEvent){
+                //TODO: implement processing KeepAliveEvents
+            }
         }
+
     }
 
     /**
      * function that adds component to listenerList
      * @param listener component to add
      */
-    public void registerComponent(EEComponent listener){
+    public void registerComponent(EEComponent listener){            //sensor and actuator have to be instance of EEComponent
         if (listener instanceof Bus){
             busList.add(listener);
-        }
+        }/*
         else if (listener instanceof VehicleActuator) {
             actuatorList.add(listener);
-        } else if (listener instanceof Sensor){
+        } else if (listener instanceof AbstractSensor || listener instanceof AbstractDistanceSensor){
             sensorList.add(listener);
-        } else { return;}
+        }*/
+        else { return;}
     }
 
-    public long getDeltaSimulationTimeNs() {
+    public Instant getDeltaSimulationTimeNs() {
         return deltaSimulationTimeNs;
     }
 
-    public long getSimulationTimeNs() {
+    public Instant getSimulationTimeNs() {
         return simulationTimeNs;
     }
 
@@ -89,12 +140,10 @@ public class EESimulator {
 
 class EESimulatorComparator implements Comparator<DiscreteEvent>
 {
-    // Used for sorting in ascending order of
+    // Used for sorting in ascending order of event time
     public int compare(DiscreteEvent a, DiscreteEvent b)
     {
-        if (a.getRequestTime() < b.getRequestTime()) {return -1;}
-        else if (a.getRequestTime() == b.getRequestTime()) {return 0;}
-        else {return 1;}
+        return a.getEventTime().compareTo(b.getEventTime());
     }
 }
 
