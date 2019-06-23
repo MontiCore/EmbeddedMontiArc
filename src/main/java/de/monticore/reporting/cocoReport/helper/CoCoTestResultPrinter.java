@@ -110,7 +110,6 @@ public class CoCoTestResultPrinter {
 
         boolean first = true;
         for (CheckCoCoResult testResult : testResults) {
-            CustomPrinter.println("" + z);
             if (testResult == null) continue;
             if (depth == 1)
                 z++;
