@@ -1,6 +1,5 @@
 package de.monticore.reporting.cocoReport.helper;
 
-import de.monticore.lang.monticar.helper.IndentPrinter;
 import de.monticore.reporting.order.ChildElement;
 import de.monticore.reporting.tools.CustomPrinter;
 import org.apache.commons.io.FileUtils;
@@ -15,6 +14,7 @@ public class CoCoTestResultPrinter {
     private static int progress = 0;
     private static int total = 0;
     private static int z = 0;
+    private static FilePrinter ip;
 
     private static String[] names = {
             "\"Root\"",
@@ -80,44 +80,44 @@ public class CoCoTestResultPrinter {
         for (int j = 0; j < 50; j++)
             CustomPrinter.print("|");
         CustomPrinter.println("");
+
         if (merge) {
             try {
-                String first = FileUtils.readFileToString(new File(path));
-                first = first.substring(0, first.length() - 3);
-                String str = first + ",\n" + printTestResults(testResults, merge, "", depth, !group);
+                String str = FileUtils.readFileToString(new File(path));
+                str = str.substring(0, str.length() - 3);
                 FileUtils.writeStringToFile(new File(path),
                         str);
+                printTestResults(testResults, merge, "", depth, !group);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            try {
-                FileUtils.writeStringToFile(new File(path),
-                        printTestResults(testResults, merge, "", depth, !group));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            File file = new File(path);
+            if (file.exists())
+                file.delete();
+            ip = new FilePrinter(path);
+            printTestResults(testResults, merge, "", depth, !group);
         }
 
         CustomPrinter.println("");
         CustomPrinter.println("");
     }
 
-    public static String printTestResults(List<CheckCoCoResult> testResults, boolean merge, String rootName, int depth, boolean expanded) {
-        IndentPrinter ip = new IndentPrinter();
+    public static void printTestResults(List<CheckCoCoResult> testResults, boolean merge, String rootName, int depth, boolean expanded) {
         if (!merge)
             ip.println("[");
         ip.indent();
 
         boolean first = true;
         for (CheckCoCoResult testResult : testResults) {
+            CustomPrinter.println("" + z);
             if (testResult == null) continue;
             if (depth == 1)
                 z++;
             int i = 0;
 
             if (!first)
-                ip.print(",\n");
+                ip.println(",");
             else
                 first = false;
 
@@ -156,28 +156,25 @@ public class CoCoTestResultPrinter {
             ip.println(names[i++] + ": " + tagOf(testResult.getAtomicComponent()) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getUniquePorts()) + ",");
             ip.println(names[i++] + ": ");
-            ip.indent();
             if (depth == 0)
-                ip.println(getChildData(testResult, testResult.getRootName1(), depth + 1));
+                printChildData(testResult, testResult.getRootName1(), depth + 1);
             else
                 ip.println("[]");
-            ip.unindent();
             ip.unindent();
             ip.print("}");
 
             if (depth == 1)
                 printProgress();
         }
-        ip.println();
+        ip.println("");
         ip.unindent();
         ip.println("]");
-        return ip.getContent();
     }
 
     private static int calcTotal(List<CheckCoCoResult> testResults, boolean group) {
         if (!group) return testResults.size();
         int i = 0;
-        for (CheckCoCoResult tr: testResults)
+        for (CheckCoCoResult tr : testResults)
             i += tr.getChildren().size();
         return i;
     }
@@ -191,12 +188,12 @@ public class CoCoTestResultPrinter {
         }
     }
 
-    private static String getChildData(CheckCoCoResult testResult, String rootName, int depth) {
+    private static void printChildData(CheckCoCoResult testResult, String rootName, int depth) {
         List<CheckCoCoResult> childResults = new LinkedList<>();
         for (ChildElement childElement : testResult.getChildren()) {
             childResults.add((CheckCoCoResult) childElement.getChild());
         }
-        return printTestResults(childResults, false, rootName, depth, false);
+        printTestResults(childResults, false, rootName, depth, false);
     }
 
     private static String getDepthImage(CheckCoCoResult testResult, int depth) {

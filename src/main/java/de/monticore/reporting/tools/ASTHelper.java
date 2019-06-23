@@ -51,6 +51,7 @@ public class ASTHelper {
         }
         boolean parsingSuccessful = ast != null;
         if (parsingSuccessful) {
+            model.setParsed(1);
             model.addErrorMessage("[INFO] Parser Test success<br>");
         }
 
@@ -102,9 +103,11 @@ public class ASTHelper {
     public static ASTEMACompilationUnit getParsed(String fileName, int timeout) throws CouldNotParseException, ParsingTimeOutException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Callable<ASTEMACompilationUnit> task = new Callable<ASTEMACompilationUnit>() {
-            public ASTEMACompilationUnit call() throws IOException {
+            public ASTEMACompilationUnit call() throws IOException, CouldNotParseException {
                 EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
-                return parser.parse(fileName).orElse(null);
+                ASTEMACompilationUnit ast = parser.parse(fileName).orElse(null);
+                if (ast == null) throw new CouldNotParseException();
+                return ast;
             }
         };
 
