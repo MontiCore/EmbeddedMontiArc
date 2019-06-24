@@ -153,8 +153,8 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
 }
 
 bool HardwareEmulator::resolve_autopilot_os( EmulatorManager &manager ) {
-
-    path = manager.path.append( autopilot_name );
+    path = manager.path;
+    path.append( autopilot_name );
     
     
     if ( os_name.size() == 0 ) {

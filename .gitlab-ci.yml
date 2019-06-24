@@ -13,7 +13,7 @@ windows_build:
   artifacts:
     paths:
       - hardware_emulator/build/Release/hardware-emulator-test.exe
-      - hardware_emulator/build/Release/HardwareEmulator.dll
+      #- hardware_emulator/build/Release/HardwareEmulator.dll
 
 test_windows:
   stage: test
@@ -48,7 +48,7 @@ linux_build:
   artifacts:
     paths:
       - hardware_emulator/Release/hardware-emulator-test
-      - hardware_emulator/Release/libHardwareEmulator.so
+      #- hardware_emulator/Release/libHardwareEmulator.so
 
 test_linux:
   stage: test
