@@ -1,35 +1,33 @@
 <#setting number_format="computer">
 <#assign config = configurations[0]>
-from ${rlFrameworkModule}.agent import DqnAgent
+<#assign rlAgentType=config.rlAlgorithm?switch("dqn", "DqnAgent", "ddpg", "DdpgAgent")>
+from ${rlFrameworkModule}.agent import ${rlAgentType}
 from ${rlFrameworkModule}.util import AgentSignalHandler
+from ${rlFrameworkModule}.cnnarch_logger import ArchLogger
+<#if config.rlAlgorithm=="ddpg">
+from ${rlFrameworkModule}.CNNCreator_${criticInstanceName} import CNNCreator_${criticInstanceName}
+</#if>
 import ${rlFrameworkModule}.environment
 import CNNCreator_${config.instanceName}
 
 import os
 import sys
 import re
-import logging
+import time
+import numpy as np
 import mxnet as mx
 
-session_output_dir = 'session'
-<#if (config.agentName)??>
-agent_name='${config.agentName}'
-<#else>
-agent_name='${config.instanceName}'
-</#if>
-session_param_output = os.path.join(session_output_dir, agent_name)
 
-def resume_session():
-    session_param_output = os.path.join(session_output_dir, agent_name)
+def resume_session(sessions_dir):
     resume_session = False
     resume_directory = None
-    if os.path.isdir(session_output_dir) and os.path.isdir(session_param_output):
+    if os.path.isdir(sessions_dir):
         regex = re.compile(r'\d\d\d\d-\d\d-\d\d-\d\d-\d\d')
-        dir_content = os.listdir(session_param_output)
+        dir_content = os.listdir(sessions_dir)
         session_files = filter(regex.search, dir_content)
         session_files.sort(reverse=True)
         for d in session_files:
-            interrupted_session_dir = os.path.join(session_param_output, d, '.interrupted_session')
+            interrupted_session_dir = os.path.join(sessions_dir, d, '.interrupted_session')
             if os.path.isdir(interrupted_session_dir):
                 resume = raw_input('Interrupted session from {} found. Do you want to resume? (y/n) '.format(d))
                 if resume == 'y':
@@ -38,147 +36,130 @@ def resume_session():
                 break
     return resume_session, resume_directory
 
+
 if __name__ == "__main__":
+<#if (config.agentName)??>
+    agent_name = '${config.agentName}'
+<#else>
+    agent_name = '${config.instanceName}'
+</#if>
+    # Prepare output directory and logger
+    all_output_dir = os.path.join('model', agent_name)
+    output_directory = os.path.join(
+        all_output_dir,
+        time.strftime('%Y-%m-%d-%H-%M-%S',
+                      time.localtime(time.time())))
+    ArchLogger.set_output_directory(output_directory)
+    ArchLogger.set_logger_name(agent_name)
+    ArchLogger.set_output_level(ArchLogger.INFO)
+
 <#if config.environment.environment == "gym">
     env = ${rlFrameworkModule}.environment.GymEnvironment(<#if config.environment.name??>'${config.environment.name}'<#else>'CartPole-v0'</#if>)
 <#else>
     env_params = {
-        'ros_node_name' : '${config.instanceName}TrainerNode',
+        'ros_node_name': '${config.instanceName}TrainerNode',
 <#if config.environment.state_topic??>
-        'state_topic' : '${config.environment.state_topic}',
+        'state_topic': '${config.environment.state_topic}',
 </#if>
 <#if config.environment.action_topic??>
-        'action_topic' : '${config.environment.action_topic}',
+        'action_topic': '${config.environment.action_topic}',
 </#if>
 <#if config.environment.reset_topic??>
-        'reset_topic' : '${config.environment.reset_topic}',
-</#if>
-<#if config.environment.meta_topic??>
-        'meta_topic' : '${config.environment.meta_topic}',
-</#if>
-<#if config.environment.greeting_topic??>
-        'greeting_topic' : '${config.environment.greeting_topic}'
+        'reset_topic': '${config.environment.reset_topic}',
 </#if>
 <#if config.environment.terminal_state_topic??>
-        'terminal_state_topic' : '${config.environment.terminal_state_topic}'
+        'terminal_state_topic': '${config.environment.terminal_state_topic}',
+</#if>
+<#if config.environment.reward_topic??>
+        'reward_topic': '${config.environment.reward_topic}',
 </#if>
     }
     env = ${rlFrameworkModule}.environment.RosEnvironment(**env_params)
 </#if>
+
 <#if (config.context)??>
     context = mx.${config.context}()
 <#else>
     context = mx.cpu()
 </#if>
-    net_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
-    net_creator.construct(context)
-
-    replay_memory_params = {
-<#if (config.replayMemory)??>
-        'method':'${config.replayMemory.method}',
-<#if (config.replayMemory.memory_size)??>
-        'memory_size':${config.replayMemory.memory_size},
-</#if>
-<#if (config.replayMemory.sample_size)??>
-        'sample_size':${config.replayMemory.sample_size},
-</#if>
+<#if config.rlAlgorithm == "dqn">
+    qnet_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    qnet_creator.construct(context)
 <#else>
-        'method':'online',
+    actor_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    actor_creator.construct(context)
+    critic_creator = CNNCreator_${criticInstanceName}()
+    critic_creator.construct(context)
 </#if>
-        'state_dtype':'float32',
-        'action_dtype':'uint8',
-        'rewards_dtype':'float32'
-    }
 
-    policy_params = {
-<#if (config.actionSelection)??>
-        'method':'${config.actionSelection.method}',
-<#else>
-        'method':'epsgreedy'
-</#if>
-<#if (config.actionSelection.epsilon)??>
-        'epsilon': ${config.actionSelection.epsilon},
-</#if>
-<#if (config.actionSelection.min_epsilon)??>
-        'min_epsilon': ${config.actionSelection.min_epsilon},
-</#if>
-<#if (config.actionSelection.epsilon_decay_method)??>
-        'epsilon_decay_method': '${config.actionSelection.epsilon_decay_method}',
-</#if>
-<#if (config.actionSelection.epsilon_decay)??>
-        'epsilon_decay': ${config.actionSelection.epsilon_decay},
-</#if>
-    }
-
-    resume_session, resume_directory = resume_session()
-
-    if resume_session:
-        agent = DqnAgent.resume_from_session(resume_directory, net_creator.net, env)
-    else:
-        agent = DqnAgent(
-            network = net_creator.net,
-            environment=env,
-            replay_memory_params=replay_memory_params,
-            policy_params=policy_params,
-            state_dim=net_creator.get_input_shapes()[0],
+    agent_params = {
+        'environment': env,
+        'replay_memory_params': {
+<#include "params/ReplayMemoryParams.ftl">
+        },
+        'strategy_params': {
+<#include "params/StrategyParams.ftl">
+        },
+        'agent_name': agent_name,
+        'verbose': True,
+        'output_directory': output_directory,
+        'state_dim': (<#list config.stateDim as d>${d},</#list>),
+        'action_dim': (<#list config.actionDim as d>${d},</#list>),
 <#if (config.context)??>
-            ctx='${config.context}',
+        'ctx': '${config.context}',
 </#if>
 <#if (config.discountFactor)??>
-            discount_factor=${config.discountFactor},
-</#if>
-<#if (config.configuration.loss)??>
-            loss='${config.lossName}',
-<#if (config.lossParams)??>
-            loss_params={
-<#list config.lossParams?keys as param>
-                '${param}': ${config.lossParams[param]}<#sep>,
-</#list>
-},
-</#if>
-</#if>
-<#if (config.configuration.optimizer)??>
-            optimizer='${config.optimizerName}',
-            optimizer_params={
-<#list config.optimizerParams?keys as param>
-                '${param}': ${config.optimizerParams[param]}<#sep>,
-</#list>
-},
+        'discount_factor': ${config.discountFactor},
 </#if>
 <#if (config.numEpisodes)??>
-            training_episodes=${config.numEpisodes},
+        'training_episodes': ${config.numEpisodes},
 </#if>
 <#if (config.trainingInterval)??>
-            train_interval=${config.trainingInterval},
+        'train_interval': ${config.trainingInterval},
 </#if>
-<#if (config.useFixTargetNetwork)?? && config.useFixTargetNetwork>
-            use_fix_target=True,
-            target_update_interval=${config.targetNetworkUpdateInterval},
-<#else>
-            use_fix_target=False,
-</#if>
-<#if (config.useDoubleDqn)?? && config.useDoubleDqn>
-            double_dqn = True,
-<#else>
-            double_dqn = False,
+<#if (config.startTrainingAt)??>
+        'start_training': ${config.startTrainingAt},
 </#if>
 <#if (config.snapshotInterval)??>
-            snapshot_interval=${config.snapshotInterval},
+        'snapshot_interval': ${config.snapshotInterval},
 </#if>
-            agent_name=agent_name,
 <#if (config.numMaxSteps)??>
-            max_episode_step=${config.numMaxSteps},
+        'max_episode_step': ${config.numMaxSteps},
 </#if>
-            output_directory=session_output_dir,
-            verbose=True,
-            live_plot = True,
-            make_logfile=True,
+<#if (config.evaluationSamples)??>
+        'evaluation_samples': ${config.evaluationSamples},
+</#if>
+<#if (config.outputDirectory)??>
+        'output_directory': ${config.outputDirectory},
+</#if>
 <#if (config.targetScore)??>
-            target_score=${config.targetScore}
-<#else>
-            target_score=None
+        'target_score': ${config.targetScore},
 </#if>
-        )
+<#if (config.rlAlgorithm == "dqn")>
+<#include "params/DqnAgentParams.ftl">
+<#else>
+<#include "params/DdpgAgentParams.ftl">
+</#if>
+    }
+
+    resume, resume_directory = resume_session(all_output_dir)
+
+    if resume:
+        output_directory, _ = os.path.split(resume_directory)
+        ArchLogger.set_output_directory(output_directory)
+        resume_agent_params = {
+            'session_dir': resume_directory,
+            'environment': env,
+<#if config.rlAlgorithm == "dqn">
+            'net': qnet_creator.net,
+<#else>
+            'actor': actor_creator.net,
+            'critic': critic_creator.net
+</#if>
+        }
+        agent = ${rlAgentType}.resume_from_session(**resume_agent_params)
+    else:
+        agent = ${rlAgentType}(**agent_params)
 
     signal_handler = AgentSignalHandler()
     signal_handler.register_agent(agent)
@@ -186,4 +167,8 @@ if __name__ == "__main__":
     train_successful = agent.train()
 
     if train_successful:
-        agent.save_best_network(net_creator._model_dir_ + net_creator._model_prefix_ + '_newest', epoch=0)
+<#if (config.rlAlgorithm == "dqn")>
+        agent.save_best_network(qnet_creator._model_dir_ + qnet_creator._model_prefix_ + '_newest', epoch=0)
+<#else>
+        agent.save_best_network(actor_creator._model_dir_ + actor_creator._model_prefix_ + '_newest', epoch=0)
+</#if>

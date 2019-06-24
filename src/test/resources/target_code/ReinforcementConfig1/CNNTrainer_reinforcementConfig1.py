@@ -1,29 +1,27 @@
 from reinforcement_learning.agent import DqnAgent
 from reinforcement_learning.util import AgentSignalHandler
+from reinforcement_learning.cnnarch_logger import ArchLogger
 import reinforcement_learning.environment
 import CNNCreator_reinforcementConfig1
 
 import os
 import sys
 import re
-import logging
+import time
+import numpy as np
 import mxnet as mx
 
-session_output_dir = 'session'
-agent_name='reinforcement_agent'
-session_param_output = os.path.join(session_output_dir, agent_name)
 
-def resume_session():
-    session_param_output = os.path.join(session_output_dir, agent_name)
+def resume_session(sessions_dir):
     resume_session = False
     resume_directory = None
-    if os.path.isdir(session_output_dir) and os.path.isdir(session_param_output):
+    if os.path.isdir(sessions_dir):
         regex = re.compile(r'\d\d\d\d-\d\d-\d\d-\d\d-\d\d')
-        dir_content = os.listdir(session_param_output)
+        dir_content = os.listdir(sessions_dir)
         session_files = filter(regex.search, dir_content)
         session_files.sort(reverse=True)
         for d in session_files:
-            interrupted_session_dir = os.path.join(session_param_output, d, '.interrupted_session')
+            interrupted_session_dir = os.path.join(sessions_dir, d, '.interrupted_session')
             if os.path.isdir(interrupted_session_dir):
                 resume = raw_input('Interrupted session from {} found. Do you want to resume? (y/n) '.format(d))
                 if resume == 'y':
@@ -32,67 +30,82 @@ def resume_session():
                 break
     return resume_session, resume_directory
 
+
 if __name__ == "__main__":
+    agent_name = 'reinforcement_agent'
+    # Prepare output directory and logger
+    all_output_dir = os.path.join('model', agent_name)
+    output_directory = os.path.join(
+        all_output_dir,
+        time.strftime('%Y-%m-%d-%H-%M-%S',
+                      time.localtime(time.time())))
+    ArchLogger.set_output_directory(output_directory)
+    ArchLogger.set_logger_name(agent_name)
+    ArchLogger.set_output_level(ArchLogger.INFO)
+
     env_params = {
-        'ros_node_name' : 'reinforcementConfig1TrainerNode',
-        'state_topic' : '/environment/state',
-        'action_topic' : '/environment/action',
-        'reset_topic' : '/environment/reset',
+        'ros_node_name': 'reinforcementConfig1TrainerNode',
+        'state_topic': '/environment/state',
+        'action_topic': '/environment/action',
+        'reset_topic': '/environment/reset',
     }
     env = reinforcement_learning.environment.RosEnvironment(**env_params)
+
     context = mx.cpu()
-    net_creator = CNNCreator_reinforcementConfig1.CNNCreator_reinforcementConfig1()
-    net_creator.construct(context)
+    qnet_creator = CNNCreator_reinforcementConfig1.CNNCreator_reinforcementConfig1()
+    qnet_creator.construct(context)
 
-    replay_memory_params = {
-        'method':'buffer',
-        'memory_size':1000000,
-        'sample_size':64,
-        'state_dtype':'float32',
-        'action_dtype':'uint8',
-        'rewards_dtype':'float32'
+    agent_params = {
+        'environment': env,
+        'replay_memory_params': {
+            'method': 'buffer',
+            'memory_size': 1000000,
+            'sample_size': 64,
+            'state_dtype': 'float32',
+            'action_dtype': 'float32',
+            'rewards_dtype': 'float32'
+        },
+        'strategy_params': {
+            'method':'epsgreedy',
+            'epsilon': 1,
+            'min_epsilon': 0.02,
+            'epsilon_decay_method': 'linear',
+            'epsilon_decay': 0.0001,
+        },
+        'agent_name': agent_name,
+        'verbose': True,
+        'output_directory': output_directory,
+        'state_dim': (8,),
+        'action_dim': (3,),
+        'discount_factor': 0.99999,
+        'training_episodes': 1000,
+        'train_interval': 1,
+        'snapshot_interval': 500,
+        'max_episode_step': 10000,
+        'target_score': 35000,
+        'qnet':qnet_creator.net,
+        'use_fix_target': True,
+        'target_update_interval': 500,
+        'loss': 'huber',
+        'optimizer': 'adam',
+        'optimizer_params': {
+            'learning_rate': 0.001        },
+        'double_dqn': True,
     }
 
-    policy_params = {
-        'method':'epsgreedy',
-        'epsilon': 1,
-        'min_epsilon': 0.02,
-        'epsilon_decay_method': 'linear',
-        'epsilon_decay': 0.0001,
-    }
+    resume, resume_directory = resume_session(all_output_dir)
 
-    resume_session, resume_directory = resume_session()
-
-    if resume_session:
-        agent = DqnAgent.resume_from_session(resume_directory, net_creator.net, env)
+    if resume:
+        output_directory, _ = os.path.split(resume_directory)
+        ArchLogger.set_output_directory(output_directory)
+        resume_agent_params = {
+            'session_dir': resume_directory,
+            'environment': env,
+            'net': qnet_creator.net,
+        }
+        agent = DqnAgent.resume_from_session(**resume_agent_params)
     else:
-        agent = DqnAgent(
-            network = net_creator.net,
-            environment=env,
-            replay_memory_params=replay_memory_params,
-            policy_params=policy_params,
-            state_dim=net_creator.get_input_shapes()[0],
-            discount_factor=0.99999,
-            loss='huber',
-            loss_params={
-                'rho': 0.9},
-            optimizer='adam',
-            optimizer_params={
-                'learning_rate': 0.001},
-            training_episodes=1000,
-            train_interval=1,
-            use_fix_target=True,
-            target_update_interval=500,
-            double_dqn = True,
-            snapshot_interval=500,
-            agent_name=agent_name,
-            max_episode_step=10000,
-            output_directory=session_output_dir,
-            verbose=True,
-            live_plot = True,
-            make_logfile=True,
-            target_score=35000
-        )
+        agent = DqnAgent(**agent_params)
 
     signal_handler = AgentSignalHandler()
     signal_handler.register_agent(agent)
@@ -100,4 +113,4 @@ if __name__ == "__main__":
     train_successful = agent.train()
 
     if train_successful:
-        agent.save_best_network(net_creator._model_dir_ + net_creator._model_prefix_ + '_newest', epoch=0)
+        agent.save_best_network(qnet_creator._model_dir_ + qnet_creator._model_prefix_ + '_newest', epoch=0)

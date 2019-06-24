@@ -13,9 +13,11 @@ class RewardFunction(object):
         self.__reward_wrapper.init()
 
     def reward(self, state, terminal):
+        s = state.astype('${config.rewardFunctionStateParameter.dtype}')
+        t = bool(terminal)
         inp = ${config.rewardFunctionName}_executor.${config.rewardFunctionName}_input()
-        inp.${config.rewardFunctionStateParameter.name} = state
-        inp.${config.rewardFunctionTerminalParameter.name} = terminal
+        inp.${config.rewardFunctionStateParameter.name} = s
+        inp.${config.rewardFunctionTerminalParameter.name} = t
         output = self.__reward_wrapper.execute(inp)
         return output.${config.rewardFunctionOutputName}
 
@@ -57,13 +59,6 @@ class GymEnvironment(Environment):
     def state_dim(self):
         return self.__env.observation_space.shape
 
-    @property
-    def state_dtype(self):
-        return 'float32'
-
-    @property
-    def action_dtype(self):
-        return 'uint8'
 
     @property
     def number_of_actions(self):
@@ -100,11 +95,12 @@ class GymEnvironment(Environment):
     def render(self):
         self.__env.render()
 <#else>
+<#assign action_ros_datatype=config.discreteRlAlgorithm?string("Int32", "Float32MultiArray")>
 import rospy
 import thread
 import numpy as np
 import time
-from std_msgs.msg import Float32MultiArray, Bool, Int32
+from std_msgs.msg import Float32MultiArray, Bool, Int32, MultiArrayDimension, Float32
 
 class RosEnvironment(Environment):
     def __init__(self,
@@ -114,19 +110,21 @@ class RosEnvironment(Environment):
         action_topic='action',
         reset_topic='reset',
         terminal_state_topic='terminal',
-        meta_topic='meta',
-        greeting_topic='greeting'):
+        reward_topic='reward'):
         super(RosEnvironment, self).__init__()
         self.__timeout_in_s = timeout_in_s
-
         self.__waiting_for_state_update = False
         self.__waiting_for_terminal_update = False
         self.__last_received_state = 0
-        self.__last_received_terminal = 0
+        self.__last_received_terminal = True
+<#if config.hasRosRewardTopic()>
+        self.__last_received_reward = 0.0
+        self.__waiting_for_reward_update = False
+</#if>
 
         rospy.loginfo("Initialize node {0}".format(ros_node_name))
 
-        self.__step_publisher = rospy.Publisher(action_topic, Int32, queue_size=1)
+        self.__step_publisher = rospy.Publisher(action_topic, ${action_ros_datatype}, queue_size=1)
         rospy.loginfo('Step Publisher initialized with topic {}'.format(action_topic))
 
         self.__reset_publisher = rospy.Publisher(reset_topic, Bool, queue_size=1)
@@ -139,6 +137,11 @@ class RosEnvironment(Environment):
 
         self.__terminal_state_subscriber = rospy.Subscriber(terminal_state_topic, Bool, self.__terminal_state_callback)
         rospy.loginfo('Terminal State Subscriber registered with topic {}'.format(terminal_state_topic))
+<#if config.hasRosRewardTopic()>
+
+        self.__reward_subscriber = rospy.Subscriber(reward_topic, Float32, self.__reward_callback)
+        rospy.loginfo('Reward Subscriber registered with topic {}'.format(reward_topic))
+</#if>
 
         rate = rospy.Rate(10)
 
@@ -156,18 +159,28 @@ class RosEnvironment(Environment):
         return self.__last_received_state
 
     def step(self, action):
-        action_rospy = Int32()
+        action_rospy = ${action_ros_datatype}()
+<#if config.continuousRlAlgorithm>
+        assert len(action.shape) == 1
+        action_rospy.layout.dim.append(MultiArrayDimension())
+        action_rospy.layout.dim[0].label = 'action'
+        action_rospy.layout.dim[0].size = ${config.actionDim[0]}
+        action_rospy.layout.dim[0].stride = ${config.actionDim[0]}
+</#if>
         action_rospy.data = action
 
         logger.debug('Send action: {}'.format(action))
 
         self.__waiting_for_state_update = True
         self.__waiting_for_terminal_update = True
+<#if config.hasRosRewardTopic()>
+        self.__waiting_for_reward_update = True
+</#if>
         self.__step_publisher.publish(action_rospy)
         self.__wait_for_new_state(self.__step_publisher, action_rospy)
         next_state = self.__last_received_state
         terminal = self.__last_received_terminal
-        reward = self.__calc_reward(next_state, terminal)
+        reward = <#if config.hasRosRewardTopic()>self.__last_received_reward<#else>self.__calc_reward(next_state, terminal)</#if>
         rospy.logdebug('Calculated reward: {}'.format(reward))
 
         return next_state, reward, terminal, 0
@@ -175,7 +188,8 @@ class RosEnvironment(Environment):
     def __wait_for_new_state(self, publisher, msg):
         time_of_timeout = time.time() + self.__timeout_in_s
         timeout_counter = 0
-        while(self.__waiting_for_state_update or self.__waiting_for_terminal_update):
+        while(self.__waiting_for_state_update
+              or self.__waiting_for_terminal_update<#if config.hasRosRewardTopic()> or self.__waiting_for_reward_update</#if>):
             is_timeout = (time.time() > time_of_timeout)
             if (is_timeout):
                 if timeout_counter < 3:
@@ -191,27 +205,25 @@ class RosEnvironment(Environment):
     def close(self):
         rospy.signal_shutdown('Program ended!')
 
-
     def __state_callback(self, data):
-<#if config.rewardFunctionStateParameter.isMultiDimensional>
-        self.__last_received_state = np.array(data.data, dtype='${config.rewardFunctionStateParameter.dtype}')
-<#else>
-        self.__last_received_state = data.data
-</#if>
+        self.__last_received_state = np.array(data.data, dtype='float32')
         rospy.logdebug('Received state: {}'.format(self.__last_received_state))
         self.__waiting_for_state_update = False
 
     def __terminal_state_callback(self, data):
-<#if config.rewardFunctionTerminalParameter.isMultiDimensional>
-        self.__last_received_terminal = np.array(data.data, dtype='${config.rewardFunctionTerminalParameter.dtype}')
-<#else>
         self.__last_received_terminal = data.data
-</#if>
         rospy.logdebug('Received terminal flag: {}'.format(self.__last_received_terminal))
         logger.debug('Received terminal: {}'.format(self.__last_received_terminal))
         self.__waiting_for_terminal_update = False
 
+<#if config.hasRosRewardTopic()>
+    def __reward_callback(self, data):
+        self.__last_received_reward = float(data.data)
+        logger.debug('Received reward: {}'.format(self.__last_received_reward))
+        self.__waiting_for_reward_update = False
+<#else>
     def __calc_reward(self, state, terminal):
         # C++ Wrapper call
         return self._reward_function.reward(state, terminal)
+</#if>
 </#if>

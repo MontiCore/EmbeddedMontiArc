@@ -24,16 +24,14 @@ configuration ReinforcementConfig1 {
 
     use_double_dqn : true
 
-    loss : huber{
-        rho: 0.9
-    }
+    loss : huber
 
     replay_memory : buffer{
         memory_size : 1000000
         sample_size : 64
     }
 
-    action_selection : epsgreedy{
+    strategy : epsgreedy{
         epsilon : 1.0
         min_epsilon : 0.02
         epsilon_decay_method: linear

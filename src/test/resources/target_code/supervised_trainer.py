@@ -22,6 +22,15 @@ class CrossEntropyLoss(gluon.loss.Loss):
         loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
         return F.mean(loss, axis=self._batch_axis, exclude=True)
 
+class LogCoshLoss(gluon.loss.Loss):
+    def __init__(self, weight=None, batch_axis=0, **kwargs):
+        super(LogCoshLoss, self).__init__(weight, batch_axis, **kwargs)
+
+    def hybrid_forward(self, F, pred, label, sample_weight=None):
+        loss = F.log(F.cosh(pred - label))
+        loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
+        return F.mean(loss, axis=self._batch_axis, exclude=True)
+
 class CNNSupervisedTrainer(object):
     def __init__(self, data_loader, net_constructor, net=None):
         self._data_loader = data_loader
@@ -113,6 +122,8 @@ class CNNSupervisedTrainer(object):
         elif loss == 'kullback_leibler':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else True
             loss_function = mx.gluon.loss.KLDivLoss(from_logits=fromLogits)
+        elif loss == 'log_cosh':
+            loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
 
