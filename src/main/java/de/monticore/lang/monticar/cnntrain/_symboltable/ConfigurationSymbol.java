@@ -32,6 +32,7 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     private Map<String, EntrySymbol> entryMap = new HashMap<>();
     private OptimizerSymbol optimizer;
     private OptimizerSymbol criticOptimizer;
+    private LossSymbol loss;
     private RewardFunctionSymbol rlRewardFunctionSymbol;
     private TrainedArchitecture trainedArchitecture;
 
@@ -57,6 +58,14 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
     public Optional<OptimizerSymbol> getCriticOptimizer() {
         return Optional.ofNullable(criticOptimizer);
+    }
+
+    public LossSymbol getLoss() {
+        return loss;
+    }
+
+    public void setLoss(LossSymbol loss) {
+        this.loss = loss;
     }
 
     protected void setRlRewardFunction(RewardFunctionSymbol rlRewardFunctionSymbol) {

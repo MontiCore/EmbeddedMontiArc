@@ -75,7 +75,7 @@ configuration ReinforcementConfig {
     target_score : 1000
     training_interval : 10
 
-    loss : huber_loss
+    loss : huber
 
     use_fix_target_network : true
     target_network_update_interval : 100
@@ -126,7 +126,7 @@ configuration ReinforcementConfig {
 |discount_factor | Float | 0.9 | No | All | Discount factor |
 | target_score | Float | None | No | All | If set, the agent stops the training when the average score of the last 100 episodes is greater than the target score. |
 | training_interval | Integer | 1 | No | All | Number of steps between two trainings |
-| loss | euclidean, l1, softmax_cross_entropy, sigmoid_cross_entropy, huber_loss | euclidean | No | DQN | Selects the loss function
+| loss | l2, l1, softmax_cross_entropy, sigmoid_cross_entropy, huber | l2 | No | DQN | Selects the loss function
 | use_fix_target_network | bool | false | No | DQN | If set, an extra network with fixed parameters is used to estimate the Q values |
 | target_network_update_interval | Integer | / | DQN | Yes, if fixed target network is true | If *use_fix_target_network* is set, it determines the number of steps after the target network is updated (Minh et. al. "Human Level Control through Deep Reinforcement Learning")|
 | use_double_dqn | bool | false | No | If set, two value functions are used to determine the action values (Hasselt et. al. "Deep Reinforcement Learning with Double Q Learning") |

@@ -199,22 +199,24 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void visit(ASTLossEntry node) {
-        EntrySymbol entry = new EntrySymbol(node.getName());
-        ValueSymbol value = new ValueSymbol();
-        if (node.getValue().isPresentEuclidean()){
-            value.setValue(Loss.EUCLIDEAN);
-        }
-        else if (node.getValue().isPresentCrossEntropy()){
-            value.setValue(Loss.CROSS_ENTROPY);
-        } else if (node.getValue().isPresentHuberLoss()) {
-            value.setValue(Loss.HUBER_LOSS);
-        } else if (node.getValue().isPresentL1()) {
-            value.setValue(Loss.L1);
-        }
-        entry.setValue(value);
-        addToScopeAndLinkWithNode(entry, node);
-        configuration.getEntryMap().put(node.getName(), entry);
+        LossSymbol loss = new LossSymbol(node.getValue().getName());
+        configuration.setLoss(loss);
+        addToScopeAndLinkWithNode(loss, node);
     }
+
+    @Override
+    public void endVisit(ASTLossEntry node) {
+        for (ASTEntry nodeParam : node.getValue().getParamsList()) {
+            LossParamSymbol param = new LossParamSymbol();
+            OptimizerParamValueSymbol valueSymbol = (OptimizerParamValueSymbol) nodeParam.getValue().getSymbolOpt().get();
+            LossParamValueSymbol lossParamValue = new LossParamValueSymbol();
+            lossParamValue.setValue(valueSymbol.getValue());
+            param.setValue(lossParamValue);
+            configuration.getLoss().getLossParamMap().put(nodeParam.getName(), param);
+        }
+
+    }
+
 
     @Override
     public void endVisit(ASTLRPolicyValue node) {

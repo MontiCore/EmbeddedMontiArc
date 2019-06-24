@@ -4,7 +4,9 @@ configuration FullConfig2{
      load_checkpoint : false
      context : gpu
      eval_metric : top_k_accuracy
-     loss: euclidean
+     loss: huber{
+        rho: 0.9
+     }
      normalize : false
      optimizer : adam{
          learning_rate : 0.001

@@ -41,11 +41,6 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
                                                | rmse:"rmse"
                                                | topKAccuracy:"top_k_accuracy");
 
-    LossValue implements ConfigValue =(euclidean:"euclidean"
-                                           | l1: "l1"
-                                           | crossEntropy:"cross_entropy"
-                                           | huberLoss: "huber_loss");
-
     LRPolicyValue implements ConfigValue =(fixed:"fixed"
                                          | step:"step"
                                          | exp:"exp"
@@ -55,6 +50,43 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     TrainContextValue implements ConfigValue = (cpu:"cpu" | gpu:"gpu");
 
     interface OptimizerParamEntry extends Entry;
+
+    interface LossValue extends ConfigValue;
+
+    L1Loss implements LossValue = name:"l1" ("{" params:Entry* "}")?;
+
+    L2Loss implements LossValue = name:"l2" ("{" params:Entry* "}")?;
+
+    LogCoshLoss implements LossValue = name:"log_cosh" ("{" params:Entry* "}")?;
+
+    interface HuberEntry extends Entry;
+    HuberLoss implements LossValue = name:"huber" ("{" params:HuberEntry* "}")?;
+
+    interface CrossEntropyEntry extends Entry;
+    CrossEntropyLoss implements LossValue = name:"cross_entropy" ("{" params:CrossEntropyEntry* "}")?;
+
+    interface SoftmaxCrossEntropyEntry extends Entry;
+    SoftmaxCrossEntropyLoss implements LossValue = name:"softmax_cross_entropy" ("{" params:SoftmaxCrossEntropyEntry* "}")?;
+
+    SigmoidBinaryCrossEntropyLoss implements LossValue = name:"sigmoid_binary_cross_entropy" ("{" params:Entry* "}")?;
+
+    interface HingeEntry extends Entry;
+    HingeLoss implements LossValue = name:"hinge" ("{" params:HingeEntry* "}")?;
+
+    interface SquaredHingeEntry extends Entry;
+    SquaredHingeLoss implements LossValue = name:"squared_hinge" ("{" params:SquaredHingeEntry* "}")?;
+
+    interface LogisticEntry extends Entry;
+    LogisticLoss implements LossValue = name:"logistic" ("{" params:LogisticEntry* "}")?;
+
+    interface KullbackLeiblerEntry extends Entry;
+    KullbackLeiblerLoss implements LossValue = name:"kullback_leibler" ("{" params:KullbackLeiblerEntry* "}")?;
+
+    SparseLabelEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry = name:"sparse_label" ":" value:BooleanValue;
+    FromLogitsEntry implements SoftmaxCrossEntropyEntry, KullbackLeiblerEntry = name:"from_logits" ":" value:BooleanValue;
+    MarginEntry implements HingeEntry, SquaredHingeEntry = name:"margin" ":" value:NumberValue;
+    LabelFormatEntry implements LogisticEntry = name:"label_format" ":" value:StringValue;
+
     interface OptimizerValue extends ConfigValue;
     interface SGDEntry extends OptimizerParamEntry;
     SGDOptimizer implements OptimizerValue = name:"sgd" ("{" params:SGDEntry* "}")?;
@@ -93,7 +125,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     Gamma2Entry implements RmsPropEntry = name:"gamma2" ":" value:NumberValue;
     CenteredEntry implements RmsPropEntry = name:"centered" ":" value:BooleanValue;
     ClipWeightsEntry implements RmsPropEntry = name:"clip_weights" ":" value:NumberValue;
-    RhoEntry implements AdaDeltaEntry = name:"rho" ":" value:NumberValue;
+    RhoEntry implements AdaDeltaEntry, HuberEntry = name:"rho" ":" value:NumberValue;
 
     // Reinforcement Extensions
     interface MultiParamValue extends ConfigValue;
