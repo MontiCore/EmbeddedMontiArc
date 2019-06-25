@@ -47,4 +47,19 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         assertEquals(tag.getPath(), "data");
         assertEquals(tag.getType(), "random");
     }
+
+    @Test
+    public void instanceTaggingParent() {
+      TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/");
+      EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.Parent", EMAComponentSymbol.KIND)
+              .orElse(null);
+      Collection<TagSymbol> tags = tagging.getTags(
+              symbol.getSpannedScope().getLocalSymbols().get("a1").iterator().next(), DataPathSymbol.KIND
+      );
+      assertEquals(1, tags.size());
+
+      DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
+      assertEquals(tag.getPath(), "lisjef");
+      assertEquals(tag.getType(), "r34");
+    }
 }
