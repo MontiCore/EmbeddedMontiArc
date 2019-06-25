@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- == PROJECT COORDINATES =============================================== -->
+
+    <parent>
+        <groupId>de.monticore.lang.monticar.borealis</groupId>
+        <artifactId>apps</artifactId>
+        <version>2019.06.25.0</version>
+    </parent>
+
+    <artifactId>maven</artifactId>
+    <packaging>pom</packaging>
+
+    <!-- == PROJECT MODULES =================================================== -->
+
+    <modules>
+        <module>ide</module>
+        <module>language</module>
+        <module>tool</module>
+    </modules>
+
+    <!-- == PROJECT PROPERTIES ================================================ -->
+
+    <properties>
+
+        <!-- .. Libraries ..................................................... -->
+
+        <!-- .. Plugins ....................................................... -->
+
+        <!-- .. Classifiers ................................................... -->
+
+        <!-- .. Misc .......................................................... -->
+
+        <!-- .. Resources ..................................................... -->
+
+    </properties>
+
+    <!-- == PROJECT METAINFORMATION =========================================== -->
+
+    <name>Borealis - Applications - Maven</name>
+
+    <!-- == PROJECT DEPENDENCIES ============================================== -->
+
+    <dependencies>
+
+        <!-- .. Libraries ................................................. -->
+
+        <!-- .. Test Libraries ............................................ -->
+
+    </dependencies>
+
+    <!-- == PROJECT BUILD SETTINGS ============================================ -->
+
+    <build>
+        <plugins>
+        </plugins>
+    </build>
+
+    <!-- == PROJECT DISTRIBUTION ============================================== -->
+
+</project>
