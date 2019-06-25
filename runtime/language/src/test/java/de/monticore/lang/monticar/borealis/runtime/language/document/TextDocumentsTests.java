@@ -33,8 +33,8 @@ public class TextDocumentsTests {
     void testOnDidChangeTextDocumentParams() {
         VersionedTextDocumentIdentifier identifier =
                 new VersionedTextDocumentIdentifier(documentItem.getUri(), documentItem.getVersion());
-        TextDocumentContentChangeEvent change = new TextDocumentContentChangeEvent("Hello World!");
-        List<TextDocumentContentChangeEvent> changes = Collections.singletonList(change);
+        List<TextDocumentContentChangeEvent> changes =
+                Collections.singletonList(new TextDocumentContentChangeEvent("Hello World!"));
         DidChangeTextDocumentParams params = new DidChangeTextDocumentParams(identifier, changes);
 
         documents.onDidChangeTextDocumentParams(params);

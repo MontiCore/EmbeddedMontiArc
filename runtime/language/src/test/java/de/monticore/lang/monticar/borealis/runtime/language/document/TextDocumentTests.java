@@ -15,8 +15,8 @@ public class TextDocumentTests {
 
     @Test
     void testUpdate() {
-        TextDocumentContentChangeEvent change = new TextDocumentContentChangeEvent("Hello World!");
-        List<TextDocumentContentChangeEvent> changes = Collections.singletonList(change);
+        List<TextDocumentContentChangeEvent> changes =
+                Collections.singletonList(new TextDocumentContentChangeEvent("Hello World!"));
 
         document.update(changes);
 
