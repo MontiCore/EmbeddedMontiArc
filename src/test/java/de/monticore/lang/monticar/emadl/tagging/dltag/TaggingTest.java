@@ -24,6 +24,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel
 import de.monticore.lang.monticar.emadl.AbstractTaggingResolverTest;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
+
 import org.junit.Test;
 
 import java.util.Collection;
@@ -35,23 +37,29 @@ public class TaggingTest extends AbstractTaggingResolverTest {
     @Test
     public void basicTaggingAlexNet() {
         TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/tagging");
-
         EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("Alexnet", EMAComponentSymbol.KIND)
                 .orElse(null);
+
         Collection<TagSymbol> tags = tagging.getTags(symbol, DataPathSymbol.KIND);
         assertEquals(1, tags.size());
+
+        DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
+        assertEquals(tag.getPath(), "data");
+        assertEquals(tag.getType(), "random");
     }
 
     @Test
     public void instanceTaggingParent() {
-        TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/");
+      TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/");
+      EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.Parent", EMAComponentSymbol.KIND)
+              .orElse(null);
+      Collection<TagSymbol> tags = tagging.getTags(
+              symbol.getSpannedScope().getLocalSymbols().get("a1").iterator().next(), DataPathSymbol.KIND
+      );
+      assertEquals(1, tags.size());
 
-        EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.Parent", EMAComponentSymbol.KIND)
-                .orElse(null);
-        Collection<TagSymbol> tags = tagging.getTags(
-                symbol.getSpannedScope().getLocalSymbols().get("a1").iterator().next(), DataPathSymbol.KIND
-        );
-        assertEquals(1, tags.size());
+      DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
+      assertEquals(tag.getPath(), "lisjef");
+      assertEquals(tag.getType(), "r34");
     }
-
 }
