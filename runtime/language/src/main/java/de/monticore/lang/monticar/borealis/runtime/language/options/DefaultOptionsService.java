@@ -73,6 +73,8 @@ public class DefaultOptionsService implements OptionsService, ServerLauncherCont
         CommandLineParser parser = new DefaultParser();
         Options options = this.registry.getOptions();
 
+        this.logger.atInfo().log("Parsing command line...");
+
         this.commandLine = parser.parse(options, arguments);
     }
 }

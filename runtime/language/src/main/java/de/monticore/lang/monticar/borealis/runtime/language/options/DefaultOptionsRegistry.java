@@ -34,6 +34,8 @@ public class DefaultOptionsRegistry implements OptionsRegistry, ServerLauncherCo
 
     @Override
     public void onInitialize(String[] arguments) {
+        this.logger.atInfo().log("Registering options...");
+
         for (OptionsContribution contribution : this.contributions) {
             contribution.registerOptions(this);
         }
