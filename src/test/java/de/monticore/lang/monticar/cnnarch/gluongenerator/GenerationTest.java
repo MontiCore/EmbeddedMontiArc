@@ -30,7 +30,6 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -264,7 +263,6 @@ public class GenerationTest extends AbstractSymtabTest {
                 Arrays.asList("FindArmadillo.cmake"));
     }
 
-    @Ignore
     @Test
     public void testDdpgConfig() {
         Log.getFindings().clear();
@@ -294,7 +292,6 @@ public class GenerationTest extends AbstractSymtabTest {
         );
     }
 
-    @Ignore
     @Test
     public void testRosDdpgConfig() {
         Log.getFindings().clear();
