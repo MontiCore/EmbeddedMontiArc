@@ -62,7 +62,7 @@ public class DefaultTextDocumentService implements ValidatorTextDocumentService 
         return this.validate(document);
     }
 
-    public CompletableFuture<List<Diagnostic>> validate(TextDocument document) {
+    protected CompletableFuture<List<Diagnostic>> validate(TextDocument document) {
         return CompletableFutures.computeAsync(monitor -> {
             monitor.checkCanceled();
             return this.diagnostics.validate(document);
@@ -79,7 +79,7 @@ public class DefaultTextDocumentService implements ValidatorTextDocumentService 
         this.pushDiagnostics(params.getTextDocument().getUri(), this.validate(params));
     }
 
-    public void pushDiagnostics(String uri, CompletableFuture<List<Diagnostic>> validation) {
+    protected void pushDiagnostics(String uri, CompletableFuture<List<Diagnostic>> validation) {
         try {
             List<Diagnostic> diagnostics = validation.get();
             LanguageClient client = this.server.getRemoteProxy();
