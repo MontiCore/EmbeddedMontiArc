@@ -112,7 +112,7 @@ public class GenerationTest extends AbstractSymtabTest{
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
         CNNArch2MxNetCli.main(args);
-        assertTrue(Log.getFindings().size() == 3);
+        assertTrue(Log.getFindings().size() == 1);
     }
 
     @Test
