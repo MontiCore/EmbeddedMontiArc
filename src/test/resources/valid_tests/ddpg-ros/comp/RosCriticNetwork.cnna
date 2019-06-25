@@ -10,5 +10,5 @@ implementation Critic(state, action) {
     ) ->
     Add() ->
     FullyConnected(units=600) ->
-    Relu();
+    Relu()
 }
