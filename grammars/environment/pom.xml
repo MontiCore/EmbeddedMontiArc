@@ -50,18 +50,6 @@
 
     <build>
         <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>1.${java.version}</source>
-                    <target>1.${java.version}</target>
-                    <release>${java.version}</release>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
 
