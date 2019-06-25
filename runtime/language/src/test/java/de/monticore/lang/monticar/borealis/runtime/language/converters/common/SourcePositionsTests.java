@@ -11,6 +11,15 @@ public class SourcePositionsTests {
     final SourcePositions sourcePositions = new SourcePositions(start, end);
 
     @Test
+    void testToString() {
+        assertEquals(
+            "< start: <10,40>, end: <20,10> >",
+            sourcePositions.toString(),
+            "SourcePositions is not correctly stringified."
+        );
+    }
+
+    @Test
     void testEquals() {
         /*
          * Equal Object

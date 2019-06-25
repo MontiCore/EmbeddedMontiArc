@@ -12,6 +12,11 @@ public class SourcePositions {
     }
 
     @Override
+    public String toString() {
+        return String.format("< start: %s, end: %s >", this.start, this.end);
+    }
+
+    @Override
     public boolean equals(Object o) {
         return o instanceof SourcePositions && this.equals((SourcePositions) o);
     }
