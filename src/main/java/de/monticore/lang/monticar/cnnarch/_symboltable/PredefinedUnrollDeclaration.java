@@ -65,7 +65,7 @@ abstract public class PredefinedUnrollDeclaration extends UnrollDeclarationSymbo
     //the following methods are only here to avoid duplication. They are used by multiple subclasses.
 
     //check if inputTypes is of size 1
-    protected void errorIfInputSizeIsNotOne(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
+    protected void errorIfInputSizeIsNotOne(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer){
         if (inputTypes.size() != 1){
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. " +
                             getName() + " layer can only handle one input stream. " +

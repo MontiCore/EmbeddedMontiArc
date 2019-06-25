@@ -27,22 +27,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class OneHot extends PredefinedLayerDeclaration {
+public class BeamSearchStart extends PredefinedLayerDeclaration {
 
-    private static int channels;
-
-    private OneHot() {
-        super(AllPredefinedLayers.ONE_HOT_NAME);
+    private BeamSearchStart() {
+        super(AllPredefinedLayers.BEAMSEARCH_NAME);
     }
 
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
 
-        channels=layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get();
-
         return Collections.singletonList(new ArchTypeSymbol.Builder()
-                .channels(layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get())
+                .channels(100) // TODO
                 .height(1)
                 .width(1)
                 .elementType("0", "1")
@@ -52,16 +48,18 @@ public class OneHot extends PredefinedLayerDeclaration {
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
-        errorIfInputSizeUnequalToOnehotSize(inputTypes, layer);
     }
 
-    public static OneHot create(){
-        OneHot declaration = new OneHot();
+    public static BeamSearchStart create(){
+        BeamSearchStart declaration = new BeamSearchStart();
         List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new VariableSymbol.Builder()
-                        .name(AllPredefinedLayers.ONE_HOT_SIZE_NAME)
-                        .constraints(Constraints.POSITIVE, Constraints.INTEGER)
-                        .defaultValue(channels)
+                        .name(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .build(),
+                new VariableSymbol.Builder()
+                        .name(AllPredefinedLayers.BEAMSEARCH_WIDTH_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;

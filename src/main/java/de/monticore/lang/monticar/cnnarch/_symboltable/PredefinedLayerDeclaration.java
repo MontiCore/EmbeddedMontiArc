@@ -116,6 +116,22 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
     }
 
+
+    //check input for onehot layer
+    protected static void errorIfInputSizeUnequalToOnehotSize(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
+        if (!inputTypes.isEmpty() && layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get() != 0) {
+            int inputChannels = inputTypes.get(0).getChannels();
+            int onehotSize = layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get();
+
+            if (onehotSize != inputChannels){
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE +
+                                "The size of the onehot vector is not equal to the output size of the previous layer." +
+                                "This is usually not intended."
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
     //output type function for convolution and pooling
     protected static List<ArchTypeSymbol> computeConvAndPoolOutputShape(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
         String borderModeSetting = method.getStringValue(AllPredefinedLayers.PADDING_NAME).get();

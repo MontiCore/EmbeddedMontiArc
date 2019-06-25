@@ -71,7 +71,9 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
 
     Layer implements ArchitectureElement =  Name "(" arguments:(ArchArgument || ",")* ")";
 
-    Unroll implements ArchitectureElement =  Name "(" arguments:(ArchArgument || ",")* ")";
+    Unroll implements ArchitectureElement =  "unroll" "<" timeParameter:LayerParameter ">"
+                                                                      Name "(" arguments:(ArchArgument || ",")* ")"
+                                                                     "{" body:Stream "}";
 
     ParallelBlock implements ArchitectureElement =  "("
                                                    groups:Stream  "|"

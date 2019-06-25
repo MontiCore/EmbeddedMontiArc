@@ -20,8 +20,10 @@
  */
 package de.monticore.lang.monticar.cnnarch._cocos;
 
+import de.monticore.commonexpressions._ast.ASTArguments;
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchArgument;
 import de.monticore.lang.monticar.cnnarch._ast.ASTLayer;
+import de.monticore.lang.monticar.cnnarch._ast.ASTLayerParameter;
 import de.monticore.lang.monticar.cnnarch._ast.ASTUnroll;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;

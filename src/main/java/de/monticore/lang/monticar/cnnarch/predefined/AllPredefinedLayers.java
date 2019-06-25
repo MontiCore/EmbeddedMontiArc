@@ -45,6 +45,7 @@ public class AllPredefinedLayers {
     public static final String CONCATENATE_NAME = "Concatenate";
     public static final String FLATTEN_NAME = "Flatten";
     public static final String ONE_HOT_NAME = "OneHot";
+    public static final String BEAMSEARCH_NAME = "BeamSearchStart";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -63,6 +64,8 @@ public class AllPredefinedLayers {
     public static final String PADDING_NAME = "padding";
     public static final String POOL_TYPE_NAME = "pool_type";
     public static final String ONE_HOT_SIZE_NAME = "size";
+    public static final String BEAMSEARCH_MAX_LENGTH = "max_length";
+    public static final String BEAMSEARCH_WIDTH_NAME = "width";
 
 
     //possible String values

@@ -341,6 +341,39 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     @Override
+    public void visit(ASTUnroll ast) {
+        ast.setName("BeamSearchStart");
+        UnrollSymbol layer = new UnrollSymbol("BeamSearchStart");
+        addToScopeAndLinkWithNode(layer, ast);
+    }
+
+    @Override
+    public void endVisit(ASTUnroll ast) {
+        UnrollSymbol layer = (UnrollSymbol) ast.getSymbolOpt().get();
+
+        List<ArgumentSymbol> arguments = new ArrayList<>(6);
+        for (ASTArchArgument astArgument : ast.getArgumentsList()){
+            Optional<ArgumentSymbol> optArgument = astArgument.getSymbolOpt().map(e -> (ArgumentSymbol)e);
+            optArgument.ifPresent(arguments::add);
+        }
+        layer.setArguments(arguments);
+
+        /*List<ArchitectureElementSymbol> elements = new ArrayList<>();
+        for (ASTStream astStream : ast.getGroupsList()){
+            elements.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
+        }
+        compositeElement.setElements(elements);
+        */
+
+
+        try{
+        System.err.println("############################" + layer.getIntValue(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH).get());
+        }catch(Exception e){};
+
+        removeCurrentScope();
+    }
+
+    @Override
     public void visit(ASTParallelBlock node) {
         ParallelCompositeElementSymbol compositeElement = new ParallelCompositeElementSymbol();
         addToScopeAndLinkWithNode(compositeElement, node);
