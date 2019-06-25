@@ -23,8 +23,6 @@ package de.monticore.lang.monticar.emadl.tagging.dltag;
 import de.monticore.lang.tagging._symboltable.TagKind;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 
-import java.util.Optional;
-
 public class DataPathSymbol extends TagSymbol {
     public static final DataPathKind KIND  = DataPathKind.INSTANCE;
 
