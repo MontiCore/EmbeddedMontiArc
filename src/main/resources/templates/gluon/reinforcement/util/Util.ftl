@@ -127,13 +127,15 @@ class TrainingStats(object):
         else:
             return self._all_total_rewards[0]
 
-    def save(self, path):
-        np.save(os.path.join(path, 'total_rewards'), self._all_total_rewards)
-        np.save(os.path.join(path, 'eps'), self._all_eps)
-        np.save(os.path.join(path, 'time'), self._all_time)
+    def save(self, path, episode=None):
+        if episode is None:
+            episode = self._max_episodes
+        np.save(os.path.join(path, 'total_rewards'), self._all_total_rewards[:episode])
+        np.save(os.path.join(path, 'eps'), self._all_eps[:episode])
+        np.save(os.path.join(path, 'time'), self._all_time[:episode])
         np.save(
             os.path.join(path, 'mean_reward'),
-            self._all_mean_reward_last_100_episodes)
+            self._all_mean_reward_last_100_episodes[:episode])
 
     def _log_episode(self, episode, start_time, training_steps, eps, reward):
         self.add_eps(episode, eps)
@@ -170,33 +172,43 @@ class DqnTrainingStats(TrainingStats):
         self._logger.info(info)
         return avg_reward
 
-    def save_stats(self, path):
+    def save_stats(self, path, episode=None):
+        if episode is None:
+            episode = self._max_episodes
+
+        all_total_rewards = self._all_total_rewards[:episode]
+        all_avg_loss = self._all_avg_loss[:episode]
+        all_eps = self._all_eps[:episode]
+        all_mean_reward_last_100_episodes = self._all_mean_reward_last_100_episodes[:episode]
+
         fig = plt.figure(figsize=(20, 20))
 
         sub_rewards = fig.add_subplot(221)
         sub_rewards.set_title('Total Rewards per episode')
         sub_rewards.plot(
-            np.arange(self._max_episodes), self._all_total_rewards)
+            np.arange(episode), all_total_rewards)
 
         sub_loss = fig.add_subplot(222)
         sub_loss.set_title('Avg. Loss per episode')
-        sub_loss.plot(np.arange(self._max_episodes), self._all_avg_loss)
+        sub_loss.plot(np.arange(episode), all_avg_loss)
 
         sub_eps = fig.add_subplot(223)
         sub_eps.set_title('Epsilon per episode')
-        sub_eps.plot(np.arange(self._max_episodes), self._all_eps)
+        sub_eps.plot(np.arange(episode), all_eps)
 
         sub_rewards = fig.add_subplot(224)
         sub_rewards.set_title('Avg. mean reward of last 100 episodes')
-        sub_rewards.plot(np.arange(self._max_episodes),
-                         self._all_mean_reward_last_100_episodes)
+        sub_rewards.plot(np.arange(episode),
+                         all_mean_reward_last_100_episodes)
 
-        self.save(path)
+        self.save(path, episode=episode)
         plt.savefig(os.path.join(path, 'stats.pdf'))
 
-    def save(self, path):
-        super(DqnTrainingStats, self).save(path)
-        np.save(os.path.join(path, 'avg_loss'), self._all_avg_loss)
+    def save(self, path, episode=None):
+        if episode is None:
+            episode = self._max_episodes
+        super(DqnTrainingStats, self).save(path, episode=episode)
+        np.save(os.path.join(path, 'avg_loss'), self._all_avg_loss[:episode])
 
 
 class DdpgTrainingStats(TrainingStats):
@@ -233,44 +245,56 @@ class DdpgTrainingStats(TrainingStats):
         self.logger.info(info)
         return avg_reward
 
-    def save(self, path):
-        super(DdpgTrainingStats, self).save(path)
+    def save(self, path, episode=None):
+        if episode is None:
+            episode = self._max_episodes
+        super(DdpgTrainingStats, self).save(path, episode=episode)
         np.save(os.path.join(
-            path, 'avg_critic_loss'), self._all_avg_critic_loss)
-        np.save(os.path.join(path, 'avg_actor_loss'), self._all_avg_actor_loss)
-        np.save(os.path.join(path, 'avg_qvalues'), self._all_avg_qvalues)
+            path, 'avg_critic_loss'), self._all_avg_critic_loss[:episode])
+        np.save(os.path.join(path, 'avg_actor_loss'), self._all_avg_actor_loss[:episode])
+        np.save(os.path.join(path, 'avg_qvalues'), self._all_avg_qvalues[:episode])
 
-    def save_stats(self, path):
+    def save_stats(self, path, episode=None):
+        if episode is None:
+            episode = self._max_episodes
+
+        all_total_rewards = self._all_total_rewards[:episode]
+        all_avg_actor_loss = self._all_avg_actor_loss[:episode]
+        all_avg_critic_loss = self._all_avg_critic_loss[:episode]
+        all_avg_qvalues = self._all_avg_qvalues[:episode]
+        all_eps = self._all_eps[:episode]
+        all_mean_reward_last_100_episodes = self._all_mean_reward_last_100_episodes[:episode]
+
         fig = plt.figure(figsize=(120, 120))
 
         sub_rewards = fig.add_subplot(321)
         sub_rewards.set_title('Total Rewards per episode')
         sub_rewards.plot(
-            np.arange(self._max_episodes), self._all_total_rewards)
+            np.arange(episode), all_total_rewards)
 
         sub_actor_loss = fig.add_subplot(322)
         sub_actor_loss.set_title('Avg. Actor Loss per episode')
         sub_actor_loss.plot(
-            np.arange(self._max_episodes), self._all_avg_actor_loss)
+            np.arange(episode), all_avg_actor_loss)
 
         sub_critic_loss = fig.add_subplot(323)
         sub_critic_loss.set_title('Avg. Critic Loss per episode')
         sub_critic_loss.plot(
-            np.arange(self._max_episodes), self._all_avg_critic_loss)
+            np.arange(episode), all_avg_critic_loss)
 
         sub_qvalues = fig.add_subplot(324)
         sub_qvalues.set_title('Avg. QValues per episode')
         sub_qvalues.plot(
-            np.arange(self._max_episodes), self._all_avg_qvalues)
+            np.arange(episode), all_avg_qvalues)
 
         sub_eps = fig.add_subplot(325)
         sub_eps.set_title('Epsilon per episode')
-        sub_eps.plot(np.arange(self._max_episodes), self._all_eps)
+        sub_eps.plot(np.arange(episode), all_eps)
 
         sub_rewards = fig.add_subplot(326)
         sub_rewards.set_title('Avg. mean reward of last 100 episodes')
-        sub_rewards.plot(np.arange(self._max_episodes),
-                         self._all_mean_reward_last_100_episodes)
+        sub_rewards.plot(np.arange(episode),
+                         all_mean_reward_last_100_episodes)
 
-        self.save(path)
+        self.save(path, episode=episode)
         plt.savefig(os.path.join(path, 'stats.pdf'))
