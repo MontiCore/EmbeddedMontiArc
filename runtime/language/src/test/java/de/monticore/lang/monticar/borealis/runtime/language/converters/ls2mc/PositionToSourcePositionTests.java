@@ -11,9 +11,8 @@ public class PositionToSourcePositionTests {
 
     @Test
     void testApply() {
-        // Input
-        Position position = new Position(20, 30);
-        SourcePosition sourcePosition = new SourcePosition(20, 30);
+        Position position = new Position(20, 30); // Input
+        SourcePosition sourcePosition = new SourcePosition(20, 30); // Output
 
         // Assertions
         assertEquals(p2sp.apply(position), sourcePosition, "Position has not correctly been converted.");
