@@ -10,4 +10,13 @@ public class SourcePositions {
         this.start = start;
         this.end = end;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof SourcePositions && this.equals((SourcePositions) o);
+    }
+
+    protected boolean equals(SourcePositions sourcePositions) {
+        return this.start.equals(sourcePositions.start) && this.end.equals(sourcePositions.end);
+    }
 }
