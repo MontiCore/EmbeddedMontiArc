@@ -151,10 +151,10 @@ if __name__ == "__main__":
             'session_dir': resume_directory,
             'environment': env,
 <#if config.rlAlgorithm == "dqn">
-            'net': qnet_creator.net,
+            'net': qnet_creator.networks[0],
 <#else>
-            'actor': actor_creator.net,
-            'critic': critic_creator.net
+            'actor': actor_creator.networks[0],
+            'critic': critic_creator.networks[0]
 </#if>
         }
         agent = ${rlAgentType}.resume_from_session(**resume_agent_params)
@@ -168,7 +168,7 @@ if __name__ == "__main__":
 
     if train_successful:
 <#if (config.rlAlgorithm == "dqn")>
-        agent.save_best_network(qnet_creator._model_dir_ + qnet_creator._model_prefix_ + '_newest', epoch=0)
+        agent.save_best_network(qnet_creator._model_dir_ + qnet_creator._model_prefix_ + '_0_newest', epoch=0)
 <#else>
-        agent.save_best_network(actor_creator._model_dir_ + actor_creator._model_prefix_ + '_newest', epoch=0)
+        agent.save_best_network(actor_creator._model_dir_ + actor_creator._model_prefix_ + '_0_newest', epoch=0)
 </#if>
