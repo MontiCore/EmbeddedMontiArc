@@ -36,16 +36,16 @@ public class TaggingTest extends AbstractTaggingResolverTest {
 
     @Test
     public void basicTaggingAlexNet() {
-        TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/tagging");
-        EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("Alexnet", EMAComponentSymbol.KIND)
+        TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources");
+        EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.Alexnet", EMAComponentSymbol.KIND)
                 .orElse(null);
 
         Collection<TagSymbol> tags = tagging.getTags(symbol, DataPathSymbol.KIND);
-        assertEquals(0, tags.size());
+        assertEquals(1, tags.size());
 
-        /*DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
+        DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
         assertEquals(tag.getPath(), "data");
-        assertEquals(tag.getType(), "random");*/
+        assertEquals(tag.getType(), "random");
     }
 
     @Test
