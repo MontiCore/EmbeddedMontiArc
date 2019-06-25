@@ -5,6 +5,9 @@ import org.eclipse.lsp4j.TextDocumentItem;
 
 import java.util.List;
 
+/*
+ * TODO: Incremental content changes.
+ */
 public class TextDocument extends TextDocumentItem {
     public TextDocument(TextDocumentItem document) {
         this(document.getUri(), document.getText());
