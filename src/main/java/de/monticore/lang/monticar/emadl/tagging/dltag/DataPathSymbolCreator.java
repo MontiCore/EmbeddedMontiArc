@@ -21,18 +21,19 @@
 package de.monticore.lang.monticar.emadl.tagging.dltag;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
 import de.monticore.lang.tagging._ast.ASTNameScope;
 import de.monticore.lang.tagging._ast.ASTTag;
 import de.monticore.lang.tagging._ast.ASTTagBody;
 import de.monticore.lang.tagging._ast.ASTTaggingUnit;
 import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.types.types._ast.ASTQualifiedName;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,22 +64,28 @@ public class DataPathSymbolCreator implements TagSymbolCreator {
 
 
         for (ASTTag tag : unit.getTagBody().getTagList()) {
-            tag.getTagElementList().stream()
-                .filter(tagElement -> tagElement.getName().equals("DataPath"))
-                .map(tagElement -> matchRegexPattern(tagElement.getTagValue()))
-                .filter(Objects::nonNull)
-                .forEachOrdered(matcher -> tag.getScopeList().stream()
+            addTag(tag, tagging, root, EMADynamicComponentInstantiationSymbol.KIND);
+            addTag(tag, tagging, root, EMAComponentSymbol.KIND);
+        }
+    }
+
+    private void addTag(ASTTag tag, TaggingResolver tagging, String root, SymbolKind kind) {
+        tag.getTagElementList().stream()
+            .filter(tagElement -> tagElement.getName().equals("DataPath"))
+            .forEachOrdered(tagElement -> {
+                Matcher matcher = matchRegexPattern(tagElement.getTagValue());
+                tag.getScopeList().stream()
                     .filter(scope -> scope.getScopeKind().equals("NameScope"))
                     .map(scope -> (ASTNameScope) scope)
                     .map(scope ->
-                            tagging.resolve(dotJoin(root, scope.getQualifiedNameString()), EMAComponentSymbol.KIND)
+                            tagging.resolve(dotJoin(root, scope.getQualifiedNameString()), kind)
                     )
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .forEachOrdered(scope ->
                             tagging.addTag(scope, new DataPathSymbol(matcher.group(1), matcher.group(2)))
-                    ));
-        }
+                    );
+            });
     }
 
     private Matcher matchRegexPattern(String regex) {
