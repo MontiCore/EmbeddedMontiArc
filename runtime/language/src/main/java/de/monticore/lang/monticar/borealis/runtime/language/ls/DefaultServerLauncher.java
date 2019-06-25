@@ -42,25 +42,22 @@ public class DefaultServerLauncher extends AbstractServerLauncher {
     }
 
     protected void launchViaStream() {
-        this.logger.atFinest().log("Stream Option chosen.");
-
         Launcher<LanguageClient> launcher = LSPLauncher.createServerLauncher(this.server, System.in, System.out);
 
         this.server.setRemoteProxy(launcher.getRemoteProxy());
         launcher.startListening();
+        this.logger.atInfo().log("Launching application with connection via stream...");
     }
 
     protected void launchViaSocket() throws Exception {
-        this.logger.atFinest().log("Socket Option chosen.");
-
         int port = this.options.getOptionAsInteger(PortOption.OPTION);
         Socket socket = new Socket("localhost", port);
         InputStream in = socket.getInputStream();
         OutputStream out = socket.getOutputStream();
         Launcher<LanguageClient> launcher = LSPLauncher.createServerLauncher(this.server, in, out);
 
-        this.logger.atInfo().log("Starting server on port " + port);
         this.server.setRemoteProxy(launcher.getRemoteProxy());
         launcher.startListening();
+        this.logger.atInfo().log("Launching application with connection on port %d...", port);
     }
 }
