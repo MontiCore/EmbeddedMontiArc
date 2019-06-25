@@ -1,5 +1,11 @@
 package de.monticore.lang.monticar.borealis.runtime.language.options;
 
+import org.eclipse.lsp4j.jsonrpc.validation.NonNull;
+
 public interface OptionsContribution {
-    void registerOptions(OptionsRegistry registry);
+    /**
+     * A method which can be used to add options to the options registry.
+     * @param registry The registry to which the options will be added.
+     */
+    void registerOptions(@NonNull OptionsRegistry registry);
 }
