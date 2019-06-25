@@ -19,7 +19,10 @@
  * *******************************************************************************
  */
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import commons.controller.commons.BusEntry;
@@ -69,7 +72,11 @@ public class BusMessage implements DiscreteEvent {
 
 	private MessageType type;
 
-	private EEComponent target;
+	private final EEComponent finalTarget;
+	
+	private Optional<EEComponent> nextHop;
+	
+	private List<EEComponent> path;
 
 	/**
 	 * Random number generator to determine a bit error
@@ -77,16 +84,42 @@ public class BusMessage implements DiscreteEvent {
 	Random bitError = new Random();
 
 	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant requestTime, MessageType type,
-			EEComponent target) {
+			EEComponent finalTarget) {
+		super();
 		this.message = message;
 		this.messageLen = messageLen;
 		this.messageID = messageID;
+		this.finalTarget = finalTarget;
 		this.controllerID = this.messageID.toString();
 		this.transmittedBytes = 0;
 		this.transmitted = false;
 		this.finishTime = Instant.EPOCH;
 		this.error = false;
+		this.path = new ArrayList<EEComponent>();
+		this.nextHop = Optional.empty();
 	}
+	
+	
+
+	public BusMessage(BusMessage busMessage) {
+		super();
+		this.message = busMessage.message;
+		this.messageLen = busMessage.messageLen;
+		this.transmittedBytes = busMessage.transmittedBytes;
+		this.transmitted = busMessage.transmitted;
+		this.requestTime = busMessage.requestTime;
+		this.controllerID = busMessage.controllerID;
+		this.messageID = busMessage.messageID;
+		this.finishTime = busMessage.finishTime;
+		this.error = busMessage.error;
+		this.type = busMessage.type;
+		this.finalTarget = busMessage.finalTarget;
+		this.nextHop = busMessage.nextHop;
+		this.path = busMessage.path;
+		this.bitError = busMessage.bitError;
+	}
+
+
 
 	public Instant getFinishTime() {
 		return finishTime;
@@ -100,8 +133,8 @@ public class BusMessage implements DiscreteEvent {
 		this.type = type;
 	}
 
-	public EEComponent getTarget() {
-		return target;
+	public EEComponent getfinalTarget() {
+		return finalTarget;
 	}
 
 	public void setFinishTime(Instant finishTime) {
@@ -163,6 +196,10 @@ public class BusMessage implements DiscreteEvent {
 	public boolean isError() {
 		return error;
 	}
+	
+	public int getRemainingBytes() {
+		return this.messageLen - this.transmittedBytes;
+	}
 
 	public int transmitBytes(int bytes, double bitErrorRate) {
 		int res = -1;
@@ -206,14 +243,39 @@ public class BusMessage implements DiscreteEvent {
 		this.transmitted = false;
 		this.error = false;
 		this.transmittedBytes = 0;
+		EEComponent nextHop = this.path.remove(0);
+		this.nextHop = Optional.of(nextHop);
 		this.controllerID = controllerID;
+	}
+
+	public void setPath(List<EEComponent> path) {
+		this.path = path;
+		EEComponent nextHop = this.path.remove(0);
+		this.nextHop = Optional.of(nextHop);
+	}
+	
+	public List<EEComponent> getPath(){
+		return this.path;
+	}
+
+	public Optional<EEComponent> getNextHop() {
+		return nextHop;
 	}
 }
 
+/*
 class BusMessageComparatorIdAsc implements Comparator<BusMessage> {
 	// Used for sorting in ascending order of
 	public int compare(BusMessage a, BusMessage b) {
 		return a.getMessageID().compareTo(b.getMessageID());
+	}
+}
+*/
+
+class BusMessageComparatorIdDesc implements Comparator<BusMessage> {
+	// Used for sorting in descending order of
+	public int compare(BusMessage a, BusMessage b) {
+		return b.getMessageID().compareTo(a.getMessageID());
 	}
 }
 

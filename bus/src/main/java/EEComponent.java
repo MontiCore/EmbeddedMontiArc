@@ -25,7 +25,10 @@ public abstract class EEComponent {
 	
 	protected EESimulator simulator;
 	
-	public EEComponent(EESimulator simulator) {
+	protected EEComponent(EESimulator simulator) {
+		if(simulator == null) {
+			throw new IllegalArgumentException("simulator can't be null");
+		}
 		this.simulator = simulator;
 	}
 
