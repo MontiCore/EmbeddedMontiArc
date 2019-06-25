@@ -25,6 +25,7 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
+import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathTagSchema;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
@@ -58,6 +59,7 @@ public class EMADLAbstractSymtab {
         TagInitTagSchema.registerTagTypes(tagging);
         TagThresholdTagSchema.registerTagTypes(tagging);
         TagDelayTagSchema.registerTagTypes(tagging);
+        DataPathTagSchema.registerTagTypes(tagging);
         return tagging;
     }
 

@@ -33,12 +33,14 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnntrain.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
+import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.ArmadilloHelper;
 import de.monticore.lang.monticar.generator.cpp.GeneratorEMAMOpt2CPP;
 import de.monticore.lang.monticar.generator.cpp.SimulatorIntegrationHelper;
 import de.monticore.lang.monticar.generator.cpp.TypesGeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Splitters;
@@ -341,6 +343,20 @@ public class EMADLGenerator {
         return fileContents;
     }
 
+    protected String getDataPath(TaggingResolver taggingResolver, EMAComponentSymbol component){
+        List<TagSymbol> tags = (List<TagSymbol>) taggingResolver.getTags(component, DataPathSymbol.KIND);
+        String dataPath;
+        if (tags.isEmpty()) {
+            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
+            dataPath = newParserConfig.getDataPath(component.getFullName());
+        }
+        else {
+            // values for data path tags are not optional, therefore always present if tag is present
+            dataPath = (String) tags.get(0).getValues().get(0);
+        }
+        return dataPath;
+    }
+
     protected void generateComponent(List<FileContent> fileContents,
                                      Set<EMAComponentInstanceSymbol> allInstances,
                                      TaggingResolver taggingResolver,
@@ -360,9 +376,7 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
-            String dPath = newParserConfig.getDataPath(EMAComponentSymbol.getFullName());
-
+            String dPath = getDataPath(taggingResolver, EMAComponentSymbol);
             /*String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "data_paths.txt", componentSymbol.getFullName());*/
             architecture.get().setDataPath(dPath);
             architecture.get().setComponentName(EMAComponentSymbol.getFullName());
