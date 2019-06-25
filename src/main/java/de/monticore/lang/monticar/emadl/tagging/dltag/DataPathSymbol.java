@@ -23,6 +23,8 @@ package de.monticore.lang.monticar.emadl.tagging.dltag;
 import de.monticore.lang.tagging._symboltable.TagKind;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 
+import java.util.Optional;
+
 public class DataPathSymbol extends TagSymbol {
     public static final DataPathKind KIND  = DataPathKind.INSTANCE;
 
@@ -36,6 +38,14 @@ public class DataPathSymbol extends TagSymbol {
 
     public DataPathSymbol(DataPathKind kind, String path, String type) {
         super(kind, path, type);
+    }
+
+    public String getPath() {
+      return getValue(0);
+    }
+
+    public String getType() {
+      return getValue(1);
     }
 
     @Override
