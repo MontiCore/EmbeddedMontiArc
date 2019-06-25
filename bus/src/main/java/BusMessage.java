@@ -1,3 +1,4 @@
+
 /**
  *
  * ******************************************************************************
@@ -72,10 +73,10 @@ public class BusMessage implements DiscreteEvent {
 
 	private MessageType type;
 
-	private final EEComponent finalTarget;
-	
+	private final EEComponent target;
+
 	private Optional<EEComponent> nextHop;
-	
+
 	private List<EEComponent> path;
 
 	/**
@@ -83,13 +84,13 @@ public class BusMessage implements DiscreteEvent {
 	 */
 	Random bitError = new Random();
 
-	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant requestTime, MessageType type,
-			EEComponent finalTarget) {
-		super();
+	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant requestTime, MessageType type, EEComponent target) {
+		this.requestTime = requestTime;
+		this.type = type;
+		this.target = target;
 		this.message = message;
 		this.messageLen = messageLen;
 		this.messageID = messageID;
-		this.finalTarget = finalTarget;
 		this.controllerID = this.messageID.toString();
 		this.transmittedBytes = 0;
 		this.transmitted = false;
@@ -98,8 +99,6 @@ public class BusMessage implements DiscreteEvent {
 		this.path = new ArrayList<EEComponent>();
 		this.nextHop = Optional.empty();
 	}
-	
-	
 
 	public BusMessage(BusMessage busMessage) {
 		super();
@@ -113,13 +112,11 @@ public class BusMessage implements DiscreteEvent {
 		this.finishTime = busMessage.finishTime;
 		this.error = busMessage.error;
 		this.type = busMessage.type;
-		this.finalTarget = busMessage.finalTarget;
+		this.target = busMessage.target;
 		this.nextHop = busMessage.nextHop;
 		this.path = busMessage.path;
 		this.bitError = busMessage.bitError;
 	}
-
-
 
 	public Instant getFinishTime() {
 		return finishTime;
@@ -133,8 +130,8 @@ public class BusMessage implements DiscreteEvent {
 		this.type = type;
 	}
 
-	public EEComponent getfinalTarget() {
-		return finalTarget;
+	public EEComponent getTarget() {
+		return target;
 	}
 
 	public void setFinishTime(Instant finishTime) {
@@ -196,7 +193,7 @@ public class BusMessage implements DiscreteEvent {
 	public boolean isError() {
 		return error;
 	}
-	
+
 	public int getRemainingBytes() {
 		return this.messageLen - this.transmittedBytes;
 	}
@@ -253,8 +250,8 @@ public class BusMessage implements DiscreteEvent {
 		EEComponent nextHop = this.path.remove(0);
 		this.nextHop = Optional.of(nextHop);
 	}
-	
-	public List<EEComponent> getPath(){
+
+	public List<EEComponent> getPath() {
 		return this.path;
 	}
 
@@ -262,15 +259,6 @@ public class BusMessage implements DiscreteEvent {
 		return nextHop;
 	}
 }
-
-/*
-class BusMessageComparatorIdAsc implements Comparator<BusMessage> {
-	// Used for sorting in ascending order of
-	public int compare(BusMessage a, BusMessage b) {
-		return a.getMessageID().compareTo(b.getMessageID());
-	}
-}
-*/
 
 class BusMessageComparatorIdDesc implements Comparator<BusMessage> {
 	// Used for sorting in descending order of

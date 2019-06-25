@@ -19,12 +19,12 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.PriorityQueue;
 import java.util.Stack;
 import java.util.UUID;
 
@@ -95,10 +95,9 @@ public abstract class Bus extends EEComponent {
 
 	protected void registerEventAtSimulator(BusMessage msg) {
 		// TODO makes this sense?
-		if(!msg.getNextHop().isPresent()) {
+		if (!msg.getNextHop().isPresent()) {
 			throw new IllegalArgumentException("Next hop of msg can not be null");
-		}
-		else {
+		} else {
 			if (msg.getNextHop().get() instanceof Bus) {
 				msg.forwardToBus(this.ID);
 				this.simulator.addEvent(msg);
@@ -117,7 +116,7 @@ public abstract class Bus extends EEComponent {
 		while (!res && !workStack.isEmpty()) {
 			Pair<Bus, List<EEComponent>> cur = workStack.pop();
 			Optional<EEComponent> comp = BusUtils.findComponentWithID(cur.getLeft().connectedComponents,
-					msg.getfinalTarget().getID());
+					msg.getTarget().getID());
 			if (comp.isPresent()) {
 				cur.getRight().add(comp.get());
 				msg.setPath(cur.getRight());
