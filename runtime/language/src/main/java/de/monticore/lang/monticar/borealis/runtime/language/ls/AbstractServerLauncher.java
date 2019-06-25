@@ -30,4 +30,7 @@ public abstract class AbstractServerLauncher implements ServerLauncher {
             contribution.onConfigure(arguments);
         }
     }
+
+    @Override
+    public abstract void launch(String[] arguments) throws Exception;
 }
