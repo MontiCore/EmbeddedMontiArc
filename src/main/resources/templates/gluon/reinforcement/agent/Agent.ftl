@@ -548,7 +548,7 @@ class DdpgAgent(Agent):
                         actor_qvalues = tmp_critic(states, self._actor(states))
                         # For maximizing qvalues we have to multiply with -1
                         # as we use a minimizer
-                        actor_loss = -1 * actor_qvalues
+                        actor_loss = -1 * actor_qvalues.mean()
                     actor_loss.backward()
                     trainer_actor.step(self._minibatch_size)
 
