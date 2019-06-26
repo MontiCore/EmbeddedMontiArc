@@ -38,6 +38,12 @@
 
         <!-- .. Modules ................................................... -->
 
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>generator-common</artifactId>
+            <version>2019.06.25.0</version>
+        </dependency>
+
         <!-- .. Libraries ................................................. -->
 
         <!-- .. Language .................................................. -->
