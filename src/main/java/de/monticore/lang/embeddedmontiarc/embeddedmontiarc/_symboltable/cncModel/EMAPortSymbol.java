@@ -24,6 +24,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.EMAConstantValue;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.MiddlewareSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
@@ -291,5 +292,9 @@ public class EMAPortSymbol extends CommonSymbol implements EMAElementSymbol {
 
   public boolean isRosPort(){
     return getMiddlewareSymbol().isPresent() && getMiddlewareSymbol().get().isKindOf(RosConnectionSymbol.KIND);
+  }
+
+  public boolean isMqttPort() {
+    return getMiddlewareSymbol().isPresent() && getMiddlewareSymbol().get().isKindOf(MqttConnectionSymbol.KIND);
   }
 }
