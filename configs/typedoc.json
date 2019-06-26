@@ -1,0 +1,7 @@
+{
+  "ignoreCompilerErrors": true,
+  "mode": "file",
+  "out": "docs",
+  "excludeExternals": true,
+  "readme": "none"
+}
