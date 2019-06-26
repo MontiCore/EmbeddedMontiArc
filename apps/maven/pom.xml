@@ -5,7 +5,7 @@
     <!-- == PROJECT COORDINATES =============================================== -->
 
     <parent>
-        <groupId>de.monticore.lang.monticar.borealis</groupId>
+        <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>apps</artifactId>
         <version>2019.06.25.0</version>
     </parent>
@@ -39,7 +39,7 @@
 
     <!-- == PROJECT METAINFORMATION =========================================== -->
 
-    <name>Borealis - Applications - Maven</name>
+    <name>Sol - Applications - Maven</name>
 
     <!-- == PROJECT DEPENDENCIES ============================================== -->
 

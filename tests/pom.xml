@@ -5,8 +5,8 @@
     <!-- == PROJECT COORDINATES =============================================== -->
 
     <parent>
-        <groupId>de.monticore.lang.monticar.borealis</groupId>
-        <artifactId>borealis</artifactId>
+        <groupId>de.monticore.lang.monticar.sol</groupId>
+        <artifactId>sol</artifactId>
         <version>2019.06.25.0</version>
     </parent>
 
@@ -36,7 +36,7 @@
 
     <!-- == PROJECT METAINFORMATION =========================================== -->
 
-    <name>Borealis - Tests</name>
+    <name>Sol - Tests</name>
 
     <!-- == PROJECT DEPENDENCIES ============================================== -->
 
