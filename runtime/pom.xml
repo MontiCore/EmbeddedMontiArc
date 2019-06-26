@@ -16,7 +16,7 @@
     <!-- == PROJECT MODULES =================================================== -->
 
     <modules>
-        <module>language</module>
+        <module>language-server</module>
     </modules>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
