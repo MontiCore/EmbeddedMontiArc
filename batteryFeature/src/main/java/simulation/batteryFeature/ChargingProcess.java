@@ -1,4 +1,4 @@
-package rwth.server.simulation;
+package simulation.batteryFeature;
 
 import rwth.server.bo.util.Logger;
 import rwth.server.pojo.MapArea;

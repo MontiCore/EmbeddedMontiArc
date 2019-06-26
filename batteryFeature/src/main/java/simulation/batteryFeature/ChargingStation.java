@@ -1,4 +1,4 @@
-package rwth.server.simulation;
+package simulation.batteryFeature;
 
 import rwth.server.bo.util.Logger;
 import rwth.server.pojo.MapArea;
@@ -89,7 +89,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 		length = 1.0;
 		height = 0.5;
 		geometryPositionOffset = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-		//physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_STREET_LANTERN;
+		physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CHARGING_STATION;
 		error = false;
 		collision = false;
 	}
