@@ -5,8 +5,9 @@
 <hr/>
 
 <div align="center">
-    [**Description**](#description) |
-    [**Getting Started**](docs/GettingStarted.md) |
+    [**Description**](#description) <b>|</b>
+    [**Getting Started**](docs/GettingStarted.md) <b>|</b>
+    [**Contributing**](docs/Contributing.md) <b>|</b>
     [**License**](#license)
 </div>
 
