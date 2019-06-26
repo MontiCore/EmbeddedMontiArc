@@ -5,3 +5,8 @@
 
 # Tagging
 Project allow Tagging of all languages via symbol table
+
+Paper describing the concepts:
+[Engineering Tagging Languages for DSLs](http://www.se-rwth.de/publications/Engineering-Tagging-Languages-for-DSLs.pdf)
+
+Note: Implementation details might have changed
