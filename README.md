@@ -2,7 +2,20 @@
     <img src="docs/media/images/logo.png" width="500"/>
 </div>
 
-## Table of Contents
+<hr/>
+
+<div align="center">
+    [**Description**](#description) |
+    [**Getting Started**](docs/GettingStarted.md) |
+    [**License**](#license)
+</div>
+
+<hr/>
+
+<div align="center">
+</div>
+
+- - -
 
 ## Description
 
