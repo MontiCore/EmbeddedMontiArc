@@ -16,7 +16,8 @@
 <div align="center">
 </div>
 
-- - -
+<hr/>
+<hr/>
 
 ## Description
 
