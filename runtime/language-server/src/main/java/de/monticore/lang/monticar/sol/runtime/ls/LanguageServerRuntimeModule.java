@@ -13,7 +13,7 @@ import de.monticore.lang.monticar.sol.runtime.ls.workspace.DefaultWorkspaceServi
 import org.eclipse.lsp4j.services.TextDocumentService;
 import org.eclipse.lsp4j.services.WorkspaceService;
 
-public class LanguageRuntimeModule extends AbstractModule {
+public class LanguageServerRuntimeModule extends AbstractModule {
     @Override
     public void configure() {
         Multibinder<ServerLauncherContribution> additions =
