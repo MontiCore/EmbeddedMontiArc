@@ -42,6 +42,8 @@
         <flogger.version>0.4</flogger.version>
         <eventbus.version>3.1.1</eventbus.version>
         <json.version>20180813</json.version>
+        <maven-plugin-api.version>3.0</maven-plugin-api.version>
+        <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
 
         <!-- .. Test Libraries ................................................ -->
 
@@ -143,6 +145,18 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-exec</artifactId>
                 <version>${commons-exec.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${maven-plugin-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${maven-plugin-annotations.version}</version>
             </dependency>
 
             <!-- .. MontiCore ................................................. -->
