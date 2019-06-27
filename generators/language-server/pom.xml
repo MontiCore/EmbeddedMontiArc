@@ -6,11 +6,11 @@
 
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
-        <artifactId>maven</artifactId>
+        <artifactId>generators</artifactId>
         <version>2019.06.25.0</version>
     </parent>
 
-    <artifactId>apps-maven-language</artifactId>
+    <artifactId>generator-language-server</artifactId>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
 
@@ -30,13 +30,19 @@
 
     <!-- == PROJECT METAINFORMATION =========================================== -->
 
-    <name>Sol - Applications - Maven - Language</name>
+    <name>Sol - Generators - Language Server</name>
 
     <!-- == PROJECT DEPENDENCIES ============================================== -->
 
     <dependencies>
 
         <!-- .. Modules ................................................... -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>generator-common</artifactId>
+            <version>2019.06.25.0</version>
+        </dependency>
 
         <!-- .. Libraries ................................................. -->
 

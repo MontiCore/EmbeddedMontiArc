@@ -1,3 +1,8 @@
+<!--
+  ~ Copyright (C) 2019 SE RWTH.
+  ~
+  ~  TODO: Include License.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -6,23 +11,11 @@
 
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
-        <artifactId>sol</artifactId>
+        <artifactId>maven</artifactId>
         <version>2019.06.25.0</version>
     </parent>
 
-    <artifactId>generators</artifactId>
-    <packaging>pom</packaging>
-
-    <!-- == PROJECT MODULES =================================================== -->
-
-    <modules>
-        <module>common</module>
-        <module>environment</module>
-        <module>ide</module>
-        <module>language-client</module>
-        <module>language-server</module>
-        <module>tool</module>
-    </modules>
+    <artifactId>apps-maven-language-client</artifactId>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
 
@@ -42,13 +35,17 @@
 
     <!-- == PROJECT METAINFORMATION =========================================== -->
 
-    <name>Sol - Generators</name>
+    <name>Sol - Applications - Maven - Language Client</name>
 
     <!-- == PROJECT DEPENDENCIES ============================================== -->
 
     <dependencies>
 
+        <!-- .. Modules ................................................... -->
+
         <!-- .. Libraries ................................................. -->
+
+        <!-- .. Language .................................................. -->
 
         <!-- .. Test Libraries ............................................ -->
 

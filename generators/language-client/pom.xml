@@ -6,23 +6,11 @@
 
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
-        <artifactId>sol</artifactId>
+        <artifactId>generators</artifactId>
         <version>2019.06.25.0</version>
     </parent>
 
-    <artifactId>generators</artifactId>
-    <packaging>pom</packaging>
-
-    <!-- == PROJECT MODULES =================================================== -->
-
-    <modules>
-        <module>common</module>
-        <module>environment</module>
-        <module>ide</module>
-        <module>language-client</module>
-        <module>language-server</module>
-        <module>tool</module>
-    </modules>
+    <artifactId>generator-language-client</artifactId>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
 
@@ -42,13 +30,23 @@
 
     <!-- == PROJECT METAINFORMATION =========================================== -->
 
-    <name>Sol - Generators</name>
+    <name>Sol - Generators - Language Client</name>
 
     <!-- == PROJECT DEPENDENCIES ============================================== -->
 
     <dependencies>
 
+        <!-- .. Modules ................................................... -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>generator-common</artifactId>
+            <version>2019.06.25.0</version>
+        </dependency>
+
         <!-- .. Libraries ................................................. -->
+
+        <!-- .. Language .................................................. -->
 
         <!-- .. Test Libraries ............................................ -->
 
