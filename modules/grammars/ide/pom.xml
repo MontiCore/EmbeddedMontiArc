@@ -8,6 +8,7 @@
         <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>sol</artifactId>
         <version>2019.06.25.0</version>
+        <relativePath>../../../pom.xml</relativePath>
     </parent>
 
     <artifactId>grammar-ide</artifactId>
