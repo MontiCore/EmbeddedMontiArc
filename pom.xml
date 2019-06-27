@@ -12,11 +12,18 @@
     <!-- == PROJECT MODULES =================================================== -->
 
     <modules>
-        <module>apps</module>
-        <module>generators</module>
-        <module>grammars</module>
-        <module>runtime</module>
-        <module>tests</module>
+        <module>dev-modules/plugins/common</module>
+        <module>modules/plugins/common</module>
+        <module>modules/plugins/ide</module>
+        <module>modules/plugins/language-client</module>
+        <module>modules/plugins/language-server</module>
+        <module>modules/plugins/tool</module>
+        <module>modules/grammars/common</module>
+        <module>modules/grammars/environment</module>
+        <module>modules/grammars/ide</module>
+        <module>modules/grammars/language</module>
+        <module>modules/grammars/tool</module>
+        <module>modules/runtime/language-server</module>
     </modules>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
@@ -33,6 +40,7 @@
         <guava.version>25.1-android</guava.version>
         <flogger.version>0.4</flogger.version>
         <eventbus.version>3.1.1</eventbus.version>
+        <json.version>20180813</json.version>
 
         <!-- .. Test Libraries ................................................ -->
 
@@ -121,6 +129,12 @@
                 <groupId>org.greenbot</groupId>
                 <artifactId>eventbus</artifactId>
                 <version>${eventbus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${json.version}</version>
             </dependency>
 
             <!-- .. MontiCore ................................................. -->
