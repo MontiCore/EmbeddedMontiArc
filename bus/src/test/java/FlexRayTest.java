@@ -46,7 +46,7 @@ import commons.controller.commons.BusEntry;
 
 public class FlexRayTest {
 
-	private static EESimulator EEsim = new EESimulator();
+	private static EESimulator EEsim = new EESimulator(Instant.EPOCH);
 
 	private static Map<Integer, BusEntry> busEntryByOrdinal = new HashMap<Integer, BusEntry>();
 
@@ -62,11 +62,12 @@ public class FlexRayTest {
 		FlexRay flexRay = createBusStructure();
 
 		flexRay.setMode(new FlexRayOperationMode(FlexRayOperationModeEnum.MAX_DATA));
-		long expectedNs = (int) Math.ceil((262 * 8 * 1000) / (double) 20);
+		long expectedNs = (int) Math.ceil((262 * 8 * 1000000) / ((double) 20));
 		assertEquals(expectedNs, flexRay.getSlotSize().toNanos());
 
 		flexRay.setMode(new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY));
-		expectedNs = (int) Math.ceil((262 * 8 * 1000) / (double) 10);
+		expectedNs = (int) Math.ceil((262 * 8 * 1000000) / ((double) 10));
+		System.out.println(expectedNs);
 		assertEquals(expectedNs, flexRay.getSlotSize().toNanos());
 	}
 
@@ -111,9 +112,9 @@ public class FlexRayTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testRegisterMessageToInvalidController() {
 		Bus bus = createBusStructure();
-
-		// check if bus contains controller with id "TestComponent 1"
+		
 		Optional<EEComponent> comp = BusUtils.findComponentWithID(bus.connectedComponents, "TestComponent 1");
+		assertTrue(comp.isPresent());
 		EEComponent illegalController = new TestComponent(EEsim, "IllegalID");
 
 		String msg = "ToIllegalController";
@@ -387,38 +388,89 @@ public class FlexRayTest {
 	public void testsimulateFor() {
 		FlexRay flexray = createBusStructure();
 
+		//finish in third cycle (static)
 		BusMessage c01 = createNregisterMessage(flexray, "c01", "TestComponent 0", "TestComponent 1", 127, 0);
+		//finish in second cycle  (dynamic 1.5 slots)
 		BusMessage c02 = createNregisterMessage(flexray, "c02", "TestComponent 0", "TestComponent 1",
-				(254 + 516 + 254 + 200), 4);
-
-		BusMessage c11 = createNregisterMessage(flexray, "c11", "TestComponent 1", "TestComponent 1", 127, 0);
-		BusMessage c12 = createNregisterMessage(flexray, "c12", "TestComponent 1", "TestComponent 1", (254 + 254 + 500),
+				(254 + 254 + 254 + 381), 4);
+		
+		//finish in third cycle (static)
+		BusMessage c11 = createNregisterMessage(flexray, "c11", "TestComponent 1", "TestComponent 1", 100, 0);
+		//finish in second cycle  (dynamic 4 slots)
+		BusMessage c12 = createNregisterMessage(flexray, "c12", "TestComponent 1", "TestComponent 1", (254 + 254 + 635),
 				3);
 
+		//finish in first cycle (static)
 		BusMessage c21 = createNregisterMessage(flexray, "c21", "TestComponent 2", "TestComponent 1", 100, 0);
+		//finish in first cycle (static)
 		BusMessage c22 = createNregisterMessage(flexray, "c22", "TestComponent 2", "TestComponent 1", 100, 0);
+		//finish in first cycle (static)
 		BusMessage c23 = createNregisterMessage(flexray, "c23", "TestComponent 2", "TestComponent 1", 54, 0);
 
+		//finish in third cycle (static)
 		BusMessage c31 = createNregisterMessage(flexray, "c31", "TestComponent 3", "TestComponent 1", 100, 0);
+		//finish in second cycle (static)
 		BusMessage c32 = createNregisterMessage(flexray, "c32", "TestComponent 3", "TestComponent 1", 200, 1);
-		BusMessage c33 = createNregisterMessage(flexray, "c33", "TestComponent 3", "TestComponent 1", (154 + 816), 5);
+		//finish in first cycle (dynamic after 3 slots) 
+		BusMessage c33 = createNregisterMessage(flexray, "c33", "TestComponent 3", "TestComponent 1", (154 + 762), 5);
+		//finish in first cycle (static)
 		BusMessage c34 = createNregisterMessage(flexray, "c34", "TestComponent 3", "TestComponent 1", 100, 6);
+		
+		long slotSizeNs = Math.toIntExact(flexray.getSlotSize().toNanos());
+		long totalStaticSegmentSizeNs = Math.toIntExact(flexray.getStaticSegmentSize().toNanos());
+		long cycleTimeNs = Math.toIntExact(flexray.getCycleTime().toNanos());
+		
+		Instant currentTime = Instant.EPOCH;
+		flexray.simulateFor(Duration.ofNanos(cycleTimeNs/2));
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
+		flexray.setCurrentTime(currentTime);
+		flexray.simulateFor(flexray.getCycleTime().dividedBy(3));
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
+		flexray.setCurrentTime(currentTime);
+		flexray.simulateFor(flexray.getCycleTime().dividedBy(3));
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
+		flexray.setCurrentTime(currentTime);
+		flexray.simulateFor(flexray.getCycleTime().dividedBy(2));
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
+		flexray.setCurrentTime(currentTime);
+		flexray.simulateFor(flexray.getCycleTime().dividedBy(3));
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
+		flexray.setCurrentTime(currentTime);
+		flexray.simulateFor(flexray.getCycleTime());
 
-		long cycleNS = flexray.getCycleTime().toNanos();
-
-		flexray.simulateFor(Duration.ofNanos(cycleNS * 3));
-
-		assertEquals(cycleNS, Duration.between(Instant.EPOCH, c34.getFinishTime()).toNanos());
-		assertEquals(cycleNS, Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
-		assertEquals(cycleNS, Duration.between(Instant.EPOCH, c21.getFinishTime()).toNanos());
-		assertEquals(cycleNS, Duration.between(Instant.EPOCH, c22.getFinishTime()).toNanos());
-		assertEquals(cycleNS, Duration.between(Instant.EPOCH, c23.getFinishTime()).toNanos());
-		assertEquals(2 * cycleNS, Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
-		assertEquals(2 * cycleNS, Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
-		assertEquals(2 * cycleNS, Duration.between(Instant.EPOCH, c32.getFinishTime()).toNanos());
-		assertEquals(3 * cycleNS, Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
-		assertEquals(3 * cycleNS, Duration.between(Instant.EPOCH, c11.getFinishTime()).toNanos());
-		assertEquals(3 * cycleNS, Duration.between(Instant.EPOCH, c31.getFinishTime()).toNanos());
+		assertTrue(0 < Duration.between(Instant.EPOCH, c34.getFinishTime()).toNanos());
+		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c34.getFinishTime()).toNanos());
+		
+		System.out.println("Expected: " + (totalStaticSegmentSizeNs + (slotSizeNs * 3)) + "; Actual: " + Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
+		assertEquals((totalStaticSegmentSizeNs + (slotSizeNs * 3)), Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
+		
+		assertTrue(0 < Duration.between(Instant.EPOCH, c21.getFinishTime()).toNanos());
+		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c21.getFinishTime()).toNanos());
+		
+		assertTrue(0 < Duration.between(Instant.EPOCH, c22.getFinishTime()).toNanos());
+		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c22.getFinishTime()).toNanos());
+		
+		assertTrue(0 < Duration.between(Instant.EPOCH, c23.getFinishTime()).toNanos());
+		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c23.getFinishTime()).toNanos());
+		
+		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + slotSizeNs) + "; Actual: " + Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + slotSizeNs) < Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + (2* slotSizeNs)) + "; Actual: " + Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + (2* slotSizeNs)) > Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+		
+		assertEquals((cycleTimeNs * 2), Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
+		
+		assertTrue(cycleTimeNs < Duration.between(Instant.EPOCH, c32.getFinishTime()).toNanos());
+		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c32.getFinishTime()).toNanos());
+		
+		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
+		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
+		
+		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c11.getFinishTime()).toNanos());
+		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c11.getFinishTime()).toNanos());
+		
+		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c31.getFinishTime()).toNanos());
+		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c31.getFinishTime()).toNanos());
 	}
 
 	private FlexRay createBusStructure() {
@@ -488,5 +540,9 @@ public class FlexRayTest {
 					messageLength, priority));
 		}
 		return msgs;
+	}
+	
+	private int getTransmitTime(int bytes, int dataRate) {
+		return (int) Math.ceil((bytes* 1000000 * 8) / ((double) dataRate));
 	}
 }

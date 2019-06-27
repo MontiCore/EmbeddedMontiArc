@@ -1,3 +1,4 @@
+
 /**
  *
  * ******************************************************************************
@@ -23,15 +24,17 @@ import java.time.Instant;
 import java.util.*;
 import java.util.Comparator;
 
+import org.jfree.util.Log;
+
 import commons.simulation.DiscreteEvent;
 
 public class EESimulator {
 
 	/** point of time of simulation */
-	private Instant simulationTimeNs;
+	private Instant simulationTime;
 
 	/** point of time of last simulation step */
-	private Instant deltaSimulationTimeNs;
+	private Instant deltaSimulationTime;
 
 	/*
 	 * private long time = System.nanoTime(); speichert beim erstellen eine Zeit in
@@ -43,7 +46,7 @@ public class EESimulator {
 	 * list of discrete events (in the future)
 	 */
 	private static final EESimulatorComparator listComparator = new EESimulatorComparator();
-	private PriorityQueue<DiscreteEvent> eventList = new PriorityQueue<>(Integer.MAX_VALUE, listComparator);
+	private PriorityQueue<DiscreteEvent> eventList = new PriorityQueue<>(listComparator);
 
 	/**
 	 * lists of objects that can get addressed by messages
@@ -54,9 +57,9 @@ public class EESimulator {
 
 	private List<EEComponent> actuatorList = Collections.synchronizedList(new LinkedList<>());
 
-	public EESimulator(Instant simulationTimeNs) {
-		this.simulationTimeNs = simulationTimeNs;
-		this.deltaSimulationTimeNs = simulationTimeNs;
+	public EESimulator(Instant simulationTime) {
+		this.simulationTime = simulationTime;
+		this.deltaSimulationTime = simulationTime;
 	}
 
 	/**
@@ -73,30 +76,34 @@ public class EESimulator {
 	 * simulate until eventList is empty or next event is in future
 	 */
 	public void simulateNextTick(Instant actualTime) {
-		this.simulationTimeNs = actualTime;
-		for (DiscreteEvent event : eventList) {
-
-			// check if event is in future
-			if (event.getEventTime().isAfter(simulationTimeNs)) {
-				this.deltaSimulationTimeNs = simulationTimeNs;
-				return;
-			}
+		this.simulationTime = actualTime;
+		
+		//loop until eventList is empty or next event is in future
+		while(!eventList.isEmpty() && eventList.peek().getEventTime().isAfter(simulationTime)){
+			DiscreteEvent cur = eventList.poll(); 
 
 			// check if event is type BusMessage or KeepAliveEvent
-			if (event instanceof BusMessage) {
-
-				if (((BusMessage) event).getType() == MessageType.SEND) {
-					// TODO: change bus which is chosen
-					busList.get(0).processEvent(event);
-					eventList.remove(event);
-				} else if (((BusMessage) event).getType() == MessageType.RECEIVE
-						&& ((BusMessage) event).getFinishTime().isBefore(simulationTimeNs)) {
-					((BusMessage) event).getTarget().processEvent(event);
-					eventList.remove(event);
+			if (cur instanceof BusMessage) {
+				BusMessage msg = (BusMessage) cur;
+				if (msg.getType() == MessageType.SEND) {
+					if (busList.contains(msg.getNextHop().get())) {
+						msg.getNextHop().get().processEvent(msg);
+					}
+					else {
+						Log.warn("EESimulator processed event for unregistered bus");
+					}
+				} else if (msg.getType() == MessageType.RECEIVE) {
+					msg.getTarget().processEvent(msg);
 				}
 
-			} else if (event instanceof KeepAliveEvent) {
-				// TODO: implement processing KeepAliveEvents
+			} else if (cur instanceof KeepAliveEvent) {
+				KeepAliveEvent keepAlive = (KeepAliveEvent)cur;
+				if (busList.contains(keepAlive.getBus())) {
+					keepAlive.getBus().processEvent(keepAlive);
+				}
+				else {
+					Log.warn("EESimulator processed event for unregistered bus");
+				}
 			}
 		}
 
@@ -120,12 +127,12 @@ public class EESimulator {
 		}
 	}
 
-	public Instant getDeltaSimulationTimeNs() {
-		return deltaSimulationTimeNs;
+	public Instant getDeltaSimulationTime() {
+		return deltaSimulationTime;
 	}
 
-	public Instant getSimulationTimeNs() {
-		return simulationTimeNs;
+	public Instant getSimulationTime() {
+		return simulationTime;
 	}
 
 }

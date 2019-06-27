@@ -117,6 +117,10 @@ public class BusMessage implements DiscreteEvent {
 		this.path = busMessage.path;
 		this.bitError = busMessage.bitError;
 	}
+	
+	public MessageType getMessageType() {
+		return this.type;
+	}
 
 	public Instant getFinishTime() {
 		return finishTime;

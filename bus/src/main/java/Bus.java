@@ -61,6 +61,10 @@ public abstract class Bus extends EEComponent {
 	public String getID() {
 		return this.ID;
 	}
+	
+	public void setCurrentTime(Instant currentTime) {
+		this.currentTime = currentTime;
+	}
 
 	public void processEvent(DiscreteEvent evt) {
 		if (evt instanceof BusMessage) {
@@ -88,7 +92,7 @@ public abstract class Bus extends EEComponent {
 	}
 
 	protected void setKeepAlive() {
-		KeepAliveEvent keepAlive = new KeepAliveEvent(this.getNextFinishTime());
+		KeepAliveEvent keepAlive = new KeepAliveEvent(this, this.getNextFinishTime());
 		currentKeepAliveID = keepAlive.getEventId();
 		this.simulator.addEvent(keepAlive);
 	}

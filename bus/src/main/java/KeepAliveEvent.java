@@ -27,13 +27,19 @@ public class KeepAliveEvent implements DiscreteEvent{
 	
 	private String ID;
 	
+	private Bus bus;
+	
 	private Instant eventTime;
 	
-	public KeepAliveEvent(Instant eventTime) {
+	public KeepAliveEvent(Bus bus, Instant eventTime) {
 		this.eventTime = eventTime;
+		this.bus = bus;
 		this.ID = UUID.randomUUID().toString();
 	}
 	
+	public Bus getBus() {
+		return this.bus;
+	}
 	
 	@Override
 	public Instant getEventTime() {

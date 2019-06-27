@@ -23,7 +23,7 @@ import commons.controller.commons.BusEntry;
 
 public class BusTest {
 	
-	private static EESimulator EEsim = new EESimulator();
+	private static EESimulator EEsim = new EESimulator(Instant.EPOCH);
 	
 	private static Map<Integer, BusEntry> busEntryByOrdinal = new HashMap<Integer, BusEntry>();
 
@@ -75,7 +75,7 @@ public class BusTest {
 	@Test
 	public void testRegisterEventAtSimulator() {
 		FlexRay flexray = createBusStructure();
-
+		
 		//one hop
 		BusMessage c05 = createNregisterMessage(flexray, "c05", "TestComponent 0", "TestComponent 5", 127, 0);
 
