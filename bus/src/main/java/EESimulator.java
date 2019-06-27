@@ -18,19 +18,10 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-import com.google.protobuf.Message;
-import simulation.vehicle.VehicleActuator;
-import sun.management.Sensor;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.Comparator;
-
-
-import commons.simulation.DiscreteEvent;
-
-import javax.swing.plaf.nimbus.AbstractRegionPainter;
 
 
 public class EESimulator {
@@ -52,7 +43,7 @@ public class EESimulator {
      * list of discrete events (in the future)
      */
     private static final EESimulatorComparator listComparator = new EESimulatorComparator();
-    private PriorityQueue<DiscreteEvent> eventList = new PriorityQueue<>(Integer.MAX_VALUE, listComparator);
+    private PriorityQueue<EEDiscreteEvent> eventList = new PriorityQueue<>(Integer.MAX_VALUE, listComparator);
 
     /**
      * lists of objects that can get addressed by messages
@@ -70,44 +61,57 @@ public class EESimulator {
 
 
     /**
-     * function that adds event to eventList
+     * function that adds event to eventList or gives event to the bus
      * @param event event to add
      */
 
-    public void addEvent(DiscreteEvent event){
-        eventList.offer(event);
+    public void addEvent(EEDiscreteEvent event){
+            eventList.offer(event);
     }
 
 
     /**
-     * simulate until eventList is empty or next event is in future
+     * simulate until eventList is empty or next event is in future after all components added their events
      */
     public void simulateNextTick(Instant actualTime){
-        this.simulationTimeNs = actualTime;
-        for (DiscreteEvent event: eventList) {
+        this.deltaSimulationTimeNs = actualTime;
+        EEDiscreteEvent event = eventList.peek();
+        while(!event.getEventTime().isAfter(simulationTimeNs)) {
+            //TODO: think about how to get the correct bus
+            event.getTarget().processEvent(event);
+            eventList.remove();
+            simulationTimeNs = event.getEventTime();
+        }
+
+
+
+
+
+
 
             //check if event is in future
             if (event.getEventTime().isAfter(simulationTimeNs)) {
-                this.deltaSimulationTimeNs=simulationTimeNs;
                 return;
             }
 
             //check if event is type BusMessage or KeepAliveEvent
             if (event instanceof BusMessage){
-
                 if (((BusMessage) event).getType() == MessageType.SEND){
-                    //TODO: change bus which is chosen
+                    //TODO: search for bus that the event is for
                     busList.get(0).processEvent(event);
                     eventList.remove(event);
-                } else if (((BusMessage) event).getType() == MessageType.RECEIVE && ((BusMessage) event).getFinishTime().isBefore(simulationTimeNs)) {
+                    simulationTimeNs = event.getEventTime();
+                }
+                if (((BusMessage) event).getType() == MessageType.RECEIVE && ((BusMessage) event).getFinishTime().isBefore(deltaSimulationTimeNs)) {
                     ((BusMessage) event).getTarget().processEvent(event);
                     eventList.remove(event);
+                    simulationTimeNs = ((BusMessage) event).getFinishTime();
                 }
 
             } else if (event instanceof KeepAliveEvent){
                 //TODO: implement processing KeepAliveEvents
             }
-        }
+
 
     }
 
@@ -138,10 +142,10 @@ public class EESimulator {
 
 }
 
-class EESimulatorComparator implements Comparator<DiscreteEvent>
+class EESimulatorComparator implements Comparator<EEDiscreteEvent>
 {
     // Used for sorting in ascending order of event time
-    public int compare(DiscreteEvent a, DiscreteEvent b)
+    public int compare(EEDiscreteEvent a, EEDiscreteEvent b)
     {
         return a.getEventTime().compareTo(b.getEventTime());
     }

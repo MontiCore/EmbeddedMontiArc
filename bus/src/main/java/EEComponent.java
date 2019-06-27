@@ -18,8 +18,6 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-import commons.controller.commons.BusEntry;
-import commons.simulation.DiscreteEvent;
 
 public abstract class EEComponent {
 	
@@ -32,7 +30,7 @@ public abstract class EEComponent {
     /**
      * processes an incoming event
      */
-    public abstract void processEvent(DiscreteEvent event);
+    public abstract void processEvent(EEDiscreteEvent event);
 
     /**
      *
