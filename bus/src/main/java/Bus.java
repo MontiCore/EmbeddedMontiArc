@@ -32,8 +32,6 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jfree.util.Log;
 
-import commons.simulation.DiscreteEvent;
-
 public abstract class Bus extends EEComponent {
 
 	protected String ID;
@@ -66,7 +64,7 @@ public abstract class Bus extends EEComponent {
 		this.currentTime = currentTime;
 	}
 
-	public void processEvent(DiscreteEvent evt) {
+	public void processEvent(EEDiscreteEvent evt) {
 		if (evt instanceof BusMessage) {
 			BusMessage msg = (BusMessage) evt;
 			if (msg.getType() == MessageType.SEND) {
@@ -79,7 +77,7 @@ public abstract class Bus extends EEComponent {
 						"Invalid MessageType. Expected SEND but was " + msg.getType().toString());
 			}
 		} else if (evt instanceof KeepAliveEvent) {
-			if (evt.getEventId() == this.currentKeepAliveID) {
+			if (((KeepAliveEvent) evt).getEventId().equals(this.currentKeepAliveID)) {
 				this.simulateFor(Duration.between(currentTime, evt.getEventTime()));
 				currentTime = evt.getEventTime();
 				this.setKeepAlive();
@@ -92,7 +90,7 @@ public abstract class Bus extends EEComponent {
 	}
 
 	protected void setKeepAlive() {
-		KeepAliveEvent keepAlive = new KeepAliveEvent(this, this.getNextFinishTime());
+		KeepAliveEvent keepAlive = new KeepAliveEvent(this, this.getNextFinishTime(), this);
 		currentKeepAliveID = keepAlive.getEventId();
 		this.simulator.addEvent(keepAlive);
 	}

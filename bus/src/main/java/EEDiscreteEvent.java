@@ -18,27 +18,28 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-import commons.controller.commons.BusEntry;
+import java.time.Instant;
 
-public abstract class EEComponent {
-	
-	protected EESimulator simulator;
-	
-	protected EEComponent(EESimulator simulator) {
-		if(simulator == null) {
-			throw new IllegalArgumentException("simulator can't be null");
-		}
-		this.simulator = simulator;
-	}
+public abstract class EEDiscreteEvent {
 
-    /**
-     * processes an incoming event
-     */
-    public abstract void processEvent(EEDiscreteEvent event);
+    private Instant eventTime;
 
-    /**
-     *
-     * @return Id of this component. Can be a BusEntry or randomly generated ID
-     */
-    public abstract String getID();
+    private EEComponent target;
+
+    public EEDiscreteEvent(Instant eventTime, EEComponent target){
+        this.eventTime = eventTime;
+        this.target = target;
+    }
+
+    public Instant getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(Instant eventTime) {
+        this.eventTime = eventTime;
+    }
+
+    public EEComponent getTarget() {
+        return target;
+    }
 }

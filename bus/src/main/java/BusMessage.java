@@ -47,7 +47,7 @@ import commons.simulation.*;
  * along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-public class BusMessage implements DiscreteEvent {
+public class BusMessage extends EEDiscreteEvent {
 
 	private Object message;
 
@@ -61,7 +61,7 @@ public class BusMessage implements DiscreteEvent {
 	/**
 	 * Time the request to transmit the messages was placed.
 	 */
-	private Instant requestTime;
+	//private Instant requestTime;
 
 	private String controllerID;
 
@@ -73,7 +73,7 @@ public class BusMessage implements DiscreteEvent {
 
 	private MessageType type;
 
-	private final EEComponent target;
+	//private final EEComponent target;
 
 	private Optional<EEComponent> nextHop;
 
@@ -84,10 +84,11 @@ public class BusMessage implements DiscreteEvent {
 	 */
 	Random bitError = new Random();
 
-	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant requestTime, MessageType type, EEComponent target) {
-		this.requestTime = requestTime;
+	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant eventTime, MessageType type, EEComponent target) {
+		super(eventTime, target);
+		//this.requestTime = requestTime;
 		this.type = type;
-		this.target = target;
+		//this.target = target;
 		this.message = message;
 		this.messageLen = messageLen;
 		this.messageID = messageID;
@@ -101,18 +102,18 @@ public class BusMessage implements DiscreteEvent {
 	}
 
 	public BusMessage(BusMessage busMessage) {
-		super();
+		super(busMessage.getEventTime(), busMessage.getTarget());
 		this.message = busMessage.message;
 		this.messageLen = busMessage.messageLen;
 		this.transmittedBytes = busMessage.transmittedBytes;
 		this.transmitted = busMessage.transmitted;
-		this.requestTime = busMessage.requestTime;
+		//this.requestTime = busMessage.requestTime;
 		this.controllerID = busMessage.controllerID;
 		this.messageID = busMessage.messageID;
 		this.finishTime = busMessage.finishTime;
 		this.error = busMessage.error;
 		this.type = busMessage.type;
-		this.target = busMessage.target;
+		//this.target = busMessage.target;
 		this.nextHop = busMessage.nextHop;
 		this.path = busMessage.path;
 		this.bitError = busMessage.bitError;
@@ -134,9 +135,6 @@ public class BusMessage implements DiscreteEvent {
 		this.type = type;
 	}
 
-	public EEComponent getTarget() {
-		return target;
-	}
 
 	public void setFinishTime(Instant finishTime) {
 		this.finishTime = finishTime;
@@ -158,13 +156,6 @@ public class BusMessage implements DiscreteEvent {
 		this.messageLen = messageLen;
 	}
 
-	public Instant getRequestTime() {
-		return requestTime;
-	}
-
-	public void setRequestTime(Instant requestTime) {
-		this.requestTime = requestTime;
-	}
 
 	public String getControllerID() {
 		return controllerID;
@@ -226,20 +217,19 @@ public class BusMessage implements DiscreteEvent {
 	public Instant getEventTime() {
 		Instant res = Instant.EPOCH;
 		if (type == MessageType.SEND) {
-			return this.requestTime;
+			return this.getEventTime();
 		} else if (type == MessageType.RECEIVE) {
 			return this.finishTime;
 		}
 		return res;
 	}
 
-	@Override
 	public String getEventId() {
 		return this.messageID.toString();
 	}
 
 	public void forwardToBus(String controllerID) {
-		this.requestTime = this.finishTime;
+		this.setEventTime(this.finishTime);
 		this.finishTime = Instant.EPOCH;
 		this.transmitted = false;
 		this.error = false;
@@ -274,6 +264,6 @@ class BusMessageComparatorIdDesc implements Comparator<BusMessage> {
 class BusMessageComparatorTimeAsc implements Comparator<BusMessage> {
 	// Used for sorting in ascending order of
 	public int compare(BusMessage a, BusMessage b) {
-		return a.getRequestTime().compareTo(b.getRequestTime());
+		return a.getEventTime().compareTo(b.getEventTime());
 	}
 }

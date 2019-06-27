@@ -21,18 +21,16 @@
 import java.time.Instant;
 import java.util.UUID;
 
-import commons.simulation.DiscreteEvent;
 
-public class KeepAliveEvent implements DiscreteEvent{
+public class KeepAliveEvent extends EEDiscreteEvent{
 	
 	private String ID;
 	
 	private Bus bus;
 	
-	private Instant eventTime;
-	
-	public KeepAliveEvent(Bus bus, Instant eventTime) {
-		this.eventTime = eventTime;
+
+	public KeepAliveEvent(Bus bus, Instant eventTime, EEComponent target) {
+		super(eventTime, target);
 		this.bus = bus;
 		this.ID = UUID.randomUUID().toString();
 	}
@@ -40,13 +38,8 @@ public class KeepAliveEvent implements DiscreteEvent{
 	public Bus getBus() {
 		return this.bus;
 	}
-	
-	@Override
-	public Instant getEventTime() {
-		return eventTime;
-	}
 
-	@Override
+
 	public String getEventId() {
 		return ID;
 	}
