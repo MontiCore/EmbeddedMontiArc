@@ -11,7 +11,7 @@
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>dev-plugin-common</artifactId>
+    <artifactId>dev-plugin-yarn</artifactId>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
 
@@ -31,7 +31,7 @@
 
     <!-- == PROJECT METAINFORMATION =========================================== -->
 
-    <name>Sol - DevPlugins - Common</name>
+    <name>Sol - DevPlugins - Yarn</name>
 
     <!-- == PROJECT DEPENDENCIES ============================================== -->
 
