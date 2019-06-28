@@ -1,0 +1,22 @@
+/*
+ * Copyright (C) 2019 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+package de.monticore.lang.monticar.sol.runtime.ls.options;
+
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
+public interface OptionsRegistry {
+    /**
+     * @return The options registered in the registry.
+     */
+    Options getOptions();
+
+    /**
+     * A method which will be used to add an option to the registry.
+     * @param option The option to be added.
+     */
+    void registerOption(Option option);
+}
