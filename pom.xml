@@ -219,7 +219,6 @@
                 <configuration>
                     <source>1.${java.version}</source>
                     <target>1.${java.version}</target>
-                    <release>${java.version}</release>
                 </configuration>
             </plugin>
 
