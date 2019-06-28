@@ -13,7 +13,6 @@
 
     <modules>
         <module>dev-modules/page</module>
-        <module>dev-modules/plugins/yarn</module>
         <module>modules/plugins/common</module>
         <module>modules/plugins/ide</module>
         <module>modules/plugins/language-client</module>
