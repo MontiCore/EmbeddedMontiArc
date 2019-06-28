@@ -15,7 +15,7 @@
 
 <div align="center">
     <a href="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Sol/commits/master">
-        <img alt="pipeline" src="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Sol/badges/master/pipeline.svg"/>
+        <img alt="pipeline" src="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Sol/badges/master/pipeline.svg?style=flat-square"/>
     </a>
 </div>
 
