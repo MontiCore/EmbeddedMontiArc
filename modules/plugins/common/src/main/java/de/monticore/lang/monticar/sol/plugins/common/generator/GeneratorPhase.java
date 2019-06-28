@@ -17,6 +17,11 @@ public interface GeneratorPhase {
     int getPriority();
 
     /**
+     * @return True if the phase should be executed, false otherwise.
+     */
+    boolean shouldExecute();
+
+    /**
      * Triggers the execution of this generation phase.
      * @throws Exception An exception which might occur during this generation phase.
      */

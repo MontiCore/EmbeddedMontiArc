@@ -1,5 +1,12 @@
 {
   "private": true,
-  "workspaces": [],
-  "devDependencies": {}
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "prepare": "lerna run prepare"
+  },
+  "devDependencies": {
+    "lerna": "^3.15.0"
+  }
 }
