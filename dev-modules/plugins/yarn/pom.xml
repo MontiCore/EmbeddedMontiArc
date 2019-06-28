@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>dev-plugin-yarn</artifactId>
-    <packaging>maven-plugin</packaging>
+    <!--<packaging>maven-plugin</packaging>-->
 
     <!-- == PROJECT PROPERTIES ================================================ -->
 
