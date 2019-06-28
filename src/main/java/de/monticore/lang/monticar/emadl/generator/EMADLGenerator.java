@@ -345,18 +345,17 @@ public class EMADLGenerator {
 
     protected String getDataPath(TaggingResolver taggingResolver, EMAComponentSymbol component, EMAComponentInstanceSymbol instance){
         // instance tags have priority
-        List<TagSymbol> tags = (List<TagSymbol>) taggingResolver.getTags(instance, DataPathSymbol.KIND);
-        List<TagSymbol> comps = (List<TagSymbol>) taggingResolver.getTags(component, DataPathSymbol.KIND);
+        List<TagSymbol> instanceTags = (List<TagSymbol>) taggingResolver.getTags(instance, DataPathSymbol.KIND);
+        List<TagSymbol> tags = !instanceTags.isEmpty() ? instanceTags :
+                (List<TagSymbol>) taggingResolver.getTags(component, DataPathSymbol.KIND);
 
-        tags.addAll(comps);
         String dataPath;
-        if (tags.isEmpty()) {
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
-            dataPath = newParserConfig.getDataPath(component.getFullName());
+        if (!tags.isEmpty()) {
+            dataPath = (String) tags.get(0).getValues().get(0);
         }
         else {
-            // values for data path tags are not optional, therefore always present if tag is present
-            dataPath = (String) tags.get(0).getValues().get(0);
+            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
+            dataPath = newParserConfig.getDataPath(component.getFullName());
         }
 
         return dataPath;
