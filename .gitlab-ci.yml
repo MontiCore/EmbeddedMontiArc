@@ -29,7 +29,7 @@ Test:
 Site:
   stage: site
   script:
-    - mvn -B clean site
+    - mvn -B clean install # TODO: Change to "deploy" once the code base is stable.
   artifacts:
     paths:
       - "public"

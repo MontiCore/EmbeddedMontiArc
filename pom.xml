@@ -342,7 +342,7 @@
                 <executions>
                     <execution>
                         <id>JavaDoc</id>
-                        <phase>site</phase>
+                        <phase>install</phase><!-- TODO: Change phase to deploy if the code base becomes stable -->
                         <goals>
                             <goal>aggregate</goal>
                         </goals>
