@@ -12,7 +12,6 @@
     <!-- == PROJECT MODULES =================================================== -->
 
     <modules>
-        <module>dev-modules/page</module>
         <module>modules/plugins/common</module>
         <module>modules/plugins/ide</module>
         <module>modules/plugins/language-client</module>
@@ -24,6 +23,7 @@
         <module>modules/grammars/language</module>
         <module>modules/grammars/tool</module>
         <module>modules/runtime/language-server</module>
+        <module>modules/tests/coverage</module>
     </modules>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
@@ -57,8 +57,11 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+        <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
         <jacoco-plugin.version>0.8.4</jacoco-plugin.version>
+        <directory-maven-plugin.version>0.3.1</directory-maven-plugin.version>
 
         <!-- .. Classifiers ................................................... -->
 
@@ -67,6 +70,7 @@
         <java.version>8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.public>${project.basedir}/public/pages</project.public>
 
         <!-- .. Resources ..................................................... -->
 
@@ -272,6 +276,79 @@
                             <arguments>
                                 <argument>install</argument>
                             </arguments>
+                        </configuration>
+                    </execution>
+                    <!--<execution>
+                        <id>yarn run docs</id>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>docs</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>-->
+                </executions>
+            </plugin>
+
+            <!-- Clean pages Folder -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${maven-clean-plugin.version}</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>public/pages</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <!-- Root Directory Property -->
+            <plugin>
+                <groupId>org.commonjava.maven.plugins</groupId>
+                <artifactId>directory-maven-plugin</artifactId>
+                <version>${directory-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>Root Directory</id>
+                        <goals>
+                            <goal>highest-basedir</goal>
+                        </goals>
+                        <configuration>
+                            <property>rootDir</property>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- JavaDoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>JavaDoc</id>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <source>${java.version}</source>
+                            <destDir>javadoc</destDir>
+                            <reportOutputDirectory>${project.public}</reportOutputDirectory>
                         </configuration>
                     </execution>
                 </executions>

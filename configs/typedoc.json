@@ -1,7 +1,8 @@
 {
-  "ignoreCompilerErrors": true,
-  "mode": "file",
-  "out": "docs",
+  "name": "Sol",
+  "mode": "modules",
+  "out": "public/pages/typedoc",
   "excludeExternals": true,
-  "readme": "none"
+  "excludePrivate": true,
+  "skipInternal": true
 }
