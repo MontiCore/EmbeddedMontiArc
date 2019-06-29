@@ -4,9 +4,12 @@
     "packages/*"
   ],
   "scripts": {
-    "prepare": "lerna run prepare"
+    "prepare": "lerna run prepare",
+    "docs": "typedoc --options configs/typedoc.json"
   },
   "devDependencies": {
-    "lerna": "^3.15.0"
+    "lerna": "^3.15.0",
+    "typedoc": "^0.14.2",
+    "typedoc-plugin-lerna-packages": "^0.1.5"
   }
 }

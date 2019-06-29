@@ -6,6 +6,7 @@
 
 ## Maven
 target/
+/public/pages/**/*
 
 ## Yarn
 node_modules/
