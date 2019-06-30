@@ -13,7 +13,7 @@ public class MqttTemplates {
 
 	private static final Template PrettyPrint;
 
-    // Choosing .ftl files for templates
+    // Loading .ftl files
     static {
         Configuration conf = new Configuration(Configuration.VERSION_2_3_23);
         conf.setDefaultEncoding("UTF-8");

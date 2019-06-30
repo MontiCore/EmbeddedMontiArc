@@ -1,0 +1,12 @@
+package tests.a;
+
+component CompA{
+    port in Q portA;
+    port in Q portB;
+    port out Q portC;
+    port out Q PortD;
+
+    implementation Math{
+        portA = portD;
+    }
+}

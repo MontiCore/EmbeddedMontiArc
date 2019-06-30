@@ -5,11 +5,10 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import java.io.File;
 import java.util.List;
 
-@SuppressWarnings("unused")
 public class GeneratorMqtt 
 {
 
-	private List<File> generateMqttAdapter(EMAComponentInstanceSymbol component) 
+	List<File> generateMqttAdapter(EMAComponentInstanceSymbol component) 
     {
     	
     	return null;
