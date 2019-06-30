@@ -6,9 +6,12 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
+
 import de.se_rwth.commons.logging.Log;
 
-@SuppressWarnings("unused")
 public class MqttTemplates {
 
 	private static final Template PrettyPrint;
@@ -27,5 +30,24 @@ public class MqttTemplates {
             Log.error(msg, e);
             throw new RuntimeException(msg, e);
         }
+    }
+    
+    public static String generateRosAdapter(MqttAdapterModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(PrettyPrint, data);
+    }
+    
+    @SuppressWarnings("rawtypes")
+	private static String generate(Template template, Map dataForTemplate) {
+        Log.errorIfNull(template);
+        Log.errorIfNull(dataForTemplate);
+        StringWriter sw = new StringWriter();
+        try {
+            template.process(dataForTemplate, sw);
+        } catch (TemplateException | IOException e) {
+            Log.error("template generation failed, template: " + template.getName(), e);
+        }
+        return sw.toString();
     }
 }
