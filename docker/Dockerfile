@@ -9,3 +9,5 @@ RUN apt-get -y install mosquitto-clients
 RUN apt-get -y install openjdk-8-jdk
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 RUN apt -y install maven
+RUN apt-get -y install build-essential
+RUN apt-get -y install cmake
