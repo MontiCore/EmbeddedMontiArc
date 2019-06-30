@@ -10,14 +10,14 @@ before_script:
 stages:
   - compile
   - test
-  - site
+  - deploy
 
-Compile:
+compiling:
   stage: compile
   script:
     - mvn -B clean compile
 
-Test:
+testing:
   stage: test
   script:
     - mvn -B clean test
@@ -26,8 +26,8 @@ Test:
       junit:
         - "*/*/*/target/surefire-reports/TEST-*.xml"
 
-Site:
-  stage: site
+pages:
+  stage: deploy
   script:
     - mvn -B clean install # TODO: Change to "deploy" once the code base is stable.
   artifacts:
