@@ -8,7 +8,7 @@ These instructions will get MQTT up and running on your **Ubuntu** system
 
 ### Installing project
 
-[Download](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2mqtt/-/archive/8-handwrite-a-mqtt-adapter/emam2mqtt-3-install-mqtt-linux.zip) this project to your computer
+Download this project to your computer
 
 [Download](https://maven.apache.org/guides/getting-started/) and install Maven
 
