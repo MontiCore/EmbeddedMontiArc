@@ -6,7 +6,11 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
 
 import static org.junit.Assert.assertNotNull;
+
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
+
 import org.junit.Test;
 
 public class PrettyPrintGenerationTest extends AbstractSymtabTest {
@@ -29,7 +33,9 @@ public class PrettyPrintGenerationTest extends AbstractSymtabTest {
         // Connect component's ports to topics
         componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
         
-        generatorMqtt.generateMqttAdapter(componentInstanceSymbol);
+        List<File> files = generatorMqtt.generateMqttAdapter(componentInstanceSymbol);
+        
+        testFilesAreEqual(files, "echo/");
     }
 
 }
