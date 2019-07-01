@@ -64,6 +64,7 @@ int EmulatorManager::alloc_emulator( const char *config ) {
             }
         }
     }
+    error_msg = "Unknown Error";
     return -1;
 }
 

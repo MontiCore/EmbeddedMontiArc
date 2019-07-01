@@ -68,7 +68,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
 ( JNIEnv *jni, jobject, jint id, jstring key, jobject value ) {
     auto &emulator = *EmulatorManager::instance.emulators[id];
     auto port_name = jni->GetStringUTFChars( key, 0 );
-    //Log::info << Log::tag << "Received input for port " << port_name;
+    //Log::info << Log::tag << "Received input for port " << port_name << ": ";
     auto port = emulator.get_port( port_name );
     jni->ReleaseStringUTFChars( key, port_name );
     if ( port == nullptr )
@@ -79,7 +79,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
         static jmethodID doubleValue = jni->GetMethodID( cls, "doubleValue", "()D" );
         if ( doubleValue != 0 ) {
             auto d_val = jni->CallDoubleMethod( value, doubleValue );
-            //Log::info << ": " << d_val << " (double)\n";
+            //Log::info  << d_val << " (double)\n";
             port_buffer.init( d_val );
         }
         else
@@ -102,6 +102,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
             return;
         double *data = jni->GetDoubleArrayElements( ( jdoubleArray )value, 0 );
         
+        /////////////
         /*bool same_val = count == port_buffer.double_array.size;
         if ( same_val ) {
             for ( uint i : urange( count ) ) {
@@ -111,8 +112,8 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
                 }
             }
         }
-        if ( !same_val ) {
-            Log::info << emulator.input_ports[port_id].name << ": {";
+        if ( !same_val || true ) {
+            Log::info << "{";
             for ( uint i : urange( count ) ) {
                 if ( i > 0 )
                     Log::info << ", ";
@@ -120,6 +121,8 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
             }
             Log::info << "}\n";
         }*/
+        ////////////
+        
         port_buffer.init( count, data );
         jni->ReleaseDoubleArrayElements( ( jdoubleArray )value, data, 0 );
     }
