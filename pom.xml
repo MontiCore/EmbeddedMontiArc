@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>de.rwth-aachen.se.montisim.simulators</groupId>
+  <artifactId>basic-simulator</artifactId>
+  <version>1.0</version>
+
+  <name>basic-simulator</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    
+    <montisim.version>2.0.0</montisim.version>
+    <montisim.simulation.version>2.0.1</montisim.simulation.version>
+    
+    <java.version>1.8</java.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.json</artifactId>
+        <version>1.1.4</version>
+    </dependency>
+    <dependency>
+        <groupId>javax.json</groupId>
+        <artifactId>javax.json-api</artifactId>
+        <version>1.1.4</version>
+    </dependency>
+    
+    
+    
+    
+    
+    <dependency>
+        <groupId>montisim-simulation</groupId>
+        <artifactId>simulator</artifactId>
+        <version>${montisim.simulation.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>montisim-simulation</groupId>
+        <artifactId>vehicle</artifactId>
+        <version>${montisim.simulation.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>montisim-simulation</groupId>
+        <artifactId>sensors</artifactId>
+        <version>${montisim.simulation.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>montisim-simulation</groupId>
+        <artifactId>environment</artifactId>
+        <version>${montisim.simulation.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>montisim</groupId>
+        <artifactId>rmi-model-server</artifactId>
+        <version>1.1.2</version>
+    </dependency>
+    <dependency>
+        <groupId>montisim</groupId>
+        <artifactId>commons</artifactId>
+        <version>1.0.7</version>
+    </dependency>
+    <dependency>
+        <groupId>montisim-controller</groupId>
+        <artifactId>library</artifactId>
+        <version>1.0.1</version>
+    </dependency>
+    <dependency>
+        <groupId>montisim-controller</groupId>
+        <artifactId>navigation</artifactId>
+        <version>1.0.1</version>
+    </dependency>
+    
+    
+    
+    <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>2.9.1</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>de.topobyte</groupId>
+        <artifactId>osm4j-core</artifactId>
+        <version>0.0.18</version>
+    </dependency>
+    <dependency>
+        <groupId>de.topobyte</groupId>
+        <artifactId>osm4j-utils</artifactId>
+        <version>0.0.22</version>
+    </dependency>
+    <dependency>
+        <groupId>de.topobyte</groupId>
+        <artifactId>osm4j-xml</artifactId>
+        <version>0.0.3</version>
+    </dependency>
+    <dependency>
+        <groupId>de.topobyte</groupId>
+        <artifactId>osm4j-pbf</artifactId>
+        <version>0.0.7</version>
+    </dependency>
+    <dependency>
+        <groupId>de.topobyte</groupId>
+        <artifactId>osm4j-tbo</artifactId>
+        <version>0.0.9</version>
+    </dependency>
+    <dependency>
+        <groupId>de.topobyte</groupId>
+        <artifactId>osm4j-geometry</artifactId>
+        <version>0.0.14</version>
+    </dependency>
+
+    <dependency>
+        <groupId>de.topobyte</groupId>
+        <artifactId>adt-geo</artifactId>
+        <version>0.0.2</version>
+    </dependency>
+    <dependency>
+        <groupId>de.topobyte</groupId>
+        <artifactId>jts2awt</artifactId>
+        <version>0.0.1</version>
+    </dependency>
+    <dependency>
+        <groupId>de.topobyte</groupId>
+        <artifactId>mercator-image</artifactId>
+        <version>0.0.1</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.wololo</groupId>
+        <artifactId>jts2geojson</artifactId>
+        <version>0.6.0
+        </version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>1.8
+        </version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.6.1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.6.1</version>
+    </dependency>
+    
+    
+    
+    
+    
+  </dependencies>
+
+  <build>
+      <plugins>
+      
+        <plugin>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.8.1</version>
+        </plugin>
+        
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.1.1</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <filters>
+                            <filter>
+                               <artifact>org.glassfish:javax.json</artifact>
+                               <includes>
+                                   <include>**</include>
+                               </includes>
+                            </filter>
+                        </filters>
+                        <minimizeJar>true</minimizeJar>
+                        <transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                              <mainClass>de.rwth_aachen.se.montisim.simulators.App</mainClass>
+                            </transformer>
+                        </transformers>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+      
+      
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0</version>
+            <configuration>
+                <useIncrementalCompilation>true</useIncrementalCompilation>
+                <source>${java.version}</source>
+                <target>${java.version}</target>
+            </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+          <configuration>
+            <workingDirectory>${project.basedir}/install</workingDirectory>
+          </configuration>
+        </plugin>
+        
+       
+      </plugins>
+  </build>
+  
+  
+</project>

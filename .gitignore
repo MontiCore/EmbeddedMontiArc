@@ -1,0 +1,13 @@
+/target/*
+.settings/*
+.project
+.classpath
+.directory
+.idea
+.idea/*
+*.iml
+/target
+*.pyc
+*.DS_Store
+install/*
+dependency-reduced-pom.xml
