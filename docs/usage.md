@@ -10,13 +10,13 @@ Next: [Maven Project tutorial](maven.md)
 
 This repository is a [Maven](https://maven.apache.org/) project.
 
-In a folder (we recommend making a "MontiSim" folder containing all the cloned projects), clone the repository using the following in the terminal:
+In a folder (we recommend making a "MontiSim" folder containing all the cloned projects), clone the repository using the following in the console:
 ```batch
 git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator
 ```
 This will create a folder named `basic-simulator` and download the contents of this repository inside.
 
-> **NOTE**: To open a console rapidly in windows, type "cmd" in the navigation bar of the windows explorer and press *Enter*.
+> **NOTE**: To open a console in a specific working directory rapidly in windows, type "cmd" in the navigation bar of the windows explorer and press *Enter*.
 > Choose *Right Clic -> Open in terminal* on the folder under Linux.
 >
 > ![Select the navigation bar.](images/cmd1.png "Select the navigation bar.")
@@ -46,28 +46,29 @@ java -jar basic-simulator.jar
 ```
 
 This will open a window listing the available **autopilots**, **maps**, **scenarios** and simulation **results**. These are 
-located alongside the basic-simulator jar inside folders with the same names.
+located alongside the `basic-simulator.jar` file inside folders with the same names.
 
 By selecting a **scenario**, you can press the "Start Simulation" button to run this scenario in the simulator.
 
-![Scenario select.](images/usage.png "Select a scenario and press the button.")
-
-**NOTE**: *Currently the output of the simulation is only shown in the console.*
+> ![Scenario select.](images/usage.png "Select a scenario and press the button.")
+> 
+> **NOTE**: *Currently the output of the simulation is only shown in the console.*
 
 You can start a simulation directly without interacting with the GUI by passing a scenario name as command line argument
 to the simulator:
 ```batch
 java -jar basic-simulator.jar straight
 ```
-> *This would start a simulation directly with the scenario "straight"*
-> 
-> *This can be used in a script as well*
+> - *This would start a simulation directly with the scenario "straight"*
+> - *This can be used in a script as well*
 
 ## Scenario format
 
-The Basic Simulator uses **JSON** scenarios. This is for easier prototyping and parsing of the scenarios. The scenario "straight" is a good
-example of how to configure a scenario. For the complete configuration entries currently supported, look at the entries in the `BasicController.ScenarioSettings` enum.
-The configuration specific to vehicles can be seen in `VehicleBuilder.VehicleSettings`.
+The Basic Simulator uses **JSON** scenarios. This is for easier prototyping and parsing of the scenarios. The scenario [straight](../install/scenarios/straight.json) is a good
+example of how to configure a scenario. For the complete configuration entries currently supported, look at the entries in the 
+[BasicController.ScenarioSettings](../src/main/java/de/rwth_aachen/se/montisim/simulators/basic_simulator/controller/BasicController.java#L35) enum.
+The configuration specific to vehicles can be seen in 
+[VehicleBuilder.VehicleSettings](../src/main/java/de/rwth_aachen/se/montisim/simulators/basic_simulator/controller/VehicleBuilder.java#L72).
 
 ## Working on Maven projects
 
