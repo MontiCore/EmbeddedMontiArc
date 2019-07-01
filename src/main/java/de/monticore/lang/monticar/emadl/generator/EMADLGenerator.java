@@ -26,6 +26,7 @@ import com.google.common.base.Splitter;
 import com.google.common.io.Resources;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
@@ -47,18 +48,15 @@ import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.DigestInputStream;
-
-import javax.xml.bind.DatatypeConverter;
+import java.util.*;
 
 public class EMADLGenerator {
 
@@ -343,13 +341,39 @@ public class EMADLGenerator {
         return fileContents;
     }
 
+    /**
+     * returns data path either from tags or data_paths.txt
+     */
     protected String getDataPath(TaggingResolver taggingResolver, EMAComponentSymbol component, EMAComponentInstanceSymbol instance){
+        List<TagSymbol> instanceTags = new LinkedList<>();
+
+        boolean isChildComponent = instance.getEnclosingComponent().isPresent();
+
+        if(isChildComponent){
+            // get all instantiated components of parent
+            List<EMAComponentInstantiationSymbol> instantiationSymbols =
+                (List<EMAComponentInstantiationSymbol>) instance
+                    .getEnclosingComponent()
+                    .get()
+                    .getComponentType()
+                    .getReferencedSymbol()
+                    .getSubComponents();
+
+            // filter corresponding instantiation of instance and add tags
+            instantiationSymbols.stream()
+                .filter(e -> e.getName().equals(instance.getName()))
+                .findFirst()
+                .ifPresent(
+                    symbol -> instanceTags.addAll(taggingResolver.getTags(symbol, DataPathSymbol.KIND))
+                );
+        }
+
         // instance tags have priority
-        List<TagSymbol> instanceTags = (List<TagSymbol>) taggingResolver.getTags(instance, DataPathSymbol.KIND);
         List<TagSymbol> tags = !instanceTags.isEmpty() ? instanceTags :
                 (List<TagSymbol>) taggingResolver.getTags(component, DataPathSymbol.KIND);
 
         String dataPath;
+
         if (!tags.isEmpty()) {
             dataPath = (String) tags.get(0).getValues().get(0);
         }
