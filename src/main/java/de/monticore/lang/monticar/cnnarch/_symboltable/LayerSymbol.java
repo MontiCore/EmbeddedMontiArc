@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 
 
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
+import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
@@ -251,6 +252,9 @@ public class LayerSymbol extends ArchitectureElementSymbol {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes() {
+
+
+
         if (getResolvedThis().isPresent()) {
             if (getResolvedThis().get() == this) {
                 List<ArchTypeSymbol> inputTypes = getInputTypes();

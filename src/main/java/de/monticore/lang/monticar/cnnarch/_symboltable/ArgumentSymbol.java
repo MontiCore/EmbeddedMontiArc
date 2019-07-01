@@ -51,6 +51,16 @@ public class ArgumentSymbol extends CommonSymbol {
         return parameter;
     }
 
+    public VariableSymbol getUnrollParameter() {
+        if (parameter == null){
+            if (getUnroll().getDeclaration() != null){
+                Optional<VariableSymbol> optParam = getUnroll().getDeclaration().getParameter(getName());
+                optParam.ifPresent(this::setParameter);
+            }
+        }
+        return parameter;
+    }
+
     protected void setParameter(VariableSymbol parameter) {
         this.parameter = parameter;
     }
@@ -102,6 +112,14 @@ public class ArgumentSymbol extends CommonSymbol {
     public void resolveExpression() throws ArchResolveException {
         getRhs().resolveOrError();
         boolean valid = Constraints.check(this);
+        if (!valid){
+            throw new ArchResolveException();
+        }
+    }
+
+    public void resolveUnrollExpression() throws ArchResolveException {
+        getRhs().resolveOrError();
+        boolean valid = Constraints.checkUnroll(this);
         if (!valid){
             throw new ArchResolveException();
         }

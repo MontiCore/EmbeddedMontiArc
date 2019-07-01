@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class BeamSearchStart extends PredefinedLayerDeclaration {
+public class BeamSearchStart extends PredefinedUnrollDeclaration {
 
     private BeamSearchStart() {
         super(AllPredefinedLayers.BEAMSEARCH_NAME);
@@ -35,7 +35,19 @@ public class BeamSearchStart extends PredefinedLayerDeclaration {
 
 
     @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer) {
+
+        try {
+            System.err.println("TEST0: ");
+            //System.err.println("LastElementSize-1: " + layer.computeOutputTypes().toString());
+            //System.err.println("LastElementSize0: " + layer.getDeclaration().toString());
+            //System.err.println("LastElementSize0.5: " + layer.getDeclaration().getBody().toString());
+            //System.err.println("LastElementSize1: " + layer.getDeclaration().getBody().getLastAtomicElements().size());
+            //System.err.println("LastElementSize2: " + layer.getDeclaration().getBody().computeOutputTypes());
+            //System.err.println("LastElementSize3: " + layer.getDeclaration().getBody().computeOutputTypes().size());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .channels(100) // TODO
@@ -46,7 +58,7 @@ public class BeamSearchStart extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
@@ -54,8 +66,9 @@ public class BeamSearchStart extends PredefinedLayerDeclaration {
         BeamSearchStart declaration = new BeamSearchStart();
         List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new VariableSymbol.Builder()
-                        .name(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH)
+                        .name(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(99)
                         .build(),
                 new VariableSymbol.Builder()
                         .name(AllPredefinedLayers.BEAMSEARCH_WIDTH_NAME)

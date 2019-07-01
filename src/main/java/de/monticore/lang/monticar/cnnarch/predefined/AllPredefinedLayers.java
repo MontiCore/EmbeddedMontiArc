@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.UnrollDeclarationSymbol;
 
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +65,7 @@ public class AllPredefinedLayers {
     public static final String PADDING_NAME = "padding";
     public static final String POOL_TYPE_NAME = "pool_type";
     public static final String ONE_HOT_SIZE_NAME = "size";
-    public static final String BEAMSEARCH_MAX_LENGTH = "max_length";
+    public static final String BEAMSEARCH_MAX_LENGTH_NAME = "max_length";
     public static final String BEAMSEARCH_WIDTH_NAME = "width";
 
 
@@ -96,6 +97,11 @@ public class AllPredefinedLayers {
                 Add.create(),
                 Concatenate.create(),
                 OneHot.create());
+    }
+
+    public static List<UnrollDeclarationSymbol> createUnrollList(){
+        return Arrays.asList(
+          BeamSearchStart.create());
     }
 
 }

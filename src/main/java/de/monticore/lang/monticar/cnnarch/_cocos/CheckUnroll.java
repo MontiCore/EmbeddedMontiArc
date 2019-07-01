@@ -52,12 +52,12 @@ public class CheckUnroll implements CNNArchASTUnrollCoCo{
         }
 
 
-        LayerDeclarationSymbol layerDeclaration = ((LayerSymbol) node.getSymbolOpt().get()).getDeclaration();
+        UnrollDeclarationSymbol layerDeclaration = ((UnrollSymbol) node.getSymbolOpt().get()).getDeclaration();
         if (layerDeclaration == null){
             ArchitectureSymbol architecture = node.getSymbolOpt().get().getEnclosingScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
             Log.error("0" + ErrorCodes.UNKNOWN_LAYER + " Unknown layer. " +
                             "Layer with name '" + node.getName() + "' does not exist. " +
-                            "Existing layers: " + Joiners.COMMA.join(architecture.getLayerDeclarations()) + "."
+                            "Existing layers: " + Joiners.COMMA.join(architecture.getUnrollDeclarations()) + "."
                     , node.get_SourcePositionStart());
         }
         else {

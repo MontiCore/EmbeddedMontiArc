@@ -164,6 +164,9 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         for (LayerDeclarationSymbol sym : AllPredefinedLayers.createList()){
             addToScope(sym);
         }
+        for (UnrollDeclarationSymbol sym : AllPredefinedLayers.createUnrollList()){
+            addToScope(sym);
+        }
     }
 
     @Override
@@ -342,7 +345,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void visit(ASTUnroll ast) {
-        UnrollSymbol layer = new UnrollSymbol("BeamSearchStart");
+        UnrollSymbol layer = new UnrollSymbol(ast.getName());
         addToScopeAndLinkWithNode(layer, ast);
     }
 
@@ -356,6 +359,13 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
             optArgument.ifPresent(arguments::add);
         }
         layer.setArguments(arguments);
+
+        /*List<ArchitectureElementSymbol> elements = new ArrayList<>();
+        for (ASTStream astStream : ast.getGroupsList()){
+            elements.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
+        }
+        compositeElement.setElements(elements);
+        */
 
         removeCurrentScope();
     }

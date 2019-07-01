@@ -103,6 +103,10 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return getSpannedScope().resolveLocally(LayerDeclarationSymbol.KIND);
     }
 
+    public Collection<UnrollDeclarationSymbol> getUnrollDeclarations(){
+        return getSpannedScope().resolveLocally(UnrollDeclarationSymbol.KIND);
+    }
+
     public void resolve() {
         for (CompositeElementSymbol stream : streams) {
             stream.checkIfResolvable();
@@ -171,7 +175,17 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             copy.getSpannedScope().getAsMutableScope().add(layerDeclaration);
         }
 
+        for (UnrollDeclarationSymbol layerDeclaration : AllPredefinedLayers.createUnrollList()){
+            copy.getSpannedScope().getAsMutableScope().add(layerDeclaration);
+        }
+
         for (LayerDeclarationSymbol layerDeclaration : getSpannedScope().<LayerDeclarationSymbol>resolveLocally(LayerDeclarationSymbol.KIND)){
+            if (!layerDeclaration.isPredefined()) {
+                copy.getSpannedScope().getAsMutableScope().add(layerDeclaration.deepCopy());
+            }
+        }
+
+        for (UnrollDeclarationSymbol layerDeclaration : getSpannedScope().<UnrollDeclarationSymbol>resolveLocally(UnrollDeclarationSymbol.KIND)){
             if (!layerDeclaration.isPredefined()) {
                 copy.getSpannedScope().getAsMutableScope().add(layerDeclaration.deepCopy());
             }
