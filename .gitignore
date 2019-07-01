@@ -9,4 +9,4 @@
 *.iml
 *.log*
 *logs*
-mvn build
+.flattened-pom.xml

@@ -21,6 +21,7 @@
 package simulation.vehicle;
 
 
+import commons.utils.LibraryService;
 import org.javafmi.wrapper.Simulation;
 
 /**
@@ -59,16 +60,25 @@ public class VehicleDynamicsModel {
      * Constructor for an uninitialised VDM
      */
     public VehicleDynamicsModel(){
-
-        inputFilter = new Simulation("lib/InputFilter.fmu");
-        chassis = new Simulation("lib/Chassis.fmu");
-        suspension = new Simulation("lib/Suspension.fmu");
-        tires = new Simulation("lib/Tires.fmu");
-        brakeSystem = new Simulation("lib/BrakeSystem.fmu");
-        driveline = new Simulation("lib/Driveline.fmu");
-        steering = new Simulation("lib/Steering.fmu");
+        String wd = LibraryService.getWorkingDirectory();
+        inputFilter = loadSimulation("lib/InputFilter.fmu", wd);
+        chassis = loadSimulation("lib/Chassis.fmu", wd);
+        suspension = loadSimulation("lib/Suspension.fmu", wd);
+        tires = loadSimulation("lib/Tires.fmu", wd);
+        brakeSystem = loadSimulation("lib/BrakeSystem.fmu", wd);
+        driveline = loadSimulation("lib/Driveline.fmu", wd);
+        steering = loadSimulation("lib/Steering.fmu", wd);
         isInitialised = false;
         needsExchanging = false;
+    }
+
+    private Simulation loadSimulation(String name, String wd){
+        try{
+            LibraryService.prepareLibrary(wd, name);
+        } catch (LibraryService.LibraryException e) {
+            e.printStackTrace();
+        }
+        return new Simulation(name);
     }
 
     /**
