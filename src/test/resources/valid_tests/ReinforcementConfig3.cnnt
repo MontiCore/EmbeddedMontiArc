@@ -23,7 +23,7 @@ configuration ReinforcementConfig3 {
 
     use_double_dqn : true
 
-    loss : huber_loss
+    loss : huber
 
     replay_memory : buffer{
         memory_size : 1000000

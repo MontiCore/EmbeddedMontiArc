@@ -102,7 +102,7 @@ class Net(gluon.HybridBlock):
             # fc5_, output shape: {[1,1,1]}
 
 
-        self.last_layer = 'linear'
+
 
 
     def hybrid_forward(self, F, state, action):

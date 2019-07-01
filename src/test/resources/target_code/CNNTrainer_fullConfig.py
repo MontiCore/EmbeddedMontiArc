@@ -13,7 +13,7 @@ if __name__ == "__main__":
     fullConfig_creator = CNNCreator_fullConfig.CNNCreator_fullConfig()
     fullConfig_loader = CNNDataLoader_fullConfig.fullConfigDataLoader()
     fullConfig_trainer = supervised_trainer.CNNSupervisedTrainer(fullConfig_loader,
-        fullConfig_creator)
+                                                                 fullConfig_creator)
 
     fullConfig_trainer.train(
         batch_size=100,
@@ -22,6 +22,10 @@ if __name__ == "__main__":
         context='gpu',
         normalize=True,
         eval_metric='mse',
+        loss='softmax_cross_entropy',
+        loss_params={
+            'sparse_label': True,
+            'from_logits': False},
         optimizer='rmsprop',
         optimizer_params={
             'weight_decay': 0.01,

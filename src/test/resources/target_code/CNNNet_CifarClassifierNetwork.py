@@ -344,8 +344,9 @@ class Net(gluon.HybridBlock):
             self.fc32_ = gluon.nn.Dense(units=10, use_bias=True)
             # fc32_, output shape: {[10,1,1]}
 
+            self.softmax32_ = Softmax()
 
-        self.last_layer = 'softmax'
+
 
 
     def hybrid_forward(self, F, data):
@@ -452,4 +453,5 @@ class Net(gluon.HybridBlock):
         fc31_ = self.fc31_(globalpooling31_)
         dropout31_ = self.dropout31_(fc31_)
         fc32_ = self.fc32_(dropout31_)
-        return fc32_
+        softmax32_ = self.softmax32_(fc32_)
+        return softmax32_
