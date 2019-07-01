@@ -27,7 +27,7 @@ public class GeneratorMqtt
 		
 		model.addPorts(ports);
 		
-		//Generate files
+		//Generate files and write to project
 		String content = MqttTemplates.generateRosAdapter(model);
 		
 		File file = new File("./target/generated-sources/ports.txt");

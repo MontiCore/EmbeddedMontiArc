@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.mqtt;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
 
 import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
@@ -24,6 +25,9 @@ public class PrettyPrintGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
         
         GeneratorMqtt generatorMqtt = new GeneratorMqtt();
+        
+        // Connect component's ports to topics
+        componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
         
         generatorMqtt.generateMqttAdapter(componentInstanceSymbol);
     }
