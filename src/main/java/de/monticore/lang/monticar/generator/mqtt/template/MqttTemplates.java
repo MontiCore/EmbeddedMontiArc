@@ -32,7 +32,7 @@ public class MqttTemplates {
         }
     }
     
-    public static String generateRosAdapter(MqttAdapterModel model) {
+    public static String generateMqttAdapter(MqttAdapterModel model) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("model", model);
         return generate(PrettyPrint, data);

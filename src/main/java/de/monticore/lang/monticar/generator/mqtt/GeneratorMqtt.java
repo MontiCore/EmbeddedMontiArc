@@ -28,7 +28,7 @@ public class GeneratorMqtt
 		model.addPorts(ports);
 		
 		//Generate files and write to project
-		String content = MqttTemplates.generateRosAdapter(model);
+		String content = MqttTemplates.generateMqttAdapter(model);
 		
 		File file = new File("./target/generated-sources/ports.txt");
 		files.add(file);
@@ -40,7 +40,7 @@ public class GeneratorMqtt
         } catch (IOException e) {
             e.printStackTrace();
         }finally{
-            //close resources
+            //Close resources
             try {
                 fr.close();
             } catch (IOException e) {
