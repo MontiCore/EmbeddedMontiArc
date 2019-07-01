@@ -42,5 +42,6 @@ public class ErrorCodes {
     public static final String UNKNOWN_VARIABLE_NAME = "x65013";
     public static final String DIFFERENT_RANGE_OPERATORS = "xA8289";
     public static final String UNFINISHED_ARCHITECTURE = "x28B42";
+    public static final String MISSING_NETWORK_STREAM = "x04893";
 
 }
