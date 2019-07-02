@@ -39,6 +39,8 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
 
         try {
             System.err.println("TEST0: ");
+            System.err.println("LastElementSize-3: " + getAstNode().get().toString());
+            System.err.println("LastElementSize-2: " + getBody().getLastAtomicElements().toString());
             //System.err.println("LastElementSize-1: " + layer.computeOutputTypes().toString());
             //System.err.println("LastElementSize0: " + layer.getDeclaration().toString());
             //System.err.println("LastElementSize0.5: " + layer.getDeclaration().getBody().toString());
