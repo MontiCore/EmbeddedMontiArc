@@ -2,6 +2,7 @@ package de.monticore.reporting.cocoReport.helper;
 
 import de.monticore.reporting.helper.OrderableModelInfo;
 import de.monticore.reporting.order.ChildElement;
+import java.lang.reflect.Field;
 
 public class CheckCoCoResult extends OrderableModelInfo {
 
@@ -23,6 +24,21 @@ public class CheckCoCoResult extends OrderableModelInfo {
     private int typeParameterNamesUnique = 0;
     private int uniquePorts = 0;
     private int atomicComponent = 0;
+    private int matrixAssignmentDeclarationCheck;
+    private int matrixAssignmentCheck;
+    private int inRosPortRosSender;
+    private int onlyIncomingPortIsConfig;
+    private int dynamicComponentDynamicBodyElements;
+    private int noDynamicNewComponentAndPort;
+    private int noDynamicNewConnectsOutsideEventHandler;
+    private int referencedSubComponentExistsEMAM;
+    private int checkLayer;
+    private int checkRangeOperators;
+    private int checkVariableName;
+    private int checkLayerName;
+    private int checkArgument;
+    private int checkLayerRecursion;
+    private int checkBehaviorName;
 
     public CheckCoCoResult(String pathToFile) {
         super(pathToFile);
@@ -33,6 +49,20 @@ public class CheckCoCoResult extends OrderableModelInfo {
     }
 
     public boolean isValid() {
+        Field[] fields = this.getClass().getDeclaredFields();
+        boolean res = true;
+        for (Field field: fields) {
+            try {
+                if (((int) field.get(this)) < 0)
+                    res = false;
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return res;
+    }
+
+    public boolean issValid() {
         return this.getComponentCapitalized() != -1 && this.getComponentInstanceNamesUnique() != -1 && this.getComponentInstanceNamesUnique() != -1 &&
                 this.getConnectorEndPointCorrectlyQualified() != -1 && this.getDefaultParametersHaveCorrectOrder() != -1 &&
                 this.getInPortUniqueSender() != -1 && this.getPackageLowerCase() != -1 &&
@@ -232,7 +262,7 @@ public class CheckCoCoResult extends OrderableModelInfo {
 
     public void setChildInfo() {
         CheckCoCoResult mainPackage = this;
-        for (ChildElement childElement: getChildren()) {
+        for (ChildElement childElement : getChildren()) {
             CheckCoCoResult child = (CheckCoCoResult) childElement.getChild();
 
             if (child.getComponentCapitalized() != 0 && child.getComponentCapitalized() < mainPackage.getComponentCapitalized() || mainPackage.getComponentCapitalized() == 0) {
@@ -292,4 +322,123 @@ public class CheckCoCoResult extends OrderableModelInfo {
         }
     }
 
+    public void setMatrixAssignmentDeclarationCheck(int matrixAssignmentDeclarationCheck) {
+        this.matrixAssignmentDeclarationCheck = matrixAssignmentDeclarationCheck;
+    }
+
+    public int getMatrixAssignmentDeclarationCheck() {
+        return matrixAssignmentDeclarationCheck;
+    }
+
+    public void setMatrixAssignmentCheck(int matrixAssignmentCheck) {
+        this.matrixAssignmentCheck = matrixAssignmentCheck;
+    }
+
+    public int getMatrixAssignmentCheck() {
+        return matrixAssignmentCheck;
+    }
+
+    public void setInRosPortRosSender(int inRosPortRosSender) {
+        this.inRosPortRosSender = inRosPortRosSender;
+    }
+
+    public int getInRosPortRosSender() {
+        return inRosPortRosSender;
+    }
+
+    public void setOnlyIncomingPortIsConfig(int onlyIncomingPortIsConfig) {
+        this.onlyIncomingPortIsConfig = onlyIncomingPortIsConfig;
+    }
+
+    public int getOnlyIncomingPortIsConfig() {
+        return onlyIncomingPortIsConfig;
+    }
+
+    public void setDynamicComponentDynamicBodyElements(int dynamicComponentDynamicBodyElements) {
+        this.dynamicComponentDynamicBodyElements = dynamicComponentDynamicBodyElements;
+    }
+
+    public int getDynamicComponentDynamicBodyElements() {
+        return dynamicComponentDynamicBodyElements;
+    }
+
+    public void setNoDynamicNewComponentAndPort(int noDynamicNewComponentAndPort) {
+        this.noDynamicNewComponentAndPort = noDynamicNewComponentAndPort;
+    }
+
+    public int getNoDynamicNewComponentAndPort() {
+        return noDynamicNewComponentAndPort;
+    }
+
+    public void setNoDynamicNewConnectsOutsideEventHandler(int noDynamicNewConnectsOutsideEventHandler) {
+        this.noDynamicNewConnectsOutsideEventHandler = noDynamicNewConnectsOutsideEventHandler;
+    }
+
+    public int getNoDynamicNewConnectsOutsideEventHandler() {
+        return noDynamicNewConnectsOutsideEventHandler;
+    }
+
+    public void setReferencedSubComponentExistsEMAM(int referencedSubComponentExistsEMAM) {
+        this.referencedSubComponentExistsEMAM = referencedSubComponentExistsEMAM;
+    }
+
+    public int getReferencedSubComponentExistsEMAM() {
+        return referencedSubComponentExistsEMAM;
+    }
+
+    public void setCheckLayer(int checkLayer) {
+        this.checkLayer = checkLayer;
+    }
+
+    public int getCheckLayer() {
+        return checkLayer;
+    }
+
+    public void setCheckRangeOperators(int checkRangeOperators) {
+        this.checkRangeOperators = checkRangeOperators;
+    }
+
+    public int getCheckRangeOperators() {
+        return checkRangeOperators;
+    }
+
+    public void setCheckVariableName(int checkVariableName) {
+        this.checkVariableName = checkVariableName;
+    }
+
+    public int getCheckVariableName() {
+        return checkVariableName;
+    }
+
+    public void setCheckLayerName(int checkLayerName) {
+        this.checkLayerName = checkLayerName;
+    }
+
+    public int getCheckLayerName() {
+        return checkLayerName;
+    }
+
+    public void setCheckArgument(int checkArgument) {
+        this.checkArgument = checkArgument;
+    }
+
+    public int getCheckArgument() {
+        return checkArgument;
+    }
+
+    public void setCheckLayerRecursion(int checkLayerRecursion) {
+        this.checkLayerRecursion = checkLayerRecursion;
+    }
+
+    public int getCheckLayerRecursion() {
+        return checkLayerRecursion;
+    }
+
+    public void setCheckBehaviorName(int checkBehaviorName) {
+        this.checkBehaviorName = checkBehaviorName;
+    }
+
+    public int getCheckBehaviorName() {
+        return checkBehaviorName;
+    }
 }

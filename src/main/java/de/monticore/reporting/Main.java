@@ -27,7 +27,7 @@ public class Main {
         if (context.isTestCoCos()) {
             CheckCoCos tcc = new CheckCoCos();
             CustomPrinter.println("\n<================Test CoCos================>\n");
-            List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getTimeout(), "ema", "emam");
+            List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getTimeout(), "ema", "emam", "emadl");
             OrderTestResults<CheckCoCoResult> order = new OrderTestResults();
             order.orderTestResults(testResults, new CheckCoCoResultCreator());
             List<CheckCoCoResult> rootModels = order.getRootModels();

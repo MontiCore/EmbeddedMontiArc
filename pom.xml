@@ -37,11 +37,13 @@
     <properties>
 
         <!-- .. SE-Libraries .................................................. -->
-        <Embedded-MontiArc-Math.version>0.1.9-SNAPSHOT</Embedded-MontiArc-Math.version>
+<!--        <Embedded-MontiArc-Math.version>0.1.9-SNAPSHOT</Embedded-MontiArc-Math.version>-->
+        <Embedded-MontiArc-DL.version>0.2.7-SNAPSHOT</Embedded-MontiArc-DL.version>
         <!-- .. Libraries .................................................. -->
+        <monticore.version>5.0.0</monticore.version>
 
         <!-- .. Plugins ....................................................... -->
-        <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
+        <monticore.plugin>5.0.0</monticore.plugin>
         <compiler.plugin>3.3</compiler.plugin>
 
         <!-- Classifiers -->
@@ -52,22 +54,28 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <github.global.server>github</github.global.server>
+<!--        <github.global.server>github</github.global.server>-->
     </properties>
 
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore.lang.monticar</groupId>-->
+<!--            <artifactId>embedded-montiarc-math</artifactId>-->
+<!--            <version>${Embedded-MontiArc-Math.version}</version>-->
+<!--        </dependency>-->
+
+        <!-- MontiCore Dependencies -->
         <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math</artifactId>
-            <version>${Embedded-MontiArc-Math.version}</version>
+            <groupId>de.monticore</groupId>
+            <artifactId>monticore-runtime</artifactId>
+            <version>${monticore.version}</version>
         </dependency>
+
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math</artifactId>
-            <version>${Embedded-MontiArc-Math.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
+            <artifactId>embedded-montiarc-deeplearning</artifactId>
+            <version>${Embedded-MontiArc-DL.version}</version>
         </dependency>
 
         <dependency>
@@ -123,18 +131,18 @@
                 </executions>
             </plugin>
             <!-- MontiCore Generation -->
-            <plugin>
-                <groupId>de.monticore.mojo</groupId>
-                <artifactId>monticore-maven-plugin</artifactId>
-                <version>${monticore.plugin}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>de.monticore.mojo</groupId>-->
+<!--                <artifactId>monticore-maven-plugin</artifactId>-->
+<!--                <version>${monticore.plugin}</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>generate</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <!-- Other Configuration -->
             <plugin>
@@ -193,15 +201,16 @@
         </plugins>
     </build>
 
+    <!-- == DISTRIBUTION ==================================================== -->
+
     <distributionManagement>
         <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/external-dependencies</url>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
         </repository>
         <snapshotRepository>
-            <id>internal.repo</id>
-            <url>file://${project.build.directory}/external-dependencies</url>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>

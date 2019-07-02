@@ -8,6 +8,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Embedded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.reporting.helper.CommonModelInfo;
@@ -104,7 +105,7 @@ public class ASTHelper {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Callable<ASTEMACompilationUnit> task = new Callable<ASTEMACompilationUnit>() {
             public ASTEMACompilationUnit call() throws IOException, CouldNotParseException {
-                EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
+                EMADLParser parser = new EMADLParser();
                 ASTEMACompilationUnit ast = parser.parse(fileName).orElse(null);
                 if (ast == null) throw new CouldNotParseException();
                 return ast;
