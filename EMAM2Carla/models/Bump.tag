@@ -7,4 +7,6 @@ tags Bumb{
         //tag bumpBot.normal_impulse_y with RosConnection = {topic = (/carla/ego_vehicle/collision, carla_msgs/CarlaCollisionEvent), msgField = normal_impulse.y};
         tag bumpBot.normal_impulse_out with RosConnection = {topic = (/carla/ego_vehicle/collision, carla_msgs/CarlaCollisionEvent), msgField = normal_impulse};
         tag bumpBot.normal_impulse with RosConnection = {topic = (/carla/ego_vehicle/collision, carla_msgs/CarlaCollisionEvent), msgField = normal_impulse};
+	tag bumpBot.normal_impulse_copy_out with RosConnection = {topic = (/emam/collision_direction, geometry_msgs/Vector3)};
+	tag bumpBot.normal_impulse_x with RosConnection = {topic = (/emam/collision_direction, geometry_msgs/Vector3), msgField = x};
 }
