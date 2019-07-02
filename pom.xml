@@ -27,7 +27,7 @@
 
     <groupId>montisim</groupId>
     <artifactId>commons</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
 
     <properties>
         <wagon.provider.version>2.6</wagon.provider.version>

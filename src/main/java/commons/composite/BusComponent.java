@@ -18,24 +18,18 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package commons.simulation;
+package commons.composite;
 
 /**
- * Interface for a discrete event in a discrete event simulation
+   A BusComponent structure represents a tree-like data-set using the Composite Pattern.
+   The elements can be BusValue, BusComposite or BusArray.
+   getType() will return the type of the Component.
  */
-public abstract class DiscreteEvent {
-
-    /**
-     * Function that returns the time of the event
-     *
-     * @return Time of the event
-     */
-    public abstract long getEventTime();
-
-    /**
-     * Function that returns a numeric identifier for the event
-     *
-     * @return Numeric identifier for the event
-     */
-    public abstract int getEventId();
+public interface BusComponent {
+    enum ComponentType {
+        VALUE,
+        ARRAY,
+        COMPOSITE
+    }
+    ComponentType getType();
 }

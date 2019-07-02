@@ -18,24 +18,30 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package commons.simulation;
+package commons.composite;
+
+import java.util.HashMap;
 
 /**
- * Interface for a discrete event in a discrete event simulation
+    A BusComposite represents a class or structure with members.
+    The contents map should be filled with the member name and sub-component.
  */
-public abstract class DiscreteEvent {
+public class BusComposite implements BusComponent {
+    private HashMap<String, BusComponent> contents = new HashMap<>();
 
-    /**
-     * Function that returns the time of the event
-     *
-     * @return Time of the event
-     */
-    public abstract long getEventTime();
+    public void setComponent(String key, BusComponent comp){
+        contents.put(key, comp);
+    }
+    public BusComponent getComponent(String key){
+        return contents.get(key);
+    }
 
-    /**
-     * Function that returns a numeric identifier for the event
-     *
-     * @return Numeric identifier for the event
-     */
-    public abstract int getEventId();
+    HashMap<String, BusComponent> getContents(){
+        return contents;
+    }
+
+
+    public ComponentType getType(){
+        return ComponentType.COMPOSITE;
+    }
 }
