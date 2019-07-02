@@ -38,15 +38,16 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer) {
 
         try {
-            System.err.println("TEST0: ");
-            System.err.println("LastElementSize-3: " + getAstNode().get().toString());
-            System.err.println("LastElementSize-2: " + getBody().getLastAtomicElements().toString());
-            //System.err.println("LastElementSize-1: " + layer.computeOutputTypes().toString());
-            //System.err.println("LastElementSize0: " + layer.getDeclaration().toString());
-            //System.err.println("LastElementSize0.5: " + layer.getDeclaration().getBody().toString());
-            //System.err.println("LastElementSize1: " + layer.getDeclaration().getBody().getLastAtomicElements().size());
-            //System.err.println("LastElementSize2: " + layer.getDeclaration().getBody().computeOutputTypes());
-            //System.err.println("LastElementSize3: " + layer.getDeclaration().getBody().computeOutputTypes().size());
+            System.err.println("allElements: " + layer.getDeclaration().getBody().getElements().toString());
+            List<ArchitectureElementSymbol> elements = new ArrayList<ArchitectureElementSymbol>();
+            elements = layer.getDeclaration().getBody().getElements();
+            System.err.println("LastElement: " + elements.get(elements.size()-1));
+            //System.err.println("LastElement_Channels: " + elements.get(elements.size()-1).getOutputTypes().get(0).getChannels());
+            for(ArchitectureElementSymbol item:elements){
+                System.err.println("name2" + item.getOutputElement().get().toString());
+                System.err.println("channels: " + item.getOutputTypes().get(0).getChannels().toString());
+                System.err.println("name3" + item.getName());
+            }
         }catch(Exception e){
             e.printStackTrace();
         }

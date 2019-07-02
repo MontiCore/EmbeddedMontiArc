@@ -76,6 +76,7 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     }
 
     public SerialCompositeElementSymbol getBody() {
+        System.err.println("Body_elements in UNROLLDECLARATIONSYMBOL: " + body.getElements().toString());
         return body;
     }
 

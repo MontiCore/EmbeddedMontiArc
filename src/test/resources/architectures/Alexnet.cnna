@@ -2,15 +2,6 @@ architecture Alexnet(img_height=224, img_width=224, img_channels=3, classes=10){
     def input Z(0:255)^{img_channels, img_height, img_width} data
     def output Q(0:1)^{classes} predictions
 
-
-    unroll<t=5> beamSearchStart (width=5, max_length=50){
-        FullyConnected(units=4096) ->
-        Relu() ->
-        Dropout()
-    }
-
-
-
     def split1(i){
         [i] ->
         Convolution(kernel=(5,5), channels=128) ->
