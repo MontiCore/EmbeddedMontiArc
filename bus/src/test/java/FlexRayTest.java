@@ -488,11 +488,26 @@ public class FlexRayTest {
 			subComponents2.add(new TestComponent(EEsim, String.valueOf(i)));
 		}
 
-		FlexRay sub2 = new FlexRay(EEsim, subComponents2);
+		List<BusEntry> messages = new ArrayList<BusEntry>();
+		messages.add(BusEntry.CONSTANT_WHEELBASE);
+
+		FlexRay sub2 = new FlexRay(EEsim);//subComponents2
+		for(EEComponent component: subComponents2){
+			sub2.registerComponent(component, messages);
+		}
+
 		subComponents1.add(sub2);
-		FlexRay sub1 = new FlexRay(EEsim, subComponents1);
+		FlexRay sub1 = new FlexRay(EEsim);//subComponents1
+		for(EEComponent component: subComponents1){
+			sub1.registerComponent(component, messages);
+		}
+
 		mainComponents.add(sub1);
-		FlexRay main = new FlexRay(EEsim, mainComponents);
+		FlexRay main = new FlexRay(EEsim);//mainComponents
+		for(EEComponent component: mainComponents){
+			main.registerComponent(component, messages);
+		}
+
 		return main;
 	}
 

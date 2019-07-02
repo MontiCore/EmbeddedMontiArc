@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import org.jfree.util.Log;
 
 import commons.simulation.DiscreteEvent;
+import commons.controller.commons.BusEntry;
 
 public class FlexRay extends Bus {
 
@@ -96,11 +97,13 @@ public class FlexRay extends Bus {
 
 	private int lastPartialDynamicSegmentBytes = 0;
 
-	public FlexRay(EESimulator simulator, List<EEComponent> controllers) {
-		super(simulator, controllers);
-		for (EEComponent controller : controllers) {
-			messagesByControllerId.put(controller.getID().toString(), new PriorityQueue<BusMessage>(COMP_ID_DESC));
-		}
+	public FlexRay(EESimulator simulator) {
+		super(simulator);
+	}
+
+	public void registerComponent(EEComponent component, List<BusEntry> messages){
+		super.registerComponent(component, messages);
+		messagesByControllerId.put(component.getID().toString(), new PriorityQueue<BusMessage>(COMP_ID_DESC));
 	}
 
 	int getTotalStaticPayload() {

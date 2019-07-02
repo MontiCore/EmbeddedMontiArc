@@ -1,3 +1,23 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 import static commons.controller.commons.BusEntry.NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -124,11 +144,26 @@ public class BusTest {
 			subComponents2.add(new TestComponent(EEsim, String.valueOf(i)));
 		}
 
-		FlexRay sub2 = new FlexRay(EEsim, subComponents2);
+		List<BusEntry> messages = new ArrayList<BusEntry>();
+		messages.add(BusEntry.CONSTANT_WHEELBASE);
+
+		FlexRay sub2 = new FlexRay(EEsim);//subComponents2
+		for(EEComponent component: subComponents2){
+			sub2.registerComponent(component, messages);
+		}
+
 		subComponents1.add(sub2);
-		FlexRay sub1 = new FlexRay(EEsim, subComponents1);
+		FlexRay sub1 = new FlexRay(EEsim);//subComponents1
+		for(EEComponent component: subComponents1){
+			sub1.registerComponent(component, messages);
+		}
+
 		mainComponents.add(sub1);
-		FlexRay main = new FlexRay(EEsim, mainComponents);
+		FlexRay main = new FlexRay(EEsim);//mainComponents
+		for(EEComponent component: mainComponents){
+			main.registerComponent(component, messages);
+		}
+
 		return main;
 	}
 
