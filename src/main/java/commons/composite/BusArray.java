@@ -18,24 +18,31 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package commons.simulation;
+package commons.composite;
 
-/**
- * Interface for a discrete event in a discrete event simulation
- */
-public abstract class DiscreteEvent {
+public class BusArray implements BusComponent {
+    private BusComponent contents[];
 
-    /**
-     * Function that returns the time of the event
-     *
-     * @return Time of the event
-     */
-    public abstract long getEventTime();
+    public BusArray(int size){
+        this.contents = new BusComponent[size];
+    }
 
-    /**
-     * Function that returns a numeric identifier for the event
-     *
-     * @return Numeric identifier for the event
-     */
-    public abstract int getEventId();
+    public void setComponent(int pos, BusComponent comp){
+        contents[pos] = comp;
+    }
+    public BusComponent getComponent(int pos){
+        return contents[pos];
+    }
+
+    public int getLength(){
+        return contents.length;
+    }
+
+    BusComponent[] getContents(){
+        return contents;
+    }
+
+    public ComponentType getType(){
+        return ComponentType.ARRAY;
+    }
 }

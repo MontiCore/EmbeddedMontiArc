@@ -29,7 +29,7 @@ import java.util.Optional;
  * Abstract class for a discrete event simulation based on scheduled events
  * This class implements the SimulationLoopNotifiable interface to be combined with vehicle simulator
  */
-public abstract class DiscreteEventSimulator implements SimulationLoopNotifiable {
+public abstract class DiscreteEventSimulator < DiscreteEventType extends DiscreteEvent > implements SimulationLoopNotifiable {
 
     /** Current total time in the discrete event simulation measured in nanoseconds */
     private long simulationTimeNs = 0;
@@ -38,7 +38,7 @@ public abstract class DiscreteEventSimulator implements SimulationLoopNotifiable
     private long lastSimulationDeltaTimeNs = 0;
 
     /** List of discrete events */
-    private final List<DiscreteEvent> eventList = Collections.synchronizedList(new LinkedList<>());
+    private final List<DiscreteEventType> eventList = Collections.synchronizedList(new LinkedList<>());
 
     /** List of simulation notifiable objects */
     private final List<DiscreteEventSimulationNotifiable> discreteEventSimulationNotifiableList = Collections.synchronizedList(new LinkedList<>());
@@ -49,7 +49,7 @@ public abstract class DiscreteEventSimulator implements SimulationLoopNotifiable
      * @param event Event to be scheduled
      * @throws IllegalArgumentException when event is timed in the past
      */
-    public void scheduleEvent(DiscreteEvent event) throws IllegalArgumentException {
+    public void scheduleEvent(DiscreteEventType event) throws IllegalArgumentException {
         // Inform notifiable objects
         synchronized (discreteEventSimulationNotifiableList) {
             for (DiscreteEventSimulationNotifiable notifiable : discreteEventSimulationNotifiableList) {
@@ -66,7 +66,7 @@ public abstract class DiscreteEventSimulator implements SimulationLoopNotifiable
         int listIndex = 0;
 
         synchronized (eventList) {
-            for (DiscreteEvent e : eventList) {
+            for (DiscreteEventType e : eventList) {
                 // Stop increasing index if event in list is really later than new event
                 if (e.getEventTime() > event.getEventTime()) {
                     break;
@@ -108,30 +108,31 @@ public abstract class DiscreteEventSimulator implements SimulationLoopNotifiable
         long initialSimulationTimeNs = simulationTimeNs;
 
         // Handle all events that are timed before new simulation time
-        while (getNextEventInTime(initialSimulationTimeNs + deltaTime).isPresent()) {
-            Optional<DiscreteEvent> event = getNextEventInTime(initialSimulationTimeNs + deltaTime);
+        long targetTime = initialSimulationTimeNs + deltaTime;
+        Optional<DiscreteEventType> event = getNextEventInTime(targetTime);
+        while (event.isPresent()) {
             eventList.remove(0);
 
             // Advance time step by step and process event
-            if (event.isPresent()) {
-                simulationTimeNs = event.get().getEventTime();
+            simulationTimeNs = event.get().getEventTime();
 
-                // Inform notifiable objects
-                synchronized (discreteEventSimulationNotifiableList) {
-                    for (DiscreteEventSimulationNotifiable notifiable : discreteEventSimulationNotifiableList) {
-                        notifiable.onProcessEvent(event.get());
-                    }
-                }
-
-                processEvent(event.get());
-
-                // Inform notifiable objects
-                synchronized (discreteEventSimulationNotifiableList) {
-                    for (DiscreteEventSimulationNotifiable notifiable : discreteEventSimulationNotifiableList) {
-                        notifiable.afterProcessEvent(event.get());
-                    }
+            // Inform notifiable objects
+            synchronized (discreteEventSimulationNotifiableList) {
+                for (DiscreteEventSimulationNotifiable notifiable : discreteEventSimulationNotifiableList) {
+                    notifiable.onProcessEvent(event.get());
                 }
             }
+
+            processEvent(event.get());
+
+            // Inform notifiable objects
+            synchronized (discreteEventSimulationNotifiableList) {
+                for (DiscreteEventSimulationNotifiable notifiable : discreteEventSimulationNotifiableList) {
+                    notifiable.afterProcessEvent(event.get());
+                }
+            }
+
+            event = getNextEventInTime(targetTime);
         }
 
         // Set simulation time to the end of time advancement
@@ -152,11 +153,11 @@ public abstract class DiscreteEventSimulator implements SimulationLoopNotifiable
      * @param finalTime Final time before which events should be returned
      * @return Next event ready for event handling
      */
-    private Optional<DiscreteEvent> getNextEventInTime(long finalTime) {
-        Optional<DiscreteEvent> result = Optional.empty();
+    private Optional<DiscreteEventType> getNextEventInTime(long finalTime) {
+        Optional<DiscreteEventType> result = Optional.empty();
 
         if (!eventList.isEmpty()) {
-            DiscreteEvent event = eventList.get(0);
+            DiscreteEventType event = eventList.get(0);
 
             // Check if time of first event matches
             if (event.getEventTime() <= finalTime) {
@@ -173,7 +174,13 @@ public abstract class DiscreteEventSimulator implements SimulationLoopNotifiable
      *
      * @param event Event to be processed
      */
-    protected abstract void processEvent(DiscreteEvent event);
+    protected void processEvent(DiscreteEventType event){
+
+    }
+
+    public void visitEvent(DiscreteEventType event){
+
+    }
 
     /**
      * Get the current total discrete simulation time in nanoseconds
@@ -198,7 +205,7 @@ public abstract class DiscreteEventSimulator implements SimulationLoopNotifiable
      *
      * @return List of discrete events
      */
-    public List<DiscreteEvent> getEventList() {
+    public List<DiscreteEventType> getEventList() {
         return Collections.synchronizedList(new LinkedList<>(eventList));
     }
 
@@ -207,7 +214,7 @@ public abstract class DiscreteEventSimulator implements SimulationLoopNotifiable
      *
      * @param eventList New discrete event list
      */
-    protected void setEventList(List<DiscreteEvent> eventList) {
+    protected void setEventList(List<DiscreteEventType> eventList) {
         this.eventList.clear();
         this.eventList.addAll(eventList);
     }
