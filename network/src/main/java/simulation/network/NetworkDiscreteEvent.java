@@ -25,7 +25,7 @@ import commons.simulation.DiscreteEvent;
 /**
  * Class that holds all relevant information for a network discrete event
  */
-public class NetworkDiscreteEvent implements DiscreteEvent {
+public class NetworkDiscreteEvent extends DiscreteEvent {
 
     /** Time of the event measured in nanoseconds */
     private long eventTimeNs;
