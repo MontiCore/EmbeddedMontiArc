@@ -50,13 +50,14 @@ public abstract class Bus extends EEComponent {
 
 	protected String currentKeepAliveID = "";
 
-	protected HashMap<BusEntry, List<EEComponent>> sendTo;
+	//protected HashMap<BusEntry, List<EEComponent>> sendTo;
 
 	protected Bus(EESimulator simulator) {
 		super(simulator);
 		this.connectedComponents = new ArrayList<EEComponent>();
-		sendTo = new HashMap<BusEntry, List<EEComponent>>();
+		//sendTo = new HashMap<BusEntry, List<EEComponent>>();
 		this.ID = "Bus" + UUID.randomUUID().toString();
+		componentType = EEComponentType.BUS;
 	}
 
 	public String getID() {
@@ -140,28 +141,19 @@ public abstract class Bus extends EEComponent {
 	}
 
 
-	private void updateSendTo(HashMap<BusEntry, List<EEComponent>> externalList, EEComponent component){
-		Set<BusEntry> keys = externalList.keySet();
-		for(BusEntry message: keys){
-			if(sendTo.containsKey(message)){
-				List<EEComponent> targets = sendTo.get(message);
-				targets.add(component);
-				sendTo.put(message, targets);
-			}
-			else{
-				List<EEComponent> list = new ArrayList<EEComponent>();
-				list.add(component);
-				sendTo.put(message, list);
-			}
-		}
+	public void registerComponent(EEComponent component){//messages are all needed/wanted messageIDs
+		List<BusEntry> messages = component.getListenTo();
+		registerComponent(component, messages);
 	}
 
 
-	public void registerComponent(EEComponent component, List<BusEntry> messages){//messages are all needed/ wanted messageIDs
-		connectedComponents.add(component);
-		if(component.getID().contains("Bus")){
-			((Bus)component).updateSendTo(sendTo, this);
+	public void registerComponent(EEComponent component, List<BusEntry> messages){
+		for(EEComponent connect : connectedComponents){
+			if(connect.getComponentType() == EEComponentType.BRIDGE){
+				((Bridge)connect).update(this, listenTo);
+			}
 		}
+		connectedComponents.add(component);
 		for(BusEntry message: messages){
 			if(sendTo.containsKey(message)){
 				List<EEComponent> targets = sendTo.get(message);
@@ -172,11 +164,32 @@ public abstract class Bus extends EEComponent {
 				List<EEComponent> list = new ArrayList<EEComponent>();
 				list.add(component);
 				sendTo.put(message, list);
+				listenTo.add(message);
 			}
 		}
 	}
 
 
+
+	protected void updateSendTo(Bridge component, List<BusEntry> listenTo){
+		for(EEComponent connect : connectedComponents){
+			if(connect.getComponentType() == EEComponentType.BRIDGE && !connect.equals(component)){
+				((Bridge)connect).update(this, listenTo);
+			}
+		}
+		for(BusEntry message: listenTo){
+			if(sendTo.containsKey(message)){
+				List<EEComponent> targets = sendTo.get(message);
+				targets.add(component);
+				sendTo.put(message, targets);
+			}
+			else{
+				List<EEComponent> list = new ArrayList<EEComponent>();
+				list.add(component);
+				sendTo.put(message, list);
+			}
+		}
+	}
 
 	abstract void simulateFor(Duration duration);
 

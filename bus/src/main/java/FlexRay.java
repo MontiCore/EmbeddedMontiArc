@@ -223,17 +223,32 @@ public class FlexRay extends Bus {
 
 	}
 
+//	@Override
+//	protected void registerMessage(BusMessage msg) {
+//		if (msg.getPath().isEmpty()) {
+//			boolean suc = this.setPath(msg);
+//			if (!suc) {
+//				throw new IllegalArgumentException("Message send to unknown controller.");
+//			}
+//		}
+//		if (!messagesByControllerId.containsKey(msg.getControllerID())) {
+//			throw new IllegalArgumentException("Message send by unknown controller.");
+//		} else {
+//			PriorityQueue<BusMessage> controllerMsgs = messagesByControllerId.get(msg.getControllerID());
+//			controllerMsgs.add(msg);
+//			messagesByControllerId.put(msg.getControllerID(), controllerMsgs);
+//		}
+//	}
+
 	@Override
-	protected void registerMessage(BusMessage msg) {
-		if (msg.getPath().isEmpty()) {
-			boolean suc = this.setPath(msg);
-			if (!suc) {
-				throw new IllegalArgumentException("Message send to unknown controller.");
-			}
+	protected void registerMessage(BusMessage msg){
+		if(!sendTo.containsKey(msg.getMessageID())){
+			throw new IllegalArgumentException("Message has no target in this Bus.");
 		}
-		if (!messagesByControllerId.containsKey(msg.getControllerID())) {
+		if(!messagesByControllerId.containsKey(msg.getControllerID())){
 			throw new IllegalArgumentException("Message send by unknown controller.");
-		} else {
+		}
+		else{
 			PriorityQueue<BusMessage> controllerMsgs = messagesByControllerId.get(msg.getControllerID());
 			controllerMsgs.add(msg);
 			messagesByControllerId.put(msg.getControllerID(), controllerMsgs);
