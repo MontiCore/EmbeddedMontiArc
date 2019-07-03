@@ -4,6 +4,7 @@ import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ConstantSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -31,6 +32,11 @@ public abstract class LayerSupportChecker {
 
         // Support all inputs and outputs
         if (resolvedElement.isInput() || resolvedElement.isOutput()) {
+            return true;
+        }
+
+        // Support for constants is checked in ArchitectureSupportChecker
+        if (resolvedElement instanceof ConstantSymbol) {
             return true;
         }
 

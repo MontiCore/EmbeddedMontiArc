@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ConstantSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.se_rwth.commons.logging.Log;
@@ -90,11 +91,10 @@ public class ArchitectureElementData {
         return getTemplateController().isSoftmaxOutput(getElement());
     }
 
-    public boolean isOneHotOutput(){
-        return getTemplateController().isOneHotOutput(getElement());
+    public int getConstValue() {
+        ConstantSymbol constant = (ConstantSymbol) getElement();
+        return constant.getExpression().getIntValue().get();
     }
-
-
 
     public List<Integer> getKernel(){
         return ((LayerSymbol) getElement())
@@ -162,13 +162,8 @@ public class ArchitectureElementData {
     }
 
     public int getSize(){
-        if(getElement().isOutput()) {
-            return ((LayerSymbol) getElement())
-                    .getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get();
-        }else{
-            return ((LayerSymbol) getElement())
-                    .getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get();
-        }
+        return ((LayerSymbol) getElement())
+                .getIntValue(AllPredefinedLayers.SIZE_NAME).get();
     }
 
     @Nullable
