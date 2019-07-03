@@ -190,8 +190,16 @@ public class GenerationTest extends AbstractSymtabTest {
         EMADLGeneratorCli.main(args);
         assertEquals(Log.getFindings().size(), 1);
         assertEquals(Log.getFindings().get(0).toString(),
-                "Tagfile was found, ignoring data_paths.txt: src/test/resources/models");
+                "Tagging info for symbol was found, ignoring data_paths.txt: src/test/resources/models");
         assertTrue(Log.getErrorCount() == 0);
+    }
+
+    @Test
+    public void testAlexNetTaggingForInstances() {
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.Parent", "-b", "MXNET", "-f", "n", "-c",
+                "n" };
+        EMADLGeneratorCli.main(args);
     }
 
     @Test(expected = RuntimeException.class)
@@ -200,14 +208,14 @@ public class GenerationTest extends AbstractSymtabTest {
         String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.AlexnetInvalid", "-b", "MXNET", "-f", "n",
                 "-c", "n" };
         EMADLGeneratorCli.main(args);
-        assertEquals(Log.getFindings().size(), 3);
-        assertTrue(
-                Log.getFindings().get(0).toString().matches("Filepath '(.)*/test/resources/models' does not exist!"));
-        assertEquals(Log.getFindings().get(1).toString(), "DatapathType is incorrect, must be of Type: HDF5 or LMDB");
-        assertEquals(Log.getFindings().get(2).toString(),
-                "Tagfile was found, ignoring data_paths.txt: test/resources/models");
+    }
 
-        assertTrue(Log.getErrorCount() == 0);
+    @Test(expected = RuntimeException.class)
+    public void testInvalidPathCoCosInstances() {
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.ParentInvalidPath", "-b", "MXNET", "-f",
+                "n", "-c", "n" };
+        EMADLGeneratorCli.main(args);
     }
 
     @Test(expected = RuntimeException.class)
@@ -217,11 +225,14 @@ public class GenerationTest extends AbstractSymtabTest {
         String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.AlexnetInvalidType", "-b", "MXNET", "-f",
                 "n", "-c", "n" };
         EMADLGeneratorCli.main(args);
-        assertEquals(Log.getFindings().size(), 2);
-        assertEquals(Log.getFindings().get(0).toString(), "DatapathType is incorrect, must be of Type: HDF5 or LMDB");
-        assertEquals(Log.getFindings().get(1).toString(),
-                "Tagfile was found, ignoring data_paths.txt: src/test/resources/models");
+    }
 
-        assertTrue(Log.getErrorCount() == 0);
+    @Test(expected = RuntimeException.class)
+    public void testInvalidTypeCocosInstances() {
+
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.ParentInvalidType", "-b", "MXNET", "-f",
+                "n", "-c", "n" };
+        EMADLGeneratorCli.main(args);
     }
 }

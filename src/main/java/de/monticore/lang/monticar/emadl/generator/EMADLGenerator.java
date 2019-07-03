@@ -381,7 +381,7 @@ public class EMADLGenerator {
 
             // TODO: Replace warinings with errors, until then use this method
             stopGeneratorIfWarning();
-            Log.warn("Tagfile was found, ignoring data_paths.txt: " + dataPath);
+            Log.warn("Tagging info for symbol was found, ignoring data_paths.txt: " + dataPath);
         } else {
             DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
             dataPath = newParserConfig.getDataPath(component.getFullName());
@@ -565,7 +565,7 @@ public class EMADLGenerator {
 
     private void stopGeneratorIfWarning() {
         for (int i = 0; i < Log.getFindings().size(); i++) {
-            if (Log.getFindings().get(i).toString().matches("Filepath '(.)*/test/resources/models' does not exist!")) {
+            if (Log.getFindings().get(i).toString().matches("Filepath '(.)*' does not exist!")) {
                 throw new RuntimeException(Log.getFindings().get(i).toString());
             } else if (Log.getFindings().get(i).toString()
                     .equals("DatapathType is incorrect, must be of Type: HDF5 or LMDB")) {
