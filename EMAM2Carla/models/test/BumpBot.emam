@@ -9,7 +9,7 @@ component BumpBot{
 		//in Q normal_impulse_y,
 		//in Vector3 normal_impulse,
 		//out Vector3 normal_impulse_out,
-		//out Vector3 wrapped_normal_impulse;
+		//out Vector3 wrapped_normal_impulse,
 		in Collision collision;
 
 	implementation Math{
