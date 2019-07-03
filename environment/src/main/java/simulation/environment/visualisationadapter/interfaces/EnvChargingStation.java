@@ -20,11 +20,21 @@
  */
 package simulation.environment.visualisationadapter.interfaces;
 
-/**
- * Created by lukas on 15.12.16.
- *
- * An enum type for defining the type of an Environment Object
- */
-public enum EnvTag {
-    BUILDING, STREET, TREE, TRAFFIC_SIGNAL, WATERWAY, CHARGING_STATION
+public interface EnvChargingStation extends EnvObject {
+    /**
+     * set default capacity to 1
+     */
+    public final int CAPACITY = 1;
+
+    /**
+     *
+     * @return the number of vehicles which can be charged at the same time
+     */
+    public abstract int getCapacity();
+
+    /**
+     *
+     * @return the name of the charging station
+     */
+    public abstract String getName();
 }

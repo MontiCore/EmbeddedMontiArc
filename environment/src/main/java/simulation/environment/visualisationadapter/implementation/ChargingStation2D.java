@@ -18,13 +18,36 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package simulation.environment.visualisationadapter.interfaces;
+package simulation.environment.visualisationadapter.implementation;
 
-/**
- * Created by lukas on 15.12.16.
- *
- * An enum type for defining the type of an Environment Object
- */
-public enum EnvTag {
-    BUILDING, STREET, TREE, TRAFFIC_SIGNAL, WATERWAY, CHARGING_STATION
+import simulation.environment.visualisationadapter.interfaces.EnvNode;
+import simulation.environment.visualisationadapter.interfaces.EnvTag;
+import simulation.environment.visualisationadapter.interfaces.EnvChargingStation;
+
+import java.util.List;
+
+public class ChargingStation2D extends EnvObject2D implements EnvChargingStation {
+
+
+    private int capacity;
+    private String name;
+
+    public ChargingStation2D(List<EnvNode> nodes) {
+        super(nodes, EnvTag.CHARGING_STATION);
+    }
+
+    public ChargingStation2D(List<EnvNode> nodes,  long osmId) {
+        super(nodes, EnvTag.CHARGING_STATION, osmId);
+
+    }
+
+    @Override
+    public int getCapacity() {
+        return capacity;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
 }
