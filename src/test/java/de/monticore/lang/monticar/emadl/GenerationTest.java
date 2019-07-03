@@ -189,7 +189,23 @@ public class GenerationTest extends AbstractSymtabTest {
         EMADLGeneratorCli.main(args);
         assertEquals(Log.getFindings().size(), 1);
         assertEquals(Log.getFindings().get(0).toString(),
+                "Tagfile was found, ignoring data_paths.txt: src/test/resources/models");
+        assertTrue(Log.getErrorCount() == 0);
+    }
+
+    @Test
+    public void testInvalidPathCoCos() {
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.AlexnetInvalid", "-b", "MXNET", "-f", "n",
+                "-c", "n" };
+        EMADLGeneratorCli.main(args);
+        assertEquals(Log.getFindings().size(), 3);
+        assertEquals(Log.getFindings().get(0).toString(),
+                "Filepath '/Users/ceso/Documents/uni/SLE/projekt/EMADL2CPP/test/resources/models' does not exist!");
+        assertEquals(Log.getFindings().get(1).toString(), "DatapathType is incorrect, must be of Type: HDF5 or LMDB");
+        assertEquals(Log.getFindings().get(2).toString(),
                 "Tagfile was found, ignoring data_paths.txt: test/resources/models");
+
         assertTrue(Log.getErrorCount() == 0);
     }
 }

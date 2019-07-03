@@ -34,6 +34,7 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnntrain.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
+import de.monticore.lang.monticar.emadl._cocos.DataPathCocos;
 import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.ArmadilloHelper;
@@ -371,6 +372,7 @@ public class EMADLGenerator {
         String dataPath;
 
         if (!tags.isEmpty()) {
+            DataPathCocos.check(component, taggingResolver);
             dataPath = (String) tags.get(0).getValues().get(0);
             Log.warn("Tagfile was found, ignoring data_paths.txt: " + dataPath);
         } else {
