@@ -28,7 +28,6 @@ import java.util.List;
 
 public class ChargingStation2D extends EnvObject2D implements EnvChargingStation {
 
-
     private int capacity;
     private String name;
 

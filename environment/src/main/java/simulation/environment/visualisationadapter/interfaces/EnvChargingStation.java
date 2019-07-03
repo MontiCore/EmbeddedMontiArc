@@ -21,10 +21,6 @@
 package simulation.environment.visualisationadapter.interfaces;
 
 public interface EnvChargingStation extends EnvObject {
-    /**
-     * set default capacity to 1
-     */
-    public final int CAPACITY = 1;
 
     /**
      *
