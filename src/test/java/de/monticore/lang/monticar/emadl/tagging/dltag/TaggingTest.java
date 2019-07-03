@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.emadl.tagging.dltag;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+
 import de.monticore.lang.monticar.emadl.AbstractTaggingResolverTest;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -50,16 +51,15 @@ public class TaggingTest extends AbstractTaggingResolverTest {
 
     @Test
     public void instanceTaggingParent() {
-      TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/");
-      EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.Parent", EMAComponentSymbol.KIND)
-              .orElse(null);
-      Collection<TagSymbol> tags = tagging.getTags(
-              symbol.getSpannedScope().getLocalSymbols().get("a1").iterator().next(), DataPathSymbol.KIND
-      );
-      assertEquals(1, tags.size());
+    TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/");
+    EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.Parent", EMAComponentSymbol.KIND)
+        .orElse(null);
 
-      DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
-      assertEquals(tag.getPath(), "lisjef");
-      assertEquals(tag.getType(), "r34");
+    Collection<TagSymbol> tags = tagging.getTags(symbol.getSpannedScope().getLocalSymbols().get("a1").iterator().next(), DataPathSymbol.KIND);
+    assertEquals(1, tags.size());
+
+    DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
+    assertEquals(tag.getPath(), "lisjef");
+    assertEquals(tag.getType(), "r34");
     }
 }
