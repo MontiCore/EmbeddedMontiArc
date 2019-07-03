@@ -35,6 +35,7 @@ import de.monticore.lang.monticar.cnntrain.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.emadl._cocos.DataPathCocos;
+import de.monticore.lang.monticar.emadl._cocos.CheckArchitecture;
 import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.ArmadilloHelper;
@@ -48,6 +49,7 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
+import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
@@ -372,8 +374,13 @@ public class EMADLGenerator {
         String dataPath;
 
         if (!tags.isEmpty()) {
-            DataPathCocos.check(component, taggingResolver);
-            dataPath = (String) tags.get(0).getValues().get(0);
+            DataPathSymbol dataPathSymbol = (DataPathSymbol) tags.get(0);
+            DataPathCocos.check(dataPathSymbol);
+
+            dataPath = dataPathSymbol.getPath();
+
+            // TODO: Replace warinings with errors, until then use this method
+            stopGeneratorIfWarning();
             Log.warn("Tagfile was found, ignoring data_paths.txt: " + dataPath);
         } else {
             DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
@@ -553,6 +560,17 @@ public class EMADLGenerator {
             System.err.println("IO Error occurred");
             System.exit(1);
             return null;
+        }
+    }
+
+    private void stopGeneratorIfWarning() {
+        for (int i = 0; i < Log.getFindings().size(); i++) {
+            if (Log.getFindings().get(i).toString().matches("Filepath '(.)*/test/resources/models' does not exist!")) {
+                throw new RuntimeException(Log.getFindings().get(i).toString());
+            } else if (Log.getFindings().get(i).toString()
+                    .equals("DatapathType is incorrect, must be of Type: HDF5 or LMDB")) {
+                throw new RuntimeException(Log.getFindings().get(i).toString());
+            }
         }
     }
 }

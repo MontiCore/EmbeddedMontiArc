@@ -39,6 +39,7 @@ import java.util.List;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import org.junit.rules.ExpectedException;
 
 public class GenerationTest extends AbstractSymtabTest {
 
@@ -193,7 +194,7 @@ public class GenerationTest extends AbstractSymtabTest {
         assertTrue(Log.getErrorCount() == 0);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void testInvalidPathCoCos() {
         Log.getFindings().clear();
         String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.AlexnetInvalid", "-b", "MXNET", "-f", "n",
@@ -209,8 +210,9 @@ public class GenerationTest extends AbstractSymtabTest {
         assertTrue(Log.getErrorCount() == 0);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void testInvalidTypeCocos() {
+
         Log.getFindings().clear();
         String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.AlexnetInvalidType", "-b", "MXNET", "-f",
                 "n", "-c", "n" };
