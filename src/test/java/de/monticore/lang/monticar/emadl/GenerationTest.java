@@ -200,8 +200,8 @@ public class GenerationTest extends AbstractSymtabTest {
                 "-c", "n" };
         EMADLGeneratorCli.main(args);
         assertEquals(Log.getFindings().size(), 3);
-        assertEquals(Log.getFindings().get(0).toString(),
-                "Filepath '/Users/ceso/Documents/uni/SLE/projekt/EMADL2CPP/test/resources/models' does not exist!");
+        assertTrue(
+                Log.getFindings().get(0).toString().matches("Filepath '(.)*/test/resources/models' does not exist!"));
         assertEquals(Log.getFindings().get(1).toString(), "DatapathType is incorrect, must be of Type: HDF5 or LMDB");
         assertEquals(Log.getFindings().get(2).toString(),
                 "Tagfile was found, ignoring data_paths.txt: test/resources/models");
