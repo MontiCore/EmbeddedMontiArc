@@ -1,24 +1,7 @@
-package simulation.batteryFeature;
+package simulation.util;
 
-import rwth.server.bo.util.Logger;
-import rwth.server.pojo.MapArea;
 import rwth.server.simulation.Car;
-import commons.simulation.IdGenerator;
-import commons.simulation.PhysicalObject;
-import commons.simulation.PhysicalObjectType;
-import commons.simulation.SimulationLoopExecutable;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-import org.apache.commons.math3.linear.*;
-import simulation.environment.WorldModel;
-import simulation.util.Log;
-import simulation.util.MathHelper;
-import java.util.AbstractMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import simulation.batteryFeature.ChargingStation;
+import simulation.environment.object.ChargingStation;
 
 /**
  * Charging Station Class
