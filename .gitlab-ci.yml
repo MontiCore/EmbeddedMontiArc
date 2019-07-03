@@ -38,6 +38,7 @@ masterJobLinux:
   - apt-get update
   - apt-get install -y libxext6
   - apt-get install -y libxrender1
+  - apt-get install -y libxtst6
   script:
   - mvn clean deploy -s settings.xml
   only:
@@ -50,6 +51,7 @@ branchJobLinux:
   - apt-get update
   - apt-get install -y libxext6
   - apt-get install -y libxrender1
+  - apt-get install -y libxtst6
   script:
   - mvn clean install -s settings.xml
   except:
