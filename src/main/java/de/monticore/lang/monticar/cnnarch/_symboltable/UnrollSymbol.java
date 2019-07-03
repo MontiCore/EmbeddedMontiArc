@@ -202,12 +202,6 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes() {
-        try {
-            System.err.println("############################" + this.getIntValue(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH).get());
-        }catch (Exception e){
-            System.err.println("44444444444444444444444444");
-            e.printStackTrace();
-        }
         if (getElements().isEmpty()){
             if (getInputElement().isPresent()){
                 return getInputElement().get().getOutputTypes();
