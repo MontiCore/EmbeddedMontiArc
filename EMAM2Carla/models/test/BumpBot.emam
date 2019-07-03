@@ -5,14 +5,14 @@ component BumpBot{
 
 	ports	out Ego_Vehicle test,
 		in Vehicle_Status vehicle_status,
-		//in Q normal_impulse_x,
-		//in Q normal_impulse_y,
-		//in Vector3 normal_impulse,
-		//out Vector3 normal_impulse_out,
-		//out Vector3 wrapped_normal_impulse,
 		in Collision collision;
 
 	implementation Math{
+		static Vector3 collision_normale;
+		static Quaternion orientation;
+		collision_normale = collision.normal_impulse;
+		orientation = vehicle_status.orientation;
+
 		static B collisionHappened = false;
 		test.throttle = 1.0;
 		test.brake = 0.0;
@@ -20,7 +20,6 @@ component BumpBot{
 		test.reverse = false;
 		test.gear = 1;
 		test.manual_gear_shift = false;		
-		//normal_impulse_out = -65000.0;
 		//if normal_impulse > 0.0 //if a collision occurred drive into the other direction
 			test.reverse = true;
 		//end
