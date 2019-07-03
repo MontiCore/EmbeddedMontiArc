@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.emadl.tagging.dltag;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 
 import de.monticore.lang.monticar.emadl.AbstractTaggingResolverTest;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
@@ -29,6 +30,7 @@ import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
@@ -51,15 +53,54 @@ public class TaggingTest extends AbstractTaggingResolverTest {
 
     @Test
     public void instanceTaggingParent() {
-    TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/");
-    EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.Parent", EMAComponentSymbol.KIND)
-        .orElse(null);
+        TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/");
+        EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>
+                resolve("tagging.Parent", EMAComponentSymbol.KIND).get();
 
-    Collection<TagSymbol> tags = tagging.getTags(symbol.getSpannedScope().getLocalSymbols().get("a1").iterator().next(), DataPathSymbol.KIND);
-    assertEquals(1, tags.size());
+        EMAComponentInstanceSymbol mainInstance = tagging.<EMAComponentInstanceSymbol>
+                resolve("tagging.parent", EMAComponentInstanceSymbol.KIND).get();
+        EMAComponentInstanceSymbol a1 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
+                resolve("a1", EMAComponentInstanceSymbol.KIND).get();
+        EMAComponentInstanceSymbol a2 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
+                resolve("a2", EMAComponentInstanceSymbol.KIND).get();
 
-    DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
-    assertEquals(tag.getPath(), "lisjef");
-    assertEquals(tag.getType(), "r34");
+        assertEquals("tagging.parent.a1", a1.getFullName());
+        assertEquals("tagging.parent.a2", a2.getFullName());
+
+        /*ArrayList<EMAComponentInstanceSymbol> subInstances = new ArrayList<EMAComponentInstanceSymbol>(mainInstance.getSubComponents());
+
+        EMAComponentInstanceSymbol a1 = subInstances.get(0);
+        EMAComponentInstanceSymbol a2 = subInstances.get(1);
+        System.out.println(a1);
+        System.out.println(a2);
+
+        Collection<TagSymbol> tagsA1 = tagging.getTags(a1, DataPathSymbol.KIND);
+        assertEquals(1, tagsA1.size());
+
+        DataPathSymbol tagA1 = (DataPathSymbol) tagsA1.iterator().next();
+        assertEquals(tagA1.getPath(), "src/test/models/");
+        assertEquals(tagA1.getType(), "LMDB");
+
+        Collection<TagSymbol> tagsA2 = tagging.getTags(a2, DataPathSymbol.KIND);
+        assertEquals(1, tagsA2.size());
+
+        DataPathSymbol tagA2 = (DataPathSymbol) tagsA2.iterator().next();
+        assertEquals(tagA2.getPath(), "lisjef");
+        assertEquals(tagA2.getType(), "r34");*/
+
+        Collection<TagSymbol> tagsA1 = tagging.getTags(symbol.getSpannedScope().getLocalSymbols().get("a1").iterator().next(), DataPathSymbol.KIND);
+        assertEquals(1, tagsA1.size());
+
+        DataPathSymbol tagA1 = (DataPathSymbol) tagsA1.iterator().next();
+        assertEquals(tagA1.getPath(), "src/test/models/");
+        assertEquals(tagA1.getType(), "LMDB");
+
+
+        Collection<TagSymbol> tagsA2 = tagging.getTags(symbol.getSpannedScope().getLocalSymbols().get("a2").iterator().next(), DataPathSymbol.KIND);
+        assertEquals(1, tagsA2.size());
+
+        DataPathSymbol tagA2 = (DataPathSymbol) tagsA2.iterator().next();
+        assertEquals(tagA2.getPath(), "lisjef");
+        assertEquals(tagA2.getType(), "r34");
     }
 }

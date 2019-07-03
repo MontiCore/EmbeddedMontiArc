@@ -22,6 +22,9 @@ package de.monticore.lang.monticar.emadl._cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+
 import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -38,9 +41,31 @@ public class DataPathCocos {
         checkDataPath(tags);
     }
 
+    public static void check(EMAComponentInstantiationSymbol instance, TaggingResolver tagging) {
+        Collection<TagSymbol> tags = tagging.getTags(instance, DataPathSymbol.KIND);
+        checkDataPath(tags);
+    }
+
     public static void check(EMAComponentSymbol component, TaggingResolver tagging) {
+        if (!component.getSubComponents().isEmpty()) {
+            component.getSubComponents().stream()
+                .forEach(instance -> check(instance, tagging));
+
+            return;
+        }
+
         Collection<TagSymbol> tags = tagging.getTags(component, DataPathSymbol.KIND);
         checkDataPath(tags);
+        checkIsValidArchitecture(component);
+    }
+
+    private static void checkIsValidArchitecture(EMAComponentSymbol component) {
+        ArchitectureSymbol architecture = component.getSpannedScope().
+                <ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).orElse(null);
+
+        if (architecture == null) {
+            Log.warn(String.format("Component: %s is not a valid Architecture!", component.getFullName()));
+        }
     }
 
     private static void checkDataPath(Collection<TagSymbol> tags) {

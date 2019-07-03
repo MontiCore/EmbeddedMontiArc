@@ -34,10 +34,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import de.monticore.lang.monticar.emadl.AbstractTaggingResolverTest;
-
 
 import static de.monticore.lang.monticar.emadl.ParserTest.ENABLE_FAIL_QUICK;
 
@@ -46,6 +46,8 @@ public class TaggingCoCoTest extends AbstractTaggingResolverTest {
     public void setUp() {
         // ensure an empty log
         Log.getFindings().clear();
+        Log.enableNonZeroExit(true);
+        Log.enableFailQuick(false);
     }
 
     @Test
@@ -72,12 +74,25 @@ public class TaggingCoCoTest extends AbstractTaggingResolverTest {
         assertTrue(Log.getFindings().isEmpty());
     }
 
+    @Test
+    public void testCoCosWithInvalidArchitecture() {
+        TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources");
+        EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.Invalidnet", EMAComponentSymbol.KIND)
+            .orElse(null);
+        assertNotNull(symbol);
+
+        checkValid(symbol, tagging);
+
+        assertFalse(Log.getFindings().isEmpty());
+        assertEquals(Log.getFindings().get(0).toString(), "Component: tagging.Invalidnet is not a valid Architecture!");
+    }
+
     //@Test
     public void testCoCosForInstancesWithValidType() {
         TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/");
-        EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.CorrectTypeInstance.net1", EMAComponentSymbol.KIND)
+        EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.CorrectTypeInstance", EMAComponentSymbol.KIND)
             .orElse(null);
-        //assertNotNull(symbol);
+        assertNotNull(symbol);
 
         checkValid(symbol, tagging);
 
