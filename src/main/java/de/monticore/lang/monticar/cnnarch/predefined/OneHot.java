@@ -39,10 +39,15 @@ public class OneHot extends PredefinedLayerDeclaration {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
-        channels = layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get();
+
+        if(layer.getOutputElement().get() instanceof IOSymbol && layer.getOutputElement().get().isOutput()) {
+            channels = ((IOSymbol) layer.getOutputElement().get()).getDefinition().getType().getChannels();
+        }else{
+            channels = layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get();
+        }
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
-                .channels(layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get())
+                .channels(channels)
                 .height(1)
                 .width(1)
                 .elementType("0", "1")

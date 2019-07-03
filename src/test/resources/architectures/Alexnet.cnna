@@ -55,5 +55,6 @@ architecture Alexnet(img_height=224, img_width=224, img_channels=3, classes=10){
     Concatenate() ->
     FullyConnected(units=10) ->
     Softmax() ->
+    OneHot() ->
     predictions;
 }
