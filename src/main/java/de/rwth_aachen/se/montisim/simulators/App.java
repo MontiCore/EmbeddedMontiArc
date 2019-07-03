@@ -42,7 +42,8 @@ public class App
 
 
         try {
-            FileSystem fileSystem = new FileSystem(LibraryService.getWorkingDirectory());
+            //FileSystem fileSystem = new FileSystem(LibraryService.getWorkingDirectory());
+            FileSystem fileSystem = new FileSystem(System.getProperty("user.dir") + "/");
             BasicController sim_controller = new BasicController(fileSystem);
 
             if (args.length > 0){
