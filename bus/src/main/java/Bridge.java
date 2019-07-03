@@ -32,14 +32,18 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jfree.util.Log;
 
 public class Bridge extends EEComponent{
          protected Pair<Bus, Bus> connected;
+         private final Instant delay;
 
-         public Bridge (EESimulator simulator, Pair<Bus, Bus> connected){
+         public Bridge (EESimulator simulator, Pair<Bus, Bus> connected, Instant delay){
              super(simulator);
              componentType = EEComponentType.BRIDGE;
              this.connected = connected;
@@ -47,6 +51,7 @@ public class Bridge extends EEComponent{
              List<BusEntry> listenConnected2 = connected.getValue().getListenTo();
              connected.getKey().registerComponent(this, listenConnected2);
              connected.getValue().registerComponent(this, listenConnected1);
+             this.delay = delay;
 
          }
 
@@ -55,7 +60,18 @@ public class Bridge extends EEComponent{
          }
 
         public void processEvent(DiscreteEvent event){
-             
+             if(event instanceof BusMessage){
+                 BusMessage msg = (BusMessage) event;
+                 if (msg.getType() == MessageType.SEND) {
+                    //need to know which Bus send this event so to which one I have to send
+                 } else {
+                     throw new IllegalArgumentException(
+                             "Invalid MessageType. Expected SEND but was " + msg.getType().toString());
+                 }
+             }
+             else{
+                 throw new IllegalArgumentException("Only BusMessages expected.");
+             }
         }
 
          protected void update(Bus bus, List<BusEntry> messages){

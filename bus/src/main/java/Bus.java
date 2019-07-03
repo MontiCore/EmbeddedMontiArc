@@ -141,13 +141,13 @@ public abstract class Bus extends EEComponent {
 	}
 
 
-	public void registerComponent(EEComponent component){//messages are all needed/wanted messageIDs
+	public void registerComponent(EEComponent component){
 		List<BusEntry> messages = component.getListenTo();
 		registerComponent(component, messages);
 	}
 
 
-	public void registerComponent(EEComponent component, List<BusEntry> messages){
+	public void registerComponent(EEComponent component, List<BusEntry> messages){//messages are all needed/wanted messageIDs
 		for(EEComponent connect : connectedComponents){
 			if(connect.getComponentType() == EEComponentType.BRIDGE){
 				((Bridge)connect).update(this, listenTo);
