@@ -7,15 +7,23 @@ public class CNNArch2GluonArchitectureSupportChecker extends ArchitectureSupport
 
     public CNNArch2GluonArchitectureSupportChecker() {}
 
+    @Override
     protected boolean checkMultipleStreams(ArchitectureSymbol architecture) {
         return true;
     }
 
+    @Override
     protected boolean checkMultipleInputs(ArchitectureSymbol architecture) {
         return true;
     }
 
+    @Override
     protected boolean checkMultipleOutputs(ArchitectureSymbol architecture) {
+        return true;
+    }
+
+    @Override
+    protected boolean checkConstants(ArchitectureSymbol architecture) {
         return true;
     }
 

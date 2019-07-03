@@ -8,8 +8,7 @@
                 strides=(${tc.join(element.stride, ",")}),
                 use_bias=${element.noBias?string("False", "True")})
 <#include "OutputShape.ftl">
-</#if>
-<#if mode == "FORWARD_FUNCTION">
+<#elseif mode == "FORWARD_FUNCTION">
 <#if element.padding??>
         ${element.name}padding = self.${element.name}padding(${input})
 <#assign input = element.name + "padding">

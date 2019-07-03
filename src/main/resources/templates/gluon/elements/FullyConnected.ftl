@@ -8,8 +8,7 @@
 </#if>
             self.${element.name} = gluon.nn.Dense(units=${units}, use_bias=${use_bias})
             <#include "OutputShape.ftl">
-</#if>
-<#if mode == "FORWARD_FUNCTION">
+<#elseif mode == "FORWARD_FUNCTION">
 <#if flatten>
         ${element.name}flatten_ = self.${element.name}flatten(${input})
         <#assign input = element.name + "flatten_">

@@ -94,7 +94,8 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 with autograd.record():
                     softmax_output = self._networks[0](data_data)
 
-                    loss = loss_functions['softmax'](softmax_output, softmax_label)
+                    loss = \
+                        loss_functions['softmax'](softmax_output, softmax_label)
 
                 loss.backward()
 
@@ -125,7 +126,8 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                softmax_output = self._networks[0](data_data)
+                if True: # Fix indentation
+                    softmax_output = self._networks[0](data_data)
 
                 predictions = [
                     mx.nd.argmax(softmax_output, axis=1)
@@ -143,7 +145,9 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                softmax_output = self._networks[0](data_data)
+                if True: # Fix indentation
+                    softmax_output = self._networks[0](data_data)
+
                 predictions = [
                     mx.nd.argmax(softmax_output, axis=1)
                 ]
