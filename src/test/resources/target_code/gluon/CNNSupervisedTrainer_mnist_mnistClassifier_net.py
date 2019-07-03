@@ -94,7 +94,8 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
                 with autograd.record():
                     predictions_output = self._networks[0](image_data)
 
-                    loss = loss_functions['predictions'](predictions_output, predictions_label)
+                    loss = \
+                        loss_functions['predictions'](predictions_output, predictions_label)
 
                 loss.backward()
 
@@ -125,7 +126,8 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                predictions_output = self._networks[0](image_data)
+                if True: # Fix indentation
+                    predictions_output = self._networks[0](image_data)
 
                 predictions = [
                     mx.nd.argmax(predictions_output, axis=1)
@@ -143,7 +145,9 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                predictions_output = self._networks[0](image_data)
+                if True: # Fix indentation
+                    predictions_output = self._networks[0](image_data)
+
                 predictions = [
                     mx.nd.argmax(predictions_output, axis=1)
                 ]

@@ -235,7 +235,6 @@ public class GenerationTest extends AbstractSymtabTest {
         }
     }
 
-    @Ignore
     @Test
     public void gluonDdpgTest() {
         Log.getFindings().clear();

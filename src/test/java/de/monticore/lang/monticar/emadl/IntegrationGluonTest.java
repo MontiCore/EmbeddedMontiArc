@@ -43,30 +43,6 @@ public class IntegrationGluonTest extends IntegrationTest {
     }
 
     @Test
-    public void testMultipleInputs() {
-        Log.getFindings().clear();
-
-        deleteHashFile(multipleInputsHashFile);
-
-        String[] args = {"-m", "src/test/resources/models/", "-r", "MultipleInputs", "-b", "GLUON"};
-        EMADLGeneratorCli.main(args);
-
-        assertTrue(Log.getFindings().isEmpty());
-    }
-
-    @Test
-    public void testMultipleOutputs() {
-        Log.getFindings().clear();
-
-        deleteHashFile(multipleOutputsHashFile);
-
-        String[] args = {"-m", "src/test/resources/models/", "-r", "MultipleOutputs", "-b", "GLUON"};
-        EMADLGeneratorCli.main(args);
-
-        assertTrue(Log.getFindings().isEmpty());
-    }
-
-    @Test
     public void testMultipleStreams() {
         Log.getFindings().clear();
 
