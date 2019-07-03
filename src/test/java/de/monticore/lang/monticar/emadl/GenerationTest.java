@@ -208,4 +208,18 @@ public class GenerationTest extends AbstractSymtabTest {
 
         assertTrue(Log.getErrorCount() == 0);
     }
+
+    @Test
+    public void testInvalidTypeCocos() {
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.AlexnetInvalidType", "-b", "MXNET", "-f",
+                "n", "-c", "n" };
+        EMADLGeneratorCli.main(args);
+        assertEquals(Log.getFindings().size(), 2);
+        assertEquals(Log.getFindings().get(0).toString(), "DatapathType is incorrect, must be of Type: HDF5 or LMDB");
+        assertEquals(Log.getFindings().get(1).toString(),
+                "Tagfile was found, ignoring data_paths.txt: src/test/resources/models");
+
+        assertTrue(Log.getErrorCount() == 0);
+    }
 }
