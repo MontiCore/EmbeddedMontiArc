@@ -63,7 +63,7 @@ public class AllPredefinedLayers {
     public static final String BETA_NAME = "beta";
     public static final String PADDING_NAME = "padding";
     public static final String POOL_TYPE_NAME = "pool_type";
-    public static final String ONE_HOT_SIZE_NAME = "size";
+    public static final String SIZE_NAME = "size";
     public static final String BEAMSEARCH_MAX_LENGTH = "max_length";
     public static final String BEAMSEARCH_WIDTH_NAME = "width";
 

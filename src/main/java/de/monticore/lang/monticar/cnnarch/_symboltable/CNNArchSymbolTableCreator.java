@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
 import de.monticore.lang.math._symboltable.expression.*;
@@ -425,6 +424,17 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         ArgumentSymbol argument = new ArgumentSymbol(node.getName());
         argument.setRhs(value);
         addToScopeAndLinkWithNode(argument, node);
+    }
+
+    public void visit(ASTConstant node) {
+        ConstantSymbol constant = new ConstantSymbol();
+        addToScopeAndLinkWithNode(constant, node);
+    }
+
+    public void endVisit(ASTConstant node) {
+        ConstantSymbol constant = (ConstantSymbol) node.getSymbolOpt().get();
+        constant.setExpression((ArchSimpleExpressionSymbol) node.getArchSimpleExpression().getSymbolOpt().get());
+        removeCurrentScope();
     }
 
     public void visit(ASTIOElement node) {

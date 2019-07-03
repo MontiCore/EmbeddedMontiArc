@@ -91,6 +91,36 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
     }
 
+    protected void errorIfInputChannelSizeIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int channels) {
+        for (ArchTypeSymbol inputType : inputTypes) {
+            if (inputType.getChannels() != channels) {
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Input channel size is "
+                                + inputType.getChannels() + " but needs to be " + channels + "."
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
+    protected void errorIfInputHeightIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int height) {
+        for (ArchTypeSymbol inputType : inputTypes) {
+            if (inputType.getHeight() != height) {
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Input height is "
+                                + inputType.getHeight() + " but needs to be " + height + "."
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
+    protected void errorIfInputWidthIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int width) {
+        for (ArchTypeSymbol inputType : inputTypes) {
+            if (inputType.getWidth() != width) {
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Input width is "
+                                + inputType.getWidth() + " but needs to be " + width + "."
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
     //check input for convolution and pooling
     protected static void errorIfInputSmallerThanKernel(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
         if (!inputTypes.isEmpty()) {
@@ -112,22 +142,6 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                                     "If this warning appears multiple times, consider changing your architecture"
                             , layer.getSourcePosition());
                 }
-            }
-        }
-    }
-
-
-    //check input for onehot layer
-    protected static void errorIfInputSizeUnequalToOnehotSize(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
-        if (!inputTypes.isEmpty() && layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get() != 0) {
-            int inputChannels = inputTypes.get(0).getChannels();
-            int onehotSize = layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get();
-
-            if (onehotSize != inputChannels){
-                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE +
-                                "The size of the onehot vector is not equal to the output size of the previous layer." +
-                                "This is usually not intended."
-                        , layer.getSourcePosition());
             }
         }
     }

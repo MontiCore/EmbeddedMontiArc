@@ -21,11 +21,13 @@
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
+import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
+import de.monticore.lang.monticar.ranges._ast.ASTRange;
+import de.monticore.lang.monticar.ranges._ast.ASTRangeStepResolution;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
+import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class OneHot extends PredefinedLayerDeclaration {
 
@@ -35,14 +37,12 @@ public class OneHot extends PredefinedLayerDeclaration {
         super(AllPredefinedLayers.ONE_HOT_NAME);
     }
 
-
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
-
-        channels=layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get();
+        channels = layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get();
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
-                .channels(layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get())
+                .channels(layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get())
                 .height(1)
                 .width(1)
                 .elementType("0", "1")
@@ -52,14 +52,58 @@ public class OneHot extends PredefinedLayerDeclaration {
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
-        errorIfInputSizeUnequalToOnehotSize(inputTypes, layer);
+        errorIfInputChannelSizeIsInvalid(inputTypes, layer, 1);
+        errorIfInputHeightIsInvalid(inputTypes, layer, 1);
+        errorIfInputWidthIsInvalid(inputTypes, layer, 1);
+
+        // Check range of input
+        ASTElementType domain = inputTypes.get(0).getDomain();
+
+        if (!domain.isNaturalNumber() && !domain.isWholeNumber()) {
+            Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: Input needs to be natural or whole. "
+                      , layer.getSourcePosition());
+        }
+        else {
+            if (!domain.getRangeOpt().isPresent()) {
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: Range is missing. "
+                          , layer.getSourcePosition());
+            }
+            else {
+                ASTRange range = domain.getRangeOpt().get();
+
+                if (!range.getMin().getNumber().isPresent() || !range.getMax().getNumber().isPresent()) {
+                    Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: Minimum or maximum is missing. "
+                              , layer.getSourcePosition());
+                }
+                else {
+                    double min = range.getMin().getNumber().get();
+                    double max = range.getMax().getNumber().get();
+
+                    // Check if minimum >= 0
+                    if (min < 0) {
+                        Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: Minimum needs to be bigger than 0. "
+                                  , layer.getSourcePosition());
+                    }
+
+                    int size = layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get();
+
+                    // Check if maximum < size
+                    if (max >= size) {
+                        Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: "
+                                  + "Maximum needs to be smaller than size " + size + ". "
+                                  , layer.getSourcePosition());
+                    }
+                }
+            }
+        }
+
     }
 
     public static OneHot create(){
         OneHot declaration = new OneHot();
         List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new VariableSymbol.Builder()
-                        .name(AllPredefinedLayers.ONE_HOT_SIZE_NAME)
+                        .name(AllPredefinedLayers.SIZE_NAME)
                         .constraints(Constraints.POSITIVE, Constraints.INTEGER)
                         .defaultValue(channels)
                         .build()));

@@ -49,6 +49,5 @@ architecture Alexnet_alt_OneHotOutput(img_height=224, img_width=224, img_channel
     Dropout() ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    OneHot(size=classes) ->
     predictions;
 }

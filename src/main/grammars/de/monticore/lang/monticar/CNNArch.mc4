@@ -69,6 +69,8 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
 
     IOElement implements ArchitectureElement =  Name ("[" index:ArchSimpleExpression "]")?;
 
+    Constant implements ArchitectureElement = ArchSimpleExpression;
+
     Layer implements ArchitectureElement =  Name "(" arguments:(ArchArgument || ",")* ")";
 
     Unroll implements ArchitectureElement =  "unroll" "<" timeParameter:LayerParameter ">"
