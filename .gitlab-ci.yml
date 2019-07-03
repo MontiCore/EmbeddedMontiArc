@@ -22,34 +22,21 @@
 stages:
 - build
 
- 
-masterJobWindows:
-  stage: build
-  script:
-  - mvn clean deploy -s settings.xml
-  - cd target
-  - ren "basic-simulator-*.jar" "basic-simulator.jar"
-  tags:
-  - Windows10
-  only:
-  - master
-  artifacts:
-    paths:
-      - target/basic-simulator.jar
   
-branchJobWindows:
+jobWindows:
   stage: build
   script:
   - mvn clean install -s settings.xml
   tags:
   - Windows10
-  except:
-  - master
   
   
 masterJobLinux:
   stage: build
   image: maven:3-jdk-8
+  before_script:
+  - apt-get update
+  - apt-get install libxext6
   script:
   - mvn clean deploy -s settings.xml
   only:
@@ -58,6 +45,9 @@ masterJobLinux:
 branchJobLinux:
   stage: build
   image: maven:3-jdk-8
+  before_script:
+  - apt-get update
+  - apt-get install libxext6
   script:
   - mvn clean install -s settings.xml
   except:
