@@ -4,12 +4,13 @@ import test.structures.*;
 component BumpBot{
 
 	ports	out Ego_Vehicle test,
-		in Q normal_impulse_x,
+		in Vehicle_Status vehicle_status,
+		//in Q normal_impulse_x,
 		//in Q normal_impulse_y,
-		in Vector3 normal_impulse,
-		out Vector3 normal_impulse_out,
-		out Vector3 normal_impulse_copy_out;
-	connect normal_impulse -> normal_impulse_copy_out;
+		//in Vector3 normal_impulse,
+		//out Vector3 normal_impulse_out,
+		//out Vector3 wrapped_normal_impulse;
+		in Collision collision;
 
 	implementation Math{
 		static B collisionHappened = false;
