@@ -20,66 +20,26 @@
  */
 package de.monticore.lang.monticar.emadl._cocos;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-
 import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
-import de.monticore.lang.tagging._symboltable.TagSymbol;
-import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import de.se_rwth.commons.logging.Log;
-import java.util.Optional;
-import java.util.Collection;
 import java.io.File;
 
 public class DataPathCocos {
 
-    public static void check(EMAComponentInstanceSymbol instance, TaggingResolver tagging) {
-        Collection<TagSymbol> tags = tagging.getTags(instance, DataPathSymbol.KIND);
-        checkDataPath(tags);
-    }
+    public static void check(DataPathSymbol dataPathSymbol) {
+        File dataPath = new File(dataPathSymbol.getPath());
 
-    public static void check(EMAComponentInstantiationSymbol instance, TaggingResolver tagging) {
-        Collection<TagSymbol> tags = tagging.getTags(instance, DataPathSymbol.KIND);
-        checkDataPath(tags);
-    }
-
-    public static void check(EMAComponentSymbol component, TaggingResolver tagging) {
-        if (!component.getSubComponents().isEmpty()) {
-            component.getSubComponents().stream()
-                .forEach(instance -> check(instance, tagging));
-
-            return;
+        if (!dataPath.exists()) {
+            Log.warn(String.format("Filepath '%s' does not exist!", dataPath.getAbsolutePath()));
+           //Log.error(String.format("Filepath '%s' does not exist!", dataPath.getAbsolutePath()));
+           // TODO should be error, but test exits abruptly if set to error
         }
 
-        Collection<TagSymbol> tags = tagging.getTags(component, DataPathSymbol.KIND);
-        checkDataPath(tags);
-        checkIsValidArchitecture(component);
-    }
-
-    private static void checkIsValidArchitecture(EMAComponentSymbol component) {
-        ArchitectureSymbol architecture = component.getSpannedScope().
-                <ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).orElse(null);
-
-        if (architecture == null) {
-            Log.warn(String.format("Component: %s is not a valid Architecture!", component.getFullName()));
-        }
-    }
-
-    private static void checkDataPath(Collection<TagSymbol> tags) {
-        if (tags.size() != 0) {
-            DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
-
-            File dataPath = new File(tag.getPath());
-            if (!dataPath.exists()) {
-               Log.warn(String.format("Filepath '%s' does not exist!", dataPath.getAbsolutePath()));
-            }
-
-            if (!tag.getType().equals("HDF5") && !tag.getType().equals("LMDB")) {
-                Log.warn("DatapathType is incorrect, must be of Type: HDF5 or LMDB");
-            }
+        if (!dataPathSymbol.getType().equals("HDF5") && !dataPathSymbol.getType().equals("LMDB")) {
+            Log.warn("DatapathType is incorrect, must be of Type: HDF5 or LMDB");
+            //Log.error("DatapathType is incorrect, must be of Type: HDF5 or LMDB");
+            // TODO should be error, but test exits abruptly if set to error
         }
     }
 }

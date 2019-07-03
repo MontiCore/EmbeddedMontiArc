@@ -1,6 +1,0 @@
-package tagging;
-
-component Invalidnet{
-    ports in Z(0:255)^{3, 224, 224} image,
-         out Q(0:1)^{1000} predictions;
-}

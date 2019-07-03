@@ -22,8 +22,10 @@ package de.monticore.lang.monticar.emadl.cocos;
 
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
+import de.monticore.lang.tagging._symboltable.TagSymbol;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.emadl._cocos.DataPathCocos;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -31,6 +33,7 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
+import java.util.Collection;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -46,8 +49,7 @@ public class TaggingCoCoTest extends AbstractTaggingResolverTest {
     public void setUp() {
         // ensure an empty log
         Log.getFindings().clear();
-        Log.enableNonZeroExit(true);
-        Log.enableFailQuick(false);
+        Log.enableFailQuick(ENABLE_FAIL_QUICK);
     }
 
     @Test
@@ -57,7 +59,10 @@ public class TaggingCoCoTest extends AbstractTaggingResolverTest {
             .orElse(null);
         assertNotNull(symbol);
 
-        checkValid(symbol, tagging);
+        Collection<TagSymbol> tags = tagging.getTags(symbol, DataPathSymbol.KIND);
+        assertEquals(1, tags.size());
+        DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
+        checkValid(tag);
 
         assertFalse(Log.getFindings().isEmpty());
     }
@@ -69,47 +74,34 @@ public class TaggingCoCoTest extends AbstractTaggingResolverTest {
             .orElse(null);
         assertNotNull(symbol);
 
-        checkValid(symbol, tagging);
+        Collection<TagSymbol> tags = tagging.getTags(symbol, DataPathSymbol.KIND);
+        assertEquals(1, tags.size());
+        DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
+        checkValid(tag);
 
         assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
-    public void testCoCosWithInvalidArchitecture() {
-        TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources");
-        EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.Invalidnet", EMAComponentSymbol.KIND)
-            .orElse(null);
-        assertNotNull(symbol);
-
-        checkValid(symbol, tagging);
-
-        assertFalse(Log.getFindings().isEmpty());
-        assertEquals(Log.getFindings().get(0).toString(), "Component: tagging.Invalidnet is not a valid Architecture!");
-    }
-
-    //@Test
     public void testCoCosForInstancesWithValidType() {
         TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources/");
         EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.CorrectTypeInstance", EMAComponentSymbol.KIND)
             .orElse(null);
         assertNotNull(symbol);
 
-        checkValid(symbol, tagging);
+        Collection<TagSymbol> tagsNet1 = tagging.getTags(symbol.getSpannedScope().getLocalSymbols().get("net1").iterator().next(), DataPathSymbol.KIND);
+        assertEquals(1, tagsNet1.size());
+        checkValid((DataPathSymbol) tagsNet1.iterator().next());
+
+        Collection<TagSymbol> tagsNet2 = tagging.getTags(symbol.getSpannedScope().getLocalSymbols().get("net2").iterator().next(), DataPathSymbol.KIND);
+        assertEquals(1, tagsNet2.size());
+        checkValid((DataPathSymbol) tagsNet2.iterator().next());
 
         assertTrue(Log.getFindings().isEmpty());
     }
 
-    /**
-     * Checks all cocos on the given node, and checks for absence of errors. Use this for checking
-     * valid models.
-     */
-    protected static void checkValid(EMAComponentSymbol symbol, TaggingResolver tagging) {
+    protected static void checkValid(DataPathSymbol dataPathSymbol) {
         Log.getFindings().clear();
-        DataPathCocos.check(symbol, tagging);
-    }
-
-    protected static void checkValid(EMAComponentInstanceSymbol instance, TaggingResolver tagging) {
-        Log.getFindings().clear();
-        DataPathCocos.check(instance, tagging);
+        DataPathCocos.check(dataPathSymbol);
     }
 }
