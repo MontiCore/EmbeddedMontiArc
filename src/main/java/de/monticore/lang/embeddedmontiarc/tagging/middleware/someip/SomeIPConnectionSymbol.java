@@ -13,53 +13,45 @@ public class SomeIPConnectionSymbol extends MiddlewareSymbol {
         super(KIND, Optional.empty(), Optional.empty(), Optional.empty());
     }
 
-    public SomeIPConnectionSymbol(String id) {
-        this(KIND, id);
-    }
-
-    public SomeIPConnectionSymbol(SomeIPConnectionKind kind, String id) {
-        super(kind, Optional.ofNullable(id));
-    }
-
-    public SomeIPConnectionSymbol(String serviceID, String instanceID){
+    public SomeIPConnectionSymbol(int serviceID, int instanceID){
         this(KIND, serviceID, instanceID);
     }
 
-    public SomeIPConnectionSymbol(String serviceID, String instanceID, String eventgroupID) {
+    public SomeIPConnectionSymbol(int serviceID, int instanceID, int eventgroupID) {
         this(KIND, serviceID, instanceID, eventgroupID);
     }
 
-    protected SomeIPConnectionSymbol(SomeIPConnectionKind kind, String serviceID, String instanceID, String eventgroupID) {
+    protected SomeIPConnectionSymbol(SomeIPConnectionKind kind, int serviceID, int instanceID, int eventgroupID) {
         super(kind, Optional.ofNullable(serviceID), Optional.ofNullable(instanceID), Optional.ofNullable(eventgroupID));
     }
 
     @Override
     public String toString() {
-        return String.format("SomeIPConnection = %s, %s, %s",
+        return String.format("SomeIPConnection = %d, %d, %d",
                 getserviceID(), getinstanceID(), geteventgroupID());
     }
 
-    public Optional<String> getserviceID() {
+    public Optional<Integer> getserviceID() {
         return getValue(0);
     }
 
-    public Optional<String> getinstanceID() {
+    public Optional<Integer> getinstanceID() {
         return getValue(1);
     }
 
-    public Optional<String> geteventgroupID() {
+    public Optional<Integer> geteventgroupID() {
         return getValue(2);
     }
 
-    public void setserviceID(String serviceID) {
+    public void setserviceID(int serviceID) {
         this.values.set(0, Optional.ofNullable(serviceID));
     }
 
-    public void setinstanceID(String instanceID) {
+    public void setinstanceID(int instanceID) {
         this.values.set(1, Optional.ofNullable(instanceID));
     }
 
-    public void seteventgroupID(String eventgroupID) {
+    public void seteventgroupID(int eventgroupID) {
         this.values.set(2, Optional.ofNullable(eventgroupID));
     }
 
