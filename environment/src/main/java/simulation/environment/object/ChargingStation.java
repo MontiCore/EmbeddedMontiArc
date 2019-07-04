@@ -80,6 +80,9 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	
 	/** Location of the Charging Station */
 	private Point3d location = new Point3d(0, 0, 0);
+	
+	/** Car tracing Radius of the Charging Station */
+	private double stationRadius = 10.00;
 
 	// ===================
 	// Constructor
@@ -174,7 +177,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	public boolean carStaningAtTheCS(Car car) {
 		// Is the Car not moving and near the CS
 		if (car.getAcceleration().getX() == 0 && car.getAcceleration().getY() == 0 && car.getAcceleration().getZ() == 0
-				&& car.getPosition().distance(this.location) < 10.00) {
+				&& car.getPosition().distance(this.location) < stationRadius) {
 			return true;
 		}
 		return false;
@@ -196,8 +199,16 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 		return this.location;
 	}
 
-	public setLocation(Point3d point) {
+	public void setLocation(Point3d point) {
 		this.location = point;
+	}
+	
+	public double getStationRadius(){
+	    return this.stationRadius;
+	}
+	
+	public void setStationRadius(double stationTrackingRadius){
+	    this.stationRadius = stationTrackingRadius;
 	}
 
 	public String toString() {
