@@ -1,3 +1,5 @@
+package simulation.EESimulator;
+
 /**
  *
  * ******************************************************************************
@@ -18,27 +20,29 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+public enum MessageType {
+	SEND("SEND"), 
+	RECEIVE("RECEIVE");
+	/**
+	 * this variable contains the name of the entry
+	 */
+	private final String name;
 
+	/**
+     * constructor for a bus entry
+     *
+     * @param name the name of the entry
+     */
+    private MessageType(String name) {
+        this.name = name;
+    }
 
-
-public class TestComponent extends EEComponent {
-	
-	private String ID;
-
-	public TestComponent(EESimulator simulator, String ID) {
-		super(simulator);
-		this.ID = ID;
+	/**
+	 * Getter of the name attribute
+	 *
+	 * @return the name of the entry
+	 */
+	public String toString() {
+		return this.name;
 	}
-
-	@Override
-	public void processEvent(EEDiscreteEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String getID() {
-		return "TestComponent " + ID;
-	}
-
 }

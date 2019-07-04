@@ -1,4 +1,4 @@
-/**
+package simulation.bus; /**
  *
  * ******************************************************************************
  *  MontiCAR Modeling Family, www.se-rwth.de
@@ -23,6 +23,7 @@ import java.util.Optional;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import simulation.EESimulator.EEComponent;
 
 public class BusUtils {
 

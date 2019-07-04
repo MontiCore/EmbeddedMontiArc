@@ -1,4 +1,4 @@
-
+package simulation.bus;
 /**
  *
  * ******************************************************************************
@@ -20,20 +20,15 @@
  * *******************************************************************************
  */
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.PriorityQueue;
-import java.util.stream.Collectors;
 
 import org.jfree.util.Log;
-
-import commons.simulation.DiscreteEvent;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
 
 public class FlexRay extends Bus {
 

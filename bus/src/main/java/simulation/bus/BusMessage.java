@@ -1,4 +1,4 @@
-
+package simulation.bus;
 /**
  *
  * ******************************************************************************
@@ -27,7 +27,9 @@ import java.util.Optional;
 import java.util.Random;
 
 import commons.controller.commons.BusEntry;
-import commons.simulation.*;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEDiscreteEvent;
+import simulation.EESimulator.MessageType;
 
 /**
  *
@@ -73,7 +75,7 @@ public class BusMessage extends EEDiscreteEvent {
 
 	private MessageType type;
 
-	//private final EEComponent target;
+	//private final EESimulator target;
 
 	private Optional<EEComponent> nextHop;
 

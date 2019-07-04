@@ -20,17 +20,23 @@
  */
 package sensors.abstractsensors;
 
+import simulation.EESimulator.EEDiscreteEvent;
+import simulation.EESimulator.EESimulator;
 import commons.simulation.Sensor;
 import simulation.vehicle.PhysicalVehicle;
+import simulation.EESimulator.EEComponent;
+
+
 
 /**
  * Created by Aklima Zaman on 1/20/2017.
  */
-public abstract class AbstractSensor implements Sensor {
+public abstract class AbstractSensor extends EEComponent implements Sensor {
 
     private PhysicalVehicle physicalVehicle;
 
-    public AbstractSensor(PhysicalVehicle physicalVehicle) {
+    public AbstractSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(simulator);
         this.physicalVehicle = physicalVehicle;
     }
 
@@ -50,5 +56,14 @@ public abstract class AbstractSensor implements Sensor {
     protected abstract void calculateValue();
 
 
+    @Override
+    public void processEvent(EEDiscreteEvent event) {
+        //TODO implement
+    }
 
+    @Override
+    public String getID() {
+        //TODO implement
+        return null;
+    }
 }

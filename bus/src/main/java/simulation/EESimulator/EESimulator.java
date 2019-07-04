@@ -1,4 +1,4 @@
-
+package simulation.EESimulator;
 /**
  *
  * ******************************************************************************
@@ -20,13 +20,12 @@
  * *******************************************************************************
  */
 
+
+import simulation.bus.Bus;
+
 import java.time.Instant;
 import java.util.*;
 import java.util.Comparator;
-
-import org.jfree.util.Log;
-
-import commons.simulation.DiscreteEvent;
 
 public class EESimulator {
 
@@ -73,15 +72,15 @@ public class EESimulator {
 	public void simulateNextTick(Instant actualTime) {
 		this.deltaSimulationTime = actualTime;
 
+		EEDiscreteEvent cur;
 		//loop until eventList is empty or next event is in future
 		while(!eventList.isEmpty() && eventList.peek().getEventTime().isAfter(deltaSimulationTime)){
-			EEDiscreteEvent cur = eventList.poll();
+			cur = eventList.poll();
 
 			cur.getTarget().processEvent(cur);
 			this.simulationTime = cur.getEventTime();
 
 		}
-
 	}
 
 	/**
@@ -89,7 +88,7 @@ public class EESimulator {
 	 * 
 	 * @param listener component to add
 	 */
-	public void registerComponent(EEComponent listener) { // sensor and actuator have to be instance of EEComponent
+	public void registerComponent(EEComponent listener) { // sensor and actuator have to be instance of EESimulator
 		if (listener instanceof Bus) {
 			busList.add(listener);
 		} /*

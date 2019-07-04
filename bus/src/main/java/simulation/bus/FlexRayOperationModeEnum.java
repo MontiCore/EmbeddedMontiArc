@@ -1,3 +1,5 @@
+package simulation.bus;
+
 /**
  *
  * ******************************************************************************
@@ -18,27 +20,8 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-import java.time.Instant;
 
-import commons.simulation.DiscreteEvent;
-
-public class SimulationEndEvent implements DiscreteEvent {
-
-	private final Instant endTime;
-	
-	public SimulationEndEvent(Instant endTime) {
-		this.endTime = endTime;
-	}
-	
-	@Override
-	public Instant getEventTime() {
-		return this.endTime;
-	}
-
-	@Override
-	public String getEventId() {
-		// TODO Auto-generated method stub
-		return "";
-	}
-
+public enum FlexRayOperationModeEnum {
+	REDUNDANCY,
+	MAX_DATA,
 }

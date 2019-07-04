@@ -20,6 +20,7 @@
  */
 package sensors.abstractsensors;
 
+import simulation.EESimulator.EESimulator;
 import commons.simulation.IPhysicalVehicle;
 import simulation.vehicle.PhysicalVehicle;
 
@@ -29,8 +30,8 @@ import simulation.vehicle.PhysicalVehicle;
 public abstract class AbstractDistanceSensor extends AbstractSensor {
     private Double value;
 
-    public AbstractDistanceSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public AbstractDistanceSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(physicalVehicle, simulator);
     }
 
     @Override
