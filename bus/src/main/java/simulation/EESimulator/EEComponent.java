@@ -1,6 +1,6 @@
 /**
  *
- * ******************************************************************************
+ *  ******************************************************************************
  *  MontiCAR Modeling Family, www.se-rwth.de
  *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
  *  All rights reserved.
@@ -18,29 +18,27 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-public enum MessageType {
-	SEND("SEND"), 
-	RECEIVE("RECEIVE");
-	/**
-	 * this variable contains the name of the entry
-	 */
-	private final String name;
+package simulation.EESimulator;
 
-	/**
-     * constructor for a bus entry
-     *
-     * @param name the name of the entry
-     */
-    private MessageType(String name) {
-        this.name = name;
-    }
-
-	/**
-	 * Getter of the name attribute
-	 *
-	 * @return the name of the entry
-	 */
-	public String toString() {
-		return this.name;
+public abstract class EEComponent {
+	
+	protected EESimulator simulator;
+	
+	protected EEComponent(EESimulator simulator) {
+		if(simulator == null) {
+			throw new IllegalArgumentException("simulator can't be null");
+		}
+		this.simulator = simulator;
 	}
+
+    /**
+     * processes an incoming event
+     */
+    public abstract void processEvent(EEDiscreteEvent event);
+
+    /**
+     *
+     * @return Id of this component. Can be a BusEntry or randomly generated ID
+     */
+    public abstract String getID();
 }

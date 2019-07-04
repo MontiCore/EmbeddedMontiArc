@@ -1,3 +1,4 @@
+package simulation.bus;
 
 /**
  *
@@ -19,28 +20,8 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-import java.time.Instant;
 
-public abstract class EEDiscreteEvent {
-
-    private Instant eventTime;
-
-    private EEComponent target;
-
-    public EEDiscreteEvent(Instant eventTime, EEComponent target){
-        this.eventTime = eventTime;
-        this.target = target;
-    }
-
-    public Instant getEventTime() {
-        return eventTime;
-    }
-
-    public void setEventTime(Instant eventTime) {
-        this.eventTime = eventTime;
-    }
-
-    public EEComponent getTarget() {
-        return target;
-    }
+public enum FlexRayOperationModeEnum {
+	REDUNDANCY,
+	MAX_DATA,
 }

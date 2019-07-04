@@ -1,4 +1,4 @@
-
+package simulation.bus;
 /**
  *
  * ******************************************************************************
@@ -27,6 +27,9 @@ import java.util.Optional;
 import java.util.Random;
 
 import commons.controller.commons.BusEntry;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEDiscreteEvent;
+import simulation.EESimulator.MessageType;
 
 /**
  *
@@ -69,8 +72,6 @@ public class BusMessage extends EEDiscreteEvent {
 	private Instant finishTime;
 
 	private boolean error;
-
-	private MessageType type;
 	
 	private EEComponent target;
 
@@ -98,30 +99,16 @@ public class BusMessage extends EEDiscreteEvent {
 		this.messageLen = busMessage.messageLen;
 		this.transmittedBytes = busMessage.transmittedBytes;
 		this.transmitted = busMessage.transmitted;
-		//this.requestTime = busMessage.requestTime;
 		this.controllerID = busMessage.controllerID;
 		this.messageID = busMessage.messageID;
 		this.finishTime = busMessage.finishTime;
 		this.error = busMessage.error;
-		this.type = busMessage.type;
-		//this.target = busMessage.target;
+		this.target = busMessage.target;
 		this.bitError = busMessage.bitError;
-	}
-	
-	public MessageType getMessageType() {
-		return this.type;
 	}
 
 	public Instant getFinishTime() {
 		return finishTime;
-	}
-
-	public MessageType getType() {
-		return type;
-	}
-
-	public void setType(MessageType type) {
-		this.type = type;
 	}
 
 	public EEComponent getTarget() 
@@ -207,13 +194,7 @@ public class BusMessage extends EEDiscreteEvent {
 
 	@Override
 	public Instant getEventTime() {
-		Instant res = Instant.EPOCH;
-		if (type == MessageType.SEND) {
-			return this.getEventTime();
-		} else if (type == MessageType.RECEIVE) {
-			return this.finishTime;
-		}
-		return res;
+		return this.getEventTime();
 	}
 
 	public String getEventId() {

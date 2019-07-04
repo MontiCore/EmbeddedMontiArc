@@ -1,3 +1,9 @@
+package simulation.bus;
+
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEDiscreteEvent;
+import simulation.EESimulator.EESimulator;
+
 /**
  *
  * ******************************************************************************
@@ -19,7 +25,26 @@
  * *******************************************************************************
  */
 
-public enum FlexRayOperationModeEnum {
-	REDUNDANCY,
-	MAX_DATA,
+
+
+public class TestComponent extends EEComponent {
+	
+	private String ID;
+
+	public TestComponent(EESimulator simulator, String ID) {
+		super(simulator);
+		this.ID = ID;
+	}
+
+	@Override
+	public void processEvent(EEDiscreteEvent event) {
+		((BusMessage) event).setMessage(this.ID + "processed");
+
+	}
+
+	@Override
+	public String getID() {
+		return "TestComponent " + ID;
+	}
+
 }

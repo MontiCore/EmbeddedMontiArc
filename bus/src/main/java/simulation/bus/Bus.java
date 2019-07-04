@@ -1,4 +1,4 @@
-
+package simulation.bus;
 /**
  *
  * ******************************************************************************
@@ -22,15 +22,13 @@
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Stack;
-import java.util.UUID;
+import java.util.*;
 
+import commons.controller.commons.BusEntry;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jfree.util.Log;
+import simulation.EESimulator.*;
 
 public abstract class Bus extends EEComponent {
 
@@ -41,6 +39,8 @@ public abstract class Bus extends EEComponent {
 	protected Instant currentTime = Instant.EPOCH;
 
 	protected String currentKeepAliveID = "";
+
+	protected HashMap<BusEntry, EEComponent> targetsOfComponents = new HashMap<>();
 
 	protected Bus(EESimulator simulator, List<EEComponent> connectedComponents) {
 		super(simulator);
@@ -135,6 +135,8 @@ public abstract class Bus extends EEComponent {
 		}
 		return res;
 	}
+
+
 
 	abstract void simulateFor(Duration duration);
 
