@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.lang.Math;
 import javafx.geometry.Point3D;
 
 /**
@@ -116,10 +117,21 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	 * 
 	 * @param capacity
 	 *            number of cars that can be placed in the Charging Station
+	 *            0 for a random capacity between 1-4
 	 */
 	public ChargingStation(int capacity) {
-		this();
-		this.capacity = capacity;
+		this
+		if (capacity == 0){
+		    if (Math.random() < 0.25) this.capacity = 1;
+		    else if (Math.random() < 0.5) this.capacity = 2;
+		    else if (Math.random() < 0.75) this.capacity = 3;
+		    else this.capacity = 4;
+		}
+		else if (capacity < 1){
+		    this.capacity = 1;
+		} else {
+		    this.capacity = capacity;
+		}
 	}
 
 	// ===================
