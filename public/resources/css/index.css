@@ -35,7 +35,7 @@ a {
     box-shadow:0  17px 10px -10px rgba(0, 0, 0, 0.4);
 }
 
-a:not(:first-child) {
+img:not(:first-child), a:not(:first-child) {
     margin-left:20px;
 }
 
