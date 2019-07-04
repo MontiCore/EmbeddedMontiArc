@@ -161,8 +161,11 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	 * @return false if not in use or car not found
 	 */
 	public boolean stopCharging(Car car) {
-		carObjects.remove(car);
-		chargingProcessesMap.remove(car);
+		if(carObjects.remove(car)){
+		    chargingProcessesMap.remove(car);
+		    return true;
+		}
+		return false;
 		
 		// TODO BROADCARST: FINISHED CHARGING
 	}
