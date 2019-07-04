@@ -24,6 +24,7 @@
         <module>modules/grammars/tool</module>
         <module>modules/runtime/language-server</module>
         <module>modules/tests/coverage</module>
+        <module>modules/tests/language-server</module>
     </modules>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
@@ -42,8 +43,10 @@
         <flogger.version>0.4</flogger.version>
         <eventbus.version>3.1.1</eventbus.version>
         <json.version>20180813</json.version>
-        <maven-plugin-api.version>3.0</maven-plugin-api.version>
-        <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
+        <maven-plugin-api.version>3.6.1</maven-plugin-api.version>
+        <maven-plugin-annotations.version>3.6.0</maven-plugin-annotations.version>
+        <maven-core.version>3.3.9</maven-core.version>
+        <monticore.version>5.0.1</monticore.version>
 
         <!-- .. Test Libraries ................................................ -->
 
@@ -59,7 +62,7 @@
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
-        <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+        <maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
         <jacoco-plugin.version>0.8.4</jacoco-plugin.version>
         <directory-maven-plugin.version>0.3.1</directory-maven-plugin.version>
@@ -167,6 +170,18 @@
                 <version>${maven-plugin-annotations.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>${maven-core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+
             <!-- .. MontiCore ................................................. -->
 
             <dependency>
@@ -179,6 +194,12 @@
                 <groupId>de.se_rwth.commons</groupId>
                 <artifactId>se-commons-logging</artifactId>
                 <version>${se-commons.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.monticore</groupId>
+                <artifactId>monticore-generator</artifactId>
+                <version>${monticore.version}</version>
             </dependency>
 
             <!-- .. Test Libraries ............................................ -->
@@ -201,13 +222,6 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
                 <version>${mockito-junit-jupiter}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -342,7 +356,7 @@
                 <executions>
                     <execution>
                         <id>JavaDoc</id>
-                        <phase>install</phase><!-- TODO: Change phase to deploy if the code base becomes stable -->
+                        <phase>deploy</phase>
                         <goals>
                             <goal>aggregate</goal>
                         </goals>
@@ -353,12 +367,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>${maven-site-plugin.version}</version>
             </plugin>
 
         </plugins>
