@@ -19,27 +19,26 @@
  * *******************************************************************************
  */
 
-import commons.controller.commons.BusEntry;
 
-public abstract class EEComponent {
+
+public class TestComponent extends EEComponent {
 	
-	protected EESimulator simulator;
-	
-	protected EEComponent(EESimulator simulator) {
-		if(simulator == null) {
-			throw new IllegalArgumentException("simulator can't be null");
-		}
-		this.simulator = simulator;
+	private String ID;
+
+	public TestComponent(EESimulator simulator, String ID) {
+		super(simulator);
+		this.ID = ID;
 	}
 
-    /**
-     * processes an incoming event
-     */
-    public abstract void processEvent(EEDiscreteEvent event);
+	@Override
+	public void processEvent(EEDiscreteEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 
-    /**
-     *
-     * @return Id of this component. Can be a BusEntry or randomly generated ID
-     */
-    public abstract String getID();
+	@Override
+	public String getID() {
+		return "TestComponent " + ID;
+	}
+
 }

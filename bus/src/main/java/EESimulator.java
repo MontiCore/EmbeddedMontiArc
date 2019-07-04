@@ -1,3 +1,4 @@
+
 /**
  *
  * ******************************************************************************
@@ -23,6 +24,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.Comparator;
 
+import org.jfree.util.Log;
 
 public class EESimulator {
 
@@ -150,4 +152,3 @@ class EESimulatorComparator implements Comparator<EEDiscreteEvent>
         return a.getEventTime().compareTo(b.getEventTime());
     }
 }
-

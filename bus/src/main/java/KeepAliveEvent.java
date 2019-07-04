@@ -22,17 +22,21 @@ import java.time.Instant;
 import java.util.UUID;
 
 
+
 public class KeepAliveEvent extends EEDiscreteEvent {
+
 	
 	private String ID;
 
-	
 	public KeepAliveEvent(Instant eventTime, EEComponent target) {
 		super(eventTime, target);
 		this.ID = UUID.randomUUID().toString();
 	}
-	
 
+	public KeepAliveEvent(Bus bus, Instant eventTime, EEComponent target) {
+		super(eventTime, target);
+		this.ID = UUID.randomUUID().toString();
+	}
 
 	public String getEventId() {
 		return ID;

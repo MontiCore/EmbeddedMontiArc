@@ -25,6 +25,9 @@ import simulation.network.NetworkSettings;
 import simulation.network.NetworkSettingsId;
 import simulation.network.NetworkTaskId;
 import simulation.network.channels.ChannelModelSimple;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import static simulation.network.NetworkTaskId.*;
 
@@ -58,16 +61,16 @@ public class SettingsSimple extends NetworkSettings {
         });
         setModulationAndDataRateInfoDefaultIndex(0);
 
-        setApplicationBeaconUpdateInterval(375000000L);
+        setApplicationBeaconUpdateInterval(Duration.ofMillis(375L));
 
-        setMinimumLocalDelayPerLayer(2000000L / 4L);
-        setMaximumLocalDelayPerLayer(3000000L / 4L);
+        setMinimumLocalDelayPerLayer(Duration.ofNanos(2000000L / 4L));
+        setMaximumLocalDelayPerLayer(Duration.ofNanos(3000000L / 4L));
 
-        setMinTaskStartTimeNs(0L);
-        setMaxTaskStartTimeNs(3000000000L);
+        setMinTaskStartTime(Instant.EPOCH);
+        setMaxTaskStartTime(Instant.ofEpochSecond(3L));
 
         setMessageBufferSize(30);
-        setMessageBufferMaxTime(15000000000L);
+        setMessageBufferMaxTime(Duration.ofSeconds(15L));
 
         setNetworkChannelModel(new ChannelModelSimple());
 

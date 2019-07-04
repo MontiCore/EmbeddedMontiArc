@@ -20,6 +20,8 @@
  */
 package simulation.environment.visualisationadapter.implementation;
 
+import java.time.Duration;
+
 import com.google.gson.Gson;
 import simulation.environment.visualisationadapter.interfaces.TrafficSignal;
 import simulation.environment.visualisationadapter.interfaces.TrafficSignalStatus;
@@ -54,8 +56,9 @@ public class TrafficSignalImpl implements TrafficSignal {
     }
 
     @Override
-    public void executeLoopIteration(long timeDiffMs) {
-        this.timeDiffMs += timeDiffMs;
+    public void executeLoopIteration(Duration timeDiff) {
+        this.timeDiffMs += timeDiff.toMillis();
+        System.out.println(timeDiffMs);
         /*
          * try { Thread.sleep(timeDiffMs); } catch (InterruptedException e) {
          * e.printStackTrace(); }

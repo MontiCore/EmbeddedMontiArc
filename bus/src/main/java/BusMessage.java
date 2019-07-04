@@ -1,3 +1,4 @@
+
 /**
  *
  * ******************************************************************************
@@ -19,7 +20,10 @@
  * *******************************************************************************
  */
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import commons.controller.commons.BusEntry;
@@ -67,20 +71,17 @@ public class BusMessage extends EEDiscreteEvent {
 	private boolean error;
 
 	private MessageType type;
-
-	//private EEComponent target;
+	
+	private EEComponent target;
 
 	/**
 	 * Random number generator to determine a bit error
 	 */
 	Random bitError = new Random();
 
-	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant requestTime, MessageType type,
-			EEComponent target) {
-		super(requestTime, target);
-		//this.requestTime = requestTime;
-		this.type = type;
-		//this.target = target;
+	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant eventTime, EEComponent target) {
+		super(eventTime, target);
+		this.target = target;
 		this.message = message;
 		this.messageLen = messageLen;
 		this.messageID = messageID;
@@ -89,6 +90,26 @@ public class BusMessage extends EEDiscreteEvent {
 		this.transmitted = false;
 		this.finishTime = Instant.EPOCH;
 		this.error = false;
+	}
+
+	public BusMessage(BusMessage busMessage) {
+		super(busMessage.getEventTime(), busMessage.getTarget());
+		this.message = busMessage.message;
+		this.messageLen = busMessage.messageLen;
+		this.transmittedBytes = busMessage.transmittedBytes;
+		this.transmitted = busMessage.transmitted;
+		//this.requestTime = busMessage.requestTime;
+		this.controllerID = busMessage.controllerID;
+		this.messageID = busMessage.messageID;
+		this.finishTime = busMessage.finishTime;
+		this.error = busMessage.error;
+		this.type = busMessage.type;
+		//this.target = busMessage.target;
+		this.bitError = busMessage.bitError;
+	}
+	
+	public MessageType getMessageType() {
+		return this.type;
 	}
 
 	public Instant getFinishTime() {
@@ -103,7 +124,10 @@ public class BusMessage extends EEDiscreteEvent {
 		this.type = type;
 	}
 
-	//public EEComponent getTarget() {		return target;	}
+	public EEComponent getTarget() 
+	{		
+		return target;	
+	}
 
 	public void setFinishTime(Instant finishTime) {
 		this.finishTime = finishTime;
@@ -124,14 +148,6 @@ public class BusMessage extends EEDiscreteEvent {
 	public void setMessageLen(int messageLen) {
 		this.messageLen = messageLen;
 	}
-
-	/*public Instant getRequestTime() {
-		return requestTime;
-	}
-
-	public void setRequestTime(Instant requestTime) {
-		this.requestTime = requestTime;
-	}*/
 
 	public String getControllerID() {
 		return controllerID;
@@ -165,6 +181,10 @@ public class BusMessage extends EEDiscreteEvent {
 		return error;
 	}
 
+	public int getRemainingBytes() {
+		return this.messageLen - this.transmittedBytes;
+	}
+
 	public int transmitBytes(int bytes, double bitErrorRate) {
 		int res = -1;
 		if (bytes >= 0) {
@@ -196,7 +216,6 @@ public class BusMessage extends EEDiscreteEvent {
 		return res;
 	}
 
-
 	public String getEventId() {
 		return this.messageID.toString();
 	}
@@ -209,13 +228,14 @@ public class BusMessage extends EEDiscreteEvent {
 		this.transmittedBytes = 0;
 		this.controllerID = controllerID;
 	}
+
+
 }
 
-
-class BusMessageComparatorIdAsc implements Comparator<BusMessage> {
-	// Used for sorting in ascending order of
+class BusMessageComparatorIdDesc implements Comparator<BusMessage> {
+	// Used for sorting in descending order of
 	public int compare(BusMessage a, BusMessage b) {
-		return a.getMessageID().compareTo(b.getMessageID());
+		return b.getMessageID().compareTo(a.getMessageID());
 	}
 }
 

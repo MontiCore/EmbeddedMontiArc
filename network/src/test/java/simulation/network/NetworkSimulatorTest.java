@@ -28,6 +28,9 @@ import simulation.network.settings.SettingsSimple;
 import simulation.util.Log;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.MassPointPhysicalVehicleBuilder;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -60,11 +63,11 @@ public class NetworkSimulatorTest {
         networkSimulator.setNetworkNodes(nodeList);
 
         // Ensure that time advancement works
-        assertTrue(networkSimulator.getSimulationTimeNs() == 0);
-        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), 0, 0);
-        assertTrue(networkSimulator.getSimulationTimeNs() == 0);
-        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), 0, 5);
-        assertTrue(networkSimulator.getSimulationTimeNs() == 5 * 1000000L);
+        assertTrue(networkSimulator.getSimulationTime().equals(Instant.EPOCH));
+        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, Duration.ZERO);
+        assertTrue(networkSimulator.getSimulationTime().equals(Instant.EPOCH));
+        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, Duration.ofMillis(5));
+        assertTrue(networkSimulator.getSimulationTime().equals(Instant.EPOCH.plusMillis(5)));
 
         // Enable log
         Log.setLogEnabled(true);
@@ -95,9 +98,9 @@ public class NetworkSimulatorTest {
         // between min/max task start time as specified in network settings
         assertTrue(!networkSimulator.getEventList().isEmpty());
         DiscreteEvent firstEvent = networkSimulator.getEventList().get(0);
-        assertTrue(firstEvent.getEventId() == NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.ordinal());
-        assertTrue(firstEvent.getEventTime() >= settings.getMinTaskStartTimeNs());
-        assertTrue(firstEvent.getEventTime() <= settings.getMaxTaskStartTimeNs());
+        assertTrue(firstEvent.getEventId().equals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.toString()));
+        assertTrue(!firstEvent.getEventTime().isBefore(settings.getMinTaskStartTime()));
+        assertTrue(!firstEvent.getEventTime().isAfter(settings.getMaxTaskStartTime()));
 
         // Enable log
         Log.setLogEnabled(true);
@@ -129,17 +132,17 @@ public class NetworkSimulatorTest {
         DiscreteEvent firstEvent = NetworkSimulator.getInstance().getEventList().get(0);
         assertTrue(networkSimulator.getEventList().size() == 1);
 
-        if (firstEvent.getEventTime() != 0) {
-            networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), 0, 0);
+        if (!firstEvent.getEventTime().equals(Instant.EPOCH)) {
+            networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, Duration.ZERO);
             assertTrue(!networkSimulator.getEventList().isEmpty());
             firstEvent = NetworkSimulator.getInstance().getEventList().get(0);
-            assertTrue(firstEvent.getEventId() == NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.ordinal());
+            assertTrue(firstEvent.getEventId().equals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.toString()));
         }
 
-        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), 0, settings.getMaxTaskStartTimeNs() / 1000000L);
+        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, Duration.between(Instant.EPOCH, settings.getMaxTaskStartTime()));
         assertTrue(!networkSimulator.getEventList().isEmpty());
         firstEvent = NetworkSimulator.getInstance().getEventList().get(0);
-        assertTrue(firstEvent.getEventId() != NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.ordinal());
+        assertTrue(!firstEvent.getEventId().equals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.toString()));
 
         // Enable log
         Log.setLogEnabled(true);

@@ -33,6 +33,10 @@ import simulation.network.*;
 import simulation.util.Log;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.Vehicle;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import static simulation.network.NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_UPDATE;
 
@@ -51,8 +55,8 @@ public class TaskAppTrafficOptimization extends NetworkTask {
     /** Minimum amount of vehicles to detect a traffic jam */
     public final static int TRAFFIC_OPTIMIZATION_MIN_COUNT = 4;
 
-    /** Amount of time that needs to pass for another vehicle to classify it as not moving, in nanoseconds */
-    public final static long TRAFFIC_OPTIMIZATION_MIN_TIME_NS = 30000000000L;
+    /** Amount of time that needs to pass for another vehicle to classify it as not moving */
+    public final static Duration TRAFFIC_OPTIMIZATION_MIN_TIME = Duration.ofSeconds(30L);
 
     /** Last list of coordinates that have been avoided in route recomputation, use this to improve performance */
     private Set<RealVector> lastAvoidPositionSet = Collections.synchronizedSet(new HashSet<>());
@@ -144,7 +148,7 @@ public class TaskAppTrafficOptimization extends NetworkTask {
                     // Create new entry if it does not exist for new received data or update if node moved away
                     if ((!infoMap.containsKey(otherIpv6)) ||
                         (infoMap.containsKey(otherIpv6) && infoMap.get(otherIpv6).getValue().getDistance(otherGpsPosition) > TRAFFIC_OPTIMIZATION_NOT_MOVED_SINGLE_RANGE)) {
-                        Map.Entry<Long, RealVector> newEntry = new AbstractMap.SimpleEntry<>(event.getEventMessage().getSimReceiveTimeNs(), otherGpsPosition);
+                        Map.Entry<Long, RealVector> newEntry = new AbstractMap.SimpleEntry<>(Instant.EPOCH.until(event.getEventMessage().getSimReceiveTime(), ChronoUnit.NANOS), otherGpsPosition);
                         infoMap.put(otherIpv6, newEntry);
                     }
 
@@ -190,7 +194,7 @@ public class TaskAppTrafficOptimization extends NetworkTask {
             for (String ipv6 : inputMap.keySet()) {
                 Map.Entry<Long, RealVector> entry = inputMap.get(ipv6);
 
-                if (NetworkUtils.simTimeWithDelay(0) - entry.getKey() >= TRAFFIC_OPTIMIZATION_MIN_TIME_NS) {
+                if (Instant.EPOCH.until(NetworkUtils.simTimeWithDelay(Duration.ZERO).minusNanos(entry.getKey()), ChronoUnit.NANOS) >= TRAFFIC_OPTIMIZATION_MIN_TIME.toNanos()) {
                     nonMovingList.add(ipv6);
                 }
             }

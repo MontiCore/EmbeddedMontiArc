@@ -27,6 +27,8 @@ import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
 import simulation.util.Log;
 import simulation.util.MathHelper;
+
+import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -337,14 +339,14 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
     /**
      * Function that computes one step of the physical behaviour of the object
-     * @param deltaTms Duration of the current simulation step in milliseconds
+     * @param deltaTime Duration of the current simulation step
      */
     @Override
-    public void computePhysics(long deltaTms){
+    public void computePhysics(Duration deltaTime){
         if(!physicalVehicleInitialised){
             throw new IllegalStateException("Physical vehicle has to be initialised before physical computations");
         }
-        double deltaT = deltaTms / 1000.0;
+        double deltaT = deltaTime.toMillis() / 1000.0;
 
         if (!this.getError()) {
             // Calculate forces

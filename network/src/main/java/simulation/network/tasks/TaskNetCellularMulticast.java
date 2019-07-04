@@ -21,6 +21,8 @@
 package simulation.network.tasks;
 
 import simulation.network.*;
+
+import java.time.Duration;
 import java.util.Arrays;
 import static simulation.network.NetworkDiscreteEventId.*;
 
@@ -61,7 +63,7 @@ public class TaskNetCellularMulticast extends NetworkTask {
                 }
 
                 // Multicast message to link layer and do not forward to transport
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NETWORK_EVENT_ID_NET_MULTICAST, networkNode, event.getEventMessage());
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NETWORK_EVENT_ID_NET_MULTICAST, networkNode, event.getEventMessage());
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }

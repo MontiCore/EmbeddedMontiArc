@@ -20,6 +20,8 @@
  */
 package simulation.vehicle;
 
+import java.time.Duration;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
@@ -124,7 +126,7 @@ public class MassPointPhysicalVehicleTest {
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
-        physicalVehicle.executeLoopIteration(33);
+        physicalVehicle.executeLoopIteration(Duration.ofMillis(33));
         motorReference.update(0.033);
         frontLeftBrakeReference.update(0.033);
         frontRightBrakeReference.update(0.033);
@@ -182,7 +184,7 @@ public class MassPointPhysicalVehicleTest {
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
-        physicalVehicle.executeLoopIteration(33);
+        physicalVehicle.executeLoopIteration(Duration.ofMillis(33));
         steeringReference.update(0.033);
 
         // Motor and brake actuators should be reset to zero
@@ -233,7 +235,7 @@ public class MassPointPhysicalVehicleTest {
         double steeringValueReference = steering.getActuatorValueCurrent();
 
         // Execute loop iteration
-        physicalVehicle.executeLoopIteration(33);
+        physicalVehicle.executeLoopIteration(Duration.ofMillis(33));
 
         // Ass actuators should not be updated
         Assert.assertEquals(motorValueReference, motor.getActuatorValueCurrent(), 0);
@@ -347,7 +349,7 @@ public class MassPointPhysicalVehicleTest {
     @Test(expected = IllegalStateException.class)
     public void computePhysicsFail(){
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
-        physicalVehicle.computePhysics(33);
+        physicalVehicle.computePhysics(Duration.ofMillis(33));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -436,7 +438,7 @@ public class MassPointPhysicalVehicleTest {
     private void mockSimulation(PhysicalVehicle physicalVehicle, long simulationLength, long stepSize){
         long currentTime = 0;
         while(currentTime < simulationLength) {
-            physicalVehicle.computePhysics(stepSize);
+            physicalVehicle.computePhysics(Duration.ofMillis(stepSize));
             updateActuators(physicalVehicle, stepSize);
             currentTime = currentTime + stepSize;
         }

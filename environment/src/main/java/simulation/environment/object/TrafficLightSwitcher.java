@@ -23,6 +23,8 @@ package simulation.environment.object;
 import commons.simulation.SimulationLoopExecutable;
 import simulation.environment.visualisationadapter.implementation.TrafficLight;
 import simulation.environment.visualisationadapter.interfaces.SignTypeAndState;
+
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,9 +72,9 @@ public class TrafficLightSwitcher implements SimulationLoopExecutable{
 
 
     @Override
-    public void executeLoopIteration(long l) {
+    public void executeLoopIteration(Duration timeDiff) {
         this.changedState.clear();
-        this.time += l;
+        this.time += timeDiff.toMillis();
         if(time >= 30000 && time <= 40000) {
             this.signals.get(currentIndex).setState(SignTypeAndState.TRAFFIC_LIGHT_YELLOW);
             this.changedState.add(this.signals.get(currentIndex).getId());

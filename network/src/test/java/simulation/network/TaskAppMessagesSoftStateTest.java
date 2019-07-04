@@ -25,7 +25,13 @@ import org.junit.Test;
 import simulation.network.settings.SettingsSimple;
 import simulation.network.tasks.TaskAppMessagesSoftState;
 import simulation.util.Log;
+
+import java.time.Instant;
+import java.time.Duration;
 import java.util.*;
+
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -48,16 +54,16 @@ public class TaskAppMessagesSoftStateTest {
         List<NetworkMessage> messageList2 = Collections.synchronizedList(new LinkedList<>());
 
         for (int i = 0; i < 10; ++i) {
-            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime() / 10)) + 1;
+            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime().toNanos() / 10)) + 1;
             NetworkMessage msg = new NetworkMessage();
-            msg.setSimReceiveTimeNs(msgReceiveTimeNs);
+            msg.setSimReceiveTime(Instant.ofEpochSecond(0, msgReceiveTimeNs));
             messageList1.add(msg);
         }
 
         for (int i = 0; i < 5; ++i) {
-            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime() / 10)) + 1;
+            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime().toNanos() / 10)) + 1;
             NetworkMessage msg = new NetworkMessage();
-            msg.setSimReceiveTimeNs(msgReceiveTimeNs);
+            msg.setSimReceiveTime(Instant.ofEpochSecond(0, msgReceiveTimeNs));
             messageList2.add(msg);
         }
 
@@ -69,7 +75,7 @@ public class TaskAppMessagesSoftStateTest {
         assertTrue(messagesMap.size() == 2);
         assertTrue(messagesMap.get("fea86fb7a631").size() == 10);
         assertTrue(messagesMap.get("fec2efa52351").size() == 5);
-        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), 0, settings.getMessageBufferMaxTime() / 1000000L);
+        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, settings.getMessageBufferMaxTime());
         TaskAppMessagesSoftState.softStateCleanup(messagesMap);
         assertTrue(messagesMap.size() == 2);
         assertTrue(messagesMap.get("fea86fb7a631").size() == 10);
@@ -94,16 +100,16 @@ public class TaskAppMessagesSoftStateTest {
         List<NetworkMessage> messageList2 = Collections.synchronizedList(new LinkedList<>());
 
         for (int i = 0; i < 10; ++i) {
-            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime() / 10)) + 1;
+            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime().toNanos() / 10)) + 1;
             NetworkMessage msg = new NetworkMessage();
-            msg.setSimReceiveTimeNs(msgReceiveTimeNs);
+            msg.setSimReceiveTime(Instant.ofEpochSecond(0, msgReceiveTimeNs));
             messageList1.add(msg);
         }
 
         for (int i = 0; i < 5; ++i) {
-            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime() / 10)) + 1;
+            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime().toNanos() / 10)) + 1;
             NetworkMessage msg = new NetworkMessage();
-            msg.setSimReceiveTimeNs(msgReceiveTimeNs);
+            msg.setSimReceiveTime(Instant.ofEpochSecond(0, msgReceiveTimeNs));
             messageList2.add(msg);
         }
 
@@ -115,9 +121,9 @@ public class TaskAppMessagesSoftStateTest {
         assertTrue(messagesMap.size() == 2);
         assertTrue(messagesMap.get("fea86fb7a631").size() == 10);
         assertTrue(messagesMap.get("fec2efa52351").size() == 5);
-        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), 0, 2 + (2 * settings.getMessageBufferMaxTime() / 1000000L));
+        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, settings.getMessageBufferMaxTime().multipliedBy(2L).plusMillis(2));
         TaskAppMessagesSoftState.softStateCleanup(messagesMap);
-        assertTrue(messagesMap.size() == 0);
+        assertEquals(0, messagesMap.size());
 
         // Enable log
         Log.setLogEnabled(true);
@@ -138,16 +144,15 @@ public class TaskAppMessagesSoftStateTest {
         List<NetworkMessage> messageList2 = Collections.synchronizedList(new LinkedList<>());
 
         for (int i = 0; i < 10; ++i) {
-            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime() / 10)) + 1;
+            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime().toNanos() / 10)) + 1;
             NetworkMessage msg = new NetworkMessage();
-            msg.setSimReceiveTimeNs(msgReceiveTimeNs);
+            msg.setSimReceiveTime(Instant.ofEpochSecond(0, msgReceiveTimeNs));
             messageList1.add(msg);
         }
-
         for (int i = 0; i < 5; ++i) {
-            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime() / 10)) + 1;
+            long msgReceiveTimeNs = (i * (settings.getMessageBufferMaxTime().toNanos() / 10)) + 1;
             NetworkMessage msg = new NetworkMessage();
-            msg.setSimReceiveTimeNs(msgReceiveTimeNs);
+            msg.setSimReceiveTime(Instant.ofEpochSecond(0, msgReceiveTimeNs));
             messageList2.add(msg);
         }
 
@@ -159,10 +164,10 @@ public class TaskAppMessagesSoftStateTest {
         assertTrue(messagesMap.size() == 2);
         assertTrue(messagesMap.get("fea86fb7a631").size() == 10);
         assertTrue(messagesMap.get("fec2efa52351").size() == 5);
-        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), 0, ((5 * (settings.getMessageBufferMaxTime() / 10)) + 1 + settings.getMessageBufferMaxTime()) / 1000000L);
+        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, settings.getMessageBufferMaxTime().dividedBy(2L).plus(settings.getMessageBufferMaxTime()));
         TaskAppMessagesSoftState.softStateCleanup(messagesMap);
-        assertTrue(messagesMap.size() == 1);
-        assertTrue(messagesMap.get("fea86fb7a631").size() == 5);
+        assertEquals(1, messagesMap.size());
+        assertEquals(5, messagesMap.get("fea86fb7a631").size());
 
         // Enable log
         Log.setLogEnabled(true);

@@ -21,6 +21,9 @@
 package simulation.network;
 
 import commons.simulation.PhysicalObjectType;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -35,7 +38,7 @@ public abstract class NetworkSettings {
     private NetworkSettingsId settingsId = NetworkSettingsId.NETWORK_SETTINGS_ID_NONE;
 
     /** Application beacon update interval */
-    private long applicationBeaconUpdateInterval = 375000000L;
+    private Duration applicationBeaconUpdateInterval = Duration.ofMillis(375L);
 
     /** IPv6 prefix of network, needs to consist of 16 characters, hex representation */
     private String ipv6Prefix = "fde938777acb4bd4";
@@ -52,17 +55,17 @@ public abstract class NetworkSettings {
     /** Initial parts of message are always transmitted at slow data rate (e.g. preamble), measured in kilobits per second */
     private int slowDataRateKBits = 1000;
 
-    /** Minimum value of randomized interval for start time of start tasks, measured in nanoseconds */
-    private long minTaskStartTimeNs = 0L;
+    /** Minimum value of randomized interval for start time of start tasks */
+    private Instant minTaskStartTime = Instant.EPOCH;
 
-    /** Maximum value of randomized interval for start time of start tasks, measured in nanoseconds */
-    private long maxTaskStartTimeNs = 3000000000L;
+    /** Maximum value of randomized interval for start time of start tasks */
+    private Instant maxTaskStartTime = Instant.ofEpochSecond(3L);
 
     /** Maximum amount of messages kept in node buffers */
     private int messageBufferSize = 30;
 
-    /** Maximum amount of nanoseconds that messages are kept for */
-    private long messageBufferMaxTime = 15000000000L;
+    /** Maximum amount of time that messages are kept for */
+    private Duration messageBufferMaxTime = Duration.ofSeconds(15L);
 
     /** Integer array that holds the information about available modulation and data rates, data rate in kBits, bits per signal, code rate numerator, code rate denominator */
     private int[][] modulationAndDataRateInfo = new int[][] {
@@ -72,11 +75,11 @@ public abstract class NetworkSettings {
     /** Default index for modulation and data rate info to be used */
     private int modulationAndDataRateInfoDefaultIndex = 0;
 
-    /** Minimum value for random interval for additional local delay between each of four layers in nanoseconds */
-    private long minimumLocalDelayPerLayer = 2000000L / 4L;
+    /** Minimum value for random interval for additional local delay between each of four layers */
+    private Duration minimumLocalDelayPerLayer = Duration.ofNanos(2000000L / 4L);
 
-    /** Maximum value for random interval for additional local delay between each of four layers in nanoseconds */
-    private long maximumLocalDelayPerLayer = 3000000L / 4L;
+    /** Maximum value for random interval for additional local delay between each of four layers */
+    private Duration maximumLocalDelayPerLayer = Duration.ofNanos(3000000L / 4L);
 
     /** Map of physical object types and task lists that are added to the nodes in the network */
     private Map<PhysicalObjectType, List<NetworkTaskId>> networkTaskIdMap = Collections.synchronizedMap(new HashMap<>());
@@ -107,7 +110,7 @@ public abstract class NetworkSettings {
      *
      * @return Value for applicationBeaconUpdateInterval
      */
-    public long getApplicationBeaconUpdateInterval() {
+    public Duration getApplicationBeaconUpdateInterval() {
         return applicationBeaconUpdateInterval;
     }
 
@@ -116,7 +119,7 @@ public abstract class NetworkSettings {
      *
      * @param applicationBeaconUpdateInterval New value for applicationBeaconUpdateInterval
      */
-    public void setApplicationBeaconUpdateInterval(long applicationBeaconUpdateInterval) {
+    public void setApplicationBeaconUpdateInterval(Duration applicationBeaconUpdateInterval) {
         this.applicationBeaconUpdateInterval = applicationBeaconUpdateInterval;
     }
 
@@ -211,39 +214,39 @@ public abstract class NetworkSettings {
     }
 
     /**
-     * Get minimum task start time in nanoseconds
+     * Get minimum task start time
      *
-     * @return Minimum task start time in nanoseconds
+     * @return Minimum task start time
      */
-    public long getMinTaskStartTimeNs() {
-        return minTaskStartTimeNs;
+    public Instant getMinTaskStartTime() {
+        return minTaskStartTime;
     }
 
     /**
-     * Set minimum task start time in nanoseconds
+     * Set minimum task start time
      *
-     * @param minTaskStartTimeNs New minimum task start time in nanoseconds
+     * @param minTaskStartTime New minimum task start time
      */
-    protected void setMinTaskStartTimeNs(long minTaskStartTimeNs) {
-        this.minTaskStartTimeNs = minTaskStartTimeNs;
+    protected void setMinTaskStartTime(Instant minTaskStartTime) {
+        this.minTaskStartTime = minTaskStartTime;
     }
 
     /**
-     * Get maximum task start time in nanoseconds
+     * Get maximum task start time
      *
-     * @return Maximum task start time in nanoseconds
+     * @return Maximum task start time
      */
-    public long getMaxTaskStartTimeNs() {
-        return maxTaskStartTimeNs;
+    public Instant getMaxTaskStartTime() {
+        return maxTaskStartTime;
     }
 
     /**
-     * Set maximum task start time in nanoseconds
+     * Set maximum task start time
      *
-     * @param maxTaskStartTimeNs New maximum task start time in nanoseconds
+     * @param maxTaskStartTimeNs New maximum task start time
      */
-    protected void setMaxTaskStartTimeNs(long maxTaskStartTimeNs) {
-        this.maxTaskStartTimeNs = maxTaskStartTimeNs;
+    protected void setMaxTaskStartTime(Instant maxTaskStartTime) {
+        this.maxTaskStartTime = maxTaskStartTime;
     }
 
     /**
@@ -269,7 +272,7 @@ public abstract class NetworkSettings {
      *
      * @return Value for messageBufferMaxTime
      */
-    public long getMessageBufferMaxTime() {
+    public Duration getMessageBufferMaxTime() {
         return messageBufferMaxTime;
     }
 
@@ -278,7 +281,7 @@ public abstract class NetworkSettings {
      *
      * @param messageBufferMaxTime New value for messageBufferMaxTime
      */
-    protected void setMessageBufferMaxTime(long messageBufferMaxTime) {
+    protected void setMessageBufferMaxTime(Duration messageBufferMaxTime) {
         this.messageBufferMaxTime = messageBufferMaxTime;
     }
 
@@ -323,7 +326,7 @@ public abstract class NetworkSettings {
      *
      * @return Value for minimumLocalDelayPerLayer
      */
-    public long getMinimumLocalDelayPerLayer() {
+    public Duration getMinimumLocalDelayPerLayer() {
         return minimumLocalDelayPerLayer;
     }
 
@@ -332,7 +335,7 @@ public abstract class NetworkSettings {
      *
      * @param minimumLocalDelayPerLayer New value for minimumLocalDelayPerLayer
      */
-    public void setMinimumLocalDelayPerLayer(long minimumLocalDelayPerLayer) {
+    public void setMinimumLocalDelayPerLayer(Duration minimumLocalDelayPerLayer) {
         this.minimumLocalDelayPerLayer = minimumLocalDelayPerLayer;
     }
 
@@ -341,7 +344,7 @@ public abstract class NetworkSettings {
      *
      * @return Value for maximumLocalDelayPerLayer
      */
-    public long getMaximumLocalDelayPerLayer() {
+    public Duration getMaximumLocalDelayPerLayer() {
         return maximumLocalDelayPerLayer;
     }
 
@@ -350,7 +353,7 @@ public abstract class NetworkSettings {
      *
      * @param maximumLocalDelayPerLayer New value for maximumLocalDelayPerLayer
      */
-    public void setMaximumLocalDelayPerLayer(long maximumLocalDelayPerLayer) {
+    public void setMaximumLocalDelayPerLayer(Duration maximumLocalDelayPerLayer) {
         this.maximumLocalDelayPerLayer = maximumLocalDelayPerLayer;
     }
 
@@ -405,8 +408,8 @@ public abstract class NetworkSettings {
                 ", macPrefix='" + macPrefix + '\'' +
                 ", macBroadcastAddress='" + macBroadcastAddress + '\'' +
                 ", slowDataRateKBits=" + slowDataRateKBits +
-                ", minTaskStartTimeNs=" + minTaskStartTimeNs +
-                ", maxTaskStartTimeNs=" + maxTaskStartTimeNs +
+                ", minTaskStartTimeNs=" + minTaskStartTime +
+                ", maxTaskStartTimeNs=" + maxTaskStartTime +
                 ", messageBufferSize=" + messageBufferSize +
                 ", messageBufferMaxTime=" + messageBufferMaxTime +
                 ", modulationAndDataRateInfo=" + Arrays.toString(modulationAndDataRateInfo) +
