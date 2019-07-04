@@ -1,3 +1,4 @@
+
 /**
  *
  * ******************************************************************************
@@ -18,37 +19,31 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+package simulation.EESimulator;
+
 import java.time.Instant;
-import java.util.UUID;
 
-import commons.simulation.DiscreteEvent;
 
-public class KeepAliveEvent implements DiscreteEvent{
-	
-	private String ID;
-	
-	private Bus bus;
-	
-	private Instant eventTime;
-	
-	public KeepAliveEvent(Bus bus, Instant eventTime) {
-		this.eventTime = eventTime;
-		this.bus = bus;
-		this.ID = UUID.randomUUID().toString();
-	}
-	
-	public Bus getBus() {
-		return this.bus;
-	}
-	
-	@Override
-	public Instant getEventTime() {
-		return eventTime;
-	}
+public abstract class EEDiscreteEvent {
 
-	@Override
-	public String getEventId() {
-		return ID;
-	}
+    private Instant eventTime;
 
+    private EEComponent target;
+
+    public EEDiscreteEvent(Instant eventTime, EEComponent target){
+        this.eventTime = eventTime;
+        this.target = target;
+    }
+
+    public Instant getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(Instant eventTime) {
+        this.eventTime = eventTime;
+    }
+
+    public EEComponent getTarget() {
+        return target;
+    }
 }

@@ -1,4 +1,4 @@
-/**
+package simulation.EESimulator; /**
  *
  * ******************************************************************************
  *  MontiCAR Modeling Family, www.se-rwth.de
@@ -18,29 +18,27 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-public enum MessageType {
-	SEND("SEND"), 
-	RECEIVE("RECEIVE");
-	/**
-	 * this variable contains the name of the entry
-	 */
-	private final String name;
+import java.time.Instant;
 
-	/**
-     * constructor for a bus entry
-     *
-     * @param name the name of the entry
-     */
-    private MessageType(String name) {
-        this.name = name;
-    }
+import commons.simulation.DiscreteEvent;
 
-	/**
-	 * Getter of the name attribute
-	 *
-	 * @return the name of the entry
-	 */
-	public String toString() {
-		return this.name;
+public class SimulationEndEvent implements DiscreteEvent {
+
+	private final Instant endTime;
+	
+	public SimulationEndEvent(Instant endTime) {
+		this.endTime = endTime;
 	}
+	
+	@Override
+	public Instant getEventTime() {
+		return this.endTime;
+	}
+
+	@Override
+	public String getEventId() {
+		// TODO Auto-generated method stub
+		return "";
+	}
+
 }

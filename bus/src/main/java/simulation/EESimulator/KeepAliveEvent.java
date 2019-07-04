@@ -1,4 +1,4 @@
-/**
+package simulation.EESimulator; /**
  *
  * ******************************************************************************
  *  MontiCAR Modeling Family, www.se-rwth.de
@@ -18,27 +18,31 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+
+import simulation.bus.Bus;
+
 import java.time.Instant;
+import java.util.UUID;
 
-import commons.simulation.DiscreteEvent;
 
-public class SimulationEndEvent implements DiscreteEvent {
 
-	private final Instant endTime;
+public class KeepAliveEvent extends EEDiscreteEvent {
+
 	
-	public SimulationEndEvent(Instant endTime) {
-		this.endTime = endTime;
-	}
-	
-	@Override
-	public Instant getEventTime() {
-		return this.endTime;
+	private String ID;
+
+	public KeepAliveEvent(Instant eventTime, EEComponent target) {
+		super(eventTime, target);
+		this.ID = UUID.randomUUID().toString();
 	}
 
-	@Override
+	public KeepAliveEvent(Bus bus, Instant eventTime, EEComponent target) {
+		super(eventTime, target);
+		this.ID = UUID.randomUUID().toString();
+	}
+
 	public String getEventId() {
-		// TODO Auto-generated method stub
-		return "";
+		return ID;
 	}
 
 }

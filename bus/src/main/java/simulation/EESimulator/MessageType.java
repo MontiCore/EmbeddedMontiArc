@@ -1,3 +1,5 @@
+package simulation.EESimulator;
+
 /**
  *
  * ******************************************************************************
@@ -18,36 +20,29 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package sensors.abstractsensors;
+public enum MessageType {
+	SEND("SEND"), 
+	RECEIVE("RECEIVE");
+	/**
+	 * this variable contains the name of the entry
+	 */
+	private final String name;
 
-import simulation.EESimulator.EESimulator;
-import commons.simulation.IPhysicalVehicle;
-import simulation.vehicle.PhysicalVehicle;
-
-/**
- * Created by Aklima Zaman on 2/8/2017.
- */
-public abstract class AbstractDistanceSensor extends AbstractSensor {
-    private Double value;
-
-    public AbstractDistanceSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
-        super(physicalVehicle, simulator);
+	/**
+     * constructor for a bus entry
+     *
+     * @param name the name of the entry
+     */
+    private MessageType(String name) {
+        this.name = name;
     }
 
-    @Override
-    protected void calculateValue() {
-        this.value = calculateDistance(getPhysicalVehicle());
-    }
-
-    protected abstract Double calculateDistance(IPhysicalVehicle v);
-
-    @Override
-    public Double getValue() {
-        return this.value;
-    }
-
-    @Override
-    public String getTypeName() {
-        return Double.class.getTypeName();
-    }
+	/**
+	 * Getter of the name attribute
+	 *
+	 * @return the name of the entry
+	 */
+	public String toString() {
+		return this.name;
+	}
 }

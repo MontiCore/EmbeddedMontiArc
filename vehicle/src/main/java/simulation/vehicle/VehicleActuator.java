@@ -20,11 +20,15 @@
  */
 package simulation.vehicle;
 
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEDiscreteEvent;
+import simulation.EESimulator.EESimulator;
+
 
 /**
  * Class that represents an actuator of the vehicle
  */
-public class VehicleActuator{
+public class VehicleActuator extends EEComponent {
 
     /** Type of the actuator */
     private VehicleActuatorType actuatorType;
@@ -53,7 +57,8 @@ public class VehicleActuator{
      * @param actuatorValueMax Maximum allowed value of the actuator
      * @param actuatorChangeRate Change rate of the actuator
      */
-    public VehicleActuator(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate){
+    public VehicleActuator(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate, EESimulator simulator){
+        super(simulator);
         if(actuatorValueMin > actuatorValueMax){
             throw new IllegalArgumentException("Lower end " + actuatorValueMin + " should not be higher than the upper end " + actuatorValueMax + ".");
         }
@@ -186,5 +191,14 @@ public class VehicleActuator{
                 " , actuatorChangeRate: " + actuatorChangeRate;
     }
 
+    @Override
+    public void processEvent(EEDiscreteEvent event) {
+        //TODO: implement
+    }
 
+    @Override
+    public String getID() {
+        //TODO: implement
+        return null;
+    }
 }

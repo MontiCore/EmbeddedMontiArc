@@ -35,14 +35,17 @@ import java.util.PriorityQueue;
 import java.util.Random;
 
 import static commons.controller.commons.BusEntry.*;
-import commons.simulation.DiscreteEventSimulationNotifiable;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Before;
+import bus.*;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import commons.controller.commons.BusEntry;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
+import simulation.EESimulator.MessageType;
+import simulation.bus.*;
 
 public class FlexRayTest {
 

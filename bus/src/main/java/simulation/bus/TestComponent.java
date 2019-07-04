@@ -1,3 +1,9 @@
+package simulation.bus;
+
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEDiscreteEvent;
+import simulation.EESimulator.EESimulator;
+
 /**
  *
  * ******************************************************************************
@@ -18,36 +24,27 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package sensors.abstractsensors;
 
-import simulation.EESimulator.EESimulator;
-import commons.simulation.IPhysicalVehicle;
-import simulation.vehicle.PhysicalVehicle;
 
-/**
- * Created by Aklima Zaman on 2/8/2017.
- */
-public abstract class AbstractDistanceSensor extends AbstractSensor {
-    private Double value;
 
-    public AbstractDistanceSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
-        super(physicalVehicle, simulator);
-    }
+public class TestComponent extends EEComponent {
+	
+	private String ID;
 
-    @Override
-    protected void calculateValue() {
-        this.value = calculateDistance(getPhysicalVehicle());
-    }
+	public TestComponent(EESimulator simulator, String ID) {
+		super(simulator);
+		this.ID = ID;
+	}
 
-    protected abstract Double calculateDistance(IPhysicalVehicle v);
+	@Override
+	public void processEvent(EEDiscreteEvent event) {
+		((BusMessage) event).setMessage(this.ID + "processed");
 
-    @Override
-    public Double getValue() {
-        return this.value;
-    }
+	}
 
-    @Override
-    public String getTypeName() {
-        return Double.class.getTypeName();
-    }
+	@Override
+	public String getID() {
+		return "TestComponent " + ID;
+	}
+
 }

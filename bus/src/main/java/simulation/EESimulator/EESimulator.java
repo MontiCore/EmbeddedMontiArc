@@ -1,4 +1,4 @@
-
+package simulation.EESimulator;
 /**
  *
  * ******************************************************************************
@@ -20,33 +20,29 @@
  * *******************************************************************************
  */
 
+
+import simulation.bus.Bus;
+
 import java.time.Instant;
 import java.util.*;
 import java.util.Comparator;
 
 import org.jfree.util.Log;
 
-import commons.simulation.DiscreteEvent;
-
 public class EESimulator {
 
 	/** point of time of simulation */
 	private Instant simulationTime;
 
-	/** point of time of last simulation step */
+	/** point of time the simulator should simulate to, given by the hardware simulator  */
 	private Instant deltaSimulationTime;
 
-	/*
-	 * private long time = System.nanoTime(); speichert beim erstellen eine Zeit in
-	 * ns. beim abfragen der Zeitdifferenz kann man dann (System.nanoTime() - time)
-	 * ist ggf etwas eleganter
-	 */
 
 	/**
-	 * list of discrete events (in the future)
+	 * list of all discrete events
 	 */
 	private static final EESimulatorComparator listComparator = new EESimulatorComparator();
-	private PriorityQueue<DiscreteEvent> eventList = new PriorityQueue<>(listComparator);
+	private PriorityQueue<EEDiscreteEvent> eventList = new PriorityQueue<>(listComparator);
 
 	/**
 	 * lists of objects that can get addressed by messages
@@ -68,7 +64,7 @@ public class EESimulator {
 	 * @param event event to add
 	 */
 
-	public void addEvent(DiscreteEvent event) {
+	public void addEvent(EEDiscreteEvent event) {
 		eventList.offer(event);
 	}
 
@@ -76,37 +72,17 @@ public class EESimulator {
 	 * simulate until eventList is empty or next event is in future
 	 */
 	public void simulateNextTick(Instant actualTime) {
-		this.simulationTime = actualTime;
-		
+		this.deltaSimulationTime = actualTime;
+
+		EEDiscreteEvent cur;
 		//loop until eventList is empty or next event is in future
-		while(!eventList.isEmpty() && eventList.peek().getEventTime().isAfter(simulationTime)){
-			DiscreteEvent cur = eventList.poll(); 
+		while(!eventList.isEmpty() && eventList.peek().getEventTime().isAfter(deltaSimulationTime)){
+			cur = eventList.poll();
 
-			// check if event is type BusMessage or KeepAliveEvent
-			if (cur instanceof BusMessage) {
-				BusMessage msg = (BusMessage) cur;
-				if (msg.getType() == MessageType.SEND) {
-					if (busList.contains(msg.getNextHop().get())) {
-						msg.getNextHop().get().processEvent(msg);
-					}
-					else {
-						Log.warn("EESimulator processed event for unregistered bus");
-					}
-				} else if (msg.getType() == MessageType.RECEIVE) {
-					msg.getTarget().processEvent(msg);
-				}
+			cur.getTarget().processEvent(cur);
+			this.simulationTime = cur.getEventTime();
 
-			} else if (cur instanceof KeepAliveEvent) {
-				KeepAliveEvent keepAlive = (KeepAliveEvent)cur;
-				if (busList.contains(keepAlive.getBus())) {
-					keepAlive.getBus().processEvent(keepAlive);
-				}
-				else {
-					Log.warn("EESimulator processed event for unregistered bus");
-				}
-			}
 		}
-
 	}
 
 	/**
@@ -114,7 +90,7 @@ public class EESimulator {
 	 * 
 	 * @param listener component to add
 	 */
-	public void registerComponent(EEComponent listener) { // sensor and actuator have to be instance of EEComponent
+	public void registerComponent(EEComponent listener) { // sensor and actuator have to be instance of EESimulator
 		if (listener instanceof Bus) {
 			busList.add(listener);
 		} /*
@@ -137,9 +113,11 @@ public class EESimulator {
 
 }
 
-class EESimulatorComparator implements Comparator<DiscreteEvent> {
-	// Used for sorting in ascending order of event time
-	public int compare(DiscreteEvent a, DiscreteEvent b) {
-		return a.getEventTime().compareTo(b.getEventTime());
-	}
+class EESimulatorComparator implements Comparator<EEDiscreteEvent>
+{
+    // Used for sorting in ascending order of event time
+    public int compare(EEDiscreteEvent a, EEDiscreteEvent b)
+    {
+        return a.getEventTime().compareTo(b.getEventTime());
+    }
 }

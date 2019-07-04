@@ -55,6 +55,13 @@
             <version>1.0.8</version>
         </dependency>
 
+        <!-- Vehicle has dependency to bus -->
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>bus</artifactId>
+            <version>1.0.8</version>
+        </dependency>
+
         <!-- Vehicle has dependency to commons -->
         <dependency>
             <groupId>montisim</groupId>

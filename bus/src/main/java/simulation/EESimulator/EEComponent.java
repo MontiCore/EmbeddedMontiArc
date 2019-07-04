@@ -1,6 +1,6 @@
 /**
  *
- * ******************************************************************************
+ *  ******************************************************************************
  *  MontiCAR Modeling Family, www.se-rwth.de
  *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
  *  All rights reserved.
@@ -18,8 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-import commons.controller.commons.BusEntry;
-import commons.simulation.DiscreteEvent;
+package simulation.EESimulator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +56,7 @@ public abstract class EEComponent {
 	/**
      * processes an incoming event
      */
-    public abstract void processEvent(DiscreteEvent event);
+    public abstract void processEvent(EEDiscreteEvent event);
 
     /**
      *
