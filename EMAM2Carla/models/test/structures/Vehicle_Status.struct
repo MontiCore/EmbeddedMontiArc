@@ -5,7 +5,7 @@ struct Vehicle_Status{
         Q velocity;
         Q acceleration;
         Quaternion orientation;
-        Ego_Vehicle control;
+        Ego_Vehicle ego_vehicle;
 }
 
 
