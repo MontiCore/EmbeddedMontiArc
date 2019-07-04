@@ -35,9 +35,19 @@ public class ChargingStation2D extends EnvObject2D implements EnvChargingStation
         super(nodes, EnvTag.CHARGING_STATION);
     }
 
-    public ChargingStation2D(List<EnvNode> nodes,  long osmId) {
+    public ChargingStation2D(List<EnvNode> nodes, long osmId) {
         super(nodes, EnvTag.CHARGING_STATION, osmId);
+    }
 
+    public ChargingStation2D(List<EnvNode> nodes, long osmId, int capacity) {
+        super(nodes, EnvTag.CHARGING_STATION, osmId);
+        this.capacity = capacity;
+    }
+
+    public ChargingStation2D(List<EnvNode> nodes, long osmId, int capacity, String name) {
+        super(nodes, EnvTag.CHARGING_STATION, osmId);
+        this.capacity = capacity;
+        this.name = name;
     }
 
     @Override
