@@ -40,17 +40,22 @@ public class FlexRay extends Bus {
 	/**
 	 * Size of frame header in byte
 	 */
-	private static final int HEADER_SIZE = 5;
+	protected static final int HEADER_SIZE = 5;
 
 	/**
 	 * Size of frame trailer in byte
 	 */
-	private static final int TRAILER_SIZE = 3;
+	protected static final int TRAILER_SIZE = 3;
 
 	/**
-	 * Maximum bytes of payload that fit in one frame
+	 * Maximum bytes of payload that fit in one slot
 	 */
-	protected static final int MAX_PAYLOAD_LEN = 254;
+	protected static final int MAX_SLOT_PAYLOAD = 254;
+
+	/**
+	 * Maximum bytes that fit in one slot
+	 */
+	protected static final int MAX_SLOT_SIZE = FlexRay.HEADER_SIZE + FlexRay.MAX_SLOT_PAYLOAD + FlexRay.TRAILER_SIZE;
 
 	/**
 	 * Number of static slots per station
@@ -58,25 +63,25 @@ public class FlexRay extends Bus {
 	private static final int STATIC_SLOTS = 1;
 
 	/**
+	 * Total bytes of payload of a controller in a static segment
+	 */
+	protected static final int CONTROLLER_STATIC_PAYLOAD = FlexRay.STATIC_SLOTS * FlexRay.MAX_SLOT_PAYLOAD;
+
+	/**
 	 * Number of dynamic slots per cycle
 	 */
 	protected static final int DYNAMIC_SLOTS = 4;
 
-	protected static int getControllerStaticPayload() {
-		return FlexRay.STATIC_SLOTS * FlexRay.MAX_PAYLOAD_LEN;
-	}
+	/**
+	 * Total bytes dynamic payload per cycle
+	 */
+	protected static final int TOTAL_DYNAMIC_PAYLOAD = FlexRay.MAX_SLOT_PAYLOAD * FlexRay.DYNAMIC_SLOTS;
 
-	protected static int getControllerSlotSize() {
-		return (FlexRay.STATIC_SLOTS * FlexRay.MAX_PAYLOAD_LEN) + FlexRay.HEADER_SIZE + FlexRay.TRAILER_SIZE;
-	}
-
-	protected static int getTotalDynamicPayload() {
-		return FlexRay.DYNAMIC_SLOTS * FlexRay.MAX_PAYLOAD_LEN;
-	}
-
-	protected static int getTotalDynamicSegmentSize() {
-		return FlexRay.DYNAMIC_SLOTS * (FlexRay.HEADER_SIZE + FlexRay.MAX_PAYLOAD_LEN + FlexRay.TRAILER_SIZE);
-	}
+	/**
+	 * Total size of the dynamic segment in bytes
+	 */
+	protected static final int DYNAMIC_SEGMENT_SIZE = FlexRay.DYNAMIC_SLOTS
+			* (FlexRay.HEADER_SIZE + FlexRay.MAX_SLOT_PAYLOAD + FlexRay.TRAILER_SIZE);
 
 	/**
 	 * Comparator that sorts {@link BusMessages} ascending according to their id
@@ -89,11 +94,20 @@ public class FlexRay extends Bus {
 	private FlexRayOperationMode mode = new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY);
 
 	private Map<String, PriorityQueue<BusMessage>> messagesByControllerId = new LinkedHashMap<String, PriorityQueue<BusMessage>>();
-
+	
+	/**
+	 * Duration of the last partial cycle that was simulated
+	 */
 	private Duration lastPartialCycleDuration = Duration.ZERO;
 
+	/**
+	 * Amount of bytes that were send in the static segment during the last partial cycle (including overhead)
+	 */
 	private int lastPartialStaticSegmentBytes = 0;
-
+	
+	/**
+	 * Amount of bytes that were send in the dynamic segment during the last partial cycle (including overhead)
+	 */
 	private int lastPartialDynamicSegmentBytes = 0;
 
 	public FlexRay(EESimulator simulator, List<EEComponent> controllers) {
@@ -103,13 +117,12 @@ public class FlexRay extends Bus {
 		}
 	}
 
-	int getTotalStaticPayload() {
-		return FlexRay.getControllerStaticPayload() * this.connectedComponents.size();
-	}
-
-	int getTotalStaticSegmentSize() {
-		return (FlexRay.HEADER_SIZE + FlexRay.getControllerStaticPayload() + FlexRay.TRAILER_SIZE)
-				* this.connectedComponents.size();
+	/**
+	 * @return total amount of bytes in a static segment
+	 */
+	private int getTotalStaticSegmentSize() {
+		return (FlexRay.HEADER_SIZE + FlexRay.CONTROLLER_STATIC_PAYLOAD + FlexRay.TRAILER_SIZE)
+				* (this.connectedComponents.size() + FlexRay.STATIC_SLOTS);
 	}
 
 	public FlexRayOperationMode getMode() {
@@ -119,64 +132,41 @@ public class FlexRay extends Bus {
 	public void setMode(FlexRayOperationMode mode) {
 		this.mode = mode;
 	}
-
-	Map<String, PriorityQueue<BusMessage>> getMessagesByControllerId() {
-		return this.messagesByControllerId;
+	
+	/**
+	 * @return The duration of a slot
+	 */
+	Duration getSlotSize() {
+		long mikroBits = ((long) (HEADER_SIZE + TRAILER_SIZE + MAX_SLOT_PAYLOAD)) * 8l * 1000000l;
+		double nanoseconds = mikroBits / ((double) mode.getDataRate());
+		return Duration.ofNanos((long) Math.ceil(nanoseconds));
 	}
 
-	private Duration finishLastCycle(Duration duration) {
-		Instant startTime = this.currentTime.minusNanos(lastPartialCycleDuration.toNanos());
-		Instant segmentStartTime = Instant.from(startTime);
+	/**
+	 * @return The duration of the static segment
+	 */
+	Duration getStaticSegmentSize() {
+		return this.getSlotSize().multipliedBy(this.messagesByControllerId.size() * FlexRay.STATIC_SLOTS);
+	}
 
-		if (lastPartialStaticSegmentBytes < this.getTotalStaticSegmentSize() && lastPartialStaticSegmentBytes > 0) {
-			int totalBytes = Math.toIntExact((duration.toMillis() * this.mode.getDataRate()) / 8);
-			int remainingBytes = this.getTotalStaticSegmentSize() - this.lastPartialStaticSegmentBytes;
-			if (totalBytes < remainingBytes) {
-				this.fillIncompleteStaticSegment(segmentStartTime, totalBytes, lastPartialStaticSegmentBytes);
-				this.lastPartialCycleDuration = this.lastPartialCycleDuration.plus(duration);
-				this.currentTime = startTime.plus(this.lastPartialCycleDuration);
-				this.lastPartialDynamicSegmentBytes = 0;
-				this.lastPartialStaticSegmentBytes += totalBytes;
-				duration = Duration.ZERO;
-			} else {
-				this.fillIncompleteStaticSegment(segmentStartTime, remainingBytes, lastPartialStaticSegmentBytes);
-				segmentStartTime = segmentStartTime.plusNanos(this.getStaticSegmentSize().toNanos());
-				totalBytes -= remainingBytes;
-				remainingBytes = FlexRay.getTotalDynamicSegmentSize();
-				if (totalBytes < remainingBytes) {
-					this.fillIncompleteDynamicSegment(segmentStartTime, totalBytes, 0);
-					this.lastPartialCycleDuration = this.lastPartialCycleDuration.plus(duration);
-					this.currentTime = startTime.plus(this.lastPartialCycleDuration);
-					this.lastPartialDynamicSegmentBytes = totalBytes;
-					this.lastPartialStaticSegmentBytes = this.getTotalStaticSegmentSize();
-					duration = Duration.ZERO;
-				} else {
-					this.fillDynamicSegment(segmentStartTime);
-					this.currentTime = startTime.plus(this.getCycleTime());
-					duration = duration.plus(lastPartialCycleDuration).minus(this.getCycleTime());
-				}
-			}
-		} else if (lastPartialStaticSegmentBytes > 0
-				&& lastPartialDynamicSegmentBytes < FlexRay.getTotalDynamicPayload()
-				&& lastPartialDynamicSegmentBytes >= 0) {
+	/**
+	 * @return The duration of the dynamic segment
+	 */
+	Duration getDynamicSegmentSize() {
+		long nanoseconds = this.getSlotSize().toNanos() * FlexRay.DYNAMIC_SLOTS;
+		return Duration.ofNanos(nanoseconds);
+	}
 
-			segmentStartTime.plusNanos(this.getStaticSegmentSize().toNanos());
-			int remainingBytes = FlexRay.getTotalDynamicSegmentSize() - this.lastPartialDynamicSegmentBytes;
-			int totalBytes = Math.toIntExact((duration.toMillis() * this.mode.getDataRate()) / 8);
-			if (totalBytes < remainingBytes) {
-				this.fillIncompleteDynamicSegment(segmentStartTime, totalBytes, lastPartialDynamicSegmentBytes);
-				this.lastPartialCycleDuration = this.lastPartialCycleDuration.plus(duration);
-				this.currentTime = startTime.plus(this.lastPartialCycleDuration);
-				this.lastPartialDynamicSegmentBytes += totalBytes;
-				this.lastPartialStaticSegmentBytes = 0;
-				duration = Duration.ZERO;
-			} else {
-				this.fillIncompleteDynamicSegment(segmentStartTime, remainingBytes, lastPartialDynamicSegmentBytes);
-				this.currentTime = startTime.plus(this.getCycleTime());
-				duration = duration.plus(lastPartialCycleDuration).minus(this.getCycleTime());
-			}
-		}
-		return duration;
+	/**
+	 * @return The duration of a cycle
+	 */
+	Duration getCycleTime() {
+		return this.getSlotSize()
+				.multipliedBy((this.messagesByControllerId.size() * FlexRay.STATIC_SLOTS) + FlexRay.DYNAMIC_SLOTS);
+	}
+
+	protected Map<String, PriorityQueue<BusMessage>> getMessagesByControllerId() {
+		return this.messagesByControllerId;
 	}
 
 	@Override
@@ -185,7 +175,7 @@ public class FlexRay extends Bus {
 		duration = this.finishLastCycle(duration);
 
 		if (!duration.isZero()) {
-			Instant segmentStartTime = this.currentTime.minusNanos(lastPartialCycleDuration.toNanos());
+			Instant segmentStartTime = this.currentTime;
 			Duration staticSegmentDuration = this.getStaticSegmentSize();
 			Duration dynamicSegmentDuration = this.getDynamicSegmentSize();
 
@@ -216,6 +206,7 @@ public class FlexRay extends Bus {
 				this.lastPartialStaticSegmentBytes = this.getTotalStaticSegmentSize();
 				this.lastPartialDynamicSegmentBytes = remainingBytes;
 			}
+			this.currentTime = this.currentTime.plus(duration);
 		}
 
 	}
@@ -250,12 +241,12 @@ public class FlexRay extends Bus {
 		if (!firstMsgs.isEmpty()) {
 			double toTransmit = firstMsgs.poll().getRemainingBytes();
 			// transmitted during static and dynamic segments
-			minCycle = (int) Math.ceil(toTransmit / (MAX_PAYLOAD_LEN * (DYNAMIC_SLOTS + STATIC_SLOTS)));
+			minCycle = (int) Math
+					.ceil(toTransmit / (FlexRay.CONTROLLER_STATIC_PAYLOAD + FlexRay.TOTAL_DYNAMIC_PAYLOAD));
 			while (!firstMsgs.isEmpty()) {
 				BusMessage cur = firstMsgs.poll();
 				// transmitted during static segments
-				int msgCycles = (int) Math
-						.ceil(cur.getRemainingBytes() / ((double) FlexRay.getControllerStaticPayload()));
+				int msgCycles = (int) Math.ceil(cur.getRemainingBytes() / ((double) FlexRay.CONTROLLER_STATIC_PAYLOAD));
 				if (msgCycles < minCycle) {
 					minCycle = msgCycles;
 				}
@@ -264,111 +255,167 @@ public class FlexRay extends Bus {
 
 		return this.currentTime.plusNanos(this.getCycleTime().toNanos() * minCycle);
 	}
-
+	
 	/**
-	 * @return The duration of a slot
+	 * Finish of the last cycle that was not completely simulated. Do nothing otherwise.
+	 * @param duration amount of time for which the bus is simulated
+	 * @return duration minus the amount of time it took the finish of the last cycle.
 	 */
-	Duration getSlotSize() {
-		double nanoseconds = (((long) (HEADER_SIZE + TRAILER_SIZE + MAX_PAYLOAD_LEN)) * 8l * 1000000l)
-				/ ((double) mode.getDataRate());
-		return Duration.ofNanos((long) Math.ceil(nanoseconds));
+	private Duration finishLastCycle(Duration duration) {
+		Instant startTime = this.currentTime.minusNanos(lastPartialCycleDuration.toNanos());
+		Instant segmentStartTime = Instant.from(startTime);
+
+		if (lastPartialStaticSegmentBytes < this.getTotalStaticSegmentSize() && lastPartialStaticSegmentBytes > 0) {
+			int totalBytes = Math.toIntExact((duration.toMillis() * this.mode.getDataRate()) / 8);
+			int remainingBytes = this.getTotalStaticSegmentSize() - this.lastPartialStaticSegmentBytes;
+			if (totalBytes < remainingBytes) {
+				this.fillIncompleteStaticSegment(segmentStartTime, totalBytes, lastPartialStaticSegmentBytes);
+				this.lastPartialCycleDuration = this.lastPartialCycleDuration.plus(duration);
+				this.currentTime = startTime.plus(this.lastPartialCycleDuration);
+				this.lastPartialDynamicSegmentBytes = 0;
+				this.lastPartialStaticSegmentBytes += totalBytes;
+				duration = Duration.ZERO;
+			} else {
+				this.fillIncompleteStaticSegment(segmentStartTime, remainingBytes, lastPartialStaticSegmentBytes);
+				segmentStartTime = segmentStartTime.plusNanos(this.getStaticSegmentSize().toNanos());
+				totalBytes -= remainingBytes;
+				remainingBytes = FlexRay.DYNAMIC_SEGMENT_SIZE;
+				if (totalBytes < remainingBytes) {
+					this.fillIncompleteDynamicSegment(segmentStartTime, totalBytes, 0);
+					this.lastPartialCycleDuration = this.lastPartialCycleDuration.plus(duration);
+					this.currentTime = startTime.plus(this.lastPartialCycleDuration);
+					this.lastPartialDynamicSegmentBytes = totalBytes;
+					this.lastPartialStaticSegmentBytes = this.getTotalStaticSegmentSize();
+					duration = Duration.ZERO;
+				} else {
+					this.fillDynamicSegment(segmentStartTime);
+					this.currentTime = startTime.plus(this.getCycleTime());
+					duration = duration.plus(lastPartialCycleDuration).minus(this.getCycleTime());
+					this.lastPartialCycleDuration = Duration.ZERO;
+					this.lastPartialDynamicSegmentBytes = FlexRay.DYNAMIC_SEGMENT_SIZE;
+					this.lastPartialStaticSegmentBytes = this.getTotalStaticSegmentSize();
+				}
+			}
+		} else if (lastPartialStaticSegmentBytes > 0 && lastPartialDynamicSegmentBytes < FlexRay.DYNAMIC_SEGMENT_SIZE
+				&& lastPartialDynamicSegmentBytes >= 0) {
+
+			segmentStartTime = segmentStartTime.plusNanos(this.getStaticSegmentSize().toNanos());
+			int remainingBytes = FlexRay.DYNAMIC_SEGMENT_SIZE - this.lastPartialDynamicSegmentBytes;
+			int totalBytes = Math.toIntExact((duration.toMillis() * this.mode.getDataRate()) / 8);
+			if (totalBytes < remainingBytes) {
+				this.fillIncompleteDynamicSegment(segmentStartTime, totalBytes, lastPartialDynamicSegmentBytes);
+				this.lastPartialCycleDuration = this.lastPartialCycleDuration.plus(duration);
+				this.currentTime = startTime.plus(this.lastPartialCycleDuration);
+				this.lastPartialDynamicSegmentBytes += totalBytes;
+				this.lastPartialStaticSegmentBytes = 0;
+				duration = Duration.ZERO;
+			} else {
+				this.fillIncompleteDynamicSegment(segmentStartTime, remainingBytes, lastPartialDynamicSegmentBytes);
+				this.currentTime = startTime.plus(this.getCycleTime());
+				duration = duration.plus(lastPartialCycleDuration).minus(this.getCycleTime());
+				this.lastPartialCycleDuration = Duration.ZERO;
+				this.lastPartialDynamicSegmentBytes = FlexRay.DYNAMIC_SEGMENT_SIZE;
+				this.lastPartialStaticSegmentBytes = this.getTotalStaticSegmentSize();
+			}
+		}
+		return duration;
 	}
 
 	/**
-	 * @return The duration of the static segment
+	 * Fill a complete static segment
+	 * @param segmentStartTime the time at which the segment was started.
 	 */
-	Duration getStaticSegmentSize() {
-		long nanoseconds = this.getSlotSize().toNanos() * this.messagesByControllerId.size();
-		return Duration.ofNanos(nanoseconds);
-	}
-
-	/**
-	 * @return The duration of the dynamic segment
-	 */
-	Duration getDynamicSegmentSize() {
-		long nanoseconds = this.getSlotSize().toNanos() * FlexRay.DYNAMIC_SLOTS;
-		return Duration.ofNanos(nanoseconds);
-	}
-
-	/**
-	 * @return The duration of a cycle
-	 */
-	Duration getCycleTime() {
-		long nanoseconds = this.getSlotSize().toNanos() * (this.messagesByControllerId.size() + FlexRay.DYNAMIC_SLOTS);
-		return Duration.ofNanos(nanoseconds);
-	}
-
 	void fillStaticSegment(Instant segmentStartTime) {
 		int transmittedBytes = 0;
 		System.out.println("-------------------\n" + "Static segment" + "\n-------------------");
 		for (Map.Entry<String, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
 			transmittedBytes += FlexRay.HEADER_SIZE;
-			fillStaticSlot(segmentStartTime, entry.getValue(), transmittedBytes, FlexRay.getControllerStaticPayload(), 0);
-			transmittedBytes += FlexRay.getControllerStaticPayload() + FlexRay.TRAILER_SIZE;
+			System.out.println(
+					"-------------------\n" + "Controller " + entry.getKey() + "\n-------------------");
+			fillStaticSlot(segmentStartTime, entry.getValue(), transmittedBytes, FlexRay.MAX_SLOT_PAYLOAD, 0);
+			transmittedBytes += FlexRay.CONTROLLER_STATIC_PAYLOAD + FlexRay.TRAILER_SIZE;
 		}
 	}
 
-	void fillIncompleteStaticSegment(Instant segmentStartTime, int bytesToSend, int transmittedBytes) {
-		int totalTransmittedBytes = transmittedBytes;
+	/**
+	 * Fill an incomplete (it was already started or is not finished) static segment.
+	 * @param segmentStartTime the time at which the segment was started
+	 * @param bytesToSend the amount of bytes to send (including overhead)
+	 * @param startByte the byte from which the segment is filled (including overhead)
+	 */
+	private void fillIncompleteStaticSegment(Instant segmentStartTime, int bytesToSend, int startByte) {
+		int totalTransmittedBytes = startByte;
 		System.out.println("-------------------\n" + "Incomplete Static Segment" + "\n-------------------");
-		System.out.println("-------------------\n" + "Trasmit " + bytesToSend + " from byte " + transmittedBytes
+		System.out.println("-------------------\n" + "Trasmit " + bytesToSend + " from byte " + startByte
 				+ " of " + this.getTotalStaticSegmentSize() + " bytes\n-------------------");
 		for (Map.Entry<String, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
 			if (bytesToSend > 0) {
-				if (transmittedBytes > FlexRay.getControllerSlotSize()) {
-					transmittedBytes -= FlexRay.HEADER_SIZE;
-					transmittedBytes -= FlexRay.getControllerStaticPayload();
-					transmittedBytes -= FlexRay.TRAILER_SIZE;
-				} else if (transmittedBytes > (FlexRay.HEADER_SIZE + FlexRay.getControllerStaticPayload())) {
-					transmittedBytes -= FlexRay.HEADER_SIZE;
-					transmittedBytes -= FlexRay.getControllerStaticPayload();
-					bytesToSend -= (FlexRay.TRAILER_SIZE - transmittedBytes);
-					totalTransmittedBytes += (FlexRay.TRAILER_SIZE - transmittedBytes);
-					transmittedBytes = 0;
-				} else if (transmittedBytes > FlexRay.HEADER_SIZE) {
-					transmittedBytes -= FlexRay.HEADER_SIZE;
-					int controllerBytes = Math.max(bytesToSend,
-							FlexRay.getControllerStaticPayload() - transmittedBytes);
-					System.out.println(
-							"-------------------\n" + "Controller " + entry.getKey() + "\n-------------------");
-					this.fillStaticSlot(segmentStartTime, entry.getValue(), totalTransmittedBytes, controllerBytes, transmittedBytes);
-					transmittedBytes = 0;
-					bytesToSend -= controllerBytes;
-					totalTransmittedBytes += controllerBytes;
-					bytesToSend -= FlexRay.TRAILER_SIZE;
-					totalTransmittedBytes += FlexRay.TRAILER_SIZE;
-				} else if (transmittedBytes > 0) {
-					bytesToSend -= FlexRay.HEADER_SIZE - transmittedBytes;
-					totalTransmittedBytes += FlexRay.HEADER_SIZE - transmittedBytes;
-					transmittedBytes = 0;
-					int controllerBytes = Math.min(bytesToSend, FlexRay.getControllerStaticPayload());
-					System.out.println(
-							"-------------------\n" + "Controller " + entry.getKey() + "\n-------------------");
-					this.fillStaticSlot(segmentStartTime, entry.getValue(), totalTransmittedBytes, controllerBytes, 0);
-					bytesToSend -= controllerBytes;
-					totalTransmittedBytes += controllerBytes;
-					bytesToSend -= FlexRay.TRAILER_SIZE;
-					totalTransmittedBytes += FlexRay.TRAILER_SIZE;
-				} else {
-					bytesToSend -= FlexRay.HEADER_SIZE;
-					totalTransmittedBytes += FlexRay.HEADER_SIZE;
-					transmittedBytes = 0;
-					int controllerBytes = Math.min(bytesToSend, FlexRay.getControllerStaticPayload());
-					System.out.println(
-							"-------------------\n" + "Controller " + entry.getKey() + "\n-------------------");
-					this.fillStaticSlot(segmentStartTime, entry.getValue(), totalTransmittedBytes, controllerBytes, 0);
-					bytesToSend -= controllerBytes;
-					totalTransmittedBytes += controllerBytes;
-					bytesToSend -= FlexRay.TRAILER_SIZE;
-					totalTransmittedBytes += FlexRay.TRAILER_SIZE;
+				for (int i = 0; i < FlexRay.STATIC_SLOTS; i++) {
+					if (startByte > FlexRay.MAX_SLOT_SIZE) {
+						startByte -= FlexRay.MAX_SLOT_SIZE;
+					} else if (startByte > (FlexRay.HEADER_SIZE + FlexRay.MAX_SLOT_PAYLOAD)) {
+						startByte -= FlexRay.HEADER_SIZE;
+						startByte -= FlexRay.MAX_SLOT_PAYLOAD;
+						bytesToSend -= (FlexRay.TRAILER_SIZE - startByte);
+						totalTransmittedBytes += (FlexRay.TRAILER_SIZE - startByte);
+						startByte = 0;
+					} else if (startByte > FlexRay.HEADER_SIZE) {
+						startByte -= FlexRay.HEADER_SIZE;
+						int controllerBytes = Math.min(bytesToSend, FlexRay.MAX_SLOT_PAYLOAD - startByte);
+						System.out.println(
+								"-------------------\n" + "Controller " + entry.getKey() + "\n-------------------");
+						this.fillStaticSlot(segmentStartTime, entry.getValue(), totalTransmittedBytes, controllerBytes,
+								startByte);
+						startByte = 0;
+						bytesToSend -= controllerBytes;
+						totalTransmittedBytes += controllerBytes;
+						bytesToSend -= FlexRay.TRAILER_SIZE;
+						totalTransmittedBytes += FlexRay.TRAILER_SIZE;
+					} else if (startByte > 0) {
+						bytesToSend -= FlexRay.HEADER_SIZE - startByte;
+						totalTransmittedBytes += FlexRay.HEADER_SIZE - startByte;
+						startByte = 0;
+						int controllerBytes = Math.min(bytesToSend, FlexRay.MAX_SLOT_PAYLOAD);
+						System.out.println(
+								"-------------------\n" + "Controller " + entry.getKey() + "\n-------------------");
+						this.fillStaticSlot(segmentStartTime, entry.getValue(), totalTransmittedBytes, controllerBytes,
+								0);
+						bytesToSend -= controllerBytes;
+						totalTransmittedBytes += controllerBytes;
+						bytesToSend -= FlexRay.TRAILER_SIZE;
+						totalTransmittedBytes += FlexRay.TRAILER_SIZE;
+					} else {
+						bytesToSend -= FlexRay.HEADER_SIZE;
+						totalTransmittedBytes += FlexRay.HEADER_SIZE;
+						startByte = 0;
+						int controllerBytes = Math.min(bytesToSend, FlexRay.MAX_SLOT_PAYLOAD);
+						System.out.println(
+								"-------------------\n" + "Controller " + entry.getKey() + "\n-------------------");
+						this.fillStaticSlot(segmentStartTime, entry.getValue(), totalTransmittedBytes, controllerBytes,
+								0);
+						bytesToSend -= controllerBytes;
+						totalTransmittedBytes += controllerBytes;
+						bytesToSend -= FlexRay.TRAILER_SIZE;
+						totalTransmittedBytes += FlexRay.TRAILER_SIZE;
+					}
 				}
+
 			}
 		}
 	}
 
-	PriorityQueue<BusMessage> fillStaticSlot(Instant segmentStartTime, PriorityQueue<BusMessage> msgs,
+	/**
+	 * Fill a static slot for one controller.
+	 * @param segmentStartTime the time at which the segment has started
+	 * @param msgs the messages that belong to the controller
+	 * @param transmittedBytes the bytes that were already transmitted during this segment (including overhead)
+	 * @param slotPayload the payload that should be transmitted during the slot
+	 * @param startByte the byte from which the slot is filled
+	 * @return the unfinished messages of the controller 
+	 */
+	private PriorityQueue<BusMessage> fillStaticSlot(Instant segmentStartTime, PriorityQueue<BusMessage> msgs,
 			int transmittedBytes, int slotPayload, int startByte) {
-		boolean endOfSlot = ((startByte + slotPayload) == FlexRay.getControllerStaticPayload());
+		boolean endOfSlot = ((startByte + slotPayload) % FlexRay.MAX_SLOT_PAYLOAD) == 0;
 		while (!msgs.isEmpty() && slotPayload > 0) {
 			BusMessage message = msgs.peek();
 			if (!message.isTransmitted()) {
@@ -398,43 +445,53 @@ public class FlexRay extends Bus {
 		return msgs;
 	}
 
+	/**
+	 * Fill a complete dynamic segment
+	 * @param segmentStartTime the time at which the segment was started.
+	 */
 	void fillDynamicSegment(Instant segmentStartTime) {
 		System.out.println("-------------------\n" + "Dynamic Segment" + "\n-------------------");
-		int bytesToSend = FlexRay.getTotalDynamicSegmentSize();
+		int bytesToSend = FlexRay.DYNAMIC_SEGMENT_SIZE;
 		int transmittedBytes = 0;
 		while (bytesToSend > 0) {
 			bytesToSend -= FlexRay.HEADER_SIZE;
 			transmittedBytes += FlexRay.HEADER_SIZE;
-			int slotPayload = Math.min(FlexRay.getControllerStaticPayload(), bytesToSend);
+			int slotPayload = FlexRay.MAX_SLOT_SIZE;
 			this.fillDynamicSlot(segmentStartTime, transmittedBytes, slotPayload, 0);
 			bytesToSend -= slotPayload + FlexRay.TRAILER_SIZE;
 			transmittedBytes += slotPayload + FlexRay.TRAILER_SIZE;
 		}
 	}
 
-	void fillIncompleteDynamicSegment(Instant segmentStartTime, int bytesToSend, int transmittedBytes) {
-		int totalTransmittedBytes = transmittedBytes;
+	/**
+	 * Fill an incomplete (it was already started or is not finished) dynamic segment.
+	 * @param segmentStartTime the time at which the segment was started
+	 * @param bytesToSend the amount of bytes to send (including overhead)
+	 * @param startByte the byte from which the segment is filled (including overhead)
+	 */
+	void fillIncompleteDynamicSegment(Instant segmentStartTime, int bytesToSend, int startByte) {
+		int totalTransmittedBytes = startByte;
 		System.out.println("-------------------\n" + "Incomplete Dynamic Segment" + "\n-------------------");
-		System.out.println("-------------------\n" + "Trasmit " + bytesToSend + " from byte " + transmittedBytes
-				+ " of " + FlexRay.getTotalDynamicPayload() + " bytes\n-------------------");
-		int fullSlots = transmittedBytes / FlexRay.getControllerSlotSize();
-		transmittedBytes -= (fullSlots * FlexRay.getControllerSlotSize());
-		if (transmittedBytes > FlexRay.HEADER_SIZE + FlexRay.getControllerStaticPayload()) {
-			transmittedBytes -= FlexRay.HEADER_SIZE + FlexRay.getControllerStaticPayload();
-			bytesToSend -= FlexRay.TRAILER_SIZE - transmittedBytes;
-			totalTransmittedBytes += FlexRay.TRAILER_SIZE - transmittedBytes;
-		} else if (transmittedBytes > FlexRay.HEADER_SIZE) {
-			transmittedBytes -= FlexRay.HEADER_SIZE;
-			int slotPayload = Math.min(FlexRay.getControllerStaticPayload() - transmittedBytes, bytesToSend);
-			this.fillDynamicSlot(segmentStartTime, totalTransmittedBytes, slotPayload, transmittedBytes);
-			bytesToSend -= slotPayload + FlexRay.TRAILER_SIZE - transmittedBytes;
-			totalTransmittedBytes += slotPayload + FlexRay.TRAILER_SIZE - transmittedBytes;
+		System.out.println("-------------------\n" + "Trasmit " + bytesToSend + " from byte " + startByte
+				+ " of " + FlexRay.DYNAMIC_SEGMENT_SIZE + " bytes\n-------------------");
+		int fullSlots = startByte / FlexRay.MAX_SLOT_SIZE;
+		startByte -= (fullSlots * FlexRay.MAX_SLOT_SIZE);
+		if (startByte > FlexRay.HEADER_SIZE + FlexRay.MAX_SLOT_PAYLOAD) {
+			startByte -= FlexRay.HEADER_SIZE + FlexRay.MAX_SLOT_PAYLOAD;
+			bytesToSend -= FlexRay.TRAILER_SIZE - startByte;
+			totalTransmittedBytes += FlexRay.TRAILER_SIZE - startByte;
+		} else if (startByte > FlexRay.HEADER_SIZE) {
+			startByte -= FlexRay.HEADER_SIZE;
+			int slotPayload = Math.min(FlexRay.MAX_SLOT_PAYLOAD - startByte, bytesToSend);
+			this.fillDynamicSlot(segmentStartTime, totalTransmittedBytes, slotPayload, startByte);
+			bytesToSend -= slotPayload + FlexRay.TRAILER_SIZE;
+			totalTransmittedBytes += slotPayload + FlexRay.TRAILER_SIZE;
 		}
 		// FlexRay.HeaderSize > transmittedBytes > 0
 		else {
-			bytesToSend -= FlexRay.HEADER_SIZE - transmittedBytes;
-			totalTransmittedBytes += FlexRay.HEADER_SIZE - transmittedBytes;
-			int slotPayload = Math.min(FlexRay.getControllerStaticPayload(), bytesToSend);
+			bytesToSend -= FlexRay.HEADER_SIZE - startByte;
+			totalTransmittedBytes += FlexRay.HEADER_SIZE - startByte;
+			int slotPayload = Math.min(FlexRay.MAX_SLOT_PAYLOAD, bytesToSend);
 			this.fillDynamicSlot(segmentStartTime, totalTransmittedBytes, slotPayload, 0);
 			bytesToSend -= slotPayload + FlexRay.TRAILER_SIZE;
 			totalTransmittedBytes += slotPayload + FlexRay.TRAILER_SIZE;
@@ -443,15 +500,22 @@ public class FlexRay extends Bus {
 		while (bytesToSend > 0) {
 			bytesToSend -= FlexRay.HEADER_SIZE;
 			totalTransmittedBytes += FlexRay.HEADER_SIZE;
-			int slotPayload = Math.min(FlexRay.getControllerStaticPayload(), bytesToSend);
+			int slotPayload = Math.min(FlexRay.MAX_SLOT_PAYLOAD, bytesToSend);
 			this.fillDynamicSlot(segmentStartTime, totalTransmittedBytes, slotPayload, 0);
 			bytesToSend -= slotPayload + FlexRay.TRAILER_SIZE;
 			totalTransmittedBytes += slotPayload + FlexRay.TRAILER_SIZE;
 		}
 	}
 
+	/**
+	 * Fill a dynamic slot for one controller.
+	 * @param segmentStartTime the time at which the segment has started
+	 * @param transmittedBytes the bytes that were already transmitted during this segment (including overhead)
+	 * @param slotPayload the payload that should be transmitted during the slot
+	 * @param startByte the byte from which the slot is filled
+	 */
 	private void fillDynamicSlot(Instant segmentStartTime, int transmittedBytes, int slotPayload, int startByte) {
-		boolean endOfSlot = (startByte + slotPayload) == FlexRay.getControllerSlotSize();
+		boolean endOfSlot = ((startByte + slotPayload) % FlexRay.MAX_SLOT_PAYLOAD) == 0;
 		BusMessage cur = this.getNextDynamicMessage();
 		while (cur != null && slotPayload > 0) {
 			int messageBytes = cur.transmitBytes(slotPayload, mode.getBitErrorRate());
@@ -465,7 +529,7 @@ public class FlexRay extends Bus {
 						transmittedBytes += FlexRay.TRAILER_SIZE;
 					}
 					long nanoseconds = this.calculateTransmissionTime(transmittedBytes);
-					cur.setFinishTime(segmentStartTime.plusNanos((long) Math.ceil(nanoseconds)));
+					cur.setFinishTime(segmentStartTime.plusNanos(nanoseconds));
 					this.registerEventAtSimulator(cur);
 					System.out.println("Msg " + cur.getMessage() + ": finished after: " + nanoseconds);
 					cur = this.getNextDynamicMessage();

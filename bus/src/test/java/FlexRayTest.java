@@ -206,8 +206,8 @@ public class FlexRayTest {
 			for (int i = 0; i < controllerMsgs.size(); i++) {
 				BusMessage cur = msgArray[i];
 				totalBytes += cur.getMessageLen();
-				int cycle = totalBytes / FlexRay.MAX_PAYLOAD_LEN;
-				if ((totalBytes % FlexRay.MAX_PAYLOAD_LEN) != 0) {
+				int cycle = totalBytes / FlexRay.MAX_SLOT_PAYLOAD;
+				if ((totalBytes % FlexRay.MAX_SLOT_PAYLOAD) != 0) {
 					cycle++;
 				}
 				System.out.println("Total bytes: " + totalBytes + " Cycle: " + cycle);
@@ -250,7 +250,7 @@ public class FlexRayTest {
 				flexray.fillStaticSegment(Instant.EPOCH);
 				for (Map.Entry<String, Integer> transmittedBytesEntry : transmittedBytesByControllerId.entrySet()) {
 					int transmittedBytes = transmittedBytesEntry.getValue();
-					transmittedBytesEntry.setValue(transmittedBytes + FlexRay.MAX_PAYLOAD_LEN);
+					transmittedBytesEntry.setValue(transmittedBytes + FlexRay.MAX_SLOT_PAYLOAD);
 				}
 			}
 			for (BusMessage msg : entry.getValue()) {
@@ -272,7 +272,7 @@ public class FlexRayTest {
 		BusMessage msgArray[] = msgs.toArray(new BusMessage[msgs.size()]);
 		Arrays.parallelSort(msgArray, new BusMessageComparatorIdDesc());
 		int totalBytes = 0;
-		int bytesPerCycle = FlexRay.DYNAMIC_SLOTS * FlexRay.MAX_PAYLOAD_LEN;
+		int bytesPerCycle = FlexRay.DYNAMIC_SLOTS * FlexRay.MAX_SLOT_PAYLOAD;
 		for (int i = 0; i < msgArray.length; i++) {
 			BusMessage cur = msgArray[i];
 			totalBytes += cur.getMessageLen();
@@ -371,7 +371,7 @@ public class FlexRayTest {
 			BusMessage cur = firstMsgs.poll();
 			// transmitted during static and dynamic segments
 			int msgCycles = (int) Math
-					.ceil(cur.getRemainingBytes() / ((double) (FlexRay.MAX_PAYLOAD_LEN * (FlexRay.DYNAMIC_SLOTS + 1))));
+					.ceil(cur.getRemainingBytes() / ((double) (FlexRay.MAX_SLOT_PAYLOAD * (FlexRay.DYNAMIC_SLOTS + 1))));
 			flexray.simulateFor(flexray.getCycleTime().multipliedBy(msgCycles));
 			assertTrue(cur.isTransmitted());
 
@@ -423,19 +423,19 @@ public class FlexRayTest {
 		Instant currentTime = Instant.EPOCH;
 		flexray.simulateFor(Duration.ofNanos(cycleTimeNs/2));
 		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
-		flexray.setCurrentTime(currentTime);
+		assertEquals(currentTime, flexray.currentTime);
 		flexray.simulateFor(flexray.getCycleTime().dividedBy(3));
 		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
-		flexray.setCurrentTime(currentTime);
+		assertEquals(currentTime, flexray.currentTime);
 		flexray.simulateFor(flexray.getCycleTime().dividedBy(3));
 		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
-		flexray.setCurrentTime(currentTime);
+		assertEquals(currentTime, flexray.currentTime);
 		flexray.simulateFor(flexray.getCycleTime().dividedBy(2));
 		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
-		flexray.setCurrentTime(currentTime);
+		assertEquals(currentTime, flexray.currentTime);
 		flexray.simulateFor(flexray.getCycleTime().dividedBy(3));
 		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
-		flexray.setCurrentTime(currentTime);
+		assertEquals(currentTime, flexray.currentTime);
 		flexray.simulateFor(flexray.getCycleTime());
 
 		assertTrue(0 < Duration.between(Instant.EPOCH, c34.getFinishTime()).toNanos());
@@ -458,11 +458,14 @@ public class FlexRayTest {
 		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + (2* slotSizeNs)) + "; Actual: " + Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
 		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + (2* slotSizeNs)) > Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
 		
+		System.out.println(cycleTimeNs + totalStaticSegmentSizeNs);
+		System.out.println("Expected: " + (cycleTimeNs * 2) + "; Actual: " + Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
 		assertEquals((cycleTimeNs * 2), Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
 		
 		assertTrue(cycleTimeNs < Duration.between(Instant.EPOCH, c32.getFinishTime()).toNanos());
 		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c32.getFinishTime()).toNanos());
 		
+		System.out.println("Expected: " + (cycleTimeNs * 2) + "; Actual: " + Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
 		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
 		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
 		
