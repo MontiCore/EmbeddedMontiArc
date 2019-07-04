@@ -297,7 +297,7 @@ public class FlexRayTest {
 			for (BusMessage msg : entry.getValue()) {
 				assertTrue(!msg.isTransmitted());
 				if (first) {
-					System.out.println(msg.getMessage().toString() + "Expected: " + transmittedBytes
+					System.out.println(msg.getMessage().toString() + " Expected: " + transmittedBytes
 							+ " transmittedBytes. Actual: " + msg.getTransmittedBytes());
 					assertEquals(transmittedBytes, msg.getTransmittedBytes());
 					first = false;

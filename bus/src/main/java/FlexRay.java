@@ -456,7 +456,7 @@ public class FlexRay extends Bus {
 		while (bytesToSend > 0) {
 			bytesToSend -= FlexRay.HEADER_SIZE;
 			transmittedBytes += FlexRay.HEADER_SIZE;
-			int slotPayload = FlexRay.MAX_SLOT_SIZE;
+			int slotPayload = FlexRay.MAX_SLOT_PAYLOAD;
 			this.fillDynamicSlot(segmentStartTime, transmittedBytes, slotPayload, 0);
 			bytesToSend -= slotPayload + FlexRay.TRAILER_SIZE;
 			transmittedBytes += slotPayload + FlexRay.TRAILER_SIZE;

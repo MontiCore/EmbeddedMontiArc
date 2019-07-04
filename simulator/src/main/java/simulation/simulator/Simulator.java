@@ -182,10 +182,8 @@ public class Simulator {
         if (!simulationTime.isBefore(Instant.ofEpochSecond(0, simulationDuration.toNanos()))) {
             return;
         }
-
-        boolean test = false;
-        if(test)
-        	throw new IllegalStateException("Test");
+        
+        System.out.println(simulationType);
         
         //Reset time
         simulationStartTime = Instant.now();

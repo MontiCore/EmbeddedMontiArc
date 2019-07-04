@@ -48,27 +48,18 @@
             <artifactId>util</artifactId>
             <version>1.0.8</version>
         </dependency>
-
-        <!-- Bus has dependency to simulator -->
-        <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>simulator</artifactId>
-            <version>1.0.8</version>
-        </dependency>
-
-        <!-- Bus has dependency to vehicle -->
-        <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>vehicle</artifactId>
-            <version>1.0.8</version>
-        </dependency>
 		
-		<!-- Bus has dependency to sensors -->
-        <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>sensors</artifactId>
-            <version>1.0.8</version>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>11.0.2</version>
+		</dependency>
 
     </dependencies>
 
