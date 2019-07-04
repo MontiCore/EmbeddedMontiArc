@@ -4,12 +4,12 @@ import test.structures.*;
 component BumpBot{
 
 	ports	out Ego_Vehicle test,
-		//in Vehicle_Status vehicle_status,
+		in Vehicle_Status vehicle_status,
 		in Collision collision;
 
 	implementation Math{
-		static Vector3 collision_normale = collision.normal_impulse;
-		//static Quaternion orientation;
+		Vector3 collision_normale = collision.normal_impulse;
+		Quaternion orientation = vehicle_status.orientation;
 		//collision_normale = collision.normal_impulse;
 		//orientation = vehicle_status.orientation;
 
