@@ -1,3 +1,8 @@
+<!--
+  ~ Copyright (C) 2019 SE RWTH.
+  ~
+  ~  TODO: Include License.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -11,8 +16,7 @@
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>plugin-language-server</artifactId>
-    <packaging>maven-plugin</packaging>
+    <artifactId>tests-language-server</artifactId>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
 
@@ -32,7 +36,7 @@
 
     <!-- == PROJECT METAINFORMATION =========================================== -->
 
-    <name>Sol - Plugins - Language Server</name>
+    <name>Sol - Tests - Language Server</name>
 
     <!-- == PROJECT DEPENDENCIES ============================================== -->
 
@@ -42,20 +46,16 @@
 
         <dependency>
             <groupId>de.monticore.lang.monticar.sol</groupId>
-            <artifactId>plugin-common</artifactId>
+            <artifactId>runtime-language-server</artifactId>
             <version>2019.06.25.0</version>
         </dependency>
 
         <!-- .. Libraries ................................................. -->
 
         <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven.plugin-tools</groupId>
-            <artifactId>maven-plugin-annotations</artifactId>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math</artifactId>
+            <version>0.1.9-SNAPSHOT</version>
         </dependency>
 
         <!-- .. Language .................................................. -->
@@ -70,30 +70,33 @@
         <plugins>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>${maven-plugin-plugin.version}</version>
-                <configuration>
-                    <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-                </configuration>
+                <groupId>de.monticore.lang.monticar.sol</groupId>
+                <artifactId>plugin-language-server</artifactId>
+                <version>2019.06.25.0</version>
                 <executions>
                     <execution>
-                        <id>mojo-descriptor</id>
+                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>descriptor</goal>
+                            <goal>generate</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>help-goal</id>
-                        <goals>
-                            <goal>helpmojo</goal>
-                        </goals>
+                        <configuration>
+                            <grammar>de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcMath</grammar>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
 
         </plugins>
     </build>
+
+
+    <!-- == PROJECT REPORTING ================================================= -->
+
+    <reporting>
+        <plugins>
+
+        </plugins>
+    </reporting>
 
     <!-- == PROJECT DISTRIBUTION ============================================== -->
 

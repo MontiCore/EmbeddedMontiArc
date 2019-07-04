@@ -1,0 +1,44 @@
+/*
+ * Copyright (C) 2019 SE RWTH.
+ *
+ *  TODO: Include License.
+ */
+package de.monticore.lang.monticar.sol.plugins.common.plugin.common;
+
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+
+import java.util.List;
+
+public abstract class AbstractPlugin extends AbstractMojo implements Plugin {
+    @Inject private List<PluginContribution> contributions;
+
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
+    protected MavenProject mavenProject;
+
+    public MavenProject getMavenProject() {
+        return this.mavenProject;
+    }
+
+    @Override
+    public final void execute() throws MojoExecutionException {
+        Guice.createInjector(this.getModule()).injectMembers(this);
+
+        try {
+            for (PluginContribution contribution : this.contributions) {
+                contribution.onPluginConfigure(this);
+            }
+
+            for (PluginContribution contribution : this.contributions) {
+                contribution.onPluginExecute(this);
+            }
+        } catch(Exception exception) {
+            exception.printStackTrace();
+            throw new MojoExecutionException(exception.getMessage(), exception);
+        }
+    }
+}

@@ -1,0 +1,48 @@
+<#-- @ftlvariable name="contribution" type="de.monticore.lang.monticar.sol.plugins.common.plugin.generate.template.TemplateContribution" -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="configuration" type="de.monticore.lang.monticar.sol.plugins.ls.plugin.configuration.LanguageServerConfiguration" -->
+${tc.signature("contribution")}
+<#assign configuration = glex.getGlobalVar("configuration")>
+<#assign hasHandCodedPeer = contribution.hasHandCodedPeer()>
+<#assign generatedPackage = configuration.getGrammarGeneratedPackage()>
+<#assign grammarName = configuration.getGrammarName()>
+<#assign generatedPackage = configuration.getGrammarGeneratedPackage()>
+package ${generatedPackage}.services;
+
+import com.google.common.flogger.FluentLogger;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import de.monticore.lang.monticar.sol.runtime.ls.converters.mc2ls.FindingToDiagnostic;
+import de.monticore.lang.monticar.sol.runtime.ls.document.TextDocument;
+import de.monticore.lang.monticar.sol.runtime.ls.services.DiagnosticsService;
+import ${generatedPackage}._parser.${grammarName}Parser;
+import de.se_rwth.commons.logging.Log;
+import org.eclipse.lsp4j.Diagnostic;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+<#if !hasHandCodedPeer>@Singleton</#if>
+public class ${grammarName}DiagnosticsService<#if hasHandCodedPeer>Top</#if> implements DiagnosticsService {
+    protected final FluentLogger logger;
+    protected final ${grammarName}Parser parser;
+    protected final FindingToDiagnostic f2d;
+
+    <#if !hasHandCodedPeer>@Inject</#if>
+    protected ${grammarName}DiagnosticsService<#if hasHandCodedPeer>Top</#if>(FindingToDiagnostic f2d) {
+        this.logger = FluentLogger.forEnclosingClass();
+        this.parser = new ${grammarName}Parser();
+        this.f2d = f2d;
+    }
+
+    @Override
+    public List<Diagnostic> validate(TextDocument document) {
+        Log.getFindings().clear();
+
+        try { this.parser.parse_String(document.getText()); } catch(IOException ignored) {}
+
+        return Log.getFindings().stream().map(this.f2d).collect(Collectors.toList());
+    }
+}
