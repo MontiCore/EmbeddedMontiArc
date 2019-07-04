@@ -356,7 +356,7 @@
                 <executions>
                     <execution>
                         <id>JavaDoc</id>
-                        <phase>deploy</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>aggregate</goal>
                         </goals>
