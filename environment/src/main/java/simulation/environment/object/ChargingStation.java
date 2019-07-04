@@ -14,13 +14,14 @@ import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
 import simulation.util.Log;
 import simulation.util.MathHelper;
+import simulation.util.ChargingProcess;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.vecmath.Point3d
+import javafx.geometry.Point3D;
 
 /**
  * Charging Station Class
@@ -79,7 +80,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	private HashMap<Car, ChargingProcess> chargingProcessesMap = new HashMap<>();
 	
 	/** Location of the Charging Station */
-	private Point3d location = new Point3d(0, 0, 0);
+	private Point3D location = new Point3D(0, 0, 0);
 	
 	/** Car tracing Radius of the Charging Station */
 	private double stationRadius = 10.00;
@@ -103,7 +104,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 		length = 1.0;
 		height = 0.5;
 		geometryPositionOffset = new ArrayRealVector(new double[] { 0.0, 0.0, 0.0 });
-		// physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_STREET_LANTERN;
+		// physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CHARGING_STATION;
 		error = false;
 		collision = false;
 
@@ -118,12 +119,12 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	/**
 	 * Cunstructor
 	 * 
-	 * @param int
-	 *            size size of how many cars can be placed in the Charing Station.
+	 * @param size
+	 *            size of how many cars can be placed in the Charing Station.
 	 *            Can be 1-6
 	 */
 	public ChargingStation(int size) {
-		ChargingStation();
+		this();
 		if (size > 6 || size < 0) {
 			size = 2;
 		} else {
@@ -198,11 +199,11 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 		return this.size;
 	}
 
-	public Point3d getLocation() {
+	public Point3D getLocation() {
 		return this.location;
 	}
 
-	public void setLocation(Point3d point) {
+	public void setLocation(Point3D point) {
 		this.location = point;
 	}
 	
@@ -215,7 +216,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	}
 
 	public String toString() {
-		return getName() + ", Size: " + getSize() + ", ID" + getID();
+		return getName() + ", Size: " + getSize() + ", ID" + getId();
 	}
 
 	public ArrayList<Car> getCarObjects() {

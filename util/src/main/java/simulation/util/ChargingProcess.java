@@ -18,7 +18,7 @@ import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import simulation.batteryFeature.ChargingStation;
+import simulation.environment.object.ChargingStation;
 
 /**
  * Charging Station Class
