@@ -6,21 +6,8 @@ import java.time.Instant;
 import java.util.*;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Set;
-
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jfree.util.Log;
-
-import commons.simulation.DiscreteEvent;
 import commons.controller.commons.BusEntry;
 
-import commons.controller.commons.BusEntry;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jfree.util.Log;
 import simulation.EESimulator.*;
 
 public abstract class Bus extends EEComponent {
@@ -54,15 +41,10 @@ public abstract class Bus extends EEComponent {
 	public void processEvent(EEDiscreteEvent evt) {
 		if (evt instanceof BusMessage) {
 			BusMessage msg = (BusMessage) evt;
-			if (msg.getType() == MessageType.SEND) {
-				this.simulateFor(Duration.between(currentTime, msg.getEventTime()));
-				currentTime = msg.getEventTime();
-				this.registerMessage(msg);
-				this.setKeepAlive();
-			} else {
-				throw new IllegalArgumentException(
-						"Invalid MessageType. Expected SEND but was " + msg.getType().toString());
-			}
+			this.simulateFor(Duration.between(currentTime, msg.getEventTime()));
+			currentTime = msg.getEventTime();
+			this.registerMessage(msg);
+			this.setKeepAlive();
 		} else if (evt instanceof KeepAliveEvent) {
 			if (((KeepAliveEvent) evt).getEventId().equals(this.currentKeepAliveID)) {
 				this.simulateFor(Duration.between(currentTime, evt.getEventTime()));
@@ -106,7 +88,7 @@ public abstract class Bus extends EEComponent {
 
 
 
-	protected void updateSendTo(Bridge component, List<BusEntry> listenTo){
+	public void updateSendTo(Bridge component, List<BusEntry> listenTo){
 		for(EEComponent connect : connectedComponents){
 			if(connect.getComponentType() == EEComponentType.BRIDGE && !connect.equals(component)){
 				((Bridge)connect).update(this, listenTo);

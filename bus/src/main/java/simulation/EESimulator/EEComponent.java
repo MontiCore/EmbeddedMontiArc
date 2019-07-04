@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.Set;
 
+import commons.controller.commons.BusEntry;
+
 import java.util.ArrayList;
 import java.util.List;
 

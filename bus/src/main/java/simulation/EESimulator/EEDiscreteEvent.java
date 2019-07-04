@@ -29,6 +29,8 @@ public abstract class EEDiscreteEvent {
     private Instant eventTime;
 
     private EEComponent target;
+    
+    private EEDiscreteEventTypeEnum eventType;
 
     public EEDiscreteEvent(Instant eventTime, EEComponent target){
         this.eventTime = eventTime;
@@ -45,5 +47,9 @@ public abstract class EEDiscreteEvent {
 
     public EEComponent getTarget() {
         return target;
+    }
+    
+    public EEDiscreteEventTypeEnum getEventType() {
+    	return this.eventType;
     }
 }

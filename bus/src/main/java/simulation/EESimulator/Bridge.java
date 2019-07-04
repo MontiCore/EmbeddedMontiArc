@@ -1,3 +1,4 @@
+package simulation.EESimulator;
 /**
  *
  * ******************************************************************************
@@ -22,6 +23,8 @@
 
 import java.lang.Object;
 import commons.simulation.DiscreteEvent;
+import simulation.bus.Bus;
+import simulation.bus.BusMessage;
 import commons.controller.commons.BusEntry;
 
 import java.util.HashMap;
@@ -59,22 +62,16 @@ public class Bridge extends EEComponent{
              return componentType.toString();
          }
 
-        public void processEvent(DiscreteEvent event){
-             if(event instanceof BusMessage){
-                 BusMessage msg = (BusMessage) event;
-                 if (msg.getType() == MessageType.SEND) {
-                    //need to know which Bus send this event so to which one I have to send
-                 } else {
-                     throw new IllegalArgumentException(
-                             "Invalid MessageType. Expected SEND but was " + msg.getType().toString());
-                 }
+        public void processEvent(EEDiscreteEvent event){
+             if(event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE){
+                 BusMessage msg = (BusMessage) event;  
              }
              else{
                  throw new IllegalArgumentException("Only BusMessages expected.");
              }
         }
 
-         protected void update(Bus bus, List<BusEntry> messages){
+         public void update(Bus bus, List<BusEntry> messages){
              if(bus.equals(connected.getKey())){
                  connected.getValue().updateSendTo(this, messages);
              }
