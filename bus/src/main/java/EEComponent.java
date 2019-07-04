@@ -21,18 +21,40 @@
 import commons.controller.commons.BusEntry;
 import commons.simulation.DiscreteEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.Set;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 public abstract class EEComponent {
 	
 	protected EESimulator simulator;
+	protected EEComponentType componentType;
+	protected HashMap<BusEntry, List<EEComponent>> sendTo; //which message to which component
+	protected List<BusEntry> listenTo; //which message do I want to get
 	
 	protected EEComponent(EESimulator simulator) {
 		if(simulator == null) {
 			throw new IllegalArgumentException("simulator can't be null");
 		}
 		this.simulator = simulator;
+		sendTo = new HashMap<BusEntry, List<EEComponent>>();
+		listenTo = new ArrayList<BusEntry>();
 	}
 
-    /**
+	public EEComponentType getComponentType() {
+		return componentType;
+	}
+
+	public List<BusEntry> getListenTo() {
+		return listenTo;
+	}
+
+	/**
      * processes an incoming event
      */
     public abstract void processEvent(DiscreteEvent event);

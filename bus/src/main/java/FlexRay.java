@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import org.jfree.util.Log;
 
 import commons.simulation.DiscreteEvent;
+import commons.controller.commons.BusEntry;
 
 public class FlexRay extends Bus {
 
@@ -110,11 +111,13 @@ public class FlexRay extends Bus {
 	 */
 	private int lastPartialDynamicSegmentBytes = 0;
 
-	public FlexRay(EESimulator simulator, List<EEComponent> controllers) {
-		super(simulator, controllers);
-		for (EEComponent controller : controllers) {
-			messagesByControllerId.put(controller.getID().toString(), new PriorityQueue<BusMessage>(COMP_ID_DESC));
-		}
+	public FlexRay(EESimulator simulator) {
+		super(simulator);
+	}
+
+	public void registerComponent(EEComponent component, List<BusEntry> messages){
+		super.registerComponent(component, messages);
+		messagesByControllerId.put(component.getID().toString(), new PriorityQueue<BusMessage>(COMP_ID_DESC));
 	}
 
 	/**
@@ -211,17 +214,32 @@ public class FlexRay extends Bus {
 
 	}
 
+//	@Override
+//	protected void registerMessage(BusMessage msg) {
+//		if (msg.getPath().isEmpty()) {
+//			boolean suc = this.setPath(msg);
+//			if (!suc) {
+//				throw new IllegalArgumentException("Message send to unknown controller.");
+//			}
+//		}
+//		if (!messagesByControllerId.containsKey(msg.getControllerID())) {
+//			throw new IllegalArgumentException("Message send by unknown controller.");
+//		} else {
+//			PriorityQueue<BusMessage> controllerMsgs = messagesByControllerId.get(msg.getControllerID());
+//			controllerMsgs.add(msg);
+//			messagesByControllerId.put(msg.getControllerID(), controllerMsgs);
+//		}
+//	}
+
 	@Override
-	protected void registerMessage(BusMessage msg) {
-		if (msg.getPath().isEmpty()) {
-			boolean suc = this.setPath(msg);
-			if (!suc) {
-				throw new IllegalArgumentException("Message send to unknown controller.");
-			}
+	protected void registerMessage(BusMessage msg){
+		if(!sendTo.containsKey(msg.getMessageID())){
+			throw new IllegalArgumentException("Message has no target in this Bus.");
 		}
-		if (!messagesByControllerId.containsKey(msg.getControllerID())) {
+		if(!messagesByControllerId.containsKey(msg.getControllerID())){
 			throw new IllegalArgumentException("Message send by unknown controller.");
-		} else {
+		}
+		else{
 			PriorityQueue<BusMessage> controllerMsgs = messagesByControllerId.get(msg.getControllerID());
 			controllerMsgs.add(msg);
 			messagesByControllerId.put(msg.getControllerID(), controllerMsgs);

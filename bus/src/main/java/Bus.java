@@ -28,11 +28,17 @@ import java.util.Optional;
 import java.util.Stack;
 import java.util.UUID;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jfree.util.Log;
 
 import commons.simulation.DiscreteEvent;
+import commons.controller.commons.BusEntry;
 
 public abstract class Bus extends EEComponent {
 
@@ -44,18 +50,14 @@ public abstract class Bus extends EEComponent {
 
 	protected String currentKeepAliveID = "";
 
-	protected Bus(EESimulator simulator, List<EEComponent> connectedComponents) {
+	//protected HashMap<BusEntry, List<EEComponent>> sendTo;
+
+	protected Bus(EESimulator simulator) {
 		super(simulator);
-		if (connectedComponents.isEmpty()) {
-			Log.info("Bus with no connected components initalized");
-		}
-		for (EEComponent comp : connectedComponents) {
-			if (comp.simulator != simulator) {
-				throw new IllegalArgumentException("Can not connect component from different simulator to bus");
-			}
-		}
-		this.connectedComponents = connectedComponents;
+		this.connectedComponents = new ArrayList<EEComponent>();
+		//sendTo = new HashMap<BusEntry, List<EEComponent>>();
 		this.ID = "Bus" + UUID.randomUUID().toString();
+		componentType = EEComponentType.BUS;
 	}
 
 	public String getID() {
@@ -136,6 +138,57 @@ public abstract class Bus extends EEComponent {
 			}
 		}
 		return res;
+	}
+
+
+	public void registerComponent(EEComponent component){
+		List<BusEntry> messages = component.getListenTo();
+		registerComponent(component, messages);
+	}
+
+
+	public void registerComponent(EEComponent component, List<BusEntry> messages){//messages are all needed/wanted messageIDs
+		for(EEComponent connect : connectedComponents){
+			if(connect.getComponentType() == EEComponentType.BRIDGE){
+				((Bridge)connect).update(this, listenTo);
+			}
+		}
+		connectedComponents.add(component);
+		for(BusEntry message: messages){
+			if(sendTo.containsKey(message)){
+				List<EEComponent> targets = sendTo.get(message);
+				targets.add(component);
+				sendTo.put(message, targets);
+			}
+			else{
+				List<EEComponent> list = new ArrayList<EEComponent>();
+				list.add(component);
+				sendTo.put(message, list);
+				listenTo.add(message);
+			}
+		}
+	}
+
+
+
+	protected void updateSendTo(Bridge component, List<BusEntry> listenTo){
+		for(EEComponent connect : connectedComponents){
+			if(connect.getComponentType() == EEComponentType.BRIDGE && !connect.equals(component)){
+				((Bridge)connect).update(this, listenTo);
+			}
+		}
+		for(BusEntry message: listenTo){
+			if(sendTo.containsKey(message)){
+				List<EEComponent> targets = sendTo.get(message);
+				targets.add(component);
+				sendTo.put(message, targets);
+			}
+			else{
+				List<EEComponent> list = new ArrayList<EEComponent>();
+				list.add(component);
+				sendTo.put(message, list);
+			}
+		}
 	}
 
 	abstract void simulateFor(Duration duration);
