@@ -120,7 +120,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	 *            0 for a random capacity between 1-4
 	 */
 	public ChargingStation(int capacity) {
-		this
+		this();
 		if (capacity == 0){
 		    if (Math.random() < 0.25) this.capacity = 1;
 		    else if (Math.random() < 0.5) this.capacity = 2;
