@@ -38,7 +38,7 @@
 
 <#macro callback sub>
     void ${sub.getMethodName()}(const ${sub.getTypeNameInTargetLanguage()}::SharedPtr msg){
-    <#if sub.getRosConnectionSymbol().getMsgField().isPresent()>
+    <#if !sub.isStructInterface() && sub.getRosConnectionSymbol().getMsgField().isPresent()>
         component->${sub.getPortNameInTargetLanguage()} = msg->${sub.getRosConnectionSymbol().getMsgField().get()};
     <#else>
         ${sub.getRos2SetStructInstruction()}
@@ -50,7 +50,7 @@
 <#macro publish pub>
     void publish${pub.getNameInTargetLanguage()}(){
     ${pub.getTypeNameInTargetLanguage()} tmpMsg;
-    <#if pub.getRosConnectionSymbol().getMsgField().isPresent()>
+    <#if !pub.isStructInterface() &&  pub.getRosConnectionSymbol().getMsgField().isPresent()>
         tmpMsg.${pub.getRosConnectionSymbol().getMsgField().get()} = component->${pub.getPortNameInTargetLanguage()};
     <#else>
         ${pub.getRos2SetStructInstruction()}

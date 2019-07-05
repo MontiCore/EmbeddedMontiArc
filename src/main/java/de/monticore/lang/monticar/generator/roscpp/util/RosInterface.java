@@ -4,9 +4,14 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
+import de.monticore.lang.monticar.generator.rosmsg.RosField;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
+import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public abstract class RosInterface {
     protected EMAPortSymbol port;
@@ -14,7 +19,30 @@ public abstract class RosInterface {
 
     public RosMsg getRosMsg() {
         String packageName = Arrays.stream(getTopicType().split("/")).findFirst().get();
-        return GeneratorRosMsg.getRosType(packageName, this.getPort().getTypeReference(), false);
+        RosMsg res = GeneratorRosMsg.getRosType(packageName, this.getPort().getTypeReference(), false);
+
+        if(rosConnectionSymbol.getMsgField().isPresent()){
+            String msgField = rosConnectionSymbol.getMsgField().get();
+            String[] parts = msgField.split("\\.");
+            String path = "";
+            for(String p : parts){
+                path += (path.length() == 0 ? "." : "") + p;
+                boolean found = false;
+                for(RosField field : res.getFields()){
+                    if (field.getType() instanceof RosMsg)
+                        if (field.getName().equals(msgField)) {
+                            res = (RosMsg) field.getType();
+                            found = true;
+                        }else{
+                            Log.error("Found field " + path + ", but it has a primitive type instead of a message type!");
+                        }
+                }
+                if(!found){
+                    Log.error("Can not find field " + path + "!");
+                }
+            }
+        }
+        return res;
     }
 
     public RosMsg getRos2Msg() {
@@ -64,6 +92,14 @@ public abstract class RosInterface {
 
     public String getRos2Include(){
         return NameHelper.msgTypeToSnakecase(getTopicType()) + ".hpp";
+    }
+
+    public boolean isStructInterface(){
+        if(!port.getTypeReference().existsReferencedSymbol()){
+            return false;
+        }
+
+        return port.getTypeReference().getReferencedSymbol() instanceof StructSymbol;
     }
 
 }

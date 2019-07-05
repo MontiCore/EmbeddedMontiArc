@@ -14,7 +14,7 @@ public class SetStructMsgInstruction{
     private SetStructMsgInstruction() {
     }
 
-    public static String getInstruction(EMAPortSymbol portSymbol, RosMsg rosMsg) {
+    public static String getInstruction(EMAPortSymbol portSymbol, RosMsg rosMsg, String fieldPrefix) {
         String inst;
         if (rosMsg.getName().startsWith("std_msgs/")) {
             if (rosMsg.getName().endsWith("MultiArray")) {
@@ -26,7 +26,7 @@ public class SetStructMsgInstruction{
                     dataSize += (i == 0 ? "" : " * ") + dimSizes.get(i);
                 }
 
-                inst = "tmpMsg.data.resize(" + dataSize + ");\n";
+                inst = "tmpMsg" + fieldPrefix + ".data.resize(" + dataSize + ");\n";
                 inst += "int counter = 0;\n";
                 String indexString = "";
                 for (int i = 0; i < dimSizes.size(); i++) {
@@ -35,7 +35,7 @@ public class SetStructMsgInstruction{
                     inst += "for(int " + curInd + " = 0; " + curInd + " < " + dimSizes.get(i) + "; " + curInd + "++){\n";
                 }
 
-                inst += "tmpMsg.data[counter] = (component->" + NameHelper.getPortNameTargetLanguage(portSymbol) + ")(" + indexString + ")";
+                inst += "tmpMsg" + fieldPrefix + ".data[counter] = (component->" + NameHelper.getPortNameTargetLanguage(portSymbol) + ")(" + indexString + ")";
                     //TODO: check type not name
                     if (rosMsg.getName().equals("std_msgs/ByteMultiArray")) {
                         //is a bool msg
@@ -51,13 +51,13 @@ public class SetStructMsgInstruction{
 
             } else {
                 inst = NameHelper.getAllFieldNames(rosMsg).stream()
-                        .map(field -> "tmpMsg." + field + " = component->" + portSymbol.getName() + ";")
+                        .map(field -> "tmpMsg." + fieldPrefix + field + " = component->" + portSymbol.getName() + ";")
                         .sorted()
                         .collect(Collectors.joining("\n"));
             }
         } else {
             inst = NameHelper.getAllFieldNames(rosMsg).stream()
-                    .map(field -> "tmpMsg." + field + " = component->" + portSymbol.getName() + "." + field + ";")
+                    .map(field -> "tmpMsg." + fieldPrefix + field + " = component->" + portSymbol.getName() + "." + field + ";")
                     .sorted()
                     .collect(Collectors.joining("\n"));
         }

@@ -31,11 +31,13 @@ public class RosSubscriber extends RosInterface {
 
     @Override
     public String getRosSetStructInstruction() {
-        return SetStructPortInstruction.getInstruction(getPort(), getRosMsg());
+        String fieldPrefix = this.rosConnectionSymbol.getMsgField().map(msgfield -> msgfield + ".").orElse("");
+        return SetStructPortInstruction.getInstruction(getPort(), getRosMsg(), fieldPrefix);
     }
 
     @Override
     public String getRos2SetStructInstruction() {
-        return SetStructPortInstruction.getInstruction(getPort(), getRos2Msg());
+        String fieldPrefix = this.rosConnectionSymbol.getMsgField().map(msgfield -> msgfield + ".").orElse("");
+        return SetStructPortInstruction.getInstruction(getPort(), getRos2Msg(), fieldPrefix);
     }
 }

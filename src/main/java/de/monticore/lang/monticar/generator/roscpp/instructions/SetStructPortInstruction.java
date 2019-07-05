@@ -18,7 +18,7 @@ public class SetStructPortInstruction{
     private SetStructPortInstruction() {
     }
 
-    public static String getInstruction(EMAPortSymbol port, RosMsg rosMsg) {
+    public static String getInstruction(EMAPortSymbol port, RosMsg rosMsg, String fieldPrefix) {
         String inst;
         if (rosMsg.getName().startsWith("std_msgs/")) {
             if (rosMsg.getName().endsWith("MultiArray")) {
@@ -34,7 +34,7 @@ public class SetStructPortInstruction{
                     inst += "for(int " + curInd + " = 0; " + curInd + " < " + dimSizes.get(i) + "; " + curInd + "++){\n";
                 }
 
-                inst += "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = msg->data[counter]";
+                inst += "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = msg->" + fieldPrefix + "data[counter]";
                 //TODO: check type not name
                 if (rosMsg.getName().equals("std_msgs/ByteMultiArray")) {
                     //is a bool msg
@@ -50,7 +50,7 @@ public class SetStructPortInstruction{
 
             } else {
                 inst = NameHelper.getAllFieldNames(rosMsg).stream()
-                        .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + " = msg->" + field + ";")
+                        .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + " = msg->" + fieldPrefix + field + ";")
                         .sorted()
                         .collect(Collectors.joining("\n"));
             }
@@ -86,7 +86,7 @@ public class SetStructPortInstruction{
             }
 
             inst = structFieldNames.stream()
-                    .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + "." + field + " = msg->" + structToMsgField.get(field) + ";")
+                    .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + "." + field + " = msg->" + fieldPrefix + structToMsgField.get(field) + ";")
                     .sorted()
                     .collect(Collectors.joining("\n"));
         }
