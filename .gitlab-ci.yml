@@ -40,13 +40,13 @@ masterJobLinux:
   - apt-get install -y libxext6
   - apt-get install -y libxrender1
   - apt-get install -y libxtst6
-  - apt-get install -y libopenjfx-java
+#  - apt-get install -y libopenjfx-java
   script:
   - mvn clean deploy -s settings.xml
   only:
   - master
-  tags:
-  - se
+#  tags:
+#  - se
   
 branchJobLinux:
   stage: build
