@@ -25,6 +25,7 @@
         <module>modules/runtime/language-server</module>
         <module>modules/tests/coverage</module>
         <module>modules/tests/language-server</module>
+        <module>modules/tests/language-client</module>
     </modules>
 
     <!-- == PROJECT PROPERTIES ================================================ -->

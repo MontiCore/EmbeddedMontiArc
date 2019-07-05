@@ -7,7 +7,7 @@ package de.monticore.lang.monticar.sol.plugins.common.plugin.generate.template;
 
 import java.nio.file.Path;
 
-public interface TemplateContribution {
+public interface TemplateContribution { // TODO: Rewrite this garbage.
     /**
      * @return True if this template has a hand-coded peer, false otherwise.
      */

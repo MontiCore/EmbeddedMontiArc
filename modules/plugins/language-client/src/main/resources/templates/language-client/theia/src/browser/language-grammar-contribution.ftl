@@ -1,13 +1,19 @@
-/*
- * Copyright (C) ${year} SE RWTH.
- */
-
+<#-- @ftlvariable name="contribution" type="de.monticore.lang.monticar.sol.plugins.common.plugin.generate.template.TemplateContribution" -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="configuration" type="de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration" -->
+${tc.signature("contribution")}
+<#assign configuration = glex.getGlobalVar("configuration")>
+<#assign grammarName = configuration.getGrammarName()>
+<#assign grammarNameLC = grammarName?lower_case>
+<#assign extension = configuration.getFileExtension()>
+<#assign hasHandCodedPeer = contribution.hasHandCodedPeer()>
 import { LanguageGrammarDefinitionContribution, TextmateRegistry } from "@theia/monaco/lib/browser/textmate";
 import { injectable } from "inversify";
-import { ${Grammar}Language } from "../common";
+import { ${grammarName}Language } from "../common";
 
 @injectable()
-export class ${Grammar}GrammarContribution implements LanguageGrammarDefinitionContribution {
+export class ${grammarName}GrammarContribution<#if hasHandCodedPeer>Top</#if> implements LanguageGrammarDefinitionContribution {
     protected readonly config: monaco.languages.LanguageConfiguration = {
         comments: {
             lineComment: "//",
@@ -36,15 +42,15 @@ export class ${Grammar}GrammarContribution implements LanguageGrammarDefinitionC
     };
 
     public registerTextmateLanguage(registry: TextmateRegistry): void {
-        const grammar = require("../../data/${grammar}.tmLanguage.json");
+        const grammar = require("../../data-gen/${grammarNameLC}.tmLanguage.json");
 
         monaco.languages.register({
-            id: ${Grammar}Language.ID,
-            aliases: [${Grammar}Language.NAME],
+            id: ${grammarName}Language.ID,
+            aliases: [${grammarName}Language.NAME],
             extensions: [".${extension}"]
         });
 
-        monaco.languages.setLanguageConfiguration(${Grammar}Language.ID, this.config);
+        monaco.languages.setLanguageConfiguration(${grammarName}Language.ID, this.config);
 
         registry.registerTextmateGrammarScope("source.${extension}", {
             async getGrammarDefinition() {
@@ -55,6 +61,6 @@ export class ${Grammar}GrammarContribution implements LanguageGrammarDefinitionC
             }
         });
 
-        registry.mapLanguageIdToTextmateGrammar(${Grammar}Language.ID, "source.${extension}");
+        registry.mapLanguageIdToTextmateGrammar(${grammarName}Language.ID, "source.${extension}");
     }
 }
