@@ -11,3 +11,4 @@
 *.DS_Store
 install/*
 dependency-reduced-pom.xml
+.vscode/

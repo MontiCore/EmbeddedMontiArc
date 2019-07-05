@@ -27,9 +27,20 @@ public class App
     public static void main( String[] args )
     {
         load_icons();
+        System.out.println("Looks and Feels:");
+        UIManager.LookAndFeelInfo[] looks = UIManager.getInstalledLookAndFeels();
+        for (UIManager.LookAndFeelInfo look : looks) {
+            System.out.println(look.getClassName());
+        }
         try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+            /*
+                javax.swing.plaf.metal.MetalLookAndFeel
+                javax.swing.plaf.nimbus.NimbusLookAndFeel
+                com.sun.java.swing.plaf.motif.MotifLookAndFeel
+                com.sun.java.swing.plaf.gtk.GTKLookAndFeel
+                com.sun.java.swing.plaf.windows.WindowsLookAndFeel
+            */
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (UnsupportedLookAndFeelException ex) {
             ex.printStackTrace();
         } catch (IllegalAccessException ex) {

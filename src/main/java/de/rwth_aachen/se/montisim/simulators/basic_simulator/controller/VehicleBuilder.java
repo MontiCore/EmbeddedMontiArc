@@ -62,7 +62,7 @@ public class VehicleBuilder {
             inputs.put(ConnectionEntry.FIND_PATH_start_vertex.toString(), nearest_start);
             inputs.put(ConnectionEntry.FIND_PATH_target_vertex.toString(), nearest_target);
             findPath.setInputs(inputs);
-            findPath.execute();
+            findPath.execute(0);
 
             trajectory = (List<Vertex>) findPath.getOutputs().get(ConnectionEntry.FIND_PATH_path.toString());
 
