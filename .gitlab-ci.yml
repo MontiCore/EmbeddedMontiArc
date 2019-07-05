@@ -44,6 +44,8 @@ masterJobLinux:
   - mvn clean deploy -s settings.xml
   only:
   - master
+  tags:
+  - sle
   
 branchJobLinux:
   stage: build
