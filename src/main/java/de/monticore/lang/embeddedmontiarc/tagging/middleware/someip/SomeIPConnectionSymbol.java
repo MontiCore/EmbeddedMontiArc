@@ -24,6 +24,10 @@ public class SomeIPConnectionSymbol extends MiddlewareSymbol {
     protected SomeIPConnectionSymbol(SomeIPConnectionKind kind, int serviceID, int instanceID, int eventgroupID) {
         super(kind, Optional.ofNullable(serviceID), Optional.ofNullable(instanceID), Optional.ofNullable(eventgroupID));
     }
+    
+    protected SomeIPConnectionSymbol(SomeIPConnectionKind kind,int serviceID, int instanceID) {
+        super(kind, Optional.ofNullable(serviceID), Optional.ofNullable(instanceID), Optional.empty());
+    }
 
     @Override
     public String toString() {
