@@ -16,8 +16,7 @@
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>plugin-language-client</artifactId>
-    <packaging>maven-plugin</packaging>
+    <artifactId>tests-language-client</artifactId>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
 
@@ -37,7 +36,7 @@
 
     <!-- == PROJECT METAINFORMATION =========================================== -->
 
-    <name>Sol - Plugins - Language Client</name>
+    <name>Sol - Tests - Language Client</name>
 
     <!-- == PROJECT DEPENDENCIES ============================================== -->
 
@@ -45,23 +44,7 @@
 
         <!-- .. Modules ................................................... -->
 
-        <dependency>
-            <groupId>de.monticore.lang.monticar.sol</groupId>
-            <artifactId>plugin-common</artifactId>
-            <version>2019.06.25.0</version>
-        </dependency>
-
         <!-- .. Libraries ................................................. -->
-
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven.plugin-tools</groupId>
-            <artifactId>maven-plugin-annotations</artifactId>
-        </dependency>
 
         <!-- .. Language .................................................. -->
 
@@ -75,30 +58,40 @@
         <plugins>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>${maven-plugin-plugin.version}</version>
-                <configuration>
-                    <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-                </configuration>
+                <groupId>de.monticore.lang.monticar.sol</groupId>
+                <artifactId>plugin-language-client</artifactId>
+                <version>2019.06.25.0</version>
                 <executions>
                     <execution>
-                        <id>mojo-descriptor</id>
+                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>descriptor</goal>
+                            <goal>generate</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>help-goal</id>
-                        <goals>
-                            <goal>helpmojo</goal>
-                        </goals>
+                        <configuration>
+                            <grammar>de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcMath</grammar>
+                            <extension>emam</extension>
+                            <outputDirectory>${project.build.directory}/generated-sources/language-client</outputDirectory>
+                            <excludedKeywords>
+                                <excludedKeyword>script</excludedKeyword>
+                                <excludedKeyword>Port</excludedKeyword>
+                                <excludedKeyword>oo</excludedKeyword>
+                            </excludedKeywords>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
 
         </plugins>
     </build>
+
+
+    <!-- == PROJECT REPORTING ================================================= -->
+
+    <reporting>
+        <plugins>
+
+        </plugins>
+    </reporting>
 
     <!-- == PROJECT DISTRIBUTION ============================================== -->
 
