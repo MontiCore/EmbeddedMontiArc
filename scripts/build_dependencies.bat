@@ -1,37 +1,35 @@
 @echo off
-for %%I in (.) do set CurrDirName=%%~nxI
-IF "%CurrDirName%"=="scripts" ( cd .. )
+pushd %~dp0\..
 echo.
 echo **************************************
 echo   Building pe-parse (Release/debug)
 echo **************************************
-cd pe-parse
+pushd pe-parse
 call ..\scripts\build.bat
 msbuild -verbosity:quiet build\pe-parse.sln /m /p:Configuration=Release /p:Platform=x64
 msbuild -verbosity:quiet build\pe-parse.sln /m /p:Configuration=Debug /p:Platform=x64
-cd ..
-
+popd
 
 echo.
 echo **************************************
 echo    Building unicorn (Release/debug)
 echo **************************************
-cd unicorn
+pushd unicorn
 call ..\scripts\build.bat
 msbuild -verbosity:quiet build\unicorn.sln /m /p:Configuration=Release /p:Platform=x64
 msbuild -verbosity:quiet build\unicorn.sln /m /p:Configuration=Debug /p:Platform=x64
-cd ..
+popd
 
 
 echo.
 echo **************************************
 echo     Building Zydis (Release/debug)
 echo **************************************
-cd zydis
+pushd zydis
 call ..\scripts\build.bat
 msbuild -verbosity:quiet build\Zydis.sln /m /p:Configuration=Release /p:Platform=x64
 msbuild -verbosity:quiet build\Zydis.sln /m /p:Configuration=Debug /p:Platform=x64
-cd ..
+popd
 
 mkdir hardware_emulator\libs\Release
 mkdir hardware_emulator\libs\Debug
@@ -50,3 +48,4 @@ copy "unicorn\build\Debug\unicorn.pdb" "hardware_emulator\libs\Debug\unicorn.pdb
 copy "zydis\build\Release\Zydis.lib" "hardware_emulator\libs\Release\Zydis.lib"
 copy "zydis\build\Debug\Zydis.lib" "hardware_emulator\libs\Debug\Zydis.lib"
 copy "zydis\build\Debug\Zydis.pdb" "hardware_emulator\libs\Debug\Zydis.pdb"
+popd

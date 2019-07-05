@@ -1,5 +1,5 @@
 @echo off
-
+pushd %~dp0
 echo.
 echo **************************************
 echo  Building Hardware Emulator (Release)

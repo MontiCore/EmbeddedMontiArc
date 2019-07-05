@@ -1,31 +1,33 @@
-if [ "${PWD##*/}" = "scripts" ] 
-then 
-    cd .. 
-fi
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+pushd $DIR/..
 
 
-echo Cleaning Unicorn
-cd unicorn
+echo "Cleaning Unicorn"
+pushd unicorn
 make clean
-cd ..
+popd
 
-echo Cleaning Zydis
-cd zydis
+echo "Cleaning Zydis"
+pushd zydis
 rm -r Release
 rm -r Debug
-cd dependencies/zycore
+pushd dependencies/zycore
 rm -r Release
 rm -r Debug
-cd ../../..
+popd
+popd
 
-echo Cleaning pe-parse
-cd pe-parse
+echo "Cleaning pe-parse"
+pushd pe-parse
 rm -r Release
 rm -r Debug
-cd ..
+popd
 
-echo Cleaning hardware_emulator
-cd hardware_emulator
+echo "Cleaning hardware_emulator"
+pushd hardware_emulator
 rm -r Release
 rm -r Debug
-cd ..
+popd
+
+popd

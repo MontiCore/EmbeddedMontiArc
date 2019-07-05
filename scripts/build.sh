@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ -z "$1" ]; then 
 	TARGET="Release"; 
 else 
@@ -8,7 +9,7 @@ if [ ! -d "$TARGET" ]; then
   mkdir $TARGET
 fi
 echo Building target ${TARGET}...
-cd $TARGET
+pushd $TARGET
 cmake -DCMAKE_BUILD_TYPE=$TARGET -G "Unix Makefiles" ../
 make
-cd ..
+popd

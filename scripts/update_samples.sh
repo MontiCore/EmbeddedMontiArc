@@ -1,32 +1,30 @@
-if [ "${PWD##*/}" = "scripts" ] 
-then
-    cd ..
-fi
-cd samples
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+pushd $DIR/../samples
 
 echo "**************************************"
 echo "        Updating simple sample"
 echo "**************************************"
-cd simple
+pushd simple
 make
 cp "sample_simple.so" "../../hardware_emulator/bin/"
-cd ..
+popd
 
 
 echo "**************************************"
 echo "     Updating funccalling sample"
 echo "**************************************"
-cd funccalling
+pushd funccalling
 make
 cp "sample_functioncalling.so" "../../hardware_emulator/bin/"
-cd ..
+popd
 
 echo "**************************************"
 echo "      Updating syscall sample"
 echo "**************************************"
-cd syscall_so
+pushd syscall_so
 make
 cp "sample_syscall.so" "../../hardware_emulator/bin/"
-cd ..
+popd
 
-cd ..
+popd

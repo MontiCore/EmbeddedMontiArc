@@ -1,37 +1,35 @@
-if [ "${PWD##*/}" = "scripts" ] 
-then
-    cd ..
-fi
-
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+pushd $DIR/..
 echo ""
 echo "**************************************"
 echo "           Making Unicorn"
 echo "**************************************"
-cd unicorn
+pushd unicorn
 ./make.sh
-cd ..
+popd
 
 echo ""
 echo "**************************************"
 echo "      Making Zydis Release/Debug"
 echo "**************************************"
-cd zydis
-cd dependencies/zycore
+pushd zydis
+pushd dependencies/zycore
 ../../../scripts/build.sh Release
 ../../../scripts/build.sh Debug
-cd ../..
+popd
 ../scripts/build.sh Release
 ../scripts/build.sh Debug
-cd ..
+popd
 
 echo ""
 echo "**************************************"
 echo "    Making pe-parse Release/Debug"
 echo "**************************************"
-cd pe-parse
+pushd pe-parse
 ../scripts/build.sh Release
 ../scripts/build.sh Debug
-cd ..
+popd
 
 
 cp "unicorn/libunicorn.a" "hardware_emulator/libs/Release/"
@@ -41,3 +39,5 @@ cp "zydis/Debug/libZydis.a" "hardware_emulator/libs/Debug/"
 
 cp "pe-parse/Release/pe-parser-library/libpe-parser-library.a" "hardware_emulator/libs/Release/"
 cp "pe-parse/Debug/pe-parser-library/libpe-parser-library.a" "hardware_emulator/libs/Debug/"
+
+popd

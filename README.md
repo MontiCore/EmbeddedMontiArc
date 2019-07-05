@@ -6,30 +6,34 @@ The **RMIModelServer** README contains general development information regarding
 
 This project builds upon [unicorn](unicorn/README.md), [pe-parse](pe-parse/README.md) and [Zydis](zydis/README.md). It requires `cmake`, (`python`), `java` and a valid `JAVA_PATH`.
 
+The dependencies are pre-compiled under the [libs](hardware_emulator/libs) folder. To re-build them use [build_dependencies.bat](scripts/build_dependencies.bat) or [build_dependencies.sh](scripts/build_dependencies.sh).
+
 ### Windows
 
-To build the Hardware Emulator with Visual Studio start [scripts/build_release.bat](scripts/build_release.bat). Be sure to have the visual studio tools in the PATH or start the build in the Visual Studio Command Prompt.
+To build the Hardware Emulator with Visual Studio start [scripts\build.bat](scripts\build.bat) inside the *hardware_emulator* project. Be sure to have the visual studio tools in the PATH or start the build in the Visual Studio Command Prompt.
 
 ```
 (VsDevCmd.bat)
 git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/hardware_emulator.git
-cd hardware_emulator
-scripts\build_release.bat
+cd hardware_emulator\hardware_emulator
+..\scripts\build.bat
 ```
 
-To update the CMake project call `..\scripts\build.bat` from within the project directory.
+The open the Visual Studio under the `build` folder and compile the project. 
 
-The dependencies are pre-compiled under the [libs](hardware_emulator/libs) folder. To re-build them use [build_dependencies.bat](scripts/build_dependencies.bat).
+Alternatively you can directly compile the project with the `build_release.bat` script.
 
 ### Linux
 
-To build all projects for Linux:
+To build the project under linux run the following:
 
 ```
 git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/hardware_emulator.git
-cd hardware_emulator
-scripts/build_all.sh
+cd hardware_emulator/hardware_emulator
+../scripts/build.sh
 ```
+
+You can pass *Debug* to the `build.sh` script to compile a Debug version.
 
 ## Install
 
