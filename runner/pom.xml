@@ -27,11 +27,8 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>2.0.0</version>
+        <version>${revision}</version>
     </parent>
-    <properties>
-        <montisim.version>2.0.0</montisim.version>
-    </properties>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>runner</artifactId>
@@ -49,74 +46,74 @@
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>rmi-model-server</artifactId>
-            <version>1.1.1</version>
+            <version>${rmimodelserver.version}</version>
         </dependency>
 
         <!-- All modules have dependency to util -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>util</artifactId>
-            <version>${montisim.version}</version>
+            <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
         <!-- Network has dependency to vehicle -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>vehicle</artifactId>
-            <version>${montisim.version}</version>
+            <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>environment</artifactId>
-            <version>${montisim.version}</version>
+            <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>simulator</artifactId>
-            <version>${montisim.version}</version>
+            <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>sensors</artifactId>
-            <version>${montisim.version}</version>
+            <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>network</artifactId>
-            <version>${montisim.version}</version>
+            <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.6</version>
+            <version>${commons.version}</version>
         </dependency>
 
         <dependency>
             <groupId>montisim-controller</groupId>
             <artifactId>library</artifactId>
-            <version>1.0.1</version>
+            <version>${controller.version}</version>
         </dependency>
         <dependency>
             <groupId>montisim-controller</groupId>
             <artifactId>control</artifactId>
-            <version>1.0.1</version>
+            <version>${controller.version}</version>
         </dependency>
         <dependency>
             <groupId>montisim-controller</groupId>
             <artifactId>navigation</artifactId>
-            <version>1.0.1</version>
+            <version>${controller.version}</version>
         </dependency>
 
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>server</artifactId>
-            <version>1.0.7</version>
+            <version>${server.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

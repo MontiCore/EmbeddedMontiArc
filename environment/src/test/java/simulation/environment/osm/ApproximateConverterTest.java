@@ -21,7 +21,7 @@
 package simulation.environment.osm;
 
 import org.junit.*;
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 import java.util.ArrayList;
 import static  org.junit.Assert.*;
 

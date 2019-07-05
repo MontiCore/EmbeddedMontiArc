@@ -22,7 +22,7 @@ package simulation.environment.geometry;
 
 import commons.map.IControllerNode;
 import commons.map.PathListener;
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 import simulation.environment.geometry.splines.LinearInterpolator;
 import java.util.ArrayList;
 import java.util.HashMap;

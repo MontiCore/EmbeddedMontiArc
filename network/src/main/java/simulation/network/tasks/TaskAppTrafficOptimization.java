@@ -25,7 +25,7 @@ import commons.controller.commons.Vertex;
 import commons.map.ControllerNode;
 import commons.map.IControllerNode;
 import commons.simulation.Sensor;
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.util.Combinations;

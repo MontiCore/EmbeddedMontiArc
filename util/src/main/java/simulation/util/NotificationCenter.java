@@ -20,7 +20,7 @@
  */
 package simulation.util;
 
-import javafx.util.Pair;
+import commons.utils.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

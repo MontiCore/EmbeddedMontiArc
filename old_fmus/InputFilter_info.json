@@ -1,0 +1,30 @@
+{"format":"Transformational debugger info","version":1,
+"info":{"name":"InputFilter","description":""},
+"variables":{
+"bank_d":{"comment":"","kind":"state","type":"Real","unit":"rad","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":41,"lineEnd":41,"colStart":3,"colEnd":15},"within":["Real"]}},
+"slope_d":{"comment":"","kind":"state","type":"Real","unit":"rad","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":40,"lineEnd":40,"colStart":3,"colEnd":16},"within":["Real"]}},
+"der(bank_d)":{"comment":"","kind":"derivative","type":"Real","unit":"Hz","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":41,"lineEnd":41,"colStart":3,"colEnd":15},"within":["Real"]}},
+"der(slope_d)":{"comment":"","kind":"derivative","type":"Real","unit":"Hz","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":40,"lineEnd":40,"colStart":3,"colEnd":16},"within":["Real"]}},
+"bank":{"comment":"","kind":"variable","type":"Real","unit":"rad","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":36,"lineEnd":36,"colStart":3,"colEnd":19},"within":["Real"]}},
+"slope":{"comment":"","kind":"variable","type":"Real","unit":"rad","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":35,"lineEnd":35,"colStart":3,"colEnd":20},"within":["Real"]}},
+"bank":{"comment":"","kind":"variable","type":"Real","unit":"rad","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":36,"lineEnd":36,"colStart":3,"colEnd":19},"within":["Real"]}},
+"slope":{"comment":"","kind":"variable","type":"Real","unit":"rad","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":35,"lineEnd":35,"colStart":3,"colEnd":20},"within":["Real"]}},
+"K_d_road":{"comment":"","kind":"parameter","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":26,"lineEnd":26,"colStart":3,"colEnd":38},"within":["Real"]}},
+"delta_int_0":{"comment":"","kind":"parameter","type":"Real","unit":"rad","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":32,"lineEnd":32,"colStart":3,"colEnd":32},"within":["Real"]}},
+"fsw":{"comment":"","kind":"parameter","type":"Real","unit":"","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":27,"lineEnd":27,"colStart":3,"colEnd":33},"within":["Real"]}},
+"slope_d_0":{"comment":"","kind":"parameter","type":"Real","unit":"rad","displayUnit":"","source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":30,"lineEnd":30,"colStart":3,"colEnd":30},"within":["Real"]}}
+},
+"equations":[{"eqIndex":0,"tag":"dummy"},
+{"eqIndex":1,"section":"initial","tag":"assign","defines":["slope_d"],"uses":["slope_d_0"],"equation":["slope_d_0"],"source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":45,"lineEnd":45,"colStart":3,"colEnd":20},"within":["InputFilter"]}},
+{"eqIndex":2,"tag":"alias","equation":[7],"section":"initial"},
+{"eqIndex":3,"section":"initial","tag":"assign","defines":["bank_d"],"uses":["bank_d_0"],"equation":["bank_d_0"],"source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":46,"lineEnd":46,"colStart":3,"colEnd":18},"within":["InputFilter"]}},
+{"eqIndex":4,"tag":"alias","equation":[8],"section":"initial"},
+{"eqIndex":5,"section":"initial","tag":"assign","defines":["delta_int"],"uses":["delta_int_0"],"equation":["delta_int_0"],"source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":47,"lineEnd":47,"colStart":3,"colEnd":24},"within":["InputFilter"]}},
+{"eqIndex":6,"tag":"alias","equation":[9],"section":"initial"},
+{"eqIndex":7,"section":"regular","tag":"assign","defines":["der(slope_d)"],"uses":["K_d_road","slope_d","slope"],"equation":["(slope - slope_d) / K_d_road"],"source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":51,"lineEnd":51,"colStart":3,"colEnd":48},"within":["InputFilter"]}},
+{"eqIndex":8,"section":"regular","tag":"assign","defines":["der(bank_d)"],"uses":["K_d_road","bank_d","bank"],"equation":["(bank - bank_d) / K_d_road"],"source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":53,"lineEnd":53,"colStart":3,"colEnd":45},"within":["InputFilter"]}},
+{"eqIndex":9,"section":"regular","tag":"assign","defines":["der(delta_int)"],"uses":["fsw","delta_int","delta_sw"],"equation":["(delta_sw - delta_int) / fsw"],"source":{"info":{"file":"/Users/ham/Projects/MontiSim/simulation/vehicle/src/main/modelica/InputFilter.mo","lineStart":55,"lineEnd":55,"colStart":3,"colEnd":50},"within":["InputFilter"]}}
+],
+"functions":[
+]
+}

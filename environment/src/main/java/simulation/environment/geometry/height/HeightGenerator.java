@@ -20,7 +20,7 @@
  */
 package simulation.environment.geometry.height;
 
-import javafx.geometry.Point2D;
+import commons.utils.Point2D;
 import simulation.environment.osm.ApproximateConverter;
 
 /**

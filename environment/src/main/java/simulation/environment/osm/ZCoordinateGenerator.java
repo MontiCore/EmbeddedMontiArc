@@ -20,7 +20,7 @@
  */
 package simulation.environment.osm;
 
-import javafx.geometry.Point2D;
+import commons.utils.Point2D;
 import simulation.environment.geometry.height.*;
 import simulation.environment.visualisationadapter.implementation.Bounds2D;
 import simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D;

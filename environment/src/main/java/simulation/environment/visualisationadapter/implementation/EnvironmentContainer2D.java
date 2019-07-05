@@ -21,8 +21,8 @@
 package simulation.environment.visualisationadapter.implementation;
 
 import commons.simulation.IPhysicalVehicle;
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
+import commons.utils.Point2D;
+import commons.utils.Point3D;
 import simulation.environment.object.House;
 import simulation.environment.visualisationadapter.interfaces.*;
 

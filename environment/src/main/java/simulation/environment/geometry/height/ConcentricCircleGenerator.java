@@ -20,8 +20,8 @@
  */
 package simulation.environment.geometry.height;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
+import commons.utils.Point2D;
+import commons.utils.Point3D;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import simulation.environment.osm.ApproximateConverter;
 import simulation.environment.visualisationadapter.interfaces.EnvBounds;

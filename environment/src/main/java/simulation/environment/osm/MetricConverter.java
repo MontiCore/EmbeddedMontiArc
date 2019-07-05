@@ -20,7 +20,7 @@
  */
 package simulation.environment.osm;
 
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 
 /**
  * Created by lukas on 24.01.17.

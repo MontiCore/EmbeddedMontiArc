@@ -21,7 +21,7 @@
 package simulation.environment.geometry.osmadapter;
 
 import commons.simulation.PhysicalObject;
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 import simulation.environment.geometry.splines.LinearInterpolator;
 import simulation.environment.geometry.splines.Spline;
 import simulation.environment.pedestrians.PedestrianStreetParameters;
