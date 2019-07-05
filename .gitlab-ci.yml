@@ -36,10 +36,10 @@ masterJobLinux:
 #  image: maven:3-jdk-8
   image: maven:3-amazoncorretto-8
   before_script:
-  - apt-get update
-  - apt-get install -y libxext6
-  - apt-get install -y libxrender1
-  - apt-get install -y libxtst6
+#  - apt-get update
+#  - apt-get install -y libxext6
+#  - apt-get install -y libxrender1
+#  - apt-get install -y libxtst6
 #  - apt-get install -y libopenjfx-java
   script:
   - mvn clean deploy -s settings.xml
