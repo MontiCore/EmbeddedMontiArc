@@ -45,7 +45,7 @@ masterJobLinux:
   only:
   - master
   tags:
-  - sle
+  - se
   
 branchJobLinux:
   stage: build
