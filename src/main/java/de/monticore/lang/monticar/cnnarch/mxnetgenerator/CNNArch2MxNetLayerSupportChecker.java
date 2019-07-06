@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
+import de.monticore.lang.monticar.cnnarch.generator.LayerSupportChecker;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 
 public class CNNArch2MxNetLayerSupportChecker extends LayerSupportChecker {

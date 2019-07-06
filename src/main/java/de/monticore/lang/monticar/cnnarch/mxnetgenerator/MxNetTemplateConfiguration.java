@@ -1,10 +1,8 @@
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
+import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 import freemarker.template.Configuration;
 
-/**
- *
- */
 public class MxNetTemplateConfiguration extends TemplateConfiguration {
     private static Configuration configuration;
 

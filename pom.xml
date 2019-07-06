@@ -17,6 +17,7 @@
     <!-- .. SE-Libraries .................................................. -->
       <CNNArch.version>0.3.1-SNAPSHOT</CNNArch.version>
       <CNNTrain.version>0.3.2-SNAPSHOT</CNNTrain.version>
+      <CNNArch2X.version>0.0.1-SNAPSHOT</CNNArch2X.version>
       <embedded-montiarc-math-opt-generator>0.1.4</embedded-montiarc-math-opt-generator>
     
         <!-- .. Libraries .................................................. -->
@@ -85,6 +86,12 @@
             <version>${CNNTrain.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>cnnarch-generator</artifactId>
+            <version>${CNNArch2X.version}</version>
         </dependency>
 
         <dependency>

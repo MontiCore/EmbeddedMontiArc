@@ -1,12 +1,11 @@
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
+import de.monticore.lang.monticar.cnnarch.generator.ArchitectureElementData;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchTemplateController;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 
 import java.io.Writer;
 
-/**
- *
- */
 public class CNNArch2MxNetTemplateController extends CNNArchTemplateController {
 
     public CNNArch2MxNetTemplateController(ArchitectureSymbol architecture) {
