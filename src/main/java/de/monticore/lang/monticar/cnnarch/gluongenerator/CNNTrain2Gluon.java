@@ -8,8 +8,8 @@ import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFun
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionSourceGenerator;
 import de.monticore.lang.monticar.cnnarch.mxnetgenerator.ConfigurationData;
 
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNTrain2MxNet;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.TemplateConfiguration;
+import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.LearningMethod;
 import de.monticore.lang.monticar.cnntrain._symboltable.RLAlgorithm;
@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CNNTrain2Gluon extends CNNTrain2MxNet {
+public class CNNTrain2Gluon extends CNNTrainGenerator {
     private static final String REINFORCEMENT_LEARNING_FRAMEWORK_MODULE = "reinforcement_learning";
 
     private final RewardFunctionSourceGenerator rewardFunctionSourceGenerator;

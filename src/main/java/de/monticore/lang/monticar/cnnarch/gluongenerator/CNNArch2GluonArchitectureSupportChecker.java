@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.ArchitectureSupportChecker;
+import de.monticore.lang.monticar.cnnarch.generator.ArchitectureSupportChecker;
 
 public class CNNArch2GluonArchitectureSupportChecker extends ArchitectureSupportChecker {
 

@@ -9,9 +9,6 @@ import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 
 import java.util.*;
 
-/**
- *
- */
 public class ReinforcementConfigurationData extends ConfigurationData {
     private static final String AST_ENTRY_LEARNING_METHOD = "learning_method";
     private static final String AST_ENTRY_NUM_EPISODES = "num_episodes";

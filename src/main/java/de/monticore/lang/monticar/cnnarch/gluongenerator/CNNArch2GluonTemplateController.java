@@ -20,11 +20,11 @@
  */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.ArchitectureElementData;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNArchTemplateController;
+import de.monticore.lang.monticar.cnnarch.generator.ArchitectureElementData;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchTemplateController;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.TemplateConfiguration;
+import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 
 import java.io.Writer;
 import java.util.*;
