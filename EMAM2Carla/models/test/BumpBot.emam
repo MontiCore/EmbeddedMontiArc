@@ -8,10 +8,6 @@ component BumpBot{
 		in Vector3 collision_normale;
 
 	implementation Math{
-		//Vector3 collision_normale = collision.normal_impulse;
-		//Quaternion orientation = vehicle_status.orientation;
-		//collision_normale = collision.normal_impulse;
-		//orientation = vehicle_status.orientation;
 		static B collisionHappened = false;
 		test.throttle = 1.0;
 		test.brake = 0.0;
@@ -19,8 +15,13 @@ component BumpBot{
 		test.reverse = false;
 		test.gear = 1;
 		test.manual_gear_shift = false;		
-		//if normal_impulse > 0.0 //if a collision occurred drive into the other direction
+		Q tmp = sinh(orientation.z);
+		if 1-(abs(tmp)/(M_PI/4))*collision_normale.x + tmp/(M_PI/4) * collision_normale.y > 0.0
 			test.reverse = true;
+		else
+			test.reverse = false;
+		end			
+		//if normal_impulse > 0.0 //if a collision occurred drive into the other direction
 		//end
 	}
 }
