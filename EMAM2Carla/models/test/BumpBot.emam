@@ -14,14 +14,21 @@ component BumpBot{
 		test.hand_brake = false;
 		test.reverse = false;
 		test.gear = 1;
-		test.manual_gear_shift = false;		
-		Q tmp = sinh(orientation.z);
+		test.manual_gear_shift = false;
+		Q tmp = asin(orientation.z);
 		if 1-(abs(tmp)/(M_PI/4))*collision_normale.x + tmp/(M_PI/4) * collision_normale.y > 0.0
-			test.reverse = true;
+			if test.reverse
+				test.reverse = false;
+			else
+				test.reverse = true;
+			end
 		else
-			test.reverse = false;
+                        if test.reverse
+                                test.reverse = true;
+                        else 
+                                test.reverse = false;
+                        end
+
 		end			
-		//if normal_impulse > 0.0 //if a collision occurred drive into the other direction
-		//end
 	}
 }
