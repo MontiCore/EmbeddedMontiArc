@@ -31,8 +31,6 @@ import java.util.*;
 
 public class OneHot extends PredefinedLayerDeclaration {
 
-    private static int channels;
-
     private OneHot() {
         super(AllPredefinedLayers.ONE_HOT_NAME);
     }
@@ -40,14 +38,23 @@ public class OneHot extends PredefinedLayerDeclaration {
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
 
-        if(layer.getOutputElement().get() instanceof IOSymbol && layer.getOutputElement().get().isOutput()) {
-            channels = ((IOSymbol) layer.getOutputElement().get()).getDefinition().getType().getChannels();
-        }else{
-            channels = layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get();
-        }
+        // TODO: Execute this code somewhere before checkInput(), for now size parameter is required
+        /*if(layer.getOutputElement().get() instanceof IOSymbol && layer.getOutputElement().get().isOutput()) {
+            int outputChannels = ((IOSymbol) layer.getOutputElement().get()).getDefinition().getType().getChannels();
+
+            layer.setIntValue(AllPredefinedLayers.SIZE_NAME, outputChannels);
+        }*/
+
+        int size = layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get();
+
+        /*if (size == 0) {
+            Log.error("0" + ErrorCodes.MISSING_ARGUMENT + " Missing argument. The argument 'size' is in this case required. "
+                      , layer.getSourcePosition());
+
+        }*/
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
-                .channels(channels)
+                .channels(size)
                 .height(1)
                 .width(1)
                 .elementType("0", "1")
@@ -110,7 +117,6 @@ public class OneHot extends PredefinedLayerDeclaration {
                 new VariableSymbol.Builder()
                         .name(AllPredefinedLayers.SIZE_NAME)
                         .constraints(Constraints.POSITIVE, Constraints.INTEGER)
-                        .defaultValue(channels)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;
