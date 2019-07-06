@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Set;
-
+import java.util.UUID;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,30 +44,38 @@ import org.jfree.util.Log;
 
 public class Bridge extends EEComponent{
          protected Pair<Bus, Bus> connected;
-         private final Instant delay;
+         private final Duration delay;
+         private UUID id;
 
-         public Bridge (EESimulator simulator, Pair<Bus, Bus> connected, Instant delay){
+         public Bridge (EESimulator simulator, Pair<Bus, Bus> connected, Duration delay){
              super(simulator);
              componentType = EEComponentType.BRIDGE;
              this.connected = connected;
-             List<BusEntry> listenConnected1 = connected.getKey().getListenTo();
-             List<BusEntry> listenConnected2 = connected.getValue().getListenTo();
-             connected.getKey().registerComponent(this, listenConnected2);
-             connected.getValue().registerComponent(this, listenConnected1);
              this.delay = delay;
-
+             this.id = UUID.randomUUID();
+             connected.getKey().registerComponent(this);
+             connected.getValue().registerComponent(this);
          }
 
-         public String getID(){
-             return componentType.toString();
+         public UUID getID(){
+             return this.id;
          }
 
         public void processEvent(EEDiscreteEvent event){
              if(event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE){
-                 BusMessage msg = (BusMessage) event;  
+                 BusMessage msg = (BusMessage) event;
+                 if(msg.getControllerID() == connected.getLeft().getID()) {
+                	 msg.forwardTo(connected.getRight());
+                 }
+                 else if(msg.getControllerID() == connected.getRight().getID()) {
+                	 msg.forwardTo(connected.getLeft());
+                 }
+                 else {
+                	 throw new IllegalArgumentException("Message from invalid controller" + msg.getControllerID() + "received at: " + this.toString());
+                 } 
              }
              else{
-                 throw new IllegalArgumentException("Only BusMessages expected.");
+                 throw new IllegalArgumentException("Only BusMessages events expected at " + this.toString() + " but was: " + event.getEventType());
              }
         }
 
@@ -83,6 +91,10 @@ public class Bridge extends EEComponent{
                      throw new IllegalArgumentException("Message send by unknown Bus.");
                  }
              }
+         }
+         
+         public Pair<Bus, Bus> getConnectedBuses() {
+        	 return this.connected;
          }
 
 }

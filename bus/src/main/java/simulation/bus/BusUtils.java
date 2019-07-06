@@ -1,34 +1,57 @@
 
 package simulation.bus; 
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Stack;
+import java.util.UUID;
 
-import com.google.common.base.Function;
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+
+import simulation.EESimulator.Bridge;
 import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
 
 public class BusUtils {
 
-	static Iterable<Bus> findConnectedBuses(Iterable<EEComponent> components) {
-		Predicate<EEComponent> busFilter = new Predicate<EEComponent>() {
+	static Collection<Bus> findConnectedBuses(Bus bus) {
+		
+		Predicate<EEComponent> bridgeFilter = new Predicate<EEComponent>() {
 			public boolean apply(EEComponent comp) {
-				return comp instanceof Bus;
+				return comp.getComponentType() == EEComponentType.BRIDGE;
 			}
 		};
-		Iterable<EEComponent> comps = Iterables.filter(components, busFilter);
+		
+		Map<UUID, Bus> busById = new HashMap<UUID, Bus>();
+		busById.put(bus.getID(), bus);
+		Stack<Bus> workStack = new Stack<Bus>();
+		workStack.add(bus);
+		
+		while(!workStack.isEmpty()) {
+			Bus cur = workStack.pop();
+			Iterable<EEComponent> bridges = Iterables.filter(bus.getConnectedComponents(), bridgeFilter);
+			for(EEComponent bridge : bridges) {
+				Pair<Bus, Bus> busPair = ((Bridge)bridge).getConnectedBuses();
+				if(!busById.containsKey(busPair.getLeft().getID())) {
+					busById.put(busPair.getLeft().getID(), busPair.getLeft());
+					workStack.add(busPair.getLeft());
+				}
+				if(!busById.containsKey(busPair.getRight().getID())) {
+					busById.put(busPair.getRight().getID(), busPair.getRight());
+					workStack.add(busPair.getRight());
+				}
+			}
+		}
 
-	    Function<EEComponent, Bus> castToBus = new Function<EEComponent, Bus>() {
-	        @Override
-	        public Bus apply(EEComponent input) {
-	            return (Bus) input;
-	        }
-	    };
-		Iterable<Bus> buses = Iterables.transform(comps, castToBus);
-		return buses;
+		return busById.values();
 	}
 	
-	static Optional<EEComponent> findComponentWithID(Iterable<EEComponent> components, String ID) {
+	static Optional<EEComponent> findComponentWithID(Iterable<EEComponent> components, UUID ID) {
 		EEComponent comp = Iterables.tryFind(components, 
 				new Predicate<EEComponent>() {
 					public boolean apply(EEComponent comp) {

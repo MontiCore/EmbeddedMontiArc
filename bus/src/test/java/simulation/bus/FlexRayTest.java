@@ -1,3 +1,4 @@
+package simulation.bus;
 
 /**
  *
@@ -20,32 +21,31 @@
  * *******************************************************************************
  */
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.UUID;
 
 import static commons.controller.commons.BusEntry.*;
 
-import bus.*;
-
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import commons.controller.commons.BusEntry;
+import simulation.EESimulator.Bridge;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
-import simulation.EESimulator.MessageType;
-import simulation.bus.*;
+import simulation.EESimulator.TestComponent;
 
 public class FlexRayTest {
 
@@ -103,65 +103,76 @@ public class FlexRayTest {
 	public void testRegisterMessageFromInvalidController() {
 		Bus bus = createBusStructure();
 
-		Optional<EEComponent> comp = BusUtils.findComponentWithID(bus.connectedComponents, "TestComponent 1");
-
-		assertNotNull(comp);
+		EEComponent comp = bus.getConnectedComponents().get(0);
+		UUID invalidID = UUID.randomUUID();
 		String msg = "FromIllegalController";
 		BusMessage illegalControllerMsg = new BusMessage(msg, msg.length(),
-				NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE, Instant.EPOCH, MessageType.SEND, comp.get());
+				NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE, Instant.EPOCH, invalidID, comp);
 		bus.registerMessage(illegalControllerMsg);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testRegisterMessageToInvalidController() {
 		Bus bus = createBusStructure();
-		
-		Optional<EEComponent> comp = BusUtils.findComponentWithID(bus.connectedComponents, "TestComponent 1");
-		assertTrue(comp.isPresent());
-		EEComponent illegalController = new TestComponent(EEsim, "IllegalID");
+
+		EEComponent comp = bus.getConnectedComponents().get(0);
+		EEComponent illegalController = new TestComponent(EEsim);
 
 		String msg = "ToIllegalController";
 		BusMessage illegalControllerMsg = new BusMessage(msg, msg.length(),
-				NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE, Instant.EPOCH, MessageType.SEND, illegalController);
-		illegalControllerMsg.setControllerID(comp.get().getID());
+				NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE, Instant.EPOCH, comp.getID(), illegalController);
 		bus.registerMessage(illegalControllerMsg);
 	}
 
 	public void testRegisterMessage() {
 		FlexRay mainBus = createBusStructure();
-		Bus subBus1 = BusUtils.findConnectedBuses(mainBus.connectedComponents).iterator().next();
-		Bus subBus2 = BusUtils.findConnectedBuses(subBus1.connectedComponents).iterator().next();
+		Collection<Bus> subBuses = BusUtils.findConnectedBuses(mainBus);
+		Bus subBus1 = null;
+		Bus subBus2 = null;
+		for(Bus bus : subBuses) {
+			if(bus.connectedComponents.size() == 5) {
+				subBus1 = bus;
+			}
+			else if(bus.connectedComponents.size() == 8){
+				subBus2 = bus;
+			}
+			else {
+				assertEquals(-1, bus.getConnectedComponents().size());
+			}
+		}
 
-		Optional<EEComponent> mainComp1 = BusUtils.findComponentWithID(mainBus.connectedComponents, "TestComponent 1");
-		assertTrue(mainComp1.isPresent());
-		Optional<EEComponent> mainComp2 = BusUtils.findComponentWithID(mainBus.connectedComponents, "TestComponent 2");
-		assertTrue(mainComp2.isPresent());
-		Optional<EEComponent> sub1Comp = BusUtils.findComponentWithID(subBus1.connectedComponents, "TestComponent 5");
-		assertTrue(sub1Comp.isPresent());
-		Optional<EEComponent> sub2Comp = BusUtils.findComponentWithID(subBus2.connectedComponents, "TestComponent 8");
-		assertTrue(sub2Comp.isPresent());
+		EEComponent mainComp1 = mainBus.getConnectedComponents().get(0);
+		EEComponent mainComp2 = mainBus.getConnectedComponents().get(1);
+		EEComponent sub1Comp = subBus1.getConnectedComponents().get(0);
+		EEComponent sub2Comp = subBus2.getConnectedComponents().get(0);
 
 		String msg = "Local";
 		BusMessage localMsg = new BusMessage(msg, msg.length(), NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE,
-				Instant.EPOCH, MessageType.SEND, mainComp2.get());
-		localMsg.setControllerID(mainComp1.get().getID());
+				Instant.EPOCH, mainComp1.getID(), mainComp2);
 		mainBus.registerMessage(localMsg);
 
 		msg = "1hop";
 		BusMessage oneHopMsg = new BusMessage(msg, msg.length(), NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE,
-				Instant.EPOCH, MessageType.SEND, sub1Comp.get());
-		oneHopMsg.setControllerID(mainComp1.get().getID());
+				Instant.EPOCH, mainComp2.getID(), sub1Comp);
 		mainBus.registerMessage(oneHopMsg);
 
 		msg = "2hop";
 		BusMessage twoHopMsg = new BusMessage(msg, msg.length(), NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE,
-				Instant.EPOCH, MessageType.SEND, sub2Comp.get());
-		twoHopMsg.setControllerID(mainComp2.get().getID());
+				Instant.EPOCH, mainComp1.getID(), sub2Comp);
 		mainBus.registerMessage(twoHopMsg);
 
-		Map<String, PriorityQueue<BusMessage>> messagesByControllerId = mainBus.getMessagesByControllerId();
-		assertEquals(2, messagesByControllerId.get(mainComp1.get().getID()).size());
-		assertEquals(1, messagesByControllerId.get(mainComp2.get().getID()).size());
+		Map<UUID, PriorityQueue<BusMessage>> messagesByControllerId = mainBus.getMessagesByControllerId();
+		for(Map.Entry<UUID, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
+			if(entry.getKey().equals(mainComp1.getID())) {
+				assertEquals(2, entry.getValue().size());
+			}
+			else if(entry.getKey().equals(mainComp2.getID())) {
+				assertEquals(1, entry.getValue().size());
+			}
+			else {
+				assertEquals(0, entry.getValue().size());
+			}
+		}
 	}
 
 	@Test
@@ -171,27 +182,27 @@ public class FlexRayTest {
 		BusMessage empty = flexray.getNextDynamicMessage();
 		assertTrue(empty == null);
 
-		BusMessage c01 = createNregisterMessage(flexray, "c01", "TestComponent 0", "TestComponent 1", 1, 0);
+		BusMessage c01 = createNregisterMessage(flexray, "c01", 0,  1, 1, 0);
 		BusMessage msg = flexray.getNextDynamicMessage();
 		assertTrue(msg != null);
 		assertEquals(msg, c01);
 
-		BusMessage c02 = createNregisterMessage(flexray, "c02", "TestComponent 0", "TestComponent 2", 254, 1);
+		BusMessage c02 = createNregisterMessage(flexray, "c02", 0, 2, 254, 1);
 		msg = flexray.getNextDynamicMessage();
 		assertTrue(msg != null);
 		assertEquals(msg, c02);
 
-		BusMessage c11 = createNregisterMessage(flexray, "c11", "TestComponent 1", "TestComponent 2", 127, 2);
+		BusMessage c11 = createNregisterMessage(flexray, "c11", 1, 2, 127, 2);
 		msg = flexray.getNextDynamicMessage();
 		assertTrue(msg != null);
 		assertEquals(msg, c11);
 
-		BusMessage c12 = createNregisterMessage(flexray, "c12", "TestComponent 1", "TestComponent 3", 127, 3);
+		BusMessage c12 = createNregisterMessage(flexray, "c12", 1, 3, 127, 3);
 		msg = flexray.getNextDynamicMessage();
 		assertTrue(msg != null);
 		assertEquals(msg, c12);
 
-		createNregisterMessage(flexray, "", "TestComponent 1", "TestComponent 4", 1, 0);
+		createNregisterMessage(flexray, "", 1, 4, 1, 0);
 		msg = flexray.getNextDynamicMessage();
 		assertTrue(msg != null);
 		assertEquals(msg, c12);
@@ -221,16 +232,16 @@ public class FlexRayTest {
 		}
 		int curCycle = 0;
 
-		Map<String, Integer> transmittedBytesByControllerId = new HashMap<String, Integer>();
-		Map<String, Boolean> firstByControllerId = new HashMap<String, Boolean>();
-		for (String controllerID : flexray.getMessagesByControllerId().keySet()) {
+		Map<UUID, Integer> transmittedBytesByControllerId = new HashMap<UUID, Integer>();
+		Map<UUID, Boolean> firstByControllerId = new HashMap<UUID, Boolean>();
+		for (UUID controllerID : flexray.getMessagesByControllerId().keySet()) {
 			transmittedBytesByControllerId.put(controllerID, 0);
 			firstByControllerId.put(controllerID, true);
 		}
 
 		for (Map.Entry<Integer, List<BusMessage>> entry : msgsByEndCycle.entrySet()) {
 			System.out.println("-----------------------");
-			for (Map.Entry<String, Boolean> first : firstByControllerId.entrySet()) {
+			for (Map.Entry<UUID, Boolean> first : firstByControllerId.entrySet()) {
 				first.setValue(true);
 			}
 
@@ -251,7 +262,7 @@ public class FlexRayTest {
 			}
 			for (; curCycle < entry.getKey(); curCycle++) {
 				flexray.fillStaticSegment(Instant.EPOCH);
-				for (Map.Entry<String, Integer> transmittedBytesEntry : transmittedBytesByControllerId.entrySet()) {
+				for (Map.Entry<UUID, Integer> transmittedBytesEntry : transmittedBytesByControllerId.entrySet()) {
 					int transmittedBytes = transmittedBytesEntry.getValue();
 					transmittedBytesEntry.setValue(transmittedBytes + FlexRay.MAX_SLOT_PAYLOAD);
 				}
@@ -373,8 +384,8 @@ public class FlexRayTest {
 		while (!firstMsgs.isEmpty()) {
 			BusMessage cur = firstMsgs.poll();
 			// transmitted during static and dynamic segments
-			int msgCycles = (int) Math
-					.ceil(cur.getRemainingBytes() / ((double) (FlexRay.MAX_SLOT_PAYLOAD * (FlexRay.DYNAMIC_SLOTS + 1))));
+			int msgCycles = (int) Math.ceil(
+					cur.getRemainingBytes() / ((double) (FlexRay.MAX_SLOT_PAYLOAD * (FlexRay.DYNAMIC_SLOTS + 1))));
 			flexray.simulateFor(flexray.getCycleTime().multipliedBy(msgCycles));
 			assertTrue(cur.isTransmitted());
 
@@ -391,40 +402,38 @@ public class FlexRayTest {
 	public void testsimulateFor() {
 		FlexRay flexray = createBusStructure();
 
-		//finish in third cycle (static)
-		BusMessage c01 = createNregisterMessage(flexray, "c01", "TestComponent 0", "TestComponent 1", 127, 0);
-		//finish in second cycle  (dynamic 1.5 slots)
-		BusMessage c02 = createNregisterMessage(flexray, "c02", "TestComponent 0", "TestComponent 1",
-				(254 + 254 + 254 + 381), 4);
-		
-		//finish in third cycle (static)
-		BusMessage c11 = createNregisterMessage(flexray, "c11", "TestComponent 1", "TestComponent 1", 100, 0);
-		//finish in second cycle  (dynamic 4 slots)
-		BusMessage c12 = createNregisterMessage(flexray, "c12", "TestComponent 1", "TestComponent 1", (254 + 254 + 635),
-				3);
+		// finish in third cycle (static)
+		BusMessage c01 = createNregisterMessage(flexray, "c01", 0, 1, 127, 0);
+		// finish in second cycle (dynamic 1.5 slots)
+		BusMessage c02 = createNregisterMessage(flexray, "c02", 0, 1, (254 + 254 + 254 + 381), 4);
 
-		//finish in first cycle (static)
-		BusMessage c21 = createNregisterMessage(flexray, "c21", "TestComponent 2", "TestComponent 1", 100, 0);
-		//finish in first cycle (static)
-		BusMessage c22 = createNregisterMessage(flexray, "c22", "TestComponent 2", "TestComponent 1", 100, 0);
-		//finish in first cycle (static)
-		BusMessage c23 = createNregisterMessage(flexray, "c23", "TestComponent 2", "TestComponent 1", 54, 0);
+		// finish in third cycle (static)
+		BusMessage c11 = createNregisterMessage(flexray, "c11", 1, 1, 100, 0);
+		// finish in second cycle (dynamic 4 slots)
+		BusMessage c12 = createNregisterMessage(flexray, "c12", 1, 1, (254 + 254 + 635), 3);
 
-		//finish in third cycle (static)
-		BusMessage c31 = createNregisterMessage(flexray, "c31", "TestComponent 3", "TestComponent 1", 100, 0);
-		//finish in second cycle (static)
-		BusMessage c32 = createNregisterMessage(flexray, "c32", "TestComponent 3", "TestComponent 1", 200, 1);
-		//finish in first cycle (dynamic after 3 slots) 
-		BusMessage c33 = createNregisterMessage(flexray, "c33", "TestComponent 3", "TestComponent 1", (154 + 762), 5);
-		//finish in first cycle (static)
-		BusMessage c34 = createNregisterMessage(flexray, "c34", "TestComponent 3", "TestComponent 1", 100, 6);
-		
+		// finish in first cycle (static)
+		BusMessage c21 = createNregisterMessage(flexray, "c21", 2, 1, 100, 0);
+		// finish in first cycle (static)
+		BusMessage c22 = createNregisterMessage(flexray, "c22", 2, 1, 100, 0);
+		// finish in first cycle (static)
+		BusMessage c23 = createNregisterMessage(flexray, "c23", 2, 1, 54, 0);
+
+		// finish in third cycle (static)
+		BusMessage c31 = createNregisterMessage(flexray, "c31", 3, 1, 100, 0);
+		// finish in second cycle (static)
+		BusMessage c32 = createNregisterMessage(flexray, "c32", 3, 1, 200, 1);
+		// finish in first cycle (dynamic after 3 slots)
+		BusMessage c33 = createNregisterMessage(flexray, "c33", 3, 1, (154 + 762), 5);
+		// finish in first cycle (static)
+		BusMessage c34 = createNregisterMessage(flexray, "c34", 3, 1, 100, 6);
+
 		long slotSizeNs = Math.toIntExact(flexray.getSlotSize().toNanos());
 		long totalStaticSegmentSizeNs = Math.toIntExact(flexray.getStaticSegmentSize().toNanos());
 		long cycleTimeNs = Math.toIntExact(flexray.getCycleTime().toNanos());
-		
+
 		Instant currentTime = Instant.EPOCH;
-		flexray.simulateFor(Duration.ofNanos(cycleTimeNs/2));
+		flexray.simulateFor(Duration.ofNanos(cycleTimeNs / 2));
 		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
 		assertEquals(currentTime, flexray.currentTime);
 		flexray.simulateFor(flexray.getCycleTime().dividedBy(3));
@@ -443,40 +452,52 @@ public class FlexRayTest {
 
 		assertTrue(0 < Duration.between(Instant.EPOCH, c34.getFinishTime()).toNanos());
 		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c34.getFinishTime()).toNanos());
-		
-		System.out.println("Expected: " + (totalStaticSegmentSizeNs + (slotSizeNs * 3)) + "; Actual: " + Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
-		assertEquals((totalStaticSegmentSizeNs + (slotSizeNs * 3)), Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
-		
+
+		System.out.println("Expected: " + (totalStaticSegmentSizeNs + (slotSizeNs * 3)) + "; Actual: "
+				+ Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
+		assertEquals((totalStaticSegmentSizeNs + (slotSizeNs * 3)),
+				Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
+
 		assertTrue(0 < Duration.between(Instant.EPOCH, c21.getFinishTime()).toNanos());
 		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c21.getFinishTime()).toNanos());
-		
+
 		assertTrue(0 < Duration.between(Instant.EPOCH, c22.getFinishTime()).toNanos());
 		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c22.getFinishTime()).toNanos());
-		
+
 		assertTrue(0 < Duration.between(Instant.EPOCH, c23.getFinishTime()).toNanos());
 		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c23.getFinishTime()).toNanos());
-		
-		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + slotSizeNs) + "; Actual: " + Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
-		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + slotSizeNs) < Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
-		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + (2* slotSizeNs)) + "; Actual: " + Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
-		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + (2* slotSizeNs)) > Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
-		
+
+		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + slotSizeNs) + "; Actual: "
+				+ Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + slotSizeNs) < Duration
+				.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + (2 * slotSizeNs)) + "; Actual: "
+				+ Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + (2 * slotSizeNs)) > Duration
+				.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+
 		System.out.println(cycleTimeNs + totalStaticSegmentSizeNs);
-		System.out.println("Expected: " + (cycleTimeNs * 2) + "; Actual: " + Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
+		System.out.println("Expected: " + (cycleTimeNs * 2) + "; Actual: "
+				+ Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
 		assertEquals((cycleTimeNs * 2), Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
-		
+
 		assertTrue(cycleTimeNs < Duration.between(Instant.EPOCH, c32.getFinishTime()).toNanos());
-		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c32.getFinishTime()).toNanos());
-		
-		System.out.println("Expected: " + (cycleTimeNs * 2) + "; Actual: " + Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
+		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c32.getFinishTime())
+				.toNanos());
+
+		System.out.println("Expected: " + (cycleTimeNs * 2) + "; Actual: "
+				+ Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
 		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
-		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
-		
+		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c01.getFinishTime())
+				.toNanos());
+
 		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c11.getFinishTime()).toNanos());
-		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c11.getFinishTime()).toNanos());
-		
+		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c11.getFinishTime())
+				.toNanos());
+
 		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c31.getFinishTime()).toNanos());
-		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c31.getFinishTime()).toNanos());
+		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c31.getFinishTime())
+				.toNanos());
 	}
 
 	private FlexRay createBusStructure() {
@@ -485,65 +506,52 @@ public class FlexRayTest {
 		List<EEComponent> subComponents2 = new ArrayList<EEComponent>();
 		int i = 0;
 		for (; i < 5; i++) {
-			mainComponents.add(new TestComponent(EEsim, String.valueOf(i)));
+			mainComponents.add(new TestComponent(EEsim));
 		}
 		for (; i < 8; i++) {
-			subComponents1.add(new TestComponent(EEsim, String.valueOf(i)));
+			subComponents1.add(new TestComponent(EEsim));
 		}
 		for (; i < 15; i++) {
-			subComponents2.add(new TestComponent(EEsim, String.valueOf(i)));
+			subComponents2.add(new TestComponent(EEsim));
 		}
 
-		List<BusEntry> messages = new ArrayList<BusEntry>();
-		messages.add(BusEntry.CONSTANT_WHEELBASE);
-
-		FlexRay sub2 = new FlexRay(EEsim);//subComponents2
-		for(EEComponent component: subComponents2){
-			sub2.registerComponent(component, messages);
+		FlexRay sub2 = new FlexRay(EEsim);// subComponents2
+		for (EEComponent component : subComponents2) {
+			sub2.registerComponent(component);
 		}
 
-		subComponents1.add(sub2);
-		FlexRay sub1 = new FlexRay(EEsim);//subComponents1
-		for(EEComponent component: subComponents1){
-			sub1.registerComponent(component, messages);
+		FlexRay sub1 = new FlexRay(EEsim);// subComponents1
+		for (EEComponent component : subComponents1) {
+			sub1.registerComponent(component);
 		}
 
-		mainComponents.add(sub1);
-		FlexRay main = new FlexRay(EEsim);//mainComponents
-		for(EEComponent component: mainComponents){
-			main.registerComponent(component, messages);
+		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(sub1, sub2), Duration.ZERO);
+		FlexRay main = new FlexRay(EEsim);// mainComponents
+		for (EEComponent component : mainComponents) {
+			main.registerComponent(component);
 		}
-
+		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(main, sub1), Duration.ZERO);
 		return main;
 	}
 
-	private BusMessage createNregisterMessage(FlexRay flexray, Object message, String senderID, String receiverID,
+	private BusMessage createNregisterMessage(FlexRay flexray, Object message, int senderPos, int receiverPos,
 			int messageLength, int priority) {
-		Optional<EEComponent> sender = BusUtils.findComponentWithID(flexray.connectedComponents, senderID);
-		assertTrue(sender.isPresent());
-		Optional<EEComponent> receiver = BusUtils.findComponentWithID(flexray.connectedComponents, receiverID);
-		assertTrue(receiver.isPresent());
-
 		assertTrue(busEntryByOrdinal.size() > priority);
 
-		BusMessage msg = new BusMessage(message, messageLength, busEntryByOrdinal.get(priority), Instant.EPOCH,
-				MessageType.SEND, receiver.get());
-		msg.setControllerID(sender.get().getID());
-		flexray.registerMessage(msg);
+		List<EEComponent> connectedComponents = flexray.getConnectedComponents();
+		assertTrue(senderPos >= 0 && senderPos < connectedComponents.size());
+		assertTrue(receiverPos >= 0 && receiverPos < connectedComponents.size());
 
+		BusMessage msg = new BusMessage(message, messageLength, busEntryByOrdinal.get(priority), Instant.EPOCH,
+				connectedComponents.get(senderPos).getID(), connectedComponents.get(receiverPos));
+		flexray.registerMessage(msg);
 		return msg;
 	}
 
 	private List<BusMessage> createNregisterMessages(FlexRay flexray) {
 		List<BusMessage> msgs = new ArrayList<BusMessage>();
 
-		List<String> controllerIds = new ArrayList<String>();
-		for (String controllerId : flexray.getMessagesByControllerId().keySet()) {
-			if (!controllerId.startsWith("Bus")) {
-				controllerIds.add(controllerId);
-			}
-
-		}
+		List<EEComponent> connectedComponents = flexray.getConnectedComponents();
 
 		// make sure ordering is deterministic => no two messages with same priority
 		List<Integer> priorities = new ArrayList<Integer>();
@@ -553,17 +561,12 @@ public class FlexRayTest {
 
 		Random rand = new Random();
 		for (int j = 0; j < busEntryByOrdinal.size(); j++) {
-			int senderID = rand.nextInt(controllerIds.size());
-			int receiverID = rand.nextInt(controllerIds.size());
+			int senderPos = rand.nextInt(connectedComponents.size());
+			int receiverPos = rand.nextInt(connectedComponents.size());
 			int messageLength = rand.nextInt(1500);
 			int priority = priorities.remove(rand.nextInt(priorities.size()));
-			msgs.add(createNregisterMessage(flexray, j, controllerIds.get(senderID), controllerIds.get(receiverID),
-					messageLength, priority));
+			msgs.add(createNregisterMessage(flexray, j, senderPos, receiverPos, messageLength, priority));
 		}
 		return msgs;
-	}
-	
-	private int getTransmitTime(int bytes, int dataRate) {
-		return (int) Math.ceil((bytes* 1000000 * 8) / ((double) dataRate));
 	}
 }

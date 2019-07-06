@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.UUID;
 
 import commons.controller.commons.BusEntry;
 
@@ -62,7 +63,7 @@ public abstract class EEComponent {
 
     /**
      *
-     * @return Id of this component. Can be a BusEntry or randomly generated ID
+     * @return Randomly generated ID of this component
      */
-    public abstract String getID();
+    public abstract UUID getID();
 }

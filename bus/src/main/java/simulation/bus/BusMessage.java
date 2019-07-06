@@ -20,16 +20,14 @@ package simulation.bus;
  * *******************************************************************************
  */
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 import commons.controller.commons.BusEntry;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EEDiscreteEvent;
-import simulation.EESimulator.MessageType;
+import simulation.EESimulator.EEDiscreteEventTypeEnum;
 
 /**
  *
@@ -60,12 +58,7 @@ public class BusMessage extends EEDiscreteEvent {
 
 	private boolean transmitted;
 
-	/**
-	 * Time the request to transmit the messages was placed.
-	 */
-	//private Instant requestTime;
-
-	private String controllerID;
+	private UUID controllerID;
 
 	private BusEntry messageID;
 
@@ -80,13 +73,13 @@ public class BusMessage extends EEDiscreteEvent {
 	 */
 	Random bitError = new Random();
 
-	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant eventTime, EEComponent target) {
-		super(eventTime, target);
+	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant eventTime, UUID sourceID, EEComponent target) {
+		super(EEDiscreteEventTypeEnum.BUSMESSAGE,eventTime, target);
 		this.target = target;
 		this.message = message;
 		this.messageLen = messageLen;
 		this.messageID = messageID;
-		this.controllerID = this.messageID.toString();
+		this.controllerID = sourceID;
 		this.transmittedBytes = 0;
 		this.transmitted = false;
 		this.finishTime = Instant.EPOCH;
@@ -94,7 +87,7 @@ public class BusMessage extends EEDiscreteEvent {
 	}
 
 	public BusMessage(BusMessage busMessage) {
-		super(busMessage.getEventTime(), busMessage.getTarget());
+		super(EEDiscreteEventTypeEnum.BUSMESSAGE, busMessage.getEventTime(), busMessage.getTarget());
 		this.message = busMessage.message;
 		this.messageLen = busMessage.messageLen;
 		this.transmittedBytes = busMessage.transmittedBytes;
@@ -136,11 +129,11 @@ public class BusMessage extends EEDiscreteEvent {
 		this.messageLen = messageLen;
 	}
 
-	public String getControllerID() {
+	public UUID getControllerID() {
 		return controllerID;
 	}
 
-	public void setControllerID(String controllerID) {
+	public void setControllerID(UUID controllerID) {
 		this.controllerID = controllerID;
 	}
 
@@ -192,23 +185,21 @@ public class BusMessage extends EEDiscreteEvent {
 		return res;
 	}
 
-	@Override
-	public Instant getEventTime() {
-		return this.getEventTime();
-	}
-
 	public String getEventId() {
 		return this.messageID.toString();
 	}
 
-	public void forwardToBus(String controllerID) {
+	public void forwardTo(EEComponent target) {
+		//old target forwards this message
+		this.controllerID = this.target.getID();
+		this.target = target;
 		this.setEventTime(this.finishTime);
 		this.finishTime = Instant.EPOCH;
 		this.transmitted = false;
 		this.error = false;
 		this.transmittedBytes = 0;
-		this.controllerID = controllerID;
 	}
+	
 
 
 }

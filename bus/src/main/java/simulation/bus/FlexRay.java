@@ -1,4 +1,5 @@
 package simulation.bus;
+
 /**
  *
  * ******************************************************************************
@@ -25,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.UUID;
 
 import org.jfree.util.Log;
 
@@ -91,20 +93,22 @@ public class FlexRay extends Bus {
 	 */
 	private FlexRayOperationMode mode = new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY);
 
-	private Map<String, PriorityQueue<BusMessage>> messagesByControllerId = new LinkedHashMap<String, PriorityQueue<BusMessage>>();
-	
+	private Map<UUID, PriorityQueue<BusMessage>> messagesByControllerId = new LinkedHashMap<UUID, PriorityQueue<BusMessage>>();
+
 	/**
 	 * Duration of the last partial cycle that was simulated
 	 */
 	private Duration lastPartialCycleDuration = Duration.ZERO;
 
 	/**
-	 * Amount of bytes that were send in the static segment during the last partial cycle (including overhead)
+	 * Amount of bytes that were send in the static segment during the last partial
+	 * cycle (including overhead)
 	 */
 	private int lastPartialStaticSegmentBytes = 0;
-	
+
 	/**
-	 * Amount of bytes that were send in the dynamic segment during the last partial cycle (including overhead)
+	 * Amount of bytes that were send in the dynamic segment during the last partial
+	 * cycle (including overhead)
 	 */
 	private int lastPartialDynamicSegmentBytes = 0;
 
@@ -112,9 +116,19 @@ public class FlexRay extends Bus {
 		super(simulator);
 	}
 
-	public void registerComponent(EEComponent component, List<BusEntry> messages){
-		super.registerComponent(component, messages);
-		messagesByControllerId.put(component.getID().toString(), new PriorityQueue<BusMessage>(COMP_ID_DESC));
+	@Override
+	public void registerComponent(EEComponent component){
+		if(component.getID() == null) {
+			throw new IllegalArgumentException("ID of Component " + component.toString() + " is null. Only fully initialized components can be registered at " + this.toString() + ".");
+		}
+		if(messagesByControllerId.containsKey(component.getID())){
+			throw new IllegalArgumentException("Component " + component.toString() + " is already registered at " + this.toString() + ".");
+		}
+		else {
+			super.registerComponent(component);
+			messagesByControllerId.put(component.getID(), new PriorityQueue<BusMessage>(COMP_ID_DESC));
+		}
+
 	}
 
 	/**
@@ -132,7 +146,7 @@ public class FlexRay extends Bus {
 	public void setMode(FlexRayOperationMode mode) {
 		this.mode = mode;
 	}
-	
+
 	/**
 	 * @return The duration of a slot
 	 */
@@ -165,13 +179,13 @@ public class FlexRay extends Bus {
 				.multipliedBy((this.messagesByControllerId.size() * FlexRay.STATIC_SLOTS) + FlexRay.DYNAMIC_SLOTS);
 	}
 
-	protected Map<String, PriorityQueue<BusMessage>> getMessagesByControllerId() {
+	protected Map<UUID, PriorityQueue<BusMessage>> getMessagesByControllerId() {
 		return this.messagesByControllerId;
 	}
 
 	@Override
 	protected void simulateFor(Duration duration) {
-
+		// TODO dont waste time when messages are empty
 		duration = this.finishLastCycle(duration);
 
 		if (!duration.isZero()) {
@@ -184,7 +198,7 @@ public class FlexRay extends Bus {
 			this.lastPartialCycleDuration = Duration.ofNanos(partialCycleDuration.toNanos());
 
 			// go through simulation cycle by cycle
-			for (int cycle = 0; cycle < fullCycles && this.messagesRegistered(); cycle++) {
+			for (int cycle = 0; cycle < fullCycles; cycle++) {
 				// sent the frames for this cycle
 				this.fillStaticSegment(segmentStartTime);
 				segmentStartTime = segmentStartTime.plusNanos(staticSegmentDuration.toNanos());
@@ -229,14 +243,16 @@ public class FlexRay extends Bus {
 //	}
 
 	@Override
-	protected void registerMessage(BusMessage msg){
-		if(!sendTo.containsKey(msg.getMessageID())){
-			throw new IllegalArgumentException("Message has no target in this Bus.");
+	protected void registerMessage(BusMessage msg) {
+		if (!sendTo.containsKey(msg.getMessageID())) {
+			Log.debug("Message has no target in Bus " + this.toString());
 		}
-		if(!messagesByControllerId.containsKey(msg.getControllerID())){
-			throw new IllegalArgumentException("Message send by unknown controller.");
+		if (!messagesByControllerId.containsKey(msg.getControllerID())) {
+			throw new IllegalArgumentException("Message send by unknown controller @" + this.toString());
+		} else if(!messagesByControllerId.containsKey(msg.getTarget().getID())) {
+			throw new IllegalArgumentException("Message with unknown target @" + this.toString());
 		}
-		else{
+		else {
 			PriorityQueue<BusMessage> controllerMsgs = messagesByControllerId.get(msg.getControllerID());
 			controllerMsgs.add(msg);
 			messagesByControllerId.put(msg.getControllerID(), controllerMsgs);
@@ -270,11 +286,14 @@ public class FlexRay extends Bus {
 
 		return this.currentTime.plusNanos(this.getCycleTime().toNanos() * minCycle);
 	}
-	
+
 	/**
-	 * Finish of the last cycle that was not completely simulated. Do nothing otherwise.
+	 * Finish of the last cycle that was not completely simulated. Do nothing
+	 * otherwise.
+	 * 
 	 * @param duration amount of time for which the bus is simulated
-	 * @return duration minus the amount of time it took the finish of the last cycle.
+	 * @return duration minus the amount of time it took the finish of the last
+	 *         cycle.
 	 */
 	private Duration finishLastCycle(Duration duration) {
 		Instant startTime = this.currentTime.minusNanos(lastPartialCycleDuration.toNanos());
@@ -338,32 +357,35 @@ public class FlexRay extends Bus {
 
 	/**
 	 * Fill a complete static segment
+	 * 
 	 * @param segmentStartTime the time at which the segment was started.
 	 */
 	void fillStaticSegment(Instant segmentStartTime) {
 		int transmittedBytes = 0;
 		System.out.println("-------------------\n" + "Static segment" + "\n-------------------");
-		for (Map.Entry<String, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
+		for (Map.Entry<UUID, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
 			transmittedBytes += FlexRay.HEADER_SIZE;
-			System.out.println(
-					"-------------------\n" + "Controller " + entry.getKey() + "\n-------------------");
+			System.out.println("-------------------\n" + "Controller " + entry.getKey() + "\n-------------------");
 			fillStaticSlot(segmentStartTime, entry.getValue(), transmittedBytes, FlexRay.MAX_SLOT_PAYLOAD, 0);
 			transmittedBytes += FlexRay.CONTROLLER_STATIC_PAYLOAD + FlexRay.TRAILER_SIZE;
 		}
 	}
 
 	/**
-	 * Fill an incomplete (it was already started or is not finished) static segment.
+	 * Fill an incomplete (it was already started or is not finished) static
+	 * segment.
+	 * 
 	 * @param segmentStartTime the time at which the segment was started
-	 * @param bytesToSend the amount of bytes to send (including overhead)
-	 * @param startByte the byte from which the segment is filled (including overhead)
+	 * @param bytesToSend      the amount of bytes to send (including overhead)
+	 * @param startByte        the byte from which the segment is filled (including
+	 *                         overhead)
 	 */
 	private void fillIncompleteStaticSegment(Instant segmentStartTime, int bytesToSend, int startByte) {
 		int totalTransmittedBytes = startByte;
 		System.out.println("-------------------\n" + "Incomplete Static Segment" + "\n-------------------");
-		System.out.println("-------------------\n" + "Trasmit " + bytesToSend + " from byte " + startByte
-				+ " of " + this.getTotalStaticSegmentSize() + " bytes\n-------------------");
-		for (Map.Entry<String, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
+		System.out.println("-------------------\n" + "Trasmit " + bytesToSend + " from byte " + startByte + " of "
+				+ this.getTotalStaticSegmentSize() + " bytes\n-------------------");
+		for (Map.Entry<UUID, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
 			if (bytesToSend > 0) {
 				for (int i = 0; i < FlexRay.STATIC_SLOTS; i++) {
 					if (startByte > FlexRay.MAX_SLOT_SIZE) {
@@ -421,12 +443,15 @@ public class FlexRay extends Bus {
 
 	/**
 	 * Fill a static slot for one controller.
+	 * 
 	 * @param segmentStartTime the time at which the segment has started
-	 * @param msgs the messages that belong to the controller
-	 * @param transmittedBytes the bytes that were already transmitted during this segment (including overhead)
-	 * @param slotPayload the payload that should be transmitted during the slot
-	 * @param startByte the byte from which the slot is filled
-	 * @return the unfinished messages of the controller 
+	 * @param msgs             the messages that belong to the controller
+	 * @param transmittedBytes the bytes that were already transmitted during this
+	 *                         segment (including overhead)
+	 * @param slotPayload      the payload that should be transmitted during the
+	 *                         slot
+	 * @param startByte        the byte from which the slot is filled
+	 * @return the unfinished messages of the controller
 	 */
 	private PriorityQueue<BusMessage> fillStaticSlot(Instant segmentStartTime, PriorityQueue<BusMessage> msgs,
 			int transmittedBytes, int slotPayload, int startByte) {
@@ -450,7 +475,7 @@ public class FlexRay extends Bus {
 						long nanoseconds = this.calculateTransmissionTime(transmittedBytes);
 						System.out.println("Msg " + message.getMessage() + ": finished after: " + nanoseconds);
 						message.setFinishTime(segmentStartTime.plusNanos((long) Math.ceil(nanoseconds)));
-						this.registerEventAtSimulator(message);
+						this.registerMessageAtSimulator(message);
 					}
 				} else {
 					Log.warn("Error transmitting message in static segment of bus: " + this.getID());
@@ -462,6 +487,7 @@ public class FlexRay extends Bus {
 
 	/**
 	 * Fill a complete dynamic segment
+	 * 
 	 * @param segmentStartTime the time at which the segment was started.
 	 */
 	void fillDynamicSegment(Instant segmentStartTime) {
@@ -479,16 +505,19 @@ public class FlexRay extends Bus {
 	}
 
 	/**
-	 * Fill an incomplete (it was already started or is not finished) dynamic segment.
+	 * Fill an incomplete (it was already started or is not finished) dynamic
+	 * segment.
+	 * 
 	 * @param segmentStartTime the time at which the segment was started
-	 * @param bytesToSend the amount of bytes to send (including overhead)
-	 * @param startByte the byte from which the segment is filled (including overhead)
+	 * @param bytesToSend      the amount of bytes to send (including overhead)
+	 * @param startByte        the byte from which the segment is filled (including
+	 *                         overhead)
 	 */
 	void fillIncompleteDynamicSegment(Instant segmentStartTime, int bytesToSend, int startByte) {
 		int totalTransmittedBytes = startByte;
 		System.out.println("-------------------\n" + "Incomplete Dynamic Segment" + "\n-------------------");
-		System.out.println("-------------------\n" + "Trasmit " + bytesToSend + " from byte " + startByte
-				+ " of " + FlexRay.DYNAMIC_SEGMENT_SIZE + " bytes\n-------------------");
+		System.out.println("-------------------\n" + "Trasmit " + bytesToSend + " from byte " + startByte + " of "
+				+ FlexRay.DYNAMIC_SEGMENT_SIZE + " bytes\n-------------------");
 		int fullSlots = startByte / FlexRay.MAX_SLOT_SIZE;
 		startByte -= (fullSlots * FlexRay.MAX_SLOT_SIZE);
 		if (startByte > FlexRay.HEADER_SIZE + FlexRay.MAX_SLOT_PAYLOAD) {
@@ -524,10 +553,13 @@ public class FlexRay extends Bus {
 
 	/**
 	 * Fill a dynamic slot for one controller.
+	 * 
 	 * @param segmentStartTime the time at which the segment has started
-	 * @param transmittedBytes the bytes that were already transmitted during this segment (including overhead)
-	 * @param slotPayload the payload that should be transmitted during the slot
-	 * @param startByte the byte from which the slot is filled
+	 * @param transmittedBytes the bytes that were already transmitted during this
+	 *                         segment (including overhead)
+	 * @param slotPayload      the payload that should be transmitted during the
+	 *                         slot
+	 * @param startByte        the byte from which the slot is filled
 	 */
 	private void fillDynamicSlot(Instant segmentStartTime, int transmittedBytes, int slotPayload, int startByte) {
 		boolean endOfSlot = ((startByte + slotPayload) % FlexRay.MAX_SLOT_PAYLOAD) == 0;
@@ -545,7 +577,7 @@ public class FlexRay extends Bus {
 					}
 					long nanoseconds = this.calculateTransmissionTime(transmittedBytes);
 					cur.setFinishTime(segmentStartTime.plusNanos(nanoseconds));
-					this.registerEventAtSimulator(cur);
+					this.registerMessageAtSimulator(cur);
 					System.out.println("Msg " + cur.getMessage() + ": finished after: " + nanoseconds);
 					cur = this.getNextDynamicMessage();
 				}
@@ -560,7 +592,7 @@ public class FlexRay extends Bus {
 	 */
 	BusMessage getNextDynamicMessage() {
 		BusMessage res = null;
-		for (Map.Entry<String, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
+		for (Map.Entry<UUID, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
 			PriorityQueue<BusMessage> controllerMessages = entry.getValue();
 			BusMessage msg = null;
 			while (!controllerMessages.isEmpty() && (msg == null || msg.isTransmitted())) {
@@ -585,7 +617,8 @@ public class FlexRay extends Bus {
 	 * @param messagesByControllerId the map to check for messages
 	 * @return true if messagesByControllerId contains at least one message
 	 */
-	boolean messagesRegistered() {
+	@Override
+	boolean hasMessages() {
 		return getNextDynamicMessage() != null;
 	}
 

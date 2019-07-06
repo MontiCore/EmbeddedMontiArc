@@ -32,9 +32,10 @@ public abstract class EEDiscreteEvent {
     
     private EEDiscreteEventTypeEnum eventType;
 
-    public EEDiscreteEvent(Instant eventTime, EEComponent target){
+    public EEDiscreteEvent(EEDiscreteEventTypeEnum eventType, Instant eventTime, EEComponent target){
         this.eventTime = eventTime;
         this.target = target;
+        this.eventType = eventType;
     }
 
     public Instant getEventTime() {

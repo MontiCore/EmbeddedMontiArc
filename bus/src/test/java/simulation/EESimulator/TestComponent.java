@@ -1,3 +1,4 @@
+package simulation.EESimulator;
 /**
  *
  * ******************************************************************************
@@ -20,26 +21,37 @@
  */
 
 
-import commons.simulation.DiscreteEvent;
+import java.util.ArrayList;
+import java.util.UUID;
+
+import commons.controller.commons.BusEntry;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEDiscreteEvent;
+import simulation.EESimulator.EESimulator;
+import simulation.bus.BusMessage;
 
 public class TestComponent extends EEComponent {
 	
-	private String ID;
+	private UUID ID;
 
-	public TestComponent(EESimulator simulator, String ID) {
+	public TestComponent(EESimulator simulator) {
 		super(simulator);
-		this.ID = ID;
+		this.ID = UUID.randomUUID();
+		this.listenTo = new ArrayList<BusEntry>();
+		for(BusEntry entry : BusEntry.values()) {
+			listenTo.add(entry);
+		}
 	}
 
 	@Override
-	public void processEvent(DiscreteEvent event) {
-		// TODO Auto-generated method stub
-		
+	public void processEvent(EEDiscreteEvent event) {
+		((BusMessage) event).setMessage(this.ID + "processed");
+
 	}
 
 	@Override
-	public String getID() {
-		return "TestComponent " + ID;
+	public UUID getID() {
+		return ID;
 	}
 
 }
