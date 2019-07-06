@@ -29,6 +29,8 @@ Prev: [Installing and using the Basic Simulator](docs/usage.md)    |    Next: [S
 > - Gitlab CI and other Repository plug-ins
 >   - CI stages, runners
 
+> git config credential.helper store
+
 
 ---
 

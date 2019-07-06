@@ -1,3 +1,23 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.rwth_aachen.se.montisim.simulators;
 
 import commons.utils.LibraryService;
@@ -27,9 +47,20 @@ public class App
     public static void main( String[] args )
     {
         load_icons();
+        System.out.println("Looks and Feels:");
+        UIManager.LookAndFeelInfo[] looks = UIManager.getInstalledLookAndFeels();
+        for (UIManager.LookAndFeelInfo look : looks) {
+            System.out.println(look.getClassName());
+        }
         try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+            /*
+                javax.swing.plaf.metal.MetalLookAndFeel
+                javax.swing.plaf.nimbus.NimbusLookAndFeel
+                com.sun.java.swing.plaf.motif.MotifLookAndFeel
+                com.sun.java.swing.plaf.gtk.GTKLookAndFeel
+                com.sun.java.swing.plaf.windows.WindowsLookAndFeel
+            */
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (UnsupportedLookAndFeelException ex) {
             ex.printStackTrace();
         } catch (IllegalAccessException ex) {

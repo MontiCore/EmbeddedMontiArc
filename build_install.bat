@@ -1,6 +1,6 @@
 @REM
 @REM
-@REM  ******************************************************************************
+@REM ******************************************************************************
 @REM  MontiCAR Modeling Family, www.se-rwth.de
 @REM  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
 @REM  All rights reserved.

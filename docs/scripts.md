@@ -12,7 +12,7 @@ Prev: [Maven Project tutorial](docs/maven.md)    |    Next: [MontiSim overview](
 > - Cheatsheet: most usefull commands under linux and windows.
 > - Use cases: building, inter-project copy, testing.
 
-
+> chmod +x filename.sh
 ---
 
 Prev: [Maven Project tutorial](docs/maven.md)    |    Next: [MontiSim overview](docs/montisim.md)
