@@ -191,6 +191,14 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testInvariantForGluon() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/models/", "-r", "Invariant", "-b", "GLUON", "-f", "n", "-c", "n"};
+        EMADLGeneratorCli.main(args);
+        assertTrue(Log.getFindings().size() == 0);
+    }
+
+    @Test
     public void testGluonReinforcementModelGymEnvironment() {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "cartpole.Master", "-b", "GLUON", "-f", "n", "-c", "n"};

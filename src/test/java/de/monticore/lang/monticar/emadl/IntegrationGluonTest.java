@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.emadl;
 
 import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
 import de.se_rwth.commons.logging.Log;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Files;
@@ -34,8 +35,6 @@ import static org.junit.Assert.assertFalse;
 
 public class IntegrationGluonTest extends IntegrationTest {
 
-    private Path multipleInputsHashFile = Paths.get("./target/generated-sources-emadl/MultipleInputs.training_hash");
-    private Path multipleOutputsHashFile = Paths.get("./target/generated-sources-emadl/MultipleOutputs.training_hash");
     private Path multipleStreamsHashFile = Paths.get("./target/generated-sources-emadl/MultipleStreams.training_hash");
 
     public IntegrationGluonTest() {
