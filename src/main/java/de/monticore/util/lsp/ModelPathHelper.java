@@ -58,7 +58,7 @@ public class ModelPathHelper {
         }
         if(isValid) {
             Path modelPath = fullPath.subpath(0, fullPath.getNameCount() - packageParts.size() - 1);
-            modelPath = Paths.get("/", modelPath.toString());
+            modelPath = Paths.get(fullPath.getRoot().toString(), modelPath.toString());
             return Optional.of(modelPath);
         }else{
             return Optional.empty();
@@ -67,8 +67,55 @@ public class ModelPathHelper {
 
 
     public static Path pathFromUriString(String uri) throws URISyntaxException {
+        Log.debug("URI: " + uri, "URIs");
         String prefix = "file://";
-        String tmp = uri.startsWith(prefix) ? uri.substring(prefix.length(), uri.length()) : uri;
-        return Paths.get(tmp);
+        String cleanUri = uri.startsWith(prefix) ? uri.substring(prefix.length()) : uri;
+        if(uri.contains("%3a") || uri.contains("%3A")) {
+            cleanUri = cleanUri.replace("%3A", ":").replace("%3a", ":");
+            if(cleanUri.startsWith("\\\\")){
+                cleanUri = cleanUri.substring(2);
+            }
+            if(cleanUri.startsWith("/")){
+                cleanUri = cleanUri.substring(1);
+            }
+            String [] parts = cleanUri.split(":");
+            if(parts.length != 2){
+                Log.error("Can not get Path from URI: " + uri);
+                return null;
+            }
+
+            cleanUri = parts[0].toUpperCase() + ":" + parts[1];
+        }
+        Log.debug("Cleaned URI: " + cleanUri, "URIs");
+        return Paths.get(cleanUri);
+    }
+
+    public static String encodePathStringToUri(String sourcePath) {
+        String fileResourcePrefix = "file://";
+        String res = sourcePath;
+
+        if(res.startsWith(fileResourcePrefix)){
+            res = res.substring(fileResourcePrefix.length());
+        }
+
+
+
+        //Convert drive letter identifier to lower case
+        if(res.contains(":")){
+            String[] parts = res.split(":");
+            String[] tail = Arrays.copyOfRange(parts,1,parts.length);
+            res = parts[0].toLowerCase() + ":" + String.join(":", tail);
+        }
+
+        res = res
+                .replace("\\","/")
+                .replace(":","%3a");
+
+        if(!res.startsWith("/")){
+            res = "/" + res;
+        }
+
+        return fileResourcePrefix + res;
+
     }
 }

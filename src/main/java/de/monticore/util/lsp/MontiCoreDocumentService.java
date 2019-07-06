@@ -17,6 +17,7 @@ public abstract class MontiCoreDocumentService<ASTType extends ASTNode> implemen
     protected Optional<LanguageClient> client = Optional.empty();
 
     public void setClient(LanguageClient client) {
+        Log.debug("setting client","DocumentService");
         this.client = Optional.ofNullable(client);
         setDiagnosticsHelper(new DiagnosticsHelper(client, getLanguageServerIdentifier()));
     }
@@ -30,6 +31,7 @@ public abstract class MontiCoreDocumentService<ASTType extends ASTNode> implemen
     }
 
     public void setDiagnosticsHelper(DiagnosticsHelper diagnosticsHelper) {
+        Log.debug("setting diagnosticsHelper","DocumentService");
         this.diagnosticsHelper = Optional.of(diagnosticsHelper);
     }
 

@@ -28,7 +28,7 @@ public class DiagnosticsHelper{
 
     protected void publishDiagnostics(String sourcePath, List<Diagnostic> diagnostics) {
         PublishDiagnosticsParams publishDiagnosticsParams = new PublishDiagnosticsParams();
-        publishDiagnosticsParams.setUri(sourcePath.startsWith("file://") ? sourcePath : "file://" + sourcePath);
+        publishDiagnosticsParams.setUri(ModelPathHelper.encodePathStringToUri(sourcePath));
         publishDiagnosticsParams.setDiagnostics(diagnostics);
         Log.debug("Publishing diagnostics!:" + publishDiagnosticsParams, "default");
         client.publishDiagnostics(publishDiagnosticsParams);
