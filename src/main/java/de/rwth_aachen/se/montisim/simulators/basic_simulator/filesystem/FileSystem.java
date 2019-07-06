@@ -12,6 +12,7 @@ public class FileSystem {
 
     public interface DirectoryWatcher {
         void add_item(String path, String name);
+        void remove_item(String path);
     }
 
     public static class DirInfo {
@@ -66,6 +67,13 @@ public class FileSystem {
         }
     }
 
+    public void remove_file(DirectoryWatcher watcher, File file, String extension) {
+        if(file == null) return;
+        if (!file.isDirectory()){
+            watcher.remove_item(file.getPath());
+        }
+    }
+
     public void check_updates(){
         for (;;){
             WatchKey key;
@@ -89,6 +97,10 @@ public class FileSystem {
 
                 if (kind == ENTRY_CREATE) {
                     add_file(target.watcher, child.toFile(), target.extension);
+                } else if (kind == ENTRY_DELETE){
+                    remove_file(target.watcher, child.toFile(), target.extension);
+                } else if (kind == ENTRY_MODIFY){
+
                 }
             }
 

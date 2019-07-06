@@ -197,12 +197,8 @@ public class VehicleBuilder {
         return result;
     }
 
-    /*
-        TODO:
-        - Check if latitude/longitude are read in correct order
-
-     */
     private static RealVector jsonCoordToRealVector(JsonArray coords) throws Exception {
+        //Json coords as [Latitude, Longitude]
         double[] res = new double[3];
         int c = 0;
         for (JsonValue val : coords){
@@ -213,8 +209,8 @@ public class VehicleBuilder {
         }
         ApproximateConverter cvt = WorldModel.getInstance().getParser().getConverter().getApproximateConverter();
         return new ArrayRealVector(new double[]{
-                cvt.convertLongToMeters(res[0], res[1]),
-                cvt.convertLatToMeters(res[1]),
+                cvt.convertLongToMeters(res[1], res[0]),
+                cvt.convertLatToMeters(res[0]),
                 0
         }, false);
     }

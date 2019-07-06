@@ -10,8 +10,8 @@
         {
             "name": "car1",
             "physics_model": "modelica",
-            "start_coords": [5.88133850,50.8354390,0],
-            "target_coords": [5.8813333,50.8355156,0],
+            "start_coords": [50.8354390, 5.88133850,0],
+            "target_coords": [50.8355156, 5.8813333,0],
             "autopilot": {
                 "autopilot": "AutopilotAdapter",
                 "os": "windows",

@@ -9,13 +9,23 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 
 public class Browser extends JFrame implements TreeSelectionListener {
 
+    protected static class BrowserTree extends JTree {
+        public BrowserTree(TreeModel model){
+            super(model);
+        }
+        public void expand(TreePath path) {
+            setExpandedState(path, true);
+        }
+    }
+
     JPanel cards;
     CardLayout cl;
-    JTree tree;
+    BrowserTree tree;
     DefaultMutableTreeNode tree_root;
     DefaultTreeModel tree_model;
     Category default_category;
@@ -50,7 +60,7 @@ public class Browser extends JFrame implements TreeSelectionListener {
 
         tree_root = new DefaultMutableTreeNode("Categories");
         tree_model = new DefaultTreeModel(tree_root);
-        tree = new JTree(tree_model);
+        tree = new BrowserTree(tree_model);
         tree.setRootVisible(false);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
@@ -68,11 +78,21 @@ public class Browser extends JFrame implements TreeSelectionListener {
 
         tree_model.reload();
 
+        expand_all();
 
+        browser.setMinimumSize(new Dimension(300, 200));
         browser.setViewportView(tree);
         getContentPane().add(BorderLayout.LINE_START, browser);
 
+
+
         setVisible(true); //making the frame visible
+    }
+
+    public void expand_all(){
+        for (int i = 0; i < tree.getRowCount(); i++) {
+            tree.expandRow(i);
+        }
     }
 
     private Category new_category(Category.CategoryType type, SimVis vis) throws IOException {
@@ -94,9 +114,28 @@ public class Browser extends JFrame implements TreeSelectionListener {
     //https://stackoverflow.com/questions/23804675/list-files-and-directories-with-jtree-and-file-in-java
     public void add_item(Category category, Category.Elem elem){
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(elem);
-        tree_model.insertNodeInto(node, categories.get(category.getType().id), 0);
-        tree.expandPath(new TreePath(node.getPath()));
+        DefaultMutableTreeNode par = categories.get(category.getType().id);
+        tree_model.insertNodeInto(node, par, 0);
         tree_model.reload();
+        expand_all();
+    }
+
+    public void remove_item(Category category, String id){
+        DefaultMutableTreeNode cat_node = categories.get(category.getType().id);
+        Enumeration<TreeNode> children = cat_node.children();
+        DefaultMutableTreeNode node = null;
+        while (children.hasMoreElements()){
+            DefaultMutableTreeNode t = (DefaultMutableTreeNode)children.nextElement();
+            Category.Elem e = (Category.Elem) t.getUserObject();
+            if (e.id.equals(id)){
+                node = t;
+                break;
+            }
+        }
+        if (node == null) return;
+        tree_model.removeNodeFromParent(node);
+        tree_model.reload();
+        expand_all();
     }
 
 
@@ -117,19 +156,16 @@ public class Browser extends JFrame implements TreeSelectionListener {
         categories.put(type.id, node);
     }
 
-    public void showVis(SimVis new_vis, Category.Elem new_elem){
+    public void show_vis(SimVis new_vis, Category.Elem new_elem){
+        new_vis.select(new_elem);
         if (new_vis != current_vis){
             current_vis = new_vis;
             cl.show(cards, new_vis.getId());
-            new_vis.select(new_elem);
         }
     }
 
     public void valueChanged(TreeSelectionEvent e) {
-        //Returns the last path element of the selection.
-        //This method is useful only when the selection model allows a single selection.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-
 
         SimVis new_vis = default_category.getVis();
         Category.Elem new_elem = null;
@@ -137,12 +173,13 @@ public class Browser extends JFrame implements TreeSelectionListener {
             //Is it a valid selection?
             if (node.getParent() != tree_root && node.isLeaf()) {
                 //Get category
-                TreeNode par;
-                TreeNode grt_par;
-                do {
-                    par = node.getParent();
-                    grt_par = par.getParent();
-                } while(grt_par != tree_root);
+                TreeNode par = node.getParent();
+                TreeNode grt_par = par.getParent();
+                while(grt_par != tree_root) {
+                    TreeNode temp = grt_par;
+                    grt_par = grt_par.getParent();
+                    par = temp;
+                }
                 DefaultMutableTreeNode category_node = (DefaultMutableTreeNode) par;
                 Category category = node_category.get(category_node);
                 if (category != null){
@@ -154,7 +191,6 @@ public class Browser extends JFrame implements TreeSelectionListener {
                 }
             }
         }
-        showVis(new_vis, new_elem);
-
+        show_vis(new_vis, new_elem);
     }
 }

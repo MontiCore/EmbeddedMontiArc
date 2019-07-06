@@ -74,4 +74,10 @@ public class Category implements FileSystem.DirectoryWatcher {
         elems.add(path);
         browser.add_item(this, elem);
     }
+
+    @Override
+    public void remove_item(String path){
+        elems.remove(path);
+        browser.remove_item(this, path);
+    }
 }

@@ -144,12 +144,13 @@ public class BasicController implements SimulationLoopNotifiable, Runnable {
         double[] position = vehicle.getPosition().toArray();
         double longitude = position[0];
         double latitude = position[1];
-        System.out.println("\tPosition of car: [" +latitude + ", " + longitude + "]");
+        VehicleBuilder.VehicleTrajectory traj = vehicleTrajectories.get(vehicle.getId());
+        double dist = traj.target.getDistance(vehicle.getPosition());
+        System.out.println("\tPosition of car: [" +latitude + ", " + longitude + "] (Dist to target: " + dist + ")");
 
         //Temporary hack to stop simulation when vehicle attained its target
-        VehicleBuilder.VehicleTrajectory traj = vehicleTrajectories.get(vehicle.getId());
         if (!traj.notified){
-            if (traj.target.getDistance(vehicle.getPosition()) < 1){
+            if (dist < 1){
                 System.out.println("\tCar at target");
                 simulator.setSimulationDuration(1000+simulator.getSimulationTime());
                 traj.notified = true;
