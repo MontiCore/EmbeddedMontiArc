@@ -230,6 +230,7 @@
                               <mainClass>de.rwth_aachen.se.montisim.simulators.App</mainClass>
                             </transformer>
                         </transformers>
+                        <outputFile>${project.basedir}/install/${project.name}.jar</outputFile>
                     </configuration>
                 </execution>
             </executions>
@@ -249,7 +250,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.1</version>
           <configuration>
-            <workingDirectory>${project.basedir}/install</workingDirectory>
+            <workingDirectory>${project.basedir}/target/test-classes</workingDirectory>
           </configuration>
         </plugin>
         

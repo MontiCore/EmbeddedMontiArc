@@ -23,19 +23,20 @@ This will create a folder named `basic-simulator` and download the contents of t
 >
 > ![Type in "cmd" then press Enter.](images/cmd2.png "Type in cmd then press Enter.")
 
-To compile the Maven project, navigate to the cloned repository (`basic-simulator` folder) with the console and run:
+To compile the Maven project, run the `install` script (*.bat* under Windows and *.sh* under Unix).
+
+What this script does is running this command: 
 ```batch
 mvn clean install -s settings.xml
 ```
-This will execute the target "install" of the maven project which will compile, test and create a jar of the project then put it in the
-**local maven repository**. More on Maven in the [Maven Project tutorial](docs/maven.md) section. The resulting
-jar can be found in the `target` directory.
+This will execute the target "install" of the maven project which will compile, test and create a jar of the project. 
+It will then put the jar in the `install` directory of this project as well as in the **local maven repository**. 
+More on Maven in the [Maven Project tutorial](docs/maven.md) section. 
 
 **NOTE**: Don't forget the `-s settings.xml` option. This tells Maven where the dependencies of the MontiSim project are located 
 (_in the **Nexus** of the Software Engineering Chair_).
 
-The `build_install` script (*.bat* under Windows and *.sh* under Unix) will do this and copy the jar in the **install**
-folder. This folder contains a script to start the simulator as well as a sample map, scenario and autopilot that can be 
+The `install` folder contains a script to start the simulator as well as a sample map, scenario and autopilot that can be 
 executed.
 
 ## Using the Basic Simulator

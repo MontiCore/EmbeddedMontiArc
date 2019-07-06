@@ -19,9 +19,8 @@
 @REM *******************************************************************************
 @REM
 
+@REM Make sure the script runs from its original location
 pushd %~dp0
-call mvn clean install -s "settings.xml"
-cd target
-ren "basic-simulator-*.jar" "basic-simulator.jar"
-copy "basic-simulator.jar" "..\install"
+
+call mvn clean install -s "settings.xml" %*
 popd
