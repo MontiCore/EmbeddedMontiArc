@@ -17,5 +17,5 @@ if __name__ == "__main__":
         num_epoch=5,
         batch_size=100,
         context='gpu',
-        opt_type='adam'
+
     )
