@@ -15,6 +15,7 @@ import de.se_rwth.commons.logging.Log;
 public class MqttTemplates {
 
 	private static final Template PrettyPrint;
+	private static final Template MQTT_CMAKELISTS;
 
     // Loading .ftl files
     static {
@@ -25,19 +26,26 @@ public class MqttTemplates {
         conf.setClassForTemplateLoading(MqttTemplates.class, "");
         try {
         	PrettyPrint = conf.getTemplate("PrettyPrint.ftl");
+			MQTT_CMAKELISTS = conf.getTemplate("CMakeLists.ftl");
         } catch (IOException e) {
             String msg = "could not load template";
             Log.error(msg, e);
             throw new RuntimeException(msg, e);
         }
     }
-    
+
     public static String generateMqttAdapter(MqttAdapterModel model) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("model", model);
         return generate(PrettyPrint, data);
     }
-    
+
+	public static String generateMqttCMakeLists(MqttCMakeModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(MQTT_CMAKELISTS, data);
+	}
+
     @SuppressWarnings("rawtypes")
 	private static String generate(Template template, Map dataForTemplate) {
         Log.errorIfNull(template);
