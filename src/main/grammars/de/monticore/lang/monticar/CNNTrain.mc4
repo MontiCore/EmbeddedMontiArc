@@ -190,6 +190,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     EpsilonDecayStartEntry implements GeneralStrategyEntry = name:"epsilon_decay_start" ":" value:IntegerValue;
     EpsilonDecayMethodEntry implements GeneralStrategyEntry = name:"epsilon_decay_method" ":" value:EpsilonDecayMethodValue;
     EpsilonDecayMethodValue implements ConfigValue = (linear:"linear" | no:"no");
+    EpsilonDecayPerStepEntry implements GeneralStrategyEntry = name:"epsilon_decay_per_step" ":" value:BooleanValue;
     EpsilonDecayEntry implements GeneralStrategyEntry = name:"epsilon_decay" ":" value:NumberValue;
 
     // Environment

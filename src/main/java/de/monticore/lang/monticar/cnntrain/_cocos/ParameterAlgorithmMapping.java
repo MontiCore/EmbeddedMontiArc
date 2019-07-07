@@ -79,6 +79,7 @@ class ParameterAlgorithmMapping {
         ASTMinEpsilonEntry.class,
         ASTEpsilonDecayEntry.class,
         ASTEpsilonDecayMethodEntry.class,
+        ASTEpsilonDecayPerStepEntry.class,
         ASTNumEpisodesEntry.class,
         ASTRosEnvironmentActionTopicEntry.class,
         ASTRosEnvironmentStateTopicEntry.class,
