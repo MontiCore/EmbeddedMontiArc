@@ -15,6 +15,10 @@ import java.util.*;
 
 public class CNNTrain2MxNet extends CNNTrainGenerator {
 
+    public CNNTrain2MxNet() {
+        trainParamSupportChecker = new CNNArch2MxNetTrainParamSupportChecker();
+    }
+
     @Override
     public void generate(Path modelsDirPath, String rootModelName) {
         ConfigurationSymbol configuration = getConfigurationSymbol(modelsDirPath, rootModelName);
