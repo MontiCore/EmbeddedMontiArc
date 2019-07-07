@@ -6,7 +6,7 @@ import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.critic.Cr
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.FunctionParameterChecker;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionParameterAdapter;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionSourceGenerator;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.ConfigurationData;
+import de.monticore.lang.monticar.cnnarch.generator.ConfigurationData;
 
 import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
@@ -46,7 +46,8 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
     }
 
     public CNNTrain2Gluon(RewardFunctionSourceGenerator rewardFunctionSourceGenerator) {
-        super();
+        trainParamSupportChecker = new CNNArch2GluonTrainParamSupportChecker();
+
         this.rewardFunctionSourceGenerator = rewardFunctionSourceGenerator;
     }
 

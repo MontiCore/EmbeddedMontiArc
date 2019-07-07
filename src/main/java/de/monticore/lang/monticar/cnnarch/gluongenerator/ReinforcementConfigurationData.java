@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionParameterAdapter;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.ConfigurationData;
+import de.monticore.lang.monticar.cnnarch.generator.ConfigurationData;
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
 import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
