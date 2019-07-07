@@ -20,28 +20,6 @@ public abstract class RosInterface {
     public RosMsg getRosMsg() {
         String packageName = Arrays.stream(getTopicType().split("/")).findFirst().get();
         RosMsg res = GeneratorRosMsg.getRosType(packageName, this.getPort().getTypeReference(), false);
-
-        if(rosConnectionSymbol.getMsgField().isPresent()){
-            String msgField = rosConnectionSymbol.getMsgField().get();
-            String[] parts = msgField.split("\\.");
-            String path = "";
-            for(String p : parts){
-                path += (path.length() == 0 ? "." : "") + p;
-                boolean found = false;
-                for(RosField field : res.getFields()){
-                    if (field.getType() instanceof RosMsg)
-                        if (field.getName().equals(msgField)) {
-                            res = (RosMsg) field.getType();
-                            found = true;
-                        }else{
-                            Log.error("Found field " + path + ", but it has a primitive type instead of a message type!");
-                        }
-                }
-                if(!found){
-                    Log.error("Can not find field " + path + "!");
-                }
-            }
-        }
         return res;
     }
 
