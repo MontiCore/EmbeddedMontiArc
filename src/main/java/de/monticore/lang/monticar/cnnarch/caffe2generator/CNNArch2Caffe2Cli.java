@@ -20,8 +20,8 @@
  */
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
-import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.GenericCNNArchCli;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.GenericCNNArchCli;
 
 public class CNNArch2Caffe2Cli {
     public static void main(String[] args) {

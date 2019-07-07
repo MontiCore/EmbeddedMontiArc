@@ -20,10 +20,10 @@
  */
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNArch2MxNet;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.Target;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.DataPathConfigParser;
+import de.monticore.lang.monticar.cnnarch.generator.Target;
 
-import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
@@ -38,7 +38,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CNNArch2Caffe2 extends CNNArch2MxNet {
+public class CNNArch2Caffe2 extends CNNArchGenerator {
 
     public CNNArch2Caffe2() {
         architectureSupportChecker = new CNNArch2Caffe2ArchitectureSupportChecker();
