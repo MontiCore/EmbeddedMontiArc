@@ -44,8 +44,11 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
             System.err.println("LastElement: " + elements.get(elements.size()-1));
             //System.err.println("LastElement_Channels: " + elements.get(elements.size()-1).getOutputTypes().get(0).getChannels());
             for(ArchitectureElementSymbol item:elements){
-                System.err.println("name2" + item.getOutputElement().get().toString());
-                System.err.println("channels: " + item.getOutputTypes().get(0).getChannels().toString());
+                System.err.println("Resolved?1: " + item.isResolved());
+                item.resolve();
+                System.err.println("Resolved?2: " + item.isResolved());
+                //System.err.println("name2" + item.getOutputElement().get().toString());
+                //System.err.println("channels: " + item.getOutputTypes().get(0).getChannels().toString());
                 System.err.println("name3" + item.getName());
             }
         }catch(Exception e){
@@ -62,7 +65,7 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
 
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer) {
-        errorIfInputSizeIsNotOne(inputTypes, layer);
+        //errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
     public static BeamSearchStart create(){

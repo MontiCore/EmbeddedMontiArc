@@ -152,6 +152,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
                 }
                 else {
                     //split the layer if it contains an argument sequence
+                    System.err.println("Resolve() called in " + this.getName());
                     ArchitectureElementSymbol splitComposite = resolveSequences(parallelLength, getSerialLengths().get());
                     setResolvedThis(splitComposite);
                     splitComposite.resolveOrError();

@@ -73,7 +73,7 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
 
     Unroll implements ArchitectureElement =  "unroll" "<" timeParameter:LayerParameter ">"
                                                                       Name "(" arguments:(ArchArgument || ",")* ")"
-                                                                     "{" body:Stream "}";
+                                                                     "{" input:IOElement? body:Stream output:IOElement? "}";
 
     ParallelBlock implements ArchitectureElement =  "("
                                                    groups:Stream  "|"
