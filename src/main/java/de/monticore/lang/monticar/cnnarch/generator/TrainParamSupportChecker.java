@@ -6,19 +6,19 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrainParamSupportChecker implements CNNTrainVisitor {
+public abstract class TrainParamSupportChecker implements CNNTrainVisitor {
 
-    private List<String> unsupportedElemList = new ArrayList<>();
+    protected List<String> unsupportedElemList = new ArrayList<>();
 
-    private void printUnsupportedEntryParam(String nodeName){
+    protected void printUnsupportedEntryParam(String nodeName){
         Log.warn("Unsupported training parameter " + "'" + nodeName + "'" + " for the current backend. It will be ignored.");
     }
 
-    private void printUnsupportedOptimizer(String nodeName){
+    protected void printUnsupportedOptimizer(String nodeName){
         Log.warn("Unsupported optimizer parameter " + "'" + nodeName + "'" + " for the current backend. It will be ignored.");
     }
 
-    private void printUnsupportedOptimizerParam(String nodeName){
+    protected void printUnsupportedOptimizerParam(String nodeName){
         Log.warn("Unsupported training optimizer parameter " + "'" + nodeName + "'" + " for the current backend. It will be ignored.");
     }
 

@@ -9,9 +9,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
 
-public class ArchitectureSupportChecker {
-
-    public ArchitectureSupportChecker() {}
+public abstract class ArchitectureSupportChecker {
 
     // Overload functions returning always true to enable the features
     protected boolean checkMultipleStreams(ArchitectureSymbol architecture) {
