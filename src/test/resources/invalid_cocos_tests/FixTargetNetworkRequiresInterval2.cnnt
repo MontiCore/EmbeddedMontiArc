@@ -7,7 +7,7 @@ configuration FixTargetNetworkRequiresInterval2 {
 
     context : cpu
 
-    loss : huber_loss
+    loss : huber
 
     target_network_update_interval : 100
 }

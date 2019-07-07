@@ -18,7 +18,7 @@ configuration ReinforcementConfig {
 
     evaluation_samples: 100
 
-    loss : huber_loss
+    loss : huber
 
     use_fix_target_network : true
     target_network_update_interval : 100
