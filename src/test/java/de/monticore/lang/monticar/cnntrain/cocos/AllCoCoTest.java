@@ -42,6 +42,7 @@ public class AllCoCoTest extends AbstractCoCoTest{
         checkValid("valid_tests", "ReinforcementConfig");
         checkValid("valid_tests", "ReinforcementConfig2");
         checkValid("valid_tests", "DdpgConfig");
+        checkValid("valid_tests", "TD3Config");
         checkValid("valid_tests", "ReinforcementWithRosReward");
     }
 

@@ -30,6 +30,7 @@ import java.util.Set;
 public class CheckContinuousRLAlgorithmUsesContinuousStrategy implements CNNTrainASTConfigurationCoCo{
     private static final Set<String> CONTINUOUS_STRATEGIES = ImmutableSet.<String>builder()
         .add("ornstein_uhlenbeck")
+        .add("gaussian")
         .build();
 
     @Override
