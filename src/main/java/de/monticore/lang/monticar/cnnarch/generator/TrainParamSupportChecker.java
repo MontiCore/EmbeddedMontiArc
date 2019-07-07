@@ -11,15 +11,15 @@ public class TrainParamSupportChecker implements CNNTrainVisitor {
     private List<String> unsupportedElemList = new ArrayList<>();
 
     private void printUnsupportedEntryParam(String nodeName){
-        Log.warn("Unsupported training parameter " + "'" + nodeName + "'" + " for the backend MXNet. It will be ignored.");
+        Log.warn("Unsupported training parameter " + "'" + nodeName + "'" + " for the current backend. It will be ignored.");
     }
 
     private void printUnsupportedOptimizer(String nodeName){
-        Log.warn("Unsupported optimizer parameter " + "'" + nodeName + "'" + " for the backend MXNet. It will be ignored.");
+        Log.warn("Unsupported optimizer parameter " + "'" + nodeName + "'" + " for the current backend. It will be ignored.");
     }
 
     private void printUnsupportedOptimizerParam(String nodeName){
-        Log.warn("Unsupported training optimizer parameter " + "'" + nodeName + "'" + " for the backend MXNet. It will be ignored.");
+        Log.warn("Unsupported training optimizer parameter " + "'" + nodeName + "'" + " for the current backend. It will be ignored.");
     }
 
     public TrainParamSupportChecker() {
