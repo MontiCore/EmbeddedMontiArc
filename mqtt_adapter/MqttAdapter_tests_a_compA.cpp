@@ -38,7 +38,7 @@ void MqttAdapter_tests_a_compA::init(tests_a_compA *comp)
 void MqttAdapter_tests_a_compA::publish_echoPublisher()
 {
     
-    string value = to_string(component->rosOut);
+    string value = to_string(component->mqttOut);
     auto pubmsg = mqtt::make_message(TOPIC, value);
     
     try {
