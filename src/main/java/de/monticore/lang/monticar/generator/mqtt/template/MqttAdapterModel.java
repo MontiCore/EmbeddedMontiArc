@@ -33,7 +33,7 @@ public class MqttAdapterModel {
 	}
 	
 	// Parse through component to find information about its ports
-	public void addPorts(Collection<EMAPortInstanceSymbol> ports) 
+	public void addPortsDesc(Collection<EMAPortInstanceSymbol> ports) 
 	{
 		for (EMAPortInstanceSymbol port : ports)
 		{
@@ -51,7 +51,7 @@ public class MqttAdapterModel {
 		}
     }
 	
-	public List<String> getPorts()
+	public List<String> getPortsDesc()
 	{
 		return this.ports;
 	}

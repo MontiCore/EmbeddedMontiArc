@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class MqttTemplates {
 
-	private static final Template PrettyPrint;
+	private static final Template MQTT_PRETTYPRINT;
 	private static final Template MQTT_CMAKELISTS;
 	private static final Template MQTT_ADAPTER_H;
 	private static final Template MQTT_ADAPTER_CPP;
@@ -29,7 +29,7 @@ public class MqttTemplates {
         conf.setLogTemplateExceptions(false);
         conf.setClassForTemplateLoading(MqttTemplates.class, "");
         try {
-        	PrettyPrint = conf.getTemplate("PrettyPrint.ftl");
+        	MQTT_PRETTYPRINT = conf.getTemplate("PrettyPrint.ftl");
 			MQTT_CMAKELISTS = conf.getTemplate("CMakeLists.ftl");
 			MQTT_ADAPTER_H = conf.getTemplate("Adapter.h.ftl");
 			MQTT_ADAPTER_CPP = conf.getTemplate("Adapter.cpp.ftl");
@@ -75,7 +75,7 @@ public class MqttTemplates {
     public static String generatePrettyPrint(MqttAdapterModel model) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("model", model);
-        return generate(PrettyPrint, data);
+        return generate(MQTT_PRETTYPRINT, data);
     }
 
     @SuppressWarnings("rawtypes")

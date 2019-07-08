@@ -20,14 +20,9 @@ public class GeneratorMqtt
 		List<File> files = new ArrayList<>();
 		List<String> contents = new ArrayList<String>();
 		List<FileWriter> frs = new ArrayList<FileWriter>();
-
-		// Get info about the ports from the component
-		Collection<EMAPortInstanceSymbol> ports = component.getPortInstanceList();
 		
 		// Create and fill model
 		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
-		
-		model.addPorts(ports);
 		
 		//Generate files and write to project
 		contents.add(MqttTemplates.generateMqttAdapterH(model));
@@ -103,7 +98,7 @@ public class GeneratorMqtt
 		// Create and fill model
 		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
 		
-		model.addPorts(ports);
+		model.addPortsDesc(ports);
 		
 		//Generate files and write to project
 		String content = MqttTemplates.generatePrettyPrint(model);
