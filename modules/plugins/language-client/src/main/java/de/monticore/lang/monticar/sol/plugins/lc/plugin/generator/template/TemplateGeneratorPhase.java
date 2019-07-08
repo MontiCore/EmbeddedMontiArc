@@ -8,17 +8,15 @@ package de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
-import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.template.AbstractTemplateGeneratorPhase;
-import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.template.TemplateContribution;
-
-import java.util.Set;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.AbstractTemplateGeneratorPhase;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.TemplateRegistry;
 
 @Singleton
 public class TemplateGeneratorPhase extends AbstractTemplateGeneratorPhase {
     @Inject
     protected TemplateGeneratorPhase(NotificationService notifications,
-                                     Set<TemplateContribution> contributions) {
-        super(notifications, contributions);
+                                     TemplateRegistry registry) {
+        super(notifications, registry);
     }
 
     @Override

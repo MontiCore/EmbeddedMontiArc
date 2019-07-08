@@ -54,18 +54,19 @@ public class TextMateGeneratorPhase implements GeneratorPhase {
     }
 
     @Override
-    public void canExecute() throws Exception {
+    public void configure() throws Exception {
         String grammarName = this.configuration.getGrammarName();
         File rootFile = this.configuration.getMavenProject().getParent().getBasedir();
-        NameFileFilter filter = new NameFileFilter(String.format("%sAntlr.tokens", grammarName));
+        String fileName = String.format("%sAntlr.tokens", grammarName);
+        NameFileFilter filter = new NameFileFilter(fileName);
         Collection<File> tokensFiles = FileUtils.listFiles(rootFile, filter, TrueFileFilter.INSTANCE);
 
         if (tokensFiles.size() > 0) this.tokensFile = tokensFiles.iterator().next();
-        else throw new Exception("Tokens File could not be found.");
+        else throw new Exception(String.format("Tokens File %s could not be located.", fileName));
     }
 
     @Override
-    public void execute(GeneratorEngine engine) throws Exception {
+    public void generate(GeneratorEngine engine) throws Exception {
         Predicate<String> predicate = keyword -> !this.configuration.getExcludedKeywords().contains(keyword);
         List<String> keywords = this.computeKeywords().stream().filter(predicate).collect(Collectors.toList());
         String patterns = this.computePatterns(keywords);
@@ -74,6 +75,7 @@ public class TextMateGeneratorPhase implements GeneratorPhase {
         Path outputPath = Paths.get(String.format("../data-gen/%s.tmLanguage.json", grammarName));
         String templateFile = "templates/language-client/theia/data/language-tmLanguage.ftl";
 
+        this.notifications.info("Generating TextMate Grammar.");
         engine.generateNoA(templateFile, outputPath, patterns, repository);
     }
 
@@ -123,7 +125,7 @@ public class TextMateGeneratorPhase implements GeneratorPhase {
 
     protected String escapeKeyword(String keyword) {
         return keyword
-                .replaceAll("\\(", "\\(")
-                .replaceAll("\\)", "\\)");
+                .replaceAll("\\(", "\\\\(")
+                .replaceAll("\\)", "\\\\)");
     }
 }

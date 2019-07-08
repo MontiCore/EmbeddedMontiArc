@@ -1,19 +1,19 @@
-<#-- @ftlvariable name="contribution" type="de.monticore.lang.monticar.sol.plugins.common.plugin.generate.template.TemplateContribution" -->
+<#-- @ftlvariable name="template" type="de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.Template" -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 <#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
 <#-- @ftlvariable name="configuration" type="de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration" -->
-${tc.signature("contribution")}
+${tc.signature("template")}
 <#assign configuration = glex.getGlobalVar("configuration")>
 <#assign grammarName = configuration.getGrammarName()>
 <#assign grammarNameLC = grammarName?lower_case>
 <#assign extension = configuration.getFileExtension()>
-<#assign hasHandCodedPeer = contribution.hasHandCodedPeer()>
+<#assign hasHandwrittenPeer = template.hasHandwrittenPeer()>
 import { LanguageGrammarDefinitionContribution, TextmateRegistry } from "@theia/monaco/lib/browser/textmate";
 import { injectable } from "inversify";
 import { ${grammarName}Language } from "../common";
 
 @injectable()
-export class ${grammarName}GrammarContribution<#if hasHandCodedPeer>Top</#if> implements LanguageGrammarDefinitionContribution {
+export class ${grammarName}GrammarContribution<#if hasHandwrittenPeer>Top</#if> implements LanguageGrammarDefinitionContribution {
     protected readonly config: monaco.languages.LanguageConfiguration = {
         comments: {
             lineComment: "//",

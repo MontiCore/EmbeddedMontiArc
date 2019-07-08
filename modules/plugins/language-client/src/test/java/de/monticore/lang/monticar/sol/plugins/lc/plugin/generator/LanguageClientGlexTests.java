@@ -1,0 +1,33 @@
+/*
+ * Copyright (C) 2019 SE RWTH.
+ *
+ *  TODO: Include License.
+ */
+package de.monticore.lang.monticar.sol.plugins.lc.plugin.generator;
+
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+@ExtendWith(MockitoExtension.class)
+public class LanguageClientGlexTests {
+    @Mock LanguageClientConfiguration configuration;
+
+    @InjectMocks LanguageClientGlex lcGlex;
+
+    @Test
+    void testDefineGlobalVars() {
+        GlobalExtensionManagement glex = mock(GlobalExtensionManagement.class);
+
+        lcGlex.defineGlobalVars(glex);
+
+        verify(glex).defineGlobalVar("configuration", configuration);
+    }
+}

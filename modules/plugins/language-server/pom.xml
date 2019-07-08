@@ -7,7 +7,7 @@
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>sol</artifactId>
-        <version>2019.06.25.0</version>
+        <version>2019.06.25-SNAPSHOT</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>de.monticore.lang.monticar.sol</groupId>
             <artifactId>plugin-common</artifactId>
-            <version>2019.06.25.0</version>
+            <version>2019.06.25-SNAPSHOT</version>
         </dependency>
 
         <!-- .. Libraries ................................................. -->
@@ -61,6 +61,24 @@
         <!-- .. Language .................................................. -->
 
         <!-- .. Test Libraries ............................................ -->
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 

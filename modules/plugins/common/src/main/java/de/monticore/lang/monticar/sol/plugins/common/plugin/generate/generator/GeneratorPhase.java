@@ -19,20 +19,27 @@ public interface GeneratorPhase {
     int getPriority();
 
     /**
-     * @throws Exception Exception which is thrown if the phase cannot be executed.
+     * Triggers configuration of this generation phase.
      */
-    default void canExecute() throws Exception {}
+    default void configure() throws Exception {}
 
     /**
      * @return True if the phase **should** be executed, false otherwise. Can be used to compare input against state.
      */
-    default boolean shouldExecute() {
+    default boolean shouldGenerate() {
         return true;
     }
 
     /**
      * Triggers the execution of this generation phase.
+     * @param engine The GeneratorEngine on which the GeneratorPhase will be executed.
      * @throws Exception An exception which might occur during this generation phase.
      */
-    void execute(GeneratorEngine engine) throws Exception;
+    void generate(GeneratorEngine engine) throws Exception;
+
+    /**
+     * Triggers shutdown of this generation phase.
+     * @throws Exception An exception which might occur during shutdown.
+     */
+    default void shutdown() throws Exception {}
 }

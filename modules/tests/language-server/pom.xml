@@ -12,7 +12,7 @@
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>sol</artifactId>
-        <version>2019.06.25.0</version>
+        <version>2019.06.25-SNAPSHOT</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>de.monticore.lang.monticar.sol</groupId>
             <artifactId>runtime-language-server</artifactId>
-            <version>2019.06.25.0</version>
+            <version>2019.06.25-SNAPSHOT</version>
         </dependency>
 
         <!-- .. Libraries ................................................. -->
@@ -72,7 +72,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.sol</groupId>
                 <artifactId>plugin-language-server</artifactId>
-                <version>2019.06.25.0</version>
+                <version>2019.06.25-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>

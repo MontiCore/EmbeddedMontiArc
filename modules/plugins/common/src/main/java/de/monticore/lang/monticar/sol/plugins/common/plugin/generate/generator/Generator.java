@@ -13,14 +13,14 @@ public interface Generator {
     void configure() throws Exception;
 
     /**
-     * A method which checks whether all registered generator phases can be executed.
-     * @throws Exception An exception thrown if one of the phases cannot be executed.
-     */
-    void canGenerate() throws Exception;
-
-    /**
      * A method which triggers the generation process.
      * @throws Exception An exception which might occur during generation.
      */
     void generate() throws Exception;
+
+    /**
+     * A method which triggers the shutdown process.
+     * @throws Exception An exception which might occur during shutdown.
+     */
+    void shutdown() throws Exception;
 }
