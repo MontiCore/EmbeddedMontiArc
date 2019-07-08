@@ -40,7 +40,7 @@ public class MqttTemplates {
         return generate(PrettyPrint, data);
     }
 
-	public static String generateMqttCMakeLists(MqttCMakeModel model) {
+	public static String generateMqttCMakeLists(MqttAdapterModel model) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("model", model);
         return generate(MQTT_CMAKELISTS, data);

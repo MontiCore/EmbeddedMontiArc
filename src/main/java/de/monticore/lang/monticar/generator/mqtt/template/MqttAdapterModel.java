@@ -24,6 +24,14 @@ public class MqttAdapterModel {
 		return compName;
 	}
 	
+	public String getEscapedCompName()
+	{
+		return compName
+				.replace('.', '_')
+				.replace('[', '_')
+				.replace(']', '_');
+	}
+	
 	// Parse through component to find information about its ports
 	public void addPorts(Collection<EMAPortInstanceSymbol> ports) 
 	{
