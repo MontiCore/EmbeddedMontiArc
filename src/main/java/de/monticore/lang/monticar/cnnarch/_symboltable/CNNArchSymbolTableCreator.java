@@ -362,17 +362,20 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         layer.setArguments(arguments);
 
 
+
         List<ArchitectureElementSymbol> elements = new ArrayList<>();
         int elementNumber = 0;
+
         for (ASTArchitectureElement astElement : ast.getBody().getElementsList()){
             elements.add((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
-            if(elementNumber == 0){
+            if(elementNumber == 0 && astElement.getSymbolOpt().get() instanceof IOSymbol){
                 layer.getDeclaration().getBody().setInputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
-            } else if(elementNumber == (ast.getBody().getElementsList().size() - 1)){
+            }else if(elementNumber == (ast.getBody().getElementsList().size() - 1) && astElement.getSymbolOpt().get() instanceof IOSymbol){
                 layer.getDeclaration().getBody().setOutputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
             }
             elementNumber++;
         }
+
         layer.getDeclaration().getBody().setElements(elements);
 
         /*List<ArchitectureElementSymbol> elements = new ArrayList<>();
