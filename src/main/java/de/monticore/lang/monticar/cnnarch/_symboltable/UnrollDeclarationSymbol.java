@@ -76,7 +76,6 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     }
 
     public SerialCompositeElementSymbol getBody() {
-        System.err.println("Body_elements in UNROLLDECLARATIONSYMBOL: " + body.getElements().toString());
         return body;
     }
 
@@ -87,6 +86,10 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     public boolean isPredefined() {
         //Override by PredefinedUnrollDeclaration
         return false;
+    }
+
+    public boolean isNetworkLayer() {
+        return body.isNetwork();
     }
 
     public Optional<VariableSymbol> getParameter(String name) {

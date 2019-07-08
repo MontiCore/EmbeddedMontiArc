@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
+import de.se_rwth.commons.Joiners;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,30 +38,15 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer) {
 
-        try {
-            System.err.println("allElements: " + layer.getDeclaration().getBody().getElements().toString());
-            List<ArchitectureElementSymbol> elements = new ArrayList<ArchitectureElementSymbol>();
-            elements = layer.getDeclaration().getBody().getElements();
-            System.err.println("LastElement: " + elements.get(elements.size()-1));
-            //System.err.println("LastElement_Channels: " + elements.get(elements.size()-1).getOutputTypes().get(0).getChannels());
-            for(ArchitectureElementSymbol item:elements){
-                System.err.println("Resolved?1: " + item.isResolved());
+        for(ArchitectureElementSymbol item:layer.getDeclaration().getBody().getElements()){
+            try {
                 item.resolve();
-                System.err.println("Resolved?2: " + item.isResolved());
-                //System.err.println("name2" + item.getOutputElement().get().toString());
-                //System.err.println("channels: " + item.getOutputTypes().get(0).getChannels().toString());
-                System.err.println("name3" + item.getName());
+            } catch (ArchResolveException e) {
+                System.err.println("The following names could not be resolved: " + Joiners.COMMA.join(item.getUnresolvableVariables()));
             }
-        }catch(Exception e){
-            e.printStackTrace();
         }
 
-        return Collections.singletonList(new ArchTypeSymbol.Builder()
-                .channels(100) // TODO
-                .height(1)
-                .width(1)
-                .elementType("0", "1")
-                .build());
+        return layer.getDeclaration().getBody().computeOutputTypes();
     }
 
     @Override
