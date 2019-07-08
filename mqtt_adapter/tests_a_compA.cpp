@@ -3,5 +3,5 @@
 
 tests_a_compA::tests_a_compA(double value)
 {
-    rosOut = value;
+    mqttOut = value;
 }
