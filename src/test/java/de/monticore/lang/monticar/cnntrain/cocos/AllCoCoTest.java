@@ -170,6 +170,13 @@ public class AllCoCoTest extends AbstractCoCoTest{
     }
 
     @Test
+    public void testInvalidCheckRLAlgorithmParameter4() {
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckRlAlgorithmParameter()),
+                "invalid_cocos_tests", "CheckRLAlgorithmParameter4",
+                new ExpectedErrorInfo(1, ErrorCodes.UNSUPPORTED_PARAMETER));
+    }
+
+    @Test
     public void testInvalidCheckDiscreteRLAlgorithmUsesDiscreteStrategy() {
         checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckDiscreteRLAlgorithmUsesDiscreteStrategy()),
                 "invalid_cocos_tests", "CheckDiscreteRLAlgorithmUsesDiscreteStrategy",
