@@ -110,10 +110,8 @@ public class IOSymbol extends ArchitectureElementSymbol {
                 if (!getArrayAccess().isPresent() && getDefinition().getArrayLength() > 1){
                     //transform io array into parallel composite
                     List<ArchitectureElementSymbol> parallelElements = createExpandedParallelElements();
-                    CompositeElementSymbol composite = new CompositeElementSymbol.Builder()
-                            .parallel(true)
-                            .elements(parallelElements)
-                            .build();
+                    ParallelCompositeElementSymbol composite = new ParallelCompositeElementSymbol();
+                    composite.setElements(parallelElements);
 
                     getSpannedScope().getAsMutableScope().add(composite);
                     composite.setAstNode(getAstNode().get());
@@ -157,8 +155,7 @@ public class IOSymbol extends ArchitectureElementSymbol {
         }
         else {
             for (int i = 0; i < getDefinition().getArrayLength(); i++){
-                CompositeElementSymbol serialComposite = new CompositeElementSymbol();
-                serialComposite.setParallel(false);
+                SerialCompositeElementSymbol serialComposite = new SerialCompositeElementSymbol();
 
                 IOSymbol ioElement = new IOSymbol(getName());
                 ioElement.setArrayAccess(i);

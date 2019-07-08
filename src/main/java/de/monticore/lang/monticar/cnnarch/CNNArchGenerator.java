@@ -67,29 +67,12 @@ public abstract class CNNArchGenerator {
         generate(scope, rootModelName);
     }
 
+    public abstract boolean check(ArchitectureSymbol architecture);
+
     public abstract void generate(Scope scope, String rootModelName);
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public abstract Map<String, String> generateStrings(ArchitectureSymbol architecture);
-
-    public void checkValidGeneration(ArchitectureSymbol architecture){
-        if (architecture.getInputs().size() > 1){
-            Log.error("This cnn architecture has multiple inputs, " +
-                            "which is currently not supported by the code generator. "
-                    , architecture.getSourcePosition());
-        }
-        if (architecture.getOutputs().size() > 1){
-            Log.error("This cnn architecture has multiple outputs, " +
-                            "which is currently not supported by the code generator. "
-                    , architecture.getSourcePosition());
-        }
-        if (architecture.getOutputs().get(0).getDefinition().getType().getWidth() != 1 ||
-                architecture.getOutputs().get(0).getDefinition().getType().getHeight() != 1){
-            Log.error("This cnn architecture has a multi-dimensional output, " +
-                            "which is currently not supported by the code generator."
-                    , architecture.getSourcePosition());
-        }
-    }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public void generateFiles(ArchitectureSymbol architecture) throws IOException{

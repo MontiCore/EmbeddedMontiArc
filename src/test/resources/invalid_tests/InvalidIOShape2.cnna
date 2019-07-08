@@ -7,5 +7,5 @@ architecture InvalidIOShape2(){
     Tanh() ->
     FullyConnected(units=10) ->
     Softmax() ->
-    out1
+    out1;
 }

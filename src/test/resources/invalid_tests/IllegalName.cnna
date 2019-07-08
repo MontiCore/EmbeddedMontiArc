@@ -11,5 +11,5 @@ architecture IllegalName(inputs=10, classes=2, Tg = 1){
     Tanh() ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    out1
+    out1;
 }

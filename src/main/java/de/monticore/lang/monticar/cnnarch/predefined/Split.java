@@ -35,6 +35,11 @@ public class Split extends PredefinedLayerDeclaration {
     }
 
     @Override
+    public boolean isNetworkLayer() {
+        return true;
+    }
+
+    @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
         ArchTypeSymbol inputShape = inputTypes.get(0);
         int numberOfSplits = layer.getIntValue(AllPredefinedLayers.NUM_SPLITS_NAME).get();

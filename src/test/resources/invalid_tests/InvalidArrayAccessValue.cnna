@@ -23,5 +23,5 @@ architecture InvalidArrayAccessValue(img_height=200, img_width=300, img_channels
     Relu() ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    predictions
+    predictions;
 }

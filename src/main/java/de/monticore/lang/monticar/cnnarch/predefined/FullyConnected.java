@@ -33,6 +33,10 @@ public class FullyConnected extends PredefinedLayerDeclaration {
         super(AllPredefinedLayers.FULLY_CONNECTED_NAME);
     }
 
+    @Override
+    public boolean isNetworkLayer() {
+        return true;
+    }
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {

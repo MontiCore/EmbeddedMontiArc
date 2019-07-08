@@ -142,7 +142,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
 
                 if (!isActive() || maxSerialLength == 0) {
                     //set resolvedThis to empty composite to remove the layer.
-                    setResolvedThis(new CompositeElementSymbol.Builder().build());
+                    setResolvedThis(new SerialCompositeElementSymbol());
                 }
                 else if (parallelLength == 1 && maxSerialLength == 1) {
                     //resolve the layer call
@@ -186,10 +186,8 @@ public class LayerSymbol extends ArchitectureElementSymbol {
             for (List<ArchitectureElementSymbol> serialElements : elements) {
                 serialComposites.add(createSerialSequencePart(serialElements));
             }
-            CompositeElementSymbol parallelElement = new CompositeElementSymbol.Builder()
-                    .parallel(true)
-                    .elements(serialComposites)
-                    .build();
+            ParallelCompositeElementSymbol parallelElement = new ParallelCompositeElementSymbol();
+            parallelElement.setElements(serialComposites);
 
             if (getAstNode().isPresent()) {
                 parallelElement.setAstNode(getAstNode().get());
@@ -203,10 +201,8 @@ public class LayerSymbol extends ArchitectureElementSymbol {
             return elements.get(0);
         }
         else {
-            CompositeElementSymbol serialComposite = new CompositeElementSymbol.Builder()
-                    .parallel(false)
-                    .elements(elements)
-                    .build();
+            SerialCompositeElementSymbol serialComposite = new SerialCompositeElementSymbol();
+            serialComposite.setElements(elements);
 
             if (getAstNode().isPresent()){
                 serialComposite.setAstNode(getAstNode().get());
@@ -326,6 +322,50 @@ public class LayerSymbol extends ArchitectureElementSymbol {
         }
         else {
             return Optional.empty();
+        }
+    }
+
+    public void setIntValue(String parameterName, int value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setIntTupleValue(String parameterName, List<Object> tupleValues) {
+        setTValue(parameterName, tupleValues, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setBooleanValue(String parameterName, boolean value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setStringValue(String parameterName, String value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setDoubleValue(String parameterName, double value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setValue(String parameterName, Object value) {
+        ArchSimpleExpressionSymbol res = new ArchSimpleExpressionSymbol();
+        res.setValue(value);
+        setTValue(parameterName, res, Function.identity());
+    }
+
+    public <T> void setTValue(String parameterName, T value, Function<T, ArchSimpleExpressionSymbol> of) {
+        Optional<VariableSymbol> param = getDeclaration().getParameter(parameterName);
+
+        if (param.isPresent()) {
+            Optional<ArgumentSymbol> arg = getArgument(parameterName);
+            ArchSimpleExpressionSymbol expression = of.apply(value);
+
+            if (arg.isPresent()) {
+                arg.get().setRhs(expression);
+            }
+            else {
+                arg = Optional.of(new ArgumentSymbol(parameterName));
+                arg.get().setRhs(expression);
+                arguments.add(arg.get());
+            }
         }
     }
 

@@ -20,29 +20,24 @@
  */
 package de.monticore.lang.monticar.cnnarch._cocos;
 
-import de.monticore.lang.monticar.cnnarch._ast.ASTArchArgument;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArgumentSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
-public class CheckArgument implements CNNArchASTArchArgumentCoCo {
+public class CheckNetworkStreamMissing extends CNNArchSymbolCoCo {
 
     @Override
-    public void check(ASTArchArgument node) {
-        ArgumentSymbol argument = (ArgumentSymbol) node.getSymbolOpt().get();
+    public void check(ArchitectureSymbol architecture) {
+        boolean hasNetworkStream = false;
 
-        if(argument.getEnclosingScope().getSpanningSymbol().get() instanceof LayerSymbol) {
-            LayerDeclarationSymbol layerDeclaration = argument.getLayer().getDeclaration();
-            if (layerDeclaration != null && argument.getParameter() ==  null){
-                Log.error("0"+ ErrorCodes.UNKNOWN_ARGUMENT + " Unknown Argument. " +
-                                "Parameter with name '" + node.getName() + "' does not exist. " +
-                                "Possible arguments are: " + Joiners.COMMA.join(layerDeclaration.getParameters())
-                        , node.get_SourcePositionStart());
-            }
+        for (CompositeElementSymbol stream : architecture.getStreams()) {
+            hasNetworkStream |= stream.isNetwork();
+        }
 
+        if (!hasNetworkStream) {
+            Log.error("0" + ErrorCodes.MISSING_NETWORK_STREAM + " The architecture has no network stream. "
+                    , architecture.getSourcePosition());
         }
     }
 

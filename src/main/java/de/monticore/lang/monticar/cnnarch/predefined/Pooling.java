@@ -33,6 +33,11 @@ public class Pooling extends PredefinedLayerDeclaration {
     }
 
     @Override
+    public boolean isNetworkLayer() {
+        return true;
+    }
+
+    @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
         return computeConvAndPoolOutputShape(inputTypes.get(0),
                 layer,

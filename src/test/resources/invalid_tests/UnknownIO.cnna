@@ -4,5 +4,5 @@ architecture UnknownIO(){
     Tanh() ->
     FullyConnected(units=10) ->
     Softmax() ->
-    out1
+    out1;
 }

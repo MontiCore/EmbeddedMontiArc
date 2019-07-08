@@ -7,5 +7,5 @@ architecture WrongRangeOperator(inputs=10, classes=2){
     Tanh() ->
     FullyConnected(units=[classes |..-> classes + 1] ) ->
     Softmax() ->
-    out1
+    out1;
 }

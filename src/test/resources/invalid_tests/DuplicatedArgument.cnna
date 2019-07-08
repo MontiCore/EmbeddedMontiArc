@@ -7,5 +7,5 @@ architecture DuplicatedArgument(){
     Tanh() ->
     FullyConnected(units=2) ->
     Softmax() ->
-    out1
+    out1;
 }

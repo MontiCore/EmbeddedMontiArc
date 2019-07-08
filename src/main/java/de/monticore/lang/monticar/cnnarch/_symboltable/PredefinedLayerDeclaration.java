@@ -53,6 +53,16 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         return true;
     }
 
+    /**
+     * This method is used to distinguish between neural networks like "source -> FullyConnected() -> target" and
+     * basic assignments like "1 -> OneHot() -> target". The generators use this to avoid creating an own
+     * network for each assignment. Override by predefined layers which are trainable.
+     */
+    @Override
+    public boolean isNetworkLayer() {
+        return false;
+    }
+
     abstract public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer);
 
     abstract public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer);
@@ -78,6 +88,36 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         if (inputTypes.size() == 0){
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Number of input streams is 0"
                     , layer.getSourcePosition());
+        }
+    }
+
+    protected void errorIfInputChannelSizeIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int channels) {
+        for (ArchTypeSymbol inputType : inputTypes) {
+            if (inputType.getChannels() != channels) {
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Input channel size is "
+                                + inputType.getChannels() + " but needs to be " + channels + "."
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
+    protected void errorIfInputHeightIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int height) {
+        for (ArchTypeSymbol inputType : inputTypes) {
+            if (inputType.getHeight() != height) {
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Input height is "
+                                + inputType.getHeight() + " but needs to be " + height + "."
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
+    protected void errorIfInputWidthIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int width) {
+        for (ArchTypeSymbol inputType : inputTypes) {
+            if (inputType.getWidth() != width) {
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Input width is "
+                                + inputType.getWidth() + " but needs to be " + width + "."
+                        , layer.getSourcePosition());
+            }
         }
     }
 

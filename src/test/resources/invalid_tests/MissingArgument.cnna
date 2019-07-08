@@ -30,5 +30,5 @@ architecture MissingArgument(img_height=224, img_width=224, img_channels=3, clas
     GlobalPooling(pool_type="avg") ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    predictions
+    predictions;
 }

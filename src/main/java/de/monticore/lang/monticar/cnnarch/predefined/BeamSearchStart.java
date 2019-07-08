@@ -24,22 +24,25 @@ import de.monticore.lang.monticar.cnnarch._symboltable.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-public class Lrn extends PredefinedLayerDeclaration {
+public class BeamSearchStart extends PredefinedLayerDeclaration {
 
-    private Lrn() {
-        super(AllPredefinedLayers.LRN_NAME);
+    private BeamSearchStart() {
+        super(AllPredefinedLayers.BEAMSEARCH_NAME);
     }
 
-    @Override
-    public boolean isNetworkLayer() {
-        return true;
-    }
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
-        return inputTypes;
+
+        return Collections.singletonList(new ArchTypeSymbol.Builder()
+                .channels(100) // TODO
+                .height(1)
+                .width(1)
+                .elementType("0", "1")
+                .build());
     }
 
     @Override
@@ -47,27 +50,16 @@ public class Lrn extends PredefinedLayerDeclaration {
         errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
-    public static Lrn create(){
-        Lrn declaration = new Lrn();
+    public static BeamSearchStart create(){
+        BeamSearchStart declaration = new BeamSearchStart();
         List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new VariableSymbol.Builder()
-                        .name(AllPredefinedLayers.NSIZE_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
+                        .name(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
                 new VariableSymbol.Builder()
-                        .name(AllPredefinedLayers.KNORM_NAME)
-                        .constraints(Constraints.NUMBER)
-                        .defaultValue(2)
-                        .build(),
-                new VariableSymbol.Builder()
-                        .name(AllPredefinedLayers.ALPHA_NAME)
-                        .constraints(Constraints.NUMBER)
-                        .defaultValue(0.0001)
-                        .build(),
-                new VariableSymbol.Builder()
-                        .name(AllPredefinedLayers.BETA_NAME)
-                        .constraints(Constraints.NUMBER)
-                        .defaultValue(0.75)
+                        .name(AllPredefinedLayers.BEAMSEARCH_WIDTH_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;

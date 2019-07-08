@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
 import de.monticore.lang.math._symboltable.expression.*;
@@ -145,8 +144,12 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     public void endVisit(final ASTArchitecture node) {
-        //ArchitectureSymbol architecture = (ArchitectureSymbol) node.getSymbolOpt().get();
-        architecture.setBody((ArchitectureElementSymbol) node.getBody().getSymbolOpt().get());
+        List<SerialCompositeElementSymbol> streams = new ArrayList<>();
+        for (ASTInstruction astInstruction : node.getInstructionsList()){
+            ASTStream astStream = (ASTStream)astInstruction; // TODO: For now all instructions are streams
+            streams.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
+        }
+        architecture.setStreams(streams);
 
         removeCurrentScope();
     }
@@ -226,7 +229,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     @Override
     public void endVisit(ASTLayerDeclaration ast) {
         LayerDeclarationSymbol layerDeclaration = (LayerDeclarationSymbol) ast.getSymbolOpt().get();
-        layerDeclaration.setBody((CompositeElementSymbol) ast.getBody().getSymbolOpt().get());
+        layerDeclaration.setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
 
         List<VariableSymbol> parameters = new ArrayList<>(4);
         for (ASTLayerParameter astParam : ast.getParametersList()){
@@ -316,18 +319,17 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void visit(ASTParallelBlock node) {
-        CompositeElementSymbol compositeElement = new CompositeElementSymbol();
-        compositeElement.setParallel(true);
+        ParallelCompositeElementSymbol compositeElement = new ParallelCompositeElementSymbol();
         addToScopeAndLinkWithNode(compositeElement, node);
     }
 
     @Override
     public void endVisit(ASTParallelBlock node) {
-        CompositeElementSymbol compositeElement = (CompositeElementSymbol) node.getSymbolOpt().get();
+        ParallelCompositeElementSymbol compositeElement = (ParallelCompositeElementSymbol) node.getSymbolOpt().get();
 
         List<ArchitectureElementSymbol> elements = new ArrayList<>();
-        for (ASTArchBody astBody : node.getGroupsList()){
-            elements.add((CompositeElementSymbol) astBody.getSymbolOpt().get());
+        for (ASTStream astStream : node.getGroupsList()){
+            elements.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
         }
         compositeElement.setElements(elements);
 
@@ -335,16 +337,14 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     @Override
-    public void visit(ASTArchBody ast) {
-        CompositeElementSymbol compositeElement = new CompositeElementSymbol();
-        compositeElement.setParallel(false);
+    public void visit(ASTStream ast) {
+        SerialCompositeElementSymbol compositeElement = new SerialCompositeElementSymbol();
         addToScopeAndLinkWithNode(compositeElement, ast);
     }
 
     @Override
-    public void endVisit(ASTArchBody ast) {
-        CompositeElementSymbol compositeElement = (CompositeElementSymbol) ast.getSymbolOpt().get();
-
+    public void endVisit(ASTStream ast) {
+        SerialCompositeElementSymbol compositeElement = (SerialCompositeElementSymbol) ast.getSymbolOpt().get();
         List<ArchitectureElementSymbol> elements = new ArrayList<>();
         for (ASTArchitectureElement astElement : ast.getElementsList()){
             elements.add((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
@@ -382,6 +382,17 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         ArgumentSymbol argument = new ArgumentSymbol(node.getName());
         argument.setRhs(value);
         addToScopeAndLinkWithNode(argument, node);
+    }
+
+    public void visit(ASTConstant node) {
+        ConstantSymbol constant = new ConstantSymbol();
+        addToScopeAndLinkWithNode(constant, node);
+    }
+
+    public void endVisit(ASTConstant node) {
+        ConstantSymbol constant = (ConstantSymbol) node.getSymbolOpt().get();
+        constant.setExpression((ArchSimpleExpressionSymbol) node.getArchSimpleExpression().getSymbolOpt().get());
+        removeCurrentScope();
     }
 
     public void visit(ASTIOElement node) {
