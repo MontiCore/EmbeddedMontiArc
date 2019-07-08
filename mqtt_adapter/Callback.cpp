@@ -25,7 +25,7 @@ void Callback::message_arrived(mqtt::const_message_ptr msg)
     cout << "Message received "<< msg->get_topic() << ": " << msg->get_payload_str() << endl;
     std::string::size_type sz;
     double value = std::stod (msg->get_payload_str(),&sz);
-    comp_->rosIn = value;
+    comp_->mqttIn = value;
 }
 
 
