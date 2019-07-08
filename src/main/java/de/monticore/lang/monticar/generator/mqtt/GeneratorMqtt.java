@@ -18,6 +18,8 @@ public class GeneratorMqtt
 	List<File> generateMqttAdapter(EMAComponentInstanceSymbol component) 
     {
 		List<File> files = new ArrayList<>();
+		List<String> contents = new ArrayList<String>();
+		List<FileWriter> frs = new ArrayList<FileWriter>();
 
 		// Get info about the ports from the component
 		Collection<EMAPortInstanceSymbol> ports = component.getPortInstanceList();
@@ -28,65 +30,39 @@ public class GeneratorMqtt
 		model.addPorts(ports);
 		
 		//Generate files and write to project
-		String content = MqttTemplates.generateMqttAdapter(model);
+		contents.add(MqttTemplates.generateMqttAdapterH(model));
+		files.add(new File("./target/generated-sources/MqttAdapter_"+model.getEscapedCompName()+".h"));
+		contents.add(MqttTemplates.generateMqttAdapterCPP(model));
+		files.add(new File("./target/generated-sources/MqttAdapter_"+model.getEscapedCompName()+".cpp"));
+		contents.add(MqttTemplates.generateMqttCallbackH(model));
+		files.add(new File("./target/generated-sources/Callback.hpp"));
+		contents.add(MqttTemplates.generateMqttCallbackCPP(model));
+		files.add(new File("./target/generated-sources/Callback.cpp"));
 		
-		File file = new File("./target/generated-sources/ports.txt");
-		files.add(file);
-		
-        FileWriter fr = null;
         try {
-            fr = new FileWriter(file);
-            fr.write(content);
+        	int counter = 0;
+        	for (File file : files)
+        	{
+        		frs.add(new FileWriter(file));
+        		frs.get(counter).write(contents.get(counter));
+        		counter++;
+        	}
         } catch (IOException e) {
             e.printStackTrace();
         }finally{
             //Close resources
             try {
-                fr.close();
+                for (FileWriter fr : frs)
+                	fr.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        
+        files.add(generateCMake(component));
 		
     	return files;
     }
-	
-	List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
-	{
-		List<File> files = new ArrayList<>();
-
-		// Get info about the ports from the component
-		Collection<EMAPortInstanceSymbol> ports = component.getPortInstanceList();
-		
-		// Create and fill model
-		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
-		
-		model.addPorts(ports);
-		
-		//Generate files and write to project
-		String content = MqttTemplates.generateMqttAdapter(model);
-		
-		File file = new File("./target/generated-sources/ports.txt");
-		files.add(file);
-		
-        FileWriter fr = null;
-        try {
-            fr = new FileWriter(file);
-            fr.write(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            //Close resources
-            try {
-                fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-		
-    	return files;
-		
-	}
 	
 	File generateCMake(EMAComponentInstanceSymbol component) 
     {
@@ -116,5 +92,42 @@ public class GeneratorMqtt
 		
     	return file;
     }
+	
+	List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
+	{
+		List<File> files = new ArrayList<>();
+
+		// Get info about the ports from the component
+		Collection<EMAPortInstanceSymbol> ports = component.getPortInstanceList();
+		
+		// Create and fill model
+		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
+		
+		model.addPorts(ports);
+		
+		//Generate files and write to project
+		String content = MqttTemplates.generatePrettyPrint(model);
+		
+		File file = new File("./target/generated-sources/ports.txt");
+		files.add(file);
+		
+        FileWriter fr = null;
+        try {
+            fr = new FileWriter(file);
+            fr.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            //Close resources
+            try {
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+		
+    	return files;
+		
+	}
 
 }

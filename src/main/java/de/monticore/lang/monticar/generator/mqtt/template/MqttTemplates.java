@@ -16,6 +16,10 @@ public class MqttTemplates {
 
 	private static final Template PrettyPrint;
 	private static final Template MQTT_CMAKELISTS;
+	private static final Template MQTT_ADAPTER_H;
+	private static final Template MQTT_ADAPTER_CPP;
+	private static final Template MQTT_CALLBACK_H;
+	private static final Template MQTT_CALLBACK_CPP;
 
     // Loading .ftl files
     static {
@@ -27,6 +31,10 @@ public class MqttTemplates {
         try {
         	PrettyPrint = conf.getTemplate("PrettyPrint.ftl");
 			MQTT_CMAKELISTS = conf.getTemplate("CMakeLists.ftl");
+			MQTT_ADAPTER_H = conf.getTemplate("Adapter.h.ftl");
+			MQTT_ADAPTER_CPP = conf.getTemplate("Adapter.cpp.ftl");
+			MQTT_CALLBACK_H = conf.getTemplate("Callback.hpp.ftl");
+			MQTT_CALLBACK_CPP = conf.getTemplate("Callback.cpp.ftl");
         } catch (IOException e) {
             String msg = "could not load template";
             Log.error(msg, e);
@@ -34,17 +42,41 @@ public class MqttTemplates {
         }
     }
 
-    public static String generateMqttAdapter(MqttAdapterModel model) {
+    public static String generateMqttAdapterH(MqttAdapterModel model) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("model", model);
-        return generate(PrettyPrint, data);
+        return generate(MQTT_ADAPTER_H, data);
     }
-
-	public static String generateMqttCMakeLists(MqttAdapterModel model) {
+    
+    public static String generateMqttAdapterCPP(MqttAdapterModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(MQTT_ADAPTER_CPP, data);
+    }
+    
+    public static String generateMqttCallbackH(MqttAdapterModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(MQTT_CALLBACK_H, data);
+    }
+    
+    public static String generateMqttCallbackCPP(MqttAdapterModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(MQTT_CALLBACK_CPP, data);
+    }
+    
+    public static String generateMqttCMakeLists(MqttAdapterModel model) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("model", model);
         return generate(MQTT_CMAKELISTS, data);
 	}
+    
+    public static String generatePrettyPrint(MqttAdapterModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(PrettyPrint, data);
+    }
 
     @SuppressWarnings("rawtypes")
 	private static String generate(Template template, Map dataForTemplate) {

@@ -1,19 +1,18 @@
-<#import "MqttMacros.ftl" as m>
 
 #ifndef Callback_hpp
 #define Callback_hpp
 
-#include "${model.getEscapedCompName()}"
-<@m.mwDefaultInclude/>
+#include "tests_a_compA"
+#include "mqtt/client.h"
 using namespace std;
-using namespace <@m.smallIdent/>;
+using namespace mqtt;
 
 class Callback : public virtual callback
 {
     client& cli_;
     
 public:
-    Callback(client& cli, ${model.getEscapedCompName()}* comp);
+    Callback(client& cli, tests_a_compA* comp);
     
     void connected(const string& cause);
     
@@ -22,7 +21,7 @@ public:
     void message_arrived(const_message_ptr msg);
     
 private:
-    ${model.getEscapedCompName()}* comp_;
+    tests_a_compA* comp_;
     
 };
 #endif /* Callback_hpp */

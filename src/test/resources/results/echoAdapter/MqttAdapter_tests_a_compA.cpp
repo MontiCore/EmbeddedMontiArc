@@ -1,13 +1,12 @@
-<#import "MqttMacros.ftl" as m>
 
-#include "<@m.mwIdent/>Adapter_${model.getEscapedCompName()}.h"
+#include "MqttAdapter_tests_a_compA.h"
 
-<@m.mwIdent/>Adapter_${model.getEscapedCompName()}::<@m.mwIdent/>Adapter_${model.getEscapedCompName()}()
+MqttAdapter_tests_a_compA::MqttAdapter_tests_a_compA()
 {
     
 }
 
-void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscapedCompName()} *comp)
+void MqttAdapter_tests_a_compA::init(tests_a_compA *comp)
 {
     // Initialize component
     this->component = comp;
@@ -35,7 +34,7 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscaped
     
 }
 
-void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publish_echoPublisher()
+void MqttAdapter_tests_a_compA::publish_echoPublisher()
 {
     
     string value = to_string(component->rosOut);
@@ -49,7 +48,7 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publish_echoPublisher()
     }
 }
 
-void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::tick()
+void MqttAdapter_tests_a_compA::tick()
 {
     publish_echoPublisher();
 }

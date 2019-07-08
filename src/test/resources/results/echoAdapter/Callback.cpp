@@ -1,8 +1,7 @@
-<#import "MqttMacros.ftl" as m>
 
 #include "Callback.hpp"
 
-Callback::Callback(client& cli, ${model.getEscapedCompName()}* comp) : callback(), cli_(cli)
+Callback::Callback(client& cli, tests_a_compA* comp) : callback(), cli_(cli)
 {
     comp_ = comp;
 }

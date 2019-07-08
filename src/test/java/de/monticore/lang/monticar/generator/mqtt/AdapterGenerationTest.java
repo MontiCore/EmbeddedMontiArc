@@ -4,7 +4,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -33,5 +32,9 @@ public class AdapterGenerationTest extends AbstractSymtabTest {
         
         // Connect component's ports to topics
         componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
+        
+        List<File> files = generatorMqtt.generateMqttAdapter(componentInstanceSymbol);
+        
+        testFilesAreEqual(files, "echoAdapter/");
     }
 }

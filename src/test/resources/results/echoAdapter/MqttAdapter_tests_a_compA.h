@@ -1,20 +1,20 @@
-<#import "MqttMacros.ftl" as m>
 
 #pragma once
 
-#include "${model.getEscapedCompName()}.h"
-<@m.mwDefaultIncludes/>
+#include "tests_a_compA.h"
+#include "mqtt/client.h"
+#include "Callback.hpp"
 
 using namespace std;
-using namespace <@m.smallIdent/>;
+using namespace mqtt;
 
-class <@m.mwIdent/>Adapter_${model.getEscapedCompName()} {
+class MqttAdapter_tests_a_compA {
     
 public:
     
-    <@m.mwIdent/>Adapter_${model.getEscapedCompName()}();
+    MqttAdapter_tests_a_compA();
     
-    void init(${model.getEscapedCompName()}* comp);
+    void init(tests_a_compA* comp);
     
     void publish_echoPublisher();
     
@@ -26,7 +26,7 @@ private:
     const string SUB_ID = "subscriber_cpp";
     const string TOPIC = "/clock";
     
-    ${model.getEscapedCompName()}* component = nullptr;
+    tests_a_compA* component = nullptr;
     
     // Callbacks, Subscribers/Publishers
     Callback* _callback = nullptr;
