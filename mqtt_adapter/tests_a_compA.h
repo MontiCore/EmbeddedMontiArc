@@ -11,8 +11,8 @@ class tests_a_compA {
     
 public:
     tests_a_compA(double value);
-    double rosIn = 0;
-    double rosOut = 0;
+    double mqttIn = 0;
+    double mqttOut = 0;
 };
 
 #endif /* tests_a_compA_h */
