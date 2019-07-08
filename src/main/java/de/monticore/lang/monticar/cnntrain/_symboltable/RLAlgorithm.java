@@ -32,5 +32,11 @@ public enum RLAlgorithm {
         public String toString() {
             return "ddpg";
         }
+    },
+    TD3 {
+        @Override
+        public String toString() {
+            return "td3";
+        }
     }
 }

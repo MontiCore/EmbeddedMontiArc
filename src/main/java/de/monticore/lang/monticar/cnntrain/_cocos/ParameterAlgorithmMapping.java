@@ -108,6 +108,8 @@ class ParameterAlgorithmMapping {
         ASTStrategyOUSigma.class
     );
 
+    private static final List<Class> EXCLUSIVE_TD3_PARAMETERS = Lists.newArrayList(EXCLUSIVE_DDPG_PARAMETERS);
+
     ParameterAlgorithmMapping() {
 
     }
@@ -136,12 +138,19 @@ class ParameterAlgorithmMapping {
             || EXCLUSIVE_DDPG_PARAMETERS.contains(entryClazz);
     }
 
+    boolean isTd3Parameter(Class<? extends ASTEntry> entryClazz) {
+        return GENERAL_PARAMETERS.contains(entryClazz)
+            || GENERAL_REINFORCEMENT_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_TD3_PARAMETERS.contains(entryClazz);
+    }
+
     List<Class> getAllReinforcementParameters() {
         return ImmutableList.<Class> builder()
             .addAll(GENERAL_PARAMETERS)
             .addAll(GENERAL_REINFORCEMENT_PARAMETERS)
             .addAll(EXCLUSIVE_DQN_PARAMETERS)
             .addAll(EXCLUSIVE_DDPG_PARAMETERS)
+            .addAll(EXCLUSIVE_TD3_PARAMETERS)
             .build();
     }
 

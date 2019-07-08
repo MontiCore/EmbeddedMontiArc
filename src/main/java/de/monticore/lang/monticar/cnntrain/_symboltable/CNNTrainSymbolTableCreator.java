@@ -351,6 +351,8 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
         if (node.getValue().isPresentDdpg()) {
             value.setValue(RLAlgorithm.DDPG);
+        } else if(node.getValue().isPresentTdThree()) {
+            value.setValue(RLAlgorithm.TD3);
         } else {
             value.setValue(RLAlgorithm.DQN);
         }

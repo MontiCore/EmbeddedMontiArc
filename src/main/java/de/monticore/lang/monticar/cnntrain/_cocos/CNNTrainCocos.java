@@ -34,7 +34,7 @@ public class CNNTrainCocos {
                 .addCoCo(new CheckReinforcementRequiresEnvironment())
                 .addCoCo(new CheckLearningParameterCombination())
                 .addCoCo(new CheckRosEnvironmentRequiresRewardFunction())
-                .addCoCo(new CheckDdpgRequiresCriticNetwork())
+                .addCoCo(new CheckActorCriticRequiresCriticNetwork())
                 .addCoCo(new CheckRlAlgorithmParameter())
                 .addCoCo(new CheckDiscreteRLAlgorithmUsesDiscreteStrategy())
                 .addCoCo(new CheckContinuousRLAlgorithmUsesContinuousStrategy())

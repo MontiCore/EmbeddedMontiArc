@@ -41,8 +41,16 @@ class ASTConfigurationUtils {
             e -> (e instanceof ASTRLAlgorithmEntry) && ((ASTRLAlgorithmEntry)e).getValue().isPresentDdpg());
     }
 
+    static boolean isTd3Algorithm(final ASTConfiguration configuration) {
+        return isReinforcementLearning(configuration)
+            && configuration.getEntriesList().stream().anyMatch(
+            e -> (e instanceof ASTRLAlgorithmEntry) && ((ASTRLAlgorithmEntry)e).getValue().isPresentTdThree());
+    }
+
     static boolean isDqnAlgorithm(final ASTConfiguration configuration) {
-        return isReinforcementLearning(configuration) && !isDdpgAlgorithm(configuration);
+        return isReinforcementLearning(configuration)
+            && !isDdpgAlgorithm(configuration)
+            && !isTd3Algorithm(configuration);
     }
 
     static boolean hasEntry(final ASTConfiguration configuration, final Class<? extends ASTConfigEntry> entryClazz) {
@@ -83,5 +91,19 @@ class ASTConfigurationUtils {
 
         }
         return false;
+    }
+
+    static boolean isActorCriticAlgorithm(final ASTConfiguration node) {
+       return isDdpgAlgorithm(node) || isTd3Algorithm(node);
+    }
+
+    static boolean hasCriticEntry(final ASTConfiguration node) {
+        return node.getEntriesList().stream()
+            .anyMatch(e -> ((e instanceof ASTCriticNetworkEntry)
+                && !((ASTCriticNetworkEntry)e).getValue().getNameList().isEmpty()));
+    }
+
+    public static boolean isContinuousAlgorithm(final ASTConfiguration node) {
+        return isDdpgAlgorithm(node) || isTd3Algorithm(node);
     }
 }

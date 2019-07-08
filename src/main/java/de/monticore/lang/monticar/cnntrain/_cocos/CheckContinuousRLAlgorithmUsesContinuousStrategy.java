@@ -35,7 +35,7 @@ public class CheckContinuousRLAlgorithmUsesContinuousStrategy implements CNNTrai
 
     @Override
     public void check(ASTConfiguration node) {
-        if (ASTConfigurationUtils.isDdpgAlgorithm(node)
+        if (ASTConfigurationUtils.isContinuousAlgorithm(node)
             && ASTConfigurationUtils.hasStrategy(node)
             && ASTConfigurationUtils.getStrategyMethod(node).isPresent()) {
             final String usedStrategy = ASTConfigurationUtils.getStrategyMethod(node).get();
