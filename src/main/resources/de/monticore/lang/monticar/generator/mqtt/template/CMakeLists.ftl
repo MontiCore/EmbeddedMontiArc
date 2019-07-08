@@ -1,12 +1,12 @@
 # Setting cmake version
 cmake_minimum_required(VERSION 3.1...3.14)
-if(${CMAKE_VERSION} VERSION_LESS 3.12)
-    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+if(<#noparse>${CMAKE_VERSION}</#noparse> VERSION_LESS 3.12)
+    cmake_policy(VERSION <#noparse>${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}</#noparse>)
 endif()
 
 # Using C++ version 11 with threads for compiling
 set (CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+set(CMAKE_CXX_FLAGS "<#noparse>${CMAKE_CXX_FLAGS}<#noparse> -std=c++11 -pthread")
 
 # Setting project name and description
 project(${model.name})
@@ -40,16 +40,16 @@ if(SEARCH_MQTT)
   elseif (NOT MQTT_INCLUDE_DIR)
     message(FATAL_ERROR "MQTT includes not found!")
   else()
-    message("MQTT includes found in " ${MQTT_INCLUDE_DIR})
-    message("MQTT libraries found in " ${MQTT_LIBS})
+    message("MQTT includes found in " <#noparse>${MQTT_INCLUDE_DIR}</#noparse>)
+    message("MQTT libraries found in " <#noparse>${MQTT_LIBS}</#noparse>)
   endif()
 endif()
 
 # Adding include directory to a target
-target_include_directories(MqttAdapter_tests_a_${model.name} PUBLIC ${MQTT_INCLUDE_DIR})
+target_include_directories(MqttAdapter_tests_a_${model.name} PUBLIC <#noparse>${MQTT_INCLUDE_DIR}</#noparse>)
 
 # Linking libraries to target
-target_link_libraries(MqttAdapter_tests_a_${model.name} PUBLIC ${MQTT_LIBS})
+target_link_libraries(MqttAdapter_tests_a_${model.name} PUBLIC <#noparse>${MQTT_LIBS}</#noparse>)
 
 # Export target to a cmake module file for outside usage
 export(TARGETS MqttAdapter_tests_a_${model.name} FILE MqttAdapter_tests_a_${model.name}.cmake)
