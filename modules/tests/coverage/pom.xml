@@ -7,7 +7,7 @@
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>sol</artifactId>
-        <version>2019.06.25.0</version>
+        <version>2019.06.25-SNAPSHOT</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
@@ -42,7 +42,25 @@
         <dependency>
             <groupId>de.monticore.lang.monticar.sol</groupId>
             <artifactId>runtime-language-server</artifactId>
-            <version>2019.06.25.0</version>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>plugin-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>plugin-language-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>plugin-language-client</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- .. Libraries ................................................. -->
@@ -72,6 +90,32 @@
                         <configuration>
                             <title>Sol</title>
                             <outputDirectory>${rootDir}/public/pages/jacoco</outputDirectory>
+                            <excludes>
+                                <exclude>**/*Module.class</exclude>
+                                <exclude>**/HelpMojo.class</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>yarn run coverage</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>coverage</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>

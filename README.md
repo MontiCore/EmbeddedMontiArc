@@ -18,6 +18,9 @@
     <a href="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Sol/commits/master">
         <img alt="pipeline" src="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Sol/badges/master/pipeline.svg?style=flat-square"/>
     </a>
+    <a href="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Sol/commits/master">
+        <img alt="coverage" src="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Sol/badges/master/coverage.svg?style=flat-square"/>
+    </a>
 </div>
 
 <hr/>

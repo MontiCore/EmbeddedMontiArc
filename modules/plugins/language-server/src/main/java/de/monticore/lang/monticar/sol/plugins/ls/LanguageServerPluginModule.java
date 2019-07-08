@@ -14,16 +14,12 @@ import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.configurati
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GeneratorSetupContribution;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GlexContribution;
-import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.template.TemplateContribution;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.TemplateContribution;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.variable.TemplateVariable;
 import de.monticore.lang.monticar.sol.plugins.ls.plugin.LanguageServerPlugin;
 import de.monticore.lang.monticar.sol.plugins.ls.plugin.configuration.LanguageServerConfiguration;
 import de.monticore.lang.monticar.sol.plugins.ls.plugin.configuration.LanguageServerConfigurationImpl;
-import de.monticore.lang.monticar.sol.plugins.ls.plugin.generator.LanguageServerGeneratorSetup;
-import de.monticore.lang.monticar.sol.plugins.ls.plugin.generator.LanguageServerGlex;
-import de.monticore.lang.monticar.sol.plugins.ls.plugin.generator.LanguageServerTemplateGeneratorPhase;
-import de.monticore.lang.monticar.sol.plugins.ls.plugin.template.LanguageModuleTemplate;
-import de.monticore.lang.monticar.sol.plugins.ls.plugin.template.ls.LanguageServerLauncherTemplate;
-import de.monticore.lang.monticar.sol.plugins.ls.plugin.template.services.LanguageDiagnosticsServiceTemplate;
+import de.monticore.lang.monticar.sol.plugins.ls.plugin.generator.*;
 
 public class LanguageServerPluginModule extends AbstractModule {
     private final LanguageServerPlugin plugin;
@@ -50,6 +46,7 @@ public class LanguageServerPluginModule extends AbstractModule {
         this.addGeneratorPhases();
         this.addPluginContributions();
         this.addTemplateContributions();
+        this.addTemplateVariables();
         this.addGlexContributions();
         this.addGeneratorSetupContributions();
     }
@@ -69,16 +66,21 @@ public class LanguageServerPluginModule extends AbstractModule {
         Multibinder<TemplateContribution> contributions =
                 Multibinder.newSetBinder(binder(), TemplateContribution.class);
 
-        contributions.addBinding().to(LanguageServerLauncherTemplate.class);
-        contributions.addBinding().to(LanguageDiagnosticsServiceTemplate.class);
-        contributions.addBinding().to(LanguageModuleTemplate.class);
+        contributions.addBinding().to(LanguageServerTemplates.class);
+    }
+
+    private void addTemplateVariables() {
+        Multibinder<TemplateVariable> contributions = Multibinder.newSetBinder(binder(), TemplateVariable.class);
+
+        contributions.addBinding().to(GrammarNameVariable.class);
+        contributions.addBinding().to(PackageVariable.class);
     }
 
     private void addGeneratorPhases() {
         Multibinder<GeneratorPhase> contributions =
                 Multibinder.newSetBinder(binder(), GeneratorPhase.class);
 
-        contributions.addBinding().to(LanguageServerTemplateGeneratorPhase.class);
+        contributions.addBinding().to(TemplateGeneratorPhase.class);
     }
 
     private void addGlexContributions() {

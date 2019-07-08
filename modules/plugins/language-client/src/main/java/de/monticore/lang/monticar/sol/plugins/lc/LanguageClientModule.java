@@ -13,20 +13,17 @@ import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.configurati
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GeneratorSetupContribution;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GlexContribution;
-import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.template.TemplateContribution;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.TemplateContribution;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.variable.TemplateVariable;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.LanguageClientPlugin;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfigurationImpl;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.LanguageClientGeneratorSetup;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.LanguageClientGlex;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.GrammarNameVariable;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.LanguageClientTemplates;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.TemplateGeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.textmate.TextMateGeneratorPhase;
-import de.monticore.lang.monticar.sol.plugins.lc.plugin.template.theia.browser.LanguageClientContributionTemplate;
-import de.monticore.lang.monticar.sol.plugins.lc.plugin.template.theia.browser.LanguageFrontendModuleTemplate;
-import de.monticore.lang.monticar.sol.plugins.lc.plugin.template.theia.browser.LanguageGrammarContributionTemplate;
-import de.monticore.lang.monticar.sol.plugins.lc.plugin.template.theia.common.IndexTemplate;
-import de.monticore.lang.monticar.sol.plugins.lc.plugin.template.theia.node.LanguageBackendModuleTemplate;
-import de.monticore.lang.monticar.sol.plugins.lc.plugin.template.theia.node.LanguageServerContributionTemplate;
 
 public class LanguageClientModule extends AbstractModule {
     private final LanguageClientPlugin plugin;
@@ -52,6 +49,7 @@ public class LanguageClientModule extends AbstractModule {
     private void addMultiBindings() {
         this.addGeneratorPhases();
         this.addTemplateContributions();
+        this.addTemplateVariables();
         this.addGlexContributions();
         this.addGeneratorSetupContributions();
     }
@@ -70,12 +68,13 @@ public class LanguageClientModule extends AbstractModule {
     private void addTemplateContributions() {
         Multibinder<TemplateContribution> contributions = Multibinder.newSetBinder(binder(), TemplateContribution.class);
 
-        contributions.addBinding().to(LanguageClientContributionTemplate.class);
-        contributions.addBinding().to(LanguageFrontendModuleTemplate.class);
-        contributions.addBinding().to(LanguageGrammarContributionTemplate.class);
-        contributions.addBinding().to(IndexTemplate.class);
-        contributions.addBinding().to(LanguageBackendModuleTemplate.class);
-        contributions.addBinding().to(LanguageServerContributionTemplate.class);
+        contributions.addBinding().to(LanguageClientTemplates.class);
+    }
+
+    private void addTemplateVariables() {
+        Multibinder<TemplateVariable> contributions = Multibinder.newSetBinder(binder(), TemplateVariable.class);
+
+        contributions.addBinding().to(GrammarNameVariable.class);
     }
 
     private void addGlexContributions() {

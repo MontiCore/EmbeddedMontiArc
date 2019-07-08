@@ -5,9 +5,11 @@
   ],
   "scripts": {
     "prepare": "lerna run prepare",
-    "docs": "typedoc --options configs/typedoc.json"
+    "docs": "typedoc --options configs/typedoc.json",
+    "coverage": "node scripts/coverage"
   },
   "devDependencies": {
+    "fs-extra": "^7.0.1",
     "lerna": "^3.15.0",
     "typedoc": "^0.14.2",
     "typedoc-plugin-lerna-packages": "^0.1.5"

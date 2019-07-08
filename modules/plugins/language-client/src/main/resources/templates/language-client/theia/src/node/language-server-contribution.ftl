@@ -1,11 +1,11 @@
-<#-- @ftlvariable name="contribution" type="de.monticore.lang.monticar.sol.plugins.common.plugin.generate.template.TemplateContribution" -->
+<#-- @ftlvariable name="template" type="de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.Template" -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 <#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
 <#-- @ftlvariable name="configuration" type="de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration" -->
-${tc.signature("contribution")}
+${tc.signature("template")}
 <#assign configuration = glex.getGlobalVar("configuration")>
 <#assign grammarName = configuration.getGrammarName()>
-<#assign hasHandCodedPeer = contribution.hasHandCodedPeer()>
+<#assign hasHandwrittenPeer = template.hasHandwrittenPeer()>
 import { injectable } from "inversify";
 import { AddressInfo } from "net";
 import { ${grammarName}Language } from "../common";
@@ -14,7 +14,7 @@ import { BaseLanguageServerContribution, IConnection } from "@theia/languages/li
 import * as FileSystem from "fs-extra";
 
 @injectable()
-export class ${grammarName}ServerContribution<#if hasHandCodedPeer>Top</#if> extends BaseLanguageServerContribution {
+export class ${grammarName}ServerContribution<#if hasHandwrittenPeer>Top</#if> extends BaseLanguageServerContribution {
     public readonly id: string = ${grammarName}Language.ID;
     public readonly name: string = ${grammarName}Language.NAME;
 

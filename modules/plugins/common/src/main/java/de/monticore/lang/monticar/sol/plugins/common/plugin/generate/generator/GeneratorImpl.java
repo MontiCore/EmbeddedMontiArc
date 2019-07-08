@@ -13,11 +13,8 @@ import de.monticore.lang.monticar.sol.plugins.common.plugin.common.PluginContrib
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import org.apache.maven.plugin.Mojo;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Singleton
 public class GeneratorImpl implements Generator, PluginContribution {
@@ -30,24 +27,15 @@ public class GeneratorImpl implements Generator, PluginContribution {
 
     @Inject
     protected GeneratorImpl(
-            NotificationService notifications, Set<GeneratorPhase> phases, Set<GlexContribution> glexContributions,
+            NotificationService notifications, List<GeneratorPhase> phases, Set<GlexContribution> glexContributions,
             Set<GeneratorSetupContribution> setupContributions
     ) {
         this.notifications = notifications;
         this.setup = new GeneratorSetup();
         this.engine = new GeneratorEngine(this.setup);
-        this.phases = this.sortPhases(phases);
+        this.phases = phases;
         this.glexContributions = glexContributions;
         this.setupContributions = setupContributions;
-    }
-
-    protected List<GeneratorPhase> sortPhases(Set<GeneratorPhase> phases) {
-        Comparator<GeneratorPhase> comparator = Comparator.comparingInt(GeneratorPhase::getPriority);
-        List<GeneratorPhase> sortedPhases = phases.stream().sorted(comparator).collect(Collectors.toList());
-
-        Collections.reverse(sortedPhases);
-
-        return sortedPhases;
     }
 
     @Override
@@ -56,7 +44,7 @@ public class GeneratorImpl implements Generator, PluginContribution {
     }
 
     @Override
-    public void configure() {
+    public void configure() throws Exception {
         this.notifications.info("Configuring Generator.");
 
         for (GeneratorSetupContribution contribution : this.setupContributions) {
@@ -66,40 +54,48 @@ public class GeneratorImpl implements Generator, PluginContribution {
         for (GlexContribution contribution : this.glexContributions) {
             contribution.defineGlobalVars(this.setup.getGlex());
         }
-    }
-
-    @Override
-    public void canGenerate() throws Exception {
-        this.notifications.info("Checking Generator Prerequisites.");
 
         for (GeneratorPhase phase : this.phases) {
-            phase.canExecute();
+            phase.configure();
         }
     }
 
     @Override
     public void generate() throws Exception {
-        int n = this.phases.size();
+        int size = this.phases.size();
 
-        this.notifications.info("Executing %d-Phase Generator.", n);
+        this.notifications.info("Executing %d-Phase Generator.", size);
 
-        for (int i = 0; i < n; i++) {
-            GeneratorPhase phase = this.phases.get(i);
+        for (GeneratorPhase phase : this.phases) {
+            int index = 1 + this.phases.indexOf(phase);
 
-            this.notifications.info("[Phase %d/%d]: %s", i+1, n, phase.getLabel());
+            this.notifications.info("[Phase %d/%d]: %s", index, size, phase.getLabel());
 
-            if (phase.shouldExecute()) phase.execute(this.engine);
+            if (phase.shouldGenerate()) phase.generate(this.engine);
         }
     }
 
     @Override
-    public void onPluginConfigure(Mojo plugin) {
+    public void shutdown() throws Exception {
+        this.notifications.info("Shutting down Generator.");
+
+        for (GeneratorPhase phase : this.phases) {
+            phase.shutdown();
+        }
+    }
+
+    @Override
+    public void onPluginConfigure(Mojo plugin) throws Exception {
         this.configure();
     }
 
     @Override
     public void onPluginExecute(Mojo plugin) throws Exception {
-        this.canGenerate();
         this.generate();
+    }
+
+    @Override
+    public void onPluginShutdown(Mojo plugin) throws Exception {
+        this.shutdown();
     }
 }

@@ -26,4 +26,11 @@ public interface PluginContribution {
      * @throws Exception An exception which might occur during execution.
      */
     default void onPluginExecute(Mojo plugin) throws Exception {}
+
+    /**
+     * This method is called once the plugin has finished execution.
+     * @param plugin The plugin which has been executed.
+     * @throws Exception An exception which might occur during shutdown.
+     */
+    default void onPluginShutdown(Mojo plugin) throws Exception {}
 }
