@@ -1,3 +1,4 @@
+package simulation.EESimulator;
 /**
  *
  * ******************************************************************************
@@ -18,21 +19,39 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package simulation.EESimulator;
 
-public enum EEDiscreteEventTypeEnum {
-    
-	BUSMESSAGE("BUSMESSAGE"),
-    KEEP_ALIVE_EVENT("KEEP_ALIVE_EVENT");
 
-    private final String name;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-    private EEDiscreteEventTypeEnum(String name){
-        this.name = name;
+import commons.controller.commons.BusEntry;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEDiscreteEvent;
+import simulation.EESimulator.EESimulator;
+import simulation.bus.BusMessage;
+
+public class EESimulatorTestComponent extends EEComponent {
+
+    private UUID ID;
+
+    public EESimulatorTestComponent(EESimulator simulator, ArrayList<BusEntry> listenTo) {
+        super(simulator);
+        this.ID = UUID.randomUUID();
+        for (BusEntry entry : listenTo ) {
+            this.listenTo.add(entry);
+        }
     }
 
+    @Override
+    public void processEvent(EEDiscreteEvent event) {
+        ((BusMessage) event).setMessage(this.ID.toString() + " processed");
 
-    public String toString(){
-        return this.name;
     }
+
+    @Override
+    public UUID getID() {
+        return ID;
+    }
+
 }

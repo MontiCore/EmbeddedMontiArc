@@ -50,9 +50,9 @@ import simulation.EESimulator.TestComponent;
 import simulation.bus.*;
 
 public class BusTest {
-	
+
 	private static EESimulator EEsim = new EESimulator(Instant.EPOCH);
-	
+
 	private static Map<Integer, BusEntry> busEntryByOrdinal = new HashMap<Integer, BusEntry>();
 
 	@BeforeClass
@@ -61,44 +61,44 @@ public class BusTest {
 			busEntryByOrdinal.put(entry.ordinal(), entry);
 		}
 	}
-	
-	
+
+
 //	@Test
 //	public void testRegisterEventAtSimulator() {
 //		FlexRay flexray = createBusStructure();
-//		
+//
 //		//one hop
 //		BusMessage c05 = createNregisterMessage(flexray, "c05", "TestComponent 0", "TestComponent 5", 127, 0);
 //
 //		//two hop
 //		BusMessage c08 = createNregisterMessage(flexray, "c08", "TestComponent 0", "TestComponent 8", 127, 0);
-//		
+//
 //		Iterable<Bus> buses = BusUtils.findConnectedBuses(flexray.connectedComponents);
 //		Iterator<Bus> it = buses.iterator();
 //		assertTrue(it.hasNext());
 //		Bus firstHop = it.next();
 //		assertTrue(!it.hasNext());
-//		
+//
 //		buses = BusUtils.findConnectedBuses(firstHop.connectedComponents);
 //		it = buses.iterator();
 //		assertTrue(it.hasNext());
 //		Bus secondHop = it.next();
 //		assertTrue(!it.hasNext());
-//		
+//
 //		assertEquals(firstHop.getID(), c05.getNextHop().get().getID());
 //		assertEquals(firstHop.getID(), c08.getNextHop().get().getID());
-//		
+//
 //		flexray.registerMessageAtSimulator(c05);
 //		flexray.registerMessageAtSimulator(c08);
-//		
+//
 //		assertEquals("TestComponent 5", c05.getNextHop().get().getID());
 //		assertEquals(secondHop.getID(), c08.getNextHop().get().getID());
-//		
+//
 //		flexray.registerMessageAtSimulator(c08);
 //		assertEquals("TestComponent 8", c08.getNextHop().get().getID());
 //	}
-	
-	
+
+
 	//TODO other bus impl.
 	private FlexRay createBusStructure() {
 		List<EEComponent> mainComponents = new ArrayList<EEComponent>();
