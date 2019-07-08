@@ -1,22 +1,23 @@
 package de.monticore.lang.monticar.generator.mqtt;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
-import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
-
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
-public class PrettyPrintGenerationTest extends AbstractSymtabTest {
-	
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+
+public class AdapterGenerationTest extends AbstractSymtabTest {
+
 	@Test
-    public void testPrettyPrint() throws IOException {
+    public void testAdapter() throws IOException {
         
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         
@@ -32,10 +33,5 @@ public class PrettyPrintGenerationTest extends AbstractSymtabTest {
         
         // Connect component's ports to topics
         componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
-        
-        List<File> files = generatorMqtt.generatePrettyPrint(componentInstanceSymbol);
-        
-        testFilesAreEqual(files, "echo/");
     }
-
 }

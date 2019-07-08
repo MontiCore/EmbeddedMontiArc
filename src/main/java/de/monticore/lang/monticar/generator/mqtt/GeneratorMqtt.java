@@ -51,6 +51,43 @@ public class GeneratorMqtt
     	return files;
     }
 	
+	List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
+	{
+		List<File> files = new ArrayList<>();
+
+		// Get info about the ports from the component
+		Collection<EMAPortInstanceSymbol> ports = component.getPortInstanceList();
+		
+		// Create and fill model
+		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
+		
+		model.addPorts(ports);
+		
+		//Generate files and write to project
+		String content = MqttTemplates.generateMqttAdapter(model);
+		
+		File file = new File("./target/generated-sources/ports.txt");
+		files.add(file);
+		
+        FileWriter fr = null;
+        try {
+            fr = new FileWriter(file);
+            fr.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            //Close resources
+            try {
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+		
+    	return files;
+		
+	}
+	
 	File generateCMake(EMAComponentInstanceSymbol component) 
     {
 		
