@@ -25,7 +25,8 @@ install:
 pages:
   stage: deploy
   script:
-    - mvn -B clean install # TODO: Change to "deploy" once the code base is stable.
+    - mvn -B clean install # We need to install first as the custom plugins need to be installed.
+    - mvn -B deploy -DskipTests
   artifacts:
     paths:
       - "public"
