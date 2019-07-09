@@ -31,11 +31,11 @@ class LogCoshLoss(gluon.loss.Loss):
         loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
         return F.mean(loss, axis=self._batch_axis, exclude=True)
 
-class CNNSupervisedTrainer(object):
-    def __init__(self, data_loader, net_constructor, net=None):
+class ${tc.fileNameWithoutEnding}:
+    def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
-        self._net = net
+        self._networks = {}
 
     def train(self, batch_size=64,
               num_epoch=10,
@@ -72,12 +72,11 @@ class CNNSupervisedTrainer(object):
 
 
         train_iter, test_iter, data_mean, data_std = self._data_loader.load_data(batch_size)
-        if self._net is None:
-            if normalize:
-                self._net_creator.construct(
-                    context=mx_context, data_mean=nd.array(data_mean), data_std=nd.array(data_std))
-            else:
-                self._net_creator.construct(context=mx_context)
+
+        if normalize:
+            self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
+        else:
+            self._net_creator.construct(context=mx_context)
 
         begin_epoch = 0
         if load_checkpoint:
@@ -86,7 +85,7 @@ class CNNSupervisedTrainer(object):
             if os.path.isdir(self._net_creator._model_dir_):
                 shutil.rmtree(self._net_creator._model_dir_)
 
-        self._net = self._net_creator.net
+        self._networks = self._net_creator.networks
 
         try:
             os.makedirs(self._net_creator._model_dir_)
@@ -94,7 +93,7 @@ class CNNSupervisedTrainer(object):
             if not os.path.isdir(self._net_creator._model_dir_):
                 raise
 
-        trainer = mx.gluon.Trainer(self._net.collect_params(), optimizer, optimizer_params)
+        trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values()]
 
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
@@ -133,14 +132,36 @@ class CNNSupervisedTrainer(object):
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
-                data = batch.data[0].as_in_context(mx_context)
-                label = batch.label[0].as_in_context(mx_context)
+                <#list tc.architectureInputs as input_name>
+                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
+                </#list>
+                <#list tc.architectureOutputs as output_name>
+                ${output_name}_label = batch.label[${output_name?index}].as_in_context(mx_context)
+                </#list>
+
                 with autograd.record():
-                    output = self._net(data)
-                    loss = loss_function(output, label)
+<#list tc.architecture.streams as stream>
+<#if stream.isNetwork()>
+                    ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
+<#else>
+${tc.include(stream, "PYTHON_INLINE")}
+</#if>
+</#list>
+
+                    loss = \
+<#list tc.architecture.streams as stream>
+<#if stream.isNetwork()>
+<#list tc.getStreamOutputNames(stream) as output_name>
+                        loss_function(${output_name}_output, ${output_name}_label)<#sep> + \
+</#list><#sep> + \
+</#if>
+</#list>
+
 
                 loss.backward()
-                trainer.step(batch_size)
+
+                for trainer in trainers:
+                    trainer.step(batch_size)
 
                 if tic is None:
                     tic = time.time()
@@ -160,30 +181,78 @@ class CNNSupervisedTrainer(object):
             train_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(train_iter):
-                data = batch.data[0].as_in_context(mx_context)
-                label = batch.label[0].as_in_context(mx_context)
-                output = self._net(data)
-                predictions = mx.nd.argmax(output, axis=1)
-                metric.update(preds=predictions, labels=label)
+                <#list tc.architectureInputs as input_name>
+                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
+                </#list>
+
+                labels = [
+<#list tc.architectureOutputs as output_name>
+                    batch.label[${output_name?index}].as_in_context(mx_context)<#sep>,
+</#list>
+
+                ]
+
+                if True: # Fix indentation
+<#list tc.architecture.streams as stream>
+<#if stream.isNetwork()>
+                    ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
+<#else>
+${tc.include(stream, "PYTHON_INLINE")}
+</#if>
+</#list>
+
+                predictions = [
+<#list tc.architectureOutputs as output_name>
+                    mx.nd.argmax(${output_name}_output, axis=1)<#sep>,
+</#list>
+
+                ]
+
+                metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
 
             test_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(test_iter):
-                data = batch.data[0].as_in_context(mx_context)
-                label = batch.label[0].as_in_context(mx_context)
-                output = self._net(data)
-                predictions = mx.nd.argmax(output, axis=1)
-                metric.update(preds=predictions, labels=label)
+                <#list tc.architectureInputs as input_name>
+                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
+                </#list>
+
+                labels = [
+<#list tc.architectureOutputs as output_name>
+                    batch.label[${output_name?index}].as_in_context(mx_context)<#sep>,
+</#list>
+
+                ]
+
+                if True: # Fix indentation
+<#list tc.architecture.streams as stream>
+<#if stream.isNetwork()>
+                    ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
+<#else>
+${tc.include(stream, "PYTHON_INLINE")}
+</#if>
+</#list>
+
+                predictions = [
+<#list tc.architectureOutputs as output_name>
+                    mx.nd.argmax(${output_name}_output, axis=1)<#sep>,
+</#list>
+
+                ]
+
+                metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]
 
             logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
-                self._net.save_parameters(self.parameter_path() + '-' + str(epoch).zfill(4) + '.params')
+                for i, network in self._networks.items():
+                    network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
 
-        self._net.save_parameters(self.parameter_path() + '-' + str(num_epoch + begin_epoch).zfill(4) + '.params')
-        self._net.export(self.parameter_path() + '_newest', epoch=0)
+        for i, network in self._networks.items():
+            network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch).zfill(4) + '.params')
+            network.export(self.parameter_path(i) + '_newest', epoch=0)
 
-    def parameter_path(self):
-        return self._net_creator._model_dir_ + self._net_creator._model_prefix_
+    def parameter_path(self, index):
+        return self._net_creator._model_dir_ + self._net_creator._model_prefix_ + '_' + str(index)

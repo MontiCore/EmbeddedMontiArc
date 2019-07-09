@@ -3,5 +3,5 @@ architecture ${architectureName}() {
     def input ${actionType}<#if actionRange??>(<#if actionRange.isLowerLimitInfinity()>-oo<#else>${actionRange.lowerLimit.get()}</#if>:<#if actionRange.isUpperLimitInfinity()>oo<#else>${actionRange.upperLimit.get()}</#if>)</#if>^{<#list actionDimension as d>${d}<#if d?has_next>,</#if></#list>} action
     def output Q(-oo:oo)^{1} qvalue
 
-    ${implementation}->FullyConnected(units=1)->qvalue
+    ${implementation}->FullyConnected(units=1)->qvalue;
 }

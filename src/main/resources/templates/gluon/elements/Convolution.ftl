@@ -1,5 +1,4 @@
 <#assign input = element.inputs[0]>
-<#assign mode = definition_mode.toString()>
 <#if mode == "ARCHITECTURE_DEFINITION">
 <#if element.padding??>
             self.${element.name}padding = Padding(padding=(${tc.join(element.padding, ",")}))
@@ -9,8 +8,7 @@
                 strides=(${tc.join(element.stride, ",")}),
                 use_bias=${element.noBias?string("False", "True")})
 <#include "OutputShape.ftl">
-</#if>
-<#if mode == "FORWARD_FUNCTION">
+<#elseif mode == "FORWARD_FUNCTION">
 <#if element.padding??>
         ${element.name}padding = self.${element.name}padding(${input})
 <#assign input = element.name + "padding">

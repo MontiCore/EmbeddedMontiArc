@@ -20,17 +20,17 @@
  */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.ArchitectureElementData;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNArchTemplateController;
+import de.monticore.lang.monticar.cnnarch.generator.ArchitectureElementData;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchTemplateController;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.TemplateConfiguration;
+import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 
 import java.io.Writer;
 import java.util.*;
 
 public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
-    public static final String NET_DEFINITION_MODE_KEY = "definition_mode";
+    public static final String NET_DEFINITION_MODE_KEY = "mode";
 
     public CNNArch2GluonTemplateController(ArchitectureSymbol architecture,
                                            TemplateConfiguration templateConfiguration) {
@@ -42,7 +42,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         Map<String, Object> ftlContext = new HashMap<>();
         ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
         ftlContext.put(ELEMENT_DATA_KEY, getCurrentElement());
-        ftlContext.put(NET_DEFINITION_MODE_KEY, netDefinitionMode);
+        ftlContext.put(NET_DEFINITION_MODE_KEY, netDefinitionMode.toString());
         getTemplateConfiguration().processTemplate(ftlContext, templatePath, writer);
     }
 
@@ -60,6 +60,20 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         }
         else {
             include(ioElement.getResolvedThis().get(), writer, netDefinitionMode);
+        }
+
+        setCurrentElement(previousElement);
+    }
+
+    public void include(ConstantSymbol constant, Writer writer, NetDefinitionMode netDefinitionMode) {
+        ArchitectureElementData previousElement = getCurrentElement();
+        setCurrentElement(constant);
+
+        if (constant.isAtomic()) {
+            include(TEMPLATE_ELEMENTS_DIR_PATH, "Const", writer, netDefinitionMode);
+        }
+        else {
+            include(constant.getResolvedThis().get(), writer, netDefinitionMode);
         }
 
         setCurrentElement(previousElement);
@@ -99,6 +113,9 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         else if (architectureElement instanceof LayerSymbol){
             include((LayerSymbol) architectureElement, writer, netDefinitionMode);
         }
+        else if (architectureElement instanceof ConstantSymbol) {
+            include((ConstantSymbol) architectureElement, writer, netDefinitionMode);
+        }
         else {
             include((IOSymbol) architectureElement, writer, netDefinitionMode);
         }
@@ -113,5 +130,29 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             throw new IllegalStateException("missing writer");
         }
         include(architectureElement, getWriter(), netDefinitionMode);
+    }
+
+    public String ioNameToCpp(String ioName) {
+        return ioName.replaceAll("_([0-9]+)_", "[$1]");
+    }
+
+    public List<String> getStreamInputNames(SerialCompositeElementSymbol stream) {
+        List<String> names = new ArrayList<>();
+
+        for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
+            names.add(getName(element));
+        }
+
+        return names;
+    }
+
+    public List<String> getStreamOutputNames(SerialCompositeElementSymbol stream) {
+        List<String> names = new ArrayList<>();
+
+        for (ArchitectureElementSymbol element : stream.getLastAtomicElements()) {
+            names.add(getName(element));
+        }
+
+        return names;
     }
 }

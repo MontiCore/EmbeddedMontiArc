@@ -105,7 +105,7 @@ from std_msgs.msg import Float32MultiArray, Bool, Int32, MultiArrayDimension, Fl
 class RosEnvironment(Environment):
     def __init__(self,
         ros_node_name='RosTrainingAgent',
-        timeout_in_s=3,
+        timeout_in_s=60,
         state_topic='state',
         action_topic='action',
         reset_topic='reset',
@@ -113,6 +113,7 @@ class RosEnvironment(Environment):
         reward_topic='reward'):
         super(RosEnvironment, self).__init__()
         self.__timeout_in_s = timeout_in_s
+        self.__in_reset = False
         self.__waiting_for_state_update = False
         self.__waiting_for_terminal_update = False
         self.__last_received_state = 0
@@ -149,13 +150,18 @@ class RosEnvironment(Environment):
         time.sleep(2)
 
     def reset(self):
+        self.__in_reset = True
         time.sleep(0.5)
         reset_message = Bool()
         reset_message.data = True
         self.__waiting_for_state_update = True
+        self.__waiting_for_terminal_update = False
+        self.__waiting_for_reward_update = False
         self.__reset_publisher.publish(reset_message)
+        self.__wait_for_new_state(self.__reset_publisher, reset_message)
         while self.__last_received_terminal:
-            self.__wait_for_new_state(self.__reset_publisher, reset_message)
+            pass
+        self.__in_reset = False
         return self.__last_received_state
 
     def step(self, action):
@@ -206,7 +212,7 @@ class RosEnvironment(Environment):
         rospy.signal_shutdown('Program ended!')
 
     def __state_callback(self, data):
-        self.__last_received_state = np.array(data.data, dtype='float32')
+        self.__last_received_state = np.array(data.data, dtype='float32').reshape((<#list config.stateDim as d>${d},</#list>))
         rospy.logdebug('Received state: {}'.format(self.__last_received_state))
         self.__waiting_for_state_update = False
 

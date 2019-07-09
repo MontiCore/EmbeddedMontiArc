@@ -2,15 +2,13 @@
 <#assign input = element.inputs[0]>
 <#assign units = element.units?c>
 <#assign use_bias = element.noBias?string("False","True")>
-<#assign mode = definition_mode.toString()>
 <#if mode == "ARCHITECTURE_DEFINITION">
 <#if flatten>
             self.${element.name}flatten = gluon.nn.Flatten()
 </#if>
             self.${element.name} = gluon.nn.Dense(units=${units}, use_bias=${use_bias})
             <#include "OutputShape.ftl">
-</#if>
-<#if mode == "FORWARD_FUNCTION">
+<#elseif mode == "FORWARD_FUNCTION">
 <#if flatten>
         ${element.name}flatten_ = self.${element.name}flatten(${input})
         <#assign input = element.name + "flatten_">

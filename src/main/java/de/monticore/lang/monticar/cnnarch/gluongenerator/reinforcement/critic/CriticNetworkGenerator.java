@@ -3,9 +3,10 @@ package de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.critic;
 import com.google.common.collect.Lists;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNArchSymbolCompiler;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.TemplateConfiguration;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.checker.AllowAllLayerSupportChecker;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2GluonArchitectureSupportChecker;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2GluonLayerSupportChecker;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchSymbolCompiler;
+import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
 import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
@@ -81,7 +82,8 @@ public class CriticNetworkGenerator {
         gluonGenerator.setGenerationTargetPath(this.getGenerationTargetPath());
 
         Map<String, String> fileContentMap = new HashMap<>();
-        CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(new AllowAllLayerSupportChecker());
+        CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(new CNNArch2GluonArchitectureSupportChecker(),
+                                                                         new CNNArch2GluonLayerSupportChecker());
         ArchitectureSymbol architectureSymbol = symbolCompiler.compileArchitectureSymbolFromModelsDir(directoryOfCnnArchFile, criticNetworkName);
         architectureSymbol.setComponentName(criticNetworkName);
         fileContentMap.putAll(gluonGenerator.generateStringsAllowMultipleIO(architectureSymbol, true));

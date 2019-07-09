@@ -1,12 +1,15 @@
-<#assign mode = definition_mode.toString()>
 <#if mode == "ARCHITECTURE_DEFINITION">
-            if not data_mean is None:
-                assert(not data_std is None)
-                self.${element.name}_input_normalization = ZScoreNormalization(data_mean=data_mean, data_std=data_std)
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_${element.name} = ZScoreNormalization(data_mean=data_mean['${element.name}'],
+                                                                               data_std=data_std['${element.name}'])
             else:
-                self.${element.name}_input_normalization = NoNormalization()
+                self.input_normalization_${element.name} = NoNormalization()
 
-</#if>
-<#if mode == "FORWARD_FUNCTION">
-        ${element.name} = self.${element.name}_input_normalization(${element.name})
+<#elseif mode == "FORWARD_FUNCTION">
+        ${element.name} = self.input_normalization_${element.name}(${element.name})
+<#elseif mode == "PYTHON_INLINE">
+                    ${element.name} = ${element.name}_data
+<#elseif mode == "CPP_INLINE">
+    vector<float> ${element.name} = CNNTranslator::translate(${tc.ioNameToCpp(element.name)});
 </#if>

@@ -1,5 +1,4 @@
 <#assign input = element.inputs[0]>
-<#assign mode = definition_mode.toString()>
 <#assign poolType = element.poolType>
 <#assign poolSize = "(" + tc.join(element.kernel, ",") + ")">
 <#assign strides = "(" + tc.join(element.stride, ",") + ")">
@@ -16,8 +15,7 @@
                 pool_size=${poolSize},
                 strides=${strides})
             <#include "OutputShape.ftl">
-</#if>
-<#if mode == "FORWARD_FUNCTION">
+<#elseif mode == "FORWARD_FUNCTION">
 <#if element.padding??>
         ${element.name}padding = self.${element.name}padding(${input})
         <#assign input = element.name + "padding">

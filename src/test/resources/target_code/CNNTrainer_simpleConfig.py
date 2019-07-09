@@ -1,8 +1,8 @@
 import logging
 import mxnet as mx
-import supervised_trainer
 import CNNCreator_simpleConfig
 import CNNDataLoader_simpleConfig
+import CNNSupervisedTrainer_simpleConfig
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
@@ -11,9 +11,11 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
     simpleConfig_creator = CNNCreator_simpleConfig.CNNCreator_simpleConfig()
-    simpleConfig_loader = CNNDataLoader_simpleConfig.simpleConfigDataLoader()
-    simpleConfig_trainer = supervised_trainer.CNNSupervisedTrainer(simpleConfig_loader,
-                                                                   simpleConfig_creator)
+    simpleConfig_loader = CNNDataLoader_simpleConfig.CNNDataLoader_simpleConfig()
+    simpleConfig_trainer = CNNSupervisedTrainer_simpleConfig.CNNSupervisedTrainer_simpleConfig(
+        simpleConfig_loader,
+        simpleConfig_creator
+    )
 
     simpleConfig_trainer.train(
         batch_size=100,

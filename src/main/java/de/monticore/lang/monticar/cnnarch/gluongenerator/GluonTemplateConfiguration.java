@@ -1,11 +1,8 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.TemplateConfiguration;
+import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 import freemarker.template.Configuration;
 
-/**
- *
- */
 public class GluonTemplateConfiguration extends TemplateConfiguration {
     private static Configuration configuration;
 

@@ -9,29 +9,40 @@
 
 #include <CNNBufferFile.h>
 
-class ${tc.fileNameWithoutEnding}{
+<#list tc.architecture.streams as stream>
+<#if stream.isNetwork()>
+class ${tc.fileNameWithoutEnding}_${stream?index}{
 public:
-    const std::string json_file = "model/${tc.componentName}/model_newest-symbol.json";
-    const std::string param_file = "model/${tc.componentName}/model_newest-0000.params";
-    //const std::vector<std::string> input_keys = {"data"};
-    const std::vector<std::string> input_keys = {${tc.join(tc.architectureInputs, ",", "\"", "\"")}};
-    const std::vector<std::vector<mx_uint>> input_shapes = {<#list tc.architecture.inputs as input>{1,${tc.join(input.definition.type.dimensions, ",")}}<#if input?has_next>,</#if></#list>};
+    const std::string json_file = "model/${tc.componentName}/model_${stream?index}_newest-symbol.json";
+    const std::string param_file = "model/${tc.componentName}/model_${stream?index}_newest-0000.params";
+    const std::vector<std::string> input_keys = {
+<#if (tc.getStreamInputNames(stream)?size == 1)>
+        "data"
+<#else>
+        <#list tc.getStreamInputNames(stream) as inputName>"data${inputName?index}"<#sep>, </#list>
+</#if>
+    };
+    const std::vector<std::vector<mx_uint>> input_shapes = {<#list stream.getFirstAtomicElements() as input>{1, ${tc.join(input.definition.type.dimensions, ", ")}}<#sep>, </#list>};
     const bool use_gpu = false;
 
     PredictorHandle handle;
 
-    explicit ${tc.fileNameWithoutEnding}(){
+    explicit ${tc.fileNameWithoutEnding}_${stream?index}(){
         init(json_file, param_file, input_keys, input_shapes, use_gpu);
     }
 
-    ~${tc.fileNameWithoutEnding}(){
+    ~${tc.fileNameWithoutEnding}_${stream?index}(){
         if(handle) MXPredFree(handle);
     }
 
-    void predict(${tc.join(tc.architectureInputs, ", ", "const std::vector<float> &", "")},
-                 ${tc.join(tc.architectureOutputs, ", ", "std::vector<float> &", "")}){
-<#list tc.architectureInputs as inputName>
+    void predict(${tc.join(tc.getStreamInputNames(stream), ", ", "const std::vector<float> &", "")},
+                 ${tc.join(tc.getStreamOutputNames(stream), ", ", "std::vector<float> &", "")}){
+<#list tc.getStreamInputNames(stream) as inputName>
+<#if (tc.getStreamInputNames(stream)?size == 1)>
         MXPredSetInput(handle, "data", ${inputName}.data(), static_cast<mx_uint>(${inputName}.size()));
+<#else>
+        MXPredSetInput(handle, "data${inputName?index}", ${inputName}.data(), static_cast<mx_uint>(${inputName}.size()));
+</#if>
 </#list>
 
         MXPredForward(handle);
@@ -41,7 +52,7 @@ public:
         mx_uint shape_len;
         size_t size;
 
-<#list tc.architectureOutputs as outputName>
+<#list tc.getStreamOutputNames(stream) as outputName>
         output_index = ${outputName?index?c};
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
@@ -71,22 +82,17 @@ public:
 
         const mx_uint num_input_nodes = input_keys.size();
 
-<#if (tc.architectureInputs?size >= 2)>
         const char* input_keys_ptr[num_input_nodes];
         for(mx_uint i = 0; i < num_input_nodes; i++){
             input_keys_ptr[i] = input_keys[i].c_str();
         }
-<#else>
-        const char* input_key[1] = { "data" };
-        const char** input_keys_ptr = input_key;
-</#if>
 
         mx_uint shape_data_size = 0;
         mx_uint input_shape_indptr[input_shapes.size() + 1];
         input_shape_indptr[0] = 0;
         for(mx_uint i = 0; i < input_shapes.size(); i++){
-            input_shape_indptr[i+1] = input_shapes[i].size();
             shape_data_size += input_shapes[i].size();
+            input_shape_indptr[i+1] = shape_data_size;
         }
 
         mx_uint input_shape_data[shape_data_size];
@@ -111,5 +117,7 @@ public:
         assert(handle);
     }
 };
+</#if>
+</#list>
 
 #endif // ${tc.fileNameWithoutEnding?upper_case}

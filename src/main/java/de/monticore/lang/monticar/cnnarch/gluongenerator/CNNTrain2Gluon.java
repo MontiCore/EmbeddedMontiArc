@@ -6,10 +6,10 @@ import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.critic.Cr
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.FunctionParameterChecker;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionParameterAdapter;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionSourceGenerator;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.ConfigurationData;
+import de.monticore.lang.monticar.cnnarch.generator.ConfigurationData;
 
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNTrain2MxNet;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.TemplateConfiguration;
+import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.LearningMethod;
 import de.monticore.lang.monticar.cnntrain._symboltable.RLAlgorithm;
@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CNNTrain2Gluon extends CNNTrain2MxNet {
+public class CNNTrain2Gluon extends CNNTrainGenerator {
     private static final String REINFORCEMENT_LEARNING_FRAMEWORK_MODULE = "reinforcement_learning";
 
     private final RewardFunctionSourceGenerator rewardFunctionSourceGenerator;
@@ -46,7 +46,8 @@ public class CNNTrain2Gluon extends CNNTrain2MxNet {
     }
 
     public CNNTrain2Gluon(RewardFunctionSourceGenerator rewardFunctionSourceGenerator) {
-        super();
+        trainParamSupportChecker = new CNNArch2GluonTrainParamSupportChecker();
+
         this.rewardFunctionSourceGenerator = rewardFunctionSourceGenerator;
     }
 
@@ -114,9 +115,6 @@ public class CNNTrain2Gluon extends CNNTrain2MxNet {
         if (configData.isSupervisedLearning()) {
             String cnnTrainTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
             fileContentMap.put("CNNTrainer_" + getInstanceName() + ".py", cnnTrainTemplateContent);
-
-            String cnnSupervisedTrainerContent = templateConfiguration.processTemplate(ftlContext, "CNNSupervisedTrainer.ftl");
-            fileContentMap.put("supervised_trainer.py", cnnSupervisedTrainerContent);
         } else if (configData.isReinforcementLearning()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();
             final RLAlgorithm rlAlgorithm = configData.getRlAlgorithm();

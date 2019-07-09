@@ -21,23 +21,27 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.IOSymbol;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNArch2MxNet;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.Target;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.Target;
+import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.TemplateConfiguration;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CNNArch2Gluon extends CNNArch2MxNet {
+public class CNNArch2Gluon extends CNNArchGenerator {
+
+    public CNNArch2Gluon() {
+        architectureSupportChecker = new CNNArch2GluonArchitectureSupportChecker();
+        layerSupportChecker = new CNNArch2GluonLayerSupportChecker();
+    }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     @Override
     public Map<String, String> generateStrings(ArchitectureSymbol architecture){
         Map<String, String> fileContentMap = compileFileContentMap(architecture);
-        checkValidGeneration(architecture);
         return fileContentMap;
     }
 
@@ -83,6 +87,9 @@ public class CNNArch2Gluon extends CNNArch2MxNet {
         Map.Entry<String, String> temp;
 
         temp = controller.process("CNNPredictor", Target.CPP);
+        fileContentMap.put(temp.getKey(), temp.getValue());
+
+        temp = controller.process("CNNSupervisedTrainer", Target.PYTHON);
         fileContentMap.put(temp.getKey(), temp.getValue());
 
         temp = controller.process("execute", Target.CPP);

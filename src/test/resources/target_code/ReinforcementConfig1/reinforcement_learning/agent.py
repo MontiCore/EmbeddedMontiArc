@@ -114,6 +114,8 @@ class Agent(object):
         agent_session_file = os.path.join(session_dir, 'agent.p')
         logger = self._logger
 
+        self._training_stats.save_stats(self._output_directory, episode=self._current_episode)
+
         self._make_pickle_ready(session_dir)
 
         with open(agent_session_file, 'wb') as f:
@@ -177,6 +179,9 @@ class Agent(object):
         return states, actions, rewards, next_states, terminals
 
     def evaluate(self, target=None, sample_games=100, verbose=True):
+        if sample_games <= 0:
+            return 0
+
         target = self._target_score if target is None else target
         if target:
             target_achieved = 0
@@ -268,8 +273,9 @@ class Agent(object):
 
     def _save_net(self, net, filename, filedir=None):
         filedir = self._output_directory if filedir is None else filedir
-        filename = os.path.join(filedir, filename + '.params')
-        net.save_parameters(filename)
+        filename = os.path.join(filedir, filename)
+        net.save_parameters(filename + '.params')
+        net.export(filename, epoch=0)
 
     def save_best_network(self, path, epoch=0):
         self._logger.info(
@@ -367,6 +373,8 @@ class DdpgAgent(Agent):
 
     def _make_pickle_ready(self, session_dir):
         super(DdpgAgent, self)._make_pickle_ready(session_dir)
+        self._save_net(self._actor, 'current_actor')
+
         self._save_net(self._actor, 'actor', session_dir)
         self._actor = None
         self._save_net(self._critic, 'critic', session_dir)
@@ -457,9 +465,9 @@ class DdpgAgent(Agent):
         else:
             self._training_stats = DdpgTrainingStats(episodes)
 
-        # Initialize target Q' and mu'
-        self._actor_target = self._copy_actor()
-        self._critic_target = self._copy_critic()
+            # Initialize target Q' and mu'
+            self._actor_target = self._copy_actor()
+            self._critic_target = self._copy_critic()
 
         # Initialize l2 loss for critic network
         l2_loss = gluon.loss.L2Loss()
@@ -540,7 +548,7 @@ class DdpgAgent(Agent):
                         actor_qvalues = tmp_critic(states, self._actor(states))
                         # For maximizing qvalues we have to multiply with -1
                         # as we use a minimizer
-                        actor_loss = -1 * actor_qvalues
+                        actor_loss = -1 * actor_qvalues.mean()
                     actor_loss.backward()
                     trainer_actor.step(self._minibatch_size)
 
@@ -732,6 +740,7 @@ class DqnAgent(Agent):
 
     def _make_pickle_ready(self, session_dir):
         super(DqnAgent, self)._make_pickle_ready(session_dir)
+        self._save_net(self._qnet, 'current_qnet')
         self._save_net(self._qnet, 'qnet', session_dir)
         self._qnet = None
         self._save_net(self._target_qnet, 'target_net', session_dir)
@@ -897,4 +906,4 @@ class DqnAgent(Agent):
 
     def _save_current_as_best_net(self):
         self._best_net = copy_net(
-            self._qnet, (1,) + self._state_dim, ctx=self._ctx)
+            self._qnet, self._state_dim, ctx=self._ctx)

@@ -2,6 +2,16 @@ import mxnet as mx
 import numpy as np
 from mxnet import gluon
 
+class OneHot(gluon.HybridBlock):
+    def __init__(self, size, **kwargs):
+        super(OneHot, self).__init__(**kwargs)
+        with self.name_scope():
+            self.size = size
+
+    def hybrid_forward(self, F, x):
+        return F.one_hot(indices=F.argmax(data=x, axis=1), depth=self.size)
+
+
 class Softmax(gluon.HybridBlock):
     def __init__(self, **kwargs):
         super(Softmax, self).__init__(**kwargs)
@@ -36,9 +46,9 @@ class ZScoreNormalization(gluon.HybridBlock):
         super(ZScoreNormalization, self).__init__(**kwargs)
         with self.name_scope():
             self.data_mean = self.params.get('data_mean', shape=data_mean.shape,
-                                             init=mx.init.Constant(data_mean.asnumpy().tolist()), differentiable=False)
+                init=mx.init.Constant(data_mean.asnumpy().tolist()), differentiable=False)
             self.data_std = self.params.get('data_std', shape=data_mean.shape,
-                                            init=mx.init.Constant(data_std.asnumpy().tolist()), differentiable=False)
+                init=mx.init.Constant(data_std.asnumpy().tolist()), differentiable=False)
 
     def hybrid_forward(self, F, x, data_mean, data_std):
         x = F.broadcast_sub(x, data_mean)
@@ -54,9 +64,9 @@ class Padding(gluon.HybridBlock):
 
     def hybrid_forward(self, F, x):
         x = F.pad(data=x,
-                  mode='constant',
-                  pad_width=self.pad_width,
-                  constant_value=0)
+            mode='constant',
+            pad_width=self.pad_width,
+            constant_value=0)
         return x
 
 
@@ -68,21 +78,23 @@ class NoNormalization(gluon.HybridBlock):
         return x
 
 
-class Net(gluon.HybridBlock):
+class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net, self).__init__(**kwargs)
+        super(Net_0, self).__init__(**kwargs)
+        self.last_layers = {}
         with self.name_scope():
-            if not data_mean is None:
-                assert(not data_std is None)
-                self.data_input_normalization = ZScoreNormalization(data_mean=data_mean, data_std=data_std)
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_data = ZScoreNormalization(data_mean=data_mean['data'],
+                                                                               data_std=data_std['data'])
             else:
-                self.data_input_normalization = NoNormalization()
+                self.input_normalization_data = NoNormalization()
 
             self.conv2_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv2_1_ = gluon.nn.Conv2D(channels=8,
-                                            kernel_size=(3,3),
-                                            strides=(1,1),
-                                            use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv2_1_, output shape: {[8,32,32]}
 
             self.batchnorm2_1_ = gluon.nn.BatchNorm()
@@ -91,18 +103,18 @@ class Net(gluon.HybridBlock):
             self.relu2_1_ = gluon.nn.Activation(activation='relu')
             self.conv3_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv3_1_ = gluon.nn.Conv2D(channels=8,
-                                            kernel_size=(3,3),
-                                            strides=(1,1),
-                                            use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv3_1_, output shape: {[8,32,32]}
 
             self.batchnorm3_1_ = gluon.nn.BatchNorm()
             # batchnorm3_1_, output shape: {[8,32,32]}
 
             self.conv2_2_ = gluon.nn.Conv2D(channels=8,
-                                            kernel_size=(1,1),
-                                            strides=(1,1),
-                                            use_bias=True)
+                kernel_size=(1,1),
+                strides=(1,1),
+                use_bias=True)
             # conv2_2_, output shape: {[8,32,32]}
 
             self.batchnorm2_2_ = gluon.nn.BatchNorm()
@@ -111,9 +123,9 @@ class Net(gluon.HybridBlock):
             self.relu4_ = gluon.nn.Activation(activation='relu')
             self.conv5_1_padding = Padding(padding=(0,0,0,0,1,0,1,0))
             self.conv5_1_ = gluon.nn.Conv2D(channels=16,
-                                            kernel_size=(3,3),
-                                            strides=(2,2),
-                                            use_bias=True)
+                kernel_size=(3,3),
+                strides=(2,2),
+                use_bias=True)
             # conv5_1_, output shape: {[16,16,16]}
 
             self.batchnorm5_1_ = gluon.nn.BatchNorm()
@@ -122,18 +134,18 @@ class Net(gluon.HybridBlock):
             self.relu5_1_ = gluon.nn.Activation(activation='relu')
             self.conv6_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv6_1_ = gluon.nn.Conv2D(channels=16,
-                                            kernel_size=(3,3),
-                                            strides=(1,1),
-                                            use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv6_1_, output shape: {[16,16,16]}
 
             self.batchnorm6_1_ = gluon.nn.BatchNorm()
             # batchnorm6_1_, output shape: {[16,16,16]}
 
             self.conv5_2_ = gluon.nn.Conv2D(channels=16,
-                                            kernel_size=(1,1),
-                                            strides=(2,2),
-                                            use_bias=True)
+                kernel_size=(1,1),
+                strides=(2,2),
+                use_bias=True)
             # conv5_2_, output shape: {[16,16,16]}
 
             self.batchnorm5_2_ = gluon.nn.BatchNorm()
@@ -142,9 +154,9 @@ class Net(gluon.HybridBlock):
             self.relu7_ = gluon.nn.Activation(activation='relu')
             self.conv8_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv8_1_ = gluon.nn.Conv2D(channels=16,
-                                            kernel_size=(3,3),
-                                            strides=(1,1),
-                                            use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv8_1_, output shape: {[16,16,16]}
 
             self.batchnorm8_1_ = gluon.nn.BatchNorm()
@@ -153,9 +165,9 @@ class Net(gluon.HybridBlock):
             self.relu8_1_ = gluon.nn.Activation(activation='relu')
             self.conv9_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv9_1_ = gluon.nn.Conv2D(channels=16,
-                                            kernel_size=(3,3),
-                                            strides=(1,1),
-                                            use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv9_1_, output shape: {[16,16,16]}
 
             self.batchnorm9_1_ = gluon.nn.BatchNorm()
@@ -164,9 +176,9 @@ class Net(gluon.HybridBlock):
             self.relu10_ = gluon.nn.Activation(activation='relu')
             self.conv11_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv11_1_ = gluon.nn.Conv2D(channels=16,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv11_1_, output shape: {[16,16,16]}
 
             self.batchnorm11_1_ = gluon.nn.BatchNorm()
@@ -175,9 +187,9 @@ class Net(gluon.HybridBlock):
             self.relu11_1_ = gluon.nn.Activation(activation='relu')
             self.conv12_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv12_1_ = gluon.nn.Conv2D(channels=16,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv12_1_, output shape: {[16,16,16]}
 
             self.batchnorm12_1_ = gluon.nn.BatchNorm()
@@ -186,9 +198,9 @@ class Net(gluon.HybridBlock):
             self.relu13_ = gluon.nn.Activation(activation='relu')
             self.conv14_1_padding = Padding(padding=(0,0,0,0,1,0,1,0))
             self.conv14_1_ = gluon.nn.Conv2D(channels=32,
-                                             kernel_size=(3,3),
-                                             strides=(2,2),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(2,2),
+                use_bias=True)
             # conv14_1_, output shape: {[32,8,8]}
 
             self.batchnorm14_1_ = gluon.nn.BatchNorm()
@@ -197,18 +209,18 @@ class Net(gluon.HybridBlock):
             self.relu14_1_ = gluon.nn.Activation(activation='relu')
             self.conv15_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv15_1_ = gluon.nn.Conv2D(channels=32,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv15_1_, output shape: {[32,8,8]}
 
             self.batchnorm15_1_ = gluon.nn.BatchNorm()
             # batchnorm15_1_, output shape: {[32,8,8]}
 
             self.conv14_2_ = gluon.nn.Conv2D(channels=32,
-                                             kernel_size=(1,1),
-                                             strides=(2,2),
-                                             use_bias=True)
+                kernel_size=(1,1),
+                strides=(2,2),
+                use_bias=True)
             # conv14_2_, output shape: {[32,8,8]}
 
             self.batchnorm14_2_ = gluon.nn.BatchNorm()
@@ -217,9 +229,9 @@ class Net(gluon.HybridBlock):
             self.relu16_ = gluon.nn.Activation(activation='relu')
             self.conv17_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv17_1_ = gluon.nn.Conv2D(channels=32,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv17_1_, output shape: {[32,8,8]}
 
             self.batchnorm17_1_ = gluon.nn.BatchNorm()
@@ -228,9 +240,9 @@ class Net(gluon.HybridBlock):
             self.relu17_1_ = gluon.nn.Activation(activation='relu')
             self.conv18_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv18_1_ = gluon.nn.Conv2D(channels=32,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv18_1_, output shape: {[32,8,8]}
 
             self.batchnorm18_1_ = gluon.nn.BatchNorm()
@@ -239,9 +251,9 @@ class Net(gluon.HybridBlock):
             self.relu19_ = gluon.nn.Activation(activation='relu')
             self.conv20_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv20_1_ = gluon.nn.Conv2D(channels=32,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv20_1_, output shape: {[32,8,8]}
 
             self.batchnorm20_1_ = gluon.nn.BatchNorm()
@@ -250,9 +262,9 @@ class Net(gluon.HybridBlock):
             self.relu20_1_ = gluon.nn.Activation(activation='relu')
             self.conv21_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv21_1_ = gluon.nn.Conv2D(channels=32,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv21_1_, output shape: {[32,8,8]}
 
             self.batchnorm21_1_ = gluon.nn.BatchNorm()
@@ -261,9 +273,9 @@ class Net(gluon.HybridBlock):
             self.relu22_ = gluon.nn.Activation(activation='relu')
             self.conv23_1_padding = Padding(padding=(0,0,0,0,1,0,1,0))
             self.conv23_1_ = gluon.nn.Conv2D(channels=64,
-                                             kernel_size=(3,3),
-                                             strides=(2,2),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(2,2),
+                use_bias=True)
             # conv23_1_, output shape: {[64,4,4]}
 
             self.batchnorm23_1_ = gluon.nn.BatchNorm()
@@ -272,18 +284,18 @@ class Net(gluon.HybridBlock):
             self.relu23_1_ = gluon.nn.Activation(activation='relu')
             self.conv24_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv24_1_ = gluon.nn.Conv2D(channels=64,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv24_1_, output shape: {[64,4,4]}
 
             self.batchnorm24_1_ = gluon.nn.BatchNorm()
             # batchnorm24_1_, output shape: {[64,4,4]}
 
             self.conv23_2_ = gluon.nn.Conv2D(channels=64,
-                                             kernel_size=(1,1),
-                                             strides=(2,2),
-                                             use_bias=True)
+                kernel_size=(1,1),
+                strides=(2,2),
+                use_bias=True)
             # conv23_2_, output shape: {[64,4,4]}
 
             self.batchnorm23_2_ = gluon.nn.BatchNorm()
@@ -292,9 +304,9 @@ class Net(gluon.HybridBlock):
             self.relu25_ = gluon.nn.Activation(activation='relu')
             self.conv26_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv26_1_ = gluon.nn.Conv2D(channels=64,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv26_1_, output shape: {[64,4,4]}
 
             self.batchnorm26_1_ = gluon.nn.BatchNorm()
@@ -303,9 +315,9 @@ class Net(gluon.HybridBlock):
             self.relu26_1_ = gluon.nn.Activation(activation='relu')
             self.conv27_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv27_1_ = gluon.nn.Conv2D(channels=64,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv27_1_, output shape: {[64,4,4]}
 
             self.batchnorm27_1_ = gluon.nn.BatchNorm()
@@ -314,9 +326,9 @@ class Net(gluon.HybridBlock):
             self.relu28_ = gluon.nn.Activation(activation='relu')
             self.conv29_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv29_1_ = gluon.nn.Conv2D(channels=64,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv29_1_, output shape: {[64,4,4]}
 
             self.batchnorm29_1_ = gluon.nn.BatchNorm()
@@ -325,9 +337,9 @@ class Net(gluon.HybridBlock):
             self.relu29_1_ = gluon.nn.Activation(activation='relu')
             self.conv30_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv30_1_ = gluon.nn.Conv2D(channels=64,
-                                             kernel_size=(3,3),
-                                             strides=(1,1),
-                                             use_bias=True)
+                kernel_size=(3,3),
+                strides=(1,1),
+                use_bias=True)
             # conv30_1_, output shape: {[64,4,4]}
 
             self.batchnorm30_1_ = gluon.nn.BatchNorm()
@@ -347,10 +359,9 @@ class Net(gluon.HybridBlock):
             self.softmax32_ = Softmax()
 
 
-
-
     def hybrid_forward(self, F, data):
-        data = self.data_input_normalization(data)
+        outputs = []
+        data = self.input_normalization_data(data)
         conv2_1_padding = self.conv2_1_padding(data)
         conv2_1_ = self.conv2_1_(conv2_1_padding)
         batchnorm2_1_ = self.batchnorm2_1_(conv2_1_)
@@ -454,4 +465,6 @@ class Net(gluon.HybridBlock):
         dropout31_ = self.dropout31_(fc31_)
         fc32_ = self.fc32_(dropout31_)
         softmax32_ = self.softmax32_(fc32_)
-        return softmax32_
+        outputs.append(softmax32_)
+
+        return outputs[0]
