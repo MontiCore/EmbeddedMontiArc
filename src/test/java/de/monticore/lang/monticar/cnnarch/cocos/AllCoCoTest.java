@@ -66,8 +66,11 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("valid_tests", "Alexnet_alt2");
         checkValid("valid_tests", "MultipleOutputs");
         checkValid("valid_tests", "MultipleStreams");
+<<<<<<< HEAD
         checkValid("valid_tests", "Alexnet_alt_OneHotOutput");
         checkValid("valid_tests", "RNNencdec");
+=======
+>>>>>>> develop
     }
 
     @Test

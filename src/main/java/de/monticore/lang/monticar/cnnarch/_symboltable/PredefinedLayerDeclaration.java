@@ -90,6 +90,36 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
     }
 
+    protected void errorIfInputChannelSizeIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int channels) {
+        for (ArchTypeSymbol inputType : inputTypes) {
+            if (inputType.getChannels() != channels) {
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Input channel size is "
+                                + inputType.getChannels() + " but needs to be " + channels + "."
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
+    protected void errorIfInputHeightIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int height) {
+        for (ArchTypeSymbol inputType : inputTypes) {
+            if (inputType.getHeight() != height) {
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Input height is "
+                                + inputType.getHeight() + " but needs to be " + height + "."
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
+    protected void errorIfInputWidthIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int width) {
+        for (ArchTypeSymbol inputType : inputTypes) {
+            if (inputType.getWidth() != width) {
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Input width is "
+                                + inputType.getWidth() + " but needs to be " + width + "."
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
     //check input for convolution and pooling
     protected static void errorIfInputSmallerThanKernel(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
         if (!inputTypes.isEmpty()) {
@@ -146,6 +176,16 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         else{
             throw new IllegalStateException("border_mode is " + borderModeSetting + ". This should never happen.");
         }
+    }
+
+    protected static void computeOneHotOutputSize(LayerSymbol layer){
+        int outputChannels = 0;
+
+        if(layer.getOutputElement().get() instanceof IOSymbol && layer.getOutputElement().get().isOutput()) {
+            outputChannels = ((IOSymbol) layer.getOutputElement().get()).getDefinition().getType().getChannels();
+        }
+
+        layer.setIntValue(AllPredefinedLayers.SIZE_NAME, outputChannels);
     }
 
     //padding with border_mode=valid, no padding

@@ -329,6 +329,50 @@ public class LayerSymbol extends ArchitectureElementSymbol {
         }
     }
 
+    public void setIntValue(String parameterName, int value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setIntTupleValue(String parameterName, List<Object> tupleValues) {
+        setTValue(parameterName, tupleValues, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setBooleanValue(String parameterName, boolean value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setStringValue(String parameterName, String value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setDoubleValue(String parameterName, double value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setValue(String parameterName, Object value) {
+        ArchSimpleExpressionSymbol res = new ArchSimpleExpressionSymbol();
+        res.setValue(value);
+        setTValue(parameterName, res, Function.identity());
+    }
+
+    public <T> void setTValue(String parameterName, T value, Function<T, ArchSimpleExpressionSymbol> of) {
+        Optional<VariableSymbol> param = getDeclaration().getParameter(parameterName);
+
+        if (param.isPresent()) {
+            Optional<ArgumentSymbol> arg = getArgument(parameterName);
+            ArchSimpleExpressionSymbol expression = of.apply(value);
+
+            if (arg.isPresent()) {
+                arg.get().setRhs(expression);
+            }
+            else {
+                arg = Optional.of(new ArgumentSymbol(parameterName));
+                arg.get().setRhs(expression);
+                arguments.add(arg.get());
+            }
+        }
+    }
+
     @Override
     public Optional<Integer> getParallelLength(){
         int length = -1;
