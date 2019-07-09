@@ -51,7 +51,7 @@
     	<artifactId>embedded-montiarc</artifactId>
     	<!-- or newer version -->
     	<version>0.1.10-SNAPSHOT</version>
-    <dependency>
+    </dependency>
 
     <dependency>
       <groupId>de.se_rwth.commons</groupId>

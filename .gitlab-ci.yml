@@ -1,10 +1,22 @@
 stages:
-- linux
+- project
+- adapter
 
-BranchJobLinux:
-  stage: linux
+BranchJobProject:
+  stage: project
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2someip
   script:
   - mvn clean install -s settings.xml
   except:
   - master
+
+BranchJobAdapter:
+  stage: adapter
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2someip
+  script:
+  - cd someip_adapter
+  - cmake .
+  - make
+  except:
+  - master
+
