@@ -120,7 +120,7 @@ class Net_0(gluon.HybridBlock):
             self.fc3_ = gluon.nn.Dense(units=10, use_bias=True)
             # fc3_, output shape: {[10,1,1]}
 
-        self.last_layers['predictions'] = 'softmax'
+            self.softmax3_ = Softmax()
 
 
     def hybrid_forward(self, F, image):
@@ -134,6 +134,7 @@ class Net_0(gluon.HybridBlock):
         fc2_ = self.fc2_(fc2_flatten_)
         relu2_ = self.relu2_(fc2_)
         fc3_ = self.fc3_(relu2_)
-        outputs.append(fc3_)
+        softmax3_ = self.softmax3_(fc3_)
+        outputs.append(softmax3_)
 
         return outputs[0]
