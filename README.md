@@ -392,7 +392,14 @@ All predefined methods start with a capital letter and all constructed methods h
   Opposite of *Concatenate*. Handles a single input stream and splits it into *n* output streams. 
   The output streams have the same height and width as the input stream and a number channels which is in general `input_channels / n`. 
   The last output stream will have a higher number of channels than the other if `input_channels` is not divisible by `n`.
+
   
   * **n** (integer > 0, required): The number of output streams. Cannot be higher than the number of input channels.
+
+* **OneHot(size)**
+
+Creates a OneHot vector of a given size, given a scalar in the previous layer that determines the OneHot-Index (the index at which the *1* in the vector will be placed).
+
+  * **size** (integer > 0, optional): The OneHot-vector's size. Can be omitted to automatically use the output size of the architecture.
   
   
