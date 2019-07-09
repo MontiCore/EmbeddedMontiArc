@@ -34,7 +34,7 @@ public class SomeIPTemplates {
     public static String generateSomeIPAdapter(SomeIPAdapterModel model) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("model", model);
-        return generate(SOMEIP_PrettyPrint, data);
+        return generate(SOMEIP_PRETTYPRINT, data);
     }
 
 
