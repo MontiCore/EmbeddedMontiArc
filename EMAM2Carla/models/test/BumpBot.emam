@@ -17,17 +17,9 @@ component BumpBot{
 		test.manual_gear_shift = false;
 		Q tmp = asin(orientation.z);
 		if 1-(abs(tmp)/(M_PI/4))*collision_normale.x + 2*tmp/(M_PI/4) * collision_normale.y > 0.0
-//			if test.reverse
-//				test.reverse = false;
-//			else
 				test.reverse = true;
-//			end
 		else
-//	                if test.reverse
-//                              test.reverse = true;
-//                      else 
                                 test.reverse = false;
-//                      end
 		end			
 	}
 }
