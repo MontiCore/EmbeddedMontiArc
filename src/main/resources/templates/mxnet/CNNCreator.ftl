@@ -254,7 +254,7 @@ class ${tc.fileNameWithoutEnding}:
 
 
     def construct(self, context, data_mean=None, data_std=None):
-${tc.include(tc.architecture.body)}
+${tc.include(tc.architecture.streams[0])}
         self.module = mx.mod.Module(symbol=mx.symbol.Group([${tc.join(tc.architectureOutputs, ",")}]),
                                          data_names=self._input_names_,
                                          label_names=self._output_names_,

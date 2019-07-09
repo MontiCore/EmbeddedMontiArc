@@ -9,7 +9,7 @@
 
 #include <CNNBufferFile.h>
 
-class CNNPredictor_Alexnet{
+class CNNPredictor_Alexnet_0{
 public:
     const std::string json_file = "model/Alexnet/model_newest-symbol.json";
     const std::string param_file = "model/Alexnet/model_newest-0000.params";
@@ -20,11 +20,11 @@ public:
 
     PredictorHandle handle;
 
-    explicit CNNPredictor_Alexnet(){
+    explicit CNNPredictor_Alexnet_0(){
         init(json_file, param_file, input_keys, input_shapes, use_gpu);
     }
 
-    ~CNNPredictor_Alexnet(){
+    ~CNNPredictor_Alexnet_0(){
         if(handle) MXPredFree(handle);
     }
 

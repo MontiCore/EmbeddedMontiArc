@@ -20,18 +20,8 @@
  */
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
-//can be removed
-public enum Target {
-    PYTHON{
-        @Override
-        public String toString() {
-            return ".py";
-        }
-    },
-    CPP{
-        @Override
-        public String toString() {
-            return ".h";
-        }
-    }
+import de.monticore.lang.monticar.cnnarch.generator.TrainParamSupportChecker;
+
+public class CNNArch2MxNetTrainParamSupportChecker extends TrainParamSupportChecker {
+
 }

@@ -20,14 +20,13 @@
  */
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
-import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.ArchitectureSupportChecker;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchSymbolCompiler;
+import de.monticore.lang.monticar.cnnarch.generator.DataPathConfigParser;
+import de.monticore.lang.monticar.cnnarch.generator.LayerSupportChecker;
+import de.monticore.lang.monticar.cnnarch.generator.Target;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.checker.AllowAllLayerSupportChecker;
-import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
-import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
-import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
@@ -36,33 +35,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CNNArch2MxNet extends CNNArchGenerator {
+
     public CNNArch2MxNet() {
-        setGenerationTargetPath("./target/generated-sources-cnnarch/");
-    }
-
-    public void generate(Scope scope, String rootModelName){
-        CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(new AllowAllLayerSupportChecker());
-        ArchitectureSymbol architectureSymbol = symbolCompiler.compileArchitectureSymbol(scope, rootModelName);
-
-        try{
-            String confPath = getModelsDirPath() + "/data_paths.txt";
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(confPath);
-            String dataPath = newParserConfig.getDataPath(rootModelName);
-            architectureSymbol.setDataPath(dataPath);
-            architectureSymbol.setComponentName(rootModelName);
-            generateFiles(architectureSymbol);
-        } catch (IOException e){
-            Log.error(e.toString());
-        }
+        architectureSupportChecker = new CNNArch2MxNetArchitectureSupportChecker();
+        layerSupportChecker = new CNNArch2MxNetLayerSupportChecker();
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public Map<String, String> generateStrings(ArchitectureSymbol architecture){
-        TemplateConfiguration templateConfiguration = new MxNetTemplateConfiguration();
-
         Map<String, String> fileContentMap = new HashMap<>();
-        CNNArch2MxNetTemplateController archTc
-                = new CNNArch2MxNetTemplateController(architecture, templateConfiguration);
+        CNNArch2MxNetTemplateController archTc = new CNNArch2MxNetTemplateController(architecture);
         Map.Entry<String, String> temp;
 
         temp = archTc.process("CNNPredictor", Target.CPP);
@@ -77,32 +59,6 @@ public class CNNArch2MxNet extends CNNArchGenerator {
         temp = archTc.process("CNNBufferFile", Target.CPP);
         fileContentMap.put("CNNBufferFile.h", temp.getValue());
 
-        checkValidGeneration(architecture);
-
-        return fileContentMap;
-    }
-
-    public void generateFromFilecontentsMap(Map<String, String> fileContentMap) throws IOException {
-        GeneratorCPP genCPP = new GeneratorCPP();
-        genCPP.setGenerationTargetPath(getGenerationTargetPath());
-        for (String fileName : fileContentMap.keySet()){
-            genCPP.generateFile(new FileContent(fileContentMap.get(fileName), fileName));
-        }
-    }
-
-    public Map<String, String> generateCMakeContent(String rootModelName) {
-        // model name should start with a lower case letter. If it is a component, replace dot . by _
-        rootModelName = rootModelName.replace('.', '_').replace('[', '_').replace(']', '_');
-        rootModelName =  rootModelName.substring(0, 1).toLowerCase() + rootModelName.substring(1);
-
-        CMakeConfig cMakeConfig = new CMakeConfig(rootModelName);
-        cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
-        cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} mxnet)");
-
-        Map<String,String> fileContentMap = new HashMap<>();
-        for (FileContent fileContent : cMakeConfig.generateCMakeFiles()){
-            fileContentMap.put(fileContent.getFileName(), fileContent.getFileContent());
-        }
         return fileContentMap;
     }
 }

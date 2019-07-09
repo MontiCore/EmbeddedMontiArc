@@ -23,6 +23,7 @@ package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -30,9 +31,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import org.junit.contrib.java.lang.system.Assertion;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import static junit.framework.TestCase.assertTrue;
 
 public class GenerationTest extends AbstractSymtabTest{
+    @Rule
+    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
     @Before
     public void setUp() {
@@ -90,13 +95,17 @@ public class GenerationTest extends AbstractSymtabTest{
                         "execute_VGG16"));
     }
 
-
     @Test
     public void testThreeInputCNNGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
+        exit.expectSystemExit();
+        exit.checkAssertionAfterwards(new Assertion() {
+            public void checkAssertion() {
+                assertTrue(Log.getFindings().size() == 2);
+            }
+        });
         CNNArch2MxNetCli.main(args);
-        assertTrue(Log.getFindings().size() == 1);
     }
 
     @Test
@@ -108,11 +117,29 @@ public class GenerationTest extends AbstractSymtabTest{
     }
 
     @Test
+    public void testMultipleStreams() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/invalid_tests", "-r", "MultipleStreams"};
+        exit.expectSystemExit();
+        exit.checkAssertionAfterwards(new Assertion() {
+            public void checkAssertion() {
+                assertTrue(Log.getFindings().size() == 2);
+            }
+        });
+        CNNArch2MxNetCli.main(args);
+    }
+
+    @Test
     public void testMultipleOutputs() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
+        String[] args = {"-m", "src/test/resources/invalid_tests", "-r", "MultipleOutputs"};
+        exit.expectSystemExit();
+        exit.checkAssertionAfterwards(new Assertion() {
+            public void checkAssertion() {
+                assertTrue(Log.getFindings().size() == 2);
+            }
+        });
         CNNArch2MxNetCli.main(args);
-        assertTrue(Log.getFindings().size() == 1);
     }
 
     @Test

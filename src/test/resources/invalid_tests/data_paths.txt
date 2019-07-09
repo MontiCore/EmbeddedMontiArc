@@ -1,3 +1,2 @@
-Alexnet data/Alexnet
-CifarClassifierNetwork data/CifarClassifierNetwork
-VGG16 data/VGG16
+MultipleStreams data/MultipleStreams
+MultipleOutputs data/MultipleOutputs

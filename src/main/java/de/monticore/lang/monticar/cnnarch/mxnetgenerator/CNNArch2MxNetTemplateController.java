@@ -1,17 +1,15 @@
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
+import de.monticore.lang.monticar.cnnarch.generator.ArchitectureElementData;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchTemplateController;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 
 import java.io.Writer;
 
-/**
- *
- */
 public class CNNArch2MxNetTemplateController extends CNNArchTemplateController {
 
-    public CNNArch2MxNetTemplateController(ArchitectureSymbol architecture,
-                                           TemplateConfiguration templateConfiguration) {
-        super(architecture, templateConfiguration);
+    public CNNArch2MxNetTemplateController(ArchitectureSymbol architecture) {
+        super(architecture, new MxNetTemplateConfiguration());
     }
 
     public void include(IOSymbol ioElement, Writer writer){
@@ -60,7 +58,7 @@ public class CNNArch2MxNetTemplateController extends CNNArchTemplateController {
     public void include(ArchitectureElementSymbol architectureElement, Writer writer){
         if (architectureElement instanceof CompositeElementSymbol){
             include((CompositeElementSymbol) architectureElement, writer);
-        } else if (architectureElement instanceof LayerSymbol){
+        } else if (architectureElement instanceof LayerSymbol) {
             include((LayerSymbol) architectureElement, writer);
         } else {
             include((IOSymbol) architectureElement, writer);
