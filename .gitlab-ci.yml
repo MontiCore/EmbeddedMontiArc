@@ -11,5 +11,5 @@ buildLinux_jar:
         stage: build
         image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/emam-carla-ros-bridge
         script:
-               - cd EMAM2Carla && source /opt/ros/kinetic/setup.bash && cd /usr/src/emam2carla/EMAM2Carla/ && rm -rf target && java -jar ../mw-generator.jar valid.json
+               - cd EMAM2Carla && source /opt/ros/kinetic/setup.bash && rm -rf target && java -jar ../mw-generator.jar valid.json
 
