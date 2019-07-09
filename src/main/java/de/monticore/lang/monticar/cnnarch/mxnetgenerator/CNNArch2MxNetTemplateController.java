@@ -35,10 +35,8 @@ public class CNNArch2MxNetTemplateController extends CNNArchTemplateController {
 
         if (layer.isAtomic()){
             ArchitectureElementSymbol nextElement = layer.getOutputElement().get();
-            if (!isSoftmaxOutput(nextElement) && !isLogisticRegressionOutput(nextElement)){
                 String templateName = layer.getDeclaration().getName();
                 include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer);
-            }
         } else {
             include(layer.getResolvedThis().get(), writer);
         }
