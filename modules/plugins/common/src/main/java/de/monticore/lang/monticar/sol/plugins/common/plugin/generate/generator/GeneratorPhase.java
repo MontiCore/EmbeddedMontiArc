@@ -20,6 +20,7 @@ public interface GeneratorPhase {
 
     /**
      * Triggers configuration of this generation phase.
+     * @throws Exception An exception which might occur during configuration.
      */
     default void configure() throws Exception {}
 

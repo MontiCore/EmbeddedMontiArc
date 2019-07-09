@@ -18,6 +18,7 @@ public interface TemplateFactory {
     /**
      * @param templatePath The relative path to the template file.
      * @param outputPath The relative path to which the filled template should be generated to.
+     * @param suffix The suffix which will be appended to the generated file if handwritten code exists.
      * @return A configured template.
      */
     Template create(@Assisted("templatePath") String templatePath, @Assisted("outputPath") String outputPath,
