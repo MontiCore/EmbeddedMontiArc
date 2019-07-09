@@ -215,8 +215,13 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     UseDoubleDQNEntry implements ConfigEntry = name:"use_double_dqn" ":" value:BooleanValue;
 
 
-    // DDPG exclusive parameters
+    // DDPG and TD3 exclusive parameters
     CriticNetworkEntry implements ConfigEntry = name:"critic" ":" value:ComponentNameValue;
     SoftTargetUpdateRateEntry implements ConfigEntry = name:"soft_target_update_rate" ":" value:NumberValue;
     CriticOptimizerEntry implements ConfigEntry = name:"critic_optimizer" ":" value:OptimizerValue;
+
+    // TD3 exclusive parameters
+    PolicyNoiseEntry implements ConfigEntry = name:"policy_noise" ":" value:NumberValue;
+    NoiseClipEntry implements ConfigEntry = name:"noise_clip" ":" value:NumberValue;
+    PolicyDelayEntry implements ConfigEntry = name:"policy_delay" ":" value:IntegerValue;
 }

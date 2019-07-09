@@ -108,7 +108,17 @@ class ParameterAlgorithmMapping {
         ASTStrategyOUSigma.class
     );
 
-    private static final List<Class> EXCLUSIVE_TD3_PARAMETERS = Lists.newArrayList(EXCLUSIVE_DDPG_PARAMETERS);
+    private static final List<Class> EXCLUSIVE_TD3_PARAMETERS = Lists.newArrayList(
+        ASTCriticNetworkEntry.class,
+        ASTSoftTargetUpdateRateEntry.class,
+        ASTCriticOptimizerEntry.class,
+        ASTStrategyOUMu.class,
+        ASTStrategyOUTheta.class,
+        ASTStrategyOUSigma.class,
+        ASTPolicyNoiseEntry.class,
+        ASTNoiseClipEntry.class,
+        ASTPolicyDelayEntry.class
+    );
 
     ParameterAlgorithmMapping() {
 
@@ -118,7 +128,8 @@ class ParameterAlgorithmMapping {
         return GENERAL_PARAMETERS.contains(entryClazz)
             || GENERAL_REINFORCEMENT_PARAMETERS.contains(entryClazz)
             || EXCLUSIVE_DQN_PARAMETERS.contains(entryClazz)
-            || EXCLUSIVE_DDPG_PARAMETERS.contains(entryClazz);
+            || EXCLUSIVE_DDPG_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_TD3_PARAMETERS.contains(entryClazz);
     }
 
     boolean isSupervisedLearningParameter(Class<? extends ASTEntry> entryClazz) {
