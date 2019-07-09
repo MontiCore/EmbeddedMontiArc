@@ -114,7 +114,6 @@ class Net_0(gluon.HybridBlock):
             self.fc5_ = gluon.nn.Dense(units=1, use_bias=True)
             # fc5_, output shape: {[1,1,1]}
 
-        self.last_layers['qvalue'] = 'linear'
 
 
     def hybrid_forward(self, F, state, action):

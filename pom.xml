@@ -8,7 +8,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-gluon-generator</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.2.2-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -16,8 +16,8 @@
 
     <!-- .. SE-Libraries .................................................. -->
       <CNNArch.version>0.3.1-SNAPSHOT</CNNArch.version>
-      <CNNTrain.version>0.3.2-SNAPSHOT</CNNTrain.version>
-      <CNNArch2X.version>0.0.1-SNAPSHOT</CNNArch2X.version>
+      <CNNTrain.version>0.3.4-SNAPSHOT</CNNTrain.version>
+      <CNNArch2X.version>0.0.2-SNAPSHOT</CNNArch2X.version>
       <embedded-montiarc-math-opt-generator>0.1.4</embedded-montiarc-math-opt-generator>
       <EMADL2PythonWrapper.version>0.0.1</EMADL2PythonWrapper.version>
     
