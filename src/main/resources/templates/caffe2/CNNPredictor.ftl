@@ -23,7 +23,7 @@ CAFFE2_DEFINE_string(predict_net_${tc.fileNameWithoutEnding}, "./model/${tc.comp
 
 using namespace caffe2;
 
-class ${tc.fileNameWithoutEnding}{
+class ${tc.fileNameWithoutEnding}_0{
     private:
         TensorCPU input;
         Workspace workSpace;
@@ -32,11 +32,11 @@ class ${tc.fileNameWithoutEnding}{
     public:
         const std::vector<TIndex> input_shapes = {<#list tc.architecture.inputs as input>{1,${tc.join(input.definition.type.dimensions, ",")}}<#if input?has_next>,</#if></#list>};
 
-        explicit ${tc.fileNameWithoutEnding}(){
+        explicit ${tc.fileNameWithoutEnding}_0(){
             init(input_shapes);
         }
 
-        ~${tc.fileNameWithoutEnding}(){};
+        ~${tc.fileNameWithoutEnding}_0(){};
 
         void init(const std::vector<TIndex> &input_shapes){
             int n = 0;

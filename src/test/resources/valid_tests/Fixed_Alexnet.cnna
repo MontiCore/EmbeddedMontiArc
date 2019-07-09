@@ -39,5 +39,5 @@ architecture Fixed_Alexnet(){
     fc(->=2) ->
     FullyConnected(units=10) ->
     Softmax() ->
-    predictions
+    predictions;
 }

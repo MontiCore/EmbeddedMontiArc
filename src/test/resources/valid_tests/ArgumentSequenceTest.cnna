@@ -9,5 +9,5 @@ architecture ArgumentSequenceTest {
     Concatenate() ->
     FullyConnected(units=10) ->
     Softmax() ->
-    predictions
+    predictions;
 }

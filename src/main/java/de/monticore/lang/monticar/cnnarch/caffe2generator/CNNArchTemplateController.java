@@ -20,6 +20,9 @@
  */
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
+import de.monticore.lang.monticar.cnnarch.generator.LayerNameCreator;
+import de.monticore.lang.monticar.cnnarch.generator.Target;
+
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.predefined.Sigmoid;
 import de.monticore.lang.monticar.cnnarch.predefined.Softmax;

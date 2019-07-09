@@ -23,5 +23,5 @@ architecture Fixed_ThreeInputCNN_M14(){
     Relu() ->
     FullyConnected(units=3) ->
     Softmax() ->
-    predictions
+    predictions;
 }
