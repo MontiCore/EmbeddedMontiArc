@@ -374,6 +374,9 @@
                             <source>${java.version}</source>
                             <destDir>javadoc</destDir>
                             <reportOutputDirectory>${project.public}</reportOutputDirectory>
+                            <excludePackageNames>
+                                de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.*
+                            </excludePackageNames>
                             <sourceFileExcludes>
                                 <sourceFileExclude>**/generated-sources/**/*.java</sourceFileExclude>
                             </sourceFileExcludes>
