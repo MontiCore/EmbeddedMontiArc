@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import com.google.gson.internal.Streams;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
@@ -119,9 +118,9 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
 
     //check input for onehot layer
     protected static void errorIfInputSizeUnequalToOnehotSize(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
-        if (!inputTypes.isEmpty() && layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get() != 0) {
+        if (!inputTypes.isEmpty() && layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get() != 0) {
             int inputChannels = inputTypes.get(0).getChannels();
-            int onehotSize = layer.getIntValue(AllPredefinedLayers.ONE_HOT_SIZE_NAME).get();
+            int onehotSize = layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get();
 
             if (onehotSize != inputChannels){
                 Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE +
