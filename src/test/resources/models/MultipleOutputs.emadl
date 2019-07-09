@@ -24,6 +24,6 @@ component MultipleOutputs{
             [1] ->
             Softmax() ->
             pred[1]
-        )
+        );
     }
 }

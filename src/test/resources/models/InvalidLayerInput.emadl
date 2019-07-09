@@ -27,6 +27,6 @@ component InvalidLayerInput{
         fc() ->
         FullyConnected(units=1000) ->
         Softmax() ->
-        predictions
+        predictions;
     }
 }

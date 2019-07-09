@@ -63,8 +63,8 @@ public class InstanceTest extends AbstractSymtabTest {
         arch1.resolve();
         arch2.resolve();
 
-        int convChannels1 = ((LayerSymbol)((CompositeElementSymbol)arch1.getBody()).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
-        int convChannels2 = ((LayerSymbol)((CompositeElementSymbol)arch2.getBody()).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
+        int convChannels1 = ((LayerSymbol)arch1.getStreams().get(0).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
+        int convChannels2 = ((LayerSymbol)arch2.getStreams().get(0).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
 
         assertEquals(20, convChannels1);
         assertEquals(40, convChannels2);
