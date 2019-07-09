@@ -11,7 +11,7 @@ buildLinux_jar:
         stage: build
         image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/emam-carla-ros-bridge
         script:
-              - git clone git@git.rwth-aachen.de:monticore/EmbeddedMontiArc/generators/EMAM2RosCpp.git && cd EMAM2RosCpp  && mvn clean install -s settings.xml -U -DskipTests && cd ..
-              - git clone git@git.rwth-aachen.de:monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git && cd EMAM2Middleware && mvn clean install -s settings.xml -U -DskipTests && cp target/target/embedded-montiarc-math-middleware-generator-0.0.24-SNAPSHOT-jar-with-dependencies.jar ../../mw-generator.jar && cd ..
+              - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2RosCpp.git && cd EMAM2RosCpp  && mvn clean install -s settings.xml -U -DskipTests && cd ..
+              - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git && cd EMAM2Middleware && mvn clean install -s settings.xml -U -DskipTests && cp target/target/embedded-montiarc-math-middleware-generator-0.0.24-SNAPSHOT-jar-with-dependencies.jar ../../mw-generator.jar && cd ..
               - cd EMAM2Carla && source /opt/ros/kinetic/setup.bash && rm -rf target && java -jar ../mw-generator.jar valid.json
 
