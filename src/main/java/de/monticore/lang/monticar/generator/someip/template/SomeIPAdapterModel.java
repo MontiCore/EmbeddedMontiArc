@@ -33,7 +33,7 @@ public class SomeIPAdapterModel {
 			if(symbol.isPresent() && symbol.get().isKindOf(SomeIPConnectionKind.INSTANCE))
 			{
 				SomeIPConnectionSymbol sym = (SomeIPConnectionSymbol) symbol.get();
-				String serviceID = sym.getserviceID().isPresent()?sym.getserviceID().get():"unknown";
+				int serviceID = sym.getserviceID().isPresent()?sym.getserviceID().get():-1;
 				symbolKind = "someip, serviceID: " + serviceID;
 			}
 
