@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ArchitectureElementData {
-    
+
     private String name;
     private ArchitectureElementSymbol element;
     private CNNArchTemplateController templateController;
@@ -69,26 +69,6 @@ public class ArchitectureElementData {
 
     public List<String> getInputs(){
         return getTemplateController().getLayerInputs(getElement());
-    }
-
-    public boolean isLogisticRegressionOutput(){
-        return getTemplateController().isLogisticRegressionOutput(getElement());
-    }
-
-
-    public boolean isLinearRegressionOutput(){
-        boolean result = getTemplateController().isLinearRegressionOutput(getElement());
-        if (result){
-            Log.warn("The Output '" + getElement().getName() + "' is a linear regression output (squared loss) during training" +
-                            " because the previous architecture element is not a softmax (cross-entropy loss) or sigmoid (logistic regression loss) activation. " +
-                            "Other loss functions are currently not supported. "
-                    , getElement().getSourcePosition());
-        }
-        return result;
-    }
-
-    public boolean isSoftmaxOutput(){
-        return getTemplateController().isSoftmaxOutput(getElement());
     }
 
     public int getConstValue() {

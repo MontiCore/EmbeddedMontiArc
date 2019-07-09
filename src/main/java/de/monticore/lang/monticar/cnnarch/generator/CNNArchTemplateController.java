@@ -139,16 +139,12 @@ public abstract class CNNArchTemplateController {
     public List<String> getLayerInputs(ArchitectureElementSymbol layer){
         List<String> inputNames = new ArrayList<>();
 
-        if (isSoftmaxOutput(layer) || isLogisticRegressionOutput(layer)){
-            inputNames = getLayerInputs(layer.getInputElement().get());
-        } else {
-            for (ArchitectureElementSymbol input : layer.getPrevious()) {
-                if (input.getOutputTypes().size() == 1) {
-                    inputNames.add(getName(input));
-                } else {
-                    for (int i = 0; i < input.getOutputTypes().size(); i++) {
-                        inputNames.add(getName(input) + "[" + i + "]");
-                    }
+        for (ArchitectureElementSymbol input : layer.getPrevious()) {
+            if (input.getOutputTypes().size() == 1) {
+                inputNames.add(getName(input));
+            } else {
+                for (int i = 0; i < input.getOutputTypes().size(); i++) {
+                    inputNames.add(getName(input) + "[" + i + "]");
                 }
             }
         }
@@ -220,28 +216,4 @@ public abstract class CNNArchTemplateController {
         return stringBuilder.toString();
     }
 
-
-    public boolean isLogisticRegressionOutput(ArchitectureElementSymbol architectureElement){
-        return isTOutput(Sigmoid.class, architectureElement);
-    }
-
-    public boolean isLinearRegressionOutput(ArchitectureElementSymbol architectureElement){
-        return architectureElement.isOutput()
-                && !isLogisticRegressionOutput(architectureElement)
-                && !isSoftmaxOutput(architectureElement);
-    }
-
-    public boolean isSoftmaxOutput(ArchitectureElementSymbol architectureElement){
-        return isTOutput(Softmax.class, architectureElement);
-    }
-
-    private boolean isTOutput(Class inputPredefinedLayerClass, ArchitectureElementSymbol architectureElement){
-        if (architectureElement.isOutput()
-                && architectureElement.getInputElement().isPresent()
-                && architectureElement.getInputElement().get() instanceof LayerSymbol){
-            LayerSymbol inputLayer = (LayerSymbol) architectureElement.getInputElement().get();
-            return inputPredefinedLayerClass.isInstance(inputLayer.getDeclaration());
-        }
-        return false;
-    }
 }
