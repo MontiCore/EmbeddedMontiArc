@@ -33,11 +33,11 @@ public class SomeIPAdapterModel {
 			if(symbol.isPresent() && symbol.get().isKindOf(SomeIPConnectionKind.INSTANCE))
 			{
 				SomeIPConnectionSymbol sym = (SomeIPConnectionSymbol) symbol.get();
-				String topicName = sym.getTopicName().isPresent()?sym.getTopicName().get():"unknown";
-				symbolKind = "someip, topic: "+topicName;
+				String serviceID = sym.getserviceID().isPresent()?sym.getserviceID().get():"unknown";
+				symbolKind = "someip, serviceID: " + serviceID;
 			}
 
-			this.ports.add(port.getName()+" : "+kind+" ("+symbolKind+")");
+			this.ports.add(port.getName() + " : " + kind + " (" + symbolKind + ")");
 		}
     }
 
