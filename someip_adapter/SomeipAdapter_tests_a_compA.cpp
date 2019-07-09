@@ -81,4 +81,3 @@ void SomeipAdapter_tests_a_compA::tick()
 {
     publish_echoPublisher();
 }
-
