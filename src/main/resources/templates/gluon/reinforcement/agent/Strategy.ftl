@@ -13,6 +13,7 @@ class StrategyBuilder(object):
         epsilon_decay_method='no',
         epsilon_decay=0.0,
         epsilon_decay_start=0,
+        epsilon_decay_per_step=False,
         action_dim=None,
         action_low=None,
         action_high=None,
@@ -24,7 +25,8 @@ class StrategyBuilder(object):
         if epsilon_decay_method == 'linear':
             decay = LinearDecay(
                 eps_decay=epsilon_decay, min_eps=min_epsilon,
-                decay_start=epsilon_decay_start)
+                decay_start=epsilon_decay_start,
+                decay_per_step=epsilon_decay_per_step)
         else:
             decay = NoDecay()
 
@@ -76,17 +78,27 @@ class NoDecay(BaseDecay):
 
 
 class LinearDecay(BaseDecay):
-    def __init__(self, eps_decay, min_eps=0, decay_start=0):
+    def __init__(self, eps_decay, min_eps=0, decay_start=0, decay_per_step=False):
         super(LinearDecay, self).__init__()
         self.eps_decay = eps_decay
         self.min_eps = min_eps
         self.decay_start = decay_start
+        self.decay_per_step = decay_per_step
+        self.last_episode = -1
+
+    def do_decay(self, episode):
+        if self.decay_per_step:
+            do = (episode >= self.decay_start)
+        else:
+            do = ((self.last_episode != episode) and (episode >= self.decay_start))
+        self.last_episode = episode
+        return do
 
     def decay(self, cur_eps, episode):
-        if episode < self.decay_start:
-            return cur_eps
-        else:
+        if self.do_decay(episode):
             return max(cur_eps - self.eps_decay, self.min_eps)
+        else:
+            return cur_eps
 
 
 class BaseStrategy(object):

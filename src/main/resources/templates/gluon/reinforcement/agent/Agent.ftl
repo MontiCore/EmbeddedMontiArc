@@ -504,6 +504,7 @@ class DdpgAgent(Agent):
                 #  actor and exploration noise N according to strategy
                 action = self._strategy.select_action(
                     self.get_next_action(state))
+                self._strategy.decay(self._current_episode)
 
                 # Execute action a and observe reward r and next state ns
                 next_state, reward, terminal, _ = \
@@ -545,10 +546,10 @@ class DdpgAgent(Agent):
                     # with critic parameters
                     tmp_critic = self._copy_critic()
                     with autograd.record():
-                        actor_qvalues = tmp_critic(states, self._actor(states))
                         # For maximizing qvalues we have to multiply with -1
                         # as we use a minimizer
-                        actor_loss = -1 * actor_qvalues.mean()
+                        actor_loss = -tmp_critic(
+                            states, self._actor(states)).mean()
                     actor_loss.backward()
                     trainer_actor.step(self._minibatch_size)
 
@@ -594,7 +595,6 @@ class DdpgAgent(Agent):
                 self._strategy.cur_eps, episode_reward)
 
             self._do_snapshot_if_in_interval(self._current_episode)
-            self._strategy.decay(self._current_episode)
 
             if self._is_target_reached(avg_reward):
                 self._logger.info(
@@ -1190,6 +1190,7 @@ class DqnAgent(Agent):
                 # 1. Choose an action based on current game state and policy
                 q_values = self._qnet(nd.array([state], ctx=self._ctx))
                 action = self._strategy.select_action(q_values[0])
+                self._strategy.decay(self._current_episode)
 
                 # 2. Play the game for a single step
                 next_state, reward, terminal, _ =\
@@ -1225,8 +1226,6 @@ class DqnAgent(Agent):
             avg_reward = self._training_stats.log_episode(
                 self._current_episode, start, training_steps,
                 episode_loss, self._strategy.cur_eps, episode_reward)
-
-            self._strategy.decay(self._current_episode)
 
             if self._is_target_reached(avg_reward):
                 self._logger.info(

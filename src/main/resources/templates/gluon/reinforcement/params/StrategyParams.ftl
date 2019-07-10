@@ -16,6 +16,9 @@
 <#if (config.strategy.epsilon_decay_start)??>
             'epsilon_decay_start': ${config.strategy.epsilon_decay_start},
 </#if>
+<#if (config.strategy.epsilon_decay_start)??>
+            'epsilon_decay_per_step': ${config.strategy.epsilon_decay_per_step?string('True', 'False')},
+</#if>
 <#if (config.strategy.method)?? && (config.strategy.method=="ornstein_uhlenbeck")>
 <#if (config.strategy.action_low)?? >
             'action_low': ${config.strategy.action_low},
