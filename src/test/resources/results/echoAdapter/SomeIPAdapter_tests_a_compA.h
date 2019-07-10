@@ -33,3 +33,4 @@ private:
 
 	std::shared_ptr<vsomeip::application> _echoPublisher;
 };
+

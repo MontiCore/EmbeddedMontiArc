@@ -31,7 +31,7 @@ public class SomeIPAdapterModel {
 
 
 	// Parse through component to find information about its ports
-	public void addPorts(Collection<EMAPortInstanceSymbol> ports)
+	public void addPortsDesc(Collection<EMAPortInstanceSymbol> ports)
 	{
 		for (EMAPortInstanceSymbol port : ports)
 		{
@@ -42,14 +42,16 @@ public class SomeIPAdapterModel {
 			{
 				SomeIPConnectionSymbol sym = (SomeIPConnectionSymbol) symbol.get();
 				int serviceID = sym.getserviceID().isPresent()?sym.getserviceID().get():-1;
-				symbolKind = "someip, serviceID: " + serviceID;
+				int instanceID = sym.getinstanceID().isPresent()?sym.getinstanceID().get():-1;
+				int eventgroupID = sym.geteventgroupID().isPresent()?sym.geteventgroupID().get():-1;
+				symbolKind = "someip, serviceID: " + serviceID + " instanceID: " + instanceID + " eventgroupID: " + eventgroupID;
 			}
 
 			this.ports.add(port.getName() + " : " + kind + " (" + symbolKind + ")");
 		}
     }
 
-	public List<String> getPorts()
+	public List<String> getPortsDesc()
 	{
 		return this.ports;
 	}

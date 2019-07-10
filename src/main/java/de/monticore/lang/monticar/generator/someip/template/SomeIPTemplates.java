@@ -16,6 +16,8 @@ public class SomeIPTemplates {
 
 	private static final Template SOMEIP_PRETTYPRINT;
 	private static final Template SOMEIP_CMAKELISTS;
+	private static final Template SOMEIP_ADAPTER_H;
+	private static final Template SOMEIP_ADAPTER_CPP;
 
     // Loading .ftl files
     static {
@@ -27,6 +29,8 @@ public class SomeIPTemplates {
         try {
         	SOMEIP_PRETTYPRINT = conf.getTemplate("PrettyPrint.ftl");
         	SOMEIP_CMAKELISTS = conf.getTemplate("CMakeLists.ftl");
+        	SOMEIP_ADAPTER_H = conf.getTemplate("Adapter.h.ftl");
+			SOMEIP_ADAPTER_CPP = conf.getTemplate("Adapter.cpp.ftl");
         } catch (IOException e) {
             String msg = "could not load template";
             Log.error(msg, e);
@@ -34,12 +38,23 @@ public class SomeIPTemplates {
         }
     }
 
-    public static String generateSomeIPAdapter(SomeIPAdapterModel model) {
+    public static String generateSomeIPAdapterH(SomeIPAdapterModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(SOMEIP_ADAPTER_H, data);
+    }
+
+    public static String generateSomeIPAdapterCPP(SomeIPAdapterModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(SOMEIP_ADAPTER_CPP, data);
+    }
+
+    public static String generatePrettyPrint(SomeIPAdapterModel model) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("model", model);
         return generate(SOMEIP_PRETTYPRINT, data);
     }
-
 
 	public static String generateSomeIPCMakeLists(SomeIPAdapterModel model) {
         HashMap<String, Object> data = new HashMap<>();

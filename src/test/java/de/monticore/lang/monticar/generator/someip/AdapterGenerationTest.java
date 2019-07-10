@@ -1,10 +1,5 @@
 package de.monticore.lang.monticar.generator.someip;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
-import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.someip.SomeIPConnectionSymbol;
-
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -13,10 +8,15 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class PrettyPrintGenerationTest extends AbstractSymtabTest {
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.someip.SomeIPConnectionSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+
+public class AdapterGenerationTest extends AbstractSymtabTest {
 
 	@Test
-    public void testPrettyPrint() throws IOException {
+    public void testAdapter() throws IOException {
 
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
 
@@ -33,9 +33,8 @@ public class PrettyPrintGenerationTest extends AbstractSymtabTest {
         // Connect component's ports to topics
         componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(1,2,3));
 
-        List<File> files = generatorSomeIP.generatePrettyPrint(componentInstanceSymbol);
+        List<File> files = generatorSomeIP.generateSomeIPAdapter(componentInstanceSymbol);
 
-        testFilesAreEqual(files, "echo/");
+        testFilesAreEqual(files, "echoAdapter/");
     }
-
 }

@@ -17,36 +17,42 @@ public class GeneratorSomeIP {
 
 	List<File> generateSomeIPAdapter(EMAComponentInstanceSymbol component) {
 		List<File> files = new ArrayList<>();
-
-		// Get info about the ports from the component
-		Collection<EMAPortInstanceSymbol> ports = component.getPortInstanceList();
+		List<String> contents = new ArrayList<String>();
+		List<FileWriter> frs = new ArrayList<FileWriter>();
 
 		// Create and fill model
 		SomeIPAdapterModel model = new SomeIPAdapterModel(component.getFullName());
 
-		model.addPorts(ports);
-
 		//Generate files and write to project
-		String content = SomeIPTemplates.generateSomeIPAdapter(model);
+		contents.add(SomeIPTemplates.generateSomeIPAdapterH(model));
+		files.add(new File("./target/generated-sources/SomeIPAdapter_"+model.getEscapedCompName()+".h"));
+		contents.add(SomeIPTemplates.generateSomeIPAdapterCPP(model));
+		files.add(new File("./target/generated-sources/SomeIPAdapter_"+model.getEscapedCompName()+".cpp"));
 
-		File file = new File("./target/generated-sources/ports.txt");
-		files.add(file);
-
-        FileWriter fr = null;
-        try {
-            fr = new FileWriter(file);
-            fr.write(content);
+		 try {
+        	int counter = 0;
+        	for (File file : files)
+        	{
+        		frs.add(new FileWriter(file));
+        		frs.get(counter).write(contents.get(counter));
+        		counter++;
+        	}
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        }finally{
             //Close resources
             try {
-                fr.close();
+                for (FileWriter fr : frs)
+                	fr.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+        files.add(generateCMake(component));
+
     	return files;
+
     }
 
     File generateCMake(EMAComponentInstanceSymbol component) {
@@ -76,6 +82,44 @@ public class GeneratorSomeIP {
 
     	return file;
     }
+
+    List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
+	{
+		List<File> files = new ArrayList<>();
+
+		// Get info about the ports from the component
+		Collection<EMAPortInstanceSymbol> ports = component.getPortInstanceList();
+
+		// Create and fill model
+		SomeIPAdapterModel model = new SomeIPAdapterModel(component.getFullName());
+
+		model.addPortsDesc(ports);
+
+		//Generate files and write to project
+		String content = SomeIPTemplates.generatePrettyPrint(model);
+
+		File file = new File("./target/generated-sources/ports.txt");
+		files.add(file);
+
+        FileWriter fr = null;
+        try {
+            fr = new FileWriter(file);
+            fr.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            //Close resources
+            try {
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    	return files;
+
+	}
+
 
 
 }

@@ -1,5 +1,6 @@
+<#import "SomeIPMacros.ftl" as m>
 #pragma once
-#include "tests_a_compA.h"
+#include "${model.getEscapedCompName()}.h"
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -11,13 +12,13 @@
 
 using namespace std;
 
-class SomeIPAdapter_tests_a_compA {
+class <@m.mwIdent/>Adapter_${model.getEscapedCompName()} {
 
 public:
 
-    SomeIPAdapter_tests_a_compA();
+    <@m.mwIdent/>Adapter_${model.getEscapedCompName()}();
 
-    void init(tests_a_compA* comp);
+    void init(${model.getEscapedCompName()}* comp);
 
     void publish_echoPublisher();
 
@@ -27,7 +28,7 @@ public:
 
 private:
 
-    tests_a_compA* component = nullptr;
+    ${model.getEscapedCompName()}* component = nullptr;
 
 	std::shared_ptr<vsomeip::application> _clockSubscriber;
 
