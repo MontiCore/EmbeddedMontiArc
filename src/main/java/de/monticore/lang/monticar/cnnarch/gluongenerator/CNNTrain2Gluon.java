@@ -119,7 +119,8 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             final String trainerName = "CNNTrainer_" + getInstanceName();
             final RLAlgorithm rlAlgorithm = configData.getRlAlgorithm();
 
-            if (rlAlgorithm.equals(RLAlgorithm.DDPG)) {
+            if (rlAlgorithm.equals(RLAlgorithm.DDPG)
+                || rlAlgorithm.equals(RLAlgorithm.TD3)) {
                 CriticNetworkGenerator criticNetworkGenerator = new CriticNetworkGenerator();
                 criticNetworkGenerator.setGenerationTargetPath(
                     Paths.get(getGenerationTargetPath(), REINFORCEMENT_LEARNING_FRAMEWORK_MODULE).toString());

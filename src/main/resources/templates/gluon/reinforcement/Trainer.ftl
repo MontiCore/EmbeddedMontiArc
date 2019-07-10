@@ -1,10 +1,10 @@
 <#setting number_format="computer">
 <#assign config = configurations[0]>
-<#assign rlAgentType=config.rlAlgorithm?switch("dqn", "DqnAgent", "ddpg", "DdpgAgent")>
+<#assign rlAgentType=config.rlAlgorithm?switch("dqn", "DqnAgent", "ddpg", "DdpgAgent", "td3", "TwinDelayedDdpgAgent")>
 from ${rlFrameworkModule}.agent import ${rlAgentType}
 from ${rlFrameworkModule}.util import AgentSignalHandler
 from ${rlFrameworkModule}.cnnarch_logger import ArchLogger
-<#if config.rlAlgorithm=="ddpg">
+<#if config.rlAlgorithm=="ddpg" || config.rlAlgorithm=="td3">
 from ${rlFrameworkModule}.CNNCreator_${criticInstanceName} import CNNCreator_${criticInstanceName}
 </#if>
 import ${rlFrameworkModule}.environment
@@ -137,8 +137,10 @@ if __name__ == "__main__":
 </#if>
 <#if (config.rlAlgorithm == "dqn")>
 <#include "params/DqnAgentParams.ftl">
-<#else>
+<#elseif config.rlAlgorithm == "ddpg">
 <#include "params/DdpgAgentParams.ftl">
+<#else>
+<#include "params/Td3AgentParams.ftl">
 </#if>
     }
 

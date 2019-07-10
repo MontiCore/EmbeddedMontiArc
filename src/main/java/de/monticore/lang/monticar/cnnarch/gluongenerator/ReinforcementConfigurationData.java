@@ -29,6 +29,9 @@ public class ReinforcementConfigurationData extends ConfigurationData {
     private static final String AST_ENTRY_START_TRAINING_AT = "start_training_at";
     private static final String AST_SOFT_TARGET_UPDATE_RATE = "soft_target_update_rate";
     private static final String AST_EVALUATION_SAMPLES = "evaluation_samples";
+    private static final String AST_ENTRY_POLICY_NOISE = "policy_noise";
+    private static final String AST_ENTRY_NOISE_CLIP = "noise_clip";
+    private static final String AST_ENTRY_POLICY_DELAY = "policy_delay";
 
     private static final String ENVIRONMENT_PARAM_REWARD_TOPIC = "reward_topic";
     private static final String ENVIRONMENT_ROS = "ros_interface";
@@ -118,7 +121,20 @@ public class ReinforcementConfigurationData extends ConfigurationData {
             ? null : (Integer)retrieveConfigurationEntryValueByKey(AST_EVALUATION_SAMPLES);
     }
 
+    public Double getPolicyNoise() {
+        return !configurationContainsKey(AST_ENTRY_POLICY_NOISE)
+            ? null : (Double) retrieveConfigurationEntryValueByKey(AST_ENTRY_POLICY_NOISE);
+    }
 
+    public Double getNoiseClip() {
+        return !configurationContainsKey(AST_ENTRY_NOISE_CLIP)
+            ? null : (Double) retrieveConfigurationEntryValueByKey(AST_ENTRY_NOISE_CLIP);
+    }
+
+    public Integer getPolicyDelay() {
+        return !configurationContainsKey(AST_ENTRY_POLICY_DELAY)
+            ? null : (Integer) retrieveConfigurationEntryValueByKey(AST_ENTRY_POLICY_DELAY);
+    }
 
     public RLAlgorithm getRlAlgorithm() {
         if (!isReinforcementLearning()) {
