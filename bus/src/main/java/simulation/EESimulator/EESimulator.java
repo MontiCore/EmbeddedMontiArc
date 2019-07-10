@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.Comparator;
 
 import org.jfree.util.Log;
+import simulation.bus.BusMessage;
 
 public class EESimulator {
 
@@ -76,8 +77,14 @@ public class EESimulator {
 
 		EEDiscreteEvent cur;
 		//loop until eventList is empty or next event is in future
-		while(!eventList.isEmpty() && eventList.peek().getEventTime().isAfter(deltaSimulationTime)){
+		while(!eventList.isEmpty() && !eventList.peek().getEventTime().isAfter(deltaSimulationTime)){
 			cur = eventList.poll();
+
+
+			System.out.println("process event: "+ cur.getEventType() + " to " + cur.getTarget() + " at " + cur.getEventTime());
+			if (cur.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) System.out.println(((BusMessage) cur).getMessage());
+
+
 
 			cur.getTarget().processEvent(cur);
 			this.simulationTime = cur.getEventTime();
@@ -111,6 +118,9 @@ public class EESimulator {
 		return simulationTime;
 	}
 
+	public PriorityQueue<EEDiscreteEvent> getEventList() {
+		return eventList;
+	}
 }
 
 class EESimulatorComparator implements Comparator<EEDiscreteEvent>

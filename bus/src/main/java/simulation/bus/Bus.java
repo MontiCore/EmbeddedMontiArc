@@ -38,11 +38,15 @@ public abstract class Bus extends EEComponent {
 
 	protected Instant currentTime = Instant.EPOCH;
 
+	private int keepAliveCounter = 0;
+
+
 	protected Bus(EESimulator simulator) {
 		super(simulator);
 		this.connectedComponents = new ArrayList<EEComponent>();
 		this.ID = UUID.randomUUID();
 		componentType = EEComponentType.BUS;
+
 	}
 	
 	@Override
@@ -59,19 +63,25 @@ public abstract class Bus extends EEComponent {
 	}
 
 	public void processEvent(EEDiscreteEvent evt) {
+		//TODO: change the way how to prevent setting up unlimited keepAliveEvents
 		if (evt.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
 			BusMessage msg = (BusMessage) evt;
 			this.simulateFor(Duration.between(currentTime, msg.getEventTime()));
 			currentTime = msg.getEventTime();
-			if(!this.hasMessages()) {
+			/*if(!this.hasMessages()) {
 				this.setKeepAlive();
-			}
+			}*/
 			this.registerMessage(msg);
 			this.setKeepAlive();
+			keepAliveCounter = 0;
 		} else if (evt.getEventType() == EEDiscreteEventTypeEnum.KEEP_ALIVE_EVENT) {
+			if (keepAliveCounter > 5){
+				return;
+			}
 			this.simulateFor(Duration.between(currentTime, evt.getEventTime()));
 			currentTime = evt.getEventTime();
 			this.setKeepAlive();
+			keepAliveCounter++;
 		} else {
 			throw new IllegalArgumentException(
 					"Invalid event type. Expected KeepAliveEvent or BusMessage but was " + evt.getClass());
@@ -133,12 +143,14 @@ public abstract class Bus extends EEComponent {
 		for(EEComponent target : this.sendTo.get(msg.getMessageID())) {
 			BusMessage newMsg = new BusMessage(msg);
 			newMsg.forwardTo(target);
-			this.simulator.addEvent(msg);
+			this.simulator.addEvent(newMsg);
 		}
 	}
 	
 	protected void setKeepAlive() {
-		KeepAliveEvent keepAlive = new KeepAliveEvent(this.getNextFinishTime(), this);
+		Instant nextFinishTime = this.getNextFinishTime();
+		if (nextFinishTime == null){return;}
+		KeepAliveEvent keepAlive = new KeepAliveEvent(nextFinishTime, this);
 		this.simulator.addEvent(keepAlive);
 	}
 

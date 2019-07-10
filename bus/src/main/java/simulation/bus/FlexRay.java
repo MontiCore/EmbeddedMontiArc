@@ -22,11 +22,7 @@ package simulation.bus;
  */
 import java.time.Duration;
 import java.time.Instant;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.UUID;
+import java.util.*;
 
 import org.jfree.util.Log;
 
@@ -114,6 +110,7 @@ public class FlexRay extends Bus {
 
 	public FlexRay(EESimulator simulator) {
 		super(simulator);
+		registerComponent(this);
 	}
 
 	@Override

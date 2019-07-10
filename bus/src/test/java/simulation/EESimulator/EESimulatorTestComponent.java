@@ -30,6 +30,7 @@ import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EESimulator;
 import simulation.bus.BusMessage;
+//import simulation.EESimulator.SimpleEESimulatorTest;
 
 public class EESimulatorTestComponent extends EEComponent {
 
@@ -45,8 +46,8 @@ public class EESimulatorTestComponent extends EEComponent {
 
     @Override
     public void processEvent(EEDiscreteEvent event) {
-        ((BusMessage) event).setMessage(this.ID.toString() + " processed");
-
+        System.out.println(this.ID.toString() + "is processing");
+        EESimulatorTest.setProcessed(((BusMessage) event), this);
     }
 
     @Override

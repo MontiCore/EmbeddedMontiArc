@@ -36,6 +36,17 @@ import simulation.bus.*;
 public class EESimulatorTest {
 
 
+    static List<BusMessage> messageList = new LinkedList<>();
+
+    public static void setProcessed(BusMessage message, EESimulatorTestComponent component) {
+        for (BusMessage msg: messageList) {
+            if(msg.getMessage().equals(message.getMessage())){
+                msg.setMessage(component.getID().toString() + " processed");
+            }
+
+        }
+    }
+
     @Test
     public void testSimulateNextTick() {
 
@@ -66,17 +77,23 @@ public class EESimulatorTest {
         testBus.registerComponent(transmitter);
 
         BusMessage message1 = new BusMessage("messageOne", 100, BusEntry.ACTUATOR_ENGINE,
-                Instant.EPOCH.plusNanos(3), transmitter.getID(), testBus);
+                Instant.EPOCH.plusSeconds(3), transmitter.getID(), testBus);
+        messageList.add(message1);
         BusMessage message2 = new BusMessage("messageTwo", 200, BusEntry.ACTUATOR_GEAR,
-                Instant.EPOCH.plusNanos(32), transmitter.getID(), testBus);
+                Instant.EPOCH.plusSeconds(32), transmitter.getID(), testBus);
+        messageList.add(message2);
         BusMessage message3 = new BusMessage("messageThree", 20, BusEntry.ACTUATOR_BRAKE,
-                Instant.EPOCH.plusNanos(38), transmitter.getID(), testBus);
+                Instant.EPOCH.plusSeconds(38), transmitter.getID(), testBus);
+        messageList.add(message3);
         BusMessage message4 = new BusMessage("messageFour", 150, BusEntry.ACTUATOR_STEERING,
-                Instant.EPOCH.plusNanos(4), transmitter.getID(), testBus);
+                Instant.EPOCH.plusSeconds(4), transmitter.getID(), testBus);
+        messageList.add(message4);
         BusMessage message5 = new BusMessage("messageFive", 30, BusEntry.ACTUATOR_ENGINE,
-                Instant.EPOCH.plusNanos(15), transmitter.getID(), testBus);
+                Instant.EPOCH.plusSeconds(15), transmitter.getID(), testBus);
+        messageList.add(message5);
         BusMessage message6 = new BusMessage("messageSix", 120, BusEntry.SENSOR_COMPASS,
-                Instant.EPOCH.plusNanos(40), transmitter.getID(), testBus);
+                Instant.EPOCH.plusSeconds(40), transmitter.getID(), testBus);
+        messageList.add(message6);
 
 
         //start first Tick of the Simulation
@@ -94,30 +111,42 @@ public class EESimulatorTest {
         assertEquals(message4.getMessage(), "messageFour");
 
 
+        System.out.println("---------------");
         //simulate second tick
-        simTime.plusNanos(30);
+        //simTime.plusNanos(30);
+        Instant simTimeTwo = Instant.EPOCH.plusSeconds(30);
         System.out.println("Run second tick");
         System.out.println("---------------");
 
         simulator.addEvent(message3);
         simulator.addEvent(message5);
 
-        simulator.simulateNextTick(simTime);
+        /*
+        for (EEDiscreteEvent messages: simulator.getEventList()) {
+            System.out.println(messages.getEventType());
+            if(messages.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) System.out.println(((BusMessage) messages).getMessage());
+            System.out.println(messages.getEventTime());
+        }
+         */
 
-        assertEquals(message1.getMessage(), tesComp1.getID().toString() + " processed");
-        assertEquals(message2.getMessage(), "messageTwo");
-        assertEquals(message3.getMessage(), "messageThree");
-        assertEquals(message4.getMessage(), testComp4.getID().toString() + " processed");
-        assertEquals(message5.getMessage(), tesComp1.getID().toString() + " processed");
+        simulator.simulateNextTick(simTimeTwo);
 
+        assertEquals(tesComp1.getID().toString() + " processed", message1.getMessage());
+        assertEquals("messageTwo", message2.getMessage());
+        assertEquals("messageThree", message3.getMessage());
+        assertEquals(testComp4.getID().toString() + " processed", message4.getMessage());
+        assertEquals(tesComp1.getID().toString() + " processed", message5.getMessage());
 
+        System.out.println("---------------");
         //simulate third tick
-        simTime.plusNanos(30);
+        //simTime.plusNanos(30);
+        Instant simTimeThree = Instant.EPOCH.plusSeconds(60);
         System.out.println("Run third tick");
         System.out.println("--------------");
 
-
         simulator.addEvent(message6);
+
+        simulator.simulateNextTick(simTimeThree);
 
         assertEquals(message1.getMessage(), tesComp1.getID().toString() + " processed");
         assertEquals(message2.getMessage(), testComp2.getID().toString() + " processed");
