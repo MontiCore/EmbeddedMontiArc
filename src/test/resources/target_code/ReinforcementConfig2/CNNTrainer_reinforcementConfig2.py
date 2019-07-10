@@ -81,7 +81,7 @@ if __name__ == "__main__":
         'target_score': 185.5,
         'qnet':qnet_creator.net,
         'use_fix_target': False,
-        'loss_function': 'euclidean',
+        'loss': 'l2',
         'optimizer': 'rmsprop',
         'optimizer_params': {
             'weight_decay': 0.01,

@@ -205,7 +205,7 @@ class Net_0(gluon.HybridBlock):
             self.fc8_ = gluon.nn.Dense(units=10, use_bias=True)
             # fc8_, output shape: {[10,1,1]}
 
-        self.last_layers['predictions'] = 'softmax'
+            self.softmax8_ = Softmax()
 
 
     def hybrid_forward(self, F, data):
@@ -271,6 +271,7 @@ class Net_0(gluon.HybridBlock):
         relu7_ = self.relu7_(fc7_)
         dropout7_ = self.dropout7_(relu7_)
         fc8_ = self.fc8_(dropout7_)
-        outputs.append(fc8_)
+        softmax8_ = self.softmax8_(fc8_)
+        outputs.append(softmax8_)
 
         return outputs[0]

@@ -5,8 +5,15 @@
 <#else>
         'use_fix_target': False,
 </#if>
-<#if (config.loss)??>
-        'loss_function': '${config.loss}',
+<#if (config.configuration.loss)??>
+        'loss': '${config.lossName}',
+<#if (config.lossParams)??>
+        'loss_params': {
+<#list config.lossParams?keys as param>
+            '${param}': ${config.lossParams[param]}<#sep>,
+</#list>
+},
+</#if>
 </#if>
 <#if (config.configuration.optimizer)??>
         'optimizer': '${config.optimizerName}',

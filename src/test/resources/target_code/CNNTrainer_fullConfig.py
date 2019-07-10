@@ -24,6 +24,10 @@ if __name__ == "__main__":
         context='gpu',
         normalize=True,
         eval_metric='mse',
+        loss='softmax_cross_entropy',
+        loss_params={
+            'sparse_label': True,
+            'from_logits': False},
         optimizer='rmsprop',
         optimizer_params={
             'weight_decay': 0.01,

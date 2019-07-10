@@ -87,7 +87,7 @@ if __name__ == "__main__":
         'qnet':qnet_creator.net,
         'use_fix_target': True,
         'target_update_interval': 500,
-        'loss_function': 'huber_loss',
+        'loss': 'huber',
         'optimizer': 'adam',
         'optimizer_params': {
             'learning_rate': 0.001        },
