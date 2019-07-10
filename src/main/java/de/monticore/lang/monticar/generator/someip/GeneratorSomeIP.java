@@ -20,18 +20,18 @@ public class GeneratorSomeIP {
 
 		// Get info about the ports from the component
 		Collection<EMAPortInstanceSymbol> ports = component.getPortInstanceList();
-		
+
 		// Create and fill model
 		SomeIPAdapterModel model = new SomeIPAdapterModel(component.getFullName());
-		
+
 		model.addPorts(ports);
-		
+
 		//Generate files and write to project
 		String content = SomeIPTemplates.generateSomeIPAdapter(model);
-		
+
 		File file = new File("./target/generated-sources/ports.txt");
 		files.add(file);
-		
+
         FileWriter fr = null;
         try {
             fr = new FileWriter(file);
@@ -48,5 +48,34 @@ public class GeneratorSomeIP {
         }
     	return files;
     }
+
+    File generateCMake(EMAComponentInstanceSymbol component) {
+
+		// Create and fill model
+		SomeIPAdapterModel model = new SomeIPAdapterModel(component.getFullName());
+
+		//Generate files and write to project
+		String content = SomeIPTemplates.generateSomeIPCMakeLists(model);
+
+		File file = new File("./target/generated-sources/CMakeLists.txt");
+
+        FileWriter fr = null;
+        try {
+            fr = new FileWriter(file);
+            fr.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            //Close resources
+            try {
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    	return file;
+    }
+
 
 }

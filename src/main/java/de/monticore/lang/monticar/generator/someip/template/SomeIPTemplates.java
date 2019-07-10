@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.generator.someip.template;
 
 import de.se_rwth.commons.logging.Log;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class SomeIPTemplates {
 
 	private static final Template SOMEIP_PRETTYPRINT;
+	private static final Template SOMEIP_CMAKELISTS;
 
     // Loading .ftl files
     static {
@@ -24,6 +26,7 @@ public class SomeIPTemplates {
         conf.setClassForTemplateLoading(SomeIPTemplates.class, "");
         try {
         	SOMEIP_PRETTYPRINT = conf.getTemplate("PrettyPrint.ftl");
+        	SOMEIP_CMAKELISTS = conf.getTemplate("CMakeLists.ftl");
         } catch (IOException e) {
             String msg = "could not load template";
             Log.error(msg, e);
@@ -37,6 +40,12 @@ public class SomeIPTemplates {
         return generate(SOMEIP_PRETTYPRINT, data);
     }
 
+
+	public static String generateSomeIPCMakeLists(SomeIPAdapterModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(SOMEIP_CMAKELISTS, data);
+	}
 
     @SuppressWarnings("rawtypes")
 	private static String generate(Template template, Map dataForTemplate) {
