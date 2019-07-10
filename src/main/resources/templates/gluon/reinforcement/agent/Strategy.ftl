@@ -44,6 +44,12 @@ class StrategyBuilder(object):
             return OrnsteinUhlenbeckStrategy(
                 action_dim, action_low, action_high, epsilon, mu, theta,
                 sigma, decay)
+        elif method == 'gaussian':
+            assert action_dim is not None
+            assert action_low is not None
+            assert action_high is not None
+            return GaussianNoiseStrategy(action_dim, action_low, action_high,
+                                         epsilon, decay)
         else:
             assert action_dim is not None
             assert len(action_dim) == 1
@@ -169,4 +175,27 @@ class OrnsteinUhlenbeckStrategy(BaseStrategy):
     def select_action(self, values):
         noise = self._evolve_state()
         action = (1.0 - self.cur_eps) * values + (self.cur_eps * noise)
+        return np.clip(action, self._action_low, self._action_high)
+
+
+class GaussianNoiseStrategy(BaseStrategy):
+    def __init__(
+        self,
+        action_dim,
+        action_low,
+        action_high,
+        eps,
+        decay=NoDecay()
+    ):
+        super(GaussianNoiseStrategy, self).__init__(decay)
+        self.eps = eps
+        self.cur_eps = eps
+
+        self._action_dim = action_dim
+        self._action_low = action_low
+        self._action_high = action_high
+
+    def select_action(self, values):
+        noise = np.random.normal(size=self._action_dim)
+        action = values + self.cur_eps * noise
         return np.clip(action, self._action_low, self._action_high)
