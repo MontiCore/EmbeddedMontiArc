@@ -21,17 +21,17 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.IOSymbol;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNArch2MxNet;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.Target;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.Target;
+import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.TemplateConfiguration;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CNNArch2Gluon extends CNNArch2MxNet {
+public class CNNArch2Gluon extends CNNArchGenerator {
 
     public CNNArch2Gluon() {
         architectureSupportChecker = new CNNArch2GluonArchitectureSupportChecker();

@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.LayerSupportChecker;
+import de.monticore.lang.monticar.cnnarch.generator.LayerSupportChecker;
 
 public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
 

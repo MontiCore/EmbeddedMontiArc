@@ -20,11 +20,11 @@
  */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.ArchitectureElementData;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNArchTemplateController;
+import de.monticore.lang.monticar.cnnarch.generator.ArchitectureElementData;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchTemplateController;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.TemplateConfiguration;
+import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 
 import java.io.Writer;
 import java.util.*;
@@ -65,13 +65,27 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         setCurrentElement(previousElement);
     }
 
+    public void include(ConstantSymbol constant, Writer writer, NetDefinitionMode netDefinitionMode) {
+        ArchitectureElementData previousElement = getCurrentElement();
+        setCurrentElement(constant);
+
+        if (constant.isAtomic()) {
+            include(TEMPLATE_ELEMENTS_DIR_PATH, "Const", writer, netDefinitionMode);
+        }
+        else {
+            include(constant.getResolvedThis().get(), writer, netDefinitionMode);
+        }
+
+        setCurrentElement(previousElement);
+    }
+
     public void include(LayerSymbol layer, Writer writer, NetDefinitionMode netDefinitionMode){
         ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(layer);
 
         if (layer.isAtomic()){
             ArchitectureElementSymbol nextElement = layer.getOutputElement().get();
-            if (!isSoftmaxOutput(nextElement) && !isLogisticRegressionOutput(nextElement) && !isOneHotOutput(nextElement)){
+            if (!isSoftmaxOutput(nextElement) && !isLogisticRegressionOutput(nextElement)){
                 String templateName = layer.getDeclaration().getName();
                 include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
             }
@@ -101,6 +115,9 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         else if (architectureElement instanceof LayerSymbol){
             include((LayerSymbol) architectureElement, writer, netDefinitionMode);
         }
+        else if (architectureElement instanceof ConstantSymbol) {
+            include((ConstantSymbol) architectureElement, writer, netDefinitionMode);
+        }
         else {
             include((IOSymbol) architectureElement, writer, netDefinitionMode);
         }
@@ -115,6 +132,10 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             throw new IllegalStateException("missing writer");
         }
         include(architectureElement, getWriter(), netDefinitionMode);
+    }
+
+    public String ioNameToCpp(String ioName) {
+        return ioName.replaceAll("_([0-9]+)_", "[$1]");
     }
 
     public List<String> getStreamInputNames(SerialCompositeElementSymbol stream) {

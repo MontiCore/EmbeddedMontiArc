@@ -7,6 +7,8 @@
     _predictor_${stream?index}_.predict(<#list stream.getFirstAtomicElements() as input>CNNTranslator::translate(${input.name}<#if input.arrayAccess.isPresent()>[${input.arrayAccess.get().intValue.get()?c}]</#if>),
                 </#list><#list stream.getLastAtomicElements() as output>CNN_${tc.getName(output)}<#sep>,
                 </#list>);
+<#else>
+${tc.include(stream, "CPP_INLINE")}
 </#if>
 </#list>
 

@@ -100,11 +100,19 @@ class ${tc.fileNameWithoutEnding}:
 <#if stream.isNetwork()>
                     ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
 <#else>
-                    # TODO: Implement non network streams
+${tc.include(stream, "PYTHON_INLINE")}
 </#if>
 </#list>
 
-                    loss = <#list tc.architectureOutputs as output_name>loss_functions['${output_name}'](${output_name}_output, ${output_name}_label)<#sep> + </#list>
+                    loss = \
+<#list tc.architecture.streams as stream>
+<#if stream.isNetwork()>
+<#list tc.getStreamOutputNames(stream) as output_name>
+                        loss_functions['${output_name}'](${output_name}_output, ${output_name}_label)<#sep> + \
+</#list><#sep> + \
+</#if>
+</#list>
+
 
                 loss.backward()
 
@@ -134,19 +142,26 @@ class ${tc.fileNameWithoutEnding}:
                 </#list>
 
                 labels = [
-                    <#list tc.architectureOutputs as output_name>batch.label[${output_name?index}].as_in_context(mx_context)<#sep>, </#list>
+<#list tc.architectureOutputs as output_name>
+                    batch.label[${output_name?index}].as_in_context(mx_context)<#sep>,
+</#list>
+
                 ]
 
+                if True: # Fix indentation
 <#list tc.architecture.streams as stream>
 <#if stream.isNetwork()>
-                ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
+                    ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
 <#else>
-                # TODO: Implement non network streams
+${tc.include(stream, "PYTHON_INLINE")}
 </#if>
 </#list>
 
                 predictions = [
-                    <#list tc.architectureOutputs as output_name>mx.nd.argmax(${output_name}_output, axis=1)<#sep>, </#list>
+<#list tc.architectureOutputs as output_name>
+                    mx.nd.argmax(${output_name}_output, axis=1)<#sep>,
+</#list>
+
                 ]
 
                 metric.update(preds=predictions, labels=labels)
@@ -160,18 +175,26 @@ class ${tc.fileNameWithoutEnding}:
                 </#list>
 
                 labels = [
-                    <#list tc.architectureOutputs as output_name>batch.label[${output_name?index}].as_in_context(mx_context)<#sep>, </#list>
+<#list tc.architectureOutputs as output_name>
+                    batch.label[${output_name?index}].as_in_context(mx_context)<#sep>,
+</#list>
+
                 ]
 
+                if True: # Fix indentation
 <#list tc.architecture.streams as stream>
 <#if stream.isNetwork()>
-                ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
+                    ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
 <#else>
-                # TODO: Implement non network streams
+${tc.include(stream, "PYTHON_INLINE")}
 </#if>
 </#list>
+
                 predictions = [
-                    <#list tc.architectureOutputs as output_name>mx.nd.argmax(${output_name}_output, axis=1)<#sep>, </#list>
+<#list tc.architectureOutputs as output_name>
+                    mx.nd.argmax(${output_name}_output, axis=1)<#sep>,
+</#list>
+
                 ]
 
                 metric.update(preds=predictions, labels=labels)

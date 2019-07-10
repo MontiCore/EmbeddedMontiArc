@@ -8,7 +8,6 @@
 <#if mode == "ARCHITECTURE_DEFINITION">
             self.${element.name} = gluon.nn.Global${poolFunctionType}Pool2D()
             <#include "OutputShape.ftl">
-</#if>
-<#if mode == "FORWARD_FUNCTION">
+<#elseif mode == "FORWARD_FUNCTION">
         ${element.name} = self.${element.name}(${input})
 </#if>

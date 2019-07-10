@@ -128,6 +128,14 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testInvariant() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "Invariant"};
+        CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
     public void testResNeXtGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ResNeXt50"};

@@ -4,3 +4,4 @@ ThreeInputCNN_M14 data/ThreeInputCNN_M14
 Alexnet data/Alexnet
 ResNeXt50 data/ResNeXt50
 MultipleStreams data/MultipleStreams
+Invariant data/Invariant

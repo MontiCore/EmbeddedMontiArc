@@ -2,16 +2,13 @@ package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionParameterAdapter;
-import de.monticore.lang.monticar.cnnarch.mxnetgenerator.ConfigurationData;
+import de.monticore.lang.monticar.cnnarch.generator.ConfigurationData;
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
 import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 
 import java.util.*;
 
-/**
- *
- */
 public class ReinforcementConfigurationData extends ConfigurationData {
     private static final String AST_ENTRY_LEARNING_METHOD = "learning_method";
     private static final String AST_ENTRY_NUM_EPISODES = "num_episodes";

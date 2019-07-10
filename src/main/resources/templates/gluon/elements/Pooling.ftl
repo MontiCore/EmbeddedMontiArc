@@ -15,8 +15,7 @@
                 pool_size=${poolSize},
                 strides=${strides})
             <#include "OutputShape.ftl">
-</#if>
-<#if mode == "FORWARD_FUNCTION">
+<#elseif mode == "FORWARD_FUNCTION">
 <#if element.padding??>
         ${element.name}padding = self.${element.name}padding(${input})
         <#assign input = element.name + "padding">
