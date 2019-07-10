@@ -1,4 +1,4 @@
-        'qnet':qnet_creator.net,
+        'qnet':qnet_creator.networks[0],
 <#if (config.useFixTargetNetwork)?? && config.useFixTargetNetwork>
         'use_fix_target': True,
         'target_update_interval': ${config.targetNetworkUpdateInterval},
