@@ -17,7 +17,7 @@ include_directories (
 
 # Linking libraries to target
 add_library(SomeIPAdapter_${model.getEscapedCompName()} SomeIPAdapter_${model.getEscapedCompName()}.cpp)
-target_link_libraries(SomeipAdapter_${model.getEscapedCompName()} vsomeip <#noparse>${Boost_LIBRARIES}</#noparse>)
+target_link_libraries(SomeIPAdapter_${model.getEscapedCompName()} vsomeip <#noparse>${Boost_LIBRARIES}</#noparse>)
 
 # Export target to a cmake module file for outside usage
 export(TARGETS SomeIPAdapter_${model.getEscapedCompName()} FILE SomeIPAdapter_${model.getEscapedCompName()}.cmake)
