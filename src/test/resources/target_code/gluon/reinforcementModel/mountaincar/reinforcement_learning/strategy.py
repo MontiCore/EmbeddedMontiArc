@@ -168,5 +168,5 @@ class OrnsteinUhlenbeckStrategy(BaseStrategy):
 
     def select_action(self, values):
         noise = self._evolve_state()
-        action = values + (self.cur_eps * noise)
+        action = (1.0 - self.cur_eps) * values + (self.cur_eps * noise)
         return np.clip(action, self._action_low, self._action_high)

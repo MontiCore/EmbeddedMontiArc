@@ -23,7 +23,7 @@ configuration TorcsDQN {
 
     use_double_dqn : true
 
-    loss : euclidean
+    loss : huber
 
     replay_memory : buffer{
         memory_size : 1000000

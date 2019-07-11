@@ -87,7 +87,7 @@ if __name__ == "__main__":
         'qnet':qnet_creator.net,
         'use_fix_target': True,
         'target_update_interval': 500,
-        'loss_function': 'euclidean',
+        'loss': 'huber',
         'optimizer': 'rmsprop',
         'optimizer_params': {
             'learning_rate': 0.001        },
@@ -102,7 +102,7 @@ if __name__ == "__main__":
         resume_agent_params = {
             'session_dir': resume_directory,
             'environment': env,
-            'net': qnet_creator.net,
+            'net': qnet_creator.networks[0],
         }
         agent = DqnAgent.resume_from_session(**resume_agent_params)
     else:
@@ -114,4 +114,4 @@ if __name__ == "__main__":
     train_successful = agent.train()
 
     if train_successful:
-        agent.save_best_network(qnet_creator._model_dir_ + qnet_creator._model_prefix_ + '_newest', epoch=0)
+        agent.save_best_network(qnet_creator._model_dir_ + qnet_creator._model_prefix_ + '_0_newest', epoch=0)
