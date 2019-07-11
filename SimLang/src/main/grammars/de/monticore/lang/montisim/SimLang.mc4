@@ -60,12 +60,14 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
                 "(" destLat:NumberWithUnit "," destLong:NumberWithUnit ("," destZ:NumberWithUnit)? ")"
                 ) ;
 
+  symbol CarModel = Name@Car;
+
   //defined vehicle moving from start to destination pos
   ExplicitVehicle implements SimulationEntity = "vehicle" Name
               ("(" startLat:NumberWithUnit "," startLong:NumberWithUnit "," startRot:NumberWithUnit ")"
               "->" 
               "(" destLat:NumberWithUnit "," destLong:NumberWithUnit ("," destZ:NumberWithUnit)? ")"
-              );
+              ) (":" CarModel)?;
               
   //random vehicles spawning somewhere within a circle at latitude,longitude with radius r moving to somewhere within dest circle
   PathedVehicle implements SimulationEntity = "vehicle"

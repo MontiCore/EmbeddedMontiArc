@@ -1,5 +1,6 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
+import de.monticore.lang.montisim.simlang.SimLangTool;
 import de.monticore.lang.montisim.simlang._ast.*;
 import de.monticore.lang.montisim.util.types.*;
 
@@ -57,6 +58,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   @Override
   public void endVisit(ASTSimLangCompilationUnit node) {
     removeCurrentScope();
+    SimLangTool.checkDefaultCoCos(node); // TODO: is that okay?
   }
   
   @Override
@@ -534,6 +536,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     addToScopeAndLinkWithNode(symbol, node);
   }
 
+  // todo: make this a scope
   public void visit(ASTExplicitVehicle node) {
     final ExplicitVehicleSymbol symbol = new ExplicitVehicleSymbol("explicit_vehicle",
             new ExplicitVehicle(node.getName(),
@@ -568,4 +571,11 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
                       ));
     addToScopeAndLinkWithNode(symbol, node);
   }
+
+  @Override
+  public void visit(ASTCarModel node) {
+    final CarModelSymbolReference symbol = new CarModelSymbolReference(node.getName(), currentScope().get());
+    addToScopeAndLinkWithNode(symbol, node);
+  }
+
 }

@@ -7,11 +7,24 @@ package de.monticore.lang.montisim.simlang;
  */
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 //import de.monticore.lang.montisim.carlang._ast.ASTCar;
 //import de.monticore.lang.montisim.carlang._symboltable.CarLangLanguage;
+import de.monticore.ModelingLanguageFamily;
+import de.monticore.lang.montisim.carlang.CoCoCheckerFactory;
+import de.monticore.lang.montisim.carlang._ast.ASTCar;
+import de.monticore.lang.montisim.carlang._symboltable.CarKind;
+import de.monticore.lang.montisim.carlang._symboltable.CarLangLanguage;
+import de.monticore.lang.montisim.carlang._symboltable.CarSymbol;
+import de.monticore.lang.montisim.simlang._ast.ASTExplicitVehicle;
+import de.monticore.lang.montisim.simlang._visitor.SimLangInheritanceVisitor;
+import de.monticore.lang.montisim.simlang._visitor.SimLangVisitor;
 import de.monticore.lang.montisim.simlang.adapter.SimLangContainer;
+import de.monticore.symboltable.resolving.AdaptedResolvingFilter;
+import de.monticore.symboltable.resolving.CommonAdaptedResolvingFilter;
 import org.antlr.v4.runtime.RecognitionException;
 
 import de.monticore.lang.montisim.simlang._ast.ASTSimLangCompilationUnit;
@@ -76,6 +89,7 @@ public class SimLangTool {
    * @param model - file to parse
    * @return
    */
+  @Deprecated
   public static ASTSimLangCompilationUnit parse(String model) {
     try {
       SimLangParser parser = new SimLangParser();
@@ -154,13 +168,8 @@ public class SimLangTool {
     return symbolTable.get().createFromAST(ast);
   }
 
-  /*
-  public static Scope createSymbolTable(ModelingLanguageFamily lang, ASTSimLangCompilationUnit astSim, ASTCar astCar) {
 
-    return null;
-  }
-  */
-
+  @Deprecated
   public static SimLangContainer parseIntoContainer(String model) {
     final SimLangLang lang = new SimLangLang();
     final ASTSimLangCompilationUnit ast = parse(model);
@@ -168,23 +177,35 @@ public class SimLangTool {
     checkDefaultCoCos(ast);
     return new SimLangContainer(modelTopScope, String.join(".",ast.getPackageList()), ast.getSimulation().getName());
   }
-  /*
-  public static SimLangContainer parseIntoContainer(String simModel, String carModel) {
+
+  /**
+   * Constructs a SimLangContainer based on a given sim file. Corresponding car files have to be present in the model path.
+   * @param modelPath The path to the model files.
+   * @param modelName The simulation model to be loaded.
+   * @return A SimLangContainer with the values set in the model file.
+   */
+  public static SimLangContainer parseIntoContainer(Path modelPath, String modelName) {
     ModelingLanguageFamily family = new ModelingLanguageFamily();
-    final SimLangLang simLang = new SimLangLang();
-    //final CarLangLanguage carLang = new CarLangLanguage();
+    family.addModelingLanguage(new CarLangLanguage("CarLang", "car"){});
+    family.addModelingLanguage(new SimLangLang());
 
-    family.addModelingLanguage(simLang);
-    //family.addModelingLanguage(carLang);
+    AdaptedResolvingFilter car2simFilter = new CommonAdaptedResolvingFilter<CarSymbol>(CarSymbol.KIND, CarSymbol.class, CarModelSymbol.KIND) {
+      @Override
+      public Symbol translate(Symbol symbol) {
+        CarSymbol s = (CarSymbol) symbol;
+        CarModelSymbol cms = new CarModelSymbol(s.getName());
+        cms.setCarModel(s.getCarModel()); // This probably sets it to null
+        return cms;
+      }
+    };
+    family.addResolver(car2simFilter);
 
-    final ASTSimLangCompilationUnit astSim = parse(simModel);
-    //final ASTCar astCar = ;
+    ModelPath mp = new ModelPath(modelPath);
+    Scope globalScope = new GlobalScope(mp, family);
+    globalScope.resolve(modelName + "." + modelName, SimulationSymbol.KIND); // unforturnately, this is necessary (reason unknown)
+    Optional<SimulationSymbol> sim = globalScope.resolve(modelName, SimulationSymbol.KIND);
 
-    checkDefaultCoCos(astSim);
-    //checkCocos(astCar);
-
-    final Scope modelTopScope = createSymbolTable(family, astSim, null);
-    return new SimLangContainer(modelTopScope);
+    return new SimLangContainer(sim.get().getEnclosingScope(), sim.get().getPackageName(), sim.get().getName());
   }
-  */
+
 }
