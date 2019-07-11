@@ -1,0 +1,15 @@
+import CMTCar;
+import CMTCar2;
+
+sim CarModelTest {
+  sim_duration 4h;
+
+  time 12:00;
+
+  map_name Basics.osm;
+
+  //pedestrian_density 0.0;
+
+  vehicle car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0) : CMTCar;
+  vehicle car2(0,0,0)->(1,1,1) : CMTCar2;
+}

@@ -1,0 +1,70 @@
+car CMTCar {
+	// basics
+	mass = 1800kg;
+	width = 2.02712567705637776m;
+	length = 4.236423828125m;
+	height = 1.19524474896355328m;
+	wheel_radius = 0.3334m;
+	wheel_dist {
+		front = 1.62025m;
+		back = 1.62025m;
+		to_front = 1.379m;
+		to_back = 1.542m;
+	}
+
+	// actuators
+	actuators {
+		motor = (-1.5:2.0:3.5);
+		brakes {
+			front {
+				left = (0.0:5.0:5.0);
+				right = (0.0:5.0:5.0);
+			}
+			back {
+				left = (0.0:5.0:5.0);
+				right = (0.0:5.0:5.0);
+			}
+		}
+		steering = (-0.785398:0.5:0.785398);
+	}
+
+	// sensors
+	sensors {
+		speed;
+		steering_angle;
+		location;
+	}
+
+	// other
+	status_logger = default;
+	controller_bus = none;
+	controller = none; // Name des Autopiloten (query an Emu Server / RMIServer)
+	navigation = none;
+	cpu = configDOTcpu;
+
+	// physicalVehicle
+	physics_model = mass_point {
+		// tire_pressure = 2.5bar;
+		air_drag = 0.3; //cw Strömungswiderstandskoeffizient
+		mass_point {
+			local_position = (-1, 0, 1);
+			mass = 450kg;
+			pressure = 250kPa; // 1bar = 100kPa
+		}
+		mass_point {
+			local_position = (1, 0, 1);
+			mass = 450kg;
+			pressure = 250kPa;
+		}
+		mass_point {
+			local_position = (-1, 0, -1);
+			mass = 450kg;
+			pressure = 250kPa;
+		}
+		mass_point {
+			local_position = (1, 0, -1);
+			mass = 450kg;
+			pressure = 250kPa;
+		}
+	}
+}
