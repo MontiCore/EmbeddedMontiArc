@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.tagging.middleware.someip.SomeIPConnec
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.someip.SomeIPConnectionSymbol.SomeIPConnectionKind;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 // Used to fill .ftl files
 
@@ -13,6 +14,8 @@ public class SomeIPAdapterModel {
 
 	private String compName;
 	private List<String> ports = new ArrayList<>();
+	private List<EMAPortInstanceSymbol> incoming = new ArrayList<>();
+	private List<EMAPortInstanceSymbol> outgoing = new ArrayList<>();
 
 	public SomeIPAdapterModel(String compName) {
         this.compName = compName;
@@ -29,6 +32,21 @@ public class SomeIPAdapterModel {
 				.replace(']', '_');
 	}
 
+	public List<EMAPortInstanceSymbol> getIncomingPorts() {
+		return incoming;
+	}
+
+	public List<EMAPortInstanceSymbol> getOutgoingPorts() {
+		return outgoing;
+	}
+
+	public void addPorts(Collection<EMAPortInstanceSymbol> ports) {
+		incoming.addAll(ports);
+		incoming = incoming.stream().filter(fc -> fc.isSomeIPPort()).filter(fc -> fc.isIncoming()).collect(Collectors.toList());
+
+		outgoing.addAll(ports);
+		outgoing = outgoing.stream().filter(fc -> fc.isSomeIPPort()).filter(fc -> fc.isOutgoing()).collect(Collectors.toList());
+	}
 
 	// Parse through component to find information about its ports
 	public void addPortsDesc(Collection<EMAPortInstanceSymbol> ports)

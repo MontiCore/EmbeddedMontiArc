@@ -23,6 +23,8 @@ public class GeneratorSomeIP {
 		// Create and fill model
 		SomeIPAdapterModel model = new SomeIPAdapterModel(component.getFullName());
 
+		model.addPorts(component.getPortInstanceList());
+
 		//Generate files and write to project
 		contents.add(SomeIPTemplates.generateSomeIPAdapterH(model));
 		files.add(new File("./target/generated-sources/SomeIPAdapter_"+model.getEscapedCompName()+".h"));
