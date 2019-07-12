@@ -17,7 +17,6 @@ public:
     void init(tests_a_compA* comp);
     
         void publish_echo_portC();
-        void publish_echo_portD();
     
     
     void tick();
@@ -32,5 +31,4 @@ private:
         client* _sub_portA = nullptr; 
     // Publishers
         client* _pub_portC = nullptr; 
-        client* _pub_portD = nullptr; 
 };

@@ -10,7 +10,6 @@ import java.util.List;
 import org.junit.Test;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
@@ -30,9 +29,6 @@ public class CMakeGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
         
         GeneratorMqtt generatorMqtt = new GeneratorMqtt();
-        
-        // Connect component's ports to topics
-        componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
         
         List<File> files = new ArrayList<>();
         

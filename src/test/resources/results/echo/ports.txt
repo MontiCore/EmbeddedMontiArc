@@ -5,5 +5,5 @@ Ports:
 
 portA : incoming (mqtt, topic: /clock)
 portB : incoming (unknown symbol)
-portC : outgoing (unknown symbol)
+portC : outgoing (mqtt, topic: /clock)
 portD : outgoing (unknown symbol)
