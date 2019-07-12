@@ -16,17 +16,18 @@ void MqttAdapter_tests_a_compA::init(tests_a_compA *comp)
     connOpts.set_keep_alive_interval(20);
     connOpts.set_clean_session(true);
 
-    // Intitialize callback, subscriber and publisher
-    _clockSubscriber = new client(SERVER_ADDRESS, SUB_ID);
-    _callback = new Callback(*_clockSubscriber, comp);
-    _echoPublisher = new client(SERVER_ADDRESS, PUB_ID);
+    // Intitialize callbacks, subscribers and publishers
+    	_sub_portA = new client(SERVER_ADDRESS, portA); 
+        _callback_portA = new Callback(*_sub_portA, comp); 
     
-    // Connect subscriber, publisher and subscribe to the topic
+        _pub_portC = new client(SERVER_ADDRESS, portC); 
+    
+    // Connect subscribers, publishers and subscribe to the topics
     try {
-        _clockSubscriber->set_callback(*_callback);
-        _clockSubscriber->connect(connOpts);
-        _echoPublisher->connect(connOpts);
-        _clockSubscriber->subscribe(TOPIC, 1);
+    	_sub_portA->set_callback(*_callback_portA); 
+    	_sub_portA->connect(connOpts);
+    	_sub_portA->subscribe("/clock", 1)
+        _pub_portC->connect(connOpts); 
         
     } catch (const mqtt::exception& exc) {
         cerr << exc.what() << endl;
@@ -34,21 +35,22 @@ void MqttAdapter_tests_a_compA::init(tests_a_compA *comp)
     
 }
 
-void MqttAdapter_tests_a_compA::publish_echoPublisher()
+void MqttAdapter_tests_a_compA::publish_echo_portC()
 {
-    
-    string value = to_string(component->rosOut);
-    auto pubmsg = make_message(TOPIC, value);
-    
-    try {
-        _echoPublisher->publish(pubmsg);
-        
-    } catch (const exception& exc) {
-        cerr << exc.to_string() << endl;
-    }
+	string value = to_string(component->mqttOut);
+	auto pubmsg = make_message("/clock", value);
+	    
+	try {
+		_pub_portC->publish(pubmsg);
+	        
+	} 
+	catch (const exception& exc) {
+	    cerr << exc.to_string() << endl;
+	}
 }
+
 
 void MqttAdapter_tests_a_compA::tick()
 {
-    publish_echoPublisher();
+        publish_echo_portC();
 }

@@ -16,7 +16,10 @@ public:
     
     void init(${model.getEscapedCompName()}* comp);
     
-    void publish_echoPublisher();
+    <#list model.getOutgoingPorts() as pub>
+        void publish_echo_${pub.getName()}();
+    </#list>
+    
     
     void tick();
     
@@ -28,8 +31,13 @@ private:
     
     ${model.getEscapedCompName()}* component = nullptr;
     
-    // Callbacks, Subscribers/Publishers
-    Callback* _callback = nullptr;
-    client* _clockSubscriber = nullptr;
-    client* _echoPublisher = nullptr;
+    // Callbacks, subscribers
+    <#list model.getIncomingPorts() as sub>
+        Callback* _callback_${sub.getName()} = nullptr;
+        client* _sub_${sub.getName()} = nullptr; 
+    </#list>
+    // Publishers
+	<#list model.getOutgoingPorts() as pub>
+        client* _pub_${pub.getName()} = nullptr; 
+    </#list>
 };

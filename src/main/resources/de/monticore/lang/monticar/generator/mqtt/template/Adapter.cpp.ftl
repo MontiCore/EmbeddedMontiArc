@@ -17,17 +17,26 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscaped
     connOpts.set_keep_alive_interval(20);
     connOpts.set_clean_session(true);
 
-    // Intitialize callback, subscriber and publisher
-    _clockSubscriber = new client(SERVER_ADDRESS, SUB_ID);
-    _callback = new Callback(*_clockSubscriber, comp);
-    _echoPublisher = new client(SERVER_ADDRESS, PUB_ID);
+    // Intitialize callbacks, subscribers and publishers
+    <#list model.getIncomingPorts() as sub>
+    	_sub_${sub.getName()} = new client(SERVER_ADDRESS, ${sub.getName()}); 
+        _callback_${sub.getName()} = new Callback(*_sub_${sub.getName()}, comp); 
+    </#list>
     
-    // Connect subscriber, publisher and subscribe to the topic
+	<#list model.getOutgoingPorts() as pub>
+        _pub_${pub.getName()} = new client(SERVER_ADDRESS, ${pub.getName()}); 
+    </#list>
+    
+    // Connect subscribers, publishers and subscribe to the topics
     try {
-        _clockSubscriber->set_callback(*_callback);
-        _clockSubscriber->connect(connOpts);
-        _echoPublisher->connect(connOpts);
-        _clockSubscriber->subscribe(TOPIC, 1);
+    	 <#list model.getIncomingPorts() as sub>
+    	_sub_${sub.getName()}->set_callback(*_callback_${sub.getName()}); 
+    	_sub_${sub.getName()}->connect(connOpts);
+    	_sub_${sub.getName()}->subscribe("${model.getTopic(sub)}", 1)
+    	</#list>
+    	<#list model.getOutgoingPorts() as pub>
+        _pub_${pub.getName()}->connect(connOpts); 
+   		</#list>
         
     } catch (const mqtt::exception& exc) {
         cerr << exc.what() << endl;
@@ -35,21 +44,26 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscaped
     
 }
 
-void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publish_echoPublisher()
+<#list model.getOutgoingPorts() as pub>
+void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publish_echo_${pub.getName()}()
 {
-    
-    string value = to_string(component->rosOut);
-    auto pubmsg = make_message(TOPIC, value);
-    
-    try {
-        _echoPublisher->publish(pubmsg);
-        
-    } catch (const exception& exc) {
-        cerr << exc.to_string() << endl;
-    }
+	string value = to_string(component->mqttOut);
+	auto pubmsg = make_message("${model.getTopic(pub)}", value);
+	    
+	try {
+		_pub_${pub.getName()}->publish(pubmsg);
+	        
+	} 
+	catch (const exception& exc) {
+	    cerr << exc.to_string() << endl;
+	}
 }
+</#list>
+
 
 void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::tick()
 {
-    publish_echoPublisher();
+	<#list model.getOutgoingPorts() as pub>
+        publish_echo_${pub.getName()}();
+    </#list>
 }

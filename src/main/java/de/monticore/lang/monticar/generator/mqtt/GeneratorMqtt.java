@@ -24,6 +24,8 @@ public class GeneratorMqtt
 		// Create and fill model
 		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
 		
+		model.addPorts(component.getPortInstanceList());
+		
 		//Generate files and write to project
 		contents.add(MqttTemplates.generateMqttAdapterH(model));
 		files.add(new File("./target/generated-sources/MqttAdapter_"+model.getEscapedCompName()+".h"));

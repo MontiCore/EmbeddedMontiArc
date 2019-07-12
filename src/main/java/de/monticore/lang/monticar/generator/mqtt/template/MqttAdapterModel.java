@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnection
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol.MqttConnectionKind;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 // Used to fill .ftl files
 
@@ -13,6 +14,8 @@ public class MqttAdapterModel {
 	
 	private String compName;
 	private List<String> ports = new ArrayList<>();
+	private List<EMAPortInstanceSymbol> incoming = new ArrayList<>();
+	private List<EMAPortInstanceSymbol> outgoing = new ArrayList<>();
 	
 	public MqttAdapterModel(String compName) 
 	{
@@ -30,6 +33,37 @@ public class MqttAdapterModel {
 				.replace('.', '_')
 				.replace('[', '_')
 				.replace(']', '_');
+	}
+	
+	public List<EMAPortInstanceSymbol> getIncomingPorts()
+	{
+		return incoming;
+	}
+	
+	public List<EMAPortInstanceSymbol> getOutgoingPorts()
+	{
+		return outgoing;
+	}
+	
+	public void addPorts(Collection<EMAPortInstanceSymbol> ports)
+	{
+		incoming.addAll(ports);
+		incoming = incoming.stream().filter(fc -> fc.isMqttPort()).filter(fc -> fc.isIncoming()).collect(Collectors.toList());
+		
+		outgoing.addAll(ports);
+		outgoing = outgoing.stream().filter(fc -> fc.isMqttPort()).filter(fc -> fc.isOutgoing()).collect(Collectors.toList());
+	}
+	
+	public String getTopic(EMAPortInstanceSymbol port)
+	{
+		Optional<MiddlewareSymbol> symbol = port.getMiddlewareSymbol();
+		if(symbol.isPresent() && symbol.get().isKindOf(MqttConnectionKind.INSTANCE))
+		{
+			MqttConnectionSymbol sym = (MqttConnectionSymbol) symbol.get();
+			String topicName = sym.getTopicName().isPresent()?sym.getTopicName().get():"unknown";
+			return topicName;
+		}
+		return "";
 	}
 	
 	// Parse through component to find information about its ports

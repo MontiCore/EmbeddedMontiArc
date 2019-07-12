@@ -16,7 +16,8 @@ public:
     
     void init(tests_a_compA* comp);
     
-    void publish_echoPublisher();
+        void publish_echo_portC();
+    
     
     void tick();
     
@@ -28,8 +29,9 @@ private:
     
     tests_a_compA* component = nullptr;
     
-    // Callbacks, Subscribers/Publishers
-    Callback* _callback = nullptr;
-    client* _clockSubscriber = nullptr;
-    client* _echoPublisher = nullptr;
+    // Callbacks, subscribers
+        Callback* _callback_portA = nullptr;
+        client* _sub_portA = nullptr; 
+    // Publishers
+        client* _pub_portC = nullptr; 
 };
