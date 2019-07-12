@@ -25,9 +25,6 @@ public:
     
 private:
     const string SERVER_ADDRESS = "tcp://localhost:1883";
-    const string PUB_ID = "publisher_cpp";
-    const string SUB_ID = "subscriber_cpp";
-    const string TOPIC = "/clock";
     
     ${model.getEscapedCompName()}* component = nullptr;
     

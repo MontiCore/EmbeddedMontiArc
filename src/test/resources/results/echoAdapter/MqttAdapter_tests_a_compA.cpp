@@ -21,6 +21,7 @@ void MqttAdapter_tests_a_compA::init(tests_a_compA *comp)
         _callback_portA = new Callback(*_sub_portA, comp); 
     
         _pub_portC = new client(SERVER_ADDRESS, portC); 
+        _pub_portD = new client(SERVER_ADDRESS, portD); 
     
     // Connect subscribers, publishers and subscribe to the topics
     try {
@@ -28,6 +29,7 @@ void MqttAdapter_tests_a_compA::init(tests_a_compA *comp)
     	_sub_portA->connect(connOpts);
     	_sub_portA->subscribe("/clock", 1)
         _pub_portC->connect(connOpts); 
+        _pub_portD->connect(connOpts); 
         
     } catch (const mqtt::exception& exc) {
         cerr << exc.what() << endl;
@@ -48,9 +50,23 @@ void MqttAdapter_tests_a_compA::publish_echo_portC()
 	    cerr << exc.to_string() << endl;
 	}
 }
+void MqttAdapter_tests_a_compA::publish_echo_portD()
+{
+	string value = to_string(component->mqttOut);
+	auto pubmsg = make_message("/clock2", value);
+	    
+	try {
+		_pub_portD->publish(pubmsg);
+	        
+	} 
+	catch (const exception& exc) {
+	    cerr << exc.to_string() << endl;
+	}
+}
 
 
 void MqttAdapter_tests_a_compA::tick()
 {
         publish_echo_portC();
+        publish_echo_portD();
 }
