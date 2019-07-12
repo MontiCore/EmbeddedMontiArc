@@ -18,6 +18,8 @@ public:
 
     <@m.mwIdent/>Adapter_${model.getEscapedCompName()}();
 
+    <@m.mwIdent/>Adapter_${model.getEscapedCompName()}(int service_id, int instance_id, int method_id, int event_id, int eventgroup_id);
+
     void init(${model.getEscapedCompName()}* comp);
 
     void publish_echoPublisher();
@@ -33,4 +35,10 @@ private:
 	std::shared_ptr<vsomeip::application> _clockSubscriber;
 
 	std::shared_ptr<vsomeip::application> _echoPublisher;
+
+	int service_id;
+	int instance_id;
+	int method_id;
+	int event_id;
+	int eventgroup_id;
 };

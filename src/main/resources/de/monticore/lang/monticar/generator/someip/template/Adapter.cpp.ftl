@@ -1,13 +1,22 @@
 <#import "SomeIPMacros.ftl" as m>
 #include "<@m.mwIdent/>Adapter_${model.getEscapedCompName()}.h"
 
-#define SAMPLE_SERVICE_ID 0x1234
-#define SAMPLE_INSTANCE_ID 0x5678
-#define SAMPLE_METHOD_ID 0x0421
-#define SAMPLE_EVENT_ID 0x2345
-#define SAMPLE_EVENTGROUP_ID 0x1456
+<@m.mwIdent/>Adapter_${model.getEscapedCompName()}::<@m.mwIdent/>Adapter_${model.getEscapedCompName()}() {
+	//choose random ids
+    service_id = 1;
+	instance_id = 2;
+	method_id = 3;
+	event_id = 4;
+	eventgroup_id = 5;
+}
 
-<@m.mwIdent/>Adapter_${model.getEscapedCompName()}::<@m.mwIdent/>Adapter_${model.getEscapedCompName()}() {}
+<@m.mwIdent/>Adapter_${model.getEscapedCompName()}::<@m.mwIdent/>Adapter_${model.getEscapedCompName()}(int service_id, int instance_id, int method_id, int event_id, int eventgroup_id) {
+    this->service_id = service_id;
+	this->instance_id = instance_id;
+	this->method_id = method_id;
+	this->event_id = event_id;
+	this->eventgroup_id = eventgroup_id;
+}
 
 void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscapedCompName()} *comp) {
     // Initialize component
@@ -16,20 +25,20 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscaped
 	// Intitialize subscriber
     _clockSubscriber = vsomeip::runtime::get()->create_application("Subscriber");
     _clockSubscriber->init();
-    _clockSubscriber->request_service(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID);
-    _clockSubscriber->register_message_handler(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_METHOD_ID, std::bind(&SomeIPAdapter_tests_a_compA::on_message, this, 		std::placeholders::_1));
+    _clockSubscriber->request_service(service_id, instance_id);
+    _clockSubscriber->register_message_handler(service_id, instance_id, method_id, std::bind(&SomeIPAdapter_tests_a_compA::on_message, this, std::placeholders::_1));
 
 	// Subscribe
   	std::set<vsomeip::eventgroup_t> event_group;
-  	event_group.insert(SAMPLE_EVENTGROUP_ID);
-  	_clockSubscriber->request_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_group, true);
-  	_clockSubscriber->subscribe(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENTGROUP_ID);
+  	event_group.insert(eventgroup_id);
+  	_clockSubscriber->request_event(service_id, instance_id, event_id, event_group, true);
+  	_clockSubscriber->subscribe(service_id, instance_id, eventgroup_id);
     _clockSubscriber->start();
 
 	// Intitialize Publisher
     _echoPublisher = vsomeip::runtime::get()->create_application("Publisher");
     _echoPublisher->init();
-    _echoPublisher->offer_service(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID);
+    _echoPublisher->offer_service(service_id, instance_id);
     _echoPublisher->start();
 }
 
@@ -59,9 +68,9 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publish_echoPublisher()
 
 	//Publish
 	std::set<vsomeip::eventgroup_t> event_group;
-	event_group.insert(SAMPLE_EVENTGROUP_ID);
-	_echoPublisher->offer_event(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, event_group, true);
-	_echoPublisher->notify(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID, SAMPLE_EVENT_ID, payload);
+	event_group.insert(eventgroup_id);
+	_echoPublisher->offer_event(service_id, instance_id, event_id, event_group, true);
+	_echoPublisher->notify(service_id, instance_id, event_id, payload);
 }
 
 void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::tick()

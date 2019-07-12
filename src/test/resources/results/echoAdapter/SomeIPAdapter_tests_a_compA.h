@@ -17,6 +17,8 @@ public:
 
     SomeIPAdapter_tests_a_compA();
 
+    SomeIPAdapter_tests_a_compA(int service_id, int instance_id, int method_id, int event_id, int eventgroup_id);
+
     void init(tests_a_compA* comp);
 
     void publish_echoPublisher();
@@ -32,5 +34,10 @@ private:
 	std::shared_ptr<vsomeip::application> _clockSubscriber;
 
 	std::shared_ptr<vsomeip::application> _echoPublisher;
-};
 
+	int service_id;
+	int instance_id;
+	int method_id;
+	int event_id;
+	int eventgroup_id;
+};
