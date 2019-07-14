@@ -49,6 +49,7 @@ if __name__ == "__main__":
         'state_topic': '/environment/state',
         'action_topic': '/environment/action',
         'reset_topic': '/environment/reset',
+        'reward_topic': '/environment/reward',
     }
     env = reinforcement_learning.environment.RosEnvironment(**env_params)
 

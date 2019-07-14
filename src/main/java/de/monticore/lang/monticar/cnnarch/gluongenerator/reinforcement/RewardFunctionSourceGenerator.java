@@ -1,8 +1,10 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+
 /**
  *
  */
 public interface RewardFunctionSourceGenerator {
-    void generate(String modelPath, String qualifiedName, String targetPath);
+    EMAComponentInstanceSymbol generate(String modelPath, String qualifiedName, String targetPath);
 }
