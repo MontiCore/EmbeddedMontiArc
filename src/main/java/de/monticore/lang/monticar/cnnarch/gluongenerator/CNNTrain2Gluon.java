@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
 import com.google.common.collect.Maps;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.critic.CriticNetworkGenerationPair;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.critic.CriticNetworkGenerator;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.FunctionParameterChecker;
@@ -19,6 +20,7 @@ import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.pythonwrapper.GeneratorPythonWrapperStandaloneApi;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.ComponentPortInformation;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -165,8 +167,11 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             setRootProjectModelsDir(modelsDirPath.toString());
         }
 
-        rewardFunctionSourceGenerator.generate(getRootProjectModelsDir().get(),
-                rewardFunctionRootModel, rewardFunctionOutputPath);
+        final TaggingResolver taggingResolver
+                = rewardFunctionSourceGenerator.createTaggingResolver(getRootProjectModelsDir().get());
+        final EMAComponentInstanceSymbol emaSymbol
+                = rewardFunctionSourceGenerator.resolveSymbol(taggingResolver, rewardFunctionRootModel);
+        rewardFunctionSourceGenerator.generate(emaSymbol, taggingResolver, rewardFunctionOutputPath);
         fixArmadilloEmamGenerationOfFile(Paths.get(rewardFunctionOutputPath, String.join("_", fullNameOfComponent) + ".h"));
 
         String pythonWrapperOutputPath = Paths.get(rewardFunctionOutputPath, "pylib").toString();
@@ -176,12 +181,11 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         if (pythonWrapperApi.checkIfPythonModuleBuildAvailable()) {
             final String rewardModuleOutput
                     = Paths.get(getGenerationTargetPath(), REINFORCEMENT_LEARNING_FRAMEWORK_MODULE).toString();
-            componentPortInformation = pythonWrapperApi.generateAndTryBuilding(getRootProjectModelsDir().get(),
-                    rewardFunctionRootModel, pythonWrapperOutputPath, rewardModuleOutput);
+            componentPortInformation = pythonWrapperApi.generateAndTryBuilding(emaSymbol,
+                    pythonWrapperOutputPath, rewardModuleOutput);
         } else {
             Log.warn("Cannot build wrapper automatically: OS not supported. Please build manually before starting training.");
-            componentPortInformation = pythonWrapperApi.generate(getRootProjectModelsDir().get(), rewardFunctionRootModel,
-                    pythonWrapperOutputPath);
+            componentPortInformation = pythonWrapperApi.generate(emaSymbol, pythonWrapperOutputPath);
         }
         RewardFunctionParameterAdapter functionParameter = new RewardFunctionParameterAdapter(componentPortInformation);
         new FunctionParameterChecker().check(functionParameter);
