@@ -145,7 +145,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 	 */
 	public boolean startCharging(Car car) {
 		
-		if (carStaningAtTheCS(car) && (!isInUse())) {
+		if (carStaningAtTheCS(car) && (!isOccupied())) {
 			carObjects.add(car);
 			ChargingProcess cp = new ChargingProcess(car, this);
 			
@@ -173,7 +173,7 @@ public class ChargingStation implements SimulationLoopExecutable, PhysicalObject
 		// TODO BROADCARST: FINISHED CHARGING
 	}
 
-	public boolean isInUse() {
+	public boolean isOccupied() {
 		if (this.carObjects.size() == this.capacity) {
 			return true;
 		}
