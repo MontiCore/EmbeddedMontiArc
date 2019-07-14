@@ -23,9 +23,7 @@ public:
     
     void tick();
     
-    static void on_message(const std::shared_ptr<vsomeip::message> &_response);
-    
-    static void on_availability(vsomeip::service_t _service, vsomeip::instance_t _instance, bool _is_available);
+    void on_message(const std::shared_ptr<vsomeip::message> &_response);
     
 private:
     

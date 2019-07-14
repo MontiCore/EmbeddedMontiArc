@@ -6,11 +6,10 @@
 using namespace std;
 
 class tests_a_compA {
-
+    
 public:
-	tests_a_compA(double value);
-    double someIPIn = 2.5;
-    double someIPOut = 3.14;
+    double rosIn = 2.5;
+    double rosOut = 3.14;
 };
 
 #endif /* tests_a_compA_h */
