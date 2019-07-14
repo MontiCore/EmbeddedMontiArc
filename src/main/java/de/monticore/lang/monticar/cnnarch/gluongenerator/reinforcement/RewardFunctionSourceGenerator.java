@@ -1,10 +1,14 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 /**
  *
  */
 public interface RewardFunctionSourceGenerator {
-    EMAComponentInstanceSymbol generate(String modelPath, String qualifiedName, String targetPath);
+    TaggingResolver createTaggingResolver(String modelPath);
+    EMAComponentInstanceSymbol resolveSymbol(TaggingResolver taggingResolver, String rootModel);
+    void generate(String modelPath, String rootModel, String targetPath);
+    void generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver, String targetPath);
 }

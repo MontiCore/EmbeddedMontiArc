@@ -20,6 +20,7 @@ import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.pythonwrapper.GeneratorPythonWrapperStandaloneApi;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.ComponentPortInformation;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -165,8 +166,11 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             setRootProjectModelsDir(modelsDirPath.toString());
         }
 
-        EMAComponentInstanceSymbol emaSymbol = rewardFunctionSourceGenerator.generate(getRootProjectModelsDir().get(),
-                rewardFunctionRootModel, rewardFunctionOutputPath);
+        final TaggingResolver taggingResolver
+                = rewardFunctionSourceGenerator.createTaggingResolver(getRootProjectModelsDir().get());
+        final EMAComponentInstanceSymbol emaSymbol
+                = rewardFunctionSourceGenerator.resolveSymbol(taggingResolver, rewardFunctionRootModel);
+        rewardFunctionSourceGenerator.generate(emaSymbol, taggingResolver, rewardFunctionOutputPath);
         fixArmadilloEmamGenerationOfFile(Paths.get(rewardFunctionOutputPath, String.join("_", fullNameOfComponent) + ".h"));
 
         String pythonWrapperOutputPath = Paths.get(rewardFunctionOutputPath, "pylib").toString();
