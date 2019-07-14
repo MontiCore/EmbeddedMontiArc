@@ -9,30 +9,49 @@ import de.se_rwth.commons.logging.Log;
 import java.io.IOException;
 import java.util.Optional;
 
-public class RewardFunctionCppGenerator implements RewardFunctionSourceGenerator {
+public class RewardFunctionCppGenerator implements RewardFunctionSourceGenerator{
     public RewardFunctionCppGenerator() {
     }
 
-    @Override
-    public void generate(String modelPath, String rootModel, String targetPath) {
-        GeneratorEMAMOpt2CPP generator = new GeneratorEMAMOpt2CPP();
-        generator.useArmadilloBackend();
 
-        TaggingResolver taggingResolver = EMADLAbstractSymtab.createSymTabAndTaggingResolver(modelPath);
+    @Override
+    public EMAComponentInstanceSymbol resolveSymbol(TaggingResolver taggingResolver, String rootModel) {
         Optional<EMAComponentInstanceSymbol> instanceSymbol = taggingResolver
                 .<EMAComponentInstanceSymbol>resolve(rootModel, EMAComponentInstanceSymbol.KIND);
 
         if (!instanceSymbol.isPresent()) {
             Log.error("Generation of reward function is not possible: Cannot resolve component instance "
-                + rootModel);
+                    + rootModel);
         }
+
+        return instanceSymbol.get();
+    }
+
+    @Override
+    public void generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver,
+                         String targetPath) {
+        GeneratorEMAMOpt2CPP generator = new GeneratorEMAMOpt2CPP();
+        generator.useArmadilloBackend();
 
         generator.setGenerationTargetPath(targetPath);
 
         try {
-            generator.generate(instanceSymbol.get(), taggingResolver);
+            generator.generate(componentInstanceSymbol, taggingResolver);
         } catch (IOException e) {
             Log.error("Generation of reward function is not possible: " + e.getMessage());
         }
+
+    }
+
+    @Override
+    public void generate(String modelPath, String rootModel, String targetPath) {
+        TaggingResolver taggingResolver = createTaggingResolver(modelPath);
+        EMAComponentInstanceSymbol instanceSymbol = resolveSymbol(taggingResolver, rootModel);
+        generate(instanceSymbol, taggingResolver, targetPath);
+    }
+
+    @Override
+    public TaggingResolver createTaggingResolver(final String modelPath) {
+        return EMADLAbstractSymtab.createSymTabAndTaggingResolver(modelPath);
     }
 }
