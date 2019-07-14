@@ -30,6 +30,27 @@ public class LibraryService {
         ACCESS_RESOURCE,
         WRITE_LIBRARY
     }
+
+    public static class SystemInfo{
+        public final String workingDirectory;
+        public final String systemName;
+        public final String libraryExtension;
+        public SystemInfo() {
+            workingDirectory = System.getProperty("user.dir") + "/";
+            String OS = System.getProperty("os.name").toLowerCase();
+            if (OS.contains("win")){
+                systemName = "windows";
+                libraryExtension = ".dll";
+            } else if (OS.contains("nix")|| OS.contains("nux")|| OS.contains("aix")|| OS.contains("mac")){
+                systemName = "linux";
+                libraryExtension = ".so";
+            }
+            else throw new ExceptionInInitializerError(new LibraryException(LibraryExceptionType.OS_RESOLVE, OS));
+        }
+    }
+
+    public static final SystemInfo systemInfo = new SystemInfo();
+
     public static class LibraryException extends Exception {
         LibraryExceptionType type;
         String details;
@@ -51,21 +72,28 @@ public class LibraryService {
     }
 
     public static String getWorkingDirectory(){
-        return System.getProperty("user.dir") + "\\";
+        return systemInfo.workingDirectory;
     }
 
-    public static String getSystemLibraryName(String lib_name) throws LibraryException {
-        String OS = System.getProperty("os.name").toLowerCase();
-        if (OS.contains("win")){
-            return lib_name+".dll";
-        } else if (OS.contains("nix")|| OS.contains("nux")|| OS.contains("aix")){
-            return lib_name+".so";
-        }
-        throw new LibraryException(LibraryExceptionType.OS_RESOLVE, OS);
+    public static String getSystemName(){
+        return systemInfo.systemName;
     }
 
-    public static void prepareLibrary(String working_dir, String lib_name) throws LibraryException {
-        String lib_path = working_dir+lib_name;
+    public static String getLibraryExtension(){
+        return systemInfo.libraryExtension;
+    }
+
+    public static String getSystemLibraryName(String lib_name) {
+        return lib_name + systemInfo.libraryExtension;
+    }
+
+    /*
+        Prepares a system dependent library:
+        It is under windows/lib_name or linux/lib_name in the resources.
+        (lib_name can contain a relative path plus the library name).
+    */
+    public static void prepareLibrary(String lib_name) throws LibraryException {
+        String lib_path = getWorkingDirectory()+lib_name;
         //System.out.println("lib_path: " + lib_path);
         File target_file = new File(lib_path);
         if(target_file.exists() && !target_file.isDirectory()) {
@@ -73,7 +101,7 @@ public class LibraryService {
         }
         //Write library to disk
         try {
-            InputStream res = LibraryService.class.getResourceAsStream("/"+lib_name);
+            InputStream res = LibraryService.class.getResourceAsStream("/"+getSystemName()+"/"+lib_name);
             target_file.getParentFile().mkdirs();
             FileOutputStream fout= new FileOutputStream(target_file);
             BufferedOutputStream out = new BufferedOutputStream(fout);

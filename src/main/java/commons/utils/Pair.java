@@ -18,21 +18,36 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package commons.map;
+package commons.utils;
 
-import commons.utils.Point3D;
+public class Pair<K,V> {
+    private K key;
+    private V value;
+    public Pair(K key, V value){
+        this.key = key;
+        this.value = value;
+    }
 
-/**
- * Created by lukas on 31.01.17.
- */
-public interface IControllerNode {
-    public final long INTERPOLATED_NODE = -1;
+    public boolean equals(Object obj){
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (!(obj instanceof Pair)) return false;
+        Pair other = (Pair) obj;
+        return key.equals(other.key) && value.equals(other.value);
+    }
 
-    public final double INTERPOLATION_DISTANCE = 2;
+    public K getKey(){
+        return key;
+    }
+    public V getValue(){
+        return value;
+    }
 
-    public abstract Point3D getPoint();
+    public int hashCode(){
+        return key.hashCode() ^ value.hashCode();
+    }
 
-    public abstract long getId();
-
-    public abstract long getOsmId();
+    public String toString(){
+        return "<" + key + ", " + value + ">";
+    }
 }
