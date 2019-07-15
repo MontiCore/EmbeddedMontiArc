@@ -545,6 +545,9 @@ class DdpgAgent(Agent):
                     # Temporary critic so that gluon trainer does not mess
                     # with critic parameters
                     tmp_critic = self._copy_critic()
+                    episode_avg_q_value +=\
+                        np.sum(tmp_critic(
+                            states, self._actor(states)).asnumpy()) / self._minibatch_size
                     with autograd.record():
                         # For maximizing qvalues we have to multiply with -1
                         # as we use a minimizer
@@ -566,8 +569,6 @@ class DdpgAgent(Agent):
                         np.sum(critic_loss.asnumpy()) / self._minibatch_size
                     episode_actor_loss +=\
                         np.sum(actor_loss.asnumpy()) / self._minibatch_size
-                    episode_avg_q_value +=\
-                        np.sum(actor_qvalues.asnumpy()) / self._minibatch_size
 
                     training_steps += 1
 
