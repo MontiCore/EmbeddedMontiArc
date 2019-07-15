@@ -6,7 +6,7 @@
         'use_fix_target': False,
 </#if>
 <#if (config.configuration.loss)??>
-        'loss': '${config.lossName}',
+        'loss_function': '${config.lossName}',
 <#if (config.lossParams)??>
         'loss_params': {
 <#list config.lossParams?keys as param>

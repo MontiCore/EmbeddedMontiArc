@@ -1003,7 +1003,7 @@ class DqnAgent(Agent):
         action_dim,
         ctx=None,
         discount_factor=.9,
-        loss_function='euclidean',
+        loss_function='l2',
         optimizer='rmsprop',
         optimizer_params={'learning_rate': 0.09},
         training_episodes=50,
