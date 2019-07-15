@@ -193,30 +193,28 @@ public class ReinforcementConfigurationData extends ConfigurationData {
         assert isReinforcementLearning(): "Strategy parameter only for reinforcement learning but called in a " +
          " non reinforcement learning context";
         Map<String, Object> strategyParams = getMultiParamEntry(AST_ENTRY_STRATEGY, "method");
-        if (strategyParams.get("method").equals(STRATEGY_ORNSTEIN_UHLENBECK)) {
-            assert getConfiguration().getTrainedArchitecture().isPresent(): "Architecture not present," +
-             " but reinforcement training";
-            TrainedArchitecture trainedArchitecture = getConfiguration().getTrainedArchitecture().get();
-            final String actionPortName = getOutputNameOfTrainedArchitecture();
-            Range actionRange = trainedArchitecture.getRanges().get(actionPortName);
+        assert getConfiguration().getTrainedArchitecture().isPresent(): "Architecture not present," +
+         " but reinforcement training";
+        TrainedArchitecture trainedArchitecture = getConfiguration().getTrainedArchitecture().get();
+        final String actionPortName = getOutputNameOfTrainedArchitecture();
+        Range actionRange = trainedArchitecture.getRanges().get(actionPortName);
 
-            if (actionRange.isLowerLimitInfinity() && actionRange.isUpperLimitInfinity()) {
-                strategyParams.put("action_low", null);
-                strategyParams.put("action_high", null);
-            } else if(!actionRange.isLowerLimitInfinity() && actionRange.isUpperLimitInfinity()) {
-                assert actionRange.getLowerLimit().isPresent();
-                strategyParams.put("action_low", actionRange.getLowerLimit().get());
-                strategyParams.put("action_high", null);
-            } else if (actionRange.isLowerLimitInfinity() && !actionRange.isUpperLimitInfinity()) {
-                assert actionRange.getUpperLimit().isPresent();
-                strategyParams.put("action_low", null);
-                strategyParams.put("action_high", actionRange.getUpperLimit().get());
-            } else {
-                assert actionRange.getLowerLimit().isPresent();
-                assert actionRange.getUpperLimit().isPresent();
-                strategyParams.put("action_low", actionRange.getLowerLimit().get());
-                strategyParams.put("action_high", actionRange.getUpperLimit().get());
-            }
+        if (actionRange.isLowerLimitInfinity() && actionRange.isUpperLimitInfinity()) {
+            strategyParams.put("action_low", null);
+            strategyParams.put("action_high", null);
+        } else if(!actionRange.isLowerLimitInfinity() && actionRange.isUpperLimitInfinity()) {
+            assert actionRange.getLowerLimit().isPresent();
+            strategyParams.put("action_low", actionRange.getLowerLimit().get());
+            strategyParams.put("action_high", null);
+        } else if (actionRange.isLowerLimitInfinity() && !actionRange.isUpperLimitInfinity()) {
+            assert actionRange.getUpperLimit().isPresent();
+            strategyParams.put("action_low", null);
+            strategyParams.put("action_high", actionRange.getUpperLimit().get());
+        } else {
+            assert actionRange.getLowerLimit().isPresent();
+            assert actionRange.getUpperLimit().isPresent();
+            strategyParams.put("action_low", actionRange.getLowerLimit().get());
+            strategyParams.put("action_high", actionRange.getUpperLimit().get());
         }
         return strategyParams;
     }

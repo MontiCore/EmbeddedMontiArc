@@ -19,7 +19,7 @@
 <#if (config.strategy.epsilon_decay_per_step)??>
             'epsilon_decay_per_step': ${config.strategy.epsilon_decay_per_step?string('True', 'False')},
 </#if>
-<#if (config.strategy.method)?? && (config.strategy.method=="ornstein_uhlenbeck")>
+<#if (config.strategy.method)?? && (config.strategy.method=="ornstein_uhlenbeck" || config.strategy.method=="gaussian")>
 <#if (config.strategy.action_low)?? >
             'action_low': ${config.strategy.action_low},
 <#else>
@@ -30,6 +30,8 @@
 <#else>
             'action_high' : np.infty,
 </#if>
+</#if>
+<#if (config.strategy.method)?? && (config.strategy.method=="ornstein_uhlenbeck")>
 <#if (config.strategy.mu)??>
             'mu': [<#list config.strategy.mu as m>${m}<#if m?has_next>, </#if></#list>],
 </#if>
