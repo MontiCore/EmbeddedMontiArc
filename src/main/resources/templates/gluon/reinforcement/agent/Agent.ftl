@@ -916,6 +916,9 @@ class TwinDelayedDdpgAgent(DdpgAgent):
 
                     if self._total_steps % self._policy_delay == 0:
                         tmp_critic = self._copy_critic()
+                        episode_avg_q_value +=\
+                        np.sum(tmp_critic(
+                            states, self._actor(states)).asnumpy()) / self._minibatch_size
                         with autograd.record():
                             actor_loss = -tmp_critic(
                                 states, self._actor(states)).mean()
@@ -942,7 +945,6 @@ class TwinDelayedDdpgAgent(DdpgAgent):
                         np.sum(critic_loss.asnumpy()) / self._minibatch_size
                     episode_actor_loss += 0 if actor_updates == 0 else\
                         np.sum(actor_loss.asnumpy()[0])
-                    episode_avg_q_value = 0
 
                     training_steps += 1
 
@@ -961,8 +963,8 @@ class TwinDelayedDdpgAgent(DdpgAgent):
                 else (episode_actor_loss / actor_updates)
             episode_critic_loss = 0 if training_steps == 0\
                 else (episode_critic_loss / training_steps)
-            episode_avg_q_value = 0 if training_steps == 0\
-                else (episode_avg_q_value / training_steps)
+            episode_avg_q_value = 0 if actor_updates == 0\
+                    else (episode_avg_q_value / actor_updates)
 
             avg_reward = self._training_stats.log_episode(
                 self._current_episode, start, training_steps,
