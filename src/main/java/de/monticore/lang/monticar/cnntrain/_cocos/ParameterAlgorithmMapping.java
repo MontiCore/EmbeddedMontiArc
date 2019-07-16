@@ -105,7 +105,8 @@ class ParameterAlgorithmMapping {
         ASTCriticOptimizerEntry.class,
         ASTStrategyOUMu.class,
         ASTStrategyOUTheta.class,
-        ASTStrategyOUSigma.class
+        ASTStrategyOUSigma.class,
+        ASTStrategyGaussianNoiseVarianceEntry.class
     );
 
     private static final List<Class> EXCLUSIVE_TD3_PARAMETERS = Lists.newArrayList(
@@ -117,7 +118,8 @@ class ParameterAlgorithmMapping {
         ASTStrategyOUSigma.class,
         ASTPolicyNoiseEntry.class,
         ASTNoiseClipEntry.class,
-        ASTPolicyDelayEntry.class
+        ASTPolicyDelayEntry.class,
+        ASTStrategyGaussianNoiseVarianceEntry.class
     );
 
     ParameterAlgorithmMapping() {

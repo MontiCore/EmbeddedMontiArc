@@ -23,6 +23,7 @@ configuration TD3Config {
     strategy : gaussian {
         epsilon: 1.0
         min_epsilon: 0.001
+        noise_variance: 0.5
         epsilon_decay_per_step: true
         epsilon_decay_method: linear
         epsilon_decay : 0.0001
