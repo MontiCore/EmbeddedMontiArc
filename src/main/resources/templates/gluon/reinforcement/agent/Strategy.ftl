@@ -19,7 +19,8 @@ class StrategyBuilder(object):
         action_high=None,
         mu=0.0,
         theta=0.5,
-        sigma=0.3
+        sigma=0.3,
+        noise_variance=0.1
     ):
 
         if epsilon_decay_method == 'linear':
@@ -50,8 +51,9 @@ class StrategyBuilder(object):
             assert action_dim is not None
             assert action_low is not None
             assert action_high is not None
+            assert noise_variance is not None
             return GaussianNoiseStrategy(action_dim, action_low, action_high,
-                                         epsilon, decay)
+                                         epsilon, noise_variance, decay)
         else:
             assert action_dim is not None
             assert len(action_dim) == 1
@@ -197,6 +199,7 @@ class GaussianNoiseStrategy(BaseStrategy):
         action_low,
         action_high,
         eps,
+        noise_variance,
         decay=NoDecay()
     ):
         super(GaussianNoiseStrategy, self).__init__(decay)
@@ -207,7 +210,9 @@ class GaussianNoiseStrategy(BaseStrategy):
         self._action_low = action_low
         self._action_high = action_high
 
+        self._noise_variance = noise_variance
+
     def select_action(self, values):
-        noise = np.random.normal(size=self._action_dim)
+        noise = np.random.normal(loc=0.0, scale=self._noise_variance, size=self._action_dim)
         action = values + self.cur_eps * noise
         return np.clip(action, self._action_low, self._action_high)

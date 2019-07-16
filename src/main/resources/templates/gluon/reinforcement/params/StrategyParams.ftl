@@ -19,6 +19,11 @@
 <#if (config.strategy.epsilon_decay_per_step)??>
             'epsilon_decay_per_step': ${config.strategy.epsilon_decay_per_step?string('True', 'False')},
 </#if>
+<#if (config.strategy.method=="gaussian")>
+<#if (config.strategy.noise_variance)??>
+            'noise_variance': ${config.strategy.noise_variance},
+</#if>
+</#if>
 <#if (config.strategy.method)?? && (config.strategy.method=="ornstein_uhlenbeck" || config.strategy.method=="gaussian")>
 <#if (config.strategy.action_low)?? >
             'action_low': ${config.strategy.action_low},
