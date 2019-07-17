@@ -124,10 +124,10 @@ class Agent(object):
 
     def _make_pickle_ready(self, session_dir):
         del self._training_stats.logger
-        self._logger = None
         self._environment.close()
         self._environment = None
         self._export_net(self._best_net, 'best_net', filedir=session_dir)
+        self._logger = None
         self._best_net = None
 
     def _make_config_dict(self):
@@ -265,12 +265,8 @@ class Agent(object):
         filedir = self._output_directory if filedir is None else filedir
         filename = os.path.join(filedir, filename)
 
-        if(episode is not None):
-            self._logger.debug(
-                'Saving model parameters after episode %d' % episode)
+        if episode is not None:
             filename = filename + '-ep{}'.format(episode)
-        else:
-            self._logger.debug('Saving model parameters')
 
         net.export(filename, epoch=0)
 
