@@ -272,7 +272,6 @@ class Agent(object):
         else:
             self._logger.debug('Saving model parameters')
 
-        net.save_parameters(filename + '.params')
         net.export(filename, epoch=0)
 
     def export_best_network(self, path=None, epoch=0):
