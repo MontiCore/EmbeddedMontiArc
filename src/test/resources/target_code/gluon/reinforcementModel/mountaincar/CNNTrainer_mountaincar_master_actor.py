@@ -85,8 +85,8 @@ if __name__ == "__main__":
         'train_interval': 1,
         'snapshot_interval': 20,
         'max_episode_step': 1000,
-        'actor': actor_creator.net,
-        'critic': critic_creator.net,
+        'actor': actor_creator.networks[0],
+        'critic': critic_creator.networks[0],
         'actor_optimizer': 'adam',
         'actor_optimizer_params': {
             'learning_rate': 1.0E-4},
@@ -116,4 +116,4 @@ if __name__ == "__main__":
     train_successful = agent.train()
 
     if train_successful:
-        agent.save_best_network(actor_creator._model_dir_ + actor_creator._model_prefix_ + '_0_newest', epoch=0)
+        agent.export_best_network(path=actor_creator._model_dir_ + actor_creator._model_prefix_ + '_0_newest', epoch=0)
