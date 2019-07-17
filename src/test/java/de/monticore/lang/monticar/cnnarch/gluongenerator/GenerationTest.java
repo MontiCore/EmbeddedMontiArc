@@ -301,6 +301,35 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testTd3Config() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests/td3");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        TrainedArchitecture trainedArchitecture = TrainedArchitectureMockFactory.createTrainedArchitectureMock();
+
+        trainGenerator.generate(modelPath, "TD3Config", trainedArchitecture);
+
+        assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code/td3"),
+                Arrays.asList(
+                        "CNNTrainer_tD3Config.py",
+                        "start_training.sh",
+                        "reinforcement_learning/CNNCreator_CriticNetwork.py",
+                        "reinforcement_learning/CNNNet_CriticNetwork.py",
+                        "reinforcement_learning/__init__.py",
+                        "reinforcement_learning/strategy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
+                )
+        );
+    }
+
+    @Test
     public void testRosDdpgConfig() {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests/ddpg-ros");
