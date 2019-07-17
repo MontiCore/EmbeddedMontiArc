@@ -269,6 +269,7 @@ class Agent(object):
             filename = filename + '-ep{}'.format(episode)
 
         net.export(filename, epoch=0)
+        net.save_parameters(filename + '.params')
 
     def export_best_network(self, path=None, epoch=0):
         path = os.path.join(self._output_directory, 'best_network')\
