@@ -102,4 +102,22 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         return this.entryMap.containsKey("learning_method")
                 ? (LearningMethod)this.entryMap.get("learning_method").getValue().getValue() : LearningMethod.SUPERVISED;
     }
+
+    public boolean isReinforcementLearningMethod() {
+        return getLearningMethod().equals(LearningMethod.REINFORCEMENT);
+    }
+
+    public boolean hasCritic() {
+        return getEntryMap().containsKey("critic");
+    }
+
+    public Optional<String> getCriticName() {
+        if (!hasCritic()) {
+            return Optional.empty();
+        }
+
+        final Object criticNameValue = getEntry("critic").getValue().getValue();
+        assert criticNameValue instanceof String;
+        return Optional.of((String)criticNameValue);
+    }
 }
