@@ -11,11 +11,7 @@ import de.monticore.lang.monticar.cnnarch.generator.ConfigurationData;
 
 import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
-import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
-import de.monticore.lang.monticar.cnntrain._symboltable.LearningMethod;
-import de.monticore.lang.monticar.cnntrain._symboltable.RLAlgorithm;
-import de.monticore.lang.monticar.cnntrain._symboltable.RewardFunctionSymbol;
-import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
+import de.monticore.lang.monticar.cnntrain._symboltable.*;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.pythonwrapper.GeneratorPythonWrapperStandaloneApi;
@@ -95,7 +91,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         }
     }
 
-    public void generate(Path modelsDirPath, String rootModelName, TrainedArchitecture trainedArchitecture) {
+    public void generate(Path modelsDirPath, String rootModelName, NNArchitectureSymbol trainedArchitecture) {
         ConfigurationSymbol configurationSymbol = this.getConfigurationSymbol(modelsDirPath, rootModelName);
         configurationSymbol.setTrainedArchitecture(trainedArchitecture);
         this.setRootProjectModelsDir(modelsDirPath.toString());

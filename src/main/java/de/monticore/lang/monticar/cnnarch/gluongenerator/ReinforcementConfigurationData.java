@@ -1,11 +1,9 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionParameterAdapter;
 import de.monticore.lang.monticar.cnnarch.generator.ConfigurationData;
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
-import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 
 import java.util.*;
 
@@ -148,7 +146,7 @@ public class ReinforcementConfigurationData extends ConfigurationData {
         if (!this.getConfiguration().getTrainedArchitecture().isPresent()) {
             throw new IllegalStateException("No trained architecture set");
         }
-        TrainedArchitecture trainedArchitecture = getConfiguration().getTrainedArchitecture().get();
+        NNArchitectureSymbol trainedArchitecture = getConfiguration().getTrainedArchitecture().get();
         // We allow only one input, the first one is the only input
         return trainedArchitecture.getInputs().get(0);
     }
@@ -157,7 +155,7 @@ public class ReinforcementConfigurationData extends ConfigurationData {
         if (!this.getConfiguration().getTrainedArchitecture().isPresent()) {
             throw new IllegalStateException("No trained architecture set");
         }
-        TrainedArchitecture trainedArchitecture = getConfiguration().getTrainedArchitecture().get();
+        NNArchitectureSymbol trainedArchitecture = getConfiguration().getTrainedArchitecture().get();
         // We allow only one output, the first one is the only output
         return trainedArchitecture.getOutputs().get(0);
     }
@@ -167,7 +165,7 @@ public class ReinforcementConfigurationData extends ConfigurationData {
             return null;
         }
         final String inputName = getInputNameOfTrainedArchitecture();
-        TrainedArchitecture trainedArchitecture = this.getConfiguration().getTrainedArchitecture().get();
+        NNArchitectureSymbol trainedArchitecture = this.getConfiguration().getTrainedArchitecture().get();
         return trainedArchitecture.getDimensions().get(inputName);
     }
 
@@ -176,7 +174,7 @@ public class ReinforcementConfigurationData extends ConfigurationData {
             return null;
         }
         final String outputName = getOutputNameOfTrainedArchitecture();
-        TrainedArchitecture trainedArchitecture = this.getConfiguration().getTrainedArchitecture().get();
+        NNArchitectureSymbol trainedArchitecture = this.getConfiguration().getTrainedArchitecture().get();
         return trainedArchitecture.getDimensions().get(outputName);
     }
 
@@ -195,7 +193,7 @@ public class ReinforcementConfigurationData extends ConfigurationData {
         Map<String, Object> strategyParams = getMultiParamEntry(AST_ENTRY_STRATEGY, "method");
         assert getConfiguration().getTrainedArchitecture().isPresent(): "Architecture not present," +
          " but reinforcement training";
-        TrainedArchitecture trainedArchitecture = getConfiguration().getTrainedArchitecture().get();
+        NNArchitectureSymbol trainedArchitecture = getConfiguration().getTrainedArchitecture().get();
         final String actionPortName = getOutputNameOfTrainedArchitecture();
         Range actionRange = trainedArchitecture.getRanges().get(actionPortName);
 

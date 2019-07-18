@@ -2,8 +2,8 @@ package de.monticore.lang.monticar.cnnarch.gluongenerator.annotations;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.IOSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
-import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.symboltable.CommonSymbol;
 
@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class ArchitectureAdapter implements TrainedArchitecture {
+public class ArchitectureAdapter extends NNArchitectureSymbol {
     private ArchitectureSymbol architectureSymbol;
 
 
-    public ArchitectureAdapter(final ArchitectureSymbol architectureSymbol) {
+    public ArchitectureAdapter(final String name,
+            final ArchitectureSymbol architectureSymbol) {
+        super(name);
         checkNotNull(architectureSymbol);
         this.architectureSymbol = architectureSymbol;
     }
@@ -53,6 +55,10 @@ public class ArchitectureAdapter implements TrainedArchitecture {
     public Map<String, String> getTypes() {
         return getAllIOSymbols().stream().collect(Collectors.toMap(CommonSymbol::getName,
             s -> s.getDefinition().getType().getDomain().getName()));
+    }
+
+    public ArchitectureSymbol getArchitectureSymbol() {
+        return this.architectureSymbol;
     }
 
     private Range astRangeToTrainRange(final ASTRange range) {

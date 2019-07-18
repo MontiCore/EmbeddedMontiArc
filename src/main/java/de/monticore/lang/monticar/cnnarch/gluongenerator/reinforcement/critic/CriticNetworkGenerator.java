@@ -8,8 +8,8 @@ import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2GluonLayerSuppo
 import de.monticore.lang.monticar.cnnarch.generator.CNNArchSymbolCompiler;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
-import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +52,7 @@ public class CriticNetworkGenerator {
 
         failIfArchitectureNotAvailable(configurationSymbol);
         assert configurationSymbol.getTrainedArchitecture().isPresent();
-        TrainedArchitecture trainedArchitecture = configurationSymbol.getTrainedArchitecture().get();
+        NNArchitectureSymbol trainedArchitecture = configurationSymbol.getTrainedArchitecture().get();
         failIfActorHasMultipleIO(trainedArchitecture);
 
         List<String> criticNetwork = retrieveFullNameOfCriticsNetworkFromConfiguration(configurationSymbol);
@@ -107,7 +107,7 @@ public class CriticNetworkGenerator {
         return tmpDirectoryToArchFile;
     }
 
-    private Map<String, Object> makeTemplateContextMap(TrainedArchitecture trainedArchitecture, String criticNetworkName, String networkImplementation) {
+    private Map<String, Object> makeTemplateContextMap(NNArchitectureSymbol trainedArchitecture, String criticNetworkName, String networkImplementation) {
         final String stateName = trainedArchitecture.getInputs().get(0);
         final String actionName = trainedArchitecture.getOutputs().get(0);
 
@@ -194,7 +194,7 @@ public class CriticNetworkGenerator {
         }
     }
 
-    private void failIfActorHasMultipleIO(TrainedArchitecture trainedArchitecture) {
+    private void failIfActorHasMultipleIO(NNArchitectureSymbol trainedArchitecture) {
         if (trainedArchitecture.getInputs().size() > 1 || trainedArchitecture.getOutputs().size() > 1) {
             failWithMessage("Actor component with multiple inputs or outputs is not supported by this generator");
         }

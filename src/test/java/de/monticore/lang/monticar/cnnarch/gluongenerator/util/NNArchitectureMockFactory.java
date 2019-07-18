@@ -2,8 +2,8 @@ package de.monticore.lang.monticar.cnnarch.gluongenerator.util;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
-import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 
 import java.util.List;
 import java.util.Map;
@@ -11,10 +11,10 @@ import java.util.Map;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class TrainedArchitectureMockFactory {
+public class NNArchitectureMockFactory {
 
-    public static TrainedArchitecture createTrainedArchitectureMock() {
-        TrainedArchitecture trainedArchitecture = mock(TrainedArchitecture.class);
+    public static NNArchitectureSymbol createNNArchitectureMock() {
+        NNArchitectureSymbol trainedArchitecture = mock(NNArchitectureSymbol.class);
 
         final String inputName = "state";
         final String outputName = "action";
