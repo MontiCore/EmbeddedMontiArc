@@ -2,8 +2,8 @@ package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
 import com.google.common.collect.Maps;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.critic.CriticNetworkGenerationPair;
-import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.critic.CriticNetworkGenerator;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.annotations.ArchitectureAdapter;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.FunctionParameterChecker;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionParameterAdapter;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionSourceGenerator;
@@ -91,11 +91,19 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         }
     }
 
-    public void generate(Path modelsDirPath, String rootModelName, NNArchitectureSymbol trainedArchitecture) {
+    public void generate(Path modelsDirPath,
+                         String rootModelName,
+                         NNArchitectureSymbol trainedArchitecture,
+                         NNArchitectureSymbol criticNetwork) {
         ConfigurationSymbol configurationSymbol = this.getConfigurationSymbol(modelsDirPath, rootModelName);
         configurationSymbol.setTrainedArchitecture(trainedArchitecture);
+        configurationSymbol.setCriticNetwork(criticNetwork);
         this.setRootProjectModelsDir(modelsDirPath.toString());
         generateFilesFromConfigurationSymbol(configurationSymbol);
+    }
+
+    public void generate(Path modelsDirPath, String rootModelName, NNArchitectureSymbol trainedArchitecture) {
+        generate(modelsDirPath, rootModelName, trainedArchitecture, null);
     }
 
     @Override
@@ -119,23 +127,28 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
 
             if (rlAlgorithm.equals(RLAlgorithm.DDPG)
                 || rlAlgorithm.equals(RLAlgorithm.TD3)) {
-                CriticNetworkGenerator criticNetworkGenerator = new CriticNetworkGenerator();
-                criticNetworkGenerator.setGenerationTargetPath(
-                    Paths.get(getGenerationTargetPath(), REINFORCEMENT_LEARNING_FRAMEWORK_MODULE).toString());
-                if (getRootProjectModelsDir().isPresent()) {
-                    criticNetworkGenerator.setRootModelsDir(getRootProjectModelsDir().get());
-                } else {
-                    Log.error("No root model dir set");
+
+                if (!configuration.getCriticNetwork().isPresent()) {
+                    Log.error("No architecture model for critic available but is required for chosen " +
+                            "actor-critic algorithm");
                 }
+                NNArchitectureSymbol genericArchitectureSymbol = configuration.getCriticNetwork().get();
+                final String criticComponentName = genericArchitectureSymbol.getName().replace('.', '_');
+                ArchitectureSymbol architectureSymbol
+                        = ((ArchitectureAdapter)genericArchitectureSymbol).getArchitectureSymbol();
 
-                CriticNetworkGenerationPair criticNetworkResult
-                    = criticNetworkGenerator.generateCriticNetworkContent(templateConfiguration, configuration);
+                CNNArch2Gluon gluonGenerator = new CNNArch2Gluon();
+                gluonGenerator.setGenerationTargetPath(
+                        Paths.get(getGenerationTargetPath(), REINFORCEMENT_LEARNING_FRAMEWORK_MODULE).toString());
+                Map<String, String> architectureFileContentMap
+                        = gluonGenerator.generateStringsAllowMultipleIO(architectureSymbol, true);
 
-                fileContentMap.putAll(criticNetworkResult.getFileContent().entrySet().stream().collect(Collectors.toMap(
+
+                fileContentMap.putAll(architectureFileContentMap.entrySet().stream().collect(Collectors.toMap(
                             k -> REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/" + k.getKey(),
                             Map.Entry::getValue))
                 );
-                ftlContext.put("criticInstanceName", criticNetworkResult.getCriticNetworkName());
+                ftlContext.put("criticInstanceName", criticComponentName);
             }
 
             ftlContext.put("trainerName", trainerName);

@@ -2,9 +2,15 @@ package de.monticore.lang.monticar.cnnarch.gluongenerator.util;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchSymbolCompiler;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2GluonArchitectureSupportChecker;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2GluonLayerSupportChecker;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.annotations.ArchitectureAdapter;
 import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -45,4 +51,12 @@ public class NNArchitectureMockFactory {
         return trainedArchitecture;
     }
 
+    public static NNArchitectureSymbol createArchitectureSymbolByCNNArchModel(final Path modelsDirPath,
+                                                                       final String rootModel) {
+        CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(new CNNArch2GluonArchitectureSupportChecker(),
+                new CNNArch2GluonLayerSupportChecker());
+        ArchitectureSymbol architectureSymbol = symbolCompiler.compileArchitectureSymbolFromModelsDir(modelsDirPath, rootModel);
+        architectureSymbol.setComponentName(rootModel);
+        return new ArchitectureAdapter(rootModel, architectureSymbol);
+    }
 }

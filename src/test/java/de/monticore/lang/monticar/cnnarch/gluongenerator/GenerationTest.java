@@ -268,8 +268,10 @@ public class GenerationTest extends AbstractSymtabTest {
         Path modelPath = Paths.get("src/test/resources/valid_tests/ddpg");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
         NNArchitectureSymbol trainedArchitecture = NNArchitectureMockFactory.createNNArchitectureMock();
+        NNArchitectureSymbol criticArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/ddpg/comp"), "CriticNetwork");
 
-        trainGenerator.generate(modelPath, "ActorNetwork", trainedArchitecture);
+        trainGenerator.generate(modelPath, "ActorNetwork", trainedArchitecture, criticArchitecture);
 
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
         checkFilesAreEqual(
@@ -297,8 +299,10 @@ public class GenerationTest extends AbstractSymtabTest {
         Path modelPath = Paths.get("src/test/resources/valid_tests/td3");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
         NNArchitectureSymbol trainedArchitecture = NNArchitectureMockFactory.createNNArchitectureMock();
+        NNArchitectureSymbol criticArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/td3/comp"), "CriticNetwork");
 
-        trainGenerator.generate(modelPath, "TD3Config", trainedArchitecture);
+        trainGenerator.generate(modelPath, "TD3Config", trainedArchitecture, criticArchitecture);
 
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
         checkFilesAreEqual(
@@ -326,8 +330,10 @@ public class GenerationTest extends AbstractSymtabTest {
         Path modelPath = Paths.get("src/test/resources/valid_tests/ddpg-ros");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
         NNArchitectureSymbol trainedArchitecture = NNArchitectureMockFactory.createNNArchitectureMock();
+        NNArchitectureSymbol criticArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/ddpg-ros/comp"), "RosCriticNetwork");
 
-        trainGenerator.generate(modelPath, "RosActorNetwork", trainedArchitecture);
+        trainGenerator.generate(modelPath, "RosActorNetwork", trainedArchitecture, criticArchitecture);
 
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
         checkFilesAreEqual(
