@@ -1,0 +1,5 @@
+RUN "mkdir -p /home/test"
+
+ENV "SOMETHING"="something"
+
+LABEL "SomeLabel"="Some Value"

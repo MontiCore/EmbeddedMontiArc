@@ -63,6 +63,18 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>grammar-environment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>plugin-environment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- .. Libraries ................................................. -->
 
         <!-- .. Language .................................................. -->
@@ -93,6 +105,7 @@
                             <excludes>
                                 <exclude>**/*Module.class</exclude>
                                 <exclude>**/HelpMojo.class</exclude>
+                                <exclude>**/_*/**/*.class</exclude> <!-- Disable Generated Sources -->
                             </excludes>
                         </configuration>
                     </execution>

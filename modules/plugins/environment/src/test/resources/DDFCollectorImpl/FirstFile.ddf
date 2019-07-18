@@ -1,0 +1,11 @@
+INSTALL "cmake", "python"
+
+ARG "abc" = "def"
+
+EXPOSE 300
+
+SHELL ["/bin/bash", "-c"]
+
+VOLUME ["/some/volume"]
+
+WORKDIR "/to/work/directory"
