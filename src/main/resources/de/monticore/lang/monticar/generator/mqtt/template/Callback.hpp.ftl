@@ -11,18 +11,20 @@ using namespace <@m.smallIdent/>;
 class Callback : public virtual callback
 {
     client& cli_;
-    
+
 public:
-    Callback(client& cli, ${model.getEscapedCompName()}* comp);
-    
+    Callback(client& cli, ${model.getEscapedCompName()}* comp, EMAPortInstanceSymbol port);
+
     void connected(const string& cause);
-    
+
     void connection_lost(const string& cause);
-    
+
     void message_arrived(const_message_ptr msg);
-    
+
 private:
     ${model.getEscapedCompName()}* comp_;
-    
+
+    EMAPortInstanceSymbol port_;
+
 };
 #endif /* Callback_hpp */
