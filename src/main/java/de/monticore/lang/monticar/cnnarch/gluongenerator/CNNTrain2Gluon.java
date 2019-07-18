@@ -133,7 +133,6 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                             "actor-critic algorithm");
                 }
                 NNArchitectureSymbol genericArchitectureSymbol = configuration.getCriticNetwork().get();
-                final String criticComponentName = genericArchitectureSymbol.getName().replace('.', '_');
                 ArchitectureSymbol architectureSymbol
                         = ((ArchitectureAdapter)genericArchitectureSymbol).getArchitectureSymbol();
 
@@ -144,11 +143,16 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                         = gluonGenerator.generateStringsAllowMultipleIO(architectureSymbol, true);
 
 
+                final String creatorName = architectureFileContentMap.keySet().iterator().next();
+                final String criticInstanceName = creatorName.substring(
+                        creatorName.indexOf('_') + 1, creatorName.lastIndexOf(".py"));
+
                 fileContentMap.putAll(architectureFileContentMap.entrySet().stream().collect(Collectors.toMap(
                             k -> REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/" + k.getKey(),
                             Map.Entry::getValue))
                 );
-                ftlContext.put("criticInstanceName", criticComponentName);
+
+                ftlContext.put("criticInstanceName", criticInstanceName);
             }
 
             ftlContext.put("trainerName", trainerName);
