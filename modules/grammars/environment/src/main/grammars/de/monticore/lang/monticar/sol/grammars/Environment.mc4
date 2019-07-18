@@ -1,0 +1,116 @@
+package de.monticore.lang.monticar.sol.grammars;
+
+/**
+ * Environment is a language which can be considered a distributed Dockerfile where each model contributes to the
+ * overall Dockerfile which acts as environment for the services launched by the IDE.
+ */
+grammar Environment extends de.monticore.MCBasics, de.monticore.MCLiterals {
+    // =========================================
+    // INTERFACE DEFINITIONS
+    // =========================================
+
+    /**
+     * ASTInstruction is the interface for a subset of Dockerfile and a few new instructions.
+     */
+    interface Instruction;
+
+    // =========================================
+    // PARSER RULES
+    // =========================================
+
+    /**
+     * EnvironmentCompilationUnit is the root parser rule which acts as container for the instructions.
+     */
+    EnvironmentCompilationUnit =
+        instruction:Instruction*
+    ;
+
+    start EnvironmentCompilationUnit;
+
+    /**
+     * LabelInstruction acts as peer to "LABEL" of a Dockerfile.
+     */
+    LabelInstruction implements Instruction =
+        "LABEL" key:StringLiteral "=" value:StringLiteral
+    ;
+
+    /**
+     * InstallInstruction is a new instruction which acts as replacement for "RUN apt-get install".
+     */
+    InstallInstruction implements Instruction =
+        "INSTALL" package:(StringLiteral || ",")+
+    ;
+
+    /**
+     * RunInstruction acts as peer to "RUN" of a Dockerfile.
+     */
+    RunInstruction implements Instruction =
+        "RUN" (
+            ("[" executable:StringLiteral ("," parameter:(StringLiteral || ",")+ )? "]") |
+            command:StringLiteral
+        )
+    ;
+
+    /**
+     * EnvInstruction acts as peer to "ENV" of a Dockerfile.
+     */
+    EnvInstruction implements Instruction =
+        "ENV" key:StringLiteral "="? value:StringLiteral
+    ;
+
+    /**
+     * ExposeInstruction acts as peer to "EXPOSE" of a Dockerfile.
+     */
+    ExposeInstruction implements Instruction =
+        "EXPOSE" port:NatLiteral
+    ;
+
+    /**
+     * VolumeInstruction acts as peer to "VOLUME" of a Dockerfile.
+     */
+    VolumeInstruction implements Instruction =
+        "VOLUME" (
+            ("[" volume:(StringLiteral || ",")+ "]") |
+            volume:StringLiteral+
+        )
+    ;
+
+    /**
+     * WorkDirInstruction acts as peer to "WORKDIR" of a Dockerfile.
+     */
+    WorkDirInstruction implements Instruction =
+        "WORKDIR" directory:StringLiteral
+    ;
+
+    /**
+     * ArgInstruction acts as peer to "ARG" of a Dockerfile.
+     */
+    ArgInstruction implements Instruction =
+        "ARG" name:StringLiteral ("=" defaultValue:StringLiteral)?
+    ;
+
+    /**
+     * ShellInstruction acts as peer to "SHELL" of a Dockerfile.
+     */
+    ShellInstruction implements Instruction =
+        "SHELL" "[" executable:StringLiteral ("," parameter:(StringLiteral || ",")+ )? "]"
+    ;
+
+    // =========================================
+    // LEXER RULES
+    // =========================================
+
+    // =========================================
+    // AST DEFINITIONS
+    // =========================================
+    ast Instruction = method String getType() {};
+    ast LabelInstruction = method String getType() { return "LABEL"; };
+    ast InstallInstruction = method String getType() { return "INSTALL"; };
+    ast RunInstruction = method String getType() { return "RUN"; };
+    ast EnvInstruction = method String getType() { return "ENV"; };
+    ast ExposeInstruction = method String getType() { return "EXPOSE"; };
+    ast VolumeInstruction = method String getType() { return "VOLUME"; };
+    ast WorkDirInstruction = method String getType() { return "WORKDIR"; };
+    ast ArgInstruction = method String getType() { return "ARG"; };
+    ast ShellInstruction = method String getType() { return "SHELL"; };
+}

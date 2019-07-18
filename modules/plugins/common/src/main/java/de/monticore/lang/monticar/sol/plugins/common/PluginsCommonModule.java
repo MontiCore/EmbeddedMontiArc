@@ -12,7 +12,6 @@ import de.monticore.lang.monticar.sol.plugins.common.plugin.common.AbstractPlugi
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.PluginContribution;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationServiceImpl;
-import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.hc.HandCodeRegistryImpl;
 
 import java.util.Comparator;
 import java.util.List;
@@ -46,7 +45,6 @@ public class PluginsCommonModule extends AbstractModule {
                 Multibinder.newSetBinder(binder(), PluginContribution.class);
 
         contributions.addBinding().to(NotificationServiceImpl.class);
-        contributions.addBinding().to(HandCodeRegistryImpl.class);
     }
 
     @Provides

@@ -1,0 +1,17 @@
+INSTALL "some"
+INSTALL "awesome"
+INSTALL "packages"
+
+RUN "something to run"
+
+VOLUME ["/show/me/them/volumes"]
+
+WORKDIR "/stay/out"
+
+RUN "something forbidden"
+
+SHELL ["/a/blue/shell", "-c"]
+
+ARG "somearg" = "some value"
+
+ENV "SOME_ENV" = "some value"
