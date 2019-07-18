@@ -105,7 +105,13 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
 
             if(this.middlewareGenerator.contains(MiddlewareGenerator.cpp)) {
                 logInfo("   -> Adding cpp generator");
-                generator.add(new CPPGenImpl(this.getPathTmpOutEMAM()), "cpp");
+                CPPGenImpl cppGen = new CPPGenImpl(this.getPathTmpOutEMAM());
+                if(this.getEnableExecutionLogging()){
+                    logWarn("Execution logging is activated! Resulting log files get large very fast!");
+                }
+                cppGen.setExecutionLoggingActive(this.getEnableExecutionLogging());
+                generator.add(cppGen, "cpp");
+
             }
             if(this.middlewareGenerator.contains(MiddlewareGenerator.roscpp)){
                 logInfo("   -> Adding roscpp generator");
