@@ -115,6 +115,18 @@ public class EMADLGenerator {
         processedArchitecture = new HashMap<>();
         setModelsPath( modelPath );
         TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
+        EMAComponentInstanceSymbol instance = resolveComponentInstanceSymbol(qualifiedName, symtab);
+
+
+        generateFiles(symtab, instance, symtab, pythonPath, forced);
+        
+        if (doCompile) {
+            compile();
+        }
+        processedArchitecture = null;
+    }
+
+    private EMAComponentInstanceSymbol resolveComponentInstanceSymbol(String qualifiedName, TaggingResolver symtab) {
         EMAComponentSymbol component = symtab.<EMAComponentSymbol>resolve(qualifiedName, EMAComponentSymbol.KIND).orElse(null);
 
         List<String> splitName = Splitters.DOT.splitToList(qualifiedName);
@@ -126,15 +138,7 @@ public class EMADLGenerator {
             System.exit(1);
         }
 
-        EMAComponentInstanceSymbol instance = component.getEnclosingScope().<EMAComponentInstanceSymbol>resolve(instanceName, EMAComponentInstanceSymbol.KIND).get();
-
-
-        generateFiles(symtab, instance, symtab, pythonPath, forced);
-        
-        if (doCompile) {
-            compile();
-        }
-        processedArchitecture = null;
+        return component.getEnclosingScope().<EMAComponentInstanceSymbol>resolve(instanceName, EMAComponentInstanceSymbol.KIND).get();
     }
 
     public void compile() throws IOException {
@@ -530,7 +534,29 @@ public class EMADLGenerator {
                 final String fullConfigName = String.join(".", names);
                 ArchitectureSymbol correspondingArchitecture = this.processedArchitecture.get(fullConfigName);
                 assert correspondingArchitecture != null : "No architecture found for train " + fullConfigName + " configuration!";
-                configuration.setTrainedArchitecture(new ArchitectureAdapter(correspondingArchitecture));
+                configuration.setTrainedArchitecture(
+                        new ArchitectureAdapter(correspondingArchitecture.getName(), correspondingArchitecture));
+
+                // Resolve critic network if critic is present
+                if (configuration.getCriticName().isPresent()) {
+                    String fullCriticName = configuration.getCriticName().get();
+                    int indexOfFirstNameCharacter = fullCriticName.lastIndexOf('.') + 1;
+                    fullCriticName = fullCriticName.substring(0, indexOfFirstNameCharacter)
+                            + fullCriticName.substring(indexOfFirstNameCharacter, indexOfFirstNameCharacter + 1).toUpperCase()
+                            + fullCriticName.substring(indexOfFirstNameCharacter + 1);
+
+                    TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
+                    EMAComponentInstanceSymbol instanceSymbol = resolveComponentInstanceSymbol(fullCriticName, symtab);
+                    EMADLCocos.checkAll(instanceSymbol);
+                    Optional<ArchitectureSymbol> critic = instanceSymbol.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
+                    if (!critic.isPresent()) {
+                        Log.error("During the resolving of critic component: Critic component "
+                                + fullCriticName + " does not have a CNN implementation but is required to have one");
+                        System.exit(-1);
+                    }
+                    configuration.setCriticNetwork(new ArchitectureAdapter(fullCriticName, critic.get()));
+                }
+
 
                 cnnTrainGenerator.setInstanceName(componentInstance.getFullName().replaceAll("\\.", "_"));
                 Map<String, String> fileContentMap =  cnnTrainGenerator.generateStrings(configuration);
