@@ -32,6 +32,7 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     private LossSymbol loss;
     private RewardFunctionSymbol rlRewardFunctionSymbol;
     private NNArchitectureSymbol trainedArchitecture;
+    private NNArchitectureSymbol criticNetwork;
 
     public static final ConfigurationSymbolKind KIND = new ConfigurationSymbolKind();
 
@@ -79,6 +80,14 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
     public void setTrainedArchitecture(NNArchitectureSymbol trainedArchitecture) {
         this.trainedArchitecture = trainedArchitecture;
+    }
+
+    public Optional<NNArchitectureSymbol> getCriticNetwork() {
+        return Optional.ofNullable(criticNetwork);
+    }
+
+    public void setCriticNetwork(NNArchitectureSymbol criticNetwork) {
+        this.criticNetwork = criticNetwork;
     }
 
     public Map<String, EntrySymbol> getEntryMap() {
