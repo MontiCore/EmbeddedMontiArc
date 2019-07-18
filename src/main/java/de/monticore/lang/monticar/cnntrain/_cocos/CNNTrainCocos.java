@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.cnntrain._cocos;
 
 import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.se_rwth.commons.logging.Log;
 
 public class CNNTrainCocos {
@@ -45,5 +46,12 @@ public class CNNTrainCocos {
         ASTCNNTrainNode node = (ASTCNNTrainNode) compilationUnit.getAstNode().get();
         int findings = Log.getFindings().size();
         createChecker().checkAll(node);
+    }
+
+    public static void checkCriticCocos(final ConfigurationSymbol configurationSymbol) {
+        CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
+                .addCoCo(new CheckCriticNetworkHasExactlyAOneDimensionalOutput());
+        int findings = Log.getFindings().size();
+        checker.checkAll(configurationSymbol);
     }
 }

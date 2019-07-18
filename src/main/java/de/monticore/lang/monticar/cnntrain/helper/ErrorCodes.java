@@ -31,4 +31,5 @@ public class ErrorCodes {
     public static final String REQUIRED_PARAMETER_MISSING = "xC8856";
     public static final String STRATEGY_NOT_APPLICABLE = "xC8857";
     public static final String CONTRADICTING_PARAMETERS = "xC8858";
+    public static final String CRITIC_NETWORK_ERROR = "xC7100";
 }
