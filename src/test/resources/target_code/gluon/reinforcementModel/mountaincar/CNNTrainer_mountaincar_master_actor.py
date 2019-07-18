@@ -1,7 +1,7 @@
 from reinforcement_learning.agent import DdpgAgent
 from reinforcement_learning.util import AgentSignalHandler
 from reinforcement_learning.cnnarch_logger import ArchLogger
-from reinforcement_learning.CNNCreator_MountaincarCritic import CNNCreator_MountaincarCritic
+from reinforcement_learning.CNNCreator_mountaincar_agent_mountaincarCritic import CNNCreator_mountaincar_agent_mountaincarCritic
 import reinforcement_learning.environment
 import CNNCreator_mountaincar_master_actor
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     context = mx.cpu()
     actor_creator = CNNCreator_mountaincar_master_actor.CNNCreator_mountaincar_master_actor()
     actor_creator.construct(context)
-    critic_creator = CNNCreator_MountaincarCritic()
+    critic_creator = CNNCreator_mountaincar_agent_mountaincarCritic()
     critic_creator.construct(context)
 
     agent_params = {

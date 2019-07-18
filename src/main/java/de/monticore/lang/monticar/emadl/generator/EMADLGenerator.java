@@ -554,6 +554,7 @@ public class EMADLGenerator {
                                 + fullCriticName + " does not have a CNN implementation but is required to have one");
                         System.exit(-1);
                     }
+                    critic.get().setComponentName(fullCriticName);
                     configuration.setCriticNetwork(new ArchitectureAdapter(fullCriticName, critic.get()));
                 }
 

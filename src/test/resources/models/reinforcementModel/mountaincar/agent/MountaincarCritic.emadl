@@ -4,7 +4,7 @@ component MountaincarCritic {
     ports
         in Q^{2} state,
         in Q^{2} action,
-        out Q(-1:1)^{1} qvalues;
+        out Q(-oo:oo)^{1} qvalues;
 
     implementation CNN {
         (
