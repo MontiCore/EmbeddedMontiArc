@@ -14,9 +14,14 @@ public class CPPGenImpl implements GeneratorImpl {
     private String generationTargetPath;
     private GeneratorCPP generatorCPP;
     private String modelsDir;
+    private boolean executionLoggingActive = false;
 
     public CPPGenImpl(String modelsDir){
         this.modelsDir = modelsDir;
+    }
+
+    public void setExecutionLoggingActive(boolean active){
+        executionLoggingActive = active;
     }
 
     private void resetGenerator(){
@@ -24,6 +29,7 @@ public class CPPGenImpl implements GeneratorImpl {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(true);
         generatorCPP.setModelsDirPath(Paths.get(modelsDir));
+        generatorCPP.setExecutionLoggingActive(executionLoggingActive);
         //generatorCPP.setGenerateTests(true);
     }
 
