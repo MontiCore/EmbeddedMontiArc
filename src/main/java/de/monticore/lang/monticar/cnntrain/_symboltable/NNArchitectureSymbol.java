@@ -18,16 +18,24 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain.annotations;
+package de.monticore.lang.monticar.cnntrain._symboltable;
+
+import de.monticore.lang.monticar.cnntrain.annotations.Range;
+import de.monticore.symboltable.SymbolKind;
 
 import java.util.List;
 import java.util.Map;
 
-public interface TrainedArchitecture {
-    public List<String> getInputs();
-    public List<String> getOutputs();
-    public Map<String, List<Integer>> getDimensions();
-    public Map<String, Range> getRanges();
-    public Map<String, String> getTypes();
+public abstract class NNArchitectureSymbol extends de.monticore.symboltable.CommonSymbol {
+    public static final NNArchitectureSymbolKind KIND = NNArchitectureSymbolKind.INSTANCE;
 
+    public NNArchitectureSymbol(String name) {
+        super(name, KIND);
+    }
+
+    abstract public List<String> getInputs();
+    abstract public List<String> getOutputs();
+    abstract public Map<String, List<Integer>> getDimensions();
+    abstract public Map<String, Range> getRanges();
+    abstract public Map<String, String> getTypes();
 }
