@@ -29,13 +29,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>1.0.8</version>
+        <version>${revision}</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>environment</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.8</version>
+    <version>${revision}</version>
 
     <!-- Repository for osm4j -->
     <repositories>
@@ -52,14 +52,14 @@
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>util</artifactId>
-            <version>1.0.8</version>
+            <version>${revision}</version>
         </dependency>
 
         <!-- Dependency to commons -->
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.6</version>
+            <version>${commons.version}</version>
         </dependency>
 
         <dependency>
@@ -147,8 +147,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.7.2</version>
+                <version>2.22.1</version>
                 <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                     <!-- Set root directory to ensure same execution context in subprojects 
                         (e.g. for Log in test mode) -->
                     <workingDirectory>${project.parent.basedir}</workingDirectory>

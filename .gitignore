@@ -9,3 +9,4 @@
 *.iml
 *.log*
 *logs*
+.flattened-pom.xml

@@ -20,6 +20,8 @@
  */
 package simulation.vehicle;
 
+
+import commons.utils.LibraryService;
 import org.javafmi.wrapper.Simulation;
 
 /**
@@ -39,6 +41,15 @@ public class VehicleDynamicsModel {
     /** FMU that represents the tires of the car*/
     private Simulation tires;
 
+    /** FMU that represents the brakeSystem of the car*/
+    private Simulation brakeSystem;
+
+    /** FMU that represents the driveline of the car*/
+    private Simulation driveline;
+
+    /** FMU that represents the steering of the car*/
+    private Simulation steering;
+
     /** Flag whether the VDM has been initialised */
     private boolean isInitialised;
 
@@ -49,12 +60,25 @@ public class VehicleDynamicsModel {
      * Constructor for an uninitialised VDM
      */
     public VehicleDynamicsModel(){
-        inputFilter = new Simulation("lib/InputFilter.fmu");
-        chassis = new Simulation("lib/Chassis.fmu");
-        suspension = new Simulation("lib/Suspension.fmu");
-        tires = new Simulation("lib/Tires.fmu");
+        String wd = LibraryService.getWorkingDirectory();
+        inputFilter = loadSimulation("lib/InputFilter.fmu", wd);
+        chassis = loadSimulation("lib/Chassis.fmu", wd);
+        suspension = loadSimulation("lib/Suspension.fmu", wd);
+        tires = loadSimulation("lib/Tires.fmu", wd);
+        brakeSystem = loadSimulation("lib/BrakeSystem.fmu", wd);
+        driveline = loadSimulation("lib/Driveline.fmu", wd);
+        steering = loadSimulation("lib/Steering.fmu", wd);
         isInitialised = false;
         needsExchanging = false;
+    }
+
+    private Simulation loadSimulation(String name, String wd){
+        try{
+            LibraryService.prepareLibrary(wd, name);
+        } catch (LibraryService.LibraryException e) {
+            e.printStackTrace();
+        }
+        return new Simulation(name);
     }
 
     /**
@@ -70,6 +94,10 @@ public class VehicleDynamicsModel {
         chassis.init(0, stopTime);
         suspension.init(0, stopTime);
         tires.init(0, stopTime);
+        brakeSystem.init(0, stopTime);
+        driveline.init(0, stopTime);
+        steering.init(0, stopTime);
+
         isInitialised = true;
         exchangeValues();
     }
@@ -89,6 +117,9 @@ public class VehicleDynamicsModel {
         chassis.doStep(stepSize);
         suspension.doStep(stepSize);
         tires.doStep(stepSize);
+        brakeSystem.doStep(stepSize);
+        driveline.doStep(stepSize);
+        steering.doStep(stepSize);
         exchangeValues();
     }
 
@@ -181,6 +212,43 @@ public class VehicleDynamicsModel {
                 chassis.write(name).with(value);
                 suspension.write(name).with(value);
                 break;
+            //Steering parameter
+            case "sr":
+            case "toe_f":
+            case "toe_r":
+            case "starm_f":
+            case "starm_r":
+            case "compfy_f":
+            case "compfy_r":
+            case "compz_f":
+            case "compz_r":
+            case "rollsr_f":
+            case "rollst_f":
+            case "rollst_r":
+            case "d_sw":
+            case "c_servo":
+            case "pinion_r":
+            case "fsw":
+                steering.write(name).with(value);
+                break;
+            case "trans_ratio":
+            case "i_gear_0":
+            case "i_gear_1":
+            case "i_gear_2":
+            case "i_gear_3":
+            case "i_gear_4":
+            case "i_gear_5":
+            case "i_final":
+                driveline.write(name).with(value);
+                break;
+            case "disc_d_f":
+            case "disc_d_r":
+            case "cf_pad":
+            case "pad_area":
+            case "piston_d":
+            case "pressure_limit":
+                driveline.write(name).with(value);
+                break;
             default:
                 throw new IllegalArgumentException("Parameter " + name + " does not exist.");
         }
@@ -203,6 +271,7 @@ public class VehicleDynamicsModel {
             // Input filter state variables
             case "slope_d":
             case "bank_d":
+            case "delta_sw":
                 inputFilter.write(name).with(value);
                 break;
             // Chassis inputs
@@ -246,13 +315,53 @@ public class VehicleDynamicsModel {
             case "F_y_4":
                 tires.write(name).with(value);
                 break;
-            // Chassis and tires inputs
+            /* Chassis and tires inputs(now handled by steering)
             case "delta_1":
             case "delta_2":
             case "delta_3":
             case "delta_4":
                 chassis.write(name).with(value);
                 tires.write(name).with(value);
+                break;*/
+            // Steering input
+            case "omega_sw":
+                // Steering state variables
+            case "delta_d":
+            case "delta_int":
+            case "stw_f":
+            case "delta_1":
+            case "delta_2":
+            case "delta_3":
+            case "delta_4":
+                steering.write(name).with(value);
+                break;
+                //Driveline inputs
+            case "c_input":
+            case "t_input":
+            case "i":
+                // Driveline state variables
+            case "engine_tmax":
+            case "engine_tmin":
+            case "omega_e_int":
+            case "omega_e":
+            case "i_t":
+            case "engine_t_int":
+            case "driving_t1":
+            case "driving_t2":
+            case "driving_t3":
+            case "driving_t4":
+                driveline.write(name).with(value);
+                break;
+                //BrakeSystem inputs
+            case "b_input":
+                // BrakeSystem state variables
+            case "brakingtorque_1":
+            case "brakingtorque_2":
+            case "brakingtorque_3":
+            case "brakingtorque_4":
+            case "brake_press_f":
+            case "brake_press_r":
+                brakeSystem.write(name).with(value);
                 break;
             default:
                 throw new IllegalArgumentException("Input value " + name + " does not exist.");
@@ -325,10 +434,10 @@ public class VehicleDynamicsModel {
             case "tau_B_4":
             case "F_ext_x":
             case "F_ext_y":
-            case "delta_1":
-            case "delta_2":
-            case "delta_3":
-            case "delta_4":
+            //case "delta_1":
+            //case "delta_2":
+            //case "delta_3":
+            //case "delta_4":
             //Chassis variables
             case "a_x":
             case "v_x":
@@ -474,6 +583,70 @@ public class VehicleDynamicsModel {
             case "F_y_3_rlx":
             case "F_y_4_rlx":
                 return tires.read(name).asDouble();
+            //Steering parameters
+            case "sr":
+            case "toe_f":
+            case "toe_r":
+            case "starm_f":
+            case "starm_r":
+            case "compfy_f":
+            case "compfy_r":
+            case "compz_f":
+            case "compz_r":
+            case "rollsr_f":
+            case "rollst_f":
+            case "rollst_r":
+            case "d_sw":
+            case "c_servo":
+            case "pinion_r":
+            case "fsw":
+            //Steering inputs
+            case "delta_sw":
+            case "omega_sw":
+            //Steering Variables
+            case "delta_d":
+            case "delta_int":
+            case "stw_f":
+            case "delta_1":
+            case "delta_2":
+            case "delta_3":
+            case "delta_4":
+                return steering.read(name).asDouble();
+            //Driveline parameters
+            case "trans_ratio":
+            case "i_gear_0":
+            case "i_gear_1":
+            case "i_gear_2":
+            case "i_gear_3":
+            case "i_gear_4":
+            case "i_gear_5":
+            case "i_final":
+            //Driveline inputs
+            //case "v_x:":
+            //case "omega_wheel_1":
+            //case "omega_wheel_2":
+            //Driveline Variables
+            case "engine_tmax":
+            case "engine_tmin":
+            case "omega_e_int":
+            case "omega_e":
+            case "i_t":
+            case "engine_t_int":
+            case "driving_t1":
+            case "driving_t2":
+            case "driving_t3":
+            case "driving_t4":
+                return driveline.read(name).asDouble();
+             //BrakeSystem inputs
+            case "b_input":
+            //BrakeSystem Variables
+            case "brakingtorque_1":
+            case "brakingtorque_2":
+            case "brakingtorque_3":
+            case "brakingtorque_4":
+            case "brake_press_f":
+            case "brake_press_r":
+                return brakeSystem.read(name).asDouble();
             default:
                 throw new IllegalArgumentException("Value " + name + " does not exist.");
         }
@@ -502,6 +675,14 @@ public class VehicleDynamicsModel {
         tires.write("v_y_2").with(chassis.read("v_y_2").asDouble());
         tires.write("v_y_3").with(chassis.read("v_y_3").asDouble());
         tires.write("v_y_4").with(chassis.read("v_y_4").asDouble());
+        tires.write("delta_1").with(steering.read("delta_1").asDouble());
+        tires.write("delta_2").with(steering.read("delta_2").asDouble());
+        tires.write("delta_3").with(steering.read("delta_3").asDouble());
+        tires.write("delta_4").with(steering.read("delta_4").asDouble());
+        chassis.write("delta_1").with(steering.read("delta_1").asDouble());
+        chassis.write("delta_2").with(steering.read("delta_2").asDouble());
+        chassis.write("delta_3").with(steering.read("delta_3").asDouble());
+        chassis.write("delta_4").with(steering.read("delta_4").asDouble());
         chassis.write("d_roll").with(suspension.read("d_roll").asDouble());
         chassis.write("d_pitch").with(suspension.read("d_pitch").asDouble());
         chassis.write("K_roll_f").with(suspension.read("K_roll_f").asDouble());
@@ -522,6 +703,30 @@ public class VehicleDynamicsModel {
         chassis.write("F_y_2").with(tires.read("F_y_2").asDouble());
         chassis.write("F_y_3").with(tires.read("F_y_3").asDouble());
         chassis.write("F_y_4").with(tires.read("F_y_4").asDouble());
+        brakeSystem.write("omega_wheel_1").with(chassis.read("omega_wheel_1").asDouble());
+        brakeSystem.write("omega_wheel_2").with(chassis.read("omega_wheel_2").asDouble());
+        brakeSystem.write("omega_wheel_3").with(chassis.read("omega_wheel_3").asDouble());
+        brakeSystem.write("omega_wheel_4").with(chassis.read("omega_wheel_4").asDouble());
+        driveline.write("v_x").with(chassis.read("v_x").asDouble());
+        driveline.write("omega_wheel_1").with(chassis.read("omega_wheel_1").asDouble());
+        driveline.write("omega_wheel_2").with(chassis.read("omega_wheel_2").asDouble());
+        steering.write("F_y_1").with(tires.read("F_y_1").asDouble());
+        steering.write("F_y_2").with(tires.read("F_y_2").asDouble());
+        steering.write("F_y_3").with(tires.read("F_y_3").asDouble());
+        steering.write("F_y_4").with(tires.read("F_y_4").asDouble());
+        steering.write("mz_1").with(tires.read("mz_1").asDouble());
+        steering.write("mz_2").with(tires.read("mz_2").asDouble());
+        steering.write("mz_3").with(tires.read("mz_3").asDouble());
+        steering.write("mz_4").with(tires.read("mz_4").asDouble());
+        steering.write("delta_int").with(inputFilter.read("delta_int").asDouble());
+        chassis.write("tau_B_1").with(brakeSystem.read("brakingtorque_1").asDouble());
+        chassis.write("tau_B_2").with(brakeSystem.read("brakingtorque_2").asDouble());
+        chassis.write("tau_B_3").with(brakeSystem.read("brakingtorque_3").asDouble());
+        chassis.write("tau_B_4").with(brakeSystem.read("brakingtorque_4").asDouble());
+        chassis.write("tau_D_1").with(driveline.read("driving_t1").asDouble());
+        chassis.write("tau_D_2").with(driveline.read("driving_t2").asDouble());
+        chassis.write("tau_D_3").with(driveline.read("driving_t3").asDouble());
+        chassis.write("tau_D_4").with(driveline.read("driving_t4").asDouble());
         needsExchanging = false;
     }
 }

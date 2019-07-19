@@ -38,6 +38,7 @@ public class NotificationCenterTest {
         Log.setLogEnabled(true);
     }
 
+    @Ignore
     @Test
     public void postNotificationWithContext () {
         TestReceiver rec = new TestReceiver();
@@ -47,7 +48,8 @@ public class NotificationCenterTest {
         NotificationCenter.getSharedInstance().postNotification("Test", NotificationCenter.getSharedInstance());
         assertTrue(rec.lastNotificationContext == System.identityHashCode(NotificationCenter.getSharedInstance()));
     }
-
+    
+    @Ignore
     @Test
     public void postNotificationToObject() {
         //Set up test receivers

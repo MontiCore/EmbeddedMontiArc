@@ -79,6 +79,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      * Function that returns the width of the object
      * @return Width of the object
      */
+
     @Override
     public double getWidth(){
         return simulationVehicle.getWidth();
@@ -278,4 +279,5 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     public boolean getPhysicalVehicleInitialised() {
         return physicalVehicleInitialised;
     }
+
 }

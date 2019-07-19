@@ -20,24 +20,18 @@
  */
 package simulation.environment.osm;
 
+import org.junit.*;
 import javafx.geometry.Point3D;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import java.util.ArrayList;
+import static  org.junit.Assert.*;
 
 /**
  * Created by lukas on 26.01.17.
  */
-public class ApproximateConverterTest extends TestCase {
-    public ApproximateConverterTest(String testName) {
-        super(testName);
-    }
+public class ApproximateConverterTest {
 
-    public static Test suite() {
-        return new TestSuite(ApproximateConverterTest.class);
-    }
 
+	@Test
     public void testApp() throws Exception {
         ApproximateConverter converter = new ApproximateConverter(6.06132, 50.78026);
         ArrayList<Point3D> points = new ArrayList<>();
@@ -91,5 +85,36 @@ public class ApproximateConverterTest extends TestCase {
 
         //larger error for larger distances
         assertEquals(63950, k3.distance(k4), 70);
+    }
+
+	@Test
+    public void testConvertXYToLonLat() {
+        // First try to convert lon lat points into xy points
+        // Then try to convert them back to check if the data are consistent
+        ApproximateConverter converter = new ApproximateConverter(6.06132, 50.78026);
+        ArrayList<Point3D> points = new ArrayList<>();
+
+        points.add(new Point3D(6.06146,50.78059, 0));
+        points.add(new Point3D(6.06132,50.78055, 0));
+        points.add(new Point3D(6.06166, 50.78033,0));
+        points.add(new Point3D(6.06155, 50.78026, 0));
+
+        ArrayList<Point3D> kPoints = new ArrayList<>();
+
+        for(Point3D p : points) {
+            kPoints.add(converter.convertLongLatPoint(p));
+        }
+
+        for(int i = 0; i < points.size(); i++) {
+            Point3D p = points.get(i);
+            Point3D k = kPoints.get(i);
+
+            assertEquals(p.getY(), converter.convertYToLat(k.getY()), 0.0001);
+            assertEquals(p.getX(), converter.convertXToLong(k.getX(), k.getY()), 0.0001);
+
+            Point3D lonLatPointConvertedFromXYPoint = converter.convertXYPoint(k);
+            assertEquals(p.getX(), lonLatPointConvertedFromXYPoint.getX(), 0.0001);
+            assertEquals(p.getY(), lonLatPointConvertedFromXYPoint.getY(), 0.0001);
+        }
     }
 }

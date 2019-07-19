@@ -37,7 +37,7 @@ import java.util.List;
  * Singleton class that can be registered to the simulator for autonomously driving vehicles
  * to add a network simulation that is based on discrete event simulation for communication
  */
-public class NetworkSimulator extends DiscreteEventSimulator {
+public class NetworkSimulator extends DiscreteEventSimulator<NetworkDiscreteEvent> {
 
     /** Singleton instance of this class */
     private static NetworkSimulator instance = null;
@@ -144,45 +144,36 @@ public class NetworkSimulator extends DiscreteEventSimulator {
     /**
      * Function that needs to be implemented in subclasses of DiscreteEventSimulator for processing events
      *
-     * @param event Event to be processed
+     * @param networkEvent Event to be processed
      */
     @Override
-    protected void processEvent(DiscreteEvent event) {
-        // Only process events for this simulator
-        if (event instanceof NetworkDiscreteEvent) {
-            // Convert event type
-            NetworkDiscreteEvent networkEvent = (NetworkDiscreteEvent)(event);
+    protected void processEvent(NetworkDiscreteEvent networkEvent) {
+        // Forward event to network node to allow for some changes before general mechanisms begin
+        networkEvent.getNetworkNode().handleNetworkEvent(networkEvent);
 
-            // Forward event to network node to allow for some changes before general mechanisms begin
-            networkEvent.getNetworkNode().handleNetworkEvent(networkEvent);
-
-            // General processing and statistics
-            switch (networkEvent.getNetworkEventId()) {
-                case NETWORK_EVENT_ID_PHY_RECEIVE_INTERRUPTION_DETECTED:
-                    NetworkStatistics.getInstance().processReceiveInterruptionPhy();
-                    break;
-                case NETWORK_EVENT_ID_PHY_SEND_START:
-                    networkSettings.getNetworkChannelModel().handleNetworkEvent(networkEvent);
-                    NetworkStatistics.getInstance().processSendMessageStartPhy(networkEvent.getEventMessage());
-                    break;
-                case NETWORK_EVENT_ID_LINK_RECEIVE:
-                    NetworkStatistics.getInstance().processReceivedMessageLink(networkEvent.getEventMessage());
-                    break;
-                case NETWORK_EVENT_ID_APP_SEND:
-                    networkEvent.getEventMessage().setSimCreateTime(getSimulationTime());
-                    NetworkStatistics.getInstance().processSendMessageApp(networkEvent.getEventMessage());
-                    break;
-                case NETWORK_EVENT_ID_APP_RECEIVE:
-                    networkEvent.getEventMessage().setSimReceiveTime(getSimulationTime());
-                    NetworkUtils.putMessageInNode(networkEvent.getNetworkNode(), networkEvent.getEventMessage());
-                    NetworkStatistics.getInstance().processReceivedMessageApp(networkEvent.getEventMessage());
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            // Warning for invalid events
-            Log.warning("NetworkSimulator - processEvent: Skipped invalid event: " + event);
+        // General processing and statistics
+        switch (networkEvent.getNetworkEventId()) {
+            case NETWORK_EVENT_ID_PHY_RECEIVE_INTERRUPTION_DETECTED:
+                NetworkStatistics.getInstance().processReceiveInterruptionPhy();
+                break;
+            case NETWORK_EVENT_ID_PHY_SEND_START:
+                networkSettings.getNetworkChannelModel().handleNetworkEvent(networkEvent);
+                NetworkStatistics.getInstance().processSendMessageStartPhy(networkEvent.getEventMessage());
+                break;
+            case NETWORK_EVENT_ID_LINK_RECEIVE:
+                NetworkStatistics.getInstance().processReceivedMessageLink(networkEvent.getEventMessage());
+                break;
+            case NETWORK_EVENT_ID_APP_SEND:
+                networkEvent.getEventMessage().setSimCreateTimeNs(getSimulationTimeNs());
+                NetworkStatistics.getInstance().processSendMessageApp(networkEvent.getEventMessage());
+                break;
+            case NETWORK_EVENT_ID_APP_RECEIVE:
+                networkEvent.getEventMessage().setSimReceiveTimeNs(getSimulationTimeNs());
+                NetworkUtils.putMessageInNode(networkEvent.getNetworkNode(), networkEvent.getEventMessage());
+                NetworkStatistics.getInstance().processReceivedMessageApp(networkEvent.getEventMessage());
+                break;
+            default:
+                break;
         }
     }
 

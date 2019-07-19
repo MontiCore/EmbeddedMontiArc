@@ -24,38 +24,44 @@ stages:
 - linux
 - integration-test
 
-masterJobLinux:
-  stage: linux
-  image: maven:3.6-jdk-8
-  before_script:
-  - apt-get update
-  - apt-get install -y openjfx
-  script: 
-  - mv lib/fmu_for_linux/*.fmu lib/
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy sonar:sonar --settings settings.xml
-#  - cat report/target/coverage-report/html/index.html
-  only:
-  - master
+#masterJobLinux:
+#  stage: linux
+#  image: maven:3.6-jdk-8
+#  before_script:
+#  - apt-get update
+#  - apt-get install -y openjfx
+#  script: 
+#  - mv lib/fmu_for_linux/*.fmu lib/
+#  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy sonar:sonar --settings settings.xml
+##  - cat report/target/coverage-report/html/index.html
+#  only:
+#  - master
  
 masterJobWindows:
   stage: windows
-  script: 
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+  script:
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
   tags:
   - Windows10
-#  only:
+  only:
+  - master
+  
+#branchJobWindows:
+#  stage: windows
+#  script:
+#  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+#  tags:
+#  - Windows10
+#  except:
 #  - master
 
 BranchJobLinux:
   stage: linux
-  image: maven:3.6-jdk-8
-  before_script:
-  - apt-get update
-  - apt-get install -y openjfx
+  image: hwzzz/openjdk-openjfx:latest
   script:
   - mv lib/fmu_for_linux/*.fmu lib/
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
-#  - cat report/target/coverage-report/html/index.html
+  - cat report/target/coverage-report/html/index.html
   except:
   - master
 

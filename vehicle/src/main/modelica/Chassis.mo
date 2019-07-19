@@ -13,13 +13,16 @@ model Chassis
   type Velocity=Real(unit="m/s");
   type AngularVelocity=Real(unit="rad/s");
   type AngularAcceleration=Real(unit="rad/s2");
+  type AngularForce=Real(unit="rad/(kg.m/s2)");
+  type AngularTorque=Real(unit="rad/(kg.m2/s2)");
   type Stiffness=Real(unit="kg/s2");
   type Damping=Real(unit="kg/s");
   type Pressure=Real(unit="kg/(m.s2)");
   type BeamInertia=Real(unit="m4");
   type Coefficient = Real(start = 1);
+  type RPM=Real(unit="rpm");
   
-  //parameters Chassis  
+  //parameters Chassis
   parameter Mass m=1750;
   parameter Length L_1=1.07;
   parameter Length L_2=1.605;
@@ -36,7 +39,6 @@ model Chassis
   parameter Length r_nom=0.316;
   parameter Density rho_air=1.225;
   parameter Acceleration g=9.81;
-  
   //Initial parameters Chassis
   parameter AngularVelocity omega_wheel_1_0=0;
   parameter AngularVelocity omega_wheel_2_0=0;
@@ -51,25 +53,28 @@ model Chassis
   parameter Velocity v_y_0=0;
   
   //Input Chassis from External
+  input Force F_ext_x;
+  input Force F_ext_y;
+  
+  //Input Chassis from Driveline
   input Torque tau_D_1;
   input Torque tau_D_2;
   input Torque tau_D_3;
   input Torque tau_D_4;
-  input Torque tau_B_1;
-  input Torque tau_B_2;
-  input Torque tau_B_3;
-  input Torque tau_B_4;
-  input Force F_ext_x;
-  input Force F_ext_y;
+  //Inputs Chassis from Steering
   input Angle delta_1;
   input Angle delta_2;
   input Angle delta_3;
   input Angle delta_4;
+  //Input Chassis from Brakes
+  input Torque tau_B_1;
+  input Torque tau_B_2;
+  input Torque tau_B_3;
+  input Torque tau_B_4;
   
   //Inputs Chassis from Input Filter
   input Angle slope_d;
   input Angle bank_d;
-  
   //Inputs Chassis from Suspension
   parameter Length d_roll = 0;
   parameter Length d_pitch = 0;
@@ -79,8 +84,6 @@ model Chassis
   input TorqueSecond D_roll_r;
   input Torque K_pitch;
   input TorqueSecond D_pitch;
-  
-  
   //Inputs Chassis from Tires
   input Force F_x_1;
   input Force F_x_2;
@@ -90,7 +93,6 @@ model Chassis
   input Force F_y_2;
   input Force F_y_3;
   input Force F_y_4;
-  
   //Variables Chassis
   Acceleration a_x;
   Velocity v_x;
@@ -143,8 +145,7 @@ initial equation
   v_y=v_y_0;
 
 equation
-
-  //Equation Chassis
+//Equation Chassis
   F_x_1*cos(delta_1)-F_y_1*sin(delta_1)
   +F_x_2*cos(delta_2)-F_y_2*sin(delta_2)
   +F_x_3*cos(delta_3)-F_y_3*sin(delta_3)
@@ -160,7 +161,7 @@ equation
   F_x_1*sin(delta_1)+F_y_1*cos(delta_1)
   +F_x_2*sin(delta_2)+F_y_2*cos(delta_2)
   +F_x_3*sin(delta_3)+F_y_3*cos(delta_3)
-  +F_x_4*sin(delta_4)+F_y_1*cos(delta_4)
+  +F_x_4*sin(delta_4)+F_y_4*cos(delta_4)
   +m*g*sin(-bank_d)
   +F_ext_y
   =m*a_y;

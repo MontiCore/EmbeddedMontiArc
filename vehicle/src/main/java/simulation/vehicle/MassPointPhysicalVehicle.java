@@ -301,7 +301,6 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      * @return List of pairs of 3D points, indicating a vector on the edges of the physical object
      */
     @Override
-    @Deprecated
     public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
         //TODO: Function is unnecessary with three dimensional collision detection
         // Build relative vectors between vertices

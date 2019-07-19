@@ -60,7 +60,7 @@ public class CompassSensor extends AbstractSensor {
         RealVector v = rotation.operate(yAxis);
         //the angle in the xy-plane is needed
         v.setEntry(2, 0.0);
-        
+
         double cos = v.cosine(yAxis);
         double angle = Math.acos(cos);
 
@@ -71,4 +71,6 @@ public class CompassSensor extends AbstractSensor {
         }
         value = angle;
     }
-}
+
+
+    }
