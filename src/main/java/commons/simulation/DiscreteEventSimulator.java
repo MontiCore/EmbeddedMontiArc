@@ -109,16 +109,16 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
         // Store initial time
         Instant initialSimulationTime = Instant.from(simulationTime);
         
-        Instant endSimulationTime = initialSimulationTime.plusNanos(deltaTime.toNanos());
+
 
         // Handle all events that are timed before new simulation time
-        long targetTime = initialSimulationTimeNs + deltaTime;
+        Instant targetTime = initialSimulationTime.plusNanos(deltaTime.toNanos());
         Optional<DiscreteEventType> event = getNextEventInTime(targetTime);
         while (event.isPresent()) {
             eventList.remove(0);
 
             // Advance time step by step and process event
-            simulationTimeNs = event.get().getEventTime();
+            simulationTime = event.get().getEventTime();
 
             // Inform notifiable objects
             synchronized (discreteEventSimulationNotifiableList) {
@@ -140,7 +140,7 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
         }
 
         // Set simulation time to the end of time advancement
-        simulationTime = endSimulationTime;
+        simulationTime = targetTime;
 
         // Inform notifiable objects
         synchronized (discreteEventSimulationNotifiableList) {
@@ -157,7 +157,7 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
      * @param finalTime Final time before which events should be returned
      * @return Next event ready for event handling
      */
-    private Optional<DiscreteEventType> getNextEventInTime(long finalTime) {
+    private Optional<DiscreteEventType> getNextEventInTime(Instant finalTime) {
         Optional<DiscreteEventType> result = Optional.empty();
         if (!eventList.isEmpty()) {
             DiscreteEventType event = eventList.get(0);
