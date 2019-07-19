@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.lang.Math;
+import java.time.Duration;
+
 import static simulation.vehicle.VehicleActuatorType.*;
 import static simulation.vehicle.VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING;
 
@@ -301,10 +303,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
     /**
      * Function that computes one step of the physical behaviour of the object
-     * @param deltaTms Duration of the current simulation step in milliseconds
+     * @param deltaTime Duration of the current simulation step
      */
     @Override
-    public void computePhysics(long deltaTms){
+    public void computePhysics(Duration deltaTime){
+    	long deltaTms = deltaTime.toMillis();
         if (!this.getError()) {
             // Calculate input values
             // Get values from VDM

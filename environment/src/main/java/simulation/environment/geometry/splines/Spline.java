@@ -22,7 +22,7 @@ package simulation.environment.geometry.splines;
 
 import commons.map.IControllerNode;
 import commons.simulation.PhysicalObject;
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 import simulation.environment.pedestrians.PedestrianStreetParameters;
 import java.util.ArrayList;
 

@@ -21,7 +21,7 @@
 package simulation.environment.geometry.osmadapter;
 
 import commons.simulation.PhysicalObject;
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 import simulation.environment.pedestrians.PedestrianStreetParameters;
 import simulation.environment.visualisationadapter.implementation.Node2D;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;

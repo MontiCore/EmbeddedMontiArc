@@ -32,10 +32,13 @@ import commons.simulation.Sensor;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+
+import simulation.EESimulator.EESimulator;
 import simulation.environment.WorldModel;
 import simulation.environment.osm.IntersectionFinder;
 import simulation.util.Log;
 import java.awt.*;
+import java.time.Instant;
 import java.util.*;
 import java.util.List;
 import static commons.controller.commons.BusEntry.*;
@@ -123,6 +126,8 @@ public class Vehicle {
     public static final double VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK = 1.542;
 
 
+    private EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+    
     /**Components */
     /** Motor of vehicle */
     private VehicleActuator motor;
@@ -307,34 +312,34 @@ public class Vehicle {
     void setActuatorProperties(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate) {
         switch (actuatorType) {
             case VEHICLE_ACTUATOR_TYPE_MOTOR:
-                motor = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                motor = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, this.eeSimulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT:
-                brakesFrontLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                brakesFrontLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, this.eeSimulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT:
-                brakesFrontRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                brakesFrontRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, this.eeSimulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT:
-                brakesBackLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                brakesBackLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, this.eeSimulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT:
-                brakesBackRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                brakesBackRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, this.eeSimulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_STEERING:
-                steering = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                steering = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, this.eeSimulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_GEAR:
-                gear =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                gear =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, this.eeSimulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_BRAKE:
-                brakes =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                brakes =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, this.eeSimulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_CLUTCH:
-                clutch =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                clutch =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, this.eeSimulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_THROTTLE:
-                throttle =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                throttle =  new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, this.eeSimulator);
                 break;
             default:
                 break;

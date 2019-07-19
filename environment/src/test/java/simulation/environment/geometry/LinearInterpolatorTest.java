@@ -21,7 +21,7 @@
 package simulation.environment.geometry;
 
 import commons.map.IControllerNode;
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 import org.junit.*;
 import static  org.junit.Assert.*;
 import simulation.environment.WorldModel;

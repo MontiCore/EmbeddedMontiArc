@@ -20,14 +20,13 @@
  */
 package simulation.environment.weather;
 
+
+import static  org.junit.Assert.*;
+import org.junit.*;
+
 import java.time.Duration;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-import org.junit.*;
-import static  org.junit.Assert.*;
 
 /**
  * Created by lukas on 02.02.17.

@@ -74,7 +74,7 @@ public class VehicleDynamicsModel {
 
     private Simulation loadSimulation(String name, String wd){
         try{
-            LibraryService.prepareLibrary(wd, name);
+            LibraryService.prepareLibrary(name);
         } catch (LibraryService.LibraryException e) {
             e.printStackTrace();
         }

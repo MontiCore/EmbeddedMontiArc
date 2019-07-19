@@ -23,7 +23,7 @@ package simulation.network.tasks;
 import commons.controller.commons.BusEntry;
 import commons.controller.commons.Vertex;
 import commons.simulation.Sensor;
-import javafx.geometry.Point3D;
+import commons.utils.*;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;

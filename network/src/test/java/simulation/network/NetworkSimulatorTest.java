@@ -98,7 +98,7 @@ public class NetworkSimulatorTest {
         // between min/max task start time as specified in network settings
         assertTrue(!networkSimulator.getEventList().isEmpty());
         DiscreteEvent firstEvent = networkSimulator.getEventList().get(0);
-        assertTrue(firstEvent.getEventId().equals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.toString()));
+        assertEquals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.ordinal(), firstEvent.getEventId());
         assertTrue(!firstEvent.getEventTime().isBefore(settings.getMinTaskStartTime()));
         assertTrue(!firstEvent.getEventTime().isAfter(settings.getMaxTaskStartTime()));
 
@@ -136,13 +136,13 @@ public class NetworkSimulatorTest {
             networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, Duration.ZERO);
             assertTrue(!networkSimulator.getEventList().isEmpty());
             firstEvent = NetworkSimulator.getInstance().getEventList().get(0);
-            assertTrue(firstEvent.getEventId().equals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.toString()));
+            assertEquals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.ordinal(), firstEvent.getEventId());
         }
 
         networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, Duration.between(Instant.EPOCH, settings.getMaxTaskStartTime()));
         assertTrue(!networkSimulator.getEventList().isEmpty());
         firstEvent = NetworkSimulator.getInstance().getEventList().get(0);
-        assertTrue(!firstEvent.getEventId().equals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.toString()));
+        assertNotEquals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.ordinal(),firstEvent.getEventId());
 
         // Enable log
         Log.setLogEnabled(true);

@@ -24,7 +24,7 @@ import commons.map.ControllerContainer;
 import commons.map.IControllerNode;
 import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObject;
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.geometry.osmadapter.GeomStreet;
 import simulation.environment.osm.Parser2D;

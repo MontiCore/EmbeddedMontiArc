@@ -20,7 +20,7 @@
  */
 package simulation.environment.visualisationadapter.implementation;
 
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 import simulation.environment.visualisationadapter.interfaces.SignTypeAndState;
 import simulation.environment.visualisationadapter.interfaces.StreetSign;
 

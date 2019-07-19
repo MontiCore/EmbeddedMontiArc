@@ -164,11 +164,11 @@ public class NetworkSimulator extends DiscreteEventSimulator<NetworkDiscreteEven
                 NetworkStatistics.getInstance().processReceivedMessageLink(networkEvent.getEventMessage());
                 break;
             case NETWORK_EVENT_ID_APP_SEND:
-                networkEvent.getEventMessage().setSimCreateTimeNs(getSimulationTimeNs());
+                networkEvent.getEventMessage().setSimCreateTime(getSimulationTime());
                 NetworkStatistics.getInstance().processSendMessageApp(networkEvent.getEventMessage());
                 break;
             case NETWORK_EVENT_ID_APP_RECEIVE:
-                networkEvent.getEventMessage().setSimReceiveTimeNs(getSimulationTimeNs());
+                networkEvent.getEventMessage().setSimReceiveTime(getSimulationTime());
                 NetworkUtils.putMessageInNode(networkEvent.getNetworkNode(), networkEvent.getEventMessage());
                 NetworkStatistics.getInstance().processReceivedMessageApp(networkEvent.getEventMessage());
                 break;

@@ -20,6 +20,9 @@
  */
 package simulation.vehicle;
 
+import java.time.Instant;
+import java.util.UUID;
+
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EESimulator;
@@ -47,6 +50,9 @@ public class VehicleActuator extends EEComponent {
 
     /** Change rate of the actuator*/
     private double actuatorChangeRate;
+    
+    //TODO delete this
+    private static EESimulator sim = new EESimulator(Instant.EPOCH);
 
     /**
      * Constructor for the actuator class, only sets the type, minimum, maximum and change rate values
@@ -78,7 +84,32 @@ public class VehicleActuator extends EEComponent {
         }
     }
 
-    /**
+
+    //TODO delete this constructor
+	public VehicleActuator(VehicleActuatorType actuatorType, double actuatorValueMin,
+			double actuatorValueMax, double actuatorChangeRate) {
+        super(sim);
+		if(actuatorValueMin > actuatorValueMax){
+            throw new IllegalArgumentException("Lower end " + actuatorValueMin + " should not be higher than the upper end " + actuatorValueMax + ".");
+        }
+        if(actuatorChangeRate < 0){
+            throw new IllegalArgumentException("Change rate " + actuatorChangeRate + " should not be negative.");
+        }
+        this.actuatorType = actuatorType;
+        this.actuatorValueMin = actuatorValueMin;
+        this.actuatorValueMax = actuatorValueMax;
+        this.actuatorChangeRate = actuatorChangeRate;
+        if(actuatorValueMin <= 0.0 && 0.0 <= actuatorValueMax){
+            actuatorValueTarget = 0.0;
+            actuatorValueCurrent = 0.0;
+        }else {
+            actuatorValueCurrent = actuatorValueMin;
+            actuatorValueTarget = actuatorValueMin;
+        }
+	}
+
+
+	/**
      * Function that computes an update tick for the actuator
      *
      * @param timeDiff Time difference considered in the update measured in seconds
@@ -197,7 +228,7 @@ public class VehicleActuator extends EEComponent {
     }
 
     @Override
-    public String getID() {
+    public UUID getID() {
         //TODO: implement
         return null;
     }

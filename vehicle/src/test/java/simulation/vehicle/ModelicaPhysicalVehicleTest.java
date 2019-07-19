@@ -20,6 +20,8 @@
  */
 package simulation.vehicle;
 
+import java.time.Duration;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
@@ -124,7 +126,7 @@ public class ModelicaPhysicalVehicleTest {
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
-        physicalVehicle.executeLoopIteration(33);
+        physicalVehicle.executeLoopIteration(Duration.ofMillis(33));
         motorReference.update(0.033);
         frontLeftBrakeReference.update(0.033);
         frontRightBrakeReference.update(0.033);
@@ -182,7 +184,7 @@ public class ModelicaPhysicalVehicleTest {
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
-        physicalVehicle.executeLoopIteration(33);
+        physicalVehicle.executeLoopIteration(Duration.ofMillis(33));
         steeringReference.update(0.033);
 
         // Motor and brake actuators should be reset to zero
@@ -221,7 +223,7 @@ public class ModelicaPhysicalVehicleTest {
         double steeringValueReference = steering.getActuatorValueCurrent();
 
         // Execute loop iteration
-        physicalVehicle.executeLoopIteration(33);
+        physicalVehicle.executeLoopIteration(Duration.ofMillis(33));
 
         // All actuators should not be updated
         Assert.assertEquals(motorValueReference, throttle.getActuatorValueCurrent(), 0);
@@ -324,7 +326,7 @@ public class ModelicaPhysicalVehicleTest {
     @Test(expected = IllegalStateException.class)
     public void computePhysicsFail(){
         ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
-        physicalVehicle.computePhysics(33);
+        physicalVehicle.computePhysics(Duration.ofMillis(33));
     }
 
     @Test(expected = IllegalStateException.class)

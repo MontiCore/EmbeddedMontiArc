@@ -98,8 +98,8 @@ public class NetworkDiscreteEvent extends DiscreteEvent {
      * @return Numeric identifier for the event
      */
     @Override
-    public String getEventId() {
-        return eventId.toString();
+    public int getEventId() {
+        return eventId.ordinal();
     }
 
     /**
