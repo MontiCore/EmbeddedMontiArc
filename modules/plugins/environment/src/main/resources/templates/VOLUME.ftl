@@ -2,6 +2,5 @@
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 ${tc.signature("partition")}
 <@compress single_line=true>
-VOLUME [<#list partition as ast><#list ast.getVolumeList() as volume>"${volume.getValue()}"<#if volume_has_next>, </#if>
-</#list><#if ast_has_next>, </#if></#list>]
+VOLUME [<#list partition as ast><#list ast.getVolumeList() as volume>"${volume.getValue()}"<#if volume_has_next>, </#if></#list><#if ast_has_next>, </#if></#list>]
 </@compress>
