@@ -33,8 +33,48 @@ import java.util.function.Function;
 
 public class UnrollSymbol extends ArchitectureElementSymbol {
 
+    protected List<ArchitectureElementSymbol> elements = new ArrayList<>();
+
+    protected void setElements(List<ArchitectureElementSymbol> elements) {
+        ArchitectureElementSymbol previous = null;
+        for (ArchitectureElementSymbol current : elements){
+            if (previous != null){
+                current.setInputElement(previous);
+                previous.setOutputElement(current);
+            }
+            else {
+                if (getInputElement().isPresent()){
+                    current.setInputElement(getInputElement().get());
+                }
+                if (getOutputElement().isPresent()){
+                    current.setOutputElement(getOutputElement().get());
+                }
+            }
+            previous = current;
+        }
+        this.elements = elements;
+    }
+
+    public List<ArchitectureElementSymbol> getElements() {
+        return elements;
+    }
+
+
     private UnrollDeclarationSymbol declaration = null;
     private List<ArgumentSymbol> arguments;
+    private SerialCompositeElementSymbol body;
+
+    public SerialCompositeElementSymbol getBody() {
+        return body;
+    }
+
+    protected void setBody(SerialCompositeElementSymbol body) {
+        this.body = body;
+    }
+
+    public boolean isNetworkLayer() {
+        return body.isNetwork();
+    }
 
     protected UnrollSymbol(String name) {
         super(name);
@@ -114,22 +154,12 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
 
     @Override
     public List<ArchitectureElementSymbol> getFirstAtomicElements() {
-        if (isAtomic()){
-            return Collections.singletonList(this);
-        }
-        else {
-            return getResolvedThis().get().getFirstAtomicElements();
-        }
+        return getDeclaration().getBody().getElements().get(0).getFirstAtomicElements();
     }
 
     @Override
     public List<ArchitectureElementSymbol> getLastAtomicElements() {
-        if (isAtomic()){
-            return Collections.singletonList(this);
-        }
-        else {
-            return getResolvedThis().get().getLastAtomicElements();
-        }
+        return getDeclaration().getBody().getElements().get(getDeclaration().getBody().getElements().size()-1).getLastAtomicElements();
     }
 
     @Override
@@ -142,15 +172,18 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
                 int maxSerialLength = getMaxSerialLength().get();
 
                 if (!isActive() || maxSerialLength == 0) {
+                    System.err.println("UnrollSymbol resolveSequences called!1");
                     //set resolvedThis to empty composite to remove the unroll.
                     setResolvedThis(new SerialCompositeElementSymbol());
                 }
                 else if (parallelLength == 1 && maxSerialLength == 1) {
+                    System.err.println("UnrollSymbol resolveSequences called!2");
                     //resolve the unroll call
                     ArchitectureElementSymbol resolvedUnroll = getDeclaration().call(this);
                     setResolvedThis(resolvedUnroll);
                 }
                 else {
+                    System.err.println("UnrollSymbol resolveSequences called!3");
                     //split the unroll if it contains an argument sequence
                     ArchitectureElementSymbol splitComposite = resolveSequences(parallelLength, getSerialLengths().get());
                     setResolvedThis(splitComposite);

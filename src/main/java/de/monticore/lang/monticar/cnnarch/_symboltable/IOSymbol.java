@@ -55,6 +55,9 @@ public class IOSymbol extends ArchitectureElementSymbol {
     //returns null if IODeclaration does not exist. This is checked in coco CheckIOName.
     public IODeclarationSymbol getDefinition() {
         if (definition == null){
+            System.err.println("#1112 " + getEnclosingScope().getSpanningSymbol().get().toString());
+            System.err.println("#11123 " + getEnclosingScope().getSpanningSymbol().get().getEnclosingScope().getSpanningSymbol().get().toString());
+            System.err.println("#111234 " + getEnclosingScope().getSpanningSymbol().get().getEnclosingScope().getSpanningSymbol().get().getEnclosingScope().getSpanningSymbol().get().toString());
             this.definition = getArchitecture().resolveIODeclaration(getName());
         }
         return definition;
@@ -183,6 +186,8 @@ public class IOSymbol extends ArchitectureElementSymbol {
             getArrayAccess().get().checkIfResolvable(allVariables);
             unresolvableVariables.addAll(getArrayAccess().get().getUnresolvableVariables());
         }
+        System.err.println("IO Definition: " + getDefinition());
+        System.err.println("IO Type: " + getDefinition().getType());
         getDefinition().getType().checkIfResolvable(allVariables);
         unresolvableVariables.addAll(getDefinition().getType().getUnresolvableVariables());
     }

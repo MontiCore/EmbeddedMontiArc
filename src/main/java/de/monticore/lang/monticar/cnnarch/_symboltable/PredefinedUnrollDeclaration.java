@@ -48,6 +48,13 @@ abstract public class PredefinedUnrollDeclaration extends UnrollDeclarationSymbo
         }
     }
 
+    protected void setLayers(List<LayerSymbol> layers) {
+        super.setLayers(layers);
+        for (LayerSymbol layer : layers){
+            layer.putInScope(getSpannedScope());
+        }
+    }
+
     @Override
     public boolean isPredefined() {
         return true;

@@ -2,10 +2,11 @@ architecture RNNencdec(max_length=50, vocabulary_size=30000, hidden_size=1000){
    def input Q(0:1)^{vocabulary_size} source
    def output Q(0:1)^{vocabulary_size} target
 
-   unroll<t> BeamSearchStart(max_length=max_length) {
+   unroll BeamSearchStart(max_length=max_length) {
        source ->
-       FullyConnected(units=vocabulary_size) ->
+       FullyConnected(units=17) ->
        Softmax() ->
+       FullyConnected(units=vocabulary_size) ->
        target
    };
  }

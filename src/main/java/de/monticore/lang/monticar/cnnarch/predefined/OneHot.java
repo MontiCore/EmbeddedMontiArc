@@ -39,11 +39,6 @@ public class OneHot extends PredefinedLayerDeclaration {
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
 
-<<<<<<< HEAD
-        channels = inputTypes.get(0).getChannels();
-
-=======
->>>>>>> develop
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .channels(layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get())
                 .height(1)
@@ -59,9 +54,6 @@ public class OneHot extends PredefinedLayerDeclaration {
         size = layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get();
 
         errorIfInputSizeIsNotOne(inputTypes, layer);
-<<<<<<< HEAD
-        //errorIfInputSizeUnequalToOnehotSize(inputTypes, layer);
-=======
         errorIfInputChannelSizeIsInvalid(inputTypes, layer, 1);
         errorIfInputHeightIsInvalid(inputTypes, layer, 1);
         errorIfInputWidthIsInvalid(inputTypes, layer, 1);
@@ -113,7 +105,6 @@ public class OneHot extends PredefinedLayerDeclaration {
             }
         }
 
->>>>>>> develop
     }
 
     public static OneHot create(){

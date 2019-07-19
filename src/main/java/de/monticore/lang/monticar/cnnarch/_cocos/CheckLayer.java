@@ -24,9 +24,12 @@ import de.monticore.lang.monticar.cnnarch._ast.ASTArchArgument;
 import de.monticore.lang.monticar.cnnarch._ast.ASTLayer;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.UnrollDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.UnrollSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
@@ -50,29 +53,62 @@ public class CheckLayer implements CNNArchASTLayerCoCo{
             }
         }
 
-        LayerDeclarationSymbol layerDeclaration = ((LayerSymbol) node.getSymbolOpt().get()).getDeclaration();
-        if (layerDeclaration == null){
-            ArchitectureSymbol architecture = node.getSymbolOpt().get().getEnclosingScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
-            Log.error("0" + ErrorCodes.UNKNOWN_LAYER + " Unknown layer. " +
-                            "Layer with name '" + node.getName() + "' does not exist. " +
-                            "Existing layers: " + Joiners.COMMA.join(architecture.getLayerDeclarations()) + "."
-                    , node.get_SourcePositionStart());
-        }
-        else {
-            Set<String> requiredArguments = new HashSet<>();
-            for (VariableSymbol param : layerDeclaration.getParameters()){
-                if (!param.getDefaultExpression().isPresent()){
-                    requiredArguments.add(param.getName());
+        if(node.getSymbolOpt().get() instanceof LayerSymbol) {
+            LayerDeclarationSymbol layerDeclaration = ((LayerSymbol) node.getSymbolOpt().get()).getDeclaration();
+            if (layerDeclaration == null){
+                ArchitectureSymbol architecture = node.getSymbolOpt().get().getEnclosingScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
+                Log.error("0" + ErrorCodes.UNKNOWN_LAYER + " Unknown layer. " +
+                                "Layer with name '" + node.getName() + "' does not exist. " +
+                                "Existing layers: " + Joiners.COMMA.join(architecture.getLayerDeclarations()) + "."
+                        , node.get_SourcePositionStart());
+            }
+            else {
+                Set<String> requiredArguments = new HashSet<>();
+                for (VariableSymbol param : layerDeclaration.getParameters()){
+                    if (!param.getDefaultExpression().isPresent()){
+                        requiredArguments.add(param.getName());
+                    }
+                }
+                for (ASTArchArgument argument : node.getArgumentsList()){
+                    requiredArguments.remove(argument.getName());
+                }
+
+                for (String missingArgumentName : requiredArguments){
+                    Log.error("0"+ErrorCodes.MISSING_ARGUMENT + " Missing argument. " +
+                                    "The argument '" + missingArgumentName + "' is required."
+                            , node.get_SourcePositionStart());
                 }
             }
-            for (ASTArchArgument argument : node.getArgumentsList()){
-                requiredArguments.remove(argument.getName());
-            }
-
-            for (String missingArgumentName : requiredArguments){
-                Log.error("0"+ErrorCodes.MISSING_ARGUMENT + " Missing argument. " +
-                                "The argument '" + missingArgumentName + "' is required."
+        }else{
+            UnrollDeclarationSymbol unrollDeclaration = ((UnrollSymbol) node.getSymbolOpt().get()).getDeclaration();
+            if (unrollDeclaration == null){
+                ArchitectureSymbol architecture = node.getSymbolOpt().get().getEnclosingScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
+                Log.error("0" + ErrorCodes.UNKNOWN_LAYER + " Unknown layer. " +
+                                "Layer with name '" + node.getName() + "' does not exist. " +
+                                "Existing layers: " + Joiners.COMMA.join(architecture.getLayerDeclarations()) + "."
                         , node.get_SourcePositionStart());
+            }
+            else {
+                Set<String> requiredArguments = new HashSet<>();
+                for (VariableSymbol param : unrollDeclaration.getParameters()){
+                    if (!param.getDefaultExpression().isPresent()){
+                        requiredArguments.add(param.getName());
+                    }
+                }
+                for (ASTArchArgument argument : node.getArgumentsList()){
+                    requiredArguments.remove(argument.getName());
+                }
+
+                for (String missingArgumentName : requiredArguments){
+                    Log.error("0"+ErrorCodes.MISSING_ARGUMENT + " Missing argument. " +
+                                    "The argument '" + missingArgumentName + "' is required."
+                            , node.get_SourcePositionStart());
+                }
+
+                for(LayerSymbol sublayer: unrollDeclaration.getLayers()){
+                    check((ASTLayer) sublayer.getAstNode().get());
+                }
+
             }
         }
     }

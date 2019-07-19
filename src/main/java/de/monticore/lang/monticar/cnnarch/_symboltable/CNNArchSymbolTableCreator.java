@@ -351,7 +351,14 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     @Override
     public void endVisit(ASTUnroll ast) {
         UnrollSymbol layer = (UnrollSymbol) ast.getSymbolOpt().get();
-        layer.getDeclaration().setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
+        SerialCompositeElementSymbol sces = new SerialCompositeElementSymbol();
+        List<ArchitectureElementSymbol> elements = new ArrayList<>();
+        for (ASTArchitectureElement astElement : ast.getBody().getElementsList()){
+            elements.add((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
+        }
+        layer.getDeclaration().setBody(sces);
+
+        layer.getDeclaration().getBody().setElements(elements);
 
         List<ArgumentSymbol> arguments = new ArrayList<>(6);
         for (ASTArchArgument astArgument : ast.getArgumentsList()){
@@ -362,11 +369,27 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
 
 
-        List<ArchitectureElementSymbol> elements = new ArrayList<>();
+
         int elementNumber = 0;
 
         for (ASTArchitectureElement astElement : ast.getBody().getElementsList()){
-            elements.add((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
+
+            //TODO: assign parameters to layers in Unroll
+            //sublayer.getDeclaration().setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
+
+            List<ArgumentSymbol> subarguments = new ArrayList<>(6);
+
+            if(astElement.getSymbolOpt().get() instanceof LayerSymbol) {
+                for (ArgumentSymbol argument : ((LayerSymbol) astElement.getSymbolOpt().get()).getArguments()) {
+                    System.err.println("arg: " + argument);
+                    subarguments.add(argument);
+                }
+                ((LayerSymbol) astElement.getSymbolOpt().get()).setArguments(subarguments);
+            }
+
+
+
+
             if(elementNumber == 0 && astElement.getSymbolOpt().get() instanceof IOSymbol){
                 layer.getDeclaration().getBody().setInputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
             }else if(elementNumber == (ast.getBody().getElementsList().size() - 1) && astElement.getSymbolOpt().get() instanceof IOSymbol){
@@ -375,7 +398,6 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
             elementNumber++;
         }
 
-        layer.getDeclaration().getBody().setElements(elements);
 
         /*List<ArchitectureElementSymbol> elements = new ArrayList<>();
         for (ASTStream astStream : ast.getGroupsList()){

@@ -35,6 +35,7 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     public static final UnrollDeclarationKind KIND = new UnrollDeclarationKind();
 
     private List<VariableSymbol> parameters;
+    private List<LayerSymbol> layers;
     private SerialCompositeElementSymbol body;
 
 
@@ -50,6 +51,14 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     @Override
     public UnrollDeclarationScope getSpannedScope() {
         return (UnrollDeclarationScope) super.getSpannedScope();
+    }
+
+    protected void setLayers(List<LayerSymbol> layers) {
+        this.layers = layers;
+    }
+
+    public List<LayerSymbol> getLayers() {
+        return layers;
     }
 
     public List<VariableSymbol> getParameters() {
