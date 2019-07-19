@@ -8,9 +8,12 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class SymboltableTest {
   @Before
@@ -30,13 +33,17 @@ public class SymboltableTest {
     SimLangTool.checkDefaultCoCos(ast);
     Log.info(symtab.getSubScopes().get(0).toString(),"symtest");
 
+    /*Optional<SimulationSymbol> astTest = SimLangTool.parse(Paths.get("SimLang/src/test/resources/test/ast"), "ASTTest");
+    assertTrue(astTest.isPresent());
+    Scope symtab = astTest.get().getEnclosingScope();*/
+
     //resolve and check for correct/expected values
-    final SimulationRenderFrequencySymbol simRenFre = symtab.<SimulationRenderFrequencySymbol>resolve("simlang.test.ASTTest.sim_render_frequency", SimulationRenderFrequencySymbol.KIND).orElse(null);
+    final SimulationRenderFrequencySymbol simRenFre = symtab.<SimulationRenderFrequencySymbol>resolve("ASTTest.sim_render_frequency", SimulationRenderFrequencySymbol.KIND).orElse(null);
     assertNotNull(simRenFre);
     Log.info(simRenFre.getSimulationRenderFrequency().getNUnit().toString(),"symtest");
     assert simRenFre.getSimulationRenderFrequency().getNUnit().get().getNumberUnit().equals("60.0ms");
 
-    final SimulationLoopFrequencySymbol simLoFre = symtab.<SimulationLoopFrequencySymbol>resolve("simlang.test.ASTTest.sim_loop_frequency", SimulationLoopFrequencySymbol.KIND).orElse(null);
+    final SimulationLoopFrequencySymbol simLoFre = symtab.<SimulationLoopFrequencySymbol>resolve("ASTTest.sim_loop_frequency", SimulationLoopFrequencySymbol.KIND).orElse(null);
     assertNotNull(simLoFre);
     assertNotNull(simLoFre.getSimulationLoopFrequency());
     assertNotNull(simLoFre.getSimulationLoopFrequency().getRange());
@@ -47,68 +54,68 @@ public class SymboltableTest {
     assert simLoFre.getSimulationLoopFrequency().getRange().get().getStep().getNumberUnit().equals("1.0m");
     assert simLoFre.getSimulationLoopFrequency().getRange().get().getEnd().getNumberUnit().equals("80.0m");
 
-    final SimulationDurationSymbol simDur = symtab.<SimulationDurationSymbol>resolve("simlang.test.ASTTest.sim_duration", SimulationDurationSymbol.KIND).orElse(null);
+    final SimulationDurationSymbol simDur = symtab.<SimulationDurationSymbol>resolve("ASTTest.sim_duration", SimulationDurationSymbol.KIND).orElse(null);
     assertNotNull(simDur);
     assert simDur.getSimulationDuration().getList().get().get(0).getNumberUnit().equals("50.0m");
     assert simDur.getSimulationDuration().getList().get().get(1).getNumberUnit().equals("4.0h");
     assert simDur.getSimulationDuration().getList().get().get(2).getNumberUnit().equals("5.0h");
     assert simDur.getSimulationDuration().getList().get().get(3).getNumberUnit().equals("6.0h");
 
-    final SimulationTypeSymbol simTy = symtab.<SimulationTypeSymbol>resolve("simlang.test.ASTTest.sim_type", SimulationTypeSymbol.KIND).orElse(null);
+    final SimulationTypeSymbol simTy = symtab.<SimulationTypeSymbol>resolve("ASTTest.sim_type", SimulationTypeSymbol.KIND).orElse(null);
     assertNotNull(simDur);
     //assert simTy.getSimulationType().equals(SimLangEnums.SimulationTypes.MAXFPS); //requires better insight into MC enums
 
-    final WeatherSymbol we = symtab.<WeatherSymbol>resolve("simlang.test.ASTTest.weather", WeatherSymbol.KIND).orElse(null);
+    final WeatherSymbol we = symtab.<WeatherSymbol>resolve("ASTTest.weather", WeatherSymbol.KIND).orElse(null);
     assertNotNull(simDur);
 
-    final TimeSymbol tim = symtab.<TimeSymbol>resolve("simlang.test.ASTTest.time", TimeSymbol.KIND).orElse(null);
+    final TimeSymbol tim = symtab.<TimeSymbol>resolve("ASTTest.time", TimeSymbol.KIND).orElse(null);
     assertNotNull(tim);
     assert tim.getTime().get(0).getHours() == 1;
     assert tim.getTime().get(0).getMinutes() == 22;
     assert tim.getTime().get(0).getSeconds().get() == 33;
     assert tim.getTime().get(0).getMilliseconds().get() == 444;
 
-    final MapPathSymbol maPa = symtab.<MapPathSymbol>resolve("simlang.test.ASTTest.map_path", MapPathSymbol.KIND).orElse(null);
+    final MapPathSymbol maPa = symtab.<MapPathSymbol>resolve("ASTTest.map_path", MapPathSymbol.KIND).orElse(null);
     assertNotNull(maPa);
     assert maPa.getMapPath().equals("Maps");
 
-    final MapNameSymbol maNa = symtab.<MapNameSymbol>resolve("simlang.test.ASTTest.map_name", MapNameSymbol.KIND).orElse(null);
+    final MapNameSymbol maNa = symtab.<MapNameSymbol>resolve("ASTTest.map_name", MapNameSymbol.KIND).orElse(null);
     assertNotNull(maNa);
     assert maNa.getMapName().equals("HorsterDreieck");
 
-    final MapHeightSymbol maHei = symtab.<MapHeightSymbol>resolve("simlang.test.ASTTest.map_height", MapHeightSymbol.KIND).orElse(null);
+    final MapHeightSymbol maHei = symtab.<MapHeightSymbol>resolve("ASTTest.map_height", MapHeightSymbol.KIND).orElse(null);
     assertNotNull(maHei);
     //assert maHei.getMapHeight().getHeightMode().get().equals(SimLangEnums.SimulationHeightModes.FLAT);
 
-    final MapOverlapSymbol maOv = symtab.<MapOverlapSymbol>resolve("simlang.test.ASTTest.map_overlap", MapOverlapSymbol.KIND).orElse(null);
+    final MapOverlapSymbol maOv = symtab.<MapOverlapSymbol>resolve("ASTTest.map_overlap", MapOverlapSymbol.KIND).orElse(null);
     assertNotNull(maOv);
     assert maOv.getMapOverlap().getNUnit().get().getNumber() == 10f;
 
-    final MapSectorWidthSymbol maSeWi = symtab.<MapSectorWidthSymbol>resolve("simlang.test.ASTTest.map_sector_width", MapSectorWidthSymbol.KIND).orElse(null);
+    final MapSectorWidthSymbol maSeWi = symtab.<MapSectorWidthSymbol>resolve("ASTTest.map_sector_width", MapSectorWidthSymbol.KIND).orElse(null);
     assertNotNull(maSeWi);
     assert maSeWi.getMapSectorWidth().getNUnit().get().getNumber() == 100f;
 
-    final MapSectorHeightSymbol maSeHe = symtab.<MapSectorHeightSymbol>resolve("simlang.test.ASTTest.map_sector_height", MapSectorHeightSymbol.KIND).orElse(null);
+    final MapSectorHeightSymbol maSeHe = symtab.<MapSectorHeightSymbol>resolve("ASTTest.map_sector_height", MapSectorHeightSymbol.KIND).orElse(null);
     assertNotNull(maSeHe);
     assert maSeWi.getMapSectorWidth().getNUnit().get().getNumber() == 100f;
 
-    final MaxSectorUsersSymbol maSeUs = symtab.<MaxSectorUsersSymbol>resolve("simlang.test.ASTTest.max_sector_users", MaxSectorUsersSymbol.KIND).orElse(null);
+    final MaxSectorUsersSymbol maSeUs = symtab.<MaxSectorUsersSymbol>resolve("ASTTest.max_sector_users", MaxSectorUsersSymbol.KIND).orElse(null);
     assertNotNull(maSeUs);
     assert maSeUs.getMaxSectorUsers().getNUnit().get().getNumber() == 1234f;
 
-    final TimeoutSymbol timeOut = symtab.<TimeoutSymbol>resolve("simlang.test.ASTTest.timeout", TimeoutSymbol.KIND).orElse(null);
+    final TimeoutSymbol timeOut = symtab.<TimeoutSymbol>resolve("ASTTest.timeout", TimeoutSymbol.KIND).orElse(null);
     assertNotNull(timeOut);
     timeOut.getTimeout().getNUnit().get().getNumberUnit().equals("12h");
 
-    final GravitySymbol grav = symtab.<GravitySymbol>resolve("simlang.test.ASTTest.gravity", GravitySymbol.KIND).orElse(null);
+    final GravitySymbol grav = symtab.<GravitySymbol>resolve("ASTTest.gravity", GravitySymbol.KIND).orElse(null);
     assertNotNull(grav);
     assert grav.getGravity().getNUnit().get().getNumberUnit().equals("12.0m/s²");
 
-    final PedestrianDensitySymbol pedDen = symtab.<PedestrianDensitySymbol>resolve("simlang.test.ASTTest.pedestrian_density", PedestrianDensitySymbol.KIND).orElse(null);
+    final PedestrianDensitySymbol pedDen = symtab.<PedestrianDensitySymbol>resolve("ASTTest.pedestrian_density", PedestrianDensitySymbol.KIND).orElse(null);
     assertNotNull(pedDen);
     assert pedDen.getPedestrianDensity().getNUnit().get().getNumberUnit().equals("2.0");
 
-    final Collection<PedestrianSymbol> peds = symtab.resolveMany("simlang.test.ASTTest.pedestrian", PedestrianSymbol.KIND);
+    final Collection<PedestrianSymbol> peds = symtab.resolveMany("ASTTest.pedestrian", PedestrianSymbol.KIND);
     assert !peds.isEmpty();
     assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getStartLat() == 10.10f;
     assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getStartLong() == 10.0f;
@@ -117,7 +124,7 @@ public class SymboltableTest {
     assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getDestLong() == 20f;
     assert ((PedestrianSymbol)peds.toArray()[0]).getPedestrian().getDestZ().get() == 0f;
 
-    final Collection<ExplicitVehicleSymbol> exVe = symtab.resolveMany("simlang.test.ASTTest.explicit_vehicle", ExplicitVehicleSymbol.KIND);
+    final Collection<ExplicitVehicleSymbol> exVe = symtab.resolveMany("ASTTest.explicit_vehicle", ExplicitVehicleSymbol.KIND);
     assert !exVe.isEmpty();
     assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getName().equals("car1");
     assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getPath().getStartLat() == -22f;
@@ -127,7 +134,7 @@ public class SymboltableTest {
     assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getPath().getDestLong() == 0f;
     assert ((ExplicitVehicleSymbol)exVe.toArray()[0]).getVehicle().getDestZ().get() == 10f;
 
-    final Collection<PathedVehicleSymbol> paVe = symtab.resolveMany("simlang.test.ASTTest.pathed_vehicle", PathedVehicleSymbol.KIND);
+    final Collection<PathedVehicleSymbol> paVe = symtab.resolveMany("ASTTest.pathed_vehicle", PathedVehicleSymbol.KIND);
     assert !paVe.isEmpty();
     assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getPath().getStartLat() == 123f;
     assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getPath().getStartLong() == -94f;
@@ -137,7 +144,7 @@ public class SymboltableTest {
     assert ((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getDestRad().getNumber() == 200f;
     assert !((PathedVehicleSymbol)paVe.toArray()[0]).getVehicle().getAmount().isPresent();
 
-    final Collection<RandomVehicleSymbol> raVe = symtab.resolveMany("simlang.test.ASTTest.random_vehicle", RandomVehicleSymbol.KIND);
+    final Collection<RandomVehicleSymbol> raVe = symtab.resolveMany("ASTTest.random_vehicle", RandomVehicleSymbol.KIND);
     assert !raVe.isEmpty();
     for(RandomVehicleSymbol sym : raVe) {
       if(sym.getVehicle().getAmount() == 1000f) {
@@ -154,7 +161,7 @@ public class SymboltableTest {
       }
     }
 
-    final Collection<ChannelSymbol> ch = symtab.resolveMany("simlang.test.ASTTest.channel", ChannelSymbol.KIND);
+    final Collection<ChannelSymbol> ch = symtab.resolveMany("ASTTest.channel", ChannelSymbol.KIND);
     assert !ch.isEmpty();
     for(ChannelSymbol sym : ch) {
       if(sym.getChannel().getName().equals("LTE")) {

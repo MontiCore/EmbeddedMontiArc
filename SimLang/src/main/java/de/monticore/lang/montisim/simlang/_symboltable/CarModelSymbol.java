@@ -1,20 +1,20 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
-import de.monticore.lang.montisim.carlang.CarModel;
+import de.monticore.lang.montisim.carlang.CarContainer;
 
 public class CarModelSymbol extends CarModelSymbolTOP {
 
-    private CarModel model;
+    private CarContainer model;
 
     public CarModelSymbol(String name) {
         super(name);
     }
 
-    public void setCarModel(CarModel model) {
+    public void setCarContainer(CarContainer model) {
         this.model = model;
     }
 
-    public CarModel getCarModel() {
+    public CarContainer getCarContainer() {
         return model;
     }
 }

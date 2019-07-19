@@ -1,5 +1,7 @@
 package de.monticore.lang.montisim.util.types;
 
+import de.monticore.lang.montisim.carlang.CarContainer;
+
 import java.util.Optional;
 
 public class ExplicitVehicle {
@@ -7,6 +9,7 @@ public class ExplicitVehicle {
   private float startRot;
   private Optional<Float> destZ = Optional.empty();
   private String name;
+  private CarContainer carContainer;
 
   public ExplicitVehicle(String name, float startX, float startY, float destX, float destY, float startRot) {
     this.path = new Path2D(startX, startY, destX, destY);
@@ -36,5 +39,13 @@ public class ExplicitVehicle {
 
   public String getName() {
     return name;
+  }
+
+  public CarContainer getCarContainer() {
+    return carContainer;
+  }
+
+  public void setCarContainer(CarContainer carContainer) {
+    this.carContainer = carContainer;
   }
 }

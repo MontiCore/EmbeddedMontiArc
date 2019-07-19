@@ -1,6 +1,8 @@
-car CMTCar {
+package cars;
+
+car CMTCar2 {
 	// basics
-	mass = 1800kg;
+	mass = 2800kg;
 	width = 2.02712567705637776m;
 	length = 4.236423828125m;
 	height = 1.19524474896355328m;
@@ -37,10 +39,10 @@ car CMTCar {
 
 	// other
 	controller = AutopilotAdapter;
-	cpu {
-	    frequency = 3GHz;
-	    memory_frequency = 2GHz;
-	}
+    cpu {
+        frequency = 3GHz;
+        memory_frequency = 2GHz;
+    }
 
 	// physicalVehicle
 	physics_model = mass_point;
