@@ -18,26 +18,27 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package commons.simulation;
-
-import java.time.Instant;
+package commons.composite;
 
 /**
- * Interface for a discrete event in a discrete event simulation
+    BusValue objects should only content basic data types (double, int, ...).
+    Complex data types should be represented by BusComposite or BusArray.
  */
-public abstract class DiscreteEvent {
+public class BusValue implements BusComponent {
+    private Object value;
+    public BusValue(Object value){
+        this.value = value;
+    }
 
-    /**
-     * Function that returns the time of the event
-     *
-     * @return Time of the event
-     */
-    public abstract Instant getEventTime();
+    public void setValue(Object value){
+        this.value = value;
+    }
 
-    /**
-     * Function that returns an identifier for the event
-     *
-     * @return Numeric identifier for the event
-     */
-    public abstract int getEventId();
+    public Object getValue(){
+        return value;
+    }
+
+    public ComponentType getType(){
+        return ComponentType.VALUE;
+    }
 }

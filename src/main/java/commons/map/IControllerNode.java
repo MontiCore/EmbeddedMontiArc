@@ -20,7 +20,7 @@
  */
 package commons.map;
 
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 
 /**
  * Created by lukas on 31.01.17.
