@@ -34,6 +34,8 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.SerialCompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNTrain2Gluon;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.annotations.ArchitectureAdapter;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCoCoChecker;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.generator.FileContent;
@@ -536,6 +538,7 @@ public class EMADLGenerator {
                 assert correspondingArchitecture != null : "No architecture found for train " + fullConfigName + " configuration!";
                 configuration.setTrainedArchitecture(
                         new ArchitectureAdapter(correspondingArchitecture.getName(), correspondingArchitecture));
+                CNNTrainCocos.checkTrainedArchitectureCoCos(configuration);
 
                 // Resolve critic network if critic is present
                 if (configuration.getCriticName().isPresent()) {
@@ -556,6 +559,7 @@ public class EMADLGenerator {
                     }
                     critic.get().setComponentName(fullCriticName);
                     configuration.setCriticNetwork(new ArchitectureAdapter(fullCriticName, critic.get()));
+                    CNNTrainCocos.checkCriticCocos(configuration);
                 }
 
 
