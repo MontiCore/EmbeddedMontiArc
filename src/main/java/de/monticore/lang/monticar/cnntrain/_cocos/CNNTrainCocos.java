@@ -48,11 +48,17 @@ public class CNNTrainCocos {
         createChecker().checkAll(node);
     }
 
+    public static void checkTrainedArchitectureCoCos(final ConfigurationSymbol configurationSymbol) {
+        CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
+                .addCoCo(new CheckTrainedRlNetworkHasExactlyOneInput())
+                .addCoCo(new CheckTrainedRlNetworkHasExactlyOneOutput());
+        checker.checkAll(configurationSymbol);
+    }
+
     public static void checkCriticCocos(final ConfigurationSymbol configurationSymbol) {
         CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
                 .addCoCo(new CheckCriticNetworkHasExactlyAOneDimensionalOutput())
                 .addCoCo(new CheckCriticNetworkInputs());
-        int findings = Log.getFindings().size();
         checker.checkAll(configurationSymbol);
     }
 }
