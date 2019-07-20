@@ -3,7 +3,7 @@ package mountaincar.agent;
 component MountaincarCritic {
     ports
         in Q^{2} state,
-        in Q^{2} action,
+        in Q(-1:1)^{1} action,
         out Q(-oo:oo)^{1} qvalues;
 
     implementation CNN {
