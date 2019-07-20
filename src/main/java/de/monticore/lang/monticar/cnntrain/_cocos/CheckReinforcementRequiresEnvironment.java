@@ -25,6 +25,7 @@ import de.monticore.lang.monticar.cnntrain._ast.ASTEnvironmentEntry;
 import de.monticore.lang.monticar.cnntrain._ast.ASTLearningMethodEntry;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.LearningMethod;
+import de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants;
 import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -32,8 +33,6 @@ import de.se_rwth.commons.logging.Log;
  *
  */
 public class CheckReinforcementRequiresEnvironment implements CNNTrainASTConfigurationCoCo {
-    private static final String PARAMETER_ENVIRONMENT = "environment";
-
     @Override
     public void check(ASTConfiguration node) {
         boolean isReinforcementLearning = ASTConfigurationUtils.isReinforcementLearning(node);
@@ -41,7 +40,7 @@ public class CheckReinforcementRequiresEnvironment implements CNNTrainASTConfigu
 
         if (isReinforcementLearning && !hasEnvironment) {
             Log.error("0" + ErrorCodes.REQUIRED_PARAMETER_MISSING + " The required parameter "
-                    + PARAMETER_ENVIRONMENT + " is missing");
+                    + ConfigEntryNameConstants.ENVIRONMENT + " is missing");
         }
     }
 }

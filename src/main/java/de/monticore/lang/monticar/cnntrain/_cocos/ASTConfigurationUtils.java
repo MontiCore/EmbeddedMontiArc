@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.cnntrain._cocos;
 
 import de.monticore.lang.monticar.cnntrain._ast.*;
+import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants.*;
 
 import java.util.Optional;
 
@@ -77,7 +78,7 @@ class ASTConfigurationUtils {
         return ASTConfigurationUtils.hasEnvironment(node)
                 && node.getEntriesList().stream()
                     .anyMatch(e -> (e instanceof ASTEnvironmentEntry)
-                            && ((ASTEnvironmentEntry)e).getValue().getName().equals("ros_interface"));
+                            && ((ASTEnvironmentEntry)e).getValue().getName().equals(ENVIRONMENT_ROS));
     }
 
     static boolean hasRewardTopic(final ASTConfiguration node) {

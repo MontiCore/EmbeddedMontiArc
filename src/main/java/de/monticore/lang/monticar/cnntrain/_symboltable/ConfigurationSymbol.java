@@ -24,6 +24,8 @@ import de.monticore.symboltable.CommonScopeSpanningSymbol;
 
 import java.util.*;
 
+import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants.*;
+
 public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
     private Map<String, EntrySymbol> entryMap = new HashMap<>();
@@ -99,8 +101,8 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     }
 
     public LearningMethod getLearningMethod() {
-        return this.entryMap.containsKey("learning_method")
-                ? (LearningMethod)this.entryMap.get("learning_method").getValue().getValue() : LearningMethod.SUPERVISED;
+        return this.entryMap.containsKey(LEARNING_METHOD)
+                ? (LearningMethod)this.entryMap.get(LEARNING_METHOD).getValue().getValue() : LearningMethod.SUPERVISED;
     }
 
     public boolean isReinforcementLearningMethod() {
@@ -108,7 +110,7 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     }
 
     public boolean hasCritic() {
-        return getEntryMap().containsKey("critic");
+        return getEntryMap().containsKey(CRITIC);
     }
 
     public Optional<String> getCriticName() {
@@ -116,7 +118,7 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
             return Optional.empty();
         }
 
-        final Object criticNameValue = getEntry("critic").getValue().getValue();
+        final Object criticNameValue = getEntry(CRITIC).getValue().getValue();
         assert criticNameValue instanceof String;
         return Optional.of((String)criticNameValue);
     }

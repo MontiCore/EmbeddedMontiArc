@@ -22,15 +22,18 @@ package de.monticore.lang.monticar.cnntrain._cocos;
 
 import com.google.common.collect.ImmutableSet;
 import de.monticore.lang.monticar.cnntrain._ast.ASTConfiguration;
+import de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants;
 import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Set;
 
+import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants.*;
+
 public class CheckContinuousRLAlgorithmUsesContinuousStrategy implements CNNTrainASTConfigurationCoCo{
     private static final Set<String> CONTINUOUS_STRATEGIES = ImmutableSet.<String>builder()
-        .add("ornstein_uhlenbeck")
-        .add("gaussian")
+        .add(STRATEGY_OU)
+        .add(STRATEGY_GAUSSIAN)
         .build();
 
     @Override

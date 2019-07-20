@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.cnntrain._cocos;
 
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.RLAlgorithm;
+import de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants;
 import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -16,7 +17,7 @@ public class CheckTrainedRlNetworkHasExactlyOneInput implements CNNTrainConfigur
             final int numberOfInputs = configurationSymbol.getTrainedArchitecture().get().getInputs().size();
             if (numberOfInputs != 1) {
                 final String networkName
-                        = configurationSymbol.getEntry("rl_algorithm").getValue().getValue()
+                        = configurationSymbol.getEntry(ConfigEntryNameConstants.RL_ALGORITHM).getValue().getValue()
                         .equals(RLAlgorithm.DQN) ? "Q-Network" : "Actor-Network";
                 Log.error("x0" + ErrorCodes.TRAINED_ARCHITECTURE_ERROR
                         + networkName + " " +configurationSymbol.getTrainedArchitecture().get().getName()
