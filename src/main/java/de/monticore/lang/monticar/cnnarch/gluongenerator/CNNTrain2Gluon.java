@@ -109,7 +109,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
     @Override
     public Map<String, String> generateStrings(ConfigurationSymbol configuration) {
         TemplateConfiguration templateConfiguration = new GluonTemplateConfiguration();
-        ReinforcementConfigurationData configData = new ReinforcementConfigurationData(configuration, getInstanceName());
+        GluonConfigurationData configData = new GluonConfigurationData(configuration, getInstanceName());
         List<ConfigurationData> configDataList = new ArrayList<>();
         configDataList.add(configData);
 

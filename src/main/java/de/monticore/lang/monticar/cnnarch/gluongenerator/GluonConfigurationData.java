@@ -9,8 +9,8 @@ import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstant
 
 import java.util.*;
 
-public class ReinforcementConfigurationData extends ConfigurationData {
-    public ReinforcementConfigurationData(ConfigurationSymbol configuration, String instanceName) {
+public class GluonConfigurationData extends ConfigurationData {
+    public GluonConfigurationData(ConfigurationSymbol configuration, String instanceName) {
         super(configuration, instanceName);
     }
 
