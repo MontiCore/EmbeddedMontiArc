@@ -51,7 +51,8 @@ public class CNNTrainCocos {
     public static void checkTrainedArchitectureCoCos(final ConfigurationSymbol configurationSymbol) {
         CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
                 .addCoCo(new CheckTrainedRlNetworkHasExactlyOneInput())
-                .addCoCo(new CheckTrainedRlNetworkHasExactlyOneOutput());
+                .addCoCo(new CheckTrainedRlNetworkHasExactlyOneOutput())
+                .addCoCo(new CheckOUParameterDimensionEqualsActionDimension());
         checker.checkAll(configurationSymbol);
     }
 
