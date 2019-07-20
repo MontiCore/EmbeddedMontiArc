@@ -32,4 +32,5 @@ public class ErrorCodes {
     public static final String STRATEGY_NOT_APPLICABLE = "xC8857";
     public static final String CONTRADICTING_PARAMETERS = "xC8858";
     public static final String CRITIC_NETWORK_ERROR = "xC7100";
+    public static final String MISSING_TRAINED_ARCHITECTURE = "xC7101";
 }

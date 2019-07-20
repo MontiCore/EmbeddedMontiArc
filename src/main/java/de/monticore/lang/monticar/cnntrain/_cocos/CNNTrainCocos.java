@@ -50,7 +50,8 @@ public class CNNTrainCocos {
 
     public static void checkCriticCocos(final ConfigurationSymbol configurationSymbol) {
         CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
-                .addCoCo(new CheckCriticNetworkHasExactlyAOneDimensionalOutput());
+                .addCoCo(new CheckCriticNetworkHasExactlyAOneDimensionalOutput())
+                .addCoCo(new CheckCriticNetworkInputs());
         int findings = Log.getFindings().size();
         checker.checkAll(configurationSymbol);
     }
