@@ -9,7 +9,7 @@
 ## How to execute the code for the bumper bot and read the collision sensor?
 
 - Start Carla by executing: `CarlaUE4.sh`
-- Execute in PythonAPI/examples: `python manual_control.py --rolename=ego_vehicle`  
+- Execute in PythonAPI/examples to create a vehicle for the ros-bridge: `python manual_control.py --rolename=ego_vehicle`  
 - To start the container execute inside the project folder:  
 `docker/bumpbot/run.sh`
 
@@ -25,14 +25,14 @@ I tested this code in a Command Prompt/Power Shell. For the use of other console
 ## Running the code
 - In the Docker Settings GUI select the drive where you want to work on as shared drive, else using volumes won't work.
 
-## Updating the IP where carla is running
+### Updating the IP where carla is running
 As we don't have a predefined docker network to the host we have to specify the IP where carla is reachable as follows and rebuild the ros-bridge:
 
-- sed -i 's/172.17.0.1/<yourIP>/g' /opt/carla-ros-bridge/src/carla_ros_bridge/config/settings.yaml
-- source /opt/ros/kinetic/setup.bash; cd  /opt/carla-ros-bridge; catkin_make -DCMAKE_BUILD_TYPE=Release install
-- source /opt/carla-ros-bridge/devel/setup.bash
-- roslaunch carla_ros_bridge carla_ros_bridge.launch
+- `sed -i 's/172.17.0.1/<yourIP>/g' /opt/carla-ros-bridge/src/carla_ros_bridge/config/settings.yaml`
+- `source /opt/ros/kinetic/setup.bash; cd  /opt/carla-ros-bridge; catkin_make -DCMAKE_BUILD_TYPE=Release install`
+- `source /opt/carla-ros-bridge/devel/setup.bash`
+- `roslaunch carla_ros_bridge carla_ros_bridge.launch`
 
-## Compile and exec
+### Compile and exec
 - This script should work exectly as with Linux:
-- docker exec -it emam2carla bash -c 'source /opt/ros/kinetic/setup.bash && cd /usr/src/emam2carla/EMAM2Carla/ && rm -rf target && java -jar ../mw-generator.jar valid.json && target/compile.sh && target/build/test_bumpBot/coordinator/Coordinator_test_bumpBot'
+- `docker exec -it emam2carla bash -c 'source /opt/ros/kinetic/setup.bash && cd /usr/src/emam2carla/EMAM2Carla/ && rm -rf target && java -jar ../mw-generator.jar valid.json && target/compile.sh && target/build/test_bumpBot/coordinator/Coordinator_test_bumpBot'`
