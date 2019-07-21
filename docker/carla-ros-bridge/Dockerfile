@@ -14,16 +14,18 @@ ARG CARLA_VERSION
 COPY --from=carla --chown=root /home/carla/PythonAPI /opt/carla/PythonAPI
 ENV PYTHONPATH=/opt/carla/PythonAPI/carla/dist/carla-$CARLA_VERSION-py2.7-linux-x86_64.egg:/opt/carla/PythonAPI
 
-COPY carla_ackermann_control /opt/carla-ros-bridge/src/carla_ackermann_control
-COPY carla_ros_bridge /opt/carla-ros-bridge/src/carla_ros_bridge
-COPY carla_manual_control /opt/carla-ros-bridge/src/carla_manual_control
-COPY carla_msgs /opt/carla-ros-bridge/src/carla_msgs
-COPY carla_ego_vehicle /opt/carla-ros-bridge/src/carla_ego_vehicle/
-COPY carla_waypoint_publisher /opt/carla-ros-bridge/src/carla_waypoint_publisher/
+RUN git clone https://github.com/carla-simulator/ros-bridge.git /opt/carla-ros-bridge/git/
+RUN mkdir -p /opt/carla-ros-bridge/src
+RUN cp -r /opt/carla-ros-bridge/git/carla_ackermann_control /opt/carla-ros-bridge/src/carla_ackermann_control
+RUN cp -r /opt/carla-ros-bridge/git/carla_ros_bridge /opt/carla-ros-bridge/src/carla_ros_bridge
+RUN cp -r /opt/carla-ros-bridge/git/carla_manual_control /opt/carla-ros-bridge/src/carla_manual_control
+RUN cp -r /opt/carla-ros-bridge/git/carla_msgs /opt/carla-ros-bridge/src/carla_msgs
+RUN cp -r /opt/carla-ros-bridge/git/carla_ego_vehicle /opt/carla-ros-bridge/src/carla_ego_vehicle
+RUN cp -r /opt/carla-ros-bridge/git/carla_waypoint_publisher /opt/carla-ros-bridge/src/carla_waypoint_publisher
 RUN /bin/bash -c 'source /opt/ros/kinetic/setup.bash; cd  /opt/carla-ros-bridge; catkin_make -DCMAKE_BUILD_TYPE=Release install'
 
 # replace entrypoint
-COPY ./docker/content/ros_entrypoint.sh /
+COPY ./docker/carla-ros-bridge/content/ros_entrypoint.sh /
 
 # Install Emam & Java
 RUN apt-get update \
