@@ -18,7 +18,7 @@ void MqttAdapter_tests_a_compA::init(tests_a_compA *comp)
 
     // Intitialize callbacks, subscribers and publishers
     	_sub_portA = new client(SERVER_ADDRESS, portA);
-        _callback_portA = new Callback(*_sub_portA, comp, portA);
+        _callback_portA = new Callback(*_sub_portA, comp, component->getIncomingPorts().get(component->getIncomingPorts().indexOf(portA)));
 
         _pub_portC = new client(SERVER_ADDRESS, portC);
 
