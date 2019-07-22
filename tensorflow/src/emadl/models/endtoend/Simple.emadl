@@ -1,0 +1,24 @@
+package endtoend;
+
+component Simple{
+	ports in Q(0:1)^{3, 256, 455} data,
+		out Q(0:1)^{1} ergebnis;
+
+	implementation CNN {
+		data ->
+		Convolution(kernel=(5,5),channels=3) ->
+		Relu() ->
+		Pooling(pool_type="max", kernel=(2,2), stride=(1,1)) ->
+		Convolution(kernel=(5,5),channels=8) ->
+		Relu() ->
+		Pooling(pool_type="max", kernel=(2,2), stride=(1,1)) ->
+		Flatten() ->
+		FullyConnected(units=50) ->
+		Relu() ->
+		Dropout() ->
+		FullyConnected(units=1) ->
+		Sigmoid() ->
+		ergebnis
+	}
+}
+

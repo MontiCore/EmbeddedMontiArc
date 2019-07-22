@@ -1,0 +1,2 @@
+endtoend.Simple resources/training_data
+endtoend.Nvidia resources/training_data

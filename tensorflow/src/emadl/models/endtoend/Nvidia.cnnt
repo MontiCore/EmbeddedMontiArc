@@ -1,0 +1,10 @@
+configuration Nvidia{
+     num_epoch:5
+     batch_size:50
+     normalize:false
+     context:cpu
+     load_checkpoint:false
+     loss:cross_entropy
+     optimizer:adam{
+     }
+}
