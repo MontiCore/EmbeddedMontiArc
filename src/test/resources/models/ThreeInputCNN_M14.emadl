@@ -24,7 +24,7 @@ component ThreeInputCNN_M14{
         Relu() ->
         FullyConnected(units=10) ->
         Softmax() ->
-        predictions
+        predictions;
 
     }
 }

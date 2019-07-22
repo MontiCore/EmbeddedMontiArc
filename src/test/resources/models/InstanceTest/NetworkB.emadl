@@ -18,7 +18,7 @@ component NetworkB<Z classes = 10> (Z convChannels){
         Dropout() ->
         FullyConnected(units=classes) ->
         Softmax() ->
-        predictions
+        predictions;
 
     }
 }
