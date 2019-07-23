@@ -50,8 +50,10 @@ public class LayerNameCreator {
     protected int name(ArchitectureElementSymbol architectureElement, int stage, List<Integer> streamIndices){
         if (architectureElement instanceof SerialCompositeElementSymbol) {
             return nameSerialComposite((SerialCompositeElementSymbol) architectureElement, stage, streamIndices);
-        } else if (architectureElement instanceof ParallelCompositeElementSymbol){
+        } else if (architectureElement instanceof ParallelCompositeElementSymbol) {
             return nameParallelComposite((ParallelCompositeElementSymbol) architectureElement, stage, streamIndices);
+        }else if (architectureElement instanceof UnrollSymbol) {
+            return nameUnroll((UnrollSymbol) architectureElement, stage, streamIndices);
         } else{
             if (architectureElement.isAtomic()){
                 if (architectureElement.getMaxSerialLength().get() > 0){
@@ -87,6 +89,14 @@ public class LayerNameCreator {
 
         streamIndices.remove(lastIndex);
         return Collections.max(endStages) + 1;
+    }
+
+    protected int nameUnroll(UnrollSymbol unrollElement, int stage, List<Integer> streamIndices){
+        int endStage = stage;
+        for (ArchitectureElementSymbol subElement : unrollElement.getDeclaration().getBody().getElements()){
+            endStage = name(subElement, endStage, streamIndices);
+        }
+        return endStage;
     }
 
     protected int add(ArchitectureElementSymbol architectureElement, int stage, List<Integer> streamIndices){
