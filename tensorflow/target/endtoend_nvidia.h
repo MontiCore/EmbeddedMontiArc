@@ -14,7 +14,7 @@ cube data;
 colvec ergebnis;
 void init()
 {
-data = cube(9, 256, 455);
+data = cube(9, 480, 640);
 ergebnis=colvec(1);
 }
 void execute(){

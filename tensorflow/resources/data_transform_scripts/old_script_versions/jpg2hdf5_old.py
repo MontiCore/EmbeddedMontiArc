@@ -10,7 +10,7 @@ from PIL import Image
 import cv2
 
 #DIR Dictionary setup
-Data_Dir = '/media/felixh/hdd/extracted_dataset.bag/'
+Data_Dir = '/media/felixh/data_ssd/test_set/'
 center_cam = Data_Dir + 'center/'
 left_cam =   Data_Dir + 'left/'
 right_cam =  Data_Dir + 'right/'
@@ -19,9 +19,6 @@ lable_csv = Data_Dir + 'steering.csv'
 PIXEL_WIDTH  = 640
 PIXEL_HEIGHT = 480
 
-
-start = 0
-ende  = 1000
 
 #output number of pictures
 print "Data Info  ...."
@@ -62,6 +59,7 @@ def rezize_img(img):
     return resized
 
 
+
 # helper function to acomplish parse_all_pictures
 #increase
 def parse_angle_picture(pic_timestamp, epsilon):
@@ -92,9 +90,7 @@ def parse_angle_picture(pic_timestamp, epsilon):
 #returns dictionary with picture idetifier (time of shot) with nearest measurment (timestamp) of steering angle
 def parse_center_to_angle():
     print "Starting Step  parse_center_to_angle"
-    pictures = [name for name in os.listdir(center_cam) if os.path.isfile(os.path.join(center_cam, name))] 
-    pictures.sort()
-    pictures = pictures[start:ende]
+    pictures = [name for name in os.listdir(center_cam) if os.path.isfile(os.path.join(center_cam, name))]
     dic = {}
     i = 0
     for pic in pictures:
@@ -103,7 +99,7 @@ def parse_center_to_angle():
         pic,row,dis = parse_angle_picture(pic_int, 100000000)
         dic[pic] = row
         i = i + 1
-        if i % 100 == 0:
+        if i % 10 == 0:
             print "proccesed pictures :" , i , "/", len(pictures)
 
     return dic
@@ -111,6 +107,7 @@ def parse_center_to_angle():
 # tensorflow seem to have height width channels not vise versa
 # https://www.kaggle.com/crawford/resize-and-save-images-as-hdf5-256x256
 # why images in 256 * 256 ????
+
 
 
 
@@ -131,15 +128,12 @@ def parse_center_to_left_right():
     right_cam_list.sort()
     left_cam_list.sort()
 
-    right_cam_list = right_cam_list[start:ende]
-    left_cam_list = left_cam_list[start:ende]
-
     #consitency check leave out in actuall computation to save time
     i = 0
     epsilon = 100000000
     for pic in pic_ids:
 
-        if i % 100 == 0:
+        if i % 10 == 0:
             print "matched pictures :" , i , "/", len(pic_ids)
 
         diff = pic - right_cam_list[i]
@@ -162,6 +156,7 @@ def create_h5py(train_percentage, test_percentage):
     pic_ids.sort()
 
     #reloading glob ids for images
+
     #print ("reloading images with glob")
 
     print "Starting Step create h5py"
@@ -194,7 +189,7 @@ def create_h5py(train_percentage, test_percentage):
             target = np.array([dic[pic_ids[0]][2]]).astype(np.float32)
 
             hf.create_dataset('data', data=combined_img, maxshape=(None,9,PIXEL_HEIGHT,PIXEL_WIDTH))
-            hf.create_dataset('ergebnis_lable',data=target , maxshape=(None,))
+            hf.create_dataset('ergebnis_label',data=target , maxshape=(None,))
 
             for i,img in enumerate(train_ids):
                 if i != 0:
@@ -217,8 +212,8 @@ def create_h5py(train_percentage, test_percentage):
                         hf['data'].resize((hf['data'].shape[0] + combined_img.shape[0]), axis = 0)
                         hf['data'][-combined_img.shape[0]:] = combined_img
 
-                        hf['ergebnis_lable'].resize((hf['ergebnis_lable'].shape[0] + next_target.shape[0]), axis = 0)
-                        hf['ergebnis_lable'][-next_target.shape[0]:] = next_target
+                        hf['ergebnis_label'].resize((hf['ergebnis_label'].shape[0] + next_target.shape[0]), axis = 0)
+                        hf['ergebnis_label'][-next_target.shape[0]:] = next_target
 
 
     else:

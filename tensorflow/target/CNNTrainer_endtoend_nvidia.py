@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     endtoend_nvidia = CNNCreator_endtoend_nvidia.CNNCreator_endtoend_nvidia()
     endtoend_nvidia.train(
-        batch_size=50,
+        batch_size=2,
         num_epoch=5,
         load_checkpoint=False,
         context='cpu',

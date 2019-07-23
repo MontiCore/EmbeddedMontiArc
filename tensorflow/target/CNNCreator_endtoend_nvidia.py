@@ -502,9 +502,9 @@ class CNNCreator_endtoend_nvidia:
         
         
 
-        data = tf.keras.layers.Input(shape=(256,455,9), name="data")
+        data = tf.keras.layers.Input(shape=(480,640,9), name="data")
         input_tensors.append(data)
-        # data, output shape: {[256,455,9]}
+        # data, output shape: {[480,640,9]}
 
             
 
@@ -531,7 +531,7 @@ class CNNCreator_endtoend_nvidia:
                                                  kernel_regularizer=self._regularizer_, 
                                                  kernel_constraint=self._weight_constraint_, 
                                                  name="conv1_")(batchnorm1_)
-        # conv1_, output shape: {[256,455,3]}
+        # conv1_, output shape: {[480,640,3]}
 
         relu1_ = tf.keras.layers.Activation(activation = "relu", name="relu1_")(conv1_)
 
@@ -544,7 +544,7 @@ class CNNCreator_endtoend_nvidia:
                                                  kernel_regularizer=self._regularizer_, 
                                                  kernel_constraint=self._weight_constraint_, 
                                                  name="conv2_")(relu1_)
-        # conv2_, output shape: {[256,455,3]}
+        # conv2_, output shape: {[480,640,3]}
 
         relu2_ = tf.keras.layers.Activation(activation = "relu", name="relu2_")(conv2_)
 
@@ -557,7 +557,7 @@ class CNNCreator_endtoend_nvidia:
                                                  kernel_regularizer=self._regularizer_, 
                                                  kernel_constraint=self._weight_constraint_, 
                                                  name="conv3_")(relu2_)
-        # conv3_, output shape: {[256,455,3]}
+        # conv3_, output shape: {[480,640,3]}
 
         relu3_ = tf.keras.layers.Activation(activation = "relu", name="relu3_")(conv3_)
 
@@ -570,7 +570,7 @@ class CNNCreator_endtoend_nvidia:
                                                  kernel_regularizer=self._regularizer_, 
                                                  kernel_constraint=self._weight_constraint_, 
                                                  name="conv4_")(relu3_)
-        # conv4_, output shape: {[256,455,3]}
+        # conv4_, output shape: {[480,640,3]}
 
         relu4_ = tf.keras.layers.Activation(activation = "relu", name="relu4_")(conv4_)
 
@@ -582,7 +582,7 @@ class CNNCreator_endtoend_nvidia:
             padding = "same",
             data_format = "channels_last",
             name="pool4_")(dropout4_)
-        # pool4_, output shape: {[256,455,3]}
+        # pool4_, output shape: {[480,640,3]}
 
         flatten4_ = tf.keras.layers.Flatten()(pool4_)
 

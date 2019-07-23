@@ -1,7 +1,7 @@
 package endtoend;
 
 component Nvidia{
-	ports in Q(0:1)^{9, 256, 455} data,
+	ports in Q(0:1)^{9, 480, 640} data,
 		out Q(0:1)^{1} ergebnis;
 
 	implementation CNN {

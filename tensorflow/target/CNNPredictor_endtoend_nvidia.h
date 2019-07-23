@@ -30,8 +30,8 @@ public:
 		
 		
 		//TODO: Look closer at this
-		std::vector<std::vector<float>> inputShapes = {{1,9,256,455}};
-		std::vector<tensorflow::TensorShape> inputShapesTensor = {tensorflow::TensorShape({1,9,256,455})};
+		std::vector<std::vector<float>> inputShapes = {{1,9,480,640}};
+		std::vector<tensorflow::TensorShape> inputShapesTensor = {tensorflow::TensorShape({1,9,480,640})};
 		
 		//*see **
 		std::vector<std::vector<float>> inputs =  {data};
