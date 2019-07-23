@@ -59,6 +59,7 @@ def rezize_img(img):
     return resized
 
 
+
 # helper function to acomplish parse_all_pictures
 #increase
 def parse_angle_picture(pic_timestamp, epsilon):
@@ -109,6 +110,7 @@ def parse_center_to_angle():
 
 
 
+
 # return dictionary with center_cam pic as key which is associated with list  [left_img,right_img,steeringangle,N.A,speed]
 def parse_center_to_left_right():
 
@@ -154,6 +156,7 @@ def create_h5py(train_percentage, test_percentage):
     pic_ids.sort()
 
     #reloading glob ids for images
+
     #print ("reloading images with glob")
 
     print "Starting Step create h5py"

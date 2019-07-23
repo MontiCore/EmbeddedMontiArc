@@ -1,0 +1,4 @@
+From /home/felixh/.local/lib/python2.7/site-packages/tensorflow/python/ops/init_ops.py:1251: calling __init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+`period` argument is deprecated. Please use `save_freq` to specify the frequency in number of samples seen.
