@@ -52,13 +52,6 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
     @Override
     public ConfigurationSymbol getConfigurationSymbol(Path modelsDirPath, String rootModelName) {
         ConfigurationSymbol configurationSymbol = super.getConfigurationSymbol(modelsDirPath, rootModelName);
-
-        // Generate Reward function if necessary
-        if (configurationSymbol.getLearningMethod().equals(LearningMethod.REINFORCEMENT)
-                && configurationSymbol.getRlRewardFunction().isPresent()) {
-            generateRewardFunction(configurationSymbol.getRlRewardFunction().get(), modelsDirPath);
-        }
-
         return configurationSymbol;
     }
 
@@ -153,6 +146,11 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                 );
 
                 ftlContext.put("criticInstanceName", criticInstanceName);
+            }
+
+            // Generate Reward function if necessary
+            if (configuration.getRlRewardFunction().isPresent()) {
+                generateRewardFunction(configuration.getRlRewardFunction().get(), Paths.get(rootProjectModelsDir));
             }
 
             ftlContext.put("trainerName", trainerName);
