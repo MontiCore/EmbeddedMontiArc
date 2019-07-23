@@ -92,7 +92,7 @@ def parse_angle_picture(pic_timestamp, epsilon):
 #returns dictionary with picture idetifier (time of shot) with nearest measurment (timestamp) of steering angle
 def parse_center_to_angle():
     print "Starting Step  parse_center_to_angle"
-    pictures = [name for name in os.listdir(center_cam) if os.path.isfile(os.path.join(center_cam, name))] 
+    pictures = [name for name in os.listdir(center_cam) if os.path.isfile(os.path.join(center_cam, name))]
     pictures.sort()
     pictures = pictures[start:ende]
     dic = {}
@@ -194,7 +194,7 @@ def create_h5py(train_percentage, test_percentage):
             target = np.array([dic[pic_ids[0]][2]]).astype(np.float32)
 
             hf.create_dataset('data', data=combined_img, maxshape=(None,9,PIXEL_HEIGHT,PIXEL_WIDTH))
-            hf.create_dataset('ergebnis_lable',data=target , maxshape=(None,))
+            hf.create_dataset('ergebnis_label',data=target , maxshape=(None,))
 
             for i,img in enumerate(train_ids):
                 if i != 0:
@@ -217,8 +217,8 @@ def create_h5py(train_percentage, test_percentage):
                         hf['data'].resize((hf['data'].shape[0] + combined_img.shape[0]), axis = 0)
                         hf['data'][-combined_img.shape[0]:] = combined_img
 
-                        hf['ergebnis_lable'].resize((hf['ergebnis_lable'].shape[0] + next_target.shape[0]), axis = 0)
-                        hf['ergebnis_lable'][-next_target.shape[0]:] = next_target
+                        hf['ergebnis_label'].resize((hf['ergebnis_label'].shape[0] + next_target.shape[0]), axis = 0)
+                        hf['ergebnis_label'][-next_target.shape[0]:] = next_target
 
 
     else:
