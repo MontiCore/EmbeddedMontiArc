@@ -51,12 +51,12 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
                     sublayer.resolve();
                     System.err.println("inputElement: " + sublayer.getInputElement().get().toString());
                     System.err.println("resolved: " + sublayer.getResolvedThis().get().getInputElement().get().getOutputTypes().get(0).getChannels().toString());
-                    output = sublayer.getResolvedThis().get().getInputElement().get().getOutputTypes();
+                    //output = sublayer.getResolvedThis().get().getInputElement().get().getOutputTypes();
                     System.err.println("inputTypes: " + sublayer.getInputTypes().toString());
                     layers.add((LayerSymbol) sublayer);
                     System.err.println("outputTypes before: " + ((ArchitectureElementSymbol) sublayer).getOutputTypes().get(0).getChannels());
-                    System.err.println("LOL_NAME: " + ((LayerSymbol) sublayer).getArguments().get(0).getName());
-                    System.err.println("LOL: " + ((LayerSymbol) sublayer).getIntValue((((LayerSymbol) sublayer).getArguments().get(0).getName())));
+                    //System.err.println("arg0_NAME: " + ((LayerSymbol) sublayer).getArguments().get(0).getName());
+                    //System.err.println("arg0_VALUE: " + ((LayerSymbol) sublayer).getIntValue((((LayerSymbol) sublayer).getArguments().get(0).getName())));
                     //item.setOutputTypes(item.getOutputTypes());
                     //System.err.println("outputTypes after: " + ((ArchitectureElementSymbol) astElement).getOutputTypes());
                 } catch (Exception e) {
@@ -69,11 +69,13 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
                     //ArchitectureElementSymbol item = (ArchitectureElementSymbol) ASTitem;
                     IOSymbol sublayer = (IOSymbol) item.getSymbol();
                     sublayer.resolve();
+                    //TODO setinputElement !!!!!
                     System.err.println("resolved2: " + sublayer.getResolvedThis().get().getInputElement().get().toString());
                     System.err.println("isOutput?: " + sublayer.isOutput());
                     System.err.println("Definition: " + sublayer.getDefinition().toString());
+                    System.err.println("Domain: " + sublayer.getDefinition().getType().getDomain().toString());
                     System.err.println("Type: " + sublayer.getDefinition().getType().getChannels().toString());
-                    output = sublayer.getResolvedThis().get().getInputElement().get().getOutputTypes();
+                    //output = sublayer.getResolvedThis().get().getInputElement().get().getOutputTypes();
                     if(sublayer.isOutput()){
                         output = new ArrayList<ArchTypeSymbol>();
                     }
@@ -86,6 +88,7 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
                 }
             }
         }
+
 
         System.err.println("output: " + output);
         return output;

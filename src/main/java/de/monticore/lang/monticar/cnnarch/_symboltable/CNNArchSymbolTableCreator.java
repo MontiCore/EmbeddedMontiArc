@@ -149,6 +149,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
             ASTStream astStream = (ASTStream)astInstruction; // TODO: For now all instructions are streams
             streams.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
         }
+        System.err.println("777333: streams set for architecture");
+        System.err.println(streams.get(0).getElements().toString());
         architecture.setStreams(streams);
 
         removeCurrentScope();
@@ -356,6 +358,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         for (ASTArchitectureElement astElement : ast.getBody().getElementsList()){
             elements.add((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
         }
+        sces.setElements(elements);
+        layer.setBody(sces);
         layer.getDeclaration().setBody(sces);
 
         layer.getDeclaration().getBody().setElements(elements);
@@ -367,14 +371,10 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         }
         layer.setArguments(arguments);
 
-
-
-
         int elementNumber = 0;
 
         for (ASTArchitectureElement astElement : ast.getBody().getElementsList()){
 
-            //TODO: assign parameters to layers in Unroll
             //sublayer.getDeclaration().setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
 
             List<ArgumentSymbol> subarguments = new ArrayList<>(6);
@@ -391,9 +391,46 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
 
             if(elementNumber == 0 && astElement.getSymbolOpt().get() instanceof IOSymbol){
-                layer.getDeclaration().getBody().setInputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
+
+                ((IOSymbol)astElement.getSymbol()).getArchitecture().resolveIODeclaration(((IOSymbol)astElement.getSymbol()).getName());
+                System.err.println("Here 55566");
+                Iterator iterator = ((IOSymbol)astElement.getSymbol()).getArchitecture().getIODeclarations().iterator();
+                while (iterator.hasNext()){
+                    System.err.println("0001111: " + iterator.next().toString());
+                }
+
+                ASTIODeclaration ioAST = (ASTIODeclaration) ((IOSymbol)astElement.getSymbol()).getDefinition().getAstNode().get();
+
+                IODeclarationSymbol iODeclaration = ((IOSymbol)astElement.getSymbol()).getDefinition();
+                if (ioAST.isPresentArrayDeclaration()){
+                    iODeclaration.setArrayLength(ioAST.getArrayDeclaration().getIntLiteral().getNumber().get().intValue());
+                }
+                iODeclaration.setInput(ioAST.isPresentIn());
+                iODeclaration.setType((ArchTypeSymbol) ioAST.getType().getSymbolOpt().get());
+
+                try {
+                    ((IOSymbol) astElement.getSymbolOpt().get()).resolve();
+                    ((IOSymbol) ast.getBody().getElements(0).getSymbolOpt().get()).resolve();
+                } catch (ArchResolveException e) {
+                    e.printStackTrace();
+                }
+                layer.getBody().setInputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
+                layer.setInputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
             }else if(elementNumber == (ast.getBody().getElementsList().size() - 1) && astElement.getSymbolOpt().get() instanceof IOSymbol){
-                layer.getDeclaration().getBody().setOutputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
+
+                Iterator iterator2 = ((IOSymbol)astElement.getSymbol()).getArchitecture().getInputs().iterator();
+                while (iterator2.hasNext()){
+                    System.err.println("0002222: " + iterator2.next().toString());
+                }
+
+                try {
+                    ((IOSymbol) astElement.getSymbolOpt().get()).resolve();
+                    ((IOSymbol) ast.getBody().getElements(ast.getBody().getElementsList().size() - 1).getSymbolOpt().get()).resolve();
+                } catch (ArchResolveException e) {
+                    e.printStackTrace();
+                }
+                layer.getBody().setOutputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
+                layer.setOutputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
             }
             elementNumber++;
         }
