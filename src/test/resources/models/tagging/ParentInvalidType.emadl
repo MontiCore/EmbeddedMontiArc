@@ -1,0 +1,6 @@
+package tagging;
+
+component ParentInvalidType{
+    instance Alexnet a1;
+    instance Alexnet a2;
+}
