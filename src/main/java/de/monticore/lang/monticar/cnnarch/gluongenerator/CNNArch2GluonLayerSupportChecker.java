@@ -23,6 +23,7 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.CONCATENATE_NAME);
         supportedLayerList.add(AllPredefinedLayers.FLATTEN_NAME);
         supportedLayerList.add(AllPredefinedLayers.ONE_HOT_NAME);
+        supportedLayerList.add(AllPredefinedLayers.BEAMSEARCH_NAME);
     }
 
 }
