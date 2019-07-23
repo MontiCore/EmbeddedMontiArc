@@ -1,6 +1,5 @@
 package tagging;
 
-component Parent{
-    instance Alexnet a1;
-    instance Alexnet a2;
+component Parent {
+    instance tagging.Alexnet a1;
 }
