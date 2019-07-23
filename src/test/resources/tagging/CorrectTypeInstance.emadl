@@ -1,0 +1,6 @@
+package tagging;
+
+component CorrectTypeInstance {
+    instance CorrectTypeNet net1;
+    instance CorrectTypeNet net2;
+}
