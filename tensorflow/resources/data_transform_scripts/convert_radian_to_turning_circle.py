@@ -18,24 +18,8 @@ for row in steering[1:]:
                 #magic number
 		turning_circle=0
 	else:
-		turning_circle= (2*wheelbase)/ math.sin(steering_angle/4)
+		turning_circle= 1/((2*wheelbase)/ math.sin(steering_angle/4))
 	row[1]=turning_circle
-
-max_element = max(abs(element[1]) for element in steering[1:])
-
-
-#normalize
-for row in steering[1:]:
-    if row[1] == 0:
-        row[1] = 1.0
-    else:
-        row[1] = row[1]/max_element
-
-#max_element = max((element[1]) for element in steering[1:])
-#min_element = min((element[1]) for element in steering[1:])
-
-#print max_element
-#print min_element
 
 #Write csv file
 wtr = csv.writer(open ('../test_set/steering_turning_circle.csv', 'w'), delimiter=',', lineterminator='\n')

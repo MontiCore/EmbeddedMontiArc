@@ -7,17 +7,20 @@ component Nvidia{
 	implementation CNN {
 		data ->
 		BatchNorm() ->
-		Convolution(kernel=(5,5),channels=3) ->
+		Convolution(kernel=(5,5),channels=24,stride=(2,2)) ->
 		Relu() ->
-		Convolution(kernel=(5,5),channels=3) ->
+		Convolution(kernel=(5,5),channels=36,stride=(2,2)) ->
 		Relu() ->
-		Convolution(kernel=(3,3),channels=3) ->
+		Convolution(kernel=(5,5),channels=48,stride=(2,2)) ->
 		Relu() ->
-		Convolution(kernel=(3,3),channels=3) ->
+		Convolution(kernel=(3,3),channels=64,stride=(2,2)) ->
 		Relu() ->
-		Dropout() ->
-		Pooling(pool_type="max", kernel=(2,2), stride=(1,1)) ->
+        Convolution(kernel=(3,3),channels=64) ->
+        Relu() ->
 		Flatten() ->
+        FullyConnected(units=1164) ->
+        Relu() ->
+        Dropout() ->
 		FullyConnected(units=100) ->
 		Relu() ->
 		Dropout() ->
@@ -25,13 +28,7 @@ component Nvidia{
 		Relu() ->
 		Dropout() ->
 		FullyConnected(units=10) ->
-		Relu() ->
-		Dropout() ->
-		FullyConnected(units=1) ->
-		Relu() ->
-		Dropout() ->
-		Sigmoid() ->
+        FullyConnected(units=1) ->
 		ergebnis;
 	}
 }
-
