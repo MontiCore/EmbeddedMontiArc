@@ -17,7 +17,7 @@ bash build.sh
 
 Finally, run the calculator as follows:
 ```
-./build/src/cpp/DigitCalculator test_img/2.jpg test_img/3.jpg test_img/4.png test_img/6.png test_img/2.jpg test_img/3.jpg
+./build/src/cpp/DigitCalculator resources/images/2.jpg resources/images/3.jpg resources/images/4.png resources/images/6.png resources/images/2.jpg resources/images/3.jpg
 ```
 
 You can try different images from the provided `/test_img` directory or even create your own images for testing. Note that the application program DigitCalculator will automatically rescale the given input image to the size 28x28.
