@@ -1,0 +1,54 @@
+import argparse
+import h5py
+from functools import reduce
+from VTool import start_plot
+import numpy as np
+
+parser = argparse.ArgumentParser(description='Visualization of predictions for the end-to-end autonomous driving model.')
+parser.add_argument('-i', type=str, help='Path to H5 container which includes data and targets.')
+parser.add_argument('-p', type=str, help='Path to predictor.')
+args = parser.parse_args()
+
+print("Predictor:",args.p)
+print("Data:",args.i)
+
+with h5py.File(args.i, 'r') as f:
+    keys = set(f.keys())
+    target_keys = {k for k in keys if k[-5:] == "label"}
+    data_keys = list(keys - target_keys)
+    target_keys = list(target_keys)
+
+    print("-"*40)
+    print("Data:")
+    for i,k in enumerate(data_keys):
+        print("  ("+str(i)+") "+k, "->", f[k].shape)
+    data_key = data_keys[int(input("Pick data number: "))]
+    target_key = target_keys[0] #hard-coded: pick first target in list
+
+    # Check data size - if it is larger than our threshold MAX_SIZE, only display the chosen chunk
+    MAX_SIZE = int(2*10e7)
+    data_total_size = reduce((lambda x,y: x*y), f[data_key].shape)
+
+    if data_total_size < MAX_SIZE:
+        images = np.array(f[data_key])
+        targets_real = np.array(f[target_key])
+    else:
+        num_chunks = data_total_size // MAX_SIZE + 1
+        chunk_size = f[data_key].shape[0] // num_chunks
+        chunk_id = int(input("Dataset is too large. It was divided into " + str(num_chunks) + " chunks. Which chunk [1-" + str(num_chunks) + "] should be selected?: ")) - 1
+
+        images = np.array(f[data_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size, 3:6])
+        images = images.reshape((-1,480,640,3)).astype("uint8")
+        print(images.min(), images.max(), images.dtype)
+        targets_real = np.array(f[target_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size])
+
+    #TODO: make predictions..
+    targets_pred = targets_real
+
+
+    print("-"*40)
+    print('Starting plot...')
+    start_plot(images, targets_real, targets_pred)
+
+    
+    print("-"*40)
