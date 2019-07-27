@@ -1,12 +1,13 @@
 stages:
-- project
-- adapter
+  - project
+  - adapter
+  - deploy
 
-masterJobLinux:
-  stage: linux
-  image: maven:3-jdk-8
+BranchJobDeploy:
+  stage: deploy
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2mqtt
   script:
-    - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
+    - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy --settings settings.xml
     - cat target/site/jacoco/index.html
   only:
     - master
@@ -15,16 +16,16 @@ BranchJobProject:
   stage: project
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2mqtt
   script:
-  - mvn clean install -s settings.xml
+    - mvn clean install -s settings.xml
   except:
-  - master
+    - master
 
 BranchJobAdapter:
   stage: adapter
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2mqtt
   script:
-  - cd mqtt_adapter
-  - cmake .
-  - make
+    - cd mqtt_adapter
+    - cmake .
+    - make
   except:
-  - master
+    - master
