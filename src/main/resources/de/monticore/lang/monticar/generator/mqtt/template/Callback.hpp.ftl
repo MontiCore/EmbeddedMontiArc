@@ -13,7 +13,7 @@ class Callback : public virtual callback
     client& cli_;
 
 public:
-    Callback(client& cli, ${model.getEscapedCompName()}* comp, EMAPortInstanceSymbol port);
+    Callback(client& cli, double port);
 
     void connected(const string& cause);
 
@@ -22,9 +22,7 @@ public:
     void message_arrived(const_message_ptr msg);
 
 private:
-    ${model.getEscapedCompName()}* comp_;
-
-    EMAPortInstanceSymbol port_;
+    double port_;
 
 };
 #endif /* Callback_hpp */

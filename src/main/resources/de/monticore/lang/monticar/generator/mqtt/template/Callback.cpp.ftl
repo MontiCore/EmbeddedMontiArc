@@ -2,9 +2,8 @@
 
 #include "Callback.hpp"
 
-Callback::Callback(client& cli, ${model.getEscapedCompName()}* comp, EMAPortInstanceSymbol port) : callback(), cli_(cli)
+Callback::Callback(client& cli, double port) : callback(), cli_(cli)
 {
-    comp_ = comp;
     port_ = port;
 }
 
@@ -28,5 +27,5 @@ void Callback::message_arrived(const_message_ptr msg)
     cout << "Message received "<< msg->get_topic() << ": " << msg->get_payload_str() << endl;
     string::size_type sz;
     double value = std::stod (msg->get_payload_str(),&sz);
-    comp_->port_.toString() = value;
+    port_ = value;
 }

@@ -20,7 +20,7 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscaped
     // Intitialize callbacks, subscribers and publishers
     <#list model.getIncomingPorts() as sub>
     	_sub_${sub.getName()} = new client(SERVER_ADDRESS, ${sub.getName()});
-        _callback_${sub.getName()} = new Callback(*_sub_${sub.getName()}, comp, component->getIncomingPorts().get(component->getIncomingPorts().indexOf(${sub.getName()})));
+        _callback_${sub.getName()} = new Callback(*_sub_${sub.getName()}, component->${sub.getName()});
     </#list>
 
 	<#list model.getOutgoingPorts() as pub>
