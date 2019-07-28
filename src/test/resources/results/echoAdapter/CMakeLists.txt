@@ -1,4 +1,3 @@
-
 # Setting cmake version
 cmake_minimum_required(VERSION 3.1...3.14)
 if(${CMAKE_VERSION} VERSION_LESS 3.12)
@@ -9,13 +8,8 @@ endif()
 set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 
-# Setting search paths for cmake modules
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
-
 # Setting project name and description
-project(MqttAdapter VERSION 1.0
-                  DESCRIPTION "MQTT adapter"
-                  LANGUAGES CXX)
+project(tests.a.compA)
 
 set(SEARCH_MQTT FALSE)
 
@@ -58,4 +52,4 @@ target_include_directories(MqttAdapter_tests_a_compA PUBLIC ${MQTT_INCLUDE_DIR})
 target_link_libraries(MqttAdapter_tests_a_compA PUBLIC ${MQTT_LIBS})
 
 # Export target to a cmake module file for outside usage
-export(TARGETS MqttAdapter_tests_a_compA FILE MqttAdapter_tests_a_compA.cmake)
+export(TARGETS MqttAdapter_tests_a_compA FILE MQTTAdapter_tests_a_compA.cmake)

@@ -1,11 +1,6 @@
-//  MqttAdapter
-//
-//  Created by Georg Vinogradov on 05.06.19.
-//  Copyright © 2019 Georg Vinogradov. All rights reserved.
-//
-
 #pragma once
 #include "tests_a_compA.h"
+#include "Callback.hpp"
 #include "mqtt/client.h"
 #include <iostream>
 
@@ -30,29 +25,7 @@ private:
     const string TOPIC = "/clock";
     
     tests_a_compA* component = nullptr;
+    Callback* _callback = nullptr;
     mqtt::client* _clockSubscriber = nullptr;
     mqtt::client* _echoPublisher = nullptr;
-};
-
-class callback : public virtual mqtt::callback
-{
-    mqtt::client& cli_;
-    
-    // Callback for when connected
-    void connected(const std::string& cause) {}
-    
-    // Callback for when the connection is lost.
-    void connection_lost(const std::string& cause) {
-        cout << "\nConnection lost";
-        if (!cause.empty())
-            cout << ": " << cause << endl;
-    }
-    
-    // Callback for when message is received
-    void message_arrived(mqtt::const_message_ptr msg) {
-        cout << "Message received "<< msg->get_topic() << ": " << msg->get_payload_str() << endl;
-    }
-    
-public:
-    callback(mqtt::client& cli) : cli_(cli) {}
 };

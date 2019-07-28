@@ -8,7 +8,7 @@ These instructions will get MQTT up and running on your **Ubuntu** system
 
 ### Installing project
 
-[Download](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2mqtt/-/archive/8-handwrite-a-mqtt-adapter/emam2mqtt-3-install-mqtt-linux.zip) this project to your computer
+Download this project to your computer
 
 [Download](https://maven.apache.org/guides/getting-started/) and install Maven
 
@@ -72,6 +72,17 @@ cd paho.mqtt.cpp
 cmake -Bbuild -H.
 sudo cmake --build build/ --target install
 ```
+#### Set environment variables for MQTT
+additionaly, you can set the environment variables for MQTT libs and includes directory by modifying the environment file on your system
+```bash
+sudo nano /etc/environment
+```
+in the file, add a new line and write
+```bash
+MQTT_LIBS = "PATH/to/libs"
+MQTT_INCLUDE_DIR = "PATH/to/includes"
+```
+
 ## Installing MQTT Publisher/Subscriber demo (locally on Ubuntu)
 open terminal, switch to **mqtt_demo** directroy inside the project and run
 `cmake .`

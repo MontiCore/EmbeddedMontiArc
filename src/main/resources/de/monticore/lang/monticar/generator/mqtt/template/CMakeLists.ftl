@@ -1,21 +1,16 @@
-
+<#--@formatter:off-->
 # Setting cmake version
 cmake_minimum_required(VERSION 3.1...3.14)
-if(${CMAKE_VERSION} VERSION_LESS 3.12)
-    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+if(<#noparse>${CMAKE_VERSION}</#noparse> VERSION_LESS 3.12)
+    cmake_policy(VERSION <#noparse>${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}</#noparse>)
 endif()
 
 # Using C++ version 11 with threads for compiling
 set (CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
-
-# Setting search paths for cmake modules
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+set(CMAKE_CXX_FLAGS "<#noparse>${CMAKE_CXX_FLAGS}</#noparse> -std=c++11 -pthread")
 
 # Setting project name and description
-project(MqttAdapter VERSION 1.0
-                  DESCRIPTION "MQTT adapter"
-                  LANGUAGES CXX)
+project(${model.getCompName()})
 
 set(SEARCH_MQTT FALSE)
 
@@ -30,13 +25,13 @@ ELSE()
 ENDIF()
 
 # Adding library as a target
-add_library(MqttAdapter_tests_a_compA
+add_library(MqttAdapter_${model.getEscapedCompName()}
 Callback.cpp
-MqttAdapter_tests_a_compA.cpp
-tests_a_compA.cpp
+MqttAdapter_${model.getEscapedCompName()}.cpp
+${model.getEscapedCompName()}.cpp
 Callback.hpp
-MqttAdapter_tests_a_compA.h
-tests_a_compA.h
+MqttAdapter_${model.getEscapedCompName()}.h
+${model.getEscapedCompName()}.h
 )
 
 # Checking if everything was found
@@ -46,16 +41,16 @@ if(SEARCH_MQTT)
   elseif (NOT MQTT_INCLUDE_DIR)
     message(FATAL_ERROR "MQTT includes not found!")
   else()
-    message("MQTT includes found in " ${MQTT_INCLUDE_DIR})
-    message("MQTT libraries found in " ${MQTT_LIBS})
+    message("MQTT includes found in " <#noparse>${MQTT_INCLUDE_DIR}</#noparse>)
+    message("MQTT libraries found in " <#noparse>${MQTT_LIBS}</#noparse>)
   endif()
 endif()
 
 # Adding include directory to a target
-target_include_directories(MqttAdapter_tests_a_compA PUBLIC ${MQTT_INCLUDE_DIR})
+target_include_directories(MqttAdapter_${model.getEscapedCompName()} PUBLIC <#noparse>${MQTT_INCLUDE_DIR}</#noparse>)
 
 # Linking libraries to target
-target_link_libraries(MqttAdapter_tests_a_compA PUBLIC ${MQTT_LIBS})
+target_link_libraries(MqttAdapter_${model.getEscapedCompName()} PUBLIC <#noparse>${MQTT_LIBS}</#noparse>)
 
 # Export target to a cmake module file for outside usage
-export(TARGETS MqttAdapter_tests_a_compA FILE MqttAdapter_tests_a_compA.cmake)
+export(TARGETS MqttAdapter_${model.getEscapedCompName()} FILE MQTTAdapter_${model.getEscapedCompName()}.cmake)

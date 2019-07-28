@@ -4,8 +4,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.emam2mqtt</groupId>
-  <artifactId>emam2mqtt</artifactId>
+  <groupId>de.monticore.lang.monticar</groupId>
+  <artifactId>embedded-montiarc-math-mqtt-generator</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>emam2mqtt</name>
@@ -45,6 +45,14 @@
   </properties>
 
   <dependencies>
+  
+  	<dependency>
+    <groupId>de.monticore.lang.monticar</groupId>
+    <artifactId>embedded-montiarc</artifactId>
+    <!-- or newer version -->
+    <version>0.1.10-SNAPSHOT</version>
+  	</dependency>
+  	
 
     <dependency>
       <groupId>de.se_rwth.commons</groupId>
