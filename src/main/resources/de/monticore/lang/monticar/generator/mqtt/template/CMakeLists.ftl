@@ -34,8 +34,8 @@ MqttAdapter_${model.getEscapedCompName()}.h
 ${model.getEscapedCompName()}.h
 )
 
-list(APPEND LIBRARIES ${model.getCompName()})
-list(APPEND LIBRARIES IAdapter_${model.getCompName()})
+list(APPEND LIBRARIES ${model.getEscapedCompName()})
+list(APPEND LIBRARIES IAdapter_${model.getEscapedCompName()})
 
 # Checking if everything was found
 if(SEARCH_MQTT)
