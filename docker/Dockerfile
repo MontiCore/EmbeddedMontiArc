@@ -1,6 +1,7 @@
 # Use an official Python runtime as a parent image
 FROM ubuntu:16.04
 
+# Install Java 8
 RUN apt-get update \
     && apt-get -y install openjdk-8-jdk \
     && rm -rf /var/lib/apt/lists/*
@@ -9,6 +10,7 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
 ENV PATH $JAVA_HOME/bin:$PATH
 
+#Install cmake, boost, maven, git
 RUN apt-get update && apt-get -y install \
   build-essential \
   cmake \
@@ -35,7 +37,7 @@ WORKDIR /usr/src/emam2someip/vsomeip
 
 RUN rm -rf build
 
-#copy example and adapter
+#copy example
 COPY . /usr/src/emam2someip
 
 #build example
@@ -44,5 +46,3 @@ WORKDIR /usr/src/emam2someip/example/build
 RUN cmake ..
 
 RUN make
-
-WORKDIR /usr/src/emam2someip/

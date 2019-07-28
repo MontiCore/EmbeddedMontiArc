@@ -18,27 +18,52 @@ public:
 
     <@m.mwIdent/>Adapter_${model.getEscapedCompName()}();
 
-    <@m.mwIdent/>Adapter_${model.getEscapedCompName()}(int service_id, int instance_id, int method_id, int event_id, int eventgroup_id);
+    void init(${model.getEscapedCompName()} *comp);
 
-    void init(${model.getEscapedCompName()}* comp);
+    void on_message_in1(const std::shared_ptr<vsomeip::message> &_request);
 
-    void publish_echoPublisher();
+    void on_message_in2(const std::shared_ptr<vsomeip::message> &_request);
+
+    void publishout1_Publisher();
+
+	void publishout2_Publisher();
 
     void tick();
 
-    void on_message(const std::shared_ptr<vsomeip::message> &_response);
 
 private:
 
     ${model.getEscapedCompName()}* component = nullptr;
 
-	std::shared_ptr<vsomeip::application> _clockSubscriber;
+	std::shared_ptr<vsomeip::application> in1_Subscriber;
 
-	std::shared_ptr<vsomeip::application> _echoPublisher;
+	std::shared_ptr<vsomeip::application> in2_Subscriber;
 
-	int service_id;
-	int instance_id;
-	int method_id;
-	int event_id;
-	int eventgroup_id;
+	std::shared_ptr<vsomeip::application> out1_Publisher;
+
+	std::shared_ptr<vsomeip::application> out2_Publisher;
+
+    int in1_service_id;
+	int in1_instance_id;
+	int in1_method_id;
+	int in1_event_id;
+	int in1_eventgroup_id;
+
+	int in2_service_id;
+	int in2_instance_id;
+	int in2_method_id;
+	int in2_event_id;
+	int in2_eventgroup_id;
+
+	int out1_service_id;
+	int out1_instance_id;
+	int out1_method_id;
+	int out1_event_id;
+	int out1_eventgroup_id;
+
+	int out2_service_id;
+	int out2_instance_id;
+	int out2_method_id;
+	int out2_event_id;
+	int out2_eventgroup_id;
 };

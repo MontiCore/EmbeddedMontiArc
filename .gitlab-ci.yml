@@ -1,6 +1,16 @@
 stages:
 - project
 - adapter
+- deploy
+
+BranchJobDeploy:
+  stage: deploy
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2mqtt
+  script:
+    - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy --settings settings.xml
+    - cat target/site/jacoco/index.html
+  only:
+    - master
 
 BranchJobProject:
   stage: project

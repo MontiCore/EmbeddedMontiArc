@@ -31,7 +31,7 @@ public class AdapterGenerationTest extends AbstractSymtabTest {
         GeneratorSomeIP generatorSomeIP = new GeneratorSomeIP();
 
         // Connect component's ports to topics
-        componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(1,2,3));
+        componentInstanceSymbol.getPortInstance("in1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(1,2,3));
 
         List<File> files = generatorSomeIP.generateSomeIPAdapter(componentInstanceSymbol);
 

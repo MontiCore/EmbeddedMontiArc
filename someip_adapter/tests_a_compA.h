@@ -9,8 +9,10 @@ class tests_a_compA {
 
 public:
 	tests_a_compA(double value);
-    double someIPIn = 2.5;
-    double someIPOut = 3.14;
+    double in1 = 1.5;
+    double in2 = 2.5;
+    double out1 = 0.1;
+    double out2 = 0.2;
 };
 
 #endif /* tests_a_compA_h */
