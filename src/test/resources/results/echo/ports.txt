@@ -3,7 +3,7 @@ Component name: tests.a.compA
 
 Ports:
 
-portA : incoming (someip, serviceID: 1 instanceID: 2 eventgroupID: 3)
-portB : incoming (unknown symbol)
-portC : outgoing (unknown symbol)
-portD : outgoing (unknown symbol)
+in1 : incoming (someip, serviceID: 1 instanceID: 2 eventgroupID: 3)
+in2 : incoming (unknown symbol)
+out1 : outgoing (unknown symbol)
+out2 : outgoing (unknown symbol)
