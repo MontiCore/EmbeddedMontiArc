@@ -4,7 +4,6 @@
 
 Callback::Callback(client& cli, double port) : callback(), cli_(cli)
 {
-    comp_ = comp;
     port_ = port;
 }
 

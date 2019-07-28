@@ -21,7 +21,6 @@ public:
     void message_arrived(const_message_ptr msg);
 
 private:
-    tests_a_compA* comp_;
     double port_;
 
 };

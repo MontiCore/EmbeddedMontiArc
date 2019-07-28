@@ -22,7 +22,6 @@ public:
     void message_arrived(const_message_ptr msg);
 
 private:
-    ${model.getEscapedCompName()}* comp_;
     double port_;
 
 };
