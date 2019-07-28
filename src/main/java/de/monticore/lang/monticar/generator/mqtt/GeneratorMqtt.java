@@ -15,7 +15,7 @@ import java.util.List;
 public class GeneratorMqtt 
 {
 
-	List<File> generateMqttAdapter(EMAComponentInstanceSymbol component) 
+	public List<File> generateMqttAdapter(EMAComponentInstanceSymbol component) 
     {
 		List<File> files = new ArrayList<>();
 		List<String> contents = new ArrayList<String>();
@@ -62,7 +62,7 @@ public class GeneratorMqtt
     	return files;
     }
 	
-	File generateCMake(EMAComponentInstanceSymbol component) 
+	public File generateCMake(EMAComponentInstanceSymbol component) 
     {
 		
 		// Create and fill model
@@ -91,7 +91,7 @@ public class GeneratorMqtt
     	return file;
     }
 	
-	File generateFindMqtt(EMAComponentInstanceSymbol component)
+	public File generateFindMqtt(EMAComponentInstanceSymbol component)
 	{
 		
 		// Create and fill model
@@ -120,7 +120,7 @@ public class GeneratorMqtt
     	return file;
     }
 	
-	List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
+	public List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
 	{
 		List<File> files = new ArrayList<>();
 
