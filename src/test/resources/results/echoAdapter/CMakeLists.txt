@@ -33,6 +33,9 @@ MqttAdapter_tests_a_compA.h
 tests_a_compA.h
 )
 
+list(APPEND LIBRARIES tests.a.compA)
+list(APPEND LIBRARIES IAdapter_tests.a.compA)
+
 # Checking if everything was found
 if(SEARCH_MQTT)
   if (NOT MQTT_C_LIB OR NOT MQTT_A_LIB OR NOT MQTT_PP_LIB)

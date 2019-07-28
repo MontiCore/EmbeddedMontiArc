@@ -57,6 +57,7 @@ public class GeneratorMqtt
         }
         
         files.add(generateCMake(component));
+        files.add(generateFindMqtt(component));
 		
     	return files;
     }
@@ -71,6 +72,35 @@ public class GeneratorMqtt
 		String content = MqttTemplates.generateMqttCMakeLists(model);
 		
 		File file = new File("./target/generated-sources/CMakeLists.txt");
+		
+        FileWriter fr = null;
+        try {
+            fr = new FileWriter(file);
+            fr.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            //Close resources
+            try {
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+		
+    	return file;
+    }
+	
+	File generateFindMqtt(EMAComponentInstanceSymbol component)
+	{
+		
+		// Create and fill model
+		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
+		
+		//Generate files and write to project
+		String content = MqttTemplates.generateMqttFindMqtt(model);
+		
+		File file = new File("./target/generated-sources/FindMQTT.cmake");
 		
         FileWriter fr = null;
         try {
