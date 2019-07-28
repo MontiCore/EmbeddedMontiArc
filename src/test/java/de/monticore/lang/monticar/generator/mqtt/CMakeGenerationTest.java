@@ -30,6 +30,8 @@ public class CMakeGenerationTest extends AbstractSymtabTest {
         
         GeneratorMqtt generatorMqtt = new GeneratorMqtt();
         
+        generatorMqtt.setGenerationTargetPath("./target/generated-sources/");
+        
         List<File> files = new ArrayList<>();
         
         files.add(generatorMqtt.generateCMake(componentInstanceSymbol));
