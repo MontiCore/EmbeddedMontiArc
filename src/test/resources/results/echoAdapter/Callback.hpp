@@ -12,7 +12,7 @@ class Callback : public virtual callback
     client& cli_;
 
 public:
-    Callback(client& cli, tests_a_compA* comp, EMAPortInstanceSymbol port);
+    Callback(client& cli, double port);
 
     void connected(const string& cause);
 
@@ -22,8 +22,7 @@ public:
 
 private:
     tests_a_compA* comp_;
-
-    EMAPortInstanceSymbol port_;
+    double port_;
 
 };
 #endif /* Callback_hpp */

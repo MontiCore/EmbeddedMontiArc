@@ -32,7 +32,9 @@ public class AdapterGenerationTest extends AbstractSymtabTest {
         
         // Connect component's ports to topics
         componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
+        componentInstanceSymbol.getPortInstance("portB").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
         componentInstanceSymbol.getPortInstance("portC").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
+        componentInstanceSymbol.getPortInstance("portD").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
         
         List<File> files = generatorMqtt.generateMqttAdapter(componentInstanceSymbol);
         
