@@ -17,13 +17,13 @@ void MqttAdapter_tests_a_compA::init(tests_a_compA *comp)
     connOpts.set_clean_session(true);
 
     // Intitialize callbacks, subscribers and publishers
-    _sub_portA = new client(SERVER_ADDRESS, portA);
-    _callback_portA = new Callback(*_sub_portA, component->portA);
-    _sub_portB = new client(SERVER_ADDRESS, portB);
-    _callback_portB = new Callback(*_sub_portB, component->portB);
+    _sub_portA = new client(SERVER_ADDRESS, "portA");
+    _callback_portA = new Callback(*_sub_portA, &(component->portA));
+    _sub_portB = new client(SERVER_ADDRESS, "portB");
+    _callback_portB = new Callback(*_sub_portB, &(component->portB));
 
-    _pub_portC = new client(SERVER_ADDRESS, portC);
-    _pub_portD = new client(SERVER_ADDRESS, portD);
+    _pub_portC = new client(SERVER_ADDRESS, "portC");
+    _pub_portD = new client(SERVER_ADDRESS, "portD");
 
     // Connect subscribers, publishers and subscribe to the topics
     try {

@@ -19,12 +19,12 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscaped
 
     // Intitialize callbacks, subscribers and publishers
     <#list model.getIncomingPorts() as sub>
-    _sub_${sub.getName()} = new client(SERVER_ADDRESS, ${sub.getName()});
-    _callback_${sub.getName()} = new Callback(*_sub_${sub.getName()}, component->${sub.getName()});
+    _sub_${sub.getName()} = new client(SERVER_ADDRESS, "${sub.getName()}");
+    _callback_${sub.getName()} = new Callback(*_sub_${sub.getName()}, &(component->${sub.getName()}));
     </#list>
 
 	<#list model.getOutgoingPorts() as pub>
-    _pub_${pub.getName()} = new client(SERVER_ADDRESS, ${pub.getName()});
+    _pub_${pub.getName()} = new client(SERVER_ADDRESS, "${pub.getName()}");
     </#list>
 
     // Connect subscribers, publishers and subscribe to the topics
