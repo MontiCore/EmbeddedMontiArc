@@ -5,6 +5,4 @@
 .classpath
 .DS_Store
 .idea
-emam2mqtt\.iml
-
-*.iml
+.iml
