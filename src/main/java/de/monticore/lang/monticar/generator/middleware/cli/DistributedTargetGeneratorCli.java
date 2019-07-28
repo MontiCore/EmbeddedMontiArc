@@ -5,10 +5,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
 import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
-import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.EMADLGeneratorImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
@@ -45,6 +41,7 @@ public final class DistributedTargetGeneratorCli {
     public static final String GENERATOR_CPP = "cpp";
     public static final String GENERATOR_EMADL = "emadlcpp";
     public static final String GENERATOR_ROSCPP = "roscpp";
+    public static final String GENERATOR_MQTT = "mqtt";
     public static final String GENERATOR_ODV = "odv";
     //ros2cpp is an alias for rclcpp
     public static final String GENERATOR_RCLCPP = "rclcpp";
@@ -84,6 +81,7 @@ public final class DistributedTargetGeneratorCli {
         res.add(GENERATOR_CPP);
         res.add(GENERATOR_EMADL);
         res.add(GENERATOR_ROSCPP);
+        res.add(GENERATOR_MQTT);
         res.add(GENERATOR_ODV);
         res.add(GENERATOR_ROS2CPP);
         res.add(GENERATOR_RCLCPP);
@@ -165,6 +163,12 @@ public final class DistributedTargetGeneratorCli {
             generator.add(new RosCppGenImpl(), "roscpp");
             RosToEmamTagSchema.registerTagTypes(taggingResolver);
             TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+        }
+        
+        if (generators.contains(GENERATOR_MQTT)) {
+            generator.add(new MqttGenImpl(), "mqtt");
+            // RosToEmamTagSchema.registerTagTypes(taggingResolver);
+            //TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
         }
 
         if (generators.contains(GENERATOR_RCLCPP) || generators.contains(GENERATOR_ROS2CPP)) {

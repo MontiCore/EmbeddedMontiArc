@@ -10,20 +10,24 @@ import de.monticore.lang.monticar.generator.mqtt.GeneratorMqtt;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
-public class MqttCppGenImpl implements GeneratorImpl {
+public class MqttGenImpl implements GeneratorImpl {
 	
 	private String generationTargetPath;
-    private GeneratorMqtt generatorMqttCpp;
+    private GeneratorMqtt generatorMqtt;
 
-    public MqttCppGenImpl(){
-    	generatorMqttCpp = new GeneratorMqtt();
+    public MqttGenImpl(){
+    	generatorMqtt = new GeneratorMqtt();
+    }
+    
+    public void setGeneratorMqttCpp(GeneratorMqtt generatorMqttCpp) {
+        this.generatorMqtt = generatorMqttCpp;
     }
 
 	@Override
 	public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver)
 			throws IOException {
-		generatorMqttCpp.setGenerationTargetPath(generationTargetPath);
-		return generatorMqttCpp.generateMqttAdapter(componentInstanceSymbol);
+		generatorMqtt.setGenerationTargetPath(generationTargetPath);
+		return generatorMqtt.generateMqttAdapter(componentInstanceSymbol);
 	}
 
 	@Override
