@@ -9,7 +9,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-middleware-generator</artifactId>
-    <version>0.0.25-SNAPSHOT</version>
+    <version>0.0.26-SNAPSHOT</version>
 
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
