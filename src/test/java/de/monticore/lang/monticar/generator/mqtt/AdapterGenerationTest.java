@@ -30,6 +30,8 @@ public class AdapterGenerationTest extends AbstractSymtabTest {
         
         GeneratorMqtt generatorMqtt = new GeneratorMqtt();
         
+        generatorMqtt.setGenerationTargetPath("./target/generated-sources/");
+        
         // Connect component's ports to topics
         componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
         componentInstanceSymbol.getPortInstance("portB").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));

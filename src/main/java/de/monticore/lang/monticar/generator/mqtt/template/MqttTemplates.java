@@ -16,6 +16,7 @@ public class MqttTemplates {
 
 	private static final Template MQTT_PRETTYPRINT;
 	private static final Template MQTT_CMAKELISTS;
+	private static final Template MQTT_FINDMQTT;
 	private static final Template MQTT_ADAPTER_H;
 	private static final Template MQTT_ADAPTER_CPP;
 	private static final Template MQTT_CALLBACK_H;
@@ -31,6 +32,7 @@ public class MqttTemplates {
         try {
         	MQTT_PRETTYPRINT = conf.getTemplate("PrettyPrint.ftl");
 			MQTT_CMAKELISTS = conf.getTemplate("CMakeLists.ftl");
+			MQTT_FINDMQTT = conf.getTemplate("FindMqtt.ftl");
 			MQTT_ADAPTER_H = conf.getTemplate("Adapter.h.ftl");
 			MQTT_ADAPTER_CPP = conf.getTemplate("Adapter.cpp.ftl");
 			MQTT_CALLBACK_H = conf.getTemplate("Callback.hpp.ftl");
@@ -70,6 +72,12 @@ public class MqttTemplates {
         HashMap<String, Object> data = new HashMap<>();
         data.put("model", model);
         return generate(MQTT_CMAKELISTS, data);
+	}
+    
+    public static String generateMqttFindMqtt(MqttAdapterModel model) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("model", model);
+        return generate(MQTT_FINDMQTT, data);
 	}
     
     public static String generatePrettyPrint(MqttAdapterModel model) {

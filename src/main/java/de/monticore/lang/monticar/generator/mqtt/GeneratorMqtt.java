@@ -14,8 +14,14 @@ import java.util.List;
 
 public class GeneratorMqtt 
 {
+	
+	private String generationTargetPath;
+	
+	public void setGenerationTargetPath(String generationTargetPath) {
+        this.generationTargetPath = generationTargetPath.endsWith("/") ? generationTargetPath : generationTargetPath + "/";
+    }
 
-	List<File> generateMqttAdapter(EMAComponentInstanceSymbol component) 
+	public List<File> generateMqttAdapter(EMAComponentInstanceSymbol component) 
     {
 		List<File> files = new ArrayList<>();
 		List<String> contents = new ArrayList<String>();
@@ -28,13 +34,13 @@ public class GeneratorMqtt
 		
 		//Generate files and write to project
 		contents.add(MqttTemplates.generateMqttAdapterH(model));
-		files.add(new File("./target/generated-sources/MqttAdapter_"+model.getEscapedCompName()+".h"));
+		files.add(new File(generationTargetPath+"MqttAdapter_"+model.getEscapedCompName()+".h"));
 		contents.add(MqttTemplates.generateMqttAdapterCPP(model));
-		files.add(new File("./target/generated-sources/MqttAdapter_"+model.getEscapedCompName()+".cpp"));
+		files.add(new File(generationTargetPath+"MqttAdapter_"+model.getEscapedCompName()+".cpp"));
 		contents.add(MqttTemplates.generateMqttCallbackH(model));
-		files.add(new File("./target/generated-sources/Callback.hpp"));
+		files.add(new File(generationTargetPath+"Callback.hpp"));
 		contents.add(MqttTemplates.generateMqttCallbackCPP(model));
-		files.add(new File("./target/generated-sources/Callback.cpp"));
+		files.add(new File(generationTargetPath+"Callback.cpp"));
 		
         try {
         	int counter = 0;
@@ -57,11 +63,12 @@ public class GeneratorMqtt
         }
         
         files.add(generateCMake(component));
+        files.add(generateFindMqtt(component));
 		
     	return files;
     }
 	
-	File generateCMake(EMAComponentInstanceSymbol component) 
+	public File generateCMake(EMAComponentInstanceSymbol component) 
     {
 		
 		// Create and fill model
@@ -70,7 +77,7 @@ public class GeneratorMqtt
 		//Generate files and write to project
 		String content = MqttTemplates.generateMqttCMakeLists(model);
 		
-		File file = new File("./target/generated-sources/CMakeLists.txt");
+		File file = new File(generationTargetPath+"CMakeLists.txt");
 		
         FileWriter fr = null;
         try {
@@ -90,7 +97,36 @@ public class GeneratorMqtt
     	return file;
     }
 	
-	List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
+	public File generateFindMqtt(EMAComponentInstanceSymbol component)
+	{
+		
+		// Create and fill model
+		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
+		
+		//Generate files and write to project
+		String content = MqttTemplates.generateMqttFindMqtt(model);
+		
+		File file = new File(generationTargetPath+"FindMQTT.cmake");
+		
+        FileWriter fr = null;
+        try {
+            fr = new FileWriter(file);
+            fr.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            //Close resources
+            try {
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+		
+    	return file;
+    }
+	
+	public List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
 	{
 		List<File> files = new ArrayList<>();
 
@@ -105,7 +141,7 @@ public class GeneratorMqtt
 		//Generate files and write to project
 		String content = MqttTemplates.generatePrettyPrint(model);
 		
-		File file = new File("./target/generated-sources/ports.txt");
+		File file = new File(generationTargetPath+"ports.txt");
 		files.add(file);
 		
         FileWriter fr = null;
