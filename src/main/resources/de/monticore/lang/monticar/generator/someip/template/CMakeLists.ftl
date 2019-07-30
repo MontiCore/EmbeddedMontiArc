@@ -15,6 +15,9 @@ include_directories (
     <#noparse>${VSOMEIP_INCLUDE_DIRS}</#noparse>
 )
 
+list(APPEND LIBRARIES ${model.getEscapedCompName()})
+list(APPEND LIBRARIES IAdapter_${model.getEscapedCompName()})
+
 # Linking libraries to target
 add_library(SomeIPAdapter_${model.getEscapedCompName()} SomeIPAdapter_${model.getEscapedCompName()}.cpp)
 target_link_libraries(SomeIPAdapter_${model.getEscapedCompName()} vsomeip <#noparse>${Boost_LIBRARIES}</#noparse>)

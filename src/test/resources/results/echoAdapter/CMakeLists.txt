@@ -14,6 +14,9 @@ include_directories (
     ${VSOMEIP_INCLUDE_DIRS}
 )
 
+list(APPEND LIBRARIES tests_a_compA)
+list(APPEND LIBRARIES IAdapter_tests_a_compA)
+
 # Linking libraries to target
 add_library(SomeIPAdapter_tests_a_compA SomeIPAdapter_tests_a_compA.cpp)
 target_link_libraries(SomeIPAdapter_tests_a_compA vsomeip ${Boost_LIBRARIES})
