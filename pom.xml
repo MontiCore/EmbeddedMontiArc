@@ -9,7 +9,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-middleware-generator</artifactId>
-    <version>0.0.25-SNAPSHOT</version>
+    <version>0.0.26-SNAPSHOT</version>
 
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
@@ -22,6 +22,7 @@
         <embedded-montiarc.version>0.1.9-SNAPSHOT</embedded-montiarc.version>
         <Embedded-montiarc-math-generator.version>0.1.12-SNAPSHOT</Embedded-montiarc-math-generator.version>
         <Embedded-montiarc-math-roscpp-generator.version>0.1.6-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
+        <Embedded-montiarc-math-emam2someip-generator.version>0.1.6-SNAPSHOT</Embedded-montiarc-math-emam2someip-generator.version>
         <EMADL2CPP.version>0.2.8</EMADL2CPP.version>
         <EMADL.version>0.2.7-SNAPSHOT</EMADL.version>
         <embedded-montiarc-component-clustering.version>0.0.2-SNAPSHOT</embedded-montiarc-component-clustering.version>
@@ -105,6 +106,13 @@
             <artifactId>embedded-montiarc-math-roscpp-generator</artifactId>
             <version>${Embedded-montiarc-math-roscpp-generator.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-emam2someip-generator</artifactId>
+            <version>${Embedded-montiarc-math-emam2someip-generator.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.commons</groupId>

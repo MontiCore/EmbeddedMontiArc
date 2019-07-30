@@ -9,6 +9,7 @@ import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.EMADLGeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.SomeIPImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
@@ -49,6 +50,7 @@ public final class DistributedTargetGeneratorCli {
     //ros2cpp is an alias for rclcpp
     public static final String GENERATOR_RCLCPP = "rclcpp";
     public static final String GENERATOR_ROS2CPP = "ros2cpp";
+    public static final String GENERATOR_SOMEIP = "someip";
 
     private DistributedTargetGeneratorCli() {}
 
@@ -87,6 +89,7 @@ public final class DistributedTargetGeneratorCli {
         res.add(GENERATOR_ODV);
         res.add(GENERATOR_ROS2CPP);
         res.add(GENERATOR_RCLCPP);
+        res.add(GENERATOR_SOMEIP);
         return res;
     }
 
@@ -175,6 +178,10 @@ public final class DistributedTargetGeneratorCli {
 
         if (generators.contains(GENERATOR_ODV)) {
             generator.add(new ODVGenImpl(), "odv");
+        }
+
+        if (generators.contains(GENERATOR_SOMEIP)) {
+            generator.add(new SomeIPGenImpl(), "someip");
         }
 
         if (cliParameters.getClusteringParameters().isPresent()) {
