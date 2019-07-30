@@ -97,6 +97,7 @@ public class CoCoTestResultPrinter {
                 file.delete();
             ip = new FilePrinter(path);
             printTestResults(testResults, merge, "", depth, !group);
+            ip.end();
         }
 
         CustomPrinter.println("");
@@ -122,39 +123,24 @@ public class CoCoTestResultPrinter {
 
             ip.println("{");
             ip.indent();
-            ip.println(names[i++] + ": \"" + (rootName.equals("") ? testResult.getRootName1() : rootName) + "\",");
-            ip.println(names[i++] + ": \"" + testResult.getProject() + "\",");
-            ip.println(names[i++] + ": \"" + getDepthImage(testResult, depth) + "\",");
-            ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
-            ip.println(names[i++] + ": \"" + getNameWithGitLabLink(testResult, expanded) + "\",");
-            ip.println(names[i++] + ": \"" + getFilePath(testResult) + "\",");
-//            ip.println(names[i++] + ": " + getVisulisationLink(testResult) + ",");
-//            ip.println(names[i++] + ": " + getVFSTag(testResult) + ",");
-            ip.println(names[i++] + ": \"" + testResult.getErrorMessages().size() + "\",");
-            ip.println(names[i++] + ": \"" + testResult.getErrorMessage() + "\",");
-            ip.println(names[i++] + ": \"" + testResult.getFileType() + "\",");
-            ip.println(names[i++] + ": " + tagOf(testResult.isValid() ? 1 : -1) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getParsed()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getResolved()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getComponentCapitalized()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getComponentInstanceNamesUnique()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getComponentWithTypeParametersHasInstance()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getConnectorEndPointCorrectlyQualified()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getDefaultParametersHaveCorrectOrder()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getInPortUniqueSender()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getPackageLowerCase()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getParameterNamesUnique()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getPortTypeOnlyBooleanOrSIUnit()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getPortUsage()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getReferencedSubComponentExists()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getSimpleConnectorSourceExists()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getSourceTargetNumberMatch()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getSubComponentsConnected()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getTopLevelComponentHasNoInstanceName()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getTypeParameterNamesUnique()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getAtomicComponent()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getUniquePorts()) + ",");
-            ip.println(names[i++] + ": ");
+            ip.println("\"Root\"" + ": \"" + (rootName.equals("") ? testResult.getRootName1() : rootName) + "\",");
+            ip.println("\"Project\"" + ": \"" + testResult.getProject() + "\",");
+            ip.println("\"ChildExpansion\"" + ": \"" + getDepthImage(testResult, depth) + "\",");
+            ip.println("\"ModelName\"" + ": \"" + testResult.getModelName() + "\",");
+            ip.println("\"Name\"" + ": \"" + getNameWithGitLabLink(testResult, expanded) + "\",");
+            ip.println("\"Path\"" + ": \"" + getFilePath(testResult) + "\",");
+            ip.println("\"LogNr\"" + ": \"" + testResult.getErrorMessages().size() + "\",");
+            ip.println("\"LogOutput\"" + ": \"" + testResult.getErrorMessage() + "\",");
+            ip.println("\"FileType\"" + ": \"" + testResult.getFileType() + "\",");
+            ip.println("\"Valid\"" + ": " + tagOf(testResult.isValid() ? 1 : -1) + ",");
+            ip.println("\"Parse\"" + ": " + tagOf(testResult.getParsed()) + ",");
+            ip.println("\"Resolve\"" + ": " + tagOf(testResult.getResolved()) + ",");
+
+            CheckCoCoResult.Data[] data = testResult.getFieldsAndValues();
+            for (CheckCoCoResult.Data dat : data)
+                ip.println(dat.getQuotedName() + ": " + tagOf(dat.value) + ",");
+
+            ip.println("\"ChildData\"" + ": ");
             if (depth == 0)
                 printChildData(testResult, testResult.getRootName1(), depth + 1);
             else

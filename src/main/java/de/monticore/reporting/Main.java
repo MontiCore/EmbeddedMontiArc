@@ -27,7 +27,7 @@ public class Main {
         if (context.isTestCoCos()) {
             CheckCoCos tcc = new CheckCoCos();
             CustomPrinter.println("\n<================Test CoCos================>\n");
-            List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getTimeout(), "ema", "emam", "emadl");
+            List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getTimeout(), context.getCoCoTimeOut(), "ema", "emam", "emadl");
             OrderTestResults<CheckCoCoResult> order = new OrderTestResults();
             order.orderTestResults(testResults, new CheckCoCoResultCreator());
             List<CheckCoCoResult> rootModels = order.getRootModels();
@@ -81,8 +81,9 @@ public class Main {
         private boolean merge = false;
         private boolean reportGrammar = false;
         private Date date = Calendar.getInstance().getTime();
-        private String output = "report/data_" + (new SimpleDateFormat("yyyyMMdd_HHmmss").format(date)) + "/";
+        private String output = "data/data_" + (new SimpleDateFormat("yyyyMMdd_HHmmss").format(date)) + "/";
         private int timeout = 10;
+        private int coCoTimeOut = 1;
 
         public boolean isTestsEndWithTest() {
             return testsEndWithTest;
@@ -150,6 +151,14 @@ public class Main {
         public void setDate(Date date) {
             this.date = date;
         }
+
+        public int getCoCoTimeOut() {
+            return coCoTimeOut;
+        }
+
+        public void setCoCoTimeOut(int coCoTimeOut) {
+            this.coCoTimeOut = coCoTimeOut;
+        }
     }
 
     private static String help() {
@@ -161,6 +170,7 @@ public class Main {
                         "  -h --help           Prints this help page\n" +
                         "  -testCoCos          Test CoCos                                  Default: not set\n" +
                         "     -timeout \"t\"       Set timeout for symtab building           Default: 10s\n" +
+                        "     -cTimeout \"t\"      Set timeout for CoCo Checking             Default: timeout / 5 s\n" +
                         "  -testTests          Check whether all tests end with \"Test\"   Default: not set\n" +
                         "  -grammar            Creates a report for all grammars in the directory\n" +
                         "  -out \"directory\"    Output directory                            Default: report/data[CurrentTime]/\n" +
@@ -176,39 +186,55 @@ public class Main {
 
         File projectRoot = new File(args[0]);
         if (!projectRoot.isDirectory() || !projectRoot.exists()) {
-            System.out.println("Cannot find dir: " + projectRoot.getAbsolutePath());
+            CustomPrinter.println("Cannot find dir: " + projectRoot.getAbsolutePath());
             Log.error("Cannot find dir: " + projectRoot.getAbsolutePath());
         }
         context.setProjectRoot(projectRoot.getAbsolutePath());
 
-        for (int i = 1; i < args.length; i++) {
-            switch (args[i]) {
-                case "-grammar":
-                    context.setReportGrammar(true);
-                    break;
-                case "-testCoCos":
-                    context.setTestCoCos(true);
-                    break;
-                case "-testTests":
-                    context.setTestsEndWithTest(true);
-                    break;
-                case "-m":
-                    context.setMerge(true);
-                    break;
-                case "-out":
-                    context.setOutput(args[++i]);
-                    break;
-                case "-h":
-                case "--help":
-                    System.out.println(help());
-                    System.exit(0);
-                case "-timeout":
-                    context.setTimeout(Integer.parseInt(args[++i]));
-                    break;
-                default:
-                    System.out.println("Invalid arguments for \"" + args[i] + "\":\n" + help());
-                    System.exit(0);
+        boolean coCoTimeOutSet = false;
+        try {
+            for (int i = 1; i < args.length; i++) {
+                switch (args[i]) {
+                    case "-grammar":
+                        context.setReportGrammar(true);
+                        break;
+                    case "-testCoCos":
+                        context.setTestCoCos(true);
+                        break;
+                    case "-testTests":
+                        context.setTestsEndWithTest(true);
+                        break;
+                    case "-m":
+                        context.setMerge(true);
+                        break;
+                    case "-out":
+                        context.setOutput(args[++i]);
+                        break;
+                    case "-h":
+                    case "--help":
+                        CustomPrinter.println(help());
+                        System.exit(0);
+                    case "-timeout":
+                        int t = Integer.parseInt(args[++i]);
+                        context.setTimeout(t);
+                        if (!coCoTimeOutSet && t / 5 >= 1)
+                            context.setCoCoTimeOut(context.getTimeout() / 5);
+                        else if (!coCoTimeOutSet && t >= 2)
+                            context.setCoCoTimeOut(2);
+                        else if (!coCoTimeOutSet)
+                            context.setCoCoTimeOut(1);
+                        break;
+                    case "-cTimeout":
+                        context.setCoCoTimeOut(Integer.parseInt(args[++i]));
+                        break;
+                    default:
+                        CustomPrinter.println("Invalid arguments for \"" + args[i] + "\":\n" + help());
+                        System.exit(0);
+                }
             }
+        } catch (Throwable e) {
+            CustomPrinter.println("Invalid arguments\n" + help());
+            System.exit(0);
         }
 
         if (!context.isTestCoCos() && !context.isTestsEndWithTest() && !context.isReportGrammar())

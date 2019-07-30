@@ -1,3 +1,5 @@
+var infoDate = "";
+
 function createTable_custom(file, infoFile) {
     loadInfo(file, infoFile, computeDataThenCreateTable);
 }
@@ -38,6 +40,7 @@ function computeDataThenCreateTable(data, info) {
         var order = uniqueNameFunction_custom(datum);
         datum['Order'] = order;
     });
+    infoDate = info["date"];
     createTable(data, info);
 }
 
@@ -80,17 +83,6 @@ function createTable(data, info) {
                 "data": "Name",
                 "bSortable": true,
             },
-            // {
-            //     "data": "Visualisation",
-            //     "className": "visualisation",
-            //     "orderable": true
-            // },
-            // {
-            //     "data": "OnlineIDE",
-            //     "className": "onlineIDE",
-            //     "orderable": false,
-            //     "visible": ide
-            // },
             {
                 "className": 'details-control',
                 "orderable": false,
@@ -102,11 +94,12 @@ function createTable(data, info) {
             {"data": "Parse", sort: "string", type: "alt-string"},
             {"data": "Resolve", sort: "string", type: "alt-string"},
             {"data": "ComponentCapitalized", sort: "string", type: "alt-string"},
-            {"data": "ComponentInstanceNamesUnique", sort: "string", type: "alt-string"},
             {"data": "ComponentWithTypeParametersHasInstance", sort: "string", type: "alt-string"},
             {"data": "ConnectorEndPointCorrectlyQualified", sort: "string", type: "alt-string"},
             {"data": "DefaultParametersHaveCorrectOrder", sort: "string", type: "alt-string"},
             {"data": "InPortUniqueSender", sort: "string", type: "alt-string"},
+            {"data": "InRosPortRosSender", sort: "string", type: "alt-string"},
+            {"data": "OnlyIncomingPortIsConfig", sort: "string", type: "alt-string"},
             {"data": "PackageLowerCase", sort: "string", type: "alt-string"},
             {"data": "ParameterNamesUnique", sort: "string", type: "alt-string"},
             {"data": "PortTypeOnlyBooleanOrSIUnit", sort: "string", type: "alt-string"},
@@ -117,7 +110,21 @@ function createTable(data, info) {
             {"data": "SubComponentsConnected", sort: "string", type: "alt-string"},
             {"data": "TopLevelComponentHasNoInstanceName", sort: "string", type: "alt-string"},
             {"data": "TypeParameterNamesUnique", sort: "string", type: "alt-string"},
-            {"data": "AtomicComponent", sort: "string", type: "alt-string"}
+            {"data": "UniquePorts", sort: "string", type: "alt-string"},
+            {"data": "AtomicComponentCoCo", sort: "string", type: "alt-string"},
+            {"data": "MatrixAssignmentDeclarationCheck", sort: "string", type: "alt-string"},
+            {"data": "MatrixAssignmentCheck", sort: "string", type: "alt-string"},
+            {"data": "DynamicComponentDynamicBodyElements", sort: "string", type: "alt-string"},
+            {"data": "NoDynamicNewComponentAndPort", sort: "string", type: "alt-string"},
+            {"data": "NoDynamicNewConnectsOutsideEventHandler", sort: "string", type: "alt-string"},
+            {"data": "ReferencedSubComponentExistsEMAM", sort: "string", type: "alt-string"},
+            {"data": "CheckLayer", sort: "string", type: "alt-string"},
+            {"data": "CheckRangeOperators", sort: "string", type: "alt-string"},
+            {"data": "CheckVariableName", sort: "string", type: "alt-string"},
+            {"data": "CheckLayerName", sort: "string", type: "alt-string"},
+            {"data": "CheckArgument", sort: "string", type: "alt-string"},
+            {"data": "CheckLayerRecursion", sort: "string", type: "alt-string"},
+            {"data": "CheckBehaviorName", sort: "string", type: "alt-string"}
         ]
     });
 };
@@ -139,6 +146,7 @@ function init() {
     initLogMechanic('details-control', formatLog_custom);
     initGrowMechanic('grow', 'shortLabel', 'fullLabel');
     defaultExpand(2, columnFilter_custom);
+    insertTimeStamp(infoDate);
 }
 
 function formatLog_custom(d) {

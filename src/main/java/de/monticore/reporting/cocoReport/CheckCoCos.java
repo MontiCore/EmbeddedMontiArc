@@ -17,7 +17,7 @@ import java.util.*;
 
 public class CheckCoCos {
 
-    public List<CheckCoCoResult> testAllCocos(File root, int timeout, String... fileType) {
+    public List<CheckCoCoResult> testAllCocos(File root, int timeout, int coCoTimeOut, String... fileType) {
         List<CheckCoCoResult> testResults = new LinkedList<>();
 
         Map<File, List<File>> filesMap = new HashMap<>();
@@ -50,7 +50,7 @@ public class CheckCoCos {
                 CheckCoCo ccT = new CheckCoCo();
                 CheckCoCoResult testResult = null;
 
-                testResult = ccT.testCoCos(file.getAbsolutePath(), timeout);
+                testResult = ccT.testCoCos(file.getAbsolutePath(), timeout, coCoTimeOut);
 
                 testResult.setModelFile(file);
                 String relativeProject = projectDir.getName();

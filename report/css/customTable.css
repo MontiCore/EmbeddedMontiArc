@@ -115,3 +115,10 @@ table thead tr.group {
 table.fixedHeader-floating thead tr.group {
   display:block;
 }
+
+.timeStamp {
+
+  float: left;
+  text-align: right;
+
+}

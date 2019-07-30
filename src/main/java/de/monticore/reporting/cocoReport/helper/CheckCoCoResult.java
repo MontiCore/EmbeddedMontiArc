@@ -6,39 +6,38 @@ import java.lang.reflect.Field;
 
 public class CheckCoCoResult extends OrderableModelInfo {
 
-    private int componentCapitalized = 0;
-    private int componentInstanceNamesUnique = 0;
-    private int componentWithTypeParametersHasInstance = 0;
-    private int connectorEndPointCorrectlyQualified = 0;
-    private int defaultParametersHaveCorrectOrder = 0;
-    private int inPortUniqueSender = 0;
-    private int packageLowerCase = 0;
-    private int parameterNamesUnique = 0;
-    private int portTypeOnlyBooleanOrSIUnit = 0;
-    private int portUsage = 0;
-    private int referencedSubComponentExists = 0;
-    private int simpleConnectorSourceExists = 0;
-    private int sourceTargetNumberMatch = 0;
-    private int subComponentsConnected = 0;
-    private int topLevelComponentHasNoInstanceName = 0;
-    private int typeParameterNamesUnique = 0;
-    private int uniquePorts = 0;
-    private int atomicComponent = 0;
-    private int matrixAssignmentDeclarationCheck;
-    private int matrixAssignmentCheck;
-    private int inRosPortRosSender;
-    private int onlyIncomingPortIsConfig;
-    private int dynamicComponentDynamicBodyElements;
-    private int noDynamicNewComponentAndPort;
-    private int noDynamicNewConnectsOutsideEventHandler;
-    private int referencedSubComponentExistsEMAM;
-    private int checkLayer;
-    private int checkRangeOperators;
-    private int checkVariableName;
-    private int checkLayerName;
-    private int checkArgument;
-    private int checkLayerRecursion;
-    private int checkBehaviorName;
+    public int componentCapitalized = 0;
+    public int componentWithTypeParametersHasInstance = 0;
+    public int connectorEndPointCorrectlyQualified = 0;
+    public int defaultParametersHaveCorrectOrder = 0;
+    public int inPortUniqueSender = 0;
+    public int inRosPortRosSender;
+    public int packageLowerCase = 0;
+    public int parameterNamesUnique = 0;
+    public int portTypeOnlyBooleanOrSIUnit = 0;
+    public int portUsage = 0;
+    public int referencedSubComponentExists = 0;
+    public int simpleConnectorSourceExists = 0;
+    public int sourceTargetNumberMatch = 0;
+    public int subComponentsConnected = 0;
+    public int topLevelComponentHasNoInstanceName = 0;
+    public int typeParameterNamesUnique = 0;
+    public int uniquePorts = 0;
+    public int atomicComponentCoCo = 0;
+    public int matrixAssignmentDeclarationCheck = 0;
+    public int matrixAssignmentCheck = 0;
+    public int onlyIncomingPortIsConfig = 0;
+    public int dynamicComponentDynamicBodyElements = 0;
+    public int noDynamicNewComponentAndPort = 0;
+    public int noDynamicNewConnectsOutsideEventHandler = 0;
+    public int referencedSubComponentExistsEMAM = 0;
+    public int checkLayer = 0;
+    public int checkRangeOperators = 0;
+    public int checkVariableName = 0;
+    public int checkLayerName = 0;
+    public int checkArgument = 0;
+    public int checkLayerRecursion = 0;
+    public int checkBehaviorName = 0;
 
     public CheckCoCoResult(String pathToFile) {
         super(pathToFile);
@@ -59,162 +58,36 @@ public class CheckCoCoResult extends OrderableModelInfo {
                 e.printStackTrace();
             }
         }
-        return res;
+        return res && getResolved() >= 0 && getParsed() >= 0;
     }
 
-    public boolean issValid() {
-        return this.getComponentCapitalized() != -1 && this.getComponentInstanceNamesUnique() != -1 && this.getComponentInstanceNamesUnique() != -1 &&
-                this.getConnectorEndPointCorrectlyQualified() != -1 && this.getDefaultParametersHaveCorrectOrder() != -1 &&
-                this.getInPortUniqueSender() != -1 && this.getPackageLowerCase() != -1 &&
-                this.getParameterNamesUnique() != -1 && this.getPortTypeOnlyBooleanOrSIUnit() != -1 && this.getPortUsage() != -1 &&
-                this.getReferencedSubComponentExists() != -1 && this.getSimpleConnectorSourceExists() != -1 && this.getSourceTargetNumberMatch() != -1 &&
-                this.getSubComponentsConnected() != -1 && this.getTopLevelComponentHasNoInstanceName() != -1 &&
-                this.getTypeParameterNamesUnique() != -1 && this.getUniquePorts() != -1 && this.getParsed() != -1 &&
-                this.getResolved() != -1 && this.getResolved() != -2;
+    public Data[] getFieldsAndValues() {
+        Field[] fields = this.getClass().getDeclaredFields();
+        Data[] data = new Data[fields.length];
+        for (int i = 0; i < fields.length; i++) {
+            Field field = fields[i];
+            try {
+                data[i] = new Data(field.getName(), (Integer) field.get(this));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return data;
     }
 
-    public int getComponentCapitalized() {
-        return componentCapitalized;
-    }
+    public class Data {
+        public String name;
+        public int value;
 
-    public void setComponentCapitalized(int componentCapitalized) {
-        this.componentCapitalized = componentCapitalized;
-    }
+        public Data(String name, int value) {
+            this.name = name;
+            this.value = value;
+        }
 
-    public int getComponentInstanceNamesUnique() {
-        return componentInstanceNamesUnique;
-    }
-
-    public void setComponentInstanceNamesUnique(int componentInstanceNamesUnique) {
-        this.componentInstanceNamesUnique = componentInstanceNamesUnique;
-    }
-
-    public int getComponentWithTypeParametersHasInstance() {
-        return componentWithTypeParametersHasInstance;
-    }
-
-    public void setComponentWithTypeParametersHasInstance(int componentWithTypeParametersHasInstance) {
-        this.componentWithTypeParametersHasInstance = componentWithTypeParametersHasInstance;
-    }
-
-    public int getConnectorEndPointCorrectlyQualified() {
-        return connectorEndPointCorrectlyQualified;
-    }
-
-    public void setConnectorEndPointCorrectlyQualified(int connectorEndPointCorrectlyQualified) {
-        this.connectorEndPointCorrectlyQualified = connectorEndPointCorrectlyQualified;
-    }
-
-    public int getDefaultParametersHaveCorrectOrder() {
-        return defaultParametersHaveCorrectOrder;
-    }
-
-    public void setDefaultParametersHaveCorrectOrder(int defaultParametersHaveCorrectOrder) {
-        this.defaultParametersHaveCorrectOrder = defaultParametersHaveCorrectOrder;
-    }
-
-    public int getInPortUniqueSender() {
-        return inPortUniqueSender;
-    }
-
-    public void setInPortUniqueSender(int inPortUniqueSender) {
-        this.inPortUniqueSender = inPortUniqueSender;
-    }
-
-    public int getPackageLowerCase() {
-        return packageLowerCase;
-    }
-
-    public void setPackageLowerCase(int packageLowerCase) {
-        this.packageLowerCase = packageLowerCase;
-    }
-
-    public int getParameterNamesUnique() {
-        return parameterNamesUnique;
-    }
-
-    public void setParameterNamesUnique(int parameterNamesUnique) {
-        this.parameterNamesUnique = parameterNamesUnique;
-    }
-
-    public int getPortTypeOnlyBooleanOrSIUnit() {
-        return portTypeOnlyBooleanOrSIUnit;
-    }
-
-    public void setPortTypeOnlyBooleanOrSIUnit(int portTypeOnlyBooleanOrSIUnit) {
-        this.portTypeOnlyBooleanOrSIUnit = portTypeOnlyBooleanOrSIUnit;
-    }
-
-    public int getPortUsage() {
-        return portUsage;
-    }
-
-    public void setPortUsage(int portUsage) {
-        this.portUsage = portUsage;
-    }
-
-    public int getReferencedSubComponentExists() {
-        return referencedSubComponentExists;
-    }
-
-    public void setReferencedSubComponentExists(int referencedSubComponentExists) {
-        this.referencedSubComponentExists = referencedSubComponentExists;
-    }
-
-    public int getSimpleConnectorSourceExists() {
-        return simpleConnectorSourceExists;
-    }
-
-    public void setSimpleConnectorSourceExists(int simpleConnectorSourceExists) {
-        this.simpleConnectorSourceExists = simpleConnectorSourceExists;
-    }
-
-    public int getSourceTargetNumberMatch() {
-        return sourceTargetNumberMatch;
-    }
-
-    public void setSourceTargetNumberMatch(int sourceTargetNumberMatch) {
-        this.sourceTargetNumberMatch = sourceTargetNumberMatch;
-    }
-
-    public int getSubComponentsConnected() {
-        return subComponentsConnected;
-    }
-
-    public void setSubComponentsConnected(int subComponentsConnected) {
-        this.subComponentsConnected = subComponentsConnected;
-    }
-
-    public int getTopLevelComponentHasNoInstanceName() {
-        return topLevelComponentHasNoInstanceName;
-    }
-
-    public void setTopLevelComponentHasNoInstanceName(int topLevelComponentHasNoInstanceName) {
-        this.topLevelComponentHasNoInstanceName = topLevelComponentHasNoInstanceName;
-    }
-
-    public int getTypeParameterNamesUnique() {
-        return typeParameterNamesUnique;
-    }
-
-    public void setTypeParameterNamesUnique(int typeParameterNamesUnique) {
-        this.typeParameterNamesUnique = typeParameterNamesUnique;
-    }
-
-    public int getUniquePorts() {
-        return uniquePorts;
-    }
-
-    public void setUniquePorts(int uniquePorts) {
-        this.uniquePorts = uniquePorts;
-    }
-
-    public int getAtomicComponent() {
-        return atomicComponent;
-    }
-
-    public void setAtomicComponent(int atomicComponent) {
-        this.atomicComponent = atomicComponent;
+        public String getQuotedName() {
+            String Name = this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
+            return "\"" + Name + "\"";
+        }
     }
 
     @Override
@@ -262,183 +135,27 @@ public class CheckCoCoResult extends OrderableModelInfo {
 
     public void setChildInfo() {
         CheckCoCoResult mainPackage = this;
+        Field[] fields = this.getClass().getDeclaredFields();
         for (ChildElement childElement : getChildren()) {
             CheckCoCoResult child = (CheckCoCoResult) childElement.getChild();
 
-            if (child.getComponentCapitalized() != 0 && child.getComponentCapitalized() < mainPackage.getComponentCapitalized() || mainPackage.getComponentCapitalized() == 0) {
-                mainPackage.setComponentCapitalized(child.getComponentCapitalized());
-            }
-            if (child.getComponentInstanceNamesUnique() != 0 && child.getComponentInstanceNamesUnique() < mainPackage.getComponentInstanceNamesUnique() || mainPackage.getComponentInstanceNamesUnique() == 0) {
-                mainPackage.setComponentInstanceNamesUnique(child.getComponentInstanceNamesUnique());
-            }
-            if (child.getComponentWithTypeParametersHasInstance() != 0 && child.getComponentWithTypeParametersHasInstance() < mainPackage.getComponentWithTypeParametersHasInstance() || mainPackage.getComponentWithTypeParametersHasInstance() == 0) {
-                mainPackage.setComponentWithTypeParametersHasInstance(child.getComponentWithTypeParametersHasInstance());
-            }
-            if (child.getConnectorEndPointCorrectlyQualified() != 0 && child.getConnectorEndPointCorrectlyQualified() < mainPackage.getConnectorEndPointCorrectlyQualified() || mainPackage.getConnectorEndPointCorrectlyQualified() == 0) {
-                mainPackage.setConnectorEndPointCorrectlyQualified(child.getConnectorEndPointCorrectlyQualified());
-            }
-            if (child.getDefaultParametersHaveCorrectOrder() != 0 && child.getDefaultParametersHaveCorrectOrder() < mainPackage.getDefaultParametersHaveCorrectOrder() || mainPackage.getDefaultParametersHaveCorrectOrder() == 0) {
-                mainPackage.setDefaultParametersHaveCorrectOrder(child.getDefaultParametersHaveCorrectOrder());
-            }
-            if (child.getInPortUniqueSender() != 0 && child.getInPortUniqueSender() < mainPackage.getInPortUniqueSender() || mainPackage.getInPortUniqueSender() == 0) {
-                mainPackage.setInPortUniqueSender(child.getInPortUniqueSender());
-            }
-            if (child.getPackageLowerCase() != 0 && child.getPackageLowerCase() < mainPackage.getPackageLowerCase() || mainPackage.getPackageLowerCase() == 0) {
-                mainPackage.setPackageLowerCase(child.getPackageLowerCase());
-            }
-            if (child.getParameterNamesUnique() != 0 && child.getParameterNamesUnique() < mainPackage.getParameterNamesUnique() || mainPackage.getParameterNamesUnique() == 0) {
-                mainPackage.setParameterNamesUnique(child.getParameterNamesUnique());
-            }
-            if (child.getPortTypeOnlyBooleanOrSIUnit() != 0 && child.getPortTypeOnlyBooleanOrSIUnit() < mainPackage.getPortTypeOnlyBooleanOrSIUnit() || mainPackage.getPortTypeOnlyBooleanOrSIUnit() == 0) {
-                mainPackage.setPortTypeOnlyBooleanOrSIUnit(child.getPortTypeOnlyBooleanOrSIUnit());
-            }
-            if (child.getPortUsage() != 0 && child.getPortUsage() < mainPackage.getPortUsage() || mainPackage.getPortUsage() == 0) {
-                mainPackage.setPortUsage(child.getPortUsage());
-            }
-            if (child.getReferencedSubComponentExists() != 0 && child.getReferencedSubComponentExists() < mainPackage.getReferencedSubComponentExists() || mainPackage.getReferencedSubComponentExists() == 0) {
-                mainPackage.setReferencedSubComponentExists(child.getReferencedSubComponentExists());
-            }
-            if (child.getSimpleConnectorSourceExists() != 0 && child.getSimpleConnectorSourceExists() < mainPackage.getSimpleConnectorSourceExists() || mainPackage.getSimpleConnectorSourceExists() == 0) {
-                mainPackage.setSimpleConnectorSourceExists(child.getSimpleConnectorSourceExists());
-            }
-            if (child.getSourceTargetNumberMatch() != 0 && child.getSourceTargetNumberMatch() < mainPackage.getSourceTargetNumberMatch() || mainPackage.getSourceTargetNumberMatch() == 0) {
-                mainPackage.setSourceTargetNumberMatch(child.getSourceTargetNumberMatch());
-            }
-            if (child.getSubComponentsConnected() != 0 && child.getSubComponentsConnected() < mainPackage.getSubComponentsConnected() || mainPackage.getSubComponentsConnected() == 0) {
-                mainPackage.setSubComponentsConnected(child.getSubComponentsConnected());
-            }
-            if (child.getTopLevelComponentHasNoInstanceName() != 0 && child.getTopLevelComponentHasNoInstanceName() < mainPackage.getTopLevelComponentHasNoInstanceName() || mainPackage.getTopLevelComponentHasNoInstanceName() == 0) {
-                mainPackage.setTopLevelComponentHasNoInstanceName(child.getTopLevelComponentHasNoInstanceName());
-            }
-            if (child.getTypeParameterNamesUnique() != 0 && child.getTypeParameterNamesUnique() < mainPackage.getTypeParameterNamesUnique() || mainPackage.getTypeParameterNamesUnique() == 0) {
-                mainPackage.setTypeParameterNamesUnique(child.getTypeParameterNamesUnique());
-            }
-            if (child.getUniquePorts() != 0 && child.getUniquePorts() < mainPackage.getUniquePorts() || mainPackage.getUniquePorts() == 0) {
-                mainPackage.setUniquePorts(child.getUniquePorts());
-            }
-            if (child.getAtomicComponent() != 0 && child.getAtomicComponent() < mainPackage.getAtomicComponent() || mainPackage.getAtomicComponent() == 0) {
-                mainPackage.setAtomicComponent(child.getAtomicComponent());
+            for (Field field: fields) {
+                int childVal = 0;
+                int mainVal = 0;
+                try {
+                    childVal = (int) field.get(child);
+                    mainVal = (int) field.get(mainPackage);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                if (childVal != 0 && childVal < mainVal || mainVal == 0) {
+                    try {
+                        field.set(mainPackage, childVal);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
-    }
-
-    public void setMatrixAssignmentDeclarationCheck(int matrixAssignmentDeclarationCheck) {
-        this.matrixAssignmentDeclarationCheck = matrixAssignmentDeclarationCheck;
-    }
-
-    public int getMatrixAssignmentDeclarationCheck() {
-        return matrixAssignmentDeclarationCheck;
-    }
-
-    public void setMatrixAssignmentCheck(int matrixAssignmentCheck) {
-        this.matrixAssignmentCheck = matrixAssignmentCheck;
-    }
-
-    public int getMatrixAssignmentCheck() {
-        return matrixAssignmentCheck;
-    }
-
-    public void setInRosPortRosSender(int inRosPortRosSender) {
-        this.inRosPortRosSender = inRosPortRosSender;
-    }
-
-    public int getInRosPortRosSender() {
-        return inRosPortRosSender;
-    }
-
-    public void setOnlyIncomingPortIsConfig(int onlyIncomingPortIsConfig) {
-        this.onlyIncomingPortIsConfig = onlyIncomingPortIsConfig;
-    }
-
-    public int getOnlyIncomingPortIsConfig() {
-        return onlyIncomingPortIsConfig;
-    }
-
-    public void setDynamicComponentDynamicBodyElements(int dynamicComponentDynamicBodyElements) {
-        this.dynamicComponentDynamicBodyElements = dynamicComponentDynamicBodyElements;
-    }
-
-    public int getDynamicComponentDynamicBodyElements() {
-        return dynamicComponentDynamicBodyElements;
-    }
-
-    public void setNoDynamicNewComponentAndPort(int noDynamicNewComponentAndPort) {
-        this.noDynamicNewComponentAndPort = noDynamicNewComponentAndPort;
-    }
-
-    public int getNoDynamicNewComponentAndPort() {
-        return noDynamicNewComponentAndPort;
-    }
-
-    public void setNoDynamicNewConnectsOutsideEventHandler(int noDynamicNewConnectsOutsideEventHandler) {
-        this.noDynamicNewConnectsOutsideEventHandler = noDynamicNewConnectsOutsideEventHandler;
-    }
-
-    public int getNoDynamicNewConnectsOutsideEventHandler() {
-        return noDynamicNewConnectsOutsideEventHandler;
-    }
-
-    public void setReferencedSubComponentExistsEMAM(int referencedSubComponentExistsEMAM) {
-        this.referencedSubComponentExistsEMAM = referencedSubComponentExistsEMAM;
-    }
-
-    public int getReferencedSubComponentExistsEMAM() {
-        return referencedSubComponentExistsEMAM;
-    }
-
-    public void setCheckLayer(int checkLayer) {
-        this.checkLayer = checkLayer;
-    }
-
-    public int getCheckLayer() {
-        return checkLayer;
-    }
-
-    public void setCheckRangeOperators(int checkRangeOperators) {
-        this.checkRangeOperators = checkRangeOperators;
-    }
-
-    public int getCheckRangeOperators() {
-        return checkRangeOperators;
-    }
-
-    public void setCheckVariableName(int checkVariableName) {
-        this.checkVariableName = checkVariableName;
-    }
-
-    public int getCheckVariableName() {
-        return checkVariableName;
-    }
-
-    public void setCheckLayerName(int checkLayerName) {
-        this.checkLayerName = checkLayerName;
-    }
-
-    public int getCheckLayerName() {
-        return checkLayerName;
-    }
-
-    public void setCheckArgument(int checkArgument) {
-        this.checkArgument = checkArgument;
-    }
-
-    public int getCheckArgument() {
-        return checkArgument;
-    }
-
-    public void setCheckLayerRecursion(int checkLayerRecursion) {
-        this.checkLayerRecursion = checkLayerRecursion;
-    }
-
-    public int getCheckLayerRecursion() {
-        return checkLayerRecursion;
-    }
-
-    public void setCheckBehaviorName(int checkBehaviorName) {
-        this.checkBehaviorName = checkBehaviorName;
-    }
-
-    public int getCheckBehaviorName() {
-        return checkBehaviorName;
     }
 }

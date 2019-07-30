@@ -8,12 +8,16 @@ import de.monticore.lang.monticar.cnnarch._cocos.*;
 import de.monticore.lang.monticar.emadl._cocos.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 
+import de.monticore.reporting.helper.TimedTask;
 import de.monticore.reporting.tools.ASTHelper;
 import de.monticore.reporting.tools.CustomPrinter;
 import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.ArrayUtils;
 
+import java.lang.reflect.Field;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 
@@ -22,7 +26,7 @@ public class CheckCoCo {
         return Log.getFindings().stream().map(s -> s.getMsg()).collect(Collectors.joining(" ")).contains(errorCode);
     }
 
-    public CheckCoCoResult testCoCos(String fileName, int timeout) {
+    public CheckCoCoResult testCoCos(String fileName, int timeout, int coCoTimeOut) {
         Log.init();
         Log.enableFailQuick(false);
         Log.getFindings().clear();
@@ -34,105 +38,7 @@ public class CheckCoCo {
             ASTEmbeddedMontiArcNode astToTest = testResult.getResolvedASTNode();
 
             testResult.addErrorMessage("[INFO] do CoCo Tests<br>=========================");
-            Log.getFindings().clear();
-            Log.enableFailQuick(false);
-            //EmbeddedMontiArcMathCoCos.createChecker().checkAll(astToTest);
-            createChecker(fileType).checkAll(astToTest);
-            for (Finding finding : Log.getFindings())
-                testResult.addErrorMessage("[WARNING] " + finding.toString());
-
-            // Math
-            // MatrixAssignmentDeclarationCheck Error Code Missing
-            // MatrixAssignmentCheck Error Code Missing
-            boolean matrixAssignmentDeclarationCheck = containsErrorCode("0x00000");
-            boolean matrixAssignmentCheck = containsErrorCode("0x00000");
-            // EMA
-            boolean componentCapitalized = containsErrorCode("0xAC004");
-            boolean componentWithTypeParametersHasInstance = containsErrorCode("0x79C00");
-            boolean connectorEndPointCorrectlyQualified = containsErrorCode("0xDB61C");
-            boolean defaultParametersHaveCorrectOrder = containsErrorCode("0xAC005");
-            boolean inPortUniqueSender = containsErrorCode("0x2BD7E");
-            boolean inRosPortRosSender = containsErrorCode("0x23a0d") || containsErrorCode("0x31f6e") || containsErrorCode("0x3830a");
-            boolean onlyIncomingPortIsConfig = containsErrorCode("0x7FF02");
-            boolean packageLowerCase = containsErrorCode("0xAC003");
-            boolean parameterNamesUnique = containsErrorCode("0xC4A61");
-            boolean portTypeOnlyBooleanOrSIUnit = containsErrorCode("0xAE753");
-            boolean portUsage = containsErrorCode("0xAC006") || containsErrorCode("0xAC007");
-            boolean referencedSubComponentExists = containsErrorCode("0x069B7");
-            boolean simpleConnectorSourceExists = containsErrorCode("0x9AF6C") || containsErrorCode("0xBEA8B") || containsErrorCode("0xF4D71");
-            boolean sourceTargetNumberMatch = containsErrorCode("0xJK901");
-            boolean subComponentsConnected = containsErrorCode("0xAC008") || containsErrorCode("0xAC009");
-            boolean topLevelComponentHasNoInstanceName = containsErrorCode("0xE51E8") || containsErrorCode("0x3F207");
-            boolean typeParameterNamesUnique = containsErrorCode("0x35F1A");
-            boolean uniquePorts = containsErrorCode("0xAC002");
-            // Dynamics
-            boolean dynamicComponentDynamicBodyElements = containsErrorCode("0xAD002");
-            boolean noDynamicNewComponentAndPort = containsErrorCode("0xAD004") || containsErrorCode("0xAD005");
-            boolean noDynamicNewConnectsOutsideEventHandler = containsErrorCode("0xAD003") || containsErrorCode("0xAD003");
-            // EMAM
-            boolean atomicComponent = containsErrorCode("0x00000AE1");
-            boolean referencedSubComponentExistsEMAM = containsErrorCode("0x069B7");
-            // CNN-Arch
-            boolean checkLayer = containsErrorCode("0x03031") || containsErrorCode("0x33585") || containsErrorCode("0x06021");
-            boolean checkRangeOperators = containsErrorCode("0xA8289");
-            boolean checkVariableName = containsErrorCode("0x93567") || containsErrorCode("0x91569");
-            boolean checkLayerName = containsErrorCode("0x93567") || containsErrorCode("0x91569");
-            boolean checkArgument = containsErrorCode("0x92527");
-            boolean checkLayerRecursion = containsErrorCode("0x25833");
-            // EMADL
-            // CheckBehaviorName Error Code Missing
-            boolean checkBehaviorName = containsErrorCode("0x00000");
-
-            // Math
-            if (isMath(fileType)) {
-                testResult.setMatrixAssignmentDeclarationCheck(matrixAssignmentDeclarationCheck ? -1 : 1);
-                testResult.setMatrixAssignmentCheck(matrixAssignmentCheck ? -1 : 1);
-            }
-            // EMA
-            if (isEMA(fileType)) {
-                testResult.setComponentCapitalized(componentCapitalized ? -1 : 1);
-                testResult.setComponentWithTypeParametersHasInstance(componentWithTypeParametersHasInstance ? -1 : 1);
-                testResult.setConnectorEndPointCorrectlyQualified(connectorEndPointCorrectlyQualified ? -1 : 1);
-                testResult.setDefaultParametersHaveCorrectOrder(defaultParametersHaveCorrectOrder ? -1 : 1);
-                testResult.setInPortUniqueSender(inPortUniqueSender ? -1 : 1);
-                testResult.setInRosPortRosSender(inRosPortRosSender ? -1 : 1);
-                testResult.setOnlyIncomingPortIsConfig(onlyIncomingPortIsConfig ? -1 : 1);
-                testResult.setPackageLowerCase(packageLowerCase ? -1 : 1);
-                testResult.setParameterNamesUnique(parameterNamesUnique ? -1 : 1);
-                testResult.setPortTypeOnlyBooleanOrSIUnit(portTypeOnlyBooleanOrSIUnit ? -1 : 1);
-                testResult.setPortUsage(portUsage ? -1 : 1);
-                testResult.setReferencedSubComponentExists(referencedSubComponentExists ? -1 : 1);
-                testResult.setSimpleConnectorSourceExists(simpleConnectorSourceExists ? -1 : 1);
-                testResult.setSourceTargetNumberMatch(sourceTargetNumberMatch ? -1 : 1);
-                testResult.setSubComponentsConnected(subComponentsConnected ? -1 : 1);
-                testResult.setTopLevelComponentHasNoInstanceName(topLevelComponentHasNoInstanceName ? -1 : 1);
-                testResult.setTypeParameterNamesUnique(typeParameterNamesUnique ? -1 : 1);
-                testResult.setUniquePorts(uniquePorts ? -1 : 1);
-            }
-            // Dynamics
-            if (isDynamic(fileType)) {
-                testResult.setDynamicComponentDynamicBodyElements(dynamicComponentDynamicBodyElements ? -1 : 1);
-                testResult.setNoDynamicNewComponentAndPort(noDynamicNewComponentAndPort ? -1 : 1);
-                testResult.setNoDynamicNewConnectsOutsideEventHandler(noDynamicNewConnectsOutsideEventHandler ? -1 : 1);
-            }
-            // EMAM
-            if (isEMAM(fileType)) {
-                testResult.setAtomicComponent(atomicComponent ? -1 : 1);
-                testResult.setReferencedSubComponentExistsEMAM(referencedSubComponentExistsEMAM ? -1 : 1);
-            }
-            // CNNArch
-            if (isCNNArch(fileType)) {
-                testResult.setCheckLayer(checkLayer ? -1 : 1);
-                testResult.setCheckRangeOperators(checkRangeOperators ? -1 : 1);
-                testResult.setCheckVariableName(checkVariableName ? -1 : 1);
-                testResult.setCheckLayerName(checkLayerName ? -1 : 1);
-                testResult.setCheckArgument(checkArgument ? -1 : 1);
-                testResult.setCheckLayerRecursion(checkLayerRecursion ? -1 : 1);
-            }
-            // EMADL
-            if (isEMADL(fileType)) {
-                testResult.setCheckBehaviorName(checkBehaviorName?-1:1);
-            }
+            checkCoCos(testResult, astToTest, fileType, coCoTimeOut);
 
             if (testResult.isValid()) {
                 testResult.addErrorMessage("[INFO] All CoCo tests successful <br>");
@@ -145,21 +51,138 @@ public class CheckCoCo {
         return testResult;
     }
 
-    private EMADLCoCoChecker createChecker(String fileType) {
-        EMADLCoCoChecker checker = new EMADLCoCoChecker();
+    private void checkCoCos(CheckCoCoResult testResult, ASTEmbeddedMontiArcNode astToTest, String fileType, int timeout) {
+        Object[] cocos = getCoCos(fileType);
+        for (Object coco : cocos) {
+            String cocoName = coco.getClass().getSimpleName();
+            cocoName = cocoName.substring(0, 1).toLowerCase() + cocoName.substring(1);
+            int result = checkCoCo(astToTest, coco, timeout);
+
+            try {
+                Field field = testResult.getClass().getDeclaredField(cocoName);
+                for (Finding finding : Log.getFindings())
+                    testResult.addErrorMessage("[WARNING] " + field.getName() + ": " + finding.toString());
+                field.set(testResult, result);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private int checkCoCo(ASTEmbeddedMontiArcNode astToTest, Object coco, int timeout) {
+        Callable<Integer> task = () -> {
+            Log.getFindings().clear();
+            Log.enableFailQuick(false);
+
+            EMADLCoCoChecker checker = new EMADLCoCoChecker();
+            addCoCo(checker, coco);
+            checker.checkAll(astToTest);
+
+            if (Log.getErrorCount() > 0) return -1;
+            else return 1;
+        };
+
+        int res = 0;
+
+        Future<Integer> future = TimedTask.executeTask(task, timeout);
+        try {
+            res = future.get();
+        } catch (CancellationException ex) {
+            res = -2;
+        } catch (InterruptedException e) {
+            res = -2;
+        } catch (Throwable e) {
+            Log.error(e.getMessage());
+            res = -1;
+        }
+        future.cancel(true);
+        return res;
+    }
+
+    private void addCoCo(EMADLCoCoChecker checker, Object coco) {
+        if (coco instanceof MatrixAssignmentDeclarationCheck)
+            checker.addCoCo((MatrixAssignmentDeclarationCheck) coco);
+        else if (coco instanceof MatrixAssignmentCheck)
+            checker.addCoCo((MatrixAssignmentCheck) coco);
+        else if (coco instanceof ComponentCapitalized)
+            checker.addCoCo((ComponentCapitalized) coco);
+        else if (coco instanceof ComponentWithTypeParametersHasInstance)
+            checker.addCoCo((ComponentWithTypeParametersHasInstance) coco);
+        else if (coco instanceof ConnectorEndPointCorrectlyQualified)
+            checker.addCoCo((ConnectorEndPointCorrectlyQualified) coco);
+        else if (coco instanceof DefaultParametersHaveCorrectOrder)
+            checker.addCoCo((DefaultParametersHaveCorrectOrder) coco);
+        else if (coco instanceof InPortUniqueSender)
+            checker.addCoCo((InPortUniqueSender) coco);
+        else if (coco instanceof InRosPortRosSender)
+            checker.addCoCo((InRosPortRosSender) coco);
+        else if (coco instanceof OnlyIncomingPortIsConfig)
+            checker.addCoCo((OnlyIncomingPortIsConfig) coco);
+        else if (coco instanceof PackageLowerCase)
+            checker.addCoCo((PackageLowerCase) coco);
+        else if (coco instanceof ParameterNamesUnique)
+            checker.addCoCo((ParameterNamesUnique) coco);
+        else if (coco instanceof PortTypeOnlyBooleanOrSIUnit)
+            checker.addCoCo((PortTypeOnlyBooleanOrSIUnit) coco);
+        else if (coco instanceof PortUsage)
+            checker.addCoCo((PortUsage) coco);
+        else if (coco instanceof ReferencedSubComponentExists)
+            checker.addCoCo((ReferencedSubComponentExists) coco);
+        else if (coco instanceof SimpleConnectorSourceExists)
+            checker.addCoCo((SimpleConnectorSourceExists) coco);
+        else if (coco instanceof SubComponentsConnected)
+            checker.addCoCo((SubComponentsConnected) coco);
+        else if (coco instanceof TopLevelComponentHasNoInstanceName)
+            checker.addCoCo((TopLevelComponentHasNoInstanceName) coco);
+        else if (coco instanceof TypeParameterNamesUnique)
+            checker.addCoCo((TypeParameterNamesUnique) coco);
+        else if (coco instanceof UniquePorts)
+            checker.addCoCo((UniquePorts) coco);
+        else if (coco instanceof DynamicComponentDynamicBodyElements)
+            checker.addCoCo((DynamicComponentDynamicBodyElements) coco);
+        else if (coco instanceof NoDynamicNewComponentAndPort)
+            checker.addCoCo((NoDynamicNewComponentAndPort) coco);
+        else if (coco instanceof NoDynamicNewConnectsOutsideEventHandler)
+            checker.addCoCo((NoDynamicNewConnectsOutsideEventHandler) coco);
+        else if (coco instanceof AtomicComponentCoCo)
+            checker.addCoCo((AtomicComponentCoCo) coco);
+        else if (coco instanceof ReferencedSubComponentExistsEMAM)
+            checker.addCoCo((ReferencedSubComponentExistsEMAM) coco);
+        else if (coco instanceof CheckLayer)
+            checker.addCoCo((CheckLayer) coco);
+        else if (coco instanceof CheckRangeOperators)
+            checker.addCoCo((CheckRangeOperators) coco);
+        else if (coco instanceof CheckVariableName)
+            checker.addCoCo((CheckVariableName) coco);
+        else if (coco instanceof CheckLayerName)
+            checker.addCoCo((CheckLayerName) coco);
+        else if (coco instanceof CheckArgument)
+            checker.addCoCo((CheckArgument) coco);
+        else if (coco instanceof CheckLayerRecursion)
+            checker.addCoCo((CheckLayerRecursion) coco);
+        else if (coco instanceof EMADLASTBehaviorNameCoCo)
+            checker.addCoCo((EMADLASTBehaviorNameCoCo) coco);
+        else if (coco instanceof EMADLASTBehaviorEmbeddingCoCo)
+            checker.addCoCo((EMADLASTBehaviorEmbeddingCoCo) coco);
+    }
+
+    private Object[] getCoCos(String fileType) {
+        Object[] cocos = {};
         if (isMath(fileType))
-            checker = addMathCoCos(checker);
+            cocos = ArrayUtils.addAll(cocos, getMathCoCos());
         if (isEMA(fileType))
-            checker = addEMACoCos(checker);
-//        if (isDynamic(fileType))
-//            checker = addDynamicCoCos(checker);
+            cocos = ArrayUtils.addAll(cocos, getEMACoCos());
+        if (isDynamic(fileType))
+            cocos = ArrayUtils.addAll(cocos, getDynamicCoCos());
         if (isEMAM(fileType))
-            checker = addEMAMCoCos(checker);
-//        if (isCNNArch(fileType))
-//            checker = addCNNArchCoCos(checker);
-//        if (isEMADL(fileType))
-//            checker = addEMADLCoCos(checker);
-        return checker;
+            cocos = ArrayUtils.addAll(cocos, getEMAMCoCos());
+        if (isCNNArch(fileType))
+            cocos = ArrayUtils.addAll(cocos, getCNNArchCoCos());
+        if (isEMADL(fileType))
+            cocos = ArrayUtils.addAll(cocos, getEMADLCoCos());
+        return cocos;
     }
 
     private boolean isMath(String fileType) {
@@ -186,61 +209,67 @@ public class CheckCoCo {
         return stringEqualsOr(fileType, "EMADL");
     }
 
-    private EMADLCoCoChecker addMathCoCos(EMADLCoCoChecker checker) {
-        return checker
-                .addCoCo(new MatrixAssignmentDeclarationCheck())
-                .addCoCo(new MatrixAssignmentCheck());
+    private Object[] getMathCoCos() {
+        return new Object[]{
+                new MatrixAssignmentDeclarationCheck(),
+                new MatrixAssignmentCheck()
+        };
     }
 
-    private EMADLCoCoChecker addEMACoCos(EMADLCoCoChecker checker) {
-        return checker
-                .addCoCo(new ComponentCapitalized())
-                .addCoCo(new ComponentWithTypeParametersHasInstance())
-                .addCoCo(new ConnectorEndPointCorrectlyQualified())
-                .addCoCo(new DefaultParametersHaveCorrectOrder())
-                .addCoCo(new InPortUniqueSender())
-                .addCoCo(new InRosPortRosSender())
-                .addCoCo(new OnlyIncomingPortIsConfig())
-                .addCoCo(new PackageLowerCase())
-                .addCoCo(new ParameterNamesUnique())
-                .addCoCo(new PortTypeOnlyBooleanOrSIUnit())
-                .addCoCo(new PortUsage())
-                .addCoCo(new ReferencedSubComponentExists())
-                .addCoCo(new SimpleConnectorSourceExists())
-                .addCoCo(new SourceTargetNumberMatch())
-                .addCoCo(new SubComponentsConnected())
-                .addCoCo(new TopLevelComponentHasNoInstanceName())
-                .addCoCo(new TypeParameterNamesUnique())
-                .addCoCo(new UniquePorts());
+    private Object[] getEMACoCos() {
+        return new Object[]{
+                new ComponentCapitalized(),
+                new ComponentWithTypeParametersHasInstance(),
+                new ConnectorEndPointCorrectlyQualified(),
+                new DefaultParametersHaveCorrectOrder(),
+                new InPortUniqueSender(),
+                new InRosPortRosSender(),
+                new OnlyIncomingPortIsConfig(),
+                new PackageLowerCase(),
+                new ParameterNamesUnique(),
+                new PortTypeOnlyBooleanOrSIUnit(),
+                new PortUsage(),
+                new ReferencedSubComponentExists(),
+                new SimpleConnectorSourceExists(),
+                new SourceTargetNumberMatch(),
+                new SubComponentsConnected(),
+                new TopLevelComponentHasNoInstanceName(),
+                new TypeParameterNamesUnique(),
+                new UniquePorts()
+        };
     }
 
-    private EMADLCoCoChecker addDynamicCoCos(EMADLCoCoChecker checker) {
-        return checker
-                .addCoCo(new DynamicComponentDynamicBodyElements())
-                .addCoCo(new NoDynamicNewComponentAndPort())
-                .addCoCo(new NoDynamicNewConnectsOutsideEventHandler());
+    private Object[] getDynamicCoCos() {
+        return new Object[]{
+                new DynamicComponentDynamicBodyElements(),
+                new NoDynamicNewComponentAndPort(),
+                new NoDynamicNewConnectsOutsideEventHandler()
+        };
     }
 
-    private EMADLCoCoChecker addEMAMCoCos(EMADLCoCoChecker checker) {
-        return checker = checker
-                .addCoCo(new AtomicComponentCoCo())
-                .addCoCo(new ReferencedSubComponentExistsEMAM());
+    private Object[] getEMAMCoCos() {
+        return new Object[]{
+                new AtomicComponentCoCo(),
+                new ReferencedSubComponentExistsEMAM()
+        };
     }
 
-    private EMADLCoCoChecker addCNNArchCoCos(EMADLCoCoChecker checker) {
-        return checker = checker
-                .addCoCo(new CheckLayer())
-                .addCoCo(new CheckRangeOperators())
-                .addCoCo(new CheckVariableName())
-                .addCoCo(new CheckLayerName())
-                .addCoCo(new CheckArgument())
-                .addCoCo(new CheckLayerRecursion());
+    private Object[] getCNNArchCoCos() {
+        return new Object[]{
+                new CheckLayer(),
+                new CheckRangeOperators(),
+                new CheckVariableName(),
+                new CheckLayerName(),
+                new CheckArgument(),
+                new CheckLayerRecursion()
+        };
     }
 
-    private EMADLCoCoChecker addEMADLCoCos(EMADLCoCoChecker checker) {
-        return checker
-                .addCoCo((EMADLASTBehaviorNameCoCo) new CheckBehaviorName())
-                .addCoCo((EMADLASTBehaviorEmbeddingCoCo) new CheckBehaviorName());
+    private Object[] getEMADLCoCos() {
+        return new Object[]{
+                (EMADLASTBehaviorNameCoCo) new CheckBehaviorName(),
+                (EMADLASTBehaviorEmbeddingCoCo) new CheckBehaviorName()
+        };
     }
 
     private boolean stringEqualsOr(String str, String... others) {

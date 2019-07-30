@@ -143,3 +143,12 @@ function childControlInit(controlClass, uniqueNameFunction) {
         expandRow(tr, row, row.data(), uniqueNameFunction);
     });
 }
+
+function insertTimeStamp(date) {
+    if (date !== "undefined") {
+        $(tableReference + '_wrapper').prepend(
+            '<div id="my-table_filter2" class="timeStamp">' +
+            '<label>Date: ' + date + '</label>' +
+            '</div>')
+    }
+}

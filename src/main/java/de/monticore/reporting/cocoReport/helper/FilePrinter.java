@@ -1,5 +1,7 @@
 package de.monticore.reporting.cocoReport.helper;
 
+import de.monticore.reporting.tools.CustomPrinter;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,9 +10,27 @@ public class FilePrinter {
     private String filePath;
     private int indention = 0;
     private boolean firstPrint = true;
+    private BufferedWriter out;
+    private FileWriter fstream;
+    private int i;
 
     public FilePrinter(String filePath) {
         this.filePath = filePath;
+        try {
+            fstream = new FileWriter(filePath, true);
+        } catch (IOException e) {
+            CustomPrinter.println(e.toString());
+        }
+        out = new BufferedWriter(fstream);
+        i = 0;
+    }
+
+    public void end() {
+        try {
+            out.close();
+        } catch (IOException e) {
+            CustomPrinter.println(e.toString());
+        }
     }
 
     public void indent() {
@@ -42,12 +62,13 @@ public class FilePrinter {
 
     private void doPrint(String content) {
         try {
-            FileWriter fstream = new FileWriter(filePath, true);
-            BufferedWriter out = new BufferedWriter(fstream);
+            if (i++ >= 50) {
+                out.flush();
+                i = 0;
+            }
             out.write(content);
-            out.close();
         } catch (IOException e) {
-            System.err.println("Error while writing to file: " +
+            CustomPrinter.println("Error while writing to file: " +
                     e.getMessage());
         }
     }

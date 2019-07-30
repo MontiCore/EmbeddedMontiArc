@@ -8,10 +8,16 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Embedded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
+import de.monticore.lang.math._symboltable.MathLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
+import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
+import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
+import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.reporting.helper.CommonModelInfo;
+import de.monticore.reporting.helper.TimedTask;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
@@ -47,6 +53,7 @@ public class ASTHelper {
             CustomPrinter.println("ERROR. Parsing Test failed");
             model.setParsed(-1);
             model.addErrorMessage("[ERROR] Parsing Test failed");
+            model.addErrorMessage(e.toString());
             for (Finding finding : Log.getFindings())
                 model.addErrorMessage(finding.toString());
         }
@@ -59,11 +66,12 @@ public class ASTHelper {
         if (parsingSuccessful) {
             model.setUnresolvedAST(ast);
             String PackageName = Joiners.DOT.join(ast.getPackageList());
+            if (!PackageName.equals("")) PackageName = PackageName + ".";
             String FileName = fileName.substring(fileName.replace("\\", "/").lastIndexOf("/") + 1, fileName.length());
             String modelPath = fileName.substring(0, fileName.length() - (PackageName + "/" + FileName).length()); // package name + File name
-            String modelName = PackageName + "." + FileName.replace(".emam", "").replace(".ema", "");
-            String qualifiedName = FileName.replace(".emam", "").replace(".ema", "");
-            qualifiedName = PackageName + "." + ("" + qualifiedName.charAt(0)).toLowerCase() + qualifiedName.substring(1, qualifiedName.length());
+            String qualifiedName = FileName.substring(0, FileName.lastIndexOf("."));
+            String modelName = PackageName + qualifiedName;
+            qualifiedName = PackageName + ("" + qualifiedName.charAt(0)).toLowerCase() + qualifiedName.substring(1, qualifiedName.length());
 
             model.setModelName(modelName);
             model.setModelPath(modelPath);
@@ -81,6 +89,7 @@ public class ASTHelper {
                 CustomPrinter.println("ERROR. Resolve Test failed");
                 model.setResolved(-1);
                 model.addErrorMessage("[ERROR] Resolve Test failed");
+                model.addErrorMessage(e.toString());
                 for (Finding finding : Log.getFindings())
                     model.addErrorMessage(finding.toString());
             } catch (ResolveTimeOutException e) {
@@ -90,9 +99,12 @@ public class ASTHelper {
                 for (Finding finding : Log.getFindings())
                     model.addErrorMessage(finding.toString());
             } catch (Exception e) {
-                CustomPrinter.println("ERROR. Something went wrong");
+                CustomPrinter.println("ERROR. Resolve Test failed");
                 model.setResolved(-1);
-                model.addErrorMessage("[ERROR] Something went wrong");
+                model.addErrorMessage("[ERROR] Resolve Test failed");
+                model.addErrorMessage(e.toString());
+                for (Finding finding : Log.getFindings())
+                    model.addErrorMessage(finding.toString());
             }
         } else {
             String FileName = fileName.substring(fileName.replace("\\", "/").lastIndexOf("/") + 1, fileName.length());
@@ -101,74 +113,59 @@ public class ASTHelper {
 
     }
 
+    private static ExecutorService service = Executors.newSingleThreadExecutor();
+    private static ScheduledExecutorService canceller = Executors.newSingleThreadScheduledExecutor();
+
     public static ASTEMACompilationUnit getParsed(String fileName, int timeout) throws CouldNotParseException, ParsingTimeOutException {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Callable<ASTEMACompilationUnit> task = new Callable<ASTEMACompilationUnit>() {
-            public ASTEMACompilationUnit call() throws IOException, CouldNotParseException {
-                EMADLParser parser = new EMADLParser();
-                ASTEMACompilationUnit ast = parser.parse(fileName).orElse(null);
-                if (ast == null) throw new CouldNotParseException();
-                return ast;
-            }
+//        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<ASTEMACompilationUnit> task = () -> {
+            EMADLParser parser = new EMADLParser();
+            ASTEMACompilationUnit ast = parser.parse(fileName).orElse(null);
+            if (ast == null) throw new CouldNotParseException("");
+            return ast;
         };
 
-        Future<ASTEMACompilationUnit> future = executor.submit(task);
+        Future<ASTEMACompilationUnit> future = TimedTask.executeTask(task, timeout);
         try {
-            return future.get(timeout, TimeUnit.SECONDS);
-        } catch (TimeoutException ex) {
+            ASTEMACompilationUnit res = future.get();
             future.cancel(true);
-            executor.shutdown();
-            executor.shutdownNow();
+            return res;
+        } catch (CancellationException ex) {
+            future.cancel(true);
             throw new ParsingTimeOutException();
         } catch (InterruptedException e) {
             future.cancel(true);
-            executor.shutdown();
-            executor.shutdownNow();
             throw new ParsingTimeOutException();
         } catch (Throwable e) {
             future.cancel(true);
-            throw new CouldNotParseException();
+            throw new CouldNotParseException(e.toString());
         }
     }
 
     public static EMAComponentSymbol getAstNode(String modelPath, String model, String fileType, int timeout) throws CouldNotResolveException, ResolveTimeOutException {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Callable<EMAComponentSymbol> task = new Callable<EMAComponentSymbol>() {
-            public EMAComponentSymbol call() {
-                Scope symTab = createSymTab(fileType, modelPath);
-                EMAComponentSymbol comp = symTab.<EMAComponentSymbol>resolve(model, EMAComponentSymbol.KIND).orElse(null);
-                return comp;
-            }
+//        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        Callable<EMAComponentSymbol> task = () -> {
+            Scope symTab = createSymTab(fileType, modelPath);
+            EMAComponentSymbol comp = symTab.<EMAComponentSymbol>resolve(model, EMAComponentSymbol.KIND).orElse(null);
+            return comp;
         };
 
-        Future<EMAComponentSymbol> future = executor.submit(task);
+        Future<EMAComponentSymbol> future = TimedTask.executeTask(task, timeout);
         try {
-            return future.get(timeout, TimeUnit.SECONDS);
-        } catch (TimeoutException ex) {
+            EMAComponentSymbol res = future.get();
             future.cancel(true);
-            executor.shutdown();
-            executor.shutdownNow();
+            return res;
+        } catch (CancellationException ex) {
+            future.cancel(true);
             throw new ResolveTimeOutException();
         } catch (InterruptedException e) {
             future.cancel(true);
-            executor.shutdown();
-            executor.shutdownNow();
             throw new ResolveTimeOutException();
         } catch (Throwable e) {
             future.cancel(true);
-            throw new CouldNotResolveException();
+            throw new CouldNotResolveException(e.toString());
         }
-    }
-
-    public static EMAComponentSymbol getAstNode(String file, int timeout) throws CouldNotResolveException, IOException, ResolveTimeOutException {
-        EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
-        ASTEMACompilationUnit ast = parser.parse(file).orElse(null);
-        String fileType = file.substring(file.lastIndexOf(".") + 1, file.length()).toUpperCase();
-        String PackageName = Joiners.DOT.join(ast.getPackageList());
-        String FileName = file.substring(file.replace("\\", "/").lastIndexOf("/") + 1, file.length());
-        String modelPath = file.substring(0, file.length() - (PackageName + "/" + FileName).length()); // package name + File name
-        String modelName = PackageName + "." + FileName.replace(".emam", "").replace(".ema", "");
-        return getAstNode(modelPath, modelName, fileType, timeout);
     }
 
     public static Scope createSymTab(String fileType, String... modelPath) {
@@ -184,11 +181,19 @@ public class ASTHelper {
     }
 
     private static ModelingLanguageFamily getModelingLanguageFamily(String fileType) {
+        ConstantPortHelper.resetLastID();
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
+//        fam.addModelingLanguage(new StreamUnitsLanguage());
+//        fam.addModelingLanguage(new StructLanguage());
+//        fam.addModelingLanguage(new EnumLangLanguage());
         if (fileType.equals("EMAM"))
             fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
         else if (fileType.equals("EMA"))
             fam.addModelingLanguage(new EmbeddedMontiArcLanguage());
+        else if (fileType.equals("M"))
+            fam.addModelingLanguage(new MathLanguage());
+        else if (fileType.equals("EMADL"))
+            fam.addModelingLanguage(new EMADLLanguage());
         else
             Log.error("Unknown file type: " + fileType);
         fam.addModelingLanguage(new StreamLanguage());
