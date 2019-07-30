@@ -1,6 +1,8 @@
 <#import "SomeIPMacros.ftl" as m>
 #pragma once
 #include "${model.getEscapedCompName()}.h"
+#include "IAdapter_${model.getEscapedCompName()}.h"
+
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -12,7 +14,7 @@
 
 using namespace std;
 
-class <@m.mwIdent/>Adapter_${model.getEscapedCompName()} {
+class <@m.mwIdent/>Adapter_${model.getEscapedCompName()} : public IAdapter_${model.getEscapedCompName()} {
 
 public:
 

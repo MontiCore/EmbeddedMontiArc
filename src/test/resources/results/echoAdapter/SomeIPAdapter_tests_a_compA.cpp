@@ -1,6 +1,6 @@
 #include "SomeIPAdapter_tests_a_compA.h"
 
-SomeIPAdapter_tests_a_compA::SomeIPAdapter_tests_a_compA() {
+SomeIPAdapter_tests_a_compA::SomeIPAdapter_tests_a_compA() : public IAdapter_tests_a_compA {
 	//choose random ids
     in1_service_id = 11;
 	in1_instance_id = 12;

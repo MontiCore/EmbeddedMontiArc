@@ -15,8 +15,19 @@ include_directories (
 )
 
 # Linking libraries to target
-add_library(SomeIPAdapter_tests_a_compA SomeIPAdapter_tests_a_compA.cpp)
-target_link_libraries(SomeIPAdapter_tests_a_compA vsomeip ${Boost_LIBRARIES})
+add_library(SomeIPAdapter_tests_a_compA SomeIPAdapter_tests_a_compA.cpp
+SomeIPAdapter_tests_a_compA.cpp
+SomeIPAdapter_tests_a_compA.h
+tests_a_compA.cpp
+tests_a_compA.h
+)
+
+list(APPEND LIBRARIES tests_a_compA)
+#list(APPEND LIBRARIES IAdapter_tests_a_compA)
+
+target_link_libraries(SomeIPAdapter_tests_a_compA vsomeip ${Boost_LIBRARIES} ${LIBRARIES})
+
+target_include_directories(SomeIPAdapter_tests_a_compA PUBLIC ${INCLUDE_DIRS})
 
 # Export target to a cmake module file for outside usage
 export(TARGETS SomeIPAdapter_tests_a_compA FILE SomeIPAdapter_tests_a_compA.cmake)

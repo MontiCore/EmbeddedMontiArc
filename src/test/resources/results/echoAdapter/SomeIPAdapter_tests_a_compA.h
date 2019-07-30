@@ -1,5 +1,6 @@
 #pragma once
 #include "tests_a_compA.h"
+#include "IAdapter_tests_a_compA.h"
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -11,7 +12,7 @@
 
 using namespace std;
 
-class SomeIPAdapter_tests_a_compA {
+class SomeIPAdapter_tests_a_compA : public IAdapter_tests_a_compA {
 
 public:
 

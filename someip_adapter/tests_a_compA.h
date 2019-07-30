@@ -8,7 +8,7 @@ using namespace std;
 class tests_a_compA {
 
 public:
-	tests_a_compA(double value);
+	tests_a_compA(double out1_value, double out2_value);
     double in1 = 1.5;
     double in2 = 2.5;
     double out1 = 0.1;

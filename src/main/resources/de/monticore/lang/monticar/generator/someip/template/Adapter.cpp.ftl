@@ -1,7 +1,7 @@
 <#import "SomeIPMacros.ftl" as m>
 #include "<@m.mwIdent/>Adapter_${model.getEscapedCompName()}.h"
 
-<@m.mwIdent/>Adapter_${model.getEscapedCompName()}::<@m.mwIdent/>Adapter_${model.getEscapedCompName()}() {
+<@m.mwIdent/>Adapter_${model.getEscapedCompName()}::<@m.mwIdent/>Adapter_${model.getEscapedCompName()}() : public IAdapter_${model.getEscapedCompName()} {
 	//choose random ids
     in1_service_id = 11;
 	in1_instance_id = 12;
