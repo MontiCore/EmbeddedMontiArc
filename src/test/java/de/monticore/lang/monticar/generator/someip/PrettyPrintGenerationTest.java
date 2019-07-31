@@ -30,6 +30,8 @@ public class PrettyPrintGenerationTest extends AbstractSymtabTest {
 
         GeneratorSomeIP generatorSomeIP = new GeneratorSomeIP();
 
+        generatorSomeIP.setGenerationTargetPath("./target/generated-sources/");
+
         // Connect component's ports to topics
         componentInstanceSymbol.getPortInstance("in1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(1,2,3));
 

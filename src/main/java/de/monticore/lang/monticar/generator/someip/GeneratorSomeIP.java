@@ -15,7 +15,14 @@ import java.util.List;
 
 public class GeneratorSomeIP {
 
-	List<File> generateSomeIPAdapter(EMAComponentInstanceSymbol component) {
+	private String generationTargetPath;
+
+	public void setGenerationTargetPath(String generationTargetPath) {
+        this.generationTargetPath = generationTargetPath.endsWith("/") ? generationTargetPath : generationTargetPath + "/";
+    }
+
+
+	public List<File> generateSomeIPAdapter(EMAComponentInstanceSymbol component) {
 		List<File> files = new ArrayList<>();
 		List<String> contents = new ArrayList<String>();
 		List<FileWriter> frs = new ArrayList<FileWriter>();
@@ -27,9 +34,9 @@ public class GeneratorSomeIP {
 
 		//Generate files and write to project
 		contents.add(SomeIPTemplates.generateSomeIPAdapterH(model));
-		files.add(new File("./target/generated-sources/SomeIPAdapter_"+model.getEscapedCompName()+".h"));
+		files.add(new File(generationTargetPath + "SomeIPAdapter_" + model.getEscapedCompName() + ".h"));
 		contents.add(SomeIPTemplates.generateSomeIPAdapterCPP(model));
-		files.add(new File("./target/generated-sources/SomeIPAdapter_"+model.getEscapedCompName()+".cpp"));
+		files.add(new File(generationTargetPath + "SomeIPAdapter_" + model.getEscapedCompName() + ".cpp"));
 
 		 try {
         	int counter = 0;
@@ -57,7 +64,7 @@ public class GeneratorSomeIP {
 
     }
 
-    File generateCMake(EMAComponentInstanceSymbol component) {
+    public File generateCMake(EMAComponentInstanceSymbol component) {
 
 		// Create and fill model
 		SomeIPAdapterModel model = new SomeIPAdapterModel(component.getFullName());
@@ -65,7 +72,7 @@ public class GeneratorSomeIP {
 		//Generate files and write to project
 		String content = SomeIPTemplates.generateSomeIPCMakeLists(model);
 
-		File file = new File("./target/generated-sources/CMakeLists.txt");
+		File file = new File(generationTargetPath + "CMakeLists.txt");
 
         FileWriter fr = null;
         try {
@@ -85,7 +92,7 @@ public class GeneratorSomeIP {
     	return file;
     }
 
-    List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
+    public List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
 	{
 		List<File> files = new ArrayList<>();
 
@@ -100,7 +107,7 @@ public class GeneratorSomeIP {
 		//Generate files and write to project
 		String content = SomeIPTemplates.generatePrettyPrint(model);
 
-		File file = new File("./target/generated-sources/ports.txt");
+		File file = new File(generationTargetPath + "ports.txt");
 		files.add(file);
 
         FileWriter fr = null;
