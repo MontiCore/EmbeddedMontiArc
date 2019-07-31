@@ -13,7 +13,7 @@ buildLinux_jar:
         script:
               - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2RosCpp.git && cd EMAM2RosCpp  && mvn clean install -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  -s settings.xml -U -DskipTests && cd ..
               - rm mw-generator.jar
-              - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git && cd EMAM2Middleware && sed -i 's/0.1.4/0.1.6/g' pom.xml && mvn clean install -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  -s settings.xml -U -DskipTests && cp target/embedded-montiarc-math-middleware-generator-0.0.24-SNAPSHOT-jar-with-dependencies.jar ../mw-generator.jar && cd ..
+              - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git && cd EMAM2Middleware && sed -i 's/0.1.4/0.1.6/g' pom.xml && mvn clean install -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  -s settings.xml -U -DskipTests && cp target/embedded-montiarc-math-middleware-generator-0.0.25-SNAPSHOT-jar-with-dependencies.jar ../mw-generator.jar && cd ..
               - ls
               - cd EMAM2Carla && source /opt/ros/kinetic/setup.bash && rm -rf target && java -jar ../mw-generator.jar valid.json
 
