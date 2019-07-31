@@ -25,62 +25,10 @@ public class MqttGenerationTest extends AbstractSymtabTest {
 
         assertNotNull(componentInstanceSymbol);
 
-        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();-
+        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath(OUT_BASE + "compA/src");
         distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH),"cpp");
         distributedTargetGenerator.add(new MqttGenImpl(), "mqtt");
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
-    }
-
-    @Test
-    public void testBaSystem() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
-        RosToEmamTagSchema.registerTagTypes(taggingResolver);
-
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("ba.system", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-
-        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
-        String generationTargetPath = OUT_BASE + "system/src/";
-        distributedTargetGenerator.setGenerationTargetPath(generationTargetPath);
-        //distributedTargetGenerator.setGenDebug(true);
-        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
-        distributedTargetGenerator.add(new MqttGenImpl(), "mqtt");
-
-        List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
-    }
-
-    @Test
-    public void testDistributedTargetGenerator() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
-        RosToEmamTagSchema.registerTagTypes(taggingResolver);
-
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.dist.distComp", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-
-        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
-        distributedTargetGenerator.setGenerationTargetPath(OUT_BASE +  "distributed/src/");
-
-        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
-        distributedTargetGenerator.add(new MqttGenImpl(), "mqtt");
-
-        distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
-    }
-
-    @Test
-    public void testDistributedStructTargetGenerator() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
-        RosToEmamTagSchema.registerTagTypes(taggingResolver);
-
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.dist.distWithStructComp", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-
-        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
-        distributedTargetGenerator.setGenerationTargetPath(OUT_BASE + "distributedStruct/src/");
-
-        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH), "cpp");
-        distributedTargetGenerator.add(new MqtttGenImpl(), "mqtt");
-
-        distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 }
