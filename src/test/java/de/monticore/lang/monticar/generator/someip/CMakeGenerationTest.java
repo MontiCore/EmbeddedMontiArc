@@ -31,8 +31,7 @@ public class CMakeGenerationTest extends AbstractSymtabTest {
 
         GeneratorSomeIP generatorSomeIP = new GeneratorSomeIP();
 
-        // Connect component's ports to topics
-        componentInstanceSymbol.getPortInstance("in1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(1,2,3));
+        generatorSomeIP.setGenerationTargetPath("./target/generated-sources/");
 
         List<File> files = new ArrayList<>();
 
