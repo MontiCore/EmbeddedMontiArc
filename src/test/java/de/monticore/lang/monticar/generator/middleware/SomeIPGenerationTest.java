@@ -29,10 +29,16 @@ public class SomeIPGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
 
         GeneratorSomeIP generatorSomeIP = new GeneratorSomeIP();
+        generatorSomeIP.setGenerationTargetPath(OUT_BASE);
 
         componentInstanceSymbol.getPortInstance("in1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(1,2,3));
         componentInstanceSymbol.getPortInstance("in2").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(4,5,6));
         componentInstanceSymbol.getPortInstance("out1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(7,8,9));
+
+        //SomeIPGenImpl someIPGenImpl = new SomeIPGenImpl();
+        //someIPGenImpl.setGeneratorSomeIP(generatorSomeIP);
+        //someIPGenImpl.setGenerationTargetPath(OUT_BASE);
+        //someIPGenImpl.generate(componentInstanceSymbol, taggingResolver);
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath(OUT_BASE + "addComp/src");
