@@ -22,11 +22,11 @@ public class SomeIPGenImpl implements GeneratorImpl {
         this.generatorSomeIP = generatorSomeIP;
     }
 
-    @Override
-    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
-        generatorSomeIP.setGenerationTargetPath(generationTargetPath);
-        return generatorSomeIP.generateFiles(componentInstanceSymbol, taggingResolver);
-    }
+    //@Override
+    //public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    //    generatorSomeIP.setGenerationTargetPath(generationTargetPath);
+    //    return generatorSomeIP.generateFiles(componentInstanceSymbol, taggingResolver);
+    //}
 
     @Override
     public void setGenerationTargetPath(String path) {

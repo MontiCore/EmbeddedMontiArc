@@ -2,9 +2,10 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.SomeIPConnectionSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.someip.SomeIPConnectionSymbol;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.SomeIPGenImpl;
+import de.monticore.lang.monticar.generator.someip.GeneratorSomeIP;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
@@ -15,7 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-public class Ros2GenerationTest extends AbstractSymtabTest {
+public class SomeIPGenerationTest extends AbstractSymtabTest {
     private static final String TEST_PATH = "src/test/resources/";
     private static final String OUT_BASE = "./target/generated-sources-someip/";
 

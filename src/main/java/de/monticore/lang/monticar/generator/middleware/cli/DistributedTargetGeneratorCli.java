@@ -9,7 +9,7 @@ import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.EMADLGeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.SomeIPImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.SomeIPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
