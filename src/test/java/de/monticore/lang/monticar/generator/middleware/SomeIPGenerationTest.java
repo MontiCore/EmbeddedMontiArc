@@ -39,6 +39,6 @@ public class SomeIPGenerationTest extends AbstractSymtabTest {
         distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH),"cpp");
         distributedTargetGenerator.add(new SomeIPGenImpl(), "someip");
 
-        List<File> files = generatorSomeIP.generateSomeIPAdapter(componentInstanceSymbol);
+        List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 }
