@@ -13,7 +13,7 @@ component BumpBot{
 		if skip
 			skip = false;
 		else
-			if inited // Requred as negation has a bug
+			if inited // Keep values!
 					collision_normale_out.x = collision_normale.x;
 					collision_normale_out.y = collision_normale.y;
 		      collision_normale_out.z = collision_normale.z;
@@ -39,11 +39,9 @@ component BumpBot{
 				Q collisionDirection = drivingDirX * -collision_normale.x +  drivingDirY * collision_normale.y;
 				Q projectionFactor = collisionDirection / sqrt(drivingDirX * drivingDirX + drivingDirY * drivingDirY);
 				B turnCompleted = (projectionFactor * drivingDirX * -collision_normale.x) + (projectionFactor * drivingDirY * collision_normale.y) < 0;
-				// && abs(collision_normale.z) > 0.01)  && !test.reverse) || (collisionDirection < 0 && abs(collision_normale.z) > 0.01) // turned already > 90° or collision while going back
 				if collisionDirection < 0.0 || turnCompleted
 					test.reverse = false;
 					test.steer= 0;
-		      //collision_normale_out.z = -1;
 					skip = true;
 				else
 					test.reverse = true;
