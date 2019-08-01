@@ -29,11 +29,12 @@ public class SomeIPGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
 
         GeneratorSomeIP generatorSomeIP = new GeneratorSomeIP();
-        generatorSomeIP.setGenerationTargetPath(OUT_BASE);
+        //generatorSomeIP.setGenerationTargetPath(OUT_BASE);
+        //generatorSomeIP.generateSomeIPAdapter(componentInstanceSymbol);
 
         componentInstanceSymbol.getPortInstance("in1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(1,2,3));
-        componentInstanceSymbol.getPortInstance("in2").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(4,5,6));
-        componentInstanceSymbol.getPortInstance("out1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(7,8,9));
+        //componentInstanceSymbol.getPortInstance("in2").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(4,5,6));
+        //componentInstanceSymbol.getPortInstance("out1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(7,8,9));
 
         //SomeIPGenImpl someIPGenImpl = new SomeIPGenImpl();
         //someIPGenImpl.setGeneratorSomeIP(generatorSomeIP);
@@ -44,6 +45,7 @@ public class SomeIPGenerationTest extends AbstractSymtabTest {
         distributedTargetGenerator.setGenerationTargetPath(OUT_BASE + "addComp/src");
         distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH),"cpp");
         distributedTargetGenerator.add(new SomeIPGenImpl(), "someip");
+        List<File> files2 = generatorSomeIP.generateSomeIPAdapter(componentInstanceSymbol);
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
