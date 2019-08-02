@@ -26,14 +26,16 @@ package sensors;
 import commons.controller.commons.BusEntry;
 import commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractDistanceSensor;
+import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
 import simulation.vehicle.PhysicalVehicle;
+//import sun.nio.cs.DoubleByte;
 
 
 public class RightFrontWheelDistanceToStreetSensor extends AbstractDistanceSensor{
-    public RightFrontWheelDistanceToStreetSensor(PhysicalVehicle vehicle) {
-        super(vehicle);
+    public RightFrontWheelDistanceToStreetSensor(PhysicalVehicle vehicle, EESimulator simulator) {
+        super(vehicle, simulator);
     }
 
     @Override

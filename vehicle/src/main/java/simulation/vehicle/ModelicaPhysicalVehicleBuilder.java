@@ -23,6 +23,7 @@ package simulation.vehicle;
 import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.EESimulator.EESimulator;
 
 /**
  * Abstract Builder class for a ModelicaPhysicalVehicle to avoid complex constructors

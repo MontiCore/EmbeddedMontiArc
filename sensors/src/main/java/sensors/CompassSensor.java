@@ -25,6 +25,7 @@ import sensors.abstractsensors.AbstractSensor;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
 
 /**
@@ -34,8 +35,8 @@ public class CompassSensor extends AbstractSensor {
 
     private Double value;
 
-    public CompassSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public CompassSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(physicalVehicle, simulator);
     }
 
     @Override

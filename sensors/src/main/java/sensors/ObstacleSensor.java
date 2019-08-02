@@ -23,6 +23,7 @@ package sensors;
 import commons.controller.commons.BusEntry;
 import commons.simulation.PhysicalObject;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -36,8 +37,8 @@ public class ObstacleSensor extends AbstractSensor {
     private List<PhysicalObject> result = Collections.synchronizedList(new LinkedList<>());
     private Object[] value = new Object[2];
 
-    public ObstacleSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public ObstacleSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(physicalVehicle, simulator);
     }
 
     protected void calculateValue() {

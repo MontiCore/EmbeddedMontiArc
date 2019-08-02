@@ -22,14 +22,18 @@ package sensors.util;
 
 import commons.controller.commons.BusEntry;
 import sensors.factory.SensorFactory;
+import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
+
+import java.time.Instant;
 
 /**
  * Created by Aklima Zaman on 2/15/2017.
  */
 public class SensorUtil {
     public static PhysicalVehicle sensorAdder(PhysicalVehicle physicalVehicle) {
-        SensorFactory sensorFactory = new SensorFactory(physicalVehicle);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        SensorFactory sensorFactory = new SensorFactory(physicalVehicle, simulator);
 
         physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_VELOCITY));
         physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_GPS_COORDINATES));

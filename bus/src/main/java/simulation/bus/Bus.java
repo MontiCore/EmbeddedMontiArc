@@ -58,7 +58,7 @@ public abstract class Bus extends EEComponent {
 		this.currentTime = currentTime;
 	}
 	
-	protected List<EEComponent> getConnectedComponents() {
+	public List<EEComponent> getConnectedComponents() {
 		return this.connectedComponents;
 	}
 

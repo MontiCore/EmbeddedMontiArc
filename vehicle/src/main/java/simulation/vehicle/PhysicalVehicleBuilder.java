@@ -24,6 +24,8 @@ import commons.controller.interfaces.Bus;
 import commons.controller.interfaces.FunctionBlockInterface;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.EESimulator.EESimulator;
+
 import java.util.Optional;
 
 /**

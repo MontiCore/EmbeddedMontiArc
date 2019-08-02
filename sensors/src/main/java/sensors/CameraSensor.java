@@ -28,6 +28,8 @@ import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
 import simulation.environment.object.House;
@@ -67,8 +69,8 @@ public class CameraSensor extends AbstractSensor {
         return originalImage;
     }
 
-    public CameraSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public CameraSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(physicalVehicle, simulator);
     }
 
     @Override

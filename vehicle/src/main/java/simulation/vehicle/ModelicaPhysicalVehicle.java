@@ -24,6 +24,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.*;
+import simulation.EESimulator.EESimulator;
 import simulation.environment.WorldModel;
 import simulation.environment.visualisationadapter.implementation.Street2D;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;

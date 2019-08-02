@@ -22,6 +22,7 @@ package sensors;
 
 import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.Vehicle;
 import simulation.vehicle.VehicleActuator;
@@ -34,8 +35,8 @@ public class SteeringAngleSensor extends AbstractSensor {
 
     private Double value;
 
-    public SteeringAngleSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public SteeringAngleSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(physicalVehicle, simulator);
     }
 
     @Override

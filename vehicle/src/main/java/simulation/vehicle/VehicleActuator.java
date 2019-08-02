@@ -24,6 +24,8 @@ import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EESimulator;
 
+import java.util.UUID;
+
 
 /**
  * Class that represents an actuator of the vehicle
@@ -197,7 +199,7 @@ public class VehicleActuator extends EEComponent {
     }
 
     @Override
-    public String getID() {
+    public UUID getID() {
         //TODO: implement
         return null;
     }

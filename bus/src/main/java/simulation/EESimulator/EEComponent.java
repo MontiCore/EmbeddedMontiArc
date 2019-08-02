@@ -56,6 +56,10 @@ public abstract class EEComponent {
 		return listenTo;
 	}
 
+	public HashMap<BusEntry, List<EEComponent>> getSendTo() {
+		return sendTo;
+	}
+
 	/**
      * processes an incoming event
      */

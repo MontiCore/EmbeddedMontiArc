@@ -18,6 +18,9 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+
+
+
 package simulation.vehicle;
 
 import com.google.gson.Gson;
@@ -43,6 +46,7 @@ import static org.junit.Assert.*;
 /**
  * Class that tests the MassPointPhysicalVehicleBuilder class
  */
+
 public class MassPointBuilderTest {
     @BeforeClass
     public static void setUpClass() {
@@ -189,9 +193,10 @@ public class MassPointBuilderTest {
         //TODO: Check mass distribution and distances and values
     }
 
-    /**
+/**
      * Testing the loading a JSON serialized car from a file and construct the object using the @{@link PhysicalVehicleBuilder}.
-     */
+*/
+
     @Test
     public void loadFromFileTest() throws IOException {
         // Create file
@@ -214,10 +219,11 @@ public class MassPointBuilderTest {
         checkTheCar(properties, physicalVehicle);
     }
 
-    /**
+/**
      * Testing storing a car in a JSON file.
      * This is done by first storing it in a file and then load it again and check if all properties remained the same.
-     */
+   */
+
     @Test
     public void storeInFileTest() throws IOException {
         // Create file
@@ -239,11 +245,12 @@ public class MassPointBuilderTest {
         checkTheCar(properties, physicalVehicle);
     }
 
-    /**
+/**
      * Checks various vehicle properties and compares them with the initially created one, to assure correct loading.
      *
      * @param physicalVehicle a vehicle to check against the one created in the setup
-     */
+*/
+
     private void checkTheCar(MassPointPhysicalVehicleBuilder.ParsableVehicleProperties properties, PhysicalVehicle physicalVehicle) {
         Assert.assertTrue(MathHelper.vectorEquals(properties.getPosition(), physicalVehicle.getPosition(), 0.00000001));
 

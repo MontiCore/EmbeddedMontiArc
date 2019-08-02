@@ -23,6 +23,7 @@ package sensors.factory;
 import commons.controller.commons.BusEntry;
 import commons.simulation.Sensor;
 import sensors.*;
+import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
 
 /**
@@ -30,47 +31,49 @@ import simulation.vehicle.PhysicalVehicle;
  */
 public class SensorFactory {
     private PhysicalVehicle physicalVehicle;
+    private EESimulator simulator;
 
-    public SensorFactory(PhysicalVehicle physicalVehicle) {
+    public SensorFactory(PhysicalVehicle physicalVehicle, EESimulator simulator) {
         this.physicalVehicle = physicalVehicle;
+        this.simulator = simulator;
     }
 
     public Sensor getSensor(BusEntry busEntry) {
         switch (busEntry) {
         case SENSOR_VELOCITY:
-            return new SpeedSensor(this.physicalVehicle);
+            return new SpeedSensor(this.physicalVehicle, simulator);
         case SENSOR_GPS_COORDINATES:
-            return new LocationSensor(this.physicalVehicle);
+            return new LocationSensor(this.physicalVehicle, simulator);
         case SENSOR_STEERING:
-            return new SteeringAngleSensor(this.physicalVehicle);
+            return new SteeringAngleSensor(this.physicalVehicle, simulator);
         case SENSOR_DISTANCE_TO_RIGHT:
-            return new DistanceToRightSensor(this.physicalVehicle);
+            return new DistanceToRightSensor(this.physicalVehicle, simulator);
         case SENSOR_DISTANCE_TO_LEFT:
-            return new DistanceToLeftSensor(this.physicalVehicle);
+            return new DistanceToLeftSensor(this.physicalVehicle, simulator);
         case SENSOR_WEATHER:
-            return new WeatherSensor(this.physicalVehicle);
+            return new WeatherSensor(this.physicalVehicle, simulator);
         case SENSOR_CAMERA:
-            return new CameraSensor(this.physicalVehicle);
+            return new CameraSensor(this.physicalVehicle, simulator);
         case SENSOR_COMPASS:
-            return new CompassSensor(this.physicalVehicle);
+            return new CompassSensor(this.physicalVehicle, simulator);
         case SENSOR_LEFT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return new LeftBackWheelDistanceToStreetSensor(this.physicalVehicle);
+            return new LeftBackWheelDistanceToStreetSensor(this.physicalVehicle, simulator);
         case SENSOR_LEFT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return new LeftFrontWheelDistanceToStreetSensor(this.physicalVehicle);
+            return new LeftFrontWheelDistanceToStreetSensor(this.physicalVehicle, simulator);
         case SENSOR_RIGHT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return new RightFrontWheelDistanceToStreetSensor(this.physicalVehicle);
+            return new RightFrontWheelDistanceToStreetSensor(this.physicalVehicle, simulator);
         case SENSOR_RIGHT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return new RightBackWheelDistanceToStreetSensor(this.physicalVehicle);
+            return new RightBackWheelDistanceToStreetSensor(this.physicalVehicle, simulator);
         case SENSOR_STREETTYPE:
-            return new StreetTypeSensor(this.physicalVehicle);
+            return new StreetTypeSensor(this.physicalVehicle, simulator);
         case SENSOR_DAYNIGHT:
-            return new DayNightSensor(this.physicalVehicle);
+            return new DayNightSensor(this.physicalVehicle, simulator);
         case SENSOR_LEFT_FRONT_DISTANCE:
-            return new LeftFrontDistanceSensor(this.physicalVehicle);
+            return new LeftFrontDistanceSensor(this.physicalVehicle, simulator);
         case SENSOR_RIGHT_FRONT_DISTANCE:
-            return new RightFrontDistanceSensor(this.physicalVehicle);
+            return new RightFrontDistanceSensor(this.physicalVehicle, simulator);
         case SENSOR_OBSTACLE:
-            return new ObstacleSensor(this.physicalVehicle);
+            return new ObstacleSensor(this.physicalVehicle, simulator);
         default:
             break;
         }

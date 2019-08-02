@@ -121,13 +121,13 @@ public class EESimulatorTest {
         simulator.addEvent(message3);
         simulator.addEvent(message5);
 
-        /*
+
         for (EEDiscreteEvent messages: simulator.getEventList()) {
             System.out.println(messages.getEventType());
             if(messages.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) System.out.println(((BusMessage) messages).getMessage());
             System.out.println(messages.getEventTime());
         }
-         */
+
 
         simulator.simulateNextTick(simTimeTwo);
 

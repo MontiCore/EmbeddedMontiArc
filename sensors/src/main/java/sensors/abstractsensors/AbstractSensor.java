@@ -26,6 +26,7 @@ import commons.simulation.Sensor;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.EESimulator.EEComponent;
 
+import java.util.UUID;
 
 
 /**
@@ -62,7 +63,7 @@ public abstract class AbstractSensor extends EEComponent implements Sensor {
     }
 
     @Override
-    public String getID() {
+    public UUID getID() {
         //TODO implement
         return null;
     }

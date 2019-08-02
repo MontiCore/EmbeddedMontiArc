@@ -24,6 +24,7 @@ import commons.controller.commons.BusEntry;
 import commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractDistanceSensor;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
 import simulation.vehicle.PhysicalVehicle;
@@ -33,8 +34,8 @@ import simulation.vehicle.PhysicalVehicle;
  */
 public class DistanceToLeftSensor extends AbstractDistanceSensor {
 
-    public DistanceToLeftSensor(PhysicalVehicle vehicle) {
-        super(vehicle);
+    public DistanceToLeftSensor(PhysicalVehicle vehicle, EESimulator simulator) {
+        super(vehicle, simulator);
     }
 
     @Override

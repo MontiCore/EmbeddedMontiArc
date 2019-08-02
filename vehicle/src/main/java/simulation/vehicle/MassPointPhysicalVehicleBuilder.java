@@ -28,10 +28,13 @@ import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import simulation.EESimulator.EESimulator;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 
 /**
  * Abstract Builder class for a MassPointPhysicalVehicle to avoid complex constructors

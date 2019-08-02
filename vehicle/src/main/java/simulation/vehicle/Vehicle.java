@@ -32,6 +32,7 @@ import commons.simulation.Sensor;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.EESimulator.EESimulator;
 import simulation.environment.WorldModel;
 import simulation.environment.osm.IntersectionFinder;
 import simulation.util.Log;
@@ -45,6 +46,9 @@ import static simulation.vehicle.VehicleActuatorType.*;
  * Simulation objects for a generic vehicle.
  */
 public class Vehicle {
+    /*
+    TODO: implement BusList, EESimulator,
+     */
 
     /** Default average values for vehicle constructor */
     /** Minimum acceleration that can be made by the motor */
@@ -182,15 +186,16 @@ public class Vehicle {
      * Use other functions to initiate movement and position updates
      */
     protected Vehicle(PhysicalVehicle physicalVehicle) {
-        // Create the motor
-        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_MOTOR, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE);
+        /*// Create the motor
+        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_MOTOR, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE, simulator);
         // Create the brakes
-        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
-        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
-        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
-        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
+        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, simulator);
+        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, simulator);
+        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, simulator);
+        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, simulator);
         // Create the steering
-        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_STEERING, VEHICLE_DEFAULT_STEERING_ANGLE_MIN, VEHICLE_DEFAULT_STEERING_ANGLE_MAX, VEHICLE_DEFAULT_STEERING_ANGLE_RATE);
+        setActuatorProperties(VEHICLE_ACTUATOR_TYPE_STEERING, VEHICLE_DEFAULT_STEERING_ANGLE_MIN, VEHICLE_DEFAULT_STEERING_ANGLE_MAX, VEHICLE_DEFAULT_STEERING_ANGLE_RATE, simulator);
+        */
         // Create the status logger
         this.statusLogger = new StatusLogger();
         // Create the sensor list
@@ -256,6 +261,7 @@ public class Vehicle {
         }
     }
 
+   /*
     /**
      * Function that sets the actuator properties
      *
@@ -264,25 +270,51 @@ public class Vehicle {
      * @param actuatorValueMax   Maximum allowed value of the actuator
      * @param actuatorChangeRate Change rate of the actuator
      */
-    void setActuatorProperties(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate) {
+    /*
+    public void setActuatorProperties(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate, EESimulator simulator) {
         switch (actuatorType) {
             case VEHICLE_ACTUATOR_TYPE_MOTOR:
-                motor = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                motor = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, simulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT:
-                brakesFrontLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                brakesFrontLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, simulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT:
-                brakesFrontRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                brakesFrontRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, simulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT:
-                brakesBackLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                brakesBackLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, simulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT:
-                brakesBackRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                brakesBackRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, simulator);
                 break;
             case VEHICLE_ACTUATOR_TYPE_STEERING:
-                steering = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                steering = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate, simulator);
+                break;
+            default:
+                break;
+        }
+    }
+    */
+    public void setActuatorProperties(VehicleActuator actuator){
+        switch(actuator.getActuatorType()){
+            case VEHICLE_ACTUATOR_TYPE_MOTOR:
+                motor = actuator;
+                break;
+            case VEHICLE_ACTUATOR_TYPE_STEERING:
+                steering = actuator;
+                break;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT:
+                brakesFrontRight = actuator;
+                break;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT:
+                brakesFrontLeft = actuator;
+                break;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT:
+                brakesBackRight = actuator;
+                break;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT:
+                brakesBackLeft = actuator;
                 break;
             default:
                 break;
@@ -718,7 +750,9 @@ public class Vehicle {
 
 
 
-
+    /*
+    TODO:   - umbauen ggf in EEVehicle schreiben
+     */
 
 
     /**

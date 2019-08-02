@@ -22,6 +22,7 @@ package sensors;
 
 import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
 
 /**
@@ -34,8 +35,8 @@ public class DayNightSensor extends AbstractSensor {
 
     private Daytime value;
 
-    public DayNightSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public DayNightSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(physicalVehicle, simulator);
     }
 
     @Override

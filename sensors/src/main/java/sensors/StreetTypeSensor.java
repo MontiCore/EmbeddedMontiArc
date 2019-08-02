@@ -22,6 +22,7 @@ package sensors;
 
 import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
 import simulation.environment.geometry.osmadapter.GeomStreet;
@@ -36,8 +37,8 @@ public class StreetTypeSensor extends AbstractSensor {
 
     private String value;
 
-    public StreetTypeSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public StreetTypeSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(physicalVehicle, simulator);
     }
 
     @Override

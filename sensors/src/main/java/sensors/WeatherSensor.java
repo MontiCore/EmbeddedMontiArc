@@ -23,6 +23,7 @@ package sensors;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
 import simulation.vehicle.PhysicalVehicle;
@@ -33,8 +34,8 @@ import simulation.vehicle.PhysicalVehicle;
 public class WeatherSensor extends AbstractSensor {
     private Double value;
 
-    public WeatherSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public WeatherSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(physicalVehicle, simulator);
     }
 
     @Override

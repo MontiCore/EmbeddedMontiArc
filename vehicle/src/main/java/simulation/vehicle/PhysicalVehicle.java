@@ -25,6 +25,7 @@ import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObjectType;
 import commons.simulation.IdGenerator;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.EESimulator.EESimulator;
 import simulation.util.Log;
 import static simulation.vehicle.VehicleActuatorType.*;
 

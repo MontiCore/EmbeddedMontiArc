@@ -33,7 +33,7 @@
     </parent>
 
     <!-- OUR OWN PROJECT -->
-    <artifactId>bus</artifactId>
+    <artifactId>eevehicle</artifactId>
     <groupId>montisim-simulation</groupId>
     <version>1.0.8</version>
 
@@ -61,6 +61,18 @@
 			<artifactId>guava</artifactId>
 			<version>11.0.2</version>
 		</dependency>
+
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>bus</artifactId>
+            <version>1.0.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>sensors</artifactId>
+            <version>1.0.8</version>
+        </dependency>
 
     </dependencies>
 

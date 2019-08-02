@@ -23,6 +23,7 @@ package sensors;
 import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
 
 /**
@@ -33,8 +34,8 @@ public class SpeedSensor extends AbstractSensor {
 
     private Double value;
 
-    public SpeedSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public SpeedSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(physicalVehicle, simulator);
     }
 
     @Override

@@ -23,7 +23,9 @@ public enum EEComponentType{
 
     BUS("BUS"),
     SENSOR("SENSOR"),
-    BRIDGE("BRIDGE");
+    BRIDGE("BRIDGE"),
+    ACTUATOR("ACTUATOR"),
+    AUTOPILOT("AUTOPILOT");
 
     private final String name;
 
