@@ -15,7 +15,7 @@
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-    <emadl.version>0.2.7-SNAPSHOT</emadl.version>
+    <emadl.version>0.2.8-SNAPSHOT</emadl.version>
     <CNNTrain.version>0.2.6</CNNTrain.version>
     <cnnarch-mxnet-generator.version>0.2.14-SNAPSHOT</cnnarch-mxnet-generator.version>
     <cnnarch-caffe2-generator.version>0.2.11-SNAPSHOT</cnnarch-caffe2-generator.version>
@@ -61,7 +61,6 @@
         </dependency>
 
         <!-- MontiCore Dependencies -->
-
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>common-monticar</artifactId>
