@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.mqtt;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
 import de.monticore.lang.monticar.generator.mqtt.template.MqttAdapterModel;
 import de.monticore.lang.monticar.generator.mqtt.template.MqttTemplates;
 
@@ -31,7 +32,11 @@ public class GeneratorMqtt
 		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
 		
 		model.addPorts(component.getPortInstanceList());
-		
+
+		component.getPortArrays().forEach(port -> {
+		    port.setMiddlewareSymbol(new MqttConnectionSymbol(port.getFullName()));
+        });
+
 		//Generate files and write to project
 		contents.add(MqttTemplates.generateMqttAdapterH(model));
 		files.add(new File(generationTargetPath+"MqttAdapter_"+model.getEscapedCompName()+".h"));
