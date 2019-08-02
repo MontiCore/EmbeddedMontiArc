@@ -46,7 +46,14 @@ public class GeneratorMqtt
 		files.add(new File(generationTargetPath+"Callback.hpp"));
 		contents.add(MqttTemplates.generateMqttCallbackCPP(model));
 		files.add(new File(generationTargetPath+"Callback.cpp"));
-		
+
+		//If file directory does not exist, create it so files can be created
+		File directory = new File(generationTargetPath);
+		if (!directory.exists()) {
+		    directory.mkdirs();
+        }
+
+
         try {
         	int counter = 0;
         	for (File file : files)
