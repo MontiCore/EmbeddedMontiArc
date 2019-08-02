@@ -49,9 +49,7 @@ public class GeneratorMqtt
 
 		//If file directory does not exist, create it so files can be created
 		File directory = new File(generationTargetPath);
-		if (!directory.exists()) {
-		    directory.mkdirs();
-        }
+		directory.mkdirs();
 
 
         try {
