@@ -38,7 +38,7 @@ public class MqttGenImpl implements GeneratorImpl {
 	@Override
 	public boolean willAccept(EMAComponentInstanceSymbol componentInstanceSymbol) {
 		
-		boolean result = componentInstanceSymbol.getPortInstanceList().stream().anyMatch(EMAPortInstanceSymbol::isRosPort); // Should be adapted to Mqtt !!!
+		boolean result = componentInstanceSymbol.getPortInstanceList().stream().anyMatch(EMAPortInstanceSymbol::isMqttPort);
         if(!result){
             Log.warn("GeneratorMqttCpp: No MQTT Ports found! Ignoring component " + componentInstanceSymbol.getName());
         }

@@ -19,7 +19,7 @@
         <!-- .. SE-Libraries .................................................. -->
         <se-commons.version>1.7.7</se-commons.version>
 
-        <embedded-montiarc.version>0.1.9-SNAPSHOT</embedded-montiarc.version>
+        <embedded-montiarc.version>0.1.11-SNAPSHOT</embedded-montiarc.version>
         <Embedded-montiarc-math-generator.version>0.1.12-SNAPSHOT</Embedded-montiarc-math-generator.version>
         <Embedded-montiarc-math-roscpp-generator.version>0.1.6-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
         <EMADL2CPP.version>0.2.8</EMADL2CPP.version>
