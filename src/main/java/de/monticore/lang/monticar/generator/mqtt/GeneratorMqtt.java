@@ -91,21 +91,8 @@ public class GeneratorMqtt
 		
 		File file = new File(generationTargetPath+"CMakeLists.txt");
 		
-        FileWriter fr = null;
-        try {
-            fr = new FileWriter(file);
-            fr.write(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            //Close resources
-            try {
-                fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-		
+        createFile(file, content);
+
     	return file;
     }
 	
@@ -120,20 +107,7 @@ public class GeneratorMqtt
 		
 		File file = new File(generationTargetPath+"FindMQTT.cmake");
 		
-        FileWriter fr = null;
-        try {
-            fr = new FileWriter(file);
-            fr.write(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            //Close resources
-            try {
-                fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        createFile(file, content);
 		
     	return file;
     }
@@ -156,6 +130,13 @@ public class GeneratorMqtt
 		File file = new File(generationTargetPath+"ports.txt");
 		files.add(file);
 		
+        createFile(file, content);
+		
+    	return files;
+		
+	}
+
+	private void createFile(File file, String content) {
         FileWriter fr = null;
         try {
             fr = new FileWriter(file);
@@ -170,9 +151,6 @@ public class GeneratorMqtt
                 e.printStackTrace();
             }
         }
-		
-    	return files;
-		
-	}
+    }
 
 }
