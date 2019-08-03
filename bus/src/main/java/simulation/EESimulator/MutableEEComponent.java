@@ -1,4 +1,3 @@
-
 /**
  *
  * ******************************************************************************
@@ -21,49 +20,40 @@
  */
 package simulation.EESimulator;
 
-import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.math3.exception.NullArgumentException;
 
-public abstract class EEDiscreteEvent {
+import commons.controller.commons.BusEntry;
 
-    private final Instant eventTime;
+import java.util.ArrayList;
+import java.util.List;
 
-    private final EEComponent target;
-    
-    private final EEDiscreteEventTypeEnum eventType;
-    
-    private final UUID Id;
+public abstract class MutableEEComponent extends AbstractEEComponent{
 
-    public EEDiscreteEvent(EEDiscreteEventTypeEnum eventType, Instant eventTime, EEComponent target){
-        this.eventTime = eventTime;
-        this.target = target;
-        this.eventType = eventType;
-        this.Id = UUID.randomUUID();
-    }
+	protected HashMap<BusEntry, List<EEComponent>> targetsByMessageId; // which message to which component
+	protected List<BusEntry> subscribedMessages; // which message do I want to get
 
-    public Instant getEventTime() {
-        return eventTime;
-    }
-
-    public EEComponent getTarget() {
-        return target;
-    }
-    
-    public EEDiscreteEventTypeEnum getEventType() {
-    	return this.eventType;
-    }
-    
-    public UUID getId() {
-    	return this.Id;
-    }
-    
-    @Override
-    public String toString() {
-    	return "Type = " + this.eventType +
-    			"; Target  = " + this.target +
-    			"; Event Time = " +this.eventTime +
-    			"; Id = " + this.Id;
-    			
-    }
+	protected MutableEEComponent(EESimulator simulator, EEComponentType type) {
+		super(simulator, type);
+		if (simulator == null || type == null) {
+			throw new NullArgumentException();
+		}
+		targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+		subscribedMessages = new ArrayList<BusEntry>();
+	}
+	
+	@Override
+	public List<BusEntry> getSubscribedMessages() {
+		return subscribedMessages;
+	}
+	
+	@Override
+	public HashMap<BusEntry, List<EEComponent>> getTragetsByMessageId() {
+		return targetsByMessageId;
+	}
 }

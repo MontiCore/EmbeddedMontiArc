@@ -23,14 +23,18 @@ package simulation.bus;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.UUID;
@@ -70,7 +74,7 @@ public class FlexRayTest {
 
 		flexRay.setMode(new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY));
 		expectedNs = (int) Math.ceil((262 * 8 * 1000000) / ((double) 10));
-		System.out.println(expectedNs);
+		System.out.println(flexRay.getSlotSize().toMillis());
 		assertEquals(expectedNs, flexRay.getSlotSize().toNanos());
 	}
 
@@ -79,7 +83,7 @@ public class FlexRayTest {
 		FlexRay flexRay = createBusStructure();
 
 		long expectedNs = flexRay.getSlotSize().toNanos()
-				* (flexRay.connectedComponents.size() + FlexRay.DYNAMIC_SLOTS);
+				* (flexRay.getConnectedComponents().size() + FlexRay.DYNAMIC_SLOTS);
 		assertEquals(expectedNs, flexRay.getCycleTime().toNanos());
 	}
 
@@ -120,96 +124,49 @@ public class FlexRayTest {
 
 		String msg = "ToIllegalController";
 		BusMessage illegalControllerMsg = new BusMessage(msg, msg.length(),
-				NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE, Instant.EPOCH, comp.getID(), illegalController);
+				NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE, Instant.EPOCH, comp.getId(), illegalController);
 		bus.registerMessage(illegalControllerMsg);
 	}
 
-	public void testRegisterMessage() {
-		FlexRay mainBus = createBusStructure();
-		Collection<Bus> subBuses = BusUtils.findConnectedBuses(mainBus);
-		Bus subBus1 = null;
-		Bus subBus2 = null;
-		for(Bus bus : subBuses) {
-			if(bus.connectedComponents.size() == 5) {
-				subBus1 = bus;
-			}
-			else if(bus.connectedComponents.size() == 8){
-				subBus2 = bus;
-			}
-			else {
-				assertEquals(-1, bus.getConnectedComponents().size());
-			}
-		}
-
-		EEComponent mainComp1 = mainBus.getConnectedComponents().get(0);
-		EEComponent mainComp2 = mainBus.getConnectedComponents().get(1);
-		EEComponent sub1Comp = subBus1.getConnectedComponents().get(0);
-		EEComponent sub2Comp = subBus2.getConnectedComponents().get(0);
-
-		String msg = "Local";
-		BusMessage localMsg = new BusMessage(msg, msg.length(), NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE,
-				Instant.EPOCH, mainComp1.getID(), mainComp2);
-		mainBus.registerMessage(localMsg);
-
-		msg = "1hop";
-		BusMessage oneHopMsg = new BusMessage(msg, msg.length(), NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE,
-				Instant.EPOCH, mainComp2.getID(), sub1Comp);
-		mainBus.registerMessage(oneHopMsg);
-
-		msg = "2hop";
-		BusMessage twoHopMsg = new BusMessage(msg, msg.length(), NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE,
-				Instant.EPOCH, mainComp1.getID(), sub2Comp);
-		mainBus.registerMessage(twoHopMsg);
-
-		Map<UUID, PriorityQueue<BusMessage>> messagesByControllerId = mainBus.getMessagesByControllerId();
-		for(Map.Entry<UUID, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
-			if(entry.getKey().equals(mainComp1.getID())) {
-				assertEquals(2, entry.getValue().size());
-			}
-			else if(entry.getKey().equals(mainComp2.getID())) {
-				assertEquals(1, entry.getValue().size());
-			}
-			else {
-				assertEquals(0, entry.getValue().size());
-			}
-		}
-	}
-
 	@Test
-	public void testGetNextDynamicMessage() {
+	public void testGetNextDynamicMessage() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 		FlexRay flexray = createBusStructure();
 
-		BusMessage empty = flexray.getNextDynamicMessage();
+		Method getNextDymaicMessage = FlexRay.class.getDeclaredMethod("getNextDynamicMessage");
+		getNextDymaicMessage.setAccessible(true);
+		BusMessage empty = (BusMessage) getNextDymaicMessage.invoke(flexray);
 		assertTrue(empty == null);
 
-		BusMessage c01 = createNregisterMessage(flexray, "c01", 0,  1, 1, 0);
-		BusMessage msg = flexray.getNextDynamicMessage();
+		BusMessage c01 = createNregisterMessage(flexray, "c01", 0, 1, 0);
+		BusMessage msg = (BusMessage) getNextDymaicMessage.invoke(flexray);
 		assertTrue(msg != null);
 		assertEquals(msg, c01);
 
-		BusMessage c02 = createNregisterMessage(flexray, "c02", 0, 2, 254, 1);
-		msg = flexray.getNextDynamicMessage();
+		BusMessage c02 = createNregisterMessage(flexray, "c02", 0, 254, 1);
+		msg = (BusMessage) getNextDymaicMessage.invoke(flexray);
 		assertTrue(msg != null);
 		assertEquals(msg, c02);
 
-		BusMessage c11 = createNregisterMessage(flexray, "c11", 1, 2, 127, 2);
-		msg = flexray.getNextDynamicMessage();
+		BusMessage c11 = createNregisterMessage(flexray, "c11", 1, 127, 2);
+		msg = (BusMessage) getNextDymaicMessage.invoke(flexray);
 		assertTrue(msg != null);
 		assertEquals(msg, c11);
 
-		BusMessage c12 = createNregisterMessage(flexray, "c12", 1, 3, 127, 3);
-		msg = flexray.getNextDynamicMessage();
+		BusMessage c12 = createNregisterMessage(flexray, "c12", 1, 127, 3);
+		msg = (BusMessage) getNextDymaicMessage.invoke(flexray);
 		assertTrue(msg != null);
 		assertEquals(msg, c12);
 
-		createNregisterMessage(flexray, "", 1, 4, 1, 0);
-		msg = flexray.getNextDynamicMessage();
+		createNregisterMessage(flexray, "", 1, 1, 0);
+		msg = (BusMessage) getNextDymaicMessage.invoke(flexray);
 		assertTrue(msg != null);
 		assertEquals(msg, c12);
 	}
 
 	@Test
-	public void testFillStaticSegment() {
+	public void testFillStaticSegment() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 		FlexRay flexray = createBusStructure();
 		createNregisterMessages(flexray);
 		Map<Integer, List<BusMessage>> msgsByEndCycle = new HashMap<Integer, List<BusMessage>>();
@@ -260,8 +217,11 @@ public class FlexRayTest {
 				}
 
 			}
+
+			Method fillStaticSegment = FlexRay.class.getDeclaredMethod("fillStaticSegment", Instant.class);
+			fillStaticSegment.setAccessible(true);
 			for (; curCycle < entry.getKey(); curCycle++) {
-				flexray.fillStaticSegment(Instant.EPOCH);
+				fillStaticSegment.invoke(flexray, Instant.EPOCH);
 				for (Map.Entry<UUID, Integer> transmittedBytesEntry : transmittedBytesByControllerId.entrySet()) {
 					int transmittedBytes = transmittedBytesEntry.getValue();
 					transmittedBytesEntry.setValue(transmittedBytes + FlexRay.MAX_SLOT_PAYLOAD);
@@ -277,7 +237,8 @@ public class FlexRayTest {
 	}
 
 	@Test
-	public void testFillDynamicSegment() {
+	public void testFillDynamicSegment() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 
 		FlexRay flexray = createBusStructure();
 		List<BusMessage> msgs = createNregisterMessages(flexray);
@@ -323,8 +284,13 @@ public class FlexRayTest {
 
 			}
 
+			for (Method mth : FlexRay.class.getMethods()) {
+				System.out.println(mth.getName());
+			}
+			Method fillDynamicSegment = FlexRay.class.getDeclaredMethod("fillDynamicSegment", Instant.class);
+			fillDynamicSegment.setAccessible(true);
 			for (; curCycle < entry.getKey(); curCycle++) {
-				flexray.fillDynamicSegment(Instant.EPOCH);
+				fillDynamicSegment.invoke(flexray, Instant.EPOCH);
 				transmittedBytes += bytesPerCycle;
 			}
 
@@ -339,38 +305,145 @@ public class FlexRayTest {
 	@Test
 	public void testGetNextFinishTime() {
 		FlexRay flexray = createBusStructure();
-		createNregisterMessages(flexray);
-		boolean nextTransmitted = false;
+		
+		BusMessage dynamic = createNregisterMessage(flexray, "finished in last dynamic slot", 0, (4 * 254 + 250), 0);
+		BusMessage copy = new BusMessage(dynamic);
+		Instant finishTime = flexray.getNextFinishTime();
+		assertEquals(copy.getTransmittedBytes(), dynamic.getTransmittedBytes());
+		Instant minFinishTime = Instant.EPOCH.plus(flexray.getStaticSegmentSize())
+				.plus(flexray.getSlotSize().multipliedBy(3));
+		assertTrue(minFinishTime.isBefore(finishTime));
+		assertTrue(minFinishTime.plus(flexray.getSlotSize()).isAfter(finishTime));
+		flexray.simulateUntil(finishTime);
+		assertTrue(dynamic.isTransmitted());
+		assertEquals(finishTime, dynamic.getFinishTime());
 
-		PriorityQueue<BusMessage> firstMsgs = new PriorityQueue<BusMessage>(new BusMessageComparatorIdDesc());
-		for (PriorityQueue<BusMessage> controllerMsgs : flexray.getMessagesByControllerId().values()) {
-			if (!controllerMsgs.isEmpty()) {
-				firstMsgs.add(new BusMessage(controllerMsgs.peek()));
-			}
-		}
+		dynamic = createNregisterMessage(flexray, "finished at end of last dynamic slot", 0, 4, 0);
+		copy = new BusMessage(dynamic);
+		finishTime = flexray.getNextFinishTime();
+		assertEquals(copy.getTransmittedBytes(), dynamic.getTransmittedBytes());
+		assertEquals(Instant.EPOCH.plus(flexray.getCycleTime()), finishTime);
+		flexray.simulateUntil(finishTime);
+		assertTrue(dynamic.isTransmitted());
+		assertEquals(finishTime, dynamic.getFinishTime());
 
-		int cycles = 0;
-		while (!nextTransmitted) {
-			cycles++;
-			// static segment
-			for (BusMessage msg : firstMsgs) {
-				int actual = msg.transmitBytes(254, 0);
-				if (actual < 254) {
-					nextTransmitted = true;
+		//start from incomplete dynamic slot
+		dynamic = createNregisterMessage(flexray, "finished in last dynamic slot", 0, (4 * 254 + 123), 0);
+		copy = new BusMessage(dynamic);
+		finishTime = flexray.getNextFinishTime();
+		assertEquals(copy.getTransmittedBytes(), dynamic.getTransmittedBytes());
+		minFinishTime = Instant.EPOCH.plus(flexray.getCycleTime()).plus(flexray.getStaticSegmentSize())
+				.plus(flexray.getSlotSize().multipliedBy(3));
+		assertTrue(minFinishTime.isBefore(finishTime));
+		assertTrue(minFinishTime.plus(flexray.getSlotSize()).isAfter(finishTime));
+		flexray.simulateUntil(finishTime);
+		assertTrue(dynamic.isTransmitted());
+		assertEquals(finishTime, dynamic.getFinishTime());
+		
+		// create message that takes up dynamic slots
+		dynamic = createNregisterMessage(flexray, "dynamic", 0, Integer.MAX_VALUE, 20);
+
+		Random rand = new Random();
+		Instant lastFinishedCycle = Instant.EPOCH.plus(flexray.getCycleTime().multipliedBy(2));
+		for (int i = 2; i < flexray.getConnectedComponents().size(); i++) {
+			System.out.println("--------------new Message-----------------");
+			int slotNumber = 0;
+			int messageLen = rand.nextInt(253) + 1;
+			
+			//start from incomplete static segment
+			BusMessage controller = createNregisterMessage(flexray, "static", i-1, messageLen, 0);
+			for (PriorityQueue<BusMessage> controllerMsgs : flexray.getMessagesByControllerId().values()) {
+				if (!controllerMsgs.isEmpty() && controllerMsgs.peek() != dynamic) {
+					break;
 				}
+				slotNumber++;
 			}
-			// dynamic segment
-			int actual = firstMsgs.peek().transmitBytes((254 * FlexRay.DYNAMIC_SLOTS), 0);
-			if (actual < (254 * FlexRay.DYNAMIC_SLOTS)) {
-				nextTransmitted = true;
+			copy = new BusMessage(controller);
+			finishTime = flexray.getNextFinishTime();
+			assertEquals(copy.getTransmittedBytes(), controller.getTransmittedBytes());
+			if(lastFinishedCycle.plus(flexray.getCycleTime()).isBefore(finishTime)) {
+				lastFinishedCycle= lastFinishedCycle.plus(flexray.getCycleTime());
 			}
+			minFinishTime = lastFinishedCycle.plus(flexray.getSlotSize().multipliedBy(slotNumber));
+			assertTrue(minFinishTime.isBefore(finishTime));
+			assertTrue(minFinishTime.plus(flexray.getSlotSize()).isAfter(finishTime));
+			flexray.simulateUntil(finishTime);
+			assertTrue(controller.isTransmitted());
+			assertEquals(finishTime, controller.getFinishTime());
+			
+			slotNumber = 0;
+			controller = createNregisterMessage(flexray, "static", i, messageLen, 0);
+			for (PriorityQueue<BusMessage> controllerMsgs : flexray.getMessagesByControllerId().values()) {
+				if (!controllerMsgs.isEmpty() && controllerMsgs.peek() != dynamic) {
+					break;
+				}
+				slotNumber++;
+			}
+			copy = new BusMessage(controller);
+			finishTime = flexray.getNextFinishTime();
+			assertEquals(copy.getTransmittedBytes(), controller.getTransmittedBytes());
+			if(lastFinishedCycle.plus(flexray.getCycleTime()).isBefore(finishTime)) {
+				lastFinishedCycle= lastFinishedCycle.plus(flexray.getCycleTime());
+			}
+			minFinishTime = lastFinishedCycle.plus(flexray.getSlotSize().multipliedBy(slotNumber));
+			assertTrue(minFinishTime.isBefore(finishTime));
+			assertTrue(minFinishTime.plus(flexray.getSlotSize()).isAfter(finishTime));
+			flexray.simulateUntil(finishTime);
+			assertTrue(controller.isTransmitted());
+			assertEquals(finishTime, controller.getFinishTime());
+
+			controller = createNregisterMessage(flexray, "static", i, 254 - messageLen, 0);
+			copy = new BusMessage(controller);
+			finishTime = flexray.getNextFinishTime();
+			assertEquals(copy.getTransmittedBytes(), controller.getTransmittedBytes());			assertEquals(minFinishTime.plus(flexray.getSlotSize()), finishTime);
+			flexray.simulateUntil(finishTime);
+			assertTrue(controller.isTransmitted());
+			assertEquals(finishTime, controller.getFinishTime());
 		}
-		Instant expected = flexray.currentTime.plusNanos((flexray.getCycleTime().toNanos() * cycles));
-		assertEquals(expected, flexray.getNextFinishTime());
+
 	}
 
 	@Test
-	public void testsimulateForRandomized() {
+	public void testGetNextFinishTimeRandomized() {
+		FlexRay flexray = createBusStructure();
+		List<BusMessage> msgs = createNregisterMessages(flexray);
+		int i = 0;
+		for (;i < 2 && !msgs.isEmpty(); i++) {
+			List<BusMessage> firstMsgs = new ArrayList<BusMessage>();
+			for (PriorityQueue<BusMessage> controllerMsgs : flexray.getMessagesByControllerId().values()) {
+				PriorityQueue<BusMessage> copy = new PriorityQueue<BusMessage>(controllerMsgs); 
+				BusMessage cur = copy.poll();
+				while(cur != null && cur.isTransmitted()) {
+					cur = copy.poll();
+				}
+				if(cur != null) {
+					firstMsgs.add(cur);
+				}
+			}
+			System.out.println("--------------New Message-------------");
+			System.out.println("--------------"+ msgs.size() + " remaining msgs-------------");
+			Instant nextFinishTime = flexray.getNextFinishTime();
+			flexray.simulateUntil(nextFinishTime);
+
+			boolean transmitted = false;
+			for(BusMessage msg : firstMsgs) {
+				if (msg.isTransmitted()) {
+					System.out.println(msg);
+					assertEquals(msg.getFinishTime(), nextFinishTime);
+					transmitted = true;
+					msgs.remove(msg);
+					i = 0;
+				}
+			}
+			assertTrue(transmitted);
+		}
+
+		assertEquals(0, msgs.size());
+	}
+
+	@Test
+	public void testsimulateUntilRandomized() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 		FlexRay flexray = createBusStructure();
 		createNregisterMessages(flexray);
 
@@ -380,13 +453,15 @@ public class FlexRayTest {
 				firstMsgs.add(controllerMsgs.peek());
 			}
 		}
-
+		Method simulateUntil = FlexRay.class.getDeclaredMethod("simulateUntil", Instant.class);
+		simulateUntil.setAccessible(true);
 		while (!firstMsgs.isEmpty()) {
 			BusMessage cur = firstMsgs.poll();
 			// transmitted during static and dynamic segments
 			int msgCycles = (int) Math.ceil(
 					cur.getRemainingBytes() / ((double) (FlexRay.MAX_SLOT_PAYLOAD * (FlexRay.DYNAMIC_SLOTS + 1))));
-			flexray.simulateFor(flexray.getCycleTime().multipliedBy(msgCycles));
+			simulateUntil.invoke(flexray,
+					flexray.getCurrentTime().plus(flexray.getCycleTime().multipliedBy(msgCycles)));
 			assertTrue(cur.isTransmitted());
 
 			firstMsgs.clear();
@@ -398,107 +473,118 @@ public class FlexRayTest {
 		}
 	}
 
-//	@Test
-//	public void testsimulateFor() {
-//		FlexRay flexray = createBusStructure();
-//
-//		// finish in third cycle (static)
-//		BusMessage c01 = createNregisterMessage(flexray, "c01", 0, 1, 127, 0);
-//		// finish in second cycle (dynamic 1.5 slots)
-//		BusMessage c02 = createNregisterMessage(flexray, "c02", 0, 1, (254 + 254 + 254 + 381), 4);
-//
-//		// finish in third cycle (static)
-//		BusMessage c11 = createNregisterMessage(flexray, "c11", 1, 1, 100, 0);
-//		// finish in second cycle (dynamic 4 slots)
-//		BusMessage c12 = createNregisterMessage(flexray, "c12", 1, 1, (254 + 254 + 635), 3);
-//
-//		// finish in first cycle (static)
-//		BusMessage c21 = createNregisterMessage(flexray, "c21", 2, 1, 100, 0);
-//		// finish in first cycle (static)
-//		BusMessage c22 = createNregisterMessage(flexray, "c22", 2, 1, 100, 0);
-//		// finish in first cycle (static)
-//		BusMessage c23 = createNregisterMessage(flexray, "c23", 2, 1, 54, 0);
-//
-//		// finish in third cycle (static)
-//		BusMessage c31 = createNregisterMessage(flexray, "c31", 3, 1, 100, 0);
-//		// finish in second cycle (static)
-//		BusMessage c32 = createNregisterMessage(flexray, "c32", 3, 1, 200, 1);
-//		// finish in first cycle (dynamic after 3 slots)
-//		BusMessage c33 = createNregisterMessage(flexray, "c33", 3, 1, (154 + 762), 5);
-//		// finish in first cycle (static)
-//		BusMessage c34 = createNregisterMessage(flexray, "c34", 3, 1, 100, 6);
-//
-//		long slotSizeNs = Math.toIntExact(flexray.getSlotSize().toNanos());
-//		long totalStaticSegmentSizeNs = Math.toIntExact(flexray.getStaticSegmentSize().toNanos());
-//		long cycleTimeNs = Math.toIntExact(flexray.getCycleTime().toNanos());
-//
-//		Instant currentTime = Instant.EPOCH;
-//		flexray.simulateFor(Duration.ofNanos(cycleTimeNs / 2));
-//		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
-//		assertEquals(currentTime, flexray.currentTime);
-//		flexray.simulateFor(flexray.getCycleTime().dividedBy(3));
-//		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
-//		assertEquals(currentTime, flexray.currentTime);
-//		flexray.simulateFor(flexray.getCycleTime().dividedBy(3));
-//		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
-//		assertEquals(currentTime, flexray.currentTime);
-//		flexray.simulateFor(flexray.getCycleTime().dividedBy(2));
-//		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
-//		assertEquals(currentTime, flexray.currentTime);
-//		flexray.simulateFor(flexray.getCycleTime().dividedBy(3));
-//		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
-//		assertEquals(currentTime, flexray.currentTime);
-//		flexray.simulateFor(flexray.getCycleTime());
-//
-//		assertTrue(0 < Duration.between(Instant.EPOCH, c34.getFinishTime()).toNanos());
-//		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c34.getFinishTime()).toNanos());
-//
-//		System.out.println("Expected: " + (totalStaticSegmentSizeNs + (slotSizeNs * 3)) + "; Actual: "
-//				+ Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
-//		assertEquals((totalStaticSegmentSizeNs + (slotSizeNs * 3)),
-//				Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
-//
-//		assertTrue(0 < Duration.between(Instant.EPOCH, c21.getFinishTime()).toNanos());
-//		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c21.getFinishTime()).toNanos());
-//
-//		assertTrue(0 < Duration.between(Instant.EPOCH, c22.getFinishTime()).toNanos());
-//		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c22.getFinishTime()).toNanos());
-//
-//		assertTrue(0 < Duration.between(Instant.EPOCH, c23.getFinishTime()).toNanos());
-//		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c23.getFinishTime()).toNanos());
-//
-//		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + slotSizeNs) + "; Actual: "
-//				+ Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
-//		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + slotSizeNs) < Duration
-//				.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
-//		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + (2 * slotSizeNs)) + "; Actual: "
-//				+ Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
-//		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + (2 * slotSizeNs)) > Duration
-//				.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
-//
-//		System.out.println(cycleTimeNs + totalStaticSegmentSizeNs);
-//		System.out.println("Expected: " + (cycleTimeNs * 2) + "; Actual: "
-//				+ Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
-//		assertEquals((cycleTimeNs * 2), Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
-//
-//		assertTrue(cycleTimeNs < Duration.between(Instant.EPOCH, c32.getFinishTime()).toNanos());
-//		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c32.getFinishTime())
-//				.toNanos());
-//
-//		System.out.println("Expected: " + (cycleTimeNs * 2) + "; Actual: "
-//				+ Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
-//		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
-//		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c01.getFinishTime())
-//				.toNanos());
-//
-//		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c11.getFinishTime()).toNanos());
-//		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c11.getFinishTime())
-//				.toNanos());
-//
-//		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c31.getFinishTime()).toNanos());
-//		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c31.getFinishTime())
-//				.toNanos());
-//	}
+	@Test
+	public void testsimulateUntil() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException, SecurityException {
+		FlexRay flexray = createBusStructure();
+
+		// finish in third cycle (static)
+		BusMessage c01 = createNregisterMessage(flexray, "c01", 0, 127, 0);
+		// finish in second cycle (dynamic 1.5 slots)
+		BusMessage c02 = createNregisterMessage(flexray, "c02", 0, (254 + 254 + 254 + 381), 4);
+
+		// finish in third cycle (static)
+		BusMessage c11 = createNregisterMessage(flexray, "c11", 1, 100, 0);
+		// finish in second cycle (dynamic 4 slots)
+		BusMessage c12 = createNregisterMessage(flexray, "c12", 1, (254 + 254 + 635), 3);
+
+		// finish in first cycle (static)
+		BusMessage c21 = createNregisterMessage(flexray, "c21", 2, 100, 0);
+		// finish in first cycle (static)
+		BusMessage c22 = createNregisterMessage(flexray, "c22", 2, 100, 0);
+		// finish in first cycle (static)
+		BusMessage c23 = createNregisterMessage(flexray, "c23", 2, 54, 0);
+
+		// finish in third cycle (static)
+		BusMessage c31 = createNregisterMessage(flexray, "c31", 3, 100, 0);
+		// finish in second cycle (static)
+		BusMessage c32 = createNregisterMessage(flexray, "c32", 3, 200, 1);
+		// finish in first cycle (dynamic after 3 slots)
+		BusMessage c33 = createNregisterMessage(flexray, "c33", 3, (154 + 762), 5);
+		// finish in first cycle (static)
+		BusMessage c34 = createNregisterMessage(flexray, "c34", 3, 100, 6);
+
+		long slotSizeNs = flexray.getSlotSize().toNanos();
+		long totalStaticSegmentSizeNs = Math.toIntExact(flexray.getStaticSegmentSize().toNanos());
+		long cycleTimeNs = flexray.getCycleTime().toNanos();
+
+		Method simulateUntil = FlexRay.class.getDeclaredMethod("simulateUntil", Instant.class);
+		simulateUntil.setAccessible(true);
+
+		Instant currentTime = Instant.EPOCH;
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
+		simulateUntil.invoke(flexray, currentTime);
+		assertEquals(currentTime, flexray.getCurrentTime());
+
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
+		simulateUntil.invoke(flexray, currentTime);
+		assertEquals(currentTime, flexray.getCurrentTime());
+
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
+		simulateUntil.invoke(flexray, currentTime);
+		assertEquals(currentTime, flexray.getCurrentTime());
+
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
+		simulateUntil.invoke(flexray, currentTime);
+		assertEquals(currentTime, flexray.getCurrentTime());
+
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
+		simulateUntil.invoke(flexray, currentTime);
+		assertEquals(currentTime, flexray.getCurrentTime());
+
+		currentTime = currentTime.plusNanos(flexray.getCycleTime().toNanos());
+		simulateUntil.invoke(flexray, currentTime);
+		assertEquals(currentTime, flexray.getCurrentTime());
+
+		assertTrue(0 < Duration.between(Instant.EPOCH, c34.getFinishTime()).toNanos());
+		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c34.getFinishTime()).toNanos());
+
+		System.out.println("Expected: " + (totalStaticSegmentSizeNs + (slotSizeNs * 3)) + "; Actual: "
+				+ Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
+		assertEquals((totalStaticSegmentSizeNs + (slotSizeNs * 3)),
+				Duration.between(Instant.EPOCH, c33.getFinishTime()).toNanos());
+
+		assertTrue(0 < Duration.between(Instant.EPOCH, c21.getFinishTime()).toNanos());
+		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c21.getFinishTime()).toNanos());
+
+		assertTrue(0 < Duration.between(Instant.EPOCH, c22.getFinishTime()).toNanos());
+		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c22.getFinishTime()).toNanos());
+
+		assertTrue(0 < Duration.between(Instant.EPOCH, c23.getFinishTime()).toNanos());
+		assertTrue(totalStaticSegmentSizeNs > Duration.between(Instant.EPOCH, c23.getFinishTime()).toNanos());
+
+		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + slotSizeNs) + "; Actual: "
+				+ Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + slotSizeNs) < Duration
+				.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+		System.out.println("Expected: " + (cycleTimeNs + totalStaticSegmentSizeNs + (2 * slotSizeNs)) + "; Actual: "
+				+ Duration.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs + (2 * slotSizeNs)) > Duration
+				.between(Instant.EPOCH, c02.getFinishTime()).toNanos());
+
+		System.out.println(cycleTimeNs + totalStaticSegmentSizeNs);
+		System.out.println("Expected: " + (cycleTimeNs * 2) + "; Actual: "
+				+ Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
+		assertEquals((cycleTimeNs * 2), Duration.between(Instant.EPOCH, c12.getFinishTime()).toNanos());
+
+		assertTrue(cycleTimeNs < Duration.between(Instant.EPOCH, c32.getFinishTime()).toNanos());
+		assertTrue((cycleTimeNs + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c32.getFinishTime())
+				.toNanos());
+
+		System.out.println("Expected: " + (cycleTimeNs * 2) + "; Actual: "
+				+ Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
+		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c01.getFinishTime()).toNanos());
+		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c01.getFinishTime())
+				.toNanos());
+
+		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c11.getFinishTime()).toNanos());
+		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c11.getFinishTime())
+				.toNanos());
+
+		assertTrue((cycleTimeNs * 2) < Duration.between(Instant.EPOCH, c31.getFinishTime()).toNanos());
+		assertTrue(((cycleTimeNs * 2) + totalStaticSegmentSizeNs) > Duration.between(Instant.EPOCH, c31.getFinishTime())
+				.toNanos());
+	}
 
 	private FlexRay createBusStructure() {
 		List<EEComponent> mainComponents = new ArrayList<EEComponent>();
@@ -534,16 +620,15 @@ public class FlexRayTest {
 		return main;
 	}
 
-	private BusMessage createNregisterMessage(FlexRay flexray, Object message, int senderPos, int receiverPos,
-			int messageLength, int priority) {
+	private BusMessage createNregisterMessage(FlexRay flexray, Object message, int senderPos, int messageLength,
+			int priority) {
 		assertTrue(busEntryByOrdinal.size() > priority);
 
 		List<EEComponent> connectedComponents = flexray.getConnectedComponents();
 		assertTrue(senderPos >= 0 && senderPos < connectedComponents.size());
-		assertTrue(receiverPos >= 0 && receiverPos < connectedComponents.size());
 
 		BusMessage msg = new BusMessage(message, messageLength, busEntryByOrdinal.get(priority), Instant.EPOCH,
-				connectedComponents.get(senderPos).getID(), connectedComponents.get(receiverPos));
+				connectedComponents.get(senderPos).getId(), flexray);
 		flexray.registerMessage(msg);
 		return msg;
 	}
@@ -562,10 +647,9 @@ public class FlexRayTest {
 		Random rand = new Random();
 		for (int j = 0; j < busEntryByOrdinal.size(); j++) {
 			int senderPos = rand.nextInt(connectedComponents.size());
-			int receiverPos = rand.nextInt(connectedComponents.size());
 			int messageLength = rand.nextInt(1500);
 			int priority = priorities.remove(rand.nextInt(priorities.size()));
-			msgs.add(createNregisterMessage(flexray, j, senderPos, receiverPos, messageLength, priority));
+			msgs.add(createNregisterMessage(flexray, j, senderPos, messageLength, priority));
 		}
 		return msgs;
 	}

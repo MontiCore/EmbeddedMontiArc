@@ -23,6 +23,7 @@ package simulation.EESimulator;
 
 import simulation.bus.Bus;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.Comparator;
@@ -66,6 +67,11 @@ public class EESimulator {
 	 */
 
 	public void addEvent(EEDiscreteEvent event) {
+		if(event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
+			BusMessage msg = (BusMessage)event;
+			System.out.println(msg.getControllerID() + " registered: " + msg.getMessage() + " for " 
+					+ msg.getTarget().getId() + " at time " + msg.getEventTime());
+		}
 		eventList.offer(event);
 	}
 
@@ -79,16 +85,20 @@ public class EESimulator {
 		//loop until eventList is empty or next event is in future
 		while(!eventList.isEmpty() && !eventList.peek().getEventTime().isAfter(deltaSimulationTime)){
 			cur = eventList.poll();
-
-
-			System.out.println("process event: "+ cur.getEventType() + " to " + cur.getTarget() + " at " + cur.getEventTime());
-			if (cur.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) System.out.println(((BusMessage) cur).getMessage());
-
-
+			
+			Object msg = "";
+			if(cur.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
+				msg = ((BusMessage)cur).getMessage();
+			}
+			
+			System.out.println("----------------------------");
+			System.out.println("process event: " + msg + " " + cur.getEventType() + " at time " 
+					+ Duration.between(Instant.EPOCH, cur.getEventTime()).toNanos() + " for " 
+					+ cur.getTarget().getId());
 
 			cur.getTarget().processEvent(cur);
 			this.simulationTime = cur.getEventTime();
-
+			System.out.println("----------------------------");
 		}
 	}
 

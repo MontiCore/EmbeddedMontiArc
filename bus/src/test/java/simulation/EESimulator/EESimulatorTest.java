@@ -23,11 +23,13 @@ package simulation.EESimulator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-
 import commons.controller.commons.BusEntry;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Test;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
@@ -35,237 +37,148 @@ import simulation.bus.*;
 
 public class EESimulatorTest {
 
+	@Test
+	public void testSimulateNextTick() {
+		EESimulator simulator = new EESimulator(Instant.EPOCH);
 
-    static List<BusMessage> messageList = new LinkedList<>();
+		Instant simTime = Instant.EPOCH;
 
-    public static void setProcessed(BusMessage message, EESimulatorTestComponent component) {
-        for (BusMessage msg: messageList) {
-            if(msg.getMessage().equals(message.getMessage())){
-                msg.setMessage(component.getID().toString() + " processed");
-            }
+		TestComponent listenerEngine = new TestComponent(simulator,
+				Collections.singletonList(BusEntry.ACTUATOR_ENGINE)); // gets ACTUATOR_ENGINE
+		TestComponent listenerGear = new TestComponent(simulator, Collections.singletonList(BusEntry.ACTUATOR_GEAR)); // gets
+																														// ACTUATOR_GEAR
+		TestComponent listenerBrake = new TestComponent(simulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE)); // gets
+																														// ACTUATOR_BRAKE
+		BusEntry listenTo[] = { BusEntry.ACTUATOR_STEERING, BusEntry.SENSOR_COMPASS };
+		TestComponent listenerSteeringNCompass = new TestComponent(simulator, Arrays.asList(listenTo)); // gets
+																										// ACTUATOR_STEERING
+																										// and
+																										// SENSOR_COMPASS
 
-        }
-    }
+		TestComponent transmitter = new TestComponent(simulator);
 
-    @Test
-    public void testSimulateNextTick() {
+		FlexRay testBus = new FlexRay(simulator);
+		testBus.registerComponent(listenerEngine);
+		testBus.registerComponent(listenerGear);
+		testBus.registerComponent(listenerBrake);
+		testBus.registerComponent(listenerSteeringNCompass);
+		testBus.registerComponent(transmitter);
 
+		List<BusMessage> messageList = new LinkedList<>();
+		BusMessage engineMsg = new BusMessage("messageOne", 100, BusEntry.ACTUATOR_ENGINE, Instant.EPOCH.plusSeconds(3),
+				transmitter.getId(), testBus);
+		messageList.add(engineMsg);
+		BusMessage gearMsg = new BusMessage("messageTwo", 200, BusEntry.ACTUATOR_GEAR, Instant.EPOCH.plusSeconds(32),
+				transmitter.getId(), testBus);
+		messageList.add(gearMsg);
+		BusMessage brakeMsg = new BusMessage("messageThree", 20, BusEntry.ACTUATOR_BRAKE, Instant.EPOCH.plusSeconds(38),
+				transmitter.getId(), testBus);
+		messageList.add(brakeMsg);
+		BusMessage steeringMsg = new BusMessage("messageFour", 150, BusEntry.ACTUATOR_STEERING,
+				Instant.EPOCH.plusSeconds(4), transmitter.getId(), testBus);
+		messageList.add(steeringMsg);
+		BusMessage engineMsg2 = new BusMessage("messageFive", 30, BusEntry.ACTUATOR_ENGINE,
+				Instant.EPOCH.plusSeconds(15), transmitter.getId(), testBus);
+		messageList.add(engineMsg2);
+		BusMessage compassMsg = new BusMessage("messageSix", 120, BusEntry.SENSOR_COMPASS,
+				Instant.EPOCH.plusSeconds(40), transmitter.getId(), testBus);
+		messageList.add(compassMsg);
 
-        EESimulator simulator = new EESimulator(Instant.EPOCH);
+		simulator.addEvent(engineMsg);
+		simulator.addEvent(gearMsg);
+		simulator.addEvent(steeringMsg);
 
-        Instant simTime = Instant.EPOCH;
+		simulator.simulateNextTick(simTime);
 
-        ArrayList<BusEntry> listenToList = new ArrayList<>();
-        listenToList.add(BusEntry.ACTUATOR_ENGINE);
-        EESimulatorTestComponent tesComp1 = new EESimulatorTestComponent(simulator, listenToList); //gets ACTUATOR_ENGINE
-        listenToList.set(0, BusEntry.ACTUATOR_GEAR);
-        EESimulatorTestComponent testComp2 = new EESimulatorTestComponent(simulator, listenToList); //gets ACTUATOR_GEAR
-        listenToList.set(0, BusEntry.ACTUATOR_BRAKE);
-        EESimulatorTestComponent testComp3 = new EESimulatorTestComponent(simulator, listenToList); //gets ACTUATOR_BRAKE
-        listenToList.set(0, BusEntry.ACTUATOR_STEERING);
-        listenToList.add(BusEntry.SENSOR_COMPASS);
-        EESimulatorTestComponent testComp4 = new EESimulatorTestComponent(simulator, listenToList); //gets ACTUATOR_STEERING and SENSOR_COMPASS
+		simTime = simTime.plusSeconds(30);
 
-        TestComponent transmitter = new TestComponent(simulator);
+		simulator.addEvent(brakeMsg);
+		simulator.addEvent(engineMsg2);
 
+		simulator.simulateNextTick(simTime);
 
-        FlexRay testBus = new FlexRay(simulator);
-        testBus.registerComponent(tesComp1);
-        testBus.registerComponent(testComp2);
-        testBus.registerComponent(testComp3);
-        testBus.registerComponent(testComp4);
-        testBus.registerComponent(transmitter);
+		assertTrue(listenerEngine.processedMessage(engineMsg.getMessage()));
+		assertTrue(listenerSteeringNCompass.processedMessage(steeringMsg.getMessage()));
+		assertTrue(listenerEngine.processedMessage(engineMsg2.getMessage()));
 
-        BusMessage message1 = new BusMessage("messageOne", 100, BusEntry.ACTUATOR_ENGINE,
-                Instant.EPOCH.plusSeconds(3), transmitter.getID(), testBus);
-        messageList.add(message1);
-        BusMessage message2 = new BusMessage("messageTwo", 200, BusEntry.ACTUATOR_GEAR,
-                Instant.EPOCH.plusSeconds(32), transmitter.getID(), testBus);
-        messageList.add(message2);
-        BusMessage message3 = new BusMessage("messageThree", 20, BusEntry.ACTUATOR_BRAKE,
-                Instant.EPOCH.plusSeconds(38), transmitter.getID(), testBus);
-        messageList.add(message3);
-        BusMessage message4 = new BusMessage("messageFour", 150, BusEntry.ACTUATOR_STEERING,
-                Instant.EPOCH.plusSeconds(4), transmitter.getID(), testBus);
-        messageList.add(message4);
-        BusMessage message5 = new BusMessage("messageFive", 30, BusEntry.ACTUATOR_ENGINE,
-                Instant.EPOCH.plusSeconds(15), transmitter.getID(), testBus);
-        messageList.add(message5);
-        BusMessage message6 = new BusMessage("messageSix", 120, BusEntry.SENSOR_COMPASS,
-                Instant.EPOCH.plusSeconds(40), transmitter.getID(), testBus);
-        messageList.add(message6);
+		simTime = simTime.plusSeconds(30);
 
+		simulator.addEvent(compassMsg);
 
-        //start first Tick of the Simulation
-        System.out.println("Run first tick");
-        System.out.println("--------------");
+		simulator.simulateNextTick(simTime);
 
-        simulator.addEvent(message1);
-        simulator.addEvent(message2);
-        simulator.addEvent(message4);
+		assertTrue(listenerGear.processedMessage(gearMsg.getMessage()));
+		assertTrue(listenerBrake.processedMessage(brakeMsg.getMessage()));
+		assertTrue(listenerSteeringNCompass.processedMessage(compassMsg.getMessage()));
+	}
 
-        simulator.simulateNextTick(simTime);
+	@Test
+	public void testComplexBusStructure() {
+		EESimulator EEsim = new EESimulator(Instant.EPOCH);
+		List<Bus> buses = createComplexBusStrucutre(EEsim);
+		
+		Map<UUID, Map<BusEntry, UUID>> messageMapByBusId = new HashMap<UUID, Map<BusEntry, UUID>>();
+		for (Bus bus : buses) {
+			Map<BusEntry, UUID> messagesByMessageId = new HashMap<BusEntry, UUID>();
+			for (BusEntry messageId : bus.getSubscribedMessages()) {
+				UUID message = UUID.randomUUID();	
+				EEsim.addEvent(new BusMessage(message, 20, messageId, Instant.EPOCH,
+							bus.getConnectedComponents().get(0).getId(), bus));
+						messagesByMessageId.put(messageId, message);
+			}
+			messageMapByBusId.put(bus.getId(), messagesByMessageId);
+		}
+		
+		EEsim.simulateNextTick(Instant.EPOCH.plusSeconds(30));
+		
+		for (Bus receiverBus : buses) {
+			for(Bus senderBus : buses) {
+				for(EEComponent comp : receiverBus.getConnectedComponents()) {
+					if (comp.getComponentType() == EEComponentType.TEST_COMPONENT) {
+						for(BusEntry messageId : comp.getSubscribedMessages()) {
+							UUID message = messageMapByBusId.get(senderBus.getId()).get(messageId);
+							assertTrue(((TestComponent) comp).processedMessage(message));
+						}
+						
+					}
+				}
+			}
+		}
+	}
 
-        assertEquals(message1.getMessage(), "messageOne");
-        assertEquals(message2.getMessage(), "messageTwo");
-        assertEquals(message4.getMessage(), "messageFour");
+	private List<Bus> createComplexBusStrucutre(EESimulator EEsim) {
+		Bus bus1 = new FlexRay(EEsim);
+		Bus bus2 = new FlexRay(EEsim);
+		Bus bus3 = new FlexRay(EEsim);
+		Bus bus4 = new FlexRay(EEsim);
 
+		TestComponent listenerEngine = new TestComponent(EEsim, Collections.singletonList(BusEntry.ACTUATOR_ENGINE));
+		TestComponent listenerGear = new TestComponent(EEsim, Collections.singletonList(BusEntry.ACTUATOR_GEAR));
+		TestComponent listenerBrake = new TestComponent(EEsim, Collections.singletonList(BusEntry.ACTUATOR_BRAKE));
+		TestComponent listnerSteering = new TestComponent(EEsim, Collections.singletonList(BusEntry.ACTUATOR_STEERING));
+		TestComponent listnerCarDetection = new TestComponent(EEsim, Collections.singletonList(BusEntry.COMPUTERVISION_DETECTED_CARS));
 
-        System.out.println("---------------");
-        //simulate second tick
-        //simTime.plusNanos(30);
-        Instant simTimeTwo = Instant.EPOCH.plusSeconds(30);
-        System.out.println("Run second tick");
-        System.out.println("---------------");
+		// all cyclic buses want engine messages
+		bus1.registerComponent(listenerEngine);
+		bus2.registerComponent(listenerEngine);
+		bus3.registerComponent(listenerEngine);
 
-        simulator.addEvent(message3);
-        simulator.addEvent(message5);
+		bus1.registerComponent(listenerGear);
+		bus2.registerComponent(listenerBrake);
+		bus3.registerComponent(listnerSteering);
+		bus4.registerComponent(listnerCarDetection);
 
-        /*
-        for (EEDiscreteEvent messages: simulator.getEventList()) {
-            System.out.println(messages.getEventType());
-            if(messages.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) System.out.println(((BusMessage) messages).getMessage());
-            System.out.println(messages.getEventTime());
-        }
-         */
-
-        simulator.simulateNextTick(simTimeTwo);
-
-        assertEquals(tesComp1.getID().toString() + " processed", message1.getMessage());
-        assertEquals("messageTwo", message2.getMessage());
-        assertEquals("messageThree", message3.getMessage());
-        assertEquals(testComp4.getID().toString() + " processed", message4.getMessage());
-        assertEquals(tesComp1.getID().toString() + " processed", message5.getMessage());
-
-        System.out.println("---------------");
-        //simulate third tick
-        //simTime.plusNanos(30);
-        Instant simTimeThree = Instant.EPOCH.plusSeconds(60);
-        System.out.println("Run third tick");
-        System.out.println("--------------");
-
-        simulator.addEvent(message6);
-
-        simulator.simulateNextTick(simTimeThree);
-
-        assertEquals(message1.getMessage(), tesComp1.getID().toString() + " processed");
-        assertEquals(message2.getMessage(), testComp2.getID().toString() + " processed");
-        assertEquals(message3.getMessage(), testComp3.getID().toString() + " processed");
-        assertEquals(message4.getMessage(), testComp4.getID().toString() + " processed");
-        assertEquals(message5.getMessage(), tesComp1.getID().toString() + " processed");
-        assertEquals(message6.getMessage(), testComp4.getID().toString() + " processed");
-
-
-    }
+		// create cycle
+		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus1, bus2), Duration.ofMillis(2));
+		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus1, bus3), Duration.ofMillis(2));
+		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus2, bus3), Duration.ofMillis(2));
+		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus1, bus4), Duration.ofMillis(2));
+		
+		List<Bus> buses = new ArrayList<Bus>();
+		buses.add(bus1);
+		buses.add(bus2);
+		buses.add(bus3);
+		buses.add(bus4);
+		return buses;
+	}
 }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//	/*
-//	private static Map<Integer, BusEntry> busEntryByOrdinal = new HashMap<Integer, BusEntry>();
-//
-//	@BeforeClass
-//	public static void oneTimeSetUp() {
-//		for (BusEntry entry : BusEntry.values()) {
-//			busEntryByOrdinal.put(entry.ordinal(), entry);
-//		}
-//	}
-//
-//	public void testSimulateNextTick() {
-//		EESimulator sim = new EESimulator(Instant.EPOCH);
-//		FlexRay flexray = createBusStructure(sim);
-//
-////		BusMessage c01 = createMessage(flexray, "c01", "TestComponent 0", "TestComponent 1", 127, 0);
-////		BusMessage c02 = createMessage(flexray, "c02", "TestComponent 0", "TestComponent 1",
-////				(254 + 516 + 254 + 200), 4);
-////
-////		BusMessage c11 = createMessage(flexray, "c11", "TestComponent 1", "TestComponent 1", 127, 0);
-////		BusMessage c12 = createMessage(flexray, "c12", "TestComponent 1", "TestComponent 1", (254 + 254 + 500),
-////				3);
-////
-////		BusMessage c21 = createMessage(flexray, "c21", "TestComponent 2", "TestComponent 1", 100, 0);
-////		BusMessage c22 = createMessage(flexray, "c22", "TestComponent 2", "TestComponent 1", 100, 0);
-////		BusMessage c23 = createMessage(flexray, "c23", "TestComponent 2", "TestComponent 1", 54, 0);
-////
-////		BusMessage c31 = createMessage(flexray, "c31", "TestComponent 3", "TestComponent 1", 100, 0);
-////		BusMessage c32 = createMessage(flexray, "c32", "TestComponent 3", "TestComponent 1", 200, 1);
-////		BusMessage c33 = createMessage(flexray, "c33", "TestComponent 3", "TestComponent 1", (154 + 816), 5);
-////		BusMessage c34 = createMessage(flexray, "c34", "TestComponent 3", "TestComponent 1", 100, 6);
-//	}
-//
-//
-//	//TODO other Bus impl.
-//	private FlexRay createBusStructure(EESimulator sim) {
-//		List<EESimulator> mainComponents = new ArrayList<EESimulator>();
-//		List<EESimulator> subComponents1 = new ArrayList<EESimulator>();
-//		List<EESimulator> subComponents2 = new ArrayList<EESimulator>();
-//		int i = 0;
-//		for (; i < 5; i++) {
-//			mainComponents.add(new TestComponent(sim, String.valueOf(i)));
-//		}
-//		for (; i < 8; i++) {
-//			subComponents1.add(new TestComponent(sim, String.valueOf(i)));
-//		}
-//		for (; i < 15; i++) {
-//			subComponents2.add(new TestComponent(sim, String.valueOf(i)));
-//		}
-//
-//		List<BusEntry> messages = new ArrayList<BusEntry>();
-//		messages.add(BusEntry.CONSTANT_WHEELBASE);
-//
-//		FlexRay sub2 = new FlexRay(sim);//subComponents2
-//		for(EEComponent component: subComponents2){
-//			sub2.registerComponent(component, messages);
-//		}
-//
-//		subComponents1.add(sub2);
-//		FlexRay sub1 = new FlexRay(sim);//subComponents1
-//		for(EEComponent component: subComponents1){
-//			sub1.registerComponent(component, messages);
-//		}
-//
-//		mainComponents.add(sub1);
-//		FlexRay main = new FlexRay(sim);//mainComponents
-//		for(EEComponent component: mainComponents){
-//			main.registerComponent(component, messages);
-//		}
-//
-//		return main;
-//	}
-//
-//	private BusMessage createMessage(FlexRay flexray, Object message, String senderID, String receiverID,
-//			int messageLength, int priority, Instant eventTime) {
-//		Optional<EESimulator> sender = BusUtils.findComponentWithID(flexray.connectedComponents, senderID);
-//		assertTrue(sender.isPresent());
-//		Optional<EESimulator> receiver = BusUtils.findComponentWithID(flexray.connectedComponents, receiverID);
-//		assertTrue(receiver.isPresent());
-//
-//		assertTrue(busEntryByOrdinal.size() > priority);
-//
-//		BusMessage msg = new BusMessage(message, messageLength, busEntryByOrdinal.get(priority), eventTime,
-//				MessageType.SEND, receiver.get());
-//		msg.setControllerID(sender.get().getID());
-//		return msg;
-//	}*/
-//}
-//

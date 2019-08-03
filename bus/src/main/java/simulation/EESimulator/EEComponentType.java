@@ -23,7 +23,8 @@ public enum EEComponentType{
 
     BUS("BUS"),
     SENSOR("SENSOR"),
-    BRIDGE("BRIDGE");
+    BRIDGE("BRIDGE"),
+	TEST_COMPONENT("TEST_COMPONENT");
 
     private final String name;
 

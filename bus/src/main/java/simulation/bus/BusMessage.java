@@ -1,4 +1,5 @@
 package simulation.bus;
+
 /**
  *
  * ******************************************************************************
@@ -21,8 +22,12 @@ package simulation.bus;
  */
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
+
+import org.apache.commons.math3.exception.NullArgumentException;
 
 import commons.controller.commons.BusEntry;
 import simulation.EESimulator.EEComponent;
@@ -66,16 +71,16 @@ public class BusMessage extends EEDiscreteEvent {
 
 	private boolean error;
 	
-	private EEComponent target;
+	private Set<UUID> seenComponentIds;
 
 	/**
 	 * Random number generator to determine a bit error
 	 */
 	Random bitError = new Random();
 
-	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant eventTime, UUID sourceID, EEComponent target) {
-		super(EEDiscreteEventTypeEnum.BUSMESSAGE,eventTime, target);
-		this.target = target;
+	public BusMessage(Object message, int messageLen, BusEntry messageID, Instant eventTime, UUID sourceID,
+			EEComponent target) {
+		super(EEDiscreteEventTypeEnum.BUSMESSAGE, eventTime, target);
 		this.message = message;
 		this.messageLen = messageLen;
 		this.messageID = messageID;
@@ -84,6 +89,21 @@ public class BusMessage extends EEDiscreteEvent {
 		this.transmitted = false;
 		this.finishTime = Instant.EPOCH;
 		this.error = false;
+		this.seenComponentIds = new HashSet<UUID>();
+	}
+	
+	private BusMessage(Object message, int messageLen, BusEntry messageID, Instant eventTime, UUID sourceID,
+			EEComponent target, Set<UUID> seenComponentsIds) {
+		super(EEDiscreteEventTypeEnum.BUSMESSAGE, eventTime, target);
+		this.message = message;
+		this.messageLen = messageLen;
+		this.messageID = messageID;
+		this.controllerID = sourceID;
+		this.transmittedBytes = 0;
+		this.transmitted = false;
+		this.finishTime = Instant.EPOCH;
+		this.error = false;
+		this.seenComponentIds = seenComponentsIds;
 	}
 
 	public BusMessage(BusMessage busMessage) {
@@ -96,17 +116,12 @@ public class BusMessage extends EEDiscreteEvent {
 		this.messageID = busMessage.messageID;
 		this.finishTime = busMessage.finishTime;
 		this.error = busMessage.error;
-		this.target = busMessage.target;
 		this.bitError = busMessage.bitError;
+		this.seenComponentIds = busMessage.seenComponentIds;
 	}
 
 	public Instant getFinishTime() {
 		return finishTime;
-	}
-
-	public EEComponent getTarget() 
-	{		
-		return target;	
 	}
 
 	public void setFinishTime(Instant finishTime) {
@@ -117,40 +132,20 @@ public class BusMessage extends EEDiscreteEvent {
 		return message;
 	}
 
-	public void setMessage(Object message) {
-		this.message = message;
-	}
-
 	public int getMessageLen() {
 		return messageLen;
-	}
-
-	public void setMessageLen(int messageLen) {
-		this.messageLen = messageLen;
 	}
 
 	public UUID getControllerID() {
 		return controllerID;
 	}
 
-	public void setControllerID(UUID controllerID) {
-		this.controllerID = controllerID;
-	}
-
 	public BusEntry getMessageID() {
 		return messageID;
 	}
 
-	public void setMessageID(BusEntry messageID) {
-		this.messageID = messageID;
-	}
-
 	public int getTransmittedBytes() {
 		return transmittedBytes;
-	}
-
-	public void setTransmittedBytes(int transmittedBytes) {
-		this.transmittedBytes = transmittedBytes;
 	}
 
 	public boolean isTransmitted() {
@@ -185,22 +180,42 @@ public class BusMessage extends EEDiscreteEvent {
 		return res;
 	}
 
-	public String getEventId() {
-		return this.messageID.toString();
-	}
-
-	public void forwardTo(EEComponent target) {
-		//old target forwards this message
-		this.controllerID = this.target.getID();
-		this.target = target;
-		this.setEventTime(this.finishTime);
-		this.finishTime = Instant.EPOCH;
-		this.transmitted = false;
-		this.error = false;
-		this.transmittedBytes = 0;
+	/**
+	 * Creates a new message with target as destination. Finish time of this is the
+	 * event time of the forwarded message.
+	 * @param target
+	 * @return
+	 */
+	public BusMessage forwardTo(EEComponent target) {
+		if(!this.transmitted) {
+			throw new IllegalArgumentException("Only transmitted messages can be forwareded.");
+		}
+		else if(target == null){
+			throw new NullArgumentException();
+		}
+		else {
+			return new BusMessage(this.message, this.messageLen, this.messageID, this.finishTime, this.getTarget().getId(),
+					target, this.seenComponentIds);
+		}
 	}
 	
-
+	public boolean hasTraveresed(Bus bus) {
+		return !this.seenComponentIds.add(bus.getId());
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() 
+				+ "; Message: " + message
+				+ "; Message length: " + messageLen
+				+ "; Message id: " + messageID
+				+ "; Sender Id: " + controllerID
+				+ "; Transmitted Bytes: " + transmittedBytes
+				+ "; Transmitted: " + transmitted
+				+ "; Finisht Time: " + finishTime
+				+ "; Error: " + error
+				+ "; Seen Components: " + seenComponentIds;
+	}
 
 }
 

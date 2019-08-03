@@ -20,146 +20,118 @@
  */
 package simulation.bus;
 
-
-import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-import java.util.HashMap;
 import commons.controller.commons.BusEntry;
 
 import simulation.EESimulator.*;
 
-public abstract class Bus extends EEComponent {
+public abstract class Bus extends MutableEEComponent {
 
-	protected UUID ID;
+	private List<EEComponent> connectedComponents = new ArrayList<EEComponent>();
 
-	protected List<EEComponent> connectedComponents;
-
-	protected Instant currentTime = Instant.EPOCH;
-
-	private int keepAliveCounter = 0;
-
+	private Optional<KeepAliveEvent> keepAlive = Optional.empty();
 
 	protected Bus(EESimulator simulator) {
-		super(simulator);
-		this.connectedComponents = new ArrayList<EEComponent>();
-		this.ID = UUID.randomUUID();
-		componentType = EEComponentType.BUS;
-
-	}
-	
-	@Override
-	public UUID getID() {
-		return this.ID;
-	}
-	
-	public void setCurrentTime(Instant currentTime) {
-		this.currentTime = currentTime;
-	}
-	
-	protected List<EEComponent> getConnectedComponents() {
-		return this.connectedComponents;
+		super(simulator, EEComponentType.BUS);
 	}
 
 	public void processEvent(EEDiscreteEvent evt) {
-		//TODO: change the way how to prevent setting up unlimited keepAliveEvents
+		if (evt.getEventTime().isBefore(this.getCurrentTime())) {
+			System.out.println("Can not process event: Time of event already simulated! Last time was " + this.getCurrentTime());
+			throw new IllegalArgumentException("Can not process event: Time of event already simulated! Last time was " + this.getCurrentTime());
+		}
 		if (evt.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
 			BusMessage msg = (BusMessage) evt;
-			this.simulateFor(Duration.between(currentTime, msg.getEventTime()));
-			currentTime = msg.getEventTime();
-			/*if(!this.hasMessages()) {
+			// only work on messages if it was not already seen before
+			if (!msg.hasTraveresed(this)) {
+				this.simulateUntil(msg.getEventTime());
+				this.registerMessage(msg);
 				this.setKeepAlive();
-			}*/
-			this.registerMessage(msg);
-			this.setKeepAlive();
-			keepAliveCounter = 0;
-		} else if (evt.getEventType() == EEDiscreteEventTypeEnum.KEEP_ALIVE_EVENT) {
-			if (keepAliveCounter > 5){
-				return;
 			}
-			this.simulateFor(Duration.between(currentTime, evt.getEventTime()));
-			currentTime = evt.getEventTime();
-			this.setKeepAlive();
-			keepAliveCounter++;
+		} else if (evt.getEventType() == EEDiscreteEventTypeEnum.KEEP_ALIVE_EVENT) {
+			if (this.keepAlive.get().getId() == evt.getId()) {
+				this.simulateUntil(evt.getEventTime());
+				if (this.hasMessages()) {
+					this.setKeepAlive();
+				} else {
+					this.keepAlive = Optional.empty();
+				}
+			}
 		} else {
 			throw new IllegalArgumentException(
-					"Invalid event type. Expected KeepAliveEvent or BusMessage but was " + evt.getClass());
+					"Invalid event type. Expected KeepAliveEvent or BusMessage but was " + evt.getEventType());
 		}
 
 	}
 
-	public void registerComponent(EEComponent component){
-		if(connectedComponents.contains(component)) {
-			throw new IllegalArgumentException("Component" + component.toString() + "is already registered at " + this.toString() + ".");
-		}
-		else {
+	public void registerComponent(EEComponent component) {
+		if (connectedComponents.contains(component)) {
+			throw new IllegalArgumentException(
+					"Component" + component.toString() + "is already registered at " + this.toString() + ".");
+		} else {
 			connectedComponents.add(component);
-			for(BusEntry message: component.getListenTo()){
-				if(sendTo.containsKey(message)){
-					List<EEComponent> targets = sendTo.get(message);
-					targets.add(component);
-					sendTo.put(message, targets);
-				}
-				else{
-					List<EEComponent> list = new ArrayList<EEComponent>();
-					list.add(component);
-					sendTo.put(message, list);
-					listenTo.add(message);
-				}
-			}
-			for(EEComponent connect : connectedComponents){
-				if(connect != component && connect.getComponentType() == EEComponentType.BRIDGE){
-					((Bridge)connect).update(this, listenTo);
-				}
-			}
+			addSubscribedMessages(component, component.getSubscribedMessages());
 		}
-		
+
 	}
 
-
-
-	public void updateSendTo(Bridge component, List<BusEntry> listenTo){
-		for(EEComponent connect : connectedComponents){
-			if(connect.getComponentType() == EEComponentType.BRIDGE && !connect.equals(component)){
-				((Bridge)connect).update(this, listenTo);
-			}
-		}
-		for(BusEntry message: listenTo){
-			if(sendTo.containsKey(message)){
-				List<EEComponent> targets = sendTo.get(message);
+	public void addSubscribedMessages(EEComponent component, List<BusEntry> messages) {
+		List<BusEntry> newMessages = new ArrayList<BusEntry>();
+		for (BusEntry message : messages) {
+			List<EEComponent> targets = targetsByMessageId.getOrDefault(message, new ArrayList<EEComponent>());
+			if(!targets.contains(component)) {
 				targets.add(component);
-				sendTo.put(message, targets);
+				targetsByMessageId.put(message, targets);
+				newMessages.add(message);
 			}
-			else{
-				List<EEComponent> list = new ArrayList<EEComponent>();
-				list.add(component);
-				sendTo.put(message, list);
+			if (!subscribedMessages.contains(message)) {
+				subscribedMessages.add(message);
 			}
 		}
+		if(!newMessages.isEmpty()) {
+			for (EEComponent connectedComponent : connectedComponents) {
+				if (connectedComponent != component && connectedComponent.getComponentType() == EEComponentType.BRIDGE) {
+					((Bridge) connectedComponent).update(this, newMessages);
+				}
+			}
+		}
+
 	}
-	
+
+	public abstract Instant getCurrentTime();
+
+	public List<EEComponent> getConnectedComponents() {
+		return this.connectedComponents;
+	}
+
 	protected void registerMessageAtSimulator(BusMessage msg) {
-		for(EEComponent target : this.sendTo.get(msg.getMessageID())) {
-			BusMessage newMsg = new BusMessage(msg);
-			newMsg.forwardTo(target);
-			this.simulator.addEvent(newMsg);
+		for (EEComponent target : this.targetsByMessageId.get(msg.getMessageID())) {
+			this.getSimulator().addEvent(msg.forwardTo(target));
 		}
 	}
-	
+
 	protected void setKeepAlive() {
 		Instant nextFinishTime = this.getNextFinishTime();
-		if (nextFinishTime == null){return;}
-		KeepAliveEvent keepAlive = new KeepAliveEvent(nextFinishTime, this);
-		this.simulator.addEvent(keepAlive);
+		// at least one message present AND (old keepAlive empty OR old keepAlive
+		// already processed OR new keepAlive
+		// before old one)
+		if (this.hasMessages()
+				&& (!this.keepAlive.isPresent() || !keepAlive.get().getEventTime().isAfter(this.getCurrentTime())
+						|| nextFinishTime.isBefore(keepAlive.get().getEventTime()))) {
+			keepAlive = Optional.of(new KeepAliveEvent(nextFinishTime, this));
+			this.getSimulator().addEvent(keepAlive.get());
+			System.out.println("Bus: " + this.getId() + " has set new keepAliveEvent with time: " + nextFinishTime);
+		}
 	}
 
-	abstract void simulateFor(Duration duration);
+	protected abstract void simulateUntil(Instant endTime);
 
-	abstract Instant getNextFinishTime();
+	protected abstract Instant getNextFinishTime();
 
-	abstract void registerMessage(BusMessage msg);
-	
-	abstract boolean hasMessages();
+	protected abstract void registerMessage(BusMessage msg);
+
+	protected abstract boolean hasMessages();
 
 }

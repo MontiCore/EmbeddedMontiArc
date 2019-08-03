@@ -48,26 +48,26 @@ public class BusUtils {
 		};
 		
 		Map<UUID, Bus> busById = new HashMap<UUID, Bus>();
-		busById.put(bus.getID(), bus);
+		busById.put(bus.getId(), bus);
 		Stack<Bus> workStack = new Stack<Bus>();
 		workStack.add(bus);
 		
 		while(!workStack.isEmpty()) {
 			Bus cur = workStack.pop();
-			Iterable<EEComponent> bridges = Iterables.filter(bus.getConnectedComponents(), bridgeFilter);
+			Iterable<EEComponent> bridges = Iterables.filter(cur.getConnectedComponents(), bridgeFilter);
 			for(EEComponent bridge : bridges) {
 				Pair<Bus, Bus> busPair = ((Bridge)bridge).getConnectedBuses();
-				if(!busById.containsKey(busPair.getLeft().getID())) {
-					busById.put(busPair.getLeft().getID(), busPair.getLeft());
+				if(!busById.containsKey(busPair.getLeft().getId())) {
+					busById.put(busPair.getLeft().getId(), busPair.getLeft());
 					workStack.add(busPair.getLeft());
 				}
-				if(!busById.containsKey(busPair.getRight().getID())) {
-					busById.put(busPair.getRight().getID(), busPair.getRight());
+				if(!busById.containsKey(busPair.getRight().getId())) {
+					busById.put(busPair.getRight().getId(), busPair.getRight());
 					workStack.add(busPair.getRight());
 				}
 			}
 		}
-
+		busById.remove(bus.getId());
 		return busById.values();
 	}
 	
@@ -75,7 +75,7 @@ public class BusUtils {
 		EEComponent comp = Iterables.tryFind(components, 
 				new Predicate<EEComponent>() {
 					public boolean apply(EEComponent comp) {
-						return comp.getID().equals(ID);
+						return comp.getId().equals(ID);
 					}
 		}).orNull();
 		return Optional.ofNullable(comp);
