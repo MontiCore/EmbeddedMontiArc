@@ -33,7 +33,10 @@ import de.topobyte.osm4j.core.model.iface.OsmNode;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.WorldModel;
+import simulation.environment.object.Battery;
+import simulation.environment.object.ChargingStation;
 import simulation.environment.osm.IntersectionFinder;
+import simulation.environment.util.ChargingProcess;
 import simulation.util.Log;
 import java.awt.*;
 import java.util.*;
@@ -44,7 +47,7 @@ import static simulation.vehicle.VehicleActuatorType.*;
 /**
  * Simulation objects for a generic vehicle.
  */
-public class Vehicle {
+public class Vehicle implements ChargingProcess.ChargeableVehicle {
 
     /** Default average values for vehicle constructor */
     /** Minimum acceleration that can be made by the motor */
@@ -148,6 +151,9 @@ public class Vehicle {
     /** List of all the sensors of the vehicle */
     private List<Sensor> sensorList;
 
+    /** Manage the battery state of the vehicle */
+    private Optional<Battery> battery;
+
     /** Bus for the controller */
     private Optional<Bus> controllerBus;
 
@@ -208,7 +214,7 @@ public class Vehicle {
      * Constructor for a vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
      */
-    protected Vehicle(PhysicalVehicle physicalVehicle) {
+    protected Vehicle(PhysicalVehicle physicalVehicle){
         // Create the motor
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_MOTOR, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE);
         // Create the brakes
@@ -227,6 +233,8 @@ public class Vehicle {
         this.statusLogger = new StatusLogger();
         // Create the sensor list
         this.sensorList = new ArrayList<>();
+        // Create battery
+        this.battery = Optional.empty();
         // Create the controller bus
         this.controllerBus = Optional.empty();
         // Create the controller
@@ -382,6 +390,34 @@ public class Vehicle {
      */
     public void addSensor(Sensor sensor) {
         this.sensorList.add(sensor);
+    }
+
+    /**
+     * Set battery
+     * @param battery
+     */
+    public void setBattery(Battery battery) {
+        this.battery = Optional.of(battery);
+    }
+
+    /**
+     * @return Battery of the vehicle
+     */
+    public Optional<Battery> getBattery() {
+        return battery;
+    }
+
+    @Override
+    public boolean isParkedChargingStation(ChargingStation station) {
+        // TODO implement
+        return false;
+    }
+
+    /**
+     * @return true if it's an EV
+     */
+    public boolean isElectricVehicle(){
+        return this.battery.isPresent();
     }
 
     /**

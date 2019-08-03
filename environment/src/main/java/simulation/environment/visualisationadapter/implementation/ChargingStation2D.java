@@ -20,6 +20,9 @@
  */
 package simulation.environment.visualisationadapter.implementation;
 
+import javafx.geometry.Point3D;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvTag;
 import simulation.environment.visualisationadapter.interfaces.EnvChargingStation;
@@ -30,24 +33,47 @@ public class ChargingStation2D extends EnvObject2D implements EnvChargingStation
 
     private int capacity;
     private String name;
+    private RealVector center;
 
     public ChargingStation2D(List<EnvNode> nodes) {
         super(nodes, EnvTag.CHARGING_STATION);
+        this.center = computeCenter();
     }
 
     public ChargingStation2D(List<EnvNode> nodes, long osmId) {
         super(nodes, EnvTag.CHARGING_STATION, osmId);
+        this.center = computeCenter();
     }
 
     public ChargingStation2D(List<EnvNode> nodes, long osmId, int capacity) {
         super(nodes, EnvTag.CHARGING_STATION, osmId);
         this.capacity = capacity;
+        this.center = computeCenter();
     }
 
     public ChargingStation2D(List<EnvNode> nodes, long osmId, int capacity, String name) {
         super(nodes, EnvTag.CHARGING_STATION, osmId);
         this.capacity = capacity;
         this.name = name;
+    }
+
+    public RealVector getCenter(){
+        return center;
+    }
+
+    private RealVector computeCenter(){
+        double x = 0;
+        double y = 0;
+        double z = 0;
+
+        for (EnvNode node: this.nodes){
+            x += node.getPoint().getX();
+            y += node.getPoint().getY();
+            z += node.getPoint().getZ();
+        }
+
+        int numNodes = nodes.size();
+        return new ArrayRealVector(new double[]{x/numNodes, y/numNodes, z/numNodes});
     }
 
     @Override

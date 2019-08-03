@@ -33,6 +33,7 @@ import de.topobyte.osm4j.xml.dynsax.OsmXmlReader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.w3c.dom.Document;
+import simulation.environment.osm.Dto.OSMNode;
 import simulation.environment.visualisationadapter.implementation.*;
 import simulation.environment.visualisationadapter.interfaces.*;
 
@@ -65,6 +66,7 @@ public class Parser2D implements IParser {
     private HashSet<EnvChargingStation> chargingStations;
 
     private String filePath;
+    private String mapName;
 
     private InputStream in;
 
@@ -81,6 +83,7 @@ public class Parser2D implements IParser {
     public Parser2D(ParserSettings pSettings) {
         this.in = pSettings.in;
         this.z = pSettings.z;
+        this.mapName = pSettings.mapName;
         init();
     }
 
@@ -219,6 +222,8 @@ public class Parser2D implements IParser {
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
+
+        parseChargingStations();
         buildContainer();
         addSomeRandomTrees();
         generateZCoordinates();
@@ -238,6 +243,28 @@ public class Parser2D implements IParser {
         this.containerM.setHeightMapMinMax(ZCoordinateGenerator.getHeightMapMinPoint(), ZCoordinateGenerator.getHeightMapMaxPoint());
 
         addStreetSigns();
+    }
+
+    private void parseChargingStations() {
+        // Each charging station in OSM are represented by a node with tag amenity=charging_station
+        // We iterate over all nodes in the map to find charging stations
+        for (OsmNode node: dataSet.getNodes().valueCollection()){
+            Map<String, String> tags = OsmModelUtil.getTagsAsMap(node);
+            String amenity = tags.get("amenity");
+
+            if (amenity != null && amenity.equals("charging_station")){
+                String capacity = tags.get("capacity");
+                if (capacity == null) {
+                    capacity = "1";
+                }
+                String name = tags.get("name");
+                if (name == null) {
+                    name = "chargingStation";
+                }
+
+                constructChargingStation(node, capacity, name);
+            }
+        }
     }
 
     private void addStreetSigns() {
@@ -392,6 +419,12 @@ public class Parser2D implements IParser {
         this.chargingStations.add(new ChargingStation2D(nodes, way.getId(), Integer.parseInt(capacity), name));
     }
 
+    private void constructChargingStation(OsmNode node, String capacity, String name){
+        List<EnvNode> nodes = new ArrayList<EnvNode>();
+        nodes.add(new Node2D(node.getLongitude(), node.getLatitude(), 0, node.getId()));
+        this.chargingStations.add(new ChargingStation2D(nodes, node.getId(), Integer.parseInt(capacity), name));
+    }
+
     @Override
     public Collection<EnvStreet> getStreets() {
         return this.streets;
@@ -466,5 +499,9 @@ public class Parser2D implements IParser {
         } else {
             return EnvStreet.StreetPavements.PAVED;
         }
+    }
+
+    public String getMapName(){
+        return this.mapName;
     }
 }
