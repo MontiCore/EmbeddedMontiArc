@@ -20,7 +20,7 @@
  */
 package simulation.environment.pedestrians;
 
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 
 /**
  * Created by lukas on 07.02.17.

@@ -30,8 +30,12 @@ import commons.simulation.PhysicalObject;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.io.IOException;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
  * Logic and object management of the simulation
@@ -116,6 +120,7 @@ public class Simulator {
     /** Times for which others wait using the waitFor() method */
     private final List<Instant> waitTimers = Collections.synchronizedList(new LinkedList<Instant>());
 
+
     /**
      * Simulator constructor. Should not be called directly but only by the initialization of "sharedInstance".
      */
@@ -148,6 +153,7 @@ public class Simulator {
      * continued.
      */
     public void startSimulation() {
+
         // Check for sane frequency
         if (simulationLoopFrequency <= 0) {
             throw  new IllegalStateException("Simulation loop frequency " + simulationLoopFrequency + " is not positive.");
@@ -224,6 +230,7 @@ public class Simulator {
             new Thread(this::runSimulation).start();
         }
     }
+
 
     /**
      * This method allows to pause the computation of the simulation after a specified amount

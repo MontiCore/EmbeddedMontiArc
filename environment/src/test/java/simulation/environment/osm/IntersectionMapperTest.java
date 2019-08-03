@@ -20,38 +20,20 @@
  */
 package simulation.environment.osm;
 
+import org.junit.*;
 import de.topobyte.osm4j.core.dataset.InMemoryMapDataSet;
 import de.topobyte.osm4j.core.resolve.EntityNotFoundException;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import java.io.InputStream;
+import static  org.junit.Assert.*;
 
 /**
  * Created by lukas on 15.12.16.
  */
-public class IntersectionMapperTest extends TestCase {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public IntersectionMapperTest ( String testName )
-    {
-        super( testName );
-    }
+public class IntersectionMapperTest  {
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( IntersectionMapperTest.class );
-    }
 
-    /**
-     * Rigourous Test :-)
-     */
+
+	 @Test
     public void testApp() throws EntityNotFoundException {
         // maven test will fail for this file path
 

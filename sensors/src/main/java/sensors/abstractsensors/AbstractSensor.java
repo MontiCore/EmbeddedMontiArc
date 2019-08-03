@@ -22,6 +22,10 @@ package sensors.abstractsensors;
 
 import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EESimulator;
+
+import java.time.Instant;
+import java.util.UUID;
+
 import commons.simulation.Sensor;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.EESimulator.EEComponent;
@@ -29,10 +33,14 @@ import simulation.EESimulator.EEComponent;
 import java.util.UUID;
 
 
+
 /**
  * Created by Aklima Zaman on 1/20/2017.
  */
 public abstract class AbstractSensor extends EEComponent implements Sensor {
+	
+	//TODO delete this
+	private static EESimulator sim = new EESimulator(Instant.EPOCH);
 
     private PhysicalVehicle physicalVehicle;
 
@@ -41,7 +49,12 @@ public abstract class AbstractSensor extends EEComponent implements Sensor {
         this.physicalVehicle = physicalVehicle;
     }
 
-
+    //TODO delete this
+    public AbstractSensor(PhysicalVehicle physicalVehicle) {
+        super(sim);
+        this.physicalVehicle = physicalVehicle;
+    }
+    
     @Override
     public void update() {
         calculateValue();

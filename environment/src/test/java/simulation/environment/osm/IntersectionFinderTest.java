@@ -21,34 +21,18 @@
 package simulation.environment.osm;
 
 import de.topobyte.osm4j.core.dataset.InMemoryMapDataSet;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.*;
 import java.io.InputStream;
+import static  org.junit.Assert.*;
 
 /**
  * Created by lukas on 15.12.16.
  */
-public class IntersectionFinderTest extends TestCase {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public IntersectionFinderTest(String testName) {
-        super(testName);
-    }
+public class IntersectionFinderTest  {
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(IntersectionFinderTest.class);
-    }
 
-    /**
-     * Rigourous Test :-)
-     */
+
+	 @Test
     public void testApp() {
         // maven test will fail for this file path
 //        String filePath = "src/test/data/min_intersection_test.osm";

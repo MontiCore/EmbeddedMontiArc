@@ -22,28 +22,28 @@
 package simulation.EESimulator;
 
 import java.time.Instant;
+import java.util.UUID;
 
 
 public abstract class EEDiscreteEvent {
 
-    private Instant eventTime;
+    private final Instant eventTime;
 
-    private EEComponent target;
+    private final EEComponent target;
     
-    private EEDiscreteEventTypeEnum eventType;
+    private final EEDiscreteEventTypeEnum eventType;
+    
+    private final UUID Id;
 
     public EEDiscreteEvent(EEDiscreteEventTypeEnum eventType, Instant eventTime, EEComponent target){
         this.eventTime = eventTime;
         this.target = target;
         this.eventType = eventType;
+        this.Id = UUID.randomUUID();
     }
 
     public Instant getEventTime() {
         return eventTime;
-    }
-
-    public void setEventTime(Instant eventTime) {
-        this.eventTime = eventTime;
     }
 
     public EEComponent getTarget() {
@@ -52,5 +52,18 @@ public abstract class EEDiscreteEvent {
     
     public EEDiscreteEventTypeEnum getEventType() {
     	return this.eventType;
+    }
+    
+    public UUID getId() {
+    	return this.Id;
+    }
+    
+    @Override
+    public String toString() {
+    	return "Type = " + this.eventType +
+    			"; Target  = " + this.target +
+    			"; Event Time = " +this.eventTime +
+    			"; Id = " + this.Id;
+    			
     }
 }

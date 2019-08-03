@@ -20,7 +20,7 @@
  */
 package simulation.environment.visualisationadapter.interfaces;
 
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 
 /**
  * Created by lukas on 10.03.17.

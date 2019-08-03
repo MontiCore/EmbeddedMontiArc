@@ -27,7 +27,7 @@ import commons.simulation.DiscreteEvent;
 /**
  * Class that holds all relevant information for a network discrete event
  */
-public class NetworkDiscreteEvent implements DiscreteEvent {
+public class NetworkDiscreteEvent extends DiscreteEvent {
 
     /** Time of the event */
     private Instant eventTime;
@@ -98,8 +98,8 @@ public class NetworkDiscreteEvent implements DiscreteEvent {
      * @return Numeric identifier for the event
      */
     @Override
-    public String getEventId() {
-        return eventId.toString();
+    public int getEventId() {
+        return eventId.ordinal();
     }
 
     /**

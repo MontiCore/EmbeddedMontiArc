@@ -34,7 +34,12 @@ public abstract class AbstractDistanceSensor extends AbstractSensor {
         super(physicalVehicle, simulator);
     }
 
-    @Override
+    //TODO delete this
+    public AbstractDistanceSensor(PhysicalVehicle vehicle) {
+		super(vehicle);
+	}
+
+	@Override
     protected void calculateValue() {
         this.value = calculateDistance(getPhysicalVehicle());
     }

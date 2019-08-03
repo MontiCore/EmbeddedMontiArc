@@ -21,37 +21,48 @@ package simulation.EESimulator;
  */
 
 
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import commons.controller.commons.BusEntry;
-import simulation.EESimulator.EEComponent;
-import simulation.EESimulator.EEDiscreteEvent;
-import simulation.EESimulator.EESimulator;
 import simulation.bus.BusMessage;
 
-public class TestComponent extends EEComponent {
+public class TestComponent extends ImmutableEEComponent {
 	
-	private UUID ID;
+	private Set<Object> processedMessages = new HashSet<Object>();
 
 	public TestComponent(EESimulator simulator) {
-		super(simulator);
-		this.ID = UUID.randomUUID();
-		this.listenTo = new ArrayList<BusEntry>();
-		for(BusEntry entry : BusEntry.values()) {
-			listenTo.add(entry);
-		}
+		super(simulator, EEComponentType.TEST_COMPONENT, Arrays.asList(BusEntry.values()), new HashMap<BusEntry, List<EEComponent>>());
 	}
+    public TestComponent(EESimulator simulator, List<BusEntry> listenTo) {
+        super(simulator, EEComponentType.TEST_COMPONENT, listenTo, new HashMap<BusEntry, List<EEComponent>>());
+    }
 
 	@Override
 	public void processEvent(EEDiscreteEvent event) {
-		((BusMessage) event).setMessage(this.ID + "processed");
-
+		if(event.getEventType() != EEDiscreteEventTypeEnum.BUSMESSAGE) {
+			throw new IllegalArgumentException("Event has to be a bus message but was " + event.getEventType());
+		}
+		else {
+			BusMessage message = (BusMessage)event;
+			if(!this.getSubscribedMessages().contains(message.getMessageID())) {
+				throw new IllegalArgumentException("Message has unexpected messageId");
+			}
+			else{
+				processedMessages.add(message.getMessage());
+			}
+		}
 	}
-
-	@Override
-	public UUID getID() {
-		return ID;
+	
+	public Set<Object> getProcessedMessages(){
+		return this.processedMessages;
+	}
+	
+	public boolean processedMessage(Object message) {
+		return this.processedMessages.contains(message);
 	}
 
 }

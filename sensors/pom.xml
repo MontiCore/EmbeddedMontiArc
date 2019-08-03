@@ -29,13 +29,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>1.0.8</version>
+        <version>${revision}</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>sensors</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.8</version>
+    <version>${revision}</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
@@ -46,27 +46,27 @@
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>util</artifactId>
-            <version>1.0.8</version>
+            <version>${revision}</version>
         </dependency>
 
         <!-- Sensors have dependency to environment -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>environment</artifactId>
-            <version>1.0.8</version>
+            <version>${revision}</version>
         </dependency>
         <!-- Sensors have dependency to simulator -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>simulator</artifactId>
-            <version>1.0.8</version>
+            <version>${revision}</version>
         </dependency>
 
         <!-- Sensors have dependency to vehicle -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>vehicle</artifactId>
-            <version>1.0.8</version>
+            <version>${revision}</version>
         </dependency>
 
         <!-- Sensors have dependency to bus -->
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.9</version>
         </dependency>
         <dependency>
             <groupId>com.jhlabs</groupId>
@@ -96,8 +96,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.7.2</version>
+                <version>2.22.1</version>
                 <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                     <!-- Set root directory to ensure same execution context in subprojects 
                         (e.g. for Log in test mode) -->
                     <workingDirectory>${project.parent.basedir}</workingDirectory>

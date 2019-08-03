@@ -21,10 +21,9 @@
 package simulation.environment.geometry;
 
 import commons.map.IControllerNode;
-import javafx.geometry.Point3D;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import commons.utils.Point3D;
+import org.junit.*;
+import static  org.junit.Assert.*;
 import simulation.environment.WorldModel;
 import simulation.environment.geometry.splines.LinearInterpolator;
 import simulation.environment.pedestrians.PedestrianStreetParameters;
@@ -34,25 +33,19 @@ import java.util.ArrayList;
 /**
  * Created by lukas on 21.01.17.
  */
-public class LinearInterpolatorTest extends TestCase {
-    public LinearInterpolatorTest(String testName) {
-        super(testName);
-    }
+public class LinearInterpolatorTest{
 
-    public static Test suite() {
-        return new TestSuite(LinearInterpolatorTest.class);
-    }
-
+	@Test
     public void testApp() throws Exception {
         LinearInterpolator interpol = new LinearInterpolator(new Point3D(3,3,0), new Point3D(1,1,0), EnvStreet.STREET_WIDTH, -1l, -1l, true);
 
         double dist = interpol.computeDistanceToMiddle(new Point3D(2,1,0));
 
-        assertEquals(Math.sqrt(0.5), dist);
+        assertEquals(Math.sqrt(0.5), dist, 0.0001);
 
 
         Point3D p = interpol.computePoint(8);
-        assertEquals(0d, interpol.computeDistanceToMiddle(p));
+        assertEquals(0d, interpol.computeDistanceToMiddle(p), 0.0001);
 
         assertEquals(EnvStreet.STREET_WIDTH, interpol.computeDistanceToLeft(p) + interpol.computeDistanceToRight(p), LinearInterpolator.precision);
 
@@ -72,11 +65,11 @@ public class LinearInterpolatorTest extends TestCase {
 
 
 
-        assertEquals(-0d,interpol.computeT(new Point3D(-5,-1,0)));
+        assertEquals(-0d,interpol.computeT(new Point3D(-5,-1,0)), 0.0001);
 
-        assertEquals(0.5,interpol.computeT(new Point3D(-1,-0.5,0)));
+        assertEquals(0.5,interpol.computeT(new Point3D(-1,-0.5,0)), 0.0001);
 
-        assertEquals(1d, interpol.computeT(new Point3D(3,0,0)));
+        assertEquals(1d, interpol.computeT(new Point3D(3,0,0)), 0.0001);
 
         p = new Point3D(2,3,4);
 

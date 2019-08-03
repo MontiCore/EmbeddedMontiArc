@@ -20,9 +20,8 @@
  */
 package simulation.environment.visualisationadapter.implementation;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.*;
+import static  org.junit.Assert.*;
 import simulation.environment.object.TrafficLightSwitcher;
 import simulation.environment.visualisationadapter.interfaces.SignTypeAndState;
 import java.util.ArrayList;
@@ -31,23 +30,10 @@ import java.util.List;
 /**
  * Created by lukas on 13.03.17.
  */
-public class TrafficSignalTest extends TestCase {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public TrafficSignalTest(String testName) {
-        super(testName);
-    }
+public class TrafficSignalTest {
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(TrafficSignalTest.class);
-    }
 
+	@Test
     public void testApp() {
 
     }

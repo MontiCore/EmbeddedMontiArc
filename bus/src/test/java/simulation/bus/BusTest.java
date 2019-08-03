@@ -1,53 +1,40 @@
 package simulation.bus;
-/**
- *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
- */
 
 import static commons.controller.commons.BusEntry.NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.Random;
-import java.util.Stack;
-
+import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import commons.controller.commons.BusEntry;
 import simulation.EESimulator.Bridge;
 import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
+import simulation.EESimulator.EEDiscreteEvent;
+import simulation.EESimulator.EEDiscreteEventTypeEnum;
 import simulation.EESimulator.EESimulator;
+import simulation.EESimulator.KeepAliveEvent;
 import simulation.EESimulator.TestComponent;
-import simulation.bus.*;
 
 public class BusTest {
 
@@ -62,44 +49,209 @@ public class BusTest {
 		}
 	}
 
+	@Test
+	public void testSetKeepAlive() {
+		EEsim = new EESimulator(Instant.EPOCH);
+		Bus bus = createBusStructure();
 
-//	@Test
-//	public void testRegisterEventAtSimulator() {
-//		FlexRay flexray = createBusStructure();
-//
-//		//one hop
-//		BusMessage c05 = createNregisterMessage(flexray, "c05", "TestComponent 0", "TestComponent 5", 127, 0);
-//
-//		//two hop
-//		BusMessage c08 = createNregisterMessage(flexray, "c08", "TestComponent 0", "TestComponent 8", 127, 0);
-//
-//		Iterable<Bus> buses = BusUtils.findConnectedBuses(flexray.connectedComponents);
-//		Iterator<Bus> it = buses.iterator();
-//		assertTrue(it.hasNext());
-//		Bus firstHop = it.next();
-//		assertTrue(!it.hasNext());
-//
-//		buses = BusUtils.findConnectedBuses(firstHop.connectedComponents);
-//		it = buses.iterator();
-//		assertTrue(it.hasNext());
-//		Bus secondHop = it.next();
-//		assertTrue(!it.hasNext());
-//
-//		assertEquals(firstHop.getID(), c05.getNextHop().get().getID());
-//		assertEquals(firstHop.getID(), c08.getNextHop().get().getID());
-//
-//		flexray.registerMessageAtSimulator(c05);
-//		flexray.registerMessageAtSimulator(c08);
-//
-//		assertEquals("TestComponent 5", c05.getNextHop().get().getID());
-//		assertEquals(secondHop.getID(), c08.getNextHop().get().getID());
-//
-//		flexray.registerMessageAtSimulator(c08);
-//		assertEquals("TestComponent 8", c08.getNextHop().get().getID());
-//	}
+		// no messages => keepAlive should not set a new keepAlive
+		bus.setKeepAlive();
+		assertTrue(EEsim.getEventList().isEmpty());
 
+		createNregisterMessage(bus, "finished second", 0, 3000, 10);
+		bus.setKeepAlive();
+		assertTrue(EEsim.getEventList().size() == 1);
+		assertEquals(EEDiscreteEventTypeEnum.KEEP_ALIVE_EVENT, EEsim.getEventList().peek().getEventType());
+		assertEquals(bus, EEsim.getEventList().peek().getTarget());
 
-	//TODO other bus impl.
+		// new keepAlive not added since finished after old keepAlive
+		UUID oldKeepAliveId = EEsim.getEventList().peek().getId();
+		createNregisterMessage(bus, "finished third", 0, 1500, 0);
+		bus.setKeepAlive();
+		assertTrue(EEsim.getEventList().size() == 1);
+		assertEquals(oldKeepAliveId, EEsim.getEventList().peek().getId());
+
+		// new keepAlive added since finished before old keepAlive
+		Instant oldKeepAliveTime = EEsim.getEventList().peek().getEventTime();
+		createNregisterMessage(bus, "finished first", 0, 1500, 20);
+		bus.setKeepAlive();
+		assertTrue(EEsim.getEventList().size() == 2);
+		EEDiscreteEvent newKeepAlive = EEsim.getEventList().poll();
+		EEDiscreteEvent oldKeepAlive = EEsim.getEventList().poll();
+		assertTrue(oldKeepAliveTime.isAfter(newKeepAlive.getEventTime()));
+		assertEquals(oldKeepAliveId, oldKeepAlive.getId());
+	}
+
+	@Test
+	public void testBusSetup() {
+		List<Bus> buses = createCyclicBusStructure();
+		for (Bus bus : buses) {
+			//get local messages
+			Iterable<EEComponent> testComponents = Iterables.filter(bus.getConnectedComponents(),
+					new Predicate<EEComponent>() {
+						public boolean apply(EEComponent comp) {
+							return comp.getComponentType() == EEComponentType.TEST_COMPONENT;
+						}
+					});
+			Function<EEComponent, List<BusEntry>> func = new Function<EEComponent, List<BusEntry>>() {
+				@Override
+				public List<BusEntry> apply(EEComponent comp) {
+					return comp.getSubscribedMessages();
+				}
+			};
+			List<BusEntry> localSubscribedMessages = Lists
+					.newArrayList(Iterables.concat(Iterables.transform(testComponents, func)));
+			
+			assertEquals(4, bus.getSubscribedMessages().size());
+			HashMap<BusEntry, List<EEComponent>> targetsByMessageId = bus.getTragetsByMessageId();
+			assertEquals(4, targetsByMessageId.size());
+			for (Map.Entry<BusEntry, List<EEComponent>> entry : targetsByMessageId.entrySet()) {
+				if (localSubscribedMessages.contains(entry.getKey())) {
+					assertEquals(3, entry.getValue().size());
+				} else {
+					assertEquals(2, entry.getValue().size());
+				}
+			}
+		}
+	}
+
+	@Test
+	public void testProcessEvents() {
+		EEsim = new EESimulator(Instant.EPOCH);
+		List<Bus> buses = createCyclicBusStructure();
+		Map<UUID, Map<BusEntry, UUID>> messageMapByBusId = new HashMap<UUID, Map<BusEntry, UUID>>();
+		
+		for (Bus bus : buses) {
+			Map<BusEntry, UUID> messagesByMessageId = new HashMap<BusEntry, UUID>();
+			for (BusEntry messageId : bus.getSubscribedMessages()) {
+				UUID message = UUID.randomUUID();
+				bus.processEvent(new BusMessage(message, 1, messageId, Instant.EPOCH,
+					bus.getConnectedComponents().get(0).getId(), bus));
+				messagesByMessageId.put(messageId, message);
+			}
+			messageMapByBusId.put(bus.getId(), messagesByMessageId);
+		}
+
+		PriorityQueue<EEDiscreteEvent> eventsRef = EEsim.getEventList();
+		PriorityQueue<EEDiscreteEvent> events = new PriorityQueue<EEDiscreteEvent>(eventsRef.comparator());
+		
+		assertEquals(3, eventsRef.size());
+
+		// process keepAlive events
+		while (!eventsRef.isEmpty()) {
+			EEDiscreteEvent event = eventsRef.poll();
+			if(event.getEventType() == EEDiscreteEventTypeEnum.KEEP_ALIVE_EVENT) {
+				assertEquals(EEComponentType.BUS, event.getTarget().getComponentType());
+				event.getTarget().processEvent(event);
+			}
+			else {
+				assertEquals(EEDiscreteEventTypeEnum.BUSMESSAGE, event.getEventType());
+				events.add(event);
+			}
+		}
+
+		assertEquals(30, events.size());
+
+		// process events at bridges and receivers
+		while (!events.isEmpty()) {
+			EEDiscreteEvent event = events.poll();
+			assertEquals(EEDiscreteEventTypeEnum.BUSMESSAGE, event.getEventType());
+			assertTrue(event.getTarget().getComponentType().toString(), event.getTarget().getComponentType() == EEComponentType.BRIDGE
+					|| event.getTarget().getComponentType() == EEComponentType.TEST_COMPONENT);
+			event.getTarget().processEvent(event);
+		}
+
+		while(!eventsRef.isEmpty()) {
+			events.add(eventsRef.poll());
+		}
+		assertEquals(24, events.size());
+		
+		// process events at bus
+		while (!events.isEmpty()) {
+			EEDiscreteEvent event = events.poll();
+			assertTrue(event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE);
+			assertTrue(event.getTarget().getComponentType() == EEComponentType.BUS);
+			event.getTarget().processEvent(event);
+		}
+
+		assertEquals(3, eventsRef.size());
+		
+		// process keepAlive events
+		while (!eventsRef.isEmpty()) {
+			EEDiscreteEvent event = eventsRef.poll();
+			if(event.getEventType() == EEDiscreteEventTypeEnum.KEEP_ALIVE_EVENT) {
+				assertEquals(EEComponentType.BUS, event.getTarget().getComponentType());
+				event.getTarget().processEvent(event);
+			}
+			else {
+				assertEquals(EEDiscreteEventTypeEnum.BUSMESSAGE, event.getEventType());
+				events.add(event);
+			}
+		}
+
+		assertEquals(60, events.size());
+
+		// process events at bridges and receivers
+		while (!events.isEmpty()) {
+			EEDiscreteEvent event = events.poll();
+			assertTrue(event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE);
+			assertTrue(event.getTarget().getComponentType() == EEComponentType.BRIDGE
+					|| event.getTarget().getComponentType() == EEComponentType.TEST_COMPONENT);
+			event.getTarget().processEvent(event);
+		}
+
+		while(!eventsRef.isEmpty()) {
+			events.add(eventsRef.poll());
+		}
+		// after two hops the messages should not be processed anymore
+		assertTrue(EEsim.getEventList().isEmpty());
+
+		for (Bus receiverBus : buses) {
+			for(Bus senderBus : buses) {
+				for(EEComponent comp : receiverBus.getConnectedComponents()) {
+					if (comp.getComponentType() == EEComponentType.TEST_COMPONENT) {
+						for(BusEntry messageId : comp.getSubscribedMessages()) {
+							UUID message = messageMapByBusId.get(senderBus.getId()).get(messageId);
+							assertTrue(((TestComponent) comp).processedMessage(message));
+						}
+						
+					}
+				}
+			}
+		}
+	}
+
+	private List<Bus> createCyclicBusStructure() {
+		Bus bus1 = new FlexRay(EEsim);
+		Bus bus2 = new FlexRay(EEsim);
+		Bus bus3 = new FlexRay(EEsim);
+
+		TestComponent listenerEngine = new TestComponent(EEsim, Collections.singletonList(BusEntry.ACTUATOR_ENGINE));
+		TestComponent listenerGear = new TestComponent(EEsim, Collections.singletonList(BusEntry.ACTUATOR_GEAR));
+		TestComponent listenerBrake = new TestComponent(EEsim, Collections.singletonList(BusEntry.ACTUATOR_BRAKE));
+		TestComponent listnerSteering = new TestComponent(EEsim, Collections.singletonList(BusEntry.ACTUATOR_STEERING));
+
+		// all buses want engine messages
+		bus1.registerComponent(listenerEngine);
+		bus2.registerComponent(listenerEngine);
+		bus3.registerComponent(listenerEngine);
+
+		bus1.registerComponent(listenerGear);
+		bus2.registerComponent(listenerBrake);
+		bus3.registerComponent(listnerSteering);
+
+		// create cycle
+		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus1, bus2), Duration.ofSeconds(2));
+		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus1, bus3), Duration.ofSeconds(2));
+		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus2, bus3), Duration.ofSeconds(2));
+
+		List<Bus> buses = new ArrayList<Bus>();
+		buses.add(bus1);
+		buses.add(bus2);
+		buses.add(bus3);
+		return buses;
+	}
+
 	private FlexRay createBusStructure() {
 		List<EEComponent> mainComponents = new ArrayList<EEComponent>();
 		List<EEComponent> subComponents1 = new ArrayList<EEComponent>();
@@ -134,39 +286,15 @@ public class BusTest {
 		return main;
 	}
 
-	private BusMessage createNregisterMessage(FlexRay flexray, Object message, int senderPos, int receiverPos,
-			int messageLength, int priority) {
+	private BusMessage createNregisterMessage(Bus bus, Object message, int senderPos, int messageLength, int priority) {
 		assertTrue(busEntryByOrdinal.size() > priority);
 
-		List<EEComponent> connectedComponents = flexray.getConnectedComponents();
+		List<EEComponent> connectedComponents = bus.getConnectedComponents();
 		assertTrue(senderPos >= 0 && senderPos < connectedComponents.size());
-		assertTrue(receiverPos >= 0 && receiverPos < connectedComponents.size());
 
 		BusMessage msg = new BusMessage(message, messageLength, busEntryByOrdinal.get(priority), Instant.EPOCH,
-				connectedComponents.get(senderPos).getID(), connectedComponents.get(receiverPos));
-		flexray.registerMessage(msg);
+				connectedComponents.get(senderPos).getId(), bus);
+		bus.registerMessage(msg);
 		return msg;
-	}
-
-	private List<BusMessage> createNregisterMessages(FlexRay flexray) {
-		List<BusMessage> msgs = new ArrayList<BusMessage>();
-
-		List<EEComponent> connectedComponents = flexray.getConnectedComponents();
-
-		// make sure ordering is deterministic => no two messages with same priority
-		List<Integer> priorities = new ArrayList<Integer>();
-		for (int j = 0; j < busEntryByOrdinal.size(); j++) {
-			priorities.add(j);
-		}
-
-		Random rand = new Random();
-		for (int j = 0; j < busEntryByOrdinal.size(); j++) {
-			int senderPos = rand.nextInt(connectedComponents.size());
-			int receiverPos = rand.nextInt(connectedComponents.size());
-			int messageLength = rand.nextInt(1500);
-			int priority = priorities.remove(rand.nextInt(priorities.size()));
-			msgs.add(createNregisterMessage(flexray, j, senderPos, receiverPos, messageLength, priority));
-		}
-		return msgs;
 	}
 }

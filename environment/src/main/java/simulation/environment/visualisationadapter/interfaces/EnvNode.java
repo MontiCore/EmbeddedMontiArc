@@ -21,7 +21,7 @@
 package simulation.environment.visualisationadapter.interfaces;
 
 import commons.map.IControllerNode;
-import javafx.geometry.Point3D;
+import commons.utils.Point3D;
 
 /**
  * Created by lukas on 15.12.16.
