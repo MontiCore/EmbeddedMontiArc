@@ -117,7 +117,7 @@ configuration ReinforcementConfig {
 | Parameter  |  Value | Default | Required | Algorithm | Description |
 |------------|--------|---------|----------|-----------|-------------|
 |learning_method| reinforcement,supervised | supervised | No | All | Determines that this CNNTrain configuration is a reinforcement or supervised learning configuration |
-| rl_algorithm | ddpg-algorithm, dqn-algorithm | dqn-algorithm | No | All | Determines the RL algorithm that is used to train the agent
+| rl_algorithm | ddpg-algorithm, dqn-algorithm, td3-algorithm | dqn-algorithm | No | All | Determines the RL algorithm that is used to train the agent
 | agent_name | String | "agent" | No | All | Names the agent (e.g. for logging output) |
 |environment | gym, ros_interface | Yes | / | All | If *ros_interface* is selected, then the agent and the environment communicates via [ROS](http://www.ros.org/). The gym environment comes with a set of environments which are listed [here](https://gym.openai.com/) |
 | context    | cpu, gpu | cpu | No | All | Determines whether the GPU is used during training or the CPU |
@@ -133,12 +133,15 @@ configuration ReinforcementConfig {
 | replay_memory | buffer, online, combined | buffer | No | All | Determines the behaviour of the replay memory |
 | strategy | epsgreedy, ornstein_uhlenbeck | epsgreedy (discrete), ornstein_uhlenbeck (continuous) | No | All |  Determines the action selection policy during the training |
 | reward_function | Full name of an EMAM component | / | Yes, if *ros_interface* is selected as the environment  and no reward topic is given | All | The EMAM component that is used to calculate the reward. It must have two inputs, one for the current state and one boolean input that determines if the current state is terminal. It must also have exactly one output which represents the reward. |
-critic | Full name of architecture definition | / | Yes, if DDPG is selected | DDPG | The architecture definition which specifies the architecture of the critic network |
-soft_target_update_rate | Float | 0.001 | No | DDPG | Determines the update rate of the critic and actor target network |
-actor_optimizer | See supervised learning | adam with LR .0001 | No | DDPG | Determines the optimizer parameters of the actor network |
-critic_optimizer | See supervised learning | adam with LR .001 | No | DDPG | Determines the optimizer parameters of the critic network |
+critic | Full name of architecture definition | / | Yes, if DDPG or TD3 is selected | DDPG, TD3 | The architecture definition which specifies the architecture of the critic network |
+soft_target_update_rate | Float | 0.001 | No | DDPG, TD3 | Determines the update rate of the critic and actor target network |
+actor_optimizer | See supervised learning | adam with LR .0001 | No | DDPG, TD3 | Determines the optimizer parameters of the actor network |
+critic_optimizer | See supervised learning | adam with LR .001 | No | DDPG, TD3 | Determines the optimizer parameters of the critic network |
 | start_training_at | Integer | 0 | No | All | Determines at which episode the training starts |
 | evaluation_samples | Integer | 100 | No | All | Determines how many epsiodes are run when evaluating the network |
+| policy_noise | Float | 0.1 | No | TD3 | Determines the standard deviation of the noise that is added to the actions predicted by the target actor network when calculating the targets.
+| noise_clip | Float | 0.5 | No | TD3 | Sets the upper and lower limit of the policy noise
+policy_delay | Integer | 2 | No | TD3 | Every policy_delay of steps, the actor network and targets are updated.
 
 #### Environment
 
@@ -189,6 +192,7 @@ This strategy is only available for discrete problems. It selects an action base
 - **epsilon_decay_start**: Number of Episodes after the decay of epsilon starts
 - **epsilon_decay**: The actual decay of epsilon after each step.
 - **min_epsilon**: After *min_epsilon* is reached, epsilon is not decreased further.
+- **epsilon_decay_per_step**:Expects either true or false. If true, the decay will be performed for each step the agent executes instead of performing the decay after each episode. The default value is false
 
 
 #### Option: ornstein_uhlenbeck
@@ -208,6 +212,9 @@ Example: Given an actor network with action output of shape (3,), we can write
 ```
 
 to specify the parameters for each place.
+
+### Option: gaussian
+This strategy is also only available for continuous problems. If this strat- egy is selected, uncorrelated Gaussian noise with zero mean is added to the current policy action selection. This strategy provides the same parameters as the epsgreedy option and the parameter **noise_variance** that determines the variance of the noise.
 
 ## Generation
 
