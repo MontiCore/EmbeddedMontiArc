@@ -20,27 +20,34 @@
  */
 package de.monticore.lang.monticar.cnntrain._cocos;
 
-import de.monticore.lang.monticar.cnntrain._ast.ASTConfiguration;
-import de.monticore.lang.monticar.cnntrain._ast.ASTEnvironmentEntry;
-import de.monticore.lang.monticar.cnntrain._ast.ASTLearningMethodEntry;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
-import de.monticore.lang.monticar.cnntrain._symboltable.LearningMethod;
-import de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants;
+import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
 import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.List;
 
 /**
  *
  */
-public class CheckReinforcementRequiresEnvironment implements CNNTrainASTConfigurationCoCo {
-    @Override
-    public void check(ASTConfiguration node) {
-        boolean isReinforcementLearning = ASTConfigurationUtils.isReinforcementLearning(node);
-        boolean hasEnvironment = ASTConfigurationUtils.hasEnvironment(node);
+public class CheckCriticNetworkHasExactlyAOneDimensionalOutput implements CNNTrainConfigurationSymbolCoCo {
 
-        if (isReinforcementLearning && !hasEnvironment) {
-            Log.error("0" + ErrorCodes.REQUIRED_PARAMETER_MISSING + " The required parameter "
-                    + ConfigEntryNameConstants.ENVIRONMENT + " is missing");
+    @Override
+    public void check(ConfigurationSymbol configurationSymbol) {
+        if (configurationSymbol.getCriticNetwork().isPresent()) {
+            NNArchitectureSymbol criticNetwork = configurationSymbol.getCriticNetwork().get();
+
+            if (criticNetwork.getOutputs().size() > 1) {
+                Log.error("0" + ErrorCodes.CRITIC_NETWORK_ERROR
+                        + " The critic network has more than one outputs", criticNetwork.getSourcePosition());
+            }
+            final String outputName = criticNetwork.getOutputs().get(0);
+            List<Integer> dimensions = criticNetwork.getDimensions().get(outputName);
+
+            if (dimensions.size() != 1 || dimensions.get(0) != 1) {
+                Log.error("0" + ErrorCodes.CRITIC_NETWORK_ERROR + " The output " + outputName
+                        + " of critic network is not a one-dimensional vector", configurationSymbol.getSourcePosition());
+            }
         }
     }
 }

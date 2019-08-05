@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.cnntrain._cocos;
 
 import com.google.common.collect.ImmutableSet;
 import de.monticore.lang.monticar.cnntrain._ast.ASTConfiguration;
+import de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants;
 import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -29,7 +30,7 @@ import java.util.Set;
 
 public class CheckDiscreteRLAlgorithmUsesDiscreteStrategy implements CNNTrainASTConfigurationCoCo{
     private static final Set<String> DISCRETE_STRATEGIES = ImmutableSet.<String>builder()
-        .add("epsgreedy")
+        .add(ConfigEntryNameConstants.STRATEGY_EPSGREEDY)
         .build();
 
     @Override

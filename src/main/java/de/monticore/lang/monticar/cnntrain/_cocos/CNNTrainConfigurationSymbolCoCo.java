@@ -18,16 +18,13 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain.annotations;
+package de.monticore.lang.monticar.cnntrain._cocos;
 
-import java.util.List;
-import java.util.Map;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 
-public interface TrainedArchitecture {
-    public List<String> getInputs();
-    public List<String> getOutputs();
-    public Map<String, List<Integer>> getDimensions();
-    public Map<String, Range> getRanges();
-    public Map<String, String> getTypes();
-
+/**
+ *
+ */
+public interface CNNTrainConfigurationSymbolCoCo {
+    void check(ConfigurationSymbol configurationSymbol);
 }

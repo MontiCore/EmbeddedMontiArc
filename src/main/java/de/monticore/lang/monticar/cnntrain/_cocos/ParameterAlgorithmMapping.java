@@ -79,6 +79,7 @@ class ParameterAlgorithmMapping {
         ASTMinEpsilonEntry.class,
         ASTEpsilonDecayEntry.class,
         ASTEpsilonDecayMethodEntry.class,
+        ASTEpsilonDecayPerStepEntry.class,
         ASTNumEpisodesEntry.class,
         ASTRosEnvironmentActionTopicEntry.class,
         ASTRosEnvironmentStateTopicEntry.class,
@@ -104,7 +105,21 @@ class ParameterAlgorithmMapping {
         ASTCriticOptimizerEntry.class,
         ASTStrategyOUMu.class,
         ASTStrategyOUTheta.class,
-        ASTStrategyOUSigma.class
+        ASTStrategyOUSigma.class,
+        ASTStrategyGaussianNoiseVarianceEntry.class
+    );
+
+    private static final List<Class> EXCLUSIVE_TD3_PARAMETERS = Lists.newArrayList(
+        ASTCriticNetworkEntry.class,
+        ASTSoftTargetUpdateRateEntry.class,
+        ASTCriticOptimizerEntry.class,
+        ASTStrategyOUMu.class,
+        ASTStrategyOUTheta.class,
+        ASTStrategyOUSigma.class,
+        ASTPolicyNoiseEntry.class,
+        ASTNoiseClipEntry.class,
+        ASTPolicyDelayEntry.class,
+        ASTStrategyGaussianNoiseVarianceEntry.class
     );
 
     ParameterAlgorithmMapping() {
@@ -115,7 +130,8 @@ class ParameterAlgorithmMapping {
         return GENERAL_PARAMETERS.contains(entryClazz)
             || GENERAL_REINFORCEMENT_PARAMETERS.contains(entryClazz)
             || EXCLUSIVE_DQN_PARAMETERS.contains(entryClazz)
-            || EXCLUSIVE_DDPG_PARAMETERS.contains(entryClazz);
+            || EXCLUSIVE_DDPG_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_TD3_PARAMETERS.contains(entryClazz);
     }
 
     boolean isSupervisedLearningParameter(Class<? extends ASTEntry> entryClazz) {
@@ -135,12 +151,19 @@ class ParameterAlgorithmMapping {
             || EXCLUSIVE_DDPG_PARAMETERS.contains(entryClazz);
     }
 
+    boolean isTd3Parameter(Class<? extends ASTEntry> entryClazz) {
+        return GENERAL_PARAMETERS.contains(entryClazz)
+            || GENERAL_REINFORCEMENT_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_TD3_PARAMETERS.contains(entryClazz);
+    }
+
     List<Class> getAllReinforcementParameters() {
         return ImmutableList.<Class> builder()
             .addAll(GENERAL_PARAMETERS)
             .addAll(GENERAL_REINFORCEMENT_PARAMETERS)
             .addAll(EXCLUSIVE_DQN_PARAMETERS)
             .addAll(EXCLUSIVE_DDPG_PARAMETERS)
+            .addAll(EXCLUSIVE_TD3_PARAMETERS)
             .build();
     }
 

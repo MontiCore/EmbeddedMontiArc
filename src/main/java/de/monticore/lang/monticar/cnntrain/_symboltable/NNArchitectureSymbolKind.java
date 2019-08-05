@@ -20,23 +20,19 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-public enum RLAlgorithm {
-    DQN {
-        @Override
-        public String toString() {
-            return "dqn";
-        }
-    },
-    DDPG {
-        @Override
-        public String toString() {
-            return "ddpg";
-        }
-    },
-    TD3 {
-        @Override
-        public String toString() {
-            return "td3";
-        }
+import de.monticore.symboltable.SymbolKind;
+
+public class NNArchitectureSymbolKind implements SymbolKind {
+    public static final NNArchitectureSymbolKind INSTANCE = new NNArchitectureSymbolKind();
+    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbolKind";
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
 }
