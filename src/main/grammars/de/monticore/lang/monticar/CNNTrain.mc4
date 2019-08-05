@@ -145,7 +145,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     LearningMethodValue implements ConfigValue = (supervisedLearning:"supervised" | reinforcement:"reinforcement");
 
-    RLAlgorithmValue implements ConfigValue = (dqn:"dqn-algorithm" | ddpg:"ddpg-algorithm");
+    RLAlgorithmValue implements ConfigValue = (dqn:"dqn-algorithm" | ddpg:"ddpg-algorithm" | tdThree:"td3-algorithm");
 
     interface MultiParamConfigEntry extends ConfigEntry;
 
@@ -176,17 +176,23 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     interface StrategyOrnsteinUhlenbeckEntry extends Entry;
     StrategyOrnsteinUhlenbeckValue implements StrategyValue = name:"ornstein_uhlenbeck" ("{" params:StrategyOrnsteinUhlenbeckEntry* "}")?;
 
+    interface StrategyGaussianEntry extends Entry;
+    StrategyGaussianValue implements StrategyValue = name:"gaussian" ("{" params:StrategyGaussianEntry* "}")?;
+
+    StrategyGaussianNoiseVarianceEntry implements StrategyGaussianEntry = name: "noise_variance" ":" value:NumberValue;
+
     StrategyOUMu implements StrategyOrnsteinUhlenbeckEntry = name: "mu" ":" value:DoubleVectorValue;
     StrategyOUTheta implements StrategyOrnsteinUhlenbeckEntry = name: "theta" ":" value:DoubleVectorValue;
     StrategyOUSigma implements StrategyOrnsteinUhlenbeckEntry = name: "sigma" ":" value:DoubleVectorValue;
 
-    interface GeneralStrategyEntry extends StrategyEpsGreedyEntry, StrategyOrnsteinUhlenbeckEntry;
+    interface GeneralStrategyEntry extends StrategyEpsGreedyEntry, StrategyOrnsteinUhlenbeckEntry, StrategyGaussianEntry;
 
     GreedyEpsilonEntry implements GeneralStrategyEntry = name:"epsilon" ":" value:NumberValue;
     MinEpsilonEntry implements GeneralStrategyEntry = name:"min_epsilon" ":" value:NumberValue;
     EpsilonDecayStartEntry implements GeneralStrategyEntry = name:"epsilon_decay_start" ":" value:IntegerValue;
     EpsilonDecayMethodEntry implements GeneralStrategyEntry = name:"epsilon_decay_method" ":" value:EpsilonDecayMethodValue;
     EpsilonDecayMethodValue implements ConfigValue = (linear:"linear" | no:"no");
+    EpsilonDecayPerStepEntry implements GeneralStrategyEntry = name:"epsilon_decay_per_step" ":" value:BooleanValue;
     EpsilonDecayEntry implements GeneralStrategyEntry = name:"epsilon_decay" ":" value:NumberValue;
 
     // Environment
@@ -211,8 +217,13 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     UseDoubleDQNEntry implements ConfigEntry = name:"use_double_dqn" ":" value:BooleanValue;
 
 
-    // DDPG exclusive parameters
+    // DDPG and TD3 exclusive parameters
     CriticNetworkEntry implements ConfigEntry = name:"critic" ":" value:ComponentNameValue;
     SoftTargetUpdateRateEntry implements ConfigEntry = name:"soft_target_update_rate" ":" value:NumberValue;
     CriticOptimizerEntry implements ConfigEntry = name:"critic_optimizer" ":" value:OptimizerValue;
+
+    // TD3 exclusive parameters
+    PolicyNoiseEntry implements ConfigEntry = name:"policy_noise" ":" value:NumberValue;
+    NoiseClipEntry implements ConfigEntry = name:"noise_clip" ":" value:NumberValue;
+    PolicyDelayEntry implements ConfigEntry = name:"policy_delay" ":" value:IntegerValue;
 }

@@ -351,6 +351,8 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
         if (node.getValue().isPresentDdpg()) {
             value.setValue(RLAlgorithm.DDPG);
+        } else if(node.getValue().isPresentTdThree()) {
+            value.setValue(RLAlgorithm.TD3);
         } else {
             value.setValue(RLAlgorithm.DQN);
         }
@@ -508,6 +510,38 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void visit(ASTEvaluationSamplesEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTPolicyNoiseEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForDouble(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTNoiseClipEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForDouble(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTStrategyGaussianNoiseVarianceEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForDouble(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTPolicyDelayEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         entry.setValue(getValueSymbolForInteger(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);

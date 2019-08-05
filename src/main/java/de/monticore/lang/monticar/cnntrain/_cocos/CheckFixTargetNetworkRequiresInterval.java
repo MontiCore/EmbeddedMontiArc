@@ -23,6 +23,7 @@ package de.monticore.lang.monticar.cnntrain._cocos;
 import de.monticore.lang.monticar.cnntrain._ast.*;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.EntrySymbol;
+import de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants;
 import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -33,8 +34,6 @@ import java.util.Map;
  *
  */
 public class CheckFixTargetNetworkRequiresInterval implements CNNTrainASTConfigurationCoCo {
-    private static final String PARAMETER_USE_FIX_TARGET_NETWORK = "use_fix_target_network";
-    private static final String PARAMETER_TARGET_NETWORK_UPDATE_INTERVAL = "target_network_update_interval";
 
     @Override
     public void check(ASTConfiguration node) {
@@ -50,8 +49,8 @@ public class CheckFixTargetNetworkRequiresInterval implements CNNTrainASTConfigu
                     .map(e -> (ASTUseFixTargetNetworkEntry)e)
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("ASTUseFixTargetNetwork entry must be available"));
-            Log.error("0" + ErrorCodes.REQUIRED_PARAMETER_MISSING + " Parameter " + Boolean.toString(useFixTargetNetwork)
-                    + " requires parameter " + PARAMETER_TARGET_NETWORK_UPDATE_INTERVAL,
+            Log.error("0" + ErrorCodes.REQUIRED_PARAMETER_MISSING + " Parameter " + ConfigEntryNameConstants.USE_FIX_TARGET_NETWORK
+                    + " requires parameter " + ConfigEntryNameConstants.TARGET_NETWORK_UPDATE_INTERVAL,
                     useFixTargetNetworkEntry.get_SourcePositionStart());
         } else if (!useFixTargetNetwork && hasTargetNetworkUpdateInterval) {
             ASTTargetNetworkUpdateIntervalEntry targetNetworkUpdateIntervalEntry = node.getEntriesList().stream()
@@ -62,7 +61,7 @@ public class CheckFixTargetNetworkRequiresInterval implements CNNTrainASTConfigu
                             () -> new IllegalStateException("ASTTargetNetworkUpdateInterval entry must be available"));
             Log.error("0" + ErrorCodes.REQUIRED_PARAMETER_MISSING + " Parameter "
                             + targetNetworkUpdateIntervalEntry.getName() + " requires that parameter "
-                            + PARAMETER_USE_FIX_TARGET_NETWORK + " to be true.",
+                            + ConfigEntryNameConstants.USE_FIX_TARGET_NETWORK + " to be true.",
                     targetNetworkUpdateIntervalEntry.get_SourcePositionStart());
         }
     }

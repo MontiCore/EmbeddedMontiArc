@@ -18,25 +18,27 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._symboltable;
+package de.monticore.lang.monticar.cnntrain._cocos;
 
-public enum RLAlgorithm {
-    DQN {
-        @Override
-        public String toString() {
-            return "dqn";
-        }
-    },
-    DDPG {
-        @Override
-        public String toString() {
-            return "ddpg";
-        }
-    },
-    TD3 {
-        @Override
-        public String toString() {
-            return "td3";
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ */
+public class CNNTrainConfigurationSymbolChecker {
+    private List<CNNTrainConfigurationSymbolCoCo> cocos = new ArrayList<>();
+
+    public CNNTrainConfigurationSymbolChecker addCoCo(CNNTrainConfigurationSymbolCoCo coco) {
+        cocos.add(coco);
+        return this;
+    }
+
+    public void checkAll(ConfigurationSymbol configurationSymbol) {
+        for (CNNTrainConfigurationSymbolCoCo coco : cocos) {
+            coco.check(configurationSymbol);
         }
     }
 }

@@ -44,6 +44,10 @@ public class MultiParamValueSymbol extends ValueSymbol {
         return parameters.get(parameterName);
     }
 
+    public boolean hasParameter(final String parameterName) {
+        return parameters.containsKey(parameterName);
+    }
+
     public void addParameter(final String parameterName, final Object value) {
         parameters.put(parameterName, value);
     }

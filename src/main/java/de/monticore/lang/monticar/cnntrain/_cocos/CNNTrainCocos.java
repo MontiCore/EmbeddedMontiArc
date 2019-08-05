@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.cnntrain._cocos;
 
 import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.se_rwth.commons.logging.Log;
 
 public class CNNTrainCocos {
@@ -34,7 +35,7 @@ public class CNNTrainCocos {
                 .addCoCo(new CheckReinforcementRequiresEnvironment())
                 .addCoCo(new CheckLearningParameterCombination())
                 .addCoCo(new CheckRosEnvironmentRequiresRewardFunction())
-                .addCoCo(new CheckDdpgRequiresCriticNetwork())
+                .addCoCo(new CheckActorCriticRequiresCriticNetwork())
                 .addCoCo(new CheckRlAlgorithmParameter())
                 .addCoCo(new CheckDiscreteRLAlgorithmUsesDiscreteStrategy())
                 .addCoCo(new CheckContinuousRLAlgorithmUsesContinuousStrategy())
@@ -45,5 +46,20 @@ public class CNNTrainCocos {
         ASTCNNTrainNode node = (ASTCNNTrainNode) compilationUnit.getAstNode().get();
         int findings = Log.getFindings().size();
         createChecker().checkAll(node);
+    }
+
+    public static void checkTrainedArchitectureCoCos(final ConfigurationSymbol configurationSymbol) {
+        CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
+                .addCoCo(new CheckTrainedRlNetworkHasExactlyOneInput())
+                .addCoCo(new CheckTrainedRlNetworkHasExactlyOneOutput())
+                .addCoCo(new CheckOUParameterDimensionEqualsActionDimension());
+        checker.checkAll(configurationSymbol);
+    }
+
+    public static void checkCriticCocos(final ConfigurationSymbol configurationSymbol) {
+        CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
+                .addCoCo(new CheckCriticNetworkHasExactlyAOneDimensionalOutput())
+                .addCoCo(new CheckCriticNetworkInputs());
+        checker.checkAll(configurationSymbol);
     }
 }

@@ -20,12 +20,11 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import com.google.common.collect.Lists;
-import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 
-import javax.swing.text.html.Option;
 import java.util.*;
+
+import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants.*;
 
 public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
@@ -34,7 +33,8 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     private OptimizerSymbol criticOptimizer;
     private LossSymbol loss;
     private RewardFunctionSymbol rlRewardFunctionSymbol;
-    private TrainedArchitecture trainedArchitecture;
+    private NNArchitectureSymbol trainedArchitecture;
+    private NNArchitectureSymbol criticNetwork;
 
     public static final ConfigurationSymbolKind KIND = new ConfigurationSymbolKind();
 
@@ -76,12 +76,20 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         return Optional.ofNullable(this.rlRewardFunctionSymbol);
     }
 
-    public Optional<TrainedArchitecture> getTrainedArchitecture() {
+    public Optional<NNArchitectureSymbol> getTrainedArchitecture() {
         return Optional.ofNullable(trainedArchitecture);
     }
 
-    public void setTrainedArchitecture(TrainedArchitecture trainedArchitecture) {
+    public void setTrainedArchitecture(NNArchitectureSymbol trainedArchitecture) {
         this.trainedArchitecture = trainedArchitecture;
+    }
+
+    public Optional<NNArchitectureSymbol> getCriticNetwork() {
+        return Optional.ofNullable(criticNetwork);
+    }
+
+    public void setCriticNetwork(NNArchitectureSymbol criticNetwork) {
+        this.criticNetwork = criticNetwork;
     }
 
     public Map<String, EntrySymbol> getEntryMap() {
@@ -93,7 +101,25 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     }
 
     public LearningMethod getLearningMethod() {
-        return this.entryMap.containsKey("learning_method")
-                ? (LearningMethod)this.entryMap.get("learning_method").getValue().getValue() : LearningMethod.SUPERVISED;
+        return this.entryMap.containsKey(LEARNING_METHOD)
+                ? (LearningMethod)this.entryMap.get(LEARNING_METHOD).getValue().getValue() : LearningMethod.SUPERVISED;
+    }
+
+    public boolean isReinforcementLearningMethod() {
+        return getLearningMethod().equals(LearningMethod.REINFORCEMENT);
+    }
+
+    public boolean hasCritic() {
+        return getEntryMap().containsKey(CRITIC);
+    }
+
+    public Optional<String> getCriticName() {
+        if (!hasCritic()) {
+            return Optional.empty();
+        }
+
+        final Object criticNameValue = getEntry(CRITIC).getValue().getValue();
+        assert criticNameValue instanceof String;
+        return Optional.of((String)criticNameValue);
     }
 }

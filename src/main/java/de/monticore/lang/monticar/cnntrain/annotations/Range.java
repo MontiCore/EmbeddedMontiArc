@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.cnntrain.annotations;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class Range {
@@ -65,5 +66,29 @@ public class Range {
 
     public static Range withLowerInfinityLimit(double upperLimit) {
         return new Range(true, false, null, upperLimit);
+    }
+
+    @Override
+    public String toString() {
+        final String lowerLimit = isLowerLimitInfinity() || !getLowerLimit().isPresent() ? "-oo" : getLowerLimit().get().toString();
+        final String upperLimit = isUpperLimitInfinity() || !getUpperLimit().isPresent() ? "oo" : getUpperLimit().get().toString();
+
+        return "[" + lowerLimit + ", " + upperLimit + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Range)) return false;
+        Range range = (Range) o;
+        return lowerLimitIsInfinity == range.lowerLimitIsInfinity &&
+                upperLimitIsInfinity == range.upperLimitIsInfinity &&
+                Objects.equals(lowerLimit, range.lowerLimit) &&
+                Objects.equals(upperLimit, range.upperLimit);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lowerLimitIsInfinity, upperLimitIsInfinity, lowerLimit, upperLimit);
     }
 }
