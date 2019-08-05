@@ -8,7 +8,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-emadl-pythonwrapper-generator</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
@@ -16,7 +16,7 @@
         <se-commons.version>1.7.7</se-commons.version>
         <embedded-montiarc-math.version>0.1.7-SNAPSHOT</embedded-montiarc-math.version>
         <embedded-montiarc.version>0.1.9-SNAPSHOT</embedded-montiarc.version>
-        <embedded-montiarc-emadl-generator.version>0.2.8</embedded-montiarc-emadl-generator.version>
+        <embedded-montiarc-emadl-generator.version>0.3.0</embedded-montiarc-emadl-generator.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -43,13 +43,6 @@
             <groupId>de.se_rwth.commons</groupId>
             <artifactId>se-commons-logging</artifactId>
             <version>${se-commons.version}</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-emadl-generator</artifactId>
-            <version>${embedded-montiarc-emadl-generator.version}</version>
         </dependency>
 
         <dependency>
@@ -97,6 +90,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-emadl-generator</artifactId>
+            <version>${embedded-montiarc-emadl-generator.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

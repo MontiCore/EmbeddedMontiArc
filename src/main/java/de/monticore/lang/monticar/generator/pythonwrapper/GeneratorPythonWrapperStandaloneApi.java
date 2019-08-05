@@ -1,7 +1,6 @@
 package de.monticore.lang.monticar.generator.pythonwrapper;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
 import de.monticore.lang.monticar.generator.pythonwrapper.building.PythonModuleBuilder;
 import de.monticore.lang.monticar.generator.pythonwrapper.building.PythonModuleBuildingException;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.ComponentPortInformation;
@@ -23,11 +22,9 @@ public class GeneratorPythonWrapperStandaloneApi {
 
     }
 
-    public ComponentPortInformation generate(final String modelPath,
-                                             final String rootModel,
+    public ComponentPortInformation generate(final EMAComponentInstanceSymbol componentInstanceSymbol,
                                              final String outputPath) {
         GeneratorPythonWrapper generatorPythonWrapper = new GeneratorPythonWrapperFactory().create();
-        EMAComponentInstanceSymbol componentInstanceSymbol = getComponentInstanceSymbol(modelPath, rootModel);
         generatorPythonWrapper.setGenerationTargetPath(outputPath);
         try {
             generatorPythonWrapper.generateFiles(componentInstanceSymbol);
@@ -41,11 +38,10 @@ public class GeneratorPythonWrapperStandaloneApi {
         return generatorPythonWrapper.getLastGeneratedComponentPortInformation().get();
     }
 
-    public ComponentPortInformation generateAndTryBuilding(final String modelPath,
-                                  final String rootModel,
-                                  final String generationOutputPath,
-                                  final String moduleOutputPath) {
-        ComponentPortInformation componentPortInformation = generate(modelPath, rootModel, generationOutputPath);
+    public ComponentPortInformation generateAndTryBuilding(final EMAComponentInstanceSymbol componentInstanceSymbol,
+                                                           final String generationOutputPath,
+                                                           final String moduleOutputPath) {
+        ComponentPortInformation componentPortInformation = generate(componentInstanceSymbol, generationOutputPath);
         if (this.checkIfPythonModuleBuildAvailable()) {
             try {
                 buildPythonModule(Paths.get(generationOutputPath),
@@ -68,12 +64,5 @@ public class GeneratorPythonWrapperStandaloneApi {
                                   final String componentName,
                                   final Path outputDirectory) throws PythonModuleBuildingException {
         pythonModuleBuilder.buildPythonModule(sourceDirectory, componentName, outputDirectory);
-    }
-
-    private EMAComponentInstanceSymbol getComponentInstanceSymbol(final String modelPath, final String rootModel) {
-        TaggingResolver taggingResolver = EMADLAbstractSymtab.createSymTabAndTaggingResolver(modelPath);
-        return taggingResolver
-                .<EMAComponentInstanceSymbol>resolve(rootModel, EMAComponentInstanceSymbol.KIND)
-                .orElseThrow(IllegalStateException::new);
     }
 }

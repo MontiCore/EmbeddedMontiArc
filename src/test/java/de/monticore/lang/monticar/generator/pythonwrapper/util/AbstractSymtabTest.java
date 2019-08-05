@@ -46,29 +46,6 @@ public class AbstractSymtabTest {
 
     private static final String MODEL_PATH = "src/test/resources/";
 
-    protected static Scope createSymTab(String... modelPath) {
-        ModelingLanguageFamily fam = new ModelingLanguageFamily();
-
-        fam.addModelingLanguage(new CNNArchLanguage());
-
-        final ModelPath mp = new ModelPath();
-        for (String m : modelPath) {
-            mp.addEntry(Paths.get(m));
-        }
-
-        return new GlobalScope(mp, fam);
-    }
-
-    protected static CNNArchCompilationUnitSymbol getCompilationUnitSymbol(String modelPath, String model) {
-        Scope symTab = createSymTab(MODEL_PATH + modelPath);
-        CNNArchCompilationUnitSymbol comp = symTab.<CNNArchCompilationUnitSymbol> resolve(
-                model, CNNArchCompilationUnitSymbol.KIND).orElse(null);
-        assertNotNull("Could not resolve model " + model, comp);
-
-        return comp;
-    }
-
-
 
     public static void checkFilesAreEqual(Path generationPath, Path resultsPath, List<String> fileNames) {
         for (String fileName : fileNames){
