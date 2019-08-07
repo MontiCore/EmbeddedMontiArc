@@ -24,18 +24,25 @@ import commons.controller.commons.BusEntry;
 import commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractDistanceSensor;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
 import simulation.vehicle.PhysicalVehicle;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Zaman on 2/8/2017.
  */
 public class DistanceToLeftSensor extends AbstractDistanceSensor {
 
-    public DistanceToLeftSensor(PhysicalVehicle vehicle, EESimulator simulator) {
-        super(vehicle, simulator);
+    public DistanceToLeftSensor(PhysicalVehicle vehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                                HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(vehicle, simulator, subscribedMessages, targetsByMessageId);
     }
 
     @Override

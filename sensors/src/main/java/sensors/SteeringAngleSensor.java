@@ -22,11 +22,15 @@ package sensors;
 
 import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.Vehicle;
 import simulation.vehicle.VehicleActuator;
 import simulation.vehicle.VehicleActuatorType;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Aklima Zaman on 20-Jan-17.
@@ -35,13 +39,19 @@ public class SteeringAngleSensor extends AbstractSensor {
 
     private Double value;
 
-    public SteeringAngleSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
-        super(physicalVehicle, simulator);
+    public SteeringAngleSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                               HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
     }
 
     @Override
     public Double getValue() {
         return this.value;
+    }
+
+    @Override
+    public int getDataLength() {
+        return 6;
     }
 
     @Override

@@ -29,7 +29,7 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>${revision}</version>
+        <version>2.0.1</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
@@ -86,6 +86,12 @@
             <groupId>com.jhlabs</groupId>
             <artifactId>filters</artifactId>
             <version>2.0.235-1</version>
+        </dependency>
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>commons</artifactId>
+            <version>1.0.6</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

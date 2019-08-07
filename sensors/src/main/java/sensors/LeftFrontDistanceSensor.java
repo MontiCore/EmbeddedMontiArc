@@ -23,18 +23,24 @@ package sensors;
 import commons.controller.commons.BusEntry;
 import commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractDistanceSensor;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
 import simulation.vehicle.PhysicalVehicle;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Marius on 12.09.2017.
  */
 public class LeftFrontDistanceSensor extends AbstractDistanceSensor {
 
-    public LeftFrontDistanceSensor(PhysicalVehicle vehicle, EESimulator simulator) {
-        super(vehicle, simulator);
+    public LeftFrontDistanceSensor(PhysicalVehicle vehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                                   HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(vehicle, simulator, subscribedMessages,targetsByMessageId);
     }
 
     @Override

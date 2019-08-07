@@ -25,8 +25,14 @@ import sensors.abstractsensors.AbstractSensor;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by kirchhof on 10/03/2017.
@@ -35,8 +41,9 @@ public class CompassSensor extends AbstractSensor {
 
     private Double value;
 
-    public CompassSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
-        super(physicalVehicle, simulator);
+    public CompassSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                         HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId);
     }
 
     @Override
@@ -47,6 +54,11 @@ public class CompassSensor extends AbstractSensor {
     @Override
     public Object getValue() {
         return value;
+    }
+
+    @Override
+    public int getDataLength() {
+        return 6;
     }
 
     @Override

@@ -29,6 +29,7 @@ import ij.process.ImageProcessor;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
@@ -44,10 +45,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Aklima Zaman on 2/8/2017.
@@ -69,13 +68,20 @@ public class CameraSensor extends AbstractSensor {
         return originalImage;
     }
 
-    public CameraSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
-        super(physicalVehicle, simulator);
+    public CameraSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                        HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+
+        super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId);
     }
 
     @Override
     public BusEntry getType() {
         return BusEntry.SENSOR_CAMERA;
+    }
+
+    @Override
+    public int getDataLength() {
+        return 50;
     }
 
     @Override

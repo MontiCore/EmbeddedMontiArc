@@ -20,15 +20,16 @@
  */
 package sensors.abstractsensors;
 
-import simulation.EESimulator.EEDiscreteEvent;
-import simulation.EESimulator.EESimulator;
+import commons.controller.commons.BusEntry;
+import simulation.EESimulator.*;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import commons.simulation.Sensor;
 import simulation.vehicle.PhysicalVehicle;
-import simulation.EESimulator.EEComponent;
 
 import java.util.UUID;
 
@@ -37,21 +38,13 @@ import java.util.UUID;
 /**
  * Created by Aklima Zaman on 1/20/2017.
  */
-public abstract class AbstractSensor extends EEComponent implements Sensor {
-	
-	//TODO delete this
-	private static EESimulator sim = new EESimulator(Instant.EPOCH);
+public abstract class AbstractSensor extends ImmutableEEComponent implements Sensor {
 
     private PhysicalVehicle physicalVehicle;
 
-    public AbstractSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
-        super(simulator);
-        this.physicalVehicle = physicalVehicle;
-    }
-
-    //TODO delete this
-    public AbstractSensor(PhysicalVehicle physicalVehicle) {
-        super(sim);
+    public AbstractSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(simulator, EEComponentType.SENSOR, subscribedMessages, targetsByMessageId);
         this.physicalVehicle = physicalVehicle;
     }
     
@@ -69,15 +62,17 @@ public abstract class AbstractSensor extends EEComponent implements Sensor {
      */
     protected abstract void calculateValue();
 
+    /**
+     *
+     * @return individual lenght of the data of the sensor in bytes
+     */
+    public abstract int getDataLength();
+
+
 
     @Override
     public void processEvent(EEDiscreteEvent event) {
         //TODO implement
     }
 
-    @Override
-    public UUID getID() {
-        //TODO implement
-        return null;
-    }
 }

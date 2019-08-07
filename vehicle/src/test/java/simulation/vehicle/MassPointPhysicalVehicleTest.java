@@ -22,7 +22,11 @@ package simulation.vehicle;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
+import commons.controller.commons.BusEntry;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
@@ -34,6 +38,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.util.Log;
 import simulation.util.MathHelper;
@@ -69,6 +74,7 @@ public class MassPointPhysicalVehicleTest {
     public void executeLoopIterationNoFlags(){
         // Set up normal vehicle
         EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
 
         // Set values for vehicle actuators
@@ -89,46 +95,47 @@ public class MassPointPhysicalVehicleTest {
         VehicleActuator motorReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR,
                 motor.getActuatorValueMin(),
                 motor.getActuatorValueMax(),
-                motor.getActuatorValueChangeRate(), simulator);
+                motor.getActuatorValueChangeRate(), simulator, Collections.emptyList(), targetsByMessageId);
         motorReference.setActuatorValueTarget(motor.getActuatorValueTarget());
         motorReference.setActuatorValueCurrent(motor.getActuatorValueCurrent());
 
         VehicleActuator frontLeftBrakeReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT,
                 frontLeftBrake.getActuatorValueMin(),
                 frontLeftBrake.getActuatorValueMax(),
-                frontLeftBrake.getActuatorValueChangeRate(), simulator);
+                frontLeftBrake.getActuatorValueChangeRate(), simulator, Collections.emptyList(), targetsByMessageId);
         frontLeftBrakeReference.setActuatorValueTarget(frontLeftBrake.getActuatorValueTarget());
         frontLeftBrakeReference.setActuatorValueCurrent(frontLeftBrake.getActuatorValueCurrent());
 
         VehicleActuator frontRightBrakeReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT,
                 frontRightBrake.getActuatorValueMin(),
                 frontRightBrake.getActuatorValueMax(),
-                frontRightBrake.getActuatorValueChangeRate(), simulator);
+                frontRightBrake.getActuatorValueChangeRate(), simulator, Collections.emptyList(), targetsByMessageId);
         frontRightBrakeReference.setActuatorValueTarget(frontRightBrake.getActuatorValueTarget());
         frontRightBrakeReference.setActuatorValueCurrent(frontRightBrake.getActuatorValueCurrent());
 
         VehicleActuator backLeftBrakeReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT,
                 backLeftBrake.getActuatorValueMin(),
                 backLeftBrake.getActuatorValueMax(),
-                backLeftBrake.getActuatorValueChangeRate(), simulator);
+                backLeftBrake.getActuatorValueChangeRate(), simulator, Collections.emptyList(), targetsByMessageId);
         backLeftBrakeReference.setActuatorValueTarget(backLeftBrake.getActuatorValueTarget());
         backLeftBrakeReference.setActuatorValueCurrent(backLeftBrake.getActuatorValueCurrent());
 
         VehicleActuator backRightBrakeReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT,
                 backRightBrake.getActuatorValueMin(),
                 backRightBrake.getActuatorValueMax(),
-                backRightBrake.getActuatorValueChangeRate(), simulator);
+                backRightBrake.getActuatorValueChangeRate(), simulator, Collections.emptyList(), targetsByMessageId);
         backRightBrakeReference.setActuatorValueTarget(backRightBrake.getActuatorValueTarget());
         backRightBrakeReference.setActuatorValueCurrent(backRightBrake.getActuatorValueCurrent());
 
         VehicleActuator steeringReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING,
                 steering.getActuatorValueMin(),
                 steering.getActuatorValueMax(),
-                steering.getActuatorValueChangeRate(), simulator);
+                steering.getActuatorValueChangeRate(), simulator, Collections.emptyList(), targetsByMessageId);
         steeringReference.setActuatorValueTarget(steering.getActuatorValueTarget());
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
+
         physicalVehicle.executeLoopIteration(Duration.ofMillis(33));
         motorReference.update(0.033);
         frontLeftBrakeReference.update(0.033);
@@ -152,6 +159,7 @@ public class MassPointPhysicalVehicleTest {
     public void executeLoopIterationCollisionFlag(){
         // Set up vehicle with collision
         EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
         physicalVehicle.setCollision(true);
 
@@ -183,7 +191,7 @@ public class MassPointPhysicalVehicleTest {
         VehicleActuator steeringReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING,
                 steering.getActuatorValueMin(),
                 steering.getActuatorValueMax(),
-                steering.getActuatorValueChangeRate(), simulator);
+                steering.getActuatorValueChangeRate(), simulator, Collections.emptyList(), targetsByMessageId);
         steeringReference.setActuatorValueTarget(steering.getActuatorValueTarget());
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 

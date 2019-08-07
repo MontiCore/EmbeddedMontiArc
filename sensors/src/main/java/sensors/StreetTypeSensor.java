@@ -22,6 +22,7 @@ package sensors;
 
 import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
@@ -30,6 +31,9 @@ import simulation.environment.visualisationadapter.implementation.Street2D;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by Henk on 04.08.2017.
  */
@@ -37,13 +41,19 @@ public class StreetTypeSensor extends AbstractSensor {
 
     private String value;
 
-    public StreetTypeSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
-        super(physicalVehicle, simulator);
+    public StreetTypeSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                            HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
     }
 
     @Override
     public BusEntry getType() {
         return BusEntry.SENSOR_STREETTYPE;
+    }
+
+    @Override
+    public int getDataLength() {
+        return (value.length() * 4);
     }
 
     @Override

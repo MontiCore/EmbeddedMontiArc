@@ -42,7 +42,7 @@ public abstract class ImmutableEEComponent extends AbstractEEComponent {
 	}
 
 	@Override
-	public HashMap<BusEntry, List<EEComponent>> getTragetsByMessageId() {
+	public HashMap<BusEntry, List<EEComponent>> getTargetsByMessageId() {
 		return targetsByMessageId;
 	}
 

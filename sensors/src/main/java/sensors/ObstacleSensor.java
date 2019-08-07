@@ -23,9 +23,12 @@ package sensors;
 import commons.controller.commons.BusEntry;
 import commons.simulation.PhysicalObject;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,8 +40,9 @@ public class ObstacleSensor extends AbstractSensor {
     private List<PhysicalObject> result = Collections.synchronizedList(new LinkedList<>());
     private Object[] value = new Object[2];
 
-    public ObstacleSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
-        super(physicalVehicle, simulator);
+    public ObstacleSensor(PhysicalVehicle physicalVehicle, EESimulator simulator,List<BusEntry> subscribedMessages,
+                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
     }
 
     protected void calculateValue() {
@@ -57,6 +61,11 @@ public class ObstacleSensor extends AbstractSensor {
     @Override
     public BusEntry getType() {
         return BusEntry.SENSOR_OBSTACLE;
+    }
+
+    @Override
+    public int getDataLength() {
+        return 12;
     }
 
     @Override

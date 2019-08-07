@@ -21,13 +21,19 @@
 package sensors;
 
 import static org.junit.Assert.assertTrue;
+
+import commons.controller.commons.BusEntry;
 import org.junit.Test;
 import commons.simulation.Sensor;
+import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.MassPointPhysicalVehicleBuilder;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Aklima Zaman on 19-Dec-16.
@@ -39,7 +45,8 @@ public class SpeedSensorTest {
         MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
         PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         EESimulator simulator = new EESimulator(Instant.EPOCH);
-        Sensor speedSensor = new SpeedSensor(physicalVehicle, simulator);
+        HashMap<BusEntry, List<EEComponent>> map = new HashMap<>();
+        Sensor speedSensor = new SpeedSensor(physicalVehicle, simulator, Collections.emptyList(), map);
 
         assertTrue(!physicalVehicle.getVelocity().equals(speedSensor.getValue()));
 

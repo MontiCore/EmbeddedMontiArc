@@ -23,10 +23,14 @@ package sensors;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
 import simulation.vehicle.PhysicalVehicle;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by zaman on 2/8/2017.
@@ -34,8 +38,9 @@ import simulation.vehicle.PhysicalVehicle;
 public class WeatherSensor extends AbstractSensor {
     private Double value;
 
-    public WeatherSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
-        super(physicalVehicle, simulator);
+    public WeatherSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                         HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
     }
 
     @Override
@@ -49,6 +54,11 @@ public class WeatherSensor extends AbstractSensor {
     @Override
     public Double getValue() {
         return this.value;
+    }
+
+    @Override
+    public int getDataLength() {
+        return 6;
     }
 
     @Override

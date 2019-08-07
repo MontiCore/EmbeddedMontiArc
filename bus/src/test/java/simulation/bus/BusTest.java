@@ -20,7 +20,6 @@
  */
 package simulation.bus;
 
-import static commons.controller.commons.BusEntry.NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -31,13 +30,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.PriorityQueue;
-import java.util.Random;
 import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -53,7 +49,6 @@ import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EEDiscreteEventTypeEnum;
 import simulation.EESimulator.EESimulator;
-import simulation.EESimulator.KeepAliveEvent;
 import simulation.EESimulator.TestComponent;
 
 public class BusTest {
@@ -123,7 +118,7 @@ public class BusTest {
 					.newArrayList(Iterables.concat(Iterables.transform(testComponents, func)));
 			
 			assertEquals(4, bus.getSubscribedMessages().size());
-			HashMap<BusEntry, List<EEComponent>> targetsByMessageId = bus.getTragetsByMessageId();
+			HashMap<BusEntry, List<EEComponent>> targetsByMessageId = bus.getTargetsByMessageId();
 			assertEquals(4, targetsByMessageId.size());
 			for (Map.Entry<BusEntry, List<EEComponent>> entry : targetsByMessageId.entrySet()) {
 				if (localSubscribedMessages.contains(entry.getKey())) {

@@ -32,7 +32,7 @@ public interface EEComponent {
 
 	public List<BusEntry> getSubscribedMessages();
 	
-	public HashMap<BusEntry, List<EEComponent>> getTragetsByMessageId();
+	public HashMap<BusEntry, List<EEComponent>> getTargetsByMessageId();
 	
 	public EESimulator getSimulator() ;
 

@@ -23,8 +23,13 @@ package sensors;
 import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
 import simulation.vehicle.PhysicalVehicle;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Aklima Zaman on 20-Jan-17.
@@ -33,14 +38,20 @@ public class LocationSensor extends AbstractSensor {
 
     private RealVector value;
 
-    public LocationSensor(PhysicalVehicle physicalVehicle, EESimulator simulator) {
-        super(physicalVehicle, simulator);
+    public LocationSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
 
     }
 
     @Override
     public RealVector getValue() {
         return this.value;
+    }
+
+    @Override
+    public int getDataLength() {
+        return 15;
     }
 
     @Override
