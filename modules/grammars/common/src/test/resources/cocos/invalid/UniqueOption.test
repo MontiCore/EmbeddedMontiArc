@@ -1,0 +1,11 @@
+option uniqueOptionCoCo:list {
+    prop label = "A Label";
+
+    option subOption:string {
+        prop label = "A Sub-Label";
+    }
+
+    option subOption:string {
+        prop label = "A Sub-Label";
+    }
+}

@@ -8,7 +8,6 @@ package de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.textmate;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration;
-import org.apache.maven.project.MavenProject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -23,8 +22,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,42 +34,21 @@ public class TextMateGeneratorPhaseTests {
 
     @Test
     void testGetLabel() {
-        assertEquals("Language Client - TextMate Grammar Generation", phase.getLabel(), "Labels do not match.");
+        assertNotNull(phase.getLabel(), "Label has not been set.");
     }
 
     @Test
     void testGetPriority() {
-        assertEquals(49, phase.getPriority(), "Priorities do not match.");
-    }
-
-    @Test
-    void testConfigure() throws Exception {
-        MavenProject mavenProject = mock(MavenProject.class);
-        File validBaseDir = Paths.get("src/test/resources").toFile();
-        File invalidBaseDir = Paths.get("src/test/java").toFile();
-        File tokensFile = Paths.get("src/test/resources/TextMateGeneratorPhase/EmbeddedMontiArcMathAntlr.tokens").toFile();
-
-        when(configuration.getGrammarName()).thenReturn("EmbeddedMontiArcMath");
-        when(configuration.getMavenProject()).thenReturn(mavenProject);
-        when(mavenProject.getParent()).thenReturn(mavenProject);
-        when(mavenProject.getBasedir()).thenReturn(validBaseDir);
-
-        phase.configure();
-
-        assertEquals(tokensFile, phase.tokensFile, "Tokens File could not be found.");
-
-        when(mavenProject.getBasedir()).thenReturn(invalidBaseDir);
-
-        assertThrows(Exception.class, () -> phase.configure(), "Configuration should throw exception.");
+        assertTrue(phase.getPriority() < 500, "Priority should be less than the one of NotificationServiceImpl.");
     }
 
     @Test
     void testGenerate() throws Exception { // TODO: Write better test.
         GeneratorEngine engine = mock(GeneratorEngine.class);
         List<String> excludes = Arrays.asList("null", "true", "false", "void");
+        File tokensFile = Paths.get("src/test/resources/TextMateGeneratorPhase/EmbeddedMontiArcMathAntlr.tokens").toFile();
 
-        phase.tokensFile = Paths.get("src/test/resources/TextMateGeneratorPhase/EmbeddedMontiArcMathAntlr.tokens").toFile();
-
+        when(configuration.getTokensArtifact()).thenReturn(tokensFile);
         when(configuration.getFileExtension()).thenReturn("emam");
         when(configuration.getExcludedKeywords()).thenReturn(excludes);
         when(configuration.getGrammarName()).thenReturn("EmbeddedMontiArcMath");
@@ -84,8 +61,9 @@ public class TextMateGeneratorPhaseTests {
     @Test
     void testComputeKeywords() throws Exception {
         List<String> expectedKeywords = Arrays.asList("null", "true", "false", "void", "boolean");
+        File tokensFile = Paths.get("src/test/resources/TextMateGeneratorPhase/EmbeddedMontiArcMathAntlr.tokens").toFile();
 
-        phase.tokensFile = Paths.get("src/test/resources/TextMateGeneratorPhase/EmbeddedMontiArcMathAntlr.tokens").toFile();
+        when(configuration.getTokensArtifact()).thenReturn(tokensFile);
 
         List<String> actualKeywords = phase.computeKeywords();
 

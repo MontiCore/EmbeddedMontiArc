@@ -1,0 +1,5 @@
+package de.monticore.lang.monticar.sol.grammars.options;
+
+grammar OptionsTest extends de.monticore.lang.monticar.sol.grammars.Options {
+    start Option;
+}

@@ -7,6 +7,8 @@ package de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration;
 
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.configuration.GeneratePluginConfiguration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public interface LanguageClientConfiguration extends GeneratePluginConfiguration {
@@ -29,4 +31,24 @@ public interface LanguageClientConfiguration extends GeneratePluginConfiguration
      * @return The keywords which will be excluded from Syntax Highlighting.
      */
     List<String> getExcludedKeywords();
+
+    /**
+     * @return A File pointing to the .tokens file which contains all keywords of the language.
+     */
+    File getTokensArtifact() throws IOException;
+
+    /**
+     * @return A File pointing to the executable JAR of the language server.
+     */
+    File getServerArtifact() throws IOException;
+
+    /**
+     * @return A list of File pointing to the the models in the models directory given in the configuration.
+     */
+    List<File> getModels();
+
+    /**
+     * @return A File pointing to the directory where the templates are located.
+     */
+    File getTemplatesPath();
 }

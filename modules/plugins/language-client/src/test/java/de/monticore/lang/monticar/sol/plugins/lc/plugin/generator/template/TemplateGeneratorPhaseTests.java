@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TemplateGeneratorPhaseTests {
@@ -24,11 +24,11 @@ public class TemplateGeneratorPhaseTests {
 
     @Test
     void testGetLabel() {
-        assertEquals("Language Client - Template Generation", phase.getLabel(), "Label does not match.");
+        assertNotNull(phase.getLabel(), "Label has not been set.");
     }
 
     @Test
     void testGetPriority() {
-        assertEquals(50, phase.getPriority(), "Priority does not match.");
+        assertTrue(phase.getPriority() < 500, "Priority should be less than the one of NotificationServiceImpl.");
     }
 }

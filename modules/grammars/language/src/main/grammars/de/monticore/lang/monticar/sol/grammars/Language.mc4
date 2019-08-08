@@ -1,0 +1,55 @@
+package de.monticore.lang.monticar.sol.grammars;
+
+/**
+ *
+ */
+grammar Language extends de.monticore.MCBasics, de.monticore.MCLiterals, de.monticore.types.Types,
+                         de.monticore.lang.monticar.sol.grammars.Options {
+    // =========================================
+    // INTERFACE DEFINITIONS
+    // =========================================
+
+    interface LanguageElement;
+
+    interface TemplateElement;
+
+    // =========================================
+    // PARSER RULES
+    // =========================================
+
+    LanguageCompilationUnit =
+        /* "package" package:(Name || ".")+ ";"
+        import:ImportStatement* */
+        Language
+    ;
+
+    start LanguageCompilationUnit;
+
+    symbol scope Language =
+        "language" Name "{" element:LanguageElement* "}"
+    ;
+
+    symbol scope TemplateDeclaration implements LanguageElement =
+        "declare" "template" Name "for" path:StringLiteral "{" element:TemplateElement* "}"
+    ;
+
+    TemplateAttribute implements TemplateElement =
+        "attribute" attribute:Pair ";"
+    ;
+
+    TemplateOption implements TemplateElement =
+        Option
+    ;
+
+    TemplateUndeclaration implements LanguageElement =
+        "undeclare" "template" QualifiedName ";"
+    ;
+
+    // =========================================
+    // LEXER RULES
+    // =========================================
+
+    // =========================================
+    // AST DEFINITIONS
+    // =========================================
+}

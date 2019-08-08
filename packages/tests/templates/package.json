@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "name": "@embeddedmontiarc/sol-tests-templates",
+  "version": "2019.6.25-SNAPSHOT",
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-runtime-templates": "^2019.6.25-SNAPSHOT",
+    "inversify": "^4.14.0"
+  },
+  "devDependencies": {
+  },
+  "theiaExtensions": [
+    {
+      "backend": "lib/node/templates-backend-module"
+    }
+  ]
+}

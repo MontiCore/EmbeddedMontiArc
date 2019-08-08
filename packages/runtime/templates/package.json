@@ -1,0 +1,33 @@
+{
+  "name": "@embeddedmontiarc/sol-runtime-templates",
+  "description": "",
+  "version": "2019.6.25-SNAPSHOT",
+  "files": ["src", "lib"],
+  "types": "lib/typings",
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-runtime-components": "2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-modules": "2019.6.25-SNAPSHOT",
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/navigator": "latest",
+    "@theia/workspace": "latest",
+    "inversify": "^4.14.0",
+    "nunjucks": "^3.2.0",
+    "fs-extra": "^7.0.1"
+  },
+  "devDependencies": {
+    "@types/nunjucks": "^3.1.1"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/templates-frontend-module",
+      "backend": "lib/node/templates-backend-module"
+    }
+  ]
+}

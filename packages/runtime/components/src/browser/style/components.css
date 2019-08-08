@@ -1,0 +1,26 @@
+/*
+ * Copyright (C) 2019 SE RWTH.
+ *
+ *  TODO: Include License.
+ */
+@import "path-component.css";
+@import "string-component.css";
+@import "list-component.css";
+
+.sol-runtime-components.content {
+    overflow-y:scroll;
+    max-height:500px;
+}
+
+.sol-runtime-components.component {
+    border:solid 1px transparent;
+    padding:2px;
+}
+
+.sol-runtime-components.component.invalid {
+    border:solid 1px red;
+}
+
+.sol-runtime-components .label {
+    margin-right:calc(var(--theia-ui-padding)*2);
+}

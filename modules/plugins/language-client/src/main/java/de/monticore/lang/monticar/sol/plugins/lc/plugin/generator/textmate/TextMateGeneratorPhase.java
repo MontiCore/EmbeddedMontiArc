@@ -13,8 +13,6 @@ import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.NameFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -34,8 +31,6 @@ import java.util.stream.Stream;
 public class TextMateGeneratorPhase implements GeneratorPhase {
     protected final NotificationService notifications;
     protected final LanguageClientConfiguration configuration;
-
-    protected File tokensFile;
 
     @Inject
     protected TextMateGeneratorPhase(NotificationService notifications, LanguageClientConfiguration configuration) {
@@ -54,18 +49,6 @@ public class TextMateGeneratorPhase implements GeneratorPhase {
     }
 
     @Override
-    public void configure() throws Exception {
-        String grammarName = this.configuration.getGrammarName();
-        File rootFile = this.configuration.getMavenProject().getParent().getBasedir();
-        String fileName = String.format("%sAntlr.tokens", grammarName);
-        NameFileFilter filter = new NameFileFilter(fileName);
-        Collection<File> tokensFiles = FileUtils.listFiles(rootFile, filter, TrueFileFilter.INSTANCE);
-
-        if (tokensFiles.size() > 0) this.tokensFile = tokensFiles.iterator().next();
-        else throw new Exception(String.format("Tokens File %s could not be located.", fileName));
-    }
-
-    @Override
     public void generate(GeneratorEngine engine) throws Exception {
         Predicate<String> predicate = keyword -> !this.configuration.getExcludedKeywords().contains(keyword);
         List<String> keywords = this.computeKeywords().stream().filter(predicate).collect(Collectors.toList());
@@ -80,7 +63,8 @@ public class TextMateGeneratorPhase implements GeneratorPhase {
     }
 
     protected List<String> computeKeywords() throws IOException {
-        List<String> lines = FileUtils.readLines(this.tokensFile, Charsets.UTF_8);
+        File tokensFile = this.configuration.getTokensArtifact();
+        List<String> lines = FileUtils.readLines(tokensFile, Charsets.UTF_8);
         Pattern pattern = Pattern.compile("'(\\w+[_-]?\\w*)'=\\d+");
         Stream<Matcher> filteredLines = lines.stream().map(pattern::matcher).filter(Matcher::matches);
 

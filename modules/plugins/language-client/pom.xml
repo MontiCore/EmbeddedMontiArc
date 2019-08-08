@@ -48,7 +48,13 @@
         <dependency>
             <groupId>de.monticore.lang.monticar.sol</groupId>
             <artifactId>plugin-common</artifactId>
-            <version>2019.06.25-SNAPSHOT</version>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>grammar-language</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- .. Libraries ................................................. -->

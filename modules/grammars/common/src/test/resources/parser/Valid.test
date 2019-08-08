@@ -1,0 +1,21 @@
+/*
+ * Ports
+ */
+option ports:list {
+    prop label = "Add Port";
+
+    option direction:string {
+        prop label = "Direction";
+        prop required = true;
+    }
+
+    option type:string {
+        prop label = "Type";
+        prop required = true;
+    }
+
+    option name:string {
+        prop label = "Name";
+        prop required = true;
+    }
+}

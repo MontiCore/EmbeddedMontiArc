@@ -1,0 +1,43 @@
+/*
+ * Copyright (C) 2019 SE RWTH.
+ *
+ *  TODO: Include License.
+ */
+package de.monticore.lang.monticar.sol.grammars.options.parser;
+
+import de.monticore.lang.monticar.sol.grammars.options.optionstest._parser.OptionsTestParser;
+import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OptionsParserTests {
+    OptionsTestParser parser = new OptionsTestParser();
+
+    @BeforeAll
+    static void beforeAll() {
+        Log.enableFailQuick(false);
+        Log.getFindings().clear();
+    }
+
+    @Test
+    void testParseString() throws IOException {
+        File validFile = Paths.get("src/test/resources/parser/Valid.test").toFile();
+        File invalidFile = Paths.get("src/test/resources/parser/Invalid.test").toFile();
+        String validContent = FileUtils.readFileToString(validFile, StandardCharsets.UTF_8);
+        String invalidContent = FileUtils.readFileToString(invalidFile, StandardCharsets.UTF_8);
+
+        assertTrue(parser.parse_String(validContent).isPresent(), "AST should be present.");
+        assertEquals(0, Log.getFindings().size(), "There should be no errors.");
+
+        assertFalse(parser.parse_String(invalidContent).isPresent(), "AST should not be present.");
+        assertNotEquals(0, Log.getFindings().size(), "There should be errors.");
+    }
+}

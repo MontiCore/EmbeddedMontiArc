@@ -2,7 +2,15 @@
   "name": "Sol",
   "mode": "modules",
   "out": "public/pages/typedoc",
+  "exclude": ["**/node_modules/**", "**/*.spec.ts", "modules/**"],
+  "lernaExclude": ["@embeddedmontiarc/sol-tests-ide", "@embeddedmontiarc/sol-tests-templates"],
+  "tsconfig": "./configs/base.tsconfig.json",
   "excludeExternals": true,
+  "readme": "none",
   "excludePrivate": true,
-  "skipInternal": true
+  "module": "commonjs",
+  "target": "ES6",
+  "ignoreCompilerErrors": true,
+  "skipInternal": true,
+  "hideGenerator": true
 }
