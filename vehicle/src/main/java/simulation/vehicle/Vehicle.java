@@ -37,6 +37,7 @@ import simulation.environment.object.Battery;
 import simulation.environment.object.ChargingStation;
 import simulation.environment.osm.IntersectionFinder;
 import simulation.environment.util.ChargingProcess;
+import simulation.environment.util.ChargingStationNavigator;
 import simulation.util.Log;
 import java.awt.*;
 import java.util.*;
@@ -166,6 +167,12 @@ public class Vehicle implements ChargingProcess.ChargeableVehicle {
     /** PhysicalVehicle that this vehicle is part of */
     private PhysicalVehicle physicalVehicle;
 
+    /** Battery Stuff */
+    /** Flag go to Chargingstation */
+    private boolean gotoCharginstation = false;
+
+    /** Last Destination */
+    private IControllerNode lastdestination;
 
     /** Properties */
     /** M of formula */
@@ -409,7 +416,14 @@ public class Vehicle implements ChargingProcess.ChargeableVehicle {
 
     @Override
     public boolean isParkedChargingStation(ChargingStation station) {
-        // TODO implement
+        if(gotoCharginstation){
+            List<Vertex> trajectory = getTrajectory();
+            if (trajectory.isEmpty()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
         return false;
     }
 
@@ -922,8 +936,31 @@ public class Vehicle implements ChargingProcess.ChargeableVehicle {
             double brakePressure = brakeValue*brakes.getActuatorValueMax();
             brakes.setActuatorValueTarget(brakePressure);
         }
+
+        //Check Battery
+        checkBattery();
     }
 
+    /**
+     * Check Battery state and move to the next Chargingstation if needed
+     */
+    private void checkBattery() {
+        if(isElectricVehicle() && !gotoCharginstation &&battery.get().getStateinPercentage()<=20){
+            gotoCharginstation = true;
+            // Todo: Get OSM Node from the Current Position
+            //ChargingStationNavigator.getNearestChargingStation();
+            //TODO: Change OSMID to IControllerNode
+            //navigateTo();
+        }
+    }
+
+    /**
+     * Can be called from the Chargingstation
+     */
+    public void onRechargeReady(){
+        gotoCharginstation = false;
+        navigateTo(lastdestination);
+    }
 
     /**
      * Function that initiates or updates navigation of the vehicle to a specified point in the map
@@ -932,6 +969,9 @@ public class Vehicle implements ChargingProcess.ChargeableVehicle {
      * @param node Target node for navigation
      */
     public void navigateTo(IControllerNode node) {
+        if(!gotoCharginstation) {
+            lastdestination = node;
+        }
         navigateTo(node, Collections.synchronizedList(new LinkedList<RealVector>()));
     }
 
