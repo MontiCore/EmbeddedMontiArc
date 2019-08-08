@@ -31,8 +31,6 @@ import java.util.*;
 /**
  * Charging Station Class
  * <p>
- * TODO BROADCAST Location
- * TODO BROADCAST Finish Charging
  *
  * @version 1.0
  * @since 2019-05-22
@@ -42,8 +40,8 @@ public class ChargingStation implements SimulationLoopExecutable {
     /**
      * Name of the Charging Station
      */
-    private static int autogenNameID = 0;
     private String name;
+    private long osmId;
     /**
      * Electrical consumption
      */
@@ -59,7 +57,6 @@ public class ChargingStation implements SimulationLoopExecutable {
     /**
      * Location of the Charging Station
      */
-    // TODO whats the difference between location and position?
     private Point3D location = new Point3D(0, 0, 0);
 
     /**
@@ -76,7 +73,7 @@ public class ChargingStation implements SimulationLoopExecutable {
      */
     public ChargingStation() {
 
-        this.name = "Charging Station " + this.autogenNameID;
+        this.name = "Charging Station ";
     }
 
     /**
@@ -85,18 +82,10 @@ public class ChargingStation implements SimulationLoopExecutable {
      * @param capacity number of cars that can be placed in the Charging Station
      *                 0 for a random capacity between 1-4
      */
-    public ChargingStation(int capacity) {
-        this();
-        if (capacity == 0) {
-            if (Math.random() < 0.25) this.capacity = 1;
-            else if (Math.random() < 0.5) this.capacity = 2;
-            else if (Math.random() < 0.75) this.capacity = 3;
-            else this.capacity = 4;
-        } else if (capacity < 1) {
-            this.capacity = 1;
-        } else {
-            this.capacity = capacity;
-        }
+    public ChargingStation(long osmId, int capacity, String name) {
+        this.osmId = osmId;
+        this.capacity = capacity;
+        this.name = name;
     }
 
     // ===================
@@ -135,8 +124,6 @@ public class ChargingStation implements SimulationLoopExecutable {
             return true;
         }
         return false;
-
-        // TODO BROADCARST: FINISHED CHARGING
     }
 
     public boolean isOccupied() {
@@ -159,8 +146,8 @@ public class ChargingStation implements SimulationLoopExecutable {
         return this.name;
     }
 
-    public int getId() {
-        return this.autogenNameID;
+    public long getOsmId() {
+        return this.osmId;
     }
 
     public int getCapacity() {
@@ -184,7 +171,7 @@ public class ChargingStation implements SimulationLoopExecutable {
     }
 
     public String toString() {
-        return getName() + ", Capacity: " + getCapacity() + ", ID" + getId();
+        return getName() + ", Capacity: " + getCapacity();
     }
 
 //	public ArrayList<PhysicalVehicle> getCarObjects() {
