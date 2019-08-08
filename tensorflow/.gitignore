@@ -2,3 +2,12 @@
 target
 *idea
 *.csv
+*.cmake
+
+CMakeCache.txt
+CMakeFiles
+model
+train.log
+Makefile
+steeringAnglePredictor
+
