@@ -8,7 +8,7 @@ The [Installision of SmartFoxServer 2X](https://git.rwth-aachen.de/monticore/Emb
 
 # Generation of AutopilotAdapter
 LTSAutopilot Model in the folder _model_ contains the core algorithm(protocol) of cooperative driving, it firstly need to be generated to _c++_ file, and then compiled to AutopilotAdapter.dll. Current AutopilotAdapter.dll file is in the folder _dll_.<br>
-The process of generation is in the Project [EMAM-showcase](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/EMAM-showcase?nav_source=navbar). When the model is generated, the emam2cpp.jar in [EMAM-showcase](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/EMAM-showcase?nav_source=navbar) will be replaced by the new emam2cpp.jar, which is in root folder and genedated from [EMAM2Cpp](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Cpp?nav_source=navbar) project (Weixu Branch).  
+The process of generation is in the Project [EMAM-showcase](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/EMAM-showcase?nav_source=navbar). When you generate the model, please replace the emam2cpp.jar in [EMAM-showcase](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/EMAM-showcase?nav_source=navbar) by emam2cpp.jar, which is in root folder of this repository and genedated from [EMAM2Cpp](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Cpp?nav_source=navbar) project (Weixu Branch).  
 # Deploy of Autopilotadapter in RMIMODELServer
 Once AutopilotAdapter.dll is generated, it will be deployed for the visualization of simulation in [RMIMODELServer](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/RMIModelServer/tree/Weixu)(Weixu Branch).
 # Running scenario 
