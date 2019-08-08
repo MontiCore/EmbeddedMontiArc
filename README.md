@@ -1,10 +1,12 @@
 # LTSAutopilot
 
-# SmartFox
+# Installation of SmartFoxServer 2X
 
 # Generation of Autopilotadapter
 
-# DLL with RMIMODELServer
+# Deploy of Autopilotadapter in RMIMODELServer
 
-# running scenario 
+# Running scenario 
+
+# Possible improvement of model language in future
 
