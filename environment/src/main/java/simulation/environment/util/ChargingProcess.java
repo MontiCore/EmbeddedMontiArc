@@ -70,7 +70,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 		if (this.chargeCar) {
 
 			// Car drives away?
-			if(!chargingStation.carStaningAtTheCS(vehicle)) {
+			if(!chargingStation.carStandingAtTheCS(vehicle)) {
 				stopProcess();
 			}
 

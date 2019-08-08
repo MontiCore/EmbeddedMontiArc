@@ -93,7 +93,7 @@
 //		if (this.chargeCar) {
 //
 //			// Car drives away?
-//			if(!cs.carStaningAtTheCS(car)) {
+//			if(!cs.carStandingAtTheCS(car)) {
 //				stopProcess();
 //			}
 //

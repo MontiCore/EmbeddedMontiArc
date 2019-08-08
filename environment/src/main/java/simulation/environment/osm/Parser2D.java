@@ -313,7 +313,6 @@ public class Parser2D implements IParser {
             String building = tags.get("building");
             String waterway = tags.get("waterway");
             String surface = tags.get("surface");
-            String amenity = tags.get("amenity");
 
 
         //  System.out.println("PARSE OBJECTS FUNCTION  "+highway);
@@ -336,20 +335,6 @@ public class Parser2D implements IParser {
             if (waterway != null) {
                 constructWaterway( way, waterway);
             }
-
-            //check if amenity is a charging station
-            if (amenity != null && amenity.equals("charging_station")) {
-                String capacity = tags.get("capacity");
-                if (capacity == null) {
-                    capacity = "1";
-                }
-                String name = tags.get("name");
-                if (name == null) {
-                    name = "chargingStation";
-                }
-                constructChargingStation( way, capacity, name);
-            }
-
         }
     }
 
@@ -407,16 +392,6 @@ public class Parser2D implements IParser {
         }
 
         this.streets.add(new Street2D(nodes, 50.d, mapper.getIntersectionsForWay(way), way.getId(), isOneWay, parseStreetType(highway)));
-    }
-
-    private void constructChargingStation(OsmWay way, String capacity, String name) throws EntityNotFoundException {
-        List<EnvNode> nodes = new ArrayList<>();
-
-        for (int i = 0; i < way.getNumberOfNodes(); i++) {
-            OsmNode node = dataSet.getNode(way.getNodeId(i));
-            nodes.add(new Node2D(node.getLongitude(), node.getLatitude(), 0, way.getNodeId(i)));
-        }
-        this.chargingStations.add(new ChargingStation2D(nodes, way.getId(), Integer.parseInt(capacity), name));
     }
 
     private void constructChargingStation(OsmNode node, String capacity, String name){
