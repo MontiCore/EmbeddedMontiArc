@@ -1,0 +1,11 @@
+package de.rwth.armin.modeling.autopilot.basicComp;
+
+
+view PID {
+	component PID{
+		ports in ? currentSpeed,
+			  in ? desiredSpeed,
+			  out ? Engine,
+			  out ? Brakes;
+	}
+}

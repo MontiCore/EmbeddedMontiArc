@@ -1,0 +1,29 @@
+package de.rwth.armin.modeling.autopilot.messagematch;
+import  de.rwth.armin.modeling.autopilot.messagestruct.*;
+
+dynamic component Idmatchtrajectorymessage{
+  ports
+   dynamic  in   Trajectorymessage     traj_msg[0:32],
+   in  Z  vehicleid,
+
+
+   out Z                   ifmatchsuccess,
+   out Trajectorymessage   matched_traj_msg,
+   out Trajectorymessage   tmsg;
+
+   @ traj_msg::connect{/* interface for dynamic ports*/}
+
+   implementation Math{
+     ifmatchsuccess = 0;
+     for i = 1:32
+         if is_connected(traj_msg,i)
+            tmsg = traj_msg(i);
+            if tmsg.vehicleid == vehicleid
+               ifmatchsuccess = 1 ;
+               matched_traj_msg = tmsg;
+            end
+         end
+     end
+   }
+
+}

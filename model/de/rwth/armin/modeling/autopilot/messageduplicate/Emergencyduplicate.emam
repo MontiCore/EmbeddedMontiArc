@@ -1,0 +1,50 @@
+package de.rwth.armin.modeling.autopilot.messageduplicate;
+import  de.rwth.armin.modeling.autopilot.messagestruct.*;
+
+dynamic component Emergencyduplicate{
+ports
+  // copy trajectorymessage for dupilcate in ports
+  dynamic in Emergencymessage   emer_msg[0:32],
+
+  dynamic out Emergencymessage  emer_msg1[0:32],
+  dynamic out Emergencymessage  emer_msg2[0:32],
+  dynamic out Emergencymessage  emer_msg3[0:32],
+  dynamic out Emergencymessage  emer_msg4[0:32],
+  dynamic out Emergencymessage  emer_msg5[0:32],
+  out Emergencymessage emsg;
+
+  @ emer_msg::connect{/*interface for dynamic ports*/}
+
+  implementation Math{
+    for i = 1:32
+      if is_connected(emer_msg,i)
+        emsg = emer_msg(i);
+
+        if ports_connect(emer_msg1, i, emsg)
+           emer_msg1(i) = emsg;
+        end
+        Z r = ports_free(emer_msg1,i);
+
+        if ports_connect(emer_msg2, i, emsg)
+           emer_msg2(i) = emsg;
+        end
+        Z r1 = ports_free(emer_msg2,i);
+
+        if ports_connect(emer_msg3, i, emsg)
+           emer_msg3(i) = emsg;
+        end
+        Z r2 = ports_free(emer_msg3,i);
+
+        if ports_connect(emer_msg4, i, emsg)
+           emer_msg4(i) = emsg;
+        end
+        Z r3 = ports_free(emer_msg4,i);
+
+        if ports_connect(emer_msg5, i, emsg)
+           emer_msg5(i) = emsg);
+        end
+        Z r4 = ports_free(emer_msg5,i);
+      end
+    end
+  }
+}
