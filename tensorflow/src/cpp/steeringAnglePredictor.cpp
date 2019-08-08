@@ -19,13 +19,12 @@ int main(int argc,char* argv[])
     
     String filename = argv[1];
     
+    //Debug information
     cout << "Reads from "+filename << endl;
     Ptr<hdf::HDF5> h5io =hdf::open( filename );
 
     cout << "Data exists: "<< BoolToString(h5io->hlexists("data")) << endl;
-    
-    cout << "Softmax_label exists: " << BoolToString(h5io->hlexists("softmax_label")) << endl;
-
+    //cout << "Softmax_label exists: " << BoolToString(h5io->hlexists("softmax_label")) << endl;
     
     std::vector<int> dims;
     dims = h5io->dsgetsize("data", hdf::HDF5::H5_GETDIMS);    
@@ -35,6 +34,8 @@ int main(int argc,char* argv[])
     cout << dims.at(2) << ",";
     cout << dims.at(3) << endl;
 
+
+    //Read data from h5 file
     Mat M;
     h5io->dsread(M, "data");
    
@@ -44,6 +45,7 @@ int main(int argc,char* argv[])
     int num_channels=dims.at(1);
     vector<float> prediction[num_pictures];
     
+    //Convert to vector and call predictor
     for(int n=0;n<num_pictures;n++){
         vector<float> data(num_channels*height*width);
         prediction[n]=vector<float> (1,42);
@@ -55,16 +57,14 @@ int main(int argc,char* argv[])
                 }
             }
         }
-        vector<float> *prediction_address = &(prediction[n]);
-        vector<float> *data_address = &(data);
         
-        
+        //Prediction
+        CNNPredictor_endtoend_nvidia_0 predictor;
+        predictor.predict(data,prediction[n]);
+        cout << prediction[n].at(0) <<endl;
     }
     
-    
-    
-    
-    
+       
     h5io->close();
     return 0;
 }
