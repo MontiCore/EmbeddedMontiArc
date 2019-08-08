@@ -1,0 +1,26 @@
+{
+  "name": "@embeddedmontiarc/sol-runtime-modules",
+  "description": "",
+  "version": "2019.6.25-SNAPSHOT",
+  "files": ["src", "lib"],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-runtime-components": "2019.6.25-SNAPSHOT",
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/workspace": "latest",
+    "@theia/navigator": "latest",
+    "autobind-decorator": "^2.4.0",
+    "inversify": "^4.14.0"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/modules-frontend-module"
+    }
+  ]
+}

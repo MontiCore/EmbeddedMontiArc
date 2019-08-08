@@ -1,0 +1,3 @@
+option supportedTypeCoCo:unknown {
+    prop label = "A Label";
+}

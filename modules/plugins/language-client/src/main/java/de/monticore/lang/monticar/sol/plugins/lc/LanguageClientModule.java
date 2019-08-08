@@ -7,7 +7,9 @@ package de.monticore.lang.monticar.sol.plugins.lc;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
+import de.monticore.lang.monticar.sol.grammars.language.LanguageModule;
 import de.monticore.lang.monticar.sol.plugins.common.PluginsGenerateModule;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.common.PluginContribution;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.configuration.PluginConfiguration;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.configuration.GeneratePluginConfiguration;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GeneratorPhase;
@@ -20,10 +22,16 @@ import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageCl
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfigurationImpl;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.LanguageClientGeneratorSetup;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.LanguageClientGlex;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.ld.LDExtractor;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.ld.LDExtractorImpl;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.ld.LDGeneratorPhase;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.server.ServerGeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.GrammarNameVariable;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.LanguageClientTemplates;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.TemplateGeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.textmate.TextMateGeneratorPhase;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.validator.LDValidator;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.validator.LDValidatorImpl;
 
 public class LanguageClientModule extends AbstractModule {
     private final LanguageClientPlugin plugin;
@@ -44,6 +52,8 @@ public class LanguageClientModule extends AbstractModule {
         bind(LanguageClientConfiguration.class).to(LanguageClientConfigurationImpl.class);
         bind(PluginConfiguration.class).to(LanguageClientConfigurationImpl.class);
         bind(GeneratePluginConfiguration.class).to(LanguageClientConfigurationImpl.class);
+        bind(LDValidator.class).to(LDValidatorImpl.class);
+        bind(LDExtractor.class).to(LDExtractorImpl.class);
     }
 
     private void addMultiBindings() {
@@ -52,10 +62,12 @@ public class LanguageClientModule extends AbstractModule {
         this.addTemplateVariables();
         this.addGlexContributions();
         this.addGeneratorSetupContributions();
+        this.addPluginContributions();
     }
 
     private void installModules() {
         this.install(new PluginsGenerateModule(this.plugin));
+        this.install(new LanguageModule());
     }
 
     private void addGeneratorPhases() {
@@ -63,6 +75,8 @@ public class LanguageClientModule extends AbstractModule {
 
         contributions.addBinding().to(TemplateGeneratorPhase.class);
         contributions.addBinding().to(TextMateGeneratorPhase.class);
+        contributions.addBinding().to(ServerGeneratorPhase.class);
+        contributions.addBinding().to(LDGeneratorPhase.class);
     }
 
     private void addTemplateContributions() {
@@ -88,5 +102,11 @@ public class LanguageClientModule extends AbstractModule {
                 Multibinder.newSetBinder(binder(), GeneratorSetupContribution.class);
 
         contributions.addBinding().to(LanguageClientGeneratorSetup.class);
+    }
+
+    private void addPluginContributions() {
+        Multibinder<PluginContribution> contributions = Multibinder.newSetBinder(binder(), PluginContribution.class);
+
+        contributions.addBinding().to(LDValidatorImpl.class);
     }
 }

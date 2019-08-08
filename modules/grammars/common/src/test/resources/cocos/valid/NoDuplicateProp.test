@@ -1,0 +1,4 @@
+option noDuplicatePropCoCo:string {
+    prop label = "A Label";
+    prop required = true;
+}

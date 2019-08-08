@@ -1,0 +1,50 @@
+[
+  {
+    "variable": "packageName",
+    "type": "string",
+    "props": {
+      "label": "Package",
+      "required": true
+    }
+  },
+  {
+    "variable": "componentName",
+    "type": "string",
+    "props": {
+      "label": "Component",
+      "required": true
+    }
+  },
+  {
+    "variable": "ports",
+    "type": "list",
+    "props": {
+      "elements": [{
+        "variable": "direction",
+        "type": "string",
+        "props": {
+          "label": "Direction",
+          "required": true
+        }
+      },
+      {
+        "variable": "type",
+        "type": "string",
+        "props": {
+          "label": "Type",
+          "required": true
+        }
+      },
+      {
+        "variable": "name",
+        "type": "string",
+        "props": {
+          "label": "Name",
+          "required": true
+        }
+      }
+      ],
+      "label": "Add Port"
+    }
+  }
+]

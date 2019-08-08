@@ -74,4 +74,44 @@ public class LanguageClientPlugin extends AbstractGeneratePlugin {
     public File getOutputPath() {
         return this.outputDirectory;
     }
+
+    @Parameter(required = true)
+    protected String grammarModule;
+
+    /**
+     * @return The artifactId of the module where the grammar is located.
+     */
+    public String getGrammarModule() {
+        return this.grammarModule;
+    }
+
+    @Parameter(required = true)
+    protected String serverArtifact;
+
+    /**
+     * @return The artifactId and name of the executable JAR of the language server. Format: (artifactId:artifactName)
+     */
+    public String getServerArtifact() {
+        return this.serverArtifact;
+    }
+
+    @Parameter(defaultValue = "models/language")
+    protected File modelsPath;
+
+    /**
+     * @return The path to the directory in which the models for the language(s) are located.
+     */
+    public File getModelsPath() {
+        return this.modelsPath;
+    }
+
+    @Parameter(defaultValue = "templates")
+    protected File templatesPath;
+
+    /**
+     * @return The path to the directory in which the templates are located.
+     */
+    public File getTemplatesPath() {
+        return this.templatesPath;
+    }
 }

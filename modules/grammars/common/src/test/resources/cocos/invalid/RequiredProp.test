@@ -1,0 +1,3 @@
+option requiredPropCoCo:string {
+    prop required = true;
+}

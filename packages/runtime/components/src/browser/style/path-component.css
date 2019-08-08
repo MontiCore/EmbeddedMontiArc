@@ -1,0 +1,17 @@
+/*
+ * Copyright (C) 2019 SE RWTH.
+ *
+ *  TODO: Include License.
+ */
+.sol-runtime-components.path-component {
+    display:flex;
+    align-items:center;
+}
+
+.sol-runtime-components.path-component button {
+    min-width:20px;
+}
+
+.sol-runtime-components.path-component input {
+    flex:1;
+}

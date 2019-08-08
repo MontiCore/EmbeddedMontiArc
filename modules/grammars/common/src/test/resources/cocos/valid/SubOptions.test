@@ -1,0 +1,8 @@
+option subOptionsCoCo:list {
+    prop label = "A Label";
+
+    option aSubOption:string {
+        prop label = "A Label";
+        prop required = true;
+    }
+}

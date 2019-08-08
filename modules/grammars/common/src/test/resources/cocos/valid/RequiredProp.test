@@ -1,0 +1,4 @@
+option requiredPropCoCo:string {
+    prop label = "A Label";
+    prop required = true;
+}

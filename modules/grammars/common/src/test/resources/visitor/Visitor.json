@@ -1,0 +1,24 @@
+{
+  "variable": "visitor",
+  "type": "list",
+  "props": {
+    "label": "A Label",
+    "elements": [
+      {
+        "variable": "subOption1",
+        "type": "string",
+        "props": {
+          "label": "An other Label"
+        }
+      },
+      {
+        "variable": "subOption2",
+        "type": "string",
+        "props": {
+          "label": "Also a Label",
+          "required": true
+        }
+      }
+    ]
+  }
+}

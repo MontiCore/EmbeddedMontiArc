@@ -1,0 +1,3 @@
+option propTypeCoCo:string {
+    prop label = true;
+}

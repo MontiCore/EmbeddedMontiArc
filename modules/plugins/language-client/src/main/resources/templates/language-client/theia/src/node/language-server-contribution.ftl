@@ -12,6 +12,7 @@ import { ${grammarName}Language } from "../common";
 import { BaseLanguageServerContribution, IConnection } from "@theia/languages/lib/node";
 
 import * as FileSystem from "fs-extra";
+import * as Path from "path";
 
 @injectable()
 export class ${grammarName}ServerContribution<#if hasHandwrittenPeer>Top</#if> extends BaseLanguageServerContribution {
@@ -19,10 +20,9 @@ export class ${grammarName}ServerContribution<#if hasHandwrittenPeer>Top</#if> e
     public readonly name: string = ${grammarName}Language.NAME;
 
     public async start(clientConnection: IConnection): Promise<void> {
-        // TODO: Change Environmental Variable to Path Resolution.
-        const envVariable = process.env.${grammarName}_LANGUAGE_SERVER;
+        const pathToJar = Path.resolve("..", "..", "server", "${grammarName}.jar");
 
-        if (envVariable) return this.doStart(clientConnection, envVariable);
+        if (await FileSystem.pathExists(pathToJar)) return this.doStart(clientConnection, pathToJar);
     }
 
     protected async doStart(clientConnection: IConnection, pathToJar: string): Promise<void> {
