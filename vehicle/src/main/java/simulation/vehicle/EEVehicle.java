@@ -33,13 +33,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
 public class EEVehicle {
-
-    private PhysicalVehicle physicalVehicle;
 
     private EESimulator eeSimulator;
 
@@ -51,91 +48,125 @@ public class EEVehicle {
 
     private List<VehicleActuator> actuatorList = new LinkedList<>();
 
+    private List<Bridge> bridgeList = new LinkedList<>();
+
     /*
-    TODO:
-            - modelica und MassPoint mal untersuchen und gucken ob/wo actuator unterschiedlich
+    TODO:   - maybe add Autopilot
      */
 
     /**
      * Constructor of EEVehicle
-     *
      * @param eeSimulator             simulator of the Vehicle
-     * @param busSystems              a HashMap of all bus systems on this vehicle. The keys of the HashMap are the bus systems on this vehicle, the entries for each key are the components connected to the bus
-     * @param modelicaPhysicalVehicle true if physicalVehicle should be type of ModelicaPhysicalVehicle, false if physicalVehicle should be type of MassPointPhysicalVehicle
+     * @param busStructure            JSON file that describes the bus structures
      */
-    public EEVehicle(EESimulator eeSimulator, boolean modelicaPhysicalVehicle, File physicalVehicleProperties, File busStructure) {
-        PhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
-        /*if(modelicaPhysicalVehicle){
-            builder = new ModelicaPhysicalVehicleBuilder();
-        } else {
-            builder = new MassPointPhysicalVehicleBuilder();
-        }*/
-        try {
-            this.physicalVehicle = ((MassPointPhysicalVehicleBuilder) builder).loadFromFile(physicalVehicleProperties);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public EEVehicle(EESimulator eeSimulator, File busStructure) {
 
-        HashMap<Bus, List<EEComponent>> busSystems = null;
+        //set EESimulator
+        this.eeSimulator = eeSimulator;
+
+        //set bus, sensor, actuator and bridge lists
+        List<Pair<EEComponent, UUID>> busSystems = new LinkedList<>();
         try {
             busSystems = loadFromFile(busStructure);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.eeSimulator = eeSimulator;
 
-        Set<Bus> processedKeys = new HashSet<>();
-
-        for (Bus actualBus : busSystems.keySet()) {
-            busList.add(actualBus);
-            for (EEComponent comp : busSystems.get(actualBus)) {
-                switch (comp.getComponentType()) {
-                    case ACTUATOR:
-                        physicalVehicle.getSimulationVehicle().setActuatorProperties((VehicleActuator) comp);
-                        if (!actuatorList.contains(comp)) {
-                            actuatorList.add((VehicleActuator) comp);
-                        }
-                        break;
-                    case SENSOR:
-                        physicalVehicle.getSimulationVehicle().addSensor((AbstractSensor) comp);
-                        if (!sensorList.contains(comp)) {
-                            sensorList.add((AbstractSensor) comp);
-                        }
-                        break;
-                    case AUTOPILOT:
-                        //autoPilot = comp;
-                    case BUS:
-                        if (!processedKeys.contains(comp)) {
-                            Pair<Bus, Bus> busPair = Pair.of(actualBus, (Bus) comp);
-                            Duration delay = Duration.ofNanos(2);
-                            Bridge bridge = new Bridge(eeSimulator, busPair, delay);
-                            bridge.update(actualBus, actualBus.getSubscribedMessages());
-                            ((Bus) comp).registerComponent(bridge);
-
-                            comp = bridge;
-                        }
-                        break;
-                    default: //exception?
-                }
-                actualBus.registerComponent(comp);
-                processedKeys.add(actualBus);
-
+        for (Pair<EEComponent, UUID> pair : busSystems) {
+            EEComponent comp = pair.getLeft();
+            switch (comp.getComponentType()) {
+                case BUS:
+                    if (!busList.contains(comp)) {
+                        busList.add((Bus) comp);
+                    }
+                    break;
+                case SENSOR:
+                    if (!sensorList.contains(comp)) {
+                        sensorList.add((AbstractSensor) comp);
+                    }
+                    break;
+                case ACTUATOR:
+                    if (!actuatorList.contains(comp)) {
+                        actuatorList.add((VehicleActuator) comp);
+                    }
+                    break;
+                case BRIDGE:
+                    if (!bridgeList.contains(comp)) {
+                        bridgeList.add((Bridge) comp);
+                    }
+                    break;
+                case AUTOPILOT:
+//                    if (autoPilot == ObjectUtils.Null) {
+//                        break;
+//                    }
+//                    autoPilot = comp;
+                default:
+                    //exception?
             }
+
         }
     }
 
 
     /**
-     * function that notify all sensors to send their actual data to the bus
-     *
-     * @param timeDiff   duration between last tick and actual tick
+     * Constructor if no JSON file is available
+     * @param eeSimulator   simulator of the vehicle
+     * @param busStructure  bus structure. Each key is one bus on the car. The value for each key is a list of connected EEComponents to this bus/key.
+     *                      Bridges between two buses have to be in at least one of the lists of connected components of the two buses.
+     */
+    public EEVehicle(EESimulator eeSimulator, HashMap<Bus, List<EEComponent>> busStructure) {
+
+        //set EESimulator
+        this.eeSimulator = eeSimulator;
+
+        //set bus, sensor, actuator and bridge lists
+
+        Set<Bus> processedKeys = new HashSet<>();
+        for (Bus bus : busStructure.keySet()) {
+            busList.add(bus);
+            for (EEComponent comp : busStructure.get(bus)) {
+                switch (comp.getComponentType()) {
+                    case BUS:
+                        if (!busList.contains(comp)) {
+                            busList.add((Bus) comp);
+                        }
+                        break;
+                    case SENSOR:
+                        if (!sensorList.contains(comp)) {
+                            sensorList.add((AbstractSensor) comp);
+                        }
+                        break;
+                    case ACTUATOR:
+                        if (!actuatorList.contains(comp)) {
+                            actuatorList.add((VehicleActuator) comp);
+                        }
+                        break;
+                    case BRIDGE:
+                        if (!bridgeList.contains(comp)) {
+                            bridgeList.add((Bridge) comp);
+                        }
+                        break;
+                    case AUTOPILOT:
+//                    if (autoPilot == ObjectUtils.Null) {
+//                        break;
+//                    }
+//                    autoPilot = comp;
+                    default:
+                        //exception?
+                }
+
+            }
+        }
+    }
+
+    /**
+     * function that notifies all sensors to send their actual data to the bus
      * @param actualTime actual time of the simulation
      */
-    public void notifySensors(Instant actualTime, Duration timeDiff) {
-        physicalVehicle.executeLoopIteration(timeDiff);
+    public void notifySensors(Instant actualTime) {
         for (AbstractSensor sensor : sensorList) {
             if (sensor.getType() == BusEntry.SENSOR_STREETTYPE) {
-                Double allowedVelocityByStreetType = physicalVehicle.getSimulationVehicle().getMaxTemporaryAllowedVelocity();
+                Double allowedVelocityByStreetType;
                 switch ((String) sensor.getValue()) {
                     case "MOTORWAY":
                         allowedVelocityByStreetType = (100.0 / 3.6);
@@ -150,9 +181,10 @@ public class EEVehicle {
                         allowedVelocityByStreetType = (30.0 / 3.6);
                         break;
                     default:
-                        allowedVelocityByStreetType = physicalVehicle.getSimulationVehicle().getMaxTemporaryAllowedVelocity();
+                        allowedVelocityByStreetType = ((StreetTypeSensor) sensor).getLastVelocityValue();
                         break;
                 }
+                ((StreetTypeSensor) sensor).setLastVelocityValue(allowedVelocityByStreetType);
                 for (EEComponent target : sensor.getTargetsByMessageId().get(BusEntry.SENSOR_STREETTYPE)) {
                     BusMessage sensorMess = new BusMessage(allowedVelocityByStreetType, 6, BusEntry.SENSOR_STREETTYPE, actualTime, sensor.getId(), target);
                     eeSimulator.addEvent(sensorMess);
@@ -166,32 +198,35 @@ public class EEVehicle {
     }
 
 
+
+
     public EESimulator getEeSimulator() {
         return eeSimulator;
     }
 
-    public PhysicalVehicle getPhysicalVehicle() {
-        return physicalVehicle;
-    }
-
-    private List<Bus> getBusList() {
+    public List<Bus> getBusList() {
         return busList;
     }
 
-    private List<AbstractSensor> getSensorList() {
+    public List<AbstractSensor> getSensorList() {
         return sensorList;
     }
 
-    private List<VehicleActuator> getActuatorList() {
+    public List<VehicleActuator> getActuatorList() {
         return actuatorList;
     }
 
+    public List<Bridge> getBridgeList() { return bridgeList; }
 
-    public HashMap<Bus, List<EEComponent>> loadFromFile(File file) throws IOException {
+
+
+
+
+    public List<Pair<EEComponent, UUID>> loadFromFile(File file) throws IOException {
 
         String jsonContents = new String(Files.readAllBytes(file.toPath()));
         Gson g = new Gson();
-        EEVehicle.ParsableBusStructureProperties data = g.fromJson(jsonContents, EEVehicle.ParsableBusStructureProperties.class);
+        ParsableBusStructureProperties data = g.fromJson(jsonContents, ParsableBusStructureProperties.class);
 
         return data.getBusSystems();
 
@@ -202,7 +237,7 @@ public class EEVehicle {
         ParsableBusStructureProperties properties = new ParsableBusStructureProperties(vehicle);
 
         Gson g = new Gson();
-        String json = g.toJson(properties, EEVehicle.ParsableBusStructureProperties.class);
+        String json = g.toJson(properties, ParsableBusStructureProperties.class);
 
         FileWriter fileWriter = new FileWriter(whereToStore, false);
 
@@ -211,31 +246,39 @@ public class EEVehicle {
         fileWriter.close();
     }
 
+}
 
-
-    /**
-     * all data of a busstructure, including all connected actuators, buses and sensors
+/**
+     * all data of a bus structure, including all connected actuators, buses and sensors
      */
-    public static class ParsableBusStructureProperties {
+class ParsableBusStructureProperties {
 
-        HashMap<Bus, List<EEComponent>> busSystems = new HashMap<>();
+        private List<Pair<EEComponent, UUID>> busSystems = new LinkedList<>();
 
         public ParsableBusStructureProperties(EEVehicle vehicle) {
 
             for (Bus bus : vehicle.getBusList()) {
-                busSystems.put(bus, new LinkedList<>());
+                busSystems.add(Pair.of(bus, bus.getId()));
+                UUID actualId = bus.getId();
 
                 //add all sensors connected to this bus
                 for (AbstractSensor sensor : vehicle.getSensorList()) {
-                    if (bus.getConnectedComponents().contains(sensor)) {
-                        busSystems.get(bus).add(sensor);
+                    if (!bus.getConnectedComponents().contains(Pair.of(sensor,actualId))) {
+                        busSystems.add(Pair.of(sensor, actualId));
                     }
                 }
 
                 //add all actuator connected to this bus
                 for (VehicleActuator actuator : vehicle.getActuatorList()) {
-                    if (bus.getConnectedComponents().contains(actuator)) {
-                        busSystems.get(bus).add(actuator);
+                    if (!bus.getConnectedComponents().contains(Pair.of(actuator, actualId))) {
+                        busSystems.add(Pair.of(actuator, actualId));
+                    }
+                }
+
+                //add all bridges connected to this bus
+                for (Bridge bridge : vehicle.getBridgeList()) {
+                    if (!bus.getConnectedComponents().contains(Pair.of(bridge, actualId))) {
+                        busSystems.add(Pair.of(bridge, actualId));
                     }
                 }
 
@@ -243,8 +286,10 @@ public class EEVehicle {
 
         }
 
-        public HashMap<Bus, List<EEComponent>> getBusSystems() {
+        public List<Pair<EEComponent, UUID>> getBusSystems() {
             return busSystems;
         }
+
+
     }
-}
+
