@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y gpg curl
 
 RUN apt-get update && apt-get install -y openjdk-8-jdk maven
 
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
 ## PYTHON:2.7 ################################################################
 
 RUN apt-get update && apt-get install -y python
