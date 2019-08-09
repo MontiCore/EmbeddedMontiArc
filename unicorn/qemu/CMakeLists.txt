@@ -20,6 +20,7 @@ set(SOFTMMU_EXTERNAL_SOURCEFILES
     ${MSVC_INCLUDE_DIR}/${SOFTMMU_NAME}-softmmu/config-target.h
 )
 
+
 set(SOFTMMU_INCLUDE_DIRS
     .
     tcg
@@ -27,8 +28,7 @@ set(SOFTMMU_INCLUDE_DIRS
     target-i386
     include
     ${UNICORN_INCLUDE_DIR}
-    ${MSVC_INCLUDE_DIR}
-    ${MSVC_INCLUDE_DIR}/x86_64-softmmu
+    x86_64-softmmu
 )
 
 set(SOFTMMU_SOURCEFILES 
@@ -98,24 +98,42 @@ foreach(source IN LISTS SOFTMMU_SOURCEFILES)
 endforeach()
 
 
-add_library(${SOFTMMU_NAME}-softmmu ${SOFTMMU_SOURCEFILES} ${SOFTMMU_EXTERNAL_SOURCEFILES})
-target_include_directories(${SOFTMMU_NAME}-softmmu PUBLIC ${SOFTMMU_INCLUDE_DIRS})
+add_library(x86_64-softmmu ${SOFTMMU_SOURCEFILES} ${SOFTMMU_EXTERNAL_SOURCEFILES})
+target_include_directories(x86_64-softmmu PUBLIC ${SOFTMMU_INCLUDE_DIRS})
 #target_compile_options(${SOFTMMU_NAME}-softmmu PRIVATE ${SOFTMMU_CFLAGS})
 #add_compile_definitions(${SOFTMMU_CFLAGS})
 
-add_definitions(
-    /FI"x86_64.h"
-    /DWIN32
-    /DNDEBUG
-    /D_LIB
-    /D__x86_64__
-    /D_CRT_SECURE_NO_WARNINGS
-    /Dinline=__inline
-    /D__func__=__FUNCTION__
-    /DNEED_CPU_H
-    /DWIN32_LEAN_AND_MEAN
-    /Gy
-    /Oi 
-    /MT 
-)
 
+if ( CMAKE_COMPILER_IS_GNUCC )
+    add_definitions(
+        -FI"x86_64.h"
+        -DWIN32
+        -DNDEBUG
+        -D_LIB
+        -D__x86_64__
+        -D_CRT_SECURE_NO_WARNINGS
+        -Dinline=__inline
+        -D__func__=__FUNCTION__
+        -DWIN32_LEAN_AND_MEAN
+        -Dcpu=i386
+        -DUNICORN_HAS_X86
+    )
+endif()
+
+if ( MSVC )
+    add_definitions(
+        /FI"x86_64.h"
+        /DWIN32
+        /DNDEBUG
+        /D_LIB
+        /D__x86_64__
+        /D_CRT_SECURE_NO_WARNINGS
+        /Dinline=__inline
+        /D__func__=__FUNCTION__
+        /DWIN32_LEAN_AND_MEAN
+        /DUNICORN_HAS_X86
+        /Gy
+        /Oi 
+        /MT
+    )
+endif()

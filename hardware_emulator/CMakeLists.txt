@@ -1,29 +1,31 @@
 cmake_minimum_required(VERSION 3.7)
+
 project(hardware-emulator)
 
 #Required Packages
 find_package(Threads)
-
-#Find java binary, extract directory to use JNI.
-# find_package(Java COMPONENTS Development)
-# get_filename_component(JAVA_BIN_DIR "${Java_JAVAC_EXECUTABLE}" PATH)
-# set(JAVA_DIR "${JAVA_BIN_DIR}/..")
-# message("JAVA_DIR: ${JAVA_DIR}")
-
 find_package(JNI)
-if (JNI_FOUND)
-#message("JAVA_INCLUDE_PATH: ${JAVA_INCLUDE_PATH}")
-#message("JAVA_INCLUDE_PATH2: ${JAVA_INCLUDE_PATH2}")
-#message("JAVA_AWT_LIBRARY: ${JAVA_AWT_LIBRARY}")
-#message("JAVA_JVM_LIBRARY: ${JAVA_JVM_LIBRARY}")
-endif()
 
 if (NOT JNI_FOUND)
 message("Could not find JNI")
 endif()
+set(LIBS_DIR "UNKNOWN")
+if (CMAKE_HOST_WIN32)
+  list(APPEND HARDWARE_EMU_LIBRARIES
+  Dbghelp
+  )
 
-#Name of the resulting library that is loaded in the autopilot RMIServer.
-set(AUTOPILO_ADAPTER_NAME "HardwareEmulator")
+  if (MINGW)
+    set(LIBS_DIR "libs/mingw")
+  elseif(MSVC)
+    set(LIBS_DIR "libs/vs")
+  endif()
+
+elseif(CMAKE_HOST_UNIX)
+  set(LIBS_DIR "libs/unix")
+endif()
+
+set(LIBRARY_NAME "HardwareEmulator")
 
 #Basic source files
 list(APPEND HARDWARE_EMU_SOURCEFILES
@@ -83,7 +85,7 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   src/os_linux/linux_calls.h
   src/os_linux/linux_calls.cpp
   
-  src/timetable/skylake.txt
+  src/timetable/skylake.table
 )
 
 #Source files for the test project
@@ -92,13 +94,13 @@ list(APPEND HARDWARE_EMU_TEST_SOURCEFILES
 )
 
 #Source files for the Autopilot Library
-list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_SOURCEFILES
-  src/emulator/emulator_server.h
+list(APPEND HARDWARE_EMU_LIB_SOURCEFILES
+  src/emulator/de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_HardwareEmulatorInterface.h
   src/emulator/emulator_server.cpp
 )
 
-#Setup the project file structure for Visual Studio projects
-foreach(source IN LISTS HARDWARE_EMU_SOURCEFILES HARDWARE_EMU_TEST_SOURCEFILES HARDWARE_EMU_AUTOPILOT_ADAPTER_SOURCEFILES)
+#Setup the project file structure for Visual Studio projects (OPTIONAL)
+foreach(source IN LISTS HARDWARE_EMU_SOURCEFILES HARDWARE_EMU_TEST_SOURCEFILES HARDWARE_EMU_LIB_SOURCEFILES)
     string(REPLACE "src/" "" trunc_source "${source}")
     get_filename_component(source_path "${trunc_source}" PATH)
     string(REPLACE "/" "\\" source_path_msvc "${source_path}")
@@ -124,43 +126,42 @@ list(APPEND HARDWARE_EMU_LIBRARIES
     pe-parser-library
 )
 
-#Linux include/lib dirs and library dependencies
+list(APPEND HARDWARE_EMU_LIB_LIBRARIES
+  "${JAVA_AWT_LIBRARY}"
+  "${JAVA_JVM_LIBRARY}"
+)
+
+#Libraries directory
+list(APPEND HARDWARE_EMU_LIB_DIRS
+  "${LIBS_DIR}"
+)
+
 if ( CMAKE_COMPILER_IS_GNUCC )
+  add_definitions(
+    -std=c++17
+    -fPIC
+    -fpermissive
+    /DZYDIS_STATIC_DEFINE
+  )
   list(APPEND HARDWARE_EMU_INCLUDE_DIRS
     ../zydis/gnucc
   )
-  #If not using precompiled libraries: (or use 'build_dependencies' which copies the build libraries to 'libs')
-  #list(APPEND HARDWARE_EMU_LIB_DIRS
-  #  ../zydis/build
-  #  "../pe-parse/${CMAKE_BUILD_TYPE}/pe-parser-library"
-  #  ../unicorn
-  #  ../unicorn/qemu
-  #)
-  list(APPEND HARDWARE_EMU_LIB_DIRS
-    "libs/${CMAKE_BUILD_TYPE}"
-  )
-  #message("Added lib dir: \"../pe-parse/${CMAKE_BUILD_TYPE}/pe-parser-library\"")
   list(APPEND HARDWARE_EMU_LIBRARIES
     pthread
     stdc++fs
-    dl
+    Dbghelp
+    #dl
   )
 endif()
 
-#MSVC include/lib dirs and library dependencies
 if ( MSVC )
+  add_definitions(
+    /std:c++17
+    /DZYDIS_STATIC_DEFINE
+    /D_CRT_SECURE_NO_WARNINGS
+  )
   list(APPEND HARDWARE_EMU_INCLUDE_DIRS
     ../zydis/msvc
-  )
-  #If not using precompiled libraries: (or use 'build_dependencies' which copies the build libraries to 'libs')
-  #list(APPEND HARDWARE_EMU_LIB_DIRS
-  #  ../zydis/build
-  #  ../pe-parse/build/pe-parser-library
-  #  ../unicorn/build
-  #  ../unicorn/build/qemu
-  #)
-  list(APPEND HARDWARE_EMU_LIB_DIRS
-    libs
   )
   list(APPEND HARDWARE_EMU_LIBRARIES
     Dbghelp
@@ -169,10 +170,7 @@ if ( MSVC )
 endif()
 
 
-list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES
-  "${JAVA_AWT_LIBRARY}"
-  "${JAVA_JVM_LIBRARY}"
-)
+
 
 
 
@@ -182,44 +180,23 @@ add_executable(${PROJECT_NAME}-test ${HARDWARE_EMU_SOURCEFILES} ${HARDWARE_EMU_T
 target_include_directories(${PROJECT_NAME}-test PUBLIC ${HARDWARE_EMU_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME}-test ${HARDWARE_EMU_LIBRARIES})
 
-#Compiler options
-if ( CMAKE_COMPILER_IS_GNUCC )
-  add_definitions(
-    #-std=c++17
-    /DZYDIS_STATIC_DEFINE
-  )
-endif()
-if ( MSVC )
-  add_definitions(
-    /std:c++17
-    /DZYDIS_STATIC_DEFINE
-    /D_CRT_SECURE_NO_WARNINGS
-  )
-endif()
-
 #Visual Studio debugging directory
 set_target_properties(${PROJECT_NAME}-test PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 
-#AutopilotAdapter library
-LINK_DIRECTORIES(${AUTOPILO_ADAPTER_NAME} ${HARDWARE_EMU_LIB_DIRS} ${HARDWARE_EMU_AUTOPILOT_ADAPTER_LIB_DIRS})
-add_library(${AUTOPILO_ADAPTER_NAME} SHARED ${HARDWARE_EMU_SOURCEFILES} ${HARDWARE_EMU_AUTOPILOT_ADAPTER_SOURCEFILES})
-target_include_directories(${AUTOPILO_ADAPTER_NAME} PUBLIC ${HARDWARE_EMU_INCLUDE_DIRS} ${HARDWARE_EMU_AUTOPILOT_ADAPTER_INCLUDE_DIRS} )
-target_link_libraries(${AUTOPILO_ADAPTER_NAME} ${HARDWARE_EMU_LIBRARIES} ${HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES})
+#HardwareEmulatorLibrary
+LINK_DIRECTORIES(${LIBRARY_NAME} ${HARDWARE_EMU_LIB_DIRS} ${HARDWARE_EMU_LIB_LIB_DIRS})
+add_library(${LIBRARY_NAME} SHARED ${HARDWARE_EMU_SOURCEFILES} ${HARDWARE_EMU_LIB_SOURCEFILES})
+target_include_directories(${LIBRARY_NAME} PUBLIC ${HARDWARE_EMU_INCLUDE_DIRS} ${HARDWARE_EMU_LIB_INCLUDE_DIRS} )
+target_link_libraries(${LIBRARY_NAME} ${HARDWARE_EMU_LIBRARIES} ${HARDWARE_EMU_LIB_LIBRARIES})
 
-#Compiler options
-if ( CMAKE_COMPILER_IS_GNUCC )
-    add_definitions(
-      -std=c++17
-      -fPIC
-      /DZYDIS_STATIC_DEFINE
-    )
-endif()
-if ( MSVC )
-    add_definitions(
-      /std:c++17
-      /DZYDIS_STATIC_DEFINE
-      /D_CRT_SECURE_NO_WARNINGS
-    )
-endif()
+set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install")
+set_target_properties(${LIBRARY_NAME} PROPERTIES PREFIX "")
+string(TOLOWER "${CMAKE_SYSTEM_NAME}" SYS_NAME)
+install(
+  TARGETS ${LIBRARY_NAME} 
+  RUNTIME
+    DESTINATION "${PROJECT_SOURCE_DIR}/../src/main/resources/${SYS_NAME}"
+    CONFIGURATIONS Release
+)
 
