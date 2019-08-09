@@ -27,14 +27,14 @@
     
     <groupId>de.rwth-aachen.se.montisim.simulators</groupId>
     <artifactId>basic-simulator</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     
     <name>basic-simulator</name>
     
     <properties>
         <!-- USE THESE TO SET THE VERSIONS OF THE DEPENDENCIES FOR ALL THE SUB-PROJECTS -->
-        <montisim.commons.version>1.0.8</montisim.commons.version>
-        <montisim.controller.version>1.0.2</montisim.controller.version>
+        <montisim.commons.version>1.0.9</montisim.commons.version>
+        <montisim.controller.version>1.0.3</montisim.controller.version>
         <montisim.server.version>1.0.7</montisim.server.version>
         <montisim.hardware_emulator.version>1.0.0</montisim.hardware_emulator.version>
         <montisim.simulation.version>2.0.2</montisim.simulation.version>
