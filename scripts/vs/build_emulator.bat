@@ -28,7 +28,9 @@ set SCRIPTS_DIR=%~dp0
 set ROOT_DIR=%~dp0\..\..
 set EMU_DIR=%ROOT_DIR%\hardware_emulator
 
-IF [%1] == [] (SET GENERATOR="Visual Studio 16 2019") else (SET GENERATOR="%1")
+IF [%1] == [] (SET GENERATOR="Visual Studio 16 2019") else (SET GENERATOR=%1)
+echo ARG1=%1
+echo GENERATOR=%GENERATOR%
 
 pushd %EMU_DIR%
 call %SCRIPTS_DIR%\build_compile.bat hardware-emulator Release %GENERATOR%
