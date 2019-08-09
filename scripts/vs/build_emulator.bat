@@ -28,8 +28,10 @@ set SCRIPTS_DIR=%~dp0
 set ROOT_DIR=%~dp0\..\..
 set EMU_DIR=%ROOT_DIR%\hardware_emulator
 
+IF [%1] == [] (SET GENERATOR="Visual Studio 16 2019") else (SET GENERATOR="%1")
+
 pushd %EMU_DIR%
-call %SCRIPTS_DIR%\build_compile.bat hardware-emulator
+call %SCRIPTS_DIR%\build_compile.bat hardware-emulator Release %GENERATOR%
 echo [SCRIPT] Installing Emulator in Maven project...
 msbuild -verbosity:quiet build\INSTALL.vcxproj /m /p:Configuration=Release /p:PlatformShortName=x64
 popd

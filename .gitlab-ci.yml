@@ -28,7 +28,7 @@ windows_build:
   stage: build
   script: 
   - call VsDevCmd.bat
-  - call scripts\vs\build_emulator.bat
+  - call scripts\vs\build_emulator.bat "Visual Studio 15 2017 Win64"
   tags:
   - Windows10
   artifacts:
