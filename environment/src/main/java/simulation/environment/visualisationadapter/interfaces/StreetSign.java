@@ -20,7 +20,7 @@
  */
 package simulation.environment.visualisationadapter.interfaces;
 
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 
 /**
  * Created by lukas on 10.03.17.

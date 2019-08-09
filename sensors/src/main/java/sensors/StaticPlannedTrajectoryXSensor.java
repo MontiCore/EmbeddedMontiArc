@@ -20,7 +20,7 @@
  */
 package sensors;
 
-import commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import java.util.List;
 
 public class StaticPlannedTrajectoryXSensor extends StaticPlannedTrajectorySensor {

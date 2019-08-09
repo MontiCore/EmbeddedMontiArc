@@ -20,11 +20,11 @@
  */
 package simulation.runner;
 
-import commons.controller.commons.BusEntry;
-import commons.controller.commons.Vertex;
-import commons.simulation.Sensor;
-import commons.simulation.SimulationLoopExecutable;
-import commons.simulation.SimulationLoopNotifiable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Vertex;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopNotifiable;
 import databus.DataBus;
 import functionBlock.ConnectionEntry;
 import functionBlock.FunctionBlock;

@@ -20,7 +20,7 @@
  */
 package simulation.environment.pedestrians;
 
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 
 /**
  * Created by lukas on 07.02.17.

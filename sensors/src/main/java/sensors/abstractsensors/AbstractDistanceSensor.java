@@ -20,7 +20,7 @@
  */
 package sensors.abstractsensors;
 
-import commons.simulation.IPhysicalVehicle;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import simulation.vehicle.PhysicalVehicle;
 
 /**

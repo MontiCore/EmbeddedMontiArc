@@ -20,8 +20,8 @@
  */
 package simulation.vehicle;
 
-import commons.controller.interfaces.Bus;
-import commons.controller.interfaces.FunctionBlockInterface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.linear.RealVector;
 import java.util.Optional;

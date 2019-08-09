@@ -20,8 +20,8 @@
  */
 package simulation.environment.visualisationadapter.interfaces;
 
-import commons.utils.Point2D;
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point2D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import java.util.Collection;
 
 /**

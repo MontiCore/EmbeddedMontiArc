@@ -20,7 +20,7 @@
  */
 package simulation.environment.geometry.height;
 
-import commons.utils.Point2D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point2D;
 import simulation.environment.osm.ApproximateConverter;
 import simulation.environment.visualisationadapter.interfaces.EnvBounds;
 

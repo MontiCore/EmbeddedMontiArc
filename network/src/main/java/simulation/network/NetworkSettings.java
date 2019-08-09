@@ -20,7 +20,7 @@
  */
 package simulation.network;
 
-import commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
 import java.util.*;
 
 /**

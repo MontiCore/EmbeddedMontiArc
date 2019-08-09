@@ -20,7 +20,7 @@
  */
 package simulation.network;
 
-import commons.simulation.DiscreteEvent;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.DiscreteEvent;
 
 /**
  * Class that holds all relevant information for a network discrete event

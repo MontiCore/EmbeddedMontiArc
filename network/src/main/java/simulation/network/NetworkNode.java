@@ -20,8 +20,8 @@
  */
 package simulation.network;
 
-import commons.simulation.PhysicalObject;
-import commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
 import simulation.util.Log;
 import simulation.util.MathHelper;
 import java.math.BigInteger;

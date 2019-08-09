@@ -21,7 +21,7 @@
 package simulation.vehicle;
 
 
-import commons.utils.LibraryService;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.LibraryService;
 import org.javafmi.wrapper.Simulation;
 
 /**

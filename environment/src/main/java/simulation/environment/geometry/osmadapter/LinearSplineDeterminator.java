@@ -20,7 +20,7 @@
  */
 package simulation.environment.geometry.osmadapter;
 
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import simulation.environment.geometry.splines.LinearInterpolator;
 import simulation.environment.geometry.splines.Spline;
 import simulation.environment.visualisationadapter.implementation.Bounds2D;

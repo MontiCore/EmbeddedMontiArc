@@ -20,7 +20,7 @@
  */
 package simulation.environment.geometry;
 
-import commons.utils.Point2D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point2D;
 import org.junit.*;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;

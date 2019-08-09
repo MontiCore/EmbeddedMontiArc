@@ -20,7 +20,7 @@
  */
 package simulation.environment.geometry.osmadapter;
 
-import commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvObject;
 

@@ -22,8 +22,8 @@ package sensors;
 
 import com.jhlabs.image.MotionBlurFilter;
 import com.jhlabs.image.PerspectiveFilter;
-import commons.controller.commons.BusEntry;
-import commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import org.apache.commons.math3.linear.ArrayRealVector;

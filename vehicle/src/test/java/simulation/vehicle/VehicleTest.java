@@ -20,7 +20,7 @@
  */
 package simulation.vehicle;
 
-import commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;

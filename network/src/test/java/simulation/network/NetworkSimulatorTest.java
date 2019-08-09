@@ -20,8 +20,8 @@
  */
 package simulation.network;
 
-import commons.simulation.DiscreteEvent;
-import commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.DiscreteEvent;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.Test;
 import simulation.network.settings.SettingsSimple;

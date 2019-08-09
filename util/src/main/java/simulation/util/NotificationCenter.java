@@ -20,7 +20,7 @@
  */
 package simulation.util;
 
-import commons.utils.Pair;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

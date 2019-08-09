@@ -22,7 +22,7 @@ package sensors;
 
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import commons.simulation.Sensor;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.MassPointPhysicalVehicleBuilder;
 

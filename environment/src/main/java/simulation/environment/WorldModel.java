@@ -21,13 +21,13 @@
 package simulation.environment;
 
 
-import commons.map.Adjacency;
-import commons.map.ControllerContainer;
-import commons.map.IAdjacency;
-import commons.map.IControllerNode;
-import commons.simulation.IPhysicalVehicle;
-import commons.simulation.PhysicalObject;
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.Adjacency;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.ControllerContainer;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IAdjacency;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.geometry.DetailedMapConstructor;
 import simulation.environment.geometry.StreetSignPositioner;

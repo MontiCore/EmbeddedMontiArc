@@ -20,7 +20,7 @@
  */
 package simulation.environment.object;
 
-import commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import simulation.environment.visualisationadapter.implementation.TrafficLight;
 import simulation.environment.visualisationadapter.interfaces.SignTypeAndState;
 import java.util.ArrayList;

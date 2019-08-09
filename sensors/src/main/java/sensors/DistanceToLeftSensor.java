@@ -20,8 +20,8 @@
  */
 package sensors;
 
-import commons.controller.commons.BusEntry;
-import commons.simulation.IPhysicalVehicle;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractDistanceSensor;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import simulation.environment.World;

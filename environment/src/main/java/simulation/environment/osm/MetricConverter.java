@@ -20,7 +20,7 @@
  */
 package simulation.environment.osm;
 
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 
 /**
  * Created by lukas on 24.01.17.

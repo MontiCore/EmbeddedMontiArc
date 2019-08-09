@@ -21,7 +21,7 @@
 package simulation.environment.osm;
 
 import org.junit.*;
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import java.util.ArrayList;
 import static  org.junit.Assert.*;
 

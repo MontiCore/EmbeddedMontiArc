@@ -20,7 +20,7 @@
  */
 package simulation.network.settings;
 
-import commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
 import simulation.network.NetworkSettings;
 import simulation.network.NetworkSettingsId;
 import simulation.network.NetworkTaskId;

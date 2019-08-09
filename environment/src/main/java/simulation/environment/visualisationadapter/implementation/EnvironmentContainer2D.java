@@ -20,9 +20,9 @@
  */
 package simulation.environment.visualisationadapter.implementation;
 
-import commons.simulation.IPhysicalVehicle;
-import commons.utils.Point2D;
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point2D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import simulation.environment.object.House;
 import simulation.environment.visualisationadapter.interfaces.*;
 

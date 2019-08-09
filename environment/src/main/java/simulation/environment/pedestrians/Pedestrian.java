@@ -20,11 +20,11 @@
  */
 package simulation.environment.pedestrians;
 
-import commons.simulation.IdGenerator;
-import commons.simulation.PhysicalObject;
-import commons.simulation.PhysicalObjectType;
-import commons.simulation.SimulationLoopExecutable;
-import commons.utils.Geometry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IdGenerator;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Geometry;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;

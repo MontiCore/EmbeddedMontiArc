@@ -20,8 +20,8 @@
  */
 package sensors;
 
-import commons.controller.commons.BusEntry;
-import commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.vehicle.PhysicalVehicle;
 import java.util.Collections;

@@ -20,7 +20,7 @@
  */
 package simulation.environment.visualisationadapter.interfaces;
 
-import commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 
 /**
  * Created by Shahriar Robbani on 26.01.17.

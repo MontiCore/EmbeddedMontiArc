@@ -20,8 +20,8 @@
  */
 package simulation.environment.visualisationadapter.interfaces;
 
-import commons.map.IControllerNode;
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 
 /**
  * Created by lukas on 15.12.16.

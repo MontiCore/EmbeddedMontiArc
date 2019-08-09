@@ -20,12 +20,12 @@
  */
 package simulation.simulator;
 
-import commons.simulation.IdGenerator;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IdGenerator;
 import simulation.util.*;
-import commons.simulation.SimulationLoopNotifiable;
-import commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopNotifiable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import simulation.vehicle.*;
-import commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 
 import java.io.IOException;
 import java.util.*;

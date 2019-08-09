@@ -20,7 +20,7 @@
  */
 package simulation.environment.weather;
 
-import commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import java.util.Random;
 
 /**

@@ -20,8 +20,8 @@
  */
 package simulation.environment.geometry;
 
-import commons.map.IControllerNode;
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import org.junit.*;
 import static  org.junit.Assert.*;
 import simulation.environment.WorldModel;
