@@ -8,12 +8,16 @@ set(UNICORN_INCLUDE_DIR
     include
 )
 
+set(MSVC_INCLUDE_DIR
+    msvc/unicorn
+)
+
 set(UNICORN_EXTERNAL_SOURCEFILES 
-    msvc/unicorn/config-host.h
-    msvc/unicorn/qapi-types.h
-    msvc/unicorn/qapi-types.c
-    msvc/unicorn/qapi-visit.h
-    msvc/unicorn/qapi-visit.c
+    ${MSVC_INCLUDE_DIR}/config-host.h
+    ${MSVC_INCLUDE_DIR}/qapi-types.h
+    ${MSVC_INCLUDE_DIR}/qapi-types.c
+    ${MSVC_INCLUDE_DIR}/qapi-visit.h
+    ${MSVC_INCLUDE_DIR}/qapi-visit.c
     ${UNICORN_INCLUDE_DIR}/unicorn/arm64.h
     ${UNICORN_INCLUDE_DIR}/unicorn/platform.h
     ${UNICORN_INCLUDE_DIR}/unicorn/unicorn.h
@@ -34,6 +38,7 @@ set(UNICORN_INCLUDE_DIRS
     qemu/tcg
     qemu/include
     ${UNICORN_INCLUDE_DIR}
+    ${MSVC_INCLUDE_DIR}
 )
 
 
@@ -190,36 +195,18 @@ endforeach()
 add_library(${PROJECT_NAME} ${UNICORN_SOURCEFILES} ${UNICORN_EXTERNAL_SOURCEFILES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${UNICORN_INCLUDE_DIRS})
 
-if ( CMAKE_COMPILER_IS_GNUCC )
-    add_definitions(
-        -FI"x86_64.h"
-        -DWIN32
-        -DNDEBUG
-        -D_LIB
-        -D__x86_64__
-        -D_CRT_SECURE_NO_WARNINGS
-        -Dinline=__inline
-        -D__func__=__FUNCTION__
-        -DWIN32_LEAN_AND_MEAN
-        -DUNICORN_HAS_X86
-    )
-endif()
-
-if ( MSVC )
-    add_definitions(
-        /FI"x86_64.h"
-        /DWIN32
-        /DNDEBUG
-        /D_LIB
-        /D__x86_64__
-        /D_CRT_SECURE_NO_WARNINGS
-        /Dinline=__inline
-        /D__func__=__FUNCTION__
-        /DWIN32_LEAN_AND_MEAN
-        /DUNICORN_HAS_X86
-        /Gy
-        /Oi 
-        /MT
-    )
-endif()
-
+add_definitions(
+    /FI"x86_64.h"
+    /DWIN32
+    /DNDEBUG
+    /D_LIB
+    /D__x86_64__
+    /D_CRT_SECURE_NO_WARNINGS
+    /Dinline=__inline
+    /D__func__=__FUNCTION__
+    /DWIN32_LEAN_AND_MEAN
+    /DUNICORN_HAS_X86
+    /Gy
+    /Oi 
+    /MT
+)

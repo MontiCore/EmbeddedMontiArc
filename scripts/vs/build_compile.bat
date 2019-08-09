@@ -21,17 +21,18 @@
 
 @REM -------------------------------------------------------------------------------------------------------------
 @REM This script generates the MinGW makefiles and compiles them.
-@REM Call from within a CMake project directory
+@REM Call from within a CMake project directory and give SOLUTION NAME as parameter
 @REM -------------------------------------------------------------------------------------------------------------
 
 @echo off
 
-IF [%1] == [] (SET TARGET="Release") else (SET TARGET="%1")
+set SOLUTION_PATH="%1.sln"
+IF [%2] == [] (SET TARGET="Release") else (SET TARGET="%2")
 
 if not exist build mkdir build
 cd build
 echo [SCRIPT] Building with target %TARGET%...
 cmake -G "Visual Studio 16 2019" ../
 echo [SCRIPT] Compiling...
-msbuild -verbosity:quiet build\hardware-emulator.sln /m /p:Configuration=%TARGET% /p:PlatformShortName=x64
+msbuild -verbosity:quiet %SOLUTION_PATH% /m /p:Configuration=%TARGET% /p:PlatformShortName=x64
 cd ..

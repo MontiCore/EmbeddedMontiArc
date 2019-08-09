@@ -44,8 +44,7 @@ static void error_print_loc(void)
  * Prepend the current location and append a newline.
  * It's wrong to call this in a QMP monitor.  Use qerror_report() there.
  */
-#if defined(_MSC_VER) || defined(_WIN32)
-//#ifdef _MSC_VER
+#ifdef _MSC_VER
 void error_vreport(const char *fmt, va_list ap)
 {
     error_print_loc();

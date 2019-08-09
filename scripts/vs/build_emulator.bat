@@ -29,7 +29,7 @@ set ROOT_DIR=%~dp0\..\..
 set EMU_DIR=%ROOT_DIR%\hardware_emulator
 
 pushd %EMU_DIR%
-call %SCRIPTS_DIR%\build_compile.bat
+call %SCRIPTS_DIR%\build_compile.bat hardware-emulator
 echo [SCRIPT] Installing Emulator in Maven project...
-msbuild -verbosity:quiet build\INSTALL.vcproj /m /p:Configuration=Release /p:PlatformShortName=x64
+msbuild -verbosity:quiet build\INSTALL.vcxproj /m /p:Configuration=Release /p:PlatformShortName=x64
 popd
