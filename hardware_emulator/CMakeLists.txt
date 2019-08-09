@@ -141,6 +141,7 @@ if ( CMAKE_COMPILER_IS_GNUCC )
     -std=c++17
     -fPIC
     -fpermissive
+    -static-libstdc++
     /DZYDIS_STATIC_DEFINE
   )
   list(APPEND HARDWARE_EMU_INCLUDE_DIRS

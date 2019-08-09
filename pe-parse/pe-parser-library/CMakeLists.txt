@@ -11,6 +11,11 @@ list(APPEND PEPARSERLIB_SOURCEFILES
   src/parse.cpp
 )
 
+if ( CMAKE_COMPILER_IS_GNUCC )
+  add_definitions(
+    -static-libstdc++
+  )
+endif()
 add_library(${PROJECT_NAME} ${PEPARSERLIB_SOURCEFILES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_options(${PROJECT_NAME} PRIVATE ${GLOBAL_CXXFLAGS})
