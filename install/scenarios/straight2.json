@@ -10,11 +10,17 @@
         {
             "name": "car1",
             "physics_model": "masspoint",
-            "start_coords": [5.88133850,50.8354390,0],
-            "target_coords": [5.8813333,50.8355156,0],
+            "start_coords": [50.8354390, 5.88133850],
+            "target_coords": [50.8355156, 5.8813333],
             "autopilot": {
                 "autopilot": "AutopilotAdapter",
                 "os": "windows",
+                "cpu_frequency": "4000000000",
+                "memory_frequency": "2500000000",
+                "cache_DL1": "262144,4,4",
+                "cache_IL1": "262144,4,4",
+                "cache_L2": "2097152,6,6",
+                "cache_L3": "12582912,40,40",
                 "no_time": true
             }
         }

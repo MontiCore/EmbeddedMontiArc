@@ -51,8 +51,8 @@ located alongside the `basic-simulator.jar` file inside folders with the same na
 
 By selecting a **scenario**, you can press the "Start Simulation" button to run this scenario in the simulator.
 
-> ![Scenario select.](images/usage.png "Select a scenario and press the button.")
-> 
+![Scenario select.](images/usage.png "Select a scenario and press the button.")
+
 > **NOTE**: *Currently the output of the simulation is only shown in the console.*
 
 You can start a simulation directly without interacting with the GUI by passing a scenario name as command line argument
