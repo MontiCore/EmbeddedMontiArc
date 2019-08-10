@@ -32,7 +32,9 @@ import de.topobyte.osm4j.core.resolve.EntityNotFoundException;
 import de.topobyte.osm4j.xml.dynsax.OsmXmlReader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealVector;
 import org.w3c.dom.Document;
+import simulation.environment.object.ChargingStation;
 import simulation.environment.osm.Dto.OSMNode;
 import simulation.environment.visualisationadapter.implementation.*;
 import simulation.environment.visualisationadapter.interfaces.*;
@@ -63,7 +65,7 @@ public class Parser2D implements IParser {
     private HashSet<EnvStreet> streets;
     private HashSet<Building> buildings;
     private HashSet<Waterway> waterway;
-    private HashSet<EnvChargingStation> chargingStations;
+    private HashSet<ChargingStation> chargingStations;
 
     private String filePath;
     private String mapName;
@@ -262,7 +264,9 @@ public class Parser2D implements IParser {
                     name = "chargingStation";
                 }
 
-                constructChargingStation(node, capacity, name);
+                RealVector location = new ArrayRealVector(new double[]{node.getLongitude(), node.getLatitude(), 0});
+
+                this.chargingStations.add(new ChargingStation(node.getId(), location, Integer.parseInt(capacity), name));
             }
         }
     }
@@ -394,12 +398,6 @@ public class Parser2D implements IParser {
         this.streets.add(new Street2D(nodes, 50.d, mapper.getIntersectionsForWay(way), way.getId(), isOneWay, parseStreetType(highway)));
     }
 
-    private void constructChargingStation(OsmNode node, String capacity, String name){
-        List<EnvNode> nodes = new ArrayList<EnvNode>();
-        nodes.add(new Node2D(node.getLongitude(), node.getLatitude(), 0, node.getId()));
-        this.chargingStations.add(new ChargingStation2D(nodes, node.getId(), Integer.parseInt(capacity), name));
-    }
-
     @Override
     public Collection<EnvStreet> getStreets() {
         return this.streets;
@@ -415,7 +413,7 @@ public class Parser2D implements IParser {
         return this.waterway;
     }
 
-    public Collection<EnvChargingStation> getChargingStations() {
+    public Collection<ChargingStation> getChargingStations() {
         return this.chargingStations;
     }
 

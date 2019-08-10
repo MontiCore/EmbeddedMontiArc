@@ -24,8 +24,7 @@ import commons.controller.commons.Vertex;
 import org.apache.commons.math3.linear.RealVector;
 import org.jfree.util.Log;
 import simulation.environment.WorldModel;
-import simulation.environment.visualisationadapter.implementation.ChargingStation2D;
-import simulation.environment.visualisationadapter.interfaces.EnvChargingStation;
+import simulation.environment.object.ChargingStation;
 import simulation.util.ServerRequest;
 
 import java.util.Collection;
@@ -61,7 +60,7 @@ public class ChargingStationNavigator {
     }
 
     static long getNearestChargingStationFromServer(long from) {
-        ChargingStation2D station = null;
+        ChargingStation station = null;
 
         String serverHost = System.getenv("SIM_SERVER");
         String serverPort = System.getenv("SIM_PORT");
@@ -90,17 +89,17 @@ public class ChargingStationNavigator {
 
     static long getNearestChargingStationFromLocalSector(long from) throws Exception {
         RealVector currentPos = getPositionOfOsmNode(from);
-        ChargingStation2D nearest = null;
+        ChargingStation nearest = null;
 
         try {
             // Iterate over all charging stations in current sector and find the nearest charging station
-            Collection<EnvChargingStation> stations = WorldModel.getInstance().getParser().getChargingStations();
-            for (EnvChargingStation station : stations) {
-                ChargingStation2D tmp = (ChargingStation2D) station;
+            Collection<ChargingStation> stations = WorldModel.getInstance().getParser().getChargingStations();
+            for (ChargingStation station : stations) {
+                ChargingStation tmp = station;
 
                 if (nearest == null) {
                     nearest = tmp;
-                } else if (currentPos.getDistance(nearest.getCenter()) > currentPos.getDistance(tmp.getCenter())) {
+                } else if (currentPos.getDistance(nearest.getLocation()) > currentPos.getDistance(tmp.getLocation())) {
                     nearest = tmp;
                 }
             }
@@ -112,7 +111,7 @@ public class ChargingStationNavigator {
         if (nearest == null) {
             return 0;
         }
-        return nearest.getNodes().get(0).getOsmId();
+        return nearest.getOsmId();
     }
 
     private static RealVector getPositionOfOsmNode(long osmID) throws Exception {

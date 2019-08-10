@@ -21,7 +21,8 @@
 package simulation.environment.object;
 
 import commons.simulation.SimulationLoopExecutable;
-import javafx.geometry.Point3D;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.util.ChargingProcess;
 import simulation.util.Log;
 
@@ -57,7 +58,7 @@ public class ChargingStation implements SimulationLoopExecutable {
     /**
      * Location of the Charging Station
      */
-    private Point3D location = new Point3D(0, 0, 0);
+    private RealVector location;
 
     /**
      * Car tracing Radius of the Charging Station
@@ -72,18 +73,21 @@ public class ChargingStation implements SimulationLoopExecutable {
      * Default Positon: 0,0,0
      */
     public ChargingStation() {
-
+        this.location = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         this.name = "Charging Station ";
     }
 
     /**
      * Cunstructor
      *
+     * @param osmId
+     * @param location
      * @param capacity number of cars that can be placed in the Charging Station
-     *                 0 for a random capacity between 1-4
+     * @param name
      */
-    public ChargingStation(long osmId, int capacity, String name) {
+    public ChargingStation(long osmId, RealVector location, int capacity, String name) {
         this.osmId = osmId;
+        this.location = location.copy();
         this.capacity = capacity;
         this.name = name;
     }
@@ -154,12 +158,14 @@ public class ChargingStation implements SimulationLoopExecutable {
         return this.capacity;
     }
 
-    public Point3D getLocation() {
-        return this.location;
+    public void setCapacity(int capacity) { this.capacity = capacity; }
+
+    public RealVector getLocation() {
+        return this.location.copy();
     }
 
-    public void setLocation(Point3D point) {
-        this.location = point;
+    public void setLocation(RealVector point) {
+        this.location = point.copy();
     }
 
     public double getStationRadius() {
