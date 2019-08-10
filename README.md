@@ -27,14 +27,8 @@ Several scenarios are listed in the folder _scenario examples_ , the simulation 
                             if is_connected(traj_msg,k)
                                tmsg = traj_msg(k);
                                if pmsg.vehicleid == tmsg.vehicleid
-                                  if ports_connect(newplat_msg,counter,pmsg)
-                                     newplat_msg(counter) = pmsg;
-                                  end
-                                  if ports_connect(newtraj_msg,counter,tmsg)
-                                     newtraj_msg(counter) = tmsg;
-                                  end
-                                  counter = counter + 1;
-                                end
+                                 ...
+                               end
                             end
                         end
                     end
@@ -49,13 +43,7 @@ Several scenarios are listed in the folder _scenario examples_ , the simulation 
             pmsg = select(platoonlist(j), plat_msg, id)
             tmsg = select(platoonlist(j), traj_msg, id)
             if pmsg.id != 0 && tmsg.id != 0 
-                if ports_connect(newplat_msg,counter,pmsg)
-                    newplat_msg(counter) = pmsg;
-                 end
-                if ports_connect(newtraj_msg,counter,tmsg)
-                    newtraj_msg(counter) = tmsg;
-                end
-                counter = counter + 1;
+               ...
             end 
         end
      ```
