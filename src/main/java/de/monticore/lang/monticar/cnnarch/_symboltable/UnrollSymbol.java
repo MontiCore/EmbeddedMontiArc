@@ -21,12 +21,8 @@
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
 
-import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
-import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
-import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.function.Function;
@@ -46,19 +42,19 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
         return elements;
     }
 
-    public boolean isNetwork() {
-        boolean isNetwork = false;
+    public boolean isTrainable() {
+        boolean isTrainable = false;
 
         for (ArchitectureElementSymbol element : elements) {
             if (element instanceof CompositeElementSymbol) {
-                isNetwork |= ((CompositeElementSymbol) element).isNetwork();
+                isTrainable |= ((CompositeElementSymbol) element).isTrainable();
             }
             else if (element instanceof LayerSymbol) {
-                isNetwork |= ((LayerSymbol) element).getDeclaration().isNetworkLayer();
+                isTrainable |= ((LayerSymbol) element).getDeclaration().isTrainable();
             }
         }
 
-        return isNetwork;
+        return isTrainable;
     }
 
     @Override
@@ -95,7 +91,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
-    public Set<VariableSymbol> resolve() throws ArchResolveException {
+    public Set<ParameterSymbol> resolve() throws ArchResolveException {
         if (!isResolved()) {
             if (isResolvable()) {
                 List<ArchitectureElementSymbol> resolvedElements = new ArrayList<>();
@@ -104,7 +100,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
                 }
             }
         }
-        return getUnresolvableVariables();
+        return getUnresolvableParameters();
     }
 
     @Override
@@ -126,10 +122,10 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
-    protected void computeUnresolvableVariables(Set<VariableSymbol> unresolvableVariables, Set<VariableSymbol> allVariables) {
+    protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters) {
         for (ArchitectureElementSymbol element : getElements()){
-            element.checkIfResolvable(allVariables);
-            unresolvableVariables.addAll(element.getUnresolvableVariables());
+            element.checkIfResolvable(allParameters);
+            unresolvableParameters.addAll(element.getUnresolvableParameters());
         }
     }
 
@@ -253,7 +249,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
 
     public <T> Optional<T> getTValue(String parameterName, Function<ArchExpressionSymbol, Optional<T>> getValue){
         Optional<ArgumentSymbol> arg = getArgument(parameterName);
-        Optional<VariableSymbol> param = getDeclaration().getParameter(parameterName);
+        Optional<ParameterSymbol> param = getDeclaration().getParameter(parameterName);
         if (arg.isPresent()){
             return getValue.apply(arg.get().getRhs());
         }

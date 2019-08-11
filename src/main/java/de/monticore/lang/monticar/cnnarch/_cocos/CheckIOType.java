@@ -46,8 +46,8 @@ public class CheckIOType extends CNNArchSymbolCoCo {
                     "Type has to be rational or whole number.");
         }
 
-        if (type.getDimensionSymbols().size() == 2 || type.getDimensionSymbols().size() > 3){
-            Log.error("0" + ErrorCodes.INVALID_IO_TYPE + " Invalid dimension shape. Shape has to be either of size 1 or 3 (e.g. {number_of_channels, height, width})."
+        if (type.getDimensionSymbols().size() > 3){
+            Log.error("0" + ErrorCodes.INVALID_IO_TYPE + " Invalid dimension shape. Shape has to be an tuple either of size 1, 2 or 3 (e.g. {number_of_channels, height, width})."
                     , ioDeclaration.getSourcePosition());
         }
         else {
@@ -57,19 +57,6 @@ public class CheckIOType extends CNNArchSymbolCoCo {
                     Log.error("0" + ErrorCodes.INVALID_IO_TYPE + " Invalid shape. " +
                                     "The dimension sizes can only be positive integers."
                             , dimension.getSourcePosition());
-                }
-            }
-        }
-
-        if (Log.getFindings().isEmpty()){
-            if (ioDeclaration.isInput() && type.getChannels() != 3 && type.getChannels() != 1){
-                if (type.getHeight() > 1 || type.getWidth() > 1){
-                    Log.warn("The number of channels of input '" +
-                                    ioDeclaration.getName() + "' is: " + type.getChannels() +
-                                    ". Heigth: " + type.getHeight() + ". Width: " + type.getWidth() + ". " +
-                                    "This is unusual and a sign of an error. " +
-                                    "The standard data format of this language is CHW and not HWC. "
-                            , ioDeclaration.getSourcePosition());
                 }
             }
         }

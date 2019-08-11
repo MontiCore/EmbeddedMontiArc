@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import com.google.gson.internal.Streams;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
@@ -41,9 +40,9 @@ abstract public class PredefinedUnrollDeclaration extends UnrollDeclarationSymbo
     }
 
     @Override
-    protected void setParameters(List<VariableSymbol> parameters) {
+    protected void setParameters(List<ParameterSymbol> parameters) {
         super.setParameters(parameters);
-        for (VariableSymbol param : parameters){
+        for (ParameterSymbol param : parameters){
             param.putInScope(getSpannedScope());
         }
     }

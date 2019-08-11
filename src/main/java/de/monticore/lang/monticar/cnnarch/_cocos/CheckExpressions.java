@@ -24,7 +24,7 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ParameterSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.helper.Utils;
 import de.se_rwth.commons.logging.Log;
@@ -47,11 +47,11 @@ public class CheckExpressions extends CNNArchSymbolCoCo {
             for (MathExpressionSymbol subMathExp : Utils.createSubExpressionList(mathExpression)){
                 if (subMathExp instanceof MathNameExpressionSymbol){
                     String name = ((MathNameExpressionSymbol) subMathExp).getNameToAccess();
-                    Collection<VariableSymbol> variableCollection = expression.getEnclosingScope().resolveMany(name, VariableSymbol.KIND);
+                    Collection<ParameterSymbol> parameterCollection = expression.getEnclosingScope().resolveMany(name, ParameterSymbol.KIND);
 
-                    if (variableCollection.isEmpty()){
-                        Log.error("0" + ErrorCodes.UNKNOWN_VARIABLE_NAME + " Unknown variable name. " +
-                                "The variable '" + name + "' does not exist. "
+                    if (parameterCollection.isEmpty()){
+                        Log.error("0" + ErrorCodes.UNKNOWN_PARAMETER_NAME + " Unknown parameter name. " +
+                                "The parameter '" + name + "' does not exist. "
                                 , subMathExp.getSourcePosition());
                     }
                 }

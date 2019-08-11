@@ -31,7 +31,7 @@ import java.util.Optional;
 
 public class CNNArchCompilationUnitSymbol extends CNNArchCompilationUnitSymbolTOP{
 
-    private List<VariableSymbol> parameters;
+    private List<ParameterSymbol> parameters;
     private List<IODeclarationSymbol> ioDeclarations;
     private ArchitectureSymbol architecture;
 
@@ -55,11 +55,11 @@ public class CNNArchCompilationUnitSymbol extends CNNArchCompilationUnitSymbolTO
         this.ioDeclarations = ioDeclarations;
     }
 
-    public List<VariableSymbol> getParameters() {
+    public List<ParameterSymbol> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<VariableSymbol> parameters) {
+    public void setParameters(List<ParameterSymbol> parameters) {
         this.parameters = parameters;
     }
 
@@ -71,7 +71,7 @@ public class CNNArchCompilationUnitSymbol extends CNNArchCompilationUnitSymbolTO
 
 
     public void checkParameters(){
-        for (VariableSymbol parameter : getParameters()){
+        for (ParameterSymbol parameter : getParameters()){
             if (!parameter.hasExpression()){
                 Log.error("0" + ErrorCodes.MISSING_VAR_VALUE + " Missing architecture argument. " +
                         "The parameter '" + parameter.getName() + "' has no value.");
@@ -79,8 +79,8 @@ public class CNNArchCompilationUnitSymbol extends CNNArchCompilationUnitSymbolTO
         }
     }
 
-    public Optional<VariableSymbol> getParameter(String name){
-        for (VariableSymbol parameter : getParameters()){
+    public Optional<ParameterSymbol> getParameter(String name){
+        for (ParameterSymbol parameter : getParameters()){
             if (parameter.getName().equals(name)){
                 return Optional.of(parameter);
             }
@@ -88,8 +88,8 @@ public class CNNArchCompilationUnitSymbol extends CNNArchCompilationUnitSymbolTO
         return Optional.empty();
     }
 
-    private VariableSymbol getParameterOrError(String name){
-        Optional<VariableSymbol> param = getParameter(name);
+    private ParameterSymbol getParameterOrError(String name){
+        Optional<ParameterSymbol> param = getParameter(name);
         if (param.isPresent()){
             return param.get();
         }
@@ -99,7 +99,7 @@ public class CNNArchCompilationUnitSymbol extends CNNArchCompilationUnitSymbolTO
     }
 
     public void setParameter(String name, Rational value){
-        VariableSymbol parameter = getParameterOrError(name);
+        ParameterSymbol parameter = getParameterOrError(name);
         if (value.getDivisor().intValue() == 1){
             parameter.setExpression(ArchSimpleExpressionSymbol.of(value.getDividend().intValue()));
         }
@@ -109,22 +109,22 @@ public class CNNArchCompilationUnitSymbol extends CNNArchCompilationUnitSymbolTO
     }
 
     public void setParameter(String name, boolean value){
-        VariableSymbol parameter = getParameterOrError(name);
+        ParameterSymbol parameter = getParameterOrError(name);
         parameter.setExpression(ArchSimpleExpressionSymbol.of(value));
     }
 
     public void setParameter(String name, int value){
-        VariableSymbol parameter = getParameterOrError(name);
+        ParameterSymbol parameter = getParameterOrError(name);
         parameter.setExpression(ArchSimpleExpressionSymbol.of(value));
     }
 
     public void setParameter(String name, double value){
-        VariableSymbol parameter = getParameterOrError(name);
+        ParameterSymbol parameter = getParameterOrError(name);
         parameter.setExpression(ArchSimpleExpressionSymbol.of(value));
     }
 
     public void setParameter(String name, String value){
-        VariableSymbol parameter = getParameterOrError(name);
+        ParameterSymbol parameter = getParameterOrError(name);
         parameter.setExpression(ArchSimpleExpressionSymbol.of(value));
     }
 
@@ -139,9 +139,9 @@ public class CNNArchCompilationUnitSymbol extends CNNArchCompilationUnitSymbolTO
             copy.setAstNode(getAstNode().get());
         }
 
-        List<VariableSymbol> parameterCopies = new ArrayList<>(getParameters().size());
-        for (VariableSymbol param : getParameters()){
-            VariableSymbol paramCopy = param.deepCopy();
+        List<ParameterSymbol> parameterCopies = new ArrayList<>(getParameters().size());
+        for (ParameterSymbol param : getParameters()){
+            ParameterSymbol paramCopy = param.deepCopy();
             parameterCopies.add(paramCopy);
             paramCopy.putInScope(copy.getSpannedScope());
         }
@@ -149,7 +149,7 @@ public class CNNArchCompilationUnitSymbol extends CNNArchCompilationUnitSymbolTO
 
         List<IODeclarationSymbol> ioCopies = new ArrayList<>(getIoDeclarations().size());
         for (IODeclarationSymbol ioDeclaration : getIoDeclarations()){
-            IODeclarationSymbol ioCopy = ioDeclaration.preResolveDeepCopy();
+            IODeclarationSymbol ioCopy = (IODeclarationSymbol) ioDeclaration.preResolveDeepCopy();
             ioCopies.add(ioCopy);
             ioCopy.putInScope(copy.getSpannedScope());
         }

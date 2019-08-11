@@ -67,13 +67,17 @@ public class CNNArchCocos {
                 .addCoCo(new CheckElementInputs())
                 .addCoCo(new CheckIOAccessAndIOMissing())
                 .addCoCo(new CheckArchitectureFinished())
-                .addCoCo(new CheckNetworkStreamMissing());
+                .addCoCo(new CheckNetworkStreamMissing())
+                .addCoCo(new CheckVariableMember())
+                .addCoCo(new CheckLayerVariableDeclarationLayerType())
+                .addCoCo(new CheckLayerVariableDeclarationIsUsed());
     }
 
     //checks cocos based on symbols before the resolve method of the ArchitectureSymbol is called
     public static CNNArchSymbolCoCoChecker createCNNArchPreResolveSymbolChecker() {
         return new CNNArchSymbolCoCoChecker()
-                .addCoCo(new CheckIOName())
+                .addCoCo(new CheckVariableDeclarationName())
+                .addCoCo(new CheckVariableName())
                 .addCoCo(new CheckExpressions());
     }
 
@@ -82,7 +86,7 @@ public class CNNArchCocos {
         return new CNNArchCoCoChecker()
                 .addCoCo(new CheckLayer())
                 .addCoCo(new CheckRangeOperators())
-                .addCoCo(new CheckVariableName())
+                .addCoCo(new CheckParameterName())
                 .addCoCo(new CheckLayerName())
                 .addCoCo(new CheckArgument())
                 .addCoCo(new CheckLayerRecursion());

@@ -18,22 +18,22 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.CommonSymbol;
+import de.monticore.symboltable.Scope;
 
-public class VariableKind implements SymbolKind {
+public abstract class VariableDeclarationSymbol extends CommonSymbol {
 
-    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.VariableKind";
+    public static final VariableDeclarationKind KIND = new VariableDeclarationKind();
 
-    @Override
-    public String getName() {
-        return NAME;
+    protected VariableDeclarationSymbol(String name) {
+        super(name, KIND);
     }
 
-    @Override
-    public boolean isKindOf(SymbolKind kind) {
-        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
-    }
+    public abstract void putInScope(Scope scope);
+
+    public abstract VariableDeclarationSymbol preResolveDeepCopy();
 
 }

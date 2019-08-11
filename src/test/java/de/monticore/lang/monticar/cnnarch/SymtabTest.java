@@ -69,7 +69,7 @@ public class SymtabTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void test3(){
+    public void testMultipleOutputs(){
         Scope symTab = createSymTab("src/test/resources/valid_tests");
         CNNArchCompilationUnitSymbol a = symTab.<CNNArchCompilationUnitSymbol>resolve(
                 "MultipleOutputs",

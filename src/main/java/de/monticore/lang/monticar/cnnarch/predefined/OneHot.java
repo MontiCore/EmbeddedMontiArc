@@ -23,7 +23,6 @@ package de.monticore.lang.monticar.cnnarch.predefined;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
-import de.monticore.lang.monticar.ranges._ast.ASTRangeStepResolution;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.se_rwth.commons.logging.Log;
 
@@ -36,7 +35,12 @@ public class OneHot extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public boolean isTrainable() {
+        return false;
+    }
+
+    @Override
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
 
         // TODO: Execute this code somewhere before checkInput(), for now size parameter is required
         /*if(layer.getOutputElement().get() instanceof IOSymbol && layer.getOutputElement().get().isOutput()) {
@@ -62,7 +66,7 @@ public class OneHot extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
         errorIfInputChannelSizeIsInvalid(inputTypes, layer, 1);
         errorIfInputHeightIsInvalid(inputTypes, layer, 1);
@@ -113,8 +117,8 @@ public class OneHot extends PredefinedLayerDeclaration {
 
     public static OneHot create(){
         OneHot declaration = new OneHot();
-        List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new VariableSymbol.Builder()
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.SIZE_NAME)
                         .constraints(Constraints.POSITIVE, Constraints.INTEGER)
                         .build()));

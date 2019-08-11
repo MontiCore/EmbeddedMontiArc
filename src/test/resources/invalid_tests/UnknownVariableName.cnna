@@ -1,11 +1,8 @@
-architecture UnknownVariableName(inputs=10){
-    def input Q(-oo:+oo)^{inputs} in1
-    def output Q(0:1)^{2} out1
-
+architecture UnknownVariableName(){
     in1 ->
     FullyConnected(units=64) ->
     Tanh() ->
-    FullyConnected(units=classes) ->
+    FullyConnected(units=10) ->
     Softmax() ->
     out1;
 }

@@ -34,7 +34,7 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
 
     public static final UnrollDeclarationKind KIND = new UnrollDeclarationKind();
 
-    private List<VariableSymbol> parameters;
+    private List<ParameterSymbol> parameters;
     private SerialCompositeElementSymbol body;
 
 
@@ -52,24 +52,24 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
         return (UnrollDeclarationScope) super.getSpannedScope();
     }
 
-    public List<VariableSymbol> getParameters() {
+    public List<ParameterSymbol> getParameters() {
         return parameters;
     }
 
-    protected void setParameters(List<VariableSymbol> parameters) {
+    protected void setParameters(List<ParameterSymbol> parameters) {
         this.parameters = parameters;
         if (!getParameter(AllPredefinedVariables.CONDITIONAL_ARG_NAME).isPresent()){
-            VariableSymbol ifParam = AllPredefinedVariables.createConditionalParameter();
+            ParameterSymbol ifParam = AllPredefinedVariables.createConditionalParameter();
             this.parameters.add(ifParam);
             ifParam.putInScope(getSpannedScope());
         }
         if (!getParameter(AllPredefinedVariables.SERIAL_ARG_NAME).isPresent()){
-            VariableSymbol forParam = AllPredefinedVariables.createSerialParameter();
+            ParameterSymbol forParam = AllPredefinedVariables.createSerialParameter();
             this.parameters.add(forParam);
             forParam.putInScope(getSpannedScope());
         }
         if (!getParameter(AllPredefinedVariables.PARALLEL_ARG_NAME).isPresent()){
-            VariableSymbol forParam = AllPredefinedVariables.createParallelParameter();
+            ParameterSymbol forParam = AllPredefinedVariables.createParallelParameter();
             this.parameters.add(forParam);
             forParam.putInScope(getSpannedScope());
         }
@@ -88,9 +88,9 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
         return false;
     }
 
-    public Optional<VariableSymbol> getParameter(String name) {
-        Optional<VariableSymbol> res = Optional.empty();
-        for (VariableSymbol parameter : getParameters()){
+    public Optional<ParameterSymbol> getParameter(String name) {
+        Optional<ParameterSymbol> res = Optional.empty();
+        for (ParameterSymbol parameter : getParameters()){
             if (parameter.getName().equals(name)){
                 res = Optional.of(parameter);
             }
@@ -121,7 +121,7 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     }
 
     private void reset(){
-        for (VariableSymbol param : getParameters()){
+        for (ParameterSymbol param : getParameters()){
             param.reset();
         }
     }
@@ -150,9 +150,9 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
             copy.setAstNode(getAstNode().get());
         }
 
-        List<VariableSymbol> parameterCopies = new ArrayList<>(getParameters().size());
-        for (VariableSymbol parameter : getParameters()){
-            VariableSymbol parameterCopy = parameter.deepCopy();
+        List<ParameterSymbol> parameterCopies = new ArrayList<>(getParameters().size());
+        for (ParameterSymbol parameter : getParameters()){
+            ParameterSymbol parameterCopy = parameter.deepCopy();
             parameterCopies.add(parameterCopy);
             parameterCopy.putInScope(copy.getSpannedScope());
         }
@@ -164,16 +164,16 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
 
 
     /*public static class Builder{
-        private List<VariableSymbol> parameters = new ArrayList<>();
+        private List<ParameterSymbol> parameters = new ArrayList<>();
         private CompositeElementSymbol body;
         private String name = "";
 
-        public Builder parameters(List<VariableSymbol> parameters) {
+        public Builder parameters(List<ParameterSymbol> parameters) {
             this.parameters = parameters;
             return this;
         }
 
-        public Builder parameters(VariableSymbol... parameters) {
+        public Builder parameters(ParameterSymbol... parameters) {
             this.parameters = new ArrayList<>(Arrays.asList(parameters));
             return this;
         }
@@ -197,7 +197,7 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
             if (body != null){
                 body.putInScope(sym.getSpannedScope());
             }
-            for (VariableSymbol param : parameters){
+            for (ParameterSymbol param : parameters){
                 param.putInScope(sym.getSpannedScope());
             }
             sym.setParameters(parameters);

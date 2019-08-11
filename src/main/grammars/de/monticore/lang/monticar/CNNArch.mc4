@@ -61,13 +61,15 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                    methodDeclaration:LayerDeclaration*
                    instructions:(Instruction || ";")+ ";";
 
-    interface Instruction;
+    Instruction = (LayerVariableDeclaration | Stream);
 
-    Stream implements Instruction = elements:(ArchitectureElement || "->")+;
+    LayerVariableDeclaration = "layer" Layer Name;
+
+    Stream = elements:(ArchitectureElement || "->")+;
 
     interface ArchitectureElement;
 
-    IOElement implements ArchitectureElement =  Name ("[" index:ArchSimpleExpression "]")?;
+    Variable implements ArchitectureElement =  Name ("." (member:"output" | member:Name))? ("[" index:ArchSimpleExpression "]")?;
 
     Constant implements ArchitectureElement = ArchSimpleExpression;
 
@@ -86,11 +88,11 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
 
     /* ====== Variables/Arguments ======*/
 
-    interface Variable;
+    interface ArchParameter;
 
-    ArchitectureParameter implements Variable =  Name ("=" default:ArchSimpleExpression)? ;
+    ArchitectureParameter implements ArchParameter =  Name ("=" default:ArchSimpleExpression)? ;
 
-    LayerParameter implements Variable =  Name ("=" default:ArchSimpleExpression)? ;
+    LayerParameter implements ArchParameter =  Name ("=" default:ArchSimpleExpression)? ;
 
     interface ArchArgument;
 
@@ -119,7 +121,7 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                                                   (serial2:"->" | parallel2:"|")
                                                   end:ArchSimpleExpression "]";
     /**
-        Expressions for variable values.
+        Expressions for parameter and variable values.
     */
     ArchSimpleExpression = (arithmeticExpression:ArchArithmeticExpression
                          | booleanExpression:ArchBooleanExpression
@@ -168,7 +170,7 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
     /* =================================*/
     /* ============ ASTRULES ===========*/
     /* =================================*/
-    ast Variable = method String getName(){};
+    ast ArchParameter = method String getName(){};
     ast ArchSpecialArgument = method public String getName(){return "";}; //Override is necessary
     ast ArchArgument = method String getName(){}
                        method ASTArchExpression getRhs(){};

@@ -69,7 +69,7 @@ public class ArchRangeExpressionSymbol extends ArchAbstractSequenceExpression {
     public void reset() {
         getStartSymbol().reset();
         getEndSymbol().reset();
-        setUnresolvableVariables(null);
+        setUnresolvableParameters(null);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class ArchRangeExpressionSymbol extends ArchAbstractSequenceExpression {
     }*/
 
     @Override
-    public Set<VariableSymbol> resolve() {
+    public Set<ParameterSymbol> resolve() {
         if (!isResolved()){
             if (isResolvable()){
 
@@ -105,7 +105,7 @@ public class ArchRangeExpressionSymbol extends ArchAbstractSequenceExpression {
                 getEndSymbol().resolveOrError();
             }
         }
-        return getUnresolvableVariables();
+        return getUnresolvableParameters();
     }
 
     @Override
@@ -145,11 +145,11 @@ public class ArchRangeExpressionSymbol extends ArchAbstractSequenceExpression {
     }
 
     @Override
-    protected void computeUnresolvableVariables(Set<VariableSymbol> unresolvableVariables, Set<VariableSymbol> allVariables) {
-        getStartSymbol().checkIfResolvable(allVariables);
-        unresolvableVariables.addAll(getStartSymbol().getUnresolvableVariables());
-        getEndSymbol().checkIfResolvable(allVariables);
-        unresolvableVariables.addAll(getEndSymbol().getUnresolvableVariables());
+    protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters) {
+        getStartSymbol().checkIfResolvable(allParameters);
+        unresolvableParameters.addAll(getStartSymbol().getUnresolvableParameters());
+        getEndSymbol().checkIfResolvable(allParameters);
+        unresolvableParameters.addAll(getEndSymbol().getUnresolvableParameters());
     }
 
     @Override

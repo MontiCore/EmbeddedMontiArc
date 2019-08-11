@@ -20,10 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch._cocos;
 
-import de.monticore.commonexpressions._ast.ASTArguments;
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchArgument;
-import de.monticore.lang.monticar.cnnarch._ast.ASTLayer;
-import de.monticore.lang.monticar.cnnarch._ast.ASTLayerParameter;
 import de.monticore.lang.monticar.cnnarch._ast.ASTUnroll;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
@@ -62,7 +59,7 @@ public class CheckUnroll implements CNNArchASTUnrollCoCo{
         }
         else {
             Set<String> requiredArguments = new HashSet<>();
-            for (VariableSymbol param : layerDeclaration.getParameters()){
+            for (ParameterSymbol param : layerDeclaration.getParameters()){
                 if (!param.getDefaultExpression().isPresent()){
                     requiredArguments.add(param.getName());
                 }

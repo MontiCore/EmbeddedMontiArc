@@ -60,7 +60,7 @@ public class ArchSimpleExpressionSymbol extends ArchExpressionSymbol {
         if (getMathExpression().isPresent()){
             if (getMathExpression().isPresent()){
                 setValue(null);
-                setUnresolvableVariables(null);
+                setUnresolvableParameters(null);
             }
         }
     }
@@ -101,28 +101,28 @@ public class ArchSimpleExpressionSymbol extends ArchExpressionSymbol {
         return getTupleValues().isPresent();
     }
 
-    protected void computeUnresolvableVariables(Set<VariableSymbol> unresolvableVariables, Set<VariableSymbol> allVariables) {
+    protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters) {
         if (getMathExpression().isPresent()) {
             for (MathExpressionSymbol exp : Utils.createSubExpressionList(getMathExpression().get())) {
                 if (exp instanceof MathNameExpressionSymbol) {
                     String name = ((MathNameExpressionSymbol) exp).getNameToAccess();
-                    Optional<VariableSymbol> variable = getEnclosingScope().resolve(name, VariableSymbol.KIND);
-                    if (variable.isPresent()) {
-                        if (!allVariables.contains(variable.get())) {
-                            allVariables.add(variable.get());
-                            if (variable.get().hasExpression()) {
-                                if (!variable.get().getExpression().isResolved()) {
-                                    variable.get().getExpression().computeUnresolvableVariables(unresolvableVariables, allVariables);
+                    Optional<ParameterSymbol> parameter = getEnclosingScope().resolve(name, ParameterSymbol.KIND);
+                    if (parameter.isPresent()) {
+                        if (!allParameters.contains(parameter.get())) {
+                            allParameters.add(parameter.get());
+                            if (parameter.get().hasExpression()) {
+                                if (!parameter.get().getExpression().isResolved()) {
+                                    parameter.get().getExpression().computeUnresolvableParameters(unresolvableParameters, allParameters);
                                 }
                             } else {
-                                unresolvableVariables.add(variable.get());
+                                unresolvableParameters.add(parameter.get());
                             }
                         }
                     }
                     else {
-                        unresolvableVariables.add(new VariableSymbol.Builder()
+                        unresolvableParameters.add(new ParameterSymbol.Builder()
                                 .name(name)
-                                .type(VariableType.UNKNOWN)
+                                .type(ParameterType.UNKNOWN)
                                 .build());
                     }
                 }
@@ -131,7 +131,7 @@ public class ArchSimpleExpressionSymbol extends ArchExpressionSymbol {
     }
 
     @Override
-    public Set<VariableSymbol> resolve() {
+    public Set<ParameterSymbol> resolve() {
         if (!isResolved()) {
             if (isResolvable()) {
                 if (getMathExpression().isPresent() && isResolvable()) {
@@ -140,7 +140,7 @@ public class ArchSimpleExpressionSymbol extends ArchExpressionSymbol {
                 }
             }
         }
-        return getUnresolvableVariables();
+        return getUnresolvableParameters();
     }
 
     private Object computeValue(){
@@ -155,10 +155,10 @@ public class ArchSimpleExpressionSymbol extends ArchExpressionSymbol {
             for (MathExpressionSymbol exp : Utils.createSubExpressionList(getMathExpression().get())) {
                 if (exp instanceof MathNameExpressionSymbol) {
                     String name = ((MathNameExpressionSymbol) exp).getNameToAccess();
-                    VariableSymbol variable = (VariableSymbol) getEnclosingScope().resolve(name, VariableSymbol.KIND).get();
-                    variable.getExpression().resolveOrError();
+                    ParameterSymbol parameter = (ParameterSymbol) getEnclosingScope().resolve(name, ParameterSymbol.KIND).get();
+                    parameter.getExpression().resolveOrError();
 
-                    replacementMap.put(name, variable.getExpression().getTextualRepresentation());
+                    replacementMap.put(name, parameter.getExpression().getTextualRepresentation());
                 }
             }
 
@@ -186,7 +186,7 @@ public class ArchSimpleExpressionSymbol extends ArchExpressionSymbol {
 
     private Object computeValue(MathNameExpressionSymbol mathExpression){
         String name = mathExpression.getNameToAccess();
-        VariableSymbol variable = (VariableSymbol) getEnclosingScope().resolve(name, VariableSymbol.KIND).get();
+        ParameterSymbol variable = (ParameterSymbol) getEnclosingScope().resolve(name, ParameterSymbol.KIND).get();
         variable.getExpression().resolveOrError();
 
         return variable.getExpression().getValue().get();
@@ -293,7 +293,7 @@ public class ArchSimpleExpressionSymbol extends ArchExpressionSymbol {
         return res;
     }
 
-    public static ArchSimpleExpressionSymbol of(VariableSymbol variable){
+    public static ArchSimpleExpressionSymbol of(ParameterSymbol variable){
         MathExpressionSymbol exp = new MathNameExpressionSymbol(variable.getName());
         ArchSimpleExpressionSymbol res = new ArchSimpleExpressionSymbol();
         res.setMathExpression(exp);

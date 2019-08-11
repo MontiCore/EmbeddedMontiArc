@@ -132,7 +132,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
-    public Set<VariableSymbol> resolve() throws ArchResolveException {
+    public Set<ParameterSymbol> resolve() throws ArchResolveException {
         if (!isResolved()) {
             if (isResolvable()) {
                 getDeclaration();
@@ -157,7 +157,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
                 }
             }
         }
-        return getUnresolvableVariables();
+        return getUnresolvableParameters();
     }
 
     private boolean isActive(){
@@ -242,10 +242,10 @@ public class LayerSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
-    protected void computeUnresolvableVariables(Set<VariableSymbol> unresolvableVariables, Set<VariableSymbol> allVariables) {
+    protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters) {
         for (ArgumentSymbol argument : getArguments()){
-            argument.getRhs().checkIfResolvable(allVariables);
-            unresolvableVariables.addAll(argument.getRhs().getUnresolvableVariables());
+            argument.getRhs().checkIfResolvable(allParameters);
+            unresolvableParameters.addAll(argument.getRhs().getUnresolvableParameters());
         }
     }
 
@@ -253,8 +253,14 @@ public class LayerSymbol extends ArchitectureElementSymbol {
     public List<ArchTypeSymbol> computeOutputTypes() {
         if (getResolvedThis().isPresent()) {
             if (getResolvedThis().get() == this) {
-                List<ArchTypeSymbol> inputTypes = getInputTypes();
-                return ((PredefinedLayerDeclaration) getDeclaration()).computeOutputTypes(inputTypes, this);
+                // if LayerSymbol has no output element and layer can be output, then return empty output types array
+                if (!getOutputElement().isPresent()) {
+                    if (((PredefinedLayerDeclaration) getDeclaration()).canBeOutput(VariableSymbol.Member.NONE)) {
+                        return new ArrayList<>();
+                    }
+                }
+
+                return ((PredefinedLayerDeclaration) getDeclaration()).computeOutputTypes(getInputTypes(), this, VariableSymbol.Member.NONE);
             }
             else {
                 return getResolvedThis().get().getOutputTypes();
@@ -270,7 +276,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
     public void checkInput() {
         if (getResolvedThis().isPresent()){
             if (getResolvedThis().get() == this){
-                ((PredefinedLayerDeclaration) getDeclaration()).checkInput(getInputTypes(), this);
+                ((PredefinedLayerDeclaration) getDeclaration()).checkInput(getInputTypes(), this, VariableSymbol.Member.NONE);
             }
             else {
                 getResolvedThis().get().checkInput();
@@ -313,7 +319,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
 
     public <T> Optional<T> getTValue(String parameterName, Function<ArchExpressionSymbol, Optional<T>> getValue){
         Optional<ArgumentSymbol> arg = getArgument(parameterName);
-        Optional<VariableSymbol> param = getDeclaration().getParameter(parameterName);
+        Optional<ParameterSymbol> param = getDeclaration().getParameter(parameterName);
         if (arg.isPresent()){
             return getValue.apply(arg.get().getRhs());
         }
@@ -352,7 +358,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
     }
 
     public <T> void setTValue(String parameterName, T value, Function<T, ArchSimpleExpressionSymbol> of) {
-        Optional<VariableSymbol> param = getDeclaration().getParameter(parameterName);
+        Optional<ParameterSymbol> param = getDeclaration().getParameter(parameterName);
 
         if (param.isPresent()) {
             Optional<ArgumentSymbol> arg = getArgument(parameterName);

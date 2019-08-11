@@ -33,9 +33,8 @@ public class BeamSearchStart extends PredefinedLayerDeclaration {
         super(AllPredefinedLayers.BEAMSEARCH_NAME);
     }
 
-
     @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .channels(100) // TODO
@@ -46,18 +45,18 @@ public class BeamSearchStart extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
     public static BeamSearchStart create(){
         BeamSearchStart declaration = new BeamSearchStart();
-        List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new VariableSymbol.Builder()
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.BEAMSEARCH_WIDTH_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build()));

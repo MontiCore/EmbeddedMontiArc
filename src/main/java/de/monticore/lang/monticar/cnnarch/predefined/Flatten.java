@@ -23,6 +23,7 @@ package de.monticore.lang.monticar.cnnarch.predefined;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.PredefinedLayerDeclaration;
+import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,24 +36,19 @@ public class Flatten extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isNetworkLayer() {
-        return true;
-    }
-
-    @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .height(1)
                 .width(1)
-                .channels(inputTypes.get(0).getHeight()
-                        * inputTypes.get(0).getWidth()
-                        * inputTypes.get(0).getChannels())
-                .elementType(inputTypes.get(0).getDomain())
+                .channels(layer.getInputTypes().get(0).getHeight()
+                        * layer.getInputTypes().get(0).getWidth()
+                        * layer.getInputTypes().get(0).getChannels())
+                .elementType(layer.getInputTypes().get(0).getDomain())
                 .build());
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 

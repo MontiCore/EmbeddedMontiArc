@@ -57,14 +57,14 @@ public class InstanceTest extends AbstractSymtabTest {
         compilationUnit2.setParameter("img_width", 210);
         ArchitectureSymbol instance2 = compilationUnit2.resolve();
 
-        int width1 = instance1.getInputs().get(0).getDefinition().getType().getWidth();
-        int height1 = instance1.getInputs().get(0).getDefinition().getType().getHeight();
-        int channels1 = instance1.getOutputs().get(0).getDefinition().getType().getChannels();
+        int width1 = ((IODeclarationSymbol) instance1.getInputs().get(0).getDeclaration()).getType().getWidth();
+        int height1 = ((IODeclarationSymbol) instance1.getInputs().get(0).getDeclaration()).getType().getHeight();
+        int channels1 = ((IODeclarationSymbol) instance1.getOutputs().get(0).getDeclaration()).getType().getChannels();
         int lastLayerChannels1 = instance1.getOutputs().get(0).getInputTypes().get(0).getChannels();
 
-        int width2 = instance2.getInputs().get(0).getDefinition().getType().getWidth();
-        int height2 = instance2.getInputs().get(0).getDefinition().getType().getHeight();
-        int channels2 = instance2.getOutputs().get(0).getDefinition().getType().getChannels();
+        int width2 = ((IODeclarationSymbol) instance2.getInputs().get(0).getDeclaration()).getType().getWidth();
+        int height2 = ((IODeclarationSymbol) instance2.getInputs().get(0).getDeclaration()).getType().getHeight();
+        int channels2 = ((IODeclarationSymbol) instance2.getOutputs().get(0).getDeclaration()).getType().getChannels();
         int lastLayerChannels2 = instance2.getOutputs().get(0).getInputTypes().get(0).getChannels();
 
         assertEquals(224, width1);

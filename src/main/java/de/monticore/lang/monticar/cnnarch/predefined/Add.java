@@ -20,9 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.PredefinedLayerDeclaration;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -39,19 +37,24 @@ public class Add extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
-        List<String> range = computeStartAndEndValue(inputTypes, Rational::plus, Rational::plus);
+    public boolean isTrainable() {
+        return false;
+    }
+
+    @Override
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
+        List<String> range = computeStartAndEndValue(layer.getInputTypes(), Rational::plus, Rational::plus);
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
-                .channels(inputTypes.get(0).getChannels())
-                .height(inputTypes.get(0).getHeight())
-                .width(inputTypes.get(0).getWidth())
+                .channels(layer.getInputTypes().get(0).getChannels())
+                .height(layer.getInputTypes().get(0).getHeight())
+                .width(layer.getInputTypes().get(0).getWidth())
                 .elementType(range.get(0), range.get(1))
                 .build());
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputIsEmpty(inputTypes, layer);
         if (inputTypes.size() == 1){
             Log.warn("Add layer has only one input stream. Layer can be removed." , layer.getSourcePosition());

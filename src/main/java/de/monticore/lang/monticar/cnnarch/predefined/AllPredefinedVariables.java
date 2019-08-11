@@ -21,8 +21,8 @@
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.Constraints;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableType;
+import de.monticore.lang.monticar.cnnarch._symboltable.ParameterSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ParameterType;
 
 public class AllPredefinedVariables {
 
@@ -32,47 +32,47 @@ public class AllPredefinedVariables {
     public static final String TRUE_NAME = "true";
     public static final String FALSE_NAME = "false";
 
-    public static VariableSymbol createConditionalParameter(){
-        return new VariableSymbol.Builder()
+    public static ParameterSymbol createConditionalParameter(){
+        return new ParameterSymbol.Builder()
                 .name(CONDITIONAL_ARG_NAME)
-                .type(VariableType.LAYER_PARAMETER)
+                .type(ParameterType.LAYER_PARAMETER)
                 .constraints(Constraints.BOOLEAN)
                 .defaultValue(true)
                 .build();
     }
 
-    public static VariableSymbol createSerialParameter(){
-        return new VariableSymbol.Builder()
+    public static ParameterSymbol createSerialParameter(){
+        return new ParameterSymbol.Builder()
                 .name(SERIAL_ARG_NAME)
-                .type(VariableType.LAYER_PARAMETER)
+                .type(ParameterType.LAYER_PARAMETER)
                 .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                 .defaultValue(1)
                 .build();
     }
 
-    public static VariableSymbol createParallelParameter(){
-        return new VariableSymbol.Builder()
+    public static ParameterSymbol createParallelParameter(){
+        return new ParameterSymbol.Builder()
                 .name(PARALLEL_ARG_NAME)
-                .type(VariableType.LAYER_PARAMETER)
+                .type(ParameterType.LAYER_PARAMETER)
                 .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                 .defaultValue(1)
                 .build();
     }
 
     //necessary because true is currently only a name in MontiMath and it needs to be evaluated at compile time for this language
-    public static VariableSymbol createTrueConstant(){
-        return new VariableSymbol.Builder()
+    public static ParameterSymbol createTrueConstant(){
+        return new ParameterSymbol.Builder()
                 .name(TRUE_NAME)
-                .type(VariableType.CONSTANT)
+                .type(ParameterType.CONSTANT)
                 .defaultValue(true)
                 .build();
     }
 
     //necessary because false is currently only a name in MontiMath and it needs to be evaluated at compile time for this language
-    public static VariableSymbol createFalseConstant() {
-        return new VariableSymbol.Builder()
+    public static ParameterSymbol createFalseConstant() {
+        return new ParameterSymbol.Builder()
                 .name(FALSE_NAME)
-                .type(VariableType.CONSTANT)
+                .type(ParameterType.CONSTANT)
                 .defaultValue(false)
                 .build();
     }

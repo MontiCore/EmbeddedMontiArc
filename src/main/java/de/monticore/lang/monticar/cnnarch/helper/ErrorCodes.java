@@ -28,7 +28,7 @@ public class ErrorCodes {
     public static final String MISSING_VAR_VALUE = "x02572";
     public static final String ILLEGAL_ASSIGNMENT = "x03444";
     public static final String ILLEGAL_SEQUENCE_LENGTH = "x24772";
-    public static final String UNKNOWN_IO = "x32487";
+    public static final String UNKNOWN_VARIABLE_NAME = "x32487";
     public static final String UNKNOWN_LAYER = "x33585";
     public static final String ILLEGAL_NAME = "x93567";
     public static final String UNKNOWN_ARGUMENT = "x92527";
@@ -39,9 +39,12 @@ public class ErrorCodes {
     public static final String INVALID_ELEMENT_INPUT_SHAPE = "x61670";
     public static final String INVALID_ELEMENT_INPUT_DOMAIN = "x61686";
     public static final String MISSING_MERGE = "x82479";
-    public static final String UNKNOWN_VARIABLE_NAME = "x65013";
+    public static final String UNKNOWN_PARAMETER_NAME = "x65013";
     public static final String DIFFERENT_RANGE_OPERATORS = "xA8289";
     public static final String UNFINISHED_ARCHITECTURE = "x28B42";
-    public static final String MISSING_NETWORK_STREAM = "x04893";
+    public static final String MISSING_TRAINABLE_STREAM = "x04893";
+    public static final String INVALID_MEMBER = "x04896";
+    public static final String ILLEGAL_LAYER_USE = "x04845";
+    public static final String UNUSED_LAYER = "x04847";
 
 }

@@ -100,10 +100,8 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
 
     @Override
     public void checkInput() {
-        if (!getElements().isEmpty()){
-            for (ArchitectureElementSymbol element : getElements()){
-                element.checkInput();
-            }
+        for (ArchitectureElementSymbol element : getElements()){
+            element.checkInput();
         }
     }
 
