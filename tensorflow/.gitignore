@@ -6,6 +6,7 @@ target
 *.pyc
 CMakeCache.txt
 CMakeFiles
+*.cmake
 model
 Makefile
 steeringAnglePredictor
