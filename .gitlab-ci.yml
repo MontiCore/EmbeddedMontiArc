@@ -36,7 +36,7 @@ masterJobLinux:
 masterJobWindows:
   stage: windows
   script:
-  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -Dtest="\!Integration*"
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -DskipTests
   tags:
   - Windows10
 
