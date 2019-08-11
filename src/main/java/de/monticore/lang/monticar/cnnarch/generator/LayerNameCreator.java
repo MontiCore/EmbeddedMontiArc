@@ -100,19 +100,43 @@ public class LayerNameCreator {
             }
 
             elementToName.put(architectureElement, name);
-            nameToElement.put(name, architectureElement);
+
+            boolean isLayerVariable = false;
+
+            if (architectureElement instanceof VariableSymbol) {
+                isLayerVariable = ((VariableSymbol) architectureElement).getType() == VariableSymbol.Type.LAYER;
+            }
+
+            // Do not map names of layer variables to their respective element since the names are not unique
+            // for now the name to element mapping is not used anywhere so it doesn't matter
+            if (!isLayerVariable) {
+                nameToElement.put(name, architectureElement);
+            }
         }
         return endStage;
     }
 
     protected String createName(ArchitectureElementSymbol architectureElement, int stage, List<Integer> streamIndices){
-        if (architectureElement instanceof IOSymbol){
+        if (architectureElement instanceof VariableSymbol) {
+            VariableSymbol element = (VariableSymbol) architectureElement;
+
             String name = createBaseName(architectureElement);
-            IOSymbol ioElement = (IOSymbol) architectureElement;
-            if (ioElement.getArrayAccess().isPresent()){
-                int arrayAccess = ioElement.getArrayAccess().get().getIntValue().get();
-                name = name + "_" + arrayAccess + "_";
+
+            if (element.getType() == VariableSymbol.Type.IO) {
+                if (element.getArrayAccess().isPresent()){
+                    int arrayAccess = element.getArrayAccess().get().getIntValue().get();
+                    name = name + "_" + arrayAccess + "_";
+                } else {
+                    name = name + "_";
+                }
+            } else if (element.getType() == VariableSymbol.Type.LAYER) {
+                if (element.getMember() == VariableSymbol.Member.STATE) {
+                    name = name + "_state_";
+                } else {
+                    name = name + "_output_";
+                }
             }
+
             return name;
         } else {
             return createBaseName(architectureElement) + stage + createStreamPostfix(streamIndices) + "_";
