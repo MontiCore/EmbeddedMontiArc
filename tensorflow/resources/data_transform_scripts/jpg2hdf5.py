@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 import cv2
 
 #DIR Dictionary setup
-Data_Dir = '/media/felixh/hdd/extracted_dataset.bag/'
+#Data_Dir = '/media/felixh/hdd/extracted_dataset.bag/'
+Data_Dir = '/home/felixh/Documents/praktikum/git_stuff/end2enddriving/tensorflow/resources/test_set/'
 center_cam = Data_Dir + 'center/'
 left_cam =   Data_Dir + 'left/'
 right_cam =  Data_Dir + 'right/'
@@ -39,7 +40,7 @@ print "Number pictures to format: center cam",len_pictures
 
 start = 0
 #ende = 1000
-ende = len_pictures
+ende = len_pictures -1
 print "---------------------------"
 
 #UNUSED right now
@@ -110,16 +111,17 @@ def parse_center_to_angle():
         if i % 100 == 0:
             print "proccesed pictures :" , i , "/", len(pictures)
 
-    with open('train.csv', 'w') as f:
-        for key in dic.keys():
-            f.write("%s,%s\n"%(key,dic[0]))
+    #with open('train.csv', 'w') as f:
+     #   for key in dic.keys():
+      #      f.write("%s,%s\n"%(key,dic[0]))
 
     return dic
 
 
-
 def center_to_hdf5():
     dic = parse_center_to_angle()
+
+    print dic
 
     pic_ids = dic.keys()
     pic_ids.sort()
@@ -170,7 +172,6 @@ def parse_data_to_circles():
     keys.sort()
 
     final_dic = {}
-
     i = 0
     for key in keys:
         if(i > 5):
@@ -181,7 +182,6 @@ def parse_data_to_circles():
 
                 angle = (float) (dic[key][0])
                 angle_list.append(angle)
-
             mean = np.mean(angle_list)
 
             if(mean > 0.5):
@@ -189,10 +189,9 @@ def parse_data_to_circles():
         i = i+1
 
 
-    with open('circles.csv', 'w') as f:
-        for key in final_dic.keys():
-            f.write("%s,%s\n"%(key,final_dic[0]))
-
+#    with open('circles.csv', 'w') as f:
+ #       for key in final_dic.keys():
+  #          f.write("%s,%s\n"%(key,final_dic[0]))
     print final_dic
 
     return final_dic
@@ -214,16 +213,15 @@ def parse_center_to_left_right():
     #sort for matching
     right_cam_list.sort()
     left_cam_list.sort()
-
     right_cam_list = right_cam_list[start:ende]
     left_cam_list = left_cam_list[start:ende]
-    #consitency check leave out in actuall computation to save time
+    #consitency check leave out in actuparse_center_to_angleall computation to save time
     i = 0
     epsilon = 100000000
     for pic in pic_ids:
 
         if i % 100 == 0:
-            print "matched pictures :" , i , "/", len(pic_ids)
+            print "maparse_center_to_angletched pictures :" , i , "/", len(pic_ids)
 
         diff = pic - right_cam_list[i]
         diff2 = pic -left_cam_list[i]
@@ -240,7 +238,7 @@ parse_data_to_circles
 def create_h5py(train_percentage, test_percentage):
 
     dic = parse_center_to_left_right()
-    #sorted list based on timestamps
+    #sorted list based on timestamps/media/felixh/hdd/extracted_dataset.bag/
     pic_ids = dic.keys()
     pic_ids.sort()
 
@@ -256,7 +254,6 @@ def create_h5py(train_percentage, test_percentage):
 
         # https://stackoverflow.com/questions/47072859/how-to-append-data-to-one-specific-dataset-in-a-hdf5-file-with-h5py
         with h5py.File('train.h5', 'w') as hf:
-
             #create starting
         #    left_img = np.zeros([1,3,PIXEL_HEIGHT,PIXEL_WIDTH]).astype(np.float32)
         #    left_img_id = dic[pic_ids[0]center_to_hdf5][0]
@@ -264,7 +261,6 @@ def create_h5py(train_percentage, test_percentage):
 
             center_img = np.zeros([1,3,PIXEL_HEIGHT,PIXEL_WIDTH]).astype(np.float32)
             center_img[0,:,:,:] = np.reshape(np.array(Image.open(center_cam+str(pic_ids[0])+".jpg")),[3,PIXEL_HEIGHT,PIXEL_WIDTH])
-
 
        #     right_img = np.zeros([1,3,PIXEL_HEIGHT,PIXEL_WIDTH]).astype(np.float32)
        #     right_img_id = dic[pic_ids[0]][1]
@@ -289,7 +285,7 @@ def create_h5py(train_percentage, test_percentage):
 
                         center_img = np.zeros([1,3,PIXEL_HEIGHT,PIXEL_WIDTH]).astype(np.float32)
                         center_img[0,:,:,:] = np.reshape(np.array(Image.open(center_cam+str(pic_ids[i])+".jpg")),[3,PIXEL_HEIGHT,PIXEL_WIDTH])
-                     #   right_img = np.zeros([1,3,PIXEL_HEIGHT,PIXEL_WIDTH]).astype(np.float32)
+                     #   right_img = np.zeros([1,3,PIXEL_HEIGHT,PIXEL_WIDTH]/media/felixh/hdd/extracted_dataset.bag/).astype(np.float32)
                      #   right_img_id = dic[pic_ids[i]][1]
                       #  right_img[0,:,:,:] = np.reshape(np.array(Image.open(right_cam+str(right_img_id)+".jpg")),[3,PIXEL_HEIGHT,PIXEL_WIDTH])
 
@@ -306,17 +302,11 @@ def create_h5py(train_percentage, test_percentage):
     else:
         raise Exception("train + test != 1")
 
-
-
-
-
 #create_h5py(0.1,0.9)
 
 #parse_center_to_left_right()
-
 #create_h5py(1,0.0)
 #parse_data_to_circles()
 
-#center_to_hdf5()
+center_to_hdf5()
 
-parse_data_to_circles()
