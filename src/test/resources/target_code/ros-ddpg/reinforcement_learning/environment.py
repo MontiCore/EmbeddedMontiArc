@@ -2,29 +2,12 @@ import abc
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-import reward_rewardFunction_executor
-
-class RewardFunction(object):
-    def __init__(self):
-        self.__reward_wrapper = reward_rewardFunction_executor.reward_rewardFunction_executor()
-        self.__reward_wrapper.init()
-
-    def reward(self, state, terminal):
-        s = state.astype('double')
-        t = bool(terminal)
-        inp = reward_rewardFunction_executor.reward_rewardFunction_input()
-        inp.state = s
-        inp.isTerminal = t
-        output = self.__reward_wrapper.execute(inp)
-        return output.reward
-
-
 
 class Environment:
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
-        self._reward_function = RewardFunction()
+        pass
 
     @abc.abstractmethod
     def reset(self):
@@ -60,6 +43,8 @@ class RosEnvironment(Environment):
         self.__waiting_for_terminal_update = False
         self.__last_received_state = 0
         self.__last_received_terminal = True
+        self.__last_received_reward = 0.0
+        self.__waiting_for_reward_update = False
 
         rospy.loginfo("Initialize node {0}".format(ros_node_name))
 
@@ -77,6 +62,9 @@ class RosEnvironment(Environment):
         self.__terminal_state_subscriber = rospy.Subscriber(terminal_state_topic, Bool, self.__terminal_state_callback)
         rospy.loginfo('Terminal State Subscriber registered with topic {}'.format(terminal_state_topic))
 
+        self.__reward_subscriber = rospy.Subscriber(reward_topic, Float32, self.__reward_callback)
+        rospy.loginfo('Reward Subscriber registered with topic {}'.format(reward_topic))
+
         rate = rospy.Rate(10)
 
         thread.start_new_thread(rospy.spin, ())
@@ -84,7 +72,6 @@ class RosEnvironment(Environment):
 
     def reset(self):
         self.__in_reset = True
-        time.sleep(0.5)
         reset_message = Bool()
         reset_message.data = True
         self.__waiting_for_state_update = True
@@ -110,12 +97,14 @@ class RosEnvironment(Environment):
 
         self.__waiting_for_state_update = True
         self.__waiting_for_terminal_update = True
+        self.__waiting_for_reward_update = True
         self.__step_publisher.publish(action_rospy)
         self.__wait_for_new_state(self.__step_publisher, action_rospy)
         next_state = self.__last_received_state
         terminal = self.__last_received_terminal
-        reward = self.__calc_reward(next_state, terminal)
-        rospy.logdebug('Calculated reward: {}'.format(reward))
+        reward = self.__last_received_reward
+
+        logger.debug('Transition: ({}, {}, {}, {})'.format(action, reward, next_state, terminal))
 
         return next_state, reward, terminal, 0
 
@@ -123,7 +112,7 @@ class RosEnvironment(Environment):
         time_of_timeout = time.time() + self.__timeout_in_s
         timeout_counter = 0
         while(self.__waiting_for_state_update
-              or self.__waiting_for_terminal_update):
+              or self.__waiting_for_terminal_update or self.__waiting_for_reward_update):
             is_timeout = (time.time() > time_of_timeout)
             if (is_timeout):
                 if timeout_counter < 3:
@@ -134,22 +123,22 @@ class RosEnvironment(Environment):
                 else:
                     rospy.logerr("Timeout 3 times in a row: Terminate application")
                     exit()
-            time.sleep(100/1000)
+            time.sleep(1/500)
 
     def close(self):
         rospy.signal_shutdown('Program ended!')
 
     def __state_callback(self, data):
         self.__last_received_state = np.array(data.data, dtype='float32').reshape((8,))
-        rospy.logdebug('Received state: {}'.format(self.__last_received_state))
+        logger.debug('Received state: {}'.format(self.__last_received_state))
         self.__waiting_for_state_update = False
 
     def __terminal_state_callback(self, data):
-        self.__last_received_terminal = data.data
-        rospy.logdebug('Received terminal flag: {}'.format(self.__last_received_terminal))
-        logger.debug('Received terminal: {}'.format(self.__last_received_terminal))
+        self.__last_received_terminal = np.bool(data.data)
+        logger.debug('Received terminal flag: {}'.format(self.__last_received_terminal))
         self.__waiting_for_terminal_update = False
 
-    def __calc_reward(self, state, terminal):
-        # C++ Wrapper call
-        return self._reward_function.reward(state, terminal)
+    def __reward_callback(self, data):
+        self.__last_received_reward = np.float32(data.data)
+        logger.debug('Received reward: {}'.format(self.__last_received_reward))
+        self.__waiting_for_reward_update = False

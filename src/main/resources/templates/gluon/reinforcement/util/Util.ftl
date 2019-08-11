@@ -11,8 +11,8 @@ import cnnarch_logger
 
 LOSS_FUNCTIONS = {
         'l1': gluon.loss.L1Loss(),
-        'euclidean': gluon.loss.L2Loss(),
-        'huber_loss': gluon.loss.HuberLoss(),
+        'l2': gluon.loss.L2Loss(),
+        'huber': gluon.loss.HuberLoss(),
         'softmax_cross_entropy': gluon.loss.SoftmaxCrossEntropyLoss(),
         'sigmoid_cross_entropy': gluon.loss.SigmoidBinaryCrossEntropyLoss()}
 

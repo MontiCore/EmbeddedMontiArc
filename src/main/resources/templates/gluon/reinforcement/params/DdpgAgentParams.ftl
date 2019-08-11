@@ -1,5 +1,5 @@
-        'actor': actor_creator.net,
-        'critic': critic_creator.net,
+        'actor': actor_creator.networks[0],
+        'critic': critic_creator.networks[0],
 <#if (config.softTargetUpdateRate)??>
         'soft_target_update_rate': ${config.softTargetUpdateRate},
 </#if>

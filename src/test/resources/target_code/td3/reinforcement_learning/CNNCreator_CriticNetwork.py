@@ -1,10 +1,10 @@
 import mxnet as mx
 import logging
 import os
-from CNNNet_RosCriticNetwork import Net_0
+from CNNNet_CriticNetwork import Net_0
 
-class CNNCreator_RosCriticNetwork:
-    _model_dir_ = "model/RosCriticNetwork/"
+class CNNCreator_CriticNetwork:
+    _model_dir_ = "model/CriticNetwork/"
     _model_prefix_ = "model"
 
     def __init__(self):
