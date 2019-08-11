@@ -30,7 +30,7 @@ class ${tc.fileNameWithoutEnding}_0{
         NetDef initNet, predictNet;
 
     public:
-        const std::vector<TIndex> input_shapes = {<#list tc.architecture.inputs as input>{1,${tc.join(input.definition.type.dimensions, ",")}}<#if input?has_next>,</#if></#list>};
+        const std::vector<TIndex> input_shapes = {<#list tc.architecture.inputs as input>{1,${tc.join(input.ioDeclaration.type.dimensions, ",")}}<#if input?has_next>,</#if></#list>};
 
         explicit ${tc.fileNameWithoutEnding}_0(){
             init(input_shapes);
@@ -105,9 +105,9 @@ class ${tc.fileNameWithoutEnding}_0{
             // Get output blob
 <#list tc.architectureOutputs as outputName>
             #ifdef USE_GPU
-            auto ${outputName + "Blob"} = TensorCPU(workSpace.GetBlob("${outputName}")->Get<TensorCUDA>());
+            auto ${outputName + "Blob"} = TensorCPU(workSpace.GetBlob("${outputName?keep_before_last("_")}")->Get<TensorCUDA>());
             #else
-            auto ${outputName + "Blob"} = workSpace.GetBlob("${outputName}")->Get<TensorCPU>();
+            auto ${outputName + "Blob"} = workSpace.GetBlob("${outputName?keep_before_last("_")}")->Get<TensorCPU>();
             #endif
             ${outputName}.assign(${outputName + "Blob"}.data<float>(),${outputName + "Blob"}.data<float>() + ${outputName + "Blob"}.size());
 
