@@ -21,9 +21,12 @@ class CNNCreator_CifarClassifierNetwork:
     _data_dir_ = "data/CifarClassifierNetwork/"
     _model_dir_ = "model/CifarClassifierNetwork/"
     _model_prefix_ = "model"
-    _input_names_ = ['data']
+    _input_names_ = ['data_']
     _input_shapes_ = [(3,32,32)]
-    _output_names_ = ['softmax_label']
+    _output_names_ = ['softmax__label']
+    _input_data_names_ = ['data']
+    _output_data_names_ = ['softmax_label']
+
 
 
     def load(self, context):
@@ -62,18 +65,18 @@ class CNNCreator_CifarClassifierNetwork:
     def load_data(self, batch_size):
         train_h5, test_h5 = self.load_h5_files()
 
-        data_mean = train_h5[self._input_names_[0]][:].mean(axis=0)
-        data_std = train_h5[self._input_names_[0]][:].std(axis=0) + 1e-5
+        data_mean = train_h5[self._input_data_names_[0]][:].mean(axis=0)
+        data_std = train_h5[self._input_data_names_[0]][:].std(axis=0) + 1e-5
 
-        train_iter = mx.io.NDArrayIter(train_h5[self._input_names_[0]],
-                                       train_h5[self._output_names_[0]],
+        train_iter = mx.io.NDArrayIter(train_h5[self._input_data_names_[0]],
+                                       train_h5[self._output_data_names_[0]],
                                        batch_size=batch_size,
                                        data_name=self._input_names_[0],
                                        label_name=self._output_names_[0])
         test_iter = None
         if test_h5 != None:
-            test_iter = mx.io.NDArrayIter(test_h5[self._input_names_[0]],
-                                          test_h5[self._output_names_[0]],
+            test_iter = mx.io.NDArrayIter(test_h5[self._input_data_names_[0]],
+                                          test_h5[self._output_data_names_[0]],
                                           batch_size=batch_size,
                                           data_name=self._input_names_[0],
                                           label_name=self._output_names_[0])
@@ -86,16 +89,16 @@ class CNNCreator_CifarClassifierNetwork:
         test_path = self._data_dir_ + "test.h5"
         if os.path.isfile(train_path):
             train_h5 = h5py.File(train_path, 'r')
-            if not (self._input_names_[0] in train_h5 and self._output_names_[0] in train_h5):
+            if not (self._input_data_names_[0] in train_h5 and self._output_data_names_[0] in train_h5):
                 logging.error("The HDF5 file '" + os.path.abspath(train_path) + "' has to contain the datasets: "
-                              + "'" + self._input_names_[0] + "', '" + self._output_names_[0] + "'")
+                              + "'" + self._input_data_names_[0] + "', '" + self._output_data_names_[0] + "'")
                 sys.exit(1)
             test_iter = None
             if os.path.isfile(test_path):
                 test_h5 = h5py.File(test_path, 'r')
-                if not (self._input_names_[0] in test_h5 and self._output_names_[0] in test_h5):
+                if not (self._input_data_names_[0] in test_h5 and self._output_data_names_[0] in test_h5):
                     logging.error("The HDF5 file '" + os.path.abspath(test_path) + "' has to contain the datasets: "
-                                  + "'" + self._input_names_[0] + "', '" + self._output_names_[0] + "'")
+                                  + "'" + self._input_data_names_[0] + "', '" + self._output_data_names_[0] + "'")
                     sys.exit(1)
             else:
                 logging.warning("Couldn't load test set. File '" + os.path.abspath(test_path) + "' does not exist.")
@@ -254,9 +257,9 @@ class CNNCreator_CifarClassifierNetwork:
 
 
     def construct(self, context, data_mean=None, data_std=None):
-        data = mx.sym.var("data",
+        data_ = mx.sym.var("data_",
             shape=(0,3,32,32))
-        # data, output shape: {[3,32,32]}
+        # data_, output shape: {[3,32,32]}
 
         if not data_mean is None:
             assert(not data_std is None)
@@ -264,9 +267,9 @@ class CNNCreator_CifarClassifierNetwork:
             _data_mean_ = mx.sym.BlockGrad(_data_mean_)
             _data_std_ = mx.sym.Variable("_data_std_", shape=(3,32,32), init=MyConstant(value=data_mean.tolist()))
             _data_std_ = mx.sym.BlockGrad(_data_std_)
-            data = mx.symbol.broadcast_sub(data, _data_mean_)
-            data = mx.symbol.broadcast_div(data, _data_std_)
-        conv2_1_ = mx.symbol.pad(data=data,
+            data_ = mx.symbol.broadcast_sub(data_, _data_mean_)
+            data_ = mx.symbol.broadcast_div(data_, _data_std_)
+        conv2_1_ = mx.symbol.pad(data=data_,
             mode='constant',
             pad_width=(0,0,0,0,1,1,1,1),
             constant_value=0)
@@ -300,7 +303,7 @@ class CNNCreator_CifarClassifierNetwork:
         batchnorm3_1_ = mx.symbol.BatchNorm(data=conv3_1_,
             fix_gamma=True,
             name="batchnorm3_1_")
-        conv2_2_ = mx.symbol.Convolution(data=data,
+        conv2_2_ = mx.symbol.Convolution(data=data_,
             kernel=(1,1),
             stride=(1,1),
             num_filter=8,
@@ -741,10 +744,10 @@ class CNNCreator_CifarClassifierNetwork:
         softmax32_ = mx.symbol.softmax(data=fc32_,
             axis=1,
             name="softmax32_")
-        softmax = mx.symbol.SoftmaxOutput(data=softmax32_,
-            name="softmax")
+        softmax_ = mx.symbol.SoftmaxOutput(data=softmax32_,
+            name="softmax_")
 
-        self.module = mx.mod.Module(symbol=mx.symbol.Group([softmax]),
+        self.module = mx.mod.Module(symbol=mx.symbol.Group([softmax_]),
                                          data_names=self._input_names_,
                                          label_names=self._output_names_,
                                          context=context)

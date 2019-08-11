@@ -22,8 +22,11 @@ class ${tc.fileNameWithoutEnding}:
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
     _input_names_ = [${tc.join(tc.architectureInputs, ",", "'", "'")}]
-    _input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.definition.type.dimensions, ",")})</#list>]
+    _input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.ioDeclaration.type.dimensions, ",")})</#list>]
     _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "_label'")}]
+    _input_data_names_ = [<#list tc.architectureInputs as inputName>'${inputName?keep_before_last("_")}'<#sep>, </#list>]
+    _output_data_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "label'")}]
+
 
 
     def load(self, context):
@@ -62,18 +65,18 @@ class ${tc.fileNameWithoutEnding}:
     def load_data(self, batch_size):
         train_h5, test_h5 = self.load_h5_files()
 
-        data_mean = train_h5[self._input_names_[0]][:].mean(axis=0)
-        data_std = train_h5[self._input_names_[0]][:].std(axis=0) + 1e-5
+        data_mean = train_h5[self._input_data_names_[0]][:].mean(axis=0)
+        data_std = train_h5[self._input_data_names_[0]][:].std(axis=0) + 1e-5
 
-        train_iter = mx.io.NDArrayIter(train_h5[self._input_names_[0]],
-                                       train_h5[self._output_names_[0]],
+        train_iter = mx.io.NDArrayIter(train_h5[self._input_data_names_[0]],
+                                       train_h5[self._output_data_names_[0]],
                                        batch_size=batch_size,
                                        data_name=self._input_names_[0],
                                        label_name=self._output_names_[0])
         test_iter = None
         if test_h5 != None:
-            test_iter = mx.io.NDArrayIter(test_h5[self._input_names_[0]],
-                                          test_h5[self._output_names_[0]],
+            test_iter = mx.io.NDArrayIter(test_h5[self._input_data_names_[0]],
+                                          test_h5[self._output_data_names_[0]],
                                           batch_size=batch_size,
                                           data_name=self._input_names_[0],
                                           label_name=self._output_names_[0])
@@ -86,16 +89,16 @@ class ${tc.fileNameWithoutEnding}:
         test_path = self._data_dir_ + "test.h5"
         if os.path.isfile(train_path):
             train_h5 = h5py.File(train_path, 'r')
-            if not (self._input_names_[0] in train_h5 and self._output_names_[0] in train_h5):
+            if not (self._input_data_names_[0] in train_h5 and self._output_data_names_[0] in train_h5):
                 logging.error("The HDF5 file '" + os.path.abspath(train_path) + "' has to contain the datasets: "
-                              + "'" + self._input_names_[0] + "', '" + self._output_names_[0] + "'")
+                              + "'" + self._input_data_names_[0] + "', '" + self._output_data_names_[0] + "'")
                 sys.exit(1)
             test_iter = None
             if os.path.isfile(test_path):
                 test_h5 = h5py.File(test_path, 'r')
-                if not (self._input_names_[0] in test_h5 and self._output_names_[0] in test_h5):
+                if not (self._input_data_names_[0] in test_h5 and self._output_data_names_[0] in test_h5):
                     logging.error("The HDF5 file '" + os.path.abspath(test_path) + "' has to contain the datasets: "
-                                  + "'" + self._input_names_[0] + "', '" + self._output_names_[0] + "'")
+                                  + "'" + self._input_data_names_[0] + "', '" + self._output_data_names_[0] + "'")
                     sys.exit(1)
             else:
                 logging.warning("Couldn't load test set. File '" + os.path.abspath(test_path) + "' does not exist.")

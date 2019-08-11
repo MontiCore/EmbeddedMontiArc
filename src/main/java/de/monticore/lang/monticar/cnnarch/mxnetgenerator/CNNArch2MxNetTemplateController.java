@@ -12,18 +12,18 @@ public class CNNArch2MxNetTemplateController extends CNNArchTemplateController {
         super(architecture, new MxNetTemplateConfiguration());
     }
 
-    public void include(IOSymbol ioElement, Writer writer){
+    public void include(VariableSymbol element, Writer writer){
         ArchitectureElementData previousElement = getCurrentElement();
-        setCurrentElement(ioElement);
+        setCurrentElement(element);
 
-        if (ioElement.isAtomic()){
-            if (ioElement.isInput()){
+        if (element.isAtomic()){
+            if (element.isInput()){
                 include(TEMPLATE_ELEMENTS_DIR_PATH, "Input", writer);
             } else {
                 include(TEMPLATE_ELEMENTS_DIR_PATH, "Output", writer);
             }
         } else {
-            include(ioElement.getResolvedThis().get(), writer);
+            include(element.getResolvedThis().get(), writer);
         }
 
         setCurrentElement(previousElement);
@@ -61,7 +61,7 @@ public class CNNArch2MxNetTemplateController extends CNNArchTemplateController {
         } else if (architectureElement instanceof LayerSymbol) {
             include((LayerSymbol) architectureElement, writer);
         } else {
-            include((IOSymbol) architectureElement, writer);
+            include((VariableSymbol) architectureElement, writer);
         }
     }
 

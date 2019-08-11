@@ -13,9 +13,14 @@ class ${tc.fileNameWithoutEnding}_0{
 public:
     const std::string json_file = "model/${tc.componentName}/model_newest-symbol.json";
     const std::string param_file = "model/${tc.componentName}/model_newest-0000.params";
-    //const std::vector<std::string> input_keys = {"data"};
-    const std::vector<std::string> input_keys = {${tc.join(tc.architectureInputs, ",", "\"", "\"")}};
-    const std::vector<std::vector<mx_uint>> input_shapes = {<#list tc.architecture.inputs as input>{1,${tc.join(input.definition.type.dimensions, ",")}}<#if input?has_next>,</#if></#list>};
+    const std::vector<std::string> input_keys = {
+<#if tc.architectureInputs?size == 1>
+        "data"
+<#else>
+        <#list tc.architectureInputs as inputName>"data${inputName?index}"<#sep>, </#list>
+</#if>
+    };
+    const std::vector<std::vector<mx_uint>> input_shapes = {<#list tc.architecture.inputs as input>{1,${tc.join(input.ioDeclaration.type.dimensions, ",")}}<#if input?has_next>,</#if></#list>};
     const bool use_gpu = false;
 
     PredictorHandle handle;
@@ -31,8 +36,7 @@ public:
     void predict(${tc.join(tc.architectureInputs, ", ", "const std::vector<float> &", "")},
                  ${tc.join(tc.architectureOutputs, ", ", "std::vector<float> &", "")}){
 <#list tc.architectureInputs as inputName>
-        MXPredSetInput(handle, "data", ${inputName}.data(), ${inputName}.size());
-        //MXPredSetInput(handle, "${inputName}", ${inputName}.data(), ${inputName}.size());
+        MXPredSetInput(handle, input_keys[${inputName?index}].c_str(), ${inputName}.data(), ${inputName}.size());
 </#list>
 
         MXPredForward(handle);
