@@ -12,7 +12,7 @@ import cv2
 
 #DIR Dictionary setup
 #Data_Dir = '/media/felixh/hdd/extracted_dataset.bag/'
-Data_Dir = '/home/felixh/Documents/praktikum/git_stuff/end2enddriving/tensorflow/resources/test_set/'
+Data_Dir = '../test_set/'
 center_cam = Data_Dir + 'center/'
 left_cam =   Data_Dir + 'left/'
 right_cam =  Data_Dir + 'right/'
@@ -40,7 +40,7 @@ print "Number pictures to format: center cam",len_pictures
 
 start = 0
 #ende = 1000
-ende = len_pictures -1
+ende = len_pictures
 print "---------------------------"
 
 #UNUSED right now
@@ -111,9 +111,9 @@ def parse_center_to_angle():
         if i % 100 == 0:
             print "proccesed pictures :" , i , "/", len(pictures)
 
-    #with open('train.csv', 'w') as f:
-     #   for key in dic.keys():
-      #      f.write("%s,%s\n"%(key,dic[0]))
+    with open('train.csv', 'w') as f:
+        for key in dic.keys():
+            f.write("%s,%s\n"%(key,dic[key][0]))
 
     return dic
 
