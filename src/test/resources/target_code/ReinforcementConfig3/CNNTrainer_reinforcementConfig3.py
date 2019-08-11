@@ -63,7 +63,7 @@ if __name__ == "__main__":
             'memory_size': 1000000,
             'sample_size': 64,
             'state_dtype': 'float32',
-            'action_dtype': 'float32',
+            'action_dtype': 'uint8',
             'rewards_dtype': 'float32'
         },
         'strategy_params': {
