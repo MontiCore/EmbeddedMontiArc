@@ -2,7 +2,7 @@ import mxnet as mx
 import logging
 import os
 <#list tc.architecture.streams as stream>
-<#if stream.isNetwork()>
+<#if stream.isTrainable()>
 from CNNNet_${tc.fullArchitectureName} import Net_${stream?index}
 </#if>
 </#list>
@@ -52,11 +52,11 @@ class ${tc.fileNameWithoutEnding}:
 
     def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.streams as stream>
-<#if stream.isNetwork()>
+<#if stream.isTrainable()>
         self.networks[${stream?index}] = Net_${stream?index}(data_mean=data_mean, data_std=data_std)
         self.networks[${stream?index}].collect_params().initialize(self.weight_initializer, ctx=context)
         self.networks[${stream?index}].hybridize()
-        self.networks[${stream?index}](<#list stream.getFirstAtomicElements() as input>mx.nd.zeros((1, ${tc.join(input.definition.type.dimensions, ",")},), ctx=context)<#sep>, </#list>)
+        self.networks[${stream?index}](<#list tc.getStreamInputDimensions(stream) as dimensions>mx.nd.zeros((${tc.join(dimensions, ",")},), ctx=context)<#sep>, </#list>)
 </#if>
 </#list>
 

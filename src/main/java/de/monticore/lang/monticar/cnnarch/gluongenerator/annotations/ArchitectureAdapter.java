@@ -1,7 +1,8 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator.annotations;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.IOSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
 import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
@@ -40,19 +41,19 @@ public class ArchitectureAdapter implements TrainedArchitecture {
     @Override
     public Map<String, List<Integer>> getDimensions() {
         return getAllIOSymbols().stream().collect(Collectors.toMap(CommonSymbol::getName,
-            s-> s.getDefinition().getType().getDimensions()));
+            s-> ((IODeclarationSymbol) s.getDeclaration()).getType().getDimensions()));
     }
 
     @Override
     public Map<String, Range> getRanges() {
         return getAllIOSymbols().stream().collect(Collectors.toMap(CommonSymbol::getName,
-            s -> astRangeToTrainRange(s.getDefinition().getType().getDomain().getRangeOpt().orElse(null))));
+            s -> astRangeToTrainRange(((IODeclarationSymbol) s.getDeclaration()).getType().getDomain().getRangeOpt().orElse(null))));
     }
 
     @Override
     public Map<String, String> getTypes() {
         return getAllIOSymbols().stream().collect(Collectors.toMap(CommonSymbol::getName,
-            s -> s.getDefinition().getType().getDomain().getName()));
+            s -> ((IODeclarationSymbol) s.getDeclaration()).getType().getDomain().getName()));
     }
 
     private Range astRangeToTrainRange(final ASTRange range) {
@@ -71,16 +72,16 @@ public class ArchitectureAdapter implements TrainedArchitecture {
         }
     }
 
-    private List<IOSymbol> getIOOutputSymbols() {
+    private List<VariableSymbol> getIOOutputSymbols() {
         return architectureSymbol.getOutputs();
     }
 
-    private List<IOSymbol> getIOInputSymbols() {
+    private List<VariableSymbol> getIOInputSymbols() {
         return architectureSymbol.getInputs();
     }
 
-    private List<IOSymbol> getAllIOSymbols() {
-        List<IOSymbol> ioSymbols = new ArrayList<>();
+    private List<VariableSymbol> getAllIOSymbols() {
+        List<VariableSymbol> ioSymbols = new ArrayList<>();
         ioSymbols.addAll(getIOOutputSymbols());
         ioSymbols.addAll(getIOInputSymbols());
         return ioSymbols;

@@ -133,28 +133,18 @@ class ${tc.fileNameWithoutEnding}:
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 <#list tc.architectureInputs as input_name>
-                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
+                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
                 </#list>
                 <#list tc.architectureOutputs as output_name>
-                ${output_name}_label = batch.label[${output_name?index}].as_in_context(mx_context)
+                ${output_name}label = batch.label[${output_name?index}].as_in_context(mx_context)
                 </#list>
 
                 with autograd.record():
-<#list tc.architecture.streams as stream>
-<#if stream.isNetwork()>
-                    ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
-<#else>
-${tc.include(stream, "PYTHON_INLINE")}
-</#if>
-</#list>
+<#include "pythonExecute.ftl">
 
                     loss = \
-<#list tc.architecture.streams as stream>
-<#if stream.isNetwork()>
-<#list tc.getStreamOutputNames(stream) as output_name>
-                        loss_function(${output_name}_output, ${output_name}_label)<#sep> + \
-</#list><#sep> + \
-</#if>
+<#list tc.architectureOutputs as output_name>
+                        loss_function(${output_name}, ${output_name}label)<#sep> + \
 </#list>
 
 
@@ -182,7 +172,7 @@ ${tc.include(stream, "PYTHON_INLINE")}
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(train_iter):
                 <#list tc.architectureInputs as input_name>
-                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
+                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
                 </#list>
 
                 labels = [
@@ -192,18 +182,12 @@ ${tc.include(stream, "PYTHON_INLINE")}
 
                 ]
 
-                if True: # Fix indentation
-<#list tc.architecture.streams as stream>
-<#if stream.isNetwork()>
-                    ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
-<#else>
-${tc.include(stream, "PYTHON_INLINE")}
-</#if>
-</#list>
+                if True: <#-- Fix indentation -->
+<#include "pythonExecute.ftl">
 
                 predictions = [
 <#list tc.architectureOutputs as output_name>
-                    mx.nd.argmax(${output_name}_output, axis=1)<#sep>,
+                    mx.nd.argmax(${output_name}, axis=1)<#sep>,
 </#list>
 
                 ]
@@ -215,7 +199,7 @@ ${tc.include(stream, "PYTHON_INLINE")}
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(test_iter):
                 <#list tc.architectureInputs as input_name>
-                ${input_name}_data = batch.data[${input_name?index}].as_in_context(mx_context)
+                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
                 </#list>
 
                 labels = [
@@ -225,18 +209,12 @@ ${tc.include(stream, "PYTHON_INLINE")}
 
                 ]
 
-                if True: # Fix indentation
-<#list tc.architecture.streams as stream>
-<#if stream.isNetwork()>
-                    ${tc.join(tc.getStreamOutputNames(stream), ", ", "", "_output")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ", "", "_data")})
-<#else>
-${tc.include(stream, "PYTHON_INLINE")}
-</#if>
-</#list>
+                if True: <#-- Fix indentation -->
+<#include "pythonExecute.ftl">
 
                 predictions = [
 <#list tc.architectureOutputs as output_name>
-                    mx.nd.argmax(${output_name}_output, axis=1)<#sep>,
+                    mx.nd.argmax(${output_name}, axis=1)<#sep>,
 </#list>
 
                 ]

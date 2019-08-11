@@ -30,6 +30,7 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -147,6 +148,14 @@ public class GenerationTest extends AbstractSymtabTest {
     public void testMultipleStreams() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleStreams"};
+        CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testRNNtest() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/architectures", "-r", "RNNtest", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2GluonCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }

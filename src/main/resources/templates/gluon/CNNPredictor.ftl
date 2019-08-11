@@ -10,19 +10,19 @@
 #include <CNNBufferFile.h>
 
 <#list tc.architecture.streams as stream>
-<#if stream.isNetwork()>
+<#if stream.isTrainable()>
 class ${tc.fileNameWithoutEnding}_${stream?index}{
 public:
     const std::string json_file = "model/${tc.componentName}/model_${stream?index}_newest-symbol.json";
     const std::string param_file = "model/${tc.componentName}/model_${stream?index}_newest-0000.params";
     const std::vector<std::string> input_keys = {
-<#if (tc.getStreamInputNames(stream)?size == 1)>
+<#if tc.getStreamInputNames(stream)?size == 1>
         "data"
 <#else>
-        <#list tc.getStreamInputNames(stream) as inputName>"data${inputName?index}"<#sep>, </#list>
+        <#list tc.getStreamInputNames(stream) as variable>"data${variable?index}"<#sep>, </#list>
 </#if>
     };
-    const std::vector<std::vector<mx_uint>> input_shapes = {<#list stream.getFirstAtomicElements() as input>{1, ${tc.join(input.definition.type.dimensions, ", ")}}<#sep>, </#list>};
+    const std::vector<std::vector<mx_uint>> input_shapes = {<#list tc.getStreamInputDimensions(stream) as dimensions>{${tc.join(dimensions, ", ")}}<#sep>, </#list>};
     const bool use_gpu = false;
 
     PredictorHandle handle;
@@ -35,14 +35,10 @@ public:
         if(handle) MXPredFree(handle);
     }
 
-    void predict(${tc.join(tc.getStreamInputNames(stream), ", ", "const std::vector<float> &", "")},
-                 ${tc.join(tc.getStreamOutputNames(stream), ", ", "std::vector<float> &", "")}){
-<#list tc.getStreamInputNames(stream) as inputName>
-<#if (tc.getStreamInputNames(stream)?size == 1)>
-        MXPredSetInput(handle, "data", ${inputName}.data(), static_cast<mx_uint>(${inputName}.size()));
-<#else>
-        MXPredSetInput(handle, "data${inputName?index}", ${inputName}.data(), static_cast<mx_uint>(${inputName}.size()));
-</#if>
+    void predict(${tc.join(tc.getStreamInputNames(stream), ", ", "const std::vector<float> &in_", "")},
+                 ${tc.join(tc.getStreamOutputNames(stream), ", ", "std::vector<float> &out_", "")}){
+<#list tc.getStreamInputNames(stream) as variable>
+        MXPredSetInput(handle, input_keys[${variable?index}].c_str(), in_${variable}.data(), static_cast<mx_uint>(in_${variable}.size()));
 </#list>
 
         MXPredForward(handle);
@@ -52,13 +48,13 @@ public:
         mx_uint shape_len;
         size_t size;
 
-<#list tc.getStreamOutputNames(stream) as outputName>
-        output_index = ${outputName?index?c};
+<#list tc.getStreamOutputNames(stream) as variable>
+        output_index = ${variable?index?c};
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
-        assert(size == ${outputName}.size());
-        MXPredGetOutput(handle, ${outputName?index?c}, &(${outputName}[0]), ${outputName}.size());
+        assert(size == out_${variable}.size());
+        MXPredGetOutput(handle, ${variable?index?c}, &(out_${variable}[0]), out_${variable}.size());
 
 </#list>
     }

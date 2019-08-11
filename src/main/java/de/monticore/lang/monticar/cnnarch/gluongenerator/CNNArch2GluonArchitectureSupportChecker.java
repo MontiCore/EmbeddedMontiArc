@@ -23,7 +23,17 @@ public class CNNArch2GluonArchitectureSupportChecker extends ArchitectureSupport
     }
 
     @Override
+    protected boolean checkMultiDimensionalOutput(ArchitectureSymbol architecture) {
+        return true;
+    }
+
+    @Override
     protected boolean checkConstants(ArchitectureSymbol architecture) {
+        return true;
+    }
+
+    @Override
+    protected boolean checkLayerVariables(ArchitectureSymbol architecture) {
         return true;
     }
 

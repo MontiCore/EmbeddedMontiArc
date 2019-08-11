@@ -85,10 +85,10 @@ class Net_0(gluon.HybridBlock):
         with self.name_scope():
             if data_mean:
                 assert(data_std)
-                self.input_normalization_data = ZScoreNormalization(data_mean=data_mean['data'],
-                                                                               data_std=data_std['data'])
+                self.input_normalization_data_ = ZScoreNormalization(data_mean=data_mean['data_'],
+                                                                               data_std=data_std['data_'])
             else:
-                self.input_normalization_data = NoNormalization()
+                self.input_normalization_data_ = NoNormalization()
 
             self.conv2_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv2_1_ = gluon.nn.Conv2D(channels=8,
@@ -359,17 +359,16 @@ class Net_0(gluon.HybridBlock):
             self.softmax32_ = Softmax()
 
 
-    def hybrid_forward(self, F, data):
-        outputs = []
-        data = self.input_normalization_data(data)
-        conv2_1_padding = self.conv2_1_padding(data)
+    def hybrid_forward(self, F, data_):
+        data_ = self.input_normalization_data_(data_)
+        conv2_1_padding = self.conv2_1_padding(data_)
         conv2_1_ = self.conv2_1_(conv2_1_padding)
         batchnorm2_1_ = self.batchnorm2_1_(conv2_1_)
         relu2_1_ = self.relu2_1_(batchnorm2_1_)
         conv3_1_padding = self.conv3_1_padding(relu2_1_)
         conv3_1_ = self.conv3_1_(conv3_1_padding)
         batchnorm3_1_ = self.batchnorm3_1_(conv3_1_)
-        conv2_2_ = self.conv2_2_(data)
+        conv2_2_ = self.conv2_2_(data_)
         batchnorm2_2_ = self.batchnorm2_2_(conv2_2_)
         add4_ = batchnorm3_1_ + batchnorm2_2_
         relu4_ = self.relu4_(add4_)
@@ -465,6 +464,7 @@ class Net_0(gluon.HybridBlock):
         dropout31_ = self.dropout31_(fc31_)
         fc32_ = self.fc32_(dropout31_)
         softmax32_ = self.softmax32_(fc32_)
-        outputs.append(softmax32_)
+        softmax_ = softmax32_
 
-        return outputs[0]
+        return softmax_
+

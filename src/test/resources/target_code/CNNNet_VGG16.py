@@ -85,10 +85,10 @@ class Net_0(gluon.HybridBlock):
         with self.name_scope():
             if data_mean:
                 assert(data_std)
-                self.input_normalization_data = ZScoreNormalization(data_mean=data_mean['data'],
-                                                                               data_std=data_std['data'])
+                self.input_normalization_data_ = ZScoreNormalization(data_mean=data_mean['data_'],
+                                                                               data_std=data_std['data_'])
             else:
-                self.input_normalization_data = NoNormalization()
+                self.input_normalization_data_ = NoNormalization()
 
             self.conv1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv1_ = gluon.nn.Conv2D(channels=64,
@@ -236,10 +236,9 @@ class Net_0(gluon.HybridBlock):
             self.softmax15_ = Softmax()
 
 
-    def hybrid_forward(self, F, data):
-        outputs = []
-        data = self.input_normalization_data(data)
-        conv1_padding = self.conv1_padding(data)
+    def hybrid_forward(self, F, data_):
+        data_ = self.input_normalization_data_(data_)
+        conv1_padding = self.conv1_padding(data_)
         conv1_ = self.conv1_(conv1_padding)
         relu1_ = self.relu1_(conv1_)
         conv2_padding = self.conv2_padding(relu1_)
@@ -292,6 +291,7 @@ class Net_0(gluon.HybridBlock):
         dropout15_ = self.dropout15_(relu15_)
         fc15_ = self.fc15_(dropout15_)
         softmax15_ = self.softmax15_(fc15_)
-        outputs.append(softmax15_)
+        predictions_ = softmax15_
 
-        return outputs[0]
+        return predictions_
+
