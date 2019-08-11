@@ -28,8 +28,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableType;
+import de.monticore.lang.monticar.cnnarch._symboltable.ParameterSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ParameterType;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.ts.MCFieldSymbol;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
@@ -49,7 +49,7 @@ public class ModifiedExpandedComponentInstanceBuilder extends EMAComponentInstan
         if (architecture.isPresent()){
 
             addPortArraySymbolsToInstance(instance);
-            addVariableSymbolsToInstance(instance);
+            addParameterSymbolsToInstance(instance);
 
             ArchitectureSymbol architectureInstance = architecture.get()
                     .preResolveDeepCopy(instance.getSpannedScope());
@@ -58,14 +58,14 @@ public class ModifiedExpandedComponentInstanceBuilder extends EMAComponentInstan
         return instance;
     }
 
-    public void addVariableSymbolsToInstance(EMAComponentInstanceSymbol instance){
+    public void addParameterSymbolsToInstance(EMAComponentInstanceSymbol instance){
         //add generics
         for (ResolutionDeclarationSymbol sym : instance.getResolutionDeclarationSymbols()){
             if (sym.getASTResolution() instanceof ASTUnitNumberResolution){
                 ASTUnitNumberResolution numberResolution = (ASTUnitNumberResolution) sym.getASTResolution();
-                VariableSymbol genericsParam = new VariableSymbol.Builder()
+                ParameterSymbol genericsParam = new ParameterSymbol.Builder()
                         .name(sym.getNameToResolve())
-                        .type(VariableType.ARCHITECTURE_PARAMETER)
+                        .type(ParameterType.ARCHITECTURE_PARAMETER)
                         .build();
                 genericsParam.setExpression(ArchSimpleExpressionSymbol.of(numberResolution.getNumber().get()));
                 instance.getSpannedScope().getAsMutableScope().add(genericsParam);
@@ -83,9 +83,9 @@ public class ModifiedExpandedComponentInstanceBuilder extends EMAComponentInstan
                 ASTNumberExpression exp = (ASTNumberExpression) instance.getArguments().get(i);
 
                 MCFieldSymbol emaParam = instance.getComponentType().getConfigParameters().get(i);
-                VariableSymbol archParam = new VariableSymbol.Builder()
+                ParameterSymbol archParam = new ParameterSymbol.Builder()
                         .name(emaParam.getName())
-                        .type(VariableType.ARCHITECTURE_PARAMETER)
+                        .type(ParameterType.ARCHITECTURE_PARAMETER)
                         .build();
                 archParam.setExpression(ArchSimpleExpressionSymbol.of(
                         exp.getNumberWithUnit().getNumber().get()));

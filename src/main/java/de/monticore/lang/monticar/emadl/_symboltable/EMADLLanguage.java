@@ -58,7 +58,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
         List<ResolvingFilter<? extends Symbol>> ret =
                 new ArrayList<>(super.getResolvingFilters());
         ret.add(new PortArraySymbol2IODeclarationSymbolTypeFilter());
-        //ret.add(new ResolutionDeclarationSymbol2VariableSymbolTypeFilter());
+        //ret.add(new ResolutionDeclarationSymbol2ParameterSymbolTypeFilter());
 
         ret.add(new PortArraySymbol2MathVariableDeclarationSymbolTypeFilter());
         ret.add(new ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter());
