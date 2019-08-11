@@ -34,6 +34,8 @@ public class OneHot extends PredefinedLayerDeclaration {
         super(AllPredefinedLayers.ONE_HOT_NAME);
     }
 
+    int size;
+
     @Override
     public boolean isTrainable() {
         return false;
@@ -41,24 +43,8 @@ public class OneHot extends PredefinedLayerDeclaration {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-
-        // TODO: Execute this code somewhere before checkInput(), for now size parameter is required
-        /*if(layer.getOutputElement().get() instanceof IOSymbol && layer.getOutputElement().get().isOutput()) {
-            int outputChannels = ((IOSymbol) layer.getOutputElement().get()).getDefinition().getType().getChannels();
-
-            layer.setIntValue(AllPredefinedLayers.SIZE_NAME, outputChannels);
-        }*/
-
-        int size = layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get();
-
-        /*if (size == 0) {
-            Log.error("0" + ErrorCodes.MISSING_ARGUMENT + " Missing argument. The argument 'size' is in this case required. "
-                      , layer.getSourcePosition());
-
-        }*/
-
         return Collections.singletonList(new ArchTypeSymbol.Builder()
-                .channels(size)
+                .channels(layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get())
                 .height(1)
                 .width(1)
                 .elementType("0", "1")
@@ -67,6 +53,9 @@ public class OneHot extends PredefinedLayerDeclaration {
 
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
+        computeOneHotOutputSize(layer);
+        size = layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get();
+
         errorIfInputSizeIsNotOne(inputTypes, layer);
         errorIfInputChannelSizeIsInvalid(inputTypes, layer, 1);
         errorIfInputHeightIsInvalid(inputTypes, layer, 1);
@@ -74,6 +63,12 @@ public class OneHot extends PredefinedLayerDeclaration {
 
         // Check range of input
         ASTElementType domain = inputTypes.get(0).getDomain();
+
+        if (layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get() == 0) {
+            Log.error("0" + ErrorCodes.MISSING_ARGUMENT + " Missing argument. The argument 'size' is in this case required. "
+                    , layer.getSourcePosition());
+
+        }
 
         if (!domain.isNaturalNumber() && !domain.isWholeNumber()) {
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: Input needs to be natural or whole. "
@@ -121,6 +116,7 @@ public class OneHot extends PredefinedLayerDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.SIZE_NAME)
                         .constraints(Constraints.POSITIVE, Constraints.INTEGER)
+                        .defaultValue(declaration.size)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;

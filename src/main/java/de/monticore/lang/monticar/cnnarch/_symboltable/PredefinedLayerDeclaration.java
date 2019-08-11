@@ -189,6 +189,16 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
     }
 
+    protected static void computeOneHotOutputSize(LayerSymbol layer){
+        int outputChannels = 0;
+
+        if (layer.getOutputElement().get() instanceof VariableSymbol && layer.getOutputElement().get().isOutput()) {
+            outputChannels = ((VariableSymbol) layer.getOutputElement().get()).getIoDeclaration().getType().getChannels();
+        }
+
+        layer.setIntValue(AllPredefinedLayers.SIZE_NAME, outputChannels);
+    }
+
     //padding with border_mode=valid, no padding
     private static List<ArchTypeSymbol> computeOutputShapeWithValidPadding(ArchTypeSymbol inputType, LayerSymbol method, int channels){
         int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
