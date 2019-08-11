@@ -4,3 +4,6 @@ java -jar ../embedded-montiarc-emadl-generator-0.3.3-SNAPSHOT-jar-with-dependenc
 rm -rf build
 mkdir build && cd build
 
+cmake ..
+make
+
