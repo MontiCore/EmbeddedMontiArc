@@ -131,20 +131,20 @@ def center_to_hdf5():
 
     with h5py.File('train.h5', 'w') as hf:
 
-            center_img = np.zeros([1,3,PIXEL_HEIGHT,PIXEL_WIDTH]).astype(np.float32)
-            center_img[0,:,:,:] = np.reshape(np.array(Image.open(center_cam+str(pic_ids[0])+".jpg")),[3,PIXEL_HEIGHT,PIXEL_WIDTH])
+            center_img = np.zeros([1,PIXEL_HEIGHT,PIXEL_WIDTH,3]).astype(np.float32)
+            center_img[0,:,:,:] = np.reshape(np.array(Image.open(center_cam+str(pic_ids[0])+".jpg")),[PIXEL_HEIGHT,PIXEL_WIDTH,3])
 
             target = np.array([dic[pic_ids[0]][0]]).astype(np.float32)
 
-            hf.create_dataset('data', data=center_img, maxshape=(None,3,PIXEL_HEIGHT,PIXEL_WIDTH))
+            hf.create_dataset('data', data=center_img, maxshape=(None,PIXEL_HEIGHT,PIXEL_WIDTH,3))
             hf.create_dataset('target_label',data=target , maxshape=(None,))
 
             for i,img in enumerate(train_ids):
                 if i != 0:
                     print "loading img :", i , "/" , len(pic_ids)-1
 
-                    center_img = np.zeros([1,3,PIXEL_HEIGHT,PIXEL_WIDTH]).astype(np.float32)
-                    center_img[0,:,:,:] = np.reshape(np.array(Image.open(center_cam+str(pic_ids[i])+".jpg")),[3,PIXEL_HEIGHT,PIXEL_WIDTH])
+                    center_img = np.zeros([1,PIXEL_HEIGHT,PIXEL_WIDTH,3]).astype(np.float32)
+                    center_img[0,:,:,:] = np.reshape(np.array(Image.open(center_cam+str(pic_ids[i])+".jpg")),[PIXEL_HEIGHT,PIXEL_WIDTH,3])
 
                     next_target = np.array([dic[pic_ids[i]][0]]).astype(np.float32)
 
