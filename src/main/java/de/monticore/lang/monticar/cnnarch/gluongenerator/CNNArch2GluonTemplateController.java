@@ -231,13 +231,13 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                         }
 
                         if (includeOutput) {
-                            if (predefinedLayerDeclaration.isValidMember(VariableSymbol.Member.OUT)) {
+                            if (predefinedLayerDeclaration.isValidMember(VariableSymbol.Member.OUTPUT)) {
                                 String name = variable.getName() + "_output_";
 
                                 List<Integer> intDimensions = predefinedLayerDeclaration.computeOutputTypes(
                                         layerVariableDeclaration.getLayer().getInputTypes(),
                                         layerVariableDeclaration.getLayer(),
-                                        VariableSymbol.Member.OUT
+                                        VariableSymbol.Member.OUTPUT
                                 ).get(0).getDimensions();
 
                                 List<String> dimensions = new ArrayList<>();
