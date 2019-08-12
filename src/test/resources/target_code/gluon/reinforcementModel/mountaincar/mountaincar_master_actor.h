@@ -9,7 +9,7 @@
 using namespace arma;
 class mountaincar_master_actor{
 public:
-CNNPredictor_mountaincar_master_actor _cnn_;
+CNNPredictor_mountaincar_master_actor_0 _predictor_0_;
 colvec state;
 colvec action;
 void init()
@@ -20,7 +20,7 @@ action=colvec(1);
 void execute(){
     vector<float> CNN_action(1);
 
-    _cnn_.predict(CNNTranslator::translate(state),
+    _predictor_0_.predict(CNNTranslator::translate(state),
                 CNN_action);
 
     action = CNNTranslator::translateToCol(CNN_action, std::vector<size_t> {1});

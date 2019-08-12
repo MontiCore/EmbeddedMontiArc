@@ -2,6 +2,16 @@ import mxnet as mx
 import numpy as np
 from mxnet import gluon
 
+class OneHot(gluon.HybridBlock):
+    def __init__(self, size, **kwargs):
+        super(OneHot, self).__init__(**kwargs)
+        with self.name_scope():
+            self.size = size
+
+    def hybrid_forward(self, F, x):
+        return F.one_hot(indices=F.argmax(data=x, axis=1), depth=self.size)
+
+
 class Softmax(gluon.HybridBlock):
     def __init__(self, **kwargs):
         super(Softmax, self).__init__(**kwargs)
@@ -68,15 +78,17 @@ class NoNormalization(gluon.HybridBlock):
         return x
 
 
-class Net(gluon.HybridBlock):
+class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net, self).__init__(**kwargs)
+        super(Net_0, self).__init__(**kwargs)
+        self.last_layers = {}
         with self.name_scope():
-            if not data_mean is None:
-                assert(not data_std is None)
-                self.state_input_normalization = ZScoreNormalization(data_mean=data_mean, data_std=data_std)
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_state = ZScoreNormalization(data_mean=data_mean['state'],
+                                                                               data_std=data_std['state'])
             else:
-                self.state_input_normalization = NoNormalization()
+                self.input_normalization_state = NoNormalization()
 
             self.fc2_1_ = gluon.nn.Dense(units=400, use_bias=True)
             # fc2_1_, output shape: {[400,1,1]}
@@ -85,11 +97,12 @@ class Net(gluon.HybridBlock):
             self.fc3_1_ = gluon.nn.Dense(units=300, use_bias=True)
             # fc3_1_, output shape: {[300,1,1]}
 
-            if not data_mean is None:
-                assert(not data_std is None)
-                self.action_input_normalization = ZScoreNormalization(data_mean=data_mean, data_std=data_std)
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_action = ZScoreNormalization(data_mean=data_mean['action'],
+                                                                               data_std=data_std['action'])
             else:
-                self.action_input_normalization = NoNormalization()
+                self.input_normalization_action = NoNormalization()
 
             self.fc2_2_ = gluon.nn.Dense(units=300, use_bias=True)
             # fc2_2_, output shape: {[300,1,1]}
@@ -99,17 +112,18 @@ class Net(gluon.HybridBlock):
             # fc4_, output shape: {[1,1,1]}
 
 
-        self.last_layer = 'linear'
-
 
     def hybrid_forward(self, F, state, action):
-        state = self.state_input_normalization(state)
+        outputs = []
+        state = self.input_normalization_state(state)
         fc2_1_ = self.fc2_1_(state)
         relu2_1_ = self.relu2_1_(fc2_1_)
         fc3_1_ = self.fc3_1_(relu2_1_)
-        action = self.action_input_normalization(action)
+        action = self.input_normalization_action(action)
         fc2_2_ = self.fc2_2_(action)
         add4_ = fc3_1_ + fc2_2_
         relu4_ = self.relu4_(add4_)
         fc4_ = self.fc4_(relu4_)
-        return fc4_
+        outputs.append(fc4_)
+
+        return outputs[0]

@@ -9,22 +9,23 @@
 
 #include <CNNBufferFile.h>
 
-class CNNPredictor_mountaincar_master_actor{
+class CNNPredictor_mountaincar_master_actor_0{
 public:
-    const std::string json_file = "model/mountaincar.agent.MountaincarActor/model_newest-symbol.json";
-    const std::string param_file = "model/mountaincar.agent.MountaincarActor/model_newest-0000.params";
-    //const std::vector<std::string> input_keys = {"data"};
-    const std::vector<std::string> input_keys = {"state"};
-    const std::vector<std::vector<mx_uint>> input_shapes = {{1,2}};
+    const std::string json_file = "model/mountaincar.agent.MountaincarActor/model_0_newest-symbol.json";
+    const std::string param_file = "model/mountaincar.agent.MountaincarActor/model_0_newest-0000.params";
+    const std::vector<std::string> input_keys = {
+        "data"
+    };
+    const std::vector<std::vector<mx_uint>> input_shapes = {{1, 2}};
     const bool use_gpu = false;
 
     PredictorHandle handle;
 
-    explicit CNNPredictor_mountaincar_master_actor(){
+    explicit CNNPredictor_mountaincar_master_actor_0(){
         init(json_file, param_file, input_keys, input_shapes, use_gpu);
     }
 
-    ~CNNPredictor_mountaincar_master_actor(){
+    ~CNNPredictor_mountaincar_master_actor_0(){
         if(handle) MXPredFree(handle);
     }
 
@@ -67,15 +68,17 @@ public:
 
         const mx_uint num_input_nodes = input_keys.size();
 
-        const char* input_key[1] = { "data" };
-        const char** input_keys_ptr = input_key;
+        const char* input_keys_ptr[num_input_nodes];
+        for(mx_uint i = 0; i < num_input_nodes; i++){
+            input_keys_ptr[i] = input_keys[i].c_str();
+        }
 
         mx_uint shape_data_size = 0;
         mx_uint input_shape_indptr[input_shapes.size() + 1];
         input_shape_indptr[0] = 0;
         for(mx_uint i = 0; i < input_shapes.size(); i++){
-            input_shape_indptr[i+1] = input_shapes[i].size();
             shape_data_size += input_shapes[i].size();
+            input_shape_indptr[i+1] = shape_data_size;
         }
 
         mx_uint input_shape_data[shape_data_size];

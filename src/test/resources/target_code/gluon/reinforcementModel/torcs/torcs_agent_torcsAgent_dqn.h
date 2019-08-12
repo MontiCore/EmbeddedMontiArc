@@ -10,7 +10,7 @@ using namespace arma;
 class torcs_agent_torcsAgent_dqn{
 const int discrete_actions = 30;
 public:
-CNNPredictor_torcs_agent_torcsAgent_dqn _cnn_;
+CNNPredictor_torcs_agent_torcsAgent_dqn_0 _predictor_0_;
 colvec state;
 colvec qvalues;
 void init()
@@ -21,7 +21,7 @@ qvalues=colvec(discrete_actions);
 void execute(){
     vector<float> CNN_qvalues(30);
 
-    _cnn_.predict(CNNTranslator::translate(state),
+    _predictor_0_.predict(CNNTranslator::translate(state),
                 CNN_qvalues);
 
     qvalues = CNNTranslator::translateToCol(CNN_qvalues, std::vector<size_t> {30});
