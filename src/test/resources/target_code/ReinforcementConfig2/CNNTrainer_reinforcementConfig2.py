@@ -56,7 +56,7 @@ if __name__ == "__main__":
             'memory_size': 10000,
             'sample_size': 32,
             'state_dtype': 'float32',
-            'action_dtype': 'float32',
+            'action_dtype': 'uint8',
             'rewards_dtype': 'float32'
         },
         'strategy_params': {
@@ -79,9 +79,9 @@ if __name__ == "__main__":
         'max_episode_step': 250,
         'evaluation_samples': 100,
         'target_score': 185.5,
-        'qnet':qnet_creator.net,
+        'qnet':qnet_creator.networks[0],
         'use_fix_target': False,
-        'loss': 'l2',
+        'loss_function': 'l2',
         'optimizer': 'rmsprop',
         'optimizer_params': {
             'weight_decay': 0.01,
@@ -120,4 +120,4 @@ if __name__ == "__main__":
     train_successful = agent.train()
 
     if train_successful:
-        agent.save_best_network(qnet_creator._model_dir_ + qnet_creator._model_prefix_ + '_0_newest', epoch=0)
+        agent.export_best_network(path=qnet_creator._model_dir_ + qnet_creator._model_prefix_ + '_0_newest', epoch=0)

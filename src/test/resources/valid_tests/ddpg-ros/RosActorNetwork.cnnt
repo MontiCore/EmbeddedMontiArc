@@ -9,9 +9,8 @@ configuration RosActorNetwork {
         state_topic : "/environment/state"
         action_topic : "/environment/action"
         reset_topic : "/environment/reset"
+        reward_topic: "/environment/reward"
     }
-
-    reward_function : reward.rewardFunction
 
     agent_name : "ddpg-agent"
 
