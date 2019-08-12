@@ -18,12 +18,12 @@ state=colvec(2);
 action=colvec(1);
 }
 void execute(){
-    vector<float> CNN_action(1);
+    vector<float> state_ = CNNTranslator::translate(state);
+    vector<float> action_(1);
 
-    _predictor_0_.predict(CNNTranslator::translate(state),
-                CNN_action);
+    _predictor_0_.predict(state_, action_);
 
-    action = CNNTranslator::translateToCol(CNN_action, std::vector<size_t> {1});
+    action = CNNTranslator::translateToCol(action_, std::vector<size_t> {1});
 
 }
 

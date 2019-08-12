@@ -19,12 +19,12 @@ state=colvec(5);
 qvalues=colvec(discrete_actions);
 }
 void execute(){
-    vector<float> CNN_qvalues(30);
+    vector<float> state_ = CNNTranslator::translate(state);
+    vector<float> qvalues_(30);
 
-    _predictor_0_.predict(CNNTranslator::translate(state),
-                CNN_qvalues);
+    _predictor_0_.predict(state_, qvalues_);
 
-    qvalues = CNNTranslator::translateToCol(CNN_qvalues, std::vector<size_t> {30});
+    qvalues = CNNTranslator::translateToCol(qvalues_, std::vector<size_t> {30});
 
 }
 
