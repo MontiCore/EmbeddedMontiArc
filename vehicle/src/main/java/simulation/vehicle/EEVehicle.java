@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
@@ -121,7 +122,6 @@ public class EEVehicle {
 
         //set bus, sensor, actuator and bridge lists
 
-        Set<Bus> processedKeys = new HashSet<>();
         for (Bus bus : busStructure.keySet()) {
             busList.add(bus);
             for (EEComponent comp : busStructure.get(bus)) {
@@ -165,6 +165,8 @@ public class EEVehicle {
      */
     public void notifySensors(Instant actualTime) {
         for (AbstractSensor sensor : sensorList) {
+
+            //create bus message with velocity
             if (sensor.getType() == BusEntry.SENSOR_STREETTYPE) {
                 Double allowedVelocityByStreetType;
                 switch ((String) sensor.getValue()) {
@@ -190,6 +192,8 @@ public class EEVehicle {
                     eeSimulator.addEvent(sensorMess);
                 }
             }
+
+            //create all other bus messages
             for (EEComponent target : sensor.getTargetsByMessageId().get(sensor.getType())) {
                 BusMessage sensorMess = new BusMessage(sensor.getValue(), sensor.getDataLength(), sensor.getType(), actualTime, sensor.getId(), target);
                 eeSimulator.addEvent(sensorMess);
@@ -197,6 +201,16 @@ public class EEVehicle {
         }
     }
 
+    //TODO: change the time of this function
+    /**
+     * function that notifies all actuators to update
+     * @param actualTime time the actuators get to update their value
+     */
+    public void notifyActuator(Duration actualTime){
+        for (VehicleActuator actuator : actuatorList) {
+            actuator.update((double) actualTime.toMillis()/1000);
+        }
+    }
 
 
 
