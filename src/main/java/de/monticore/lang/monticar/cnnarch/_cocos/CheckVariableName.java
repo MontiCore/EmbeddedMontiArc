@@ -20,69 +20,30 @@
  */
 package de.monticore.lang.monticar.cnnarch._cocos;
 
-import de.monticore.lang.monticar.cnnarch._ast.ASTLayerParameter;
-import de.monticore.lang.monticar.cnnarch._ast.ASTVariable;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
-import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
-public class CheckVariableName implements CNNArchASTVariableCoCo {
-
-    Set<String> variableNames = new HashSet<>();
-
+public class CheckVariableName extends CNNArchSymbolCoCo {
 
     @Override
-    public void check(ASTVariable node) {
-        checkForIllegalNames(node);
-        checkForDuplicates(node);
-    }
-
-    private void checkForIllegalNames(ASTVariable node){
-        String name = node.getName();
-        if (name.isEmpty() || !Character.isLowerCase(name.codePointAt(0))){
-            Log.error("0" + ErrorCodes.ILLEGAL_NAME + " Illegal name: " + name +
-                            ". All new variable and method names have to start with a lowercase letter. "
-                    , node.get_SourcePositionStart());
-        }
-        else if (name.equals(AllPredefinedVariables.TRUE_NAME) || name.equals(AllPredefinedVariables.FALSE_NAME)){
-            Log.error("0" + ErrorCodes.ILLEGAL_NAME + " Illegal name: " + name +
-                            ". No variable can be named 'true' or 'false'"
-                    , node.get_SourcePositionStart());
-        }
-        else if (name.equals(AllPredefinedVariables.CONDITIONAL_ARG_NAME.toLowerCase())){
-            Log.error("0" + ErrorCodes.ILLEGAL_NAME + " Illegal name: " + name +
-                            ". No variable can be named 'if'"
-                    , node.get_SourcePositionStart());
+    public void check(ArchitectureElementSymbol sym) {
+        if (sym instanceof VariableSymbol) {
+            checkVariable((VariableSymbol) sym);
         }
     }
 
-    private void checkForDuplicates(ASTVariable node){
-        String name = node.getName();
-        if (variableNames.contains(name)){
-            if (node instanceof ASTLayerParameter){
-                Collection<Symbol> allParametersWithSameName = node.getEnclosingScopeOpt().get().getLocalSymbols().get(name);
-                if (allParametersWithSameName.size() > 1){
-                    duplicationError(node);
-                }
-            }
-            else {
-                duplicationError(node);
-            }
-        }
-        else{
-            variableNames.add(name);
-        }
-    }
+    public void checkVariable(VariableSymbol variable) {
+        Collection<VariableDeclarationSymbol> declarations
+                = variable.getArchitecture().getSpannedScope().resolveMany(variable.getName(), VariableDeclarationSymbol.KIND);
 
-    private void duplicationError(ASTVariable node){
-        Log.error("0" + ErrorCodes.DUPLICATED_NAME + " Duplicated variable name. " +
-                        "The name '" + node.getName() + "' is already used."
-                , node.get_SourcePositionStart());
+        if (declarations.isEmpty()) {
+            Log.error("0" + ErrorCodes.UNKNOWN_VARIABLE_NAME + " Unknown variable name. " +
+                            "Variable '" + variable.getName() + "' does not exist. "
+                      , variable.getSourcePosition());
+        }
     }
 
 }

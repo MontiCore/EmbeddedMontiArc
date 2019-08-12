@@ -33,40 +33,35 @@ public class Pooling extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isNetworkLayer() {
-        return true;
-    }
-
-    @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
-        return computeConvAndPoolOutputShape(inputTypes.get(0),
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
+        return computeConvAndPoolOutputShape(layer.getInputTypes().get(0),
                 layer,
-                inputTypes.get(0).getChannels());
+                layer.getInputTypes().get(0).getChannels());
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
         errorIfInputSmallerThanKernel(inputTypes, layer);
     }
 
     public static Pooling create(){
         Pooling declaration = new Pooling();
-        List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new VariableSymbol.Builder()
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.POOL_TYPE_NAME)
                         .constraints(Constraints.POOL_TYPE)
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.KERNEL_NAME)
                         .constraints(Constraints.INTEGER_TUPLE, Constraints.POSITIVE)
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.STRIDE_NAME)
                         .constraints(Constraints.INTEGER_TUPLE, Constraints.POSITIVE)
                         .defaultValue(Arrays.asList(1, 1))
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.PADDING_NAME)
                         .constraints(Constraints.PADDING_TYPE)
                         .defaultValue(AllPredefinedLayers.PADDING_SAME)

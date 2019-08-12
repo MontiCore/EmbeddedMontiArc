@@ -36,23 +36,28 @@ public class Get extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public boolean isTrainable() {
+        return false;
+    }
+
+    @Override
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         int index = layer.getIntValue(AllPredefinedLayers.INDEX_NAME).get();
-        if (index < inputTypes.size()){
-            return Collections.singletonList(inputTypes.get(index));
+        if (index < layer.getInputTypes().size()){
+            return Collections.singletonList(layer.getInputTypes().get(index));
         }
         else {
-            if (inputTypes.isEmpty()){
-                return inputTypes;
+            if (layer.getInputTypes().isEmpty()){
+                return layer.getInputTypes();
             }
             else {
-                return Collections.singletonList(inputTypes.get(0));
+                return Collections.singletonList(layer.getInputTypes().get(0));
             }
         }
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         int index = layer.getIntValue(AllPredefinedLayers.INDEX_NAME).get();
         if (inputTypes.size() <= index){
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Stream index out of bound. " +
@@ -64,8 +69,8 @@ public class Get extends PredefinedLayerDeclaration {
 
     public static Get create(){
         Get declaration = new Get();
-        List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new VariableSymbol.Builder()
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.INDEX_NAME)
                         .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
                         .build()));

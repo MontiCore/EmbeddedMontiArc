@@ -35,13 +35,8 @@ public class Split extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isNetworkLayer() {
-        return true;
-    }
-
-    @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
-        ArchTypeSymbol inputShape = inputTypes.get(0);
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
+        ArchTypeSymbol inputShape = layer.getInputTypes().get(0);
         int numberOfSplits = layer.getIntValue(AllPredefinedLayers.NUM_SPLITS_NAME).get();
         int inputHeight = inputShape.getHeight();
         int inputWidth = inputShape.getWidth();
@@ -57,14 +52,14 @@ public class Split extends PredefinedLayerDeclaration {
                         .height(inputHeight)
                         .width(inputWidth)
                         .channels(outputChannelsLast)
-                        .elementType(inputTypes.get(0).getDomain())
+                        .elementType(layer.getInputTypes().get(0).getDomain())
                         .build());
             } else {
                 outputShapes.add(new ArchTypeSymbol.Builder()
                         .height(inputHeight)
                         .width(inputWidth)
                         .channels(outputChannels)
-                        .elementType(inputTypes.get(0).getDomain())
+                        .elementType(layer.getInputTypes().get(0).getDomain())
                         .build());
             }
         }
@@ -72,7 +67,7 @@ public class Split extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         if (inputTypes.size() == 1) {
             int inputChannels = inputTypes.get(0).getChannels();
             int numberOfSplits = layer.getIntValue(AllPredefinedLayers.NUM_SPLITS_NAME).get();
@@ -91,8 +86,8 @@ public class Split extends PredefinedLayerDeclaration {
 
     public static Split create(){
         Split declaration = new Split();
-        List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new VariableSymbol.Builder()
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NUM_SPLITS_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build()));

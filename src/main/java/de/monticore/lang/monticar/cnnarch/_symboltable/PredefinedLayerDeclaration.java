@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import com.google.gson.internal.Streams;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
@@ -41,9 +40,9 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
     @Override
-    protected void setParameters(List<VariableSymbol> parameters) {
+    protected void setParameters(List<ParameterSymbol> parameters) {
         super.setParameters(parameters);
-        for (VariableSymbol param : parameters){
+        for (ParameterSymbol param : parameters){
             param.putInScope(getSpannedScope());
         }
     }
@@ -59,13 +58,40 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
      * network for each assignment. Override by predefined layers which are trainable.
      */
     @Override
-    public boolean isNetworkLayer() {
-        return false;
+    public boolean isTrainable() {
+        return isTrainable(VariableSymbol.Member.NONE);
     }
 
-    abstract public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer);
+    public boolean isTrainable(VariableSymbol.Member member) {
+        return true;
+    }
 
-    abstract public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer);
+    /**
+     * A note to this function: For occurrences without the use of VariableSymbol these are the same but when using the
+     * layer as a layer variable and accessing its member OUT, you generally want to use the LayerSymbol's input types
+     * since they have the input types of the VariableSymbol occurrence with member == NONE. It makes sense as the actual
+     * layer call determines the types, not the use of the (already generated) output of the layer.
+     * tl;dr: Always use LayerSymbol's input types (layer.getInputTypes()) unless you know what you do.
+     */
+    abstract public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes,
+                                                            LayerSymbol layer,
+                                                            VariableSymbol.Member member);
+
+    abstract public void checkInput(List<ArchTypeSymbol> inputTypes,
+                                    LayerSymbol layer,
+                                    VariableSymbol.Member member);
+
+    public boolean isValidMember(VariableSymbol.Member member) {
+        return member == VariableSymbol.Member.NONE || member == VariableSymbol.Member.OUTPUT;
+    }
+
+    public boolean canBeInput(VariableSymbol.Member member) {
+        return member == VariableSymbol.Member.OUTPUT;
+    }
+
+    public boolean canBeOutput(VariableSymbol.Member member) {
+        return member == VariableSymbol.Member.NONE;
+    }
 
     @Override
     public PredefinedLayerDeclaration deepCopy() {
@@ -161,6 +187,16 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         else{
             throw new IllegalStateException("border_mode is " + borderModeSetting + ". This should never happen.");
         }
+    }
+
+    protected static void computeOneHotOutputSize(LayerSymbol layer){
+        int outputChannels = 0;
+
+        if (layer.getOutputElement().get() instanceof VariableSymbol && layer.getOutputElement().get().isOutput()) {
+            outputChannels = ((VariableSymbol) layer.getOutputElement().get()).getIoDeclaration().getType().getChannels();
+        }
+
+        layer.setIntValue(AllPredefinedLayers.SIZE_NAME, outputChannels);
     }
 
     //padding with border_mode=valid, no padding

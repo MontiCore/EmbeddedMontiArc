@@ -33,38 +33,33 @@ public class Lrn extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isNetworkLayer() {
-        return true;
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
+        return layer.getInputTypes();
     }
 
     @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
-        return inputTypes;
-    }
-
-    @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
     public static Lrn create(){
         Lrn declaration = new Lrn();
-        List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new VariableSymbol.Builder()
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NSIZE_NAME)
                         .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.KNORM_NAME)
                         .constraints(Constraints.NUMBER)
                         .defaultValue(2)
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.ALPHA_NAME)
                         .constraints(Constraints.NUMBER)
                         .defaultValue(0.0001)
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.BETA_NAME)
                         .constraints(Constraints.NUMBER)
                         .defaultValue(0.75)

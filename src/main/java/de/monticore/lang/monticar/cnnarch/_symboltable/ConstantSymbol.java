@@ -20,10 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
-import de.monticore.lang.monticar.cnnarch.helper.Utils;
-import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.symboltable.Scope;
@@ -79,20 +76,20 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
-    public Set<VariableSymbol> resolve() throws ArchResolveException {
+    public Set<ParameterSymbol> resolve() throws ArchResolveException {
         if (!isResolved()) {
             if (isResolvable()) {
                 resolveExpressions();
                 setResolvedThis(this);
             }
         }
-        return getUnresolvableVariables();
+        return getUnresolvableParameters();
     }
 
     @Override
-    protected void computeUnresolvableVariables(Set<VariableSymbol> unresolvableVariables, Set<VariableSymbol> allVariables) {
-        getExpression().checkIfResolvable(allVariables);
-        unresolvableVariables.addAll(getExpression().getUnresolvableVariables());
+    protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters) {
+        getExpression().checkIfResolvable(allParameters);
+        unresolvableParameters.addAll(getExpression().getUnresolvableParameters());
     }
 
     @Override
@@ -176,7 +173,7 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
             copy.setAstNode(getAstNode().get());
         }
 
-        copy.setExpression(getExpression());
+        copy.setExpression(getExpression().preResolveDeepCopy());
 
         return copy;
     }

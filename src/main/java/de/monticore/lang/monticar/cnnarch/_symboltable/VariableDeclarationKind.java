@@ -20,30 +20,20 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-public enum VariableType {
-    LAYER_PARAMETER {
-        @Override
-        public String toString(){
-            return "layer parameter";
-        }
-    },
-    ARCHITECTURE_PARAMETER {
-        @Override
-        public String toString(){
-            return "architecture parameter";
-        }
-    },
-    CONSTANT {
-        @Override
-        public String toString(){
-            return "constant";
-        }
-    },
-    UNKNOWN {
-        //describes a variable which does not exist. Only used to avoid exceptions while checking Cocos.
-        @Override
-        public String toString(){
-            return "unknown";
-        }
+import de.monticore.symboltable.SymbolKind;
+
+public class VariableDeclarationKind implements SymbolKind {
+
+    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.VariableDeclarationKind";
+
+    @Override
+    public String getName() {
+        return NAME;
     }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    }
+
 }

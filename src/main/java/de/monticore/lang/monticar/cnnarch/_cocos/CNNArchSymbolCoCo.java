@@ -42,8 +42,8 @@ public class CNNArchSymbolCoCo {
         else if (sym instanceof ArchTypeSymbol){
             check((ArchTypeSymbol) sym);
         }
-        else if (sym instanceof VariableSymbol){
-            check((VariableSymbol) sym);
+        else if (sym instanceof ParameterSymbol){
+            check((ParameterSymbol) sym);
         }
         else if (sym instanceof ArgumentSymbol){
             check((ArgumentSymbol) sym);
@@ -51,8 +51,8 @@ public class CNNArchSymbolCoCo {
         else if (sym instanceof CNNArchCompilationUnitSymbol){
             check((CNNArchCompilationUnitSymbol) sym);
         }
-        else if (sym instanceof IODeclarationSymbol){
-            check((IODeclarationSymbol) sym);
+        else if (sym instanceof VariableDeclarationSymbol){
+            check((VariableDeclarationSymbol) sym);
         }
         else if (sym instanceof MathExpressionSymbol){
             check((MathExpressionSymbol) sym);
@@ -84,7 +84,7 @@ public class CNNArchSymbolCoCo {
         //Override if needed
     }
 
-    public void check(VariableSymbol sym){
+    public void check(ParameterSymbol sym){
         //Override if needed
     }
 
@@ -96,7 +96,7 @@ public class CNNArchSymbolCoCo {
         //Override if needed
     }
 
-    public void check(IODeclarationSymbol sym){
+    public void check(VariableDeclarationSymbol sym){
         //Override if needed
     }
 

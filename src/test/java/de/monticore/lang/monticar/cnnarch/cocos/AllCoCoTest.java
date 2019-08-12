@@ -51,6 +51,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("architectures", "SequentialAlexnet");
         checkValid("architectures", "ThreeInputCNN_M14");
         checkValid("architectures", "VGG16");
+        checkValid("architectures", "RNNtest");
 
         checkValid("valid_tests", "ArgumentSequenceTest");
         checkValid("valid_tests", "Fixed_Alexnet");
@@ -72,7 +73,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
     public void testIllegalIONames(){
         checkInvalid(
                 new CNNArchCoCoChecker(),
-                new CNNArchSymbolCoCoChecker().addCoCo(new CheckIOName()),
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckVariableDeclarationName()),
                 new CNNArchSymbolCoCoChecker(),
                 "invalid_tests", "IllegalIOName",
                 new ExpectedErrorInfo(2, ErrorCodes.ILLEGAL_NAME));
@@ -89,7 +90,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
 
     @Test
     public void testDuplicatedNames(){
-        checkInvalid(new CNNArchCoCoChecker().addCoCo(new CheckVariableName()).addCoCo(new CheckLayerName()),
+        checkInvalid(new CNNArchCoCoChecker().addCoCo(new CheckParameterName()).addCoCo(new CheckLayerName()),
                 new CNNArchSymbolCoCoChecker(),
                 new CNNArchSymbolCoCoChecker(),
                 "invalid_tests", "DuplicatedNames",
@@ -99,28 +100,28 @@ public class AllCoCoTest extends AbstractCoCoTest {
     @Test
     public void testDuplicatedIONames(){
         checkInvalid(new CNNArchCoCoChecker(),
-                new CNNArchSymbolCoCoChecker().addCoCo(new CheckIOName()),
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckVariableDeclarationName()),
                 new CNNArchSymbolCoCoChecker(),
                 "invalid_tests", "DuplicatedIONames",
                 new ExpectedErrorInfo(1, ErrorCodes.DUPLICATED_NAME));
     }
 
     @Test
-    public void testUnknownVariableName(){
+    public void testUnknownParameterName(){
         checkInvalid(new CNNArchCoCoChecker(),
                 new CNNArchSymbolCoCoChecker().addCoCo(new CheckExpressions()),
                 new CNNArchSymbolCoCoChecker(),
-                "invalid_tests", "UnknownVariableName",
-                new ExpectedErrorInfo(1, ErrorCodes.UNKNOWN_VARIABLE_NAME));
+                "invalid_tests", "UnknownParameterName",
+                new ExpectedErrorInfo(1, ErrorCodes.UNKNOWN_PARAMETER_NAME));
     }
 
     @Test
-    public void testUnknownIO(){
+    public void testUnknownVariableName(){
         checkInvalid(new CNNArchCoCoChecker(),
-                new CNNArchSymbolCoCoChecker().addCoCo(new CheckIOName()),
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckVariableName()),
                 new CNNArchSymbolCoCoChecker(),
-                "invalid_tests", "UnknownIO",
-                new ExpectedErrorInfo(2, ErrorCodes.UNKNOWN_IO));
+                "invalid_tests", "UnknownVariableName",
+                new ExpectedErrorInfo(2, ErrorCodes.UNKNOWN_VARIABLE_NAME));
     }
 
     @Test
@@ -224,7 +225,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
 
     @Test
     public void testIllegalName(){
-        checkInvalid(new CNNArchCoCoChecker().addCoCo(new CheckVariableName()).addCoCo(new CheckLayerName()),
+        checkInvalid(new CNNArchCoCoChecker().addCoCo(new CheckParameterName()).addCoCo(new CheckLayerName()),
                 new CNNArchSymbolCoCoChecker(),
                 new CNNArchSymbolCoCoChecker(),
                 "invalid_tests", "IllegalName",
@@ -255,7 +256,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
                 new CNNArchSymbolCoCoChecker(),
                 new CNNArchSymbolCoCoChecker().addCoCo(new CheckIOType()),
                 "invalid_tests", "InvalidIOShape1",
-                new ExpectedErrorInfo(2, ErrorCodes.INVALID_IO_TYPE));
+                new ExpectedErrorInfo(1, ErrorCodes.INVALID_IO_TYPE));
     }
 
     @Test

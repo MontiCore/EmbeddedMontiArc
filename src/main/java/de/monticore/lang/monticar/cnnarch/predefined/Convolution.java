@@ -33,45 +33,40 @@ public class Convolution extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isNetworkLayer() {
-        return true;
-    }
-
-    @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
-        return computeConvAndPoolOutputShape(inputTypes.get(0),
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
+        return computeConvAndPoolOutputShape(layer.getInputTypes().get(0),
                 layer,
                 layer.getIntValue(AllPredefinedLayers.CHANNELS_NAME).get());
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
         errorIfInputSmallerThanKernel(inputTypes, layer);
     }
 
     public static Convolution create(){
         Convolution declaration = new Convolution();
-        List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new VariableSymbol.Builder()
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.KERNEL_NAME)
                         .constraints(Constraints.INTEGER_TUPLE, Constraints.POSITIVE)
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.CHANNELS_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.STRIDE_NAME)
                         .constraints(Constraints.INTEGER_TUPLE, Constraints.POSITIVE)
                         .defaultValue(Arrays.asList(1, 1))
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NOBIAS_NAME)
                         .constraints(Constraints.BOOLEAN)
                         .defaultValue(false)
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.PADDING_NAME)
                         .constraints(Constraints.PADDING_TYPE)
                         .defaultValue(AllPredefinedLayers.PADDING_SAME)

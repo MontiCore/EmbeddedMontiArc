@@ -20,20 +20,30 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.symboltable.SymbolKind;
-
-public class IODeclarationKind implements SymbolKind {
-
-    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationKind";
-
-    @Override
-    public String getName() {
-        return NAME;
+public enum ParameterType {
+    LAYER_PARAMETER {
+        @Override
+        public String toString(){
+            return "layer parameter";
+        }
+    },
+    ARCHITECTURE_PARAMETER {
+        @Override
+        public String toString(){
+            return "architecture parameter";
+        }
+    },
+    CONSTANT {
+        @Override
+        public String toString(){
+            return "constant";
+        }
+    },
+    UNKNOWN {
+        //describes a parameter which does not exist. Only used to avoid exceptions while checking Cocos.
+        @Override
+        public String toString(){
+            return "unknown";
+        }
     }
-
-    @Override
-    public boolean isKindOf(SymbolKind kind) {
-        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
-    }
-
 }

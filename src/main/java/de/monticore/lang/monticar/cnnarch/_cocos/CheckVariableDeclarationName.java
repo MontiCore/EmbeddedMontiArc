@@ -20,25 +20,34 @@
  */
 package de.monticore.lang.monticar.cnnarch._cocos;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
-public class CheckNetworkStreamMissing extends CNNArchSymbolCoCo {
+import java.util.HashSet;
+import java.util.Set;
+
+public class CheckVariableDeclarationName extends CNNArchSymbolCoCo {
+
+    Set<String> variableNames = new HashSet<>();
 
     @Override
-    public void check(ArchitectureSymbol architecture) {
-        boolean hasTrainableStream = false;
+    public void check(VariableDeclarationSymbol sym) {
+        String name = sym.getName();
 
-        for (CompositeElementSymbol stream : architecture.getStreams()) {
-            hasTrainableStream |= stream.isTrainable();
+        if (name.isEmpty() || name.endsWith("_")) {
+            Log.error("0" + ErrorCodes.ILLEGAL_NAME + " Illegal variable name. " +
+                            "Variable names cannot end with \"_\"",
+                      sym.getSourcePosition());
         }
 
-        if (!hasTrainableStream) {
-            Log.error("0" + ErrorCodes.MISSING_TRAINABLE_STREAM + " The architecture has no trainable stream. "
-                    , architecture.getSourcePosition());
+        if (variableNames.contains(name)) {
+            Log.error("0" + ErrorCodes.DUPLICATED_NAME + " Duplicated variable name. " +
+                            "The name '" + name + "' is already used.",
+                      sym.getSourcePosition());
+        }
+        else {
+            variableNames.add(name);
         }
     }
-
 }

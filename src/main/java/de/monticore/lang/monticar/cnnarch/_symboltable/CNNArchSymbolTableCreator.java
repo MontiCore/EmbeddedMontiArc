@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.monticar.cnnarch._ast.*;
@@ -29,7 +28,6 @@ import de.monticore.lang.monticar.cnnarch._visitor.CNNArchVisitor;
 import de.monticore.lang.monticar.cnnarch._visitor.CNNArchDelegatorVisitor;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
-import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -119,9 +117,9 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         CNNArchCompilationUnitSymbol compilationUnitSymbol = (CNNArchCompilationUnitSymbol) ast.getSymbolOpt().get();
         compilationUnitSymbol.setArchitecture((ArchitectureSymbol) ast.getArchitecture().getSymbolOpt().get());
 
-        List<VariableSymbol> parameters = new ArrayList<>(ast.getArchitectureParameterList().size());
+        List<ParameterSymbol> parameters = new ArrayList<>(ast.getArchitectureParameterList().size());
         for (ASTArchitectureParameter astParameter : ast.getArchitectureParameterList()){
-            parameters.add((VariableSymbol) astParameter.getSymbolOpt().get());
+            parameters.add((ParameterSymbol) astParameter.getSymbolOpt().get());
         }
         compilationUnitSymbol.setParameters(parameters);
 
@@ -144,11 +142,19 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     public void endVisit(final ASTArchitecture node) {
+        List<LayerVariableDeclarationSymbol> layerVariableDeclarations = new ArrayList<>();
         List<SerialCompositeElementSymbol> streams = new ArrayList<>();
+
         for (ASTInstruction astInstruction : node.getInstructionsList()){
-            ASTStream astStream = (ASTStream)astInstruction; // TODO: For now all instructions are streams
-            streams.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
+            if (astInstruction.isPresentLayerVariableDeclaration()) {
+                layerVariableDeclarations.add((LayerVariableDeclarationSymbol) astInstruction.getLayerVariableDeclaration().getSymbolOpt().get());
+            }
+            else if (astInstruction.isPresentStream()) {
+                streams.add((SerialCompositeElementSymbol) astInstruction.getStream().getSymbolOpt().get());
+            }
         }
+
+        architecture.setLayerVariableDeclarations(layerVariableDeclarations);
         architecture.setStreams(streams);
 
         removeCurrentScope();
@@ -167,8 +173,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTArchitectureParameter node) {
-        VariableSymbol variable = new VariableSymbol(node.getName());
-        variable.setType(VariableType.ARCHITECTURE_PARAMETER);
+        ParameterSymbol variable = new ParameterSymbol(node.getName());
+        variable.setType(ParameterType.ARCHITECTURE_PARAMETER);
         if (node.isPresentDefault()){
             variable.setDefaultExpression((ArchSimpleExpressionSymbol) node.getDefault().getSymbolOpt().get());
         }
@@ -231,9 +237,9 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         LayerDeclarationSymbol layerDeclaration = (LayerDeclarationSymbol) ast.getSymbolOpt().get();
         layerDeclaration.setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
 
-        List<VariableSymbol> parameters = new ArrayList<>(4);
+        List<ParameterSymbol> parameters = new ArrayList<>(4);
         for (ASTLayerParameter astParam : ast.getParametersList()){
-            VariableSymbol parameter = (VariableSymbol) astParam.getSymbolOpt().get();
+            ParameterSymbol parameter = (ParameterSymbol) astParam.getSymbolOpt().get();
             parameters.add(parameter);
         }
         layerDeclaration.setParameters(parameters);
@@ -243,14 +249,14 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void visit(ASTLayerParameter ast) {
-        VariableSymbol variable = new VariableSymbol(ast.getName());
-        variable.setType(VariableType.LAYER_PARAMETER);
+        ParameterSymbol variable = new ParameterSymbol(ast.getName());
+        variable.setType(ParameterType.LAYER_PARAMETER);
         addToScopeAndLinkWithNode(variable, ast);
     }
 
     @Override
     public void endVisit(ASTLayerParameter ast) {
-        VariableSymbol variable = (VariableSymbol) ast.getSymbolOpt().get();
+        ParameterSymbol variable = (ParameterSymbol) ast.getSymbolOpt().get();
         if (ast.isPresentDefault()){
             variable.setDefaultExpression((ArchSimpleExpressionSymbol) ast.getDefault().getSymbolOpt().get());
         }
@@ -337,6 +343,18 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     @Override
+    public void visit(ASTLayerVariableDeclaration ast) {
+        LayerVariableDeclarationSymbol layerVariableDeclaration = new LayerVariableDeclarationSymbol(ast.getName());
+        addToScopeAndLinkWithNode(layerVariableDeclaration, ast);
+    }
+
+    @Override
+    public void endVisit(ASTLayerVariableDeclaration ast) {
+        LayerVariableDeclarationSymbol layerVariableDeclaration = (LayerVariableDeclarationSymbol) ast.getSymbolOpt().get();
+        layerVariableDeclaration.setLayer((LayerSymbol) ast.getLayer().getSymbolOpt().get());
+    }
+
+    @Override
     public void visit(ASTStream ast) {
         SerialCompositeElementSymbol compositeElement = new SerialCompositeElementSymbol();
         addToScopeAndLinkWithNode(compositeElement, ast);
@@ -395,17 +413,23 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         removeCurrentScope();
     }
 
-    public void visit(ASTIOElement node) {
-        IOSymbol ioElement = new IOSymbol(node.getName());
-        addToScopeAndLinkWithNode(ioElement, node);
+    public void visit(ASTVariable node) {
+        VariableSymbol variableSymbol = new VariableSymbol(node.getName());
+        addToScopeAndLinkWithNode(variableSymbol, node);
     }
 
     @Override
-    public void endVisit(ASTIOElement node) {
-        IOSymbol sym = (IOSymbol) node.getSymbolOpt().get();
-        if (node.isPresentIndex()){
-            sym.setArrayAccess((ArchSimpleExpressionSymbol) node.getIndex().getSymbolOpt().get());
+    public void endVisit(ASTVariable node) {
+        VariableSymbol variableSymbol = (VariableSymbol) node.getSymbolOpt().get();
+
+        if (node.isPresentMember()) {
+            variableSymbol.setMember(node.getMember());
         }
+
+        if (node.isPresentIndex()) {
+            variableSymbol.setArrayAccess((ArchSimpleExpressionSymbol) node.getIndex().getSymbolOpt().get());
+        }
+
         removeCurrentScope();
     }
 

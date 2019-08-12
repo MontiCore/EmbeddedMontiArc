@@ -30,7 +30,7 @@ abstract public class ArchExpressionSymbol extends CommonSymbol {
 
     public static final ArchExpressionKind KIND = new ArchExpressionKind();
 
-    private Set<VariableSymbol> unresolvableVariables = null;
+    private Set<ParameterSymbol> unresolvableParameters = null;
 
     public ArchExpressionSymbol() {
         super("", KIND);
@@ -38,25 +38,25 @@ abstract public class ArchExpressionSymbol extends CommonSymbol {
 
 
     public Boolean isResolvable(){
-        Set<VariableSymbol> set = getUnresolvableVariables();
+        Set<ParameterSymbol> set = getUnresolvableParameters();
         return set != null && set.isEmpty();
     }
 
-    public Set<VariableSymbol> getUnresolvableVariables() {
-        if (unresolvableVariables == null){
+    public Set<ParameterSymbol> getUnresolvableParameters() {
+        if (unresolvableParameters == null){
             checkIfResolvable(new HashSet<>());
         }
-        return unresolvableVariables;
+        return unresolvableParameters;
     }
 
-    protected void setUnresolvableVariables(Set<VariableSymbol> unresolvableVariables){
-        this.unresolvableVariables = unresolvableVariables;
+    protected void setUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters){
+        this.unresolvableParameters = unresolvableParameters;
     }
 
-    public void checkIfResolvable(Set<VariableSymbol> seenVariables){
-        Set<VariableSymbol> unresolvableVariables = new HashSet<>();
-        computeUnresolvableVariables(unresolvableVariables, seenVariables);
-        setUnresolvableVariables(unresolvableVariables);
+    public void checkIfResolvable(Set<ParameterSymbol> seenParameters){
+        Set<ParameterSymbol> unresolvableParameters = new HashSet<>();
+        computeUnresolvableParameters(unresolvableParameters, seenParameters);
+        setUnresolvableParameters(unresolvableParameters);
     }
 
 
@@ -321,7 +321,7 @@ abstract public class ArchExpressionSymbol extends CommonSymbol {
         resolve();
         if (!isResolved()){
             throw new IllegalStateException("The following expression could not be resolved: " + getTextualRepresentation() +
-                    ". The following names are unresolvable: " + getUnresolvableVariables());
+                    ". The following names are unresolvable: " + getUnresolvableParameters());
         }
     }
 
@@ -341,12 +341,12 @@ abstract public class ArchExpressionSymbol extends CommonSymbol {
     abstract public void reset();
 
     /**
-     * Replaces all variable names in this values expression if possible.
-     * The values of the variables depend on the current scope. The replacement is irreversible if successful.
+     * Replaces all parameter names in this values expression if possible.
+     * The values of the parameters depend on the current scope. The replacement is irreversible if successful.
      *
      * @return returns a set of all names which could not be resolved.
      */
-    abstract public Set<VariableSymbol> resolve();
+    abstract public Set<ParameterSymbol> resolve();
 
     /**
      * @return returns a optional of a list(parallel) of lists(serial) of simple expressions in this sequence.
@@ -355,7 +355,7 @@ abstract public class ArchExpressionSymbol extends CommonSymbol {
      */
     abstract public Optional<List<List<ArchSimpleExpressionSymbol>>> getElements();
 
-    abstract protected void computeUnresolvableVariables(Set<VariableSymbol> unresolvableVariables, Set<VariableSymbol> allVariables);
+    abstract protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters);
 
     /**
      * @return returns true if the expression is resolved.
