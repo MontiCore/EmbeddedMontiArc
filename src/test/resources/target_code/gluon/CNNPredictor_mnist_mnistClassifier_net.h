@@ -29,9 +29,9 @@ public:
         if(handle) MXPredFree(handle);
     }
 
-    void predict(const std::vector<float> &image,
-                 std::vector<float> &predictions){
-        MXPredSetInput(handle, "data", image.data(), static_cast<mx_uint>(image.size()));
+    void predict(const std::vector<float> &in_image_,
+                 std::vector<float> &out_predictions_){
+        MXPredSetInput(handle, input_keys[0].c_str(), in_image_.data(), static_cast<mx_uint>(in_image_.size()));
 
         MXPredForward(handle);
 
@@ -44,8 +44,8 @@ public:
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
-        assert(size == predictions.size());
-        MXPredGetOutput(handle, 0, &(predictions[0]), predictions.size());
+        assert(size == out_predictions_.size());
+        MXPredGetOutput(handle, 0, &(out_predictions_[0]), out_predictions_.size());
 
     }
 

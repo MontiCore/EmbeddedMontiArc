@@ -85,10 +85,10 @@ class Net_0(gluon.HybridBlock):
         with self.name_scope():
             if data_mean:
                 assert(data_std)
-                self.input_normalization_image = ZScoreNormalization(data_mean=data_mean['image'],
-                                                                               data_std=data_std['image'])
+                self.input_normalization_image_ = ZScoreNormalization(data_mean=data_mean['image_'],
+                                                                               data_std=data_std['image_'])
             else:
-                self.input_normalization_image = NoNormalization()
+                self.input_normalization_image_ = NoNormalization()
 
             self.conv1_ = gluon.nn.Conv2D(channels=20,
                 kernel_size=(5,5),
@@ -123,10 +123,9 @@ class Net_0(gluon.HybridBlock):
             self.softmax3_ = Softmax()
 
 
-    def hybrid_forward(self, F, image):
-        outputs = []
-        image = self.input_normalization_image(image)
-        conv1_ = self.conv1_(image)
+    def hybrid_forward(self, F, image_):
+        image_ = self.input_normalization_image_(image_)
+        conv1_ = self.conv1_(image_)
         pool1_ = self.pool1_(conv1_)
         conv2_ = self.conv2_(pool1_)
         pool2_ = self.pool2_(conv2_)
@@ -135,6 +134,7 @@ class Net_0(gluon.HybridBlock):
         relu2_ = self.relu2_(fc2_)
         fc3_ = self.fc3_(relu2_)
         softmax3_ = self.softmax3_(fc3_)
-        outputs.append(softmax3_)
+        predictions_ = softmax3_
 
-        return outputs[0]
+        return predictions_
+

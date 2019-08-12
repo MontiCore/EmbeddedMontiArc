@@ -13,8 +13,9 @@ class CNNPredictor_cifar10_cifar10Classifier_net_0{
 public:
     const std::string json_file = "model/cifar10.CifarNetwork/model_newest-symbol.json";
     const std::string param_file = "model/cifar10.CifarNetwork/model_newest-0000.params";
-    //const std::vector<std::string> input_keys = {"data"};
-    const std::vector<std::string> input_keys = {"data"};
+    const std::vector<std::string> input_keys = {
+        "data"
+    };
     const std::vector<std::vector<mx_uint>> input_shapes = {{1,3,32,32}};
     const bool use_gpu = false;
 
@@ -28,10 +29,9 @@ public:
         if(handle) MXPredFree(handle);
     }
 
-    void predict(const std::vector<float> &data,
-                 std::vector<float> &softmax){
-        MXPredSetInput(handle, "data", data.data(), data.size());
-        //MXPredSetInput(handle, "data", data.data(), data.size());
+    void predict(const std::vector<float> &data_,
+                 std::vector<float> &softmax_){
+        MXPredSetInput(handle, input_keys[0].c_str(), data_.data(), data_.size());
 
         MXPredForward(handle);
 
@@ -44,8 +44,8 @@ public:
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
-        assert(size == softmax.size());
-        MXPredGetOutput(handle, 0, &(softmax[0]), softmax.size());
+        assert(size == softmax_.size());
+        MXPredGetOutput(handle, 0, &(softmax_[0]), softmax_.size());
 
     }
 
