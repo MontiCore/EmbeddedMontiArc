@@ -20,15 +20,14 @@
  */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableDeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch.generator.Target;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
+import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 
 import java.util.*;
 
@@ -111,5 +110,21 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         CNNArch2GluonTemplateController archTc = new CNNArch2GluonTemplateController(
                 architecture, templateConfiguration);
         return compilePythonFiles(archTc, architecture);
+    }
+
+    public Map<String, String> generateCMakeContent(String rootModelName) {
+        // model name should start with a lower case letter. If it is a component, replace dot . by _
+        rootModelName = rootModelName.replace('.', '_').replace('[', '_').replace(']', '_');
+        rootModelName =  rootModelName.substring(0, 1).toLowerCase() + rootModelName.substring(1);
+
+        CMakeConfig cMakeConfig = new CMakeConfig(rootModelName);
+        cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
+        cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} mxnet)");
+
+        Map<String,String> fileContentMap = new HashMap<>();
+        for (FileContent fileContent : cMakeConfig.generateCMakeFiles()){
+            fileContentMap.put(fileContent.getFileName(), fileContent.getFileContent());
+        }
+        return fileContentMap;
     }
 }
