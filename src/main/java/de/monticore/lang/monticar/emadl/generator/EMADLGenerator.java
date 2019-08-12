@@ -457,7 +457,7 @@ public class EMADLGenerator {
 
         int i = 0;
         for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
-            if (stream.isNetwork()) {
+            if (stream.isTrainable()) {
                 networkAttributes += "\n" + predictorClassName + "_" + i + " _predictor_" + i + "_;";
             }
 

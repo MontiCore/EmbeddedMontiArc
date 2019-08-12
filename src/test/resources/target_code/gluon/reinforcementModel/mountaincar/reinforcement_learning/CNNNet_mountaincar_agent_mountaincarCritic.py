@@ -85,10 +85,10 @@ class Net_0(gluon.HybridBlock):
         with self.name_scope():
             if data_mean:
                 assert(data_std)
-                self.input_normalization_state = ZScoreNormalization(data_mean=data_mean['state'],
-                                                                               data_std=data_std['state'])
+                self.input_normalization_state_ = ZScoreNormalization(data_mean=data_mean['state_'],
+                                                                               data_std=data_std['state_'])
             else:
-                self.input_normalization_state = NoNormalization()
+                self.input_normalization_state_ = NoNormalization()
 
             self.fc2_1_ = gluon.nn.Dense(units=400, use_bias=True)
             # fc2_1_, output shape: {[400,1,1]}
@@ -99,10 +99,10 @@ class Net_0(gluon.HybridBlock):
 
             if data_mean:
                 assert(data_std)
-                self.input_normalization_action = ZScoreNormalization(data_mean=data_mean['action'],
-                                                                               data_std=data_std['action'])
+                self.input_normalization_action_ = ZScoreNormalization(data_mean=data_mean['action_'],
+                                                                               data_std=data_std['action_'])
             else:
-                self.input_normalization_action = NoNormalization()
+                self.input_normalization_action_ = NoNormalization()
 
             self.fc2_2_ = gluon.nn.Dense(units=300, use_bias=True)
             # fc2_2_, output shape: {[300,1,1]}
@@ -113,17 +113,17 @@ class Net_0(gluon.HybridBlock):
 
 
 
-    def hybrid_forward(self, F, state, action):
-        outputs = []
-        state = self.input_normalization_state(state)
-        fc2_1_ = self.fc2_1_(state)
+    def hybrid_forward(self, F, state_, action_):
+        state_ = self.input_normalization_state_(state_)
+        fc2_1_ = self.fc2_1_(state_)
         relu2_1_ = self.relu2_1_(fc2_1_)
         fc3_1_ = self.fc3_1_(relu2_1_)
-        action = self.input_normalization_action(action)
-        fc2_2_ = self.fc2_2_(action)
+        action_ = self.input_normalization_action_(action_)
+        fc2_2_ = self.fc2_2_(action_)
         add4_ = fc3_1_ + fc2_2_
         relu4_ = self.relu4_(add4_)
         fc4_ = self.fc4_(relu4_)
-        outputs.append(fc4_)
+        qvalues_ = fc4_
 
-        return outputs[0]
+        return qvalues_
+

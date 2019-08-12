@@ -85,10 +85,10 @@ class Net_0(gluon.HybridBlock):
         with self.name_scope():
             if data_mean:
                 assert(data_std)
-                self.input_normalization_state = ZScoreNormalization(data_mean=data_mean['state'],
-                                                                               data_std=data_std['state'])
+                self.input_normalization_state_ = ZScoreNormalization(data_mean=data_mean['state_'],
+                                                                               data_std=data_std['state_'])
             else:
-                self.input_normalization_state = NoNormalization()
+                self.input_normalization_state_ = NoNormalization()
 
             self.fc1_ = gluon.nn.Dense(units=300, use_bias=True)
             # fc1_, output shape: {[300,1,1]}
@@ -104,15 +104,15 @@ class Net_0(gluon.HybridBlock):
             self.tanh3_ = gluon.nn.Activation(activation='tanh')
 
 
-    def hybrid_forward(self, F, state):
-        outputs = []
-        state = self.input_normalization_state(state)
-        fc1_ = self.fc1_(state)
+    def hybrid_forward(self, F, state_):
+        state_ = self.input_normalization_state_(state_)
+        fc1_ = self.fc1_(state_)
         relu1_ = self.relu1_(fc1_)
         fc2_ = self.fc2_(relu1_)
         relu2_ = self.relu2_(fc2_)
         fc3_ = self.fc3_(relu2_)
         tanh3_ = self.tanh3_(fc3_)
-        outputs.append(tanh3_)
+        action_ = tanh3_
 
-        return outputs[0]
+        return action_
+

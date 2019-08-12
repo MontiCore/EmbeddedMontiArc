@@ -85,9 +85,9 @@ class CNNPredictor_mnist_mnistClassifier_net_0{
             input.Resize(input_shapes);
         }
 
-        void predict(const std::vector<float> &image, std::vector<float> &predictions){
+        void predict(const std::vector<float> &image_, std::vector<float> &predictions_){
             //Note: ShareExternalPointer requires a float pointer.
-            input.ShareExternalPointer((float *) image.data());
+            input.ShareExternalPointer((float *) image_.data());
 
             // Get input blob
             #ifdef USE_GPU
@@ -104,11 +104,11 @@ class CNNPredictor_mnist_mnistClassifier_net_0{
 
             // Get output blob
             #ifdef USE_GPU
-            auto predictionsBlob = TensorCPU(workSpace.GetBlob("predictions")->Get<TensorCUDA>());
+            auto predictions_Blob = TensorCPU(workSpace.GetBlob("predictions")->Get<TensorCUDA>());
             #else
-            auto predictionsBlob = workSpace.GetBlob("predictions")->Get<TensorCPU>();
+            auto predictions_Blob = workSpace.GetBlob("predictions")->Get<TensorCPU>();
             #endif
-            predictions.assign(predictionsBlob.data<float>(),predictionsBlob.data<float>() + predictionsBlob.size());
+            predictions_.assign(predictions_Blob.data<float>(),predictions_Blob.data<float>() + predictions_Blob.size());
 
             google::protobuf::ShutdownProtobufLibrary();
         }

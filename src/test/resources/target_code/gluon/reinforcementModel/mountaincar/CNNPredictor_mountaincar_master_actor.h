@@ -29,9 +29,9 @@ public:
         if(handle) MXPredFree(handle);
     }
 
-    void predict(const std::vector<float> &state,
-                 std::vector<float> &action){
-        MXPredSetInput(handle, "data", state.data(), static_cast<mx_uint>(state.size()));
+    void predict(const std::vector<float> &in_state_,
+                 std::vector<float> &out_action_){
+        MXPredSetInput(handle, input_keys[0].c_str(), in_state_.data(), static_cast<mx_uint>(in_state_.size()));
 
         MXPredForward(handle);
 
@@ -44,8 +44,8 @@ public:
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
-        assert(size == action.size());
-        MXPredGetOutput(handle, 0, &(action[0]), action.size());
+        assert(size == out_action_.size());
+        MXPredGetOutput(handle, 0, &(out_action_[0]), out_action_.size());
 
     }
 
