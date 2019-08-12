@@ -248,28 +248,6 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     @Override
-    public void visit(ASTUnrollDeclaration ast) {
-        UnrollDeclarationSymbol unrollDeclaration = new UnrollDeclarationSymbol(ast.getName());
-        addToScopeAndLinkWithNode(unrollDeclaration, ast);
-    }
-
-    @Override
-    public void endVisit(ASTUnrollDeclaration ast) {
-        UnrollDeclarationSymbol unrollDeclaration = (UnrollDeclarationSymbol) ast.getSymbolOpt().get();
-        unrollDeclaration.setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
-
-        List<ParameterSymbol> parameters = new ArrayList<>(4);
-        for (ASTLayerParameter astParam : ast.getParametersList()){
-            ParameterSymbol parameter = (ParameterSymbol) astParam.getSymbolOpt().get();
-            parameters.add(parameter);
-        }
-        unrollDeclaration.setParameters(parameters);
-
-
-        removeCurrentScope();
-    }
-
-    @Override
     public void visit(ASTLayerParameter ast) {
         ParameterSymbol variable = new ParameterSymbol(ast.getName());
         variable.setType(ParameterType.LAYER_PARAMETER);
@@ -343,26 +321,6 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
             elements.add(serialElements);
         }
         sym.setElements(elements);
-    }
-
-    @Override
-    public void visit(ASTUnroll ast) {
-        UnrollSymbol layer = new UnrollSymbol("BeamSearchStart");
-        addToScopeAndLinkWithNode(layer, ast);
-    }
-
-    @Override
-    public void endVisit(ASTUnroll ast) {
-        UnrollSymbol layer = (UnrollSymbol) ast.getSymbolOpt().get();
-
-        List<ArgumentSymbol> arguments = new ArrayList<>(6);
-        for (ASTArchArgument astArgument : ast.getArgumentsList()){
-            Optional<ArgumentSymbol> optArgument = astArgument.getSymbolOpt().map(e -> (ArgumentSymbol)e);
-            optArgument.ifPresent(arguments::add);
-        }
-        layer.setArguments(arguments);
-
-        removeCurrentScope();
     }
 
     @Override

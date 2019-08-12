@@ -59,10 +59,6 @@ public class ArgumentSymbol extends CommonSymbol {
         return (LayerSymbol) getEnclosingScope().getSpanningSymbol().get();
     }
 
-    public UnrollSymbol getUnroll() {
-        return (UnrollSymbol) getEnclosingScope().getSpanningSymbol().get();
-    }
-
     public ArchExpressionSymbol getRhs() {
         return rhs;
     }
