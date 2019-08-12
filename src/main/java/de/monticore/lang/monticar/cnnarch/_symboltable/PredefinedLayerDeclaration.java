@@ -82,11 +82,11 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                                     VariableSymbol.Member member);
 
     public boolean isValidMember(VariableSymbol.Member member) {
-        return member == VariableSymbol.Member.NONE || member == VariableSymbol.Member.OUT;
+        return member == VariableSymbol.Member.NONE || member == VariableSymbol.Member.OUTPUT;
     }
 
     public boolean canBeInput(VariableSymbol.Member member) {
-        return member == VariableSymbol.Member.OUT;
+        return member == VariableSymbol.Member.OUTPUT;
     }
 
     public boolean canBeOutput(VariableSymbol.Member member) {

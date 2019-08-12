@@ -78,13 +78,13 @@ public class RNN extends PredefinedLayerDeclaration {
     @Override
     public boolean isValidMember(VariableSymbol.Member member) {
         return member == VariableSymbol.Member.NONE ||
-               member == VariableSymbol.Member.OUT ||
+               member == VariableSymbol.Member.OUTPUT ||
                member == VariableSymbol.Member.STATE;
     }
 
     @Override
     public boolean canBeInput(VariableSymbol.Member member) {
-        return member == VariableSymbol.Member.OUT || member == VariableSymbol.Member.STATE;
+        return member == VariableSymbol.Member.OUTPUT || member == VariableSymbol.Member.STATE;
     }
 
     @Override

@@ -40,7 +40,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
 
     public enum Member {
         STATE,
-        OUT,
+        OUTPUT,
         NONE,
         UNKNOWN;
 
@@ -49,7 +49,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                 case "state":
                     return STATE;
                 case "output":
-                    return OUT;
+                    return OUTPUT;
                 case "":
                     return NONE;
                 default:
@@ -155,7 +155,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
             return getIoDeclaration().isInput();
         }
         else if (getType() == Type.LAYER) {
-            return getMember() == Member.STATE || getMember() == Member.OUT;
+            return getMember() == Member.STATE || getMember() == Member.OUTPUT;
         }
 
         return false;
