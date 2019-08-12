@@ -10,7 +10,7 @@ using namespace arma;
 class cifar10_cifar10Classifier_net{
 const int classes = 10;
 public:
-CNNPredictor_cifar10_cifar10Classifier_net _cnn_;
+CNNPredictor_cifar10_cifar10Classifier_net_0 _predictor_0_;
 icube data;
 colvec softmax;
 void init()
@@ -21,7 +21,7 @@ softmax=colvec(classes);
 void execute(){
     vector<float> CNN_softmax(10);
 
-    _cnn_.predict(CNNTranslator::translate(data),
+    _predictor_0_.predict(CNNTranslator::translate(data),
                 CNN_softmax);
 
     softmax = CNNTranslator::translateToCol(CNN_softmax, std::vector<size_t> {10});

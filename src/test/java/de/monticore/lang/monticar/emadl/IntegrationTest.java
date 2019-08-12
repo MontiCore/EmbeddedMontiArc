@@ -26,10 +26,7 @@ import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,6 +110,7 @@ public abstract class IntegrationTest extends AbstractSymtabTest {
     }
 
     @Test
+    @Ignore
     public void testDontRetrain2() {
         // The training hash is written manually, so even the first training should be skipped
         Log.getFindings().clear();

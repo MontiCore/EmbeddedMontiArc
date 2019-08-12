@@ -1,0 +1,17 @@
+package torcs.agent;
+
+import torcs.agent.policy.GreedyDiscreteActionPolicy;
+import torcs.agent.dqn.TorcsDQN;
+
+component TorcsAgent {
+    ports
+        in Q^{5} state,
+        out Z action;
+
+    instance TorcsDQN<30> dqn;
+    instance GreedyDiscreteActionPolicy<30> policy;
+
+    connect state -> dqn.state;
+    connect dqn.qvalues -> policy.values;
+    connect policy.action -> action;
+}

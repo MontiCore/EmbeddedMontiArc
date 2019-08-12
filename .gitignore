@@ -5,6 +5,6 @@ nppBackup
 .classpath
 .idea
 .git
-
+.vscode
 *.iml
-
+train.log

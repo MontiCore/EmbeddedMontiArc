@@ -1,0 +1,16 @@
+package cartpole.agent;
+
+component Reward {
+    ports
+        in Q^{4} state,
+        in B isTerminal,
+        out Q reward;
+
+    implementation Math {
+        if isTerminal
+            reward = -1;
+        else
+            reward = 1;
+        end
+    }
+}
