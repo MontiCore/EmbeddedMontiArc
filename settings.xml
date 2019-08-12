@@ -89,7 +89,7 @@
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </repository>
-        <repository>
+        <!--<repository>
                     <id>central</id>
                     <url>https://repo1.maven.org/maven2</url>
                     <releases>
@@ -98,7 +98,7 @@
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
-                </repository>
+                </repository>-->
                 <repository>
                     <id>eclipse</id>
                     <url>https://repo.eclipse.org/content/groups/releases/</url>
