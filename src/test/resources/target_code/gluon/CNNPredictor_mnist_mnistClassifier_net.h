@@ -9,29 +9,29 @@
 
 #include <CNNBufferFile.h>
 
-class CNNPredictor_mnist_mnistClassifier_net{
+class CNNPredictor_mnist_mnistClassifier_net_0{
 public:
-    const std::string json_file = "model/mnist.LeNetNetwork/model_newest-symbol.json";
-    const std::string param_file = "model/mnist.LeNetNetwork/model_newest-0000.params";
-    //const std::vector<std::string> input_keys = {"data"};
-    const std::vector<std::string> input_keys = {"image"};
-    const std::vector<std::vector<mx_uint>> input_shapes = {{1,1,28,28}};
+    const std::string json_file = "model/mnist.LeNetNetwork/model_0_newest-symbol.json";
+    const std::string param_file = "model/mnist.LeNetNetwork/model_0_newest-0000.params";
+    const std::vector<std::string> input_keys = {
+        "data"
+    };
+    const std::vector<std::vector<mx_uint>> input_shapes = {{1, 1, 28, 28}};
     const bool use_gpu = false;
 
     PredictorHandle handle;
 
-    explicit CNNPredictor_mnist_mnistClassifier_net(){
+    explicit CNNPredictor_mnist_mnistClassifier_net_0(){
         init(json_file, param_file, input_keys, input_shapes, use_gpu);
     }
 
-    ~CNNPredictor_mnist_mnistClassifier_net(){
+    ~CNNPredictor_mnist_mnistClassifier_net_0(){
         if(handle) MXPredFree(handle);
     }
 
     void predict(const std::vector<float> &image,
                  std::vector<float> &predictions){
-        MXPredSetInput(handle, "data", image.data(), image.size());
-        //MXPredSetInput(handle, "image", image.data(), image.size());
+        MXPredSetInput(handle, "data", image.data(), static_cast<mx_uint>(image.size()));
 
         MXPredForward(handle);
 
@@ -61,8 +61,6 @@ public:
         int dev_type = use_gpu ? 2 : 1;
         int dev_id = 0;
 
-        handle = 0;
-
         if (json_data.GetLength() == 0 ||
             param_data.GetLength() == 0) {
             std::exit(-1);
@@ -79,8 +77,8 @@ public:
         mx_uint input_shape_indptr[input_shapes.size() + 1];
         input_shape_indptr[0] = 0;
         for(mx_uint i = 0; i < input_shapes.size(); i++){
-            input_shape_indptr[i+1] = input_shapes[i].size();
             shape_data_size += input_shapes[i].size();
+            input_shape_indptr[i+1] = shape_data_size;
         }
 
         mx_uint input_shape_data[shape_data_size];
@@ -92,8 +90,8 @@ public:
             }
         }
 
-        MXPredCreate((const char*)json_data.GetBuffer(),
-                     (const char*)param_data.GetBuffer(),
+        MXPredCreate(static_cast<const char*>(json_data.GetBuffer()),
+                     static_cast<const char*>(param_data.GetBuffer()),
                      static_cast<size_t>(param_data.GetLength()),
                      dev_type,
                      dev_id,

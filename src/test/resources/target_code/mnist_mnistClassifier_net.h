@@ -10,7 +10,7 @@ using namespace arma;
 class mnist_mnistClassifier_net{
 const int classes = 10;
 public:
-CNNPredictor_mnist_mnistClassifier_net _cnn_;
+CNNPredictor_mnist_mnistClassifier_net_0 _predictor_0_;
 icube image;
 colvec predictions;
 void init()
@@ -21,7 +21,7 @@ predictions=colvec(classes);
 void execute(){
     vector<float> CNN_predictions(10);
 
-    _cnn_.predict(CNNTranslator::translate(image),
+    _predictor_0_.predict(CNNTranslator::translate(image),
                 CNN_predictions);
 
     predictions = CNNTranslator::translateToCol(CNN_predictions, std::vector<size_t> {10});

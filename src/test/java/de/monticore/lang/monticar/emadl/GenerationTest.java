@@ -23,9 +23,11 @@ package de.monticore.lang.monticar.emadl;
 import de.monticore.lang.monticar.emadl.generator.Backend;
 import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
 import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -35,14 +37,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import org.junit.rules.ExpectedException;
 
 public class GenerationTest extends AbstractSymtabTest {
-
     @Before
     public void setUp() {
         // ensure an empty log
@@ -58,19 +61,25 @@ public class GenerationTest extends AbstractSymtabTest {
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
-        checkFilesAreEqual(Paths.get("./target/generated-sources-emadl"), Paths.get("./src/test/resources/target_code"),
-                Arrays.asList("cifar10_cifar10Classifier.cpp", "cifar10_cifar10Classifier.h",
-                        "CNNCreator_cifar10_cifar10Classifier_net.py", "CNNBufferFile.h",
-                        "CNNPredictor_cifar10_cifar10Classifier_net.h", "cifar10_cifar10Classifier_net.h",
-                        "CNNTranslator.h", "cifar10_cifar10Classifier_calculateClass.h",
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-emadl"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "cifar10_cifar10Classifier.cpp",
+                        "cifar10_cifar10Classifier.h",
+                        "CNNCreator_cifar10_cifar10Classifier_net.py",
+                        "CNNBufferFile.h",
+                        "CNNPredictor_cifar10_cifar10Classifier_net.h",
+                        "cifar10_cifar10Classifier_net.h",
+                        "CNNTranslator.h",
+                        "cifar10_cifar10Classifier_calculateClass.h",
                         "CNNTrainer_cifar10_cifar10Classifier_net.py"));
     }
 
     @Test
     public void testSimulatorGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = { "-m", "src/test/resources/models/", "-r", "simulator.MainController", "-b", "MXNET", "-f",
-                "n", "-c", "n" };
+        String[] args = {"-m", "src/test/resources/models/", "-r", "simulator.MainController", "-b", "MXNET", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -78,7 +87,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testAddGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = { "-m", "src/test/resources/models/", "-r", "Add", "-b", "MXNET", "-f", "n", "-c", "n" };
+        String[] args = {"-m", "src/test/resources/models/", "-r", "Add", "-b", "MXNET", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -86,7 +95,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testAlexnetGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = { "-m", "src/test/resources/models/", "-r", "Alexnet", "-b", "MXNET", "-f", "n", "-c", "n" };
+        String[] args = {"-m", "src/test/resources/models/", "-r", "Alexnet", "-b", "MXNET", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -94,7 +103,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testResNeXtGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = { "-m", "src/test/resources/models/", "-r", "ResNeXt50", "-b", "MXNET", "-f", "n", "-c", "n" };
+        String[] args = {"-m", "src/test/resources/models/", "-r", "ResNeXt50", "-b", "MXNET", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -102,8 +111,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testThreeInputGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = { "-m", "src/test/resources/models/", "-r", "ThreeInputCNN_M14", "-b", "MXNET", "-f", "n", "-c",
-                "n" };
+        String[] args = {"-m", "src/test/resources/models/", "-r", "ThreeInputCNN_M14", "-b", "MXNET", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
     }
@@ -111,8 +119,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testMultipleOutputsGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = { "-m", "src/test/resources/models/", "-r", "MultipleOutputs", "-b", "MXNET", "-f", "n", "-c",
-                "n" };
+        String[] args = {"-m", "src/test/resources/models/", "-r", "MultipleOutputs", "-b", "MXNET", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
     }
@@ -120,7 +127,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testVGGGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = { "-m", "src/test/resources/models/", "-r", "VGG16", "-b", "MXNET", "-f", "n", "-c", "n" };
+        String[] args = {"-m", "src/test/resources/models/", "-r", "VGG16", "-b", "MXNET", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -129,57 +136,150 @@ public class GenerationTest extends AbstractSymtabTest {
     public void testMultipleInstances() throws IOException, TemplateException {
         try {
             Log.getFindings().clear();
-            String[] args = { "-m", "src/test/resources/models/", "-r", "InstanceTest.MainB", "-b", "MXNET", "-f", "n",
-                    "-c", "n" };
+            String[] args = {"-m", "src/test/resources/models/", "-r", "InstanceTest.MainB", "-b", "MXNET", "-f", "n", "-c", "n"};
             EMADLGeneratorCli.main(args);
             assertTrue(Log.getFindings().isEmpty());
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void testMnistClassifier() throws IOException, TemplateException {
+    public void testMnistClassifierForCaffe2() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = { "-m", "src/test/resources/models/", "-r", "mnist.MnistClassifier", "-b", "CAFFE2", "-f", "n",
-                "-c", "n" };
+        String[] args = {"-m", "src/test/resources/models/", "-r", "mnist.MnistClassifier", "-b", "CAFFE2", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
-        checkFilesAreEqual(Paths.get("./target/generated-sources-emadl"), Paths.get("./src/test/resources/target_code"),
-                Arrays.asList("mnist_mnistClassifier.cpp", "mnist_mnistClassifier.h",
-                        "CNNCreator_mnist_mnistClassifier_net.py", "CNNPredictor_mnist_mnistClassifier_net.h",
-                        "mnist_mnistClassifier_net.h", "CNNTranslator.h", "mnist_mnistClassifier_calculateClass.h",
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-emadl"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "mnist_mnistClassifier.cpp",
+                        "mnist_mnistClassifier.h",
+                        "CNNCreator_mnist_mnistClassifier_net.py",
+                        "CNNPredictor_mnist_mnistClassifier_net.h",
+                        "mnist_mnistClassifier_net.h",
+                        "CNNTranslator.h",
+                        "mnist_mnistClassifier_calculateClass.h",
                         "CNNTrainer_mnist_mnistClassifier_net.py"));
     }
 
     @Test
     public void testMnistClassifierForGluon() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = { "-m", "src/test/resources/models/", "-r", "mnist.MnistClassifier", "-b", "GLUON", "-f", "n",
-                "-c", "n" };
+        String[] args = {"-m", "src/test/resources/models/", "-r", "mnist.MnistClassifier", "-b", "GLUON", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
-        checkFilesAreEqual(Paths.get("./target/generated-sources-emadl"),
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-emadl"),
                 Paths.get("./src/test/resources/target_code/gluon"),
-                Arrays.asList("CNNBufferFile.h", "CNNNet_mnist_mnistClassifier_net.py", "mnist_mnistClassifier.cpp",
-                        "mnist_mnistClassifier.h", "CNNCreator_mnist_mnistClassifier_net.py",
-                        "CNNPredictor_mnist_mnistClassifier_net.h", "CNNDataLoader_mnist_mnistClassifier_net.py",
-                        "supervised_trainer.py", "mnist_mnistClassifier_net.h", "HelperA.h", "CNNTranslator.h",
-                        "mnist_mnistClassifier_calculateClass.h", "CNNTrainer_mnist_mnistClassifier_net.py",
+                Arrays.asList(
+                        "CNNBufferFile.h",
+                        "CNNNet_mnist_mnistClassifier_net.py",
+                        "mnist_mnistClassifier.cpp",
+                        "mnist_mnistClassifier.h",
+                        "CNNCreator_mnist_mnistClassifier_net.py",
+                        "CNNPredictor_mnist_mnistClassifier_net.h",
+                        "CNNDataLoader_mnist_mnistClassifier_net.py",
+                        "CNNSupervisedTrainer_mnist_mnistClassifier_net.py",
+                        "mnist_mnistClassifier_net.h",
+                        "HelperA.h",
+                        "CNNTranslator.h",
+                        "mnist_mnistClassifier_calculateClass.h",
+                        "CNNTrainer_mnist_mnistClassifier_net.py",
                         "mnist_mnistClassifier_net.h"));
+    }
+
+    @Test
+    public void testInvariantForGluon() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/models/", "-r", "Invariant", "-b", "GLUON", "-f", "n", "-c", "n"};
+        EMADLGeneratorCli.main(args);
+        assertTrue(Log.getFindings().size() == 0);
+    }
+
+    @Test
+    public void testGluonReinforcementModelGymEnvironment() {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "cartpole.Master", "-b", "GLUON", "-f", "n", "-c", "n"};
+        EMADLGeneratorCli.main(args);
+        assertTrue(Log.getFindings().stream().filter(Finding::isError).collect(Collectors.toList()).isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-emadl"),
+                Paths.get("./src/test/resources/target_code/gluon/reinforcementModel/cartpole"),
+                Arrays.asList(
+                        "cartpole_master.cpp",
+                        "cartpole_master.h",
+                        "cartpole_master_dqn.h",
+                        "cartpole_master_policy.h",
+                        "CMakeLists.txt",
+                        "CNNBufferFile.h",
+                        "CNNCreator_cartpole_master_dqn.py",
+                        "CNNNet_cartpole_master_dqn.py",
+                        "CNNPredictor_cartpole_master_dqn.h",
+                        "CNNTrainer_cartpole_master_dqn.py",
+                        "CNNTranslator.h",
+                        "HelperA.h",
+                        "start_training.sh",
+                        "reinforcement_learning/__init__.py",
+                        "reinforcement_learning/strategy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
+                )
+        );
     }
 
     @Test
     public void testHashFunction() {
         EMADLGenerator tester = new EMADLGenerator(Backend.MXNET);
-
-        try {
+        
+        try{
             tester.getChecksumForFile("invalid Path!");
             assertTrue("Hash method should throw IOException on invalid path", false);
-        } catch (IOException e) {
+        } catch(IOException e){
         }
+    }
+
+    @Test
+    public void gluonDdpgTest() {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "mountaincar.Master", "-b", "GLUON", "-f", "n", "-c", "n"};
+        EMADLGeneratorCli.main(args);
+        assertEquals(0, Log.getFindings().stream().filter(Finding::isError).count());
+
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-emadl"),
+                Paths.get("./src/test/resources/target_code/gluon/reinforcementModel/mountaincar"),
+                Arrays.asList(
+                        "mountaincar_master.cpp",
+                        "mountaincar_master.h",
+                        "mountaincar_master_actor.h",
+                        "CMakeLists.txt",
+                        "CNNBufferFile.h",
+                        "CNNCreator_mountaincar_master_actor.py",
+                        "CNNNet_mountaincar_master_actor.py",
+                        "CNNPredictor_mountaincar_master_actor.h",
+                        "CNNTrainer_mountaincar_master_actor.py",
+                        "CNNTranslator.h",
+                        "HelperA.h",
+                        "start_training.sh",
+                        "reinforcement_learning/__init__.py",
+                        "reinforcement_learning/CNNCreator_mountaincar_agent_mountaincarCritic.py",
+                        "reinforcement_learning/CNNNet_mountaincar_agent_mountaincarCritic.py",
+                        "reinforcement_learning/strategy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
+                )
+        );
     }
 
     @Test

@@ -34,6 +34,6 @@ component ResNet152{
         GlobalPooling(pool_type="avg") ->
         FullyConnected(units=1000) ->
         Softmax() ->
-        predictions
+        predictions;
     }
 }

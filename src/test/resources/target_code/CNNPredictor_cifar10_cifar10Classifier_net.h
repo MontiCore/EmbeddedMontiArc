@@ -9,7 +9,7 @@
 
 #include <CNNBufferFile.h>
 
-class CNNPredictor_cifar10_cifar10Classifier_net{
+class CNNPredictor_cifar10_cifar10Classifier_net_0{
 public:
     const std::string json_file = "model/cifar10.CifarNetwork/model_newest-symbol.json";
     const std::string param_file = "model/cifar10.CifarNetwork/model_newest-0000.params";
@@ -20,16 +20,16 @@ public:
 
     PredictorHandle handle;
 
-    explicit CNNPredictor_cifar10_cifar10Classifier_net(){
+    explicit CNNPredictor_cifar10_cifar10Classifier_net_0(){
         init(json_file, param_file, input_keys, input_shapes, use_gpu);
     }
 
-    ~CNNPredictor_cifar10_cifar10Classifier_net(){
+    ~CNNPredictor_cifar10_cifar10Classifier_net_0(){
         if(handle) MXPredFree(handle);
     }
 
     void predict(const std::vector<float> &data,
-                     std::vector<float> &softmax){
+                 std::vector<float> &softmax){
         MXPredSetInput(handle, "data", data.data(), data.size());
         //MXPredSetInput(handle, "data", data.data(), data.size());
 
