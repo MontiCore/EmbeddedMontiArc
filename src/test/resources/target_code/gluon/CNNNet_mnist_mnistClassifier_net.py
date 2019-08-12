@@ -2,6 +2,16 @@ import mxnet as mx
 import numpy as np
 from mxnet import gluon
 
+class OneHot(gluon.HybridBlock):
+    def __init__(self, size, **kwargs):
+        super(OneHot, self).__init__(**kwargs)
+        with self.name_scope():
+            self.size = size
+
+    def hybrid_forward(self, F, x):
+        return F.one_hot(indices=F.argmax(data=x, axis=1), depth=self.size)
+
+
 class Softmax(gluon.HybridBlock):
     def __init__(self, **kwargs):
         super(Softmax, self).__init__(**kwargs)
@@ -68,15 +78,17 @@ class NoNormalization(gluon.HybridBlock):
         return x
 
 
-class Net(gluon.HybridBlock):
+class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net, self).__init__(**kwargs)
+        super(Net_0, self).__init__(**kwargs)
+        self.last_layers = {}
         with self.name_scope():
-            if not data_mean is None:
-                assert(not data_std is None)
-                self.input_normalization = ZScoreNormalization(data_mean=data_mean, data_std=data_std)
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_image = ZScoreNormalization(data_mean=data_mean['image'],
+                                                                               data_std=data_std['image'])
             else:
-                self.input_normalization = NoNormalization()
+                self.input_normalization_image = NoNormalization()
 
             self.conv1_ = gluon.nn.Conv2D(channels=20,
                 kernel_size=(5,5),
@@ -108,12 +120,12 @@ class Net(gluon.HybridBlock):
             self.fc3_ = gluon.nn.Dense(units=10, use_bias=True)
             # fc3_, output shape: {[10,1,1]}
 
+            self.softmax3_ = Softmax()
 
-        self.last_layer = 'softmax'
 
-
-    def hybrid_forward(self, F, x):
-        image = self.input_normalization(x)
+    def hybrid_forward(self, F, image):
+        outputs = []
+        image = self.input_normalization_image(image)
         conv1_ = self.conv1_(image)
         pool1_ = self.pool1_(conv1_)
         conv2_ = self.conv2_(pool1_)
@@ -122,4 +134,7 @@ class Net(gluon.HybridBlock):
         fc2_ = self.fc2_(fc2_flatten_)
         relu2_ = self.relu2_(fc2_)
         fc3_ = self.fc3_(relu2_)
-        return fc3_
+        softmax3_ = self.softmax3_(fc3_)
+        outputs.append(softmax3_)
+
+        return outputs[0]

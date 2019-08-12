@@ -18,7 +18,7 @@ class MyConstant(mx.init.Initializer):
 class CNNCreator_cifar10_cifar10Classifier_net:
 
     module = None
-    _data_dir_ = "src/test/resources/training_data/"
+    _data_dir_ = "src/test/resources/training_data/Cifar/"
     _model_dir_ = "model/cifar10.CifarNetwork/"
     _model_prefix_ = "model"
     _input_names_ = ['data']
@@ -104,10 +104,83 @@ class CNNCreator_cifar10_cifar10Classifier_net:
             logging.error("Data loading failure. File '" + os.path.abspath(train_path) + "' does not exist.")
             sys.exit(1)
 
+    def loss_function(self, loss, params):
+        label = mx.symbol.var(name=self._output_names_[0], )
+        prediction = self.module.symbol.get_children()[0]
+
+        margin = params['margin'] if 'margin' in params else 1.0
+        sparseLabel = params['sparse_label'] if 'sparse_label' in params else True
+
+        if loss == 'softmax_cross_entropy':
+            fromLogits = params['from_logits'] if 'from_logits' in params else False
+            if not fromLogits:
+                prediction = mx.symbol.log_softmax(data=prediction, axis=1)
+            if sparseLabel:
+                loss_func = mx.symbol.mean(-mx.symbol.pick(prediction, label, axis=-1, keepdims=True), axis=0, exclude=True)
+            else:
+                label = mx.symbol.reshape_like(label, prediction)
+                loss_func = mx.symbol.mean(-mx.symbol.sum(prediction * label, axis=-1, keepdims=True), axis=0, exclude=True)
+            loss_func = mx.symbol.MakeLoss(loss_func, name="softmax_cross_entropy")
+        elif loss == 'cross_entropy':
+            prediction = mx.symbol.log(prediction)
+            if sparseLabel:
+                loss_func = mx.symbol.mean(-mx.symbol.pick(prediction, label, axis=-1, keepdims=True), axis=0, exclude=True)
+            else:
+                label = mx.symbol.reshape_like(label, prediction)
+                loss_func = mx.symbol.mean(-mx.symbol.sum(prediction * label, axis=-1, keepdims=True), axis=0, exclude=True)
+            loss_func = mx.symbol.MakeLoss(loss_func, name="cross_entropy")
+        elif loss == 'sigmoid_binary_cross_entropy':
+            loss_func = mx.symbol.LogisticRegressionOutput(data=prediction, name=self.module.symbol.name)
+        elif loss == 'l1':
+            loss_func = mx.symbol.MAERegressionOutput(data=prediction, name=self.module.symbol.name)
+        elif loss == 'l2':
+            label = mx.symbol.reshape_like(label, prediction)
+            loss_func = mx.symbol.mean(mx.symbol.square((label - prediction) / 2), axis=0, exclude=True)
+            loss_func = mx.symbol.MakeLoss(loss_func, name="L2")
+        elif loss == 'huber':
+            rho = params['rho'] if 'rho' in params else 1
+            label = mx.symbol.reshape_like(label, prediction)
+            loss_func = mx.symbol.abs(label - prediction)
+            loss_func = mx.symbol.where(loss_func > rho, loss_func - 0.5 * rho, (0.5 / rho) * mx.symbol.square(loss_func))
+            loss_func = mx.symbol.mean(loss_func, axis=0, exclude=True)
+            loss_func = mx.symbol.MakeLoss(loss_func, name="huber")
+        elif loss == 'hinge':
+            label = mx.symbol.reshape_like(label, prediction)
+            loss_func = mx.symbol.mean(mx.symbol.relu(margin - prediction * label), axis=0, exclude=True)
+            loss_func = mx.symbol.MakeLoss(loss_func, name="hinge")
+        elif loss == 'squared_hinge':
+            label = mx.symbol.reshape_like(label, prediction)
+            loss_func = mx.symbol.mean(mx.symbol.square(mx.symbol.relu(margin - prediction * label)), axis=0, exclude=True)
+            loss_func = mx.symbol.MakeLoss(loss_func, name="squared_hinge")
+        elif loss == 'logistic':
+            labelFormat = params['label_format'] if 'label_format' in params else 'signed'
+            if labelFormat not in ["binary", "signed"]:
+                logging.error("label_format can only be signed or binary")
+            label = mx.symbol.reshape_like(label, prediction)
+            if labelFormat == 'signed':
+                label = (label + 1.0)/2.0
+            loss_func = mx.symbol.relu(prediction) - prediction * label
+            loss_func = loss_func + mx.symbol.Activation(-mx.symbol.abs(prediction), act_type="softrelu")
+            loss_func = mx.symbol.MakeLoss(mx.symbol.mean(loss_func, 0, exclude=True), name="logistic")
+        elif loss == 'kullback_leibler':
+            fromLogits = params['from_logits'] if 'from_logits' in params else True
+            if not fromLogits:
+                prediction = mx.symbol.log_softmax(prediction, axis=1)
+            loss_func = mx.symbol.mean(label * (mx.symbol.log(label) - prediction), axis=0, exclude=True)
+            loss_func = mx.symbol.MakeLoss(loss_func, name="kullback_leibler")
+        elif loss == 'log_cosh':
+            loss_func = mx.symbol.mean(mx.symbol.log(mx.symbol.cosh(prediction - label)), axis=0, exclude=True)
+            loss_func = mx.symbol.MakeLoss(loss_func, name="log_cosh")
+        else:
+            logging.error("Invalid loss parameter.")
+
+        return loss_func
 
     def train(self, batch_size=64,
               num_epoch=10,
               eval_metric='acc',
+              loss ='softmax_cross_entropy',
+              loss_params={},
               optimizer='adam',
               optimizer_params=(('learning_rate', 0.001),),
               load_checkpoint=True,
@@ -136,13 +209,20 @@ class CNNCreator_cifar10_cifar10Classifier_net:
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
-
         train_iter, test_iter, data_mean, data_std = self.load_data(batch_size)
         if self.module == None:
             if normalize:
                 self.construct(mx_context, data_mean, data_std)
             else:
                 self.construct(mx_context)
+
+        loss_func = self.loss_function(loss=loss, params=loss_params)
+
+        self.module = mx.mod.Module(
+            symbol=mx.symbol.Group([loss_func, mx.symbol.BlockGrad(self.module.symbol.get_children()[0], name="pred")]),
+            data_names=self._input_names_,
+            label_names=self._output_names_,
+            context=mx_context)
 
         begin_epoch = 0
         if load_checkpoint:
@@ -157,9 +237,11 @@ class CNNCreator_cifar10_cifar10Classifier_net:
             if not os.path.isdir(self._model_dir_):
                 raise
 
+        metric = mx.metric.create(eval_metric, output_names=['pred_output'])
+
         self.module.fit(
             train_data=train_iter,
-            eval_metric=eval_metric,
+            eval_metric=metric,
             eval_data=test_iter,
             optimizer=optimizer,
             optimizer_params=optimizer_params,
@@ -656,8 +738,10 @@ class CNNCreator_cifar10_cifar10Classifier_net:
             num_hidden=10,
             no_bias=False,
             name="fc32_")
-
-        softmax = mx.symbol.SoftmaxOutput(data=fc32_,
+        softmax32_ = mx.symbol.softmax(data=fc32_,
+            axis=1,
+            name="softmax32_")
+        softmax = mx.symbol.SoftmaxOutput(data=softmax32_,
             name="softmax")
 
         self.module = mx.mod.Module(symbol=mx.symbol.Group([softmax]),

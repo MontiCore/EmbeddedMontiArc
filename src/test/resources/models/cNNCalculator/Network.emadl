@@ -14,7 +14,7 @@ component Network{
         Relu() ->
         FullyConnected(units=10) ->
         Softmax() ->
-        predictions
+        predictions;
 
     }
 }

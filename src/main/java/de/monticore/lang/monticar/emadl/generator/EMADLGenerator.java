@@ -27,10 +27,15 @@ import com.google.common.io.Resources;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
-import de.monticore.lang.monticar.cnnarch.DataPathConfigParser;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.DataPathConfigParser;
+import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnntrain.CNNTrainGenerator;
+import de.monticore.lang.monticar.cnnarch._symboltable.SerialCompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNTrain2Gluon;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.annotations.ArchitectureAdapter;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCoCoChecker;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.generator.FileContent;
@@ -66,8 +71,8 @@ public class EMADLGenerator {
     private Backend backend;
 
     private String modelsPath;
-    
 
+    private Map<String, ArchitectureSymbol> processedArchitecture;
 
     public EMADLGenerator(Backend backend) {
         this.backend = backend;
@@ -109,8 +114,21 @@ public class EMADLGenerator {
     }
 
     public void generate(String modelPath, String qualifiedName, String pythonPath, String forced, boolean doCompile) throws IOException, TemplateException {
+        processedArchitecture = new HashMap<>();
         setModelsPath( modelPath );
         TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
+        EMAComponentInstanceSymbol instance = resolveComponentInstanceSymbol(qualifiedName, symtab);
+
+
+        generateFiles(symtab, instance, symtab, pythonPath, forced);
+        
+        if (doCompile) {
+            compile();
+        }
+        processedArchitecture = null;
+    }
+
+    private EMAComponentInstanceSymbol resolveComponentInstanceSymbol(String qualifiedName, TaggingResolver symtab) {
         EMAComponentSymbol component = symtab.<EMAComponentSymbol>resolve(qualifiedName, EMAComponentSymbol.KIND).orElse(null);
 
         List<String> splitName = Splitters.DOT.splitToList(qualifiedName);
@@ -122,14 +140,7 @@ public class EMADLGenerator {
             System.exit(1);
         }
 
-        EMAComponentInstanceSymbol instance = component.getEnclosingScope().<EMAComponentInstanceSymbol>resolve(instanceName, EMAComponentInstanceSymbol.KIND).get();
-
-
-        generateFiles(symtab, instance, symtab, pythonPath, forced);
-        
-        if (doCompile) {
-            compile();
-        }
+        return component.getEnclosingScope().<EMAComponentInstanceSymbol>resolve(instanceName, EMAComponentInstanceSymbol.KIND).get();
     }
 
     public void compile() throws IOException {
@@ -228,12 +239,14 @@ public class EMADLGenerator {
             String b = backend.getBackendString(backend);
             String trainingDataHash = "";
             String testDataHash = "";
-            if(b.equals("CAFFE2")){
-                trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train_lmdb/data.mdb");
-                testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test_lmdb/data.mdb");
-            }else{
-                trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train.h5");
-                testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test.h5");
+            if (architecture.get().getDataPath() != null) {
+                if (b.equals("CAFFE2")) {
+                    trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train_lmdb/data.mdb");
+                    testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test_lmdb/data.mdb");
+                } else {
+                    trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train.h5");
+                    testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test.h5");
+                }
             }
             String trainingHash = emadlHash + "#" + cnntHash + "#" + trainingDataHash + "#" + testDataHash;
 
@@ -312,6 +325,7 @@ public class EMADLGenerator {
 
     public List<FileContent> generateStrings(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab, Set<EMAComponentInstanceSymbol> allInstances, String forced){
         List<FileContent> fileContents = new ArrayList<>();
+        processedArchitecture = new HashMap<>();
 
         generateComponent(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
 
@@ -338,6 +352,7 @@ public class EMADLGenerator {
 
         fixArmadilloImports(fileContents);
 
+        processedArchitecture = null;
         return fileContents;
     }
 
@@ -360,13 +375,26 @@ public class EMADLGenerator {
         EMADLCocos.checkAll(componentInstanceSymbol);
 
         if (architecture.isPresent()){
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
-            String dPath = newParserConfig.getDataPath(EMAComponentSymbol.getFullName());
+            cnnArchGenerator.check(architecture.get());
+
+            String dPath = null;
+            Path dataPathDefinition = Paths.get(getModelsPath(), "data_paths.txt");
+            if (dataPathDefinition.toFile().exists()) {
+                DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
+                dPath = newParserConfig.getDataPath(EMAComponentSymbol.getFullName());
+            } else {
+                Log.warn("No data path definition found in " + dataPathDefinition + " found: "
+                        + "Set data path to default ./data path");
+                dPath = "data";
+            }
 
             /*String dPath = DataPathConfigParser.getDataPath(getModelsPath() + "data_paths.txt", componentSymbol.getFullName());*/
             architecture.get().setDataPath(dPath);
             architecture.get().setComponentName(EMAComponentSymbol.getFullName());
             generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get());
+            if (processedArchitecture != null) {
+                processedArchitecture.put(architecture.get().getComponentName(), architecture.get());
+            }
         }
         else if (mathStatements.isPresent()){
             generateMathComponent(fileContents, taggingResolver, componentInstanceSymbol, mathStatements.get());
@@ -398,7 +426,7 @@ public class EMADLGenerator {
 
         String component = emamGen.generateString(taggingResolver, instance, (MathStatementsSymbol) null);
         FileContent componentFileContent = new FileContent(
-                transformComponent(component, "CNNPredictor_" + fullName, executeMethod),
+                transformComponent(component, "CNNPredictor_" + fullName, executeMethod, architecture),
                 instance);
 
         for (String fileName : contentMap.keySet()){
@@ -408,18 +436,26 @@ public class EMADLGenerator {
         fileContents.add(new FileContent(readResource("CNNTranslator.h", Charsets.UTF_8), "CNNTranslator.h"));
     }
 
-    protected String transformComponent(String component, String predictorClassName, String executeMethod){
-        String networkVariableName = "_cnn_";
-
+    protected String transformComponent(String component, String predictorClassName, String executeMethod, ArchitectureSymbol architecture){
         //insert includes
         component = component.replaceFirst("using namespace",
                 "#include \"" + predictorClassName + ".h" + "\"\n" +
                         "#include \"CNNTranslator.h\"\n" +
                         "using namespace");
 
-        //insert network attribute
-        component = component.replaceFirst("public:",
-                "public:\n" + predictorClassName + " " + networkVariableName + ";");
+        //insert network attribute for predictor of each network
+        String networkAttributes = "public:";
+
+        int i = 0;
+        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
+            if (stream.isNetwork()) {
+                networkAttributes += "\n" + predictorClassName + "_" + i + " _predictor_" + i + "_;";
+            }
+
+            ++i;
+        }
+
+        component = component.replaceFirst("public:", networkAttributes);
 
         //insert execute method
         component = component.replaceFirst("void execute\\(\\)\\s\\{\\s\\}",
@@ -487,10 +523,46 @@ public class EMADLGenerator {
                 String trainConfigFilename = getConfigFilename(mainComponentName, component.getFullName(), component.getName());
 
                 //should be removed when CNNTrain supports packages
+                cnnTrainGenerator.setGenerationTargetPath(getGenerationTargetPath());
+                if (cnnTrainGenerator instanceof CNNTrain2Gluon) {
+                    ((CNNTrain2Gluon) cnnTrainGenerator).setRootProjectModelsDir(getModelsPath());
+                }
                 List<String> names = Splitter.on("/").splitToList(trainConfigFilename);
                 trainConfigFilename = names.get(names.size()-1);
                 Path modelPath = Paths.get(getModelsPath() + Joiner.on("/").join(names.subList(0,names.size()-1)));
                 ConfigurationSymbol configuration = cnnTrainGenerator.getConfigurationSymbol(modelPath, trainConfigFilename);
+
+                // Annotate train configuration with architecture
+                final String fullConfigName = String.join(".", names);
+                ArchitectureSymbol correspondingArchitecture = this.processedArchitecture.get(fullConfigName);
+                assert correspondingArchitecture != null : "No architecture found for train " + fullConfigName + " configuration!";
+                configuration.setTrainedArchitecture(
+                        new ArchitectureAdapter(correspondingArchitecture.getName(), correspondingArchitecture));
+                CNNTrainCocos.checkTrainedArchitectureCoCos(configuration);
+
+                // Resolve critic network if critic is present
+                if (configuration.getCriticName().isPresent()) {
+                    String fullCriticName = configuration.getCriticName().get();
+                    int indexOfFirstNameCharacter = fullCriticName.lastIndexOf('.') + 1;
+                    fullCriticName = fullCriticName.substring(0, indexOfFirstNameCharacter)
+                            + fullCriticName.substring(indexOfFirstNameCharacter, indexOfFirstNameCharacter + 1).toUpperCase()
+                            + fullCriticName.substring(indexOfFirstNameCharacter + 1);
+
+                    TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
+                    EMAComponentInstanceSymbol instanceSymbol = resolveComponentInstanceSymbol(fullCriticName, symtab);
+                    EMADLCocos.checkAll(instanceSymbol);
+                    Optional<ArchitectureSymbol> critic = instanceSymbol.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
+                    if (!critic.isPresent()) {
+                        Log.error("During the resolving of critic component: Critic component "
+                                + fullCriticName + " does not have a CNN implementation but is required to have one");
+                        System.exit(-1);
+                    }
+                    critic.get().setComponentName(fullCriticName);
+                    configuration.setCriticNetwork(new ArchitectureAdapter(fullCriticName, critic.get()));
+                    CNNTrainCocos.checkCriticCocos(configuration);
+                }
+
+
                 cnnTrainGenerator.setInstanceName(componentInstance.getFullName().replaceAll("\\.", "_"));
                 Map<String, String> fileContentMap =  cnnTrainGenerator.generateStrings(configuration);
                 for (String fileName : fileContentMap.keySet()){

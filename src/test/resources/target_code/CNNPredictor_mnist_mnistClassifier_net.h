@@ -23,7 +23,7 @@ CAFFE2_DEFINE_string(predict_net_CNNPredictor_mnist_mnistClassifier_net, "./mode
 
 using namespace caffe2;
 
-class CNNPredictor_mnist_mnistClassifier_net{
+class CNNPredictor_mnist_mnistClassifier_net_0{
     private:
         TensorCPU input;
         Workspace workSpace;
@@ -32,11 +32,11 @@ class CNNPredictor_mnist_mnistClassifier_net{
     public:
         const std::vector<TIndex> input_shapes = {{1,1,28,28}};
 
-        explicit CNNPredictor_mnist_mnistClassifier_net(){
+        explicit CNNPredictor_mnist_mnistClassifier_net_0(){
             init(input_shapes);
         }
 
-        ~CNNPredictor_mnist_mnistClassifier_net(){};
+        ~CNNPredictor_mnist_mnistClassifier_net_0(){};
 
         void init(const std::vector<TIndex> &input_shapes){
             int n = 0;
