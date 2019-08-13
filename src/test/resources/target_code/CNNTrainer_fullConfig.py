@@ -18,7 +18,6 @@ if __name__ == "__main__":
         batch_size=100,
         context='gpu',
         eval_metric='mse',
-        loss='cross_entropy',
         opt_type='rmsprop',
         epsilon=1.0E-6,
         weight_decay=0.01,

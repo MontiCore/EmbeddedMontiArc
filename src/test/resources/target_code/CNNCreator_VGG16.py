@@ -72,9 +72,9 @@ class CNNCreator_VGG16:
     def create_model(self, model, data, device_opts, is_test):
     	with core.DeviceScope(device_opts):
 
-    		data = data
-    		# data, output shape: {[3,224,224]}
-    		conv1_ = brew.conv(model, data, 'conv1_', dim_in=3, dim_out=64, kernel=3, stride=1, pad=1)
+    		data_ = data
+    		# data_, output shape: {[3,224,224]}
+    		conv1_ = brew.conv(model, data_, 'conv1_', dim_in=3, dim_out=64, kernel=3, stride=1, pad=1)
     		# conv1_, output shape: {[64,224,224]}
     		relu1_ = brew.relu(model, conv1_, conv1_)
     		conv2_ = brew.conv(model, relu1_, 'conv2_', dim_in=64, dim_out=64, kernel=3, stride=1, pad=1)
@@ -133,9 +133,9 @@ class CNNCreator_VGG16:
     		dropout15_ = brew.dropout(model, relu15_, 'dropout15_', ratio=0.5, is_test=False)
     		fc15_ = brew.fc(model, dropout15_, 'fc15_', dim_in=4096, dim_out=1000)
     		# fc15_, output shape: {[1000,1,1]}
-    		predictions = brew.softmax(model, fc15_, 'predictions')
+    		predictions_ = brew.softmax(model, fc15_, 'predictions_')
 
-    		return predictions
+    		return predictions_
 
     # this adds the loss and optimizer
     def add_training_operators(self, model, output, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum) :
@@ -196,10 +196,10 @@ class CNNCreator_VGG16:
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
     	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'train_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	predictions = self.create_model(train_model, data, device_opts=device_opts, is_test=False)
-    	self.add_training_operators(train_model, predictions, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
+    	predictions_ = self.create_model(train_model, data, device_opts=device_opts, is_test=False)
+    	self.add_training_operators(train_model, predictions_, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	if not loss == 'euclidean':
-    		self.add_accuracy(train_model, predictions, label, device_opts, eval_metric)
+    		self.add_accuracy(train_model, predictions_, label, device_opts, eval_metric)
     	with core.DeviceScope(device_opts):
     		brew.add_weight_decay(train_model, weight_decay)
 
@@ -231,9 +231,9 @@ class CNNCreator_VGG16:
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
     	data, label, test_dataset_size = self.add_input(test_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'test_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	predictions = self.create_model(test_model, data, device_opts=device_opts, is_test=True)
+    	predictions_ = self.create_model(test_model, data, device_opts=device_opts, is_test=True)
     	if not loss == 'euclidean':
-    		self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
+    		self.add_accuracy(test_model, predictions_, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
     	workspace.CreateNet(test_model.net, overwrite=True)
 

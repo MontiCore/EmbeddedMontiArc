@@ -1,5 +1,5 @@
 <#list tc.architecture.outputs as output>
-    <#assign shape = output.definition.type.dimensions>
+    <#assign shape = output.ioDeclaration.type.dimensions>
     vector<float> CNN_${tc.getName(output)}(<#list shape as dim>${dim?c}<#if  dim?has_next>*</#if></#list>);
 </#list>
 
@@ -8,7 +8,7 @@
                 </#if></#list>);
 
 <#list tc.architecture.outputs as output>
-<#assign shape = output.definition.type.dimensions>
+<#assign shape = output.ioDeclaration.type.dimensions>
 <#if shape?size == 1>
     ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToCol(CNN_${tc.getName(output)}, std::vector<size_t> {${shape[0]?c}});
 </#if>
