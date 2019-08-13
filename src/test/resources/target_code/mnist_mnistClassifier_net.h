@@ -19,12 +19,12 @@ image = icube(1, 28, 28);
 predictions=colvec(classes);
 }
 void execute(){
-    vector<float> CNN_predictions(10);
+    vector<float> CNN_predictions_(10);
 
     _predictor_0_.predict(CNNTranslator::translate(image),
-                CNN_predictions);
+                CNN_predictions_);
 
-    predictions = CNNTranslator::translateToCol(CNN_predictions, std::vector<size_t> {10});
+    predictions = CNNTranslator::translateToCol(CNN_predictions_, std::vector<size_t> {10});
 
 }
 
