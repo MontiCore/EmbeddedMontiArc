@@ -36,23 +36,23 @@ with h5py.File(args.i, 'r') as f:
 
     if data_total_size < MAX_SIZE:
         images = np.array(f[data_key])
+        images = images.reshape((-1,480,640,3)).astype("uint8")
         targets_real = np.array(f[target_key])
     else:
         num_chunks = data_total_size // MAX_SIZE + 1
         chunk_size = f[data_key].shape[0] // num_chunks
         chunk_id = int(input("Dataset is too large. It was divided into " + str(num_chunks) + " chunks. Which chunk [1-" + str(num_chunks) + "] should be selected?: ")) - 1
 
-        images = np.array(f[data_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size, 3:6])
-        images = images.reshape((-1,3,480,640)).astype("uint8")
+        images = np.array(f[data_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size][:])
+        images = images.reshape((-1,480,640,3)).astype("uint8")
         targets_real = np.array(f[target_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size])
 
-    
     with open('predictions.csv') as f:
          for row in csv.reader(f, delimiter=','):
             targets_pred = np.array([float(r) for r in row]).astype('float32')
-            print(targets_pred)
-            
-    print('predictions:','targets_pred')
+
+    print('predictions:',targets_pred)
+
     print("-"*40)
     print('Starting plot...')
     start_plot(images, targets_real, targets_pred)

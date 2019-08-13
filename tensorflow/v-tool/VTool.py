@@ -41,7 +41,6 @@ def start_plot(images, targets_real, targets_pred):
         acc.update(targets_real[i],targets_pred[i])
 
     player = Player(fig, ax_player, update, maxi=len(targets_real)-1, interval=50)
-
     image = ax_image.imshow(images[0])
 
     center = (0.5,0.5)
