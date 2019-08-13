@@ -28,7 +28,7 @@ import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ParameterSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
@@ -99,8 +99,8 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
                 }
                 else {
                     String instName = element instanceof ASTNameExpression ? ((ASTNameExpression) element).getName() : element.getSymbolOpt().get().getName();
-                    VariableSymbol variable= port.getEnclosingScope()
-                            .<VariableSymbol>resolve(instName, VariableSymbol.KIND).get();
+                    ParameterSymbol variable= port.getEnclosingScope()
+                            .<ParameterSymbol>resolve(instName, ParameterSymbol.KIND).get();
                     dimensionList.add(variable.getExpression());
                 }
             }
