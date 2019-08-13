@@ -154,16 +154,16 @@ public abstract class CNNArchTemplateController {
 
     public List<String> getArchitectureInputs(){
         List<String> list = new ArrayList<>();
-        for (IOSymbol ioElement : getArchitecture().getInputs()){
-            list.add(nameManager.getName(ioElement));
+        for (VariableSymbol element : getArchitecture().getInputs()){
+            list.add(nameManager.getName(element));
         }
         return list;
     }
 
     public List<String> getArchitectureOutputs(){
         List<String> list = new ArrayList<>();
-        for (IOSymbol ioElement : getArchitecture().getOutputs()){
-            list.add(nameManager.getName(ioElement));
+        for (VariableSymbol element : getArchitecture().getOutputs()){
+            list.add(nameManager.getName(element));
         }
         return list;
     }
