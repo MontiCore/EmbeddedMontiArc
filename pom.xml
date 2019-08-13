@@ -64,12 +64,6 @@
         <!-- MontiCore Dependencies -->
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>common-monticar</artifactId>
-            <version>0.0.17-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-opt-generator</artifactId>
             <version>${embedded-montiarc-math-opt-generator}</version>
         </dependency>

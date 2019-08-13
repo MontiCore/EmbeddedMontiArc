@@ -26,18 +26,18 @@ import com.google.common.base.Splitter;
 import com.google.common.io.Resources;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
-import de.monticore.lang.monticar.cnnarch.generator.DataPathConfigParser;
-import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.SerialCompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.DataPathConfigParser;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNTrain2Gluon;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.annotations.ArchitectureAdapter;
-import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCoCoChecker;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+import de.monticore.lang.monticar.emadl._cocos.DataPathCocos;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
@@ -53,18 +53,15 @@ import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.DigestInputStream;
-
-import javax.xml.bind.DatatypeConverter;
+import java.util.*;
 
 public class EMADLGenerator {
 
@@ -360,18 +357,46 @@ public class EMADLGenerator {
     }
 
     protected String getDataPath(TaggingResolver taggingResolver, EMAComponentSymbol component, EMAComponentInstanceSymbol instance){
+        List<TagSymbol> instanceTags = new LinkedList<>();
+
+        boolean isChildComponent = instance.getEnclosingComponent().isPresent();
+
+        if (isChildComponent) {
+            // get all instantiated components of parent
+            List<EMAComponentInstantiationSymbol> instantiationSymbols = (List<EMAComponentInstantiationSymbol>) instance
+                    .getEnclosingComponent().get().getComponentType().getReferencedSymbol().getSubComponents();
+
+            // filter corresponding instantiation of instance and add tags
+            instantiationSymbols.stream().filter(e -> e.getName().equals(instance.getName())).findFirst()
+                    .ifPresent(symbol -> instanceTags.addAll(taggingResolver.getTags(symbol, DataPathSymbol.KIND)));
+        }
+
         // instance tags have priority
-        List<TagSymbol> instanceTags = (List<TagSymbol>) taggingResolver.getTags(instance, DataPathSymbol.KIND);
-        List<TagSymbol> tags = !instanceTags.isEmpty() ? instanceTags :
-                (List<TagSymbol>) taggingResolver.getTags(component, DataPathSymbol.KIND);
+        List<TagSymbol> tags = !instanceTags.isEmpty() ? instanceTags
+                : (List<TagSymbol>) taggingResolver.getTags(component, DataPathSymbol.KIND);
 
         String dataPath;
+
         if (!tags.isEmpty()) {
-            dataPath = (String) tags.get(0).getValues().get(0);
+            DataPathSymbol dataPathSymbol = (DataPathSymbol) tags.get(0);
+            DataPathCocos.check(dataPathSymbol);
+
+            dataPath = dataPathSymbol.getPath();
+
+            // TODO: Replace warinings with errors, until then use this method
+            stopGeneratorIfWarning();
+            Log.warn("Tagging info for symbol was found, ignoring data_paths.txt: " + dataPath);
         }
         else {
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
-            dataPath = newParserConfig.getDataPath(component.getFullName());
+            Path dataPathDefinition = Paths.get(getModelsPath(), "data_paths.txt");
+            if (dataPathDefinition.toFile().exists()) {
+                DataPathConfigParser newParserConfig = new DataPathConfigParser(getModelsPath() + "data_paths.txt");
+                dataPath = newParserConfig.getDataPath(component.getFullName());
+            } else {
+                Log.warn("No data path definition found in " + dataPathDefinition + " found: "
+                        + "Set data path to default ./data path");
+                dataPath = "data";
+            }
         }
 
         return dataPath;
@@ -596,4 +621,16 @@ public class EMADLGenerator {
             return null;
         }
     }
+
+    private void stopGeneratorIfWarning() {
+        for (int i = 0; i < Log.getFindings().size(); i++) {
+            if (Log.getFindings().get(i).toString().matches("Filepath '(.)*' does not exist!")) {
+                throw new RuntimeException(Log.getFindings().get(i).toString());
+            } else if (Log.getFindings().get(i).toString()
+                    .equals("DatapathType is incorrect, must be of Type: HDF5 or LMDB")) {
+                throw new RuntimeException(Log.getFindings().get(i).toString());
+            }
+        }
+    }
+
 }
