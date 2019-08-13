@@ -46,20 +46,25 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         getTemplateConfiguration().processTemplate(ftlContext, templatePath, writer);
     }
 
-    public void include(IOSymbol ioElement, Writer writer, NetDefinitionMode netDefinitionMode){
+    public void include(VariableSymbol element, Writer writer, NetDefinitionMode netDefinitionMode){
         ArchitectureElementData previousElement = getCurrentElement();
-        setCurrentElement(ioElement);
+        setCurrentElement(element);
 
-        if (ioElement.isAtomic()){
-            if (ioElement.isInput()){
-                include(TEMPLATE_ELEMENTS_DIR_PATH, "Input", writer, netDefinitionMode);
+        if (element.isAtomic()){
+            if (element.getType() == VariableSymbol.Type.IO) {
+                if (element.isInput()){
+                    include(TEMPLATE_ELEMENTS_DIR_PATH, "Input", writer, netDefinitionMode);
+                }
+                else {
+                    include(TEMPLATE_ELEMENTS_DIR_PATH, "Output", writer, netDefinitionMode);
+                }
             }
-            else {
-                include(TEMPLATE_ELEMENTS_DIR_PATH, "Output", writer, netDefinitionMode);
+            else if (element.getType() == VariableSymbol.Type.LAYER) {
+                include(TEMPLATE_ELEMENTS_DIR_PATH, element.getLayerVariableDeclaration().getLayer().getName(), writer, netDefinitionMode);
             }
         }
         else {
-            include(ioElement.getResolvedThis().get(), writer, netDefinitionMode);
+            include(element.getResolvedThis().get(), writer, netDefinitionMode);
         }
 
         setCurrentElement(previousElement);
@@ -84,7 +89,6 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         setCurrentElement(layer);
 
         if (layer.isAtomic()){
-            ArchitectureElementSymbol nextElement = layer.getOutputElement().get();
             String templateName = layer.getDeclaration().getName();
             include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
         }
@@ -117,7 +121,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             include((ConstantSymbol) architectureElement, writer, netDefinitionMode);
         }
         else {
-            include((IOSymbol) architectureElement, writer, netDefinitionMode);
+            include((VariableSymbol) architectureElement, writer, netDefinitionMode);
         }
     }
 
@@ -132,27 +136,128 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         include(architectureElement, getWriter(), netDefinitionMode);
     }
 
-    public String ioNameToCpp(String ioName) {
-        return ioName.replaceAll("_([0-9]+)_", "[$1]");
+    public Set<String> getStreamInputNames(SerialCompositeElementSymbol stream) {
+        return getStreamInputs(stream).keySet();
     }
 
-    public List<String> getStreamInputNames(SerialCompositeElementSymbol stream) {
-        List<String> names = new ArrayList<>();
-
-        for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
-            names.add(getName(element));
-        }
-
-        return names;
+    public Collection<List<String>> getStreamInputDimensions(SerialCompositeElementSymbol stream) {
+        return getStreamInputs(stream).values();
     }
 
-    public List<String> getStreamOutputNames(SerialCompositeElementSymbol stream) {
-        List<String> names = new ArrayList<>();
+    public Set<String> getStreamOutputNames(SerialCompositeElementSymbol stream) {
+        Set<String> outputNames = new LinkedHashSet<>();
 
         for (ArchitectureElementSymbol element : stream.getLastAtomicElements()) {
-            names.add(getName(element));
+            if (element.isOutput()) {
+                outputNames.add(getName(element));
+            }
         }
 
-        return names;
+        outputNames.addAll(getStreamLayerVariableMembers(stream, "1", true).keySet());
+
+        return outputNames;
     }
+
+    // Used to initialize all layer variable members which are passed through the networks
+    public Map<String, List<String>> getLayerVariableMembers(String batchSize) {
+        Map<String, List<String>> members = new LinkedHashMap<>();
+
+        for (SerialCompositeElementSymbol stream : getArchitecture().getStreams()) {
+            members.putAll(getStreamLayerVariableMembers(stream, batchSize, true));
+        }
+
+        return members;
+    }
+
+    private Map<String, List<String>> getStreamInputs(SerialCompositeElementSymbol stream) {
+        Map<String, List<String>> inputs = new LinkedHashMap<>();
+
+        for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
+            if (element.isInput()) {
+                List<Integer> intDimensions = element.getOutputTypes().get(0).getDimensions();
+
+                List<String> dimensions = new ArrayList<>();
+                for (Integer intDimension : intDimensions) {
+                    dimensions.add(intDimension.toString());
+                }
+
+                // Add batch size dimension
+                dimensions.add(0, "1");
+
+                inputs.put(getName(element), dimensions);
+            }
+        }
+
+        inputs.putAll(getStreamLayerVariableMembers(stream, "1", false));
+
+        return inputs;
+    }
+
+    private Map<String, List<String>> getStreamLayerVariableMembers(SerialCompositeElementSymbol stream, String batchSize, boolean includeOutput) {
+        Map<String, List<String>> members = new HashMap<>();
+
+        List<ArchitectureElementSymbol> elements = stream.getSpannedScope().resolveLocally(ArchitectureElementSymbol.KIND);
+        for (ArchitectureElementSymbol element : elements) {
+            if (element instanceof VariableSymbol) {
+                VariableSymbol variable = (VariableSymbol) element;
+
+                if (variable.getType() == VariableSymbol.Type.LAYER && variable.getMember() == VariableSymbol.Member.NONE) {
+                    LayerVariableDeclarationSymbol layerVariableDeclaration = variable.getLayerVariableDeclaration();
+
+                    if (layerVariableDeclaration.getLayer().getDeclaration().isPredefined()) {
+                        PredefinedLayerDeclaration predefinedLayerDeclaration =
+                                (PredefinedLayerDeclaration) layerVariableDeclaration.getLayer().getDeclaration();
+
+                        if (predefinedLayerDeclaration.isValidMember(VariableSymbol.Member.STATE)) {
+                            String name = variable.getName() + "_state_";
+
+                            List<Integer> intDimensions = predefinedLayerDeclaration.computeOutputTypes(
+                                    layerVariableDeclaration.getLayer().getInputTypes(),
+                                    layerVariableDeclaration.getLayer(),
+                                    VariableSymbol.Member.STATE
+                            ).get(0).getDimensions();
+
+                            List<String> dimensions = new ArrayList<>();
+
+                            for (Integer intDimension : intDimensions) {
+                                dimensions.add(intDimension.toString());
+                            }
+
+                            // Add batch size dimension at index 1, since RNN states in Gluon have the format
+                            // (layers, batch_size, units)
+                            dimensions.add(1, batchSize);
+
+                            members.put(name, dimensions);
+                        }
+
+                        if (includeOutput) {
+                            if (predefinedLayerDeclaration.isValidMember(VariableSymbol.Member.OUTPUT)) {
+                                String name = variable.getName() + "_output_";
+
+                                List<Integer> intDimensions = predefinedLayerDeclaration.computeOutputTypes(
+                                        layerVariableDeclaration.getLayer().getInputTypes(),
+                                        layerVariableDeclaration.getLayer(),
+                                        VariableSymbol.Member.OUTPUT
+                                ).get(0).getDimensions();
+
+                                List<String> dimensions = new ArrayList<>();
+
+                                for (Integer intDimension : intDimensions) {
+                                    dimensions.add(intDimension.toString());
+                                }
+
+                                // Add batch size dimension at index 0, since we use NTC format for RNN output in Gluon
+                                dimensions.add(0, batchSize);
+
+                                members.put(name, dimensions);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return members;
+    }
+
 }

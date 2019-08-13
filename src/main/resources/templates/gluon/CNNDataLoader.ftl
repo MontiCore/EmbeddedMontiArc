@@ -6,8 +6,8 @@ import sys
 from mxnet import nd
 
 class ${tc.fileNameWithoutEnding}:
-    _input_names_ = [${tc.join(tc.architectureInputs, ",", "'", "'")}]
-    _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "_label'")}]
+    _input_names_ = [<#list tc.architectureInputs as inputName>'${inputName?keep_before_last("_")}'<#sep>, </#list>]
+    _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "label'")}]
 
     def __init__(self):
         self._data_dir = "${tc.dataPath}/"
@@ -21,8 +21,8 @@ class ${tc.fileNameWithoutEnding}:
 
         for input_name in self._input_names_:
             train_data[input_name] = train_h5[input_name]
-            data_mean[input_name] = nd.array(train_h5[input_name][:].mean(axis=0))
-            data_std[input_name] = nd.array(train_h5[input_name][:].std(axis=0) + 1e-5)
+            data_mean[input_name + '_'] = nd.array(train_h5[input_name][:].mean(axis=0))
+            data_std[input_name + '_'] = nd.array(train_h5[input_name][:].std(axis=0) + 1e-5)
 
         train_label = {}
         for output_name in self._output_names_:
