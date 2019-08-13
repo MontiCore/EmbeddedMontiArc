@@ -55,31 +55,5 @@
       <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
     </mirror>	 
   </mirrors>
-
-  <profiles>
-
-    <profile>
-      <id>se-nexus</id>
-      <repositories>
-        <repository>
-          <id>central</id>
-          <url>http://central</url>
-          <releases><enabled /></releases>
-          <snapshots><enabled /></snapshots>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>central</id>
-          <url>http://central</url>
-          <releases><enabled /></releases>
-          <snapshots><enabled /></snapshots>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
-  </profiles>
-
-  <activeProfiles>
-    <activeProfile>se-nexus</activeProfile>
-  </activeProfiles>  
+ 
 </settings>
