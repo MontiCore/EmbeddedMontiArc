@@ -43,7 +43,7 @@ component AlexnetInvalid{
         fc(->=2) ->
         FullyConnected(units=1000) ->
         Softmax() ->
-        predictions
+        predictions;
 
     }
 }
