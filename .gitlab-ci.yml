@@ -27,7 +27,6 @@ masterJobLinux:
   stage: linux
   image: maven:3-jdk-8
   script: 
-  - apt-get update && apt-get install -y --no-install-recommends openjfx && rm -rf /var/lib/apt/lists/*
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
   only:
   - master
@@ -38,12 +37,13 @@ masterJobWindows:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
   tags:
   - Windows10
+  only:
+  - master
 
 BranchJobLinux:
   stage: linux
   image: maven:3-jdk-8
   script: 
-  - apt-get update && apt-get install -y --no-install-recommends openjfx && rm -rf /var/lib/apt/lists/*
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
   except:
   - master
