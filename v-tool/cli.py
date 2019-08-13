@@ -3,14 +3,16 @@ import h5py
 from functools import reduce
 from VTool import start_plot
 import numpy as np
+import csv
+from subprocess import call
 
 parser = argparse.ArgumentParser(description='Visualization of predictions for the end-to-end autonomous driving model.')
 parser.add_argument('-i', type=str, help='Path to H5 container which includes data and targets.')
 parser.add_argument('-p', type=str, help='Path to predictor.')
 args = parser.parse_args()
 
-print("Predictor:",args.p)
 print("Data:",args.i)
+print("Predictor:",args.p)
 
 with h5py.File(args.i, 'r') as f:
     keys = set(f.keys())
@@ -39,13 +41,13 @@ with h5py.File(args.i, 'r') as f:
 
         images = np.array(f[data_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size, 3:6])
         images = images.reshape((-1,480,640,3)).astype("uint8")
-        print(images.min(), images.max(), images.dtype)
         targets_real = np.array(f[target_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size])
 
     #TODO: make predictions..
-    targets_pred = targets_real
-
-
+    call([args.p,args.i,'predictions.csv'])
+    with open('predictions.csv') as f:
+         targets_pred = np.array(csv.reader(f, delimiter=',')[0]).astype('float32')
+    print('predictions:','targets_pred')
     print("-"*40)
     print('Starting plot...')
     start_plot(images, targets_real, targets_pred)
