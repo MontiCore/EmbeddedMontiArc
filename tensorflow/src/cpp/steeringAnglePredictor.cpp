@@ -1,75 +1,65 @@
 #include <opencv2/core.hpp>
 #include <opencv2/hdf.hpp>
 #include <iostream>
+#include <fstream>
 #include "CNNPredictor_endtoend_nvidia.h"
-
 
 using namespace std;
 using namespace cv;
 
-
-inline const char * const BoolToString(bool b);
-
 int main(int argc,char* argv[])
 {
-    if(argc<2){
-        cout << "Please give name of h5 file as an argument." << endl;
+    //Parse arguments
+    if(argc<3){
+        cout << "Please give name of h5 file and output filename as arguments." << endl;
         return 1;
     }
-    
     String filename = argv[1];
-    
-    //Debug information
-    cout << "Reads from "+filename << endl;
+    String output_filename = argv[2];
+    cout << "Reads from " << filename << endl;
+
+    //Initialize variables
     Ptr<hdf::HDF5> h5io =hdf::open( filename );
+    std::vector<int> dims = h5io->dsgetsize("data", hdf::HDF5::H5_GETDIMS);
+    int num_pictures=dims.at(0);
+    int num_channels=dims.at(1);
+    int height=dims.at(2);
+    int width=dims.at(3);
+    vector<float> prediction;
+    vector<float> data(num_channels*height*width);
+    CNNPredictor_endtoend_nvidia_0 predictor;
+    int picture_offset=width*height*num_channels;
 
-    cout << "Data exists: "<< BoolToString(h5io->hlexists("data")) << endl;
-    //cout << "Softmax_label exists: " << BoolToString(h5io->hlexists("softmax_label")) << endl;
-    
-    std::vector<int> dims;
-    dims = h5io->dsgetsize("data", hdf::HDF5::H5_GETDIMS);    
-    cout << "Dimension of data is: ";
-    cout << dims.at(0) << ",";
-    cout << dims.at(1) << ",";
-    cout << dims.at(2) << ",";
-    cout << dims.at(3) << endl;
-
+    //Debug information
+    cout << "Dimension of data is: "
+         << "N" << num_pictures
+         << "C" << num_channels
+         << "H" << height
+         << "W" << width << endl;
 
     //Read data from h5 file
     Mat M;
     h5io->dsread(M, "data");
-   
-    int num_pictures=dims.at(0);
-    int width=dims.at(3);
-    int height=dims.at(2);
-    int num_channels=dims.at(1);
-    vector<float> prediction[num_pictures];
-    
-    //Convert to vector and call predictor
-    for(int n=0;n<num_pictures;n++){
-        vector<float> data(num_channels*height*width);
-        prediction[n]=vector<float> (1,42);
-        Mat img(height,width,CV_32F, M.ptr<int>(n));
-        for(int i=0;i<height;i++){
-            for(int j=0;j<width;j++){
-                for(int k=0;k<num_channels;k++){
-                    data[k*height*width + i*height + j] = (float) img.at<int>(i,j);
-                }
-            }
-        }
-        
-        //Prediction
-        CNNPredictor_endtoend_nvidia_0 predictor;
-        predictor.predict(data,prediction[n]);
-        cout << prediction[n].at(0) <<endl;
-    }
-    
-       
-    h5io->close();
-    return 0;
-}
 
-inline const char * const BoolToString(bool b)
-{
-  return b ? "true" : "false";
+    //Open output file
+    ofstream output_file;
+    output_file.open (output_filename);
+
+    for(int n=0;n<num_pictures;n++){
+        //Convert picture to flat vector
+        for(int i=0;i<picture_offset;i++)
+            data[i]=M.at<float>(n*picture_offset+i);
+        //Prediction
+        predictor.predict(data,prediction);
+        cout << prediction.at(0) <<endl;
+        if(n<num_pictures-1)
+            output_file << prediction.at(0) << ",";
+    }
+
+    //Close everything
+    h5io->close();
+    output_file << prediction.at(0);
+    output_file.close();
+
+    return 0;
 }
