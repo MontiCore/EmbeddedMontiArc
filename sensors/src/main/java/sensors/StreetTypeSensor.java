@@ -41,20 +41,11 @@ public class StreetTypeSensor extends AbstractSensor {
 
     private String value;
 
-    private Double lastVelocityValue = 0.;
-
     public StreetTypeSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                             HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
     }
 
-    public Double getLastVelocityValue(){
-        return lastVelocityValue;
-    }
-
-    public void setLastVelocityValue(Double lastVelocityValue) {
-        this.lastVelocityValue = lastVelocityValue;
-    }
 
     @Override
     public BusEntry getType() {

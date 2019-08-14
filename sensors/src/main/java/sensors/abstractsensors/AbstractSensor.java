@@ -62,14 +62,6 @@ public abstract class AbstractSensor extends ImmutableEEComponent implements Sen
      */
     protected abstract void calculateValue();
 
-    /**
-     *
-     * @return individual lenght of the data of the sensor in bytes
-     */
-    public abstract int getDataLength();
-
-
-
     @Override
     public void processEvent(EEDiscreteEvent event) {
         //TODO implement

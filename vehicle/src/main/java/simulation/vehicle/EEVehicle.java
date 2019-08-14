@@ -22,9 +22,8 @@ package simulation.vehicle;
 
 import com.google.gson.Gson;
 import commons.controller.commons.BusEntry;
+import commons.simulation.Sensor;
 import org.apache.commons.lang3.tuple.Pair;
-import sensors.StreetTypeSensor;
-import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.*;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
@@ -45,11 +44,14 @@ public class EEVehicle {
 
     private List<Bus> busList = new LinkedList<>();
 
-    private List<AbstractSensor> sensorList = new LinkedList<>();
+    private List<Sensor> sensorList = new LinkedList<>();
 
     private List<VehicleActuator> actuatorList = new LinkedList<>();
 
     private List<Bridge> bridgeList = new LinkedList<>();
+
+    Double allowedVelocityByStreetType = 0.;
+
 
     /*
     TODO:   - maybe add Autopilot
@@ -83,7 +85,7 @@ public class EEVehicle {
                     break;
                 case SENSOR:
                     if (!sensorList.contains(comp)) {
-                        sensorList.add((AbstractSensor) comp);
+                        sensorList.add((Sensor) comp);
                     }
                     break;
                 case ACTUATOR:
@@ -133,7 +135,7 @@ public class EEVehicle {
                         break;
                     case SENSOR:
                         if (!sensorList.contains(comp)) {
-                            sensorList.add((AbstractSensor) comp);
+                            sensorList.add((Sensor) comp);
                         }
                         break;
                     case ACTUATOR:
@@ -164,11 +166,10 @@ public class EEVehicle {
      * @param actualTime actual time of the simulation
      */
     public void notifySensors(Instant actualTime) {
-        for (AbstractSensor sensor : sensorList) {
+        for (Sensor sensor : sensorList) {
 
             //create bus message with velocity
             if (sensor.getType() == BusEntry.SENSOR_STREETTYPE) {
-                Double allowedVelocityByStreetType;
                 switch ((String) sensor.getValue()) {
                     case "MOTORWAY":
                         allowedVelocityByStreetType = (100.0 / 3.6);
@@ -183,19 +184,17 @@ public class EEVehicle {
                         allowedVelocityByStreetType = (30.0 / 3.6);
                         break;
                     default:
-                        allowedVelocityByStreetType = ((StreetTypeSensor) sensor).getLastVelocityValue();
                         break;
                 }
-                ((StreetTypeSensor) sensor).setLastVelocityValue(allowedVelocityByStreetType);
-                for (EEComponent target : sensor.getTargetsByMessageId().get(BusEntry.SENSOR_STREETTYPE)) {
-                    BusMessage sensorMess = new BusMessage(allowedVelocityByStreetType, 6, BusEntry.SENSOR_STREETTYPE, actualTime, sensor.getId(), target);
+                for (EEComponent target : ((ImmutableEEComponent) sensor).getTargetsByMessageId().get(BusEntry.SENSOR_STREETTYPE)) {
+                    BusMessage sensorMess = new BusMessage(allowedVelocityByStreetType, 6, BusEntry.SENSOR_STREETTYPE, actualTime, ((EEComponent) sensor).getId(), target);
                     eeSimulator.addEvent(sensorMess);
                 }
             }
 
             //create all other bus messages
-            for (EEComponent target : sensor.getTargetsByMessageId().get(sensor.getType())) {
-                BusMessage sensorMess = new BusMessage(sensor.getValue(), sensor.getDataLength(), sensor.getType(), actualTime, sensor.getId(), target);
+            for (EEComponent target : ((ImmutableEEComponent) sensor).getTargetsByMessageId().get(sensor.getType())) {
+                BusMessage sensorMess = new BusMessage(sensor.getValue(), sensor.getDataLength(), sensor.getType(), actualTime, ((EEComponent) sensor).getId(), target);
                 eeSimulator.addEvent(sensorMess);
             }
         }
@@ -222,7 +221,7 @@ public class EEVehicle {
         return busList;
     }
 
-    public List<AbstractSensor> getSensorList() {
+    public List<Sensor> getSensorList() {
         return sensorList;
     }
 
@@ -276,9 +275,9 @@ class ParsableBusStructureProperties {
                 UUID actualId = bus.getId();
 
                 //add all sensors connected to this bus
-                for (AbstractSensor sensor : vehicle.getSensorList()) {
+                for (Sensor sensor : vehicle.getSensorList()) {
                     if (!bus.getConnectedComponents().contains(Pair.of(sensor,actualId))) {
-                        busSystems.add(Pair.of(sensor, actualId));
+                        busSystems.add(Pair.of((EEComponent) sensor, actualId));
                     }
                 }
 
