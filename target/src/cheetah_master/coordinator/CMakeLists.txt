@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.5)
+project (Coordinator_cheetah_master LANGUAGES CXX)
+
+set (CMAKE_CXX_STANDARD 14)
+set (THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+add_library(IAdapter_cheetah_master IAdapter_cheetah_master.cpp)
+target_link_libraries(IAdapter_cheetah_master cheetah_master)
+target_include_directories(IAdapter_cheetah_master PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable(Coordinator_cheetah_master Coordinator_cheetah_master.cpp)
+set_target_properties(Coordinator_cheetah_master PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(Coordinator_cheetah_master RosAdapter_cheetah_master cheetah_master Threads::Threads IAdapter_cheetah_master)
+target_include_directories(Coordinator_cheetah_master PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+export(TARGETS Coordinator_cheetah_master IAdapter_cheetah_master FILE Coordinator_cheetah_master.cmake)
+
+install(TARGETS Coordinator_cheetah_master DESTINATION bin)
