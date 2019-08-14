@@ -1,0 +1,53 @@
+{
+    "state_dim": [
+        4
+    ], 
+    "evaluation_samples": 100, 
+    "snapshot_interval": 250, 
+    "agent_name": "PoleAgent", 
+    "target_update_interval": 500, 
+    "training_episodes": 1000, 
+    "verbose": true, 
+    "start_training": 1, 
+    "optimizer_params": {
+        "learning_rate": 0.00025
+    }, 
+    "loss_function": "huber", 
+    "train_interval": 1, 
+    "use_fix_target": true, 
+    "action_dim": [
+        2
+    ], 
+    "discount_factor": 0.995, 
+    "optimizer": "rmsprop", 
+    "output_directory": "model/PoleAgent/2019-07-15-16-09-37", 
+    "replay_memory_params": {
+        "state_dtype": "float32", 
+        "state_dim": [
+            4
+        ], 
+        "rewards_dtype": "float32", 
+        "action_dtype": "float32", 
+        "sample_size": 64, 
+        "memory_size": 1000000, 
+        "method": "buffer", 
+        "action_dim": [
+            2
+        ]
+    }, 
+    "strategy_params": {
+        "epsilon_decay": 0.005, 
+        "epsilon": 1, 
+        "epsilon_decay_start": 10, 
+        "epsilon_decay_method": "linear", 
+        "min_epsilon": 0.01, 
+        "method": "epsgreedy", 
+        "action_dim": [
+            2
+        ]
+    }, 
+    "max_episode_step": 300, 
+    "target_score": null, 
+    "ctx": "gpu(0)", 
+    "double_dqn": false
+}
