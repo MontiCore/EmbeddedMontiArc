@@ -1,0 +1,10 @@
+{
+    "modelsDir": "src/model",
+    "outputDir": "target",
+    "rootModel": "lander.master",
+    "generators": [
+        "emadlcpp",
+        "roscpp"
+    ],
+    "emadlBackend": "GLUON"
+}
