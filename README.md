@@ -74,3 +74,14 @@ output = instance.execute(inp)
 print(output.result1)
 print(output.result2)
 ```
+
+## Troubleshooting
+
+- **fatal error: numpy/arrayobject.h: No such file or directory** The numpy include files are not included in the global `/usr/include` directory. Usually, the missing files can be found in the directory `/usr/local/lib/python2.7/dist-packages/numpy/core/include/numpy`. If not, you can run a python script which outputs the location:
+    ```python
+    import numpy
+    numpy.get_include()
+    ```
+    After that you can copy the files to the global include directory:
+    ```bash
+    cp -r /usr/local/lib/python2.7/dist-packages/numpy/core/include/numpy /usr/local/include
