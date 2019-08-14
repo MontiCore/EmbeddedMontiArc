@@ -1,0 +1,10 @@
+{
+    "modelsDir": "src/model",
+    "outputDir": "target",
+    "rootModel": "cheetah.master",
+    "generators": [
+        "emadlcpp",
+        "roscpp"
+    ],
+    "emadlBackend": "GLUON"
+}
