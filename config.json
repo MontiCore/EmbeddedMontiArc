@@ -1,0 +1,10 @@
+{
+    "modelsDir": "src/model",
+    "outputDir": "target",
+    "rootModel": "bipedalwalker.master",
+    "generators": [
+        "emadlcpp",
+        "roscpp"
+    ],
+    "emadlBackend": "GLUON"
+}
