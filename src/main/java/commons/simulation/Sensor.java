@@ -52,4 +52,10 @@ public interface Sensor {
      */
     void update();
 
+    /**
+     *function that returns the length of the data
+     * @return individual lenght of the data of the sensor in bytes
+     */
+    int getDataLength();
+
 }
