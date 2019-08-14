@@ -1,0 +1,17 @@
+package cartpole.agent.network;
+
+component PoleQNet {
+    ports
+        in Q(-oo:oo)^{4} observation,
+        out Q(-oo:oo)^{2} qvalues;
+
+    implementation CNN {
+        observation ->
+        FullyConnected(units=300) ->
+        Relu() ->
+        FullyConnected(units=600) ->
+        Relu() ->
+        FullyConnected(units=2) ->
+        qvalues;
+    }
+}
