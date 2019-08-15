@@ -1,8 +1,11 @@
 # End2EndDriving
 
+This repository consists of a neural network for end to end driving and some usefull tools. It implements the [paper](https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) by Nvidia on End to End driving.
+
 ## Requirements
 
-- OpenCV for Python: `pip install opencv`
+- OpenCV, h5py, numpy, PIL, matplotlib and scipy for Python: `pip install opencv h5py numpy PIL matplotlib scipy`
+- OpenCV for C
 - Tensorflow for C: [This repo might help you](https://github.com/FloopCZ/tensorflow_cc)
 
 ## Usage
