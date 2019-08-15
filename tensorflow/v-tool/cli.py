@@ -28,7 +28,8 @@ with h5py.File(args.i, 'r') as f:
     print("Data:")
     for i,k in enumerate(data_keys):
         print("  ("+str(i)+") "+k, "->", f[k].shape)
-    data_key = data_keys[int(input("Pick data number: "))]
+    #data_key = data_keys[int(input("Pick data number: "))]
+    data_key = data_keys[0]
     target_key = target_keys[0] #hard-coded: pick first target in list
 
     # Check data size - if it is larger than our threshold MAX_SIZE, only display the chosen chunk
@@ -52,7 +53,7 @@ with h5py.File(args.i, 'r') as f:
          for row in csv.reader(f, delimiter=','):
             targets_pred = np.array([float(r) for r in row]).astype('float32')
 
-    print('predictions:',targets_pred)
+    #print('predictions:',targets_pred)
 
     print("-"*40)
     print('Starting plot...')
