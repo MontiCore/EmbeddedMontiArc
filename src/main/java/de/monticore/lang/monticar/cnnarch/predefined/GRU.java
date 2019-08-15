@@ -20,18 +20,21 @@
  */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.*;
+import de.monticore.lang.monticar.cnnarch._symboltable.Constraints;
+import de.monticore.lang.monticar.cnnarch._symboltable.ParameterSymbol;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class RNN extends BaseRNN {
+public class GRU extends BaseRNN {
 
-    private RNN() {
-        super(AllPredefinedLayers.RNN_NAME);
+    private GRU() {
+        super(AllPredefinedLayers.GRU_NAME);
     }
 
-    public static RNN create() {
-        RNN declaration = new RNN();
+    public static GRU create() {
+        GRU declaration = new GRU();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.UNITS_NAME)

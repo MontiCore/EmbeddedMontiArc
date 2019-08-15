@@ -47,6 +47,8 @@ public class AllPredefinedLayers {
     public static final String ONE_HOT_NAME = "OneHot";
     public static final String BEAMSEARCH_NAME = "BeamSearchStart";
     public static final String RNN_NAME = "RNN";
+    public static final String LSTM_NAME = "LSTM";
+    public static final String GRU_NAME = "GRU";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -97,7 +99,9 @@ public class AllPredefinedLayers {
                 Add.create(),
                 Concatenate.create(),
                 OneHot.create(),
-                RNN.create());
+                RNN.create(),
+                LSTM.create(),
+                GRU.create());
     }
 
 }
