@@ -36,9 +36,9 @@ def start_plot(images, targets_real, targets_pred):
     # Callback
     def update(i):
         image.set_data(images[i])
-        wheel_real.update(targets_real[i])
-        wheel_pred.update(targets_pred[i])
-        acc.update(targets_real[i],targets_pred[i])
+        wheel_real.update(-targets_real[i])#negative values because predicted angles are inverted
+        wheel_pred.update(-targets_pred[i])
+        acc.update(-targets_real[i],-targets_pred[i])
 
     player = Player(fig, ax_player, update, maxi=len(targets_real)-1, interval=50)
     image = ax_image.imshow(images[0])
@@ -54,7 +54,7 @@ def start_plot(images, targets_real, targets_pred):
     plt.show()
 
 if __name__ == "__main__":
-    print("Running with random values.")
+    print("[DEBUG MODE] Running with random values.")
     num_images = 100
     images = np.random.randint(0,255,(num_images,480,640,3))
     targets_real = 2*np.sin(np.linspace(0,5,num_images))+6*np.cos(np.linspace(0,5,num_images))
