@@ -392,10 +392,12 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                                 , getSourcePosition());
                     } else {
                         ASTElementType inputType = getInputTypes().get(0).getDomain();
-                        if (!Utils.equals(inputType, ioDeclaration.getType().getDomain())) {
+                        ASTElementType outputType = ioDeclaration.getType().getDomain();
+
+                        if (!Utils.contains(outputType, inputType)) {
                             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " " +
                                     "The declared output type of '" + name + "' does not match with the actual type. " +
-                                    "Declared type: " + ioDeclaration.getType().getDomain().getName() + ". " +
+                                    "Declared type: " + outputType.getName() + ". " +
                                     "Actual type: " + inputType.getName() + ".");
                         }
                     }
