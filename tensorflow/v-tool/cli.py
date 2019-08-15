@@ -15,7 +15,8 @@ print("Data:",args.i)
 print("Predictor:",args.p)
 
 #make predictions
-call([args.p,args.i,'predictions.csv'])
+if args.p is not None:
+    call([args.p,args.i,'predictions.csv'])
 
 with h5py.File(args.i, 'r') as f:
     keys = set(f.keys())
