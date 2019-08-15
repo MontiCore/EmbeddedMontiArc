@@ -1,7 +1,7 @@
 <#if element.member == "NONE">
 <#assign input = element.inputs[0]>
 <#if mode == "ARCHITECTURE_DEFINITION">
-            self.rnn_${element.element.name} = gluon.rnn.RNN(hidden_size=${element.units?c}, num_layers=${element.layers?c}, activation='tanh', layout='NTC')
+            self.rnn_${element.element.name} = gluon.rnn.GRU(hidden_size=${element.units?c}, num_layers=${element.layers?c}, layout='NTC')
             <#include "OutputShape.ftl">
 <#elseif mode == "FORWARD_FUNCTION">
         ${element.name}, ${element.element.name}_state_ = self.rnn_${element.element.name}(${input}, ${element.element.name}_state_)
