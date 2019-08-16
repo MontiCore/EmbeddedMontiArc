@@ -80,6 +80,10 @@ public class ArchitectureElementData {
         }
     }
 
+    public boolean isVariable() {
+        return getElement() instanceof VariableSymbol;
+    }
+
     public List<String> getInputs(){
         return getTemplateController().getLayerInputs(getElement());
     }
