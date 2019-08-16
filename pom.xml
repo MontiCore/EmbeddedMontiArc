@@ -8,15 +8,15 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-generator</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-      <CNNArch.version>0.3.2-SNAPSHOT</CNNArch.version>
-      <CNNTrain.version>0.3.4-SNAPSHOT</CNNTrain.version>
+      <CNNArch.version>0.3.3-SNAPSHOT</CNNArch.version>
+      <CNNTrain.version>0.3.6-SNAPSHOT</CNNTrain.version>
       <embedded-montiarc-math-opt-generator>0.1.4</embedded-montiarc-math-opt-generator>
     
         <!-- .. Libraries .................................................. -->

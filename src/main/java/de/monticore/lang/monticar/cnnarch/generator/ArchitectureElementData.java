@@ -85,9 +85,13 @@ public class ArchitectureElementData {
     }
 
     public String getMember() {
-        assert getElement() instanceof VariableSymbol;
+        if (getElement() instanceof VariableSymbol) {
+            return ((VariableSymbol) getElement()).getMember().toString();
+        }
+        else {
+            return VariableSymbol.Member.NONE.toString();
+        }
 
-        return ((VariableSymbol) getElement()).getMember().toString();
     }
 
     public int getConstValue() {
@@ -154,6 +158,14 @@ public class ArchitectureElementData {
 
     public int getLayers(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.LAYERS_NAME).get();
+    }
+
+    public int getInputDim(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.INPUT_DIM_NAME).get();
+    }
+
+    public int getOutputDim(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.OUTPUT_DIM_NAME).get();
     }
 
     @Nullable
