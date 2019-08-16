@@ -50,13 +50,14 @@ public class OneHot extends PredefinedLayerDeclaration {
     }
 
     private static void inferSizeFromOutput(LayerSymbol layer){
-        int outputChannels = 0;
+        // Only infer when not already done and next element is output
+        if (layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get() == 0
+                && layer.getOutputElement().isPresent()
+                && layer.getOutputElement().get().isOutput()) {
+            int outputChannels = ((VariableSymbol) layer.getOutputElement().get()).getIoDeclaration().getType().getChannels();
 
-        if (layer.getOutputElement().isPresent() && layer.getOutputElement().get().isOutput()) {
-            outputChannels = ((VariableSymbol) layer.getOutputElement().get()).getIoDeclaration().getType().getChannels();
+            layer.setIntValue(AllPredefinedLayers.SIZE_NAME, outputChannels);
         }
-
-        layer.setIntValue(AllPredefinedLayers.SIZE_NAME, outputChannels);
     }
 
     @Override
