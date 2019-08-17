@@ -92,6 +92,10 @@ public enum BusEntry {
     ACTUATOR_GEAR("ACTUATOR_GEAR"),
     //Current Value
     ACTUATOR_GEAR_CURRENT("ACTUATOR_GEAR_CURRENT"),
+    //Target Value
+    ACTUATOR_CLUTCH("ACTUATOR_CLUTCH"),
+    //Current Value
+    ACTUATOR_CLUTCH_CURRENT("ACTUATOR_CLUTCH_CURRENT"),
     //***************************************************************************
     //*  Computervision Entries                                                 *
     //***************************************************************************

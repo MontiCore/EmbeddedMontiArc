@@ -22,6 +22,8 @@ package commons.simulation;
 
 import commons.controller.commons.BusEntry;
 
+import java.time.Instant;
+
 /**
  * Created by Aklima Zaman on 16-Dec-16. This is an interface for a sensor. It
  * includes all of the mandatory functions of a sensor should be implement.
@@ -50,7 +52,7 @@ public interface Sensor {
     /**
      * This method update the value of the sensor.
      */
-    void update();
+    void update(Instant actualTime);
 
     /**
      *function that returns the length of the data
