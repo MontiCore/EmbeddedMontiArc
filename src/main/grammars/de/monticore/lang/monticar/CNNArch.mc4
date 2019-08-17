@@ -64,6 +64,10 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
 
     Stream implements Instruction = elements:(ArchitectureElement || "->")+;
 
+    Unroll implements Instruction =  "timed" "<" timeParameter:ArchitectureParameter ">"
+                                     Name "(" arguments:(ArchArgument || ",")* ")"
+                                     "{" body:Stream "}";
+
     interface ArchitectureElement;
 
     IOElement implements ArchitectureElement =  Name ("[" index:ArchSimpleExpression "]")?;
@@ -72,9 +76,6 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
 
     Layer implements ArchitectureElement =  Name "(" arguments:(ArchArgument || ",")* ")";
 
-    Unroll implements ArchitectureElement =  "unroll" Name "(" arguments:(ArchArgument || ",")* ")" "{"
-                                                body:Stream
-                                                "}";
 
     ParallelBlock implements ArchitectureElement =  "("
                                                    groups:Stream  "|"

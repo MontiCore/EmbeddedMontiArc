@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.cnnarch._cocos;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.UnrollSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -29,8 +30,18 @@ public class CheckArchitectureFinished extends CNNArchSymbolCoCo {
 
     @Override
     public void check(ArchitectureSymbol architecture) {
+        System.err.println("Architecture in checkArchFinished: " + architecture.toString());
         for (CompositeElementSymbol stream : architecture.getStreams()) {
+            System.err.println("Stream in checkArchFinished");
             if (!stream.getOutputTypes().isEmpty()){
+                Log.error("0" + ErrorCodes.UNFINISHED_ARCHITECTURE + " The architecture is not finished. " +
+                                "There are still open streams at the end of the architecture. "
+                        , architecture.getSourcePosition());
+            }
+        }
+        for (UnrollSymbol unroll : architecture.getUnrolls()) {
+            System.err.println("UnrollSymbol in checkArchFinished");
+            if (!unroll.getOutputTypes().isEmpty()){
                 Log.error("0" + ErrorCodes.UNFINISHED_ARCHITECTURE + " The architecture is not finished. " +
                                 "There are still open streams at the end of the architecture. "
                         , architecture.getSourcePosition());

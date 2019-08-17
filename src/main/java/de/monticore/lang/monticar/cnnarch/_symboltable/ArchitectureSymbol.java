@@ -38,6 +38,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     public static final ArchitectureKind KIND = new ArchitectureKind();
 
     private List<SerialCompositeElementSymbol> streams = new ArrayList<>();
+    private List<UnrollSymbol> unrolls = new ArrayList<>();
     private List<IOSymbol> inputs = new ArrayList<>();
     private List<IOSymbol> outputs = new ArrayList<>();
     private Map<String, IODeclarationSymbol> ioDeclarationMap = new HashMap<>();
@@ -54,6 +55,14 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public void setStreams(List<SerialCompositeElementSymbol> streams) {
         this.streams = streams;
+    }
+
+    public List<UnrollSymbol> getUnrolls() {
+        return unrolls;
+    }
+
+    public void setUnrolls(List<UnrollSymbol> unrolls) {
+        this.unrolls = unrolls;
     }
 
     public String getDataPath() {
@@ -73,6 +82,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     }
 
     public List<IOSymbol> getInputs() {
+        System.err.println("THE inputs: " + inputs);
         return inputs;
     }
 
@@ -118,6 +128,18 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
                 // Do nothing; error is already logged
             }
         }
+
+        for (UnrollSymbol unroll : unrolls) {
+            unroll.checkIfResolvable();
+
+            try {
+                unroll.resolveOrError();
+                //unroll.getBody().resolveOrError();
+            }
+            catch (ArchResolveException e) {
+                // Do nothing; error is already logged
+            }
+        }
     }
 
     /*public List<ArchitectureElementSymbol> getFirstElements() {
@@ -134,6 +156,10 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             resolved &= stream.isResolved();
         }
 
+        for (UnrollSymbol unroll: unrolls) {
+            resolved &= unroll.isResolved();
+        }
+
         return resolved;
     }
 
@@ -142,6 +168,10 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
         for (CompositeElementSymbol stream : streams) {
             resolvable &= stream.isResolvable();
+        }
+
+        for (UnrollSymbol unroll: unrolls) {
+            resolvable &= unroll.isResolvable();
         }
 
         return resolvable;
@@ -198,6 +228,14 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             copyStreams.add(copyStream);
         }
         copy.setStreams(copyStreams);
+
+        List<UnrollSymbol> copyUnrolls = new ArrayList<>();
+        for (UnrollSymbol unroll : unrolls) {
+            UnrollSymbol copyUnroll = unroll.preResolveDeepCopy();
+            copyUnroll.putInScope(copy.getSpannedScope());
+            copyUnrolls.add(copyUnroll);
+        }
+        copy.setUnrolls(copyUnrolls);
 
         copy.putInScope(enclosingScopeOfCopy);
         return copy;

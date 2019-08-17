@@ -42,53 +42,14 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
 
         List<ArchTypeSymbol> output = new ArrayList<ArchTypeSymbol>();
 
-
-        for(ASTArchitectureElement item: ((ASTUnroll) layer.getAstNode().get()).getBody().getElementsList()){
-            if(item instanceof ASTLayer) {
-                try {
-                    //ArchitectureElementSymbol item = (ArchitectureElementSymbol) ASTitem;
-                    LayerSymbol sublayer = (LayerSymbol) item.getSymbol();
-                    sublayer.resolve();
-                    System.err.println("inputElement: " + sublayer.getInputElement().get().toString());
-                    System.err.println("resolved: " + sublayer.getResolvedThis().get().getInputElement().get().getOutputTypes().get(0).getChannels().toString());
-                    //output = sublayer.getResolvedThis().get().getInputElement().get().getOutputTypes();
-                    System.err.println("inputTypes: " + sublayer.getInputTypes().toString());
-                    layers.add((LayerSymbol) sublayer);
-                    System.err.println("outputTypes before: " + ((ArchitectureElementSymbol) sublayer).getOutputTypes().get(0).getChannels());
-                    //System.err.println("arg0_NAME: " + ((LayerSymbol) sublayer).getArguments().get(0).getName());
-                    //System.err.println("arg0_VALUE: " + ((LayerSymbol) sublayer).getIntValue((((LayerSymbol) sublayer).getArguments().get(0).getName())));
-                    //item.setOutputTypes(item.getOutputTypes());
-                    //System.err.println("outputTypes after: " + ((ArchitectureElementSymbol) astElement).getOutputTypes());
-                } catch (Exception e) {
-                    LayerSymbol sublayer = (LayerSymbol) item.getSymbol();
-                    //System.err.println("The following names could not be resolved: " + Joiners.COMMA.join(sublayer.getUnresolvableVariables()));
-                    e.printStackTrace();
-                }
-            }else if(item instanceof ASTIOElement){
-                try {
-                    //ArchitectureElementSymbol item = (ArchitectureElementSymbol) ASTitem;
-                    IOSymbol sublayer = (IOSymbol) item.getSymbol();
-                    sublayer.resolve();
-                    //TODO setinputElement !!!!!
-                    System.err.println("resolved2: " + sublayer.getResolvedThis().get().getInputElement().get().toString());
-                    System.err.println("isOutput?: " + sublayer.isOutput());
-                    System.err.println("Definition: " + sublayer.getDefinition().toString());
-                    System.err.println("Domain: " + sublayer.getDefinition().getType().getDomain().toString());
-                    System.err.println("Type: " + sublayer.getDefinition().getType().getChannels().toString());
-                    //output = sublayer.getResolvedThis().get().getInputElement().get().getOutputTypes();
-                    if(sublayer.isOutput()){
-                        output = new ArrayList<ArchTypeSymbol>();
-                    }
-                    //item.setOutputTypes(item.getOutputTypes());
-                    //System.err.println("outputTypes after: " + ((ArchitectureElementSymbol) astElement).getOutputTypes());
-                } catch (Exception e) {
-                    IOSymbol sublayer = (IOSymbol) item.getSymbol();
-                    //System.err.println("The following names could not be resolved2: " + Joiners.COMMA.join(sublayer.getUnresolvableVariables()));
-                    e.printStackTrace();
-                }
-            }
+        try {
+            // TODO: why is body null in EMADL2CPP?
+            System.err.println("BODY: " + layer.getBody().getElements().toString());
+            layer.getBody().resolveOrError();
+            //layer.getDeclaration().getBody().resolveOrError();
+        } catch (ArchResolveException e) {
+            e.printStackTrace();
         }
-
 
         System.err.println("output: " + output);
         return output;

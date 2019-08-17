@@ -72,7 +72,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
         this.body = body;
     }
 
-    public boolean isNetworkLayer() {
+    public boolean isNetwork() {
         return body.isNetwork();
     }
 
@@ -154,12 +154,12 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
 
     @Override
     public List<ArchitectureElementSymbol> getFirstAtomicElements() {
-        return getDeclaration().getBody().getElements().get(0).getFirstAtomicElements();
+        return this.getBody().getElements().get(0).getFirstAtomicElements();
     }
 
     @Override
     public List<ArchitectureElementSymbol> getLastAtomicElements() {
-        return getDeclaration().getBody().getElements().get(getDeclaration().getBody().getElements().size()-1).getLastAtomicElements();
+        return this.getBody().getElements().get(this.getBody().getElements().size()-1).getLastAtomicElements();
     }
 
     @Override
@@ -285,6 +285,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes() {
+        System.err.println("##33333333");
         if (getResolvedThis().isPresent()) {
             if (getResolvedThis().get() == this) {
                 List<ArchTypeSymbol> inputTypes = getInputTypes();
@@ -470,7 +471,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
-    protected ArchitectureElementSymbol preResolveDeepCopy() {
+    protected UnrollSymbol preResolveDeepCopy() {
         UnrollSymbol copy = new UnrollSymbol(getName());
         if (getAstNode().isPresent()){
             copy.setAstNode(getAstNode().get());

@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.cnnarch._cocos;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.UnrollSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -33,6 +34,10 @@ public class CheckNetworkStreamMissing extends CNNArchSymbolCoCo {
 
         for (CompositeElementSymbol stream : architecture.getStreams()) {
             hasNetworkStream |= stream.isNetwork();
+        }
+
+        for (UnrollSymbol unroll : architecture.getUnrolls()) {
+            hasNetworkStream |= unroll.isNetwork();
         }
 
         if (!hasNetworkStream) {

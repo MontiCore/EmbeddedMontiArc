@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.cnnarch._cocos;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.UnrollSymbol;
 
 public class CheckElementInputs extends CNNArchSymbolCoCo {
 
@@ -29,6 +30,12 @@ public class CheckElementInputs extends CNNArchSymbolCoCo {
     public void check(ArchitectureSymbol architecture) {
         for (CompositeElementSymbol stream : architecture.getStreams()) {
             stream.checkInput();
+        }
+
+        for (UnrollSymbol unroll : architecture.getUnrolls()) {
+            System.err.println("BEFORE check");
+            unroll.checkInput();
+            System.err.println("AFTER check");
         }
     }
 }

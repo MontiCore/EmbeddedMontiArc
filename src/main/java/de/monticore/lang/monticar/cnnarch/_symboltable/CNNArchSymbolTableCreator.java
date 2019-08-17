@@ -145,13 +145,21 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     public void endVisit(final ASTArchitecture node) {
         List<SerialCompositeElementSymbol> streams = new ArrayList<>();
+        List<UnrollSymbol> unrolls = new ArrayList<>();
         for (ASTInstruction astInstruction : node.getInstructionsList()){
-            ASTStream astStream = (ASTStream)astInstruction; // TODO: For now all instructions are streams
-            streams.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
+            if(astInstruction instanceof ASTStream) {
+                ASTStream astStream = (ASTStream) astInstruction;
+                streams.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
+            }else if(astInstruction instanceof ASTUnroll) {
+                ASTUnroll astUnroll = (ASTUnroll) astInstruction;
+                unrolls.add((UnrollSymbol) astUnroll.getSymbolOpt().get());
+                System.err.println("Table 1: " + ((UnrollSymbol) astUnroll.getSymbolOpt().get()).getName());
+                System.err.println("Table 1_1: " + ((UnrollSymbol) astUnroll.getSymbolOpt().get()).getBody().getElements().toString());
+            }
         }
-        System.err.println("777333: streams set for architecture");
-        System.err.println(streams.get(0).getElements().toString());
+
         architecture.setStreams(streams);
+        architecture.setUnrolls(unrolls);
 
         removeCurrentScope();
     }
@@ -360,9 +368,9 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         }
         sces.setElements(elements);
         layer.setBody(sces);
-        layer.getDeclaration().setBody(sces);
+        //layer.getDeclaration().setBody(sces);
 
-        layer.getDeclaration().getBody().setElements(elements);
+        //layer.setElements(elements);
 
         List<ArgumentSymbol> arguments = new ArrayList<>(6);
         for (ASTArchArgument astArgument : ast.getArgumentsList()){
@@ -371,69 +379,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         }
         layer.setArguments(arguments);
 
-        int elementNumber = 0;
-
-        for (ASTArchitectureElement astElement : ast.getBody().getElementsList()){
-
-            //sublayer.getDeclaration().setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
-
-            List<ArgumentSymbol> subarguments = new ArrayList<>(6);
-
-            if(astElement.getSymbolOpt().get() instanceof LayerSymbol) {
-                for (ArgumentSymbol argument : ((LayerSymbol) astElement.getSymbolOpt().get()).getArguments()) {
-                    System.err.println("arg: " + argument);
-                    subarguments.add(argument);
-                }
-                ((LayerSymbol) astElement.getSymbolOpt().get()).setArguments(subarguments);
-            }
 
 
-
-
-            if(elementNumber == 0 && astElement.getSymbolOpt().get() instanceof IOSymbol){
-
-                ((IOSymbol)astElement.getSymbol()).getArchitecture().resolveIODeclaration(((IOSymbol)astElement.getSymbol()).getName());
-                System.err.println("Here 55566");
-                Iterator iterator = ((IOSymbol)astElement.getSymbol()).getArchitecture().getIODeclarations().iterator();
-                while (iterator.hasNext()){
-                    System.err.println("0001111: " + iterator.next().toString());
-                }
-
-                ASTIODeclaration ioAST = (ASTIODeclaration) ((IOSymbol)astElement.getSymbol()).getDefinition().getAstNode().get();
-
-                IODeclarationSymbol iODeclaration = ((IOSymbol)astElement.getSymbol()).getDefinition();
-                if (ioAST.isPresentArrayDeclaration()){
-                    iODeclaration.setArrayLength(ioAST.getArrayDeclaration().getIntLiteral().getNumber().get().intValue());
-                }
-                iODeclaration.setInput(ioAST.isPresentIn());
-                iODeclaration.setType((ArchTypeSymbol) ioAST.getType().getSymbolOpt().get());
-
-                try {
-                    ((IOSymbol) astElement.getSymbolOpt().get()).resolve();
-                    ((IOSymbol) ast.getBody().getElements(0).getSymbolOpt().get()).resolve();
-                } catch (ArchResolveException e) {
-                    e.printStackTrace();
-                }
-                layer.getBody().setInputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
-                layer.setInputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
-            }else if(elementNumber == (ast.getBody().getElementsList().size() - 1) && astElement.getSymbolOpt().get() instanceof IOSymbol){
-
-                Iterator iterator2 = ((IOSymbol)astElement.getSymbol()).getArchitecture().getInputs().iterator();
-                while (iterator2.hasNext()){
-                    System.err.println("0002222: " + iterator2.next().toString());
-                }
-
-                try {
-                    ((IOSymbol) astElement.getSymbolOpt().get()).resolve();
-                    ((IOSymbol) ast.getBody().getElements(ast.getBody().getElementsList().size() - 1).getSymbolOpt().get()).resolve();
-                } catch (ArchResolveException e) {
-                    e.printStackTrace();
-                }
-                layer.getBody().setOutputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
-                layer.setOutputElement((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
-            }
-            elementNumber++;
-        }
 
 
         /*List<ArchitectureElementSymbol> elements = new ArrayList<>();
