@@ -136,7 +136,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 softmax_label = batch.label[0].as_in_context(mx_context)
 
                 with autograd.record():
-                    softmax_ = mx.nd.zeroes(((10,), ctx=mx_context)
+                    softmax_ = mx.nd.zeroes((10,), ctx=mx_context)
 
                     softmax_ = self._networks[0](data_)
 
@@ -173,7 +173,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 ]
 
                 if True:
-                    softmax_ = mx.nd.zeroes(((10,), ctx=mx_context)
+                    softmax_ = mx.nd.zeroes((10,), ctx=mx_context)
 
                     softmax_ = self._networks[0](data_)
 
@@ -194,7 +194,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 ]
 
                 if True:
-                    softmax_ = mx.nd.zeroes(((10,), ctx=mx_context)
+                    softmax_ = mx.nd.zeroes((10,), ctx=mx_context)
 
                     softmax_ = self._networks[0](data_)
 
