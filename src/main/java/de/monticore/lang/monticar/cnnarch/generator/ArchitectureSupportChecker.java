@@ -1,10 +1,6 @@
 package de.monticore.lang.monticar.cnnarch.generator;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.ConstantSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.SerialCompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -13,7 +9,7 @@ public abstract class ArchitectureSupportChecker {
 
     // Overload functions returning always true to enable the features
     protected boolean checkMultipleStreams(ArchitectureSymbol architecture) {
-        if (architecture.getStreams().size() != 1) {
+        if (architecture.getStreams().size() + architecture.getUnrolls().size() != 1) {
             Log.error("This cnn architecture has multiple instructions, " +
                       "which is currently not supported by the code generator. "
                       , architecture.getSourcePosition());
@@ -83,6 +79,16 @@ public abstract class ArchitectureSupportChecker {
     protected boolean checkConstants(ArchitectureSymbol architecture) {
         for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
             for (ArchitectureElementSymbol element : stream.getElements()) {
+                if (hasConstant(element)) {
+                    Log.error("This cnn architecture has a constant, which is currently not supported by the code generator."
+                            , architecture.getSourcePosition());
+                    return false;
+                }
+            }
+        }
+
+        for (UnrollSymbol unroll: architecture.getUnrolls()) {
+            for (ArchitectureElementSymbol element : unroll.getBody().getElements()) {
                 if (hasConstant(element)) {
                     Log.error("This cnn architecture has a constant, which is currently not supported by the code generator."
                             , architecture.getSourcePosition());

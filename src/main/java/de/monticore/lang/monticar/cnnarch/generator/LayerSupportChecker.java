@@ -1,12 +1,7 @@
 package de.monticore.lang.monticar.cnnarch.generator;
 
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.ConstantSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -58,6 +53,14 @@ public abstract class LayerSupportChecker {
     public boolean check(ArchitectureSymbol architecture) {
         for (CompositeElementSymbol stream : architecture.getStreams()) {
             for (ArchitectureElementSymbol element : stream.getElements()) {
+                if (!isSupportedLayer(element)) {
+                    return false;
+                }
+            }
+        }
+
+        for (UnrollSymbol unroll: architecture.getUnrolls()) {
+            for (ArchitectureElementSymbol element : unroll.getBody().getElements()) {
                 if (!isSupportedLayer(element)) {
                     return false;
                 }

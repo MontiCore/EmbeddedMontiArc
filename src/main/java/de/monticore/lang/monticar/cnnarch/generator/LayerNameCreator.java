@@ -37,6 +37,9 @@ public class LayerNameCreator {
         for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
             stage = name(stream, stage, new ArrayList<>());
         }
+        for (UnrollSymbol unroll : architecture.getUnrolls()) {
+            stage = name(unroll, stage, new ArrayList<>());
+        }
     }
 
     public ArchitectureElementSymbol getArchitectureElement(String name){
@@ -93,7 +96,7 @@ public class LayerNameCreator {
 
     protected int nameUnroll(UnrollSymbol unrollElement, int stage, List<Integer> streamIndices){
         int endStage = stage;
-        for (ArchitectureElementSymbol subElement : unrollElement.getDeclaration().getBody().getElements()){
+        for (ArchitectureElementSymbol subElement : unrollElement.getBody().getElements()){
             endStage = name(subElement, endStage, streamIndices);
         }
         return endStage;
