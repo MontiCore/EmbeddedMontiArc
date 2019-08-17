@@ -107,12 +107,27 @@ public abstract class ArchitectureSupportChecker {
         return true;
     }
 
+    protected boolean checkOutputAsInput(ArchitectureSymbol architecture) {
+        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
+            for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
+                if (element.isOutput()) {
+                    Log.error("This cnn architecture uses an output as an input, which is currently not supported by the code generator."
+                            , architecture.getSourcePosition());
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public boolean check(ArchitectureSymbol architecture) {
         return checkMultipleStreams(architecture)
                 && checkMultipleInputs(architecture)
                 && checkMultipleOutputs(architecture)
                 && checkMultiDimensionalOutput(architecture)
                 && checkConstants(architecture)
-                && checkLayerVariables(architecture);
+                && checkLayerVariables(architecture)
+                && checkOutputAsInput(architecture);
     }
 }
