@@ -16,7 +16,7 @@ import static junit.framework.TestCase.assertTrue;
  *
  */
 public class IntegrationPythonWrapperTest extends AbstractSymtabTest {
-    @Test
+    /*@Test
     public void testGluonReinforcementModelRosEnvironment() {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "torcs.agent.TorcsAgent", "-b", "GLUON", "-f", "n", "-c", "n"};
@@ -69,5 +69,5 @@ public class IntegrationPythonWrapperTest extends AbstractSymtabTest {
         assertTrue(Paths.get(
                 "./target/generated-sources-emadl/reinforcement_learning/torcs_agent_dqn_reward_executor.py")
                 .toFile().exists());
-    }
+    }*/
 }

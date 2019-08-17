@@ -15,7 +15,7 @@
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-    <emadl.version>0.2.8-SNAPSHOT</emadl.version>
+    <emadl.version>0.2.6</emadl.version>
     <CNNTrain.version>0.3.4-SNAPSHOT</CNNTrain.version>
     <cnnarch-generator.version>0.0.2-SNAPSHOT</cnnarch-generator.version>
     <cnnarch-mxnet-generator.version>0.2.16-SNAPSHOT</cnnarch-mxnet-generator.version>
