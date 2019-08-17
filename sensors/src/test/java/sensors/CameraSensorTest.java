@@ -21,12 +21,9 @@
 package sensors;
 
 import org.junit.Test;
-import sensors.util.SensorUtil;
 import simulation.environment.WorldModel;
 import simulation.environment.weather.WeatherSettings;
-import simulation.simulator.Simulator;
-import simulation.vehicle.ModelicaPhysicalVehicleBuilder;
-import simulation.vehicle.PhysicalVehicle;
+
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -135,14 +132,5 @@ public class CameraSensorTest {
             //ImageIO.write(awgnImage, "JPEG", new FileOutputStream("/Users/christapujun/Desktop/SPP/awgn_scene.jpeg"));
           }
           */
-    }
-    private PhysicalVehicle setupDefaultVehicle() {
-        // Create a new vehicle
-        PhysicalVehicle physicalVehicle = null;
-        ModelicaPhysicalVehicleBuilder physicalVehicleBuilder = new ModelicaPhysicalVehicleBuilder();
-        physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-        SensorUtil.sensorAdder(physicalVehicle);
-
-        return physicalVehicle;
     }
 }

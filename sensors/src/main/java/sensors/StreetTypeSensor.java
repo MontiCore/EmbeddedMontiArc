@@ -21,6 +21,7 @@
 package sensors;
 
 import commons.controller.commons.BusEntry;
+import commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
@@ -28,7 +29,6 @@ import simulation.environment.World;
 import simulation.environment.WorldModel;
 import simulation.environment.geometry.osmadapter.GeomStreet;
 import simulation.environment.visualisationadapter.implementation.Street2D;
-import simulation.vehicle.PhysicalVehicle;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class StreetTypeSensor extends AbstractSensor {
 
     private Double lastVelocityValue = 0.;
 
-    public StreetTypeSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+    public StreetTypeSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                             HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
     }
@@ -58,6 +58,10 @@ public class StreetTypeSensor extends AbstractSensor {
 
     @Override
     public BusEntry getType() {
+        return BusEntry.SENSOR_STREETTYPE;
+    }
+    
+    public static BusEntry getSensorType() {
         return BusEntry.SENSOR_STREETTYPE;
     }
 

@@ -21,12 +21,11 @@
 package sensors;
 
 import commons.controller.commons.BusEntry;
+import commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.EESimulator.EEComponent;
-import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
-import simulation.vehicle.PhysicalVehicle;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +37,7 @@ public class LocationSensor extends AbstractSensor {
 
     private RealVector value;
 
-    public LocationSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+    public LocationSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                           HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
 
@@ -77,6 +76,10 @@ public class LocationSensor extends AbstractSensor {
 
     @Override
     public BusEntry getType() {
+        return BusEntry.SENSOR_GPS_COORDINATES;
+    }
+    
+    public static BusEntry getSensorType() {
         return BusEntry.SENSOR_GPS_COORDINATES;
     }
 

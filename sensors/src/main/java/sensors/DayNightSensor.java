@@ -21,13 +21,11 @@
 package sensors;
 
 import commons.controller.commons.BusEntry;
+import commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.EEComponent;
-import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
-import simulation.vehicle.PhysicalVehicle;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class DayNightSensor extends AbstractSensor {
 
     private Daytime value;
 
-    public DayNightSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+    public DayNightSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                           HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId);
     }
@@ -63,6 +61,10 @@ public class DayNightSensor extends AbstractSensor {
 
     @Override
     public BusEntry getType() {
+        return BusEntry.SENSOR_DAYNIGHT;
+    }
+    
+    public static BusEntry getSensorType() {
         return BusEntry.SENSOR_DAYNIGHT;
     }
 

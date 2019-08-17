@@ -23,56 +23,53 @@ package sensors.abstractsensors;
 import commons.controller.commons.BusEntry;
 import simulation.EESimulator.*;
 
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
+import commons.simulation.IPhysicalVehicle;
 import commons.simulation.Sensor;
-import simulation.vehicle.PhysicalVehicle;
-
-import java.util.UUID;
-
-
 
 /**
  * Created by Aklima Zaman on 1/20/2017.
  */
 public abstract class AbstractSensor extends ImmutableEEComponent implements Sensor {
+	
+	private final IPhysicalVehicle physicalVehicle;
 
-    private PhysicalVehicle physicalVehicle;
+	public AbstractSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+			HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+		super(simulator, EEComponentType.SENSOR, subscribedMessages, targetsByMessageId);
+		this.physicalVehicle = physicalVehicle;
+	}
 
-    public AbstractSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
-                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
-        super(simulator, EEComponentType.SENSOR, subscribedMessages, targetsByMessageId);
-        this.physicalVehicle = physicalVehicle;
-    }
-    
-    @Override
-    public void update() {
-        calculateValue();
-    }
+	@Override
+	public void update() {
+		calculateValue();
+		
+	}
 
-    public PhysicalVehicle getPhysicalVehicle() {
-        return this.physicalVehicle;
-    }
+	/**
+	 * Return the physicalVehicle this sensor belongs to
+	 * @return
+	 */
+	public IPhysicalVehicle getPhysicalVehicle() {
+		return physicalVehicle;
+	}
 
-    /**
-     * This method do the sensor calculations
-     */
-    protected abstract void calculateValue();
+	/**
+	 * This method do the sensor calculations
+	 */
+	protected abstract void calculateValue();
 
-    /**
-     *
-     * @return individual lenght of the data of the sensor in bytes
-     */
-    public abstract int getDataLength();
+	/**
+	 *
+	 * @return individual lenght of the data of the sensor in bytes
+	 */
+	public abstract int getDataLength();
 
-
-
-    @Override
-    public void processEvent(EEDiscreteEvent event) {
-        //TODO implement
-    }
+	@Override
+	public void processEvent(EEDiscreteEvent event) {
+		// TODO implement
+	}
 
 }

@@ -342,7 +342,7 @@ public class WorldModel implements World{
 
     @Override
     public Number getDistanceFrontLeftWheelToLeftStreetBorder(IPhysicalVehicle v) {
-        RealVector pos = v.getFrontLeftWheelGeometryPosition();
+    	RealVector pos = v.getFrontLeftWheelGeometryPosition();
 
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);

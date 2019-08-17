@@ -23,6 +23,7 @@ package simulation.vehicle;
 import commons.controller.interfaces.Bus;
 import commons.controller.interfaces.FunctionBlockInterface;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.EESimulator.EESimulator;
 
@@ -33,6 +34,8 @@ import java.util.Optional;
  */
 public abstract class PhysicalVehicleBuilder {
 
+	protected Optional<Vehicle> vehicle = Optional.empty();
+	
     protected Optional<RealVector> position = Optional.empty();
     protected Optional<Rotation> rotation = Optional.empty();
     protected Optional<RealVector> velocity = Optional.empty();
@@ -52,8 +55,6 @@ public abstract class PhysicalVehicleBuilder {
 
     //TODO: Add actuators to the build process and to the JSON serialisation
 
-    protected Optional<Optional<Bus>> controllerBus = Optional.empty();
-    protected Optional<Optional<FunctionBlockInterface>> controller = Optional.empty();
     protected Optional<Optional<FunctionBlockInterface>> navigation = Optional.empty();
 
     /**
@@ -68,7 +69,48 @@ public abstract class PhysicalVehicleBuilder {
      *
      * @return PhysicalVehicle that was built with the builder
      */
-    public abstract PhysicalVehicle buildPhysicalVehicle();
+    public PhysicalVehicle buildPhysicalVehicle() {
+    	PhysicalVehicle physicalVehicle = this.createPhysicalVehicle();
+        
+    	if(this.velocity.isPresent()) {
+    		this.setVelocity(physicalVehicle, velocity.get());
+    	}
+    	if(this.angularVelocity.isPresent()) {
+    		physicalVehicle.setAngularVelocity(this.calculateAngularVelocity(angularVelocity.get()));
+    	}
+    	
+    	this.vehicle.ifPresent(physicalVehicle::setVehicle);
+    	
+    	this.mass.ifPresent(physicalVehicle::setMass);
+
+        this.width.ifPresent(physicalVehicle::setWidth);
+        this.length.ifPresent(physicalVehicle::setLength);
+        this.height.ifPresent(physicalVehicle::setHeight);
+        
+    	this.wheelRadius.ifPresent(physicalVehicle::setWheelRadius);
+        this.wheelDistLeftRightFrontSide.ifPresent(physicalVehicle::setWheelDistLeftRightFrontSide);
+        this.wheelDistLeftRightBackSide.ifPresent(physicalVehicle::setWheelDistLeftRightBackSide);
+        this.wheelDistToFront.ifPresent(physicalVehicle::setWheelDistToFront);
+        this.wheelDistToBack.ifPresent(physicalVehicle::setWheelDistToBack);
+        
+        physicalVehicle.initPhysics();
+        
+        this.position.ifPresent(physicalVehicle::setPosition);
+        this.rotation.ifPresent(rotation -> physicalVehicle.setRotation(new BlockRealMatrix(rotation.getMatrix())));
+    	
+        return physicalVehicle;
+    }
+    
+    /**
+     * Function that returns a uninitialized PhysicalVehicle (freshly created)
+     *
+     * @return PhysicalVehicle that is uninitialized
+     */
+    abstract PhysicalVehicle createPhysicalVehicle();
+    
+    abstract RealVector calculateAngularVelocity(RealVector angularVelocity);
+    
+    abstract void setVelocity(PhysicalVehicle vehicle, RealVector velocity);
 
     public PhysicalVehicleBuilder setPosition(RealVector position){
         this.position = Optional.of(position);
@@ -132,16 +174,6 @@ public abstract class PhysicalVehicleBuilder {
 
     public  PhysicalVehicleBuilder setWheelDistToBack(double wheelDistToBack){
         this.wheelDistToBack = Optional.of(wheelDistToBack);
-        return this;
-    }
-
-    public PhysicalVehicleBuilder setControllerBus(Optional<Bus> controllerBus){
-        this.controllerBus = Optional.of(controllerBus);
-        return this;
-    }
-
-    public PhysicalVehicleBuilder setController(Optional<FunctionBlockInterface> controller) {
-        this.controller = Optional.of(controller);
         return this;
     }
 
