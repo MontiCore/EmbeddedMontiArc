@@ -8,7 +8,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-emadl-generator</artifactId>
-  <version>0.3.5-SNAPSHOT</version>
+  <version>0.3.6-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -62,7 +62,6 @@
         </dependency>
 
         <!-- MontiCore Dependencies -->
-
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-opt-generator</artifactId>

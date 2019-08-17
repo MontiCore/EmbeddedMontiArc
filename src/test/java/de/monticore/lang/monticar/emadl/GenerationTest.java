@@ -27,21 +27,15 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 public class GenerationTest extends AbstractSymtabTest {
     @Before
@@ -54,7 +48,8 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testCifar10Generation() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET", "-f", "n", "-c", "n"};
+        String[] args = { "-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET", "-f",
+                "n", "-c", "n" };
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
@@ -285,5 +280,59 @@ public class GenerationTest extends AbstractSymtabTest {
                         "reinforcement_learning/cnnarch_logger.py"
                 )
         );
+    }
+
+    @Test
+    public void testAlexNetTagging() {
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.Alexnet", "-b", "MXNET", "-f", "n", "-c",
+                "n" };
+        EMADLGeneratorCli.main(args);
+        assertEquals(Log.getFindings().size(), 1);
+        assertEquals(Log.getFindings().get(0).toString(),
+                "Tagging info for symbol was found, ignoring data_paths.txt: src/test/resources/models");
+        assertTrue(Log.getErrorCount() == 0);
+    }
+
+    @Test
+    public void testAlexNetTaggingForInstances() {
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.Parent", "-b", "MXNET", "-f", "n", "-c",
+                "n" };
+        EMADLGeneratorCli.main(args);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testInvalidPathCoCos() {
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.AlexnetInvalid", "-b", "MXNET", "-f", "n",
+                "-c", "n" };
+        EMADLGeneratorCli.main(args);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testInvalidPathCoCosInstances() {
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.ParentInvalidPath", "-b", "MXNET", "-f",
+                "n", "-c", "n" };
+        EMADLGeneratorCli.main(args);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testInvalidTypeCocos() {
+
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.AlexnetInvalidType", "-b", "MXNET", "-f",
+                "n", "-c", "n" };
+        EMADLGeneratorCli.main(args);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testInvalidTypeCocosInstances() {
+
+        Log.getFindings().clear();
+        String[] args = { "-m", "src/test/resources/models/", "-r", "tagging.ParentInvalidType", "-b", "MXNET", "-f",
+                "n", "-c", "n" };
+        EMADLGeneratorCli.main(args);
     }
 }
