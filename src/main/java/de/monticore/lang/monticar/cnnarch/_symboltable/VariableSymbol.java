@@ -342,7 +342,8 @@ public class VariableSymbol extends ArchitectureElementSymbol {
     public List<ArchTypeSymbol> computeOutputTypes() {
         if (isAtomic()) {
             if (getType() == Type.IO) {
-                if (isInput()) {
+                // Allow inputs and outputs to be used as input
+                if (isInput() || getOutputElement().isPresent()) {
                     return Collections.singletonList(((IODeclarationSymbol) getDeclaration()).getType());
                 }
                 else {
@@ -387,9 +388,12 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                     }
 
                     if (getInputTypes().size() != 1) {
-                        Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid number of input streams. " +
-                                        "The number of input streams for the output '" + name + "' is " + getInputTypes().size() + "."
-                                , getSourcePosition());
+                        // Allow no input when output is used as input
+                        if (!(getInputTypes().size() == 0 && getOutputElement().isPresent())) {
+                            Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid number of input streams. " +
+                                            "The number of input streams for the output '" + name + "' is " + getInputTypes().size() + "."
+                                    , getSourcePosition());
+                        }
                     } else {
                         ASTElementType inputType = getInputTypes().get(0).getDomain();
                         ASTElementType outputType = ioDeclaration.getType().getDomain();
