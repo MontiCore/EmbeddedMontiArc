@@ -47,6 +47,13 @@
             <artifactId>util</artifactId>
             <version>${revision}</version>
         </dependency>
+		
+		<!-- Vehicle has dependency to sensor -->
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>sensor</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
         <!-- Vehicle has dependency to environment -->
         <dependency>
@@ -84,39 +91,34 @@
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.9</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>sensors</artifactId>
-            <version>2.0.1</version>
-            <scope>compile</scope>
-        </dependency>
+
     </dependencies>
 
 

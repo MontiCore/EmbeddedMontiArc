@@ -48,13 +48,6 @@ public class StreetTypeSensor extends AbstractSensor {
         super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
     }
 
-    public Double getLastVelocityValue(){
-        return lastVelocityValue;
-    }
-
-    public void setLastVelocityValue(Double lastVelocityValue) {
-        this.lastVelocityValue = lastVelocityValue;
-    }
 
     @Override
     public BusEntry getType() {

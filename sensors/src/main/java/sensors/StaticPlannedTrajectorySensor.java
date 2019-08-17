@@ -58,4 +58,9 @@ public abstract class StaticPlannedTrajectorySensor implements Sensor {
     @Override
     public void update() {
     }
+
+    @Override
+    public int getDataLength(){
+        return 6 * trajectory.size();
+    }
 }
