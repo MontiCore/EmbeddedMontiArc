@@ -37,4 +37,9 @@ public class CNNArch2GluonArchitectureSupportChecker extends ArchitectureSupport
         return true;
     }
 
+    @Override
+    protected boolean checkOutputAsInput(ArchitectureSymbol architecture) {
+        return true;
+    }
+
 }
