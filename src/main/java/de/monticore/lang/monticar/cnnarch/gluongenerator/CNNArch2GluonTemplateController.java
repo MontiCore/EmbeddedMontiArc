@@ -26,6 +26,7 @@ import de.monticore.lang.monticar.cnnarch.generator.CNNArchTemplateController;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
+import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 
 import java.io.Writer;
 import java.util.*;
@@ -39,6 +40,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     }
 
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer, NetDefinitionMode netDefinitionMode){
+        System.err.println("include called. templateName: " + templateWithoutFileEnding);
         String templatePath = relativePath + templateWithoutFileEnding + FTL_FILE_ENDING;
         Map<String, Object> ftlContext = new HashMap<>();
         ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
@@ -100,14 +102,15 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(unrollElement);
 
-        if(unrollElement.getDeclaration().getBody().getElements().get(0).isInput()) {
-            include(unrollElement.getDeclaration().getBody().getElements().get(0).getResolvedThis().get(), writer, netDefinitionMode);
+        if(unrollElement.getBody().getElements().get(0).isInput()) {
+            include(unrollElement.getBody().getElements().get(0).getResolvedThis().get(), writer, netDefinitionMode);
         }
 
-        for(int i=0; i < (int)unrollElement.getDeclaration().getParameters().get(0).getExpression().getValue().get(); i++) {
-            
+        for(int i = 0; i < (int)unrollElement.getIntValue(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH_NAME).get(); i++) {
 
-            for (ArchitectureElementSymbol element : unrollElement.getDeclaration().getBody().getElements()) {
+            System.err.println("i: " + i);
+
+            for (ArchitectureElementSymbol element : unrollElement.getBody().getElements()) {
                 previousElement = getCurrentElement();
                 setCurrentElement(element);
 
@@ -156,9 +159,9 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     }
 
     public void include(ArchitectureElementSymbol architectureElementSymbol, String netDefinitionMode) {
-        for(int i=0; i < ((ASTStream)architectureElementSymbol.getAstNode().get()).getElementsList().size(); i++){
-            System.err.println(((ASTStream)architectureElementSymbol.getAstNode().get()).getElementsList().get(i).getSymbol().getName());
-        }
+        //System.err.println("INCLUDE: " + ((SerialCompositeElementSymbol)architectureElementSymbol).getElements().toString());
+        System.err.println(architectureElementSymbol.getSpannedScope().getSpanningSymbol().get().getClass());
+        System.err.println("isUnroll? " + (architectureElementSymbol.getSpannedScope().getSpanningSymbol().get() instanceof UnrollSymbol));
         include(architectureElementSymbol, NetDefinitionMode.fromString(netDefinitionMode));
     }
 
@@ -177,15 +180,8 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         List<String> names = new ArrayList<>();
 
         for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
-            if(element instanceof  UnrollSymbol){
-                for(ArchitectureElementSymbol sublayer: ((UnrollSymbol) element).getDeclaration().getBody().getFirstAtomicElements()){
-                    names.add(getName(sublayer));
-                }
-            }else {
-                names.add(getName(element));
-            }
+            names.add(getName(element));
         }
-
         return names;
     }
 
@@ -193,15 +189,26 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         List<String> names = new ArrayList<>();
 
         for (ArchitectureElementSymbol element : stream.getLastAtomicElements()) {
-            if(element instanceof  UnrollSymbol){
-                for(ArchitectureElementSymbol sublayer: ((UnrollSymbol) element).getDeclaration().getBody().getLastAtomicElements()){
-                    names.add(getName(sublayer));
-                }
-            }else {
-                names.add(getName(element));
-            }
+            names.add(getName(element));
         }
+        return names;
+    }
 
+    public List<String> getUnrollInputNames(UnrollSymbol unroll) {
+        List<String> names = new ArrayList<>();
+
+        for (ArchitectureElementSymbol element : unroll.getFirstAtomicElements()) {
+            names.add(getName(element));
+        }
+        return names;
+    }
+
+    public List<String> getUnrollOutputNames(UnrollSymbol unroll) {
+        List<String> names = new ArrayList<>();
+
+        for (ArchitectureElementSymbol element : unroll.getLastAtomicElements()) {
+            names.add(getName(element));
+        }
         return names;
     }
 }

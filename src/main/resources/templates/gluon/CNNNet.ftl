@@ -97,3 +97,23 @@ ${tc.include(stream, "FORWARD_FUNCTION")}
 </#if>
 </#if>
 </#list>
+
+<#list tc.architecture.unrolls as unroll>
+<#if unroll.isNetwork()>
+class Net_${unroll?index}(gluon.HybridBlock):
+    def __init__(self, data_mean=None, data_std=None, **kwargs):
+        super(Net_${unroll?index}, self).__init__(**kwargs)
+        self.last_layers = {}
+        with self.name_scope():
+${tc.include(unroll, "ARCHITECTURE_DEFINITION")}
+
+    def hybrid_forward(self, F, ${tc.join(tc.getUnrollInputNames(unroll), ", ")}):
+        outputs = []
+${tc.include(unroll, "FORWARD_FUNCTION")}
+<#if tc.getUnrollOutputNames(unroll)?size gt 1>
+        return tuple(outputs)
+<#else>
+        return outputs[0]
+</#if>
+</#if>
+</#list>

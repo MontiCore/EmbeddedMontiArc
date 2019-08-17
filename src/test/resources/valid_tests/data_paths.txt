@@ -5,3 +5,4 @@ Alexnet data/Alexnet
 ResNeXt50 data/ResNeXt50
 MultipleStreams data/MultipleStreams
 Invariant data/Invariant
+RNNencdec data/RNNencdec
