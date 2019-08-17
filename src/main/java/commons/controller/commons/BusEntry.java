@@ -76,10 +76,22 @@ public enum BusEntry {
     //***************************************************************************
     //*  Actuator Entries                                                       *
     //***************************************************************************
+    //Target Value
     ACTUATOR_ENGINE("ACTUATOR_ENGINE"),
+    //Current Value
+    ACTUATOR_ENGINE_CURRENT("ACTUATOR_ENGINE_CURRENT"),
+    //Target Value
     ACTUATOR_BRAKE("ACTUATOR_BRAKE"),
+    //Current Value
+    ACTUATOR_BRAKE_CURRENT("ACTUATOR_BRAKE_CURRENT"),
+    //Target Value
     ACTUATOR_STEERING("ACTUATOR_STEERING"),
+    //Current Value
+    ACTUATOR_STEERING_CURRENT("ACTUATOR_STEERING_CURRENT"),
+    //Target Value
     ACTUATOR_GEAR("ACTUATOR_GEAR"),
+    //Current Value
+    ACTUATOR_GEAR_CURRENT("ACTUATOR_GEAR_CURRENT"),
     //***************************************************************************
     //*  Computervision Entries                                                 *
     //***************************************************************************
