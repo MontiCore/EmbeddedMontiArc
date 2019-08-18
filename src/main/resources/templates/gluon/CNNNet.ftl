@@ -79,7 +79,7 @@ class NoNormalization(gluon.HybridBlock):
 
 
 <#list tc.architecture.streams as stream>
-<#if stream.isNetwork()>
+<#if stream.isTrainable()>
 class Net_${stream?index}(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
         super(Net_${stream?index}, self).__init__(**kwargs)
@@ -88,18 +88,14 @@ class Net_${stream?index}(gluon.HybridBlock):
 ${tc.include(stream, "ARCHITECTURE_DEFINITION")}
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(stream), ", ")}):
-        outputs = []
 ${tc.include(stream, "FORWARD_FUNCTION")}
-<#if tc.getStreamOutputNames(stream)?size gt 1>
-        return tuple(outputs)
-<#else>
-        return outputs[0]
-</#if>
+        return ${tc.join(tc.getStreamOutputNames(stream), ", ")}
+
 </#if>
 </#list>
 
 <#list tc.architecture.unrolls as unroll>
-<#if unroll.isNetwork()>
+<#if unroll.isTrainable()>
 class Net_${unroll?index}(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
         super(Net_${unroll?index}, self).__init__(**kwargs)

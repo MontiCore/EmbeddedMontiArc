@@ -29,9 +29,9 @@ public:
         if(handle) MXPredFree(handle);
     }
 
-    void predict(const std::vector<float> &data,
-                 std::vector<float> &softmax){
-        MXPredSetInput(handle, "data", data.data(), static_cast<mx_uint>(data.size()));
+    void predict(const std::vector<float> &in_data_,
+                 std::vector<float> &out_softmax_){
+        MXPredSetInput(handle, input_keys[0].c_str(), in_data_.data(), static_cast<mx_uint>(in_data_.size()));
 
         MXPredForward(handle);
 
@@ -44,8 +44,8 @@ public:
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
-        assert(size == softmax.size());
-        MXPredGetOutput(handle, 0, &(softmax[0]), softmax.size());
+        assert(size == out_softmax_.size());
+        MXPredGetOutput(handle, 0, &(out_softmax_[0]), out_softmax_.size());
 
     }
 

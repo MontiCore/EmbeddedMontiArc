@@ -21,8 +21,8 @@ class CNNDataLoader_VGG16:
 
         for input_name in self._input_names_:
             train_data[input_name] = train_h5[input_name]
-            data_mean[input_name] = nd.array(train_h5[input_name][:].mean(axis=0))
-            data_std[input_name] = nd.array(train_h5[input_name][:].std(axis=0) + 1e-5)
+            data_mean[input_name + '_'] = nd.array(train_h5[input_name][:].mean(axis=0))
+            data_std[input_name + '_'] = nd.array(train_h5[input_name][:].std(axis=0) + 1e-5)
 
         train_label = {}
         for output_name in self._output_names_:

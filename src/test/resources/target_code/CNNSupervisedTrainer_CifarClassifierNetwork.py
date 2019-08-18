@@ -132,14 +132,16 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
-                data_data = batch.data[0].as_in_context(mx_context)
+                data_ = batch.data[0].as_in_context(mx_context)
                 softmax_label = batch.label[0].as_in_context(mx_context)
 
                 with autograd.record():
-                    softmax_output = self._networks[0](data_data)
+                    softmax_ = mx.nd.zeros((10,), ctx=mx_context)
+
+                    softmax_ = self._networks[0](data_)
 
                     loss = \
-                        loss_function(softmax_output, softmax_label)
+                        loss_function(softmax_, softmax_label)
 
                 loss.backward()
 
@@ -164,17 +166,19 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             train_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(train_iter):
-                data_data = batch.data[0].as_in_context(mx_context)
+                data_ = batch.data[0].as_in_context(mx_context)
 
                 labels = [
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                if True: # Fix indentation
-                    softmax_output = self._networks[0](data_data)
+                if True:
+                    softmax_ = mx.nd.zeros((10,), ctx=mx_context)
+
+                    softmax_ = self._networks[0](data_)
 
                 predictions = [
-                    mx.nd.argmax(softmax_output, axis=1)
+                    mx.nd.argmax(softmax_, axis=1)
                 ]
 
                 metric.update(preds=predictions, labels=labels)
@@ -183,17 +187,19 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             test_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(test_iter):
-                data_data = batch.data[0].as_in_context(mx_context)
+                data_ = batch.data[0].as_in_context(mx_context)
 
                 labels = [
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                if True: # Fix indentation
-                    softmax_output = self._networks[0](data_data)
+                if True:
+                    softmax_ = mx.nd.zeros((10,), ctx=mx_context)
+
+                    softmax_ = self._networks[0](data_)
 
                 predictions = [
-                    mx.nd.argmax(softmax_output, axis=1)
+                    mx.nd.argmax(softmax_, axis=1)
                 ]
 
                 metric.update(preds=predictions, labels=labels)

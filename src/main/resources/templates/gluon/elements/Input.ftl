@@ -8,8 +8,4 @@
 
 <#elseif mode == "FORWARD_FUNCTION">
         ${element.name} = self.input_normalization_${element.name}(${element.name})
-<#elseif mode == "PYTHON_INLINE">
-                    ${element.name} = ${element.name}_data
-<#elseif mode == "CPP_INLINE">
-    vector<float> ${element.name} = CNNTranslator::translate(${tc.ioNameToCpp(element.name)});
 </#if>

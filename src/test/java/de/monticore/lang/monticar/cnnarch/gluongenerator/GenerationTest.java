@@ -20,16 +20,14 @@
  */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionSourceGenerator;
-import de.monticore.lang.monticar.cnnarch.gluongenerator.util.TrainedArchitectureMockFactory;
-import de.monticore.lang.monticar.cnntrain.annotations.Range;
-import de.monticore.lang.monticar.cnntrain.annotations.TrainedArchitecture;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.util.NNArchitectureMockFactory;
+import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -37,15 +35,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import org.junit.contrib.java.lang.system.Assertion;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class GenerationTest extends AbstractSymtabTest {
     private RewardFunctionSourceGenerator rewardFunctionSourceGenerator;
@@ -172,6 +164,14 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testRNNtest() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/architectures", "-r", "RNNtest", "-o", "./target/generated-sources-cnnarch/"};
+        CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
     public void testFullCfgGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String sourcePath = "src/test/resources/valid_tests";
@@ -220,7 +220,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
-        TrainedArchitecture trainedArchitecture = TrainedArchitectureMockFactory.createTrainedArchitectureMock();
+        NNArchitectureSymbol trainedArchitecture = NNArchitectureMockFactory.createNNArchitectureMock();
 
         trainGenerator.generate(modelPath, "ReinforcementConfig2", trainedArchitecture);
 
@@ -248,7 +248,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
-        TrainedArchitecture trainedArchitecture = TrainedArchitectureMockFactory.createTrainedArchitectureMock();
+        NNArchitectureSymbol trainedArchitecture = NNArchitectureMockFactory.createNNArchitectureMock();
 
         trainGenerator.generate(modelPath, "ReinforcementConfig3", trainedArchitecture);
 
@@ -296,9 +296,11 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests/ddpg");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
-        TrainedArchitecture trainedArchitecture = TrainedArchitectureMockFactory.createTrainedArchitectureMock();
+        NNArchitectureSymbol trainedArchitecture = NNArchitectureMockFactory.createNNArchitectureMock();
+        NNArchitectureSymbol criticArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/ddpg/comp"), "CriticNetwork");
 
-        trainGenerator.generate(modelPath, "ActorNetwork", trainedArchitecture);
+        trainGenerator.generate(modelPath, "ActorNetwork", trainedArchitecture, criticArchitecture);
 
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
         checkFilesAreEqual(
@@ -321,13 +323,46 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testTd3Config() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests/td3");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        NNArchitectureSymbol trainedArchitecture = NNArchitectureMockFactory.createNNArchitectureMock();
+        NNArchitectureSymbol criticArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/td3/comp"), "CriticNetwork");
+
+        trainGenerator.generate(modelPath, "TD3Config", trainedArchitecture, criticArchitecture);
+
+        assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code/td3"),
+                Arrays.asList(
+                        "CNNTrainer_tD3Config.py",
+                        "start_training.sh",
+                        "reinforcement_learning/CNNCreator_CriticNetwork.py",
+                        "reinforcement_learning/CNNNet_CriticNetwork.py",
+                        "reinforcement_learning/__init__.py",
+                        "reinforcement_learning/strategy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
+                )
+        );
+    }
+
+    @Test
     public void testRosDdpgConfig() {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests/ddpg-ros");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
-        TrainedArchitecture trainedArchitecture = TrainedArchitectureMockFactory.createTrainedArchitectureMock();
+        NNArchitectureSymbol trainedArchitecture = NNArchitectureMockFactory.createNNArchitectureMock();
+        NNArchitectureSymbol criticArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/ddpg-ros/comp"), "RosCriticNetwork");
 
-        trainGenerator.generate(modelPath, "RosActorNetwork", trainedArchitecture);
+        trainGenerator.generate(modelPath, "RosActorNetwork", trainedArchitecture, criticArchitecture);
 
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
         checkFilesAreEqual(
