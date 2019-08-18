@@ -30,23 +30,31 @@ import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public static final ArchitectureKind KIND = new ArchitectureKind();
 
+    private List<LayerVariableDeclarationSymbol> layerVariableDeclarations = new ArrayList<>();
     private List<SerialCompositeElementSymbol> streams = new ArrayList<>();
     private List<UnrollSymbol> unrolls = new ArrayList<>();
-    private List<IOSymbol> inputs = new ArrayList<>();
-    private List<IOSymbol> outputs = new ArrayList<>();
     private Map<String, IODeclarationSymbol> ioDeclarationMap = new HashMap<>();
+    private List<VariableSymbol> inputs = new ArrayList<>();
+    private List<VariableSymbol> outputs = new ArrayList<>();
     private String dataPath;
     private String componentName;
 
     public ArchitectureSymbol() {
         super("", KIND);
+    }
+
+    public List<LayerVariableDeclarationSymbol> getLayerVariableDeclarations() {
+        return layerVariableDeclarations;
+    }
+
+    public void setLayerVariableDeclarations(List<LayerVariableDeclarationSymbol> layerVariableDeclarations) {
+        this.layerVariableDeclarations = layerVariableDeclarations;
     }
 
     public List<SerialCompositeElementSymbol> getStreams() {
@@ -81,32 +89,18 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return this.componentName;
     }
 
-    public List<IOSymbol> getInputs() {
+
+    public List<VariableSymbol> getInputs() {
         System.err.println("THE inputs: " + inputs);
         return inputs;
     }
 
-    public List<IOSymbol> getOutputs() {
+    public List<VariableSymbol> getOutputs() {
         return outputs;
     }
 
-    //called in IOSymbol to get the IODeclarationSymbol; only null if error; will be checked in coco CheckIOName
-    @Nullable
-    protected IODeclarationSymbol resolveIODeclaration(String name){
-        IODeclarationSymbol ioDeclaration = ioDeclarationMap.get(name);
-        if (ioDeclaration == null){
-            Collection<IODeclarationSymbol> ioDefCollection = getEnclosingScope().resolveMany(name, IODeclarationSymbol.KIND);
-            if (!ioDefCollection.isEmpty()){
-                ioDeclaration = ioDefCollection.iterator().next();
-                ioDeclarationMap.put(name, ioDeclaration);
-                ioDeclaration.setArchitecture(this);
-            }
-        }
-        return ioDeclaration;
-    }
-
     public Collection<IODeclarationSymbol> getIODeclarations(){
-        return ioDeclarationMap.values();
+        return getEnclosingScope().resolveLocally(IODeclarationSymbol.KIND);
     }
 
     public Collection<LayerDeclarationSymbol> getLayerDeclarations(){
@@ -134,20 +128,13 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
             try {
                 unroll.resolveOrError();
-                //unroll.getBody().resolveOrError();
+                unroll.getBody().resolveOrError();
             }
             catch (ArchResolveException e) {
                 // Do nothing; error is already logged
             }
         }
     }
-
-    /*public List<ArchitectureElementSymbol> getFirstElements() {
-        if (!getBody().isResolved()){
-            resolve();
-        }
-        return getBody().getFirstAtomicElements();
-    }*/
 
     public boolean isResolved(){
         boolean resolved = true;
@@ -209,7 +196,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             copy.getSpannedScope().getAsMutableScope().add(layerDeclaration);
         }
 
-        for (LayerDeclarationSymbol layerDeclaration : getSpannedScope().<LayerDeclarationSymbol>resolveLocally(LayerDeclarationSymbol.KIND)){
+        for (LayerDeclarationSymbol layerDeclaration : getLayerDeclarations()){
             if (!layerDeclaration.isPredefined()) {
                 copy.getSpannedScope().getAsMutableScope().add(layerDeclaration.deepCopy());
             }
@@ -220,9 +207,17 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
                 copy.getSpannedScope().getAsMutableScope().add(layerDeclaration.deepCopy());
             }
         }
+        List<LayerVariableDeclarationSymbol> copyLayerParameterDeclarations = new ArrayList<>();
+        for (LayerVariableDeclarationSymbol layerParameterDeclaration : getLayerVariableDeclarations()) {
+            LayerVariableDeclarationSymbol copyLayerParameterDeclaration =
+                    (LayerVariableDeclarationSymbol) layerParameterDeclaration.preResolveDeepCopy();
+            copyLayerParameterDeclaration.putInScope(copy.getSpannedScope());
+            copyLayerParameterDeclarations.add(copyLayerParameterDeclaration);
+        }
+        copy.setLayerVariableDeclarations(copyLayerParameterDeclarations);
 
         List<SerialCompositeElementSymbol> copyStreams = new ArrayList<>();
-        for (SerialCompositeElementSymbol stream : streams) {
+        for (SerialCompositeElementSymbol stream : getStreams()) {
             SerialCompositeElementSymbol copyStream = stream.preResolveDeepCopy();
             copyStream.putInScope(copy.getSpannedScope());
             copyStreams.add(copyStream);
@@ -240,4 +235,6 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         copy.putInScope(enclosingScopeOfCopy);
         return copy;
     }
+
+
 }

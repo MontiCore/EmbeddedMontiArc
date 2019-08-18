@@ -34,34 +34,35 @@ public class ArgumentSymbol extends CommonSymbol {
 
     public static final ArgumentKind KIND = new ArgumentKind();
 
-    private VariableSymbol parameter;
+    private ParameterSymbol parameter;
     private ArchExpressionSymbol rhs;
 
     protected ArgumentSymbol(String name) {
         super(name, KIND);
     }
 
-    public VariableSymbol getParameter() {
+    public ParameterSymbol getParameter() {
         if (parameter == null){
             if (getLayer().getDeclaration() != null){
-                Optional<VariableSymbol> optParam = getLayer().getDeclaration().getParameter(getName());
+                Optional<ParameterSymbol> optParam = getLayer().getDeclaration().getParameter(getName());
                 optParam.ifPresent(this::setParameter);
             }
         }
         return parameter;
     }
 
-    public VariableSymbol getUnrollParameter() {
+    public ParameterSymbol getUnrollParameter() {
         if (parameter == null){
             if (getUnroll().getDeclaration() != null){
-                Optional<VariableSymbol> optParam = getUnroll().getDeclaration().getParameter(getName());
+                Optional<ParameterSymbol> optParam = getUnroll().getDeclaration().getParameter(getName());
                 optParam.ifPresent(this::setParameter);
             }
         }
         return parameter;
     }
 
-    protected void setParameter(VariableSymbol parameter) {
+
+    protected void setParameter(ParameterSymbol parameter) {
         this.parameter = parameter;
     }
 
@@ -212,10 +213,10 @@ public class ArgumentSymbol extends CommonSymbol {
 
     public static class Builder{
         private String name;
-        private VariableSymbol parameter;
+        private ParameterSymbol parameter;
         private ArchExpressionSymbol value;
 
-        public Builder parameter(VariableSymbol parameter) {
+        public Builder parameter(ParameterSymbol parameter) {
             this.parameter = parameter;
             return this;
         }

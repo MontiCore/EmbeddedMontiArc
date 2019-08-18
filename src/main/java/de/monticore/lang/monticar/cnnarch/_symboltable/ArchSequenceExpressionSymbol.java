@@ -58,7 +58,7 @@ public class ArchSequenceExpressionSymbol extends ArchAbstractSequenceExpression
                 element.reset();
             }
         }
-        setUnresolvableVariables(null);
+        setUnresolvableParameters(null);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ArchSequenceExpressionSymbol extends ArchAbstractSequenceExpression
     }
 
     @Override
-    public Set<VariableSymbol> resolve() {
+    public Set<ParameterSymbol> resolve() {
         if (!isResolved()) {
             if (isResolvable()) {
 
@@ -89,7 +89,7 @@ public class ArchSequenceExpressionSymbol extends ArchAbstractSequenceExpression
                 }
             }
         }
-        return getUnresolvableVariables();
+        return getUnresolvableParameters();
     }
 
     @Override
@@ -106,11 +106,11 @@ public class ArchSequenceExpressionSymbol extends ArchAbstractSequenceExpression
     }
 
     @Override
-    protected void computeUnresolvableVariables(Set<VariableSymbol> unresolvableVariables, Set<VariableSymbol> allVariables) {
+    protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters) {
         for (List<ArchSimpleExpressionSymbol> serialElements : _getElements()){
             for (ArchSimpleExpressionSymbol element : serialElements){
-                element.checkIfResolvable(allVariables);
-                unresolvableVariables.addAll(element.getUnresolvableVariables());
+                element.checkIfResolvable(allParameters);
+                unresolvableParameters.addAll(element.getUnresolvableParameters());
             }
         }
     }

@@ -30,18 +30,18 @@ public class CheckNetworkStreamMissing extends CNNArchSymbolCoCo {
 
     @Override
     public void check(ArchitectureSymbol architecture) {
-        boolean hasNetworkStream = false;
+        boolean hasTrainableStream = false;
 
         for (CompositeElementSymbol stream : architecture.getStreams()) {
-            hasNetworkStream |= stream.isNetwork();
+            hasTrainableStream |= stream.isTrainable();
         }
 
         for (UnrollSymbol unroll : architecture.getUnrolls()) {
-            hasNetworkStream |= unroll.isNetwork();
+            hasTrainableStream |= unroll.isTrainable();
         }
 
-        if (!hasNetworkStream) {
-            Log.error("0" + ErrorCodes.MISSING_NETWORK_STREAM + " The architecture has no network stream. "
+        if (!hasTrainableStream) {
+            Log.error("0" + ErrorCodes.MISSING_TRAINABLE_STREAM + " The architecture has no trainable stream. "
                     , architecture.getSourcePosition());
         }
     }

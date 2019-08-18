@@ -47,6 +47,10 @@ public class AllPredefinedLayers {
     public static final String FLATTEN_NAME = "Flatten";
     public static final String ONE_HOT_NAME = "OneHot";
     public static final String BEAMSEARCH_NAME = "BeamSearchStart";
+    public static final String RNN_NAME = "RNN";
+    public static final String LSTM_NAME = "LSTM";
+    public static final String GRU_NAME = "GRU";
+    public static final String EMBEDDING_NAME = "Embedding";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -65,9 +69,11 @@ public class AllPredefinedLayers {
     public static final String PADDING_NAME = "padding";
     public static final String POOL_TYPE_NAME = "pool_type";
     public static final String SIZE_NAME = "size";
-    public static final String BEAMSEARCH_MAX_LENGTH_NAME = "max_length";
+    public static final String LAYERS_NAME = "layers";
+    public static final String INPUT_DIM_NAME = "input_dim";
+    public static final String OUTPUT_DIM_NAME = "output_dim";
+    public static final String BEAMSEARCH_MAX_LENGTH = "max_length";
     public static final String BEAMSEARCH_WIDTH_NAME = "width";
-
 
     //possible String values
     public static final String PADDING_VALID = "valid";
@@ -96,7 +102,11 @@ public class AllPredefinedLayers {
                 Get.create(),
                 Add.create(),
                 Concatenate.create(),
-                OneHot.create());
+                OneHot.create(),
+                RNN.create(),
+                LSTM.create(),
+                GRU.create(),
+                Embedding.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){

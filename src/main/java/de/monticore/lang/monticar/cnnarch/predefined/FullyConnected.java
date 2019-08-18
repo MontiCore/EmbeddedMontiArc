@@ -34,12 +34,7 @@ public class FullyConnected extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isNetworkLayer() {
-        return true;
-    }
-
-    @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .height(1)
                 .width(1)
@@ -49,18 +44,18 @@ public class FullyConnected extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
     public static FullyConnected create(){
         FullyConnected declaration = new FullyConnected();
-        List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new VariableSymbol.Builder()
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.UNITS_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
-                new VariableSymbol.Builder()
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NOBIAS_NAME)
                         .constraints(Constraints.BOOLEAN)
                         .defaultValue(false)

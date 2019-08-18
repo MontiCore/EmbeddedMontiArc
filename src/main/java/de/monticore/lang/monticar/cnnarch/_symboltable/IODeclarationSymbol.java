@@ -23,18 +23,16 @@
 
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class IODeclarationSymbol extends CommonSymbol {
-
-    public static final IODeclarationKind KIND = new IODeclarationKind();
+public class IODeclarationSymbol extends VariableDeclarationSymbol {
 
     private ArchTypeSymbol type;
     private boolean input; //true->input, false->output
@@ -42,7 +40,7 @@ public class IODeclarationSymbol extends CommonSymbol {
     private ArchitectureSymbol architecture = null; // set by ArchitectureSymbol
 
     protected IODeclarationSymbol(String name) {
-        super(name, KIND);
+        super(name);
     }
 
     public ArchTypeSymbol getType() {
@@ -53,12 +51,12 @@ public class IODeclarationSymbol extends CommonSymbol {
         this.type = type;
     }
 
-    public List<IOSymbol> getConnectedElements() {
+    public List<VariableSymbol> getConnectedElements() {
         if (getArchitecture() == null){
             return new ArrayList<>();
         }
         else {
-            List<IOSymbol> completeList;
+            List<VariableSymbol> completeList;
             if (input) {
                 completeList = getArchitecture().getInputs();
             } else {
@@ -91,13 +89,10 @@ public class IODeclarationSymbol extends CommonSymbol {
     }
 
     public ArchitectureSymbol getArchitecture() {
-        return architecture;
+        return (ArchitectureSymbol) getEnclosingScope().resolve("", ArchitectureSymbol.KIND).get();
     }
 
-    public void setArchitecture(ArchitectureSymbol architecture) {
-        this.architecture = architecture;
-    }
-
+    @Override
     public void putInScope(Scope scope){
         Collection<Symbol> symbolsInScope = scope.getLocalSymbols().get(getName());
         if (symbolsInScope == null || !symbolsInScope.contains(this)) {
@@ -106,7 +101,8 @@ public class IODeclarationSymbol extends CommonSymbol {
         }
     }
 
-    public IODeclarationSymbol preResolveDeepCopy(){
+    @Override
+    public VariableDeclarationSymbol preResolveDeepCopy(){
         IODeclarationSymbol copy = new IODeclarationSymbol(getName());
         if (getAstNode().isPresent()){
             copy.setAstNode(getAstNode().get());

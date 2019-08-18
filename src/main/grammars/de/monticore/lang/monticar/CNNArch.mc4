@@ -25,10 +25,6 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                        parameters:(LayerParameter || ",")* ")" "{"
                        body:Stream  "}";
 
-    UnrollDeclaration =  "unroll" "<" timeParameter:LayerParameter ">"
-                         Name "(" parameters:(LayerParameter || ",")* ")"
-                        "{" body:Stream "}";
-
     IODeclaration =  "def"
                     (in:"input" | out:"output")
                     type:ArchType
@@ -60,17 +56,19 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
     Architecture = methodDeclaration:LayerDeclaration*
                    instructions:(Instruction || ";")+ ";";
 
-    interface Instruction;
+    Instruction = (LayerVariableDeclaration | Stream | Unroll);
 
-    Stream implements Instruction = elements:(ArchitectureElement || "->")+;
+    LayerVariableDeclaration = "layer" Layer Name;
 
-    Unroll implements Instruction =  "timed" "<" timeParameter:ArchitectureParameter ">"
+    Stream = elements:(ArchitectureElement || "->")+;
+
+    Unroll =  "timed" "<" timeParameter:ArchitectureParameter ">"
                                      Name "(" arguments:(ArchArgument || ",")* ")"
                                      "{" body:Stream "}";
 
     interface ArchitectureElement;
 
-    IOElement implements ArchitectureElement =  Name ("[" index:ArchSimpleExpression "]")?;
+    Variable implements ArchitectureElement =  Name ("." (member:"output" | member:Name))? ("[" index:ArchSimpleExpression "]")?;
 
     Constant implements ArchitectureElement = ArchSimpleExpression;
 
@@ -86,11 +84,11 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
 
     /* ====== Variables/Arguments ======*/
 
-    interface Variable;
+    interface ArchParameter;
 
-    ArchitectureParameter implements Variable =  Name ("=" default:ArchSimpleExpression)? ;
+    ArchitectureParameter implements ArchParameter =  Name ("=" default:ArchSimpleExpression)? ;
 
-    LayerParameter implements Variable =  Name ("=" default:ArchSimpleExpression)? ;
+    LayerParameter implements ArchParameter =  Name ("=" default:ArchSimpleExpression)? ;
 
     interface ArchArgument;
 
@@ -119,7 +117,7 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                                                   (serial2:"->" | parallel2:"|")
                                                   end:ArchSimpleExpression "]";
     /**
-        Expressions for variable values.
+        Expressions for parameter and variable values.
     */
     ArchSimpleExpression = (arithmeticExpression:ArchArithmeticExpression
                          | booleanExpression:ArchBooleanExpression
@@ -168,7 +166,7 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
     /* =================================*/
     /* ============ ASTRULES ===========*/
     /* =================================*/
-    ast Variable = method String getName(){};
+    ast ArchParameter = method String getName(){};
     ast ArchSpecialArgument = method public String getName(){return "";}; //Override is necessary
     ast ArchArgument = method String getName(){}
                        method ASTArchExpression getRhs(){};

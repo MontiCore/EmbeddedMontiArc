@@ -40,22 +40,36 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
 
     abstract protected void setElements(List<ArchitectureElementSymbol> elements);
 
-    public boolean isNetwork() {
-        boolean isNetwork = false;
+    public boolean isTrainable() {
+        boolean isTrainable = false;
 
         for (ArchitectureElementSymbol element : elements) {
             if (element instanceof CompositeElementSymbol) {
-                isNetwork |= ((CompositeElementSymbol) element).isNetwork();
+                isTrainable |= ((CompositeElementSymbol) element).isTrainable();
             }
             else if (element instanceof LayerSymbol) {
-                isNetwork |= ((LayerSymbol) element).getDeclaration().isNetworkLayer();
+                isTrainable |= ((LayerSymbol) element).getDeclaration().isTrainable();
+            }
+            else if (element instanceof VariableSymbol) {
+                VariableSymbol variable = (VariableSymbol) element;
+
+                if (variable.getType() == VariableSymbol.Type.LAYER) {
+                    LayerDeclarationSymbol layerDeclaration = ((LayerVariableDeclarationSymbol) variable.getDeclaration()).getLayer().getDeclaration();
+
+                    if (layerDeclaration.isPredefined()) {
+                        isTrainable |= ((PredefinedLayerDeclaration) layerDeclaration).isTrainable(variable.getMember());
+                    }
+                    else {
+                        isTrainable |= layerDeclaration.isTrainable();
+                    }
+                }
             }
             else if (element instanceof UnrollSymbol) {
-                isNetwork |= ((UnrollSymbol) element).isNetwork();
+                isTrainable |= ((UnrollSymbol) element).isTrainable();
             }
         }
 
-        return isNetwork;
+        return isTrainable;
     }
 
     @Override
@@ -64,7 +78,7 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
-    public Set<VariableSymbol> resolve() throws ArchResolveException {
+    public Set<ParameterSymbol> resolve() throws ArchResolveException {
         if (!isResolved()) {
             if (isResolvable()) {
                 List<ArchitectureElementSymbol> resolvedElements = new ArrayList<>();
@@ -73,7 +87,7 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
                 }
             }
         }
-        return getUnresolvableVariables();
+        return getUnresolvableParameters();
     }
 
     @Override
@@ -95,10 +109,10 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
-    protected void computeUnresolvableVariables(Set<VariableSymbol> unresolvableVariables, Set<VariableSymbol> allVariables) {
+    protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters) {
         for (ArchitectureElementSymbol element : getElements()){
-            element.checkIfResolvable(allVariables);
-            unresolvableVariables.addAll(element.getUnresolvableVariables());
+            element.checkIfResolvable(allParameters);
+            unresolvableParameters.addAll(element.getUnresolvableParameters());
         }
     }
 

@@ -41,9 +41,9 @@ abstract public class PredefinedUnrollDeclaration extends UnrollDeclarationSymbo
     }
 
     @Override
-    protected void setParameters(List<VariableSymbol> parameters) {
+    protected void setParameters(List<ParameterSymbol> parameters) {
         super.setParameters(parameters);
-        for (VariableSymbol param : parameters){
+        for (ParameterSymbol param : parameters){
             param.putInScope(getSpannedScope());
         }
     }
@@ -60,9 +60,9 @@ abstract public class PredefinedUnrollDeclaration extends UnrollDeclarationSymbo
         return true;
     }
 
-    abstract public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer);
+    abstract public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer, VariableSymbol.Member member);
 
-    abstract public void checkInput(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer);
+    abstract public void checkInput(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer, VariableSymbol.Member member);
 
     @Override
     public PredefinedUnrollDeclaration deepCopy() {

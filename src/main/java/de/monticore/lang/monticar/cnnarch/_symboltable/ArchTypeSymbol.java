@@ -21,10 +21,7 @@
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
-import de.monticore.lang.monticar.ranges._ast.ASTRangeStepResolution;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
-import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
@@ -120,6 +117,7 @@ public class ArchTypeSymbol extends CommonSymbol {
 
     public void setDimensionSymbols(List<ArchSimpleExpressionSymbol> dimensions) {
         this.dimensions = dimensions;
+        System.err.println("Setting dimensions: " + dimensions.toString());
     }
 
     public List<ArchSimpleExpressionSymbol> getDimensionSymbols() {
@@ -142,7 +140,7 @@ public class ArchTypeSymbol extends CommonSymbol {
         return dimensionList;
     }
 
-    public Set<VariableSymbol> resolve() {
+    public Set<ParameterSymbol> resolve() {
         if (!isResolved()){
             if (isResolvable()){
                 for (ArchSimpleExpressionSymbol dimension : getDimensionSymbols()){
@@ -150,7 +148,7 @@ public class ArchTypeSymbol extends CommonSymbol {
                 }
             }
         }
-        return getUnresolvableVariables();
+        return getUnresolvableParameters();
     }
 
     public boolean isResolvable(){
@@ -173,15 +171,15 @@ public class ArchTypeSymbol extends CommonSymbol {
         return isResolved;
     }
 
-    public Set<VariableSymbol> getUnresolvableVariables(){
-        Set<VariableSymbol> unresolvableVariables = new HashSet<>();
+    public Set<ParameterSymbol> getUnresolvableParameters(){
+        Set<ParameterSymbol> unresolvableParameters = new HashSet<>();
         for (ArchSimpleExpressionSymbol dimension : getDimensionSymbols()){
-            unresolvableVariables.addAll(dimension.getUnresolvableVariables());
+            unresolvableParameters.addAll(dimension.getUnresolvableParameters());
         }
-        return unresolvableVariables;
+        return unresolvableParameters;
     }
 
-    public void checkIfResolvable(Set<VariableSymbol> seenVariables) {
+    public void checkIfResolvable(Set<ParameterSymbol> seenVariables) {
         for (ArchSimpleExpressionSymbol dimension : getDimensionSymbols()){
             dimension.checkIfResolvable(seenVariables);
         }
@@ -225,9 +223,9 @@ public class ArchTypeSymbol extends CommonSymbol {
     }
 
     public static class Builder{
-        private int height = 1;
-        private int width = 1;
-        private int channels = 1;
+        private int height = 0;
+        private int width = 0;
+        private int channels = 0;
         private ASTElementType domain = null;
 
         public Builder height(int height){
@@ -258,10 +256,26 @@ public class ArchTypeSymbol extends CommonSymbol {
 
         public ArchTypeSymbol build(){
             ArchTypeSymbol sym = new ArchTypeSymbol();
-            sym.setChannelIndex(0);
-            sym.setHeightIndex(1);
-            sym.setWidthIndex(2);
-            sym.setDimensions(Arrays.asList(channels, height, width));
+
+            int index = 0;
+            List<Integer> dimensions = new ArrayList<>();
+
+            if (channels != 0) {
+                sym.setChannelIndex(index++);
+                dimensions.add(channels);
+            }
+
+            if (height != 0) {
+                sym.setHeightIndex(index++);
+                dimensions.add(height);
+            }
+
+            if (width != 0) {
+                sym.setWidthIndex(index);
+                dimensions.add(width);
+            }
+
+            sym.setDimensions(dimensions);
 
             if (domain == null){
                 domain = new ASTElementType();

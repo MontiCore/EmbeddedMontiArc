@@ -36,7 +36,7 @@ public class CheckArchitectureFinished extends CNNArchSymbolCoCo {
             if (!stream.getOutputTypes().isEmpty()){
                 Log.error("0" + ErrorCodes.UNFINISHED_ARCHITECTURE + " The architecture is not finished. " +
                                 "There are still open streams at the end of the architecture. "
-                        , architecture.getSourcePosition());
+                        , stream.getSourcePosition());
             }
         }
         for (UnrollSymbol unroll : architecture.getUnrolls()) {

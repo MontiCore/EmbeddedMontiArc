@@ -72,8 +72,8 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
         this.body = body;
     }
 
-    public boolean isNetwork() {
-        return body.isNetwork();
+    public boolean isTrainable() {
+        return body.isTrainable();
     }
 
     protected UnrollSymbol(String name) {
@@ -163,7 +163,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
-    public Set<VariableSymbol> resolve() throws ArchResolveException {
+    public Set<ParameterSymbol> resolve() throws ArchResolveException {
         if (!isResolved()) {
             if (isResolvable()) {
                 getDeclaration();
@@ -191,7 +191,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
                 }
             }
         }
-        return getUnresolvableVariables();
+        return getUnresolvableParameters();
     }
 
     private boolean isActive(){
@@ -276,10 +276,10 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
-    protected void computeUnresolvableVariables(Set<VariableSymbol> unresolvableVariables, Set<VariableSymbol> allVariables) {
+    protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableVariables, Set<ParameterSymbol> allVariables) {
         for (ArgumentSymbol argument : getArguments()){
             argument.getRhs().checkIfResolvable(allVariables);
-            unresolvableVariables.addAll(argument.getRhs().getUnresolvableVariables());
+            unresolvableVariables.addAll(argument.getRhs().getUnresolvableParameters());
         }
     }
 
@@ -289,7 +289,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
         if (getResolvedThis().isPresent()) {
             if (getResolvedThis().get() == this) {
                 List<ArchTypeSymbol> inputTypes = getInputTypes();
-                return ((PredefinedUnrollDeclaration) getDeclaration()).computeOutputTypes(inputTypes, this);
+                return ((PredefinedUnrollDeclaration) getDeclaration()).computeOutputTypes(inputTypes, this, VariableSymbol.Member.NONE);
             }
             else {
                 return getResolvedThis().get().getOutputTypes();
@@ -305,7 +305,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
     public void checkInput() {
         if (getResolvedThis().isPresent()){
             if (getResolvedThis().get() == this){
-                ((PredefinedUnrollDeclaration) getDeclaration()).checkInput(getInputTypes(), this);
+                ((PredefinedUnrollDeclaration) getDeclaration()).checkInput(getInputTypes(), this, VariableSymbol.Member.NONE);
             }
             else {
                 getResolvedThis().get().checkInput();
@@ -348,7 +348,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
 
     public <T> Optional<T> getTValue(String parameterName, Function<ArchExpressionSymbol, Optional<T>> getValue){
         Optional<ArgumentSymbol> arg = getArgument(parameterName);
-        Optional<VariableSymbol> param = getDeclaration().getParameter(parameterName);
+        Optional<ParameterSymbol> param = getDeclaration().getParameter(parameterName);
         if (arg.isPresent()){
             return getValue.apply(arg.get().getRhs());
         }

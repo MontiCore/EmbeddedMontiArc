@@ -199,6 +199,79 @@ public class Utils {
         return true;
     }
 
+    // Checks if firstType contains secondType
+    public static boolean contains(ASTElementType firstType, ASTElementType secondType){
+        if (firstType.isBoolean()) {
+            if (!secondType.isBoolean()) {
+                return false;
+            }
+        }
+
+        if (firstType.isNaturalNumber()) {
+            if (secondType.isWholeNumber() || secondType.isRational() || secondType.isComplex()) {
+                return false;
+            }
+        }
+
+        if (firstType.isWholeNumber()) {
+            if (secondType.isRational() || secondType.isComplex()) {
+                return false;
+            }
+        }
+
+        if (firstType.isRational()) {
+            if (secondType.isComplex()) {
+                return false;
+            }
+        }
+
+        if (firstType.isPresentRange()) {
+            if (!secondType.isPresentRange()) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+
+        return contains(firstType.getRange(), secondType.getRange());
+    }
+
+    public static boolean contains(ASTRange firstRange, ASTRange secondRange) {
+        if (!firstRange.hasNoLowerLimit() && secondRange.hasNoLowerLimit()) {
+            return false;
+        }
+
+        if (!firstRange.hasNoUpperLimit() && secondRange.hasNoUpperLimit()) {
+            return false;
+        }
+
+        if (!firstRange.hasNoLowerLimit() && firstRange.getStartValue().compareTo(secondRange.getStartValue()) > 0) {
+            return false;
+        }
+
+        if (!firstRange.hasNoUpperLimit() && firstRange.getEndValue().compareTo(secondRange.getEndValue()) < 0){
+            return false;
+        }
+
+        if (firstRange.isPresentStep()){
+            if (!secondRange.isPresentStep()) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+
+        if (!firstRange.getStepValue().equals(secondRange.getStepValue())){
+            return false;
+        }
+
+        // TODO: Check for different step sizes; too complex and not necessary for current use
+
+        return true;
+    }
+
     public static void recursiveSetResolvingFilters(Scope scope, Collection<ResolvingFilter<? extends Symbol>> resolvingFilters){
         scope.getAsMutableScope().setResolvingFilters(resolvingFilters);
         for (Scope subScope : scope.getSubScopes()){

@@ -22,9 +22,9 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class VariableKind implements SymbolKind {
+public class VariableDeclarationKind implements SymbolKind {
 
-    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.VariableKind";
+    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.VariableDeclarationKind";
 
     @Override
     public String getName() {

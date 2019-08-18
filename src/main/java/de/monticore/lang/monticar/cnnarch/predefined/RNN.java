@@ -18,32 +18,31 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch._symboltable;
+package de.monticore.lang.monticar.cnnarch.predefined;
 
-public enum VariableType {
-    LAYER_PARAMETER {
-        @Override
-        public String toString(){
-            return "layer parameter";
-        }
-    },
-    ARCHITECTURE_PARAMETER {
-        @Override
-        public String toString(){
-            return "architecture parameter";
-        }
-    },
-    CONSTANT {
-        @Override
-        public String toString(){
-            return "constant";
-        }
-    },
-    UNKNOWN {
-        //describes a variable which does not exist. Only used to avoid exceptions while checking Cocos.
-        @Override
-        public String toString(){
-            return "unknown";
-        }
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
+
+import java.util.*;
+
+public class RNN extends BaseRNN {
+
+    private RNN() {
+        super(AllPredefinedLayers.RNN_NAME);
+    }
+
+    public static RNN create() {
+        RNN declaration = new RNN();
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.UNITS_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.LAYERS_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
+                        .build()));
+        declaration.setParameters(parameters);
+        return declaration;
     }
 }

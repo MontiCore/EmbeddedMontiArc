@@ -27,7 +27,7 @@ import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.UnrollDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.UnrollSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ParameterSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.Joiners;
@@ -52,7 +52,7 @@ public class CheckLayer implements CNNArchASTLayerCoCo{
                 nameSet.add(name);
             }
         }
-
+        
         if(node.getSymbolOpt().get() instanceof LayerSymbol) {
             LayerDeclarationSymbol layerDeclaration = ((LayerSymbol) node.getSymbolOpt().get()).getDeclaration();
             if (layerDeclaration == null){
@@ -64,7 +64,7 @@ public class CheckLayer implements CNNArchASTLayerCoCo{
             }
             else {
                 Set<String> requiredArguments = new HashSet<>();
-                for (VariableSymbol param : layerDeclaration.getParameters()){
+                for (ParameterSymbol param : layerDeclaration.getParameters()){
                     if (!param.getDefaultExpression().isPresent()){
                         requiredArguments.add(param.getName());
                     }
@@ -90,7 +90,7 @@ public class CheckLayer implements CNNArchASTLayerCoCo{
             }
             else {
                 Set<String> requiredArguments = new HashSet<>();
-                for (VariableSymbol param : unrollDeclaration.getParameters()){
+                for (ParameterSymbol param : unrollDeclaration.getParameters()){
                     if (!param.getDefaultExpression().isPresent()){
                         requiredArguments.add(param.getName());
                     }

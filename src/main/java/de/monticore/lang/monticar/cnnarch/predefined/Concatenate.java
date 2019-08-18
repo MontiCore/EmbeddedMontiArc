@@ -23,6 +23,7 @@ package de.monticore.lang.monticar.cnnarch.predefined;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.PredefinedLayerDeclaration;
+import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -38,20 +39,15 @@ public class Concatenate extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isNetworkLayer() {
-        return true;
-    }
-
-    @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
-        int height = inputTypes.get(0).getHeight();
-        int width = inputTypes.get(0).getWidth();
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
+        int height = layer.getInputTypes().get(0).getHeight();
+        int width = layer.getInputTypes().get(0).getWidth();
         int channels = 0;
-        for (ArchTypeSymbol inputShape : inputTypes) {
+        for (ArchTypeSymbol inputShape : layer.getInputTypes()) {
             channels += inputShape.getChannels();
         }
 
-        List<String> range = computeStartAndEndValue(inputTypes, (x,y) -> x.isLessThan(y) ? x : y, (x,y) -> x.isLessThan(y) ? y : x);
+        List<String> range = computeStartAndEndValue(layer.getInputTypes(), (x,y) -> x.isLessThan(y) ? x : y, (x,y) -> x.isLessThan(y) ? y : x);
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .channels(channels)
@@ -62,7 +58,7 @@ public class Concatenate extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         if (!inputTypes.isEmpty()) {
             List<Integer> heightList = new ArrayList<>();
             List<Integer> widthList = new ArrayList<>();

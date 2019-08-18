@@ -31,10 +31,10 @@ public abstract class ArchitectureElementSymbol extends CommonScopeSpanningSymbo
 
     public static final ArchitectureElementKind KIND = new ArchitectureElementKind();
 
-    private ArchitectureElementSymbol inputElement;
-    private ArchitectureElementSymbol outputElement;
+    private ArchitectureElementSymbol inputElement = null;
+    private ArchitectureElementSymbol outputElement = null;
     private List<ArchTypeSymbol> outputTypes = null;
-    private Set<VariableSymbol> unresolvableVariables = null;
+    private Set<ParameterSymbol> unresolvableParameters = null;
     private ArchitectureElementSymbol resolvedThis = null;
 
     protected ArchitectureElementSymbol(String name) {
@@ -152,29 +152,29 @@ public abstract class ArchitectureElementSymbol extends CommonScopeSpanningSymbo
         }
     }
 
-    public Set<VariableSymbol> getUnresolvableVariables() {
-        if (unresolvableVariables == null){
+    public Set<ParameterSymbol> getUnresolvableParameters() {
+        if (unresolvableParameters == null){
             checkIfResolvable();
         }
-        return unresolvableVariables;
+        return unresolvableParameters;
     }
 
-    protected void setUnresolvableVariables(Set<VariableSymbol> unresolvableVariables) {
-        this.unresolvableVariables = unresolvableVariables;
+    protected void setUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters) {
+        this.unresolvableParameters = unresolvableParameters;
     }
 
     public boolean isResolvable(){
-        return getUnresolvableVariables().isEmpty();
+        return getUnresolvableParameters().isEmpty();
     }
 
     public void checkIfResolvable(){
         checkIfResolvable(new HashSet<>());
     }
 
-    protected void checkIfResolvable(Set<VariableSymbol> occurringVariables){
-        Set<VariableSymbol> unresolvableVariables = new HashSet<>();
-        computeUnresolvableVariables(unresolvableVariables, occurringVariables);
-        setUnresolvableVariables(unresolvableVariables);
+    protected void checkIfResolvable(Set<ParameterSymbol> occurringParameters){
+        Set<ParameterSymbol> unresolvableParameters = new HashSet<>();
+        computeUnresolvableParameters(unresolvableParameters, occurringParameters);
+        setUnresolvableParameters(unresolvableParameters);
     }
 
     public Optional<ArchitectureElementSymbol> getResolvedThis() {
@@ -195,9 +195,9 @@ public abstract class ArchitectureElementSymbol extends CommonScopeSpanningSymbo
     }
 
     public void resolveOrError() throws ArchResolveException{
-        Set<VariableSymbol> names = resolve();
+        Set<ParameterSymbol> names = resolve();
         if (!isResolved()){
-            throw new IllegalStateException("The following names could not be resolved: " + Joiners.COMMA.join(getUnresolvableVariables()));
+            throw new IllegalStateException("The following names could not be resolved: " + Joiners.COMMA.join(getUnresolvableParameters()));
         }
     }
 
@@ -214,16 +214,16 @@ public abstract class ArchitectureElementSymbol extends CommonScopeSpanningSymbo
      * resolves all expressions and underlying architecture elements and handles layer method calls and sequences.
      * Architecture parameters have to be set before calling resolve.
      * Resolves prepares the architecture elements such that the output type and shape of each element can be calculated and checked.
-     * @return returns the set of all variables which could not be resolved. Should be ignored.
+     * @return returns the set of all parameters which could not be resolved. Should be ignored.
      * @throws ArchResolveException thrown to interrupt the recursive resolve process to avoid follow-up Runtime Exceptions in tests after an error was logged.
      *                              Can be caught and ignored.
      */
-    abstract public Set<VariableSymbol> resolve() throws ArchResolveException;
+    abstract public Set<ParameterSymbol> resolve() throws ArchResolveException;
 
     //only call after resolve
     protected abstract List<ArchTypeSymbol> computeOutputTypes();
 
-    abstract protected void computeUnresolvableVariables(Set<VariableSymbol> unresolvableVariables, Set<VariableSymbol> allVariables);
+    abstract protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters);
 
     abstract public Optional<Integer> getParallelLength();
 

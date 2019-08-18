@@ -62,7 +62,7 @@ public class CheckUnroll implements CNNArchASTUnrollCoCo{
         }
         else {
             Set<String> requiredArguments = new HashSet<>();
-            for (VariableSymbol param : layerDeclaration.getParameters()){
+            for (ParameterSymbol param : layerDeclaration.getParameters()){
                 if (!param.getDefaultExpression().isPresent()){
                     requiredArguments.add(param.getName());
                 }

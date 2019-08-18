@@ -34,29 +34,24 @@ public class GlobalPooling extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isNetworkLayer() {
-        return true;
-    }
-
-    @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .height(1)
                 .width(1)
-                .channels(inputTypes.get(0).getChannels())
-                .elementType(inputTypes.get(0).getDomain())
+                .channels(layer.getInputTypes().get(0).getChannels())
+                .elementType(layer.getInputTypes().get(0).getDomain())
                 .build());
     }
 
     @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+    public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
     public static GlobalPooling create(){
         GlobalPooling declaration = new GlobalPooling();
-        List<VariableSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new VariableSymbol.Builder()
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.POOL_TYPE_NAME)
                         .constraints(Constraints.POOL_TYPE)
                         .build()));

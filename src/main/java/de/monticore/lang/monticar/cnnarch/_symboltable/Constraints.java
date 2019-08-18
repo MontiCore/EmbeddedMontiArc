@@ -190,31 +190,31 @@ public enum Constraints {
 
     abstract protected String msgString();
 
-    public static boolean check(VariableSymbol variable){
+    public static boolean check(ParameterSymbol parameter){
         boolean valid = true;
-        for (Constraints constraint : variable.getConstraints()) {
+        for (Constraints constraint : parameter.getConstraints()) {
             valid = valid &&
-                    constraint.check(variable.getExpression(), variable.getSourcePosition(), variable.getName());
+                    constraint.check(parameter.getExpression(), parameter.getSourcePosition(), parameter.getName());
         }
         return valid;
     }
 
     public static boolean check(ArgumentSymbol argument){
         boolean valid = true;
-        VariableSymbol variable = argument.getParameter();
-        for (Constraints constraint : variable.getConstraints()) {
+        ParameterSymbol parameter = argument.getParameter();
+        for (Constraints constraint : parameter.getConstraints()) {
             valid = valid &&
-                    constraint.check(argument.getRhs(), argument.getSourcePosition(), variable.getName());
+                    constraint.check(argument.getRhs(), argument.getSourcePosition(), parameter.getName());
         }
         return valid;
     }
 
     public static boolean checkUnroll(ArgumentSymbol argument){
         boolean valid = true;
-        VariableSymbol variable = argument.getUnrollParameter();
-        for (Constraints constraint : variable.getConstraints()) {
+        ParameterSymbol parameter = argument.getUnrollParameter();
+        for (Constraints constraint : parameter.getConstraints()) {
             valid = valid &&
-                    constraint.check(argument.getRhs(), argument.getSourcePosition(), variable.getName());
+                    constraint.check(argument.getRhs(), argument.getSourcePosition(), parameter.getName());
         }
         return valid;
     }

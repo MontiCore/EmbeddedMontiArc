@@ -22,7 +22,7 @@ package de.monticore.lang.monticar.cnnarch._cocos;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.IOSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -53,7 +53,7 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
                     , ioDeclaration.getSourcePosition());
         }
         else {
-            for (IOSymbol ioElement : ioDeclaration.getConnectedElements()){
+            for (VariableSymbol ioElement : ioDeclaration.getConnectedElements()){
                 if (ioElement.getArrayAccess().isPresent()){
                     Log.error("0" + ErrorCodes.INVALID_ARRAY_ACCESS + " Invalid IO array access. " +
                                     "This input or output is not an array."
@@ -67,7 +67,7 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
     private void checkIOArray(IODeclarationSymbol ioDeclaration){
         List<Integer> unusedIndices = IntStream.range(0, ioDeclaration.getArrayLength()).boxed().collect(Collectors.toList());
 
-        for (IOSymbol ioElement : ioDeclaration.getConnectedElements()){
+        for (VariableSymbol ioElement : ioDeclaration.getConnectedElements()){
             if (ioElement.getArrayAccess().isPresent()){
                 Optional<Integer> arrayAccess = ioElement.getArrayAccess().get().getIntValue();
                 if (arrayAccess.isPresent() && arrayAccess.get() >= 0 && arrayAccess.get() < ioDeclaration.getArrayLength()){
