@@ -1,7 +1,11 @@
 <#if element.member == "NONE">
 <#assign input = element.inputs[0]>
 <#if mode == "ARCHITECTURE_DEFINITION">
-            self.${element.name} = gluon.rnn.RNN(hidden_size=${element.units?c}, num_layers=${element.layers?c}, activation='tanh', layout='NTC')
+            self.${element.name} = gluon.rnn.RNN(hidden_size=${element.units?c},
+                num_layers=${element.layers?c},
+                bidirectional=${element.bidirectional?string("True", "False")},
+                activation='tanh',
+                layout='NTC')
             <#include "OutputShape.ftl">
 <#elseif mode == "FORWARD_FUNCTION">
 <#if element.isVariable()>
