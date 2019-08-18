@@ -112,12 +112,11 @@ class Net_0(gluon.HybridBlock):
                 strides=(2,2))
             # pool2_, output shape: {[50,4,4]}
 
-            self.fc2_flatten = gluon.nn.Flatten()
-            self.fc2_ = gluon.nn.Dense(units=500, use_bias=True)
+            self.fc2_ = gluon.nn.Dense(units=500, use_bias=True, flatten=True)
             # fc2_, output shape: {[500,1,1]}
 
             self.relu2_ = gluon.nn.Activation(activation='relu')
-            self.fc3_ = gluon.nn.Dense(units=10, use_bias=True)
+            self.fc3_ = gluon.nn.Dense(units=10, use_bias=True, flatten=True)
             # fc3_, output shape: {[10,1,1]}
 
             self.softmax3_ = Softmax()
@@ -129,8 +128,7 @@ class Net_0(gluon.HybridBlock):
         pool1_ = self.pool1_(conv1_)
         conv2_ = self.conv2_(pool1_)
         pool2_ = self.pool2_(conv2_)
-        fc2_flatten_ = self.fc2_flatten(pool2_)
-        fc2_ = self.fc2_(fc2_flatten_)
+        fc2_ = self.fc2_(pool2_)
         relu2_ = self.relu2_(fc2_)
         fc3_ = self.fc3_(relu2_)
         softmax3_ = self.softmax3_(fc3_)
