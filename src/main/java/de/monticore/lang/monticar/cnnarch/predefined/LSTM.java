@@ -20,13 +20,6 @@
  */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.Constraints;
-import de.monticore.lang.monticar.cnnarch._symboltable.ParameterSymbol;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class LSTM extends BaseRNN {
 
     private LSTM() {
@@ -35,17 +28,7 @@ public class LSTM extends BaseRNN {
 
     public static LSTM create() {
         LSTM declaration = new LSTM();
-        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.UNITS_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .build(),
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.LAYERS_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .defaultValue(1)
-                        .build()));
-        declaration.setParameters(parameters);
+        declaration.setParameters(createParameters());
         return declaration;
     }
 }

@@ -71,6 +71,7 @@ public class AllPredefinedLayers {
     public static final String LAYERS_NAME = "layers";
     public static final String INPUT_DIM_NAME = "input_dim";
     public static final String OUTPUT_DIM_NAME = "output_dim";
+    public static final String BIDIRECTIONAL_NAME = "bidirectional";
     public static final String BEAMSEARCH_MAX_LENGTH = "max_length";
     public static final String BEAMSEARCH_WIDTH_NAME = "width";
 
