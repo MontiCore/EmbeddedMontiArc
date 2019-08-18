@@ -2,6 +2,16 @@ import mxnet as mx
 import numpy as np
 from mxnet import gluon
 
+class OneHot(gluon.HybridBlock):
+    def __init__(self, size, **kwargs):
+        super(OneHot, self).__init__(**kwargs)
+        with self.name_scope():
+            self.size = size
+
+    def hybrid_forward(self, F, x):
+        return F.one_hot(indices=F.argmax(data=x, axis=1), depth=self.size)
+
+
 class Softmax(gluon.HybridBlock):
     def __init__(self, **kwargs):
         super(Softmax, self).__init__(**kwargs)
@@ -68,15 +78,17 @@ class NoNormalization(gluon.HybridBlock):
         return x
 
 
-class Net(gluon.HybridBlock):
+class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net, self).__init__(**kwargs)
+        super(Net_0, self).__init__(**kwargs)
+        self.last_layers = {}
         with self.name_scope():
-            if not data_mean is None:
-                assert(not data_std is None)
-                self.state_input_normalization = ZScoreNormalization(data_mean=data_mean, data_std=data_std)
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_state_ = ZScoreNormalization(data_mean=data_mean['state_'],
+                                                                               data_std=data_std['state_'])
             else:
-                self.state_input_normalization = NoNormalization()
+                self.input_normalization_state_ = NoNormalization()
 
             self.fc1_ = gluon.nn.Dense(units=512, use_bias=True)
             # fc1_, output shape: {[512,1,1]}
@@ -90,14 +102,15 @@ class Net(gluon.HybridBlock):
             # fc3_, output shape: {[30,1,1]}
 
 
-        self.last_layer = 'linear'
 
-
-    def hybrid_forward(self, F, state):
-        state = self.state_input_normalization(state)
-        fc1_ = self.fc1_(state)
+    def hybrid_forward(self, F, state_):
+        state_ = self.input_normalization_state_(state_)
+        fc1_ = self.fc1_(state_)
         tanh1_ = self.tanh1_(fc1_)
         fc2_ = self.fc2_(tanh1_)
         tanh2_ = self.tanh2_(fc2_)
         fc3_ = self.fc3_(tanh2_)
-        return fc3_
+        qvalues_ = fc3_
+
+        return qvalues_
+

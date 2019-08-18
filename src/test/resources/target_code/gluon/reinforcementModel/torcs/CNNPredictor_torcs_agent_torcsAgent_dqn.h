@@ -9,28 +9,29 @@
 
 #include <CNNBufferFile.h>
 
-class CNNPredictor_torcs_agent_torcsAgent_dqn{
+class CNNPredictor_torcs_agent_torcsAgent_dqn_0{
 public:
-    const std::string json_file = "model/torcs.agent.dqn.TorcsDQN/model_newest-symbol.json";
-    const std::string param_file = "model/torcs.agent.dqn.TorcsDQN/model_newest-0000.params";
-    //const std::vector<std::string> input_keys = {"data"};
-    const std::vector<std::string> input_keys = {"state"};
-    const std::vector<std::vector<mx_uint>> input_shapes = {{1,5}};
+    const std::string json_file = "model/torcs.agent.dqn.TorcsDQN/model_0_newest-symbol.json";
+    const std::string param_file = "model/torcs.agent.dqn.TorcsDQN/model_0_newest-0000.params";
+    const std::vector<std::string> input_keys = {
+        "data"
+    };
+    const std::vector<std::vector<mx_uint>> input_shapes = {{1, 5}};
     const bool use_gpu = false;
 
     PredictorHandle handle;
 
-    explicit CNNPredictor_torcs_agent_torcsAgent_dqn(){
+    explicit CNNPredictor_torcs_agent_torcsAgent_dqn_0(){
         init(json_file, param_file, input_keys, input_shapes, use_gpu);
     }
 
-    ~CNNPredictor_torcs_agent_torcsAgent_dqn(){
+    ~CNNPredictor_torcs_agent_torcsAgent_dqn_0(){
         if(handle) MXPredFree(handle);
     }
 
-    void predict(const std::vector<float> &state,
-                 std::vector<float> &qvalues){
-        MXPredSetInput(handle, "data", state.data(), static_cast<mx_uint>(state.size()));
+    void predict(const std::vector<float> &in_state_,
+                 std::vector<float> &out_qvalues_){
+        MXPredSetInput(handle, input_keys[0].c_str(), in_state_.data(), static_cast<mx_uint>(in_state_.size()));
 
         MXPredForward(handle);
 
@@ -43,8 +44,8 @@ public:
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
-        assert(size == qvalues.size());
-        MXPredGetOutput(handle, 0, &(qvalues[0]), qvalues.size());
+        assert(size == out_qvalues_.size());
+        MXPredGetOutput(handle, 0, &(out_qvalues_[0]), out_qvalues_.size());
 
     }
 
@@ -67,15 +68,17 @@ public:
 
         const mx_uint num_input_nodes = input_keys.size();
 
-        const char* input_key[1] = { "data" };
-        const char** input_keys_ptr = input_key;
+        const char* input_keys_ptr[num_input_nodes];
+        for(mx_uint i = 0; i < num_input_nodes; i++){
+            input_keys_ptr[i] = input_keys[i].c_str();
+        }
 
         mx_uint shape_data_size = 0;
         mx_uint input_shape_indptr[input_shapes.size() + 1];
         input_shape_indptr[0] = 0;
         for(mx_uint i = 0; i < input_shapes.size(); i++){
-            input_shape_indptr[i+1] = input_shapes[i].size();
             shape_data_size += input_shapes[i].size();
+            input_shape_indptr[i+1] = shape_data_size;
         }
 
         mx_uint input_shape_data[shape_data_size];

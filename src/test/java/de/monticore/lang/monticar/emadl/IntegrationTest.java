@@ -110,6 +110,7 @@ public abstract class IntegrationTest extends AbstractSymtabTest {
     }
 
     @Test
+    @Ignore
     public void testDontRetrain2() {
         // The training hash is written manually, so even the first training should be skipped
         Log.getFindings().clear();

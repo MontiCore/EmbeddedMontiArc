@@ -1,0 +1,6 @@
+package tagging;
+
+component ParentInvalidPath{
+    instance Alexnet a1;
+    instance Alexnet a2;
+}

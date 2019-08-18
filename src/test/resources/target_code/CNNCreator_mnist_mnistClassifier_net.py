@@ -72,9 +72,9 @@ class CNNCreator_mnist_mnistClassifier_net:
     def create_model(self, model, data, device_opts, is_test):
     	with core.DeviceScope(device_opts):
 
-    		image = data
-    		# image, output shape: {[1,28,28]}
-    		conv1_ = brew.conv(model, image, 'conv1_', dim_in=1, dim_out=20, kernel=5, stride=1)
+    		image_ = data
+    		# image_, output shape: {[1,28,28]}
+    		conv1_ = brew.conv(model, image_, 'conv1_', dim_in=1, dim_out=20, kernel=5, stride=1)
     		# conv1_, output shape: {[20,24,24]}
     		pool1_ = brew.max_pool(model, conv1_, 'pool1_', kernel=2, stride=2)
     		# pool1_, output shape: {[20,12,12]}
@@ -87,9 +87,9 @@ class CNNCreator_mnist_mnistClassifier_net:
     		relu2_ = brew.relu(model, fc2_, fc2_)
     		fc3_ = brew.fc(model, relu2_, 'fc3_', dim_in=500, dim_out=10)
     		# fc3_, output shape: {[10,1,1]}
-    		predictions = brew.softmax(model, fc3_, 'predictions')
+    		predictions_ = brew.softmax(model, fc3_, 'predictions_')
 
-    		return predictions
+    		return predictions_
 
     # this adds the loss and optimizer
     def add_training_operators(self, model, output, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum) :
@@ -150,10 +150,10 @@ class CNNCreator_mnist_mnistClassifier_net:
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
     	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'train_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	predictions = self.create_model(train_model, data, device_opts=device_opts, is_test=False)
-    	self.add_training_operators(train_model, predictions, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
+    	predictions_ = self.create_model(train_model, data, device_opts=device_opts, is_test=False)
+    	self.add_training_operators(train_model, predictions_, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	if not loss == 'euclidean':
-    		self.add_accuracy(train_model, predictions, label, device_opts, eval_metric)
+    		self.add_accuracy(train_model, predictions_, label, device_opts, eval_metric)
     	with core.DeviceScope(device_opts):
     		brew.add_weight_decay(train_model, weight_decay)
 
@@ -185,9 +185,9 @@ class CNNCreator_mnist_mnistClassifier_net:
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
     	data, label, test_dataset_size = self.add_input(test_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'test_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	predictions = self.create_model(test_model, data, device_opts=device_opts, is_test=True)
+    	predictions_ = self.create_model(test_model, data, device_opts=device_opts, is_test=True)
     	if not loss == 'euclidean':
-    		self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
+    		self.add_accuracy(test_model, predictions_, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
     	workspace.CreateNet(test_model.net, overwrite=True)
 

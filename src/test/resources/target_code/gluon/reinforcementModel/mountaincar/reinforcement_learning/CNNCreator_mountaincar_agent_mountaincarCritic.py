@@ -1,10 +1,10 @@
 import mxnet as mx
 import logging
 import os
-from CNNNet_mountaincar_master_actor import Net_0
+from CNNNet_mountaincar_agent_mountaincarCritic import Net_0
 
-class CNNCreator_mountaincar_master_actor:
-    _model_dir_ = "model/mountaincar.agent.MountaincarActor/"
+class CNNCreator_mountaincar_agent_mountaincarCritic:
+    _model_dir_ = "model/mountaincar.agent.MountaincarCritic/"
     _model_prefix_ = "model"
 
     def __init__(self):
@@ -50,7 +50,7 @@ class CNNCreator_mountaincar_master_actor:
         self.networks[0] = Net_0(data_mean=data_mean, data_std=data_std)
         self.networks[0].collect_params().initialize(self.weight_initializer, ctx=context)
         self.networks[0].hybridize()
-        self.networks[0](mx.nd.zeros((1,2,), ctx=context))
+        self.networks[0](mx.nd.zeros((1,2,), ctx=context), mx.nd.zeros((1,1,), ctx=context))
 
         if not os.path.exists(self._model_dir_):
             os.makedirs(self._model_dir_)

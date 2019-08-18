@@ -132,14 +132,16 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
-                image_data = batch.data[0].as_in_context(mx_context)
+                image_ = batch.data[0].as_in_context(mx_context)
                 predictions_label = batch.label[0].as_in_context(mx_context)
 
                 with autograd.record():
-                    predictions_output = self._networks[0](image_data)
+                    predictions_ = mx.nd.zeros((10,), ctx=mx_context)
+
+                    predictions_ = self._networks[0](image_)
 
                     loss = \
-                        loss_function(predictions_output, predictions_label)
+                        loss_function(predictions_, predictions_label)
 
                 loss.backward()
 
@@ -164,17 +166,19 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
             train_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(train_iter):
-                image_data = batch.data[0].as_in_context(mx_context)
+                image_ = batch.data[0].as_in_context(mx_context)
 
                 labels = [
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                if True: # Fix indentation
-                    predictions_output = self._networks[0](image_data)
+                if True:
+                    predictions_ = mx.nd.zeros((10,), ctx=mx_context)
+
+                    predictions_ = self._networks[0](image_)
 
                 predictions = [
-                    mx.nd.argmax(predictions_output, axis=1)
+                    mx.nd.argmax(predictions_, axis=1)
                 ]
 
                 metric.update(preds=predictions, labels=labels)
@@ -183,17 +187,19 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
             test_iter.reset()
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(test_iter):
-                image_data = batch.data[0].as_in_context(mx_context)
+                image_ = batch.data[0].as_in_context(mx_context)
 
                 labels = [
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                if True: # Fix indentation
-                    predictions_output = self._networks[0](image_data)
+                if True:
+                    predictions_ = mx.nd.zeros((10,), ctx=mx_context)
+
+                    predictions_ = self._networks[0](image_)
 
                 predictions = [
-                    mx.nd.argmax(predictions_output, axis=1)
+                    mx.nd.argmax(predictions_, axis=1)
                 ]
 
                 metric.update(preds=predictions, labels=labels)

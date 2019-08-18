@@ -1,7 +1,7 @@
 from reinforcement_learning.agent import DdpgAgent
 from reinforcement_learning.util import AgentSignalHandler
 from reinforcement_learning.cnnarch_logger import ArchLogger
-from reinforcement_learning.CNNCreator_MountaincarCritic import CNNCreator_MountaincarCritic
+from reinforcement_learning.CNNCreator_mountaincar_agent_mountaincarCritic import CNNCreator_mountaincar_agent_mountaincarCritic
 import reinforcement_learning.environment
 import CNNCreator_mountaincar_master_actor
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     context = mx.cpu()
     actor_creator = CNNCreator_mountaincar_master_actor.CNNCreator_mountaincar_master_actor()
     actor_creator.construct(context)
-    critic_creator = CNNCreator_MountaincarCritic()
+    critic_creator = CNNCreator_mountaincar_agent_mountaincarCritic()
     critic_creator.construct(context)
 
     agent_params = {
@@ -85,8 +85,8 @@ if __name__ == "__main__":
         'train_interval': 1,
         'snapshot_interval': 20,
         'max_episode_step': 1000,
-        'actor': actor_creator.net,
-        'critic': critic_creator.net,
+        'actor': actor_creator.networks[0],
+        'critic': critic_creator.networks[0],
         'actor_optimizer': 'adam',
         'actor_optimizer_params': {
             'learning_rate': 1.0E-4},
@@ -103,8 +103,8 @@ if __name__ == "__main__":
         resume_agent_params = {
             'session_dir': resume_directory,
             'environment': env,
-            'actor': actor_creator.net,
-            'critic': critic_creator.net
+            'actor': actor_creator.networks[0],
+            'critic': critic_creator.networks[0]
         }
         agent = DdpgAgent.resume_from_session(**resume_agent_params)
     else:
@@ -116,4 +116,4 @@ if __name__ == "__main__":
     train_successful = agent.train()
 
     if train_successful:
-        agent.save_best_network(actor_creator._model_dir_ + actor_creator._model_prefix_ + '_newest', epoch=0)
+        agent.export_best_network(path=actor_creator._model_dir_ + actor_creator._model_prefix_ + '_0_newest', epoch=0)

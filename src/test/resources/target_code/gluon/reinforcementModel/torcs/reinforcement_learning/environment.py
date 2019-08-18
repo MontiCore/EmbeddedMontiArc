@@ -47,7 +47,7 @@ from std_msgs.msg import Float32MultiArray, Bool, Int32, MultiArrayDimension, Fl
 class RosEnvironment(Environment):
     def __init__(self,
         ros_node_name='RosTrainingAgent',
-        timeout_in_s=3,
+        timeout_in_s=60,
         state_topic='state',
         action_topic='action',
         reset_topic='reset',
@@ -55,6 +55,7 @@ class RosEnvironment(Environment):
         reward_topic='reward'):
         super(RosEnvironment, self).__init__()
         self.__timeout_in_s = timeout_in_s
+        self.__in_reset = False
         self.__waiting_for_state_update = False
         self.__waiting_for_terminal_update = False
         self.__last_received_state = 0
@@ -82,13 +83,17 @@ class RosEnvironment(Environment):
         time.sleep(2)
 
     def reset(self):
-        time.sleep(0.5)
+        self.__in_reset = True
         reset_message = Bool()
         reset_message.data = True
         self.__waiting_for_state_update = True
+        self.__waiting_for_terminal_update = False
+        self.__waiting_for_reward_update = False
         self.__reset_publisher.publish(reset_message)
+        self.__wait_for_new_state(self.__reset_publisher, reset_message)
         while self.__last_received_terminal:
-            self.__wait_for_new_state(self.__reset_publisher, reset_message)
+            pass
+        self.__in_reset = False
         return self.__last_received_state
 
     def step(self, action):
@@ -104,7 +109,8 @@ class RosEnvironment(Environment):
         next_state = self.__last_received_state
         terminal = self.__last_received_terminal
         reward = self.__calc_reward(next_state, terminal)
-        rospy.logdebug('Calculated reward: {}'.format(reward))
+
+        logger.debug('Transition: ({}, {}, {}, {})'.format(action, reward, next_state, terminal))
 
         return next_state, reward, terminal, 0
 
@@ -123,20 +129,19 @@ class RosEnvironment(Environment):
                 else:
                     rospy.logerr("Timeout 3 times in a row: Terminate application")
                     exit()
-            time.sleep(100/1000)
+            time.sleep(1/500)
 
     def close(self):
         rospy.signal_shutdown('Program ended!')
 
     def __state_callback(self, data):
-        self.__last_received_state = np.array(data.data, dtype='float32')
-        rospy.logdebug('Received state: {}'.format(self.__last_received_state))
+        self.__last_received_state = np.array(data.data, dtype='float32').reshape((5,))
+        logger.debug('Received state: {}'.format(self.__last_received_state))
         self.__waiting_for_state_update = False
 
     def __terminal_state_callback(self, data):
-        self.__last_received_terminal = data.data
-        rospy.logdebug('Received terminal flag: {}'.format(self.__last_received_terminal))
-        logger.debug('Received terminal: {}'.format(self.__last_received_terminal))
+        self.__last_received_terminal = np.bool(data.data)
+        logger.debug('Received terminal flag: {}'.format(self.__last_received_terminal))
         self.__waiting_for_terminal_update = False
 
     def __calc_reward(self, state, terminal):
