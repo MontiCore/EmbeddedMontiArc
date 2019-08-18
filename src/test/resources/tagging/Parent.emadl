@@ -1,0 +1,6 @@
+package tagging;
+
+component Parent {
+    instance Alexnet a1;
+    instance Alexnet a2;
+}

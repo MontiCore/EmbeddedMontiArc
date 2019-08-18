@@ -1,0 +1,5 @@
+package dltag;
+
+tagschema DeepLearningFilePathSchema {
+	tagtype DataPath for EMAComponentSymbol is { path = ${path:String}, type = ${type:String} };
+}
