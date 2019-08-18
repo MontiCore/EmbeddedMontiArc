@@ -1,7 +1,12 @@
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
-import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ConstantSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -26,8 +31,13 @@ public abstract class LayerSupportChecker {
         }
 
         // Support all inputs and outputs
-        if (resolvedElement.isInput() || resolvedElement.isOutput()) {
-            return true;
+        if (resolvedElement instanceof VariableSymbol) {
+            if (((VariableSymbol) resolvedElement).getType() == VariableSymbol.Type.LAYER) {
+                return isSupportedLayer(((VariableSymbol) resolvedElement).getLayerVariableDeclaration().getLayer());
+            }
+            else if (resolvedElement.isInput() || resolvedElement.isOutput()) {
+                return true;
+            }
         }
 
         // Support for constants is checked in ArchitectureSupportChecker

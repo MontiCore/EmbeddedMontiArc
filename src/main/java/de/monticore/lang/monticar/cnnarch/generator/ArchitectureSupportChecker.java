@@ -1,9 +1,16 @@
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ConstantSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.SerialCompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.VariableDeclarationSymbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.List;
+import java.util.*;
 
 public abstract class ArchitectureSupportChecker {
 
@@ -45,8 +52,9 @@ public abstract class ArchitectureSupportChecker {
     }
 
     protected boolean checkMultiDimensionalOutput(ArchitectureSymbol architecture) {
-        if (architecture.getOutputs().get(0).getDefinition().getType().getWidth() != 1 ||
-            architecture.getOutputs().get(0).getDefinition().getType().getHeight() != 1) {
+        IODeclarationSymbol ioDeclaration = (IODeclarationSymbol) architecture.getOutputs().get(0).getDeclaration();
+
+        if (ioDeclaration.getType().getWidth() != 1 || ioDeclaration.getType().getHeight() != 1) {
             Log.error("This cnn architecture has a multi-dimensional output, " +
                       "which is currently not supported by the code generator."
                       , architecture.getSourcePosition());
@@ -57,7 +65,7 @@ public abstract class ArchitectureSupportChecker {
         return true;
     }
 
-    protected boolean hasConstant(ArchitectureElementSymbol element) {
+    private boolean hasConstant(ArchitectureElementSymbol element) {
         ArchitectureElementSymbol resolvedElement = element.getResolvedThis().get();
 
         if (resolvedElement instanceof CompositeElementSymbol) {
@@ -100,11 +108,37 @@ public abstract class ArchitectureSupportChecker {
         return true;
     }
 
+    protected boolean checkLayerVariables(ArchitectureSymbol architecture) {
+        if (!architecture.getLayerVariableDeclarations().isEmpty()) {
+            Log.error("This cnn architecture uses layer variables, which are currently not supported by the code generator."
+                    , architecture.getSourcePosition());
+            return false;
+        }
+
+        return true;
+    }
+
+    protected boolean checkOutputAsInput(ArchitectureSymbol architecture) {
+        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
+            for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
+                if (element.isOutput()) {
+                    Log.error("This cnn architecture uses an output as an input, which is currently not supported by the code generator."
+                            , architecture.getSourcePosition());
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public boolean check(ArchitectureSymbol architecture) {
         return checkMultipleStreams(architecture)
                 && checkMultipleInputs(architecture)
                 && checkMultipleOutputs(architecture)
                 && checkMultiDimensionalOutput(architecture)
-                && checkConstants(architecture);
+                && checkConstants(architecture)
+                && checkLayerVariables(architecture)
+                && checkOutputAsInput(architecture);
     }
 }

@@ -24,6 +24,8 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ConstantSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.LayerVariableDeclarationSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.se_rwth.commons.logging.Log;
 
@@ -67,94 +69,117 @@ public class ArchitectureElementData {
         this.templateController = templateController;
     }
 
+    private LayerSymbol getLayerSymbol() {
+        if (getElement() instanceof VariableSymbol) {
+            return ((VariableSymbol) getElement()).getLayerVariableDeclaration().getLayer();
+        }
+        else {
+            assert getElement() instanceof LayerSymbol;
+
+            return (LayerSymbol) getElement();
+        }
+    }
+
+    public boolean isVariable() {
+        return getElement() instanceof VariableSymbol;
+    }
+
     public List<String> getInputs(){
         return getTemplateController().getLayerInputs(getElement());
     }
 
+    public String getMember() {
+        if (getElement() instanceof VariableSymbol) {
+            return ((VariableSymbol) getElement()).getMember().toString();
+        }
+        else {
+            return VariableSymbol.Member.NONE.toString();
+        }
+
+    }
+
     public int getConstValue() {
-        ConstantSymbol constant = (ConstantSymbol) getElement();
-        return constant.getExpression().getIntValue().get();
+        assert getElement() instanceof ConstantSymbol;
+
+        return ((ConstantSymbol) getElement()).getExpression().getIntValue().get();
     }
 
     public List<Integer> getKernel(){
-        return ((LayerSymbol) getElement())
-                .getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get();
+        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get();
     }
 
     public int getChannels(){
-        return ((LayerSymbol) getElement())
-                .getIntValue(AllPredefinedLayers.CHANNELS_NAME).get();
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.CHANNELS_NAME).get();
     }
 
     public List<Integer> getStride(){
-        return ((LayerSymbol) getElement())
-                .getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
+        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
     }
 
     public int getUnits(){
-        return ((LayerSymbol) getElement())
-                .getIntValue(AllPredefinedLayers.UNITS_NAME).get();
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.UNITS_NAME).get();
     }
 
     public boolean getNoBias(){
-        return ((LayerSymbol) getElement())
-                .getBooleanValue(AllPredefinedLayers.NOBIAS_NAME).get();
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.NOBIAS_NAME).get();
     }
 
     public double getP(){
-        return ((LayerSymbol) getElement())
-                .getDoubleValue(AllPredefinedLayers.P_NAME).get();
+        return getLayerSymbol().getDoubleValue(AllPredefinedLayers.P_NAME).get();
     }
 
     public int getIndex(){
-        return ((LayerSymbol) getElement())
-                .getIntValue(AllPredefinedLayers.INDEX_NAME).get();
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.INDEX_NAME).get();
     }
 
     public int getNumOutputs(){
-        return ((LayerSymbol) getElement())
-                .getIntValue(AllPredefinedLayers.NUM_SPLITS_NAME).get();
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.NUM_SPLITS_NAME).get();
     }
 
     public boolean getFixGamma(){
-        return ((LayerSymbol) getElement())
-                .getBooleanValue(AllPredefinedLayers.FIX_GAMMA_NAME).get();
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.FIX_GAMMA_NAME).get();
     }
 
     public int getNsize(){
-        return ((LayerSymbol) getElement())
-                .getIntValue(AllPredefinedLayers.NSIZE_NAME).get();
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.NSIZE_NAME).get();
     }
 
     public double getKnorm(){
-        return ((LayerSymbol) getElement())
-                .getDoubleValue(AllPredefinedLayers.KNORM_NAME).get();
+        return getLayerSymbol().getDoubleValue(AllPredefinedLayers.KNORM_NAME).get();
     }
 
     public double getAlpha(){
-        return ((LayerSymbol) getElement())
-                .getDoubleValue(AllPredefinedLayers.ALPHA_NAME).get();
+        return getLayerSymbol().getDoubleValue(AllPredefinedLayers.ALPHA_NAME).get();
     }
 
     public double getBeta(){
-        return ((LayerSymbol) getElement())
-                .getDoubleValue(AllPredefinedLayers.BETA_NAME).get();
+        return getLayerSymbol().getDoubleValue(AllPredefinedLayers.BETA_NAME).get();
     }
 
     public int getSize(){
-        return ((LayerSymbol) getElement())
-                .getIntValue(AllPredefinedLayers.SIZE_NAME).get();
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.SIZE_NAME).get();
+    }
+
+    public int getLayers(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.LAYERS_NAME).get();
+    }
+
+    public int getInputDim(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.INPUT_DIM_NAME).get();
+    }
+
+    public int getOutputDim(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.OUTPUT_DIM_NAME).get();
     }
 
     @Nullable
     public String getPoolType(){
-        return ((LayerSymbol) getElement())
-                .getStringValue(AllPredefinedLayers.POOL_TYPE_NAME).get();
+        return getLayerSymbol().getStringValue(AllPredefinedLayers.POOL_TYPE_NAME).get();
     }
 
     @Nullable
     public List<Integer> getPadding(){
-        return getPadding((LayerSymbol) getElement());
+        return getPadding(getLayerSymbol());
     }
 
     @Nullable
