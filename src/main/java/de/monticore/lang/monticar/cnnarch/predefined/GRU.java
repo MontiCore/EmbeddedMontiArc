@@ -20,14 +20,14 @@
  */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
-public class RNN extends BaseRNN {
+public class GRU extends BaseRNN {
 
-    private RNN() {
-        super(AllPredefinedLayers.RNN_NAME);
+    private GRU() {
+        super(AllPredefinedLayers.GRU_NAME);
     }
 
-    public static RNN create() {
-        RNN declaration = new RNN();
+    public static GRU create() {
+        GRU declaration = new GRU();
         declaration.setParameters(createParameters());
         return declaration;
     }

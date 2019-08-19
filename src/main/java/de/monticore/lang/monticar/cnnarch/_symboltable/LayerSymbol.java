@@ -253,13 +253,6 @@ public class LayerSymbol extends ArchitectureElementSymbol {
     public List<ArchTypeSymbol> computeOutputTypes() {
         if (getResolvedThis().isPresent()) {
             if (getResolvedThis().get() == this) {
-                // if LayerSymbol has no output element and layer can be output, then return empty output types array
-                if (!getOutputElement().isPresent()) {
-                    if (((PredefinedLayerDeclaration) getDeclaration()).canBeOutput(VariableSymbol.Member.NONE)) {
-                        return new ArrayList<>();
-                    }
-                }
-
                 return ((PredefinedLayerDeclaration) getDeclaration()).computeOutputTypes(getInputTypes(), this, VariableSymbol.Member.NONE);
             }
             else {

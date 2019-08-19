@@ -20,14 +20,14 @@
  */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
-public class RNN extends BaseRNN {
+public class LSTM extends BaseRNN {
 
-    private RNN() {
-        super(AllPredefinedLayers.RNN_NAME);
+    private LSTM() {
+        super(AllPredefinedLayers.LSTM_NAME);
     }
 
-    public static RNN create() {
-        RNN declaration = new RNN();
+    public static LSTM create() {
+        LSTM declaration = new LSTM();
         declaration.setParameters(createParameters());
         return declaration;
     }
