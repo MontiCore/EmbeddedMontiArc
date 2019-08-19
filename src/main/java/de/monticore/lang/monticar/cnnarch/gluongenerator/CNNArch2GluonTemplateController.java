@@ -173,7 +173,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         Map<String, List<String>> inputs = new LinkedHashMap<>();
 
         for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
-            if (element.isInput()) {
+            if (element.isInput() || element.isOutput()) {
                 List<Integer> intDimensions = element.getOutputTypes().get(0).getDimensions();
 
                 List<String> dimensions = new ArrayList<>();

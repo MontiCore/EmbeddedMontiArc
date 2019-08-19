@@ -1,10 +1,9 @@
 <#if element.member == "NONE">
 <#assign input = element.inputs[0]>
 <#if mode == "ARCHITECTURE_DEFINITION">
-            self.${element.name} = gluon.rnn.RNN(hidden_size=${element.units?c},
+            self.${element.name} = gluon.rnn.LSTM(hidden_size=${element.units?c},
                 num_layers=${element.layers?c},
-                bidirectional=${element.bidirectional?string("True", "False")},
-                activation='tanh',
+                bidirectional=${element.bidirectional?string("True", "False")}
                 layout='NTC')
             <#include "OutputShape.ftl">
 <#elseif mode == "FORWARD_FUNCTION">

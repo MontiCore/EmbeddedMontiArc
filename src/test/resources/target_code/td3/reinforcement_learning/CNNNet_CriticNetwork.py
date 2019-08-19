@@ -90,11 +90,11 @@ class Net_0(gluon.HybridBlock):
             else:
                 self.input_normalization_state_ = NoNormalization()
 
-            self.fc2_1_ = gluon.nn.Dense(units=300, use_bias=True)
+            self.fc2_1_ = gluon.nn.Dense(units=300, use_bias=True, flatten=True)
             # fc2_1_, output shape: {[300,1,1]}
 
             self.relu2_1_ = gluon.nn.Activation(activation='relu')
-            self.fc3_1_ = gluon.nn.Dense(units=600, use_bias=True)
+            self.fc3_1_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
             # fc3_1_, output shape: {[600,1,1]}
 
             if data_mean:
@@ -104,14 +104,14 @@ class Net_0(gluon.HybridBlock):
             else:
                 self.input_normalization_action_ = NoNormalization()
 
-            self.fc2_2_ = gluon.nn.Dense(units=600, use_bias=True)
+            self.fc2_2_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
             # fc2_2_, output shape: {[600,1,1]}
 
-            self.fc4_ = gluon.nn.Dense(units=600, use_bias=True)
+            self.fc4_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
             # fc4_, output shape: {[600,1,1]}
 
             self.relu4_ = gluon.nn.Activation(activation='relu')
-            self.fc5_ = gluon.nn.Dense(units=1, use_bias=True)
+            self.fc5_ = gluon.nn.Dense(units=1, use_bias=True, flatten=True)
             # fc5_, output shape: {[1,1,1]}
 
 
