@@ -30,7 +30,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-deeplearning</artifactId>
-    <version>0.2.9-SNAPSHOT</version>
+    <version>0.2.10-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -44,7 +44,7 @@
         <Embedded-MontiArc.version>0.1.9-SNAPSHOT</Embedded-MontiArc.version>
         <Embedded-MontiArc-Math.version>0.1.9-SNAPSHOT</Embedded-MontiArc-Math.version>
         <Embedded-MontiArc-Behaviour.version>0.0.16-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-        <CNNArch.version>0.3.2-SNAPSHOT</CNNArch.version>
+        <CNNArch.version>0.3.3-SNAPSHOT</CNNArch.version>
         <Math.version>0.0.19-SNAPSHOT</Math.version>
         <MathOpt.version>0.1.1-SNAPSHOT</MathOpt.version>
         <embedded-montiarc-dynamics.version>0.0.4-SNAPSHOT</embedded-montiarc-dynamics.version>
