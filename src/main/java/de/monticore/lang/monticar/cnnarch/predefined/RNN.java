@@ -20,10 +20,6 @@
  */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.*;
-
-import java.util.*;
-
 public class RNN extends BaseRNN {
 
     private RNN() {
@@ -32,17 +28,7 @@ public class RNN extends BaseRNN {
 
     public static RNN create() {
         RNN declaration = new RNN();
-        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.UNITS_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .build(),
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.LAYERS_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .defaultValue(1)
-                        .build()));
-        declaration.setParameters(parameters);
+        declaration.setParameters(createParameters());
         return declaration;
     }
 }
