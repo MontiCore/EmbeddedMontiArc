@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. config.sh
+
 if [ ! -d logs ]
 then
     mkdir logs
