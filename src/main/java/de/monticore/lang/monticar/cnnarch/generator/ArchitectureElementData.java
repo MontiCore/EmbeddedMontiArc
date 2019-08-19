@@ -80,14 +80,22 @@ public class ArchitectureElementData {
         }
     }
 
+    public boolean isVariable() {
+        return getElement() instanceof VariableSymbol;
+    }
+
     public List<String> getInputs(){
         return getTemplateController().getLayerInputs(getElement());
     }
 
     public String getMember() {
-        assert getElement() instanceof VariableSymbol;
+        if (getElement() instanceof VariableSymbol) {
+            return ((VariableSymbol) getElement()).getMember().toString();
+        }
+        else {
+            return VariableSymbol.Member.NONE.toString();
+        }
 
-        return ((VariableSymbol) getElement()).getMember().toString();
     }
 
     public int getConstValue() {
@@ -154,6 +162,22 @@ public class ArchitectureElementData {
 
     public int getLayers(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.LAYERS_NAME).get();
+    }
+
+    public int getInputDim(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.INPUT_DIM_NAME).get();
+    }
+
+    public int getOutputDim(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.OUTPUT_DIM_NAME).get();
+    }
+
+    public boolean getBidirectional() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.BIDIRECTIONAL_NAME).get();
+    }
+
+    public boolean getFlatten() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.FLATTEN_PARAMETER_NAME).get();
     }
 
     @Nullable
