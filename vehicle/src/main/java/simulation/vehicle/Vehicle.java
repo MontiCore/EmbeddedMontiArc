@@ -788,265 +788,265 @@ public class Vehicle {
 
 
 
-    /*
-    TODO:   - umbauen ggf in EEVehicle schreiben
-     */
-
-
-    /**
-     * Function that exchanges data with the controller
-     *
-     * @param deltaT Time difference of the last update loop in seconds
-     * TODO: Add remaining Actuators
-     */
-    protected void exchangeDataWithController(double deltaT) {
-        // Skip if controller bus or controller are not available
-        if (!controllerBus.isPresent() || !controller.isPresent()) {
-            return;
-        }
-        // Send vehicle data to controller
-        if (!constantBusDataSent) {
-            controllerBus.get().setData(CONSTANT_NUMBER_OF_GEARS.toString(), 1);
-            controllerBus.get().setData(CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
-            controllerBus.get().setData(CONSTANT_MAXIMUM_TOTAL_VELOCITY.toString(), Vehicle.VEHICLE_DEFAULT_APPROX_MAX_VELOCITY);
-            controllerBus.get().setData(CONSTANT_MOTOR_MAX_ACCELERATION.toString(), motor.getActuatorValueMax());
-            controllerBus.get().setData(CONSTANT_MOTOR_MIN_ACCELERATION.toString(), motor.getActuatorValueMin());
-            controllerBus.get().setData(CONSTANT_BRAKES_MAX_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMax());
-            controllerBus.get().setData(CONSTANT_BRAKES_MIN_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMin());
-            controllerBus.get().setData(CONSTANT_STEERING_MAX_ANGLE.toString(), steering.getActuatorValueMax());
-            controllerBus.get().setData(CONSTANT_STEERING_MIN_ANGLE.toString(), steering.getActuatorValueMin());
-            controllerBus.get().setData(CONSTANT_TRAJECTORY_ERROR.toString(), 0.0);
-
-            constantBusDataSent = true;
-        }
-
-        // Send sensor data: Write values to bus
-        for (Sensor sensor : sensorList) {
-            // Put data from sensor on the bus
-            controllerBus.get().setData(sensor.getType().toString(), sensor.getValue());
-
-            // Special case for weather / surface, for now just constant Asphalt
-            if (sensor.getType() == SENSOR_WEATHER) {
-                Surface surface = Surface.Asphalt;
-                controllerBus.get().setData(SENSOR_CURRENT_SURFACE.toString(), surface);
-            }
-        }
-
-        //TODO: This logic should be moved to the controller
-        Optional<Sensor> streetTypeSensor = getSensorByType(SENSOR_STREETTYPE);
-        if (streetTypeSensor.isPresent()) {
-            String streetType = (String)(streetTypeSensor.get().getValue());
-            double allowedVelocityByStreetType = Double.MAX_VALUE;
-
-            switch(streetType){
-                case "MOTORWAY":
-                    allowedVelocityByStreetType = (100.0 / 3.6);
-                    break;
-                case "A_ROAD":
-                    allowedVelocityByStreetType = (70.0 / 3.6);
-                    break;
-                case "STREET":
-                    allowedVelocityByStreetType = (50.0 / 3.6);
-                    break;
-                case "LIVING_STREET":
-                    allowedVelocityByStreetType = (30.0 / 3.6);
-                    break;
-                default:
-                    allowedVelocityByStreetType = maxTemporaryAllowedVelocity;
-                    break;
-            }
-
-            setMaxTemporaryAllowedVelocity(Math.min(getMaxTemporaryAllowedVelocity(), allowedVelocityByStreetType));
-        }
-
-        // Set other values on bus that can change during simulation
-        controllerBus.get().setData(SIMULATION_DELTA_TIME.toString(), deltaT);
-        controllerBus.get().setData(VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.toString(), getMaxTemporaryAllowedVelocity());
-
-        //Give the bus to the mainControlBlock
-        controller.get().setInputs(controllerBus.get().getAllData());
-
-        // Call controller to compute new values
-        controller.get().execute(deltaT);
-
-        //Pass the data of the mainControlBlock to the bus
-        controllerBus.get().setAllData(controller.get().getOutputs());
-
-        // Read new values from bus
-        double motorValue = 0;
-        double brakeValue = 0;
-        double steeringValue = 0;
-
-        Object motorObj = controllerBus.get().getData(BusEntry.ACTUATOR_ENGINE.toString());
-        if (motorObj != null){
-            motorValue = (Double) motorObj;
-        }
-        Object brakeObj = controllerBus.get().getData(BusEntry.ACTUATOR_BRAKE.toString());
-        if (brakeObj != null){
-            brakeValue = (Double) brakeObj;
-        }
-        Object steeringObj = controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString());
-        if (steeringObj != null){
-            steeringValue = (Double) steeringObj;
-        }
-
-        steering.setActuatorValueTarget(steeringValue);
-
-        // Set new values from bus to actuators
-
-        if (physicalVehicle instanceof MassPointPhysicalVehicle) {
-            motor.setActuatorValueTarget(motorValue);
-            brakesBackLeft.setActuatorValueTarget(brakeValue);
-            brakesBackRight.setActuatorValueTarget(brakeValue);
-            brakesFrontLeft.setActuatorValueTarget(brakeValue);
-            brakesFrontRight.setActuatorValueTarget(brakeValue);
-
-        } else {
-            throttle.setActuatorValueTarget(motorValue);
-            double brakePressure = brakeValue*brakes.getActuatorValueMax();
-            brakes.setActuatorValueTarget(brakePressure);
-        }
-    }
-
-
-    /**
-     * Function that initiates or updates navigation of the vehicle to a specified point in the map
-     * Controller is periodically called such that setting these values in the function here should work without issues
-     *
-     * @param node Target node for navigation
-     */
-    public void navigateTo(IControllerNode node) {
-        navigateTo(node, Collections.synchronizedList(new LinkedList<RealVector>()));
-    }
-
-    /**
-     * Function that initiates or updates navigation of the vehicle to a specified point in the map
-     * Controller is periodically called such that setting these values in the function here should work without issues
-     * Tries to avoid list of coordinates, might not be possible if all ways to target are affected. Then avoiding coordinates is not possible.
-     *
-     * @param node Target node for navigation
-     * @param avoidCoordinates List of coordinates which should be avoided in path finding, if possible
-     */
-    public void navigateTo(IControllerNode node, List<RealVector> avoidCoordinates) {
-        // Check for valid objects
-        if (!navigation.isPresent() || !controllerBus.isPresent() || !getSensorByType(SENSOR_GPS_COORDINATES).isPresent()) {
-            Log.warning("Vehicle: navigateTo called without valid navigation or controllerBus or GPS sensor");
-            return;
-        }
-
-        // Set last navigation target
-        this.lastNavigationTarget = Optional.of(node);
-
-        // Get current GPS coordinates from sensor
-        getSensorByType(SENSOR_GPS_COORDINATES).get().update();
-        Object gpsCoordinates = getSensorByType(SENSOR_GPS_COORDINATES).get().getValue();
-
-        // Process navigation target without avoiding coordinates for reference
-        Map<String, Object> navigationInputs = new LinkedHashMap<>();
-        navigationInputs.put(NavigationEntry.MAP_ADJACENCY_LIST.toString(), WorldModel.getInstance().getControllerMap().getAdjacencies());
-        navigationInputs.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
-        navigationInputs.put(NavigationEntry.GPS_COORDINATES.toString(), gpsCoordinates);
-        navigationInputs.put(NavigationEntry.TARGET_NODE.toString(), node);
-        navigation.get().setInputs(navigationInputs);
-        navigation.get().execute(0);
-
-        // Stop processing if trajectory or avoiding coordinate list is empty
-        if (navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) == null) {
-            return;
-        }
-
-        List<Vertex> trajectoryWithoutAvoiding = (List<Vertex>)(navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
-        if (trajectoryWithoutAvoiding.isEmpty() || avoidCoordinates.isEmpty()) {
-            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
-            afterTrajectoryUpdate();
-            return;
-        }
-
-        // Compare distance to final destination to compare quality of trajectories
-        RealVector endTarget = new ArrayRealVector(new double[]{node.getPoint().getX(), node.getPoint().getY(), node.getPoint().getZ()});
-        double endTargetDistanceWithoutAvoiding = trajectoryWithoutAvoiding.get(trajectoryWithoutAvoiding.size() - 1).getPosition().getDistance(endTarget);
-
-        // Compute trajectory with avoiding coordinates on a copied adjacency list
-        ArrayList<IAdjacency> adjacencyFiltered = new ArrayList<>(WorldModel.getInstance().getControllerMap().getAdjacencies());
-        ArrayList<IAdjacency> adjacencyRemove = new ArrayList<>();
-        Set<Long> filterOsmIds = new HashSet<>();
-
-        // Find OSM IDs with minimal distance to coordinates to be avoided
-        for (RealVector pos : avoidCoordinates) {
-            double minDistSq = Double.MAX_VALUE;
-            long minOsmId = -1L;
-
-            for (IAdjacency adjacency : adjacencyFiltered) {
-                RealVector posAdjacency1 = new ArrayRealVector(new double[]{adjacency.getNode1().getPoint().getX(), adjacency.getNode1().getPoint().getY(), adjacency.getNode1().getPoint().getZ()});
-                RealVector posAdjacency2 = new ArrayRealVector(new double[]{adjacency.getNode2().getPoint().getX(), adjacency.getNode2().getPoint().getY(), adjacency.getNode2().getPoint().getZ()});
-
-                // Compute square distances manually here, cheaper than distance since no sqrt is needed for minimum
-                double distSq1 = (pos.getEntry(0) - posAdjacency1.getEntry(0)) * (pos.getEntry(0) - posAdjacency1.getEntry(0)) + (pos.getEntry(1) - posAdjacency1.getEntry(1)) * (pos.getEntry(1) - posAdjacency1.getEntry(1)) + (pos.getEntry(2) - posAdjacency1.getEntry(2)) * (pos.getEntry(2) - posAdjacency1.getEntry(2));
-                double distSq2 = (pos.getEntry(0) - posAdjacency2.getEntry(0)) * (pos.getEntry(0) - posAdjacency2.getEntry(0)) + (pos.getEntry(1) - posAdjacency2.getEntry(1)) * (pos.getEntry(1) - posAdjacency2.getEntry(1)) + (pos.getEntry(2) - posAdjacency2.getEntry(2)) * (pos.getEntry(2) - posAdjacency2.getEntry(2));
-
-                if (distSq1 < minDistSq) {
-                    minDistSq = distSq1;
-                    minOsmId = adjacency.getNode1().getOsmId();
-                }
-
-                if (distSq2 < minDistSq) {
-                    minDistSq = distSq2;
-                    minOsmId = adjacency.getNode2().getOsmId();
-                }
-            }
-
-            if (minOsmId > 0) {
-                filterOsmIds.add(minOsmId);
-            }
-        }
-
-        // Find adjacency entries with OSM Ids to be removed
-        for (IAdjacency adjacency : adjacencyFiltered) {
-            if (filterOsmIds.contains(adjacency.getNode1().getOsmId()) || filterOsmIds.contains(adjacency.getNode2().getOsmId())) {
-                adjacencyRemove.add(adjacency);
-            }
-        }
-
-        // Remove all adjacency entries to be filtered out
-        adjacencyFiltered.removeAll(adjacencyRemove);
-
-        // Process navigation target without avoiding coordinates for reference
-        Map<String, Object> navigationInputsFiltered = new LinkedHashMap<>();
-        navigationInputsFiltered.put(NavigationEntry.MAP_ADJACENCY_LIST.toString(), adjacencyFiltered);
-        navigationInputsFiltered.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
-        navigationInputsFiltered.put(NavigationEntry.GPS_COORDINATES.toString(), gpsCoordinates);
-        navigationInputsFiltered.put(NavigationEntry.TARGET_NODE.toString(), node);
-        navigation.get().setInputs(navigationInputsFiltered);
-        navigation.get().execute(0);
-
-        // If trajectory with avoiding is null or empty, just set original result without avoiding
-        if (navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) == null) {
-            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
-            afterTrajectoryUpdate();
-            return;
-        }
-
-        List<Vertex> trajectoryWithAvoiding = (List<Vertex>)(navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
-        if (trajectoryWithAvoiding.isEmpty()) {
-            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
-            afterTrajectoryUpdate();
-            return;
-        }
-
-        // Compare distance to final destination to compare quality of trajectories
-        double endTargetDistanceWithAvoiding = trajectoryWithAvoiding.get(trajectoryWithAvoiding.size() - 1).getPosition().getDistance(endTarget);
-
-        // Check if end target distance with avoiding is roughly as good as without avoiding
-        // If yes then set new trajectory with avoiding, otherwise use old one without avoiding
-        if (endTargetDistanceWithAvoiding - 5.0 <= endTargetDistanceWithoutAvoiding) {
-            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithAvoiding);
-            afterTrajectoryUpdate();
-            return;
-        }
-
-        controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
-        afterTrajectoryUpdate();
-    }
+//    /*
+//    TODO:   - umbauen ggf in EEVehicle schreiben
+//     */
+//
+//
+//    /**
+//     * Function that exchanges data with the controller
+//     *
+//     * @param deltaT Time difference of the last update loop in seconds
+//     * TODO: Add remaining Actuators
+//     */
+//    protected void exchangeDataWithController(double deltaT) {
+//        // Skip if controller bus or controller are not available
+//        if (!controllerBus.isPresent() || !controller.isPresent()) {
+//            return;
+//        }
+//        // Send vehicle data to controller
+//        if (!constantBusDataSent) {
+//            controllerBus.get().setData(CONSTANT_NUMBER_OF_GEARS.toString(), 1);
+//            controllerBus.get().setData(CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
+//            controllerBus.get().setData(CONSTANT_MAXIMUM_TOTAL_VELOCITY.toString(), Vehicle.VEHICLE_DEFAULT_APPROX_MAX_VELOCITY);
+//            controllerBus.get().setData(CONSTANT_MOTOR_MAX_ACCELERATION.toString(), motor.getActuatorValueMax());
+//            controllerBus.get().setData(CONSTANT_MOTOR_MIN_ACCELERATION.toString(), motor.getActuatorValueMin());
+//            controllerBus.get().setData(CONSTANT_BRAKES_MAX_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMax());
+//            controllerBus.get().setData(CONSTANT_BRAKES_MIN_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMin());
+//            controllerBus.get().setData(CONSTANT_STEERING_MAX_ANGLE.toString(), steering.getActuatorValueMax());
+//            controllerBus.get().setData(CONSTANT_STEERING_MIN_ANGLE.toString(), steering.getActuatorValueMin());
+//            controllerBus.get().setData(CONSTANT_TRAJECTORY_ERROR.toString(), 0.0);
+//
+//            constantBusDataSent = true;
+//        }
+//
+//        // Send sensor data: Write values to bus
+//        for (Sensor sensor : sensorList) {
+//            // Put data from sensor on the bus
+//            controllerBus.get().setData(sensor.getType().toString(), sensor.getValue());
+//
+//            // Special case for weather / surface, for now just constant Asphalt
+//            if (sensor.getType() == SENSOR_WEATHER) {
+//                Surface surface = Surface.Asphalt;
+//                controllerBus.get().setData(SENSOR_CURRENT_SURFACE.toString(), surface);
+//            }
+//        }
+//
+//        //TODO: This logic should be moved to the controller
+//        Optional<Sensor> streetTypeSensor = getSensorByType(SENSOR_STREETTYPE);
+//        if (streetTypeSensor.isPresent()) {
+//            String streetType = (String)(streetTypeSensor.get().getValue());
+//            double allowedVelocityByStreetType = Double.MAX_VALUE;
+//
+//            switch(streetType){
+//                case "MOTORWAY":
+//                    allowedVelocityByStreetType = (100.0 / 3.6);
+//                    break;
+//                case "A_ROAD":
+//                    allowedVelocityByStreetType = (70.0 / 3.6);
+//                    break;
+//                case "STREET":
+//                    allowedVelocityByStreetType = (50.0 / 3.6);
+//                    break;
+//                case "LIVING_STREET":
+//                    allowedVelocityByStreetType = (30.0 / 3.6);
+//                    break;
+//                default:
+//                    allowedVelocityByStreetType = maxTemporaryAllowedVelocity;
+//                    break;
+//            }
+//
+//            setMaxTemporaryAllowedVelocity(Math.min(getMaxTemporaryAllowedVelocity(), allowedVelocityByStreetType));
+//        }
+//
+//        // Set other values on bus that can change during simulation
+//        controllerBus.get().setData(SIMULATION_DELTA_TIME.toString(), deltaT);
+//        controllerBus.get().setData(VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.toString(), getMaxTemporaryAllowedVelocity());
+//
+//        //Give the bus to the mainControlBlock
+//        controller.get().setInputs(controllerBus.get().getAllData());
+//
+//        // Call controller to compute new values
+//        controller.get().execute(deltaT);
+//
+//        //Pass the data of the mainControlBlock to the bus
+//        controllerBus.get().setAllData(controller.get().getOutputs());
+//
+//        // Read new values from bus
+//        double motorValue = 0;
+//        double brakeValue = 0;
+//        double steeringValue = 0;
+//
+//        Object motorObj = controllerBus.get().getData(BusEntry.ACTUATOR_ENGINE.toString());
+//        if (motorObj != null){
+//            motorValue = (Double) motorObj;
+//        }
+//        Object brakeObj = controllerBus.get().getData(BusEntry.ACTUATOR_BRAKE.toString());
+//        if (brakeObj != null){
+//            brakeValue = (Double) brakeObj;
+//        }
+//        Object steeringObj = controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString());
+//        if (steeringObj != null){
+//            steeringValue = (Double) steeringObj;
+//        }
+//
+//        steering.setActuatorValueTarget(steeringValue);
+//
+//        // Set new values from bus to actuators
+//
+//        if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+//            motor.setActuatorValueTarget(motorValue);
+//            brakesBackLeft.setActuatorValueTarget(brakeValue);
+//            brakesBackRight.setActuatorValueTarget(brakeValue);
+//            brakesFrontLeft.setActuatorValueTarget(brakeValue);
+//            brakesFrontRight.setActuatorValueTarget(brakeValue);
+//
+//        } else {
+//            throttle.setActuatorValueTarget(motorValue);
+//            double brakePressure = brakeValue*brakes.getActuatorValueMax();
+//            brakes.setActuatorValueTarget(brakePressure);
+//        }
+//    }
+//
+//
+//    /**
+//     * Function that initiates or updates navigation of the vehicle to a specified point in the map
+//     * Controller is periodically called such that setting these values in the function here should work without issues
+//     *
+//     * @param node Target node for navigation
+//     */
+//    public void navigateTo(IControllerNode node) {
+//        navigateTo(node, Collections.synchronizedList(new LinkedList<RealVector>()));
+//    }
+//
+//    /**
+//     * Function that initiates or updates navigation of the vehicle to a specified point in the map
+//     * Controller is periodically called such that setting these values in the function here should work without issues
+//     * Tries to avoid list of coordinates, might not be possible if all ways to target are affected. Then avoiding coordinates is not possible.
+//     *
+//     * @param node Target node for navigation
+//     * @param avoidCoordinates List of coordinates which should be avoided in path finding, if possible
+//     */
+//    public void navigateTo(IControllerNode node, List<RealVector> avoidCoordinates) {
+//        // Check for valid objects
+//        if (!navigation.isPresent() || !controllerBus.isPresent() || !getSensorByType(SENSOR_GPS_COORDINATES).isPresent()) {
+//            Log.warning("Vehicle: navigateTo called without valid navigation or controllerBus or GPS sensor");
+//            return;
+//        }
+//
+//        // Set last navigation target
+//        this.lastNavigationTarget = Optional.of(node);
+//
+//        // Get current GPS coordinates from sensor
+//        getSensorByType(SENSOR_GPS_COORDINATES).get().update();
+//        Object gpsCoordinates = getSensorByType(SENSOR_GPS_COORDINATES).get().getValue();
+//
+//        // Process navigation target without avoiding coordinates for reference
+//        Map<String, Object> navigationInputs = new LinkedHashMap<>();
+//        navigationInputs.put(NavigationEntry.MAP_ADJACENCY_LIST.toString(), WorldModel.getInstance().getControllerMap().getAdjacencies());
+//        navigationInputs.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
+//        navigationInputs.put(NavigationEntry.GPS_COORDINATES.toString(), gpsCoordinates);
+//        navigationInputs.put(NavigationEntry.TARGET_NODE.toString(), node);
+//        navigation.get().setInputs(navigationInputs);
+//        navigation.get().execute(0);
+//
+//        // Stop processing if trajectory or avoiding coordinate list is empty
+//        if (navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) == null) {
+//            return;
+//        }
+//
+//        List<Vertex> trajectoryWithoutAvoiding = (List<Vertex>)(navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
+//        if (trajectoryWithoutAvoiding.isEmpty() || avoidCoordinates.isEmpty()) {
+//            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
+//            afterTrajectoryUpdate();
+//            return;
+//        }
+//
+//        // Compare distance to final destination to compare quality of trajectories
+//        RealVector endTarget = new ArrayRealVector(new double[]{node.getPoint().getX(), node.getPoint().getY(), node.getPoint().getZ()});
+//        double endTargetDistanceWithoutAvoiding = trajectoryWithoutAvoiding.get(trajectoryWithoutAvoiding.size() - 1).getPosition().getDistance(endTarget);
+//
+//        // Compute trajectory with avoiding coordinates on a copied adjacency list
+//        ArrayList<IAdjacency> adjacencyFiltered = new ArrayList<>(WorldModel.getInstance().getControllerMap().getAdjacencies());
+//        ArrayList<IAdjacency> adjacencyRemove = new ArrayList<>();
+//        Set<Long> filterOsmIds = new HashSet<>();
+//
+//        // Find OSM IDs with minimal distance to coordinates to be avoided
+//        for (RealVector pos : avoidCoordinates) {
+//            double minDistSq = Double.MAX_VALUE;
+//            long minOsmId = -1L;
+//
+//            for (IAdjacency adjacency : adjacencyFiltered) {
+//                RealVector posAdjacency1 = new ArrayRealVector(new double[]{adjacency.getNode1().getPoint().getX(), adjacency.getNode1().getPoint().getY(), adjacency.getNode1().getPoint().getZ()});
+//                RealVector posAdjacency2 = new ArrayRealVector(new double[]{adjacency.getNode2().getPoint().getX(), adjacency.getNode2().getPoint().getY(), adjacency.getNode2().getPoint().getZ()});
+//
+//                // Compute square distances manually here, cheaper than distance since no sqrt is needed for minimum
+//                double distSq1 = (pos.getEntry(0) - posAdjacency1.getEntry(0)) * (pos.getEntry(0) - posAdjacency1.getEntry(0)) + (pos.getEntry(1) - posAdjacency1.getEntry(1)) * (pos.getEntry(1) - posAdjacency1.getEntry(1)) + (pos.getEntry(2) - posAdjacency1.getEntry(2)) * (pos.getEntry(2) - posAdjacency1.getEntry(2));
+//                double distSq2 = (pos.getEntry(0) - posAdjacency2.getEntry(0)) * (pos.getEntry(0) - posAdjacency2.getEntry(0)) + (pos.getEntry(1) - posAdjacency2.getEntry(1)) * (pos.getEntry(1) - posAdjacency2.getEntry(1)) + (pos.getEntry(2) - posAdjacency2.getEntry(2)) * (pos.getEntry(2) - posAdjacency2.getEntry(2));
+//
+//                if (distSq1 < minDistSq) {
+//                    minDistSq = distSq1;
+//                    minOsmId = adjacency.getNode1().getOsmId();
+//                }
+//
+//                if (distSq2 < minDistSq) {
+//                    minDistSq = distSq2;
+//                    minOsmId = adjacency.getNode2().getOsmId();
+//                }
+//            }
+//
+//            if (minOsmId > 0) {
+//                filterOsmIds.add(minOsmId);
+//            }
+//        }
+//
+//        // Find adjacency entries with OSM Ids to be removed
+//        for (IAdjacency adjacency : adjacencyFiltered) {
+//            if (filterOsmIds.contains(adjacency.getNode1().getOsmId()) || filterOsmIds.contains(adjacency.getNode2().getOsmId())) {
+//                adjacencyRemove.add(adjacency);
+//            }
+//        }
+//
+//        // Remove all adjacency entries to be filtered out
+//        adjacencyFiltered.removeAll(adjacencyRemove);
+//
+//        // Process navigation target without avoiding coordinates for reference
+//        Map<String, Object> navigationInputsFiltered = new LinkedHashMap<>();
+//        navigationInputsFiltered.put(NavigationEntry.MAP_ADJACENCY_LIST.toString(), adjacencyFiltered);
+//        navigationInputsFiltered.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
+//        navigationInputsFiltered.put(NavigationEntry.GPS_COORDINATES.toString(), gpsCoordinates);
+//        navigationInputsFiltered.put(NavigationEntry.TARGET_NODE.toString(), node);
+//        navigation.get().setInputs(navigationInputsFiltered);
+//        navigation.get().execute(0);
+//
+//        // If trajectory with avoiding is null or empty, just set original result without avoiding
+//        if (navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) == null) {
+//            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
+//            afterTrajectoryUpdate();
+//            return;
+//        }
+//
+//        List<Vertex> trajectoryWithAvoiding = (List<Vertex>)(navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
+//        if (trajectoryWithAvoiding.isEmpty()) {
+//            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
+//            afterTrajectoryUpdate();
+//            return;
+//        }
+//
+//        // Compare distance to final destination to compare quality of trajectories
+//        double endTargetDistanceWithAvoiding = trajectoryWithAvoiding.get(trajectoryWithAvoiding.size() - 1).getPosition().getDistance(endTarget);
+//
+//        // Check if end target distance with avoiding is roughly as good as without avoiding
+//        // If yes then set new trajectory with avoiding, otherwise use old one without avoiding
+//        if (endTargetDistanceWithAvoiding - 5.0 <= endTargetDistanceWithoutAvoiding) {
+//            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithAvoiding);
+//            afterTrajectoryUpdate();
+//            return;
+//        }
+//
+//        controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
+//        afterTrajectoryUpdate();
+//    }
 
     /**
      * Get current trajectory of the vehicle, if available. Otherwise return empty list.

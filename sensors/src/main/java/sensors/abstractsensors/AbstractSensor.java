@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.UUID;
 
 import commons.simulation.Sensor;
+import simulation.bus.BusMessage;
 import simulation.vehicle.PhysicalVehicle;
 
 import java.util.UUID;
@@ -49,8 +50,13 @@ public abstract class AbstractSensor extends ImmutableEEComponent implements Sen
     }
     
     @Override
-    public void update() {
+    public void update(Instant actualTime) {
         calculateValue();
+        for (EEComponent target : this.getTargetsByMessageId().get(this.getType())) {
+            BusMessage msg = new BusMessage(this.getValue(), this.getDataLength(), this.getType(), actualTime, this.getId(), target);
+            this.getSimulator().addEvent(msg);
+        }
+
     }
 
     public PhysicalVehicle getPhysicalVehicle() {

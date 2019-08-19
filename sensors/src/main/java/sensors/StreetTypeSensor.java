@@ -24,6 +24,7 @@ import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
+import simulation.bus.BusMessage;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
 import simulation.environment.geometry.osmadapter.GeomStreet;
@@ -31,6 +32,7 @@ import simulation.environment.visualisationadapter.implementation.Street2D;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 
@@ -74,5 +76,30 @@ public class StreetTypeSensor extends AbstractSensor {
     @Override
     public String getTypeName() {
         return String.class.getTypeName();
+    }
+
+    @Override
+    public void update(Instant actualTime) {
+        double allowedVelocityByStreetType = this.getPhysicalVehicle().getSimulationVehicle().getMaxTemporaryAllowedVelocity();
+        switch (this.getValue()) {
+            case "MOTORWAY":
+                allowedVelocityByStreetType = (100.0 / 3.6);
+                break;
+            case "A_ROAD":
+                allowedVelocityByStreetType = (70.0 / 3.6);
+                break;
+            case "STREET":
+                allowedVelocityByStreetType = (50.0 / 3.6);
+                break;
+            case "LIVING_STREET":
+                allowedVelocityByStreetType = (30.0 / 3.6);
+                break;
+            default:
+                break;
+        }
+        for (EEComponent target : this.getTargetsByMessageId().get(BusEntry.SENSOR_STREETTYPE)) {
+            BusMessage sensorMess = new BusMessage(allowedVelocityByStreetType, 6, BusEntry.VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY, actualTime, this.getId(), target);
+            this.getSimulator().addEvent(sensorMess);
+        }
     }
 }

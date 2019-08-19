@@ -20,17 +20,15 @@
  */
 package simulation.vehicle;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 import commons.controller.commons.BusEntry;
-import simulation.EESimulator.EEComponent;
-import simulation.EESimulator.EEComponentType;
-import simulation.EESimulator.EEDiscreteEvent;
-import simulation.EESimulator.EESimulator;
-import simulation.EESimulator.ImmutableEEComponent;
+import simulation.EESimulator.*;
+import simulation.bus.BusMessage;
 
 
 /**
@@ -55,6 +53,9 @@ public class VehicleActuator extends ImmutableEEComponent {
 
 	/** Change rate of the actuator */
 	private double actuatorChangeRate;
+
+	/** Time of last update */
+	Instant lastUpdate;
 
 	/**
      * Constructor for the actuator class, only sets the type, minimum, maximum and change rate values
@@ -84,15 +85,18 @@ public class VehicleActuator extends ImmutableEEComponent {
             actuatorValueCurrent = actuatorValueMin;
             actuatorValueTarget = actuatorValueMin;
         }
+		this.lastUpdate = simulator.getSimulationTime();
     }
 
 	/**
 	 * Function that computes an update tick for the actuator
 	 *
-	 * @param timeDiff Time difference considered in the update measured in seconds
+	 * @param actualTime actual time of the simulation. Used to calculate the time difference considered in the update measured in seconds
 	 */
-	protected void update(double timeDiff) {
+	//TODO: send actualValue to the bus
+	protected void update(Instant actualTime) {
 		// Total change of value in given time span
+		double timeDiff = Duration.between(lastUpdate, actualTime).toMillis()/1000;
 		double valueDiff = (actuatorChangeRate * timeDiff);
 
 		if (Math.abs(actuatorValueTarget - actuatorValueCurrent) <= valueDiff) {
@@ -104,7 +108,50 @@ public class VehicleActuator extends ImmutableEEComponent {
 			actuatorValueCurrent = actuatorValueCurrent
 					+ ((actuatorValueCurrent < actuatorValueTarget) ? valueDiff : -valueDiff);
 		}
+		lastUpdate = actualTime;
+
+		switch (actuatorType) {
+			case VEHICLE_ACTUATOR_TYPE_BRAKE:
+			case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT:
+			case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT:
+			case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT:
+			case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT:
+				for (EEComponent comp : getTargetsByMessageId().get(BusEntry.ACTUATOR_BRAKE)) {
+					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_BRAKE_CURRENT, actualTime, this.getId(), comp);
+					this.getSimulator().addEvent(msg);
+				}
+				break;
+			case VEHICLE_ACTUATOR_TYPE_THROTTLE:
+			case VEHICLE_ACTUATOR_TYPE_MOTOR:
+				for (EEComponent comp : getTargetsByMessageId().get(BusEntry.ACTUATOR_ENGINE)) {
+					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_ENGINE_CURRENT, actualTime, this.getId(), comp);
+					this.getSimulator().addEvent(msg);
+				}
+				break;
+			case VEHICLE_ACTUATOR_TYPE_STEERING:
+				for (EEComponent comp : getTargetsByMessageId().get(BusEntry.ACTUATOR_STEERING)) {
+					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_STEERING_CURRENT, actualTime, this.getId(), comp);
+					this.getSimulator().addEvent(msg);
+				}
+				break;
+			case VEHICLE_ACTUATOR_TYPE_GEAR:
+				for (EEComponent comp : getTargetsByMessageId().get(BusEntry.ACTUATOR_GEAR)) {
+					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_GEAR_CURRENT, actualTime, this.getId(), comp);
+					this.getSimulator().addEvent(msg);
+				}
+				break;
+			case VEHICLE_ACTUATOR_TYPE_CLUTCH:
+				for (EEComponent comp : getTargetsByMessageId().get(BusEntry.ACTUATOR_CLUTCH)) {
+					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_CLUTCH_CURRENT, actualTime, this.getId(), comp);
+					this.getSimulator().addEvent(msg);
+				}
+				break;
+			default:
+				//exception?
+		}
+
 	}
+
 
 	/**
 	 * Getter for the type of the actuator
@@ -206,6 +253,8 @@ public class VehicleActuator extends ImmutableEEComponent {
 
 	@Override
 	public void processEvent(EEDiscreteEvent event) {
-		// TODO: implement
+		if (event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE && event.getTarget() == this){
+			setActuatorValueTarget((double) ((BusMessage) event).getMessage());
+		}
 	}
 }

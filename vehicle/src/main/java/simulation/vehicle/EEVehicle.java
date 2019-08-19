@@ -50,7 +50,7 @@ public class EEVehicle {
 
     private List<Bridge> bridgeList = new LinkedList<>();
 
-    Double allowedVelocityByStreetType = 0.;
+    double allowedVelocityByStreetType = 0.;
 
 
     /*
@@ -161,53 +161,25 @@ public class EEVehicle {
         }
     }
 
+
     /**
      * function that notifies all sensors to send their actual data to the bus
      * @param actualTime actual time of the simulation
      */
     public void notifySensors(Instant actualTime) {
         for (Sensor sensor : sensorList) {
-
-            //create bus message with velocity
-            if (sensor.getType() == BusEntry.SENSOR_STREETTYPE) {
-                switch ((String) sensor.getValue()) {
-                    case "MOTORWAY":
-                        allowedVelocityByStreetType = (100.0 / 3.6);
-                        break;
-                    case "A_ROAD":
-                        allowedVelocityByStreetType = (70.0 / 3.6);
-                        break;
-                    case "STREET":
-                        allowedVelocityByStreetType = (50.0 / 3.6);
-                        break;
-                    case "LIVING_STREET":
-                        allowedVelocityByStreetType = (30.0 / 3.6);
-                        break;
-                    default:
-                        break;
-                }
-                for (EEComponent target : ((ImmutableEEComponent) sensor).getTargetsByMessageId().get(BusEntry.SENSOR_STREETTYPE)) {
-                    BusMessage sensorMess = new BusMessage(allowedVelocityByStreetType, 6, BusEntry.SENSOR_STREETTYPE, actualTime, ((EEComponent) sensor).getId(), target);
-                    eeSimulator.addEvent(sensorMess);
-                }
-            }
-
-            //create all other bus messages
-            for (EEComponent target : ((ImmutableEEComponent) sensor).getTargetsByMessageId().get(sensor.getType())) {
-                BusMessage sensorMess = new BusMessage(sensor.getValue(), sensor.getDataLength(), sensor.getType(), actualTime, ((EEComponent) sensor).getId(), target);
-                eeSimulator.addEvent(sensorMess);
-            }
+            sensor.update(actualTime);
         }
     }
 
-    //TODO: change the time of this function
     /**
      * function that notifies all actuators to update
      * @param actualTime time the actuators get to update their value
      */
-    public void notifyActuator(Duration actualTime){
+    //TODO: wert des updates nach update auf den bus schreiben
+    public void notifyActuator(Instant actualTime){
         for (VehicleActuator actuator : actuatorList) {
-            actuator.update((double) actualTime.toMillis()/1000);
+            actuator.update(actualTime);
         }
     }
 
