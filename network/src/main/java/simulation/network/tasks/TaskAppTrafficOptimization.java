@@ -29,6 +29,7 @@ import commons.utils.Point3D;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.util.Combinations;
+import sensors.abstractsensors.AbstractSensor;
 import simulation.network.*;
 import simulation.util.Log;
 import simulation.vehicle.PhysicalVehicle;
@@ -95,7 +96,7 @@ public class TaskAppTrafficOptimization extends NetworkTask {
                 // Continue processing only if this network node is a vehicle
                 if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
                     PhysicalVehicle physicalVehicle = (PhysicalVehicle) (networkNode.getPhysicalObject());
-                    Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+                    Vehicle vehicle = new Vehicle(physicalVehicle);
 
                     // Remove nodes which were not received for a long time
                     // Changes to key set or value set are reflected in the map as well, thus retainAll call removes outdated map entries
@@ -123,7 +124,7 @@ public class TaskAppTrafficOptimization extends NetworkTask {
 
                     if (trajectory.isEmpty()) {
                         // Access GPS sensor of this node
-                        Optional<Sensor> gpsSensor = vehicle.getSensorByType(BusEntry.SENSOR_GPS_COORDINATES);
+                        Optional<AbstractSensor> gpsSensor = vehicle.getSensorByType(BusEntry.SENSOR_GPS_COORDINATES);
                         RealVector thisGpsPosition = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
 
                         if (gpsSensor.isPresent()) {

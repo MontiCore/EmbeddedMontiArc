@@ -93,7 +93,6 @@ public class VehicleActuator extends ImmutableEEComponent {
 	 *
 	 * @param actualTime actual time of the simulation. Used to calculate the time difference considered in the update measured in seconds
 	 */
-	//TODO: send actualValue to the bus
 	protected void update(Instant actualTime) {
 		// Total change of value in given time span
 		double timeDiff = Duration.between(lastUpdate, actualTime).toMillis()/1000;

@@ -31,6 +31,7 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import sensors.abstractsensors.AbstractSensor;
 import simulation.environment.WorldModel;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.network.*;
@@ -203,7 +204,7 @@ public class TaskAppVelocityControl extends NetworkTask {
                 // Continue processing only if this network node is a vehicle
                 if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
                     PhysicalVehicle physicalVehicle = (PhysicalVehicle) (networkNode.getPhysicalObject());
-                    Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+                    //Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
                     // Remove nodes which were not received for a long time
                     // Changes to key set or value set are reflected in the map as well, thus retainAll call removes outdated map entries
@@ -259,11 +260,11 @@ public class TaskAppVelocityControl extends NetworkTask {
         // Only perform this for vehicles
         if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
             PhysicalVehicle physicalVehicle = (PhysicalVehicle) (networkNode.getPhysicalObject());
-            Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+            Vehicle vehicle = new Vehicle(physicalVehicle);
 
             // Get velocity sensor value
             double currentVelocity = 0.0;
-            Optional<Sensor> velocitySensor = vehicle.getSensorByType(BusEntry.SENSOR_VELOCITY);
+            Optional<AbstractSensor> velocitySensor = vehicle.getSensorByType(BusEntry.SENSOR_VELOCITY);
 
             if (velocitySensor.isPresent()) {
                 currentVelocity = (Double)(velocitySensor.get().getValue());
@@ -274,7 +275,7 @@ public class TaskAppVelocityControl extends NetworkTask {
 
             // Get compass sensor value
             double currentCompass = 0.0;
-            Optional<Sensor> compassSensor = vehicle.getSensorByType(BusEntry.SENSOR_COMPASS);
+            Optional<AbstractSensor> compassSensor = vehicle.getSensorByType(BusEntry.SENSOR_COMPASS);
 
             if (compassSensor.isPresent()) {
                 currentCompass = (Double) (compassSensor.get().getValue());
@@ -285,7 +286,7 @@ public class TaskAppVelocityControl extends NetworkTask {
 
             // Get GPS sensor value
             RealVector currentGps = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-            Optional<Sensor> gpsSensor = vehicle.getSensorByType(BusEntry.SENSOR_GPS_COORDINATES);
+            Optional<AbstractSensor> gpsSensor = vehicle.getSensorByType(BusEntry.SENSOR_GPS_COORDINATES);
 
             if (gpsSensor.isPresent()) {
                 currentGps = (RealVector) (gpsSensor.get().getValue());
@@ -296,8 +297,8 @@ public class TaskAppVelocityControl extends NetworkTask {
 
             // Process new data
             double maxAllowedVelocityTotal = Double.MAX_VALUE;
-            double maxAllowedVelocityPriorityToRight = computePriorityToTheRightVelocity(statusInfoMap, trajectoryInfoMap, vehicle.getTrajectory(), currentVelocity, currentCompass, currentGps, vehicle.getLength(), vehicle.getWidth(), vehicle.getHeight(), getNetworkNode().getIpv6Address(), priorityInfoMap, priorityTakenSimulationTimeNs);
-            double maxAllowedVelocityCollisionAvoidance = computeCollisionAvoidanceVelocity(statusInfoMap, trajectoryInfoMap, vehicle.getTrajectory(), currentVelocity, currentCompass, currentGps, vehicle.getLength(), vehicle.getWidth(), vehicle.getHeight(), getNetworkNode().getIpv6Address());
+            double maxAllowedVelocityPriorityToRight = computePriorityToTheRightVelocity(statusInfoMap, trajectoryInfoMap, vehicle.getTrajectory(), currentVelocity, currentCompass, currentGps, physicalVehicle.getLength(), physicalVehicle.getWidth(), physicalVehicle.getHeight(), getNetworkNode().getIpv6Address(), priorityInfoMap, priorityTakenSimulationTimeNs);
+            double maxAllowedVelocityCollisionAvoidance = computeCollisionAvoidanceVelocity(statusInfoMap, trajectoryInfoMap, vehicle.getTrajectory(), currentVelocity, currentCompass, currentGps, physicalVehicle.getLength(), physicalVehicle.getWidth(), physicalVehicle.getHeight(), getNetworkNode().getIpv6Address());
             maxAllowedVelocityTotal = Math.min(maxAllowedVelocityTotal, Math.min(maxAllowedVelocityPriorityToRight, maxAllowedVelocityCollisionAvoidance));
 
             // Set new data in vehicle

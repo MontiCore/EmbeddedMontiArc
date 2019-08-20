@@ -207,6 +207,9 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 		calcMassPointPosition();
 		calcMassPointVelocity();
 	}
+	
+	@Override
+	public void instantiatePhysicalVehicle() {	}
 
 	/**
 	 * Function that returns a copy of the velocity vector of the center of mass

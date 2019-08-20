@@ -146,7 +146,7 @@ public class EEVehicle {
 	 *                     one of the lists of connected components of the two
 	 *                     buses.
 	 */
-    public EEVehicle(EESimulator eeSimulator, HashMap<Bus, List<EEComponent>> busStructure) {
+    public EEVehicle(EESimulator eeSimulator, Map<Bus, List<EEComponent>> busStructure) {
 
         //set EESimulator
         this.eeSimulator = eeSimulator;
@@ -164,12 +164,12 @@ public class EEVehicle {
                         break;
                     case SENSOR:
                         if (!sensorList.contains(comp)) {
-                            sensorList.add((AbstractSensor) comp);
+                            this.addSensor((AbstractSensor) comp);
                         }
                         break;
                     case ACTUATOR:
                         if (!actuatorList.contains(comp)) {
-                            actuatorList.add((VehicleActuator) comp);
+                            this.addActuator((VehicleActuator) comp);
                         }
                         break;
                     case BRIDGE:
@@ -189,6 +189,12 @@ public class EEVehicle {
 			}
 		}
 	}
+    
+    public void executeLoopIteration(Instant time) {
+    	this.notifySensors(time);
+    	this.eeSimulator.simulateNextTick(time);
+    	this.notifyActuator(time);
+    }
 
 	/**
 	 * function that notifies all sensors to send their actual data to the bus
@@ -240,7 +246,11 @@ public class EEVehicle {
 		}
 		return Optional.empty();
 	}
-
+	
+	/**
+	 * Add sensor to sensor list and register at target buses
+	 * @param sensor to be registered
+	 */
 	private void addSensor(AbstractSensor sensor) {
 		for (List<EEComponent> targets : sensor.getTargetsByMessageId().values()) {
 			for (EEComponent target : targets) {
@@ -253,6 +263,11 @@ public class EEVehicle {
 		this.sensorList.add(sensor);
 	}
 
+	
+	/**
+	 * Add actuator to actuator list and register at target buses
+	 * @param actuator to be registered
+	 */
 	private void addActuator(VehicleActuator actuator) {
 		for(List<EEComponent> targets : actuator.getTargetsByMessageId().values()) {
 			for (EEComponent target : targets) {
@@ -383,6 +398,17 @@ public class EEVehicle {
         
 		return eeVehicle;
 	}
+
+
+    
+    public Optional<AbstractSensor> getSensorByType(BusEntry type) {
+		Predicate<EEComponent> IsSensorType = new Predicate<EEComponent>() {
+			public boolean apply(EEComponent comp) {
+				return comp.getTargetsByMessageId().containsKey(type);
+			}
+		};
+    	return Optional.ofNullable(Iterables.find(this.sensorList, IsSensorType, null));
+    }
 
 }
 

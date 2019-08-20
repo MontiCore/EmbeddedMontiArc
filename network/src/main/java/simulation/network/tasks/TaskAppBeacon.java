@@ -25,6 +25,7 @@ import commons.controller.commons.Vertex;
 import commons.simulation.Sensor;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+import sensors.abstractsensors.AbstractSensor;
 import simulation.network.*;
 import simulation.util.Log;
 import simulation.vehicle.PhysicalVehicle;
@@ -131,14 +132,14 @@ public class TaskAppBeacon extends NetworkTask {
         // Convert to vehicle
         if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
             PhysicalVehicle physicalVehicle = (PhysicalVehicle)(networkNode.getPhysicalObject());
-            Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+            Vehicle vehicle = new Vehicle(physicalVehicle);
             List<Float> messageFloats = Collections.synchronizedList(new LinkedList<>());
             NetworkMessage message = new NetworkMessage();
 
             // Each third message is trajectory update message, otherwise regular status message
             if ((beaconCounter % 3L) == 0) {
                 // Read GPS sensor value
-                Optional<Sensor> gpsSensor = vehicle.getSensorByType(SENSOR_GPS_COORDINATES);
+                Optional<AbstractSensor> gpsSensor = vehicle.getSensorByType(SENSOR_GPS_COORDINATES);
                 RealVector gpsPosition = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
 
                 if (gpsSensor.isPresent()) {
@@ -187,7 +188,7 @@ public class TaskAppBeacon extends NetworkTask {
                 // Add sensor values to message
                 List<BusEntry> sensorEntries = Arrays.asList(SENSOR_GPS_COORDINATES, SENSOR_VELOCITY, SENSOR_COMPASS);
                 for (BusEntry sensorEntry : sensorEntries) {
-                    Optional<Sensor> sensor = vehicle.getSensorByType(sensorEntry);
+                    Optional<AbstractSensor> sensor = vehicle.getSensorByType(sensorEntry);
 
                     if (sensor.isPresent()) {
                         Object sensorValue = sensor.get().getValue();
@@ -215,9 +216,9 @@ public class TaskAppBeacon extends NetworkTask {
                 }
 
                 // Add vehicle values to message
-                messageFloats.add((float)(vehicle.getLength()));
-                messageFloats.add((float)(vehicle.getWidth()));
-                messageFloats.add((float)(vehicle.getHeight()));
+                messageFloats.add((float)(physicalVehicle.getLength()));
+                messageFloats.add((float)(physicalVehicle.getWidth()));
+                messageFloats.add((float)(physicalVehicle.getHeight()));
 
                 // Set message ports
                 message.setTransportPortSourceNumber(APP_BEACON_PORT_NUMBER_STATUS_MSG);

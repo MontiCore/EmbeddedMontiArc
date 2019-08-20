@@ -49,6 +49,12 @@
         </dependency>
 		
 
+		<!-- Vehicle has dependency to sensors -->
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>sensors</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
         <!-- Vehicle has dependency to environment -->
         <dependency>
