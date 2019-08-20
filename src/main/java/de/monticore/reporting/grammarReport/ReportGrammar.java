@@ -2,6 +2,7 @@ package de.monticore.reporting.grammarReport;
 
 import de.monticore.lang.monticar.helper.IndentPrinter;
 import de.monticore.reporting.Main;
+import de.monticore.reporting.tools.GitLabHelper;
 import de.monticore.reporting.tools.SearchFiles;
 import org.apache.commons.io.FileUtils;
 
@@ -26,24 +27,10 @@ public class ReportGrammar {
                     getAbsolutePath().length() + 1)
                     .replace(".mc4","").replace(".mc5", "")
                     .replace("\\","/");
-            String ideLink = "";
-            grammars.add(new GrammarInfo(file, name, ideLink));
+            grammars.add(new GrammarInfo(file, name));
         }
 
         printGrammars(grammars, context, outputFile, merge);
-    }
-
-    private String generateIDELink(File file, String zipName, File root){
-        String zipName_ = zipName.substring(0, zipName.lastIndexOf("."));
-        String urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName;;
-        String path = file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
-        String displayName = path.replace("/",".").replace("\\",".");
-
-
-        return ("\"<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
-                + urlToZip + "&openFile=/" + path + "'>" +
-                "<img border='0' alt='" + displayName + "' src='images/favicon.ico' class='onlineIDEImage'>" +
-                "</a>\"").replace("\\", "/");
     }
 
     private void printGrammars(List<GrammarInfo> grammars, Main.ReportContext context, String outputFile, boolean merge){
@@ -71,8 +58,7 @@ public class ReportGrammar {
     private String getPrintString(List<GrammarInfo> grammars, Main.ReportContext context, boolean merge){
         String[] names = {
                 "\"Root\"",
-                "\"Name\"",
-                "\"OnlineIDE\""
+                "\"Name\""
         };
         IndentPrinter ip = new IndentPrinter();
         if (!merge)
@@ -92,8 +78,7 @@ public class ReportGrammar {
             ip.println("{");
             ip.indent();
             ip.println(names[i++] + ": \"" + getComputedRootName(context.getProjectRoot(), grammar) + "\",");
-            ip.println(names[i++] + ": \"" + getGithubLink(grammar, context.getProjectRoot()) + "\",");
-            ip.println(names[i++] + ": " + grammar.ideLink);
+            ip.println(names[i++] + ": \"" + getGitLabLink(grammar, context.getProjectRoot()) + "\"");
             ip.unindent();
             ip.print("}");
         }
@@ -119,21 +104,14 @@ public class ReportGrammar {
         return rootName;
     }
 
-    private static String getGithubLink(GrammarInfo grammar, String root) {
-        String rootName = (new File(root)).getName();
-        String projectName = grammar.file.getAbsolutePath().substring(root.length() + 1).replace("\\","/");
-        projectName = projectName.substring(0,projectName.indexOf("/"));
-        String ghLink = "https://github.com/" + rootName + "/" + projectName
-                + "/blob/master/"
-                + grammar.file.getAbsolutePath().substring(
-                root.length() + projectName.length() + 1)
-                .replace("\\","/");
-        ghLink = ghLink.replace("\\","/");
+    private static String getGitLabLink(GrammarInfo grammar, String root) {
+        File project = new File(root + "/" + grammar.name.substring(0, grammar.name.indexOf("/")));
+        String ghLink = GitLabHelper.getHTMLTagOf(project, grammar.file);
 
         String htmlTag = "<a class='ghLink' href='" + ghLink + "' target='_blank' rel='noopener'>"
                 + computeName(grammar) + "</a>";
 
-        return htmlTag;
+        return ghLink.replace("\\","/");
     }
 
     private static String computeName(GrammarInfo grammar){
@@ -152,13 +130,11 @@ public class ReportGrammar {
 
     private class GrammarInfo {
         File file;
-        String ideLink;
         String name;
 
-        GrammarInfo(File file, String name, String ideLink){
+        GrammarInfo(File file, String name){
             this.file = file;
             this.name = name;
-            this.ideLink = ideLink;
         }
 
         public String toString() {

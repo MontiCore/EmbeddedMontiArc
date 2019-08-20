@@ -40,11 +40,6 @@ function createTable(data) {
         "aoColumns": [
             {"data": "Root", visible: false},
             {"data": null, visible: false},
-            {
-                "data": "OnlineIDE",
-                "className": "onlineIDE",
-                "orderable": false
-            },
             {"data": "Name", sort: "string", type: "alt-string"}
         ],
         "order": [[1, 'asc']]

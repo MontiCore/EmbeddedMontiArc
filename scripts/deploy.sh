@@ -23,7 +23,7 @@ git config user.email "malte.heithoff@rwth-aachen.de"
 # deploy reports
 git rm -rf public/report/data/* || exit 0
 mv ../report/data public/report/
-mv ../report/data* data/
+mv ../data/data* data/
 
 git add public/report/.
 git commit -m "Deploy reports to report branch: ${SHA}"

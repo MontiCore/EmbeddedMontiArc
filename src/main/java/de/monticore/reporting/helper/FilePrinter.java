@@ -1,4 +1,4 @@
-package de.monticore.reporting.cocoReport.helper;
+package de.monticore.reporting.helper;
 
 import de.monticore.reporting.tools.CustomPrinter;
 
@@ -7,15 +7,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FilePrinter {
-    private String filePath;
     private int indention = 0;
     private boolean firstPrint = true;
     private BufferedWriter out;
-    private FileWriter fstream;
     private int i;
 
     public FilePrinter(String filePath) {
-        this.filePath = filePath;
+        FileWriter fstream = null;
         try {
             fstream = new FileWriter(filePath, true);
         } catch (IOException e) {

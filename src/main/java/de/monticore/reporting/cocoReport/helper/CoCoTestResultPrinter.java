@@ -1,5 +1,6 @@
 package de.monticore.reporting.cocoReport.helper;
 
+import de.monticore.reporting.helper.FilePrinter;
 import de.monticore.reporting.order.ChildElement;
 import de.monticore.reporting.tools.CustomPrinter;
 import org.apache.commons.io.FileUtils;
