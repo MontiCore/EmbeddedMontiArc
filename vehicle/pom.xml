@@ -48,10 +48,10 @@
             <version>${revision}</version>
         </dependency>
 		
-		<!-- Vehicle has dependency to sensor -->
+		<!-- Vehicle has dependency to sensors -->
         <dependency>
             <groupId>montisim-simulation</groupId>
-            <artifactId>sensor</artifactId>
+            <artifactId>sensors</artifactId>
             <version>${revision}</version>
         </dependency>
 

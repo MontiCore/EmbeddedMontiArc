@@ -742,6 +742,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
 
         physicalVehicleInitialised = true;
     }
+    
+	@Override
+	public void instantiatePhysicalVehicle() {
+		this.vehicleDynamicsModel = new VehicleDynamicsModel();		
+	}
 
 	/**
      * Function that returns the force that is acting on the vehicle

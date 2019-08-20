@@ -131,7 +131,7 @@ public class TaskAppBeacon extends NetworkTask {
         // Convert to vehicle
         if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
             PhysicalVehicle physicalVehicle = (PhysicalVehicle)(networkNode.getPhysicalObject());
-            Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+            Vehicle vehicle = new Vehicle(physicalVehicle);
             List<Float> messageFloats = Collections.synchronizedList(new LinkedList<>());
             NetworkMessage message = new NetworkMessage();
 
@@ -215,9 +215,9 @@ public class TaskAppBeacon extends NetworkTask {
                 }
 
                 // Add vehicle values to message
-                messageFloats.add((float)(vehicle.getLength()));
-                messageFloats.add((float)(vehicle.getWidth()));
-                messageFloats.add((float)(vehicle.getHeight()));
+                messageFloats.add((float)(physicalVehicle.getLength()));
+                messageFloats.add((float)(physicalVehicle.getWidth()));
+                messageFloats.add((float)(physicalVehicle.getHeight()));
 
                 // Set message ports
                 message.setTransportPortSourceNumber(APP_BEACON_PORT_NUMBER_STATUS_MSG);

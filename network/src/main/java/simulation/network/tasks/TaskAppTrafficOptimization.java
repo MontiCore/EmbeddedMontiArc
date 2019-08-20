@@ -95,7 +95,7 @@ public class TaskAppTrafficOptimization extends NetworkTask {
                 // Continue processing only if this network node is a vehicle
                 if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
                     PhysicalVehicle physicalVehicle = (PhysicalVehicle) (networkNode.getPhysicalObject());
-                    Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+                    Vehicle vehicle = new Vehicle(physicalVehicle);
 
                     // Remove nodes which were not received for a long time
                     // Changes to key set or value set are reflected in the map as well, thus retainAll call removes outdated map entries

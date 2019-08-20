@@ -24,17 +24,37 @@ import commons.controller.commons.BusEntry;
 import commons.controller.commons.NavigationEntry;
 import commons.controller.commons.Surface;
 import commons.controller.commons.Vertex;
-import commons.controller.interfaces.Bus;
 import commons.controller.interfaces.FunctionBlockInterface;
 import commons.map.IAdjacency;
 import commons.map.IControllerNode;
 import commons.simulation.Sensor;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
+import sensors.CameraSensor;
+import sensors.CompassSensor;
+import sensors.DayNightSensor;
+import sensors.DistanceToLeftSensor;
+import sensors.DistanceToRightSensor;
+import sensors.LeftBackWheelDistanceToStreetSensor;
+import sensors.LeftFrontDistanceSensor;
+import sensors.LeftFrontWheelDistanceToStreetSensor;
+import sensors.LocationSensor;
+import sensors.ObstacleSensor;
+import sensors.RightBackWheelDistanceToStreetSensor;
+import sensors.RightFrontDistanceSensor;
+import sensors.RightFrontWheelDistanceToStreetSensor;
+import sensors.SpeedSensor;
+import sensors.SteeringAngleSensor;
+import sensors.StreetTypeSensor;
+import sensors.WeatherSensor;
+import sensors.abstractsensors.AbstractSensor;
+
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
-
+import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
+import simulation.bus.Bus;
+import simulation.bus.InstantBus;
 import simulation.environment.WorldModel;
 import simulation.environment.osm.IntersectionFinder;
 import simulation.util.Log;
@@ -126,21 +146,126 @@ public class Vehicle {
      * Constructor for a vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
      */
-    protected Vehicle(EEVehicle eeVehicle) {
+    public Vehicle(PhysicalVehicle physicalVehicle) {
         // Create the status logger
         this.statusLogger = new StatusLogger();
         // Create the navigation unit
         this.navigation = Optional.empty();
         
-        physicalVehicle = Optional.empty();
+        this.physicalVehicle = Optional.empty();
         //Set eeVehicle
-        this.eeVehicle = eeVehicle;
+        this.eeVehicle = createEEVehicle(physicalVehicle);
         // Initialise last navigation target with empty optional
         this.lastNavigationTarget = Optional.empty();
         // Initialise camera image with empty optional
         cameraImage = Optional.empty();
         // When created, maximum temporary allowed velocity is not limited
         this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
+    }
+    
+    private EEVehicle createEEVehicle(PhysicalVehicle pyhsicalVehicle) {
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		Bus bus = new InstantBus(eeSimulator);
+		Map<Bus, List<EEComponent>> componentsByBus = new HashMap<Bus, List<EEComponent>>();
+		List<EEComponent> components = new ArrayList<EEComponent>();
+		
+		//create all sensor
+		HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+		targetsByMessageId.put(SpeedSensor.getSensorType(), Collections.singletonList(bus));
+		components.add(new SpeedSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(LocationSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new LocationSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(SteeringAngleSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new SteeringAngleSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(DistanceToRightSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new DistanceToRightSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(DistanceToLeftSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new DistanceToLeftSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(WeatherSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new WeatherSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(CameraSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new CameraSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId, Collections.emptyList()));
+
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(CompassSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new CompassSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(LeftBackWheelDistanceToStreetSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new LeftBackWheelDistanceToStreetSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(LeftFrontWheelDistanceToStreetSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new LeftFrontWheelDistanceToStreetSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(RightFrontWheelDistanceToStreetSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new RightFrontWheelDistanceToStreetSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+     
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(RightBackWheelDistanceToStreetSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new RightBackWheelDistanceToStreetSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+    
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(StreetTypeSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new StreetTypeSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(DayNightSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new DayNightSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(LeftFrontDistanceSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new LeftFrontDistanceSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(RightFrontDistanceSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new RightFrontDistanceSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(ObstacleSensor.getSensorType(), Collections.singletonList(bus));
+        components.add(new ObstacleSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
+        
+        
+        //create all actuators
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(BusEntry.ACTUATOR_ENGINE_CURRENT, Collections.singletonList(bus));
+        components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR, Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_ENGINE), targetsByMessageId));
+        // Create the brakes
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(BusEntry.ACTUATOR_BRAKE_CURRENT, Collections.singletonList(bus));
+        components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
+        components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
+        components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
+        components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
+        // Create the steering
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(BusEntry.ACTUATOR_STEERING_CURRENT, Collections.singletonList(bus));
+        components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MIN, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_STEERING), targetsByMessageId));
+
+        componentsByBus.put(bus, components);
+        return new EEVehicle(eeSimulator, componentsByBus);
+    }
+    
+    public Optional<Sensor> getSensorByType(BusEntry type){
+    	return this.eeVehicle.getSensorByType(type);
+    }
+    
+    public void executeLoopIteration(Instant time) {
+    	//update physical vehicle?
+    	this.eeVehicle.executeLoopIteration(time);
     }
     
 	public EEVehicle getEEVehicle() {
@@ -249,16 +374,13 @@ public class Vehicle {
      * @return Current trajectory of the vehicle, if not available return empty list
      */
     public List<Vertex> getTrajectory() {
-        // Check if trajectory is available and return copy if valid
-        if (controllerBus.isPresent() && (controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) != null)) {
-                ArrayList<Vertex> originalList = (ArrayList<Vertex>)(controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
-                return new ArrayList<>(originalList);
-        }
-
-        // Fallback to empty list
-        return new ArrayList<>();
+		throw new UnsupportedOperationException();
     }
-
+    
+	public void navigateTo(IControllerNode iControllerNode, LinkedList linkedList) {
+		throw new UnsupportedOperationException();
+	}
+ 
     /**
      * Get nearest position that is located on the ordered trajectory
      *
@@ -368,26 +490,26 @@ public class Vehicle {
         return new AbstractMap.SimpleEntry<>(nextVertex, nearestPosOnTrajectory);
     }
 
-    /**
-     * Internal function that is called after an trajectory update was performed
-     */
-    private void afterTrajectoryUpdate() {
-        // Get current trajectory
-        List<Vertex> trajectory = getTrajectory();
-        if (trajectory.isEmpty()) {
-            return;
-        }
-
-        // Add intersection node information to each vertex in the trajectory
-        Set<OsmNode> intersectionNodes = IntersectionFinder.getInstance().getIntersections();
-        for (Vertex vertex : trajectory) {
-            for (OsmNode intersectionNode : intersectionNodes) {
-                if (vertex.getOsmId() == intersectionNode.getId()) {
-                    vertex.setIntersectionNode(true);
-                }
-            }
-        }
-    }
+//    /**
+//     * Internal function that is called after an trajectory update was performed
+//     */
+//    private void afterTrajectoryUpdate() {
+//        // Get current trajectory
+//        List<Vertex> trajectory = getTrajectory();
+//        if (trajectory.isEmpty()) {
+//            return;
+//        }
+//
+//        // Add intersection node information to each vertex in the trajectory
+//        Set<OsmNode> intersectionNodes = IntersectionFinder.getInstance().getIntersections();
+//        for (Vertex vertex : trajectory) {
+//            for (OsmNode intersectionNode : intersectionNodes) {
+//                if (vertex.getOsmId() == intersectionNode.getId()) {
+//                    vertex.setIntersectionNode(true);
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Overwrite toString() to get a nice output for vehicles

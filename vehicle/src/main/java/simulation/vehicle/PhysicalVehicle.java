@@ -105,6 +105,8 @@ public abstract class PhysicalVehicle implements IPhysicalVehicle {
         collision = false;
         // When created, the physical vehicle is not initialised
         physicalVehicleInitialised = false;
+        //Instantiate PhysicalVehicle
+        this.instantiatePhysicalVehicle();
         // Set width
         this.width = VEHICLE_DEFAULT_WIDTH;
         // Set length
@@ -357,6 +359,12 @@ public abstract class PhysicalVehicle implements IPhysicalVehicle {
         	throw new IllegalStateException("EEVehicle does not have the necessary actuators for the pyhiscal vehicle");
         }
 	}
+	
+	/**
+	 * Function that instantiates the parts of the vehicle that are dependent on the implementation
+	 * but need to be present before values can be set. (e.g. VehicleDynamicsModel)
+	 */
+	public abstract void instantiatePhysicalVehicle();
 	
     /**
      * Function that initialises the physical components and parameters
