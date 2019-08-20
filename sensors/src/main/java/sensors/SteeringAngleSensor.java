@@ -21,13 +21,10 @@
 package sensors;
 
 import commons.controller.commons.BusEntry;
+import commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
-import simulation.vehicle.PhysicalVehicle;
-import simulation.vehicle.Vehicle;
-import simulation.vehicle.VehicleActuator;
-import simulation.vehicle.VehicleActuatorType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +36,7 @@ public class SteeringAngleSensor extends AbstractSensor {
 
     private Double value;
 
-    public SteeringAngleSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+    public SteeringAngleSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                                HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
     }
@@ -56,16 +53,17 @@ public class SteeringAngleSensor extends AbstractSensor {
 
     @Override
     protected void calculateValue() {
-        Vehicle vehicle = getPhysicalVehicle().getSimulationVehicle();
-        VehicleActuator steering = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
-        double tempValue = steering.getActuatorValueCurrent();
         //NormalDistribution normalDistribution = new NormalDistribution(tempValue, .001);
         //tempValue = DoubleMath.mean(normalDistribution.sample(10));
-        this.value = new Double(tempValue);
+        this.value = this.getPhysicalVehicle().getSteeringAngle();
     }
 
     @Override
     public BusEntry getType() {
+        return BusEntry.SENSOR_STEERING;
+    }
+    
+    public static BusEntry getSensorType() {
         return BusEntry.SENSOR_STEERING;
     }
 

@@ -243,7 +243,7 @@ public abstract class NetworkSettings {
     /**
      * Set maximum task start time
      *
-     * @param maxTaskStartTimeNs New maximum task start time
+     * @param maxTaskStartTime New maximum task start time
      */
     protected void setMaxTaskStartTime(Instant maxTaskStartTime) {
         this.maxTaskStartTime = maxTaskStartTime;

@@ -21,16 +21,14 @@
 package sensors;
 
 import commons.controller.commons.BusEntry;
+import commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.EESimulator.EEComponent;
-import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
-import simulation.vehicle.PhysicalVehicle;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class CompassSensor extends AbstractSensor {
 
     private Double value;
 
-    public CompassSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+    public CompassSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId);
     }
@@ -50,6 +48,10 @@ public class CompassSensor extends AbstractSensor {
     public BusEntry getType() {
         return BusEntry.SENSOR_COMPASS;
     }
+    
+	public static BusEntry getSensorType() {
+        return BusEntry.SENSOR_COMPASS;
+	}
 
     @Override
     public Object getValue() {
@@ -84,6 +86,8 @@ public class CompassSensor extends AbstractSensor {
         }
         value = angle;
     }
+
+
 
 
     }

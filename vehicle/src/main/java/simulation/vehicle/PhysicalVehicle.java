@@ -30,11 +30,41 @@ import simulation.util.Log;
 import static simulation.vehicle.VehicleActuatorType.*;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Class that represents all physical properties of a vehicle and performs physics computations
  */
-public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhysicalVehicle {
+public abstract class PhysicalVehicle implements IPhysicalVehicle {
+	
+    /** Length of the vehicle in meters */
+	protected static final double VEHICLE_DEFAULT_LENGTH = 4.236423828125;
+
+    /** Width of the vehicle in meters */
+    protected static final double VEHICLE_DEFAULT_WIDTH = 2.02712567705637776;
+
+    /** Height of the vehicle in meters */
+    protected static final double VEHICLE_DEFAULT_HEIGHT = 1.19524474896355328;
+
+    /** Radius of the wheels in meters */
+    protected static final double VEHICLE_DEFAULT_WHEEL_RADIUS = 0.3334;
+
+    /** Mass of the vehicle */
+    protected static final double VEHICLE_DEFAULT_MASS = 1800.0;
+
+    /** Distance between the left and the right wheels in meters */
+    protected static final double VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_FRONT = 1.62025;
+
+    /**Track width rear wheels in meters */
+    protected static final double VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_REAR = 1.505;
+
+    /** Distance between front and back wheels in meters */
+    protected static final double VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT = 1.379;
+
+    /** Distance between back wheels and center of mass in meters */
+    protected static final double VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK = 1.542;
 
     /** Variables for the IPhysicalVehicle interface */
     /** Type of the physical object */
@@ -49,14 +79,17 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /** Unique ID */
     private final long uniqueId = IdGenerator.getSharedInstance().generateUniqueId();
 
-
-    /** The vehicle */
-    protected final Vehicle simulationVehicle;
-
+    /** Dimensions of vehicle in meters */
+    protected double width, length, height;
 
     /** Internal flags*/
     /** Flag whether the vehicle is fully initialised or not */
     protected boolean physicalVehicleInitialised;
+    
+    protected VehicleActuator steering;
+    
+    /** The vehicle that this physicalVehicle belongs to */
+    private Vehicle vehicle;
 
 
     /**
@@ -70,10 +103,25 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         error = false;
         // Set collision flag
         collision = false;
-        // Create default simulation vehicle
-        this.simulationVehicle = new Vehicle(this);
         // When created, the physical vehicle is not initialised
         physicalVehicleInitialised = false;
+        // Set width
+        this.width = VEHICLE_DEFAULT_WIDTH;
+        // Set length
+        this.length = VEHICLE_DEFAULT_LENGTH;
+        // Set height
+        this.height = VEHICLE_DEFAULT_HEIGHT;
+        // Set front mass
+        this.setMass(VEHICLE_DEFAULT_MASS);
+        // Set wheel radius
+        this.setWheelRadius(VEHICLE_DEFAULT_WHEEL_RADIUS);
+        // Set track
+        this.setWheelDistLeftRightFrontSide(VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_FRONT);
+        this.setWheelDistLeftRightBackSide(VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_REAR);
+        // Set wheel base
+        this.setWheelDistToFront(VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT);
+        this.setWheelDistToBack(VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK);
+		 
     }
 
     /**
@@ -83,7 +131,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
 
     @Override
     public double getWidth(){
-        return simulationVehicle.getWidth();
+        return width;
     }
 
     /**
@@ -92,7 +140,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     @Override
     public void setWidth(double width){
-        simulationVehicle.setWidth(width);
+        this.width = width;
     }
 
     /**
@@ -101,7 +149,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     @Override
     public double getLength(){
-        return simulationVehicle.getLength();
+        return this.length;
     }
 
     /**
@@ -110,7 +158,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     @Override
     public void setLength(double length){
-        simulationVehicle.setLength(length);
+        this.length = length;
     }
 
     /**
@@ -119,7 +167,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     @Override
     public double getHeight(){
-        return simulationVehicle.getHeight();
+        return this.height;
     }
 
     /**
@@ -131,7 +179,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         if(physicalVehicleInitialised) {
             throw new IllegalStateException("Height can only be set before initialisation.");
         }
-        simulationVehicle.setHeight(height);
+        this.height = height;
     }
 
     /**
@@ -188,14 +236,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         return this.uniqueId;
     }
 
-    /**
-     * Function that returns the wheel radius of the physical vehicle
-     * @return Wheel radius of the physical vehicle
-     */
-    @Override
-    public double getWheelRadius(){
-        return simulationVehicle.getWheelRadius();
-    }
 
     /**
      * Function that returns the steering angle of the physical vehicle
@@ -203,58 +243,121 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     @Override
     public double getSteeringAngle(){
-        return simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
+        return this.steering.getActuatorValueCurrent();
     }
-
+    
+    /**
+     * Function that returns if the physicalVehicle is initialised
+     * @return Value of physicalVehicleInitialised
+     */
+    public boolean getPhysicalVehicleInitialised() {
+        return physicalVehicleInitialised;
+    }
+    
+    /**
+     * Function that returns the vehicle this PhyiscalVehicle belongs to
+     * @return Reference to the vehicle this PhysicalVehicle belongs to
+     */
+    public Vehicle getVehicle() {
+    	return this.vehicle;
+    }
+    
+    /**
+     * Function that sets the vehicle this PhyiscalVehicle belongs to
+     * @param Reference to the vehicle this PhysicalVehicle 
+     */
+    protected void setVehicle(Vehicle vehicle) {
+    	if(vehicle != null) {
+			throw new IllegalStateException("Vehicle can be set once.");
+    	}
+    	if(physicalVehicleInitialised) {
+			throw new IllegalStateException("Vehicle can only be set before initialisation.");
+    	}
+		this.vehicle = vehicle;
+    }
+    
+	protected List<VehicleActuator> initializeActuators(VehicleActuatorType[] actuatorTypes) {
+		List<VehicleActuator> actuators = new ArrayList<VehicleActuator>(actuatorTypes.length);
+		for(VehicleActuatorType type : actuatorTypes) {
+	        Optional<VehicleActuator> actuator = vehicle.getEEVehicle().getActuator(type);
+			if(actuator.isPresent()) {
+	        	actuators.add(actuator.get());
+	        }
+		}
+		if(actuatorTypes.length > actuators.size()) {
+			throw new IllegalStateException("EEVehicle does not contain all necessary actuators");
+		}
+		return actuators;
+	}
+    
+//    /**
+//     * Function that requests the called object to update its state for given time difference
+//     * @param timeDiff Difference in time
+//     */
+//    @Override
+//    public void executeLoopIteration(Duration timeDiff) {
+//        if (this.error) {
+//            Log.finest("PhysicalVehicle: Vehicle collided or had a computational error and will therefore not move anymore, PhysicalVehicle: " + this);
+//            return;
+//        }
+//        Log.finest("PhysicalVehicle: executeLoopIteration - timeDiff: " + timeDiff + ", PhysicalVehicle at start: " + this);
+//
+//        final double deltaT = (timeDiff.toMillis() / 1000.0);
+//
+//        // Exchange data with controller
+//        simulationVehicle.exchangeDataWithController(deltaT);
+//
+//        // Update vehicle actuators
+//        if (!this.collision) {
+//            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).update(deltaT);
+//            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).update(deltaT);
+//            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).update(deltaT);
+//            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).update(deltaT);
+//            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).update(deltaT);
+//        }else{
+//            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueCurrent(0.0);
+//            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).setActuatorValueCurrent(0.0);
+//            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).setActuatorValueCurrent(0.0);
+//            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).setActuatorValueCurrent(0.0);
+//            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).setActuatorValueCurrent(0.0);
+//        }
+//
+//        simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).update(deltaT);
+//        this.collision = false;
+//
+//        Log.finest("PhysicalVehicle: executeLoopIteration - timeDiff: " + timeDiff +  ", PhysicalVehicle at end: " + this);
+//    }
+	
+    /**
+* Function that returns the current vehicle actuators
+*
+* @param type Type of the vehicle actuator to get
+* @return Current vehicle actuator object for the type, otherwise null
+*/
+	public VehicleActuator getVehicleActuator(VehicleActuatorType type) {
+		if(type == VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING) {
+			return steering;
+		}
+		return null;
+	}
 
     /**
-     * Function that requests the called object to update its state for given time difference
-     * @param timeDiff Difference in time
+     * Function that initialises the actuators
+     * Should only be called by vehicle
      */
-    @Override
-    public void executeLoopIteration(Duration timeDiff) {
-        if (this.error) {
-            Log.finest("PhysicalVehicle: Vehicle collided or had a computational error and will therefore not move anymore, PhysicalVehicle: " + this);
-            return;
+	protected void initializeActuators() {
+		if(steering != null) {
+            throw new IllegalStateException("Actuators can only be initialised once.");
+		}
+		Optional<VehicleActuator> steering = vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
+        if(steering.isPresent()) {
+        	this.steering = steering.get();
         }
-        Log.finest("PhysicalVehicle: executeLoopIteration - timeDiff: " + timeDiff + ", PhysicalVehicle at start: " + this);
-
-        simulationVehicle.updateAllSensors();
-
-        final double deltaT = (timeDiff.toMillis() / 1000.0);
-
-        // Exchange data with controller
-        simulationVehicle.exchangeDataWithController(deltaT);
-
-        // Update vehicle actuators
-        if (!this.collision) {
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).update(deltaT);
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).update(deltaT);
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).update(deltaT);
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).update(deltaT);
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).update(deltaT);
-        }else{
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueCurrent(0.0);
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).setActuatorValueCurrent(0.0);
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).setActuatorValueCurrent(0.0);
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).setActuatorValueCurrent(0.0);
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).setActuatorValueCurrent(0.0);
+        else {
+        	throw new IllegalStateException("EEVehicle does not have the necessary actuators for the pyhiscal vehicle");
         }
-
-        simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).update(deltaT);
-        this.collision = false;
-
-        Log.finest("PhysicalVehicle: executeLoopIteration - timeDiff: " + timeDiff +  ", PhysicalVehicle at end: " + this);
-    }
-
-    /**
-     * Function that returns the current simulation vehicle
-     * @return Current simulation vehicle object
-     */
-    public Vehicle getSimulationVehicle() {
-        return simulationVehicle;
-    }
-
+	}
+	
     /**
      * Function that initialises the physical components and parameters
      * Should only be called by physical vehicle builder
@@ -272,13 +375,91 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      * @return Torque acting on the vehicle
      */
     public abstract RealVector getTorque();
+    
+    /**
+     * Function that returns the mass of the vehicle
+     *
+     * @return Mass of the vehicle
+     */
+     public abstract double getMass();
 
     /**
-     * Function that returns if the physicalVehicle is initialised
-     * @return Value of physicalVehicleInitialised
+     * Function that sets the mass of the vehicle
+     *
+     * @param mass New mass of the vehicle
      */
-    public boolean getPhysicalVehicleInitialised() {
-        return physicalVehicleInitialised;
-    }
+    public abstract void setMass(double mass);
+
+    /**
+     * Function that returns the wheel radius of the vehicle
+     *
+     * @return Wheel radius of the vehicle
+     */
+    public abstract double getWheelRadius();
+
+    /**
+     * Function that sets the wheel radius of the vehicle
+     *
+     * @param wheelRadius New wheel radius of the vehicle
+     */
+    public abstract void setWheelRadius(double wheelRadius);
+
+    /**
+     * Function that returns the distance between left and right wheels of the front axel of the vehicle
+     *
+     * @return Distance between left and right wheels of the front axel of the vehicle
+     */
+    public abstract double getWheelDistLeftRightFrontSide();
+
+    /**
+     * Function that sets the distance between left and right wheels of the front axel of the vehicle
+     *
+     * @param wheelDistLeftRightFrontSide New distance between left and right wheels of the front axel of the vehicle
+     */
+    public abstract void setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide);
+
+    /**
+     * Function that returns the distance between left and right wheels of the back axel of the vehicle
+     *
+     * @return Distance between left and right wheels of the back axel of the vehicle
+     */
+    public abstract double getWheelDistLeftRightBackSide();
+
+    /**
+     * Function that sets the distance between left and right wheels of the back axel of the vehicle
+     *
+     * @param wheelDistLeftRightBackSide New distance between left and right wheels of the back axel of the vehicle
+     */
+    public abstract void setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide);
+
+    /**
+     * Function that returns the distance between the center of mass and the front axel of the vehicle
+     *
+     * @return Distance between center of mass and front axel of the vehicle
+     */
+    public abstract double getWheelDistToFront();
+
+    /**
+     * Function that sets the distance between the center of mass and the front axel of the vehicle
+     *
+     * @param wheelDistToFront New distance between center of mass and front axel of the vehicle
+     */
+    public abstract void setWheelDistToFront(double wheelDistToFront);
+
+    /**
+     * Function that returns the distance between the center of mass and the back axel of the vehicle
+     *
+     * @return Distance between center of mass and back axel of the vehicle
+     */
+    public abstract double getWheelDistToBack();
+
+    /**
+     * Function that sets the distance between the center of mass and the back axel of the vehicle
+     *
+     * @param wheelDistToBack New distance between center of mass and back axel of the vehicle
+     */
+    public abstract void setWheelDistToBack(double wheelDistToBack);
+
+
 
 }

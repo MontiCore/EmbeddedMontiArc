@@ -23,13 +23,14 @@ package sensors;
 import com.jhlabs.image.MotionBlurFilter;
 import com.jhlabs.image.PerspectiveFilter;
 import commons.controller.commons.BusEntry;
+import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObject;
+import commons.simulation.PhysicalObjectType;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.EEComponent;
-import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
@@ -37,8 +38,7 @@ import simulation.environment.object.House;
 import simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
-import simulation.vehicle.PhysicalVehicle;
-import simulation.simulator.*;
+
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -63,21 +63,43 @@ public class CameraSensor extends AbstractSensor {
     private double baseline = 0.02; // [m]
 
     //private static World world;
-
+    private final List<IPhysicalVehicle> otherVehicles; 
+    
     public Optional<Image> getOriginalImage() {
         return originalImage;
     }
 
-    public CameraSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
-                        HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
-
-        super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId);
+    /**
+     * 
+     * @param phyiscalVehicle
+     * @param simulator
+     * @param subscribedMessages
+     * @param targetsByMessageId
+     * @param simulationObjects the objects in the simulation
+     */
+    public CameraSensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                        HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<PhysicalObject> simulationObjects) {
+        super(phyiscalVehicle,simulator, subscribedMessages, targetsByMessageId);
+        otherVehicles = new ArrayList<IPhysicalVehicle>();
+        for (PhysicalObject object : simulationObjects) {
+            if(object.getPhysicalObjectType()==PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR){
+            	IPhysicalVehicle otherVehicle = (IPhysicalVehicle)object;
+            	if(otherVehicle.getId() != this.getPhysicalVehicle().getId()) {
+            		otherVehicles.add(otherVehicle);
+            	}
+            }
+        }
     }
 
     @Override
     public BusEntry getType() {
         return BusEntry.SENSOR_CAMERA;
     }
+    
+	public static BusEntry getSensorType() {
+        return BusEntry.SENSOR_CAMERA;
+
+	}
 
     @Override
     public int getDataLength() {
@@ -128,9 +150,6 @@ public class CameraSensor extends AbstractSensor {
 
         // create image depending on other sensors (to be implemented)
         try {
-            // get the current used vehicle
-            PhysicalVehicle vehicle = this.getPhysicalVehicle();
-
             // get objects in the environment
             World world = WorldModel.getInstance();
             Collection<House> houses = ((EnvironmentContainer2D)world.getContainer()).getHouses();
@@ -145,7 +164,7 @@ public class CameraSensor extends AbstractSensor {
                     }
                 }
             }
-            Collection<EnvNode> intersection1 = intersection;
+            //Collection<EnvNode> intersection1 = intersection;
             double range = 100;
 
             // collection of buildings which are in the detecting range of the camera sensor
@@ -158,9 +177,8 @@ public class CameraSensor extends AbstractSensor {
 
             // TODO: to get all other vehicles in the simulation
 
-            Simulator simulator = Simulator.getSharedInstance();
-            List<PhysicalObject> OtherVehicle = simulator.getPhysicalObjects();
             // detect all buildings in the detecting range of the camera sensor
+            IPhysicalVehicle vehicle = this.getPhysicalVehicle();
             for (House house : houses){
                 double distance = vehicle.getGeometryPosition().getDistance(house.getGeometryPosition());
                 if (distance < range){
@@ -238,17 +256,14 @@ public class CameraSensor extends AbstractSensor {
             }
 
             // TODO: draw vehicles
-            for (PhysicalObject car : OtherVehicle) {
-                if(car instanceof PhysicalVehicle){
-                    PhysicalVehicle vehicle1 = (PhysicalVehicle) car;
-                    double distFrontLeftToCar = vehicle.getFrontLeftWheelGeometryPosition().getDistance(vehicle1.getGeometryPosition());
-                    double distFrontRightToCar = vehicle.getFrontRightWheelGeometryPosition().getDistance(vehicle1.getGeometryPosition());
+            for (IPhysicalVehicle otherVehicle : otherVehicles) {
+                    double distFrontLeftToCar = vehicle.getFrontLeftWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
+                    //double distFrontRightToCar = vehicle.getFrontRightWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
 
-                    double distBackLeftToCar = vehicle.getBackLeftWheelGeometryPosition().getDistance(vehicle1.getGeometryPosition());
-                    double distBackRightToCar = vehicle.getBackRightWheelGeometryPosition().getDistance(vehicle1.getGeometryPosition());
-                    double distToCar = vehicle.getGeometryPosition().getDistance(vehicle1.getGeometryPosition());
+                    double distBackLeftToCar = vehicle.getBackLeftWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
+                    //double distBackRightToCar = vehicle.getBackRightWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
+                    double distToCar = vehicle.getGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
                     drawer.drawVehicle( distToCar,  distFrontLeftToCar, distBackLeftToCar);
-                }
             }
 
 
@@ -416,4 +431,6 @@ public class CameraSensor extends AbstractSensor {
         return filteredImage;
 
     }
+
+
 }

@@ -108,7 +108,7 @@ public class EEVehicleTest {
 
         System.out.println("Test create EEVehicle by using JSON File");
         //store and load from JSON file
-        File file = new File("C:/Users/Freddy/Desktop/SWP");
+        File file = new File("C:/Users/Freddy/Desktop/SWP/EEVehicle Testordner/test.txt");
         eeVehicle.storeInFile(file, eeVehicle);
 
         EEVehicle eeVehicleJSON = new EEVehicle(simulator, file);

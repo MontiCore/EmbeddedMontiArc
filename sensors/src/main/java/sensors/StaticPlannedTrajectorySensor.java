@@ -23,6 +23,8 @@ package sensors;
 import commons.controller.commons.BusEntry;
 import commons.simulation.Sensor;
 import org.apache.commons.lang3.Validate;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,7 +58,7 @@ public abstract class StaticPlannedTrajectorySensor implements Sensor {
     }
 
     @Override
-    public void update() {
+    public void update(Instant actualTime) {
     }
 
     @Override

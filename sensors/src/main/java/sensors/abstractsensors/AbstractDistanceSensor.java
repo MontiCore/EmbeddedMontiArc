@@ -22,11 +22,8 @@ package sensors.abstractsensors;
 
 import commons.controller.commons.BusEntry;
 import simulation.EESimulator.EEComponent;
-import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
 import commons.simulation.IPhysicalVehicle;
-import simulation.vehicle.PhysicalVehicle;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,19 +32,22 @@ import java.util.List;
  */
 public abstract class AbstractDistanceSensor extends AbstractSensor {
     private Double value;
+   
 
-    public AbstractDistanceSensor(PhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+    public AbstractDistanceSensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                                   HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
-        super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId);
+        super(phyiscalVehicle, simulator, subscribedMessages, targetsByMessageId);
     }
 
 
 	@Override
     protected void calculateValue() {
-        this.value = calculateDistance(getPhysicalVehicle());
+        this.value = calculateDistance(this.getPhysicalVehicle());
     }
+	
 
-    protected abstract Double calculateDistance(IPhysicalVehicle v);
+
+    protected abstract Double calculateDistance(IPhysicalVehicle phyiscalVehicle);
 
     @Override
     public Double getValue() {

@@ -28,4 +28,5 @@ public class StaticPlannedTrajectoryXSensor extends StaticPlannedTrajectorySenso
     public StaticPlannedTrajectoryXSensor(List<Double> trajectoryX) {
         super(BusEntry.PLANNED_TRAJECTORY_X, trajectoryX);
     }
+
 }

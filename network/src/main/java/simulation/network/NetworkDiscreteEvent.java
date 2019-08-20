@@ -43,7 +43,7 @@ public class NetworkDiscreteEvent extends DiscreteEvent {
 
     /**
      * Constructor for a network discrete event
-     * @param eventTimeNs Time of the event measured in nanoseconds
+     * @param eventTime Time of the event measured in nanoseconds
      * @param eventId Id of the event
      * @param networkNode Network node related to this event
      * @param eventMessage Message of the event
