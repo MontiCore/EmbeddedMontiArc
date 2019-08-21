@@ -166,6 +166,7 @@ if ( MSVC )
   list(APPEND HARDWARE_EMU_LIBRARIES
     Dbghelp
     x86_64-softmmu
+    Shlwapi
   )
 endif()
 
