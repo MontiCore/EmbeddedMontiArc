@@ -51,11 +51,9 @@ linux_build:
   image: maven:3-jdk-8
   before_script:
   - apt update
-  - dpkg --list | grep compiler
-  - apt-cache search Compiler | grep "g++"
   - apt --assume-yes install make
   - apt --assume-yes install python
-  - apt --assume-yes install g++-8
+  - apt --assume-yes install g++
   - apt --assume-yes install cmake
   - g++ --version
   

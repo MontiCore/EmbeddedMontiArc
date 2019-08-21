@@ -244,6 +244,22 @@ Library::~Library() {
 
 #endif
 
+FS::File::File(std::string folder, std::string name){
+    this->path = append(folder, name);
+    int dot_pos = -1;
+    for (int i = name.size()-1; i >= 0; --i){
+        if (name[i] == '.') {
+            dot_pos = i;
+            break;
+        }
+    }
+    if (dot_pos != -1){
+        this->name = name.substr(0, dot_pos);
+        this->extension = name.substr(dot_pos);
+    } else {
+        this->name = name;
+    }
+}
 
 #if defined _WIN32 || defined _WIN64
 std::string FS::append(std::string path, std::string file){
@@ -253,7 +269,7 @@ std::string FS::append(std::string path, std::string file){
 
 std::string FS::current_path(){
     TCHAR buff[MAX_PATH];
-    if (GetCurrentDirectory(sizeof(buff), buff) != 0){
+    if (GetCurrentDirectory(sizeof(buff), buff) != 0)
         return std::string(buff);
     std::cerr << "GetCurrentDirectory() error" << std::endl;
     return "";
@@ -261,9 +277,8 @@ std::string FS::current_path(){
 
 std::string FS::canonical(const std::string &path){
     TCHAR buff[MAX_PATH];
-    if (PathCanonicalizeA(buff, path.c_str())){
+    if (PathCanonicalizeA(buff, path.c_str()))
         return std::string(buff);
-    }
     std::cerr << "PathCanonicalizeA() error" << std::endl;
     return "";
 }

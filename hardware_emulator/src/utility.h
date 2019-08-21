@@ -657,30 +657,15 @@ namespace ConsoleColor {
     Replacement of some FileSystem functionnalities for compatibility.
 */
 namespace FS {
-    std::string append(std::string path, std::string file);
     struct File {
         std::string path;
         std::string name;
         std::string extension;
-        File(std::string folder, std::string name){
-            this->path = append(folder, name);
-            int dot_pos = -1;
-            for (int i = name.size()-1; i >= 0; --i){
-                if (name[i] == '.'){
-                    dot_pos = i;
-                    break;
-                }
-            }
-            if (dot_pos != -1){
-                this->name = name.substr(0, dot_pos);
-                this->extension = name.substr(dot_pos);
-            } else {
-                this->name = name;
-            }
-        }
+        File(std::string folder, std::string name);
     };
 
 
+    std::string append(std::string path, std::string file);
     std::string current_path();
     std::string canonical(const std::string &path);
     std::list<File> directory_files( std::string folder );
