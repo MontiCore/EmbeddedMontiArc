@@ -9,6 +9,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.lang.monticar.sol.grammars.language._ast.ASTLanguageCompilationUnit;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable.LanguageSymbolTable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,12 +18,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -33,6 +33,8 @@ public class LDGeneratorPhaseTests {
     @Mock NotificationService notifications;
     @Mock LanguageClientConfiguration configuration;
     @Mock LDExtractor extractor;
+    @Mock LanguageSymbolTable symbolTable;
+
     @InjectMocks LDGeneratorPhase phase;
 
     @Test
@@ -46,13 +48,12 @@ public class LDGeneratorPhaseTests {
     }
 
     @Test
-    void testGenerate() throws Exception { // TODO: Write better test.
+    void testGenerate() { // TODO: Write better test.
         GeneratorEngine engine = mock(GeneratorEngine.class);
-        File model = Paths.get("src/test/resources/LDGeneratorPhase/EmbeddedMontiArcMath.ld").toFile();
+        ASTLanguageCompilationUnit node = mock(ASTLanguageCompilationUnit.class);
 
-        when(configuration.getGrammarName()).thenReturn("EmbeddedMontiArcMath");
-        when(configuration.getModels()).thenReturn(Collections.singletonList(model));
-        doNothing().when(notifications).info(anyString(), any());
+        when(configuration.getGrammarName()).thenReturn("EmbeddedMontiArc");
+        when(symbolTable.getRootNode()).thenReturn(Optional.of(node));
 
         phase.generate(engine);
         verify(engine).generate(anyString(), any(Path.class), any(ASTLanguageCompilationUnit.class), any(LDExtractor.class));

@@ -7,23 +7,8 @@ package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 
 public class ValidateEnvNameCoCoTests extends AbstractCoCoTests {
     @Override
-    protected EnvironmentCoCo getContextCondition() {
-        return new ValidateEnvNameCoCo();
-    }
-
-    @Override
-    protected String getExpectedErrorCode() {
-        return "ENV0004";
-    }
-
-    @Override
-    protected String getExpectedErrorMessage() {
-        return "ENV0004 Environmental Variable 'bad' has not the right name format.";
-    }
-
-    @Override
-    protected Object[] getMessageParameters() {
-        return new Object[] { "bad" };
+    protected Class<? extends EnvironmentCoCo> getContextCondition() {
+        return ValidateEnvNameCoCo.class;
     }
 
     @Override

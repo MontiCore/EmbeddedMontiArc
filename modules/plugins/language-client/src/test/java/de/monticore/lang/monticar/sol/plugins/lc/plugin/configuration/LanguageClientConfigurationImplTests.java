@@ -19,7 +19,6 @@ import org.mockito.quality.Strictness;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,6 +34,7 @@ public class LanguageClientConfigurationImplTests {
     LanguageClientConfigurationImpl configuration;
     File expectedFile = Paths.get("src/test/resources/LanguageClientConfigurationImpl/EmbeddedMontiArcMathAntlr.tokens").toFile();
     File resourcesPath = Paths.get("src/test/resources/LanguageClientConfigurationImpl").toFile();
+    List<String> excludedKeywords = Arrays.asList("oo", "script");
 
     @BeforeEach
     void before() {
@@ -48,8 +48,8 @@ public class LanguageClientConfigurationImplTests {
         when(plugin.getGrammarModule()).thenReturn("language");
         when(plugin.getServerArtifact()).thenReturn("server:EmbeddedMontiArcMathAntlr.tokens");
         when(plugin.getMavenProject()).thenReturn(client);
-        when(plugin.getModelsPath()).thenReturn(resourcesPath.getAbsoluteFile());
         when(plugin.getOutputPath()).thenReturn(resourcesPath);
+        when(plugin.getRootModel()).thenReturn("de.monticore.lang.monticar.sol.tests.ld.Root");
 
         when(client.getParent()).thenReturn(parent);
         when(parent.getCollectedProjects()).thenReturn(Arrays.asList(language, server, client));
@@ -79,11 +79,25 @@ public class LanguageClientConfigurationImplTests {
     }
 
     @Test
-    void testGetModels() {
-        List<File> calculatedModels = configuration.getModels();
-        File expectedModel = new File(resourcesPath, "EmbeddedMontiArcMath.ld").getAbsoluteFile();
-        List<File> expectedModels = Collections.singletonList(expectedModel);
+    void testGetRootModel() {
+        assertEquals("de.monticore.lang.monticar.sol.tests.ld.Root", configuration.getRootModel(), "Root Models do not match.");
+    }
 
-        assertIterableEquals(expectedModels, calculatedModels, "Models do not match.");
+    @Test
+    void testGetFileExtension() {
+        when(plugin.getExtension()).thenReturn("emam");
+
+        assertEquals("emam", configuration.getFileExtension(), "File Extensions do not match.");
+
+        when(plugin.getExtension()).thenReturn(".emam");
+
+        assertEquals("emam", configuration.getFileExtension(), "File Extensions do not match.");
+    }
+
+    @Test
+    void testGetExcludedKeywords() {
+        when(plugin.getExcludedKeywords()).thenReturn(excludedKeywords);
+
+        assertIterableEquals(excludedKeywords, configuration.getExcludedKeywords(), "Excluded Keywords do not match.");
     }
 }

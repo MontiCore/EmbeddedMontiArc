@@ -6,12 +6,11 @@
 package de.monticore.lang.monticar.sol.grammars.options.cocos;
 
 import com.google.inject.Inject;
+import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOption;
 import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOptionProp;
-import de.monticore.lang.monticar.sol.grammars.options._ast.ASTPair;
-import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsASTOptionPropCoCo;
+import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsASTOptionCoCo;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsCoCoChecker;
 import de.monticore.lang.monticar.sol.grammars.options._visitor.OptionsVisitor;
-import de.monticore.lang.monticar.sol.grammars.options.cocos.types.props.Prop;
 import de.monticore.mcliterals._ast.ASTBooleanLiteral;
 import de.monticore.mcliterals._ast.ASTDoubleLiteral;
 import de.monticore.mcliterals._ast.ASTStringLiteral;
@@ -20,20 +19,20 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This context condition checks whether a prop accepts the given type.
  */
-public class PropTypeCoCo implements OptionCoCo, OptionsASTOptionPropCoCo, OptionsVisitor {
-    protected final Map<String, Prop> props;
+public class PropTypeCoCo implements OptionCoCo, OptionsASTOptionCoCo, OptionsVisitor {
+    protected final ComponentTypeService service;
 
-    protected ASTPair node;
-    protected Prop prop;
+    protected ASTOptionProp node;
+    protected String componentType;
+    protected String prop;
 
     @Inject
-    protected PropTypeCoCo(Map<String, Prop> props) {
-        this.props = props;
+    public PropTypeCoCo(ComponentTypeService service) {
+        this.service = service;
     }
 
     @Override
@@ -55,32 +54,41 @@ public class PropTypeCoCo implements OptionCoCo, OptionsASTOptionPropCoCo, Optio
     }
 
     @Override
-    public void check(ASTOptionProp node) {
+    public void check(ASTOption node) {
         this.handle(node);
     }
 
     @Override
-    public void visit(ASTPair node) {
+    public void visit(ASTOption node) {
+        this.componentType = node.getType();
+    }
+
+    @Override
+    public void visit(ASTOptionProp node) {
         this.node = node;
-        this.prop = this.props.get(node.getKey());
+        this.prop = node.getName();
     }
 
     @Override
     public void visit(ASTStringLiteral node) {
-        if (!this.prop.accepts(node)) this.log("string");
+        this.checkPropSupportsType("string");
     }
 
     @Override
     public void visit(ASTDoubleLiteral node) {
-        if (!this.prop.accepts(node)) this.log("double");
+        this.checkPropSupportsType("double");
     }
 
     @Override
     public void visit(ASTBooleanLiteral node) {
-        if (!this.prop.accepts(node)) this.log("boolean");
+        this.checkPropSupportsType("boolean");
+    }
+
+    protected void checkPropSupportsType(String type) {
+        if (!this.service.propSupportsType(this.componentType, this.prop, type)) this.log(type);
     }
 
     protected void log(String type) {
-        Log.warn(this.getErrorMessage(this.prop.getIdentifier(), type), this.node.get_SourcePositionStart());
+        Log.warn(this.getErrorMessage(this.prop, type), this.node.get_SourcePositionStart());
     }
 }

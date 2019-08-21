@@ -12,6 +12,7 @@ import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsCoCoChecker
 import de.monticore.lang.monticar.sol.grammars.options.optionstest._parser.OptionsTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,9 +39,13 @@ public abstract class AbstractCoCoTests {
 
     protected abstract int getExpectedViolations();
 
+    @BeforeAll
+    public static void beforeAll() {
+        Log.enableFailQuick(false);
+    }
+
     @BeforeEach
     public void before() {
-        Log.enableFailQuick(false);
         Log.getFindings().clear();
     }
 

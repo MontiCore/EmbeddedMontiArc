@@ -7,29 +7,26 @@ package de.monticore.lang.monticar.sol.grammars.options.cocos;
 
 import com.google.inject.Inject;
 import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOption;
-import de.monticore.lang.monticar.sol.grammars.options._ast.ASTPair;
+import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOptionProp;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsASTOptionCoCo;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsCoCoChecker;
 import de.monticore.lang.monticar.sol.grammars.options._visitor.OptionsVisitor;
-import de.monticore.lang.monticar.sol.grammars.options.cocos.types.OptionType;
-import de.monticore.lang.monticar.sol.grammars.options.cocos.types.props.Prop;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This context condition checks whether all required props are present in the option declaration.
  */
 public class RequiredPropCoCo implements OptionCoCo, OptionsASTOptionCoCo, OptionsVisitor {
-    protected final Map<String, OptionType> types;
+    protected final ComponentTypeService service;
     protected final Set<String> props;
 
     protected ASTOption node;
 
     @Inject
-    protected RequiredPropCoCo(Map<String, OptionType> types) {
-        this.types = types;
+    protected RequiredPropCoCo(ComponentTypeService service) {
+        this.service = service;
         this.props = new HashSet<>();
     }
 
@@ -53,7 +50,7 @@ public class RequiredPropCoCo implements OptionCoCo, OptionsASTOptionCoCo, Optio
 
     @Override
     public void check(ASTOption node) {
-        Set<String> requiredProps = this.getRequiredProps(node);
+        Set<String> requiredProps = this.service.getRequiredProps(node.getType());
 
         this.props.clear();
         this.handle(node);
@@ -61,13 +58,6 @@ public class RequiredPropCoCo implements OptionCoCo, OptionsASTOptionCoCo, Optio
         for (String prop : requiredProps) {
             if (!this.props.contains(prop)) Log.warn(this.getErrorMessage(node.getType(), prop), node.get_SourcePositionStart());
         }
-    }
-
-    protected Set<String> getRequiredProps(ASTOption node) {
-        OptionType type = this.types.get(node.getType());
-        Set<Prop> requiredProps = type.getProps().stream().filter(Prop::isRequired).collect(Collectors.toSet());
-
-        return requiredProps.stream().map(Prop::getIdentifier).collect(Collectors.toSet());
     }
 
     @Override
@@ -90,7 +80,7 @@ public class RequiredPropCoCo implements OptionCoCo, OptionsASTOptionCoCo, Optio
     }
 
     @Override
-    public void visit(ASTPair node) {
-        this.props.add(node.getKey());
+    public void visit(ASTOptionProp node) {
+        this.props.add(node.getName());
     }
 }

@@ -30,6 +30,8 @@ import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.Gramm
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.LanguageClientTemplates;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.TemplateGeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.textmate.TextMateGeneratorPhase;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable.LanguageSymbolTable;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable.LanguageSymbolTableImpl;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.validator.LDValidator;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.validator.LDValidatorImpl;
 
@@ -54,6 +56,7 @@ public class LanguageClientModule extends AbstractModule {
         bind(GeneratePluginConfiguration.class).to(LanguageClientConfigurationImpl.class);
         bind(LDValidator.class).to(LDValidatorImpl.class);
         bind(LDExtractor.class).to(LDExtractorImpl.class);
+        bind(LanguageSymbolTable.class).to(LanguageSymbolTableImpl.class);
     }
 
     private void addMultiBindings() {
@@ -108,5 +111,6 @@ public class LanguageClientModule extends AbstractModule {
         Multibinder<PluginContribution> contributions = Multibinder.newSetBinder(binder(), PluginContribution.class);
 
         contributions.addBinding().to(LDValidatorImpl.class);
+        contributions.addBinding().to(LanguageSymbolTableImpl.class);
     }
 }

@@ -33,7 +33,7 @@ public class NotificationServiceImplTests {
 
     @Test
     void testGetPriority() {
-        assertEquals(500, notifications.getPriority(), "Unexpected Priority.");
+        assertEquals(Integer.MAX_VALUE, notifications.getPriority(), "Unexpected Priority.");
     }
 
     @Test

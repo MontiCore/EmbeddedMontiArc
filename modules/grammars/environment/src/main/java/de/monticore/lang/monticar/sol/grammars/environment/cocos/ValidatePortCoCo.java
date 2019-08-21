@@ -5,8 +5,8 @@
  */
 package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 
-import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTExposeInstruction;
-import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTExposeInstructionCoCo;
+import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTExpose;
+import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTExposeCoCo;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
 import de.monticore.mcliterals._ast.ASTNatLiteral;
 import de.se_rwth.commons.logging.Log;
@@ -15,7 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ValidatePortCoCo implements EnvironmentCoCo, EnvironmentASTExposeInstructionCoCo {
+/**
+ * This context condition checks whether a given port lies within the valid range.
+ */
+public class ValidatePortCoCo implements EnvironmentCoCo, EnvironmentASTExposeCoCo {
     @Override
     public String getErrorCode() {
         return "ENV0005";
@@ -35,7 +38,7 @@ public class ValidatePortCoCo implements EnvironmentCoCo, EnvironmentASTExposeIn
     }
 
     @Override
-    public void check(ASTExposeInstruction node) {
+    public void check(ASTExpose node) {
         ASTNatLiteral portNode = node.getPort();
         int port = portNode.getValue();
 

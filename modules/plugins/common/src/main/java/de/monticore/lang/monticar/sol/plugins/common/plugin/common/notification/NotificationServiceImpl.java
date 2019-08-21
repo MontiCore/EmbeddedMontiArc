@@ -17,7 +17,7 @@ public class NotificationServiceImpl implements NotificationService, PluginContr
 
     @Override
     public int getPriority() {
-        return 500;
+        return Integer.MAX_VALUE;
     }
 
     @Override

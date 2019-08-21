@@ -1,6 +1,6 @@
-/* package de.monticore.lang.monticar.embeddedmontiarc
+package de.monticore.lang.monticar.embeddedmontiarc
 
-import some.qualified.Name */
+import some.qualified.Name
 
 language EmbeddedMontiArc {
     declare template emaComponent for "EmbeddedMontiArcComponent.njk" {

@@ -1,47 +1,7 @@
-/* package de.monticore.lang.monticar.embeddedmontiarc;
+package LDExtractorImpl;
 
-import some.qualified.name.EmbeddedMontiArcDL; */
+import LDExtractorImpl.EmbeddedMontiArc;
 
-language EmbeddedMontiArc {
-    declare template emaComponent for "EmbeddedMontiArc.njk" {
-        attribute label = "EmbeddedMontiArc Component";
-
-        /*
-         * Package
-         */
-        option packageName:string {
-            prop label = "Package";
-            prop required = true;
-        }
-
-        /*
-         * Component
-         */
-        option componentName:string {
-            prop label = "Component";
-            prop required = true;
-        }
-
-        /*
-         * Ports
-         */
-        option ports:list {
-            prop label = "Add Port";
-
-            option direction:string {
-                prop label = "Direction";
-                prop required = true;
-            }
-
-            option type:string {
-                prop label = "Type";
-                prop required = true;
-            }
-
-            option name:string {
-                prop label = "Name";
-                prop required = true;
-            }
-        }
-    }
+language EmbeddedMontiArcMath extends EmbeddedMontiArc {
+    undeclare template emaComponent;
 }

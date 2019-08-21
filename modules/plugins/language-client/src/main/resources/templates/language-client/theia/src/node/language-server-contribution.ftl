@@ -1,11 +1,14 @@
+<#-- @ftlvariable name="rootPackage" type="de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm.SolPackage" -->
 <#-- @ftlvariable name="template" type="de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.Template" -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 <#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
 <#-- @ftlvariable name="configuration" type="de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration" -->
 ${tc.signature("template")}
 <#assign configuration = glex.getGlobalVar("configuration")>
+<#assign rootPackage = glex.getGlobalVar("rootPackage")>
 <#assign grammarName = configuration.getGrammarName()>
 <#assign hasHandwrittenPeer = template.hasHandwrittenPeer()>
+<#assign serverPath = rootPackage.getDirectory("server").get()!"server">
 import { injectable } from "inversify";
 import { AddressInfo } from "net";
 import { ${grammarName}Language } from "../common";
@@ -20,7 +23,7 @@ export class ${grammarName}ServerContribution<#if hasHandwrittenPeer>Top</#if> e
     public readonly name: string = ${grammarName}Language.NAME;
 
     public async start(clientConnection: IConnection): Promise<void> {
-        const pathToJar = Path.resolve("..", "..", "server", "${grammarName}.jar");
+        const pathToJar = Path.resolve(__dirname, "..", "..", "${serverPath}", "${grammarName}.jar");
 
         if (await FileSystem.pathExists(pathToJar)) return this.doStart(clientConnection, pathToJar);
     }

@@ -63,24 +63,13 @@
                 <version>${project.version}</version>
                 <executions>
                     <execution>
-                        <id>Validation</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>validate</goal>
-                        </goals>
-                        <configuration>
-                            <rootDirectory>src/main/models/environment</rootDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>Generation</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <baseImage>SomeBaseImage:latest</baseImage>
-                            <rootDirectory>src/main/models/environment</rootDirectory>
+                            <rootModel>de.monticore.lang.monticar.sol.tests.environment.Main</rootModel>
                             <outputPath>${project.build.directory}/generated-sources/environment</outputPath>
                         </configuration>
                     </execution>

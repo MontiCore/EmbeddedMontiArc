@@ -18,17 +18,10 @@ component grammar Options extends de.monticore.MCBasics, de.monticore.MCLiterals
     // =========================================
 
     /**
-     * Represents a key / value pair separated by a equivalence sign.
-     */
-    Pair =
-        key:Name "=" (string:StringLiteral | number:SignedDoubleLiteral | boolean:BooleanLiteral)
-    ;
-
-    /**
      * Represents the assignment of a value to a prop of an option.
      */
-    OptionProp implements OptionElement =
-        "prop" prop:Pair ";"
+    symbol OptionProp implements OptionElement =
+        "prop" Name "=" literal:SignedLiteral ";"
     ;
 
     /**

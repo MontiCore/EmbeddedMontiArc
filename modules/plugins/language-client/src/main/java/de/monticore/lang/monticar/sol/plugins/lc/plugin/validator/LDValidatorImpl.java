@@ -7,47 +7,40 @@ package de.monticore.lang.monticar.sol.plugins.lc.plugin.validator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import de.monticore.lang.monticar.sol.grammars.language._ast.ASTLanguage;
 import de.monticore.lang.monticar.sol.grammars.language._cocos.LanguageCoCoChecker;
-import de.monticore.lang.monticar.sol.grammars.language._parser.LanguageParser;
+import de.monticore.lang.monticar.sol.grammars.language._symboltable.LanguageSymbol;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.PluginContribution;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
-import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm.NPMPackageService;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm.SolPackage;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable.LanguageSymbolTable;
 import de.se_rwth.commons.logging.Log;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
-import java.io.File;
-import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class LDValidatorImpl implements LDValidator, PluginContribution {
     protected final NotificationService notifications;
-    protected final LanguageClientConfiguration configuration;
+    protected final LanguageSymbolTable symbolTable;
     protected final LanguageCoCoChecker checker;
-    protected final LanguageParser parser;
+    protected final NPMPackageService packages;
 
     @Inject
-    protected LDValidatorImpl(NotificationService notifications, LanguageClientConfiguration configuration,
-                              LanguageCoCoChecker checker) {
+    protected LDValidatorImpl(NotificationService notifications, LanguageSymbolTable symbolTable,
+                              LanguageCoCoChecker checker, NPMPackageService packages) {
         this.notifications = notifications;
-        this.configuration = configuration;
+        this.symbolTable = symbolTable;
         this.checker = checker;
-        this.parser = new LanguageParser();
+        this.packages = packages;
     }
 
     @Override
     public void validate() throws Exception {
-        List<File> models = this.configuration.getModels();
-
-        Log.enableFailQuick(false);
-        this.notifications.info("Validating Models.");
-
-        for (File model : models) {
-            this.notifications.info("Validating '%s'.", model);
-            this.parser.parse(model.getPath()).ifPresent(this.checker::checkAll);
-        }
-
-        if (Log.getFindings().size() > 0) throw new MojoExecutionException("There are erroneous models.");
+        this.validatePackage();
+        this.validateModels();
     }
 
     @Override
@@ -58,5 +51,29 @@ public class LDValidatorImpl implements LDValidator, PluginContribution {
     @Override
     public void onPluginConfigure(Mojo plugin) throws Exception {
         this.validate();
+    }
+
+    protected void validatePackage() throws Exception {
+        SolPackage solPackage = this.packages.getCurrentPackage()
+                .orElseThrow(() -> new MojoExecutionException("Root Package could not be located or is not a Sol package."));
+
+        if (!solPackage.isTheiaPackage()) throw new MojoExecutionException("Root Package should also be a Theia package.");
+    }
+
+    protected void validateModels() throws Exception {
+        this.symbolTable.getRootNode().ifPresent(node -> this.validateNode(node.getLanguage()));
+
+        if (Log.getFindings().size() > 0) throw new MojoExecutionException("There are erroneous models.");
+    }
+
+    protected void validateNode(ASTLanguage node) {
+        this.checker.checkAll(node);
+        node.getLanguageSymbolOpt().ifPresent(symbol -> {
+            symbol.getParentSymbols().stream()
+                    .map(LanguageSymbol::getLanguageNode)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .forEach(this::validateNode);
+        });
     }
 }

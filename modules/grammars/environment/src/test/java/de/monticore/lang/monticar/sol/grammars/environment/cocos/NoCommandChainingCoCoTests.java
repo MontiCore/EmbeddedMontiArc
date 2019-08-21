@@ -7,23 +7,8 @@ package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 
 public class NoCommandChainingCoCoTests extends AbstractCoCoTests {
     @Override
-    protected EnvironmentCoCo getContextCondition() {
-        return new NoCommandChainingCoCo();
-    }
-
-    @Override
-    protected String getExpectedErrorCode() {
-        return "ENV0003";
-    }
-
-    @Override
-    protected String getExpectedErrorMessage() {
-        return "ENV0003 RUN should have at most one command.";
-    }
-
-    @Override
-    protected Object[] getMessageParameters() {
-        return new Object[0];
+    protected Class<? extends EnvironmentCoCo> getContextCondition() {
+        return NoCommandChainingCoCo.class;
     }
 
     @Override

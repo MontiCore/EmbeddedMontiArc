@@ -6,7 +6,7 @@
 package de.monticore.lang.monticar.sol.grammars.options.cocos;
 
 import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOption;
-import de.monticore.lang.monticar.sol.grammars.options._ast.ASTPair;
+import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOptionProp;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsASTOptionCoCo;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsCoCoChecker;
 import de.monticore.lang.monticar.sol.grammars.options._visitor.OptionsVisitor;
@@ -70,8 +70,8 @@ public class NoDuplicatePropCoCo implements OptionCoCo, OptionsASTOptionCoCo, Op
     }
 
     @Override
-    public void visit(ASTPair node) {
-        String prop = node.getKey();
+    public void visit(ASTOptionProp node) {
+        String prop = node.getName();
 
         if (this.props.contains(prop)) Log.warn(this.getErrorMessage(prop), node.get_SourcePositionStart());
         else this.props.add(prop);

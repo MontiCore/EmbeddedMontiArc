@@ -5,15 +5,21 @@
  */
 package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 
-import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTRunInstruction;
-import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTRunInstructionCoCo;
+import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTCommandOrSplitCommand;
+import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTRun;
+import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTSplitCommand;
+import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTRunCoCo;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
+import de.monticore.lang.monticar.sol.grammars.environment._visitor.EnvironmentVisitor;
 import de.monticore.mcliterals._ast.ASTStringLiteral;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
 
-public class NoAPTGetInstallCoCo implements EnvironmentCoCo, EnvironmentASTRunInstructionCoCo {
+/**
+ *  This context condition checks whether RUN "apt-get install" is used instead of INSTALL.
+ */
+public class NoAPTGetInstallCoCo implements EnvironmentCoCo, EnvironmentASTRunCoCo, EnvironmentVisitor {
     @Override
     public String getErrorCode() {
         return "ENV0001";
@@ -30,12 +36,22 @@ public class NoAPTGetInstallCoCo implements EnvironmentCoCo, EnvironmentASTRunIn
     }
 
     @Override
-    public void check(ASTRunInstruction node) {
-        boolean commandViolation = node.isPresentCommand() && this.violatesCommand(node.getCommand());
-        boolean executableViolation = node.isPresentExecutable()
-                && this.violatesExecutableParameters(node.getExecutable(), node.getParameterList());
+    public void check(ASTRun node) {
+        node.accept(getRealThis());
+    }
 
-        if (commandViolation || executableViolation) Log.warn(this.getErrorMessage(), node.get_SourcePositionStart());
+    @Override
+    public void visit(ASTCommandOrSplitCommand node) {
+        node.getCommandOpt().ifPresent(command -> {
+            if (this.violatesCommand(command)) Log.warn(this.getErrorMessage(), node.get_SourcePositionStart());
+        });
+    }
+
+    @Override
+    public void visit(ASTSplitCommand node) {
+        boolean violation = this.violatesExecutableParameters(node.getExecutable(), node.getParameterList());
+
+        if (violation) Log.warn(this.getErrorMessage(), node.get_SourcePositionStart());
     }
 
     protected boolean violatesCommand(ASTStringLiteral command) {

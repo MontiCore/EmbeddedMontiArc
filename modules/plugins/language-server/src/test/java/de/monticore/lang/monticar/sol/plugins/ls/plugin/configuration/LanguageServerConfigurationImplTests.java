@@ -68,13 +68,6 @@ public class LanguageServerConfigurationImplTests {
     }
 
     @Test
-    void testGetStatePath() {
-        File statePath = new File(baseDir, "state");
-
-        assertEquals(statePath, configuration.getStatePath(), "State Path does not match.");
-    }
-
-    @Test
     void testGetSourceCodeOutputPath() {
         File statePath = new File(baseDir, "sourcecode");
 

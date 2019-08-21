@@ -13,13 +13,11 @@ import de.monticore.lang.monticar.sol.plugins.lc.plugin.LanguageClientPlugin;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -39,11 +37,6 @@ public class LanguageClientConfigurationImpl extends AbstractGeneratePluginConfi
     @Override
     protected File getDefaultHandCodedPath() {
         return this.resolveFromBaseDirectory("src");
-    }
-
-    @Override
-    public File getStatePath() {
-        return new File(this.getOutputPath(), "state");
     }
 
     @Override
@@ -110,20 +103,10 @@ public class LanguageClientConfigurationImpl extends AbstractGeneratePluginConfi
     }
 
     @Override
-    public List<File> getModels() {
+    public String getRootModel() {
         Preconditions.checkNotNull(this.plugin);
 
-        File modelsPath = this.resolveFromBaseDirectory(this.plugin.getModelsPath());
-        WildcardFileFilter filter = new WildcardFileFilter("*.ld");
-
-        return new ArrayList<>(FileUtils.listFiles(modelsPath, filter, TrueFileFilter.INSTANCE));
-    }
-
-    @Override
-    public File getTemplatesPath() {
-        Preconditions.checkNotNull(this.plugin);
-
-        return this.resolveFromBaseDirectory(this.plugin.getTemplatesPath());
+        return this.plugin.getRootModel();
     }
 
     protected MavenProject getMavenProjectFromArtifactId(String artifactId, IOException exception) throws IOException {

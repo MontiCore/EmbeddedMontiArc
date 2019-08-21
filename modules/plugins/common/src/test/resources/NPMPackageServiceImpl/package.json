@@ -1,0 +1,11 @@
+{
+  "name": "dummy",
+  "dependencies": {
+    "dummy2": "*"
+  },
+  "sol": {
+    "directories": {
+      "models": "models"
+    }
+  }
+}

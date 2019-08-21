@@ -5,8 +5,8 @@
  */
 package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 
-import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTWorkDirInstruction;
-import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTWorkDirInstructionCoCo;
+import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTWorkDir;
+import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTWorkDirCoCo;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
 import de.monticore.mcliterals._ast.ASTStringLiteral;
 import de.se_rwth.commons.logging.Log;
@@ -15,7 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NoRelativeWorkDirCoCo implements EnvironmentCoCo, EnvironmentASTWorkDirInstructionCoCo {
+/**
+ * This context condition checks whether a relative path has been used to in the WORKDIR instruction.
+ */
+public class NoRelativeWorkDirCoCo implements EnvironmentCoCo, EnvironmentASTWorkDirCoCo {
     @Override
     public String getErrorCode() {
         return "ENV0006";
@@ -35,7 +38,7 @@ public class NoRelativeWorkDirCoCo implements EnvironmentCoCo, EnvironmentASTWor
     }
 
     @Override
-    public void check(ASTWorkDirInstruction node) {
+    public void check(ASTWorkDir node) {
         ASTStringLiteral workDirNode = node.getDirectory();
         String workDir = workDirNode.getValue();
 

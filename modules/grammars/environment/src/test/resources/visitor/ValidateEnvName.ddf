@@ -1,1 +1,0 @@
-ENV "SOME00THING" "A key which does not start with a digit!"
