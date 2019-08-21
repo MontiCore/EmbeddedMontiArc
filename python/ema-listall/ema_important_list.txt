@@ -1,4 +1,4 @@
-https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications    12996    (10 projects)
+https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications    12996   
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/end2enddriving    31685
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/flownet    31683
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/carlacomponents    29952
@@ -11,7 +11,7 @@ https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/mnistpredicto
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/mnistcalculator    25225
 
 
-https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning    16434    (8 projects)
+https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning    16434   
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/torcs_rf    33029
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/ataripong    33028
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/roboschoolhalfcheetah    33027
@@ -22,7 +22,7 @@ https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/cartpole    33021
 
 
-https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators    9836    (25 projects)
+https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators    9836    
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/cnnarch2x    30745
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/cnnarch2tensorflow    29656
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emadl2pythonwrapper    26620
@@ -42,7 +42,7 @@ https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/visualisation    17659
 
 
-https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages    9835    (21 projects)
+https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages    9835    
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/montianna    30105
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/EmbeddedMontiArcDynamics    18991
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Enum    17657
@@ -75,7 +75,7 @@ https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/WeatherSimulato
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/visualization    17683
 
 
-https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities    9839    (23 projects)
+https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities    9839    
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/monticore-lsp-commons    31405
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Sol    31332
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/emam-debugger-vscode    30256
