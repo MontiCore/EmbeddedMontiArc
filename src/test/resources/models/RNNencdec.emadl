@@ -5,11 +5,12 @@ component RNNencdec{
    implementation CNN{
 
 
-
+       timed <t> BeamSearchStart(max_length=50){
            source ->
            FullyConnected(units=30000) ->
            Softmax() ->
-           target;
+           target
+       };
 
 
        }
