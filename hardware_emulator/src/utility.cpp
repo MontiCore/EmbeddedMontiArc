@@ -20,7 +20,6 @@
  */
 #include "utility.h"
 #include <iomanip>
-#include <dirent.h>
 
 #if defined _WIN32 || defined _WIN64
     #include <WinSock2.h>
@@ -31,6 +30,7 @@
     #include "shlwapi.h"
     #include <DbgHelp.h>
 #else
+    #include <dirent.h>
     #include <dlfcn.h>
     #include <limits.h>
     #include <stdlib.h>
@@ -261,23 +261,7 @@ FS::File::File(std::string folder, std::string name){
     }
 }
 
-std::list<FS::File> FS::directory_files(const std::string &folder ){
-    std::list<File> files;
-    DIR *d;
-    struct dirent *dir;
-    d = opendir(folder.c_str());
-    if (d) {
-        while ((dir = readdir(d)) != NULL) {
-            if (dir->d_type == DT_REG){
-                files.emplace_back(File(folder, dir->d_name));
-            }
-        }
-        closedir(d);
-    } else {
-        perror("opendir() error");
-    }
-    return files;
-}
+
 
 #if defined _WIN32 || defined _WIN64
 std::string FS::append(const std::string &path, const std::string &file){
@@ -301,7 +285,65 @@ std::string FS::canonical(const std::string &path){
     return "";
 }
 
+#include <locale>
+#include <codecvt>
+
+std::list<FS::File> FS::directory_files(const std::string &folder ){
+    std::list<File> files;
+    WIN32_FIND_DATA fdFile;
+    HANDLE hFind = NULL;
+
+    //std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    //std::wstring wide = converter.from_bytes(folder);
+    std::string file_mask = folder + "\\*.*";
+    if((hFind = FindFirstFile(file_mask.c_str(), &fdFile)) == INVALID_HANDLE_VALUE)
+    {
+        perror("FindFirstFile() error");
+        return files;
+    }
+    do
+    {
+        std::string file_name = (const char*) fdFile.cFileName;
+        if(file_name != "." && file_name != "..") {
+            if(!(fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) //File
+                files.emplace_back(File(folder, file_name));
+        }
+    }
+    while(FindNextFile(hFind, &fdFile));
+
+    FindClose(hFind);
+    return files;
+}
+
+bool ListDirectoryContents(const char *sDir)
+{
+
+    
+
+    return true;
+}
+
 #else
+
+
+std::list<FS::File> FS::directory_files(const std::string &folder ){
+    std::list<File> files;
+    DIR *d;
+    struct dirent *dir;
+    d = opendir(folder.c_str());
+    if (d) {
+        while ((dir = readdir(d)) != NULL) {
+            if (dir->d_type == DT_REG){
+                files.emplace_back(File(folder, dir->d_name));
+            }
+        }
+        closedir(d);
+    } else {
+        perror("opendir() error");
+    }
+    return files;
+}
+
 std::string FS::append(const std::string &path, const std::string &file){
     if (path.size() == 0) return '/' + file;
     return path[path.size()-1] == '/' ? path + file : path + '/' + file;
