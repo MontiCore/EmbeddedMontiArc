@@ -177,7 +177,7 @@ public class ChargingStation implements SimulationLoopExecutable {
     }
 
     public String toString() {
-        return getName() + ", Capacity: " + getCapacity();
+        return getName() + ", Capacity: " + getCapacity() + ", OsmID: " + getOsmId() + "\n" + getLocation();
     }
 
 //	public ArrayList<PhysicalVehicle> getCarObjects() {

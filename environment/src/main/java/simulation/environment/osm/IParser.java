@@ -20,6 +20,7 @@
  */
 package simulation.environment.osm;
 
+import simulation.environment.object.ChargingStation;
 import simulation.environment.visualisationadapter.interfaces.Building;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
@@ -55,6 +56,10 @@ public interface IParser {
      */
     public abstract Collection<Waterway> getWaterways();
 
+    /**
+     * @return a collection of all Charging Stations parsed
+     */
+    public abstract Collection<ChargingStation> getChargingStations();
 
 
     /**
