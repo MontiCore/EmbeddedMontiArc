@@ -124,11 +124,10 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         }
 
         for (UnrollSymbol unroll : unrolls) {
-            unroll.checkIfResolvable();
+            //unroll.checkIfResolvable();
 
             try {
-                unroll.resolveOrError();
-                unroll.getBody().resolveOrError();
+                unroll.resolve();
             }
             catch (ArchResolveException e) {
                 // Do nothing; error is already logged
@@ -143,9 +142,6 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             resolved &= stream.isResolved();
         }
 
-        for (UnrollSymbol unroll: unrolls) {
-            resolved &= unroll.isResolved();
-        }
 
         return resolved;
     }

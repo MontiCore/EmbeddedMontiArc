@@ -18,24 +18,22 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch._cocos;
+package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.UnrollSymbol;
+import de.monticore.symboltable.SymbolKind;
 
-public class CheckElementInputs extends CNNArchSymbolCoCo {
+public class UnrollKind implements SymbolKind {
+
+    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.UnrollKind";
 
     @Override
-    public void check(ArchitectureSymbol architecture) {
-        for (CompositeElementSymbol stream : architecture.getStreams()) {
-            stream.checkInput();
-        }
-
-        for (UnrollSymbol unroll : architecture.getUnrolls()) {
-            System.err.println("BEFORE check");
-            unroll.getBody().checkInput();
-            System.err.println("AFTER check");
-        }
+    public String getName() {
+        return NAME;
     }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    }
+
 }

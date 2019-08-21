@@ -64,9 +64,6 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
                     }
                 }
             }
-            else if (element instanceof UnrollSymbol) {
-                isTrainable |= ((UnrollSymbol) element).isTrainable();
-            }
         }
 
         return isTrainable;

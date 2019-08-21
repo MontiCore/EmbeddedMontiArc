@@ -41,7 +41,7 @@ public class CheckArchitectureFinished extends CNNArchSymbolCoCo {
         }
         for (UnrollSymbol unroll : architecture.getUnrolls()) {
             System.err.println("UnrollSymbol in checkArchFinished");
-            if (!unroll.getOutputTypes().isEmpty()){
+            if (!unroll.getBody().getOutputTypes().isEmpty()){
                 Log.error("0" + ErrorCodes.UNFINISHED_ARCHITECTURE + " The architecture is not finished. " +
                                 "There are still open streams at the end of the architecture. "
                         , architecture.getSourcePosition());

@@ -36,6 +36,9 @@ public class CNNArchSymbolCoCo {
         else if (sym instanceof UnrollDeclarationSymbol){
             check((UnrollDeclarationSymbol) sym);
         }
+        else if (sym instanceof UnrollSymbol){
+            check((UnrollSymbol) sym);
+        }
         else if (sym instanceof ArchitectureElementSymbol){
             check((ArchitectureElementSymbol) sym);
         }
@@ -108,6 +111,10 @@ public class CNNArchSymbolCoCo {
     }
 
     public void check(MathExpressionSymbol sym){
+        //Override if needed
+    }
+
+    public void check(UnrollSymbol sym){
         //Override if needed
     }
 }

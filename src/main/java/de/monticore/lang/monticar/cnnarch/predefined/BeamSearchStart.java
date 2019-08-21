@@ -67,7 +67,6 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
                     //ArchitectureElementSymbol item = (ArchitectureElementSymbol) ASTitem;
                     VariableSymbol sublayer = (VariableSymbol) item.getSymbol();
                     sublayer.resolve();
-                    //TODO setinputElement !!!!!
                     System.err.println("resolved2: " + sublayer.getResolvedThis().get());
                     //System.err.println("resolved2_1: " + sublayer.getResolvedThis().get().getInputElement().get().toString());
                     System.err.println("isOutput?: " + sublayer.isOutput());

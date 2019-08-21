@@ -112,25 +112,12 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     }
 
 
-    public ArchitectureElementSymbol call(UnrollSymbol layer) throws ArchResolveException{
+    public UnrollSymbol call(UnrollSymbol layer) throws ArchResolveException{
         checkForSequence(layer.getArguments());
 
-        if (isPredefined()){
-            return layer;
-        }
-        else {
-            reset();
-            set(layer.getArguments());
 
-            SerialCompositeElementSymbol copy = getBody().preResolveDeepCopy();
-            copy.putInScope(getSpannedScope());
-            copy.resolveOrError();
-            getSpannedScope().remove(copy);
-            getSpannedScope().removeSubScope(copy.getSpannedScope());
+        return layer;
 
-            reset();
-            return copy;
-        }
     }
 
     private void reset(){
