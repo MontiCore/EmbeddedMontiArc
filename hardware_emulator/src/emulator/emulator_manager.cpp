@@ -31,34 +31,29 @@ void worker( HardwareEmulator *emu, long long time_delta ) {
 bool EmulatorManager::init( const char *config, const char *default_config ) {
     this->default_config = default_config;
     available_threads = std::thread::hardware_concurrency();
-    available_autopilots = "";
+    available_autopilots_string = "";
     
-    printf("TEST3b\n");
-    path = fs::current_path();
-    printf("TEST4a\n");
+    //path = fs::current_path();
+    autopilots_folder = FS::current_path();
     MessageParser parser( config );
     while ( parser.has_next() ) {
         if ( parser.is_cmd( "autopilots_folder" ) )
-            path = fs::canonical( parser.get_string() );
+            //path = fs::canonical( parser.get_string() );
+            autopilots_folder = FS::canonical(parser.get_string());
         else
             parser.unknown();
     }
-    printf("TEST5\n");
     
-    Log::info << Log::tag << "autopilots_folder path: " << path << "\n";
+    Log::info << Log::tag << "autopilots_folder: " << autopilots_folder << "\n";
     Log::info << Log::tag << "Default config:\n" << default_config;
     
-    for ( const auto &entry : fs::directory_iterator( path ) ) {
-        if ( entry.status().type() == fs::file_type::regular ) {
-            auto &p = entry.path();
-            std::string ext = p.extension().generic_string();
-            //std::cout << p << "\t" << p.filename() << "\t" << ext/*p.extension()*/ << std::endl;
-            if ( ext.compare( ".so" ) == 0 || ext.compare( ".dll" ) == 0 ) {
-                entries.emplace_back( p );
-                if ( available_autopilots.size() > 0 )
-                    available_autopilots += ';';
-                available_autopilots += p.filename().generic_string();
-            }
+    for ( const auto &file : FS::directory_files( autopilots_folder ) ) {
+        //std::cout << p << "\t" << p.filename() << "\t" << ext/*p.extension()*/ << std::endl;
+        if ( file.extension.compare( ".so" ) == 0 || file.extension.compare( ".dll" ) == 0 ) {
+            available_autopilots.emplace_back( file );
+            if ( available_autopilots_string.size() > 0 )
+                available_autopilots_string += ';';
+            available_autopilots_string += file.name;
         }
     }
     emulators.drop();
@@ -117,11 +112,11 @@ std::string EmulatorManager::query( const char *msg ) {
         if ( parser.is_cmd( "get_error_msg" ) )
             builder.add( "error_msg", error_msg );
         else if ( parser.is_cmd( "get_available_autopilots" ) )
-            builder.add( "available_autopilots", available_autopilots );
+            builder.add( "available_autopilots", available_autopilots_string );
         else if ( parser.is_cmd( "get_available_threads" ) )
             builder.add( "available_threads", std::to_string( available_threads ) );
         else if ( parser.is_cmd( "get_autopilots_folder" ) )
-            builder.add( "autopilots_folder", path.string() );
+            builder.add( "autopilots_folder", autopilots_folder );
         else
             parser.unknown();
     }

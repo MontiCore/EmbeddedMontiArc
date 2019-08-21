@@ -124,13 +124,13 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
         return false;
         
         
-    if ( !computer.os->load_file( path.string().c_str() ) ) {
+    if ( !computer.os->load_file( autopilot_path.c_str() ) ) {
         error_msg = "Error loading autopilot";
         return false;
     }
     
     if ( test_real ) {
-        if ( !real_program.init( path.string().c_str() ) ) {
+        if ( !real_program.init( autopilot_path.c_str() ) ) {
             error_msg = "Could not load real program";
             return false;
         }
@@ -175,27 +175,21 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
 }
 
 bool HardwareEmulator::resolve_autopilot_os( EmulatorManager &manager ) {
-    path = manager.path;
-    path.append( autopilot_name );
+    autopilot_path = FS::append(manager.autopilots_folder, autopilot_name);
+    //path.append( autopilot_name );
     
     
     if ( os_name.size() == 0 ) {
         bool found = false;
         //Check existing autopilots with this name
-        for ( auto &e : manager.entries ) {
-            auto &p = e.path();
-            std::string i_file_name = p.filename().string();
-            std::string i_extension = p.extension().string();
-            if ( i_file_name.size() > i_extension.size() ) {
-                auto raw_name = i_file_name.substr( 0, i_file_name.size() - i_extension.size() );
-                if ( raw_name.compare( autopilot_name ) == 0 ) {
-                    found = true;
-                    if ( i_extension.compare( ".dll" ) == 0 )
-                        os_name = "windows";
-                    else if ( i_extension.compare( ".so" ) == 0 )
-                        os_name = "linux";
-                    break;
-                }
+        for ( const auto &file : manager.available_autopilots ) {
+            if ( file.name.compare( autopilot_name ) == 0 ) {
+                found = true;
+                if ( file.extension.compare( ".dll" ) == 0 )
+                    os_name = "windows";
+                else if ( file.extension.compare( ".so" ) == 0 )
+                    os_name = "linux";
+                break;
             }
         }
         if ( !found ) {

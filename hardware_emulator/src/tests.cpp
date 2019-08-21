@@ -25,7 +25,20 @@
 #include "os_linux/os_linux.h"
 #include "config.h"
 #include "os_linux/elf.h"
+#include "utility.h"
 
+
+bool test_filesystem(){
+    auto cp = FS::current_path();
+    Log::debug << "FS::current_path(): " << cp << "\n";
+    Log::debug << "FS::canonical(FS::current_path()): " << FS::canonical(cp) << "\n";
+    auto files = FS::directory_files(cp);
+    Log::debug << "FS::directory_files(FS::current_path()):\n";
+    for (const auto &file : files){
+        Log::debug << "\t" << file.path << ": " << file.name << " ext: " << file.extension << "\n";
+    }
+    return true;
+}
 
 /*
     Tests the emulation of the functions from
@@ -34,8 +47,6 @@
 */
 bool test_simple_sample( OS::OS *os, bool windows ) {
     Computer computer;
-    std::filesystem::path path = std::filesystem::current_path();
-    std::cout << "Path: " << path << std::endl;
     computer.init();
     if ( !computer.loaded() )
         return false;

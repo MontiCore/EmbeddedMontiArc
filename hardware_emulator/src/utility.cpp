@@ -27,6 +27,14 @@
     #pragma comment(lib, "Ws2_32.lib")
     #include <iostream>
     #include "windows.h"
+    #include "shlwapi.h"
+    #include <DbgHelp.h>
+#else
+    #include <dlfcn.h>
+    #include <limits.h>
+    #include <stdlib.h>
+    #include <unistd.h>
+    #include <dirent.h>
 #endif
 
 uint BIT_MASKS[] = {
@@ -160,7 +168,6 @@ void ConsoleColor::Console::set_color( Color which ) {
 
 #endif
 #if defined _WIN32 || defined _WIN64
-#include <DbgHelp.h>
 
 bool undercorate_function_name( const std::string &name, Array<char> &buffer ) {
     return UnDecorateSymbolName( name.c_str(), buffer.begin(), buffer.size(), UNDNAME_COMPLETE );
@@ -211,7 +218,6 @@ Library::~Library() {
 
 #else
 
-#include <dlfcn.h>
 
 bool Library::init( const char *name ) {
     auto n = name + std::string(".so");
@@ -238,4 +244,70 @@ Library::~Library() {
 
 #endif
 
+
+#if defined _WIN32 || defined _WIN64
+std::string FS::append(std::string path, std::string file){
+    if (path.size() == 0) return file;
+    return path[path.size()-1] == '\\' ? path + file : path + '\\' + file;
+}
+
+std::string FS::current_path(){
+    TCHAR buff[MAX_PATH];
+    if (GetCurrentDirectory(sizeof(buff), buff) != 0){
+        return std::string(buff);
+    std::cerr << "GetCurrentDirectory() error" << std::endl;
+    return "";
+}
+
+std::string FS::canonical(const std::string &path){
+    TCHAR buff[MAX_PATH];
+    if (PathCanonicalizeA(buff, path.c_str())){
+        return std::string(buff);
+    }
+    std::cerr << "PathCanonicalizeA() error" << std::endl;
+    return "";
+}
+std::list<File> FS::directory_files( std::string folder ){
+    
+}
+#else
+std::string FS::append(std::string path, std::string file){
+    if (path.size() == 0) return '/' + file;
+    return path[path.size()-1] == '/' ? path + file : path + '/' + file;
+}
+
+std::string FS::current_path(){
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL)
+        return std::string(cwd);
+    perror("getcwd() error");
+    return "";
+}
+
+std::string FS::canonical(const std::string &path){
+    char actualpath [PATH_MAX];
+    if (realpath(path.c_str(), actualpath) != NULL)
+        return std::string(actualpath);
+    perror("realpath() error");
+    return "";
+}
+std::list<FS::File> FS::directory_files( std::string folder ){
+    std::list<File> files;
+    DIR *d;
+    struct dirent *dir;
+    d = opendir(folder.c_str());
+    if (d) {
+        while ((dir = readdir(d)) != NULL) {
+            if (dir->d_type == DT_REG){
+                files.emplace_back(File(folder, dir->d_name));
+            }
+        }
+        closedir(d);
+    } else {
+        perror("opendir() error");
+    }
+    return files;
+}
+
+#endif
 

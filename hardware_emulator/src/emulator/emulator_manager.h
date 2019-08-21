@@ -21,9 +21,10 @@
 #pragma once
 #include "hardware_emulator.h"
 #include <list>
-#include <filesystem>
+#include "utility.h"
+//#include <filesystem>
 
-namespace fs = std::filesystem;
+//namespace fs = std::filesystem;
 
 /*
     The EmulatorManager is used to allocate and interact with autopilot emualtors.
@@ -34,10 +35,12 @@ struct EmulatorManager {
     Array<std::unique_ptr<HardwareEmulator>> emulators;
     uint emulator_count;
     
-    std::list<fs::directory_entry> entries;
-    std::string available_autopilots;
+    //std::list<fs::directory_entry> entries;
+    std::list<FS::File> available_autopilots;
+    std::string available_autopilots_string;
     uint available_threads;
-    fs::path path;
+    //fs::path path;
+    std::string autopilots_folder;
     
     std::string default_config;
     

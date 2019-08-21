@@ -28,6 +28,7 @@ struct TestCase {
     TestCase( const char *name, bool( *func )() ) : name( name ), func( func ) {}
 };
 
+bool test_filesystem();
 
 bool test_simple_dll();
 

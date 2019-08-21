@@ -30,7 +30,7 @@
 #include "config.h"
 
 #include <unordered_map>
-#include <filesystem>
+//#include <filesystem>
 
 struct PrecisionTimer {
         using HRClock = std::chrono::high_resolution_clock;
@@ -64,7 +64,7 @@ struct PrecisionTimer {
         }
 };
 
-namespace fs = std::filesystem;
+//namespace fs = std::filesystem;
 /*
     CacheSettings is used to configure the cache layout of the computer.
     Replace the IL1, DL1, L2 and L3 members with Cache objects to enable and configure the given cache level.
@@ -158,7 +158,8 @@ struct HardwareEmulator {
     Computer computer;
     std::string os_name;
     std::string autopilot_name;
-    fs::path path;
+    //fs::path path;
+    std::string autopilot_path;
     
     MemoryRange buffer_slot;
     

@@ -23,6 +23,7 @@
 
 
 TestCase test_cases[] = {
+    TestCase( "Filesystem", test_filesystem ),
     TestCase( "Simple DLL", test_simple_dll ),
     TestCase( "Function Calling DLL", test_funccalling_dll ),
     TestCase( "Syscall DLL", test_syscall_dll ),

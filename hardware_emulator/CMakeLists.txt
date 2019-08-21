@@ -150,7 +150,7 @@ if ( CMAKE_COMPILER_IS_GNUCC )
   )
   list(APPEND HARDWARE_EMU_LIBRARIES
     pthread
-    stdc++fs
+    #stdc++fs
   )
 endif()
 
