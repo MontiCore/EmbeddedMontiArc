@@ -29,6 +29,5 @@ linux_build:
   image: maven:3-jdk-8
   
   script:
-  - updatedb
   - locate libXtst
   - apt-file search libXext.so.6
