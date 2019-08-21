@@ -262,7 +262,7 @@ FS::File::File(std::string folder, std::string name){
 }
 
 #if defined _WIN32 || defined _WIN64
-std::string FS::append(std::string path, std::string file){
+std::string FS::append(const std::string &path, const std::string &file){
     if (path.size() == 0) return file;
     return path[path.size()-1] == '\\' ? path + file : path + '\\' + file;
 }
@@ -282,11 +282,11 @@ std::string FS::canonical(const std::string &path){
     std::cerr << "PathCanonicalizeA() error" << std::endl;
     return "";
 }
-std::list<File> FS::directory_files( std::string folder ){
-    
+std::list<FS::File> FS::directory_files(const std::string &folder ){
+    return std::list<FS::File>();
 }
 #else
-std::string FS::append(std::string path, std::string file){
+std::string FS::append(const std::string &path, const std::string &file){
     if (path.size() == 0) return '/' + file;
     return path[path.size()-1] == '/' ? path + file : path + '/' + file;
 }
@@ -306,7 +306,7 @@ std::string FS::canonical(const std::string &path){
     perror("realpath() error");
     return "";
 }
-std::list<FS::File> FS::directory_files( std::string folder ){
+std::list<FS::File> FS::directory_files(const std::string &folder ){
     std::list<File> files;
     DIR *d;
     struct dirent *dir;

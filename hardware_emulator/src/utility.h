@@ -665,10 +665,10 @@ namespace FS {
     };
 
 
-    std::string append(std::string path, std::string file);
+    std::string append(const std::string &path, const std::string &file);
     std::string current_path();
     std::string canonical(const std::string &path);
-    std::list<File> directory_files( std::string folder );
+    std::list<FS::File> directory_files(const std::string &folder );
     
 }
 
