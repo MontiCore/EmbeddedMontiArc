@@ -5,6 +5,7 @@ variables:
 
 before_script:
   - apt-get update && apt-get install -y build-essential
+  - yarn install --ignore-scripts
 
 stages:
   - install

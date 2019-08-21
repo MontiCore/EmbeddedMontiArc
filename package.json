@@ -2,9 +2,7 @@
   "private": true,
   "workspaces": [
     "packages/*/*",
-    "modules/tests/*",
-    "modules/tests/*/*",
-    "modules/tests/*/*/*"
+    "modules/tests/**/*"
   ],
   "scripts": {
     "prepare": "lerna run prepare",
@@ -18,7 +16,7 @@
     "rimraf": "^2.6.3",
     "tslint": "^5.18.0",
     "typedoc": "^0.14.2",
-    "typedoc-plugin-lerna-packages": "^0.1.6",
+    "typedoc-plugin-external-module-map": "^1.0.0",
     "typescript": "^3.5.3"
   }
 }

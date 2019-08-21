@@ -330,20 +330,6 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>yarn install</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>yarn</executable>
-                            <arguments>
-                                <argument>install</argument>
-                                <argument>--ignore-scripts</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>yarn run clean</id>
                         <phase>clean</phase>
                         <goals>
