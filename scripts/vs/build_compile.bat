@@ -30,8 +30,7 @@ set SOLUTION_PATH="%1.sln"
 IF [%1] == [] (SET SOLUTION_PATH="hardware-emulator.sln") else (SET SOLUTION_PATH="%1.sln")
 IF [%2] == [] (SET TARGET=Release) else (SET TARGET=%2)
 IF [%3] == [] (SET GENERATOR="Visual Studio 16 2019") else (SET GENERATOR=%3)
-echo ARG3=%3
-echo GENERATOR=%GENERATOR%
+
 if not exist build mkdir build
 cd build
 echo [SCRIPT] Building with target %TARGET%...
