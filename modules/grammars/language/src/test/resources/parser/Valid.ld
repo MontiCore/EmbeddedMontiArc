@@ -1,8 +1,8 @@
-/* package de.monticore.lang.monticar.embeddedmontiarc;
+package de.monticore.lang.monticar.embeddedmontiarc;
 
-import some.qualified.name.EmbeddedMontiArcDL; */
+import some.qualified.name.EmbeddedMontiArcDL;
 
-language EmbeddedMontiArc {
+language EmbeddedMontiArc extends EmbeddedMontiArcDL, EmbeddedMontiArcDynamics {
     declare template emaComponent for "EmbeddedMontiArc.njk" {
         attribute label = "EmbeddedMontiArc Component";
 
@@ -45,5 +45,5 @@ language EmbeddedMontiArc {
         }
     }
 
-    undeclare template EmbeddedMontiArcDL.someTemplate;
+    undeclare template someTemplate;
 }

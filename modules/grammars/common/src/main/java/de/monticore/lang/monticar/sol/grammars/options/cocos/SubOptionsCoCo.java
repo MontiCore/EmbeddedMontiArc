@@ -10,26 +10,24 @@ import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOption;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsASTOptionCoCo;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsCoCoChecker;
 import de.monticore.lang.monticar.sol.grammars.options._visitor.OptionsVisitor;
-import de.monticore.lang.monticar.sol.grammars.options.cocos.types.OptionType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This context condition checks whether a declared option accepts sub-option declarations.
  */
 public class SubOptionsCoCo implements OptionCoCo, OptionsASTOptionCoCo, OptionsVisitor {
-    protected final Map<String, OptionType> types;
+    protected final ComponentTypeService service;
 
     protected ASTOption node;
-    protected OptionType type;
+    protected String type;
 
     @Inject
-    protected SubOptionsCoCo(Map<String, OptionType> types) {
-        this.types = types;
+    protected SubOptionsCoCo(ComponentTypeService service) {
+        this.service = service;
     }
 
     @Override
@@ -53,15 +51,13 @@ public class SubOptionsCoCo implements OptionCoCo, OptionsASTOptionCoCo, Options
     @Override
     public void check(ASTOption node) {
         this.node = node;
-        this.type = this.types.get(node.getType());
+        this.type = node.getType();
 
         this.traverse(node);
     }
 
     @Override
     public void visit(ASTOption peer) {
-        String type = this.node.getType();
-
-        if (!this.type.allowsSubOptions()) Log.warn(this.getErrorMessage(type), this.node.get_SourcePositionStart());
+        if (!this.service.supportsOptions(this.type)) Log.warn(this.getErrorMessage(this.type), this.node.get_SourcePositionStart());
     }
 }

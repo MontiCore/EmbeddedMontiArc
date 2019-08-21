@@ -7,29 +7,26 @@ package de.monticore.lang.monticar.sol.grammars.options.cocos;
 
 import com.google.inject.Inject;
 import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOption;
-import de.monticore.lang.monticar.sol.grammars.options._ast.ASTPair;
+import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOptionProp;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsASTOptionCoCo;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsCoCoChecker;
 import de.monticore.lang.monticar.sol.grammars.options._visitor.OptionsVisitor;
-import de.monticore.lang.monticar.sol.grammars.options.cocos.types.OptionType;
-import de.monticore.lang.monticar.sol.grammars.options.cocos.types.props.Prop;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This context condition checks whether a given option declaration supports the given props.
  */
 public class SupportedPropCoCo implements OptionCoCo, OptionsASTOptionCoCo, OptionsVisitor {
-    protected final Map<String, OptionType> types;
+    protected final ComponentTypeService service;
     protected final Set<String> props;
 
     protected ASTOption node;
 
     @Inject
-    protected SupportedPropCoCo(Map<String, OptionType> types) {
-        this.types = types;
+    protected SupportedPropCoCo(ComponentTypeService service) {
+        this.service = service;
         this.props = new HashSet<>();
     }
 
@@ -53,20 +50,13 @@ public class SupportedPropCoCo implements OptionCoCo, OptionsASTOptionCoCo, Opti
 
     @Override
     public void check(ASTOption node) {
-        Set<String> supportedProps = this.getSupportedProps(node);
-
         this.props.clear();
         this.handle(node);
 
         for (String prop : this.props) {
-            if (!supportedProps.contains(prop)) Log.warn(this.getErrorMessage(node.getType(), prop), node.get_SourcePositionStart());
+            if (!this.service.supportsProp(node.getType(), prop))
+                Log.warn(this.getErrorMessage(node.getType(), prop), node.get_SourcePositionStart());
         }
-    }
-
-    protected Set<String> getSupportedProps(ASTOption node) {
-        OptionType type = this.types.get(node.getType());
-
-        return type.getProps().stream().map(Prop::getIdentifier).collect(Collectors.toSet());
     }
 
     @Override
@@ -89,7 +79,7 @@ public class SupportedPropCoCo implements OptionCoCo, OptionsASTOptionCoCo, Opti
     }
 
     @Override
-    public void visit(ASTPair pair) {
-        this.props.add(pair.getKey());
+    public void visit(ASTOptionProp pair) {
+        this.props.add(pair.getName());
     }
 }

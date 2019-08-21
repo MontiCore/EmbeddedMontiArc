@@ -7,23 +7,8 @@ package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 
 public class NoAPTGetInstallCoCoTests extends AbstractCoCoTests {
     @Override
-    protected EnvironmentCoCo getContextCondition() {
-        return new NoAPTGetInstallCoCo();
-    }
-
-    @Override
-    protected String getExpectedErrorCode() {
-        return "ENV0001";
-    }
-
-    @Override
-    protected String getExpectedErrorMessage() {
-        return "ENV0001 Please use 'INSTALL <package> [,<package>]' instead of 'RUN apt-get install'.";
-    }
-
-    @Override
-    protected Object[] getMessageParameters() {
-        return new Object[0];
+    protected Class<? extends EnvironmentCoCo> getContextCondition() {
+        return NoAPTGetInstallCoCo.class;
     }
 
     @Override

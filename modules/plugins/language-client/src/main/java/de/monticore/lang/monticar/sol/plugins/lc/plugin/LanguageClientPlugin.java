@@ -36,6 +36,16 @@ public class LanguageClientPlugin extends AbstractGeneratePlugin {
     }
 
     @Parameter(required = true)
+    protected String rootModel;
+
+    /**
+     * @return The root model for the language description.
+     */
+    public String getRootModel() {
+        return this.rootModel;
+    }
+
+    @Parameter(required = true)
     protected String grammar;
 
     /**
@@ -93,25 +103,5 @@ public class LanguageClientPlugin extends AbstractGeneratePlugin {
      */
     public String getServerArtifact() {
         return this.serverArtifact;
-    }
-
-    @Parameter(defaultValue = "models/language")
-    protected File modelsPath;
-
-    /**
-     * @return The path to the directory in which the models for the language(s) are located.
-     */
-    public File getModelsPath() {
-        return this.modelsPath;
-    }
-
-    @Parameter(defaultValue = "templates")
-    protected File templatesPath;
-
-    /**
-     * @return The path to the directory in which the templates are located.
-     */
-    public File getTemplatesPath() {
-        return this.templatesPath;
     }
 }

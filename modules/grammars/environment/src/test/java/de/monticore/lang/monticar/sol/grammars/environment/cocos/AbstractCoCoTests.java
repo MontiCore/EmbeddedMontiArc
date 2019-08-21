@@ -5,77 +5,61 @@
  */
 package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.monticar.sol.grammars.environment.EnvironmentModule;
 import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTEnvironmentCompilationUnit;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
-import de.monticore.lang.monticar.sol.grammars.environment._parser.EnvironmentParser;
+import de.monticore.lang.monticar.sol.grammars.environment._symboltable.EnvironmentModelLoader;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractCoCoTests {
     protected final EnvironmentCoCoChecker checker;
-    protected final EnvironmentParser parser;
+    protected final EnvironmentCoCo coCo;
+    protected final EnvironmentModelLoader loader;
 
     protected AbstractCoCoTests() {
-        this.parser = new EnvironmentParser();
-        this.checker = new EnvironmentCoCoChecker();
+        Injector injector = Guice.createInjector(new EnvironmentModule());
 
-        this.getContextCondition().registerTo(this.checker);
+        this.checker = new EnvironmentCoCoChecker();
+        this.coCo = injector.getInstance(this.getContextCondition());
+        this.loader = injector.getInstance(EnvironmentModelLoader.class);
+
+        this.coCo.registerTo(this.checker);
     }
 
-    protected abstract EnvironmentCoCo getContextCondition();
-
-    protected abstract String getExpectedErrorCode();
-
-    protected abstract String getExpectedErrorMessage();
-
-    protected abstract Object[] getMessageParameters();
+    protected abstract Class<? extends EnvironmentCoCo> getContextCondition();
 
     protected abstract int getExpectedViolations();
+
+    @BeforeAll
+    public static void beforeAll() {
+        Log.enableFailQuick(false);
+    }
 
     @BeforeEach
     public void before() {
         Log.getFindings().clear();
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
-    protected ASTEnvironmentCompilationUnit fetchAST(String folder) throws IOException {
+    protected ASTEnvironmentCompilationUnit fetchAST(String folder) {
         String className = this.getClass().getSimpleName().replace("CoCoTests", "");
-        String filename = String.format("%s.ddf", className);
-        File testFile = Paths.get("src/test/resources/cocos", folder, filename).toFile();
-        String contents = FileUtils.readFileToString(testFile, StandardCharsets.UTF_8);
+        ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/cocos"));
+        String qualifiedName = String.format("%s.%s", folder, className);
 
-        return this.parser.parse_String(contents).get();
+        return this.loader.loadModelsIntoScope(qualifiedName, modelPath).iterator().next();
     }
 
     @Test
-    protected void testGetErrorCode() {
-        assertEquals(
-                this.getExpectedErrorCode(),
-                this.getContextCondition().getErrorCode(),
-                "Error Codes do not match."
-        );
-    }
-
-    @Test
-    protected void testGetErrorMessage() {
-        assertEquals(
-                this.getExpectedErrorMessage(),
-                this.getContextCondition().getErrorMessage(this.getMessageParameters()),
-                "Error Messages do not match."
-        );
-    }
-
-    @Test
-    protected void testCheck() throws IOException {
+    protected void testCheck() {
         this.checker.checkAll(this.fetchAST("valid"));
 
         assertEquals(0, Log.getFindings().size(), "Number of violations does not match.");

@@ -16,6 +16,6 @@ export class ${grammarName}ClientContribution<#if hasHandwrittenPeer>Top</#if> e
     public readonly name: string = ${grammarName}Language.NAME;
 
     protected get globPatterns(): string[] {
-        return ["**/*.car"];
+        return ["**/*.${configuration.getFileExtension()}"];
     }
 }

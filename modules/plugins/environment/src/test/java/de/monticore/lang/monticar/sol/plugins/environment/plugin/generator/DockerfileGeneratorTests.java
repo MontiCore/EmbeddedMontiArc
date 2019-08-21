@@ -1,0 +1,70 @@
+/*
+ * Copyright (C) 2019 SE RWTH.
+ *
+ *  TODO: Include License.
+ */
+package de.monticore.lang.monticar.sol.plugins.environment.plugin.generator;
+
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTInstruction;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.configuration.EnvironmentGenerateConfiguration;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.collector.DDFCollector;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.partitioner.DDFPartitioner;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.sanitizer.DDFSanitizer;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.translator.DDFTranslator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+public class DockerfileGeneratorTests {
+    @Mock NotificationService notifications;
+    @Mock EnvironmentGenerateConfiguration configuration;
+    @Mock DDFCollector collector;
+    @Mock DDFSanitizer sanitizer;
+    @Mock DDFPartitioner partitioner;
+    @Mock DDFTranslator translator;
+
+    @InjectMocks DockerfileGenerator generator;
+
+    @Test
+    void testGetLabel() {
+        assertEquals("Environment Generator - Dockerfile Generation", generator.getLabel(), "Label does not match.");
+    }
+
+    @Test
+    void testGetPriority() {
+        assertEquals(100, generator.getPriority(), "Priorities do not match.");
+    }
+
+    @Test
+    void testGenerate() throws IOException {
+        GeneratorEngine engine = mock(GeneratorEngine.class);
+        List<List<ASTInstruction>> partitions = new ArrayList<>();
+        File outputPath = Paths.get("target/test-classes/DockerfileGenerator").toFile();
+        File targetArtifact = new File(outputPath, "Dockerfile");
+
+        when(configuration.getOutputPath()).thenReturn(outputPath);
+
+        generator.generate(engine);
+
+        assertTrue(targetArtifact.exists() && targetArtifact.delete(), "Dockerfile has not been created.");
+    }
+}

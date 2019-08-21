@@ -9,7 +9,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.Multibinder;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
+import de.monticore.lang.monticar.sol.grammars.environment._symboltable.EnvironmentLanguage;
 import de.monticore.lang.monticar.sol.grammars.environment.cocos.*;
+import de.monticore.symboltable.ResolvingConfiguration;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,6 +34,8 @@ public class EnvironmentModule extends AbstractModule {
         coCos.addBinding().to(ValidateEnvNameCoCo.class);
         coCos.addBinding().to(ValidatePortCoCo.class);
         coCos.addBinding().to(NoRelativeWorkDirCoCo.class);
+        coCos.addBinding().to(BlockedInstructionCoCo.class);
+        coCos.addBinding().to(ImportComponentCoCo.class);
     }
 
     @Provides
@@ -44,5 +48,14 @@ public class EnvironmentModule extends AbstractModule {
         else throw new Exception("The same error code has been used in more than one context condition.");
 
         return checker;
+    }
+
+    @Provides
+    protected ResolvingConfiguration providesResolvingConfiguration(EnvironmentLanguage language) {
+        ResolvingConfiguration configuration = new ResolvingConfiguration();
+
+        configuration.addDefaultFilters(language.getResolvingFilters());
+
+        return configuration;
     }
 }

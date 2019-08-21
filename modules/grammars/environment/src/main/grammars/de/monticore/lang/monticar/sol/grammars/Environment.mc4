@@ -22,53 +22,71 @@ grammar Environment extends de.monticore.MCBasics, de.monticore.MCLiterals {
      * EnvironmentCompilationUnit is the root parser rule which acts as container for the instructions.
      */
     EnvironmentCompilationUnit =
-        instruction:Instruction*
+        "PACKAGE" package:(Name || ".")+
+        Import*
+        main:Dockerfile
     ;
 
     start EnvironmentCompilationUnit;
 
     /**
-     * LabelInstruction acts as peer to "LABEL" of a Dockerfile.
+     * A rule which enables the import of Component Dockerfiles.
      */
-    LabelInstruction implements Instruction =
+    Import =
+        "IMPORT" import:(Name || ".")+
+    ;
+
+    /**
+     * A rule which specifies a Dockerfile including whether it is a component or not.
+     */
+    symbol Dockerfile =
+        component:["COMPONENT"]? "DOCKERFILE" Name
+        instruction:Instruction*
+    ;
+
+    // -----------------------------------------
+    // COMPONENT INSTRUCTIONS
+    // -----------------------------------------
+
+    /**
+     * Label acts as peer to "LABEL" of a Dockerfile.
+     */
+    Label implements Instruction =
         "LABEL" key:StringLiteral "=" value:StringLiteral
     ;
 
     /**
-     * InstallInstruction is a new instruction which acts as replacement for "RUN apt-get install".
+     * Install is a new instruction which acts as replacement for "RUN apt-get install".
      */
-    InstallInstruction implements Instruction =
+    Install implements Instruction =
         "INSTALL" package:(StringLiteral || ",")+
     ;
 
     /**
-     * RunInstruction acts as peer to "RUN" of a Dockerfile.
+     * Run acts as peer to "RUN" of a Dockerfile.
      */
-    RunInstruction implements Instruction =
-        "RUN" (
-            ("[" executable:StringLiteral ("," parameter:(StringLiteral || ",")+ )? "]") |
-            command:StringLiteral
-        )
+    Run implements Instruction =
+        "RUN" argument:CommandOrSplitCommand
     ;
 
     /**
-     * EnvInstruction acts as peer to "ENV" of a Dockerfile.
+     * Env acts as peer to "ENV" of a Dockerfile.
      */
-    EnvInstruction implements Instruction =
+    Env implements Instruction =
         "ENV" key:StringLiteral "="? value:StringLiteral
     ;
 
     /**
-     * ExposeInstruction acts as peer to "EXPOSE" of a Dockerfile.
+     * Expose acts as peer to "EXPOSE" of a Dockerfile.
      */
-    ExposeInstruction implements Instruction =
+    Expose implements Instruction =
         "EXPOSE" port:NatLiteral
     ;
 
     /**
-     * VolumeInstruction acts as peer to "VOLUME" of a Dockerfile.
+     * Volume acts as peer to "VOLUME" of a Dockerfile.
      */
-    VolumeInstruction implements Instruction =
+    Volume implements Instruction =
         "VOLUME" (
             ("[" volume:(StringLiteral || ",")+ "]") |
             volume:StringLiteral+
@@ -76,41 +94,203 @@ grammar Environment extends de.monticore.MCBasics, de.monticore.MCLiterals {
     ;
 
     /**
-     * WorkDirInstruction acts as peer to "WORKDIR" of a Dockerfile.
+     * WorkDir acts as peer to "WORKDIR" of a Dockerfile.
      */
-    WorkDirInstruction implements Instruction =
+    WorkDir implements Instruction =
         "WORKDIR" directory:StringLiteral
     ;
 
     /**
-     * ArgInstruction acts as peer to "ARG" of a Dockerfile.
+     * Arg acts as peer to "ARG" of a Dockerfile.
      */
-    ArgInstruction implements Instruction =
+    Arg implements Instruction =
         "ARG" name:StringLiteral ("=" defaultValue:StringLiteral)?
     ;
 
     /**
-     * ShellInstruction acts as peer to "SHELL" of a Dockerfile.
+     * Shell acts as peer to "SHELL" of a Dockerfile.
      */
-    ShellInstruction implements Instruction =
-        "SHELL" "[" executable:StringLiteral ("," parameter:(StringLiteral || ",")+ )? "]"
+    Shell implements Instruction =
+        "SHELL" argument:SplitCommand
+    ;
+
+    // -----------------------------------------
+    // NON-COMPONENT INSTRUCTIONS
+    // -----------------------------------------
+
+    /**
+     * From acts as peer to "FROM" of a Dockerfile.
+     */
+    From implements Instruction =
+        "FROM" image:StringLiteral // ("AS" name:StringLiteral)? // Multi-Stage builds are not supported.
+    ;
+
+    /**
+     * CMD acts as peer to "CMD" of a Dockerfile.
+     */
+    CMD implements Instruction =
+        "CMD" (argument:CommandOrSplitCommand |  ("[" parameter:(StringLiteral || ",")+ "]"))
+    ;
+
+    /**
+     * Add acts as peer to "Add" of a Dockerfile.
+     */
+    Add implements Instruction =
+        "ADD" operation:AddOrCopyOperation
+    ;
+
+    /**
+     * Copy acts as peer to "Copy" of a Dockerfile.
+     */
+    Copy implements Instruction =
+        "COPY" option:InstructionOption? operation:AddOrCopyOperation
+    ;
+
+    /**
+     * EntryPoint acts as peer to "EntryPoint" of a Dockerfile.
+     */
+    EntryPoint implements Instruction =
+        "ENTRYPOINT" argument:CommandOrSplitCommand
+    ;
+
+    /**
+     * User acts as peer to "User" of a Dockerfile.
+     */
+    User implements Instruction =
+        "USER" owner:UserGroup
+    ;
+
+    /**
+     * OnBuild acts as peer to "OnBuild" of a Dockerfile.
+     */
+    OnBuild implements Instruction =
+        "ONBUILD" Instruction
+    ;
+
+    /**
+     * StopSignal acts as peer to "StopSignal" of a Dockerfile.
+     */
+    StopSignal implements Instruction =
+        "STOPSIGNAL" signal:Literal
+    ;
+
+    /**
+     * HealthCheck acts as peer to "HealthCheck" of a Dockerfile.
+     */
+    HealthCheck implements Instruction =
+        "HEALTHCHECK" (
+            (option:InstructionOption* "CMD" command:StringLiteral) |
+            "NONE"
+        )
+    ;
+
+    // -----------------------------------------
+    // COMMON PRODUCTIONS
+    // -----------------------------------------
+
+    /**
+     * UserGroup is pair of user (and group) used for ownership options.
+     */
+    UserGroup =
+        user:Literal (":" group:Literal)?
+    ;
+
+    /**
+     * Grouped elements for Add and Copy.
+     */
+    AddOrCopyOperation =
+        ( "--chown" "=" owner:UserGroup )? (
+            (source:StringLiteral+ destination:StringLiteral) |
+            ("[" source:(StringLiteral || ",")+ "," destination:StringLiteral "]")
+        )
+    ;
+
+    /**
+     * Represents an option for some of the instructions.
+     */
+    InstructionOption =
+        option:Option "=" value:Literal
+    ;
+
+    /**
+     * Represents a command in the format [executable, param1, param2].
+     */
+    SplitCommand =
+        "[" executable:StringLiteral ( "," parameter:(StringLiteral || ",")+ )? "]"
+    ;
+
+    /**
+     * Represents a command as string or as split command.
+     */
+    CommandOrSplitCommand =
+         command:StringLiteral | split:SplitCommand
     ;
 
     // =========================================
     // LEXER RULES
     // =========================================
 
+    /*token Value = // Tokenizer will usually choose this token as it is in most cases the first longest match.
+        ( ~( ' ' | '\\' | '\r' | '\n' )+ ( '\\' ( '\r' | '\n' | '\r' '\n' )+ (' ')* )? )+
+    :{
+        java.lang.String[] lines = getText().split("\\\\");
+
+        for (int i = 0; i < lines.length; i++) {
+            lines[i] = lines[i].trim();
+        }
+
+        setText(java.lang.String.join(" ", lines));
+    };*/
+
+    /*
+     * Used to match options of instructions.
+     */
+    token Option =
+        '-' '-' ('-' | 'a' .. 'z')+
+    ;
+
     // =========================================
     // AST DEFINITIONS
     // =========================================
+
     ast Instruction = method String getType() {};
-    ast LabelInstruction = method String getType() { return "LABEL"; };
-    ast InstallInstruction = method String getType() { return "INSTALL"; };
-    ast RunInstruction = method String getType() { return "RUN"; };
-    ast EnvInstruction = method String getType() { return "ENV"; };
-    ast ExposeInstruction = method String getType() { return "EXPOSE"; };
-    ast VolumeInstruction = method String getType() { return "VOLUME"; };
-    ast WorkDirInstruction = method String getType() { return "WORKDIR"; };
-    ast ArgInstruction = method String getType() { return "ARG"; };
-    ast ShellInstruction = method String getType() { return "SHELL"; };
+
+
+    ast Label = method String getType() { return "LABEL"; };
+
+    ast Install = method String getType() { return "INSTALL"; };
+
+    ast Run = method String getType() { return "RUN"; };
+
+    ast Env = method String getType() { return "ENV"; };
+
+    ast Expose = method String getType() { return "EXPOSE"; };
+
+    ast Volume = method String getType() { return "VOLUME"; };
+
+    ast WorkDir = method String getType() { return "WORKDIR"; };
+
+    ast Arg = method String getType() { return "ARG"; };
+
+    ast Shell = method String getType() { return "SHELL"; };
+
+
+    ast From = method String getType() { return "FROM"; };
+
+    ast CMD = method String getType() { return "CMD"; };
+
+    ast Add = method String getType() { return "ADD"; };
+
+    ast Copy = method String getType() { return "COPY"; };
+
+    ast EntryPoint = method String getType() { return "ENTRYPOINT"; };
+
+    ast User = method String getType() { return "USER"; };
+
+    ast OnBuild = method String getType() { return "ONBUILD"; };
+
+    ast StopSignal = method String getType() { return "STOPSIGNAL"; };
+
+    ast HealthCheck = method String getType() { return "HEALTHCHECK"; };
+
 }

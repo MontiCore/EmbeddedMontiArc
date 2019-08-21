@@ -43,12 +43,7 @@ public interface LanguageClientConfiguration extends GeneratePluginConfiguration
     File getServerArtifact() throws IOException;
 
     /**
-     * @return A list of File pointing to the the models in the models directory given in the configuration.
+     * @return The root model of the language description.
      */
-    List<File> getModels();
-
-    /**
-     * @return A File pointing to the directory where the templates are located.
-     */
-    File getTemplatesPath();
+    String getRootModel();
 }

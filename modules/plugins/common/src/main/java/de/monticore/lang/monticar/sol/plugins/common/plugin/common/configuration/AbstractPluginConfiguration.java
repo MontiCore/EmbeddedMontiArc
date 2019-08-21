@@ -21,7 +21,7 @@ public abstract class AbstractPluginConfiguration implements PluginConfiguration
 
     @Override
     public int getPriority() {
-        return Integer.MAX_VALUE;
+        return 50000;
     }
 
     @Override
@@ -30,9 +30,6 @@ public abstract class AbstractPluginConfiguration implements PluginConfiguration
 
         return this.plugin.getMavenProject();
     }
-
-    @Override
-    public abstract File getStatePath();
 
     protected File resolveFromBaseDirectory(File file) {
         return this.resolveFromBaseDirectory(file.getPath());

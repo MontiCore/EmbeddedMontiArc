@@ -34,6 +34,7 @@ public abstract class AbstractPlugin extends AbstractMojo implements Plugin {
         try {
             this.doExecute();
         } catch(Exception exception) {
+            exception.printStackTrace();
             throw new MojoExecutionException(exception.getMessage(), exception);
         }
     }

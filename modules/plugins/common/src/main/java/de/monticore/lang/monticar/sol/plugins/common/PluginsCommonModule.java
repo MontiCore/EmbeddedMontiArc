@@ -7,11 +7,15 @@ package de.monticore.lang.monticar.sol.plugins.common;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.AbstractPlugin;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.PluginContribution;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.common.mp.ModelPathService;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.common.mp.ModelPathServiceImpl;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationServiceImpl;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm.*;
 
 import java.util.Comparator;
 import java.util.List;
@@ -29,10 +33,14 @@ public class PluginsCommonModule extends AbstractModule {
     protected void configure() {
         this.addBindings();
         this.addMultiBindings();
+        this.installModules();
     }
 
     private void addBindings() {
         bind(NotificationService.class).to(NotificationServiceImpl.class);
+        bind(NodeModulesResolver.class).to(NodeModulesResolverImpl.class);
+        bind(NPMPackageService.class).to(NPMPackageServiceImpl.class);
+        bind(ModelPathService.class).to(ModelPathServiceImpl.class);
         bind(AbstractPlugin.class).toInstance(this.plugin);
     }
 
@@ -45,6 +53,12 @@ public class PluginsCommonModule extends AbstractModule {
                 Multibinder.newSetBinder(binder(), PluginContribution.class);
 
         contributions.addBinding().to(NotificationServiceImpl.class);
+        contributions.addBinding().to(NPMPackageServiceImpl.class);
+    }
+
+    private void installModules() {
+        this.install(new FactoryModuleBuilder().implement(NodeModules.class, NodeModulesImpl.class).build(NodeModulesFactory.class));
+        this.install(new FactoryModuleBuilder().implement(NPMPackage.class, NPMPackageImpl.class).build(NPMPackageFactory.class));
     }
 
     @Provides

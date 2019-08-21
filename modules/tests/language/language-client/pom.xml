@@ -79,9 +79,9 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <rootModel>de.monticore.lang.monticar.sol.tests.lc.EmbeddedMontiArcMath</rootModel>
                             <grammar>de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcMath</grammar>
                             <extension>emam</extension>
-                            <outputDirectory>${project.build.directory}/generated-sources/language-client</outputDirectory>
                             <grammarModule>tests-language-l</grammarModule>
                             <serverArtifact>tests-language-ls:tests-language-ls-${project.version}.jar</serverArtifact>
                             <excludedKeywords>

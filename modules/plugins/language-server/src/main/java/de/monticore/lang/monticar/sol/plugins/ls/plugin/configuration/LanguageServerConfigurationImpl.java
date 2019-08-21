@@ -52,11 +52,6 @@ public class LanguageServerConfigurationImpl extends AbstractGeneratePluginConfi
     }
 
     @Override
-    public File getStatePath() {
-        return new File(this.getOutputPath(), "state");
-    }
-
-    @Override
     public File getSourceCodeOutputPath() {
         return new File(this.getOutputPath(), "sourcecode");
     }

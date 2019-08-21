@@ -1,2 +1,0 @@
-ENV "SOME_ENV" = "Hello World"
-ENV "SOME_ENV" "Hello World"

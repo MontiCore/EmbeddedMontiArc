@@ -8,9 +8,9 @@ package de.monticore.lang.monticar.sol.grammars.options.visitor;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOption;
-import de.monticore.lang.monticar.sol.grammars.options._ast.ASTPair;
+import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOptionProp;
 import de.monticore.lang.monticar.sol.grammars.options._visitor.OptionsVisitor;
-import de.monticore.lang.monticar.sol.grammars.options.cocos.types.OptionType;
+import de.monticore.lang.monticar.sol.grammars.options.cocos.ComponentTypeService;
 import de.monticore.lang.monticar.sol.runtime.grammar.ast.ASTProperty;
 import de.monticore.mcliterals._ast.ASTBooleanLiteral;
 import de.monticore.mcliterals._ast.ASTDoubleLiteral;
@@ -18,19 +18,18 @@ import de.monticore.mcliterals._ast.ASTStringLiteral;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Map;
 import java.util.Stack;
 
 @Singleton
 public class OptionsSerializerImpl implements OptionsSerializer, OptionsVisitor {
-    protected final Map<String, OptionType> types;
+    protected final ComponentTypeService service;
     protected final ASTProperty<JSONObject> values;
     protected final ASTProperty<String> keys;
     protected final Stack<ASTOption> options;
 
     @Inject
-    protected OptionsSerializerImpl(Map<String, OptionType> types) {
-        this.types = types;
+    protected OptionsSerializerImpl(ComponentTypeService service) {
+        this.service = service;
         this.values = new ASTProperty<>();
         this.keys = new ASTProperty<>();
         this.options = new Stack<>();
@@ -55,7 +54,7 @@ public class OptionsSerializerImpl implements OptionsSerializer, OptionsVisitor 
         values.put("type", type);
         values.put("props", props);
 
-        if (this.types.get(type).allowsSubOptions()) props.put("elements", new JSONArray());
+        if (this.service.supportsOptions(type)) props.put("elements", new JSONArray());
 
         this.values.put(node, values);
         this.options.push(node);
@@ -69,12 +68,12 @@ public class OptionsSerializerImpl implements OptionsSerializer, OptionsVisitor 
     }
 
     @Override
-    public void visit(ASTPair node) {
-        this.keys.put(this.options.peek(), node.getKey());
+    public void visit(ASTOptionProp node) {
+        this.keys.put(this.options.peek(), node.getName());
     }
 
     @Override
-    public void endVisit(ASTPair node) {
+    public void endVisit(ASTOptionProp node) {
         this.keys.removeFrom(this.options.peek());
     }
 

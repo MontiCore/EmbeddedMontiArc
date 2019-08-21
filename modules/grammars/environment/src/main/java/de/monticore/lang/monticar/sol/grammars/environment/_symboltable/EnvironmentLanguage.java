@@ -1,0 +1,26 @@
+/*
+ * Copyright (C) 2019 SE RWTH.
+ *
+ *  TODO: Include License.
+ */
+package de.monticore.lang.monticar.sol.grammars.environment._symboltable;
+
+import com.google.inject.Singleton;
+import de.monticore.ast.ASTNode;
+import de.monticore.modelloader.ModelingLanguageModelLoader;
+
+@Singleton
+public class EnvironmentLanguage extends EnvironmentLanguageTOP {
+    public EnvironmentLanguage() {
+        this("EnvironmentDescription", "ddf");
+    }
+
+    protected EnvironmentLanguage(String langName, String fileEnding) {
+        super(langName, fileEnding);
+    }
+
+    @Override
+    protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
+        return new EnvironmentModelLoader(this);
+    }
+}

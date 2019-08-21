@@ -9,20 +9,21 @@ import com.google.inject.Inject;
 import de.monticore.lang.monticar.sol.grammars.options._ast.ASTOption;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsASTOptionCoCo;
 import de.monticore.lang.monticar.sol.grammars.options._cocos.OptionsCoCoChecker;
-import de.monticore.lang.monticar.sol.grammars.options.cocos.types.OptionType;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This context condition checks whether the type of a given option is supported.
  */
 public class SupportedTypeCoCo implements OptionCoCo, OptionsASTOptionCoCo {
-    protected final Map<String, OptionType> types;
+    protected final ComponentTypeService service;
 
     @Inject
-    protected SupportedTypeCoCo(Map<String, OptionType> types) {
-        this.types = types;
+    protected SupportedTypeCoCo(ComponentTypeService service) {
+        this.service = service;
     }
 
     @Override
@@ -46,8 +47,7 @@ public class SupportedTypeCoCo implements OptionCoCo, OptionsASTOptionCoCo {
     @Override
     public void check(ASTOption node) {
         String type = node.getType();
-        Set<String> types = this.types.keySet();
 
-        if (!types.contains(type)) Log.warn(this.getErrorMessage(type), node.get_SourcePositionStart());
+        if (!this.service.isTypeRegistered(type)) Log.warn(this.getErrorMessage(type), node.get_SourcePositionStart());
     }
 }

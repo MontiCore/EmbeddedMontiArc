@@ -5,8 +5,8 @@
  */
 package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 
-import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTEnvInstruction;
-import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTEnvInstructionCoCo;
+import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTEnv;
+import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTEnvCoCo;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
 import de.monticore.mcliterals._ast.ASTStringLiteral;
 import de.se_rwth.commons.logging.Log;
@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ValidateEnvNameCoCo implements EnvironmentCoCo, EnvironmentASTEnvInstructionCoCo {
+/**
+ * This context condition checks whether an environmental variable has the right format.
+ */
+public class ValidateEnvNameCoCo implements EnvironmentCoCo, EnvironmentASTEnvCoCo {
     @Override
     public String getErrorCode() {
         return "ENV0004";
@@ -37,7 +40,7 @@ public class ValidateEnvNameCoCo implements EnvironmentCoCo, EnvironmentASTEnvIn
     }
 
     @Override
-    public void check(ASTEnvInstruction node) {
+    public void check(ASTEnv node) {
         // https://stackoverflow.com/questions/2821043/allowed-characters-in-linux-environment-variable-names
         ASTStringLiteral envNode = node.getKey();
         String env = envNode.getValue();
