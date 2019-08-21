@@ -14,6 +14,8 @@ Prev: [Maven Project tutorial](docs/maven.md)    |    Next: [MontiSim overview](
 
 > chmod +x filename.sh
 > msbuild -verbosity:quiet build\hardware-emulator.sln /m /p:Configuration=Release /p:Platform=x64
+> sudo apt-get install -y default-jdk
+> sudo apt-get install -y openjdk-8-jdk
 ---
 
 Prev: [Maven Project tutorial](docs/maven.md)    |    Next: [MontiSim overview](docs/montisim.md)
