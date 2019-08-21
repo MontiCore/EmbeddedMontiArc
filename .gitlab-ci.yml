@@ -29,4 +29,4 @@ linux_build:
   image: maven:3-jdk-8
   
   script:
-  - apt-file search libXext.so.6
+  - apt-cache search libxext
