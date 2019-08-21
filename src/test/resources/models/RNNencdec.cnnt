@@ -1,4 +1,4 @@
-configuration ResNeXt50{
+configuration RNNencdec{
     num_epoch:10
     batch_size:64
     normalize:true

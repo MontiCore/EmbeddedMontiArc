@@ -201,6 +201,7 @@ public class GenerationTest extends AbstractSymtabTest {
         assertTrue(Log.getFindings().size() == 0);
     }
 
+    @Test
     public void testRNNtestForGluon() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/models/", "-r", "RNNtest", "-b", "GLUON", "-f", "n", "-c", "n"};
@@ -210,9 +211,6 @@ public class GenerationTest extends AbstractSymtabTest {
 
 
     /*@Test
-=======
-    @Test
->>>>>>> develop
     public void testGluonReinforcementModelGymEnvironment() {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "cartpole.Master", "-b", "GLUON", "-f", "n", "-c", "n"};
