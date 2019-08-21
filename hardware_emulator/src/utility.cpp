@@ -20,6 +20,7 @@
  */
 #include "utility.h"
 #include <iomanip>
+#include <dirent.h>
 
 #if defined _WIN32 || defined _WIN64
     #include <WinSock2.h>
@@ -34,7 +35,6 @@
     #include <limits.h>
     #include <stdlib.h>
     #include <unistd.h>
-    #include <dirent.h>
 #endif
 
 uint BIT_MASKS[] = {
@@ -261,6 +261,24 @@ FS::File::File(std::string folder, std::string name){
     }
 }
 
+std::list<FS::File> FS::directory_files(const std::string &folder ){
+    std::list<File> files;
+    DIR *d;
+    struct dirent *dir;
+    d = opendir(folder.c_str());
+    if (d) {
+        while ((dir = readdir(d)) != NULL) {
+            if (dir->d_type == DT_REG){
+                files.emplace_back(File(folder, dir->d_name));
+            }
+        }
+        closedir(d);
+    } else {
+        perror("opendir() error");
+    }
+    return files;
+}
+
 #if defined _WIN32 || defined _WIN64
 std::string FS::append(const std::string &path, const std::string &file){
     if (path.size() == 0) return file;
@@ -282,9 +300,7 @@ std::string FS::canonical(const std::string &path){
     std::cerr << "PathCanonicalizeA() error" << std::endl;
     return "";
 }
-std::list<FS::File> FS::directory_files(const std::string &folder ){
-    return std::list<FS::File>();
-}
+
 #else
 std::string FS::append(const std::string &path, const std::string &file){
     if (path.size() == 0) return '/' + file;
@@ -306,23 +322,7 @@ std::string FS::canonical(const std::string &path){
     perror("realpath() error");
     return "";
 }
-std::list<FS::File> FS::directory_files(const std::string &folder ){
-    std::list<File> files;
-    DIR *d;
-    struct dirent *dir;
-    d = opendir(folder.c_str());
-    if (d) {
-        while ((dir = readdir(d)) != NULL) {
-            if (dir->d_type == DT_REG){
-                files.emplace_back(File(folder, dir->d_name));
-            }
-        }
-        closedir(d);
-    } else {
-        perror("opendir() error");
-    }
-    return files;
-}
+
 
 #endif
 
