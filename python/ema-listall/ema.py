@@ -12,7 +12,7 @@ def print_projects(group, abs):
 
 import gitlab
 
-gl=gitlab.Gitlab('https://git.rwth-aachen.de/', private_token='e7czjh4RiC3yh4RuxyLy')
+gl=gitlab.Gitlab('https://git.rwth-aachen.de/', private_token='kfyiVbKz-8V1rqn_bKCy')
 
 gl.auth()
 
