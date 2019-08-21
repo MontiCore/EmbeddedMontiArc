@@ -22,9 +22,9 @@ package simulation.vehicle;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import commons.controller.commons.BusEntry;
 import simulation.EESimulator.*;
@@ -115,32 +115,37 @@ public class VehicleActuator extends ImmutableEEComponent {
 			case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT:
 			case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT:
 			case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT:
-				for (EEComponent comp : getTargetsByMessageId().get(BusEntry.ACTUATOR_BRAKE)) {
+				for (EEComponent comp : getTargetsByMessageId().getOrDefault(BusEntry.ACTUATOR_BRAKE_CURRENT, Collections.emptyList())) {
 					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_BRAKE_CURRENT, actualTime, this.getId(), comp);
 					this.getSimulator().addEvent(msg);
 				}
 				break;
 			case VEHICLE_ACTUATOR_TYPE_THROTTLE:
+				for (EEComponent comp : getTargetsByMessageId().getOrDefault(BusEntry.ACTUATOR_THROTTLE_CURRENT, Collections.emptyList())) {
+					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_THROTTLE_CURRENT, actualTime, this.getId(), comp);
+					this.getSimulator().addEvent(msg);
+				}
+				break;
 			case VEHICLE_ACTUATOR_TYPE_MOTOR:
-				for (EEComponent comp : getTargetsByMessageId().get(BusEntry.ACTUATOR_ENGINE)) {
+				for (EEComponent comp : getTargetsByMessageId().getOrDefault(BusEntry.ACTUATOR_ENGINE_CURRENT, Collections.emptyList())) {
 					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_ENGINE_CURRENT, actualTime, this.getId(), comp);
 					this.getSimulator().addEvent(msg);
 				}
 				break;
 			case VEHICLE_ACTUATOR_TYPE_STEERING:
-				for (EEComponent comp : getTargetsByMessageId().get(BusEntry.ACTUATOR_STEERING)) {
+				for (EEComponent comp : getTargetsByMessageId().getOrDefault(BusEntry.ACTUATOR_STEERING_CURRENT, Collections.emptyList())) {
 					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_STEERING_CURRENT, actualTime, this.getId(), comp);
 					this.getSimulator().addEvent(msg);
 				}
 				break;
 			case VEHICLE_ACTUATOR_TYPE_GEAR:
-				for (EEComponent comp : getTargetsByMessageId().get(BusEntry.ACTUATOR_GEAR)) {
+				for (EEComponent comp : getTargetsByMessageId().getOrDefault(BusEntry.ACTUATOR_GEAR_CURRENT, Collections.emptyList())) {
 					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_GEAR_CURRENT, actualTime, this.getId(), comp);
 					this.getSimulator().addEvent(msg);
 				}
 				break;
 			case VEHICLE_ACTUATOR_TYPE_CLUTCH:
-				for (EEComponent comp : getTargetsByMessageId().get(BusEntry.ACTUATOR_CLUTCH)) {
+				for (EEComponent comp : getTargetsByMessageId().getOrDefault(BusEntry.ACTUATOR_CLUTCH_CURRENT, Collections.emptyList())) {
 					BusMessage msg = new BusMessage(this.actuatorValueCurrent, 6, BusEntry.ACTUATOR_CLUTCH_CURRENT, actualTime, this.getId(), comp);
 					this.getSimulator().addEvent(msg);
 				}
@@ -255,5 +260,36 @@ public class VehicleActuator extends ImmutableEEComponent {
 		if (event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE && event.getTarget() == this){
 			setActuatorValueTarget((double) ((BusMessage) event).getMessage());
 		}
+	}
+
+	/**
+	 * Resets value after collision
+	 */
+	public void reset() {
+		switch (actuatorType) {
+		case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT:
+		case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT:
+		case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT:
+		case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT:
+		case VEHICLE_ACTUATOR_TYPE_MOTOR:
+			this.setActuatorValueCurrent(0.0d);
+			break;
+		case VEHICLE_ACTUATOR_TYPE_BRAKE:
+			this.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MIN);
+			break;
+		case VEHICLE_ACTUATOR_TYPE_THROTTLE:
+			this.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_MIN);
+			break;
+		case VEHICLE_ACTUATOR_TYPE_GEAR:
+			this.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_GEAR_MIN);
+			break;
+		case VEHICLE_ACTUATOR_TYPE_CLUTCH:
+			this.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_CLUTCH_POSITION_MIN);
+			break;
+		case VEHICLE_ACTUATOR_TYPE_STEERING:
+			break;
+		default:
+			throw new IllegalStateException("Unknown Actuator Type: " + this.actuatorType);
+		}		
 	}
 }

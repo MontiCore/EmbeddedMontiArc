@@ -73,8 +73,6 @@ public class ModelicaBuilderTest {
         double expectedWheelDistLeftRightBackSide = referenceVDM.getValue("TW_r");
         double expectedWheelDistToFront = referenceVDM.getValue("L_1");
         double expectedWheelDistToBack = referenceVDM.getValue("L_2");
-        Optional<Bus> expectedControllerBus = Optional.empty();
-        Optional<FunctionBlockInterface> expectedController = Optional.empty();
         Optional<FunctionBlockInterface> expectedNavigation = Optional.empty();
 
         // Calculate expected remaining values
@@ -86,7 +84,7 @@ public class ModelicaBuilderTest {
         ModelicaPhysicalVehicleBuilder builder = new ModelicaPhysicalVehicleBuilder();
         ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) builder.buildPhysicalVehicle();
 
-        Vehicle vehicle = new Vehicle(physicalVehicle);
+        Vehicle vehicle = physicalVehicle.getVehicle();
 
         // Test default/not set parameters
         Assert.assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
@@ -171,8 +169,6 @@ public class ModelicaBuilderTest {
         builder.setWheelDistToFront(expectedWheelDistToFront);
         builder.setWheelDistToBack(expectedWheelDistToBack);
         ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) builder.buildPhysicalVehicle();
-
-        Vehicle vehicle = new Vehicle(physicalVehicle);
 
         // Test custom set parameters
         Assert.assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));

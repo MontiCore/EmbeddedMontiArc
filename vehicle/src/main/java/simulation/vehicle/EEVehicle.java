@@ -71,8 +71,8 @@ public class EEVehicle {
     private List<VehicleActuator> actuatorList = new LinkedList<>();
 
     private List<Bridge> bridgeList = new LinkedList<>();
-
-    double allowedVelocityByStreetType = 0.;
+    
+    private boolean collision = false;
 
 
     /*
@@ -212,8 +212,16 @@ public class EEVehicle {
 	 */
 	//TODO: wert des updates nach update auf den bus schreiben
 	public void notifyActuator(Instant actualTime){
-		for (VehicleActuator actuator : actuatorList) {
-			actuator.update(actualTime);
+		if(!this.collision) {
+			for (VehicleActuator actuator : actuatorList) {
+				actuator.update(actualTime);
+			}
+		}
+		else {
+			for (VehicleActuator actuator : actuatorList) {
+				actuator.reset();
+			}
+			this.collision = false;
 		}
 	}
 
@@ -266,7 +274,7 @@ public class EEVehicle {
 	
 	/**
 	 * Add actuator to actuator list and register at target buses
-	 * @param actuator to be registered
+	 * @param actuator actuator to be registered
 	 */
 	private void addActuator(VehicleActuator actuator) {
 		for(List<EEComponent> targets : actuator.getTargetsByMessageId().values()) {
@@ -303,103 +311,6 @@ public class EEVehicle {
 		fileWriter.flush();
 		fileWriter.close();
 	}
-
-
-
-	public static EEVehicle createBasicEEVehicle(PhysicalVehicle pyhsicalVehicle) {
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		HashMap<Bus, List<EEComponent>> busStructure = new HashMap<>();
-		EEVehicle eeVehicle = new EEVehicle(eeSimulator, busStructure);
-		Bus bus = new InstantBus(eeSimulator);
-		HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-		targetsByMessageId.put(SpeedSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new SpeedSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(LocationSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new LocationSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(SteeringAngleSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new SteeringAngleSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(DistanceToRightSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new DistanceToRightSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(DistanceToLeftSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new DistanceToLeftSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(WeatherSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new WeatherSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(CameraSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new CameraSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId, Collections.emptyList()));
-
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(CompassSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new CompassSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(LeftBackWheelDistanceToStreetSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new LeftBackWheelDistanceToStreetSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(LeftFrontWheelDistanceToStreetSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new LeftFrontWheelDistanceToStreetSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(RightFrontWheelDistanceToStreetSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new RightFrontWheelDistanceToStreetSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-     
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(RightBackWheelDistanceToStreetSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new RightBackWheelDistanceToStreetSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-    
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(StreetTypeSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new StreetTypeSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(DayNightSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new DayNightSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(LeftFrontDistanceSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new LeftFrontDistanceSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(RightFrontDistanceSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new RightFrontDistanceSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(ObstacleSensor.getSensorType(), Collections.singletonList(bus));
-        eeVehicle.addSensor(new ObstacleSensor(pyhsicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
-        
-
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(BusEntry.ACTUATOR_ENGINE_CURRENT, Collections.singletonList(bus));
-        eeVehicle.addActuator(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR, Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_ENGINE), targetsByMessageId));
-        // Create the brakes
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(BusEntry.ACTUATOR_BRAKE_CURRENT, Collections.singletonList(bus));
-        eeVehicle.addActuator(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
-        eeVehicle.addActuator(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
-        eeVehicle.addActuator(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
-        eeVehicle.addActuator(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
-        // Create the steering
-        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        targetsByMessageId.put(BusEntry.ACTUATOR_STEERING_CURRENT, Collections.singletonList(bus));
-        eeVehicle.addActuator(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MIN, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_STEERING), targetsByMessageId));
- 
-        
-		return eeVehicle;
-	}
-
-
     
     public Optional<AbstractSensor> getSensorByType(BusEntry type) {
 		Predicate<EEComponent> IsSensorType = new Predicate<EEComponent>() {
@@ -409,6 +320,10 @@ public class EEVehicle {
 		};
     	return Optional.ofNullable(Iterables.find(this.sensorList, IsSensorType, null));
     }
+
+	public void setCollision(boolean collision) {
+		this.collision = collision;
+	}
 
 }
 

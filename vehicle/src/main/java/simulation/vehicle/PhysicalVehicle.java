@@ -227,6 +227,7 @@ public abstract class PhysicalVehicle implements IPhysicalVehicle {
     @Override
     public void setCollision(boolean collision){
         this.collision = collision;
+        this.vehicle.getEEVehicle().setCollision(true);
     }
 
     /**
@@ -269,8 +270,8 @@ public abstract class PhysicalVehicle implements IPhysicalVehicle {
      * @param Reference to the vehicle this PhysicalVehicle 
      */
     protected void setVehicle(Vehicle vehicle) {
-    	if(vehicle != null) {
-			throw new IllegalStateException("Vehicle can be set once.");
+    	if(this.vehicle != null) {
+			throw new IllegalStateException("Vehicle can only be set once.");
     	}
     	if(physicalVehicleInitialised) {
 			throw new IllegalStateException("Vehicle can only be set before initialisation.");

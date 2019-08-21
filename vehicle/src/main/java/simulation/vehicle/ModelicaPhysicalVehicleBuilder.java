@@ -79,9 +79,9 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         }
         localVelocity.setEntry(0, localVelocity.getEntry(0) / wheelRadius);
         // Set initial wheel rotation rates
-        ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_1_0", localVelocity.getEntry(0) / wheelRadius);
-        ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_2_0", localVelocity.getEntry(0) / wheelRadius);
-        ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_3_0", localVelocity.getEntry(0) / wheelRadius);
-        ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_4_0", localVelocity.getEntry(0) / wheelRadius);
+        ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_1_0", localVelocity.getEntry(0));
+        ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_2_0", localVelocity.getEntry(0));
+        ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_3_0", localVelocity.getEntry(0));
+        ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_4_0", localVelocity.getEntry(0));
 	}
 }
