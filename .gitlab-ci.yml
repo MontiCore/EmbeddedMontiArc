@@ -29,4 +29,5 @@ linux_build:
   image: maven:3-jdk-8
   
   script:
-  - apt-get install libxext6
+  - apt update
+  - apt --assume-yes install libxext6
