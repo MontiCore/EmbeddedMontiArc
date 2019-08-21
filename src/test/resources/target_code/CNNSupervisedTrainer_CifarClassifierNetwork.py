@@ -140,6 +140,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
 
                     softmax_ = self._networks[0](data_)
 
+
                     loss = \
                         loss_function(softmax_, softmax_label)
 
@@ -172,10 +173,11 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                if True:
+                if True: 
                     softmax_ = mx.nd.zeros((10,), ctx=mx_context)
 
                     softmax_ = self._networks[0](data_)
+
 
                 predictions = [
                     mx.nd.argmax(softmax_, axis=1)
@@ -193,10 +195,11 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                if True:
+                if True: 
                     softmax_ = mx.nd.zeros((10,), ctx=mx_context)
 
                     softmax_ = self._networks[0](data_)
+
 
                 predictions = [
                     mx.nd.argmax(softmax_, axis=1)

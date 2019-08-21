@@ -12,3 +12,11 @@
 ${tc.include(stream, "PYTHON_INLINE")}
 </#if>
 </#list>
+
+<#list tc.architecture.unrolls as unroll>
+<#if unroll.isTrainable()>
+                    ${tc.join(tc.getUnrollOutputNames(unroll), ", ")} = self._networks[${unroll?index}](${tc.join(tc.getUnrollInputNames(unroll), ", ")})
+<#else>
+${tc.include(unroll, "PYTHON_INLINE")}
+</#if>
+</#list>

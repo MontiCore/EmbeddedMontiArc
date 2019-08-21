@@ -104,4 +104,6 @@ public:
     }
 };
 
+
+
 #endif // CNNPREDICTOR_VGG16

@@ -40,7 +40,6 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     }
 
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer, NetDefinitionMode netDefinitionMode){
-        System.err.println("include called. templateName: " + templateWithoutFileEnding);
         String templatePath = relativePath + templateWithoutFileEnding + FTL_FILE_ENDING;
         Map<String, Object> ftlContext = new HashMap<>();
         ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);

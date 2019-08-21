@@ -16,6 +16,14 @@ ${tc.include(stream, "CPP_INLINE")}
 </#if>
 </#list>
 
+<#list tc.architecture.unrolls as unroll>
+<#if unroll.isTrainable()>
+    _predictor_${unroll?index}_.predict(${tc.join(tc.getUnrollInputNames(unroll), ", ")}, ${tc.join(tc.getUnrollOutputNames(unroll), ", ")});
+<#else>
+${tc.include(unroll, "CPP_INLINE")}
+</#if>
+</#list>
+
 <#list tc.architecture.outputs as output>
 <#assign shape = output.ioDeclaration.type.dimensions>
 <#if shape?size == 1>

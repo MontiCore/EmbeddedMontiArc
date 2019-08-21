@@ -104,6 +104,22 @@ class Net_${unroll?index}(gluon.HybridBlock):
 ${tc.include(unroll, "ARCHITECTURE_DEFINITION")}
 
     def hybrid_forward(self, F, ${tc.join(tc.getUnrollInputNames(unroll), ", ")}):
+${tc.include(unroll, "FORWARD_FUNCTION")}
+        return ${tc.join(tc.getUnrollOutputNames(unroll), ", ")}
+
+</#if>
+</#list>
+
+<#list tc.architecture.unrolls as unroll>
+<#if unroll.isTrainable()>
+class Net_${unroll?index}(gluon.HybridBlock):
+    def __init__(self, data_mean=None, data_std=None, **kwargs):
+        super(Net_${unroll?index}, self).__init__(**kwargs)
+        self.last_layers = {}
+        with self.name_scope():
+${tc.include(unroll, "ARCHITECTURE_DEFINITION")}
+
+    def hybrid_forward(self, F, ${tc.join(tc.getUnrollInputNames(unroll), ", ")}):
         outputs = []
 ${tc.include(unroll, "FORWARD_FUNCTION")}
 <#if tc.getUnrollOutputNames(unroll)?size gt 1>

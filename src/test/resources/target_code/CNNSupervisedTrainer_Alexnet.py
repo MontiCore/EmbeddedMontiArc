@@ -140,6 +140,7 @@ class CNNSupervisedTrainer_Alexnet:
 
                     predictions_ = self._networks[0](data_)
 
+
                     loss = \
                         loss_function(predictions_, predictions_label)
 
@@ -172,10 +173,11 @@ class CNNSupervisedTrainer_Alexnet:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                if True:
+                if True: 
                     predictions_ = mx.nd.zeros((10,), ctx=mx_context)
 
                     predictions_ = self._networks[0](data_)
+
 
                 predictions = [
                     mx.nd.argmax(predictions_, axis=1)
@@ -193,10 +195,11 @@ class CNNSupervisedTrainer_Alexnet:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                if True:
+                if True: 
                     predictions_ = mx.nd.zeros((10,), ctx=mx_context)
 
                     predictions_ = self._networks[0](data_)
+
 
                 predictions = [
                     mx.nd.argmax(predictions_, axis=1)

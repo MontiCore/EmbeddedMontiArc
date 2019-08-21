@@ -1,9 +1,16 @@
 import mxnet as mx
 import logging
 import os
+
 <#list tc.architecture.streams as stream>
 <#if stream.isTrainable()>
 from CNNNet_${tc.fullArchitectureName} import Net_${stream?index}
+</#if>
+</#list>
+
+<#list tc.architecture.unrolls as unroll>
+<#if unroll.isTrainable()>
+from CNNNet_${tc.fullArchitectureName} import Net_${unroll?index}
 </#if>
 </#list>
 
@@ -57,6 +64,15 @@ class ${tc.fileNameWithoutEnding}:
         self.networks[${stream?index}].collect_params().initialize(self.weight_initializer, ctx=context)
         self.networks[${stream?index}].hybridize()
         self.networks[${stream?index}](<#list tc.getStreamInputDimensions(stream) as dimensions>mx.nd.zeros((${tc.join(dimensions, ",")},), ctx=context)<#sep>, </#list>)
+</#if>
+</#list>
+
+<#list tc.architecture.unrolls as unroll>
+<#if unroll.isTrainable()>
+        self.networks[${unroll?index}] = Net_${unroll?index}(data_mean=data_mean, data_std=data_std)
+        self.networks[${unroll?index}].collect_params().initialize(self.weight_initializer, ctx=context)
+        self.networks[${unroll?index}].hybridize()
+        self.networks[${unroll?index}](<#list tc.getUnrollInputDimensions(unroll) as dimensions>mx.nd.zeros((${tc.join(dimensions, ",")},), ctx=context)<#sep>, </#list>)
 </#if>
 </#list>
 
