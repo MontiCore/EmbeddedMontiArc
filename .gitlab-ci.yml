@@ -77,6 +77,8 @@ linux_test:
 linux_maven_master:
   stage: maven
   image: maven:3-jdk-8
+  before_script:
+  - apt install libxext6
   script: 
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
   only:
