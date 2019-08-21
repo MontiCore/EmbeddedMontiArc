@@ -58,6 +58,7 @@ linux_build:
   - g++ --version
   
   script:
+  - scripts/unix/build_dependencies.sh
   - scripts/unix/build_emulator.sh
   artifacts:
     paths:
