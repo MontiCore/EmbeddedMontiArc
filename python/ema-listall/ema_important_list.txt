@@ -59,7 +59,7 @@ https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMath    176
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMathOpt    17642
 
 
-https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators    9837    (30 projects)
+https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators    9837 
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator    31533
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/hardware_emulator    23385
 https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/montisim-cli    18573
