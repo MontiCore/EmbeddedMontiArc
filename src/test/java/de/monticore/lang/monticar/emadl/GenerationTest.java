@@ -210,9 +210,6 @@ public class GenerationTest extends AbstractSymtabTest {
 
 
     /*@Test
-=======
-    @Test
->>>>>>> develop
     public void testGluonReinforcementModelGymEnvironment() {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "cartpole.Master", "-b", "GLUON", "-f", "n", "-c", "n"};
