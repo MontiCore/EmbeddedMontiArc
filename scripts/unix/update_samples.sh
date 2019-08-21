@@ -20,31 +20,32 @@
 # *******************************************************************************
 #
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-pushd $DIR/../samples
+SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+#Import print()
+. $SCRIPTS_DIR/print.sh
+ROOT_DIR="$SCRIPTS_DIR/../.."
 
-echo "**************************************"
-echo "        Updating simple sample"
-echo "**************************************"
+pushd $ROOT_DIR/samples
+
+print "Updating simple sample..."
 pushd simple
 make
+print "Copying simple sample..."
 cp "sample_simple.so" "../../hardware_emulator/bin/"
 popd
 
 
-echo "**************************************"
-echo "     Updating funccalling sample"
-echo "**************************************"
+print "Updating funccalling sample..."
 pushd funccalling
 make
+print "Copying funccalling sample..."
 cp "sample_functioncalling.so" "../../hardware_emulator/bin/"
 popd
 
-echo "**************************************"
-echo "      Updating syscall sample"
-echo "**************************************"
+print "Updating syscall sample..."
 pushd syscall_so
 make
+print "Copying syscall sample..."
 cp "sample_syscall.so" "../../hardware_emulator/bin/"
 popd
 

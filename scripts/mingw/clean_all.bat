@@ -30,6 +30,7 @@ set ROOT_DIR=%~dp0\..\..
 echo [SCRIPT] Cleaning all build files...
 
 pushd %ROOT_DIR%
+
 echo [SCRIPT] Cleaning pe-parse...
 cd pe-parse
 rmdir /S /Q build

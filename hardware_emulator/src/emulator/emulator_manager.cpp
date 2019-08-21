@@ -33,7 +33,9 @@ bool EmulatorManager::init( const char *config, const char *default_config ) {
     available_threads = std::thread::hardware_concurrency();
     available_autopilots = "";
     
-    path = fs::canonical( "./" );
+    printf("TEST3b\n");
+    path = fs::current_path();
+    printf("TEST4a\n");
     MessageParser parser( config );
     while ( parser.has_next() ) {
         if ( parser.is_cmd( "autopilots_folder" ) )
@@ -41,6 +43,7 @@ bool EmulatorManager::init( const char *config, const char *default_config ) {
         else
             parser.unknown();
     }
+    printf("TEST5\n");
     
     Log::info << Log::tag << "autopilots_folder path: " << path << "\n";
     Log::info << Log::tag << "Default config:\n" << default_config;

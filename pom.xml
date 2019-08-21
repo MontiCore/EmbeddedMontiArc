@@ -30,7 +30,7 @@
     
     
     <properties>
-        <commons.version>1.0.8</commons.version>
+        <commons.version>1.0.9</commons.version>
         
         
         <wagon.provider.version>2.6</wagon.provider.version>

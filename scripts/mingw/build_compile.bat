@@ -29,8 +29,8 @@
 IF [%1] == [] (SET TARGET="Release") else (SET TARGET="%1")
 
 if not exist build mkdir build
-cd build
 echo [SCRIPT] Building with target %TARGET%...
+cd build
 cmake -DCMAKE_BUILD_TYPE=%TARGET% -G "MinGW Makefiles" ../
 echo [SCRIPT] Compiling...
 mingw32-make

@@ -34,7 +34,8 @@
 */
 bool test_simple_sample( OS::OS *os, bool windows ) {
     Computer computer;
-    
+    std::filesystem::path path = std::filesystem::current_path();
+    std::cout << "Path: " << path << std::endl;
     computer.init();
     if ( !computer.loaded() )
         return false;

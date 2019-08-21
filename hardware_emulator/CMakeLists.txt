@@ -4,11 +4,8 @@ project(hardware-emulator)
 
 #Required Packages
 find_package(Threads)
-find_package(JNI)
+find_package(JNI REQUIRED)
 
-if (NOT JNI_FOUND)
-message("Could not find JNI")
-endif()
 set(LIBS_DIR "UNKNOWN")
 if (CMAKE_HOST_WIN32)
   list(APPEND HARDWARE_EMU_LIBRARIES
@@ -23,6 +20,10 @@ if (CMAKE_HOST_WIN32)
 
 elseif(CMAKE_HOST_UNIX)
   set(LIBS_DIR "libs/unix")
+
+  list(APPEND HARDWARE_EMU_LIBRARIES
+    dl
+  )
 endif()
 
 set(LIBRARY_NAME "HardwareEmulator")
@@ -150,8 +151,6 @@ if ( CMAKE_COMPILER_IS_GNUCC )
   list(APPEND HARDWARE_EMU_LIBRARIES
     pthread
     stdc++fs
-    Dbghelp
-    #dl
   )
 endif()
 
@@ -198,6 +197,7 @@ install(
   TARGETS ${LIBRARY_NAME} 
   RUNTIME
     DESTINATION "${PROJECT_SOURCE_DIR}/../src/main/resources/${SYS_NAME}"
+    LIBRARY DESTINATION "${PROJECT_SOURCE_DIR}/../src/main/resources/${SYS_NAME}"
     CONFIGURATIONS Release
 )
 
