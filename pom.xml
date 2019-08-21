@@ -58,7 +58,7 @@
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>
 		<java.version>1.8</java.version>
-        <jacoco.plugin>0.8.1</jacoco.plugin>
+        <jacoco.plugin>0.8.2</jacoco.plugin>
     </properties>
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>

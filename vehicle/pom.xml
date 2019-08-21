@@ -66,7 +66,7 @@
         <dependency>
             <groupId>org.siani.javafmi</groupId>
             <artifactId>fmu-wrapper</artifactId>
-            <version>2.24.0</version>
+            <version>LATEST</version>
         </dependency>
 
         <dependency>
@@ -86,8 +86,8 @@
                 <version>2.22.1</version>
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
-                    <!-- Set root directory to ensure same execution context in subprojects (e.g. for Log in test mode) -->
-                    <workingDirectory>${project.parent.basedir}</workingDirectory>
+                    <!-- Run the tests where the resources are located -->
+                    <workingDirectory>${project.basedir}/target/classes</workingDirectory>
                 </configuration>
             </plugin>
         </plugins>

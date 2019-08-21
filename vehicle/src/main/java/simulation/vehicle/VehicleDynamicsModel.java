@@ -77,7 +77,7 @@ public class VehicleDynamicsModel {
         } catch (LibraryService.LibraryException e) {
             e.printStackTrace();
         }
-        return new Simulation(name);
+        return new Simulation(LibraryService.getWorkingDirectory()+name);
     }
 
     /**
