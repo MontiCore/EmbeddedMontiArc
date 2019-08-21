@@ -34,8 +34,8 @@ if [ ! -d "build" ]; then
   mkdir build
 fi
 print "Building with target ${TARGET}..."
-cd build
+pushd build
 cmake -DCMAKE_BUILD_TYPE=$TARGET -G "Unix Makefiles" ../
 print "Compiling..."
 make
-cd ..
+popd
