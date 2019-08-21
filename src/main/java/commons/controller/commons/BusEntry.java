@@ -96,6 +96,10 @@ public enum BusEntry {
     ACTUATOR_CLUTCH("ACTUATOR_CLUTCH"),
     //Current Value
     ACTUATOR_CLUTCH_CURRENT("ACTUATOR_CLUTCH_CURRENT"),
+    //Target Value
+    ACTUATOR_THROTTLE("ACTUATOR_THROTTLE"),
+    //Current Value
+    ACTUATOR_THROTTLE_CURRENT("ACTUATOR_THROTTLE_CURRENT"),
     //***************************************************************************
     //*  Computervision Entries                                                 *
     //***************************************************************************
