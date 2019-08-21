@@ -38,7 +38,7 @@ public class LayerNameCreator {
             stage = name(stream, stage, new ArrayList<>());
         }
         for (UnrollSymbol unroll : architecture.getUnrolls()) {
-            stage = name(unroll, stage, new ArrayList<>());
+            stage = name(unroll.getBody(), stage, new ArrayList<>());
         }
     }
 
@@ -55,8 +55,6 @@ public class LayerNameCreator {
             return nameSerialComposite((SerialCompositeElementSymbol) architectureElement, stage, streamIndices);
         } else if (architectureElement instanceof ParallelCompositeElementSymbol) {
             return nameParallelComposite((ParallelCompositeElementSymbol) architectureElement, stage, streamIndices);
-        }else if (architectureElement instanceof UnrollSymbol) {
-            return nameUnroll((UnrollSymbol) architectureElement, stage, streamIndices);
         } else{
             if (architectureElement.isAtomic()){
                 if (architectureElement.getMaxSerialLength().get() > 0){
