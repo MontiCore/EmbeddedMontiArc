@@ -104,7 +104,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
 
     public void include(UnrollSymbol unrollElement, Writer writer, NetDefinitionMode netDefinitionMode){
         ArchitectureElementData previousElement = getCurrentElement();
-        setCurrentElement(unrollElement);
+        //setCurrentElement(unrollElement);
 
         if(unrollElement.getBody().getElements().get(0).isInput()) {
             include(unrollElement.getBody().getElements().get(0).getResolvedThis().get(), writer, netDefinitionMode);
@@ -151,9 +151,6 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         else if (architectureElement instanceof LayerSymbol){
             include((LayerSymbol) architectureElement, writer, netDefinitionMode);
         }
-        else if (architectureElement instanceof UnrollSymbol){
-            include((UnrollSymbol) architectureElement, writer, netDefinitionMode);
-        }
         else if (architectureElement instanceof ConstantSymbol) {
             include((ConstantSymbol) architectureElement, writer, netDefinitionMode);
         }
@@ -163,17 +160,26 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     }
 
     public void include(ArchitectureElementSymbol architectureElementSymbol, String netDefinitionMode) {
-        //System.err.println("INCLUDE: " + ((SerialCompositeElementSymbol)architectureElementSymbol).getElements().toString());
-        System.err.println(architectureElementSymbol.getSpannedScope().getSpanningSymbol().get().getClass());
-        System.err.println("isUnroll? " + (architectureElementSymbol.getSpannedScope().getSpanningSymbol().get() instanceof UnrollSymbol));
         include(architectureElementSymbol, NetDefinitionMode.fromString(netDefinitionMode));
     }
+
+    public void include(UnrollSymbol unrollSymbol, String netDefinitionMode) {
+        include(unrollSymbol, NetDefinitionMode.fromString(netDefinitionMode));
+    }
+
 
     public void include(ArchitectureElementSymbol architectureElement, NetDefinitionMode netDefinitionMode){
         if (getWriter() == null){
             throw new IllegalStateException("missing writer");
         }
         include(architectureElement, getWriter(), netDefinitionMode);
+    }
+
+    public void include(UnrollSymbol unroll, NetDefinitionMode netDefinitionMode){
+        if (getWriter() == null){
+            throw new IllegalStateException("missing writer");
+        }
+        include(unroll, getWriter(), netDefinitionMode);
     }
 
     public Set<String> getStreamInputNames(SerialCompositeElementSymbol stream) {
