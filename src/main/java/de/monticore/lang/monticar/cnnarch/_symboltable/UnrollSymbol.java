@@ -112,9 +112,7 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
     protected void setResolvedThis(UnrollSymbol resolvedThis) {
         if (resolvedThis != null){
             //resolvedThis.putInScope(getSpannedScope());
-
         }
-        System.err.println("setResolvedThis() called");
         this.resolvedThis = resolvedThis;
     }
 
@@ -126,13 +124,10 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
                 getDeclaration();
                 resolveExpressions();
 
-                System.err.println("UnrollSymbol resolveSequences called!2");
                 //resolve the unroll call
                 getBody().resolveOrError();
-                System.err.println("BODY1: " +getBody().getElements().toString());
                 UnrollSymbol resolvedUnroll = getDeclaration().call(this);
                 setResolvedThis(resolvedUnroll);
-                System.err.println("HERE1");
 
             }
         }

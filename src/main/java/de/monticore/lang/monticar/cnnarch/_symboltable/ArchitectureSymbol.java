@@ -91,7 +91,6 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
 
     public List<VariableSymbol> getInputs() {
-        System.err.println("THE inputs: " + inputs);
         return inputs;
     }
 
@@ -124,13 +123,14 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         }
 
         for (UnrollSymbol unroll : unrolls) {
-            //unroll.checkIfResolvable();
-
-            try {
-                unroll.resolve();
-            }
-            catch (ArchResolveException e) {
-                // Do nothing; error is already logged
+            if(unroll.isResolvable());
+            {
+                try {
+                    unroll.resolve();
+                }
+                catch (ArchResolveException e) {
+                    // Do nothing; error is already logged
+                }
             }
         }
     }

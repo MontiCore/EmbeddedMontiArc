@@ -114,8 +114,6 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
 
     public UnrollSymbol call(UnrollSymbol layer) throws ArchResolveException{
         checkForSequence(layer.getArguments());
-
-
         return layer;
 
     }

@@ -33,9 +33,7 @@ public class CheckElementInputs extends CNNArchSymbolCoCo {
         }
 
         for (UnrollSymbol unroll : architecture.getUnrolls()) {
-            System.err.println("BEFORE check");
             unroll.getBody().checkInput();
-            System.err.println("AFTER check");
         }
     }
 }

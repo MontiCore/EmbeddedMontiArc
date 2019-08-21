@@ -117,7 +117,6 @@ public class ArchTypeSymbol extends CommonSymbol {
 
     public void setDimensionSymbols(List<ArchSimpleExpressionSymbol> dimensions) {
         this.dimensions = dimensions;
-        System.err.println("Setting dimensions: " + dimensions.toString());
     }
 
     public List<ArchSimpleExpressionSymbol> getDimensionSymbols() {
