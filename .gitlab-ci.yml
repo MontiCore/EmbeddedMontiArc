@@ -24,13 +24,6 @@ stages:
 - test
 - maven
 
-include:
-  template: License-Management.gitlab-ci.yml
-  
-license_management:
-  variables:
-    MAVEN_CLI_OPTS: --settings=settings.xml
- 
 windows_build:
   stage: build
   script: 
