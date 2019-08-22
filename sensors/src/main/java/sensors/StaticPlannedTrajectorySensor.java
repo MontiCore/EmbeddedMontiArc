@@ -21,20 +21,24 @@
 package sensors;
 
 import commons.controller.commons.BusEntry;
+import commons.simulation.IPhysicalVehicle;
 import commons.simulation.Sensor;
 import org.apache.commons.lang3.Validate;
+import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EESimulator;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class StaticPlannedTrajectorySensor implements Sensor {
+public abstract class StaticPlannedTrajectorySensor extends AbstractSensor implements Sensor {
 
     private final BusEntry type;
     private final List<Double> trajectory;
 
-    public StaticPlannedTrajectorySensor(BusEntry type, List<Double> trajectory) {
+    public StaticPlannedTrajectorySensor(BusEntry type, List<Double> trajectory, IPhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(physicalVehicle, simulator, null, null);
         this.type = Validate.notNull(type);
         Validate.notNull(trajectory);
         List<Double> defensiveCopy = new ArrayList<>(trajectory);

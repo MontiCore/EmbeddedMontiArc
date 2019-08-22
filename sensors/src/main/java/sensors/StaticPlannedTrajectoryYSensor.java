@@ -21,11 +21,18 @@
 package sensors;
 
 import commons.controller.commons.BusEntry;
+import commons.simulation.IPhysicalVehicle;
+import simulation.EESimulator.EESimulator;
+
 import java.util.List;
 
 public class StaticPlannedTrajectoryYSensor extends StaticPlannedTrajectorySensor {
 
-    public StaticPlannedTrajectoryYSensor(List<Double> trajectoryY) {
-        super(BusEntry.PLANNED_TRAJECTORY_Y, trajectoryY);
+    public StaticPlannedTrajectoryYSensor(List<Double> trajectoryY, IPhysicalVehicle physicalVehicle, EESimulator simulator) {
+        super(BusEntry.PLANNED_TRAJECTORY_Y, trajectoryY, physicalVehicle, simulator);
+    }
+
+    public void calculateValue(){
+
     }
 }

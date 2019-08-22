@@ -62,7 +62,7 @@ public class EEVehicle {
 
     private EESimulator eeSimulator;
 
-    //private AutoPilot autoPilot;
+    //private DirectModelAsFunctionBlock autoPilot;
 
     private List<Bus> busList = new LinkedList<>();
 
@@ -251,7 +251,7 @@ public class EEVehicle {
 	 * Add sensor to sensor list and register at target buses
 	 * @param sensor to be registered
 	 */
-	private void addSensor(AbstractSensor sensor) {
+	public void addSensor(AbstractSensor sensor) {
 		for (List<EEComponent> targets : sensor.getTargetsByMessageId().values()) {
 			for (EEComponent target : targets) {
 				if (target.getComponentType() == EEComponentType.BUS) {
