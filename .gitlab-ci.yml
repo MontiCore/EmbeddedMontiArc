@@ -25,8 +25,8 @@ stages:
 - linux
 
 
-include:
-  template: License-Management.gitlab-ci.yml
+#include:
+#  template: License-Management.gitlab-ci.yml
   
 license_management:
   tags:
