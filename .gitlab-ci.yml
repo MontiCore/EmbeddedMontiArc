@@ -32,7 +32,8 @@ license_management:
   tags:
   - se
   variables:
-    MAVEN_CLI_OPTS: --settings=settings.xml
+    MAVEN_CLI_OPTS: --settings=settings.xml --debug
+    CI_DEBUG_TRACE: "true"
 
 
 masterJobLinux:
