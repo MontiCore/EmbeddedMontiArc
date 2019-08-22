@@ -23,6 +23,9 @@ stages:
 - windows
 - linux
 
+include:
+  template: License-Management.gitlab-ci.yml
+
 masterJobLinux:
   stage: linux
   image: maven:3-jdk-8
