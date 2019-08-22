@@ -1,4 +1,5 @@
 rm -rf target
+# (c) https://github.com/MontiCore/monticore  
 java -jar ../embedded-montiarc-emadl-generator-0.3.0-jar-with-dependencies.jar -m src/emadl/models/ -r cNNCalculator.Connector -o target -b CAFFE2
 
 rm -rf build
