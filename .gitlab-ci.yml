@@ -29,6 +29,8 @@ include:
   template: License-Management.gitlab-ci.yml
   
 license_management:
+  tags:
+  - Windows10
   variables:
     MAVEN_CLI_OPTS: --settings=settings.xml
 
