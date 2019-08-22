@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # CooperativeIntersection
 
 ## Simulator and compiler installation

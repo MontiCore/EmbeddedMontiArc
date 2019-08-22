@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba;
 conforms to de.monticore.lang.monticar.generator.roscpp.RosToEmamTagSchema;
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 source /opt/ros/kinetic/setup.bash
 
 if [ -z "$COINCAR_SIM_HOME" ]

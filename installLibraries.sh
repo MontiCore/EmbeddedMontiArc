@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 set -e
 
 # Change EMA_INSTALL_BASE to your desired install directory(must be absolute)

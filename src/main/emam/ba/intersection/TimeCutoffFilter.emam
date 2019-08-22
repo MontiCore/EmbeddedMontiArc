@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba.intersection;
 
 component TimeCutoffFilter<N1 m = 10>(adaptable Q timeCutoff){
