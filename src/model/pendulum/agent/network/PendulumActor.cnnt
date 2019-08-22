@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration PendulumActor {
     agent_name: "PendulumActor"
     

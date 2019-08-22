@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Reinforcement Learning Agent for Pendulum-v0
 
 EMADL models of a DDPG and TD3 Agent for the [OpenAi Gym environment](https://gym.openai.com/envs/Pendulum-v0/) `Pendulum-v0`. Based on the models, code is generated that trains on the mentioned environment.
