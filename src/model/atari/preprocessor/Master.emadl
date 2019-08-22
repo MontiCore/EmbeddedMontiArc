@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package atari.preprocessor;
 
 import atari.preprocessor.util.Greyscale;

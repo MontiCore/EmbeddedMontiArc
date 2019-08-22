@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package atari.preprocessor.util;
 
 component ImageJoiner<Z height=105, Z width=80> {

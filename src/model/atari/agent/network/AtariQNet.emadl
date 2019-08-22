@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package atari.agent.network;
 
 component AtariQNet {

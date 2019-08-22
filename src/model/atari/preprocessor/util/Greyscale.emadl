@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package atari.preprocessor.util;
 
 component Greyscale<Z height=2, Z width=2> {

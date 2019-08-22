@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Reinforcement Learning Agent for Pong-v0
 
 EMADL model of a DQN Agent for the [OpenAi Gym environment](https://gym.openai.com/envs/Pong-v0/) `Pong-v0`. Based on the model, code is generated that trains on the mentioned environment.
