@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 See [] for a video on how to setup a project from the MontiCar language family.
 
 A short step-by-step guide:

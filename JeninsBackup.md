@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Shell script to backup repos into Jenkins
 ```
 count=$(find  -type d -name ".git" | wc -l)

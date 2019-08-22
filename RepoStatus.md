@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Repository Status
 
 | Project | Code Quality | Build Status | Test Coverage |

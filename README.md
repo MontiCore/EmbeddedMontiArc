@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Documentation of EmbeddedMontiArcMath 
 
 * [Repository Status and Overview](RepoStatus.md)

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package controller;
 struct carInfo{ Q(0 m : 0.00001 m : 0.5 m) wheelRadius;
 					Q(0 : 0.00001 : 50) steerLock;

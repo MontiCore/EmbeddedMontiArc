@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package controller;
 component targetSpeedComputation<Z(0:1:19) lookaheadDist>{
 	ports 

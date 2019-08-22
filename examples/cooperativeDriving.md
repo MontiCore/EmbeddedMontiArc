@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 Examples for Cooperative Driving
 =========
 

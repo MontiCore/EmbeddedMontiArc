@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Documentation of CI setups
 
 # Travis and Coveralls
