@@ -30,7 +30,7 @@ include:
   
 license_management:
   tags:
-  - docker
+  - se
   variables:
     MAVEN_CLI_OPTS: --settings=settings.xml
 
