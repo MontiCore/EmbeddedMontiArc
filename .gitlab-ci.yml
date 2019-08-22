@@ -22,6 +22,7 @@
 stages:
 - windows
 - linux
+- test
 
 include:
   template: License-Management.gitlab-ci.yml
