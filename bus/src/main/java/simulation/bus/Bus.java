@@ -107,7 +107,7 @@ public abstract class Bus extends MutableEEComponent {
 	}
 
 	protected void registerMessageAtSimulator(BusMessage msg) {
-		for (EEComponent target : this.targetsByMessageId.get(msg.getMessageID())) {
+		for (EEComponent target : this.targetsByMessageId.getOrDefault(msg.getMessageID(), Collections.emptyList())) {
 			this.getSimulator().addEvent(msg.forwardTo(target));
 		}
 	}

@@ -129,7 +129,7 @@ public class Vehicle {
     private EEVehicle eeVehicle;
 
     /** PhysicalVehicle that models the physical part of this vehicle */
-    private Optional<PhysicalVehicle> physicalVehicle;
+    private PhysicalVehicle physicalVehicle;
 
     /** Internal Attributes */
     /** Last navigation target for vehicle */
@@ -151,10 +151,12 @@ public class Vehicle {
         this.statusLogger = new StatusLogger();
         // Create the navigation unit
         this.navigation = Optional.empty();
-        
-        this.physicalVehicle = Optional.empty();
+        //Set physicalVehicle
+        this.physicalVehicle = physicalVehicle;
+        physicalVehicle.setVehicle(this);
         //Set eeVehicle
         this.eeVehicle = createEEVehicle(physicalVehicle);
+        physicalVehicle.initializeActuators();
         // Initialise last navigation target with empty optional
         this.lastNavigationTarget = Optional.empty();
         // Initialise camera image with empty optional
@@ -239,22 +241,36 @@ public class Vehicle {
         components.add(new ObstacleSensor(physicalVehicle, eeSimulator, Collections.emptyList(), targetsByMessageId));
         
         
-        //create all actuators
+        //Create all actuators
+        //Create Motor
         targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
         targetsByMessageId.put(BusEntry.ACTUATOR_ENGINE_CURRENT, Collections.singletonList(bus));
         components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR, Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_ENGINE), targetsByMessageId));
-        // Create the brakes
+        // Create brakes
         targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
         targetsByMessageId.put(BusEntry.ACTUATOR_BRAKE_CURRENT, Collections.singletonList(bus));
+        components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE, Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MIN, Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MAX, Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
         components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
         components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
         components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
         components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_BRAKE), targetsByMessageId));
-        // Create the steering
+        // Create steering
         targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
         targetsByMessageId.put(BusEntry.ACTUATOR_STEERING_CURRENT, Collections.singletonList(bus));
         components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MIN, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_STEERING), targetsByMessageId));
-
+        //Create Clutch
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(BusEntry.ACTUATOR_CLUTCH_CURRENT, Collections.singletonList(bus));
+        components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_CLUTCH, Vehicle.VEHICLE_DEFAULT_CLUTCH_POSITION_MIN, Vehicle.VEHICLE_DEFAULT_CLUTCH_POSITION_MAX, Vehicle.VEHICLE_DEFAULT_CLUTCH_POSITION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_CLUTCH), targetsByMessageId));
+        //Create Gear
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(BusEntry.ACTUATOR_GEAR_CURRENT, Collections.singletonList(bus));
+        components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR, Vehicle.VEHICLE_DEFAULT_GEAR_MIN, Vehicle.VEHICLE_DEFAULT_GEAR_MAX, Vehicle.VEHICLE_DEFAULT_GEAR_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_GEAR), targetsByMessageId));
+        //Create Throttle
+        targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(BusEntry.ACTUATOR_THROTTLE_CURRENT, Collections.singletonList(bus));
+        components.add(new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE, Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_MIN, Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_MAX, Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_RATE, eeSimulator, Collections.singletonList(BusEntry.ACTUATOR_THROTTLE), targetsByMessageId));
+        
         componentsByBus.put(bus, components);
         return new EEVehicle(eeSimulator, componentsByBus);
     }
@@ -266,6 +282,7 @@ public class Vehicle {
     public void executeLoopIteration(Instant time) {
     	//update physical vehicle?
     	this.eeVehicle.executeLoopIteration(time);
+    	this.physicalVehicle.setCollision(false);
     }
     
 	public EEVehicle getEEVehicle() {
@@ -273,10 +290,7 @@ public class Vehicle {
 	}
 	
 	public boolean isInitialized() {
-		if(this.physicalVehicle.isPresent()) {
-			return this.physicalVehicle.get().getPhysicalVehicleInitialised();
-		}
-		return false;
+			return this.physicalVehicle.getPhysicalVehicleInitialised();
 	}
 
     /**
@@ -358,14 +372,6 @@ public class Vehicle {
      */
     public void setMaxTemporaryAllowedVelocity(double maxTemporaryAllowedVelocity) {
         this.maxTemporaryAllowedVelocity = maxTemporaryAllowedVelocity;
-    }
-
-    public void setPhysicalVehicle(PhysicalVehicle pyhsicalVehicle) {
-    	if(physicalVehicle.isPresent()) {
-    		throw new IllegalStateException("PhysicalVehicle can only be set onece.");
-    	}
-    	this.physicalVehicle = Optional.of(pyhsicalVehicle);
-    	this.physicalVehicle.get().initializeActuators();
     }
 
     //TODO: What is it and do we still need it?

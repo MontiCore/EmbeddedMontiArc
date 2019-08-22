@@ -93,11 +93,16 @@ public abstract class PhysicalVehicleBuilder {
         this.wheelDistToFront.ifPresent(physicalVehicle::setWheelDistToFront);
         this.wheelDistToBack.ifPresent(physicalVehicle::setWheelDistToBack);
         
+        //create vehicle that pyhsicalVehicle belongs to
+        new Vehicle(physicalVehicle);
+        
         physicalVehicle.initPhysics();
         
         this.position.ifPresent(physicalVehicle::setPosition);
         this.rotation.ifPresent(rotation -> physicalVehicle.setRotation(new BlockRealMatrix(rotation.getMatrix())));
     	
+       
+        
         return physicalVehicle;
     }
     

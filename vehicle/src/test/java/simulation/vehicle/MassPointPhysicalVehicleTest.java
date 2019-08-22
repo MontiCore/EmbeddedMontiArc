@@ -135,7 +135,7 @@ public class MassPointPhysicalVehicleTest {
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
-        Vehicle vehicle = new Vehicle(physicalVehicle);
+        Vehicle vehicle = physicalVehicle.getVehicle();
         
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
         motorReference.update(Instant.EPOCH.plusMillis(33));
@@ -197,7 +197,7 @@ public class MassPointPhysicalVehicleTest {
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
-        Vehicle vehicle = new Vehicle(physicalVehicle);
+        Vehicle vehicle = physicalVehicle.getVehicle();
         
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
         steeringReference.update(Instant.EPOCH.plusMillis(33));
@@ -250,7 +250,7 @@ public class MassPointPhysicalVehicleTest {
         double steeringValueReference = steering.getActuatorValueCurrent();
 
         // Execute loop iteration
-        Vehicle vehicle = new Vehicle(physicalVehicle);
+        Vehicle vehicle = physicalVehicle.getVehicle();
         
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
 
