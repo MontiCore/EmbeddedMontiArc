@@ -1,0 +1,37 @@
+@REM
+@REM
+@REM  ******************************************************************************
+@REM  MontiCAR Modeling Family, www.se-rwth.de
+@REM  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+@REM  All rights reserved.
+@REM
+@REM  This project is free software; you can redistribute it and/or
+@REM  modify it under the terms of the GNU Lesser General Public
+@REM  License as published by the Free Software Foundation; either
+@REM  version 3.0 of the License, or (at your option) any later version.
+@REM  This library is distributed in the hope that it will be useful,
+@REM  but WITHOUT ANY WARRANTY; without even the implied warranty of
+@REM  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+@REM  Lesser General Public License for more details.
+@REM
+@REM  You should have received a copy of the GNU Lesser General Public
+@REM  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+@REM *******************************************************************************
+@REM
+
+@REM -------------------------------------------------------------------------------------------------------------
+@REM This script builds and compiles the hardware_emulator (and installs it to the Maven project)
+@REM -------------------------------------------------------------------------------------------------------------
+
+@echo off
+set SCRIPTS_DIR=%~dp0
+set ROOT_DIR=%~dp0\..\..
+set EMU_DIR=%ROOT_DIR%\hardware_emulator
+
+IF [%1] == [] (SET GENERATOR="Visual Studio 16 2019") else (SET GENERATOR=%1)
+
+pushd %EMU_DIR%
+call %SCRIPTS_DIR%\build_compile.bat hardware-emulator Release %GENERATOR%
+echo [SCRIPT] Installing Emulator in Maven project...
+msbuild -verbosity:quiet build\INSTALL.vcxproj /m /p:Configuration=Release /p:PlatformShortName=x64
+popd

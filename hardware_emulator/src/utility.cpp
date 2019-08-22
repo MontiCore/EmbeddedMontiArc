@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 #include "utility.h"
 #include <iomanip>
 
@@ -7,6 +27,14 @@
     #pragma comment(lib, "Ws2_32.lib")
     #include <iostream>
     #include "windows.h"
+    #include "shlwapi.h"
+    #include <DbgHelp.h>
+#else
+    #include <dirent.h>
+    #include <dlfcn.h>
+    #include <limits.h>
+    #include <stdlib.h>
+    #include <unistd.h>
 #endif
 
 uint BIT_MASKS[] = {
@@ -140,7 +168,6 @@ void ConsoleColor::Console::set_color( Color which ) {
 
 #endif
 #if defined _WIN32 || defined _WIN64
-#include <DbgHelp.h>
 
 bool undercorate_function_name( const std::string &name, Array<char> &buffer ) {
     return UnDecorateSymbolName( name.c_str(), buffer.begin(), buffer.size(), UNDNAME_COMPLETE );
@@ -191,7 +218,6 @@ Library::~Library() {
 
 #else
 
-#include <dlfcn.h>
 
 bool Library::init( const char *name ) {
     auto n = name + std::string(".so");
@@ -218,4 +244,127 @@ Library::~Library() {
 
 #endif
 
+FS::File::File(std::string folder, std::string name){
+    this->path = append(folder, name);
+    int dot_pos = -1;
+    for (int i = name.size()-1; i >= 0; --i){
+        if (name[i] == '.') {
+            dot_pos = i;
+            break;
+        }
+    }
+    if (dot_pos != -1){
+        this->name = name.substr(0, dot_pos);
+        this->extension = name.substr(dot_pos);
+    } else {
+        this->name = name;
+    }
+}
+
+
+
+#if defined _WIN32 || defined _WIN64
+std::string FS::append(const std::string &path, const std::string &file){
+    if (path.size() == 0) return file;
+    return path[path.size()-1] == '\\' ? path + file : path + '\\' + file;
+}
+
+std::string FS::current_path(){
+    TCHAR buff[MAX_PATH];
+    if (GetCurrentDirectory(sizeof(buff), buff) != 0)
+        return std::string(buff);
+    std::cerr << "GetCurrentDirectory() error" << std::endl;
+    return "";
+}
+
+std::string FS::canonical(const std::string &path){
+    TCHAR buff[MAX_PATH];
+    if (PathCanonicalizeA(buff, path.c_str()))
+        return std::string(buff);
+    std::cerr << "PathCanonicalizeA() error" << std::endl;
+    return "";
+}
+
+#include <locale>
+#include <codecvt>
+
+std::list<FS::File> FS::directory_files(const std::string &folder ){
+    std::list<File> files;
+    WIN32_FIND_DATA fdFile;
+    HANDLE hFind = NULL;
+
+    //std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    //std::wstring wide = converter.from_bytes(folder);
+    std::string file_mask = folder + "\\*.*";
+    if((hFind = FindFirstFile(file_mask.c_str(), &fdFile)) == INVALID_HANDLE_VALUE)
+    {
+        perror("FindFirstFile() error");
+        return files;
+    }
+    do
+    {
+        std::string file_name = (const char*) fdFile.cFileName;
+        if(file_name != "." && file_name != "..") {
+            if(!(fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) //File
+                files.emplace_back(File(folder, file_name));
+        }
+    }
+    while(FindNextFile(hFind, &fdFile));
+
+    FindClose(hFind);
+    return files;
+}
+
+bool ListDirectoryContents(const char *sDir)
+{
+
+    
+
+    return true;
+}
+
+#else
+
+
+std::list<FS::File> FS::directory_files(const std::string &folder ){
+    std::list<File> files;
+    DIR *d;
+    struct dirent *dir;
+    d = opendir(folder.c_str());
+    if (d) {
+        while ((dir = readdir(d)) != NULL) {
+            if (dir->d_type == DT_REG){
+                files.emplace_back(File(folder, dir->d_name));
+            }
+        }
+        closedir(d);
+    } else {
+        perror("opendir() error");
+    }
+    return files;
+}
+
+std::string FS::append(const std::string &path, const std::string &file){
+    if (path.size() == 0) return '/' + file;
+    return path[path.size()-1] == '/' ? path + file : path + '/' + file;
+}
+
+std::string FS::current_path(){
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL)
+        return std::string(cwd);
+    perror("getcwd() error");
+    return "";
+}
+
+std::string FS::canonical(const std::string &path){
+    char actualpath [PATH_MAX];
+    if (realpath(path.c_str(), actualpath) != NULL)
+        return std::string(actualpath);
+    perror("realpath() error");
+    return "";
+}
+
+
+#endif
 

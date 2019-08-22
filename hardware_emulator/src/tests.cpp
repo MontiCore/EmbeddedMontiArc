@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 #include "tests.h"
 #include "dll_interface.h"
 #include "emulator/emulator_manager.h"
@@ -5,7 +25,20 @@
 #include "os_linux/os_linux.h"
 #include "config.h"
 #include "os_linux/elf.h"
+#include "utility.h"
 
+
+bool test_filesystem(){
+    auto cp = FS::current_path();
+    Log::debug << "FS::current_path(): " << cp << "\n";
+    Log::debug << "FS::canonical(FS::current_path()): " << FS::canonical(cp) << "\n";
+    auto files = FS::directory_files(cp);
+    Log::debug << "FS::directory_files(FS::current_path()):\n";
+    for (const auto &file : files){
+        Log::debug << "\t" << file.path << ": " << file.name << " ext: " << file.extension << "\n";
+    }
+    return true;
+}
 
 /*
     Tests the emulation of the functions from
@@ -14,7 +47,6 @@
 */
 bool test_simple_sample( OS::OS *os, bool windows ) {
     Computer computer;
-    
     computer.init();
     if ( !computer.loaded() )
         return false;

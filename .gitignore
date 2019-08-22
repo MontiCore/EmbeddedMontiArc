@@ -9,3 +9,8 @@ zydis/Debug/
 zydis/Release/
 zydis/dependencies/zycore/Debug/
 zydis/dependencies/zycore/Release/
+.project
+.settings/
+.vscode/
+.classpath
+target/
