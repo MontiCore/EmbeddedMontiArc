@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # EmbeddedMontiArcStudio
 
 * **Latest release of old IDE but with complete Features:** https://rwth-aachen.sciebo.de/s/6g3uWJNQcqgnKRc
