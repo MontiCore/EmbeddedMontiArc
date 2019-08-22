@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include "CNNTranslator.h"
 #include "mnist_mnistClassifier.h"
 #include <opencv2/highgui/highgui.hpp>
