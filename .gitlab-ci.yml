@@ -30,7 +30,7 @@ include:
   
 license_management:
   tags:
-  - Windows10
+  - docker
   variables:
     MAVEN_CLI_OPTS: --settings=settings.xml
 
