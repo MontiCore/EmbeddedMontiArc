@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Reinforcement Learning Agent for BipedalWalker-v2
 
 EMADL models of a DDPG and TD3 Agent for the [OpenAi Gym environment](https://gym.openai.com/envs/BipedalWalker-v2/) `BipedalWalker-v2`. Based on the models, code is generated that trains on the mentioned environment.

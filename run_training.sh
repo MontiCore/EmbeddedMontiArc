@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 if [ ! -d logs ]
 then
     mkdir logs
