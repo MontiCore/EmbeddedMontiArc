@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Reinforcement Learning Agent for RoboschoolHalfCheetah-v1
 
 EMADL models of a DDPG and TD3 Agent for the [OpenAi Gym environment](https://gym.openai.com/envs/RoboschoolHalfCheetah-v1/) `RoboschoolHalfCheetah-v1`. 

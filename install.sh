@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 if [ ! -d "target" ];
 then
     echo "No target folder found..."
