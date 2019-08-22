@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 Steps to build a component:
 
 * 1.) move **mw-generator.jar** to the directory of the component you wish to build.

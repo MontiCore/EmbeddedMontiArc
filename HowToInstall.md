@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # How to install everything
 - Download Carla (We are using the precompiled version 0.9.5, because this version is currently supported by the ros-bridge) from `https://github.com/carla-simulator/carla/releases/tag/0.9.5`
 - Extract it

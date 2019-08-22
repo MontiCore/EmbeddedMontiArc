@@ -1,4 +1,5 @@
 #!/bin/sh
+# (c) https://github.com/MontiCore/monticore  
 
 usage() { echo "Usage: $0 [-t <tag>] [-i <image>]" 1>&2; exit 1; }
 
