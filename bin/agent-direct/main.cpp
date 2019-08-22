@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include <iostream>
 //#include "torcs_agent_torcsAgent/torcs_agent_torcsAgent.h"
 #include "ros/ros.h"

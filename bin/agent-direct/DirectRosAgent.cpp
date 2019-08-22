@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include "DirectRosAgent.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32MultiArray.h"

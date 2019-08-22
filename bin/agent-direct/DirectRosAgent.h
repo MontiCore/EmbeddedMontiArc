@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 //
 // Created by nicola on 04.08.19.
 //

@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 from gym_torcs import TorcsEnv
 from sample_agent import Agent
 import numpy as np

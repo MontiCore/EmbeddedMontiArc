@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNBUFFERFILE_H
 #define CNNBUFFERFILE_H
 

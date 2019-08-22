@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 . config.sh
 
 # Clear target directory

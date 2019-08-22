@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 import rospy
 import numpy as np
 import time

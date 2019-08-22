@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # EMADL Reinforcement Learning Agent for TORCS
 
 EMADL model of an DDPG and TD3 Agent for the [TORCS](https://sourceforge.net/projects/torcs/) environment. Based on the model, code is generated that trains a car to drive on a racing track.

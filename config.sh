@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 TARGET_OUTPUT="target"
 BINARY_OUTPUT="${TARGET_OUTPUT}/bin"
 
