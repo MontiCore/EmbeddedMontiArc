@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package lander.agent.strategy;
 
 component GreedyDiscreteStrategy<Z(1:oo) n = 2> {

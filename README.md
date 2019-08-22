@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Reinforcement Learning Agent for LunarLander-v2
 
 EMADL model of a DQN Agent for the [OpenAi Gym environment](https://gym.openai.com/envs/LunarLander-v2/) `LunarLander-v2`. Based on the model, code is generated that trains on the mentioned environment.
