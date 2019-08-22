@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 . config.sh
 
 GENERATOR_PATH="bin/embedded-montiarc-math-middleware-generator-0.0.26-SNAPSHOT-jar-with-dependencies.jar"
