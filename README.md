@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Reinforcement Learning Agent for LunarLanderContinuous-v2
 
 EMADL models of a DDPG and TD3 Agent for the [OpenAi Gym environment](https://gym.openai.com/envs/LunarLanderContinuous-v2/) `LunarLanderContinuous-v2`. Based on the models, code is generated that trains on the mentioned environment.
