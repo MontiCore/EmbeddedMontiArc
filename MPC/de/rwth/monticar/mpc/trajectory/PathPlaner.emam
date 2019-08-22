@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // PathPlaner:
 // - First trims path to current progress
 // - Then creates low level reference state vector for mpc controller
