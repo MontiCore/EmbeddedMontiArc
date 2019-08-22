@@ -20,9 +20,13 @@
 #
 
 stages:
+- test
 - build
 - test
 - maven
+
+include:
+  template: License-Management.gitlab-ci.yml
  
 windows_build:
   stage: build
