@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef tests_a_compA_h
 #define tests_a_compA_h
 

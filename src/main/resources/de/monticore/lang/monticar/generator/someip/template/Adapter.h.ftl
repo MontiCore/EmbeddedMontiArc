@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#import "SomeIPMacros.ftl" as m>
 #pragma once
 #include "${model.getEscapedCompName()}.h"

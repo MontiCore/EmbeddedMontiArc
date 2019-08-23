@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#--@formatter:off-->
 # Setting cmake version
 cmake_minimum_required (VERSION 2.8)

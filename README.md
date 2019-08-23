@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # EMAM2SomeIP
 
 A project that generates a SomeIP-Adapter for EmbeddedMontiArcMath components.
