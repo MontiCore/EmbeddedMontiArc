@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # demonstrator
 
 project page for demonstrator, we start with http://demo.embeddedmontiarc.com/
