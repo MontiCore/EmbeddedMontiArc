@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign flatten = element.element.inputTypes[0].height != 1 || element.element.inputTypes[0].width != 1>
 <#assign input = element.inputs[0]>
 <#if flatten>
