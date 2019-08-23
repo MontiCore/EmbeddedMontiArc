@@ -103,7 +103,10 @@ public abstract class ArchitectureElementSymbol extends CommonScopeSpanningSymbo
         if (sym instanceof ArchitectureSymbol){
             return (ArchitectureSymbol) sym;
         }
-        else {
+        else if (sym instanceof UnrollSymbol) {
+            sym = sym.getEnclosingScope().getSpanningSymbol().get();
+            return (ArchitectureSymbol)sym;
+        }else {
             return ((ArchitectureElementSymbol) sym).getArchitecture();
         }
     }

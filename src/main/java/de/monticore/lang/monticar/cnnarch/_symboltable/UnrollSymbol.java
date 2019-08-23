@@ -21,47 +21,27 @@
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
 
+import de.monticore.lang.monticar.cnnarch._ast.ASTArchitectureParameter;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
+import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.function.Function;
 
-public class UnrollSymbol extends ArchitectureElementSymbol {
+public class UnrollSymbol extends CommonScopeSpanningSymbol {
 
-    protected List<ArchitectureElementSymbol> elements = new ArrayList<>();
-
-    protected void setElements(List<ArchitectureElementSymbol> elements) {
-        ArchitectureElementSymbol previous = null;
-        for (ArchitectureElementSymbol current : elements){
-            if (previous != null){
-                current.setInputElement(previous);
-                previous.setOutputElement(current);
-            }
-            else {
-                if (getInputElement().isPresent()){
-                    current.setInputElement(getInputElement().get());
-                }
-                if (getOutputElement().isPresent()){
-                    current.setOutputElement(getOutputElement().get());
-                }
-            }
-            previous = current;
-        }
-        this.elements = elements;
-    }
-
-    public List<ArchitectureElementSymbol> getElements() {
-        return elements;
-    }
-
+    public static final UnrollKind KIND = new UnrollKind();
 
     private UnrollDeclarationSymbol declaration = null;
     private List<ArgumentSymbol> arguments;
+    private ParameterSymbol timeParameter;
+    private UnrollSymbol resolvedThis = null;
     private SerialCompositeElementSymbol body;
 
     public SerialCompositeElementSymbol getBody() {
@@ -77,7 +57,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
     }
 
     protected UnrollSymbol(String name) {
-        super(name);
+        super(name, KIND);
     }
 
     public UnrollDeclarationSymbol getDeclaration() {
@@ -90,9 +70,9 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
         return declaration;
     }
 
-    @Override
+
     public boolean isResolvable() {
-        return super.isResolvable() && getDeclaration() != null;
+        return getBody().isResolvable() && getDeclaration() != null;
     }
 
     private void setDeclaration(UnrollDeclarationSymbol declaration) {
@@ -107,6 +87,14 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
         this.arguments = arguments;
     }
 
+    public ParameterSymbol getTimeParameter(){
+        return timeParameter;
+    }
+
+    protected void setTimeParameter(ParameterSymbol timeParameter){
+        this.timeParameter = timeParameter;
+    }
+
     public ArchExpressionSymbol getIfExpression(){
         Optional<ArgumentSymbol> argument = getArgument(AllPredefinedVariables.CONDITIONAL_ARG_NAME);
         if (argument.isPresent()){
@@ -117,23 +105,6 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
         }
     }
 
-    @Override
-    public void setInputElement(ArchitectureElementSymbol inputElement) {
-        super.setInputElement(inputElement);
-        if (getResolvedThis().isPresent() && getResolvedThis().get() != this){
-            getResolvedThis().get().setInputElement(inputElement);
-        }
-    }
-
-    @Override
-    public void setOutputElement(ArchitectureElementSymbol outputElement) {
-        super.setOutputElement(outputElement);
-        if (getResolvedThis().isPresent() && getResolvedThis().get() != this){
-            getResolvedThis().get().setOutputElement(outputElement);
-        }
-    }
-
-    @Override
     protected void putInScope(Scope scope){
         Collection<Symbol> symbolsInScope = scope.getLocalSymbols().get(getName());
         if (symbolsInScope == null || !symbolsInScope.contains(this)){
@@ -142,56 +113,34 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
                 getResolvedThis().get().putInScope(getSpannedScope());
             }*/
             for (ArgumentSymbol argument : getArguments()){
-                argument.putInScope(getSpannedScope());
+                argument.putInScope(getSpannedScope().getAsMutableScope());
             }
         }
     }
 
-    @Override
-    public boolean isAtomic(){
-        return getResolvedThis().isPresent() && getResolvedThis().get() == this;
+    protected void setResolvedThis(UnrollSymbol resolvedThis) {
+        if (resolvedThis != null){
+            //resolvedThis.putInScope(getSpannedScope());
+        }
+        this.resolvedThis = resolvedThis;
     }
 
-    @Override
-    public List<ArchitectureElementSymbol> getFirstAtomicElements() {
-        return this.getBody().getElements().get(0).getFirstAtomicElements();
-    }
 
-    @Override
-    public List<ArchitectureElementSymbol> getLastAtomicElements() {
-        return this.getBody().getElements().get(this.getBody().getElements().size()-1).getLastAtomicElements();
-    }
 
-    @Override
     public Set<ParameterSymbol> resolve() throws ArchResolveException {
-        if (!isResolved()) {
+        if (true) {
             if (isResolvable()) {
                 getDeclaration();
                 resolveExpressions();
-                int parallelLength = getParallelLength().get();
-                int maxSerialLength = getMaxSerialLength().get();
 
-                if (!isActive() || maxSerialLength == 0) {
-                    System.err.println("UnrollSymbol resolveSequences called!1");
-                    //set resolvedThis to empty composite to remove the unroll.
-                    setResolvedThis(new SerialCompositeElementSymbol());
-                }
-                else if (parallelLength == 1 && maxSerialLength == 1) {
-                    System.err.println("UnrollSymbol resolveSequences called!2");
-                    //resolve the unroll call
-                    ArchitectureElementSymbol resolvedUnroll = getDeclaration().call(this);
-                    setResolvedThis(resolvedUnroll);
-                }
-                else {
-                    System.err.println("UnrollSymbol resolveSequences called!3");
-                    //split the unroll if it contains an argument sequence
-                    ArchitectureElementSymbol splitComposite = resolveSequences(parallelLength, getSerialLengths().get());
-                    setResolvedThis(splitComposite);
-                    splitComposite.resolveOrError();
-                }
+                //resolve the unroll call
+                getBody().resolveOrError();
+                UnrollSymbol resolvedUnroll = getDeclaration().call(this);
+                setResolvedThis(resolvedUnroll);
+
             }
         }
-        return getUnresolvableParameters();
+        return new HashSet<ParameterSymbol>() ;
     }
 
     private boolean isActive(){
@@ -209,26 +158,6 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
         }
     }
 
-    private ArchitectureElementSymbol resolveSequences(int parallelLength, List<Integer> serialLengths){
-        List<List<ArchitectureElementSymbol>> elements = computeExpandedSplit(parallelLength, serialLengths);
-        List<ArchitectureElementSymbol> serialComposites = new ArrayList<>();
-
-        if (elements.size() == 1){
-            return createSerialSequencePart(elements.get(0));
-        }
-        else {
-            for (List<ArchitectureElementSymbol> serialElements : elements) {
-                serialComposites.add(createSerialSequencePart(serialElements));
-            }
-            ParallelCompositeElementSymbol parallelElement = new ParallelCompositeElementSymbol();
-            parallelElement.setElements(serialComposites);
-
-            if (getAstNode().isPresent()) {
-                parallelElement.setAstNode(getAstNode().get());
-            }
-            return parallelElement;
-        }
-    }
 
     private ArchitectureElementSymbol createSerialSequencePart(List<ArchitectureElementSymbol> elements){
         if (elements.size() == 1){
@@ -245,71 +174,13 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
         }
     }
 
-    private List<List<ArchitectureElementSymbol>> computeExpandedSplit(int parallelLength, List<Integer> serialLengths){
-        List<List<ArchitectureElementSymbol>> elements = new ArrayList<>(parallelLength);
 
-        List<List<List<ArgumentSymbol>>> allExpandedArguments = new ArrayList<>(getArguments().size());
-        for (ArgumentSymbol argument : getArguments()){
-            allExpandedArguments.add(argument.expandedSplit(parallelLength, serialLengths).get());
-        }
 
-        for (int i = 0; i < parallelLength; i++){
-            List<ArchitectureElementSymbol> serialElementList = new ArrayList<>(serialLengths.get(i));
-            for (int j = 0; j < serialLengths.get(i); j++){
-                List<ArgumentSymbol> unrollArguments = new ArrayList<>();
-                for (List<List<ArgumentSymbol>> args : allExpandedArguments){
-                    unrollArguments.add(args.get(i).get(j));
-                }
 
-                UnrollSymbol unroll = new UnrollSymbol.Builder()
-                        .declaration(getDeclaration())
-                        .arguments(unrollArguments)
-                        .build();
-                if (getAstNode().isPresent()){
-                    unroll.setAstNode(getAstNode().get());
-                }
-                serialElementList.add(unroll);
-            }
-            elements.add(serialElementList);
-        }
-        return elements;
-    }
-
-    @Override
     protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableVariables, Set<ParameterSymbol> allVariables) {
         for (ArgumentSymbol argument : getArguments()){
             argument.getRhs().checkIfResolvable(allVariables);
             unresolvableVariables.addAll(argument.getRhs().getUnresolvableParameters());
-        }
-    }
-
-    @Override
-    public List<ArchTypeSymbol> computeOutputTypes() {
-        System.err.println("##33333333");
-        if (getResolvedThis().isPresent()) {
-            if (getResolvedThis().get() == this) {
-                List<ArchTypeSymbol> inputTypes = getInputTypes();
-                return ((PredefinedUnrollDeclaration) getDeclaration()).computeOutputTypes(inputTypes, this, VariableSymbol.Member.NONE);
-            }
-            else {
-                return getResolvedThis().get().getOutputTypes();
-
-            }
-        }
-        else {
-            throw new IllegalStateException("Output type cannot be computed before the unroll is resolved");
-        }
-    }
-
-    @Override
-    public void checkInput() {
-        if (getResolvedThis().isPresent()){
-            if (getResolvedThis().get() == this){
-                ((PredefinedUnrollDeclaration) getDeclaration()).checkInput(getInputTypes(), this, VariableSymbol.Member.NONE);
-            }
-            else {
-                getResolvedThis().get().checkInput();
-            }
         }
     }
 
@@ -360,117 +231,53 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
         }
     }
 
-    @Override
-    public Optional<Integer> getParallelLength(){
-        int length = -1;
-        for (ArgumentSymbol argument : getArguments()) {
-            if (argument.getRhs() instanceof ArchAbstractSequenceExpression) {
-                Optional<Integer> optParallelLength = argument.getRhs().getParallelLength();
-                if (optParallelLength.isPresent()) {
-                    int argLength = optParallelLength.get();
-                    if (length == -1) {
-                        length = argLength;
-                    }
-                    else if (length != argLength) {
-                        Log.error("0" + ErrorCodes.ILLEGAL_SEQUENCE_LENGTH + " Illegal sequence length. " +
-                                        "Length is " + argLength + " but it should be " + length + " or not a sequence. " +
-                                        "All parallel sequences in the same unroll must be of the same size. "
-                                , argument.getSourcePosition());
-                    }
-                }
-                else {
-                    return Optional.empty();
-                }
-            }
-        }
-        if (length == -1) length = 1;
-        return Optional.of(length);
+    public void setIntValue(String parameterName, int value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
     }
 
-    @Override
-    public Optional<Integer> getMaxSerialLength(){
-        int max = 0;
-        for (ArgumentSymbol arg : getArguments()){
-            Optional<Integer> argLen = arg.getRhs().getMaxSerialLength();
-            if (argLen.isPresent()){
-                if (argLen.get() > max){
-                    max = argLen.get();
-                }
+    public void setIntTupleValue(String parameterName, List<Object> tupleValues) {
+        setTValue(parameterName, tupleValues, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setBooleanValue(String parameterName, boolean value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setStringValue(String parameterName, String value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setDoubleValue(String parameterName, double value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setValue(String parameterName, Object value) {
+        ArchSimpleExpressionSymbol res = new ArchSimpleExpressionSymbol();
+        res.setValue(value);
+        setTValue(parameterName, res, Function.identity());
+    }
+
+    public <T> void setTValue(String parameterName, T value, Function<T, ArchSimpleExpressionSymbol> of) {
+        Optional<ParameterSymbol> param = getDeclaration().getParameter(parameterName);
+
+        if (param.isPresent()) {
+            Optional<ArgumentSymbol> arg = getArgument(parameterName);
+            ArchSimpleExpressionSymbol expression = of.apply(value);
+
+            if (arg.isPresent()) {
+                arg.get().setRhs(expression);
             }
             else {
-                return Optional.empty();
+                arg = Optional.of(new ArgumentSymbol(parameterName));
+                arg.get().setRhs(expression);
+                arguments.add(arg.get());
             }
         }
-        if (getArguments().isEmpty()){
-            max = 1;
-        }
-        return Optional.of(max);
     }
 
-    @Override
-    public Optional<List<Integer>> getSerialLengths(){
-        Optional<Integer> optParallelLength = getParallelLength();
-        if (optParallelLength.isPresent()){
-            Optional<List<List<Integer>>> allArgLengths = expandArgumentSerialLengths(getArguments(), optParallelLength.get());
-            if (allArgLengths.isPresent()){
-                List<Integer> serialLengths = new ArrayList<>(optParallelLength.get());
-                for (int i = 0; i < optParallelLength.get(); i++){
-                    int serialLength = checkSerialLength(allArgLengths.get(), i);
-                    serialLengths.add(serialLength);
-                }
-                return Optional.of(serialLengths);
-            }
-        }
-        return Optional.empty();
-    }
 
-    private int checkSerialLength(List<List<Integer>> allArgumentLengths, int serialIndex){
-        int serialLength = -1;
-        for (List<Integer> argLengths : allArgumentLengths){
-            int argLength = argLengths.get(serialIndex);
-            if (serialLength == -1){
-                serialLength = argLength;
-            }
-            else if (serialLength == 1) {
-                serialLength = argLength;
-            }
-            else if (argLength != 1 && argLength != serialLength){
-                Log.error("0" + ErrorCodes.ILLEGAL_SEQUENCE_LENGTH + " Illegal sequence length. " +
-                                "Length of sequence dimension "+ serialIndex +" is " + argLength + " but it should be " + serialLength + " or not a sequence. " +
-                                "All serial sequences of the same paralle dimension in the same unroll must be of the same size. "
-                        , getSourcePosition());
-            }
-        }
-        if (serialLength == -1){
-            serialLength = 1;
-        }
-        return serialLength;
-    }
 
-    private Optional<List<List<Integer>>> expandArgumentSerialLengths(List<ArgumentSymbol> arguments, int parallelLength){
-        List<List<Integer>> argumentLengths = new ArrayList<>();
-        for (ArgumentSymbol arg : arguments){
-            Optional<List<Integer>> argLen = arg.getRhs().getSerialLengths();
-            if (argLen.isPresent()){
-                if (argLen.get().size() == 1){
-                    argumentLengths.add(Collections.nCopies(parallelLength, argLen.get().get(0)));
-                }
-                else {
-                    //assuming argLen.get().size() == parallelLength.
-                    argumentLengths.add(argLen.get());
-                }
-            }
-            else {
-                return Optional.empty();
-            }
-        }
-        if (getArguments().isEmpty()){
-            argumentLengths.add(Collections.singletonList(1));
-        }
-        return Optional.of(argumentLengths);
-    }
 
-    @Override
     protected UnrollSymbol preResolveDeepCopy() {
         UnrollSymbol copy = new UnrollSymbol(getName());
         if (getAstNode().isPresent()){
@@ -482,6 +289,8 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
             args.add(argument.preResolveDeepCopy());
         }
         copy.setArguments(args);
+        copy.setBody(getBody().preResolveDeepCopy());
+        copy.getBody().putInScope(copy.getSpannedScope());
 
         return copy;
     }
@@ -511,18 +320,7 @@ public class UnrollSymbol extends ArchitectureElementSymbol {
             return this;
         }
 
-        public UnrollSymbol build(){
-            if (declaration == null){
-                throw new IllegalStateException("Missing declaration for UnrollSymbol");
-            }
-            UnrollSymbol sym = new UnrollSymbol(declaration.getName());
-            sym.setDeclaration(declaration);
-            sym.setArguments(arguments);
-            if (isResolved){
-                sym.setResolvedThis(sym);
-            }
-            return sym;
-        }
+
 
     }
 

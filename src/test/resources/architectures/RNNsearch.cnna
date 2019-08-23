@@ -14,7 +14,7 @@ architecture RNNsearch(max_length=50, vocabulary_size=30001, embedding_size=620,
     1 -> OneHot(n=vocabulary_size) -> target[0];
     encoder.state[1] -> decoder.state;
 
-    unroll<t> BeamSearchStart(width=5, max_length=50) {
+    unroll<t=0> BeamSearchStart(width=5, max_length=50) {
         (
             (
                 (

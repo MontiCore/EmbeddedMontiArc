@@ -76,6 +76,7 @@ public class AllPredefinedLayers {
     public static final String FLATTEN_PARAMETER_NAME = "flatten";
     public static final String BEAMSEARCH_MAX_LENGTH = "max_length";
     public static final String BEAMSEARCH_WIDTH_NAME = "width";
+    public static final String BEAMSEARCH_T_NAME = "t";
 
     //possible String values
     public static final String PADDING_VALID = "valid";

@@ -31,6 +31,7 @@ import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
@@ -345,34 +346,15 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     @Override
     public void endVisit(ASTUnroll ast) {
         UnrollSymbol layer = (UnrollSymbol) ast.getSymbolOpt().get();
-        SerialCompositeElementSymbol sces = new SerialCompositeElementSymbol();
-        List<ArchitectureElementSymbol> elements = new ArrayList<>();
-        for (ASTArchitectureElement astElement : ast.getBody().getElementsList()){
-            elements.add((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
-        }
-        sces.setElements(elements);
-        layer.setBody(sces);
-        //layer.getDeclaration().setBody(sces);
-
-        //layer.setElements(elements);
-
+        layer.setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
         List<ArgumentSymbol> arguments = new ArrayList<>(6);
+
+        //ast.getArgumentsList().add(ast.getTimeParameter());
         for (ASTArchArgument astArgument : ast.getArgumentsList()){
             Optional<ArgumentSymbol> optArgument = astArgument.getSymbolOpt().map(e -> (ArgumentSymbol)e);
             optArgument.ifPresent(arguments::add);
         }
         layer.setArguments(arguments);
-
-
-
-
-
-        /*List<ArchitectureElementSymbol> elements = new ArrayList<>();
-        for (ASTStream astStream : ast.getGroupsList()){
-            elements.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
-        }
-        compositeElement.setElements(elements);
-        */
 
         removeCurrentScope();
     }

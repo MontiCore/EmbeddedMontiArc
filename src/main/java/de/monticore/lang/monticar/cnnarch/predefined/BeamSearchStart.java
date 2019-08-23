@@ -67,7 +67,6 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
                     //ArchitectureElementSymbol item = (ArchitectureElementSymbol) ASTitem;
                     VariableSymbol sublayer = (VariableSymbol) item.getSymbol();
                     sublayer.resolve();
-                    //TODO setinputElement !!!!!
                     System.err.println("resolved2: " + sublayer.getResolvedThis().get());
                     //System.err.println("resolved2_1: " + sublayer.getResolvedThis().get().getInputElement().get().toString());
                     System.err.println("isOutput?: " + sublayer.isOutput());
@@ -104,19 +103,16 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .defaultValue(99)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.BEAMSEARCH_T_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.BEAMSEARCH_WIDTH_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build()));
         declaration.setParameters(parameters);
-        declaration.setLayers(declaration.layers);
-        for(LayerSymbol layer: declaration.layers){
-            for(ArgumentSymbol a: layer.getArguments()) {
-                //layer.setIntValue(a.getName(), 10);
-            }
-        }
         return declaration;
     }
 }

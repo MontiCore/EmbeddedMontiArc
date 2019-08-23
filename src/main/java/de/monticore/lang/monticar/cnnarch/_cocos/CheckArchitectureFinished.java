@@ -30,9 +30,7 @@ public class CheckArchitectureFinished extends CNNArchSymbolCoCo {
 
     @Override
     public void check(ArchitectureSymbol architecture) {
-        System.err.println("Architecture in checkArchFinished: " + architecture.toString());
         for (CompositeElementSymbol stream : architecture.getStreams()) {
-            System.err.println("Stream in checkArchFinished");
             if (!stream.getOutputTypes().isEmpty()){
                 Log.error("0" + ErrorCodes.UNFINISHED_ARCHITECTURE + " The architecture is not finished. " +
                                 "There are still open streams at the end of the architecture. "
@@ -40,8 +38,7 @@ public class CheckArchitectureFinished extends CNNArchSymbolCoCo {
             }
         }
         for (UnrollSymbol unroll : architecture.getUnrolls()) {
-            System.err.println("UnrollSymbol in checkArchFinished");
-            if (!unroll.getOutputTypes().isEmpty()){
+            if (!unroll.getBody().getOutputTypes().isEmpty()){
                 Log.error("0" + ErrorCodes.UNFINISHED_ARCHITECTURE + " The architecture is not finished. " +
                                 "There are still open streams at the end of the architecture. "
                         , architecture.getSourcePosition());
