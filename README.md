@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Documentation
 This documentation includes basic information about the implemented concepts and the required installation steps for the MontiSim project.
 

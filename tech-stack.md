@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Technology Stack of The Project (DRAFT)
 
 ## Back-End Technologies
