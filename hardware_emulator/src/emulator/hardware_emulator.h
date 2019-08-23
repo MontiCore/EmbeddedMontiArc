@@ -1,6 +1,27 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 #pragma once
 #include <thread>
 #include <fstream>
+#include <chrono>
 
 #include "utility.h"
 #include "computer/computer.h"
@@ -9,9 +30,41 @@
 #include "config.h"
 
 #include <unordered_map>
-#include <experimental/filesystem>
+//#include <filesystem>
 
-namespace fs = std::experimental::filesystem::v1;
+struct PrecisionTimer {
+        using HRClock = std::chrono::high_resolution_clock;
+        using TimePoint = HRClock::time_point;
+        static inline long time_delta( TimePoint start, TimePoint end ) {
+            return std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();
+        }
+        static std::string microsecondTimeToString( ulong time ) {
+            if ( time >= 1000000 )
+                return std::to_string( time / 1000000 ) + "." + std::to_string( ( time / 1000 ) % 1000 ) + "s";
+            else if ( time >= 1000 )
+                return std::to_string( time / 1000 ) + "." + std::to_string( time % 1000 ) + "ms";
+            else
+                return std::to_string( time ) + "us";
+        }
+    protected:
+        TimePoint m_start, m_end;
+    public:
+        std::string name;
+        inline void start() {
+            m_start = HRClock::now();
+        }
+        inline void end() {
+            m_end = HRClock::now();
+        }
+        inline long getDelta() {
+            return ( long )time_delta( m_start, m_end );
+        }
+        std::string print( std::string tab = std::string() ) {
+            return microsecondTimeToString( getDelta() );
+        }
+};
+
+//namespace fs = std::filesystem;
 /*
     CacheSettings is used to configure the cache layout of the computer.
     Replace the IL1, DL1, L2 and L3 members with Cache objects to enable and configure the given cache level.
@@ -105,13 +158,17 @@ struct HardwareEmulator {
     Computer computer;
     std::string os_name;
     std::string autopilot_name;
-    fs::path path;
+    //fs::path path;
+    std::string autopilot_path;
     
     MemoryRange buffer_slot;
     
     MeanAvgCollector avg_runtime;
     
     CacheSettings cache_settings;
+    
+    PrecisionTimer timer;
+    long real_time_accumulator = 0;
     
     bool call_success;
     //uint debug_tick_count;

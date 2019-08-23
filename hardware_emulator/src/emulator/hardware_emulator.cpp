@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 #include "hardware_emulator.h"
 #include "os_windows/os_windows.h"
 #include "os_linux/os_linux.h"
@@ -6,6 +26,7 @@
 
 
 using namespace std;
+
 
 
 std::string HardwareEmulator::query( const char *msg ) {
@@ -103,13 +124,13 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
         return false;
         
         
-    if ( !computer.os->load_file( path.string().c_str() ) ) {
+    if ( !computer.os->load_file( autopilot_path.c_str() ) ) {
         error_msg = "Error loading autopilot";
         return false;
     }
     
     if ( test_real ) {
-        if ( !real_program.init( path.string().c_str() ) ) {
+        if ( !real_program.init( autopilot_path.c_str() ) ) {
             error_msg = "Could not load real program";
             return false;
         }
@@ -149,31 +170,26 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
     if ( test_real )
         Log::info << "real autopilot compared,\n";
     //debug_tick_count = 0;
+    real_time_accumulator = 0;
     return true;
 }
 
 bool HardwareEmulator::resolve_autopilot_os( EmulatorManager &manager ) {
-    path = manager.path;
-    path.append( autopilot_name );
+    autopilot_path = FS::append(manager.autopilots_folder, autopilot_name);
+    //path.append( autopilot_name );
     
     
     if ( os_name.size() == 0 ) {
         bool found = false;
         //Check existing autopilots with this name
-        for ( auto &e : manager.entries ) {
-            auto &p = e.path();
-            std::string i_file_name = p.filename().string();
-            std::string i_extension = p.extension().string();
-            if ( i_file_name.size() > i_extension.size() ) {
-                auto raw_name = i_file_name.substr( 0, i_file_name.size() - i_extension.size() );
-                if ( raw_name.compare( autopilot_name ) == 0 ) {
-                    found = true;
-                    if ( i_extension.compare( ".dll" ) == 0 )
-                        os_name = "windows";
-                    else if ( i_extension.compare( ".so" ) == 0 )
-                        os_name = "linux";
-                    break;
-                }
+        for ( const auto &file : manager.available_autopilots ) {
+            if ( file.name.compare( autopilot_name ) == 0 ) {
+                found = true;
+                if ( file.extension.compare( ".dll" ) == 0 )
+                    os_name = "windows";
+                else if ( file.extension.compare( ".so" ) == 0 )
+                    os_name = "linux";
+                break;
             }
         }
         if ( !found ) {
@@ -212,7 +228,13 @@ void HardwareEmulator::exec( ulong micro_delta ) {
         for ( auto &port : output_ports )
             call_output( port );
             
+        if ( test_real ) {
+            Log::info << "EMR: " << ( int ) ( ( double )computer.time.micro_time / real_time_accumulator * 100 )
+                      << "% E: " << PrecisionTimer::microsecondTimeToString( computer.time.micro_time )
+                      << " M: " << PrecisionTimer::microsecondTimeToString( real_time_accumulator ) << "\n";
+        }
         computer.time.reset();
+        real_time_accumulator = 0;
     }
     else
         computer.time.micro_time -= micro_delta;
@@ -237,15 +259,19 @@ void HardwareEmulator::call_input( Port &port ) {
         case VALUE_TYPE::DOUBLE:
             computer.func_call->set_param1_double( input.double_value );
             if ( test_real ) {
+                timer.start();
                 using DoubleInputFunc = void( * )( double );
                 ( ( DoubleInputFunc )port.real_function )( input.double_value );
+                timer.end();
             }
             break;
         case VALUE_TYPE::INT:
             computer.func_call->set_param1_32( *( uint * )&input.int_value );
             if ( test_real ) {
+                timer.start();
                 using IntInputFunc = void( * )( int );
                 ( ( IntInputFunc )port.real_function )( *( uint * )&input.int_value );
+                timer.end();
             }
             break;
         case VALUE_TYPE::DOUBLE_ARRAY:
@@ -258,15 +284,19 @@ void HardwareEmulator::call_input( Port &port ) {
                                           ( uchar * )input.double_array.data.begin() );
             computer.func_call->set_params_64( buffer_slot.start_address, ( ulong )input.double_array.size );
             if ( test_real ) {
+                timer.start();
                 using DoubleArrayInputFunc = void( * )( double *, int );
                 ( ( DoubleArrayInputFunc )port.real_function )( input.double_array.data.begin(), input.double_array.size );
+                timer.end();
             }
             break;
         default:
             Log::err << Log::tag << "Add Port type support in HardwareEmulator::call_input().\n";
             break;
     }
-    
+    if ( test_real )
+        real_time_accumulator += timer.getDelta();
+        
     call_success = computer.call( addr, port.name.c_str() );
 }
 
@@ -281,6 +311,7 @@ void HardwareEmulator::call_output( Port &port ) {
     auto &output = port.buffer;
     port.updated = true;
     
+    PrecisionTimer timer;
     call_success = computer.call( addr, port.name.c_str() );
     if ( !call_success )
         return;
@@ -288,22 +319,31 @@ void HardwareEmulator::call_output( Port &port ) {
         case VALUE_TYPE::DOUBLE:
             output.double_value = computer.func_call->get_return_double();
             if ( test_real ) {
+                timer.start();
                 using DoubleOutputFunc = double( * )();
                 compare_results( ( ( DoubleOutputFunc )port.real_function )(), output.double_value, port.name.c_str() );
+                timer.end();
             }
             break;
         default:
             Log::err << Log::tag << "Add Port type support in HardwareEmulator::call_output().\n";
             break;
     }
+    if ( test_real )
+        real_time_accumulator += timer.getDelta();
 }
 
 void HardwareEmulator::call_execute() {
     call_success = computer.call( execute_address, "execute" );
     if ( test_real ) {
+        timer.start();
         using ExecFunc = void( * )();
         ( ( ExecFunc )real_exec )();
+        timer.end();
     }
+    
+    if ( test_real )
+        real_time_accumulator += timer.getDelta();
 }
 
 void HardwareEmulator::call_init() {

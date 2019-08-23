@@ -62,6 +62,12 @@ add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/dependencies/zycore" EXCLUDE_FROM_AL
 # Library configuration                                                                           #
 # =============================================================================================== #
 
+if ( CMAKE_COMPILER_IS_GNUCC )
+  add_definitions(
+    -static-libstdc++
+  )
+endif()
+
 if (ZYDIS_BUILD_SHARED_LIB)
     add_library("Zydis" SHARED)
 else ()

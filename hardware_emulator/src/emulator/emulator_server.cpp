@@ -1,4 +1,24 @@
-#include "emulator_server.h"
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
+#include "de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_HardwareEmulatorInterface.h"
 #include "emulator_manager.h"
 
 /*
@@ -10,7 +30,7 @@
     if new data types must be converted from C types to Java types.
 */
 
-JNIEXPORT jboolean JNICALL Java_simulator_integration_HardwareEmulatorInterface_init
+JNIEXPORT jboolean JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_init
 ( JNIEnv *jni, jobject, jstring string1, jstring string2 ) {
     auto config = jni->GetStringUTFChars( string1, 0 );
     auto default_config = jni->GetStringUTFChars( string2, 0 );
@@ -20,7 +40,7 @@ JNIEXPORT jboolean JNICALL Java_simulator_integration_HardwareEmulatorInterface_
     return res;
 }
 
-JNIEXPORT jint JNICALL Java_simulator_integration_HardwareEmulatorInterface_alloc_1autopilot
+JNIEXPORT jint JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_alloc_1autopilot
 ( JNIEnv *jni, jobject, jstring string ) {
     auto config = jni->GetStringUTFChars( string, 0 );
     auto res = EmulatorManager::instance.alloc_emulator( config );
@@ -28,27 +48,27 @@ JNIEXPORT jint JNICALL Java_simulator_integration_HardwareEmulatorInterface_allo
     return res;
 }
 
-JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_free_1autopilot
+JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_free_1autopilot
 ( JNIEnv *, jobject, jint id ) {
     EmulatorManager::instance.free_emulator( id );
 }
 
-JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_execute_1one
+JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_execute_1one
 ( JNIEnv *, jobject, jint id, jlong time_delta ) {
     EmulatorManager::instance.emulators[id]->exec( time_delta );
 }
 
-JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_start_1tick
+JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_start_1tick
 ( JNIEnv *, jobject, jlong time_delta ) {
     EmulatorManager::instance.start_tick( time_delta );
 }
 
-JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_end_1tick
+JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_end_1tick
 ( JNIEnv *, jobject ) {
     EmulatorManager::instance.end_tick();
 }
 
-JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_query
+JNIEXPORT jstring JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_query
 ( JNIEnv *jni, jobject, jstring string ) {
     auto message = jni->GetStringUTFChars( string, 0 );
     auto res = EmulatorManager::instance.query( message );
@@ -56,7 +76,7 @@ JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_q
     return jni->NewStringUTF( res.c_str() );
 }
 
-JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_query_1autopilot
+JNIEXPORT jstring JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_query_1autopilot
 ( JNIEnv *jni, jobject, jint id, jstring string ) {
     auto message = jni->GetStringUTFChars( string, 0 );
     auto res = EmulatorManager::instance.emulators[id]->query( message );
@@ -64,7 +84,7 @@ JNIEXPORT jstring JNICALL Java_simulator_integration_HardwareEmulatorInterface_q
     return jni->NewStringUTF( res.c_str() );
 }
 
-JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_1one_1input
+JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_add_1one_1input
 ( JNIEnv *jni, jobject, jint id, jstring key, jobject value ) {
     auto &emulator = *EmulatorManager::instance.emulators[id];
     auto port_name = jni->GetStringUTFChars( key, 0 );
@@ -91,7 +111,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
         if ( intValue != 0 ) {
             auto i_val = jni->CallIntMethod( value, intValue );
             //Log::info << ": " << i_val << " (int)\n";
-            port_buffer.init( i_val );
+            port_buffer.init( (int) i_val );
         }
         else
             Log::err << "Could not resolve intValue method from Java Integer\n";
@@ -128,7 +148,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_add_
     }
 }
 
-JNIEXPORT void JNICALL Java_simulator_integration_HardwareEmulatorInterface_query_1outputs
+JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_query_1outputs
 ( JNIEnv *env, jobject obj, jint id, jobject opaque_hashmap ) {
     static jclass cls = env->GetObjectClass( obj );
     if ( cls == 0 ) {
