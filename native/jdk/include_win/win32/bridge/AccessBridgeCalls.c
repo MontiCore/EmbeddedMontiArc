@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /*
  * @(#)AccessBridgeCalls.c      1.25 05/08/22
  */
