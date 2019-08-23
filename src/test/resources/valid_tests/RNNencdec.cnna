@@ -1,11 +1,13 @@
 architecture RNNencdec(max_length=5, vocabulary_size=30000, hidden_size=1000){
    def input Q(0:1)^{vocabulary_size} source
-   def output Q(0:1)^{vocabulary_size} target
+   def output Q(0:1)^{vocabulary_size} target[3]
 
-   timed <t> BeamSearchStart(max_length=5) {
-       source ->
+    source -> target[0];
+
+   timed <t=2> BeamSearchStart(max_length=5) {
+       target[t-1] ->
        FullyConnected(units=vocabulary_size) ->
        Softmax() ->
-       target
+       target[t]
    };
  }

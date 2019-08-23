@@ -109,9 +109,12 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             include(unrollElement.getBody().getElements().get(0).getResolvedThis().get(), writer, netDefinitionMode);
         }
 
-        for(int i = 0; i < (int)unrollElement.getIntValue(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH).get(); i++) {
+        //System.err.println("TIME: " + unrollElement.getIntValue(AllPredefinedLayers.BEAMSEARCH_T_NAME).get());
+        int timestep = 0;//unrollElement.getIntValue(AllPredefinedLayers.BEAMSEARCH_T_NAME).get();
 
-            System.err.println("i: " + i);
+        while (timestep < unrollElement.getIntValue(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH).get()) {
+
+            System.err.println("i: " + timestep);
 
             for (ArchitectureElementSymbol element : unrollElement.getBody().getElements()) {
                 previousElement = getCurrentElement();
@@ -126,6 +129,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                     }
                 }
             }
+            timestep++;
         }
 
 
