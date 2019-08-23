@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package model;
 conforms to nfp.CompPower;
 tags CompPower for weatherBalloon.weatherBalloonSensors {

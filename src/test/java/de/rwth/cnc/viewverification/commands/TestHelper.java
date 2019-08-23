@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.cnc.viewverification.commands;
 
 import static javolution.testing.TestContext.assertEquals;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package avionicsSystemExample;
 
 // The connection can be used in a positive way (and fail) to check that

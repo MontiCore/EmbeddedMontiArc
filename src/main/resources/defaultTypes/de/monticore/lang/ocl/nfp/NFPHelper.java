@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.ocl.nfp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ElementInstance;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package view;
 conforms to nfp.LatencyTagSchema;
 

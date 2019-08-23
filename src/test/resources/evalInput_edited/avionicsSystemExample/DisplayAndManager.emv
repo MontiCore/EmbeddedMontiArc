@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package avionicsSystemExample;
 
 // Shows that the Pilot_Display exclusively communicates with the Pilot_Display_Manager
