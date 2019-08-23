@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture RNNencdec<max_length=50, vocabulary_size=30000, hidden_size=1000>{
     def input Q^{max_length, vocabulary_size} source
     def output Q^{max_length, vocabulary_size} target
