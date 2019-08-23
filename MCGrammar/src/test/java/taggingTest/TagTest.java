@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+package taggingTest;
 
 import java.nio.file.Paths;
 import java.util.*;
