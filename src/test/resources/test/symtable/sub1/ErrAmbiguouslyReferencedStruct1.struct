@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package test.symtable.sub1;
 
 struct ErrAmbiguouslyReferencedStruct1 {
