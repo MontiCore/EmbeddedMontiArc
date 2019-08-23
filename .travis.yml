@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 
 script:
 - git checkout ${TRAVIS_BRANCH}

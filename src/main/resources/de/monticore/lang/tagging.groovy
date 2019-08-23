@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.montiarc.tagging.generator
 
 // M1: configuration object "_configuration" prepared externally

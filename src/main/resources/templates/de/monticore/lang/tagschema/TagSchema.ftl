@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("packageName", "schemaName", "tagTypeNames")}
 
 package ${packageName}.${schemaName};

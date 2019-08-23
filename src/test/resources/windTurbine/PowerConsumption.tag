@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package industry;
 conforms to nfp.PowerConsumptionTagSchema;
 

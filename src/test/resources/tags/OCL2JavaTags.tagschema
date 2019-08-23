@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package nfp;
 
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;

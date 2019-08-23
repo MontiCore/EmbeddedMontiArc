@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package nfp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
