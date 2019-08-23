@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore
 %module test_noOutputComponent_executor
 
 %{
