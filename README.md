@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # WebServerForDemonstrator
 
 The web-server based on the Jetty web-server. The main goal is to process requests from the demonstartor front-end part. The server does the following:

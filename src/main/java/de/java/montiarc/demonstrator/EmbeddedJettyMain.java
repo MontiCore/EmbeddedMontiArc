@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.java.montiarc.demonstrator;
 
 import org.eclipse.jetty.server.Server;
