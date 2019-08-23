@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {ClientFunction, t} from "testcafe";
 import {Constants} from "../../se.rwth.common.test/constants";
 import {ClientFunctions} from "../../se.rwth.common.test/client.functions";

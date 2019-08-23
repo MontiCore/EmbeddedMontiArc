@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 call "..\shared\variables"
 if exist "%STREAM_TEST_EXEC_DIR%" rmdir "%STREAM_TEST_EXEC_DIR%" /s /q
 mkdir "%STREAM_TEST_EXEC_DIR%"

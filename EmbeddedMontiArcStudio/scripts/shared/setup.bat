@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 setlocal
 If Not Exist setup (
     call ..\..\emam2wasm\scripts\setup

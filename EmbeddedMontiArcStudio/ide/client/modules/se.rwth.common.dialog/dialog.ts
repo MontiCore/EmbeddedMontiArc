@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {UIModule} from "../se.rwth.common.module/module";
 
 export class Dialog extends UIModule {

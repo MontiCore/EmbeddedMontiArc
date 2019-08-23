@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {ClientFunction} from "testcafe";
 
 declare var browser;

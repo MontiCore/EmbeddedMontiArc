@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
     function getPng() {
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {

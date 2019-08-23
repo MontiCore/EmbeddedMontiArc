@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /* caption: OCL; extensions: ocl */
 define(function(require, exports, module) {
     var OCLHighlightRules = require("./ocl_highlight_rules").OCLHighlightRules;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var EmbeddedMontiArcApplication = function(EmbeddedMontiArcApplication) {
   EmbeddedMontiArcApplication = EmbeddedMontiArcApplication || {};
   var Module = EmbeddedMontiArcApplication;

@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 if exist "%TEST_EXEC_DIR%" rmdir "%TEST_EXEC_DIR%" /s /q
 mkdir "%TEST_EXEC_DIR%"
 if exist "%TESTS_CPP_DIR%" rmdir "%TESTS_CPP_DIR%" /s /q

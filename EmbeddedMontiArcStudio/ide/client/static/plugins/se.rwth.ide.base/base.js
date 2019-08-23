@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 (function() {
     var pathname = window.location.pathname;
     var index = pathname.lastIndexOf('/');

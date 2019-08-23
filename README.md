@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 <!--[![Packing Windows 64-bit portable application](https://ci.appveyor.com/api/projects/status/e6j0od439jh25ax9?svg=true)](https://ci.appveyor.com/project/vonwenckstern/emastudiobuilder)-->
 
 # EMAStudioBuilder

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {AbstractModuleTestController} from "../framework/ModuleTestController";
 import {Selector, t} from "testcafe";
 import * as Util from "util";

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var GitHubContainer = (function() {
     var properties = {
         $container: null

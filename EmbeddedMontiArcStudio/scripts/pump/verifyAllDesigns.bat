@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 REM call reportinformation 
 call "..\shared\variables.bat"
 if exist "%HOME%\viewverification\results\" rmdir "%HOME%\viewverification\results\" /s /q

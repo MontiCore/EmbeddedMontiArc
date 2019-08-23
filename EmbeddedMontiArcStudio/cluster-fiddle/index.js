@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 $(function() {
     var $spinner = $("#spinner");
     var $result = $("#result");

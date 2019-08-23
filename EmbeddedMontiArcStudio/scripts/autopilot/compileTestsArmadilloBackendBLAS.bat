@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 g++ -fPIC ^
    -I"%JAVA_HOME%\include" ^
    -I"%JAVA_HOME%\include\win32" ^

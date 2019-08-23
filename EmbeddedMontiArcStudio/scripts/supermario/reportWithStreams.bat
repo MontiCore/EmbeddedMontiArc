@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 call "..\shared\variables.bat"
 call "..\supermario\runAllTests.bat"
 if exist "%REPORTING_HOME%\report\data" rmdir "%REPORTING_HOME%\report\data" /s /q

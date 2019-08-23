@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var OCL = function(OCL) {
   OCL = OCL || {};
   var Module = OCL;

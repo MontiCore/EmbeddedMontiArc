@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Branches = (function() {
     var properties = {
         $panel: null,

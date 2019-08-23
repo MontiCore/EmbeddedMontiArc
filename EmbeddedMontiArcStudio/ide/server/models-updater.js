@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 const Log = require("log4js");
 const rimraf = require("rimraf");
 const mkdirp = require("mkdirp");

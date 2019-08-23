@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Trashbin = (function() {
     var CONSTANTS = {
         KEY: "trashbin"

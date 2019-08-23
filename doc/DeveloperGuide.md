@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Developer Guide
 ![](https://img.shields.io/badge/Status-Work_In_Progress-blue.svg?longCache=true&style=flat-square)
 

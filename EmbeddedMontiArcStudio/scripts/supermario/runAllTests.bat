@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 call reportinformation
 if exist "%STREAM_TESTING%\testResults\" rmdir "%STREAM_TESTING%\testResults\" /s /q
 if exist "%HOME%\testResults\" rmdir "%HOME%\testResults\" /s /q

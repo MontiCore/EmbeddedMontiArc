@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Tagging = function(Tagging) {
   Tagging = Tagging || {};
   var Module = Tagging;

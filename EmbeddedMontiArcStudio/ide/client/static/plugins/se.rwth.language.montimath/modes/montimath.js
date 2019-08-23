@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /* caption: Math; extensions: m */
 define(function(require, exports, module) {
     var MathHighlightRules = require("./math_highlight_rules").MathHighlightRules;

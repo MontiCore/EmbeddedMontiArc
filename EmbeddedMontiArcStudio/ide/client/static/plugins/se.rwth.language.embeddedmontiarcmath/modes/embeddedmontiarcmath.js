@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /* caption: EmbeddedMontiArcMath; extensions: emam */
 define(function(require, exports, module) {
     var EmbeddedMontiArcMathHighlightRules = require("./embeddedmontiarcmath_highlight_rules").EmbeddedMontiArcMathHighlightRules;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("../../se.rwth.common.test/constants");

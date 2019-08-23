@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 define(function(require, exports, module) {
     main.consumes = ["Plugin", "ui", "layout", "ace.status"];
     main.provides = ["ui.custom"];

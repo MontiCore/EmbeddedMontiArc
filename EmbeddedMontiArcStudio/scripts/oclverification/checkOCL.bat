@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 setlocal
 echo "Checking OCL types"
 pushd %~dp0

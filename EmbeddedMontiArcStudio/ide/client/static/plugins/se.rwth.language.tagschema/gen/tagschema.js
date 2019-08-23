@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var TagSchema = function(TagSchema) {
   TagSchema = TagSchema || {};
   var Module = TagSchema;

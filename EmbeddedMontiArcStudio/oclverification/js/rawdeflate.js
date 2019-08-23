@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /*
  * $Id: rawdeflate.js,v 0.3 2009/03/01 19:05:05 dankogai Exp dankogai $
  *

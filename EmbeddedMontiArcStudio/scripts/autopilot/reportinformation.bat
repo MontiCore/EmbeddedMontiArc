@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 call "..\shared\variables"
 "%JAVA_HOME%\bin\java.exe" -jar "%HOME%\emam2cpp.jar" ^
    --models-dir="%HOME%\model\autopilot" ^

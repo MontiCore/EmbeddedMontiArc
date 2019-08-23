@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var MontiMath = function(MontiMath) {
   MontiMath = MontiMath || {};
   var Module = MontiMath;

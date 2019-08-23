@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /**
  * This file defines the Highlighting Rules of the
  * OCL language.

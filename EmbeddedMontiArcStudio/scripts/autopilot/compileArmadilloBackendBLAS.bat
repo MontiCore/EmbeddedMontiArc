@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 if exist "%DLL_DIR%" rmdir "%DLL_DIR%" /s /q
 mkdir "%DLL_DIR%"
 g++ -shared -fPIC ^

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 define(function(require, exports, module) {
     main.consumes = ["Plugin", "ui", "layout", "ui.custom", "tabManager", "models.updater", "fs"];
     main.provides = ["oclverification"];

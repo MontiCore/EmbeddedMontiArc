@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {UIModule} from "../se.rwth.common.module/module";
 import {Dialog} from "../se.rwth.common.dialog/dialog";
 

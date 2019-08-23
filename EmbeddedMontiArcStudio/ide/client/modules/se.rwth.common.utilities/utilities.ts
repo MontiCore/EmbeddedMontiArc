@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 export class Utilities {
     public static query(queryString: string): any {
         const pairs = queryString.split('&');

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Demos = (function() {
     var CONSTANTS = {
         USERNAME: "EmbeddedMontiArc",

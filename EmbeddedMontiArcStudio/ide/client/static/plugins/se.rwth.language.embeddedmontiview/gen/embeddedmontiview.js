@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var EmbeddedMontiView = function(EmbeddedMontiView) {
   EmbeddedMontiView = EmbeddedMontiView || {};
   var Module = EmbeddedMontiView;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Load = (function() {
     var CONSTANTS = {
         RESERVED_KEYS: ["mountPoint", "url"]

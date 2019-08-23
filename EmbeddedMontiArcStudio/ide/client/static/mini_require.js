@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 (function() {
 
 var MODULE_LOAD_URL = "/load/module";

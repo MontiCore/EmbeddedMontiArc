@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 call "..\shared\variables"
 if exist "%CPP_DIR%" rmdir "%CPP_DIR%" /s /q
 mkdir "%CPP_DIR%"

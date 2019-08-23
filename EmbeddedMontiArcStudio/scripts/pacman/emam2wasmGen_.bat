@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 setlocal
 pushd %~dp0
 cd ..

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 define(function(require, exports, module) {
     main.consumes = ["Plugin", "ui", "layout", "ui.custom", "models.updater"];
     main.provides = ["visualizeRes"];

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var GitHubVFS = function(ownername, reponame, branchname, username, password) {
     var CONSTANTS = {
         URL: "http://www.se-rwth.de/~vonwenckstern/fetch.php",

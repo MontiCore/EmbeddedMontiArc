@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var CD = function(CD) {
   CD = CD || {};
   var Module = CD;

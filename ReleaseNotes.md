@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 <!--<h1>This version is instable yet, see #14</h1> -->
 
 Requirements:

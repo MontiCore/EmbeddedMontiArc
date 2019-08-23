@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 call "..\shared\variables.bat"
 if exist "%SVG_HOME%\SVG" rmdir "%SVG_HOME%\SVG" /s /q
 mkdir "%SVG_HOME%\SVG"

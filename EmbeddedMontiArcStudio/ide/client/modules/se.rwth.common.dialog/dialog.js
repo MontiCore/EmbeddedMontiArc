@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Dialog = (function() {
     var CONSTANTS = {
         RADIX: "modules/se.rwth.common.dialog/images/"

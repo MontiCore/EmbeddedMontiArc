@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 set file=%1 
 set file=%file:~0,-5%
 echo %file%
