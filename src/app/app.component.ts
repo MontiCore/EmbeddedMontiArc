@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Component, OnInit } from "@angular/core";
 import { remote } from "electron";
 import { LoadService } from "@services/common/load.service";

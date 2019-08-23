@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Component } from "@angular/core";
 import { UseCaseState, UseCasesStateService } from "@services/use-cases";
 import { State, StateComponent } from "@services/common/state.service";

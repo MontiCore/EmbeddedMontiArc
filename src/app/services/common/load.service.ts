@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Injectable } from "@angular/core";
 import { ArtifactsService } from "@services/artifacts";
 import { UseCasesService } from "@services/use-cases";

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Injectable } from "@angular/core";
 import { UseCasesStateService, UseCaseState } from "@services/use-cases/use-cases-state.service";
 import { WorkspaceService } from "@services/common/workspace.service";

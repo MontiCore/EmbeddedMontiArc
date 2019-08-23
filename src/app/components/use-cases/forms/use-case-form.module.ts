@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { NgModule } from "@angular/core";
 import { UseCaseFormComponent } from "./use-case-form.component";
 import {

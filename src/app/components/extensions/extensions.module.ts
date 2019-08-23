@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { NgModule } from "@angular/core";
 import { ExtensionsComponent } from "./extensions.component";
 import {

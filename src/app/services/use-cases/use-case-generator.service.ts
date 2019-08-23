@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Injectable } from "@angular/core";
 import { GeneratorService } from "@services/common/generator.service";
 import { UseCaseState } from "@services/use-cases/use-cases-state.service";

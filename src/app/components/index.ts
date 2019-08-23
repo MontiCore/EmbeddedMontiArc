@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 export * from "./welcome";
 export * from "./use-cases";
 export * from "./artifacts";

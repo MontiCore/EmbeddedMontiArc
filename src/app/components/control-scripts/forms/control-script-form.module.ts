@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { NgModule } from "@angular/core";
 import { ControlScriptFormComponent } from "./control-script-form.component";
 import {

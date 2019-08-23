@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { ValidatedValue, ValidatorErrorMap, ValidatorsService } from "@services/common/validators.service";
 import { AbstractState } from "@services/common/state.service";
 import { ValidationErrors } from "@angular/forms";

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 const FileSystem = require("fs-extra");
 const Path = require("path");
 

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Injectable } from "@angular/core";
 
 import * as path from "path";

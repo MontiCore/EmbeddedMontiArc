@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Component, Input } from "@angular/core";
 import { ButtonState, ExtensionState } from "@services/extensions";
 

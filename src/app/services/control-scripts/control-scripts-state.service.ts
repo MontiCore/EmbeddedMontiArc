@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Injectable } from "@angular/core";
 import { AbstractState, AbstractStateService, State } from "@services/common/state.service";
 import { ValidatedValue, ValidatorErrorMap, ValidatorsService } from "@services/common/validators.service";

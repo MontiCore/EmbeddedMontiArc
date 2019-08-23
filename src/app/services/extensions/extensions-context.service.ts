@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { ExtensionState } from "@services/extensions/extensions-state.service";
 import { ButtonContext } from "@services/extensions/buttons/buttons-context.service";
 import { Injectable } from "@angular/core";

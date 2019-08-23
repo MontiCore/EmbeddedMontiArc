@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { ExtensionStateTransformation } from "@services/extensions/extensions-state-transformer";
 import { ButtonState } from "@services/extensions";
 

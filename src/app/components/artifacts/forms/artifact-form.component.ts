@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Component, Input } from "@angular/core";
 import { ArtifactState, ArtifactsStateService } from "../../../services/artifacts/index";
 import { MatCheckboxChange } from "@angular/material";

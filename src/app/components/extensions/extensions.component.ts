@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Component } from "@angular/core";
 import { ExtensionState, ExtensionsStateService } from "@services/extensions";
 import { State, StateComponent } from "@services/common/state.service";

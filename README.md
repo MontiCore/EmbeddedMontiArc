@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 <div align="center">
     <img src="doc/media/images/emasinstallermanager.png" width="800"/>
 </div>

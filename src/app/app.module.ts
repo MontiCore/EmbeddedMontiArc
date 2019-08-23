@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 

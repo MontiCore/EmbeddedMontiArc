@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2018 SE RWTH.
- *
- * TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 const { app, BrowserWindow } = require("electron");
 const { posix } = require("path");

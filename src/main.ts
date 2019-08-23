@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { enableProdMode } from "@angular/core";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 

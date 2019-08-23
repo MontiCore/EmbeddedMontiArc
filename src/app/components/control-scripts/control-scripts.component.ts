@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Component } from "@angular/core";
 import { ControlScriptsStateService } from "@services/control-scripts";
 import { ControlScriptState } from "@services/control-scripts";

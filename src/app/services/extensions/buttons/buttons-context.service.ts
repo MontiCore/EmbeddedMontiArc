@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { ButtonState } from "@services/extensions";
 
 import * as path from "path";

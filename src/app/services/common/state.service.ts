@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { AbstractControl, ValidationErrors } from "@angular/forms";
 
 export interface State {

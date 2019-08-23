@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { UseCasesComponent, WelcomeComponent, ArtifactsComponent, ControlScriptsComponent, ExtensionsComponent } from "@components/index";

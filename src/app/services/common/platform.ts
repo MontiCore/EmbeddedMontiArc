@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 export type Platform = "all" | "win32" | "linux";
 
 export namespace Platform {

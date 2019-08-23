@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Component } from "@angular/core";
 import { ArtifactState, ArtifactsStateService } from "@services/artifacts/artifacts-state.service";
 import { State, StateComponent } from "@services/common/state.service";

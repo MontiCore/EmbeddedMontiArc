@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Injectable } from "@angular/core";
 import { WorkspaceService } from "@services/common/workspace.service";
 import { Extension } from "@services/extensions/extensions.service";

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { URL } from "url";
 import { ValidationErrors } from "@angular/forms";
 import { Injectable } from "@angular/core";

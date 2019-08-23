@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { ControlScriptsStateService, ControlScriptState } from "@services/control-scripts/control-scripts-state.service";
 import { ControlScript } from "@services/control-scripts/control-scripts.service";
 import { WorkspaceService } from "@services/common/workspace.service";

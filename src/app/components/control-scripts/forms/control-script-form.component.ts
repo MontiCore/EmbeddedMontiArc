@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Component, Input } from "@angular/core";
 import { ControlScriptState } from "@services/control-scripts";
 import { UseCase, UseCasesService } from "@services/use-cases";
