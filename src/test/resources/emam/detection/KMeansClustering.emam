@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package detection;
 
 component KMeansClustering<N1 n, N1 amountVectors, N1 maximumClusters>{

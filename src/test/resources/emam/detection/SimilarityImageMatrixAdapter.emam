@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package detection;
 
 component SimilarityImageMatrixAdapter<N1 n, N1 m>{

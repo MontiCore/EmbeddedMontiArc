@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package detection;
 
 component SpectralClusterer<N1 n, N1 k, N1 maximumClusters>{
