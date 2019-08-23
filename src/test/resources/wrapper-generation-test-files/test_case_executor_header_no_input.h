@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef _ANY_COMPONENT_EXECUTOR_H_
 #define _ANY_COMPONENT_EXECUTOR_H_
 #include "armadillo"

@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # EMADL2PythonWrapper
 This generator takes an EMAM or EMADL model and produces a python wrapper in order to use the EMAM/EMADL component as a python package.
 Note that it **does not** generate the source files for the logic of the component.

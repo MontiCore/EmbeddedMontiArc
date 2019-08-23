@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.pythonwrapper.building;
 
 import de.se_rwth.commons.logging.Log;

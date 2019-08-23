@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.pythonwrapper.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
