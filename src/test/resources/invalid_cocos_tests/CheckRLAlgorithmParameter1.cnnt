@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration CheckRLAlgorithmParameter1 {
     learning_method : reinforcement
     critic : path.to.component

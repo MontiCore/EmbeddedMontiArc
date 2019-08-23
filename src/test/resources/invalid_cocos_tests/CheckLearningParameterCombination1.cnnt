@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration CheckLearningParameterCombination1 {
     learning_method : reinforcement
 
