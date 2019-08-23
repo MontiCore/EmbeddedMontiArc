@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign hasInputVariables = (inputVariables?size > 0)>
 <#assign hasOutputVariables = (outputVariables?size > 0)>
 #include "${wrapperClassName}.h"
