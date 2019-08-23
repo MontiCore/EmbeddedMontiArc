@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { readFileSync } from "fs";
 
 export function parseStacktraces(fileName: string, modelBaseDir: string): emaStacktraces {

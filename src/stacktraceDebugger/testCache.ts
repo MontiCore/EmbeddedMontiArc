@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { emaStacktraces, parseStacktraces } from "./stacktraceParser";
 import { readFileSync, statSync, readdirSync, writeFileSync } from "fs";
 import { isAbsolute } from "path";

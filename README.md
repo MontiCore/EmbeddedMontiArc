@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # EmbeddedMontiArcMath debugger plugin for vscode
 Based on Microsoft's [VS Code Mock Debug](https://github.com/microsoft/vscode-mock-debug).
 

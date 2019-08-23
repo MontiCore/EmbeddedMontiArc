@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { spawnSync } from 'child_process';
 import { createHash } from 'crypto';
 import { RuntimeLogger } from "./RuntimeLogger";

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { Source } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 export class StackFrameWithColRange implements DebugProtocol.StackFrame {

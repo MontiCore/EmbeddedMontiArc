@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { EventEmitter } from 'events';
 import * as log4js from 'log4js';
 export class RuntimeLogger {
