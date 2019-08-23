@@ -172,6 +172,14 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntValue(AllPredefinedLayers.OUTPUT_DIM_NAME).get();
     }
 
+    public boolean getBidirectional() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.BIDIRECTIONAL_NAME).get();
+    }
+
+    public boolean getFlatten() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.FLATTEN_PARAMETER_NAME).get();
+    }
+
     @Nullable
     public String getPoolType(){
         return getLayerSymbol().getStringValue(AllPredefinedLayers.POOL_TYPE_NAME).get();
