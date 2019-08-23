@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include <stdio.h>
 #include "tests_a_compA.h"
 

@@ -1,10 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.mqtt;
 
-/*
- * Copyright (c) 2015 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;

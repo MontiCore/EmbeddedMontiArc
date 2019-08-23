@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # EMAM2MQTT
 
 A project that generates MQTT-Adapter for EmbeddedMontiArcMath components.

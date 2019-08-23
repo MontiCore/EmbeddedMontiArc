@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include "MqttAdapter_tests_a_compA.h"
 
 using namespace std;

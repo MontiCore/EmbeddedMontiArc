@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#--@formatter:off-->
 
 # Created by Georg Vinogradov on 28.05.19
