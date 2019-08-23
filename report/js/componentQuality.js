@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 $(window).resize(function () {
     $('.reportFrame').each(function () {
         resizeIframe(this);

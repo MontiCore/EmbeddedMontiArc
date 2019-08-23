@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.reporting.cocoReport;
 
 import de.monticore.reporting.cocoReport.helper.RewriteWithoutArray;

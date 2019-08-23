@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.reporting.tools;
 
 public class CustomLog extends de.se_rwth.commons.logging.Log {

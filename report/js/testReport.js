@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 function loadJSON(file,callback) {   
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType('application/json');

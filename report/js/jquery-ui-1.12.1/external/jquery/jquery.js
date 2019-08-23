@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /*!
  * jQuery JavaScript Library v1.12.4
  * http://jquery.com/

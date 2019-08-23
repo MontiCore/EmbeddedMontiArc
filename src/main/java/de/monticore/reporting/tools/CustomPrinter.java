@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.reporting.tools;
 
 import java.io.OutputStream;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var infoDate = "";
 
 function createTable_custom(file, infoFile) {

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.reporting.testReport;
 
 import de.monticore.lang.monticar.helper.IndentPrinter;

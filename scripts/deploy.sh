@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 #!/bin/sh
 set -e # Exit with nonzero exit code if anything fails
 SOURCE_BRANCH="master"

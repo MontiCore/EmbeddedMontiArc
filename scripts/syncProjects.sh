@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 #!/bin/sh
 BASE_PATH="https://git.rwth-aachen.de/"
 
