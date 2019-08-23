@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 # Edit config only
 . ./config
 

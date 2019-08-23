@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 #Download curl
 if(!(Test-Path -path ".\curl")) {
   "Getting curl"

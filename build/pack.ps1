@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 $targetDir = "$targetDir.$date"
 
 if(!(Test-Path -path $targetDir)) {

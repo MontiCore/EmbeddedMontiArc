@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 $date = Get-Date -format "ddMMM-HHmm"
 # The Folder which will be present after self-extracting
 $targetDir = "EMAStudio"

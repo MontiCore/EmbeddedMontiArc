@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 $dir = $ext        
 
 if(!(Test-Path -path $ext)) {

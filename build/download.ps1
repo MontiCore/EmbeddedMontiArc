@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 # download new dependencies 
 if(!(Test-Path -path $dl)) {
     New-Item -ItemType directory -Path $dl
