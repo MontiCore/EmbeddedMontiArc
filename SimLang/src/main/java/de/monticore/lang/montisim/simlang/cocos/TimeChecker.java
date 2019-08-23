@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /*
  * Custom CoCos for Time
  * @author Deniz Schmidt 

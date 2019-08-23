@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2014 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.montisim.simlang._symboltable;
 import de.monticore.lang.montisim.weather.symboltable.*;
 import de.monticore.symboltable.ResolvingConfiguration;

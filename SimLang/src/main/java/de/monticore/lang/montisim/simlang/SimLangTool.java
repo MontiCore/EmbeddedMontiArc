@@ -1,10 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.montisim.simlang;
 
-/*
- * Copyright (c) 2017 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
 
 import java.io.IOException;
 import java.util.Optional;

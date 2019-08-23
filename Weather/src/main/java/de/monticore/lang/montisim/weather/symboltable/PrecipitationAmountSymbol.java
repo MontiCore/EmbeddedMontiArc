@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.montisim.weather.symboltable;
 
 import de.monticore.lang.montisim.util.types.AlternativeInput;

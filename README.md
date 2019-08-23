@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # SimulationLanguage
 
 SimLang is a DSL for describing settings of vehicle simulations.

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /*
  * Custom CoCos for Timeout
  * @author Deniz Schmidt 
