@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monitcore.lang.monticar.utilities.tools;
 
 import de.se_rwth.commons.SourcePosition;

@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 
 For more information see Wiki:
 [Link](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/maven-streamtest/wikis/home)

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monitcore.lang.monticar.utilities;
 
 import de.monitcore.lang.monticar.utilities.tools.LogToFile;

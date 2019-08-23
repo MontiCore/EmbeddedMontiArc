@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.utilities.middleware;
 
 import de.monitcore.lang.monticar.utilities.middleware.MiddlewareBuildMojo;

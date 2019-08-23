@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package testA;
 
 stream GatherSum_TestStream for GatherSum_TestWrapper {
