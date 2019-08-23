@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function name = getBlockName( path )
 %GETBLOCKTYPE Summary of this function goes here
 %   Detailed explanation goes here

@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function conformsString = getConformsString(tagType)
     pref = 'conforms to nfp.';
     suff = ';\n';

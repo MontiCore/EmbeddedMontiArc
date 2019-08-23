@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function sys = expandMasks(componentPath)
     subComponents = find_system(componentPath, 'SearchDepth', 1, 'LookUnderMasks', 'all', 'FollowLinks', 'on', 'type', 'block');
    

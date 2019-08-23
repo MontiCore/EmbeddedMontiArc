@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function computeBCETTest
     display('running computeBCETTest ...');
     

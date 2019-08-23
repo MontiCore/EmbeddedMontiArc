@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 classdef CompPower < AbstractNFP
     properties
     end

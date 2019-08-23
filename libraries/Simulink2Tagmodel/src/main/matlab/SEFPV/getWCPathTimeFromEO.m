@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function time = getWCPathTimeFromEO(input, slistFile)
     orderedHandles = convertDiaryEntries(slistFile);
     m = ismember(orderedHandles,input);

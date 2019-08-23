@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 classdef Util
     %UTIL Summary of this class goes here
     %   Detailed explanation goes here

@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function time = getSumOfWCETForSubsystem(path)
     if strcmp(path(length(path)),'/')
         path(length(path)) = '';

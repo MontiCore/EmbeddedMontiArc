@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function indentation = unindent(s)
 %UNINDENT unindents the string s by deleting from the beginning of the 
 %string.

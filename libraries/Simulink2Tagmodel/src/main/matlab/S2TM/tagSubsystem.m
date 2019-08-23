@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function outputString = tagSubsystem(sys, nfpCalc, slistFile, ind, parentPath)
     tagValue = nfpCalc.getNFPForComponent(sys, slistFile);
     compName = Util.getBlockName(sys);

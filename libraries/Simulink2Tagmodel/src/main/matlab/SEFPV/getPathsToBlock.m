@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function [paths, blocksVisited] = getPathsToBlock(path, blocksVisited)
    if nargin < 2
       blocksVisited = []; 

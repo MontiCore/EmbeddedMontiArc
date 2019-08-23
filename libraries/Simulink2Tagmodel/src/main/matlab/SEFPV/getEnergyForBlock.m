@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function result = getEnergyForBlock(blockPath, eoFile)
     if ~exist('eoFile', 'var')
         eoFile = '';

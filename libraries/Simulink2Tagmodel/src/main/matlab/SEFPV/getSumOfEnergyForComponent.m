@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function energy = getSumOfEnergyForComponent(path)
     if strcmp(path(length(path)),'/')
         path(length(path)) = '';

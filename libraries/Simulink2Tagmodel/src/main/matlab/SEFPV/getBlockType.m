@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function type = getBlockType( path )
     if iscell(path)
         s = size(path);

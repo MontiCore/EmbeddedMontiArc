@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function time = getWCPathTime(input)
     lastIndex = find(input,1,'last');
     

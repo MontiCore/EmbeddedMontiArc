@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function name = getComponentName(path)
 %GETCOMPONENTNAME returns the name for a component.
 %   path is a path separated by '/' to a component. If the path looks like

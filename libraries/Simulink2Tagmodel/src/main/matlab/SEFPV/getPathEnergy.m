@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function energy = getPathEnergy(input, slistFile)       
     % sum up energy of each block of the input path
     pathEnergy = 0;

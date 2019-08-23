@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function s2tm(cmp, tagType, package, outputDir, slistFile)
 %S2TM creates a tag model for the provided Simulink block path
 %   Allowed paths are root level, subsystem or atomic block paths paths of

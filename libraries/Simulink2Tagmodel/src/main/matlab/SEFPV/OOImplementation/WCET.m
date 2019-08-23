@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 classdef WCET < AbstractNFP
     properties
     end

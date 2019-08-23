@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function getComponentOutputsTest
     display('running getComponentOutputsTest...');
     

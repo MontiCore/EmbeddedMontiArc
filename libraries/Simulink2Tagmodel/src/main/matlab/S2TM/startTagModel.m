@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function m = startTagModel(startCmp, nfpCalculator, slistFile, ind)
     name = startCmp;
     parts = strsplit(name, '/');

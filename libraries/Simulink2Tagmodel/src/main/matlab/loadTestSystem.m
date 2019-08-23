@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function [ccoo,er1,rsff] = loadTestSystem
     % for testing
     load_system('Oeffentlicher_Demonstrator_FAS_v04');

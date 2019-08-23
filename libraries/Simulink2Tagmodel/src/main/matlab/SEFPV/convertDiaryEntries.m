@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function handles = convertDiaryEntries(diaryPath)
     file = fopen(diaryPath);
     out = [];

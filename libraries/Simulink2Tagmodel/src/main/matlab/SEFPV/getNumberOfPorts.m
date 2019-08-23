@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function numOfPorts = getNumberOfPorts( blockPath, b )
 %GETNUMBEROFPORTS Summary of this function goes here
 %   Detailed explanation goes here

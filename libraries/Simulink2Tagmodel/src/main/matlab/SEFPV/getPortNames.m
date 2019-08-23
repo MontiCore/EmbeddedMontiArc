@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function ports = getPortNames(blockPath, b)
 %GETIOPORTNAMES returns the port names of a component.
 %   blockPath is a Simulink path to a component and b is a logical variable

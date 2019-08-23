@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function cleanedString = replaceForbiddenCharacters( string )
 %REPLACEFORBIDDENCHARACTERS Removes characters from the provided string
 %that are not allowed in MontiArc names.

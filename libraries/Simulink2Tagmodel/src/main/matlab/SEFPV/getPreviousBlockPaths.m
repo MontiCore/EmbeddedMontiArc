@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function paths = getPreviousBlockPaths(blockPath)
     names = getPreviousBlockNames(blockPath);
     

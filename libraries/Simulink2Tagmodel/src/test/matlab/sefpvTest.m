@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 % add required paths
 %   1. the tool 
 addpath('../../main/matlab/SEFPV');

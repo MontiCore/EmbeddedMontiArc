@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function m = appendMatrix(m1,m2)
     s11 = size(m1,1);
     s12 = size(m1,2);

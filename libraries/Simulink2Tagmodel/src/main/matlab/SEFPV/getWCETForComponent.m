@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function wcet = getWCETForComponent(path, slistFile, mode)
     if ~exist('mode', 'var')
         mode = 'PathLength';

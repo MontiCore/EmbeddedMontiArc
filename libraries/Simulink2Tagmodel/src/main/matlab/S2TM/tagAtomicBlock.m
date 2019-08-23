@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function outputString = tagAtomicBlock(blockPath, nfpCalc, slistFile, ind, parentPath)
     type = Util.getBlockType(blockPath);
     name = Util.getBlockName(blockPath);

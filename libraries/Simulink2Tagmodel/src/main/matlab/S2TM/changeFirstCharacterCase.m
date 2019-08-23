@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function outputString = changeFirstCharacterCase( string, toLower )
 %CHANGEFIRSTCHARACTERCASE changes the first character of the string to
 %lower or to upper case depending on the boolean value of the second

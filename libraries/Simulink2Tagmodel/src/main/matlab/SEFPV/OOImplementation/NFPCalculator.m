@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 classdef NFPCalculator
     %AbstractNFPCalculator  
     %   Detailed explanation goes here

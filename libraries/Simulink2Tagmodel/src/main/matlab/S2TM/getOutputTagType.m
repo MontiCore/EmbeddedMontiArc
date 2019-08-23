@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function tagTypeString = getOutputTagType(tagType)
     switch(tagType)
         case {'WCET','BCET'}

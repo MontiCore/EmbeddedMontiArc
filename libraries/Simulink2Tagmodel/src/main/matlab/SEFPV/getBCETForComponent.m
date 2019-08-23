@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 function bcet = getBCETForComponent(path, mode)
     if ~exist('mode', 'var')
         mode = 'PathLength';

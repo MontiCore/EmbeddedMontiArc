@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 classdef (Abstract = true) AbstractNFP < handle
     %AbstractNFP Stores and provides concrete NFP values 
     %   Subclasses define a cell array of Strings and Integers,
