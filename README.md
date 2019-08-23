@@ -37,7 +37,3 @@ detailed explanation can be found
 | ![](doc/media/images/control-scripts.png) | ![](doc/media/images/extensions.png) |  |
 | Control Scripts Page | Extensions Page |  |
 
-## License
-Copyright (C) 2018 SE RWTH.
-
-A concrete license is to be discussed.
