@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.roscpp.helper;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;

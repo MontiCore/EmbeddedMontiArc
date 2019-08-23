@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #pragma once
 #include "IAdapter_test_instanceArrayComp_basicPorts_1_.h"
 #include "test_instanceArrayComp_basicPorts_1_.h"

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #pragma once
 #include "IAdapter_tests_a_compA.h"
 #include "tests_a_compA.h"

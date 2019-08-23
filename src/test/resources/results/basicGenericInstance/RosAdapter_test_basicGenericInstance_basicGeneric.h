@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #pragma once
 #include "IAdapter_test_basicGenericInstance_basicGeneric.h"
 #include "test_basicGenericInstance_basicGeneric.h"

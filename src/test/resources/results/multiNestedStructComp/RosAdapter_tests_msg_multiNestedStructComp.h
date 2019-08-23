@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #pragma once
 #include "IAdapter_tests_msg_multiNestedStructComp.h"
 #include "tests_msg_multiNestedStructComp.h"

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #pragma once
 #include <ros/ros.h>
 #include "ba_intersection_intersectionController.h"

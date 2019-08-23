@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef BA_INTERSECTION_INTERSECTIONCONTROLLER
 #define BA_INTERSECTION_INTERSECTIONCONTROLLER
 #ifndef M_PI
