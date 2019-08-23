@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # ArtifactAnalysis
 
 The website needs two different inputs. The implemented and extracted results and the specification against the implementation is run.
