@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 
 @REM -------------------------------------------------------------------------------------------------------------
 @REM This script generates the MinGW makefiles and compiles them.

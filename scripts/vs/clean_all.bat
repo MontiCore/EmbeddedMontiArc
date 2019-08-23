@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 
 @REM -------------------------------------------------------------------------------------------------------------
 @REM This script removes all the build directories from hardware_emulator and its dependencies

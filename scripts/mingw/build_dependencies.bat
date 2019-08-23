@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 
 @REM -------------------------------------------------------------------------------------------------------------
 @REM This script compiles all the libraries required by the hardware_emulator and places them in the 'libs' folder

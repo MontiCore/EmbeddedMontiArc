@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 
 @REM -------------------------------------------------------------------------------------------------------------
 @REM This script re-compiles all the sample programs used in the hardware_emulator tests.

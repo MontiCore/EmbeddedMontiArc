@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 
 set MINGW_HOME="A:\EmbededMontiArcNew\EMAM-showcase\mingw64"
 set PATH=%MINGW_HOME%\bin;%PATH%
