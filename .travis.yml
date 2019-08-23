@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 # this build configuration is a hack, use build matrix later
 # https://lord.io/blog/2014/travis-multiple-subdirs/
 script:

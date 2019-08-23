@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package cd4a; //This needs to be the package of the cd model
 
 conforms to tagschema.CD4ATags;  // not necessary to work, only needed for the TaggingGenerator and documentation
