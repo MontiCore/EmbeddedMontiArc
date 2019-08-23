@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# (c) https://github.com/MontiCore/monticore  
 
 current_dir=$(pwd)
 parent_dir="$(dirname $current_dir)"
