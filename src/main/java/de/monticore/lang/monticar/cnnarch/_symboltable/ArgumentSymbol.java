@@ -104,6 +104,7 @@ public class ArgumentSymbol extends CommonSymbol {
     public void set(){
         if (getRhs().isResolved() && getRhs().isSimpleValue()){
             getParameter().setExpression((ArchSimpleExpressionSymbol) getRhs());
+            getUnrollParameter().setExpression((ArchSimpleExpressionSymbol) getRhs());
         }
         else {
             throw new IllegalStateException("The value of the parameter is set to a sequence or the expression is not resolved. This should never happen.");

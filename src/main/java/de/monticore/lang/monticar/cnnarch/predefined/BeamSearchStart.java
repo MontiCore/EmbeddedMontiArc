@@ -105,16 +105,14 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
                 new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.BEAMSEARCH_T_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
+                        .build(),
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.BEAMSEARCH_WIDTH_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build()));
         declaration.setParameters(parameters);
-        declaration.setLayers(declaration.layers);
-        for(LayerSymbol layer: declaration.layers){
-            for(ArgumentSymbol a: layer.getArguments()) {
-                //layer.setIntValue(a.getName(), 10);
-            }
-        }
         return declaration;
     }
 }

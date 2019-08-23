@@ -62,7 +62,7 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
 
     Stream = elements:(ArchitectureElement || "->")+;
 
-    Unroll =  "timed" "<" timeParameter:ArchitectureParameter ">"
+    Unroll =  "timed" "<" timeParameter:LayerParameter ">"
                                      Name "(" arguments:(ArchArgument || ",")* ")"
                                      "{" body:Stream "}";
 

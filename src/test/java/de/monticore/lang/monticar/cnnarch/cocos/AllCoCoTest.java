@@ -45,9 +45,9 @@ public class AllCoCoTest extends AbstractCoCoTest {
     @Test
     public void testValidCoCos(){
         checkValid("valid_tests", "RNNencdec");
+        checkValid("architectures", "ResNeXt50");
         checkValid("architectures", "ResNet152");
         checkValid("architectures", "Alexnet");
-        checkValid("architectures", "ResNeXt50");
         checkValid("architectures", "ResNet34");
         checkValid("architectures", "SequentialAlexnet");
         checkValid("architectures", "ThreeInputCNN_M14");

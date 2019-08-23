@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
 
+import de.monticore.lang.monticar.cnnarch._ast.ASTArchitectureParameter;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
@@ -39,7 +40,7 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
 
     private UnrollDeclarationSymbol declaration = null;
     private List<ArgumentSymbol> arguments;
-    private Set<ParameterSymbol> unresolvableParameters = null;
+    private ParameterSymbol timeParameter;
     private UnrollSymbol resolvedThis = null;
     private SerialCompositeElementSymbol body;
 
@@ -84,6 +85,14 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
 
     protected void setArguments(List<ArgumentSymbol> arguments) {
         this.arguments = arguments;
+    }
+
+    public ParameterSymbol getTimeParameter(){
+        return timeParameter;
+    }
+
+    protected void setTimeParameter(ParameterSymbol timeParameter){
+        this.timeParameter = timeParameter;
     }
 
     public ArchExpressionSymbol getIfExpression(){
@@ -219,6 +228,50 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
         }
         else {
             return Optional.empty();
+        }
+    }
+
+    public void setIntValue(String parameterName, int value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setIntTupleValue(String parameterName, List<Object> tupleValues) {
+        setTValue(parameterName, tupleValues, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setBooleanValue(String parameterName, boolean value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setStringValue(String parameterName, String value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setDoubleValue(String parameterName, double value) {
+        setTValue(parameterName, value, ArchSimpleExpressionSymbol::of);
+    }
+
+    public void setValue(String parameterName, Object value) {
+        ArchSimpleExpressionSymbol res = new ArchSimpleExpressionSymbol();
+        res.setValue(value);
+        setTValue(parameterName, res, Function.identity());
+    }
+
+    public <T> void setTValue(String parameterName, T value, Function<T, ArchSimpleExpressionSymbol> of) {
+        Optional<ParameterSymbol> param = getDeclaration().getParameter(parameterName);
+
+        if (param.isPresent()) {
+            Optional<ArgumentSymbol> arg = getArgument(parameterName);
+            ArchSimpleExpressionSymbol expression = of.apply(value);
+
+            if (arg.isPresent()) {
+                arg.get().setRhs(expression);
+            }
+            else {
+                arg = Optional.of(new ArgumentSymbol(parameterName));
+                arg.get().setRhs(expression);
+                arguments.add(arg.get());
+            }
         }
     }
 

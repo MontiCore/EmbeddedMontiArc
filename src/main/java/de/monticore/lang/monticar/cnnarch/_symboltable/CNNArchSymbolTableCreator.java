@@ -31,6 +31,7 @@ import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
@@ -346,25 +347,14 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     public void endVisit(ASTUnroll ast) {
         UnrollSymbol layer = (UnrollSymbol) ast.getSymbolOpt().get();
         layer.setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
-        //layer.getDeclaration().setBody(sces);
-
         List<ArgumentSymbol> arguments = new ArrayList<>(6);
+
+        //ast.getArgumentsList().add(ast.getTimeParameter());
         for (ASTArchArgument astArgument : ast.getArgumentsList()){
             Optional<ArgumentSymbol> optArgument = astArgument.getSymbolOpt().map(e -> (ArgumentSymbol)e);
             optArgument.ifPresent(arguments::add);
         }
         layer.setArguments(arguments);
-
-
-
-
-
-        /*List<ArchitectureElementSymbol> elements = new ArrayList<>();
-        for (ASTStream astStream : ast.getGroupsList()){
-            elements.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());
-        }
-        compositeElement.setElements(elements);
-        */
 
         removeCurrentScope();
     }
