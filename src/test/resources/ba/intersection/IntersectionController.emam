@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba.intersection;
 import ba.util.SingleSetCompareMatrix;
 //TODO: x = (n-1)n/2

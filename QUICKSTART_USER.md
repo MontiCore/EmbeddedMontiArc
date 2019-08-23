@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Quickstart guide for generator users
 - Download the latest version of the generator from the [se-nexus](https://nexus.se.rwth-aachen.de/service/rest/repository/browse/public/de/monticore/lang/monticar/embedded-montiarc-math-middleware-generator/) (e.g. .../0.0.20-20190311.154342-1/embedded-montiarc-math-middleware-generator-0.0.20-20190311.154342-1-jar-with-dependencies.jar) and save it as mw-generator.jar
 - Create a `project.json` config file for your project

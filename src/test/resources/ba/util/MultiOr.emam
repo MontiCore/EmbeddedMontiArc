@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba.util;
 
 component MultiOr<N1 x = 2>{

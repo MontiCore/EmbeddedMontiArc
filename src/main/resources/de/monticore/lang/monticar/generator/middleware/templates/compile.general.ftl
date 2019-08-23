@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#macro cmake subdir="">
 <@comment str="configure cmake"/>
 cmake -B<@evalCurDir postfix="build/${subdir}"/> -H<@evalCurDir postfix="src/${subdir}"/> -DCMAKE_INSTALL_PREFIX=<@evalCurDir postfix="install"/> <@generatorOption/> <@passParams/>

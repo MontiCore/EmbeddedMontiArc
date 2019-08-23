@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tests.matrix;
 conforms to de.monticore.lang.monticar.generator.roscpp.RosToEmamTagSchema;
 

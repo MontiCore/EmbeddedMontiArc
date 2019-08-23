@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba.intersection;
 
 //Finds the earliest line intersection from a set of LineIntersection components

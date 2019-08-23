@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 #!/usr/bin/env bash
 set -e
 export CMAKE_PREFIX_PATH=$AMENT_PREFIX_PATH:$CMAKE_PREFIX_PATH

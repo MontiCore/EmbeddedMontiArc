@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package daimler.v4;
 component Oeffentlicher_Demonstrator_FAS_v04 {
 instance DEMO_FAS_1 dEMO_FAS_1;

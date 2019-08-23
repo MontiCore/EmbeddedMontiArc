@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package daimler.v4;
 // The C&C model Oeffentlicher_Demonstrator_FAS_v04 satisfies the view FA4.
   component Oeffentlicher_Demonstrator_FAS_v04FA4Tracing {

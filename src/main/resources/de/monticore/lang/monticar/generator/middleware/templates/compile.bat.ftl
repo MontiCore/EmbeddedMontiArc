@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#-- General batch -->
 <#macro comment str>
 :: ${str}
