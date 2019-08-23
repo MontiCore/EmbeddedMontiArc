@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 FullScreenMario.FullScreenMario.settings.events = {
     "keyOnClassCycleStart": "onThingAdd",
     "keyDoClassCycleStart": "placed",

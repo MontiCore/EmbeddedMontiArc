@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /// <reference path="FPSAnalyzr-0.2.1.ts" />
 var GamesRunnr;
 (function (GamesRunnr_1) {

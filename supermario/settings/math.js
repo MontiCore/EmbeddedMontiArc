@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /// <reference path="../FullScreenMario.ts" />
 var FullScreenMario;
 (function (FullScreenMario) {

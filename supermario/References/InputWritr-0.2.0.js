@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var InputWritr;
 (function (InputWritr_1) {
     "use strict";

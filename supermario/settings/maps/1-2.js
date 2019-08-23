@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 FullScreenMario.FullScreenMario.settings.maps.library["1-2"] = {
     "name": "1-2",
     "locations": [

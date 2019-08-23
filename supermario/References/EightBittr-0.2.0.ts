@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module EightBittr {
     /**
      * A basic representation of an in-game Thing. Size, velocity, and position

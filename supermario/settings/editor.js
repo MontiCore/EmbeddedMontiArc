@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 FullScreenMario.FullScreenMario.settings.editor = (function (prethings, macros) {
     return {
         "blocksize": FullScreenMario.FullScreenMario.unitsize * 4,

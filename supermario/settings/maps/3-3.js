@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 FullScreenMario.FullScreenMario.settings.maps.library["3-3"] = {
     "name": "3-3",
     "time": 300,

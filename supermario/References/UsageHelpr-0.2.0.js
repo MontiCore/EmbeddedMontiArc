@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var UsageHelpr;
 (function (UsageHelpr_1) {
     "use strict";

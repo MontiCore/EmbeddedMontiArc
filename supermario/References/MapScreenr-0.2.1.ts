@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module MapScreenr {
     /**
      * Functions to compute new variable values, keyed by their variable's names.

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.pacman.heithoff2.decision;
 
 // check whether an intersection (3 or more non-blocked paths) is reached

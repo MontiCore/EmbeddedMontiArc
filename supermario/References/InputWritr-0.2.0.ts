@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module InputWritr {
     /**
      * A callback for when a piped event is triggered.

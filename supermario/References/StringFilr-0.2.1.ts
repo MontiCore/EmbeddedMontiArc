@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module StringFilr {
     /**
      * The core stored library in a StringFilr, as a tree of data.

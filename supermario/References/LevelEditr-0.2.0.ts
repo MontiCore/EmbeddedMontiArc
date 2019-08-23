@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /// <reference path="ChangeLinr-0.2.0.ts" />
 /// <reference path="GroupHoldr-0.2.1.ts" />
 /// <reference path="InputWritr-0.2.0.ts" />

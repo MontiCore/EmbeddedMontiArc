@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module GroupHoldr {
     /**
      * An Object group containing objects of type T.

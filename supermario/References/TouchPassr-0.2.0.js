@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /// <reference path="InputWritr-0.2.0.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module FPSAnalyzr {
     /**
      * A Function to generate a current timestamp, such as performance.now.

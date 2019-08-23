@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /// <reference path="AreaSpawnr-0.2.0.ts" />
 /// <reference path="AudioPlayr-0.2.1.ts" />
 /// <reference path="ChangeLinr-0.2.0.ts" />

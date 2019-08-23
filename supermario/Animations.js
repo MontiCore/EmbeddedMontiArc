@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // @ifdef INCLUDE_DEFINITIONS
 /// <reference path="FullScreenMario.d.ts" />
 // @endif

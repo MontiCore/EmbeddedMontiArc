@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /// <reference path="ItemsHoldr-0.2.1.ts" />
 var AudioPlayr;
 (function (AudioPlayr_1) {

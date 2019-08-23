@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /**
  * An updated version of the traditional MersenneTwister JavaScript class by
  * Sean McCullough (2010), based on code by Takuji Nishimura and Makoto

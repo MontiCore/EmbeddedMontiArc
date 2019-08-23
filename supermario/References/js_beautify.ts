@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
 /*
 

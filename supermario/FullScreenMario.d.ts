@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module FullScreenMario {
     /**
      * A simple container for Map attributes given by switching to an Area within 

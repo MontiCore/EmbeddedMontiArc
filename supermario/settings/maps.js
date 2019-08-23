@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 FullScreenMario.FullScreenMario.settings.maps = {
     "mapDefault": "1-1",
     "locationDefault": "0",

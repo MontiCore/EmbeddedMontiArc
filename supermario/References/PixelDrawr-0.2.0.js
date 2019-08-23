@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /// <reference path="ChangeLinr-0.2.0.ts" />
 /// <reference path="ObjectMakr-0.2.2.ts" />
 /// <reference path="PixelRendr-0.2.0.ts" />

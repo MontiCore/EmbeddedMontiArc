@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var StringFilr;
 (function (StringFilr_1) {
     "use strict";

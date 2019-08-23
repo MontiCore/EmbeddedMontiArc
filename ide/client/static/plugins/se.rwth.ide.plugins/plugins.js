@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var reponame = localStorage.getItem("reponame");
 var plugins = [
     {

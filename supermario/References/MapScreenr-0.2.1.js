@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var MapScreenr;
 (function (MapScreenr_1) {
     "use strict";

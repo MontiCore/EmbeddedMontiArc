@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // All ghosts come from the right and PacMan needs to go left
 
 ghostX: [70cm,70cm,70cm,70cm]               tick [70cm,70cm,70cm,70cm]          tick [70cm,70cm,70cm,70cm]

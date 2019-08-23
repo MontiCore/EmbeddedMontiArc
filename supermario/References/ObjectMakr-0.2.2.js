@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var ObjectMakr;
 (function (ObjectMakr_1) {
     "use strict";

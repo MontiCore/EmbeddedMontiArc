@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var GroupHoldr;
 (function (GroupHoldr_1) {
     "use strict";

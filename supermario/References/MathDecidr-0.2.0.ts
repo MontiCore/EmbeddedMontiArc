@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module MathDecidr {
     /**
      * Useful constants a MathDecidr may use in equations.

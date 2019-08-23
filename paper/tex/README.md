@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 * this project needs to run with *lualatex*, pdflatex does not work - it runs out of memory!
 
 ```

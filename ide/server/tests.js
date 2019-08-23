@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 const {BATCHES, PATHS} = require("./constants");
 const Log = require("log4js");
 const Path = require("path");

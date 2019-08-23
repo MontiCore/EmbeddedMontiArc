@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var TimeHandlr;
 (function (TimeHandlr) {
     "use strict";

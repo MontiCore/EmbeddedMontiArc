@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /// <reference path="InputWritr-0.2.0.ts" />
 
 declare module TouchPassr {

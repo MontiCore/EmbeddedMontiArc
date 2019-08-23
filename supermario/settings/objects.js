@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 FullScreenMario.FullScreenMario.settings.objects = {
     "onMake": "onMake",
     "indexMap": ["width", "height"],

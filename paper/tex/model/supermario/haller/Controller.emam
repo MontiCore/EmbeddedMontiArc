@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.supermario.haller;
 import de.rwth.supermario.haller.tools.OrRelation_3;
 import de.rwth.supermario.haller.actuator.GeneralStrategy;

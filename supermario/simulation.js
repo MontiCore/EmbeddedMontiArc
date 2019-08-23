@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var KEY = {
 	UP: 38,
 	DOWN: 40,

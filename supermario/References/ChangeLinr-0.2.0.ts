@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module ChangeLinr {
     /**
      * A container of transform Functions, referenced by their keys.

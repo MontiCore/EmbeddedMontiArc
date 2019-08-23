@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module ObjectMakr {
     /**
      * A tree representing class inheritances, where each key represents

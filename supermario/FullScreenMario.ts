@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // @echo '/// <reference path="GameStartr-0.2.0.ts" />'
 
 // @ifdef INCLUDE_DEFINITIONS

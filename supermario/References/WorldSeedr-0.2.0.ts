@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module WorldSeedr {
     /**
      * A general listing of possibilities, keyed by title.

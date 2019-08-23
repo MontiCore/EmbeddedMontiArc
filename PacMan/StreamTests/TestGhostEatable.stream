@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 ghostX: [70cm,70cm,70cm,70cm] tick [70cm,70cm,70cm,70cm] tick [70cm,70cm,70cm,70cm]
 ghostY: [210cm,210cm,210cm,210cm] tick [210cm,210cm,210cm,210cm] tick [210cm,210cm,210cm,210cm]
 ghostDirection: [2,2,2,2] tick [2,2,2,2] tick [2,2,2,2]

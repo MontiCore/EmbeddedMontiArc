@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /// <reference path="ObjectMakr-0.2.2.ts" />
 var QuadsKeepr;
 (function (QuadsKeepr_1) {

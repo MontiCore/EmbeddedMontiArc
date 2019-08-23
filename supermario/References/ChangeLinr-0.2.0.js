@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var ChangeLinr;
 (function (ChangeLinr_1) {
     "use strict";

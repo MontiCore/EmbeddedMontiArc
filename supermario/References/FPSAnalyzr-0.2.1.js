@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var FPSAnalyzr;
 (function (FPSAnalyzr_1) {
     "use strict";

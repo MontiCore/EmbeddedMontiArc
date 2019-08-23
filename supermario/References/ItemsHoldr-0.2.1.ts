@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module ItemsHoldr {
     /**
      * A mapping of ItemValue values to triggered callbacks.

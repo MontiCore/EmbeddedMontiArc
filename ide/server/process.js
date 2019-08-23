@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 const ChildProcess = require("child_process");
 const {PATHS} = require("./constants");
 const Log = require("log4js");

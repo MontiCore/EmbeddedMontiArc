@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 FullScreenMario.FullScreenMario.settings.sprites = {
     "spriteWidth": "spritewidthpixels",
     "spriteHeight": "spriteheightpixels",

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var ItemsHoldr;
 (function (ItemsHoldr_1) {
     "use strict";

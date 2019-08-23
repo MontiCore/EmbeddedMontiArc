@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var WorldSeedr;
 (function (WorldSeedr) {
     "use strict";

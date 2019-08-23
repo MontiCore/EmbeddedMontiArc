@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module TimeHandlr {
     /**
      * Lookup of current events, mapping times to all associated events.

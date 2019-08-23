@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var MathDecidr;
 (function (MathDecidr_1) {
     "use strict";

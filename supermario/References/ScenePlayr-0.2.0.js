@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var ScenePlayr;
 (function (ScenePlayr_1) {
     "use strict";

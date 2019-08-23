@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module ScenePlayr {
     /**
      * Cutscenes that may be played, keyed by name.

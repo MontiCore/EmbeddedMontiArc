@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 declare module UsageHelpr {
     /**
      * Styles that may be applied to logged help text.
