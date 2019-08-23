@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef SIMULATOR_MAINCONTROLLER_STEERCONTROLLER1
 #define SIMULATOR_MAINCONTROLLER_STEERCONTROLLER1
 #ifndef M_PI

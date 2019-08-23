@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_VECTORCOLONEXPRESSIONTEST
 #define TEST_MATH_VECTORCOLONEXPRESSIONTEST
 #ifndef M_PI

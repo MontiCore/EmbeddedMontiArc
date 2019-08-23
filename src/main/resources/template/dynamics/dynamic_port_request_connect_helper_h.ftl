@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 
 #ifndef DynamicHelper_h
 #define DynamicHelper_h

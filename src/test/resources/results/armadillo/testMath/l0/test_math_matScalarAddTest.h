@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_MATSCALARADDTEST
 #define TEST_MATH_MATSCALARADDTEST
 #ifndef M_PI

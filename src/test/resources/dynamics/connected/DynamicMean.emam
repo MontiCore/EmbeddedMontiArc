@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package connected;
 
 dynamic component DynamicMean<T, N1 n = 2> {

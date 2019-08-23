@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef OPTIMIZER_SIMPLESCALARMULTIPLICATION1
 #define OPTIMIZER_SIMPLESCALARMULTIPLICATION1
 #ifndef M_PI

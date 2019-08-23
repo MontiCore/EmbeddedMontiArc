@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 //simple test resource file to check if port array initialization and connection is parsed correctly and what is equivalent to/could be transformed into
 package testing;
 component LightControlSwitch{

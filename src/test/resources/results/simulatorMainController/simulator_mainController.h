@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef SIMULATOR_MAINCONTROLLER
 #define SIMULATOR_MAINCONTROLLER
 #ifndef M_PI

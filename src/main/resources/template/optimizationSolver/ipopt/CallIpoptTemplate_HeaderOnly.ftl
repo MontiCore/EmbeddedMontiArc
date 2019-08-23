@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 #ifndef __${viewModel.callSolverName?upper_case}_H__
 #define __${viewModel.callSolverName?upper_case}_H__
 #include"armadillo"

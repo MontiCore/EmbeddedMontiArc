@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;

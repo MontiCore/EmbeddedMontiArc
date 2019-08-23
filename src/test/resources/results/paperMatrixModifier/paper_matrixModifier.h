@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef PAPER_MATRIXMODIFIER
 #define PAPER_MATRIXMODIFIER
 #ifndef M_PI

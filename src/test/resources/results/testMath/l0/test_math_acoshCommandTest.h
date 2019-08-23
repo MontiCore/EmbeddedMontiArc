@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_ACOSHCOMMANDTEST
 #define TEST_MATH_ACOSHCOMMANDTEST
 #ifndef M_PI

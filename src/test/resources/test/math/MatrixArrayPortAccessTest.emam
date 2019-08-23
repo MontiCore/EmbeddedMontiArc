@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package test.math;
 component MatrixArrayPortAccessTest{
     ports in Q^{3,3} arrayIn[5];

@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 void logStart(){
     std::ofstream __StacktraceFile;
     __StacktraceFile.open("stacktrace.log", std::ios_base::out | std::ios_base::app);

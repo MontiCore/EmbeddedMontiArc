@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_SUBPACKAGE9_MYCOMPONENT9_TRIMPATH
 #define TESTING_SUBPACKAGE9_MYCOMPONENT9_TRIMPATH
 #ifndef M_PI

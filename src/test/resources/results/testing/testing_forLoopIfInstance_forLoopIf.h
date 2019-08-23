@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_FORLOOPIFINSTANCE_FORLOOPIF
 #define TESTING_FORLOOPIFINSTANCE_FORLOOPIF
 #ifndef M_PI

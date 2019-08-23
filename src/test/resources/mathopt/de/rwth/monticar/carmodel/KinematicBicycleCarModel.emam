@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.monticar.carmodel;
 
 component KinematicBicycleCarModel<Q dt = 0.1 s, Q l_f = 1 m, Q l_r = 1 m>

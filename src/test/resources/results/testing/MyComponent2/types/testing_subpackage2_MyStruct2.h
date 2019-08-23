@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_SUBPACKAGE2_MYSTRUCT2
 #define TESTING_SUBPACKAGE2_MYSTRUCT2
 

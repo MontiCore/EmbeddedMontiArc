@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_SUMCOMMANDTEST
 #define TEST_MATH_SUMCOMMANDTEST
 #ifndef M_PI

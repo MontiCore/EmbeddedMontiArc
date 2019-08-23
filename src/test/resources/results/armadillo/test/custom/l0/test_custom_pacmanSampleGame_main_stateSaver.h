@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_CUSTOM_PACMANSAMPLEGAME_MAIN_STATESAVER
 #define TEST_CUSTOM_PACMANSAMPLEGAME_MAIN_STATESAVER
 #ifndef M_PI

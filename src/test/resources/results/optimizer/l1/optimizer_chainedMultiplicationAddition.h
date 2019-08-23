@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef OPTIMIZER_CHAINEDMULTIPLICATIONADDITION
 #define OPTIMIZER_CHAINEDMULTIPLICATIONADDITION
 #ifndef M_PI

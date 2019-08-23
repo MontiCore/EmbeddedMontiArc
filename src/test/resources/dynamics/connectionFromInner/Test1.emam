@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package connectionFromInner;
 
 dynamic component Test1 {

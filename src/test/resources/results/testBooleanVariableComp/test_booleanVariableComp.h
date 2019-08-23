@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_BOOLEANVARIABLECOMP
 #define TEST_BOOLEANVARIABLECOMP
 #ifndef M_PI

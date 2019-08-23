@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package testing.subpackage4;
 
 component MyComponent4v1 {

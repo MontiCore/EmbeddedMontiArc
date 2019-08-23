@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_ARRAYPORTSCOMP
 #define TESTING_ARRAYPORTSCOMP
 #ifndef M_PI

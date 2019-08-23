@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_TYPEDIMENSIONSTEST
 #define TEST_MATH_TYPEDIMENSIONSTEST
 #ifndef M_PI

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package testing;
 component ModelColor<N1 width=1, N1 height=1>{
 ports out Z(0:255)^{width,height} red,

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_DETCOMMANDTEST
 #define TEST_MATH_DETCOMMANDTEST
 #ifndef M_PI

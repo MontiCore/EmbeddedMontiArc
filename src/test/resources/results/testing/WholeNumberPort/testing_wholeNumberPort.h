@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_WHOLENUMBERPORT
 #define TESTING_WHOLENUMBERPORT
 #ifndef M_PI

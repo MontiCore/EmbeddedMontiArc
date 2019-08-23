@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef MACMAKETEST_ADMAT_H
 #define MACMAKETEST_ADMAT_H
 

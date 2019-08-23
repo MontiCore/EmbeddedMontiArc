@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_MATRIXARRAYPORTACCESSTEST
 #define TEST_MATH_MATRIXARRAYPORTACCESSTEST
 #ifndef M_PI

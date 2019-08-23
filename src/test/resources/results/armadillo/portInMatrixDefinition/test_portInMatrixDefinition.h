@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_PORTINMATRIXDEFINITION
 #define TEST_PORTINMATRIXDEFINITION
 #ifndef M_PI

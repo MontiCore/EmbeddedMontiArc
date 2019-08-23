@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_CUSTOM_SAMPLECOMPONENTINST
 #define TEST_CUSTOM_SAMPLECOMPONENTINST
 #ifndef M_PI

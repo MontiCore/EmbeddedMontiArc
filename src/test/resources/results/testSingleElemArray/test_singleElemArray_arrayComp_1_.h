@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_SINGLEELEMARRAY_ARRAYCOMP_1_
 #define TEST_SINGLEELEMARRAY_ARRAYCOMP_1_
 #ifndef M_PI

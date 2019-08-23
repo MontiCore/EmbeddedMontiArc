@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_COSHCOMMANDTEST
 #define TEST_MATH_COSHCOMMANDTEST
 #ifndef M_PI

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_MODEL_MODELCOLOR
 #define TESTING_MODEL_MODELCOLOR
 #ifndef M_PI

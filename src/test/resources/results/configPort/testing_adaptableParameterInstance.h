@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_ADAPTABLEPARAMETERINSTANCE
 #define TESTING_ADAPTABLEPARAMETERINSTANCE
 #ifndef M_PI

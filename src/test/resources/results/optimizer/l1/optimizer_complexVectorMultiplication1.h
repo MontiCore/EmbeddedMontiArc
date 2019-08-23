@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef OPTIMIZER_COMPLEXVECTORMULTIPLICATION1
 #define OPTIMIZER_COMPLEXVECTORMULTIPLICATION1
 #ifndef M_PI

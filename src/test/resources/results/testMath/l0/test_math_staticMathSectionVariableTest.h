@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_STATICMATHSECTIONVARIABLETEST
 #define TEST_MATH_STATICMATHSECTIONVARIABLETEST
 #ifndef M_PI

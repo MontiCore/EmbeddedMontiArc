@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_BASICPORTSMATH
 #define TEST_BASICPORTSMATH
 #ifndef M_PI

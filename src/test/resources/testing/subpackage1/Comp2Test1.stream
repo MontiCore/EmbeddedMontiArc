@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package testing.subpackage1;
 
 stream Comp2Test1 for Comp2 {

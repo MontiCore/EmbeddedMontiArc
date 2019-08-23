@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_BASICGENERICARRAYINSTANCE
 #define TEST_BASICGENERICARRAYINSTANCE
 #ifndef M_PI
