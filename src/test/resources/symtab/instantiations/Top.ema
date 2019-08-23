@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package symtab.instantiations;
 
 component Top { // Component Top, ComponentInstance top

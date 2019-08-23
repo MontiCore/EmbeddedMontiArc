@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package testing;
 
 component BasicResolution<N1 n = 2, N1 k = 1> {

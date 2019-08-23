@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.tagging.middleware.someip;
 
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.MiddlewareSymbol;

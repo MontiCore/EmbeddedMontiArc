@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package testing;
 component ComponentArray{
   ports in B lightsIn[25],

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package testing;
 
 stream MySuperNiceStream1 for MySuperNiceComponent {

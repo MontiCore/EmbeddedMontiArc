@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package a;
 
 component SuperCompGenericGenericExtensionInstance implements SuperCompGenericGenericExtension<5>{
