@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include "models_model.h"
 #include <emscripten/bind.h>
 #include <emscripten/val.h>

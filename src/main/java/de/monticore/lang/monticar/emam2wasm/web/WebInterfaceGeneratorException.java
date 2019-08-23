@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.emam2wasm.web;
 
 public class WebInterfaceGeneratorException extends RuntimeException {

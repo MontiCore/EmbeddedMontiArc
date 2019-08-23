@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cli;
 
 import org.springframework.context.annotation.Condition;

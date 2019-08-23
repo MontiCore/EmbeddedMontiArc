@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.js;
 
 import static org.mockito.ArgumentMatchers.any;

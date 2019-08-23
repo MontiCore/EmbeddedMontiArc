@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef HELPERA_H
 #define HELPERA_H
 #define _GLIBCXX_USE_CXX11_ABI 0

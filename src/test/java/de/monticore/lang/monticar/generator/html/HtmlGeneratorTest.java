@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.html;
 
 import static org.assertj.core.api.Assertions.assertThat;

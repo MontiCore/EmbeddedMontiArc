@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Contributing
 
 THIS DOCUMENTATION IS INVALID: 

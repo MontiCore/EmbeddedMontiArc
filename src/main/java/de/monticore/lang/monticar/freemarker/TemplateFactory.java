@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.freemarker;
 
 import freemarker.cache.TemplateLoader;

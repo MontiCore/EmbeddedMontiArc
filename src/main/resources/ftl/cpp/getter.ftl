@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#macro simple methodName objectName variableName>
   val ${methodName}() {
     return val(${objectName}->${variableName});

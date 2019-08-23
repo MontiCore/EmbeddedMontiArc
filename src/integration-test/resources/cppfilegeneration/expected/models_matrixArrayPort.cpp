@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef arraysize
 #define arraysize(array) (sizeof(array)/sizeof(array[0]))
 #endif

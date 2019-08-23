@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp;
 
 import static de.monticore.lang.monticar.generator.cpp.TypeConverter.CppTypes.BOOL;

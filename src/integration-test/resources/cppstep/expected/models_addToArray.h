@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef MODELS_ADDTOARRAY
 #define MODELS_ADDTOARRAY
 #ifndef M_PI

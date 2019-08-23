@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.emam2wasm.wasm;
 
 public class WasmCompilerException extends RuntimeException {

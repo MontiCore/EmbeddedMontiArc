@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef MODELS_MODEL
 #define MODELS_MODEL
 #ifndef M_PI

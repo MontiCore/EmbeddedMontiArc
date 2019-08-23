@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.setup.action;
 
 import de.monticore.lang.monticar.util.FileDownloader;

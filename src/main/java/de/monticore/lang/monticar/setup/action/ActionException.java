@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.setup.action;
 
 public class ActionException extends RuntimeException {

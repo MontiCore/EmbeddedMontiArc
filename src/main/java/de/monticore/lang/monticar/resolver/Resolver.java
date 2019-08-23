@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.resolver;
 
 import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;

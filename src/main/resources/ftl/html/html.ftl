@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#ftl strip_whitespace=true>
 <!doctype html>
 <html lang="en-us">

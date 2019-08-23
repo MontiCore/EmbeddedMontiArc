@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.emam2wasm.web;
 
 import de.monticore.symboltable.Symbol;

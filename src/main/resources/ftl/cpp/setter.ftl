@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#macro simple methodName parameterName objectName variableName variableType>
   void ${methodName}(val ${parameterName}) {
   ${objectName}->${variableName} = ${parameterName}.as<${variableType}>();

@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#ftl strip_whitespace=true>
 <#import "getter.ftl" as g>
 <#import "setter.ftl" as s>

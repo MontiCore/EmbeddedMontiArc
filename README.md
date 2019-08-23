@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 [![Linux Build][travis-image]][travis-url]
 [![Windows Build][appveyor-image]][appveyor-url]
 [![Coverage Codecov][codecov-image]][codecov-url]

@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#ftl strip_whitespace=true>
 var Module = {
   'print': function (text) { console.log('stdout: ' + text) },

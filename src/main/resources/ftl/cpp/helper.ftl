@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#macro matrix_to_array>
   val matrixToArray(mat matrix) {
     val result = val::array();
