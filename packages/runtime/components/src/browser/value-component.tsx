@@ -1,8 +1,3 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
 import * as React from "react";
 import { Widget } from "@theia/core/lib/browser";
 import Component = React.Component;

@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 import { ContributionProvider } from "@theia/core";
 import { inject, injectable, named, postConstruct } from "inversify";
 import { ValueComponent, ValueComponentProps } from "./value-component";

@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 import URI from "@theia/core/lib/common/uri";
 import { UriCommandHandler } from "@theia/core/lib/common/uri-command-handler";
 import { inject, injectable } from "inversify";

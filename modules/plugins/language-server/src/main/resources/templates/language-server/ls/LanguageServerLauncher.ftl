@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
 <#-- @ftlvariable name="configuration" type="de.monticore.lang.monticar.sol.plugins.ls.plugin.configuration.LanguageServerConfiguration" -->
 <#assign configuration = glex.getGlobalVar("configuration")>

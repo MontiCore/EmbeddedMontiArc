@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#-- @ftlvariable name="rootPackage" type="de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm.SolPackage" -->
 <#-- @ftlvariable name="template" type="de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.Template" -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->

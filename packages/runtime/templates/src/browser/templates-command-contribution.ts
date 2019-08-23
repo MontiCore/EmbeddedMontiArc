@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 import { DynamicDialogProps } from "@embeddedmontiarc/sol-runtime-components/lib/browser";
 import { ComponentManager } from "@embeddedmontiarc/sol-runtime-components/lib/browser/component-manager";
 import { open, SingleTextInputDialog } from "@theia/core/lib/browser";

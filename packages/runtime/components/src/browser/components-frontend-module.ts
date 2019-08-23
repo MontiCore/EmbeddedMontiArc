@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 import { bindContributionProvider } from "@theia/core";
 import { ContainerModule } from "inversify";
 import { ComponentFactory, ComponentManager, ComponentManagerImpl } from "./component-manager";

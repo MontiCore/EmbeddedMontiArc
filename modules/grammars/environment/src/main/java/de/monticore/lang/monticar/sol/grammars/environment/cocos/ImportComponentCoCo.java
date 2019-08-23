@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 
 import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTDockerfile;

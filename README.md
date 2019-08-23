@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 <div align="center">
     <img src="docs/media/images/logo.gif" width="500"/>
 </div>

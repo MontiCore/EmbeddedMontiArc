@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 import { MaybePromise } from "@theia/core/lib/common";
 import { LabelProviderContribution } from "@theia/core/lib/browser";
 import URI from "@theia/core/lib/common/uri";

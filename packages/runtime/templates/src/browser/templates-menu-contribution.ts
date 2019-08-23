@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 import { ModulesMenus } from "@embeddedmontiarc/sol-runtime-modules/lib/browser/modules-menu-contribution";
 import { MenuContribution, MenuModelRegistry, MenuPath } from "@theia/core";
 import { inject, injectable } from "inversify";

@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 import { MenuContribution, MenuModelRegistry, MenuPath } from "@theia/core/lib/common";
 import { CommonMenus } from "@theia/core/lib/browser";
 import { NavigatorContextMenu } from "@theia/navigator/lib/browser/navigator-contribution";

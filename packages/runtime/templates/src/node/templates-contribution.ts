@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 import { ContributionProvider } from "@theia/core";
 import { BackendApplicationContribution } from "@theia/core/lib/node";
 import { inject, injectable, named } from "inversify";

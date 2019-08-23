@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 import { CommandContribution, MenuContribution } from "@theia/core";
 import { WebSocketConnectionProvider } from "@theia/core/lib/browser";
 import { ContainerModule } from "inversify";

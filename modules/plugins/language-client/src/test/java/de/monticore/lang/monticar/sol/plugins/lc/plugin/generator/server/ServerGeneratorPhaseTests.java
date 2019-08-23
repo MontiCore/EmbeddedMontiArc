@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.server;
 
 import de.monticore.generating.GeneratorEngine;

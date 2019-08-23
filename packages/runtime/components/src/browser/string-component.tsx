@@ -1,8 +1,3 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
 import { boundMethod } from "autobind-decorator";
 import { ChangeEvent } from "react";
 import * as React from "react";

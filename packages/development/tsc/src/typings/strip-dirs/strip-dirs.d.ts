@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 declare function stripDirs(path: string, amount: number): string;
 
 declare module "strip-dirs";

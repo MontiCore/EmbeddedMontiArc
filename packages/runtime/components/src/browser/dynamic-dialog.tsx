@@ -1,8 +1,3 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
 import { AbstractDialog, DialogMode, DialogProps } from "@theia/core/lib/browser";
 import { ComponentManager } from "./component-manager";
 import { GroupComponent } from "./group-component";

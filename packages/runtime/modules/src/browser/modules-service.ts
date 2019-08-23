@@ -1,8 +1,4 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 import URI from "@theia/core/lib/common/uri";
 import { FileStat, FileSystem } from "@theia/filesystem/lib/common";
 import { WorkspaceService } from "@theia/workspace/lib/browser";

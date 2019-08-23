@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
+/* (c) https://github.com/MontiCore/monticore */
 export * from "./templates-contribution";
 export * from "./templates-server-impl";

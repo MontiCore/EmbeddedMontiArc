@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#-- @ftlvariable name="rootPackage" type="de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm.SolPackage" -->
 <#-- @ftlvariable name="ast" type="de.monticore.lang.monticar.sol.grammars.language._ast.ASTLanguageCompilationUnit" -->
 <#-- @ftlvariable name="extractor" type="de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.ld.LDExtractor" -->

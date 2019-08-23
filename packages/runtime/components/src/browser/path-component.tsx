@@ -1,8 +1,3 @@
-/*
- * Copyright (C) 2019 SE RWTH.
- *
- *  TODO: Include License.
- */
 import { FileDialogService, OpenFileDialogProps } from "@theia/filesystem/lib/browser";
 import { WorkspaceService } from "@theia/workspace/lib/browser";
 import { boundMethod } from "autobind-decorator";
