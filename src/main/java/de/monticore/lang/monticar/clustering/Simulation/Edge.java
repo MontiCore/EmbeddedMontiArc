@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.clustering.Simulation;
 
 import org.apache.commons.math3.util.Pair;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package com.clust4j.data;
 
 import org.apache.commons.math3.util.FastMath;

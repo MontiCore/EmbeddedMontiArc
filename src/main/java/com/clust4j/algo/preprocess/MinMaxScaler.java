@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /*******************************************************************************
  *    Copyright 2015, 2016 Taylor G Smith
  *

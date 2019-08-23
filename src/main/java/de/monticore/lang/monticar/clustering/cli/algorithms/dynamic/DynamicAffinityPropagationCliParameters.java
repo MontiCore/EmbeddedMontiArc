@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.clustering.cli.algorithms.dynamic;
 
 import de.monticore.lang.monticar.clustering.cli.algorithms.AffinityPropagationCliParameters;

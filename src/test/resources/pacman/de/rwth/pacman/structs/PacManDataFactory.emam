@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.pacman.structs;
 
 import de.rwth.pacman.structs.PacManData;

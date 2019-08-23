@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package com.clust4j.algo;
 
 import com.clust4j.utils.DeepCloneable;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.clustering.algorithms;
 
 import net.sf.javaml.clustering.mcl.MarkovClustering;
