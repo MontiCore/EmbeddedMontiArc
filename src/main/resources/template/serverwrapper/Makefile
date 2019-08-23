@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore
 CXX = g++
 CPPFLAGS += `pkg-config --cflags protobuf grpc`
 CXXFLAGS += -std=c++11
