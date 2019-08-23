@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign input = element.inputs[0]>
 <#if mode == "FORWARD_FUNCTION">
         ${element.name} = F.LRN(data=${input},

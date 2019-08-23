@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
         'qnet':qnet_creator.networks[0],
 <#if (config.useFixTargetNetwork)?? && config.useFixTargetNetwork>
         'use_fix_target': True,

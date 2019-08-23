@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#if (config.replayMemory)??>
             'method': '${config.replayMemory.method}',
 <#if (config.replayMemory.memory_size)??>

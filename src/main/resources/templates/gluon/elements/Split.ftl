@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign input = element.inputs[0]>
 <#assign num_outputs = element.numOutputs?c>
 <#if mode == "ARCHITECTURE_DEFINITION">

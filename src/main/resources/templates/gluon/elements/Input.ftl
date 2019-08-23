@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#if mode == "ARCHITECTURE_DEFINITION">
             if data_mean:
                 assert(data_std)

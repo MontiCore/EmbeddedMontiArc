@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration ReinforcementConfig1 {
     learning_method : reinforcement
 

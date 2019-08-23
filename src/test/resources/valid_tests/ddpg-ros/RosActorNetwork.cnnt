@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration RosActorNetwork {
     learning_method : reinforcement
 

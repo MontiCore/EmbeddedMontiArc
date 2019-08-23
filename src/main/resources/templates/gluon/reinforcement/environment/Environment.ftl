@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#setting number_format="computer">
 <#assign config = configurations[0]>
 import abc

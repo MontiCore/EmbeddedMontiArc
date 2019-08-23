@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
         'actor': actor_creator.networks[0],
         'critic': critic_creator.networks[0],
 <#if (config.softTargetUpdateRate)??>

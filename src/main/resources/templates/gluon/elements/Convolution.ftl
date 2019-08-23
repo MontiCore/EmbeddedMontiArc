@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign input = element.inputs[0]>
 <#if mode == "ARCHITECTURE_DEFINITION">
 <#if element.padding??>

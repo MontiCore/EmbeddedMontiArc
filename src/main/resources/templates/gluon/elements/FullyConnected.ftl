@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign input = element.inputs[0]>
 <#assign units = element.units?c>
 <#assign use_bias = element.noBias?string("False","True")>

@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#include "DdpgAgentParams.ftl">
 <#if (config.policyNoise)??>
         'policy_noise': ${config.policyNoise},

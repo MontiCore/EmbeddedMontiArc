@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#if (config.strategy)??>
             'method':'${config.strategy.method}',
 </#if>
