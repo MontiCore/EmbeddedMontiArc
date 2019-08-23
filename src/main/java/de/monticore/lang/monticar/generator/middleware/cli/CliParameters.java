@@ -56,5 +56,4 @@ public class CliParameters {
     public Optional<ClusteringParameters> getClusteringParameters() {
         return Optional.ofNullable(clusteringParameters);
     }
-
 }
