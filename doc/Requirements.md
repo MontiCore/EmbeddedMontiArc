@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Version 1 (Integrate Math Code into C&C visualisation)
 * this is already working: http://www.se-rwth.de/materials/ema_compiler/ObjectDetectorSVG/detection.objectDetector4.spectralClusterer[3].html
     * see visualization project https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/visualisation

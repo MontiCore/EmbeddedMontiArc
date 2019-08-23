@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.visualization.emam.resources;
 
 import java.io.IOException;

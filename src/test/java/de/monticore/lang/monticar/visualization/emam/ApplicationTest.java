@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.visualization.emam;
 
 import de.monticore.lang.monticar.visualization.emam.application.Application;

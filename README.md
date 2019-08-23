@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # 2D Visualization for EmbeddedMontiArcMath
 
 <p align="center">

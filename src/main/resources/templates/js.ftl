@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
     class Hash {
         constructor(hash, closeCross, overlay, port) {
             this._parts = hash.substring(1).split('&');

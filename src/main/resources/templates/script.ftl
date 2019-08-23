@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign helper = glex.getGlobalVar("helper")>
 package ${helper.getPackage()};
 

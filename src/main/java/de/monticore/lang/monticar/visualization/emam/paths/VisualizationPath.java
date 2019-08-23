@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.visualization.emam.paths;
 
 import java.nio.file.Path;
