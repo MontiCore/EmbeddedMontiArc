@@ -1,4 +1,5 @@
 pushd `pwd` > /dev/null
+# (c) https://github.com/MontiCore/monticore  
 source "../shared/variables.sh"
 source ${USER_HOME}/mxnet/bin/activate
 if [ -d "${CLASSIFIER_TARGET}/model" ]

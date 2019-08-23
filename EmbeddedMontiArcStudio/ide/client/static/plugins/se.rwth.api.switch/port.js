@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Port = function(id) {
     var properties = {
         pid: 0,

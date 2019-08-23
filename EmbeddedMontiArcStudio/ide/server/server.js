@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 const App = require("./app");
 const Archiver = require("./archiver");
 const Log = require("log4js");

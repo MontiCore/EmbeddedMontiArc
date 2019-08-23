@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 pushd `pwd` > /dev/null
 if [ -z $ROS_SIM_HOME ]; then
 	echo "ERROR: ROS_SIM_HOME is not set. Aborting!"

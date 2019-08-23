@@ -1,4 +1,5 @@
 mkdir -p ${dl}
+# (c) https://github.com/MontiCore/monticore  
 
 cd ${dl}
 echo "Downloading dependencies"

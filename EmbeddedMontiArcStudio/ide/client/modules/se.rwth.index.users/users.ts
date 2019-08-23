@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {Module} from "../se.rwth.common.framework/module";
 
 export class User {

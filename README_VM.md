@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # EMAStudio
 To start EMAStudio, double click EMAStudio.sh and choose *Run in Terminal* or start *ide.sh* in */home/user/EMAStudio/* and wait for chrome to open. 
 

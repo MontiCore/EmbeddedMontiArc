@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 const Express                                           = require("express");
 const Path                                              = require("path");
 const {PATHS, URLS, OPTIONS}                            = require("./constants");

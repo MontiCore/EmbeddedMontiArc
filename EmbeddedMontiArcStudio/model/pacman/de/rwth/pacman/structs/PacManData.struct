@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // see https://github.com/daleharvey/pacman/blob/master/pacman.js#L281
 // we do not need `direction` and `due` as input, as `direction` is output and `due` is only for the game
 

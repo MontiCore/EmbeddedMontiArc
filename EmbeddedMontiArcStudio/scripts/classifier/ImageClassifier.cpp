@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include <armadillo>
 #include <iomanip>
 #include <iostream>

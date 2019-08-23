@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 setlocal ENABLEDELAYEDEXPANSION
 
 REM get Model

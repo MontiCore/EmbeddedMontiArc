@@ -1,4 +1,5 @@
 pushd `pwd` > /dev/null
+# (c) https://github.com/MontiCore/monticore  
 if [ -e "${CLASSIFIER_TARGET}/ImageClassifier" ]
 then 
   echo "ImageClassifier already exists. Skipping compilation."

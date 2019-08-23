@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 call ..\shared\variables.bat
 
 call generate.bat

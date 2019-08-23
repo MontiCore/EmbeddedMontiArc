@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var StreamUnits = function(StreamUnits) {
   StreamUnits = StreamUnits || {};
   var Module = StreamUnits;

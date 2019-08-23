@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Utilities = (function() {
     var methods = {
         query: function(queryString) {

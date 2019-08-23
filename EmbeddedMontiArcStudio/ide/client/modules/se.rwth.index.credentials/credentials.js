@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Credentials = (function() {
     var properties = {
         $container: null,

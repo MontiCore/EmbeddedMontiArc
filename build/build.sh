@@ -1,4 +1,5 @@
 echo "Loading config!"
+# (c) https://github.com/MontiCore/monticore  
 echo ""
 source ./config.sh
 

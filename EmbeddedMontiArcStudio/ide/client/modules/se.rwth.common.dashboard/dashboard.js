@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Dashboard = (function() {
     var CONSTANTS = {
         KEY: "dashboard"

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package cifar10;
 
 component Network<Z(2:oo) classes = 10>{

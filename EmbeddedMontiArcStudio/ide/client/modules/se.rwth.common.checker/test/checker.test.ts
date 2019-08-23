@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {Constants} from "../../se.rwth.common.test/constants";
 import {SettingsTestController} from "../../se.rwth.common.settings/test/settings.tc";
 import {BrowserDetectTestController} from "./browser-detect.tc";

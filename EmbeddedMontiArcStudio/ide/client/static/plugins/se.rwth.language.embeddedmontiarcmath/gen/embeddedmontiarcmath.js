@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var EmbeddedMontiArcMath = function(EmbeddedMontiArcMath) {
   EmbeddedMontiArcMath = EmbeddedMontiArcMath || {};
   var Module = EmbeddedMontiArcMath;

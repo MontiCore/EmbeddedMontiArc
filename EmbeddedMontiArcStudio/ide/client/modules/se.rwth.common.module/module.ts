@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 export type Callback = (...args: any[]) => void;
 
 export abstract class EventBus {

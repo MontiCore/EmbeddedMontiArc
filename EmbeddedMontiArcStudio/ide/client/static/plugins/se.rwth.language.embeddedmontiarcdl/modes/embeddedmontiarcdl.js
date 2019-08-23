@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /* caption: EmbeddedMontiArcDL; extensions: emadl */
 define(function(require, exports, module) {
     var EMADLHighlightRules = require("./embeddedmontiarcdl_highlight_rules").EMADLHighlightRules;

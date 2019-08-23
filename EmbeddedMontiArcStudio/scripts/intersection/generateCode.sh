@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 pushd `pwd` > /dev/null
 cd $ROS_SIM_HOME
 

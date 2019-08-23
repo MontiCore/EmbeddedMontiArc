@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 (function() {
 
 var MODULE_LOAD_URL = "/load/module";
@@ -270,6 +271,9 @@ var require = function(module, callback, errback) {
 
 var config = require.config = function(cfg) {
     if (cfg.baseUrl)
+/*** cache ***/
+/*** plugins ***/
+/*** add global define ***/
         config.baseUrl = cfg.baseUrl.replace(/\/*$/, "/");
 
     cfg.packages && cfg.packages.forEach(function(pkg) {
@@ -434,7 +438,6 @@ function loadText(path, cb) {
     xhr.send("");
 }
 
-/*** cache ***/
 var host = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
 var loadScript = function(path, id, callback) {
     if (!config.useCache)
@@ -634,7 +637,6 @@ function definePlugin(plugin, p) {
     };
 }
 
-/*** plugins ***/
 require["text!"] = function(module, callback) {
     var url = require.toUrl(module);
     if (define.fetchedUrls[url] & 2)
@@ -660,7 +662,6 @@ require["ace/requirejs/text!"] = function(module, callback) {
     loadCached(url, cb);
 };
 
-/*** add global define ***/
 if (!global.define || !global.define.packaged) {
     define.original = global.define;
     global.define = define;

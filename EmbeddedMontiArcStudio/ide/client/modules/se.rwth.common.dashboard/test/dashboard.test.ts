@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import {Constants} from "../../se.rwth.common.test/constants";
 import {DashboardTestController} from "./dashboard.tc";
 import {LoaderTestController} from "../../se.rwth.common.loader/test/loader.tc";

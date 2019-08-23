@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var DemoVFS = function(username, reponame, path) {
     var CONSTANTS = {
         REF: "master"

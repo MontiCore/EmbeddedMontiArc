@@ -1,4 +1,5 @@
 pushd `pwd` > /dev/null
+# (c) https://github.com/MontiCore/monticore  
 cd ..
 cd ..
 if !([[ -v USER_HOME ]])

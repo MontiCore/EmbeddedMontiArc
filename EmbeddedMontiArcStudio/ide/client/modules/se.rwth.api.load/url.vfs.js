@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var URLVFS = function(mountPoint, url) {
     var properties = {
         vfs: null

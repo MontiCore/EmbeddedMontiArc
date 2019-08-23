@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 define(function(require, exports, module) {
     var Handler = require("plugins/se.rwth.api.language/worker/worker");
 

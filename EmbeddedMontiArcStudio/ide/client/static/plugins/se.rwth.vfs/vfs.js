@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 define(function(require, exports, module) {
 	"use strict";
 	var username = localStorage.getItem("username");

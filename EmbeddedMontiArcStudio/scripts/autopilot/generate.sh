@@ -1,4 +1,5 @@
 rm -rf ${CPP_DIR}
+# (c) https://github.com/MontiCore/monticore  
 mkdir ${CPP_DIR}
 ${JAVA_HOME}/bin/java -jar "${HOME}/emam2cpp.jar" \
    --models-dir="${HOME}/model/autopilot" \

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 const Process = require("./process");
 const Log = require("log4js");
 const {EXECUTABLES, JARS} = require("./constants");

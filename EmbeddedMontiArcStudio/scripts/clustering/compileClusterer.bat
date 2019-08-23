@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 call "..\shared\variables"
 if exist "%CLUSTERER_EXEC_DIR%" rmdir "%CLUSTERER_EXEC_DIR%" /s /q
 mkdir "%CLUSTERER_EXEC_DIR%"

@@ -1,4 +1,5 @@
 dir=${ext}
+# (c) https://github.com/MontiCore/monticore  
 
 mkdir -p ${ext}
 

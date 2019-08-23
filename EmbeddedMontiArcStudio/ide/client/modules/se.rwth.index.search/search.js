@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Search = (function() {
     var properties = {
         $query: null,

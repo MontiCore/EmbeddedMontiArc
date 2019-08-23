@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 define(function(require, exports, module) {
     return function(caption, extension, noWorker) {
         var captionLowerCase = caption.toLowerCase();

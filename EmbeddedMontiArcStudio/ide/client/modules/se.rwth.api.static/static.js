@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Static = (function() {
     var CONSTANTS = {
         REGEX: /(["'])(?:(?=(\\?))\2.)*?\1/g,

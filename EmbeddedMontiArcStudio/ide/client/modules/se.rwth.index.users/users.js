@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 var Users = (function() {
     var properties = {
         $panel: null,

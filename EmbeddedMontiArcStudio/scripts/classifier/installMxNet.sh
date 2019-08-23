@@ -1,4 +1,5 @@
 while true; do
+# (c) https://github.com/MontiCore/monticore  
     read -p "This script will download, compile and install mxnet (in path ~/incubator-mxnet) and other requirements for emadl. It will create the virtualenv 'mxnet' for the mxnet python binding (usable with command 'source ~/mxnet/bin/activate'). Continue? (y/N)" yn1
     case $yn1 in
         [Yy]* ) break;;

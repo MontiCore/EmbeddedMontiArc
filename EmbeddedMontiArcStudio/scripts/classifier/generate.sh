@@ -1,4 +1,5 @@
 pushd `pwd` > /dev/null
+# (c) https://github.com/MontiCore/monticore  
 source "../shared/variables.sh"
 if [ -e "${CLASSIFIER_TARGET}/ImageClassifier" ] && [ -d "${CLASSIFIER_TARGET}/model" ]
 then

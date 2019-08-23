@@ -1,4 +1,5 @@
 rm -rf "${DLL_DIR}"
+# (c) https://github.com/MontiCore/monticore  
 mkdir "${DLL_DIR}"
 
 g++ -std=c++11 -shared -fPIC \

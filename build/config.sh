@@ -1,4 +1,5 @@
 #date="{0:yyyy-MM-dd HH.mm}" -f (get-date)
+# (c) https://github.com/MontiCore/monticore  
 date=`date '+%Y-%m-%d_%H:%M'`
 # The Folder which will be present after self-extracting
 targetDir="EMAStudio"

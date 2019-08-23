@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba.util;
 
 component TrajectoryToLines<N1 m = 10, N1 m1 = 9>{

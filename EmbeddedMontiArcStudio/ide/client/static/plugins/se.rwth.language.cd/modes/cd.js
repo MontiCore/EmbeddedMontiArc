@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 /* caption: CD; extensions: cd */
 define(function(require, exports, module) {
     var CDHighlightRules = require("./cd_highlight_rules").CDHighlightRules;

@@ -1,4 +1,5 @@
 mkdir -p ${targetDir}
+# (c) https://github.com/MontiCore/monticore  
 
 echo "Copy extracted dependencies to build"
 mv -v ${ext}* ${targetDir}

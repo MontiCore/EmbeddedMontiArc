@@ -1,4 +1,5 @@
 source config.sh
+# (c) https://github.com/MontiCore/monticore  
 
 if [ -z $ext ] || [ -z $build ] || [ -z $targetDir ] || [ -z $targetName ] || [ -z $dl ]
 then

@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 mkdir %HOME%\testResults\
 call generateTestsArmadilloBackend %1
 call compileTestsArmadilloBackendOpenBLAS

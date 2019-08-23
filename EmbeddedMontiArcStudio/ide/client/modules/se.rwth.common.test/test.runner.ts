@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 const MakeTestCafe = require("testcafe");
 
 const BROWSERS = process.env.HOST ? ["chrome"] : [

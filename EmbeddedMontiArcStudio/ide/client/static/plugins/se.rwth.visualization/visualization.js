@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 define(function(require, exports, module) {
     main.consumes = ["Plugin", "fs", "tabManager", "vfs.main"];
     main.provides = ["svg"];
