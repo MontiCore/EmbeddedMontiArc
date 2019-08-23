@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.embeddedmontiview;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
