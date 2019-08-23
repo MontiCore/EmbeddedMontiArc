@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign input = element.inputs[0]>
 <#if element.softmaxOutput>
     		${element.name} = brew.softmax(model, ${input}, '${element.name}')
