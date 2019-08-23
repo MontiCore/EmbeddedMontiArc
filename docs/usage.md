@@ -1,7 +1,5 @@
 Next: [Maven Project tutorial](maven.md)
 
----
-
 # Installing and using the Basic Simulator
 
 
@@ -17,7 +15,8 @@ git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic
 This will create a folder named `basic-simulator` and download the contents of this repository inside.
 
 > **NOTE**: To open a console in a specific working directory rapidly in windows, type "cmd" in the navigation bar of the windows explorer and press *Enter*.
-> Choose *Right Clic -> Open in terminal* on the folder under Linux.
+>
+> For Linux choose *Right Clic -> Open in terminal* on or inside the folder.
 >
 > ![Select the navigation bar.](images/cmd1.png "Select the navigation bar.")
 >

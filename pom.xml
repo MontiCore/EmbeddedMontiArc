@@ -37,7 +37,7 @@
         <montisim.controller.version>1.0.3</montisim.controller.version>
         <montisim.server.version>1.0.7</montisim.server.version>
         <montisim.hardware_emulator.version>1.0.0</montisim.hardware_emulator.version>
-        <montisim.simulation.version>2.0.2</montisim.simulation.version>
+        <montisim.simulation.version>2.0.1</montisim.simulation.version>
         
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
