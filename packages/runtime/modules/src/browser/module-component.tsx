@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import * as React from "react";
 
 import Component = React.Component;

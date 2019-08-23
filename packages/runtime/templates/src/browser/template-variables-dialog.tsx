@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { ComponentManager } from "@embeddedmontiarc/sol-runtime-components/lib/browser/component-manager";
 import { DynamicDialog, DynamicDialogProps } from "@embeddedmontiarc/sol-runtime-components/lib/browser/dynamic-dialog";
 import * as ReactDOM from "react-dom";

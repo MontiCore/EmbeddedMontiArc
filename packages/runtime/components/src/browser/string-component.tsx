@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { boundMethod } from "autobind-decorator";
 import { ChangeEvent } from "react";
 import * as React from "react";

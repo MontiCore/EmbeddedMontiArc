@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.sol.tests.lc;
 
 import de.monticore.lang.monticar.sol.tests.lc.EmbeddedMontiArc;

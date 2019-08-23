@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { ComponentManager } from "./component-manager";
 import { DynamicDialogElement } from "./dynamic-dialog";
 import { MultiValueComponent, MultiValueComponentProps } from "./multi-value-component";
