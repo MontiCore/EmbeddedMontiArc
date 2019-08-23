@@ -191,18 +191,17 @@ class Net_0(gluon.HybridBlock):
             self.concatenate6_ = Concatenate(dim=1)
             # concatenate6_, output shape: {[256,6,6]}
 
-            self.fc6_flatten = gluon.nn.Flatten()
-            self.fc6_ = gluon.nn.Dense(units=4096, use_bias=True)
+            self.fc6_ = gluon.nn.Dense(units=4096, use_bias=True, flatten=True)
             # fc6_, output shape: {[4096,1,1]}
 
             self.relu6_ = gluon.nn.Activation(activation='relu')
             self.dropout6_ = gluon.nn.Dropout(rate=0.5)
-            self.fc7_ = gluon.nn.Dense(units=4096, use_bias=True)
+            self.fc7_ = gluon.nn.Dense(units=4096, use_bias=True, flatten=True)
             # fc7_, output shape: {[4096,1,1]}
 
             self.relu7_ = gluon.nn.Activation(activation='relu')
             self.dropout7_ = gluon.nn.Dropout(rate=0.5)
-            self.fc8_ = gluon.nn.Dense(units=10, use_bias=True)
+            self.fc8_ = gluon.nn.Dense(units=10, use_bias=True, flatten=True)
             # fc8_, output shape: {[10,1,1]}
 
             self.softmax8_ = Softmax()
@@ -262,8 +261,7 @@ class Net_0(gluon.HybridBlock):
         pool5_2_ = self.pool5_2_(conv5_2_)
         relu5_2_ = self.relu5_2_(pool5_2_)
         concatenate6_ = self.concatenate6_(relu5_1_, relu5_2_)
-        fc6_flatten_ = self.fc6_flatten(concatenate6_)
-        fc6_ = self.fc6_(fc6_flatten_)
+        fc6_ = self.fc6_(concatenate6_)
         relu6_ = self.relu6_(fc6_)
         dropout6_ = self.dropout6_(relu6_)
         fc7_ = self.fc7_(dropout6_)

@@ -219,18 +219,17 @@ class Net_0(gluon.HybridBlock):
                 strides=(2,2))
             # pool13_, output shape: {[512,7,7]}
 
-            self.fc13_flatten = gluon.nn.Flatten()
-            self.fc13_ = gluon.nn.Dense(units=4096, use_bias=True)
+            self.fc13_ = gluon.nn.Dense(units=4096, use_bias=True, flatten=True)
             # fc13_, output shape: {[4096,1,1]}
 
             self.relu14_ = gluon.nn.Activation(activation='relu')
             self.dropout14_ = gluon.nn.Dropout(rate=0.5)
-            self.fc14_ = gluon.nn.Dense(units=4096, use_bias=True)
+            self.fc14_ = gluon.nn.Dense(units=4096, use_bias=True, flatten=True)
             # fc14_, output shape: {[4096,1,1]}
 
             self.relu15_ = gluon.nn.Activation(activation='relu')
             self.dropout15_ = gluon.nn.Dropout(rate=0.5)
-            self.fc15_ = gluon.nn.Dense(units=1000, use_bias=True)
+            self.fc15_ = gluon.nn.Dense(units=1000, use_bias=True, flatten=True)
             # fc15_, output shape: {[1000,1,1]}
 
             self.softmax15_ = Softmax()
@@ -282,8 +281,7 @@ class Net_0(gluon.HybridBlock):
         conv13_ = self.conv13_(conv13_padding)
         relu13_ = self.relu13_(conv13_)
         pool13_ = self.pool13_(relu13_)
-        fc13_flatten_ = self.fc13_flatten(pool13_)
-        fc13_ = self.fc13_(fc13_flatten_)
+        fc13_ = self.fc13_(pool13_)
         relu14_ = self.relu14_(fc13_)
         dropout14_ = self.dropout14_(relu14_)
         fc14_ = self.fc14_(dropout14_)

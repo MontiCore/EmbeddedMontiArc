@@ -349,11 +349,11 @@ class Net_0(gluon.HybridBlock):
             self.globalpooling31_ = gluon.nn.GlobalAvgPool2D()
             # globalpooling31_, output shape: {[64,1,1]}
 
-            self.fc31_ = gluon.nn.Dense(units=128, use_bias=True)
+            self.fc31_ = gluon.nn.Dense(units=128, use_bias=True, flatten=True)
             # fc31_, output shape: {[128,1,1]}
 
             self.dropout31_ = gluon.nn.Dropout(rate=0.5)
-            self.fc32_ = gluon.nn.Dense(units=10, use_bias=True)
+            self.fc32_ = gluon.nn.Dense(units=10, use_bias=True, flatten=True)
             # fc32_, output shape: {[10,1,1]}
 
             self.softmax32_ = Softmax()
