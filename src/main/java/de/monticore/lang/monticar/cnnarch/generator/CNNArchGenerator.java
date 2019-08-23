@@ -81,8 +81,7 @@ public abstract class CNNArchGenerator {
 
     // TODO: Rewrite so that CNNArchSymbolCompiler is used in EMADL2CPP instead of this method
     public boolean check(ArchitectureSymbol architecture) {
-        //return architectureSupportChecker.check(architecture) && layerSupportChecker.check(architecture);
-        return true;
+        return architectureSupportChecker.check(architecture) && layerSupportChecker.check(architecture);
     }
 
     public void generate(Scope scope, String rootModelName){
