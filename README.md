@@ -37,7 +37,7 @@ An example config file with all clustering algorithms: [config](src/test/resourc
 | outputDir            | String |     ✅    | path to output directory for generated files                                              |
 | rootModel            | String |     ✅    | fully qualified name of the root model                                                    |
 | generators           | List   |     ✅    | List of generator identfiers<br> 'cpp', 'emadlcpp', 'roscpp', 'rclcpp'                    |
-| emadlBackend         | String |     ❓    | deep-learning-framework backend<br> 'MXNET'(Default), 'CAFFE2'                                     |
+| emadlBackend         | String |     ❓    | deep-learning-framework backend<br> 'MXNET'(Default), 'CAFFE2', 'GLUON'                   |
 | writeTagFile         | Bool   |     ❓    | Writes a .tag file with all Middleware tags into the generated code<br> Defaults to false |
 | clusteringParameters | Object |     ❓    | Options to cluster the component before generating<br> See below                          |
 
