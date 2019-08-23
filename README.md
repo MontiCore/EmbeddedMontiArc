@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
   [![Maintainability](https://api.codeclimate.com/v1/badges/139a2da1882c679b970e/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EmbeddedMontiView/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EmbeddedMontiView.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EmbeddedMontiView)
   [![Build Status](https://circleci.com/gh/EmbeddedMontiArc/EmbeddedMontiView/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/EmbeddedMontiArc/EmbeddedMontiView/tree/master)

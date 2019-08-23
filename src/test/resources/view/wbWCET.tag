@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package view;
 conforms to de.monticore.lang.embeddedmontiview.embeddedmontiview.tagging.LatencyTagSchema;
 
