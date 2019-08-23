@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth_aachen.se.montisim.simulators.basic_simulator.controller;
 
 import commons.simulation.SimulationLoopExecutable;

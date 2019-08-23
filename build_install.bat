@@ -1,3 +1,4 @@
+@rem (c) https://github.com/MontiCore/monticore  
 
 pushd %~dp0
 call mvn clean install -s "settings.xml"

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth_aachen.se.montisim.simulators.basic_simulator.gui;
 
 import de.rwth_aachen.se.montisim.simulators.basic_simulator.controller.BasicController;

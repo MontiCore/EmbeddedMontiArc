@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 Prev: [Scripts tutorial](docs/scripts.md)
 
 ---

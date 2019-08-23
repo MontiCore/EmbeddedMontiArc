@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 Prev: [Installing and using the Basic Simulator](docs/usage.md)    |    Next: [Scripts tutorial](docs/scripts.md)
 
 ---
