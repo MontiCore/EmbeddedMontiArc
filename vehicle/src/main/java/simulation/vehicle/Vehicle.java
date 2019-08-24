@@ -184,6 +184,16 @@ public class Vehicle {
     /** Flag whether the vehicle is initialised */
     private boolean vehicleInitialised;
 
+    public Battery battery;
+    
+    public void setBattery(Battery b) {
+        this.battery = b;
+    }
+    
+    public Battery getBattery() {
+        return this.battery;
+    }
+
 
     /**
      * Constructor for a vehicle that is standing at its position
@@ -765,6 +775,44 @@ public class Vehicle {
         if (!controllerBus.isPresent() || !controller.isPresent()) {
             return;
         }
+
+        Boolean batteryProblem = false;
+        
+        if (battery != null) {
+            
+            // check if connection to ChargingStation is established
+            if ( battery.getChargingStationConnectionStatus() == true ) {
+                
+                // dummy placeholders for ChargingStation specifications
+                double ChargingStationVoltage = 100;
+                double ChargingStationAmpere = 1;
+                
+                // depending on the ChargingStation implementation, 
+                // they also can invoke this function themselves
+                //      here, for demonstration purposes, we set them to some dummy values
+                battery.setVoltageChargingStation(ChargingStationVoltage);
+                battery.setAmpereChargingStation(ChargingStationAmpere);
+                
+                battery.charge();
+            }
+            
+            // check vehicle type,
+            //      set consumption calculation based on the vehicle type
+            if (physicalVehicle instanceof MassPointPhysicalVehicle)
+                battery.setConsumptionMethod(Battery.consumptionMethod.CONSUMPTION_MASS_VELOCITY);
+            else
+                battery.setConsumptionMethod(Battery.consumptionMethod.CONSUMPTION_THROTTLE_GEAR);
+            
+            try {
+                battery.discharge();
+            }
+            catch (IllegalArgumentException e) {
+                // this flag would cause motor/throttle to be updated to zero,
+                //      exactly at the end of this function
+                batteryProblem = true;
+            }   
+        }
+
         // Send vehicle data to controller
         if (!constantBusDataSent) {
             controllerBus.get().setData(CONSTANT_NUMBER_OF_GEARS.toString(), 1);
@@ -866,6 +914,17 @@ public class Vehicle {
             throttle.setActuatorValueTarget(motorValue);
             double brakePressure = brakeValue*brakes.getActuatorValueMax();
             brakes.setActuatorValueTarget(brakePressure);
+        }
+
+        // battery discharging failed, cannot accelerate the vehicle
+        //      set either motor OR throttle to zero, based on type of the car
+        if (batteryProblem == true) {
+            if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+                motor.setActuatorValueTarget(0.0);
+
+            } else {
+                throttle.setActuatorValueTarget(0.0);
+            }
         }
     }
 
