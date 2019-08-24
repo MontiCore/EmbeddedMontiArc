@@ -355,6 +355,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
             optArgument.ifPresent(arguments::add);
         }
         layer.setArguments(arguments);
+        layer.setTimeParameter((ParameterSymbol)ast.getTimeParameter().getSymbolOpt().get());
 
         removeCurrentScope();
     }

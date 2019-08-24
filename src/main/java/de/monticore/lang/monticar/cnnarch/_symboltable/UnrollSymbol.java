@@ -137,7 +137,6 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
                 getBody().resolveOrError();
                 UnrollSymbol resolvedUnroll = getDeclaration().call(this);
                 setResolvedThis(resolvedUnroll);
-
             }
         }
         return new HashSet<ParameterSymbol>() ;
@@ -288,9 +287,31 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
         for (ArgumentSymbol argument : getArguments()){
             args.add(argument.preResolveDeepCopy());
         }
+
+        copy.setDeclaration(getDeclaration());
+
+        List<ParameterSymbol> parameterCopies = new ArrayList<>(getDeclaration().getParameters().size());
+        for (ParameterSymbol parameter : getDeclaration().getParameters()){
+            ParameterSymbol parameterCopy = parameter.deepCopy();
+            parameterCopies.add(parameterCopy);
+            parameterCopy.putInScope(copy.getSpannedScope());
+        }
+        copy.getDeclaration().setParameters(parameterCopies);
         copy.setArguments(args);
+
+        copy.setTimeParameter(getTimeParameter().deepCopy());
+        //System.err.println("t2: " + this.getIntValue(AllPredefinedLayers.BEAMSEARCH_T_NAME));
+        // TODO: currently only the defaultValue for t is used, make it use the assigned value instead
+        ((ParameterSymbol)((ArrayList<Symbol>)getSpannedScope().getLocalSymbols().get("t")).get(0)).getExpression().setValue(this.getIntValue(AllPredefinedLayers.BEAMSEARCH_T_NAME));
+        System.err.println("t_value: " + ((ParameterSymbol)((ArrayList<Symbol>)getSpannedScope().getLocalSymbols().get("t")).get(0)).getValue().get().toString());
+        copy.getTimeParameter().putInScope(getSpannedScope());
+
         copy.setBody(getBody().preResolveDeepCopy());
         copy.getBody().putInScope(copy.getSpannedScope());
+        //TODO: Find a nicer way to put the timeParameter into the unroll elements' scope
+        for(ArchitectureElementSymbol element: copy.getBody().getElements()){
+            element.getSpannedScope().add(copy.getTimeParameter());
+        }
 
         return copy;
     }

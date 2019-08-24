@@ -148,6 +148,7 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
             copy.setAstNode(getAstNode().get());
         }
 
+        System.err.println("parameters to copy: " + getParameters());
         List<ParameterSymbol> parameterCopies = new ArrayList<>(getParameters().size());
         for (ParameterSymbol parameter : getParameters()){
             ParameterSymbol parameterCopy = parameter.deepCopy();
