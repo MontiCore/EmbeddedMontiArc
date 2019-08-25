@@ -54,7 +54,7 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         MqttConnectionSymbol tag = (MqttConnectionSymbol) tags.iterator().next();
         assertEquals(tag.getTopicName().get(), "/clock");
         assertEquals(tag.getMsgField().get(), "clock.toSec()");
-
+        
         //mqttOut
         EMAPortSymbol mqttOut = component.getPortInstance("mqttOut").orElse(null);
         assertNotNull(mqttOut);
@@ -65,17 +65,18 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         tag = (MqttConnectionSymbol) tags.iterator().next();
         assertEquals(tag.getTopicName().get(), "/echo");
         assertEquals(tag.getMsgField().get(), "data");
-
+        
         //emptyTagIn
         EMAPortSymbol emptyTagIn = component.getPortInstance("emptyTagIn").orElse(null);
         assertNotNull(emptyTagIn);
 
         tags = symtab.getTags(emptyTagIn, MqttConnectionSymbol.KIND);
         assertTrue(tags.size() == 1);
-
+        
         tag = (MqttConnectionSymbol) tags.iterator().next();
         assertEquals(tag.getTopicName(), Optional.empty());
         assertEquals(tag.getMsgField(), Optional.empty());
+        
     }
 
     @Test
