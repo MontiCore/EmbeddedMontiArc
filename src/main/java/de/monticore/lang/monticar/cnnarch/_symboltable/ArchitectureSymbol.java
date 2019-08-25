@@ -127,6 +127,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             {
                 try {
                     unroll.resolve();
+                    unroll = unroll.createUnrollForBackend();
                 }
                 catch (ArchResolveException e) {
                     // Do nothing; error is already logged

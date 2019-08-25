@@ -43,6 +43,7 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
     private ParameterSymbol timeParameter;
     private UnrollSymbol resolvedThis = null;
     private SerialCompositeElementSymbol body;
+    private boolean isExtendedForBackend = false;
 
     public SerialCompositeElementSymbol getBody() {
         return body;
@@ -50,6 +51,63 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
 
     protected void setBody(SerialCompositeElementSymbol body) {
         this.body = body;
+    }
+
+    public boolean isExtended(){
+        return this.isExtendedForBackend;
+    }
+
+    private void setExtended(boolean extended){
+        this.isExtendedForBackend = extended;
+    }
+
+    public UnrollSymbol createUnrollForBackend(){
+        if(this.isExtendedForBackend){
+            return this;
+        }else {
+            int i;
+            boolean skipFirst;
+            List<ArchitectureElementSymbol> newBodyList = new ArrayList<>();
+            for (i = this.getIntValue(AllPredefinedLayers.BEAMSEARCH_T_NAME).get(); i < this.getIntValue(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH).get(); i++) {
+                skipFirst = true;
+                SerialCompositeElementSymbol body = this.getBody().preResolveDeepCopy();
+                body.putInScope(this.getBody().getSpannedScope());
+                for (ArchitectureElementSymbol element : body.getElements()) {
+                    if (!(i > 0 && skipFirst)) {
+                        if(element.getEnclosingScope() == null) {
+                            element.setEnclosingScope(getEnclosingScope().getAsMutableScope());
+                        }
+                        ((ParameterSymbol)((ArrayList<Symbol>)getSpannedScope().getLocalSymbols().get(AllPredefinedLayers.BEAMSEARCH_T_NAME)).get(0)).getExpression().setValue(i);
+                        try {
+                            this.resolveExpressions();
+                        } catch (ArchResolveException e) {
+                            e.printStackTrace();
+                        }
+                        for(ParameterSymbol p:declaration.getParameters()){
+                            if(p.getEnclosingScope() == null) {
+                                p.putInScope(getSpannedScope());
+                            }
+                        }
+                        try {
+                            element.resolve();
+                        } catch (ArchResolveException e) {
+                            e.printStackTrace();
+                        }
+                        newBodyList.add(element);
+                    }
+                    skipFirst=false;
+                }
+            }
+            SerialCompositeElementSymbol newBody = new SerialCompositeElementSymbol();
+            newBody.putInScope(this.getBody().getSpannedScope());
+            newBody.setElements(newBodyList);
+            this.setBody(newBody);
+            this.setExtended(true);
+            List<UnrollSymbol> newUnrolls = new ArrayList<>();
+            newUnrolls.add(this);
+            getBody().getArchitecture().setUnrolls(newUnrolls);
+            return this;
+        }
     }
 
     public boolean isTrainable() {
@@ -305,6 +363,7 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
         ((ParameterSymbol)((ArrayList<Symbol>)getSpannedScope().getLocalSymbols().get("t")).get(0)).getExpression().setValue(this.getIntValue(AllPredefinedLayers.BEAMSEARCH_T_NAME));
         System.err.println("t_value: " + ((ParameterSymbol)((ArrayList<Symbol>)getSpannedScope().getLocalSymbols().get("t")).get(0)).getValue().get().toString());
         copy.getTimeParameter().putInScope(getSpannedScope());
+
 
         copy.setBody(getBody().preResolveDeepCopy());
         copy.getBody().putInScope(copy.getSpannedScope());
