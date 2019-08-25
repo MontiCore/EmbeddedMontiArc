@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.mqtt;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
 import de.monticore.lang.monticar.generator.mqtt.template.MqttAdapterModel;
 import de.monticore.lang.monticar.generator.mqtt.template.MqttTemplates;
 
@@ -32,7 +33,11 @@ public class GeneratorMqtt
 		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
 		
 		model.addPorts(component.getPortInstanceList());
-		
+
+		component.getPortArrays().forEach(port -> {
+		    port.setMiddlewareSymbol(new MqttConnectionSymbol(port.getFullName()));
+        });
+
 		//Generate files and write to project
 		contents.add(MqttTemplates.generateMqttAdapterH(model));
 		files.add(new File(generationTargetPath+"MqttAdapter_"+model.getEscapedCompName()+".h"));
@@ -42,7 +47,12 @@ public class GeneratorMqtt
 		files.add(new File(generationTargetPath+"Callback.hpp"));
 		contents.add(MqttTemplates.generateMqttCallbackCPP(model));
 		files.add(new File(generationTargetPath+"Callback.cpp"));
-		
+
+		//If file directory does not exist, create it so files can be created
+		File directory = new File(generationTargetPath);
+		directory.mkdirs();
+
+
         try {
         	int counter = 0;
         	for (File file : files)
@@ -80,21 +90,8 @@ public class GeneratorMqtt
 		
 		File file = new File(generationTargetPath+"CMakeLists.txt");
 		
-        FileWriter fr = null;
-        try {
-            fr = new FileWriter(file);
-            fr.write(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            //Close resources
-            try {
-                fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-		
+        createFile(file, content);
+
     	return file;
     }
 	
@@ -109,20 +106,7 @@ public class GeneratorMqtt
 		
 		File file = new File(generationTargetPath+"FindMQTT.cmake");
 		
-        FileWriter fr = null;
-        try {
-            fr = new FileWriter(file);
-            fr.write(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            //Close resources
-            try {
-                fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        createFile(file, content);
 		
     	return file;
     }
@@ -145,6 +129,13 @@ public class GeneratorMqtt
 		File file = new File(generationTargetPath+"ports.txt");
 		files.add(file);
 		
+        createFile(file, content);
+		
+    	return files;
+		
+	}
+
+	private void createFile(File file, String content) {
         FileWriter fr = null;
         try {
             fr = new FileWriter(file);
@@ -159,9 +150,6 @@ public class GeneratorMqtt
                 e.printStackTrace();
             }
         }
-		
-    	return files;
-		
-	}
+    }
 
 }
