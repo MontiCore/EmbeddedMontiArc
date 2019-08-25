@@ -50,7 +50,7 @@
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc</artifactId>
     <!-- or newer version -->
-    <version>0.1.10-SNAPSHOT</version>
+    <version>0.1.12-SNAPSHOT</version>
   	</dependency>
   	
 
