@@ -2,7 +2,9 @@
                     ${member} = mx.nd.zeros((${tc.join(tc.getLayerVariableMembers("batch_size")[member], ", ")},), ctx=mx_context)
 </#list>
 <#list tc.architecture.outputs as output>
+<#if tc.getName(output)??>
                     ${tc.getName(output)} = mx.nd.zeros((${tc.join(output.ioDeclaration.type.dimensions, ", ")},), ctx=mx_context)
+</#if>
 </#list>
 
 <#list tc.architecture.streams as stream>

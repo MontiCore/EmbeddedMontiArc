@@ -5,7 +5,9 @@
     vector<float> ${member}(${tc.join(tc.getLayerVariableMembers("1")[member], " * ")})
 </#list>
 <#list tc.architecture.outputs as output>
+<#if tc.getName(output)??>
     vector<float> ${tc.getName(output)}(${tc.join(output.ioDeclaration.type.dimensions, " * ")});
+</#if>
 </#list>
 
 <#list tc.architecture.streams as stream>
@@ -25,6 +27,7 @@ ${tc.include(unroll, "CPP_INLINE")}
 </#list>
 
 <#list tc.architecture.outputs as output>
+<#if tc.getName(output)??>
 <#assign shape = output.ioDeclaration.type.dimensions>
 <#if shape?size == 1>
     ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToCol(${tc.getName(output)}, std::vector<size_t> {${shape[0]?c}});
@@ -34,5 +37,6 @@ ${tc.include(unroll, "CPP_INLINE")}
 </#if>
 <#if shape?size == 3>
     ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToCube(${tc.getName(output)}, std::vector<size_t> {${shape[0]?c}, ${shape[1]?c}, ${shape[2]?c}});
+</#if>
 </#if>
 </#list>

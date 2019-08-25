@@ -102,38 +102,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     }
 
     public void include(UnrollSymbol unrollElement, Writer writer, NetDefinitionMode netDefinitionMode){
-        ArchitectureElementData previousElement = getCurrentElement();
-        //setCurrentElement(unrollElement);
-
-        if(unrollElement.getBody().getElements().get(0).isInput()) {
-            include(unrollElement.getBody().getElements().get(0).getResolvedThis().get(), writer, netDefinitionMode);
-        }
-
-        //System.err.println("TIME: " + unrollElement.getIntValue(AllPredefinedLayers.BEAMSEARCH_T_NAME).get());
-        int timestep = 0;//unrollElement.getIntValue(AllPredefinedLayers.BEAMSEARCH_T_NAME).get();
-
-        while (timestep < unrollElement.getIntValue(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH).get()) {
-
-            System.err.println("i: " + timestep);
-
-            for (ArchitectureElementSymbol element : unrollElement.getBody().getElements()) {
-                previousElement = getCurrentElement();
-                setCurrentElement(element);
-
-                if (element.isAtomic() && !element.isInput() && !element.isOutput()) {
-                    String templateName = element.getName();
-                    include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
-                } else {
-                    if(element.isOutput()) {
-                        include(element.getResolvedThis().get(), writer, netDefinitionMode);
-                    }
-                }
-            }
-            timestep++;
-        }
-
-
-        setCurrentElement(previousElement);
+        include(unrollElement.getBody(), writer, netDefinitionMode);
     }
 
     public void include(CompositeElementSymbol compositeElement, Writer writer, NetDefinitionMode netDefinitionMode){
@@ -218,10 +187,14 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     public Set<String> getUnrollOutputNames(UnrollSymbol unroll) {
         Set<String> outputNames = new LinkedHashSet<>();
 
-        for (ArchitectureElementSymbol element : unroll.getBody().getLastAtomicElements()) {
-            if (element.isOutput()) {
-                outputNames.add(getName(element));
+        int timestep = 0;//unroll.getIntValue(AllPredefinedLayers.BEAMSEARCH_T_NAME).get()
+        while (timestep < unroll.getIntValue(AllPredefinedLayers.BEAMSEARCH_MAX_LENGTH).get()) {
+            for (ArchitectureElementSymbol element : unroll.getBody().getLastAtomicElements()) {
+                if (element.isOutput()) {
+                    outputNames.add(getName(element));
+                }
             }
+            timestep++;
         }
 
         outputNames.addAll(getStreamLayerVariableMembers(unroll.getBody(), "1", true).keySet());
