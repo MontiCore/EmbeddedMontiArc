@@ -20,7 +20,7 @@ public class AdapterGenerationTest extends AbstractSymtabTest {
         
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         
-        // Ros schema is used for now
+        // Ros schema is used for now (Mqtt is not added yet)
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
         
         // Create component instance and run the generator
