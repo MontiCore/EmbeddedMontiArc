@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package testing;
 
 component interface CarInterface { // interface defines the contract with developed physic engine simulator

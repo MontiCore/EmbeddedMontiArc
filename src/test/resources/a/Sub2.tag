@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package a;
 conforms to de.monticore.lang.embeddedmontiarc.tagging.nfp.CompPower;
 

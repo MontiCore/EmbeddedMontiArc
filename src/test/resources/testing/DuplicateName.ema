@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package testing;
 component DuplicateName{
     instance BooleanConnector cmp1,cmp1;

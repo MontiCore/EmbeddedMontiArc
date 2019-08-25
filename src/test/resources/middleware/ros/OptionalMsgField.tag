@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package middleware.ros;
 conforms to middleware.ros.RosToEmamTagSchema;
 

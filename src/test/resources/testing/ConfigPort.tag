@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package testing;
 conforms to adaptable.AdaptableTagSchema;
 
