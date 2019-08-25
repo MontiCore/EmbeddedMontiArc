@@ -1,4 +1,5 @@
 <#import "MqttMacros.ftl" as m>
+/* (c) https://github.com/MontiCore/monticore */
 
 #include "<@m.mwIdent/>Adapter_${model.getEscapedCompName()}.h"
 
