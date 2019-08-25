@@ -163,7 +163,9 @@ public abstract class CNNArchTemplateController {
     public List<String> getArchitectureOutputs(){
         List<String> list = new ArrayList<>();
         for (VariableSymbol element : getArchitecture().getOutputs()){
-            list.add(nameManager.getName(element));
+            if(nameManager.getName(element) != null) {
+                list.add(nameManager.getName(element));
+            }
         }
         return list;
     }
