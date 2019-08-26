@@ -117,14 +117,14 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
     public void endVisit(final ASTMathDeclarationStatement declarationExpression) {
         MathValueSymbol symbol = new MathValueSymbol(declarationExpression.getName());
-        symbol.setType(MathValueType.convert(declarationExpression.getType()));
+        symbol.setType(MathValueType.convert(declarationExpression.getType(), this.currentScope().get()));
         addToScopeAndLinkWithNode(symbol, declarationExpression);
     }
 
     public void endVisit(final ASTMathAssignmentDeclarationStatement assignmentDeclarationExpression) {
         MathValueSymbol symbol = new MathValueSymbol(assignmentDeclarationExpression.getName());
 
-        symbol.setType(MathValueType.convert(assignmentDeclarationExpression.getType()));
+        symbol.setType(MathValueType.convert(assignmentDeclarationExpression.getType(), this.currentScope().get()));
         Log.info(assignmentDeclarationExpression.toString(), "AST:");
         if (assignmentDeclarationExpression.getExpression().getSymbolOpt().isPresent())
             symbol.setValue((MathExpressionSymbol) assignmentDeclarationExpression.getExpression().getSymbolOpt().get());
