@@ -18,24 +18,30 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package sensors;
+package sensors.abstractsensors;
 
 import commons.controller.commons.BusEntry;
+import commons.simulation.IPhysicalVehicle;
+import commons.simulation.PhysicalObject;
 import commons.simulation.Sensor;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
+
 import org.apache.commons.lang3.Validate;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
-public abstract class StaticPlannedTrajectorySensor implements Sensor {
+public abstract class StaticPlannedTrajectorySensor extends  AbstractSensor {
 
-    private final BusEntry type;
     private final List<Double> trajectory;
 
-    public StaticPlannedTrajectorySensor(BusEntry type, List<Double> trajectory) {
-        this.type = Validate.notNull(type);
+    public StaticPlannedTrajectorySensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+            HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<Double> trajectory) {
+        super(phyiscalVehicle,simulator, subscribedMessages, targetsByMessageId);
         Validate.notNull(trajectory);
         List<Double> defensiveCopy = new ArrayList<>(trajectory);
         Validate.noNullElements(defensiveCopy);
@@ -45,11 +51,6 @@ public abstract class StaticPlannedTrajectorySensor implements Sensor {
     @Override
     public Object getValue() {
         return trajectory;
-    }
-
-    @Override
-    public BusEntry getType() {
-        return type;
     }
 
     @Override
@@ -63,6 +64,6 @@ public abstract class StaticPlannedTrajectorySensor implements Sensor {
 
     @Override
     public int getDataLength(){
-        return 6 * trajectory.size();
+        return 8 * trajectory.size();
     }
 }

@@ -20,9 +20,15 @@
  */
 package simulation.EESimulator;
 
+import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.math3.exception.NullArgumentException;
+
+import commons.controller.commons.BusEntry;
+import simulation.bus.BusMessage;
 
 abstract class AbstractEEComponent implements EEComponent{
 
@@ -54,5 +60,22 @@ abstract class AbstractEEComponent implements EEComponent{
 	@Override
 	public UUID getId() {
 		return Id;
+	}
+	
+	/**
+	 * Send message to all targets that are registered for this message in targetsByMessageId
+	 * @param message message to be send
+	 * @param messageLen length of message in bytes
+	 * @param messageId message id of the message
+	 * @param eventTime time when the message is sent
+	 */
+	@Override
+	public void sendMessage(Object message, int messageLen , BusEntry messageId, Instant eventTime) {
+		List<EEComponent> targets = this.getTargetsByMessageId().getOrDefault(messageId, Collections.emptyList());
+		for(EEComponent target : targets) {
+			BusMessage msg = new BusMessage(message, 6, messageId,
+					eventTime, this.getId(), target);
+			this.getSimulator().addEvent(msg);
+		}
 	}
 }

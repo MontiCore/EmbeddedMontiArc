@@ -97,9 +97,9 @@ public class CameraSensor extends AbstractSensor {
     }
     
 	public static BusEntry getSensorType() {
-        return BusEntry.SENSOR_CAMERA;
-
+		return BusEntry.SENSOR_CAMERA;
 	}
+	
 
     @Override
     public int getDataLength() {
