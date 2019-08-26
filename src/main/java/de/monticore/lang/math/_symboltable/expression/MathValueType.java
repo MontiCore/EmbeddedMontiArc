@@ -22,8 +22,13 @@ package de.monticore.lang.math._symboltable.expression;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTAssignmentType;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.CommonMCTypeReference;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.types2._ast.ASTDimension;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -36,9 +41,18 @@ public class MathValueType extends MathExpressionSymbol {
     protected ASTElementType type;
     protected List<String> properties = new ArrayList<>();
     protected List<MathExpressionSymbol> dimensions = new ArrayList<>();
+    protected MCTypeReference typeRef;
 
     public MathValueType() {
 
+    }
+
+    public MCTypeReference getTypeRef() {
+        return typeRef;
+    }
+
+    public void setTypeRef(MCTypeReference typeRef) {
+        this.typeRef = typeRef;
     }
 
     public void addDimension(MathExpressionSymbol dimension) {
@@ -114,6 +128,7 @@ public class MathValueType extends MathExpressionSymbol {
         return result;
     }
 
+    @Deprecated
     public static MathValueType convert(ASTAssignmentType type) {
         MathValueType mathValueType = new MathValueType();
 
@@ -138,4 +153,13 @@ public class MathValueType extends MathExpressionSymbol {
 
         return mathValueType;
     }
+
+    @SuppressWarnings("deprecation")
+    public static MathValueType convert(ASTAssignmentType type, Scope scope){
+        MathValueType mathValueType = convert(type);
+        mathValueType.setEnclosingScope(scope.getAsMutableScope());
+        mathValueType.setTypeRef( new CommonMCTypeReference(type.getElementType().getName() , MCTypeSymbol.KIND, scope));
+        return mathValueType;
+    }
+
 }
