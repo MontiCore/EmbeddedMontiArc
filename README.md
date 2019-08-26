@@ -5,6 +5,8 @@ In order to do so it utilizes UnitNumbers from NumberUnit and the Weather langua
 
 SimLang files must end with .sim.
 
+To use car models created with the [Car Modeling Language](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/CarLang), they have to be imported in the preamble of the sim file and need to be placed in their corresponding location in the model path. Then, when the scenario file is parsed, the corresponding car files will automatically loaded and are accessible from the `SimLangContainer` via the `getCarContainer()` method of the class `ExplicitVehicle`. 
+
 ## Syntax help
 ```
 "" terms are keywords.
@@ -18,6 +20,8 @@ Uppercase terms relate to another rule.
 
 # Simulation Rules
 ```
+import ([package].)?[carModelName];
+
 "sim" [name] "{"
   RULE1 ";"
   RULE2 ";"
@@ -95,19 +99,19 @@ Definable once.
 Sets the amount of random pedestrians being spawned.
 Definable once.
 
-### "<p>" "(" [startLat] "," [startLong] ")" "->" "(" [destLat] "," [destLong] ("," [destZ])? ")"
+### "pedestrian" "(" [startLat] "," [startLong] ")" "->" "(" [destLat] "," [destLong] ("," [destZ])? ")"
 Creates a concrete pedestrian, who follows the given path.
 Definable arbitrarily often.
 
-### [vehicleName] "(" [startLat] "," [startLong] "," [startRot] ")" "->" "(" [destLat] "," [destLong] ("," [destZ])? ")"
+### "vehicle" [vehicleName] "(" [startLat] "," [startLong] "," [startRot] ")" "->" "(" [destLat] "," [destLong] ("," [destZ])? ")" (":" [fullyQualifiedCarModelName])?
 Creates an instance of the given vehicle at the given coordinates, which will then follow the given path.
 Definable arbitrarily often.
 
-### "<v>" "(" [startLat] "," [startLong] "," [startRadius] ")" "->" "(" [destLat] "," [destLong] "," [destRadius] ")" ([NumberOfVehicles])?
+### "vehicle" "(" [startLat] "," [startLong] "," [startRadius] ")" "->" "(" [destLat] "," [destLong] "," [destRadius] ")" ([NumberOfVehicles])?
 Creates random vehicles spawning somewhere within a circle at the given coordinates and radius, moving to somewhere within thge given destination circle.
 Definable arbitrarily often.
 
-### "<v>" [Number > 0] ("(" [startLat] "," [startLong] "," [destLat] "," [destLong] ")")?
+### "vehicle" [Number > 0] ("(" [startLat] "," [startLong] "," [destLat] "," [destLong] ")")?
 Creates completely random vehicle spawns and destinations with optional avoidance of a given path.
 Definable arbitrarily often.
 
