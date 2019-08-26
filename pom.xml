@@ -25,7 +25,7 @@
     <properties>
     
         <!-- USE THIS VARIABLE TO SET THE VERSION OF THIS PROJECT AND ALL SUB PROJECTS -->
-        <revision>2.0.1</revision>
+        <revision>2.0.1-SNAPSHOT</revision>
         
         <commons.version>1.0.7</commons.version>
         
