@@ -32,7 +32,7 @@ grammar StreamUnits extends de.monticore.NumberUnit, de.monticore.literals.Liter
     NamedStreamUnits+
   "}";
   //Name enforcement
-  symbol scope NamedStreamUnits = Name ":" Stream ";" ;
+  symbol scope NamedStreamUnits = Name ("." fieldQualifier:Name)* ":" Stream ";" ;
 
   Stream = (StreamInstruction | "tick" )+;
   StreamInstruction = StreamValue | StreamCompare | StreamArrayValues;

@@ -76,7 +76,13 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
 
     @Override
     public void visit(ASTNamedStreamUnits node) {
-        NamedStreamUnitsSymbol streamSymbol = new NamedStreamUnitsSymbol(node.getName(), id);
+        String qualifiedName;
+        if(node.getFieldQualifierList().isEmpty()) {
+            qualifiedName = node.getName();
+        }else{
+            qualifiedName = node.getName() + "." + String.join(".", node.getFieldQualifierList());
+        }
+        NamedStreamUnitsSymbol streamSymbol = new NamedStreamUnitsSymbol(qualifiedName, id);
         for (ASTStreamInstruction streamInstruction : node.getStream().getStreamInstructionList()) {
             if (streamInstruction.getStreamValueOpt().isPresent()) {
                 streamSymbol.add(handleStreamValue(streamInstruction.getStreamValueOpt().get()));
