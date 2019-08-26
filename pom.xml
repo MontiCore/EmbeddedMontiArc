@@ -10,7 +10,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math</artifactId>
-    <version>0.1.9-SNAPSHOT</version>
+    <version>0.1.10-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -21,10 +21,10 @@
         <se-commons.version>1.7.8</se-commons.version>
         <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
         <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
-        <Embedded-MontiArc.version>0.1.9-SNAPSHOT</Embedded-MontiArc.version>
+        <Embedded-MontiArc.version>0.1.12-SNAPSHOT</Embedded-MontiArc.version>
         <Embedded-MontiArc-Dynamics.version>0.0.4-SNAPSHOT</Embedded-MontiArc-Dynamics.version>
         <Embedded-MontiArc-Behaviour.version>0.0.16-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-        <Math.version>0.0.19-SNAPSHOT</Math.version>
+        <Math.version>0.0.20-SNAPSHOT</Math.version>
         <MathOpt.version>0.1.1-SNAPSHOT</MathOpt.version>
 
 
