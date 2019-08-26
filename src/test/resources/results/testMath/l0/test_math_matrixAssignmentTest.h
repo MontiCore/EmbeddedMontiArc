@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_MATRIXASSIGNMENTTEST
 #define TEST_MATH_MATRIXASSIGNMENTTEST
 #ifndef M_PI

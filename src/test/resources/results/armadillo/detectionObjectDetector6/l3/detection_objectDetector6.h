@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef DETECTION_OBJECTDETECTOR6
 #define DETECTION_OBJECTDETECTOR6
 #ifndef M_PI

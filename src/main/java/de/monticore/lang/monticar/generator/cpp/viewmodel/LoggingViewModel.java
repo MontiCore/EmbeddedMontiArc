@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.viewmodel;
 
 import de.monticore.ast.ASTNode;

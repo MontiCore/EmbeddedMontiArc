@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_EYECOMMANDTEST
 #define TEST_MATH_EYECOMMANDTEST
 #ifndef M_PI

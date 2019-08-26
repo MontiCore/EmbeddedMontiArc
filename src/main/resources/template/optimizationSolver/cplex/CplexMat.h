@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef MACMAKETEST_CplexMat_H
 #define MACMAKETEST_CplexMat_H
 

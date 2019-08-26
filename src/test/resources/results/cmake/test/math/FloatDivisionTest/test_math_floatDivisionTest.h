@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_FLOATDIVISIONTEST
 #define TEST_MATH_FLOATDIVISIONTEST
 #ifndef M_PI

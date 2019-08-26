@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.commands;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
@@ -78,6 +79,7 @@ public class DynamicMathPortNewConnectCommand extends MathCommand {
 
             connM.addInstruction(new TargetCodeInstruction(String.format("*id%d = dynamicconnect(%d, __%s_connected, &__%s_connect_request);\n",
                     n, portVar.get().getArraySize(), portName, portName)));
+            connM.addInstruction(new TargetCodeInstruction(String.format(" __%s_free_request.push(*id%d);\n", portName,n)));
 
             if(i > 0){
                 check += " || ";

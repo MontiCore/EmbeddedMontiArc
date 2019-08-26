@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_MODEL
 #define TESTING_MODEL
 #ifndef M_PI

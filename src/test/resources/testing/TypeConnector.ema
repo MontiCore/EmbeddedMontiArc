@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 //tests if values/constants can be connected to a port. Is equivalent to setting the port to always have a certain value/constant.
 package testing;
 

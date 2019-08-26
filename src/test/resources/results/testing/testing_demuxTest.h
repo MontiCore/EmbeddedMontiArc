@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_DEMUXTEST
 #define TESTING_DEMUXTEST
 #ifndef M_PI

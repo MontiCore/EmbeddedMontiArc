@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_PORTTYPECUBETEST
 #define TESTING_PORTTYPECUBETEST
 #ifndef M_PI

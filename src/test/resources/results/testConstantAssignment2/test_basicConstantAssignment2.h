@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_BASICCONSTANTASSIGNMENT2
 #define TEST_BASICCONSTANTASSIGNMENT2
 #ifndef M_PI

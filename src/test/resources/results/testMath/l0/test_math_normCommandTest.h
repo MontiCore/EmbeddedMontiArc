@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_NORMCOMMANDTEST
 #define TEST_MATH_NORMCOMMANDTEST
 #ifndef M_PI

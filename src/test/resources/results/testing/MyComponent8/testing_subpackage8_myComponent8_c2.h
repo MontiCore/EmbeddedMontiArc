@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_SUBPACKAGE8_MYCOMPONENT8_C2
 #define TESTING_SUBPACKAGE8_MYCOMPONENT8_C2
 #ifndef M_PI

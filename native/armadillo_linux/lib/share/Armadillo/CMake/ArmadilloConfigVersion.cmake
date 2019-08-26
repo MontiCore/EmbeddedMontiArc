@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 set(PACKAGE_VERSION "")
 
 # Check whether the requested PACKAGE_FIND_VERSION is compatible

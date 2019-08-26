@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include "mainControlBlock_NativeControllerBlock.h"
 #define _GLIBCXX_USE_CXX11_ABI 0
 #include "simulator_mainController.h"

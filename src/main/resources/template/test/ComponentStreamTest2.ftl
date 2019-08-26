@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 //created by ComponentStreamTest2.ftl
 <#include "/Common.ftl">
 #ifndef ${viewModel.fileNameWithoutExtension?upper_case}

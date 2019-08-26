@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 //created by TestsMainEntry.ftl
 <#include "/Common.ftl">
 #ifndef TESTS_MAIN

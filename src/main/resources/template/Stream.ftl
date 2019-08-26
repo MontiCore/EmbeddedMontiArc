@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 package ${streamTest.packageName};
 
 stream ${streamTest.testName} for ${streamTest.componentName}{

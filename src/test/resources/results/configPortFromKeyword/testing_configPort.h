@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_CONFIGPORT
 #define TESTING_CONFIGPORT
 #ifndef M_PI

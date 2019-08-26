@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 

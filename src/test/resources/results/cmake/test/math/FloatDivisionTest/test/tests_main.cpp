@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 //created by TestsMainEntry.ftl
 #ifndef TESTS_MAIN
 #define TESTS_MAIN

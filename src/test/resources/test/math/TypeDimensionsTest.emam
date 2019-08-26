@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 // purpose of this test model is to test if the correct data types for scalars, vectors, matrices and cubes are
 // generated. Also checks if the empty initialization is correct.
 

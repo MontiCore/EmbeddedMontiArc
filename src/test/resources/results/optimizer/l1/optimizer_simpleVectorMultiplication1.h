@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef OPTIMIZER_SIMPLEVECTORMULTIPLICATION1
 #define OPTIMIZER_SIMPLEVECTORMULTIPLICATION1
 #ifndef M_PI

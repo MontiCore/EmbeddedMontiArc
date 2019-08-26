@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 //created by ComponentStreamTest2.ftl
 #ifndef TEST_BASICPORTSMATH_TEST
 #define TEST_BASICPORTSMATH_TEST

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package detection;
 
 component EigenSolver<N1 n = 2500,N1 targetEigenvectors = 4>{

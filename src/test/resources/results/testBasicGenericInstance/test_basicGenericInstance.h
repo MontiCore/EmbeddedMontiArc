@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_BASICGENERICINSTANCE
 #define TEST_BASICGENERICINSTANCE
 #ifndef M_PI

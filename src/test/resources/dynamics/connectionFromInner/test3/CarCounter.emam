@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package connectionFromInner.test3;
 
 dynamic component CarCounter<N1 n=1> {

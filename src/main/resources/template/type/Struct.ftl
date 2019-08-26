@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#include "/Common.ftl">
 #ifndef ${viewModel.includeName?upper_case}
 #define ${viewModel.includeName?upper_case}

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef PAPER_MATHUNIT7
 #define PAPER_MATHUNIT7
 #ifndef M_PI

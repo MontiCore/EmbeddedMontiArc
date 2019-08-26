@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.monticar.carmodel;
 
 component MatlabCarModel<Q dt = 0.1 s, Q m = 2000 kg, Q a = 1.5 m, Q b = 1.5 m, Q cx = 150000, Q cy = 40000, Q ca =  0.5>

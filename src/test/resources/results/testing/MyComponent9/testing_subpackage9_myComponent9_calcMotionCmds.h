@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_SUBPACKAGE9_MYCOMPONENT9_CALCMOTIONCMDS
 #define TESTING_SUBPACKAGE9_MYCOMPONENT9_CALCMOTIONCMDS
 #ifndef M_PI

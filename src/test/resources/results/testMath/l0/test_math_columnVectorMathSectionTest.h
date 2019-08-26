@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_COLUMNVECTORMATHSECTIONTEST
 #define TEST_MATH_COLUMNVECTORMATHSECTIONTEST
 #ifndef M_PI

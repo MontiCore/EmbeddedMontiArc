@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef DETECTION_OBJECTDETECTOR1_SPECTRALCLUSTERER
 #define DETECTION_OBJECTDETECTOR1_SPECTRALCLUSTERER
 #ifndef M_PI

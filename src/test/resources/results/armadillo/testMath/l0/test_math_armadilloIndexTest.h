@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_ARMADILLOINDEXTEST
 #define TEST_MATH_ARMADILLOINDEXTEST
 #ifndef M_PI

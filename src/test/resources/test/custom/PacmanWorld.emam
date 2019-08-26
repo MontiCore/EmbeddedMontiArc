@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package test.custom;
 
 //Tiles start from top left and go to right, then next row starting from left to right

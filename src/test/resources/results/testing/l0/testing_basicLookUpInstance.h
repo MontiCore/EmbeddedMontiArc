@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_BASICLOOKUPINSTANCE
 #define TESTING_BASICLOOKUPINSTANCE
 #ifndef M_PI

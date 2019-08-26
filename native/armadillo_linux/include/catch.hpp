@@ -1,9 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
 /*
  *  Catch v2.0.1
  *  Generated: 2017-11-03 11:53:39.642003
  *  ----------------------------------------------------------
  *  This file has been merged from multiple headers. Please don't edit it directly
- *  Copyright (c) 2017 Two Blue Cubes Ltd. All rights reserved.
+ *  Copy right ( c ) 2017 Two Blue Cubes Ltd. All rights reserved.
  *
  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_ATANHCOMMANDTEST
 #define TEST_MATH_ATANHCOMMANDTEST
 #ifndef M_PI

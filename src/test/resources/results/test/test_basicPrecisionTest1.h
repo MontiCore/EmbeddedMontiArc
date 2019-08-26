@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_BASICPRECISIONTEST1
 #define TEST_BASICPRECISIONTEST1
 #ifndef M_PI

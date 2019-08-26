@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_MATH_TRANSPOSETEST
 #define TEST_MATH_TRANSPOSETEST
 #ifndef M_PI

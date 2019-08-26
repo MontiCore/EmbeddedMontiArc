@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TEST_CUSTOM_PACMANSAMPLEGAME_MAIN_PACMANINIT
 #define TEST_CUSTOM_PACMANSAMPLEGAME_MAIN_PACMANINIT
 #ifndef M_PI

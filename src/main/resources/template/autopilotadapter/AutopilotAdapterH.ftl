@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#include "/Common.ftl">
 #pragma once
 #if defined(_MSC_VER)

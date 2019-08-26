@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 //created by ComponentStreamTest2.ftl
 #ifndef TEST_MATH_FLOATDIVISIONTEST_TEST
 #define TEST_MATH_FLOATDIVISIONTEST_TEST

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba;
 
 component Delay(Q(-oo:oo) dvalue) {

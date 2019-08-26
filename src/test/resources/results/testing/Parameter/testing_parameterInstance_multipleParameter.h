@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef TESTING_PARAMETERINSTANCE_MULTIPLEPARAMETER
 #define TESTING_PARAMETERINSTANCE_MULTIPLEPARAMETER
 #ifndef M_PI

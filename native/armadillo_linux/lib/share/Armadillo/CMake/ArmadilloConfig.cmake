@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 # - Config file for the Armadillo package
 # It defines the following variables
 #  ARMADILLO_INCLUDE_DIRS - include directories for Armadillo
