@@ -4,7 +4,7 @@ package de.monticore.lang.embeddedmontiarc.tagging.middleware.someip;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
-public class SomeIPtoEmamTagSchema {
+public class SomeIPToEmamTagSchema {
 
     protected static SomeIPToEmamTagSchema instance = null;
 
