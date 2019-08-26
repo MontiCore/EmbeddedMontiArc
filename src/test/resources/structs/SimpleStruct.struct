@@ -1,0 +1,5 @@
+package structs;
+
+struct SimpleStruct{
+    Q field;
+}

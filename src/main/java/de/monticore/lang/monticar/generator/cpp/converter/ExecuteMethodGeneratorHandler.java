@@ -6,16 +6,22 @@ import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.VariableType;
 import de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.Utils;
+import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
+import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Sascha Schneiders
@@ -152,9 +158,29 @@ public class ExecuteMethodGeneratorHandler {
             result = handleBooleanType(mathValueType);
         } else {
             Log.info(mathValueType.getTextualRepresentation(), "Representation:");
-            Log.error("MathValueType: Case not handled!");
+            result = handleStructType(mathValueType);
         }
         return result;
+    }
+
+    private static String handleStructType(MathValueType mathValueType) {
+        String res = "";
+        if (mathValueType.getDimensions().size() == 0){
+            if(mathValueType.getTypeRef().existsReferencedSymbol()){
+                Symbol tmpSym = mathValueType.getTypeRef().getReferencedSymbol();
+                if(tmpSym instanceof StructSymbol){
+                    return tmpSym.getFullName().replace(".","_");
+                }else{
+                    Log.error("Referenced Symbol is not a Struct!");
+                }
+            }else{
+                Log.error("Can not find Referenced type for " + mathValueType.getType().getName());
+            }
+
+        }else{
+            Log.error("StructType: Case not handled!");
+        }
+        return res;
     }
 
 
