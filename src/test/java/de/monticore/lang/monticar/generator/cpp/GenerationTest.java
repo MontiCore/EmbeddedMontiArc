@@ -734,4 +734,22 @@ public class GenerationTest extends AbstractSymtabTest {
 
         testFilesAreEqual(files,"testing/WholeNumberMatrix/");
     }
+
+    @Test
+    public void testStructDecl() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources");
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("structs.structDeclarationComp",EMAComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(componentInstanceSymbol);
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/structs/StructDeclarationComp/");
+
+        List<File> files = generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver);
+
+        //testFilesAreEqual(files,"testing/WholeNumberMatrix/");
+
+    }
 }

@@ -139,7 +139,7 @@ public final class GeneratorCppCli {
     }
 
     public static void main(String[] args) {
-        Log.initDEBUG();
+        //Log.initDEBUG();
         Options options = getOptions();
         CommandLineParser parser = new DefaultParser();
         CommandLine cliArgs = parseArgs(options, parser, args);
