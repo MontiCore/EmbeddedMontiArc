@@ -30,9 +30,9 @@ car CMTCar {
 
 	// sensors
 	sensors {
-		speed;
-		steering_angle;
-		location;
+		sensor_velocity;
+		sensor_steering;
+		sensor_gps_coordinates;
 	}
 
 	// other

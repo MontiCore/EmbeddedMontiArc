@@ -1,6 +1,7 @@
 package de.monticore.lang.montisim.simlang;
 
 import de.monticore.lang.montisim.simlang.adapter.SimLangContainer;
+import de.monticore.lang.montisim.util.types.ExplicitVehicle;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,10 +17,17 @@ public class CarModelTest {
     public void carModelAvailable() {
         SimLangContainer carModelTest = SimLangTool.parseIntoContainer(MODEL_PATH, "CarModelTest");
 
-        // TODO: the order seems to be not consistent with the order in the sim file
-        //Assert.assertEquals(carModelTest.getExplicitVehicles().get().get(0).getCarContainer().getMass(), 1800, DELTA);
-        //Assert.assertEquals(carModelTest.getExplicitVehicles().get().get(1).getCarContainer().getMass(), 1800, DELTA);
-        //Assert.assertEquals(carModelTest.getExplicitVehicles().get().get(2).getCarContainer().getMass(), 2800, DELTA);
+        for (ExplicitVehicle v : carModelTest.getExplicitVehicles().get()) {
+            switch (v.getName()) {
+                case "car1":
+                case "car3":
+                    Assert.assertEquals(v.getCarContainer().getMass(), 1800, DELTA);
+                    break;
+                case "car2":
+                    Assert.assertEquals(v.getCarContainer().getMass(), 2800, DELTA);
+                    break;
+            }
+        }
     }
 
 }
