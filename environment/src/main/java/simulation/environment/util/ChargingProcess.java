@@ -56,6 +56,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 	public ChargingProcess(ChargeableVehicle vehicle, ChargingStation cs) throws Exception {
 		this.vehicle = vehicle;
 		this.chargingStation = cs;
+		this.battery = vehicle.getBattery();
 		// ==== TODO ====
 		// Add method Car.getBattery(); to Car
         if (! vehicle.isElectricVehicle()){
@@ -82,6 +83,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 					return;
 				}
 
+
 				// ==== TODO ====
 				double consumtionOfThisLoop = 0;
 				// Needs to be calculated with values of the battery battery like the maxLoadingSpeed
@@ -90,6 +92,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 				// ==== TODO ====
 				// Update Battery battery charge like this.battery.updateCharging();
 				// ...
+				this.battery.recharge();
 
 				// Update Charging Station consumtion
 				this.chargingStation.setConsumption(this.chargingStation.getConsumption() + consumtionOfThisLoop);

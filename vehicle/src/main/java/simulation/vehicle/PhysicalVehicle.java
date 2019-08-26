@@ -25,13 +25,15 @@ import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObjectType;
 import commons.simulation.IdGenerator;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.environment.object.Battery;
+import simulation.environment.util.ChargingProcess;
 import simulation.util.Log;
 import static simulation.vehicle.VehicleActuatorType.*;
 
 /**
  * Class that represents all physical properties of a vehicle and performs physics computations
  */
-public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhysicalVehicle {
+public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhysicalVehicle, ChargeableVehicle{
 
     /** Variables for the IPhysicalVehicle interface */
     /** Type of the physical object */
