@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 ![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMath/badges/master/build.svg)
 ![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMath/badges/master/coverage.svg)
 
