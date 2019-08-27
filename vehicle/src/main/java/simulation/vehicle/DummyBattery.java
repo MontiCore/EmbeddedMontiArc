@@ -36,6 +36,10 @@ public class DummyBattery {
 		setCriticalPercentage(10.0);
 		
 	}
+
+	public void setPercentage(double percentage) {
+		this.capacityCurrent = capacityMax * percentage;
+	}
 	
 	public double getPercentage() {
 		return (getCapacityCurrent() / getCapacityMax()) * 100;
