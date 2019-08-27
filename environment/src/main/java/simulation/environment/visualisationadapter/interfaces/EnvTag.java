@@ -7,10 +7,5 @@ package simulation.environment.visualisationadapter.interfaces;
  * An enum type for defining the type of an Environment Object
  */
 public enum EnvTag {
-<<<<<<< HEAD
-    BUILDING, STREET, TREE, TRAFFIC_SIGNAL, WATERWAY, CHARGING_STATION
-}
-=======
     BUILDING, STREET, TREE, TRAFFIC_SIGNAL, WATERWAY
 }
->>>>>>> BatteryInterface

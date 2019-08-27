@@ -21,8 +21,9 @@
 package simulation.vehicle;
 
 import commons.controller.commons.BusEntry;
+import simulation.environment.util.IBattery;
 
-public class Battery implements BatteryInterface{
+public class Battery implements BatteryInterface, IBattery{
 	
 	private Vehicle 		vehicle;
 	private VehicleActuator throttle;

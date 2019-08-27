@@ -39,7 +39,7 @@ import java.util.Optional;
 public class ChargingProcess implements SimulationLoopExecutable {
 	private Chargeable vehicle;
 	private ChargingStation chargingStation;
-	private Optional<Battery> battery;
+	private Optional<IBattery> battery;
 	private long chargingTimeMillis;
 
 	// if true the chargingStation process is running
@@ -70,7 +70,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 			if (timeDiffMs > 1000 * 2) {
 				// Loop of the Charging Process every 2 Seconds
 
-				if(this.battery.get().isFullyCharged()){
+				if(this.battery.get().getBatteryPercentage() == 100){
 				    stopProcess();
 					return;
 				}
@@ -84,7 +84,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 				// Update Battery battery charge like this.battery.updateCharging();
 				// ...
 				
-				double consumtionOfThisLoop = this.battery.get().recharge();
+				double consumtionOfThisLoop = this.battery.get().charge();
 				// Increased consumption through transaction
 				double IncreaseConsumptionPercent = 5;
 				consumtionOfThisLoop = (5 * consumtionOfThisLoop / 100) + consumtionOfThisLoop;

@@ -25,7 +25,7 @@ import java.util.Optional;
 
 public interface Chargeable {
     boolean isElectricVehicle();
-   // Optional<Battery> getBattery();
+    Optional<IBattery> getBattery();
     //		boolean isFullyCharged();
     boolean isParkedChargingStation(ChargingStation station);
     void onRechargeReady();
