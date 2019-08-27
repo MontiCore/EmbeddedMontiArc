@@ -34,7 +34,7 @@ public class Battery implements BatteryInterface, IBattery{
 	
 	private double local_deltaT;
 
-	private consumptionMethod preferredConsumptionMethod;
+	private ConsumptionMethod preferredConsumptionMethod;
 	
 	private double oldKineticEnergy;
 	
@@ -47,7 +47,7 @@ public class Battery implements BatteryInterface, IBattery{
 		vehicle = v;
 		dummyBattery = new DummyBattery(bCapacity);
 		
-		this.preferredConsumptionMethod = consumptionMethod.CONSUMPTION_THROTTLE_GEAR;
+		this.preferredConsumptionMethod = ConsumptionMethod.CONSUMPTION_THROTTLE_GEAR;
 		
 		setThrottle (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE));
 		setGear     (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR));
@@ -59,7 +59,7 @@ public class Battery implements BatteryInterface, IBattery{
 		setAmpereChargingStation(0);		
 	}
 	
-	public void setConsumptionMethod(consumptionMethod method) {
+	public void setConsumptionMethod(ConsumptionMethod method) {
 		this.preferredConsumptionMethod = method;
 	}
 	
@@ -145,7 +145,7 @@ public class Battery implements BatteryInterface, IBattery{
 		
 		// based on whether the car is a MassPointPhysicalVehicle or ModelicaPhysicalVehicle
 		// the calculation method changes
-		if (this.preferredConsumptionMethod == consumptionMethod.CONSUMPTION_MASS_VELOCITY)
+		if (this.preferredConsumptionMethod == ConsumptionMethod.CONSUMPTION_MASS_VELOCITY)
 			consumptionValue = this.calculateBatteryConsumption_MASS_VELOCITY();
 		else
 			consumptionValue = this.calculateBatteryConsumption_THROTTLE_GEAR();
