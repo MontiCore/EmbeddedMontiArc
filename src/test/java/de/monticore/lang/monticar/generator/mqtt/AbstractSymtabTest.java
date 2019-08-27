@@ -6,7 +6,7 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttToEmamTagSchema;
 import de.monticore.lang.monticar.Utils;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
@@ -38,7 +38,7 @@ public class AbstractSymtabTest {
     public static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
         Scope scope = createSymTab(modelPath);
         TaggingResolver taggingResolver = new TaggingResolver(scope, Arrays.asList(modelPath));
-        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+        MqttToEmamTagSchema.registerTagTypes(taggingResolver);
         return taggingResolver;
     }
 
@@ -107,8 +107,10 @@ public class AbstractSymtabTest {
         }
         lines1 = discardEmptyLines(lines1);
         lines1 = discardCommentLines(lines1);
+        lines1 = discardCopyrightNotice(lines1);
         lines2 = discardEmptyLines(lines2);
         lines2 = discardCommentLines(lines2);
+        lines2 = discardCopyrightNotice(lines2);
         if (lines1.size() != lines2.size()) {
             Assert.fail(
                     "files have different number of lines: "
@@ -131,6 +133,14 @@ public class AbstractSymtabTest {
             );
         }
         return true;
+    }
+
+    private static List<String> discardCopyrightNotice(List<String> lines) {
+        return lines
+                .stream()
+                .filter(s -> !s.contains("(c) https://github.com/MontiCore/monticore"))
+                .collect(Collectors.toList());
+
     }
 
     private static List<String> discardEmptyLines(List<String> lines) {

@@ -1,6 +1,7 @@
 # (c) https://github.com/MontiCore/monticore
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#--@formatter:off-->
+# (c) https://github.com/MontiCore/monticore
 
 # Created by Georg Vinogradov on 28.05.19
 

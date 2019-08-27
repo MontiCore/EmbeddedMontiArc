@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.Test;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttToEmamTagSchema;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 public class CMakeGenerationTest extends AbstractSymtabTest {
@@ -21,8 +21,7 @@ public class CMakeGenerationTest extends AbstractSymtabTest {
         
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         
-        // Ros schema is used for now
-        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+        MqttToEmamTagSchema.registerTagTypes(taggingResolver);
         
         // Create component instance and run the generator
         EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.a.compA", EMAComponentInstanceSymbol.KIND).orElse(null);
