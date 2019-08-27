@@ -13,7 +13,7 @@ import static simulation.vehicle.VehicleActuatorType.*;
 /**
  * Class that represents all physical properties of a vehicle and performs physics computations
  */
-public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhysicalVehicle, Chargeable{
+public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhysicalVehicle{
 
     /** Variables for the IPhysicalVehicle interface */
     /** Type of the physical object */
