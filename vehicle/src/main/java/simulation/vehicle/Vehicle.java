@@ -17,6 +17,7 @@ import simulation.environment.WorldModel;
 import simulation.environment.object.ChargingStation;
 import simulation.environment.osm.IntersectionFinder;
 import simulation.environment.util.Chargeable;
+import simulation.environment.util.IBattery;
 import simulation.util.Log;
 import java.awt.*;
 import java.util.*;
@@ -132,7 +133,7 @@ public class Vehicle implements Chargeable {
     private List<Sensor> sensorList;
 
     /** Manage the battery state of the vehicle */
-    private Optional<Battery> battery;
+    private Optional<IBattery> battery;
 
     /** Bus for the controller */
     private Optional<Bus> controllerBus;
@@ -383,14 +384,14 @@ public class Vehicle implements Chargeable {
      * Set battery
      * @param battery
      */
-    public void setBattery(Battery battery) {
+    public void setBattery(IBattery battery) {
         this.battery = Optional.of(battery);
     }
 
     /**
      * @return Battery of the vehicle
      */
-    public Optional<Battery> getBattery() {
+    public Optional<IBattery> getBattery() {
         return battery;
     }
 
@@ -838,9 +839,9 @@ public class Vehicle implements Chargeable {
             // check vehicle type,
             //      set consumption calculation based on the vehicle type
             if (physicalVehicle instanceof MassPointPhysicalVehicle)
-                battery.get().setConsumptionMethod(Battery.consumptionMethod.CONSUMPTION_MASS_VELOCITY);
+                battery.get().setConsumptionMethod(IBattery.ConsumptionMethod.CONSUMPTION_MASS_VELOCITY);
             else
-                battery.get().setConsumptionMethod(Battery.consumptionMethod.CONSUMPTION_THROTTLE_GEAR);
+                battery.get().setConsumptionMethod(IBattery.ConsumptionMethod.CONSUMPTION_THROTTLE_GEAR);
             
             try {
                 battery.get().discharge();

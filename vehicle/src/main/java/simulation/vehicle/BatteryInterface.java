@@ -23,7 +23,7 @@ package simulation.vehicle;
 
 public interface BatteryInterface {
 	
-	public void setConsumptionMethod(Battery.consumptionMethod method);
+	//public void setConsumptionMethod(Battery.consumptionMethod method);
 	
 	public double charge();
 	

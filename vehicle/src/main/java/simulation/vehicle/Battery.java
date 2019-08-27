@@ -33,11 +33,7 @@ public class Battery implements BatteryInterface, IBattery{
 	private static final double defaultAmpere = 1.0;
 	
 	private double local_deltaT;
-	
-	public enum consumptionMethod {
-		CONSUMPTION_MASS_VELOCITY,
-		CONSUMPTION_THROTTLE_GEAR,
-	}
+
 	private consumptionMethod preferredConsumptionMethod;
 	
 	private double oldKineticEnergy;
