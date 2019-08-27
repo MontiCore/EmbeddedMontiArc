@@ -6,10 +6,7 @@ import de.monticore.lang.monticar.generator.middleware.cli.DistributedTargetGene
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.ArrayUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -130,6 +127,7 @@ public class CliTest {
         }
     }
 
+    @Ignore
     @Test
     public void testSingleEMADLGenerator() {
         String targetDir = "target/cliTest/SingleEmadlTest/";
@@ -150,6 +148,7 @@ public class CliTest {
         }
     }
 
+    @Ignore
     @Test
     public void testEMADLAndRosGenerator(){
         String targetDir = "target/cliTest/EmadlRosTest/";
@@ -169,6 +168,7 @@ public class CliTest {
         }
     }
 
+    @Ignore
     @Test
     public void testEMADLConfigFile(){
         String targetDir = "target/cliTest/emadlConfigFile/";

@@ -285,6 +285,7 @@ public class GenerationTest extends AbstractSymtabTest {
         middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
+    @Ignore
     @Test
     public void testEMADLMiddlewareGeneration() throws IOException, TemplateException {
         TaggingResolver taggingResolver = EMADLAbstractSymtab.createSymTabAndTaggingResolver(TEST_PATH);
