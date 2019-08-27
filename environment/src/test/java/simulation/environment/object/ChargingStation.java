@@ -201,11 +201,11 @@ public class ChargingStation implements SimulationLoopExecutable {
 		return this.ampere;
 	}
 	
-	public double setVoltage(double voltage){
+	public void setVoltage(double voltage){
 		this.voltage = voltage;
 	}
 	
-	public double setAmpere(double ampere){
+	public void setAmpere(double ampere){
 		this.ampere = ampere;
 	}
 
