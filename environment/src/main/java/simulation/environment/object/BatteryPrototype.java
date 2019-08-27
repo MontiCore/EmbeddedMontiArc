@@ -36,7 +36,8 @@ public class BatteryPrototype implements SimulationLoopExecutable, Battery{
 
     @java.lang.Override
     public int getStateinPercentage() {
-        return 0;
+        //return percentage;
+        return 100;
     }
 
     @java.lang.Override

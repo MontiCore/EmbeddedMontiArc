@@ -43,6 +43,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 		Optional<Battery> getBattery();
 //		boolean isFullyCharged();
 		boolean isParkedChargingStation(ChargingStation station);
+        void onRechargeReady();
 	}
 
 	private ChargeableVehicle vehicle;
@@ -118,7 +119,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 
 		// Here can added more in case the chargingStation process ends
 		// ...
-
+        vehicle.onRechargeReady();
 		chargingStation.stopCharging(vehicle);
 		return chargeCar;
 	}
