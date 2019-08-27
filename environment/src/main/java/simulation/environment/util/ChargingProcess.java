@@ -79,7 +79,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 			if (timeDiffMs > 1000 * 2) {
 				// Loop of the Charging Process every 2 Seconds
 
-				if(this.battery.isFullyCharged()){
+				if(this.battery.get().isFullyCharged()){
 				    stopProcess();
 					return;
 				}
@@ -93,7 +93,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 				// ==== TODO ====
 				// Update Battery battery charge like this.battery.updateCharging();
 				// ...
-				this.battery.recharge();
+				this.battery.get().recharge();
 
 				// Update Charging Station consumtion
 				this.chargingStation.setConsumption(this.chargingStation.getConsumption() + consumtionOfThisLoop);
