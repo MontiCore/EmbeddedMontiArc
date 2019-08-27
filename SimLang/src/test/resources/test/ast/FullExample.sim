@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 sim FullExample {
   sim_render_frequency 60ms;
   sim_loop_frequency (60m:1m:80m);

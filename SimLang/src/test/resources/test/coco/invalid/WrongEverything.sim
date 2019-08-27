@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 sim WrongEverything {
   sim_render_frequency 60km;
   sim_render_frequency 60;

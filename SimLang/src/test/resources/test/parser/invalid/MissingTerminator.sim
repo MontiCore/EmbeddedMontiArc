@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 sim MissingTerminator {
   sim_render_frequency 60ms
   map_name HorsterDreieck.osm;

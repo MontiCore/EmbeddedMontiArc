@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2015 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.montisim.simlang.cocos;
 
 import de.monticore.lang.montisim.weather._ast.ASTWeatherScope;
