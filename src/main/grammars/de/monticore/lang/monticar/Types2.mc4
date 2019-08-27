@@ -26,10 +26,8 @@ grammar Types2 extends de.monticore.types.Types, de.monticore.NumberUnit, de.mon
   Dimension =
       "^" ("{" matrixDim:(Expression || ",")+ "}" | vecDim:Expression);
 
-  // changed, as "Z (0m : 10km)" makes no sense, is it (0m : 1m : 10m) or (0m : 1km : 10km)?
-  // Q can only be used stand-alone, as Q := (-oo : oo), same with Z := (-oo : 1 : oo)
   ElementType implements Type, TypeArgument =
-      Name | Range;
+      Name Range? | Range;
 
   // added missing expressions
   BooleanExpression implements Expression<50> = BooleanLiteral;
