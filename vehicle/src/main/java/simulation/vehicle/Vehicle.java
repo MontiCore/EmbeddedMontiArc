@@ -832,8 +832,8 @@ public class Vehicle implements Chargeable {
                 //      here, for demonstration purposes, we set them to some dummy values
                 battery.get().setVoltageChargingStation(ChargingStationVoltage);
                 battery.get().setAmpereChargingStation(ChargingStationAmpere);
-                
-                battery.get().charge();
+                // leave charging initiation to ChargingStation, not to the Vehicle
+                //battery.get().charge();
             }
             
             // check vehicle type,
