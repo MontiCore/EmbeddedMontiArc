@@ -95,16 +95,13 @@ public class ChargingProcess implements SimulationLoopExecutable {
 		}
 	}
 
-//	public boolean batterieFullCharged(Battery b) {
-//		// ==== TODO ====
-//		// Add method Battery.fullCharged()
-//		if (b.fullCharged()){
-//		    return true;
-//		}
-//		return false;
-//	}
-
 	public void startProcess() {
+	    
+		// Battery Charging Protocol
+	    this.battery.get().setVoltageChargingStation(this.chargingStation.getVoltage());
+		this.battery.get().setAmpereChargingStation(this.chargingStation.getAmpere());
+		this.battery.get().connectToChargingStation();
+		
 		this.chargeCar = true;
 	}
 
@@ -112,9 +109,9 @@ public class ChargingProcess implements SimulationLoopExecutable {
 		this.chargeCar = false;
 
 		// Here can added more in case the chargingStation process ends
-		// ...
-        vehicle.onRechargeReady();
-		chargingStation.stopCharging(vehicle);
+		this.battery.get().disconnectFromChargingStation();
+        this.vehicle.onRechargeReady();
+		this.chargingStation.stopCharging(vehicle);
 		return chargeCar;
 	}
 

@@ -47,6 +47,11 @@ public class ChargingStation implements SimulationLoopExecutable {
      * Electrical consumption
      */
     private double consumption = 0;
+	/**
+	 * Voltage and Ampere of the ChargingStation
+	 */
+    private double voltage = 100;
+	private double ampere = 1;
 
     /**
      * Number of cars which can be charged at the same time, default = 1
@@ -187,6 +192,22 @@ public class ChargingStation implements SimulationLoopExecutable {
     public double getConsumption() {
         return consumption;
     }
+	
+	public double getVoltage(){
+		return this.voltage;
+	}
+	
+	public double getAmpere(){
+		return this.ampere;
+	}
+	
+	public double setVoltage(double voltage){
+		this.voltage = voltage;
+	}
+	
+	public double setAmpere(double ampere){
+		this.ampere = ampere;
+	}
 
     public void setConsumption(double consumption) {
         if (consumption < 0) {
@@ -196,7 +217,6 @@ public class ChargingStation implements SimulationLoopExecutable {
             this.consumption = consumption;
         }
     }
-
 
     /**
      * Function that requests the called object to update its state for given time
