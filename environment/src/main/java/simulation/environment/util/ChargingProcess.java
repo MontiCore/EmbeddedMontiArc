@@ -87,6 +87,9 @@ public class ChargingProcess implements SimulationLoopExecutable {
 				// ...
 				
 				double consumtionOfThisLoop = this.battery.get().recharge();
+				// Increased consumption through transaction
+				double IncreaseConsumptionPercent = 5;
+				consumtionOfThisLoop = (5 * consumtionOfThisLoop / 100) + consumtionOfThisLoop;
 
 				// Update Charging Station consumtion
 				this.chargingStation.setConsumption(this.chargingStation.getConsumption() + consumtionOfThisLoop);
