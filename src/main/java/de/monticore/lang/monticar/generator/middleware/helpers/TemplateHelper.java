@@ -19,7 +19,7 @@ public class TemplateHelper {
         String resourceFileName = "/de/monticore/lang/monticar/generator/middleware/templates/" + fileName;
 
         try {
-            tmpStr = IOUtils.toString(TemplateHelper.class.getResourceAsStream(resourceFileName));
+            tmpStr = IOUtils.toString(TemplateHelper.class.getResourceAsStream(resourceFileName)).replaceAll("<#--[^>]*-->", "");
         } catch (Exception e) {
             //Not recoverable
             Log.error("Template file not found: " + resourceFileName);
