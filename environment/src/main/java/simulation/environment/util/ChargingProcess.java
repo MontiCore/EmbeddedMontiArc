@@ -79,14 +79,14 @@ public class ChargingProcess implements SimulationLoopExecutable {
 
 
 				// ==== TODO ====
-				double consumtionOfThisLoop = 0;
 				// Needs to be calculated with values of the battery battery like the maxLoadingSpeed
 				// ...
 
 				// ==== TODO ====
 				// Update Battery battery charge like this.battery.updateCharging();
 				// ...
-				this.battery.get().recharge();
+				
+				double consumtionOfThisLoop = this.battery.get().recharge();
 
 				// Update Charging Station consumtion
 				this.chargingStation.setConsumption(this.chargingStation.getConsumption() + consumtionOfThisLoop);

@@ -31,8 +31,10 @@ public class BatteryPrototype implements SimulationLoopExecutable, Battery{
         }
     }
 
-    public void recharge (){
+    public double recharge (){
+		consumption = 0;
         percentage = percentage + 20;
+		return consumption;
     }
 
     @java.lang.Override

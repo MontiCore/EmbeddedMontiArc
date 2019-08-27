@@ -23,7 +23,5 @@ package simulation.environment.object;
 public interface Battery {
     boolean isFullyCharged();
     int getStateinPercentage();
-    void recharge();
-
-//    float consumption();
+    double recharge();
 }
