@@ -8,6 +8,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
@@ -26,6 +27,7 @@ import de.monticore.lang.monticar.streamunits._visitor.StreamUnitsVisitor;
 import de.monticore.literals.literals._ast.ASTBooleanLiteral;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.types.references.TypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -124,7 +126,7 @@ public final class TestsGeneratorCPP {
                 "add_custom_target(run_<name>_StreamTests ALL\n" +
                 "                  COMMAND <name>_StreamTests\n" +
                 "                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})";
-        cmake.addCMakeCommandEnd(executeTestTplt.replace("<name>",compName));
+        cmake.addCMakeCommandEnd(executeTestTplt.replace("<name>", compName));
     }
 
     private String getExistingComponentNames() {
@@ -230,37 +232,44 @@ public final class TestsGeneratorCPP {
     }
 
     private static List<ComponentCheckViewModel> getComponentPortChecks(EMAComponentSymbol cs, ComponentStreamUnitsSymbol stream) {
-        Map<EMAPortSymbol, ASTStream> port2NamedStream = getPort2NamedStream(cs, stream);
+        List<PortStreamTuple> port2NamedStream = getPort2NamedStream(cs, stream);
         int streamLength = getStreamLengths(port2NamedStream, stream);
         List<ComponentCheckViewModel> result = new ArrayList<>();
         for (int i = 0; i < streamLength; i++) {
             ComponentCheckViewModel vm = new ComponentCheckViewModel();
             vm.setInputPortName2Value(new HashMap<>());
             vm.setOutputPortName2Check(new HashMap<>());
-            for (Map.Entry<EMAPortSymbol, ASTStream> kv : port2NamedStream.entrySet()) {
-                ASTStreamInstruction nextInstruction = kv.getValue().getStreamInstructionList().get(i);
-                processInstruction(vm, nextInstruction, kv.getKey());
+            for (PortStreamTuple tuple : port2NamedStream) {
+                ASTStreamInstruction nextInstruction = tuple.getNamedStreamUnits().getStream().getStreamInstructionList().get(i);
+                processInstruction(vm, nextInstruction, tuple);
             }
             result.add(vm);
         }
         return result;
     }
 
-    private static Map<EMAPortSymbol, ASTStream> getPort2NamedStream(EMAComponentSymbol cs, ComponentStreamUnitsSymbol stream) {
-        Map<EMAPortSymbol, ASTStream> port2NamedStream = new HashMap<>();
+    private static List<PortStreamTuple> getPort2NamedStream(EMAComponentSymbol cs, ComponentStreamUnitsSymbol stream) {
+        List<PortStreamTuple> port2NamedStream = new ArrayList<>();
         for (EMAPortSymbol port : cs.getPortsList()) {
-            NamedStreamUnitsSymbol namedStreamForPort = stream.getNamedStream(port.getName()).orElse(null);
-            if (namedStreamForPort != null && namedStreamForPort.getAstNode().isPresent()) {
-                ASTNamedStreamUnits node = (ASTNamedStreamUnits) namedStreamForPort.getAstNode().get();
-                port2NamedStream.put(port, node.getStream());
+
+
+//            NamedStreamUnitsSymbol namedStreamForPort = stream.getNamedStream(port.getName()).orElse(null);
+            List<NamedStreamUnitsSymbol> namedStreamForPortList = stream.getNamedStreams();
+            for (NamedStreamUnitsSymbol namedStreamForPort : namedStreamForPortList) {
+                boolean matchingName = (namedStreamForPort.getName().startsWith(port.getName() + ".") || namedStreamForPort.getName().equals(port.getName()));
+                if (matchingName && namedStreamForPort.getAstNode().isPresent()) {
+                    ASTNamedStreamUnits node = (ASTNamedStreamUnits) namedStreamForPort.getAstNode().get();
+                    port2NamedStream.add(new PortStreamTuple(port, node));
+                }
             }
         }
         return port2NamedStream;
     }
 
-    private static int getStreamLengths(Map<EMAPortSymbol, ASTStream> port2NamedStream, ComponentStreamUnitsSymbol stream) {
+    private static int getStreamLengths(List<PortStreamTuple> port2NamedStream, ComponentStreamUnitsSymbol stream) {
         int streamLength = -1;
-        for (ASTStream ns : port2NamedStream.values()) {
+        for (PortStreamTuple tuple : port2NamedStream) {
+            ASTStream ns = tuple.getNamedStreamUnits().getStream();
             int l = ns.getStreamInstructionList().size();
             if (streamLength == -1) {
                 streamLength = l;
@@ -278,10 +287,17 @@ public final class TestsGeneratorCPP {
         return streamLength;
     }
 
-    private static void processInstruction(ComponentCheckViewModel vm, ASTStreamInstruction nextInstruction, EMAPortSymbol port) {
+    private static void processInstruction(ComponentCheckViewModel vm, ASTStreamInstruction nextInstruction, PortStreamTuple portStreamTuple) {
+        EMAPortSymbol port = portStreamTuple.getPort();
         if (nextInstruction.getStreamValueOpt().isPresent()) {
             ASTStreamValue sv = nextInstruction.getStreamValueOpt().get();
-            String portName = port.getName();
+            String portName;
+            ASTNamedStreamUnits namedStreamUnits = portStreamTuple.getNamedStreamUnits();
+            if(namedStreamUnits.isEmptyFieldQualifiers()){
+                portName = port.getName();
+            }else{
+                portName = port.getName() + "." + String.join(".", namedStreamUnits.getFieldQualifierList());
+            }
             if (port.isIncoming()) {
                 processIncomingPort(vm, sv, portName);
             } else {
@@ -427,7 +443,7 @@ public final class TestsGeneratorCPP {
                     builder.append("NOT HANDLED VALUEPAIROPT!!!");
                 }
                 Log.debug("Result: " + builder.toString(), "TestGeneratorCPP");
-                result = RangeOutputPortCheck.from(builder.toString(), builder.toString(),true);
+                result = RangeOutputPortCheck.from(builder.toString(), builder.toString(), true);
             }
             handled = true;
         }
@@ -523,5 +539,24 @@ public final class TestsGeneratorCPP {
             result = Double.toString(unitNumber.getNumber().get().doubleValue());
         }
 
+    }
+
+    private static class PortStreamTuple {
+        private EMAPortSymbol port;
+        private ASTNamedStreamUnits namedStreamUnits;
+
+
+        public PortStreamTuple(EMAPortSymbol port, ASTNamedStreamUnits namedStreamUnits) {
+            this.port = port;
+            this.namedStreamUnits = namedStreamUnits;
+        }
+
+        public EMAPortSymbol getPort() {
+            return port;
+        }
+
+        public ASTNamedStreamUnits getNamedStreamUnits() {
+            return namedStreamUnits;
+        }
     }
 }
