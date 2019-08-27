@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.mqtt;
 
 import static org.junit.Assert.assertNotNull;

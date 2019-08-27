@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.mqtt.template;
 
 import freemarker.template.Configuration;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include "Callback.hpp"
 
 Callback::Callback(mqtt::client& cli, tests_a_compA* comp) : mqtt::callback(), cli_(cli)

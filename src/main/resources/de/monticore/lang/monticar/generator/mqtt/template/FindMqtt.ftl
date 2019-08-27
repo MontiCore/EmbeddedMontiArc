@@ -1,3 +1,5 @@
+# (c) https://github.com/MontiCore/monticore
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#--@formatter:off-->
 # (c) https://github.com/MontiCore/monticore
 
