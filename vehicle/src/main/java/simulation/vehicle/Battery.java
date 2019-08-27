@@ -182,8 +182,8 @@ public class Battery implements BatteryInterface{
 	 * for testing charging process 
 	 * 		DO NOT USE this method for release
 	 */
-	public void charge(double VoltageInput, double AmpereInput) {
-		this.dummyBattery.charge(VoltageInput, AmpereInput, local_deltaT);		
+	public double charge(double VoltageInput, double AmpereInput) {
+		return this.dummyBattery.charge(VoltageInput, AmpereInput, local_deltaT);		
 	}
 	
 	/*
@@ -195,8 +195,8 @@ public class Battery implements BatteryInterface{
 	 * 			and to false when the car has left the proximity of the ChargingStation itself
 	 * 		
 	 */
-	public void charge() {
-		this.dummyBattery.charge(VoltageChargingStation, AmpereChargingStation, local_deltaT);
+	public double charge() {
+		return this.dummyBattery.charge(VoltageChargingStation, AmpereChargingStation, local_deltaT);
 	}
 	
 	public double getBatteryPercentage() {

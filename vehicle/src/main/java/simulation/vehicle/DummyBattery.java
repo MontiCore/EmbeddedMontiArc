@@ -41,7 +41,7 @@ public class DummyBattery {
 		return (getCapacityCurrent() / getCapacityMax()) * 100;
 	}
 	
-	public void charge(double VoltageInput, double AmpereInput, double deltaT) {
+	public double charge(double VoltageInput, double AmpereInput, double deltaT) {
 		// V = voltage
 		// I = current through the circuit
 		// R = resistance
@@ -50,6 +50,8 @@ public class DummyBattery {
 		capacityCurrent += power;
 		if (capacityCurrent > capacityMax)
 			capacityCurrent = capacityMax;
+			
+		return power;
 	}
 	
 	public void discharge(double VoltageInput, double AmpereInput, double deltaT) {

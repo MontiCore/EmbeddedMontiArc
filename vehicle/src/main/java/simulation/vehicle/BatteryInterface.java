@@ -25,7 +25,7 @@ public interface BatteryInterface {
 	
 	public void setConsumptionMethod(Battery.consumptionMethod method);
 	
-	public void charge();
+	public double charge();
 	
 	public double timeToCharge(double aimedPercentage);
 	
@@ -36,7 +36,7 @@ public interface BatteryInterface {
 	public double getCurrentCapacity();
 	
 	// for testing:
-	public void charge(double VoltageInput, double AmpereInput);
+	public double charge(double VoltageInput, double AmpereInput);
 	
 	public double timeToCharge(double aimedPercentage, double VoltageInput, double AmpereInput);
 }
