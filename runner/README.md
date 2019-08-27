@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # System test
 
 This module contains a simple test to validate the behavior of the simulation.

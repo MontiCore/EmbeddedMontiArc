@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 model InputFilter
   //Types for all Models
   type Mass=Real(unit="kg");

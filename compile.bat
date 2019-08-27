@@ -1,22 +1,11 @@
 @REM
 @REM
-@REM ******************************************************************************
-@REM  MontiCAR Modeling Family, www.se-rwth.de
-@REM  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
-@REM  All rights reserved.
+@REM /* (c) https://github.com/MontiCore/monticore */
 @REM
-@REM  This project is free software; you can redistribute it and/or
-@REM  modify it under the terms of the GNU Lesser General Public
-@REM  License as published by the Free Software Foundation; either
-@REM  version 3.0 of the License, or (at your option) any later version.
-@REM  This library is distributed in the hope that it will be useful,
-@REM  but WITHOUT ANY WARRANTY; without even the implied warranty of
-@REM  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-@REM  Lesser General Public License for more details.
+@REM The license generally applicable for this project
+@REM can be found under https://github.com/MontiCore/monticore.
 @REM
-@REM  You should have received a copy of the GNU Lesser General Public
-@REM  License along with this project. If not, see <http://www.gnu.org/licenses/>.
-@REM *******************************************************************************
-@REM
+
+@rem (c) https://github.com/MontiCore/monticore  
 
 mvn clean install -DskipTests -s settings.xml

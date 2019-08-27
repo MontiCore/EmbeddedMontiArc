@@ -18,6 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+/* (c) https://github.com/MontiCore/monticore */
 package simulation.util;
 
 /**

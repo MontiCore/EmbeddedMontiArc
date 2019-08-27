@@ -1,23 +1,4 @@
-/**
- *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 package simulation.vehicle;
 
 import commons.controller.commons.BusEntry;
@@ -33,11 +14,9 @@ import de.topobyte.osm4j.core.model.iface.OsmNode;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.WorldModel;
-import simulation.environment.object.Battery;
 import simulation.environment.object.ChargingStation;
 import simulation.environment.osm.IntersectionFinder;
-import simulation.environment.util.ChargingProcess;
-import simulation.environment.util.ChargingStationNavigator;
+import simulation.environment.util.Chargeable;
 import simulation.util.Log;
 import java.awt.*;
 import java.util.*;
@@ -48,7 +27,7 @@ import static simulation.vehicle.VehicleActuatorType.*;
 /**
  * Simulation objects for a generic vehicle.
  */
-public class Vehicle implements ChargingProcess.ChargeableVehicle {
+public class Vehicle implements Chargeable {
 
     /** Default average values for vehicle constructor */
     /** Minimum acceleration that can be made by the motor */
@@ -216,6 +195,7 @@ public class Vehicle implements ChargingProcess.ChargeableVehicle {
     /** Flag whether the vehicle is initialised */
     private boolean vehicleInitialised;
 
+    Boolean batteryProblem = false;
 
     /**
      * Constructor for a vehicle that is standing at its position
@@ -834,6 +814,44 @@ public class Vehicle implements ChargingProcess.ChargeableVehicle {
         if (!controllerBus.isPresent() || !controller.isPresent()) {
             return;
         }
+
+        batteryProblem = false;
+        
+        if (battery != null) {
+            
+            // check if connection to ChargingStation is established
+            if ( battery.get().getChargingStationConnectionStatus() == true ) {
+                
+                // dummy placeholders for ChargingStation specifications
+                double ChargingStationVoltage = 100;
+                double ChargingStationAmpere = 1;
+                
+                // depending on the ChargingStation implementation, 
+                // they also can invoke this function themselves
+                //      here, for demonstration purposes, we set them to some dummy values
+                battery.get().setVoltageChargingStation(ChargingStationVoltage);
+                battery.get().setAmpereChargingStation(ChargingStationAmpere);
+                
+                battery.get().charge();
+            }
+            
+            // check vehicle type,
+            //      set consumption calculation based on the vehicle type
+            if (physicalVehicle instanceof MassPointPhysicalVehicle)
+                battery.get().setConsumptionMethod(Battery.consumptionMethod.CONSUMPTION_MASS_VELOCITY);
+            else
+                battery.get().setConsumptionMethod(Battery.consumptionMethod.CONSUMPTION_THROTTLE_GEAR);
+            
+            try {
+                battery.get().discharge();
+            }
+            catch (IllegalArgumentException e) {
+                // this flag would cause motor/throttle to be updated to zero,
+                //      exactly at the end of this function
+                batteryProblem = true;
+            }   
+        }
+
         // Send vehicle data to controller
         if (!constantBusDataSent) {
             controllerBus.get().setData(CONSTANT_NUMBER_OF_GEARS.toString(), 1);
@@ -945,12 +963,22 @@ public class Vehicle implements ChargingProcess.ChargeableVehicle {
      * Check Battery state and move to the next Chargingstation if needed
      */
     private void checkBattery() {
-        if(isElectricVehicle() && !gotoCharginstation &&battery.get().getStateinPercentage()<=20){
+        if(isElectricVehicle() && !gotoCharginstation && battery.get().getBatteryPercentage()<=20){
             gotoCharginstation = true;
             // Todo: Get OSM Node from the Current Position
             //ChargingStationNavigator.getNearestChargingStation();
             //TODO: Change OSMID to IControllerNode
             //navigateTo();
+        // battery discharging failed, cannot accelerate the vehicle
+        //      set either motor OR throttle to zero, based on type of the car
+        if (batteryProblem == true) {
+            if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+                motor.setActuatorValueTarget(0.0);
+
+            } else {
+                throttle.setActuatorValueTarget(0.0);
+            }
+            }
         }
     }
 

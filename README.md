@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Simulation
 ![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/badges/master/build.svg)
 ![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/badges/master/coverage.svg)

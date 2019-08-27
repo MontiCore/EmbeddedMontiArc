@@ -23,8 +23,8 @@ package simulation.environment.object;
 import commons.simulation.SimulationLoopExecutable;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.environment.util.Chargeable;
 import simulation.environment.util.ChargingProcess;
-import simulation.util.Log;
 
 import java.util.*;
 
@@ -52,8 +52,8 @@ public class ChargingStation implements SimulationLoopExecutable {
      * Number of cars which can be charged at the same time, default = 1
      */
     private int capacity = 1;
-    private ArrayList<ChargingProcess.ChargeableVehicle> carObjects = new ArrayList<>();
-    private HashMap<ChargingProcess.ChargeableVehicle, ChargingProcess> chargingProcessesMap = new HashMap<>();
+    private ArrayList<Chargeable> carObjects = new ArrayList<>();
+    private HashMap<Chargeable, ChargingProcess> chargingProcessesMap = new HashMap<>();
 
     /**
      * Location of the Charging Station
@@ -102,7 +102,7 @@ public class ChargingStation implements SimulationLoopExecutable {
      * @param vehicle current vehicle
      * @return false if it is already in use or not near by
      */
-    public boolean startCharging(ChargingProcess.Chargeable vehicle) throws Exception {
+    public boolean startCharging(Chargeable vehicle) throws Exception {
 
         if (carStandingAtTheCS(vehicle) && (!isOccupied())) {
             carObjects.add(vehicle);
@@ -122,7 +122,7 @@ public class ChargingStation implements SimulationLoopExecutable {
      *
      * @return false if not in use or vehicle not found
      */
-    public boolean stopCharging(ChargingProcess.Chargeable vehicle) {
+    public boolean stopCharging(Chargeable vehicle) {
         if (carObjects.remove(vehicle)) {
             chargingProcessesMap.remove(vehicle);
             return true;
@@ -137,7 +137,7 @@ public class ChargingStation implements SimulationLoopExecutable {
         return false;
     }
 
-    public boolean carStandingAtTheCS(ChargingProcess.Chargeable vehicle) {
+    public boolean carStandingAtTheCS(Chargeable vehicle) {
         // Is the Car not moving and near the CS
         return vehicle.isParkedChargingStation(this);
     }
@@ -190,7 +190,7 @@ public class ChargingStation implements SimulationLoopExecutable {
 
     public void setConsumption(double consumption) {
         if (consumption < 0) {
-            Log.warning("Consumption < 0 is not possible! Fallback to zero.");
+            simulation.util.Log.warning("Consumption < 0 is not possible! Fallback to zero.");
             this.consumption = 0;
         } else {
             this.consumption = consumption;

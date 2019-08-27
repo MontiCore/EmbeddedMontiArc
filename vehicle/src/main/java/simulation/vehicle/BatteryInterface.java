@@ -1,3 +1,5 @@
+package simulation.vehicle;
+
 /**
  *
  * ******************************************************************************
@@ -18,10 +20,23 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package simulation.environment.object;
 
-public interface Battery {
-    boolean isFullyCharged();
-    int getStateinPercentage();
-    double recharge();
+public interface BatteryInterface {
+	
+	public void setConsumptionMethod(Battery.consumptionMethod method);
+	
+	public void charge();
+	
+	public double timeToCharge(double aimedPercentage);
+	
+	public void discharge();
+	
+	public double getBatteryPercentage();
+	
+	public double getCurrentCapacity();
+	
+	// for testing:
+	public void charge(double VoltageInput, double AmpereInput);
+	
+	public double timeToCharge(double aimedPercentage, double VoltageInput, double AmpereInput);
 }
