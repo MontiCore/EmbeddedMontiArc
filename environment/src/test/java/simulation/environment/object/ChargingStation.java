@@ -36,7 +36,7 @@ import java.util.*;
  * @version 1.0
  * @since 2019-05-22
  */
-public class ChargingStationTest implements SimulationLoopExecutable {
+public class ChargingStation implements SimulationLoopExecutable {
 
     /**
      * Name of the Charging Station
