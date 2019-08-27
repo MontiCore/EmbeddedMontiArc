@@ -48,7 +48,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 
 	private ChargeableVehicle vehicle;
 	private ChargingStation chargingStation;
-	private Battery battery;
+	private Optional<Battery> battery;
 	private long chargingTimeMillis;
 
 	// if true the chargingStation process is running
@@ -64,7 +64,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
         	String msg =  "Vehicle is not electric vehicle, it can't be charged at charging station";
 			throw new Exception(msg);
 		}
-		this.battery = vehicle.getBattery().get();
+		this.battery = Optional.of(vehicle.getBattery().get());
 	}
 
 	@Override
