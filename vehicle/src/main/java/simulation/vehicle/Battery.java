@@ -64,7 +64,7 @@ public class Battery implements BatteryInterface, IBattery{
 		dummyBattery = new DummyBattery(bCapacity);
 		dummyBattery.setPercentage(initialBatteryPercentage);
 		
-		this.preferredConsumptionMethod = consumptionMethod.CONSUMPTION_THROTTLE_GEAR;
+		this.preferredConsumptionMethod = ConsumptionMethod.CONSUMPTION_THROTTLE_GEAR;
 		
 		setThrottle (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE));
 		setGear     (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR));
@@ -73,7 +73,7 @@ public class Battery implements BatteryInterface, IBattery{
 		
 		ChargingStationConnectionStatus = false;
 		setVoltageChargingStation(0);
-		setAmpereChargingStation(0);		
+		setAmpereChargingStation(0);	
 	}
 	
 	public void setConsumptionMethod(ConsumptionMethod method) {
