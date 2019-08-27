@@ -102,7 +102,7 @@ public class ChargingStation implements SimulationLoopExecutable {
      * @param vehicle current vehicle
      * @return false if it is already in use or not near by
      */
-    public boolean startCharging(ChargingProcess.ChargeableVehicle vehicle) throws Exception {
+    public boolean startCharging(ChargingProcess.Chargeable vehicle) throws Exception {
 
         if (carStandingAtTheCS(vehicle) && (!isOccupied())) {
             carObjects.add(vehicle);
@@ -122,7 +122,7 @@ public class ChargingStation implements SimulationLoopExecutable {
      *
      * @return false if not in use or vehicle not found
      */
-    public boolean stopCharging(ChargingProcess.ChargeableVehicle vehicle) {
+    public boolean stopCharging(ChargingProcess.Chargeable vehicle) {
         if (carObjects.remove(vehicle)) {
             chargingProcessesMap.remove(vehicle);
             return true;
@@ -137,7 +137,7 @@ public class ChargingStation implements SimulationLoopExecutable {
         return false;
     }
 
-    public boolean carStandingAtTheCS(ChargingProcess.ChargeableVehicle vehicle) {
+    public boolean carStandingAtTheCS(ChargingProcess.Chargeable vehicle) {
         // Is the Car not moving and near the CS
         return vehicle.isParkedChargingStation(this);
     }
