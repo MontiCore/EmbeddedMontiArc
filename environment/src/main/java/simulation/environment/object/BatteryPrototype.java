@@ -18,7 +18,8 @@ public class BatteryPrototype implements SimulationLoopExecutable, Battery{
 
     public BatteryPrototype() {
         percentage = 100;
-
+        ampere = 2;
+        voltage = 12;
     }
 
     public void executeLoopIteration(long timeDiffMs) {

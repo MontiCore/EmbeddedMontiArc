@@ -23,6 +23,7 @@ package simulation.environment.util;
 import commons.simulation.SimulationLoopExecutable;
 import simulation.environment.object.Battery;
 import simulation.environment.object.ChargingStation;
+import simulation.environment.util.Chargeable;
 
 import java.util.Optional;
 
@@ -38,15 +39,7 @@ import java.util.Optional;
  * @since 2019-05-22
  */
 public class ChargingProcess implements SimulationLoopExecutable {
-	public interface ChargeableVehicle{
-		boolean isElectricVehicle();
-		Optional<Battery> getBattery();
-//		boolean isFullyCharged();
-		boolean isParkedChargingStation(ChargingStation station);
-        void onRechargeReady();
-	}
-
-	private ChargeableVehicle vehicle;
+	private Chargeable vehicle;
 	private ChargingStation chargingStation;
 	private Optional<Battery> battery;
 	private long chargingTimeMillis;
@@ -54,7 +47,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 	// if true the chargingStation process is running
 	private boolean chargeCar = false;
 
-	public ChargingProcess(ChargeableVehicle vehicle, ChargingStation cs) throws Exception {
+	public ChargingProcess(Chargeable vehicle, ChargingStation cs) throws Exception {
 		this.vehicle = vehicle;
 		this.chargingStation = cs;
 		this.battery = vehicle.getBattery();
@@ -124,11 +117,11 @@ public class ChargingProcess implements SimulationLoopExecutable {
 		return chargeCar;
 	}
 
-	public ChargeableVehicle getVehicle() {
+	public Chargeable getVehicle() {
 		return vehicle;
 	}
 
-	public void setVehicle(ChargeableVehicle vehicle) {
+	public void setVehicle(Chargeable vehicle) {
 		this.vehicle = vehicle;
 	}
 
