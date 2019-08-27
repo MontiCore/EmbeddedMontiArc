@@ -22,6 +22,9 @@ package simulation.vehicle;
 
 import commons.controller.commons.BusEntry;
 import commons.simulation.Sensor;
+import sensors.CompassSensor;
+import sensors.abstractsensors.AbstractSensor;
+
 import org.junit.*;
 import simulation.EESimulator.Bridge;
 import simulation.EESimulator.EEComponent;
@@ -37,10 +40,42 @@ import java.time.Instant;
 import java.util.*;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EEVehicleTest {
 
 
+	@Test
+	public void sendConstantBusData() {
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().createPhysicalVehicle();
+        Vehicle vehicle = new Vehicle(physicalVehicle);
+        EEVehicle eeVehicle = vehicle.getEEVehicle();
+        Bus bus = eeVehicle.getBusList().get(0);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+        targetsByMessageId.put(BusEntry.SENSOR_COMPASS, Collections.singletonList(bus));
+        //subscribe to all
+        AbstractSensor sensor1 = new CompassSensor(physicalVehicle, eeVehicle.getEESimulator(), EEVehicle.constantMessages, targetsByMessageId);
+        //subscribe to one
+        List<BusEntry> subscribedMsgs = new ArrayList<BusEntry>();
+        subscribedMsgs.add(EEVehicle.constantMessages.get(4));
+        AbstractSensor sensor2 = new CompassSensor(physicalVehicle, eeVehicle.getEESimulator(), subscribedMsgs, targetsByMessageId);
+        //subscribe to 3
+        subscribedMsgs = new ArrayList<BusEntry>();
+        subscribedMsgs.add(EEVehicle.constantMessages.get(0));
+        subscribedMsgs.add(EEVehicle.constantMessages.get(2));
+        subscribedMsgs.add(EEVehicle.constantMessages.get(5));
+        AbstractSensor sensor3 = new CompassSensor(physicalVehicle, eeVehicle.getEESimulator(), subscribedMsgs, targetsByMessageId);
+
+        eeVehicle.getSensorList().add(sensor1);
+        eeVehicle.getSensorList().add(sensor2);
+        eeVehicle.getSensorList().add(sensor3);
+        
+        eeVehicle.setConstantBusData();
+        
+        EESimulator sim = eeVehicle.getEESimulator();
+        assertEquals(sim.getEventList().size(), EEVehicle.constantMessages.size() - 1 + 2 +3);
+	}
+	
     @Test
     public void testConstructor() throws IOException {
         //set up all needed classes
@@ -101,7 +136,10 @@ public class EEVehicleTest {
 
         System.out.println("Test create EEVehicle by using HashMap");
         //set up EEVehicle
-        EEVehicle eeVehicle = new EEVehicle(simulator, busSystem);
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().createPhysicalVehicle();
+        Vehicle vehicle = new Vehicle(physicalVehicle);
+        //this should not be done since eeVehicle is not registered at vehicle!
+        EEVehicle eeVehicle = new EEVehicle(vehicle, simulator, busSystem);
 
         //tests
         assertEquals(busCompareSet, new HashSet<>(eeVehicle.getBusList()));

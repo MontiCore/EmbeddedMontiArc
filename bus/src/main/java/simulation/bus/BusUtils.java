@@ -23,8 +23,11 @@ package simulation.bus;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
 
@@ -69,6 +72,16 @@ public class BusUtils {
 		}
 		busById.remove(bus.getId());
 		return busById.values();
+	}
+	
+	public static Set<Bus> findConnectedBuses(EEComponent component) {		
+		Set<Bus> connectedBuses = new HashSet<Bus>();
+		for(List<EEComponent> targets : component.getTargetsByMessageId().values()) {
+			for(Bus bus : Iterables.filter(targets, Bus.class)) {
+				connectedBuses.add(bus);
+			}
+		}
+		return connectedBuses;
 	}
 	
 	static Optional<EEComponent> findComponentWithID(Iterable<EEComponent> components, UUID ID) {

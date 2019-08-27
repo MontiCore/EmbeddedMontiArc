@@ -203,7 +203,7 @@ public class Vehicle {
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, bus));
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE, bus));
         
-        return new EEVehicle(eeSimulator, Collections.singletonList(bus), components);
+        return new EEVehicle(this, eeSimulator, Collections.singletonList(bus), components);
     }
     
     public Optional<AbstractSensor> getSensorByType(BusEntry type){
@@ -218,6 +218,10 @@ public class Vehicle {
     
 	public EEVehicle getEEVehicle() {
 		return this.eeVehicle;
+	}
+	
+	public PhysicalVehicle getPhysicalVehicle() {
+		return this.physicalVehicle;
 	}
 	
 	public boolean isInitialized() {

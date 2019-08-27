@@ -48,6 +48,7 @@ import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.*;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
+import simulation.bus.BusUtils;
 import simulation.bus.InstantBus;
 
 import java.io.File;
@@ -60,67 +61,84 @@ import java.util.*;
 
 public class EEVehicle {
 
-    private EESimulator eeSimulator;
+	protected static final List<BusEntry> constantMessages = new ArrayList<BusEntry>() {
+		{
+			add(BusEntry.CONSTANT_NUMBER_OF_GEARS);
+			add(BusEntry.CONSTANT_WHEELBASE);
+			add(BusEntry.CONSTANT_MAXIMUM_TOTAL_VELOCITY);
+			add(BusEntry.CONSTANT_MOTOR_MAX_ACCELERATION);
+			add(BusEntry.CONSTANT_MOTOR_MIN_ACCELERATION);
+			add(BusEntry.CONSTANT_BRAKES_MAX_ACCELERATION);
+			add(BusEntry.CONSTANT_BRAKES_MIN_ACCELERATION);
+			add(BusEntry.CONSTANT_STEERING_MAX_ANGLE);
+			add(BusEntry.CONSTANT_STEERING_MIN_ANGLE);
+			add(BusEntry.CONSTANT_TRAJECTORY_ERROR);
+		}
+	};
 
-    //private AutoPilot autoPilot;
+	private final EESimulator eeSimulator;
 
-    private List<Bus> busList = new LinkedList<>();
+	private final Vehicle vehicle;
 
-    private List<AbstractSensor> sensorList = new LinkedList<>();
+	// private AutoPilot autoPilot;
 
-    private List<VehicleActuator> actuatorList = new LinkedList<>();
+	private List<Bus> busList = new LinkedList<>();
 
-    private List<Bridge> bridgeList = new LinkedList<>();
-    
-    private boolean collision = false;
+	private List<AbstractSensor> sensorList = new LinkedList<>();
 
+	private List<VehicleActuator> actuatorList = new LinkedList<>();
 
-    /*
-    TODO:   - maybe add Autopilot
-     */
+	private List<Bridge> bridgeList = new LinkedList<>();
 
-    /**
-     * Constructor of EEVehicle
-     * @param eeSimulator             simulator of the Vehicle
-     * @param busStructure            JSON file that describes the bus structures
-     */
-    public EEVehicle(EESimulator eeSimulator, File busStructure) {
+	private boolean collision = false;
 
-        //set EESimulator
-        this.eeSimulator = eeSimulator;
+	/*
+	 * TODO: - maybe add Autopilot
+	 */
 
-        //set bus, sensor, actuator and bridge lists
-        List<Pair<EEComponent, UUID>> busSystems = new LinkedList<>();
-        try {
-            busSystems = loadFromFile(busStructure);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	/**
+	 * Constructor of EEVehicle
+	 * 
+	 * @param eeSimulator  simulator of the Vehicle
+	 * @param busStructure JSON file that describes the bus structures
+	 */
+	public EEVehicle(Vehicle vehicle, EESimulator eeSimulator, File busStructure) {
+		this.vehicle = vehicle;
+		// set EESimulator
+		this.eeSimulator = eeSimulator;
 
-        for (Pair<EEComponent, UUID> pair : busSystems) {
-            EEComponent comp = pair.getLeft();
-            switch (comp.getComponentType()) {
-                case BUS:
-                    if (!busList.contains(comp)) {
-                        busList.add((Bus) comp);
-                    }
-                    break;
-                case SENSOR:
-                    if (!sensorList.contains(comp)) {
-                        sensorList.add((AbstractSensor) comp);
-                    }
-                    break;
-                case ACTUATOR:
-                    if (!actuatorList.contains(comp)) {
-                        actuatorList.add((VehicleActuator) comp);
-                    }
-                    break;
-                case BRIDGE:
-                    if (!bridgeList.contains(comp)) {
-                        bridgeList.add((Bridge) comp);
-                    }
-                    break;
-                case AUTOPILOT:
+		// set bus, sensor, actuator and bridge lists
+		List<Pair<EEComponent, UUID>> busSystems = new LinkedList<>();
+		try {
+			busSystems = loadFromFile(busStructure);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		for (Pair<EEComponent, UUID> pair : busSystems) {
+			EEComponent comp = pair.getLeft();
+			switch (comp.getComponentType()) {
+			case BUS:
+				if (!busList.contains(comp)) {
+					busList.add((Bus) comp);
+				}
+				break;
+			case SENSOR:
+				if (!sensorList.contains(comp)) {
+					sensorList.add((AbstractSensor) comp);
+				}
+				break;
+			case ACTUATOR:
+				if (!actuatorList.contains(comp)) {
+					actuatorList.add((VehicleActuator) comp);
+				}
+				break;
+			case BRIDGE:
+				if (!bridgeList.contains(comp)) {
+					bridgeList.add((Bridge) comp);
+				}
+				break;
+			case AUTOPILOT:
 //                    if (autoPilot == ObjectUtils.Null) {
 //                        break;
 //                    }
@@ -132,10 +150,6 @@ public class EEVehicle {
 		}
 	}
 
-
-	
-
-
 	/**
 	 * Constructor if no JSON file is available
 	 * 
@@ -146,38 +160,38 @@ public class EEVehicle {
 	 *                     one of the lists of connected components of the two
 	 *                     buses.
 	 */
-    public EEVehicle(EESimulator eeSimulator, Map<Bus, List<EEComponent>> busStructure) {
+	public EEVehicle(Vehicle vehicle, EESimulator eeSimulator, Map<Bus, List<EEComponent>> busStructure) {
+		this.vehicle = vehicle;
+		// set EESimulator
+		this.eeSimulator = eeSimulator;
 
-        //set EESimulator
-        this.eeSimulator = eeSimulator;
+		// set bus, sensor, actuator and bridge lists
 
-        //set bus, sensor, actuator and bridge lists
-
-        for (Bus bus : busStructure.keySet()) {
-            busList.add(bus);
-            for (EEComponent comp : busStructure.get(bus)) {
-                switch (comp.getComponentType()) {
-                    case BUS:
-                        if (!busList.contains(comp)) {
-                            busList.add((Bus) comp);
-                        }
-                        break;
-                    case SENSOR:
-                        if (!sensorList.contains(comp)) {
-                            this.addSensor((AbstractSensor) comp);
-                        }
-                        break;
-                    case ACTUATOR:
-                        if (!actuatorList.contains(comp)) {
-                            this.addActuator((VehicleActuator) comp);
-                        }
-                        break;
-                    case BRIDGE:
-                        if (!bridgeList.contains(comp)) {
-                            bridgeList.add((Bridge) comp);
-                        }
-                        break;
-                    case AUTOPILOT:
+		for (Bus bus : busStructure.keySet()) {
+			busList.add(bus);
+			for (EEComponent comp : busStructure.get(bus)) {
+				switch (comp.getComponentType()) {
+				case BUS:
+					if (!busList.contains(comp)) {
+						busList.add((Bus) comp);
+					}
+					break;
+				case SENSOR:
+					if (!sensorList.contains(comp)) {
+						this.addSensor((AbstractSensor) comp);
+					}
+					break;
+				case ACTUATOR:
+					if (!actuatorList.contains(comp)) {
+						this.addActuator((VehicleActuator) comp);
+					}
+					break;
+				case BRIDGE:
+					if (!bridgeList.contains(comp)) {
+						bridgeList.add((Bridge) comp);
+					}
+					break;
+				case AUTOPILOT:
 //                    if (autoPilot == ObjectUtils.Null) {
 //                        break;
 //                    }
@@ -189,15 +203,52 @@ public class EEVehicle {
 			}
 		}
 	}
-    
-    public void executeLoopIteration(Instant time) {
-    	this.notifySensors(time);
-    	this.eeSimulator.simulateNextTick(time);
-    	this.notifyActuator(time);
-    }
+
+	public EEVehicle(Vehicle vehicle,EESimulator eeSimulator, List<Bus> buses, List<EEComponent> components) {
+		this.vehicle = vehicle;
+		this.eeSimulator = eeSimulator;
+		this.busList = new ArrayList<Bus>(buses);
+		Map<UUID, Bus> busById = new HashMap<UUID, Bus>();
+		for (Bus bus : buses) {
+			busById.put(bus.getId(), bus);
+		}
+		for (EEComponent component : components) {
+			switch (component.getComponentType()) {
+			case ACTUATOR:
+				this.actuatorList.add((VehicleActuator) component);
+				break;
+			case SENSOR:
+				this.sensorList.add((AbstractSensor) component);
+			case AUTOPILOT:
+				break;
+			default:
+				throw new IllegalStateException(
+						"Invalid component type. Component type was: " + component.getComponentType());
+			}
+			List<UUID> seenIds = new ArrayList<UUID>();
+			for (List<EEComponent> targets : component.getTargetsByMessageId().values()) {
+				for (EEComponent target : targets) {
+					if (target.getComponentType() == EEComponentType.BUS) {
+						if (!seenIds.contains(target.getId())) {
+							seenIds.add(target.getId());
+							((Bus) target).registerComponent(component);
+						}
+					}
+
+				}
+			}
+		}
+	}
+
+	public void executeLoopIteration(Instant time) {
+		this.notifySensors(time);
+		this.eeSimulator.simulateNextTick(time);
+		this.notifyActuator(time);
+	}
 
 	/**
 	 * function that notifies all sensors to send their actual data to the bus
+	 * 
 	 * @param actualTime actual time of the simulation
 	 */
 	public void notifySensors(Instant actualTime) {
@@ -208,16 +259,16 @@ public class EEVehicle {
 
 	/**
 	 * function that notifies all actuators to update
+	 * 
 	 * @param actualTime time the actuators get to update their value
 	 */
-	//TODO: wert des updates nach update auf den bus schreiben
-	public void notifyActuator(Instant actualTime){
-		if(!this.collision) {
+	// TODO: wert des updates nach update auf den bus schreiben
+	public void notifyActuator(Instant actualTime) {
+		if (!this.collision) {
 			for (VehicleActuator actuator : actuatorList) {
 				actuator.update(actualTime);
 			}
-		}
-		else {
+		} else {
 			for (VehicleActuator actuator : actuatorList) {
 				actuator.reset();
 			}
@@ -225,8 +276,7 @@ public class EEVehicle {
 		}
 	}
 
-
-	public EESimulator getEeSimulator() {
+	public EESimulator getEESimulator() {
 		return eeSimulator;
 	}
 
@@ -254,9 +304,10 @@ public class EEVehicle {
 		}
 		return Optional.empty();
 	}
-	
+
 	/**
 	 * Add sensor to sensor list and register at target buses
+	 * 
 	 * @param sensor to be registered
 	 */
 	private void addSensor(AbstractSensor sensor) {
@@ -271,13 +322,13 @@ public class EEVehicle {
 		this.sensorList.add(sensor);
 	}
 
-	
 	/**
 	 * Add actuator to actuator list and register at target buses
+	 * 
 	 * @param actuator actuator to be registered
 	 */
 	private void addActuator(VehicleActuator actuator) {
-		for(List<EEComponent> targets : actuator.getTargetsByMessageId().values()) {
+		for (List<EEComponent> targets : actuator.getTargetsByMessageId().values()) {
 			for (EEComponent target : targets) {
 				if (target.getComponentType() == EEComponentType.BUS) {
 					Bus bus = (Bus) target;
@@ -311,18 +362,108 @@ public class EEVehicle {
 		fileWriter.flush();
 		fileWriter.close();
 	}
-    
-    public Optional<AbstractSensor> getSensorByType(BusEntry type) {
+
+	public Optional<AbstractSensor> getSensorByType(BusEntry type) {
 		Predicate<EEComponent> IsSensorType = new Predicate<EEComponent>() {
 			public boolean apply(EEComponent comp) {
 				return comp.getTargetsByMessageId().containsKey(type);
 			}
 		};
-    	return Optional.ofNullable(Iterables.find(this.sensorList, IsSensorType, null));
-    }
+		return Optional.ofNullable(Iterables.find(this.sensorList, IsSensorType, null));
+	}
 
-	public void setCollision(boolean collision) {
+	protected void setCollision(boolean collision) {
 		this.collision = collision;
+	}
+
+	protected void setConstantBusData() {
+		List<EEComponent> components = new ArrayList<EEComponent>(
+				this.actuatorList.size() + this.sensorList.size() + 5);
+		components.addAll(actuatorList);
+		components.addAll(sensorList);
+
+		Predicate<EEComponent> containsOne = new Predicate<EEComponent>() {
+			public boolean apply(EEComponent comp) {
+				return comp.getComponentType() == EEComponentType.BRIDGE;
+			}
+		};
+		for (EEComponent component : components) {
+			List<BusEntry> subscribedConstMsgs = this.getSubscribedConstantMessages(component);
+			if (!subscribedConstMsgs.isEmpty()) {
+				Set<Bus> connectedBuses = BusUtils.findConnectedBuses(component);
+				if (connectedBuses.isEmpty()) {
+					throw new IllegalStateException(
+							"Component that requires bus connection not connected to bus. Component was : "
+									+ component);
+				}
+				Bus bus = connectedBuses.iterator().next();
+				this.sendConstMsgs(subscribedConstMsgs, bus, component);
+			}
+		}
+	}
+
+	private void sendConstMsgs(List<BusEntry> constMsgs, Bus bus, EEComponent component) {
+		PhysicalVehicle physicalVehilce = vehicle.getPhysicalVehicle();
+		VehicleActuator brakes = physicalVehilce
+				.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT);
+		VehicleActuator motor = physicalVehilce.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR);
+		// ModelicaPhysicalVehicle
+		if (brakes == null) {
+			brakes = physicalVehilce.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE);
+			motor = physicalVehilce.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE);
+		}
+		VehicleActuator steering = physicalVehilce
+				.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
+		for(BusEntry constMsg : constMsgs) {
+			Object msg;
+			switch (constMsg) {
+			case CONSTANT_BRAKES_MAX_ACCELERATION:
+				msg = brakes.getActuatorValueMax();
+				break;
+			case CONSTANT_BRAKES_MIN_ACCELERATION:
+				msg = brakes.getActuatorValueMin();
+				break;
+			case CONSTANT_MAXIMUM_TOTAL_VELOCITY:
+				msg = Vehicle.VEHICLE_DEFAULT_APPROX_MAX_VELOCITY;
+				break;
+			case CONSTANT_MOTOR_MAX_ACCELERATION:
+				msg = motor.getActuatorValueMax();
+				break;
+			case CONSTANT_MOTOR_MIN_ACCELERATION:
+				msg = motor.getActuatorValueMin();
+				break;
+			case CONSTANT_NUMBER_OF_GEARS:
+				msg = 1;
+				break;
+			case CONSTANT_STEERING_MAX_ANGLE:
+				msg = steering.getActuatorValueMax();
+				break;
+			case CONSTANT_STEERING_MIN_ANGLE:
+				msg = steering.getActuatorValueMin();
+				break;
+			case CONSTANT_TRAJECTORY_ERROR:
+				msg = 0.0;
+				break;
+			case CONSTANT_WHEELBASE:
+				msg = physicalVehilce.getWheelDistToFront() + physicalVehilce.getWheelDistToBack();
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown constant message: " + constMsg);
+			}
+			if(msg != null) {
+				this.eeSimulator.addEvent(new BusMessage(msg, 8, constMsg, this.eeSimulator.getSimulationTime(), bus.getId(), component));
+			}
+		}
+	}
+
+	private List<BusEntry> getSubscribedConstantMessages(EEComponent component) {
+		List<BusEntry> subscribedConstMsgs = new ArrayList<BusEntry>();
+		for (BusEntry messageId : component.getSubscribedMessages()) {
+			if (constantMessages.contains(messageId)) {
+				subscribedConstMsgs.add(messageId);
+			}
+		}
+		return subscribedConstMsgs;
 	}
 
 }
