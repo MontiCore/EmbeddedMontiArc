@@ -187,6 +187,11 @@ public class FlexRay extends Bus {
 		return this.currentTime;
 	}
 
+	@Override
+	public String getBusType() {
+		return "flexRay";
+	}
+
 	/**
 	 * Determines if messagesByControllerId contains no messages
 	 * 

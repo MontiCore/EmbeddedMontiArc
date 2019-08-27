@@ -106,4 +106,7 @@ public class Bridge extends MutableEEComponent{
         	 return this.connected;
          }
 
+         public Duration getDelay() {
+            return delay;
+         }
 }

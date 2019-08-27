@@ -20,6 +20,7 @@
  */
 package simulation.EESimulator;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -46,4 +47,7 @@ public interface EEComponent {
 	 * @return Randomly generated ID of this component
 	 */
 	public UUID getId();
+	
+	
+	public void sendMessage(Object message, int messageLen , BusEntry messageId, Instant eventTime);
 }

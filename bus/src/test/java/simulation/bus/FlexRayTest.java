@@ -281,9 +281,6 @@ public class FlexRayTest {
 
 			}
 
-			for (Method mth : FlexRay.class.getMethods()) {
-				System.out.println(mth.getName());
-			}
 			Method fillDynamicSegment = FlexRay.class.getDeclaredMethod("fillDynamicSegment", Instant.class);
 			fillDynamicSegment.setAccessible(true);
 			for (; curCycle < entry.getKey(); curCycle++) {

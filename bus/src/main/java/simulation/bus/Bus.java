@@ -134,4 +134,6 @@ public abstract class Bus extends MutableEEComponent {
 
 	protected abstract boolean hasMessages();
 
+	public abstract String getBusType();
+
 }
