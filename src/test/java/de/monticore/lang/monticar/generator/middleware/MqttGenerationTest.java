@@ -1,7 +1,8 @@
 package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttToEmamTagSchema;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.MqttGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -20,15 +21,19 @@ public class MqttGenerationTest extends AbstractSymtabTest {
     @Test
     public void testMqttGeneration() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.a.compA", EMAComponentInstanceSymbol.KIND).orElse(null);
-        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+        MqttToEmamTagSchema.registerTagTypes(taggingResolver);
 
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.a.compA", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
+        
+        componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
+        
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath(OUT_BASE + "compA/src");
-        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH),"cpp");
+        distributedTargetGenerator.add(new CPPGenImpl(TEST_PATH),"cpp"); // Cpp implementation for the component
         distributedTargetGenerator.add(new MqttGenImpl(), "mqtt");
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
+
     }
 }
