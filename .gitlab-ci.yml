@@ -35,7 +35,7 @@ DeployJobLinux:
 
 MqttIntegrationJob:
   stage: integration
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2mqtt
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2mqtt:latest
   dependencies:
     - CompileJobLinux
   script:
