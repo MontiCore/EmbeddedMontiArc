@@ -163,7 +163,6 @@ public abstract class CNNArchTemplateController {
             }
         }
         list.removeAll(Collections.singleton(null));
-        System.err.println("555555555_list: " + list);
         return list;
     }
 
