@@ -1,4 +1,4 @@
-component RNNencdec{
+component RNNencdec2{
    ports in Q(0:1)^{30000} source,
         out Q(0:1)^{30000} target[5];
 

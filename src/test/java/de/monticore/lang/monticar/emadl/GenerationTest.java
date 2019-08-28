@@ -196,7 +196,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testRNNencdecForGluon() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "RNNencdec", "-b", "GLUON", "-f", "n", "-c", "n"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "RNNencdec2", "-b", "GLUON", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 0);
     }
