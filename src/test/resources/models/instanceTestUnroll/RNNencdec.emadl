@@ -1,0 +1,25 @@
+package instanceTestUnroll;
+
+component RNNencdec<Z(2:oo) classes = 10>{
+    ports in Z(0:255)^{3, 32, 32} data,
+         out Q(0:1)^{classes} softmax[5];
+
+   implementation CNN{
+
+        data ->
+        Convolution(kernel=(5,5), channels=8, padding="valid") ->
+        Convolution(kernel=(5,5), channels=8, padding="valid") ->
+        FullyConnected(units=128) ->
+        Dropout()->
+        FullyConnected(units=classes) ->
+        softmax[0];
+
+
+       timed <t=0> BeamSearchStart(max_length=4){
+        softmax[t] ->
+        FullyConnected(units=classes) ->
+        Softmax() ->
+        softmax[t+1]
+       };
+       }
+ }

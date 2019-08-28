@@ -46,9 +46,9 @@ class ZScoreNormalization(gluon.HybridBlock):
         super(ZScoreNormalization, self).__init__(**kwargs)
         with self.name_scope():
             self.data_mean = self.params.get('data_mean', shape=data_mean.shape,
-                init=mx.init.Constant(data_mean.asnumpy().tolist()), differentiable=False)
+                                             init=mx.init.Constant(data_mean.asnumpy().tolist()), differentiable=False)
             self.data_std = self.params.get('data_std', shape=data_mean.shape,
-                init=mx.init.Constant(data_std.asnumpy().tolist()), differentiable=False)
+                                            init=mx.init.Constant(data_std.asnumpy().tolist()), differentiable=False)
 
     def hybrid_forward(self, F, x, data_mean, data_std):
         x = F.broadcast_sub(x, data_mean)
@@ -64,9 +64,9 @@ class Padding(gluon.HybridBlock):
 
     def hybrid_forward(self, F, x):
         x = F.pad(data=x,
-            mode='constant',
-            pad_width=self.pad_width,
-            constant_value=0)
+                  mode='constant',
+                  pad_width=self.pad_width,
+                  constant_value=0)
         return x
 
 
@@ -86,14 +86,14 @@ class Net_0(gluon.HybridBlock):
             if data_mean:
                 assert(data_std)
                 self.input_normalization_image_ = ZScoreNormalization(data_mean=data_mean['image_'],
-                                                                               data_std=data_std['image_'])
+                                                                      data_std=data_std['image_'])
             else:
                 self.input_normalization_image_ = NoNormalization()
 
             self.conv1_ = gluon.nn.Conv2D(channels=20,
-                kernel_size=(5,5),
-                strides=(1,1),
-                use_bias=True)
+                                          kernel_size=(5,5),
+                                          strides=(1,1),
+                                          use_bias=True)
             # conv1_, output shape: {[20,24,24]}
 
             self.pool1_ = gluon.nn.MaxPool2D(
@@ -102,9 +102,9 @@ class Net_0(gluon.HybridBlock):
             # pool1_, output shape: {[20,12,12]}
 
             self.conv2_ = gluon.nn.Conv2D(channels=50,
-                kernel_size=(5,5),
-                strides=(1,1),
-                use_bias=True)
+                                          kernel_size=(5,5),
+                                          strides=(1,1),
+                                          use_bias=True)
             # conv2_, output shape: {[50,8,8]}
 
             self.pool2_ = gluon.nn.MaxPool2D(
@@ -112,12 +112,11 @@ class Net_0(gluon.HybridBlock):
                 strides=(2,2))
             # pool2_, output shape: {[50,4,4]}
 
-            self.fc2_flatten = gluon.nn.Flatten()
-            self.fc2_ = gluon.nn.Dense(units=500, use_bias=True)
+            self.fc2_ = gluon.nn.Dense(units=500, use_bias=True, flatten=True)
             # fc2_, output shape: {[500,1,1]}
 
             self.relu2_ = gluon.nn.Activation(activation='relu')
-            self.fc3_ = gluon.nn.Dense(units=10, use_bias=True)
+            self.fc3_ = gluon.nn.Dense(units=10, use_bias=True, flatten=True)
             # fc3_, output shape: {[10,1,1]}
 
             self.softmax3_ = Softmax()
@@ -129,12 +128,12 @@ class Net_0(gluon.HybridBlock):
         pool1_ = self.pool1_(conv1_)
         conv2_ = self.conv2_(pool1_)
         pool2_ = self.pool2_(conv2_)
-        fc2_flatten_ = self.fc2_flatten(pool2_)
-        fc2_ = self.fc2_(fc2_flatten_)
+        fc2_ = self.fc2_(pool2_)
         relu2_ = self.relu2_(fc2_)
         fc3_ = self.fc3_(relu2_)
         softmax3_ = self.softmax3_(fc3_)
         predictions_ = softmax3_
 
         return predictions_
+
 

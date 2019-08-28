@@ -135,6 +135,23 @@ public abstract class IntegrationTest extends AbstractSymtabTest {
         deleteInstanceTestCifarHashFile();
     }
 
+    @Test
+    public void testDontRetrain4() {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/models", "-r", "instanceTestUnroll.MainRNN", "-b", this.backend};
+        EMADLGeneratorCli.main(args);
+        //assertTrue(Log.getFindings().size() == 1);
+        //assertTrue(Log.getFindings().get(0).getMsg().contains("skipped"));
+        final Path instanceTestCifarHasFile
+                = Paths.get("./target/generated-sources-emadl/instanceTestUnroll/RNNencdec.training_hash");
+        try {
+            Files.delete(instanceTestCifarHasFile);
+        }
+        catch(Exception e) {
+            assertFalse("Could not delete hash file", true);
+        }
+    }
+
     private void deleteInstanceTestCifarHashFile() {
         final Path instanceTestCifarHasFile
                 = Paths.get("./target/generated-sources-emadl/instanceTestCifar/CifarNetwork.training_hash");

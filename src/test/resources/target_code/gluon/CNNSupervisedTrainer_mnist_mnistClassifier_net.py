@@ -64,9 +64,9 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
                 min_learning_rate = optimizer_params['learning_rate_minimum']
                 del optimizer_params['learning_rate_minimum']
             optimizer_params['lr_scheduler'] = mx.lr_scheduler.FactorScheduler(
-                                                   optimizer_params['step_size'],
-                                                   factor=optimizer_params['learning_rate_decay'],
-                                                   stop_factor_lr=min_learning_rate)
+                optimizer_params['step_size'],
+                factor=optimizer_params['learning_rate_decay'],
+                stop_factor_lr=min_learning_rate)
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
@@ -140,6 +140,7 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
 
                     predictions_ = self._networks[0](image_)
 
+
                     loss = \
                         loss_function(predictions_, predictions_label)
 
@@ -177,9 +178,12 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
 
                     predictions_ = self._networks[0](image_)
 
+
                 predictions = [
-                    mx.nd.argmax(predictions_, axis=1)
-                ]
+                    mx.nd.argmax(predictions_, axis=1)]
+
+                BeamSearchPredictions = [mx.nd.topk(predictions_, axis=1, k=4)]
+
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
@@ -197,6 +201,7 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
                     predictions_ = mx.nd.zeros((10,), ctx=mx_context)
 
                     predictions_ = self._networks[0](image_)
+
 
                 predictions = [
                     mx.nd.argmax(predictions_, axis=1)
