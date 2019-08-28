@@ -132,7 +132,7 @@ public class ChargingStationNavigator {
         throw new Exception("OsmNode " + osmID + " not found in current map");
     }
 
-    public ChargingStation getNearestCS(){
+    public static ChargingStation getNearestCS(){
         return nearestCS;
     }
 }

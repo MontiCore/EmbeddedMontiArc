@@ -5,9 +5,11 @@ import commons.simulation.SimulationLoopExecutable;
 import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObjectType;
 import commons.simulation.IdGenerator;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.object.ChargingStation;
 import simulation.environment.util.Chargeable;
+import simulation.environment.util.ChargingStationNavigator;
 import simulation.environment.util.IBattery;
 import simulation.util.Log;
 import static simulation.vehicle.VehicleActuatorType.*;
@@ -77,12 +79,8 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         this.simulationVehicle = new Vehicle(this);
         // Create battery if vehicle is electric
         if (isElectricVehicle) {
-<<<<<<< HEAD
 			this.isElectricVehicle = isElectricVehicle;
-            Battery battery = new Battery(simulationVehicle,100,batteryPercentage);
-=======
-            Battery battery = new Battery(simulationVehicle,50000,100);
->>>>>>> 660c002251cf11a166ae48041d22a16deb9ea5b6
+            Battery battery = new Battery(simulationVehicle,3000000,batteryPercentage);
             simulationVehicle.setBattery(battery);
         }
         // When created, the physical vehicle is not initialised
@@ -105,16 +103,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     @Override
     public void setIsCharging(boolean isCharging){
         this.isCharging = isCharging;
-    }
-
-    /**
-     * @return true if it's an EV
-     */
-
-    @Override
-    public boolean isElectricVehicle(){
-
-        return simulationVehicle.isElectricVehicle();
     }
 
     /**
@@ -274,6 +262,14 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         return simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
     }
 
+    private boolean initCharging(ChargingStation station) throws Exception{
+        if(station.startCharging(this)){
+            isCharging = true;
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * Function that requests the called object to update its state for given time difference
@@ -311,6 +307,17 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
 
         simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).update(deltaT);
         this.collision = false;
+
+
+        if (simulationVehicle.getGotoChargingStation() && !isCharging){
+            ChargingStation nearest = ChargingStationNavigator.getNearestCS();
+            if (isParkedChargingStation(nearest) && getVelocity() == new ArrayRealVector(new double[]{0, 0, 0}) ){
+                try {
+                    initCharging(nearest);
+                }catch(Exception e){
+                }
+            }
+        }
 
         Log.finest("PhysicalVehicle: executeLoopIteration - timeDiffMs: " + timeDiffMs +  ", PhysicalVehicle at end: " + this);
     }
