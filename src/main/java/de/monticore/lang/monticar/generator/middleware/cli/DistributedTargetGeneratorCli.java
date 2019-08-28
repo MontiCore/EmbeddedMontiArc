@@ -3,11 +3,13 @@ package de.monticore.lang.monticar.generator.middleware.cli;
 import com.google.gson.Gson;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttToEmamTagSchema;
 import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
 import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
 import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
+import de.monticore.lang.monticar.generator.mqtt.helper.MqttTagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -167,8 +169,8 @@ public final class DistributedTargetGeneratorCli {
         
         if (generators.contains(GENERATOR_MQTT)) {
             generator.add(new MqttGenImpl(), "mqtt");
-            // RosToEmamTagSchema.registerTagTypes(taggingResolver);
-            //TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+            MqttToEmamTagSchema.registerTagTypes(taggingResolver);
+            MqttTagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
         }
 
         if (generators.contains(GENERATOR_RCLCPP) || generators.contains(GENERATOR_ROS2CPP)) {
