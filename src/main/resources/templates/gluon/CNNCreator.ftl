@@ -9,9 +9,11 @@ from CNNNet_${tc.fullArchitectureName} import Net_${stream?index}
 </#list>
 
 <#list tc.architecture.unrolls as unroll>
-<#if unroll.isTrainable()>
-from CNNNet_${tc.fullArchitectureName} import Net_${unroll?index}
+<#list unroll.getBodiesForAllTimesteps() as body>
+<#if body.isTrainable()>
+from CNNNet_${tc.fullArchitectureName} import Net_${tc.architecture.streams?size + body?index}
 </#if>
+</#list>
 </#list>
 
 class ${tc.fileNameWithoutEnding}:
@@ -68,12 +70,14 @@ class ${tc.fileNameWithoutEnding}:
 </#list>
 
 <#list tc.architecture.unrolls as unroll>
-<#if unroll.isTrainable()>
-        self.networks[${unroll?index}] = Net_${unroll?index}(data_mean=data_mean, data_std=data_std)
-        self.networks[${unroll?index}].collect_params().initialize(self.weight_initializer, ctx=context)
-        self.networks[${unroll?index}].hybridize()
-        self.networks[${unroll?index}](<#list tc.getUnrollInputDimensions(unroll) as dimensions>mx.nd.zeros((${tc.join(dimensions, ",")},), ctx=context)<#sep>, </#list>)
+<#list unroll.getBodiesForAllTimesteps() as body>
+<#if body.isTrainable()>
+        self.networks[${tc.architecture.streams?size + body?index}] = Net_${tc.architecture.streams?size + body?index}(data_mean=data_mean, data_std=data_std)
+        self.networks[${tc.architecture.streams?size + body?index}].collect_params().initialize(self.weight_initializer, ctx=context)
+        self.networks[${tc.architecture.streams?size + body?index}].hybridize()
+        self.networks[${tc.architecture.streams?size + body?index}](<#list tc.getStreamInputDimensions(body) as dimensions>mx.nd.zeros((${tc.join(dimensions, ",")},), ctx=context)<#sep>, </#list>)
 </#if>
+</#list>
 </#list>
 
         if not os.path.exists(self._model_dir_):

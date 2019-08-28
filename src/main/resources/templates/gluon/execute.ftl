@@ -1,5 +1,7 @@
 <#list tc.architecture.inputs as input>
+<#if tc.getName(input)??>
     vector<float> ${tc.getName(input)} = CNNTranslator::translate(${input.name}<#if input.arrayAccess.isPresent()>[${input.arrayAccess.get().intValue.get()?c}]</#if>);
+</#if>
 </#list>
 <#list tc.getLayerVariableMembers("1")?keys as member>
     vector<float> ${member}(${tc.join(tc.getLayerVariableMembers("1")[member], " * ")})
@@ -19,11 +21,13 @@ ${tc.include(stream, "CPP_INLINE")}
 </#list>
 
 <#list tc.architecture.unrolls as unroll>
-<#if unroll.isTrainable()>
-    _predictor_${unroll?index}_.predict(${tc.join(tc.getUnrollInputNames(unroll), ", ")}, ${tc.join(tc.getUnrollOutputNames(unroll), ", ")});
+<#list unroll.getBodiesForAllTimesteps() as body>
+<#if body.isTrainable()>
+    _predictor_${tc.architecture.streams?size + body?index}_.predict(${tc.join(tc.getStreamInputNames(body), ", ")}, ${tc.join(tc.getStreamOutputNames(body), ", ")});
 <#else>
-${tc.include(unroll, "CPP_INLINE")}
+${tc.include(unroll, true, "CPP_INLINE")}
 </#if>
+</#list>
 </#list>
 
 <#list tc.architecture.outputs as output>

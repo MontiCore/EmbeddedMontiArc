@@ -95,21 +95,18 @@ ${tc.include(stream, "FORWARD_FUNCTION")}
 </#list>
 
 <#list tc.architecture.unrolls as unroll>
-<#if unroll.isTrainable()>
-class Net_${tc.architecture.streams?size + unroll?index}(gluon.HybridBlock):
+<#list unroll.getBodiesForAllTimesteps() as body>
+<#if body.isTrainable()>
+class Net_${tc.architecture.streams?size + body?index}(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net_${unroll?index}, self).__init__(**kwargs)
+        super(Net_${tc.architecture.streams?size + body?index}, self).__init__(**kwargs)
         self.last_layers = {}
         with self.name_scope():
-${tc.include(unroll, "ARCHITECTURE_DEFINITION")}
+${tc.include(body, false, "ARCHITECTURE_DEFINITION")}
 
-    def hybrid_forward(self, F, ${tc.join(tc.getUnrollInputNames(unroll), ", ")}):
-        outputs = []
-${tc.include(unroll, "FORWARD_FUNCTION")}
-<#if tc.getUnrollOutputNames(unroll)?size gt 1>
-        return tuple(outputs)
-<#else>
-        return outputs[0]
+    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(body), ", ")}):
+${tc.include(body, true, "FORWARD_FUNCTION")}
+        return ${tc.join(tc.getStreamOutputNames(body), ", ")}
 </#if>
-</#if>
+</#list>
 </#list>

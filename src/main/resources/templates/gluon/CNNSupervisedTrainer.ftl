@@ -189,8 +189,9 @@ class ${tc.fileNameWithoutEnding}:
 <#list tc.architectureOutputs as output_name>
                     mx.nd.argmax(${output_name}, axis=1)<#sep>,
 </#list>
+]
 
-                ]
+                <#include "elements/BeamSearchStart.ftl">
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
@@ -223,6 +224,7 @@ class ${tc.fileNameWithoutEnding}:
             test_metric_score = metric.get()[1]
 
             logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))
+
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
                 for i, network in self._networks.items():

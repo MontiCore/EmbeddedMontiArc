@@ -180,8 +180,8 @@ class CNNSupervisedTrainer_Alexnet:
 
 
                 predictions = [
-                    mx.nd.argmax(predictions_, axis=1)
-                ]
+                    mx.nd.argmax(predictions_, axis=1)]
+
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
@@ -209,6 +209,7 @@ class CNNSupervisedTrainer_Alexnet:
             test_metric_score = metric.get()[1]
 
             logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))
+
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
                 for i, network in self._networks.items():
