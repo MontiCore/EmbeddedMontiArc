@@ -53,8 +53,21 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     public ModelicaPhysicalVehicle(){
         super();
+		
+		initModelicaPhysicalVehicle();
+    }
+	
+	/**
+     * Constructor for an uninitialised electrical physical vehicle
+     */
+    public ModelicaPhysicalVehicle(boolean isElectrical){
+        super(isElectrical);
 
-        vehicleDynamicsModel = new VehicleDynamicsModel();
+        initModelicaPhysicalVehicle();
+    }
+	
+	private void initModelicaPhysicalVehicle(){
+		vehicleDynamicsModel = new VehicleDynamicsModel();
 
         // Before initialisation
         // the center of mass position is at the origin
@@ -63,7 +76,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         this.position = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         this.rotation = coordinateRotation.copy();
         this.geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-    }
+	}
 
     /**
      * Function that returns a copy of the center of mass position vector
