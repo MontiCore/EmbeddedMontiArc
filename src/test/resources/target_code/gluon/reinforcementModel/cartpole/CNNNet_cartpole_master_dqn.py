@@ -90,15 +90,15 @@ class Net_0(gluon.HybridBlock):
             else:
                 self.input_normalization_state_ = NoNormalization()
 
-            self.fc1_ = gluon.nn.Dense(units=128, use_bias=True)
+            self.fc1_ = gluon.nn.Dense(units=128, use_bias=True, flatten=True)
             # fc1_, output shape: {[128,1,1]}
 
             self.tanh1_ = gluon.nn.Activation(activation='tanh')
-            self.fc2_ = gluon.nn.Dense(units=256, use_bias=True)
+            self.fc2_ = gluon.nn.Dense(units=256, use_bias=True, flatten=True)
             # fc2_, output shape: {[256,1,1]}
 
             self.tanh2_ = gluon.nn.Activation(activation='tanh')
-            self.fc3_ = gluon.nn.Dense(units=2, use_bias=True)
+            self.fc3_ = gluon.nn.Dense(units=2, use_bias=True, flatten=True)
             # fc3_, output shape: {[2,1,1]}
 
 
