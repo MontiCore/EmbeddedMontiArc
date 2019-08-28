@@ -6,14 +6,18 @@ import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObjectType;
 import commons.simulation.IdGenerator;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.environment.object.ChargingStation;
 import simulation.environment.util.Chargeable;
+import simulation.environment.util.IBattery;
 import simulation.util.Log;
 import static simulation.vehicle.VehicleActuatorType.*;
+import simulation.vehicle.Battery;
+import java.util.Optional;
 
 /**
  * Class that represents all physical properties of a vehicle and performs physics computations
  */
-public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhysicalVehicle{
+public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhysicalVehicle, Chargeable{
 
     /** Variables for the IPhysicalVehicle interface */
     /** Type of the physical object */
@@ -53,6 +57,64 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         this.simulationVehicle = new Vehicle(this);
         // When created, the physical vehicle is not initialised
         physicalVehicleInitialised = false;
+    }
+
+    /**
+     * Constructor for a physical vehicle that can be electric
+     */
+    protected PhysicalVehicle(boolean isElectricVehicle) {
+        // Set physical object type car
+        this.physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR;
+        // Set error flag
+        error = false;
+        // Set collision flag
+        collision = false;
+        // Create default simulation vehicle
+        this.simulationVehicle = new Vehicle(this);
+        // Create battery if vehicle is electric
+        if (isElectricVehicle) {
+            Battery battery = new Battery(simulationVehicle,100,100);
+            simulationVehicle.setBattery(battery);
+        }
+        // When created, the physical vehicle is not initialised
+        physicalVehicleInitialised = false;
+    }
+
+    /**
+     * @return true if it's an EV
+     */
+
+    @Override
+    public boolean isElectricVehicle(){
+
+        return simulationVehicle.isElectricVehicle();
+    }
+
+    /**
+     * @return Battery of the vehicle
+     */
+
+    @Override
+    public Optional<IBattery> getBattery(){
+        return simulationVehicle.getBattery();
+    }
+
+    /**
+     * @return true if vehicle is parked at charging station
+     */
+
+    @Override
+    public boolean isParkedChargingStation(ChargingStation station){
+        return simulationVehicle.isParkedChargingStation(station);
+    }
+
+    /**
+     * Function that allows vehicle to move on after charging
+     */
+
+    @Override
+    public void onRechargeReady(){
+        simulationVehicle.onRechargeReady();
     }
 
     /**
