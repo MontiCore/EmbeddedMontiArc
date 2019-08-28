@@ -1,0 +1,47 @@
+car CMTCar {
+	// basics
+	mass = 1800kg;
+	width = 2.02712567705637776m;
+	length = 4.236423828125m;
+	height = 1.19524474896355328m;
+	wheel_radius = 0.3334m;
+	wheel_dist {
+		front = 1.62025m;
+		back = 1.62025m;
+		to_front = 1.379m;
+		to_back = 1.542m;
+	}
+
+	// actuators
+	actuators {
+		motor = (-1.5:2.0:3.5);
+		brakes {
+			front {
+				left = (0.0:5.0:5.0);
+				right = (0.0:5.0:5.0);
+			}
+			back {
+				left = (0.0:5.0:5.0);
+				right = (0.0:5.0:5.0);
+			}
+		}
+		steering = (-0.785398:0.5:0.785398);
+	}
+
+	// sensors
+	sensors {
+		sensor_velocity;
+		sensor_steering;
+		sensor_gps_coordinates;
+	}
+
+	// other
+	controller = AutopilotAdapter;
+	cpu {
+	    frequency = 3GHz;
+	    memory_frequency = 2GHz;
+	}
+
+	// physicalVehicle
+	physics_model = mass_point;
+}

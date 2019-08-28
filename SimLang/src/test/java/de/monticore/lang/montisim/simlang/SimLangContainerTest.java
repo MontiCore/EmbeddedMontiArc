@@ -7,6 +7,8 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.file.Paths;
+
 public class SimLangContainerTest {
   @Before
   public void setUp() {
@@ -17,7 +19,8 @@ public class SimLangContainerTest {
 
   @Test
   public void testSimLangContainer() {
-    final SimLangContainer adapter = SimLangTool.parseIntoContainer("src/test/resources/test/ast/ASTTest.sim");
+    // final SimLangContainer adapter = SimLangTool.parseIntoContainer("src/test/resources/test/ast/ASTTest.sim");
+    final SimLangContainer adapter = SimLangTool.parseIntoContainer(Paths.get("src/test/resources/test/ast"), "ASTTest");
 
     assert adapter.getSimulationRenderFrequency().isPresent();
     assert adapter.getSimulationRenderFrequency().get().getNUnit().get().getNumberUnit().equals("60.0ms");
