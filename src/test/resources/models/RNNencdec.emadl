@@ -1,17 +1,17 @@
 component RNNencdec{
    ports in Q(0:1)^{30000} source,
-        out Q(0:1)^{30000} target;
+        out Q(0:1)^{30000} target[5];
 
    implementation CNN{
 
+       source -> Softmax() -> target[0];
 
-       timed <t> BeamSearchStart(max_length=50){
+       timed <t=0> BeamSearchStart(max_length=4){
            source ->
            FullyConnected(units=30000) ->
            Softmax() ->
-           target
+           target[t+1]
        };
-
 
        }
  }
