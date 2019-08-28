@@ -104,7 +104,10 @@ public class GeneratorMqtt
 		//Generate files and write to project
 		String content = MqttTemplates.generateMqttFindMqtt(model);
 		
-		File file = new File(generationTargetPath+"FindMQTT.cmake");
+		File directory = new File(generationTargetPath+"modules/");
+		directory.mkdirs();
+		
+		File file = new File(generationTargetPath+"modules/FindMQTT.cmake");
 		
         createFile(file, content);
 		
