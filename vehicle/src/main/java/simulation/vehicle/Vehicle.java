@@ -28,7 +28,7 @@ import static simulation.vehicle.VehicleActuatorType.*;
 /**
  * Simulation objects for a generic vehicle.
  */
-public class Vehicle implements Chargeable {
+public class Vehicle{
 
     /** Default average values for vehicle constructor */
     /** Minimum acceleration that can be made by the motor */
@@ -395,7 +395,7 @@ public class Vehicle implements Chargeable {
         return battery;
     }
 
-    @Override
+
     public boolean isParkedChargingStation(ChargingStation station) {
         if(gotoCharginstation){
             List<Vertex> trajectory = getTrajectory();

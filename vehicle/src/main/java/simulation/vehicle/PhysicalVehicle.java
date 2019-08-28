@@ -42,6 +42,9 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /** Flag whether the vehicle is fully initialised or not */
     protected boolean physicalVehicleInitialised;
 
+    /** IsCharging flag */
+    protected boolean isCharging;
+
 
     /**
      * Constructor for a physical vehicle that is standing at its position
@@ -74,12 +77,34 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         this.simulationVehicle = new Vehicle(this);
         // Create battery if vehicle is electric
         if (isElectricVehicle) {
+<<<<<<< HEAD
 			this.isElectricVehicle = isElectricVehicle;
             Battery battery = new Battery(simulationVehicle,100,batteryPercentage);
+=======
+            Battery battery = new Battery(simulationVehicle,50000,100);
+>>>>>>> 660c002251cf11a166ae48041d22a16deb9ea5b6
             simulationVehicle.setBattery(battery);
         }
         // When created, the physical vehicle is not initialised
         physicalVehicleInitialised = false;
+    }
+
+
+    /**
+     * @return true if vehicle is charging
+     */
+
+    @Override
+    public boolean getIsCharging() {
+        return isCharging;
+    }
+
+    /**
+     * Function to set isCharging flag
+     */
+    @Override
+    public void setIsCharging(boolean isCharging){
+        this.isCharging = isCharging;
     }
 
     /**
