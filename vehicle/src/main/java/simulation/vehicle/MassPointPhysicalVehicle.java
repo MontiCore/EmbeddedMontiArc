@@ -79,7 +79,21 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     public MassPointPhysicalVehicle(){
         super();
-        // Before initialisation
+        
+		initMassPointPhysicalVehicle();
+    }
+	
+	/**
+     * Constructor for an uninitialised electrical physical vehicle
+     */
+    public MassPointPhysicalVehicle(boolean isElectrical){
+        super(isElectrical);
+        
+		initMassPointPhysicalVehicle();
+    }
+	
+	private void initMassPointPhysicalVehicle(){
+		// Before initialisation
         // the center of mass position is at the center of the bottom side of the vehicle
         // no rotation
         this.position = new ArrayRealVector(new double[]{0.0, 0.0, - simulationVehicle.getHeight()/2});
@@ -92,7 +106,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         this.geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight()/2});
 
         targetAngularVelocity = new ArrayRealVector(3);
-    }
+	}
 
     /**
      * Function that returns a copy of the center of mass position vector
