@@ -136,7 +136,7 @@ public abstract class IntegrationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testDontRetrain4() {
+    public void testUnroll() {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/models", "-r", "instanceTestUnroll.MainRNN", "-b", this.backend};
         EMADLGeneratorCli.main(args);

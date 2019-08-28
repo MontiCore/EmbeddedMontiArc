@@ -14,3 +14,4 @@ MultipleStreams src/test/resources/training_data/MultipleStreams
 Invariant src/test/resources/training_data/Invariant
 RNNtest data/RNNtest
 instanceTestUnroll.RNNencdec src/test/resources/training_data/Cifar/data_outArray
+RNNencdec2 data/RNNencdec

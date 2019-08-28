@@ -15,7 +15,6 @@
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-
     <emadl.version>0.2.10-SNAPSHOT</emadl.version>
     <CNNTrain.version>0.3.6-SNAPSHOT</CNNTrain.version>
     <cnnarch-generator.version>0.0.4-SNAPSHOT</cnnarch-generator.version>
@@ -143,7 +142,7 @@
         </dependency>
 
     </dependencies>
-  
+
 
   <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
