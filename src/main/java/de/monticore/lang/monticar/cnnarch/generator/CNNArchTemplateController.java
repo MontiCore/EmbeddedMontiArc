@@ -157,13 +157,20 @@ public abstract class CNNArchTemplateController {
         for (VariableSymbol element : getArchitecture().getInputs()){
             list.add(nameManager.getName(element));
         }
+        for (UnrollSymbol unroll : getArchitecture().getUnrolls()){
+            for (SerialCompositeElementSymbol element: unroll.getBodiesForAllTimesteps()) {
+                list.add(nameManager.getName(element.getFirstAtomicElements().get(0)));
+            }
+        }
+        list.removeAll(Collections.singleton(null));
+        System.err.println("555555555_list: " + list);
         return list;
     }
 
     public List<String> getArchitectureOutputs(){
         List<String> list = new ArrayList<>();
         for (VariableSymbol element : getArchitecture().getOutputs()){
-            if(nameManager.getName(element) != null) {
+            if(nameManager.getName(element) != null && !list.contains(nameManager.getName(element))) {
                 list.add(nameManager.getName(element));
             }
         }
