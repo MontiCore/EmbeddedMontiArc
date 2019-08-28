@@ -11,6 +11,7 @@ import commons.map.ControllerNode;
 import commons.map.IAdjacency;
 import commons.map.IControllerNode;
 import commons.simulation.Sensor;
+import commons.utils.Geometry;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
@@ -974,7 +975,7 @@ public class Vehicle{
             gotoCharginstation = true;
             long nearestcharg = ChargingStationNavigator.getNearestChargingStation(ChargingStationNavigator.RealVectortoOSMID(this.physicalVehicle.getPosition()));
             RealVector point3d = ChargingStationNavigator.getPositionOfOsmNode(nearestcharg);
-            navigateTo(new ControllerNode(null,nearestcharg)); //TODO: create Point3D
+            navigateTo(new ControllerNode(Geometry.realVector2Point3D(point3d),nearestcharg));
             //      battery discharging failed, cannot accelerate the vehicle
             //      set either motor OR throttle to zero, based on type of the car
             if (batteryProblem == true) {
