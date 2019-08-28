@@ -120,7 +120,7 @@ public class ChargingStationNavigator {
         return nearest.getOsmId();
     }
 
-    private static RealVector getPositionOfOsmNode(long osmID) throws Exception {
+    public static RealVector getPositionOfOsmNode(long osmID) throws Exception {
         structures.Graph g = new structures.Graph(
                 WorldModel.getInstance().getControllerMap().getAdjacencies(), true);
         for (Vertex v : g.getVertices()) {
@@ -130,6 +130,17 @@ public class ChargingStationNavigator {
         }
 
         throw new Exception("OsmNode " + osmID + " not found in current map");
+    }
+    public static long RealVectortoOSMID(RealVector realVector) throws Exception {
+        structures.Graph g = new structures.Graph(
+                WorldModel.getInstance().getControllerMap().getAdjacencies(), true);
+        for (Vertex v : g.getVertices()) {
+            if (v.getPosition() == realVector) {
+                return v.getOsmId();
+            }
+        }
+
+        throw new Exception("Realvector " + realVector.toString() + " not found in current map");
     }
 
     public static ChargingStation getNearestCS(){

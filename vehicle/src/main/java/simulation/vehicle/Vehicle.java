@@ -7,6 +7,7 @@ import commons.controller.commons.Surface;
 import commons.controller.commons.Vertex;
 import commons.controller.interfaces.Bus;
 import commons.controller.interfaces.FunctionBlockInterface;
+import commons.map.ControllerNode;
 import commons.map.IAdjacency;
 import commons.map.IControllerNode;
 import commons.simulation.Sensor;
@@ -17,6 +18,7 @@ import simulation.environment.WorldModel;
 import simulation.environment.object.ChargingStation;
 import simulation.environment.osm.IntersectionFinder;
 import simulation.environment.util.Chargeable;
+import simulation.environment.util.ChargingStationNavigator;
 import simulation.environment.util.IBattery;
 import simulation.util.Log;
 import java.awt.*;
@@ -956,29 +958,31 @@ public class Vehicle{
             brakes.setActuatorValueTarget(brakePressure);
         }
 
-        //Check Battery
-        checkBattery();
+        //  Check Battery
+        try {
+            checkBattery();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Check Battery state and move to the next Chargingstation if needed
      */
-    private void checkBattery() {
+    private void checkBattery() throws Exception {
         if(isElectricVehicle() && !gotoCharginstation && battery.get().getBatteryPercentage()<=20){
             gotoCharginstation = true;
-            // Todo: Get OSM Node from the Current Position
-            //ChargingStationNavigator.getNearestChargingStation();
-            //TODO: Change OSMID to IControllerNode
-            //navigateTo();
-        // battery discharging failed, cannot accelerate the vehicle
-        //      set either motor OR throttle to zero, based on type of the car
-        if (batteryProblem == true) {
-            if (physicalVehicle instanceof MassPointPhysicalVehicle) {
-                motor.setActuatorValueTarget(0.0);
-
-            } else {
-                throttle.setActuatorValueTarget(0.0);
-            }
+            long nearestcharg = ChargingStationNavigator.getNearestChargingStation(ChargingStationNavigator.RealVectortoOSMID(this.physicalVehicle.getPosition()));
+            RealVector point3d = ChargingStationNavigator.getPositionOfOsmNode(nearestcharg);
+            navigateTo(new ControllerNode(null,nearestcharg)); //TODO: create Point3D
+            //      battery discharging failed, cannot accelerate the vehicle
+            //      set either motor OR throttle to zero, based on type of the car
+            if (batteryProblem == true) {
+                if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+                    motor.setActuatorValueTarget(0.0);
+                } else {
+                    throttle.setActuatorValueTarget(0.0);
+                }
             }
         }
     }
