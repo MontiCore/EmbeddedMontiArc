@@ -62,8 +62,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     public ModelicaPhysicalVehicle(boolean isElectrical){
         super(isElectrical);
-
-        initModelicaPhysicalVehicle();
+		
+		initModelicaPhysicalVehicle();
     }
 	
 	private void initModelicaPhysicalVehicle(){
