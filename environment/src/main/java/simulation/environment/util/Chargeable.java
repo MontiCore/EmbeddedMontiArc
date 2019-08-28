@@ -24,6 +24,8 @@ import simulation.environment.object.ChargingStation;
 import java.util.Optional;
 
 public interface Chargeable {
+    boolean getIsCharging();
+    void setIsCharging(boolean isCharging);
     boolean isElectricVehicle();
     Optional<IBattery> getBattery();
     //		boolean isFullyCharged();

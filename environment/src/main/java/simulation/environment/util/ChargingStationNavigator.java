@@ -33,6 +33,7 @@ import java.util.Collection;
  *
  */
 public class ChargingStationNavigator {
+
     /**
      * Find nearest charging station
      *
@@ -43,6 +44,9 @@ public class ChargingStationNavigator {
      * other sector by the server.
      * 3. 0 if no charging station can be found.
      */
+
+    static ChargingStation nearestCS = null;
+
     public static long getNearestChargingStation(long from) {
         long result = getNearestChargingStationFromServer(from);
         if (result != 0) {
@@ -109,8 +113,10 @@ public class ChargingStationNavigator {
         }
 
         if (nearest == null) {
+            nearestCS = null;
             return 0;
         }
+        nearestCS = nearest;
         return nearest.getOsmId();
     }
 
@@ -124,5 +130,9 @@ public class ChargingStationNavigator {
         }
 
         throw new Exception("OsmNode " + osmID + " not found in current map");
+    }
+
+    public ChargingStation getNearestCS(){
+        return nearestCS;
     }
 }
