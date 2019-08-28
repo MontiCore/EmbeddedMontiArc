@@ -86,8 +86,8 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 	/**
      * Constructor for an uninitialised electrical physical vehicle
      */
-    public MassPointPhysicalVehicle(boolean isElectrical){
-        super(isElectrical);
+    public MassPointPhysicalVehicle(boolean isElectrical, double batteryPercentage){
+        super(isElectrical, batteryPercentage);
         
 		initMassPointPhysicalVehicle();
     }

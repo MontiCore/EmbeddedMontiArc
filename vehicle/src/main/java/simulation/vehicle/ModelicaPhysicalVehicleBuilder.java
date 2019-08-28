@@ -24,7 +24,7 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      */
     @Override
     public PhysicalVehicle buildPhysicalVehicle(){
-        PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle(true);
+        PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle(true, 100);
 
         if(this.velocity.isPresent()){
             // Get rotation

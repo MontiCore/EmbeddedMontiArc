@@ -63,7 +63,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /**
      * Constructor for a physical vehicle that can be electric
      */
-    protected PhysicalVehicle(boolean isElectricVehicle) {
+    protected PhysicalVehicle(boolean isElectricVehicle, double batteryPercentage){
         // Set physical object type car
         this.physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR;
         // Set error flag
@@ -74,7 +74,8 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         this.simulationVehicle = new Vehicle(this);
         // Create battery if vehicle is electric
         if (isElectricVehicle) {
-            Battery battery = new Battery(simulationVehicle,100,100);
+			this.isElectricVehicle = isElectricVehicle;
+            Battery battery = new Battery(simulationVehicle,100,batteryPercentage);
             simulationVehicle.setBattery(battery);
         }
         // When created, the physical vehicle is not initialised

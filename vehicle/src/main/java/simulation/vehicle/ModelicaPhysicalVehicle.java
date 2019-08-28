@@ -60,8 +60,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 	/**
      * Constructor for an uninitialised electrical physical vehicle
      */
-    public ModelicaPhysicalVehicle(boolean isElectrical){
-        super(isElectrical);
+    public ModelicaPhysicalVehicle(boolean isElectrical, double batteryPercentage){
+        super(isElectrical, batteryPercentage);
 		
 		initModelicaPhysicalVehicle();
     }

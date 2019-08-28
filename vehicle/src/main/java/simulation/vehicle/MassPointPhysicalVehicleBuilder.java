@@ -33,7 +33,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      */
     @Override
     public PhysicalVehicle buildPhysicalVehicle(){
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(true);
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(true, 100);
 
         if(this.velocity.isPresent()){
             // Get rotation
