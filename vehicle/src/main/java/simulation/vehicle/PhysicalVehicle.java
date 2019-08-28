@@ -32,10 +32,11 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /** Unique ID */
     private final long uniqueId = IdGenerator.getSharedInstance().generateUniqueId();
 
-
     /** The vehicle */
     protected final Vehicle simulationVehicle;
 
+	/** Is the physical Vehicle an electrical Vehicle */
+	protected boolean isElectricVehicle = false;
 
     /** Internal flags*/
     /** Flag whether the vehicle is fully initialised or not */
@@ -295,6 +296,14 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     public Vehicle getSimulationVehicle() {
         return simulationVehicle;
     }
+	
+	/**
+     * Checks the Vehicle
+     * @return true if Vehicle is electrical Vehicle
+     */
+	public boolean isElectricVehicle(){
+		return isElectricVehicle;
+	}
 
     /**
      * Function that initialises the physical components and parameters
