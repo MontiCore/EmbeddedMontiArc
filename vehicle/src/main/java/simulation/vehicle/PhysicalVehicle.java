@@ -267,7 +267,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         return simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
     }
 
-    private boolean initCharging(ChargingStation station) throws Exception{
+    private boolean initCharging(ChargingStation station){
         if(station.startCharging(this)){
             isCharging = true;
             return true;
@@ -317,10 +317,9 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         if (simulationVehicle.getGotoChargingStation() && !isCharging){
             ChargingStation nearest = ChargingStationNavigator.getNearestCS();
             if (isParkedChargingStation(nearest) && getVelocity() == new ArrayRealVector(new double[]{0, 0, 0}) ){
-                try {
-                    initCharging(nearest);
-                }catch(Exception e){
-                }
+
+                initCharging(nearest);
+
             }
         }
 

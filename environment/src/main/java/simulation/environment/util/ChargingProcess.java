@@ -45,7 +45,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
 	// if true the chargingStation process is running
 	private boolean chargeCar = false;
 
-	public ChargingProcess(Chargeable vehicle, ChargingStation cs) throws Exception {
+	public ChargingProcess(Chargeable vehicle, ChargingStation cs){
 		this.vehicle = vehicle;
 		this.chargingStation = cs;
 		this.battery = vehicle.getBattery();
