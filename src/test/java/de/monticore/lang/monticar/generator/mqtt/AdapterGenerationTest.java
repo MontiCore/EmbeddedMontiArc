@@ -37,14 +37,14 @@ public class AdapterGenerationTest extends AbstractSymtabTest {
         componentInstanceSymbol.getPortInstance("portB").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
         componentInstanceSymbol.getPortInstance("portC").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
         componentInstanceSymbol.getPortInstance("portD").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
-				componentInstanceSymbol.getPortInstance("portE").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockN"));
-				componentInstanceSymbol.getPortInstance("portF").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockN"));
-				componentInstanceSymbol.getPortInstance("portG").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockZ"));
-				componentInstanceSymbol.getPortInstance("portH").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockZ"));
-				componentInstanceSymbol.getPortInstance("portI").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockB"));
-				componentInstanceSymbol.getPortInstance("portJ").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockB"));
+		componentInstanceSymbol.getPortInstance("portE").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockN"));
+		componentInstanceSymbol.getPortInstance("portF").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockN"));
+		componentInstanceSymbol.getPortInstance("portG").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockZ"));
+		componentInstanceSymbol.getPortInstance("portH").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockZ"));
+		componentInstanceSymbol.getPortInstance("portI").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockB"));
+		componentInstanceSymbol.getPortInstance("portJ").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clockB"));
 
-        List<File> files = generatorMqtt.generateMqttAdapter(componentInstanceSymbol);
+        List<File> files = generatorMqtt.generateMqttAdapter(componentInstanceSymbol);        	
 
         testFilesAreEqual(files, "echoAdapter/");
     }
