@@ -4,5 +4,8 @@
 
 tests_a_compA::tests_a_compA(double value)
 {
-    mqttOut = value;
+    mqttOutQ = value;
+    mqttOutN = (int) value;
+    mqttOutZ = (int) value;
+    mqttOutB = (value >= 1);
 }

@@ -5,7 +5,10 @@
 #include "tests_a_compA.h"
 #include "IAdapter_tests_a_compA.h"
 #include "mqtt/client.h"
-#include "Callback.hpp"
+#include "CallbackQ.hpp"
+#include "CallbackN.hpp"
+#include "CallbackZ.hpp"
+#include "CallbackB.hpp"
 
 using namespace std;
 using namespace mqtt;
@@ -20,7 +23,9 @@ public:
 
     void publish_echo_portC();
     void publish_echo_portD();
-
+    void publish_echo_portF();
+    void publish_echo_portH();
+    void publish_echo_portJ();
 
     void tick();
 
@@ -30,11 +35,20 @@ private:
     tests_a_compA* component = nullptr;
 
     // Callbacks, subscribers
-    Callback* _callback_portA = nullptr;
+          CallbackQ* _callback_portA = nullptr;
     client* _sub_portA = nullptr;
-    Callback* _callback_portB = nullptr;
+          CallbackQ* _callback_portB = nullptr;
     client* _sub_portB = nullptr;
+          CallbackN* _callback_portE = nullptr;
+    client* _sub_portE = nullptr;
+          CallbackZ* _callback_portG = nullptr;
+    client* _sub_portG = nullptr;
+          CallbackB* _callback_portI = nullptr;
+    client* _sub_portI = nullptr;
     // Publishers
     client* _pub_portC = nullptr;
     client* _pub_portD = nullptr;
+    client* _pub_portF = nullptr;
+    client* _pub_portH = nullptr;
+    client* _pub_portJ = nullptr;
 };

@@ -31,10 +31,16 @@ ENDIF()
 
 # Adding library as a target
 add_library(MqttAdapter_tests_a_compA
-Callback.cpp
+CallbackQ.cpp
+CallbackN.cpp
+CallbackZ.cpp
+CallbackB.cpp
 MqttAdapter_tests_a_compA.cpp
 tests_a_compA.cpp
-Callback.hpp
+CallbackQ.hpp
+CallbackN.hpp
+CallbackZ.hpp
+CallbackB.hpp
 MqttAdapter_tests_a_compA.h
 tests_a_compA.h
 )

@@ -11,9 +11,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 # Setting project name and description
 project(tests.a.compA)
 
-set(SEARCH_MQTT FALSE)
-
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/modules")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 
 # Check is environment variable was set
 IF(DEFINED ENV{MQTT_INCLUDE_DIR} AND DEFINED ENV{MQTT_LIBS})
@@ -27,10 +25,16 @@ ENDIF()
 
 # Adding library as a target
 add_library(MqttAdapter_tests_a_compA
-Callback.cpp
+CallbackQ.cpp
+CallbackN.cpp
+CallbackZ.cpp
+CallbackB.cpp
 MqttAdapter_tests_a_compA.cpp
-#tests_a_compA.cpp
-Callback.hpp
+tests_a_compA.cpp
+CallbackQ.hpp
+CallbackN.hpp
+CallbackZ.hpp
+CallbackB.hpp
 MqttAdapter_tests_a_compA.h
 #tests_a_compA.h
 )
@@ -51,10 +55,10 @@ if(SEARCH_MQTT)
 endif()
 
 # Adding include directory to a target
-target_include_directories(MqttAdapter_tests_a_compA PUBLIC ${MQTT_INCLUDE_DIR})
+target_include_directories(MqttAdapter_tests_a_compA PUBLIC ${LIBRARIES} ${MQTT_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Linking libraries to target
-target_link_libraries(MqttAdapter_tests_a_compA PUBLIC ${MQTT_LIBS})
+target_link_libraries(MqttAdapter_tests_a_compA PUBLIC ${LIBRARIES} ${MQTT_LIBS})
 
 # Export target to a cmake module file for outside usage
 export(TARGETS MqttAdapter_tests_a_compA FILE MQTTAdapter_tests_a_compA.cmake)

@@ -1,20 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-#include "Callback.hpp"
+#include "CallbackN.hpp"
 
-Callback::Callback(client& cli, double* port) : callback(), cli_(cli)
+CallbackN::CallbackN(client& cli, int* port) : callback(), cli_(cli)
 {
     port_ = port;
 }
 
 // Callback for when connected to broker
-void Callback::connected(const string& cause)
+void CallbackN::connected(const string& cause)
 {
     cout << "Connected" <<endl;
 }
 
 // Callback for when the connection is lost.
-void Callback::connection_lost(const string& cause)
+void CallbackN::connection_lost(const string& cause)
 {
     cout << "\nConnection lost";
     if (!cause.empty())
@@ -22,10 +22,9 @@ void Callback::connection_lost(const string& cause)
 }
 
 // Callback for when message is received
-void Callback::message_arrived(const_message_ptr msg)
+void CallbackN::message_arrived(const_message_ptr msg)
 {
     cout << "Message received "<< msg->get_topic() << ": " << msg->get_payload_str() << endl;
-    string::size_type sz;
-    double value = std::stod (msg->get_payload_str(),&sz);
+    int value = std::stoi (msg->get_payload_str());
     *port_ = value;
 }
