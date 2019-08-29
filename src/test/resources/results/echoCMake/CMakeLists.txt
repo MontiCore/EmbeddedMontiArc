@@ -13,6 +13,8 @@ project(tests.a.compA)
 
 set(SEARCH_MQTT FALSE)
 
+SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/modules")
+
 # Check is environment variable was set
 IF(DEFINED ENV{MQTT_INCLUDE_DIR} AND DEFINED ENV{MQTT_LIBS})
   message("...MQTT environment variables are set" )
@@ -27,10 +29,10 @@ ENDIF()
 add_library(MqttAdapter_tests_a_compA
 Callback.cpp
 MqttAdapter_tests_a_compA.cpp
-tests_a_compA.cpp
+#tests_a_compA.cpp
 Callback.hpp
 MqttAdapter_tests_a_compA.h
-tests_a_compA.h
+#tests_a_compA.h
 )
 
 list(APPEND LIBRARIES tests_a_compA)

@@ -31,10 +31,10 @@ ENDIF()
 add_library(MqttAdapter_${model.getEscapedCompName()}
 Callback.cpp
 MqttAdapter_${model.getEscapedCompName()}.cpp
-${model.getEscapedCompName()}.cpp
+#${model.getEscapedCompName()}.cpp
 Callback.hpp
 MqttAdapter_${model.getEscapedCompName()}.h
-${model.getEscapedCompName()}.h
+#${model.getEscapedCompName()}.h
 )
 
 list(APPEND LIBRARIES ${model.getEscapedCompName()})
