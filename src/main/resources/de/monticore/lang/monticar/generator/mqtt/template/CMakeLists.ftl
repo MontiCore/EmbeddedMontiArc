@@ -15,6 +15,8 @@ project(${model.getCompName()})
 
 set(SEARCH_MQTT FALSE)
 
+SET(CMAKE_MODULE_PATH "<#noparse>${CMAKE_CURRENT_LIST_DIR}</#noparse>/modules")
+
 # Check is environment variable was set
 IF(DEFINED ENV{MQTT_INCLUDE_DIR} AND DEFINED ENV{MQTT_LIBS})
   message("...MQTT environment variables are set" )
@@ -29,10 +31,10 @@ ENDIF()
 add_library(MqttAdapter_${model.getEscapedCompName()}
 Callback.cpp
 MqttAdapter_${model.getEscapedCompName()}.cpp
-${model.getEscapedCompName()}.cpp
+#${model.getEscapedCompName()}.cpp
 Callback.hpp
 MqttAdapter_${model.getEscapedCompName()}.h
-${model.getEscapedCompName()}.h
+#${model.getEscapedCompName()}.h
 )
 
 list(APPEND LIBRARIES ${model.getEscapedCompName()})
