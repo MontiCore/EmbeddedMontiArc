@@ -14,6 +14,7 @@ import simulation.environment.util.IBattery;
 import simulation.util.Log;
 import static simulation.vehicle.VehicleActuatorType.*;
 import simulation.vehicle.Battery;
+import simulation.vehicle.VehicleType;
 import java.util.Optional;
 
 /**
@@ -37,19 +38,15 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /** The vehicle */
     protected final Vehicle simulationVehicle;
 
-	/** Is the physical Vehicle an electrical Vehicle */
-	protected boolean isElectricVehicle = false;
-
     /** Internal flags*/
     /** Flag whether the vehicle is fully initialised or not */
     protected boolean physicalVehicleInitialised;
 
-    /** IsCharging flag */
-    protected boolean isCharging;
-
+    /** PowerType of the Vehicle */
+    protected VehicleType vehicleType = VehicleType.NONE;
 
     /**
-     * Constructor for a physical vehicle that is standing at its position
+     * Constructor for a none powered physical vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
      */
     protected PhysicalVehicle() {
@@ -66,9 +63,9 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     }
 
     /**
-     * Constructor for a physical vehicle that can be electric
+     * Constructor for a physical vehicle with a Vehicle Type
      */
-    protected PhysicalVehicle(boolean isElectricVehicle, double batteryPercentage){
+    protected PhysicalVehicle(VehicleType vehicleType, double fuellPercentage){
         // Set physical object type car
         this.physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR;
         // Set error flag
@@ -77,23 +74,35 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         collision = false;
         // Create default simulation vehicle
         this.simulationVehicle = new Vehicle(this);
+
+        // Electrical Vehicle
         // Create battery if vehicle is electric
-        if (isElectricVehicle) {
-			this.isElectricVehicle = isElectricVehicle;
-            Battery battery = new Battery(simulationVehicle,3000000,batteryPercentage);
+        if (vehicleType == VehicleType.ELECTRICAL) {
+			this.vehicleType = vehicleType;
+            Battery battery = new Battery(simulationVehicle, 3000000, fuellPercentage);
             simulationVehicle.setBattery(battery);
         }
+
+        // Other Vehicle like Fuell or Gas Vehicle
+        // ...
+
         // When created, the physical vehicle is not initialised
         physicalVehicleInitialised = false;
     }
 
+    /**
+     * @return VehicleType the type of the Vehicle
+     */
+    @Override
+    public VehicleType getVehicleType(){
+        return this.vehicleType;
+    }
 
     /**
      * @return true if vehicle is charging
      */
-
     @Override
-    public boolean getIsCharging() {
+    public boolean isCharging() {
         return isCharging;
     }
 
@@ -101,14 +110,13 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      * Function to set isCharging flag
      */
     @Override
-    public void setIsCharging(boolean isCharging){
+    public void isCharging(boolean isCharging){
         this.isCharging = isCharging;
     }
 
     /**
      * @return Battery of the vehicle
      */
-
     @Override
     public Optional<IBattery> getBattery(){
         return simulationVehicle.getBattery();
@@ -117,7 +125,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /**
      * @return true if vehicle is parked at charging station
      */
-
     @Override
     public boolean isParkedChargingStation(ChargingStation station){
         return simulationVehicle.isParkedChargingStation(station);
@@ -126,7 +133,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /**
      * Function that allows vehicle to move on after charging
      */
-
     @Override
     public void onRechargeReady(){
         simulationVehicle.onRechargeReady();
@@ -136,7 +142,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      * Function that returns the width of the object
      * @return Width of the object
      */
-
     @Override
     public double getWidth(){
         return simulationVehicle.getWidth();
