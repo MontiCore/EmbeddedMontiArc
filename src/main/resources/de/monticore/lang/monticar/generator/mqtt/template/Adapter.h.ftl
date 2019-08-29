@@ -32,7 +32,20 @@ private:
 
     // Callbacks, subscribers
     <#list model.getIncomingPorts() as sub>
-    Callback* _callback_${sub.getName()} = nullptr;
+      <#switch  sub.getTypeReference().getName()>
+        <#case "Q">
+          CallbackQ* _callback_${sub.getName()} = nullptr;
+        <#break>
+        <#case "N">
+          CallbackN* _callback_${sub.getName()} = nullptr;
+        <#break>
+        <#case "Z">
+          CallbackZ* _callback_${sub.getName()} = nullptr;
+        <#break>
+        <#case "B">
+          CallbackB* _callback_${sub.getName()} = nullptr;
+        <#break>
+      </#switch>
     client* _sub_${sub.getName()} = nullptr;
     </#list>
     // Publishers

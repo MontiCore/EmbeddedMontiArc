@@ -9,5 +9,8 @@
 
 <#macro mwDefaultIncludes>
 #include "mqtt/client.h"
-#include "Callback.hpp"
+#include "CallbackQ.hpp"
+#include "CallbackN.hpp"
+#include "CallbackZ.hpp"
+#include "CallbackB.hpp"
 </#macro>

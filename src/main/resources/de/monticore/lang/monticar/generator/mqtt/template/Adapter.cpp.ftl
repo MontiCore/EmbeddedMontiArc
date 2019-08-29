@@ -21,8 +21,26 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscaped
 
     // Intitialize callbacks, subscribers and publishers
     <#list model.getIncomingPorts() as sub>
-    _sub_${sub.getName()} = new client(SERVER_ADDRESS, "${sub.getName()}");
-    _callback_${sub.getName()} = new Callback(*_sub_${sub.getName()}, &(component->${sub.getName()}));
+      <#switch sub.getTypeReference().getName()>
+        <#case "Q">
+          _sub_${sub.getName()} = new client(SERVER_ADDRESS, "${sub.getName()}");
+          _callback_${sub.getName()} = new CallbackQ(*_sub_${sub.getName()}, &(component->${sub.getName()}));
+        <#break>
+        <#case "N">
+          _sub_${sub.getName()} = new client(SERVER_ADDRESS, "${sub.getName()}");
+          _callback_${sub.getName()} = new CallbackN(*_sub_${sub.getName()}, &(component->${sub.getName()}));
+        <#break>
+        <#case "Z">
+          _sub_${sub.getName()} = new client(SERVER_ADDRESS, "${sub.getName()}");
+          _callback_${sub.getName()} = new CallbackZ(*_sub_${sub.getName()}, &(component->${sub.getName()}));
+        <#break>
+        <#case "B">
+          _sub_${sub.getName()} = new client(SERVER_ADDRESS, "${sub.getName()}");
+          _callback_${sub.getName()} = new CallbackB(*_sub_${sub.getName()}, &(component->${sub.getName()}));
+        <#break>
+        <#default>
+          cerr << "Not a valid input port type" << endl;
+      </#switch>
     </#list>
 
 	<#list model.getOutgoingPorts() as pub>
@@ -49,7 +67,22 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscaped
 <#list model.getOutgoingPorts() as pub>
 void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publish_echo_${pub.getName()}()
 {
-	string value = to_string(component->${pub.getName()});
+  <#switch pub.getTypeReference().getName()>
+    <#case "Q">
+      string value = to_string(component->${pub.getName()});
+    <#break>
+    <#case "N">
+      string value = to_string(component->${pub.getName()});
+    <#break>
+    <#case "Z">
+      string value = to_string(component->${pub.getName()});
+    <#break>
+    <#case "B">
+      string value = to_string(component->${pub.getName()} ? 1.0 : 0.0);
+    <#break>
+    <#default>
+      cerr << "Not a valid output port type" << endl;
+  </#switch>
 	auto pubmsg = make_message("${model.getTopic(pub)}", value);
 
 	try {

@@ -27,10 +27,16 @@ ENDIF()
 
 # Adding library as a target
 add_library(MqttAdapter_${model.getEscapedCompName()}
-Callback.cpp
+CallbackQ.cpp
+CallbackN.cpp
+CallbackZ.cpp
+CallbackB.cpp
 MqttAdapter_${model.getEscapedCompName()}.cpp
 ${model.getEscapedCompName()}.cpp
-Callback.hpp
+CallbackQ.hpp
+CallbackN.hpp
+CallbackZ.hpp
+CallbackB.hpp
 MqttAdapter_${model.getEscapedCompName()}.h
 ${model.getEscapedCompName()}.h
 )

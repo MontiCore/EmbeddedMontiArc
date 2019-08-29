@@ -9,11 +9,17 @@
 using namespace std;
 
 class tests_a_compA {
-    
+
 public:
     tests_a_compA(double value);
-    double mqttIn = 0;
-    double mqttOut = 0;
+    double mqttInQ = 0;
+    double mqttOutQ = 0;
+    int mqttInN = 0;
+    int mqttOutN = 0;
+    int mqttInZ = 0;
+    int mqttOutZ = 0;
+    bool mqttInB = false;
+    bool mqttOutB = false;
 };
 
 #endif /* tests_a_compA_h */

@@ -1,19 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
-#include "Callback.hpp"
+#include "CallbackQ.hpp"
 
-Callback::Callback(mqtt::client& cli, tests_a_compA* comp) : mqtt::callback(), cli_(cli)
+CallbackQ::CallbackQ(mqtt::client& cli, double* port) : mqtt::callback(), cli_(cli)
 {
-    comp_ = comp;
+    port_ = port;
 }
 
 // Callback for when connected to broker
-void Callback::connected(const std::string& cause)
+void CallbackQ::connected(const std::string& cause)
 {
-    cout << "Connected" <<endl; 
+    cout << "Connected" <<endl;
 }
 
 // Callback for when the connection is lost.
-void Callback::connection_lost(const std::string& cause)
+void CallbackQ::connection_lost(const std::string& cause)
 {
     cout << "\nConnection lost";
     if (!cause.empty())
@@ -21,13 +21,10 @@ void Callback::connection_lost(const std::string& cause)
 }
 
 // Callback for when message is received
-void Callback::message_arrived(mqtt::const_message_ptr msg)
+void CallbackQ::message_arrived(mqtt::const_message_ptr msg)
 {
     cout << "Message received "<< msg->get_topic() << ": " << msg->get_payload_str() << endl;
     std::string::size_type sz;
     double value = std::stod (msg->get_payload_str(),&sz);
-    comp_->mqttIn = value;
+    *port_ = value;
 }
-
-
-
