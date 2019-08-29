@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#--@formatter:off-->
+/* (c) https://github.com/MontiCore/monticore */
 <#if model.getMw() == "ROS2">
     <#import "Ros2Macros.ftl" as m>
 <#elseif model.getMw() == "ROS">
