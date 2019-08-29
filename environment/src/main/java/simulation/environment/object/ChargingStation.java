@@ -25,7 +25,6 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.util.Chargeable;
 import simulation.environment.util.ChargingProcess;
-import simulation.vehicle.VehicleType;
 
 import java.util.*;
 
@@ -109,7 +108,7 @@ public class ChargingStation implements SimulationLoopExecutable {
      * @return false if it is already in use or not near by
      */
     public boolean startCharging(Chargeable vehicle) {
-        if (vehicle.getVehicleType() != VehicleType.ELECTRICAL){
+        if (!vehicle.isChargeable()){
             return false;
         }
 

@@ -45,6 +45,9 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /** PowerType of the Vehicle */
     protected VehicleType vehicleType = VehicleType.NONE;
 
+    /** Is the Vehicle Chargeable */
+    protected boolean isChargeable = false;
+
     /**
      * Constructor for a none powered physical vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
@@ -66,6 +69,8 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      * Constructor for a physical vehicle with a Vehicle Type
      */
     protected PhysicalVehicle(VehicleType vehicleType, double fuellPercentage){
+        // Set the type of the Vehicle
+        this.vehicleType = vehicleType;
         // Set physical object type car
         this.physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR;
         // Set error flag
@@ -78,7 +83,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         // Electrical Vehicle
         // Create battery if vehicle is electric
         if (vehicleType == VehicleType.ELECTRICAL) {
-			this.vehicleType = vehicleType;
+            this.isChargeable = true;
             Battery battery = new Battery(simulationVehicle, 3000000, fuellPercentage);
             simulationVehicle.setBattery(battery);
         }
@@ -96,6 +101,14 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     @Override
     public VehicleType getVehicleType(){
         return this.vehicleType;
+    }
+
+    /**
+     * @return true if vehicle is chargeable
+     */
+    @Override
+    public boolean isChargeable() {
+        return isChargeable;
     }
 
     /**

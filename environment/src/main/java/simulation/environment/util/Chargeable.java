@@ -26,6 +26,7 @@ import java.util.Optional;
 public interface Chargeable {
     boolean isCharging();
     void setCharging(boolean isCharging);
+    boolean isChargeable();
     VehicleType getVehicleType();
     Optional<IBattery> getBattery();
     //		boolean isFullyCharged();
