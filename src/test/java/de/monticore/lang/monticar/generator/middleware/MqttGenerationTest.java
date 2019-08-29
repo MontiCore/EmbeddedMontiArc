@@ -1,10 +1,10 @@
 package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttToEmamTagSchema;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.MqttGenImpl;
+import de.monticore.lang.monticar.generator.mqtt.helper.MqttTagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
@@ -23,11 +23,10 @@ public class MqttGenerationTest extends AbstractSymtabTest {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         MqttToEmamTagSchema.registerTagTypes(taggingResolver);
 
-        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.a.compA", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.mqtt.testComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         
-        componentInstanceSymbol.getPortInstance("portA").orElse(null).setMiddlewareSymbol(new MqttConnectionSymbol("/clock"));
-        
+        MqttTagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath(OUT_BASE + "compA/src");

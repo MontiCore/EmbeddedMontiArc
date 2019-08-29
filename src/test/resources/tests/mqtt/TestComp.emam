@@ -1,0 +1,8 @@
+package tests.mqtt;
+
+component TestComp{
+    ports in Q in1,
+          in Q in2,
+          out Q out1;
+          
+}
