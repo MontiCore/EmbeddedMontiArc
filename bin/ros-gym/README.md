@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # ROS Communicator for Gym Environemnts
 
 The RosGym environment creates a ROS interface for the OpenAI environments. Given an environment string, which can be found on the [OpenAI Gym webpage](\url{https://gym.openai.com}), we can interact with the environment via ROS. The application sends all states via the topic */gym/state*. The terminal information of a state is published via the topic */gym/terminal*. All rewards are sent via the topic */gym/reward*. A new game can be started by sending a boolean value via */gym/reset*. An agent can provide an action to the environment by using the */gym/step* topic. We can launch the RosGym environment with the CLI.
