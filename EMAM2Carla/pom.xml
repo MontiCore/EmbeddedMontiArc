@@ -32,7 +32,7 @@
 	  <runStreamTestBefore>true</runStreamTestBefore>
           <pathTmpOut>EMAM2Carla/target/tmp</pathTmpOut>
           <generator>MinGW</generator>
-          <pathMiddlewareOut>Carla2EMAM/target/middleware</pathMiddlewareOut>
+          <pathMiddlewareOut>EMAM2Carla/target/middleware</pathMiddlewareOut>
           <middlewareRootModels>
               <param>test.bumpBot</param>
           </middlewareRootModels>
@@ -52,6 +52,13 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-roscpp-generator</artifactId>
+            <version>0.1.5-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>
