@@ -1,6 +1,8 @@
 #!/bin/bash
 # (c) https://github.com/MontiCore/monticore  
 
+. config.sh
+
 if [ ! -d logs ]
 then
     mkdir logs
