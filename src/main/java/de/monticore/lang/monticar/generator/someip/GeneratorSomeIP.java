@@ -20,6 +20,10 @@ public class GeneratorSomeIP {
 
 	public void setGenerationTargetPath(String generationTargetPath) {
         this.generationTargetPath = generationTargetPath.endsWith("/") ? generationTargetPath : generationTargetPath + "/";
+
+		File directory = new File(generationTargetPath);
+		directory.mkdirs();
+
     }
 
 
