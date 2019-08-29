@@ -132,7 +132,7 @@ public class GeneratorRosCpp {
 
         List<FileContent> result = new ArrayList<>();
         result.add(new FileContent("CMakeLists.txt", RosCppTemplates.generateRosCMakeLists(model)));
-        result.add(new FileContent(name + ".cpp","#include \"" + name + ".h\""));
+        result.add(new FileContent(name + ".cpp","/* (c) https://github.com/MontiCore/monticore */\n#include \"" + name + ".h\""));
         return result;
     }
 
