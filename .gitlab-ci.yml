@@ -23,7 +23,7 @@ BranchJobProject:
 
 BranchJobAdapter:
   stage: adapter
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2mqtt:latestt
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2mqtt:latest
   script:
     - cd mqtt_adapter
     - cmake .
