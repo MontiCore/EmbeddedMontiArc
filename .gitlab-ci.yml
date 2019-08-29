@@ -7,5 +7,7 @@ TestBuildAndTrain:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/emadl-rl-mxnet:latest
   script:
+    - chmod +x install.sh
+    - chmod +x run_training.sh
     - ./install.sh
     - ./run_training.sh
