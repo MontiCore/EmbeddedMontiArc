@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.middleware.cli;
 import com.google.gson.Gson;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.someip.SomeIPToEmamTagSchema;
 import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
 import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
@@ -13,6 +14,7 @@ import de.monticore.lang.monticar.generator.middleware.impls.SomeIPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
+import de.monticore.lang.monticar.generator.someip.helper.SomeIPTagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -182,6 +184,8 @@ public final class DistributedTargetGeneratorCli {
 
         if (generators.contains(GENERATOR_SOMEIP)) {
             generator.add(new SomeIPGenImpl(), "someip");
+            SomeIPToEmamTagSchema.registerTagTypes(taggingResolver);
+            SomeIPTagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
         }
 
         if (cliParameters.getClusteringParameters().isPresent()) {
