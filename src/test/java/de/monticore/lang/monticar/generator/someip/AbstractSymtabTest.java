@@ -107,8 +107,10 @@ public class AbstractSymtabTest {
         }
         lines1 = discardEmptyLines(lines1);
         lines1 = discardCommentLines(lines1);
+        lines1 = discardCopyrightNotice(lines1);
         lines2 = discardEmptyLines(lines2);
         lines2 = discardCommentLines(lines2);
+        lines2 = discardCopyrightNotice(lines2);
         if (lines1.size() != lines2.size()) {
             Assert.fail(
                     "files have different number of lines: "
@@ -131,6 +133,12 @@ public class AbstractSymtabTest {
             );
         }
         return true;
+    }
+
+    private static List<String> discardCopyrightNotice(List<String> lines) {
+        return lines.stream()
+                .filter(l -> !l.contains("(c) https://github.com/MontiCore/monticore"))
+                .collect(Collectors.toList());
     }
 
     private static List<String> discardEmptyLines(List<String> lines) {
