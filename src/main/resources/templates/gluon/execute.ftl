@@ -6,7 +6,8 @@
 <#list tc.getLayerVariableMembers("1")?keys as member>
     vector<float> ${member}(${tc.join(tc.getLayerVariableMembers("1")[member], " * ")})
 </#list>
-<#list tc.architecture.outputs as output>
+
+<#list tc.getNoDuplicateArchitectureOutputs() as output>
 <#if tc.getName(output)??>
     vector<float> ${tc.getName(output)}(${tc.join(output.ioDeclaration.type.dimensions, " * ")});
 </#if>
