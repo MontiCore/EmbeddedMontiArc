@@ -3,7 +3,7 @@
 #ifndef CallbackQ_hpp
 #define CallbackQ_hpp
 
-#include "tests_a_compA"
+#include "tests_a_compA.h"
 #include "mqtt/client.h"
 using namespace std;
 using namespace mqtt;

@@ -32,13 +32,11 @@ CallbackN.cpp
 CallbackZ.cpp
 CallbackB.cpp
 MqttAdapter_${model.getEscapedCompName()}.cpp
-${model.getEscapedCompName()}.cpp
 CallbackQ.hpp
 CallbackN.hpp
 CallbackZ.hpp
 CallbackB.hpp
 MqttAdapter_${model.getEscapedCompName()}.h
-#${model.getEscapedCompName()}.h
 )
 
 list(APPEND LIBRARIES ${model.getEscapedCompName()})

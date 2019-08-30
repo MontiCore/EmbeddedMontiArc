@@ -5,7 +5,7 @@
 #ifndef CallbackZ_hpp
 #define CallbackZ_hpp
 
-#include "${model.getEscapedCompName()}"
+#include "${model.getEscapedCompName()}.h"
 <@m.mwDefaultInclude/>
 using namespace std;
 using namespace <@m.smallIdent/>;
@@ -15,7 +15,7 @@ class CallbackZ : public virtual callback
     client& cli_;
 
 public:
-    CallbackZ(client& cli, double* port);
+    CallbackZ(client& cli, int* port);
 
     void connected(const string& cause);
 

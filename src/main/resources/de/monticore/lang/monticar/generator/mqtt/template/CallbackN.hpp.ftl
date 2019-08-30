@@ -5,7 +5,7 @@
 #ifndef CallbackN_hpp
 #define CallbackN_hpp
 
-#include "${model.getEscapedCompName()}"
+#include "${model.getEscapedCompName()}.h"
 <@m.mwDefaultInclude/>
 using namespace std;
 using namespace <@m.smallIdent/>;
@@ -15,7 +15,7 @@ class CallbackN : public virtual callback
     client& cli_;
 
 public:
-    CallbackN(client& cli, double* port);
+    CallbackN(client& cli, int* port);
 
     void connected(const string& cause);
 

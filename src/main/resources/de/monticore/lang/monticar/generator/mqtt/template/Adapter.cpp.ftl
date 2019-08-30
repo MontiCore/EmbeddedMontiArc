@@ -4,8 +4,7 @@
 
 #include "<@m.mwIdent/>Adapter_${model.getEscapedCompName()}.h"
 
-<@m.mwIdent/>Adapter_${model.getEscapedCompName()}::<@m.mwIdent/>Adapter_${model.getEscapedCompName()}() : public IAdapter_${model.getEscapedCompName()}
-{
+<@m.mwIdent/>Adapter_${model.getEscapedCompName()}::<@m.mwIdent/>Adapter_${model.getEscapedCompName()}()
 
 }
 
