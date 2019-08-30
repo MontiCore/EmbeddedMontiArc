@@ -136,7 +136,7 @@ public class MassPointPhysicalVehicleTest {
 
         // Execute loop iteration
         Vehicle vehicle = physicalVehicle.getVehicle();
-        
+
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
         motorReference.update(Instant.EPOCH.plusMillis(33));
         frontLeftBrakeReference.update(Instant.EPOCH.plusMillis(33));
@@ -198,7 +198,7 @@ public class MassPointPhysicalVehicleTest {
 
         // Execute loop iteration
         Vehicle vehicle = physicalVehicle.getVehicle();
-        
+
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
         steeringReference.update(Instant.EPOCH.plusMillis(33));
 
@@ -251,7 +251,7 @@ public class MassPointPhysicalVehicleTest {
 
         // Execute loop iteration
         Vehicle vehicle = physicalVehicle.getVehicle();
-        
+
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
 
         // Ass actuators should not be updated

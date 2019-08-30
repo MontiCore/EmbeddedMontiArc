@@ -62,6 +62,7 @@ import simulation.environment.osm.IntersectionFinder;
 import simulation.util.Log;
 
 import java.awt.*;
+import java.io.File;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
@@ -167,7 +168,7 @@ public class Vehicle {
         this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
     }
 
-    public Vehicle(PhysicalVehicle physicalVehicle, EEVehicle eeVehicle) {
+    public Vehicle(PhysicalVehicle physicalVehicle, EESimulator simulator, List<Bus> buses, List<EEComponent> components) {
         // Create the status logger
         this.statusLogger = new StatusLogger();
         // Create the navigation unit
@@ -176,7 +177,26 @@ public class Vehicle {
         this.physicalVehicle = physicalVehicle;
         physicalVehicle.setVehicle(this);
         //Set eeVehicle
-        this.eeVehicle = eeVehicle;
+        this.eeVehicle = new EEVehicle(this, simulator, buses, components);
+        physicalVehicle.initializeActuators();
+        // Initialise last navigation target with empty optional
+        this.lastNavigationTarget = Optional.empty();
+        // Initialise camera image with empty optional
+        cameraImage = Optional.empty();
+        // When created, maximum temporary allowed velocity is not limited
+        this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
+    }
+
+    public Vehicle(PhysicalVehicle physicalVehicle, EESimulator simulator, File file) {
+        // Create the status logger
+        this.statusLogger = new StatusLogger();
+        // Create the navigation unit
+        this.navigation = Optional.empty();
+        //Set physicalVehicle
+        this.physicalVehicle = physicalVehicle;
+        physicalVehicle.setVehicle(this);
+        //Set eeVehicle
+        this.eeVehicle = new EEVehicle(this, simulator, file);
         physicalVehicle.initializeActuators();
         // Initialise last navigation target with empty optional
         this.lastNavigationTarget = Optional.empty();
@@ -222,8 +242,8 @@ public class Vehicle {
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR, bus));
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, bus));
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE, bus));
-
-        return new EEVehicle(eeSimulator, Collections.singletonList(bus), components);
+        
+        return new EEVehicle(this, eeSimulator, Collections.singletonList(bus), components);
     }
     
     public Optional<AbstractSensor> getSensorByType(BusEntry type){
@@ -238,6 +258,10 @@ public class Vehicle {
     
 	public EEVehicle getEEVehicle() {
 		return this.eeVehicle;
+	}
+	
+	public PhysicalVehicle getPhysicalVehicle() {
+		return this.physicalVehicle;
 	}
 	
 	public boolean isInitialized() {

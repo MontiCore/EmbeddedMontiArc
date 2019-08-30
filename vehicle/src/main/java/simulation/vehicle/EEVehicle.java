@@ -26,33 +26,14 @@ import com.google.gson.Gson;
 import commons.controller.commons.BusEntry;
 
 import commons.controller.interfaces.FunctionBlockInterface;
-import commons.simulation.IPhysicalVehicle;
-import commons.simulation.Sensor;
-import jdk.internal.org.jline.utils.Log;
 import org.apache.commons.lang3.tuple.Pair;
 
-import sensors.CameraSensor;
-import sensors.CompassSensor;
-import sensors.DayNightSensor;
-import sensors.DistanceToLeftSensor;
-import sensors.DistanceToRightSensor;
-import sensors.LeftBackWheelDistanceToStreetSensor;
-import sensors.LeftFrontDistanceSensor;
-import sensors.LeftFrontWheelDistanceToStreetSensor;
-import sensors.LocationSensor;
-import sensors.ObstacleSensor;
-import sensors.RightBackWheelDistanceToStreetSensor;
-import sensors.RightFrontDistanceSensor;
-import sensors.RightFrontWheelDistanceToStreetSensor;
-import sensors.SpeedSensor;
-import sensors.SteeringAngleSensor;
-import sensors.StreetTypeSensor;
-import sensors.WeatherSensor;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.*;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
 import simulation.bus.FlexRay;
+import simulation.bus.BusUtils;
 import simulation.bus.InstantBus;
 
 import java.io.File;
@@ -65,19 +46,36 @@ import java.util.*;
 
 public class EEVehicle {
 
-    private EESimulator eeSimulator;
+	protected static final List<BusEntry> constantMessages = new ArrayList<BusEntry>() {
+		{
+			add(BusEntry.CONSTANT_NUMBER_OF_GEARS);
+			add(BusEntry.CONSTANT_WHEELBASE);
+			add(BusEntry.CONSTANT_MAXIMUM_TOTAL_VELOCITY);
+			add(BusEntry.CONSTANT_MOTOR_MAX_ACCELERATION);
+			add(BusEntry.CONSTANT_MOTOR_MIN_ACCELERATION);
+			add(BusEntry.CONSTANT_BRAKES_MAX_ACCELERATION);
+			add(BusEntry.CONSTANT_BRAKES_MIN_ACCELERATION);
+			add(BusEntry.CONSTANT_STEERING_MAX_ANGLE);
+			add(BusEntry.CONSTANT_STEERING_MIN_ANGLE);
+			add(BusEntry.CONSTANT_TRAJECTORY_ERROR);
+		}
+	};
 
-    private FunctionBlockInterface autoPilot;
+	private final EESimulator eeSimulator;
 
-    private List<Bus> busList = new LinkedList<>();
+	private final Vehicle vehicle;
 
-    private List<AbstractSensor> sensorList = new LinkedList<>();
+	private FunctionBlockInterface autoPilot;
 
-    private List<VehicleActuator> actuatorList = new LinkedList<>();
+	private List<Bus> busList = new LinkedList<>();
 
-    private List<Bridge> bridgeList = new LinkedList<>();
-    
-    private boolean collision = false;
+	private List<AbstractSensor> sensorList = new LinkedList<>();
+
+	private List<VehicleActuator> actuatorList = new LinkedList<>();
+
+	private List<Bridge> bridgeList = new LinkedList<>();
+
+	private boolean collision = false;
 
 
     /*
@@ -87,14 +85,16 @@ public class EEVehicle {
     /**
      * Constructor of EEVehicle
      * @param eeSimulator simulator of the Vehicle
-     * @param data JSON file that describes the bus structures
+     * @param data JSON file that describes the busAndParameter structures
      */
-    public EEVehicle(EESimulator eeSimulator, IPhysicalVehicle physicalVehicle, File data) {
+    public EEVehicle(Vehicle vehicle, EESimulator eeSimulator, File data) {
 
-        //set EESimulator
+        //set EESimulator, vehicle
         this.eeSimulator = eeSimulator;
 
-        //set bus, sensor, actuator and bridge lists
+        this.vehicle = vehicle;
+
+        //set busAndParameter, sensor, actuator and bridge lists
 		ParsableBusStructureProperties busStructure;
 
 		try {
@@ -104,102 +104,94 @@ public class EEVehicle {
 			for (ParsableBusStructureProperties.Pair component : busStructure.getBuses()) {
 				if (component.eeComponent.equals("flexRay")) {
 					FlexRay flexRay = new FlexRay(eeSimulator);
-					busList.add((int) component.bus[0], flexRay);
+					busList.add((int) component.busAndParameter[0], flexRay);
 				} else if (component.eeComponent.equals("instantBus")) {
 					InstantBus instantBus = new InstantBus(eeSimulator);
-					busList.add((int) component.bus[0], instantBus);
+					busList.add((int) component.busAndParameter[0], instantBus);
 				}
 			}
 
 			//create sensors, actuator and bridges
 			for (ParsableBusStructureProperties.Pair sensor : busStructure.getSensors()) {
-				Class<? extends AbstractSensor> sensorClass = (Class<? extends AbstractSensor>) Class.forName(sensor.eeComponent);
-				AbstractSensor newSensor = AbstractSensor.createSensor(sensorClass, physicalVehicle, busList.get((int) sensor.bus[0])).get();
-				sensorList.add(newSensor);
-				busList.get((int) sensor.bus[0]).registerComponent(newSensor);
+				try {
+					Class<? extends AbstractSensor> sensorClass = (Class<? extends AbstractSensor>) Class.forName(sensor.eeComponent);
+					AbstractSensor newSensor = AbstractSensor.createSensor(sensorClass, vehicle.getPhysicalVehicle(), busList.get((int) sensor.busAndParameter[0])).get();
+					sensorList.add(newSensor);
+					busList.get((int) sensor.busAndParameter[0]).registerComponent(newSensor);
+				} catch (ClassNotFoundException e) {
+					throw new IllegalArgumentException("Can not create EEVehicle. File contains non-existent sensor: " + sensor.eeComponent);
+				}
 			}
 
 			for (ParsableBusStructureProperties.Pair actuator : busStructure.getActuators()) {
-				VehicleActuator newActuator = VehicleActuator.createVehicleActuator(VehicleActuatorType.valueOf(actuator.eeComponent), actuator.bus[1], actuator.bus[2], actuator.bus[3], busList.get((int) actuator.bus[0]));
+				VehicleActuator newActuator = VehicleActuator.createVehicleActuator(VehicleActuatorType.valueOf(actuator.eeComponent), actuator.busAndParameter[1], actuator.busAndParameter[2], actuator.busAndParameter[3], busList.get((int) actuator.busAndParameter[0]));
 				actuatorList.add(newActuator);
-				busList.get((int) actuator.bus[0]).registerComponent(newActuator);
+				busList.get((int) actuator.busAndParameter[0]).registerComponent(newActuator);
 			}
 
 			for (ParsableBusStructureProperties.Pair bridge : busStructure.getBridges()) {
-				Bridge newBridge = new Bridge(eeSimulator, Pair.of(busList.get((int) bridge.bus[0]), busList.get((int) bridge.bus[1])), Duration.ofMillis((long) bridge.bus[2]));
+				Bridge newBridge = new Bridge(eeSimulator, Pair.of(busList.get((int) bridge.busAndParameter[0]), busList.get((int) bridge.busAndParameter[1])), Duration.ofMillis((long) bridge.busAndParameter[2]));
 				bridgeList.add(newBridge);
-				busList.get((int) bridge.bus[0]).registerComponent(newBridge);
-				busList.get((int) bridge.bus[1]).registerComponent(newBridge);
 			}
 
 		} catch (IOException e) {
-			Log.error("Can not create EEVehicle. Failed to read the file");
-		} catch (ClassNotFoundException e) {
-			Log.error("Can not create EEVehicle. File contains non-existent sensor");
+			throw  new IllegalArgumentException("Can not create EEVehicle. Failed to read file: " + data);
 		}
 
 	}
 
 
 
-
-
-
-
-	/*
-	TODO: register autopilot at the bus he is connected to.
-	 */
-
-	/**
-	 * Constructor if no JSON file is available
-	 * 
-	 * @param eeSimulator  simulator of the vehicle
-	 * @param buses list of buses the vehicle has
-	 * @param components list of components (actuators, sensors, bridges and autopilot) the vehicle has
-	 */
-    public EEVehicle(EESimulator eeSimulator, List<Bus> buses, List<EEComponent> components) {
-
-        //set EESimulator
-        this.eeSimulator = eeSimulator;
-
+	public EEVehicle(Vehicle vehicle, EESimulator eeSimulator, List<Bus> buses, List<EEComponent> components) {
+		this.vehicle = vehicle;
+		this.eeSimulator = eeSimulator;
+		this.busList = new ArrayList<Bus>(buses);
+		Map<UUID, Bus> busById = new HashMap<UUID, Bus>();
 		for (Bus bus : buses) {
-			busList.add(bus);
+			busById.put(bus.getId(), bus);
 		}
 		for (EEComponent component : components) {
 			switch (component.getComponentType()) {
-				case SENSOR:
-					sensorList.add((AbstractSensor) component);
-					for (EEComponent bus : component.getTargetsByMessageId().get(((AbstractSensor) component).getType())) {
-						((Bus) bus).registerComponent(component);
-					}
-					break;
-				case ACTUATOR:
-					actuatorList.add((VehicleActuator) component);
-					for (EEComponent bus : component.getTargetsByMessageId().get(((VehicleActuator) component).getSendMsgId())) {
-						((Bus) bus).registerComponent(component);
-					}
-					break;
-				case BRIDGE:
-					bridgeList.add((Bridge) component);
-					((Bridge) component).getConnectedBuses().getLeft().registerComponent(component);
-					((Bridge) component).getConnectedBuses().getRight().registerComponent(component);
-					break;
-				case AUTOPILOT:
-					autoPilot = (FunctionBlockInterface) component;
-					//TODO: implement!
+			case ACTUATOR:
+				this.actuatorList.add((VehicleActuator) component);
+				break;
+			case SENSOR:
+				this.sensorList.add((AbstractSensor) component);
+			case AUTOPILOT:
+				break;
+			case BRIDGE:
+				this.bridgeList.add((Bridge) component);
+				break;
+			default:
+				throw new IllegalStateException(
+						"Invalid component type. Component type was: " + component.getComponentType());
+			}
+			if (component.getComponentType() != EEComponentType.BRIDGE	) {
+				List<UUID> seenIds = new ArrayList<UUID>();
+				for (List<EEComponent> targets : component.getTargetsByMessageId().values()) {
+					for (EEComponent target : targets) {
+						if (target.getComponentType() == EEComponentType.BUS) {
+							if (!seenIds.contains(target.getId())) {
+								seenIds.add(target.getId());
+								((Bus) target).registerComponent(component);
+							}
+						}
 
+					}
+				}
 			}
 		}
 	}
-    
-    public void executeLoopIteration(Instant time) {
-    	this.notifySensors(time);
-    	this.eeSimulator.simulateNextTick(time);
-    	this.notifyActuator(time);
-    }
+
+	public void executeLoopIteration(Instant time) {
+		this.notifySensors(time);
+		this.eeSimulator.simulateNextTick(time);
+		this.notifyActuator(time);
+	}
 
 	/**
-	 * function that notifies all sensors to send their actual data to the bus
+	 * function that notifies all sensors to send their actual data to the busAndParameter
+	 * 
 	 * @param actualTime actual time of the simulation
 	 */
 	public void notifySensors(Instant actualTime) {
@@ -210,16 +202,16 @@ public class EEVehicle {
 
 	/**
 	 * function that notifies all actuators to update
+	 * 
 	 * @param actualTime time the actuators get to update their value
 	 */
-	//TODO: wert des updates nach update auf den bus schreiben
-	public void notifyActuator(Instant actualTime){
-		if(!this.collision) {
+	// TODO: wert des updates nach update auf den busAndParameter schreiben
+	public void notifyActuator(Instant actualTime) {
+		if (!this.collision) {
 			for (VehicleActuator actuator : actuatorList) {
 				actuator.update(actualTime);
 			}
-		}
-		else {
+		} else {
 			for (VehicleActuator actuator : actuatorList) {
 				actuator.reset();
 			}
@@ -227,8 +219,7 @@ public class EEVehicle {
 		}
 	}
 
-
-	public EESimulator getEeSimulator() {
+	public EESimulator getEESimulator() {
 		return eeSimulator;
 	}
 
@@ -260,8 +251,10 @@ public class EEVehicle {
 	public FunctionBlockInterface getAutoPilot() {
 		return this.autoPilot;
 	}
+
 	/**
 	 * Add sensor to sensor list and register at target buses
+	 * 
 	 * @param sensor to be registered
 	 */
 	public void addSensor(AbstractSensor sensor) {
@@ -276,13 +269,13 @@ public class EEVehicle {
 		this.sensorList.add(sensor);
 	}
 
-	
 	/**
 	 * Add actuator to actuator list and register at target buses
+	 * 
 	 * @param actuator actuator to be registered
 	 */
 	private void addActuator(VehicleActuator actuator) {
-		for(List<EEComponent> targets : actuator.getTargetsByMessageId().values()) {
+		for (List<EEComponent> targets : actuator.getTargetsByMessageId().values()) {
 			for (EEComponent target : targets) {
 				if (target.getComponentType() == EEComponentType.BUS) {
 					Bus bus = (Bus) target;
@@ -316,24 +309,114 @@ public class EEVehicle {
 		fileWriter.flush();
 		fileWriter.close();
 	}
-    
-    public Optional<AbstractSensor> getSensorByType(BusEntry type) {
+
+	public Optional<AbstractSensor> getSensorByType(BusEntry type) {
 		Predicate<EEComponent> IsSensorType = new Predicate<EEComponent>() {
 			public boolean apply(EEComponent comp) {
 				return comp.getTargetsByMessageId().containsKey(type);
 			}
 		};
-    	return Optional.ofNullable(Iterables.find(this.sensorList, IsSensorType, null));
-    }
+		return Optional.ofNullable(Iterables.find(this.sensorList, IsSensorType, null));
+	}
 
-	public void setCollision(boolean collision) {
+	protected void setCollision(boolean collision) {
 		this.collision = collision;
+	}
+
+	protected void setConstantBusData() {
+		List<EEComponent> components = new ArrayList<EEComponent>(
+				this.actuatorList.size() + this.sensorList.size() + 5);
+		components.addAll(actuatorList);
+		components.addAll(sensorList);
+
+		Predicate<EEComponent> containsOne = new Predicate<EEComponent>() {
+			public boolean apply(EEComponent comp) {
+				return comp.getComponentType() == EEComponentType.BRIDGE;
+			}
+		};
+		for (EEComponent component : components) {
+			List<BusEntry> subscribedConstMsgs = this.getSubscribedConstantMessages(component);
+			if (!subscribedConstMsgs.isEmpty()) {
+				Set<Bus> connectedBuses = BusUtils.findConnectedBuses(component);
+				if (connectedBuses.isEmpty()) {
+					throw new IllegalStateException(
+							"Component that requires busAndParameter connection not connected to busAndParameter. Component was : "
+									+ component);
+				}
+				Bus bus = connectedBuses.iterator().next();
+				this.sendConstMsgs(subscribedConstMsgs, bus, component);
+			}
+		}
+	}
+
+	private void sendConstMsgs(List<BusEntry> constMsgs, Bus bus, EEComponent component) {
+		PhysicalVehicle physicalVehilce = vehicle.getPhysicalVehicle();
+		VehicleActuator brakes = physicalVehilce
+				.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT);
+		VehicleActuator motor = physicalVehilce.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR);
+		// ModelicaPhysicalVehicle
+		if (brakes == null) {
+			brakes = physicalVehilce.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE);
+			motor = physicalVehilce.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE);
+		}
+		VehicleActuator steering = physicalVehilce
+				.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
+		for(BusEntry constMsg : constMsgs) {
+			Object msg;
+			switch (constMsg) {
+			case CONSTANT_BRAKES_MAX_ACCELERATION:
+				msg = brakes.getActuatorValueMax();
+				break;
+			case CONSTANT_BRAKES_MIN_ACCELERATION:
+				msg = brakes.getActuatorValueMin();
+				break;
+			case CONSTANT_MAXIMUM_TOTAL_VELOCITY:
+				msg = Vehicle.VEHICLE_DEFAULT_APPROX_MAX_VELOCITY;
+				break;
+			case CONSTANT_MOTOR_MAX_ACCELERATION:
+				msg = motor.getActuatorValueMax();
+				break;
+			case CONSTANT_MOTOR_MIN_ACCELERATION:
+				msg = motor.getActuatorValueMin();
+				break;
+			case CONSTANT_NUMBER_OF_GEARS:
+				msg = 1;
+				break;
+			case CONSTANT_STEERING_MAX_ANGLE:
+				msg = steering.getActuatorValueMax();
+				break;
+			case CONSTANT_STEERING_MIN_ANGLE:
+				msg = steering.getActuatorValueMin();
+				break;
+			case CONSTANT_TRAJECTORY_ERROR:
+				msg = 0.0;
+				break;
+			case CONSTANT_WHEELBASE:
+				msg = physicalVehilce.getWheelDistToFront() + physicalVehilce.getWheelDistToBack();
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown constant message: " + constMsg);
+			}
+			if(msg != null) {
+				this.eeSimulator.addEvent(new BusMessage(msg, 8, constMsg, this.eeSimulator.getSimulationTime(), bus.getId(), component));
+			}
+		}
+	}
+
+	private List<BusEntry> getSubscribedConstantMessages(EEComponent component) {
+		List<BusEntry> subscribedConstMsgs = new ArrayList<BusEntry>();
+		for (BusEntry messageId : component.getSubscribedMessages()) {
+			if (constantMessages.contains(messageId)) {
+				subscribedConstMsgs.add(messageId);
+			}
+		}
+		return subscribedConstMsgs;
 	}
 
 }
 
 /**
- * all data of a bus structure, including all connected actuators, buses,
+ * all data of a busAndParameter structure, including all connected actuators, buses,
  * sensors and autopilots.
  * Sensors are saved by their class name.
  * Actuators are saved by their actuatorType.
@@ -344,11 +427,11 @@ class ParsableBusStructureProperties {
 
 	class Pair {
 		String eeComponent;
-		double[] bus;
+		double[] busAndParameter;
 
 		public Pair(String eeComponent, double[] bus) {
 			this.eeComponent = eeComponent;
-			this.bus = bus;
+			this.busAndParameter = bus;
 		}
 
 
@@ -357,7 +440,7 @@ class ParsableBusStructureProperties {
 		}
 
 		public double[] getBus() {
-			return bus;
+			return busAndParameter;
 		}
 	}
 
@@ -372,7 +455,7 @@ class ParsableBusStructureProperties {
 
 		List<Bridge> processedBridges = new LinkedList<>();
 
-		//id to assign component to the bus and index of the bus in busList of the eeVehicle
+		//id to assign component to the busAndParameter and index of the busAndParameter in busList of the eeVehicle
 		int busId = 0;
 
 		for (Bus bus : vehicle.getBusList()) {

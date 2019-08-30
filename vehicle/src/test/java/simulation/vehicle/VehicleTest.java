@@ -72,4 +72,6 @@ public class VehicleTest {
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(vehicle1.getCollision() && !vehicle2.getCollision());
     }
+
+
 }

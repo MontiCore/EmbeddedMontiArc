@@ -85,8 +85,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
 	public ModelicaPhysicalVehicle() {
 		super();
 
-		vehicleDynamicsModel = new VehicleDynamicsModel();
-
 		// Before initialisation
 		// the center of mass position is at the origin
 		// no rotation
@@ -195,7 +193,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
 	 */
 	@Override
 	public void setAngularVelocity(RealVector angularVelocity) {
-		if (!physicalVehicleInitialised) {
+		if (physicalVehicleInitialised) {
 			throw new IllegalStateException("Angular velocity can only be set before initialisation.");
 		}
 		getVDM().setParameter("omega_z_0", angularVelocity.getEntry(2));
