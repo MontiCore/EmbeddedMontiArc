@@ -3,6 +3,7 @@
 #include "MqttAdapter_tests_a_compA.h"
 
 MqttAdapter_tests_a_compA::MqttAdapter_tests_a_compA()
+{
 
 }
 
