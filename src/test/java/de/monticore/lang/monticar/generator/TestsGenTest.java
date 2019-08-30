@@ -96,4 +96,31 @@ public class TestsGenTest extends AbstractSymtabTest {
         assertTrue(content.stream().anyMatch(line -> line.contains("component.in1.simpleField = 2.0;")));
         assertTrue(content.stream().anyMatch(line -> line.contains("component.in1.structField.field = 4.0;")));
     }
+
+    @Test
+    public void testMatrixComp() throws IOException {
+        TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources/matrixStreamBase/");
+        EMAComponentInstanceSymbol componentSymbol = symTab.<EMAComponentInstanceSymbol>resolve(
+                "basic.matrixComp",
+                EMAComponentInstanceSymbol.KIND
+        ).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setModelsDirPath(Paths.get("src/test/resources/matrixStreamBase/"));
+        generatorCPP.setGenerateTests(true);
+        generatorCPP.setGenerateCMake(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/streamTest/matrix/");
+        generatorCPP.setCheckModelDir(true);
+        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol, symTab));
+
+        Optional<File> testFileOpt = files.stream().filter(file -> file.getName().endsWith("basic_matrixComp_test.hpp")).findFirst();
+
+        assertTrue(testFileOpt.isPresent());
+        List<String> content = FileUtils.readLines(testFileOpt.get(), "UTF-8");
+
+        assertFalse(content.stream().anyMatch(line -> line.contains("NOT HANDLED VALUEPAIROPT!!!")));
+        assertTrue(content.stream().anyMatch(line -> line.matches(".*component.colVecIn\\s*<<\\s*1.0\\s*<<\\s*2.0\\s*<<\\s*3.0\\s*<<\\s*arma::endr\\s*;.*")));
+        assertTrue(content.stream().anyMatch(line -> line.matches(".*component.matIn\\s*<<\\s*1.0\\s*<<\\s*2.0\\s*<<\\s*3.0\\s*<<\\s*arma::endr\\s*<<\\s*4.0\\s*<<\\s*5.0\\s*<<\\s*6.0\\s*<<\\s*arma::endr\\s*<<\\s*7.0\\s*<<\\s*8.0\\s*<<\\s*9.0\\s*<<\\s*arma::endr\\s*;.*")));
+        assertTrue(content.stream().anyMatch(line -> line.matches(".*component.rowVecIn\\s*<<\\s*1.0\\s*<<\\s*arma::endr\\s*<<\\s*2.0\\s*<<\\s*arma::endr\\s*<<\\s*3.0\\s*<<\\s*arma::endr\\s*;.*")));
+    }
 }

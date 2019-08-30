@@ -439,8 +439,7 @@ public final class TestsGeneratorCPP {
                         }
                     }
                 } else if (node.getValuePairOpt().isPresent()) {
-                    //TODO valuepair conversion
-                    builder.append("NOT HANDLED VALUEPAIROPT!!!");
+                    convertValuePair(builder, converter, node.getValuePair());
                 }
                 Log.debug("Result: " + builder.toString(), "TestGeneratorCPP");
                 result = RangeOutputPortCheck.from(builder.toString(), builder.toString(), true);
@@ -452,7 +451,7 @@ public final class TestsGeneratorCPP {
 
     private static final class ASTStreamValue2InputPortValue implements StreamUnitsVisitor {
 
-        private String result = null;
+        private String result = "";
         boolean handled = false;
 
         public String getResult() {
@@ -506,14 +505,30 @@ public final class TestsGeneratorCPP {
                         }
                     }
                 } else if (node.getValuePairOpt().isPresent()) {
-                    //TODO valuepair conversion
-                    result += "NOT HANDLED VALUEPAIROPT!!!";
+                    convertValuePair(builder, converter, node.getValuePair());
                 }
                 Log.debug("Result: " + builder.toString(), "TestGeneratorCPP.vists(ASTStreamArrayValues)");
                 result += builder.toString();
             }
             handled = true;
         }
+    }
+
+    private static void convertValuePair(StringBuilder builder, StreamValueConverter converter, ASTValuePair valuePair) {
+        builder.append(" <<");
+        for (int i = 0; i < valuePair.getStreamValueList().size(); ++i) {
+            ASTStreamValue value = valuePair.getStreamValueList().get(i);
+            //TODO Name, PrecisionNumber, SignedLiteral, valueAtTick
+            if (value.getNameOpt().isPresent()) {
+                builder.append(value.getName());
+            } else {
+                builder.append(converter.convert(value));
+            }
+            if (i + 1 < valuePair.getStreamValueList().size()) {
+                builder.append(" << ");
+            }
+        }
+        builder.append("<< arma::endr ");
     }
 
     private static class StreamValueConverter implements StreamUnitsVisitor {
