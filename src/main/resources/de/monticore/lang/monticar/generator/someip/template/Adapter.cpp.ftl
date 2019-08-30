@@ -3,107 +3,91 @@
 #include "<@m.mwIdent/>Adapter_${model.getEscapedCompName()}.h"
 
 <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::<@m.mwIdent/>Adapter_${model.getEscapedCompName()}() : public IAdapter_${model.getEscapedCompName()} {
-	//choose random ids
-    in1_service_id = 11;
-	in1_instance_id = 12;
-	in1_method_id = 13;
-	in1_event_id = 14;
-	in1_eventgroup_id = 15;
+	<#-- <#list model.getIncomingPorts() as sub>
+    ${sub.getName()}_service_id = 11;
+	${sub.getName()}_instance_id = 12;
+	${sub.getName()}_method_id = 13;
+	${sub.getName()}_event_id = 14;
+	${sub.getName()}_eventgroup_id = 15;
+    </#list>
 
-	in2_service_id = 21;
-	in2_instance_id = 22;
-	in2_method_id = 23;
-	in2_event_id = 24;
-	in2_eventgroup_id = 25;
-
-    out1_service_id = 111;
-	out1_instance_id = 112;
-	out1_method_id = 113;
-	out1_event_id = 114;
-	out1_eventgroup_id = 115;
-
-	out2_service_id = 121;
-	out2_instance_id = 122;
-	out2_method_id = 123;
-	out2_event_id = 124;
-	out2_eventgroup_id = 125;
+	<#list model.getOutgoingPorts() as pub>
+    ${pub.getName()}_service_id = 111;
+	${pub.getName()}_instance_id = 112;
+	${pub.getName()}_method_id = 113;
+	${pub.getName()}_event_id = 114;
+	${pub.getName()}_eventgroup_id = 115;
+    </#list> -->
 }
 
 void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscapedCompName()} *comp) {
     // Initialize component
 	this->component = comp;
 
-	// Intitialize subscriber for in1
-    in1_Subscriber = vsomeip::runtime::get()->create_application("Subscriber");
-    in1_Subscriber->init();
-    in1_Subscriber->request_service(in1_service_id, in1_instance_id);
-    in1_Subscriber->register_message_handler(in1_service_id, in1_instance_id, in1_method_id, std::bind(&SomeIPAdapter_${model.getEscapedCompName()}::on_message_in1, this, std::placeholders::_1));
 
-	// Subscribe
-  	std::set<vsomeip::eventgroup_t> in1_event_group;
-  	in1_event_group.insert(in1_eventgroup_id);
-  	in1_Subscriber->request_event(in1_service_id, in1_instance_id, in1_event_id, in1_event_group, true);
-  	in1_Subscriber->subscribe(in1_service_id, in1_instance_id, in1_eventgroup_id);
-    in1_Subscriber->start();
+	// Intitialize Subscriber
+	<#list model.getIncomingPorts() as sub>
+		${sub.getName()}_Subscriber = vsomeip::runtime::get()->create_application("Subscriber");
+		if (!${sub.getName()}_Subscriber->init()) {
+            std::cerr << "Couldn't initialize Subscriber ${sub.getName()}" << std::endl;
+            return false;
+        }
+		
+        ${sub.getName()}_Subscriber->register_state_handler(std::bind(&SomeIPAdapter_${model.getEscapedCompName()}::on_state, this, std::placeholders::_1);
 
+		${sub.getName()}_Subscriber->register_message_handler(${sub.getSomeIPConnectionSymbol().getserviceID()}, ${sub.getSomeIPConnectionSymbol().getinstanceID()}, ${sub.getSomeIPConnectionSymbol().getmethodID()}, std::bind(&SomeIPAdapter_${model.getEscapedCompName()}::on_message_${sub.getName()}, this, std::placeholders::_1));
+		${sub.getName()}_Subscriber->register_availability_handler(${sub.getSomeIPConnectionSymbol().getserviceID()}, ${sub.getSomeIPConnectionSymbol().getinstanceID()}, std::bind(&SomeIPAdapter_${model.getEscapedCompName()}::on_availability, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
-	// Intitialize subscriber for in2
-    in2_Subscriber = vsomeip::runtime::get()->create_application("Subscriber");
-    in2_Subscriber->init();
-    in2_Subscriber->request_service(in2_service_id, in2_instance_id);
-    in2_Subscriber->register_message_handler(in2_service_id, in2_instance_id, in2_method_id, std::bind(&SomeIPAdapter_${model.getEscapedCompName()}::on_message_in2, this, std::placeholders::_1));
-
-	// Subscribe
-  	std::set<vsomeip::eventgroup_t> in2_event_group;
-  	in2_event_group.insert(in2_eventgroup_id);
-  	in2_Subscriber->request_event(in2_service_id, in2_instance_id, in2_event_id, in2_event_group, true);
-  	in2_Subscriber->subscribe(in2_service_id, in2_instance_id, in2_eventgroup_id);
-    in2_Subscriber->start();
+		// Subscribe
+		std::set<vsomeip::eventgroup_t> event_group;
+		event_group.insert(${sub.getSomeIPConnectionSymbol().geteventgroupID()});
+		${sub.getName()}_Subscriber->request_event(${sub.getSomeIPConnectionSymbol().getserviceID()}, ${sub.getSomeIPConnectionSymbol().getinstanceID()}, ${sub.getSomeIPConnectionSymbol().geteventID()}, event_group, true);
+		${sub.getName()}_Subscriber->subscribe(${sub.getSomeIPConnectionSymbol().getserviceID()}, ${sub.getSomeIPConnectionSymbol().getinstanceID()}, ${sub.getSomeIPConnectionSymbol().geteventgroupID()});
+    </#list>
 
 
-	// Intitialize Publisher for out1
-    out1_Publisher = vsomeip::runtime::get()->create_application("Publisher");
-    out1_Publisher->init();
-    out1_Publisher->offer_service(out1_service_id, out1_instance_id);
-    out1_Publisher->start();
+	// Intitialize Publisher
+	<#list model.getOutgoingPorts() as pub>
+    	${pub.getName()}_Publisher = vsomeip::runtime::get()->create_application("Publisher");
+		if (!${pub.getName()}_Publisher->init()) {
+            std::cerr << "Couldn't initialize Publisher ${pub.getName()}" << std::endl;
+            return false;
+        }
+    	${pub.getName()}_Publisher->offer_service(${pub.getSomeIPConnectionSymbol().getserviceID()}, ${pub.getSomeIPConnectionSymbol().getinstanceID()});
+    </#list>
 
-    // Intitialize Publisher for out2
-    out2_Publisher = vsomeip::runtime::get()->create_application("Publisher");
-    out2_Publisher->init();
-    out2_Publisher->offer_service(out2_service_id, out2_instance_id);
-    out2_Publisher->start();
+	// Start Subscriber
+	<#list model.getIncomingPorts() as sub>
+		${sub.getName()}_Subscriber->start();
+    </#list>
+
+	// Start Publisher
+	<#list model.getOutgoingPorts() as pub>
+		${pub.getName()}_Publisher->start();
+    </#list>
 }
 
-void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::on_message_in1(const std::shared_ptr<vsomeip::message> &_request) {
+<#list model.getIncomingPorts() as sub>
+void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::on_message_${sub.getName()}(const std::shared_ptr<vsomeip::message> &_request) {
 	//read received message
     std::shared_ptr<vsomeip::payload> its_payload = _request->get_payload();
     vsomeip::length_t l = its_payload->get_length();
     double dataFromMessage = *((double*)its_payload->get_data());
-    component->in1 = dataFromMessage;
+    component->${sub.getName()} = dataFromMessage;
 	//print data to std out
-    std::cout << "SERVICE: Received message from ["
-        << std::setw(4) << std::setfill('0') << std::hex << _request->get_client() << "/"
-        << std::setw(4) << std::setfill('0') << std::hex << _request->get_session() << "]: "
-        << dataFromMessage << std::endl;
+    std::cout << "SERVICE ${sub.getName()}: Received message from ["
+			<< std::setw(4) << std::setfill('0') << std::hex << _request->get_client() << "/"
+			<< std::setw(4) << std::setfill('0') << std::hex << _request->get_session() << "]: "
+			<< dataFromMessage << std::endl;
 }
+</#list>
 
-void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::on_message_in2(const std::shared_ptr<vsomeip::message> &_request) {
-	//read received message
-    std::shared_ptr<vsomeip::payload> its_payload = _request->get_payload();
-    vsomeip::length_t l = its_payload->get_length();
-    double dataFromMessage = *((double*)its_payload->get_data());
-    component->in2 = dataFromMessage;
-	//print data to std out
-    std::cout << "SERVICE: Received message from ["
-        << std::setw(4) << std::setfill('0') << std::hex << _request->get_client() << "/"
-        << std::setw(4) << std::setfill('0') << std::hex << _request->get_session() << "]: "
-        << dataFromMessage << std::endl;
-}
 
-void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publishout1_Publisher()
+<#list model.getOutgoingPorts() as pub>
+void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publish${pub.getName()}_Publisher()
 {
     //Read data from component
-    double d = component->out1;
+    double d = component->${pub.getName()};
 
     //Create message
    	uint8_t *byteArray = (uint8_t*)&d;
@@ -112,32 +96,34 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publishout1_Publisher()
    	std::shared_ptr< vsomeip::payload > payload = vsomeip::runtime::get()->create_payload(p,8);
 
 	//Publish
-	std::set<vsomeip::eventgroup_t> out1_event_group;
-	out1_event_group.insert(out1_eventgroup_id);
-	out1_Publisher->offer_event(out1_service_id, out1_instance_id, out1_event_id, out1_event_group, true);
-	out1_Publisher->notify(out1_service_id, out1_instance_id, out1_event_id, payload);
+	std::set<vsomeip::eventgroup_t> event_group;
+	event_group.insert(${pub.getSomeIPConnectionSymbol().geteventgroupID()});
+	${pub.getName()}_Publisher->offer_event(${pub.getSomeIPConnectionSymbol().getserviceID()}, ${pub.getSomeIPConnectionSymbol().getinstanceID()}, ${pub.getSomeIPConnectionSymbol().geteventID()}, event_group, true);
+	${pub.getName()}_Publisher->notify(${pub.getSomeIPConnectionSymbol().getserviceID()}, ${pub.getSomeIPConnectionSymbol().getinstanceID()}, ${pub.getSomeIPConnectionSymbol().geteventID()}, payload);
+}
+</#list>
+
+<#list model.getIncomingPorts() as sub>
+void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::on_state_${sub.getName()}(vsomeip::state_type_e _state) {
+	if (_state == vsomeip::state_type_e::ST_REGISTERED) {
+		${sub.getName()}_Subscriber->request_service(${pub.getSomeIPConnectionSymbol().getserviceID()}, ${pub.getSomeIPConnectionSymbol().getinstanceID()});
+	}
+}
+</#list>
+
+
+void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::on_availability(vsomeip::service_t _service, vsomeip::instance_t _instance, bool _is_available) {
+	std::cout << "Service ["
+		<< std::setw(4) << std::setfill('0') << std::hex << _service << "." << _instance
+		<< "] is "
+		<< (_is_available ? "available." : "NOT available.")
+		<< std::endl;
 }
 
-void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publishout2_Publisher()
-{
-	//Read data from component
-    double d = component->out2;
-
-    //Create message
-   	uint8_t *byteArray = (uint8_t*)&d;
-   	vsomeip::byte_t *p;
-   	p = byteArray;
-   	std::shared_ptr< vsomeip::payload > payload = vsomeip::runtime::get()->create_payload(p,8);
-
-	//Publish
-	std::set<vsomeip::eventgroup_t> out2_event_group;
-	out2_event_group.insert(out2_eventgroup_id);
-	out2_Publisher->offer_event(out2_service_id, out2_instance_id, out2_event_id, out2_event_group, true);
-	out2_Publisher->notify(out2_service_id, out2_instance_id, out2_event_id, payload);
-}
 
 void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::tick()
 {
-    publishout1_Publisher();
-    publishout2_Publisher();
+	<#list model.getOutgoingPorts() as pub>
+    	publish${pub.getName()}_Publisher();
+    </#list>
 }

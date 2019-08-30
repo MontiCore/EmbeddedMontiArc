@@ -23,14 +23,6 @@ public:
 
     void init(${model.getEscapedCompName()} *comp);
 
-    void on_message_in1(const std::shared_ptr<vsomeip::message> &_request);
-
-    void on_message_in2(const std::shared_ptr<vsomeip::message> &_request);
-
-    void publishout1_Publisher();
-
-	void publishout2_Publisher();
-
     void tick();
 
 
@@ -38,35 +30,35 @@ private:
 
     ${model.getEscapedCompName()}* component = nullptr;
 
-	std::shared_ptr<vsomeip::application> in1_Subscriber;
+	<#list model.getIncomingPorts() as sub>
+		std::shared_ptr<vsomeip::application> ${sub.getName()}_Subscriber;
 
-	std::shared_ptr<vsomeip::application> in2_Subscriber;
+		void on_message_${sub.getName()}(const std::shared_ptr<vsomeip::message> &_request);
+		void on_state_${sub.getName()}(vsomeip::state_type_e _state);
+    </#list>
 
-	std::shared_ptr<vsomeip::application> out1_Publisher;
+	<#list model.getOutgoingPorts() as pub>
+		std::shared_ptr<vsomeip::application> ${pub.getName()}_Publisher;
 
-	std::shared_ptr<vsomeip::application> out2_Publisher;
+		void publish${pub.getName()}_Publisher()();
+    </#list>
 
-    int in1_service_id;
-	int in1_instance_id;
-	int in1_method_id;
-	int in1_event_id;
-	int in1_eventgroup_id;
+	void on_availability(vsomeip::service_t _service, vsomeip::instance_t _instance, bool _is_available);
 
-	int in2_service_id;
-	int in2_instance_id;
-	int in2_method_id;
-	int in2_event_id;
-	int in2_eventgroup_id;
 
-	int out1_service_id;
-	int out1_instance_id;
-	int out1_method_id;
-	int out1_event_id;
-	int out1_eventgroup_id;
+	<#-- <#list model.getIncomingPorts() as sub>
+		int ${sub.getName()}_service_id;
+		int ${sub.getName()}_instance_id;
+		int ${sub.getName()}_method_id;
+		int ${sub.getName()}_event_id;
+		int ${sub.getName()}_eventgroup_id;
+    </#list>
 
-	int out2_service_id;
-	int out2_instance_id;
-	int out2_method_id;
-	int out2_event_id;
-	int out2_eventgroup_id;
+	<#list model.getOutgoingPorts() as pub>
+		int ${pub.getName()}_service_id;
+		int ${pub.getName()}_instance_id;
+		int ${pub.getName()}_method_id;
+		int ${pub.getName()}_event_id;
+		int ${pub.getName()}_eventgroup_id;
+    </#list> -->
 };
