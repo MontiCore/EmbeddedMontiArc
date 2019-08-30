@@ -176,6 +176,18 @@ public abstract class CNNArchTemplateController {
         return list;
     }
 
+    public List getNoDuplicateArchitectureOutputs(){
+        List<String> names = new ArrayList();
+        List<VariableSymbol> noDuplicates = new ArrayList();
+        for(VariableSymbol output: getArchitecture().getOutputs()){
+            if(!names.contains(getName(output))){
+                noDuplicates.add(output);
+            }
+            names.add(getName(output));
+        }
+        return noDuplicates;
+    }
+
     public String getComponentName(){
         return getArchitecture().getComponentName();
     }
