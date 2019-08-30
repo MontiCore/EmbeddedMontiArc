@@ -90,6 +90,8 @@ public class EEVehicle {
 
 	private List<Bridge> bridgeList = new LinkedList<>();
 
+	private Optional<NavigationBlockAsEEComponent> navigation = Optional.empty();
+
 	private boolean collision = false;
 
 	/*
@@ -214,15 +216,20 @@ public class EEVehicle {
 		}
 		for (EEComponent component : components) {
 			switch (component.getComponentType()) {
-			case ACTUATOR:
-				this.actuatorList.add((VehicleActuator) component);
-				break;
-			case SENSOR:
-				this.sensorList.add((AbstractSensor) component);
-			case AUTOPILOT:
-				break;
-			default:
-				throw new IllegalStateException(
+				case ACTUATOR:
+					this.actuatorList.add((VehicleActuator) component);
+					break;
+				case SENSOR:
+					this.sensorList.add((AbstractSensor) component);
+				case AUTOPILOT:
+					break;
+				case NAVIGATION:
+					if(navigation.isPresent()){
+						throw new IllegalStateException("Navigation can only be set once");
+					}
+					navigation = Optional.of((NavigationBlockAsEEComponent) component);
+				default:
+					throw new IllegalStateException(
 						"Invalid component type. Component type was: " + component.getComponentType());
 			}
 			List<UUID> seenIds = new ArrayList<UUID>();
@@ -337,6 +344,10 @@ public class EEVehicle {
 			}
 		}
 		this.actuatorList.add(actuator);
+	}
+
+	protected Optional<NavigationBlockAsEEComponent> getNavigation(){
+		return navigation;
 	}
 
 	public List<Pair<EEComponent, UUID>> loadFromFile(File file) throws IOException {
