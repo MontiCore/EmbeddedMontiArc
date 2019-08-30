@@ -30,13 +30,11 @@ CallbackN.cpp
 CallbackZ.cpp
 CallbackB.cpp
 MqttAdapter_tests_a_compA.cpp
-tests_a_compA.cpp
 CallbackQ.hpp
 CallbackN.hpp
 CallbackZ.hpp
 CallbackB.hpp
 MqttAdapter_tests_a_compA.h
-#tests_a_compA.h
 )
 
 list(APPEND LIBRARIES tests_a_compA)

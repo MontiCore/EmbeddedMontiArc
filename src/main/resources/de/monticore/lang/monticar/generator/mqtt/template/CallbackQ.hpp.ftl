@@ -5,7 +5,7 @@
 #ifndef CallbackQ_hpp
 #define CallbackQ_hpp
 
-#include "${model.getEscapedCompName()}"
+#include "${model.getEscapedCompName()}.h"
 <@m.mwDefaultInclude/>
 using namespace std;
 using namespace <@m.smallIdent/>;

@@ -3,7 +3,7 @@
 #ifndef CallbackN_hpp
 #define CallbackN_hpp
 
-#include "tests_a_compA"
+#include "tests_a_compA.h"
 #include "mqtt/client.h"
 using namespace std;
 using namespace mqtt;
@@ -13,7 +13,7 @@ class CallbackN : public virtual callback
     client& cli_;
 
 public:
-    CallbackN(client& cli, double* port);
+    CallbackN(client& cli, int* port);
 
     void connected(const string& cause);
 

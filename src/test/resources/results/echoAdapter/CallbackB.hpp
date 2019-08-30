@@ -3,7 +3,7 @@
 #ifndef CallbackB_hpp
 #define CallbackB_hpp
 
-#include "tests_a_compA"
+#include "tests_a_compA.h"
 #include "mqtt/client.h"
 using namespace std;
 using namespace mqtt;
@@ -13,7 +13,7 @@ class CallbackB : public virtual callback
     client& cli_;
 
 public:
-    CallbackB(client& cli, double* port);
+    CallbackB(client& cli, bool* port);
 
     void connected(const string& cause);
 
