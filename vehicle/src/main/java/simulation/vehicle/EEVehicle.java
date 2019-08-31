@@ -65,7 +65,7 @@ public class EEVehicle {
 
 	private final Vehicle vehicle;
 
-	private FunctionBlockInterface autoPilot;
+	private FunctionBlockAsEEComponent autoPilot;
 
 	private List<Bus> busList = new LinkedList<>();
 
@@ -74,6 +74,8 @@ public class EEVehicle {
 	private List<VehicleActuator> actuatorList = new LinkedList<>();
 
 	private List<Bridge> bridgeList = new LinkedList<>();
+
+	private Optional<NavigationBlockAsEEComponent> navigation = Optional.empty();
 
 	private boolean collision = false;
 
@@ -162,9 +164,14 @@ public class EEVehicle {
 			case BRIDGE:
 				this.bridgeList.add((Bridge) component);
 				break;
+				case NAVIGATION:
+					if(navigation.isPresent()){
+						throw new IllegalStateException("Navigation can only be set once");
+					}
+					navigation = Optional.of((NavigationBlockAsEEComponent) component);
+					break;
 			default:
-				throw new IllegalStateException(
-						"Invalid component type. Component type was: " + component.getComponentType());
+				throw new IllegalStateException("Invalid component type. Component type was: " + component.getComponentType());
 			}
 			if (component.getComponentType() != EEComponentType.BRIDGE	) {
 				List<UUID> seenIds = new ArrayList<UUID>();
@@ -205,7 +212,6 @@ public class EEVehicle {
 	 * 
 	 * @param actualTime time the actuators get to update their value
 	 */
-	// TODO: wert des updates nach update auf den busAndParameter schreiben
 	public void notifyActuator(Instant actualTime) {
 		if (!this.collision) {
 			for (VehicleActuator actuator : actuatorList) {
@@ -248,7 +254,7 @@ public class EEVehicle {
 		return Optional.empty();
 	}
 
-	public FunctionBlockInterface getAutoPilot() {
+	public FunctionBlockAsEEComponent getAutoPilot() {
 		return this.autoPilot;
 	}
 
@@ -286,9 +292,19 @@ public class EEVehicle {
 		this.actuatorList.add(actuator);
 	}
 
+	protected Optional<NavigationBlockAsEEComponent> getNavigation(){
+		return navigation;
+	}
+
+	/**
+	 * Function that load the ParsableBusStructure out of a JSON file
+	 * @param file JSON File of the bus structure of an EEVehicle
+	 * @return the bus structure as a ParsabelBusStructure
+	 * @throws IOException
+	 */
+
 	public ParsableBusStructureProperties loadFromFile(File file) throws IOException {
 
-		List<EEComponent> components = new LinkedList<>();
 		String jsonContents = new String(Files.readAllBytes(file.toPath()));
 		Gson g = new Gson();
 		ParsableBusStructureProperties data = g.fromJson(jsonContents, ParsableBusStructureProperties.class);
@@ -296,6 +312,12 @@ public class EEVehicle {
 		return data;
 	}
 
+	/**
+	 * stores the actual bus structure in JSON file
+	 * @param whereToStore path where the JSON file will be stored
+	 * @param vehicle vehicle which bus should be stored
+	 * @throws IOException
+	 */
 	public void storeInFile(File whereToStore, EEVehicle vehicle) throws IOException {
 
 		ParsableBusStructureProperties properties = new ParsableBusStructureProperties(vehicle);

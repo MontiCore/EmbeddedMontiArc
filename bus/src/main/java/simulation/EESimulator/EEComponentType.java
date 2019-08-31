@@ -26,7 +26,8 @@ public enum EEComponentType{
     BRIDGE("BRIDGE"),
     ACTUATOR("ACTUATOR"),
     AUTOPILOT("AUTOPILOT"),
-	TEST_COMPONENT("TEST_COMPONENT");
+	TEST_COMPONENT("TEST_COMPONENT"),
+    NAVIGATION("NAVIGATION");
 
     private final String name;
 

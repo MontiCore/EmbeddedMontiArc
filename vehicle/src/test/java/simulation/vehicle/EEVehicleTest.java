@@ -33,6 +33,7 @@ import simulation.EESimulator.Bridge;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.bus.Bus;
+import simulation.bus.BusMessage;
 import simulation.bus.FlexRay;
 import simulation.bus.InstantBus;
 
@@ -237,4 +238,39 @@ public class EEVehicleTest {
         }
         return true;
     }
+
+    @Test
+    public void testMessageToActuator(){
+	    //create vehicle
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().createPhysicalVehicle();
+        Vehicle vehicle = new Vehicle(physicalVehicle);
+
+        //create reference actuator
+        VehicleActuator steeringReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MIN, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_RATE, vehicle.getEEVehicle().getEESimulator(), null, null);
+        VehicleActuator brakeReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE, Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MIN, Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MAX, Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_RATE, vehicle.getEEVehicle().getEESimulator(), null, null);
+
+
+
+        //create messages
+        BusMessage messageSteering = new BusMessage(10, 6, BusEntry.ACTUATOR_STEERING, Instant.EPOCH.plusMillis(1), UUID.randomUUID(), vehicle.getEEVehicle().getBusList().get(0));
+        BusMessage messageBrak = new BusMessage(5, 6, BusEntry.ACTUATOR_BRAKE, Instant.EPOCH.plusMillis(2), UUID.randomUUID(), vehicle.getEEVehicle().getBusList().get(0));
+        vehicle.getEEVehicle().getEESimulator().addEvent(messageSteering);
+        vehicle.getEEVehicle().getEESimulator().addEvent(messageBrak);
+
+        //set reference actuator
+        steeringReference.setActuatorValueTarget(10);
+        brakeReference.setActuatorValueTarget(5);
+        steeringReference.update(Instant.EPOCH.plusMillis(33));
+        brakeReference.update(Instant.EPOCH.plusMillis(33));
+
+        //loop für 33 milliseconds
+        vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
+
+        //test if value of actuator are correct
+        assertEquals(steeringReference.getActuatorValueCurrent(), vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).get().getActuatorValueCurrent());
+        assertEquals(brakeReference.getActuatorValueCurrent(), vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE).get().getActuatorValueCurrent());
+
+    }
+
+
 }

@@ -21,14 +21,10 @@
 package simulation.vehicle;
 
 import commons.controller.commons.BusEntry;
-import commons.controller.commons.NavigationEntry;
-import commons.controller.commons.Surface;
 import commons.controller.commons.Vertex;
-import commons.controller.interfaces.FunctionBlockInterface;
-import commons.map.IAdjacency;
 import commons.map.IControllerNode;
-import commons.simulation.Sensor;
-import de.topobyte.osm4j.core.model.iface.OsmNode;
+//import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
+import navigationBlock.NavigationBlock;
 import sensors.CameraSensor;
 import sensors.CompassSensor;
 import sensors.DayNightSensor;
@@ -46,15 +42,16 @@ import sensors.SpeedSensor;
 import sensors.StaticPlannedTrajectoryXSensor;
 import sensors.StaticPlannedTrajectoryYSensor;
 import sensors.SteeringAngleSensor;
-import sensors.StreetTypeSensor;
 import sensors.WeatherSensor;
 import sensors.abstractsensors.AbstractSensor;
+
 
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
+import simulation.EESimulator.NavigationBlockAsEEComponent;
 import simulation.bus.Bus;
 import simulation.bus.InstantBus;
 import simulation.environment.WorldModel;
@@ -121,12 +118,12 @@ public class Vehicle {
     public static final double VEHICLE_DEFAULT_GEAR_MIN = 0;
     public static final double VEHICLE_DEFAULT_GEAR_MAX = 5;
     public static final double VEHICLE_DEFAULT_GEAR_RATE = 1;
-    
+
     /** Status logging module */
     private StatusLogger statusLogger;
 
     /** Navigation for vehicle */
-    private Optional<FunctionBlockInterface> navigation;
+    private Optional<NavigationBlockAsEEComponent> navigation;
     
     /** EEVehicle that models the in Vehicle communication */
     private EEVehicle eeVehicle;
@@ -135,8 +132,6 @@ public class Vehicle {
     private PhysicalVehicle physicalVehicle;
 
     /** Internal Attributes */
-    /** Last navigation target for vehicle */
-    private Optional<IControllerNode> lastNavigationTarget;
 
     /** Camera image from visualization */
     private Optional<Image> cameraImage;
@@ -152,16 +147,16 @@ public class Vehicle {
     public Vehicle(PhysicalVehicle physicalVehicle) {
         // Create the status logger
         this.statusLogger = new StatusLogger();
-        // Create the navigation unit
-        this.navigation = Optional.empty();
+
         //Set physicalVehicle
         this.physicalVehicle = physicalVehicle;
         physicalVehicle.setVehicle(this);
         //Set eeVehicle
         this.eeVehicle = createEEVehicle(physicalVehicle);
+        //Register actuators at physical vehicle
         physicalVehicle.initializeActuators();
-        // Initialise last navigation target with empty optional
-        this.lastNavigationTarget = Optional.empty();
+        //Register navigation at vehicle
+        this.navigation = eeVehicle.getNavigation();
         // Initialise camera image with empty optional
         cameraImage = Optional.empty();
         // When created, maximum temporary allowed velocity is not limited
@@ -179,8 +174,6 @@ public class Vehicle {
         //Set eeVehicle
         this.eeVehicle = new EEVehicle(this, simulator, buses, components);
         physicalVehicle.initializeActuators();
-        // Initialise last navigation target with empty optional
-        this.lastNavigationTarget = Optional.empty();
         // Initialise camera image with empty optional
         cameraImage = Optional.empty();
         // When created, maximum temporary allowed velocity is not limited
@@ -198,13 +191,12 @@ public class Vehicle {
         //Set eeVehicle
         this.eeVehicle = new EEVehicle(this, simulator, file);
         physicalVehicle.initializeActuators();
-        // Initialise last navigation target with empty optional
-        this.lastNavigationTarget = Optional.empty();
         // Initialise camera image with empty optional
         cameraImage = Optional.empty();
         // When created, maximum temporary allowed velocity is not limited
         this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
     }
+
     
     private EEVehicle createEEVehicle(PhysicalVehicle physicalVehicle) {
 		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
@@ -231,7 +223,9 @@ public class Vehicle {
 		components.add(AbstractSensor.createSensor(StaticPlannedTrajectoryYSensor.class, physicalVehicle, bus).get());
 		components.add(AbstractSensor.createSensor(SteeringAngleSensor.class, physicalVehicle, bus).get());
 		components.add(AbstractSensor.createSensor(WeatherSensor.class, physicalVehicle, bus).get());
-		
+
+
+		//create all actuators
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE, bus));
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, bus));
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, bus));
@@ -242,7 +236,10 @@ public class Vehicle {
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR, bus));
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, bus));
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE, bus));
-        
+
+        //create navigation
+        components.add(NavigationBlockAsEEComponent.createNavigationBlockAsEEComponent(bus));
+
         return new EEVehicle(this, eeSimulator, Collections.singletonList(bus), components);
     }
     
@@ -291,18 +288,14 @@ public class Vehicle {
      *
      * @return Optional navigation of the vehicle
      */
-    public Optional<FunctionBlockInterface> getNavigation() {
-        return navigation;
+    public Optional<NavigationBlock> getNavigation()
+    {
+        if(navigation.isPresent()) {
+            return Optional.of(navigation.get().getNavigationBlock());
+        }
+        return Optional.empty();
     }
 
-    /**
-     * Function that sets the optional navigation
-     *
-     * @param navigation Optional navigation of the vehicle
-     */
-    public void setNavigation(Optional<FunctionBlockInterface> navigation) {
-        this.navigation = navigation;
-    }
 
     /**
      * Function that returns the last navigation target of the vehicle
@@ -310,7 +303,10 @@ public class Vehicle {
      * @return ToDo
      */
     public Optional<IControllerNode> getLastNavigationTarget() {
-        return lastNavigationTarget;
+        if(navigation.isPresent()) {
+            return navigation.get().getLastNavigationTarget();
+        }
+        return Optional.empty();
     }
 
     /**
@@ -356,12 +352,16 @@ public class Vehicle {
      * @return Current trajectory of the vehicle, if not available return empty list
      */
     public List<Vertex> getTrajectory() {
-
-		throw new UnsupportedOperationException();
+        if(navigation.isPresent()) {
+            return navigation.get().getTrajectory();
+        }
+        return new ArrayList<>();
     }
     
-	public void navigateTo(IControllerNode iControllerNode, LinkedList linkedList) {
-		throw new UnsupportedOperationException();
+	public void navigateTo(IControllerNode target, LinkedList<RealVector> avoidCoordinates) {
+        if(navigation.isPresent()) {
+            navigation.get().navigateTo(target, avoidCoordinates);
+        }
 	}
  
     /**
@@ -473,26 +473,6 @@ public class Vehicle {
         return new AbstractMap.SimpleEntry<>(nextVertex, nearestPosOnTrajectory);
     }
 
-//    /**
-//     * Internal function that is called after an trajectory update was performed
-//     */
-//    private void afterTrajectoryUpdate() {
-//        // Get current trajectory
-//        List<Vertex> trajectory = getTrajectory();
-//        if (trajectory.isEmpty()) {
-//            return;
-//        }
-//
-//        // Add intersection node information to each vertex in the trajectory
-//        Set<OsmNode> intersectionNodes = IntersectionFinder.getInstance().getIntersections();
-//        for (Vertex vertex : trajectory) {
-//            for (OsmNode intersectionNode : intersectionNodes) {
-//                if (vertex.getOsmId() == intersectionNode.getId()) {
-//                    vertex.setIntersectionNode(true);
-//                }
-//            }
-//        }
-//    }
 
     /**
      * Overwrite toString() to get a nice output for vehicles
