@@ -134,6 +134,16 @@ public class StreamTestMojoBase extends AbstractMojo {
     @Parameter(defaultValue = "true")
     protected boolean showDateAndTime;
 
+
+    @Parameter(defaultValue = "false")
+    protected boolean enableExecutionLogging;
+    public boolean getEnableExecutionLogging(){
+        return enableExecutionLogging;
+    }
+    public void setEnableExecutionLogging(boolean enableExecutionLogging){
+        this.enableExecutionLogging = enableExecutionLogging;
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Properties">
@@ -206,6 +216,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.showBuildAndRunOutput = showBuildAndRunOutput;
         stmb.forceRun = forceRun;
         stmb.showDateAndTime = showDateAndTime;
+        stmb.enableExecutionLogging = enableExecutionLogging;
         stmb.setLog(getLog());
 
         stmb.myLog = myLog;

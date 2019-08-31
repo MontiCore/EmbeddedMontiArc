@@ -77,13 +77,4 @@ public class MiddlewareMojoBase extends StreamTestMojoBase {
         mmb.enableExecutionLogging = this.enableExecutionLogging;
     }
 
-
-    @Parameter(defaultValue = "false")
-    protected boolean enableExecutionLogging;
-    public boolean getEnableExecutionLogging(){
-        return enableExecutionLogging;
-    }
-    public void setEnableExecutionLogging(boolean enableExecutionLogging){
-        this.enableExecutionLogging = enableExecutionLogging;
-    }
 }

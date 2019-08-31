@@ -235,6 +235,10 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             generatorCPP.setCheckModelDir(true);
             generatorCPP.setUseAlgebraicOptimizations(false);
             generatorCPP.setUseThreadingOptimization(false);
+            if(getEnableExecutionLogging()){
+                logWarn("Execution logging is activated! Resulting log files get large very fast!");
+            }
+            generatorCPP.setExecutionLoggingActive(getEnableExecutionLogging());
             //use cmake
             generatorCPP.setGenerateCMake(true);
             List<File> files = null;
