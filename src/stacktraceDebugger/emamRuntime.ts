@@ -6,7 +6,7 @@
 import { EventEmitter } from 'events';
 import { emaStacktraces } from './stacktraceParser';
 import { DebugProtocol } from 'vscode-debugprotocol';
-import { existsSync ,readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import { TestCache } from './testCache';
 import { EMATestRunner } from './testRunner';
 import { window } from 'vscode';
@@ -27,10 +27,10 @@ export class EmamRuntime extends EventEmitter {
 	private modelbase: string;
 	private lastManualIndex: number = -1;
 	private logger: RuntimeLogger = new RuntimeLogger(this);
-	private	generatorJarPath: string;
+	private generatorJarPath: string;
 
-	public setSourceFile(path:string){
-		this._sourceFile = path.replace("\/\/","/");
+	public setSourceFile(path: string) {
+		this._sourceFile = path.replace("\/\/", "/");
 	}
 
 	public getVariables(): DebugProtocol.Variable[] {
@@ -66,7 +66,7 @@ export class EmamRuntime extends EventEmitter {
 	private _breakpointId = 1;
 
 
-	constructor(generatorJarPath:string) {
+	constructor(generatorJarPath: string) {
 		super();
 		this.generatorJarPath = generatorJarPath;
 	}
@@ -79,17 +79,18 @@ export class EmamRuntime extends EventEmitter {
 	 * Start executing the given program.
 	 */
 	public start(program: string, modelbase: string, stopOnEntry: boolean) {
-		if(!existsSync(modelbase)){
+		log4js.getLogger().trace("start");
+		if (!existsSync(modelbase)) {
 			window.showErrorMessage("Modelbase " + modelbase + " does not exist!");
 			setTimeout(() => this.sendEvent('end'), 2000);
-		}else{
+		} else {
 			this.logger.log("Start debugging the Stream tests for " + program);
 			const targetBasePath = modelbase + "/target";
-			this.testRunner = new TestCache(new EMATestRunner(targetBasePath,this.generatorJarPath, modelbase, this.logger));
+			this.testRunner = new TestCache(new EMATestRunner(targetBasePath, this.generatorJarPath, modelbase, this.logger));
 			this.modelbase = modelbase;
 			this.logger.log("Parsing stacktraces...");
 			const tmpStacktraces = this.testRunner.getStacktraces(program);
-			if(tmpStacktraces){
+			if (tmpStacktraces) {
 				this.stacktraces = tmpStacktraces;
 				this.debugLog("Start debugging");
 				if (stopOnEntry) {
@@ -97,7 +98,7 @@ export class EmamRuntime extends EventEmitter {
 				} else {
 					this.continue();
 				}
-			}else{
+			} else {
 				setTimeout(() => this.sendEvent('end'), 2000);
 			}
 		}
@@ -116,6 +117,7 @@ export class EmamRuntime extends EventEmitter {
 	 * Step to the next/previous non empty line.
 	 */
 	public step(reverse = false, event = 'stopOnStep') {
+		log4js.getLogger().trace("step");
 		this.lastManualIndex = this.current_stack_index;
 		this.run(reverse, event);
 	}
@@ -125,6 +127,7 @@ export class EmamRuntime extends EventEmitter {
 	}
 
 	public stepOut() {
+		log4js.getLogger().trace("stepOut");
 		this.lastManualIndex = this.current_stack_index;
 		this.run(false, "stepOut");
 	}
@@ -157,7 +160,8 @@ export class EmamRuntime extends EventEmitter {
 	 * Set breakpoint in file with given line.
 	 */
 	public setBreakPoint(rawPath: string, line: number): EmamBreakpoint {
-		let path = rawPath.replace("\/\/","/");
+		log4js.getLogger().trace("setBreakPoint");
+		let path = rawPath.replace("\/\/", "/");
 		log4js.getLogger().debug("Set bp on " + path + ":" + line);
 		const bp = <EmamBreakpoint>{ verified: false, line, id: this._breakpointId++ };
 		let bps = this._breakPoints.get(path);
@@ -176,6 +180,7 @@ export class EmamRuntime extends EventEmitter {
 	 * Clear breakpoint in file with given line.
 	 */
 	public clearBreakPoint(path: string, line: number): EmamBreakpoint | undefined {
+		log4js.getLogger().trace("clearBreakPoint");
 		let bps = this._breakPoints.get(path);
 		if (bps) {
 			const index = bps.findIndex(bp => bp.line === line);
@@ -189,6 +194,7 @@ export class EmamRuntime extends EventEmitter {
 	}
 
 	public clearBreakpoints(path: string): void {
+		log4js.getLogger().trace("clearBreakpoints");
 		this._breakPoints.delete(path);
 	}
 
@@ -230,7 +236,7 @@ export class EmamRuntime extends EventEmitter {
 		if (path.startsWith("file:")) {
 			prefix = "file:"
 		}
-		this._sourceLines = readFileSync(prefix + path, {"encoding":"utf-8", "flag":"r"}).split("\n");
+		this._sourceLines = readFileSync(prefix + path, { "encoding": "utf-8", "flag": "r" }).split("\n");
 		let bps = this._breakPoints.get(path);
 		if (bps) {
 			for (let bp of bps) {
@@ -249,6 +255,7 @@ export class EmamRuntime extends EventEmitter {
 	}
 
 	private fireEventsForCurrentStacktrace(ln: number, stepEvent?: string, reverse?: boolean): boolean {
+		log4js.getLogger().trace("fireEventsForCurrentStacktrace");
 		// is there a breakpoint?
 		const breakpoints = this._breakPoints.get(this._sourceFile);
 		if (breakpoints) {
@@ -259,11 +266,11 @@ export class EmamRuntime extends EventEmitter {
 				if (a || b) {
 					this.sendEvent('stopOnBreakpoint');
 					return true;
-				}else{
+				} else {
 					log4js.getLogger().trace("Mismatch! bp.line: " + bp.line + ", stLine: " + stLine);
 				}
 			}
-		}else{
+		} else {
 			log4js.getLogger().trace("No breakpoints for " + this._sourceFile);
 		}
 

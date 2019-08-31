@@ -8,11 +8,12 @@ export class TestCache {
 	private lastModifiedMap: Object;
 	private testRunner: EMATestRunner;
 
-	constructor(testRunner:EMATestRunner) {
+	constructor(testRunner: EMATestRunner) {
 		this.testRunner = testRunner;
 	}
 
-	public getStacktraces(componentName:string):emaStacktraces | null{
+	public getStacktraces(componentName: string): emaStacktraces | null {
+		log4js.getLogger().trace("getStacktraces");
 		const targetDir = this.testRunner.getTargetDir(componentName);
 		const stacktraceFile = targetDir + "/build/stacktrace.log";
 		const lastDebugPath = targetDir + "/lastDebug.json";
@@ -23,10 +24,10 @@ export class TestCache {
 
 		if (this.hasChangedAndUpdateAll(relevantFiles)) {
 			let success = this.doRunTests(componentName, stacktraceFile, lastDebugPath);
-			if(!success){
+			if (!success) {
 				return null;
 			}
-		}else{
+		} else {
 			this.testRunner.getDebugConsoleLogger().log("Files have not changed => Using cache");
 		}
 
@@ -34,23 +35,25 @@ export class TestCache {
 
 	}
 
-	private doRunTests(componentName: string, stacktraceFile: string, lastDebugPath: string): boolean{
+	private doRunTests(componentName: string, stacktraceFile: string, lastDebugPath: string): boolean {
+		log4js.getLogger().trace("doRunTests");
 		this.testRunner.getDebugConsoleLogger().log("Files have changed => Rerunning tests");
 		const testWasRun = this.testRunner.executeTests(componentName);
-		if(testWasRun){
+		if (testWasRun) {
 			this.hasChangedAndUpdate(stacktraceFile);
 			log4js.getLogger().debug("Writing lastDebug");
 			log4js.getLogger().trace(componentName);
 			log4js.getLogger().trace(this.lastModifiedMap);
-			writeFileSync(lastDebugPath, JSON.stringify({"program":componentName, "fileModifiedStamps": this.lastModifiedMap}), {"encoding":"utf-8"});
+			writeFileSync(lastDebugPath, JSON.stringify({ "program": componentName, "fileModifiedStamps": this.lastModifiedMap }), { "encoding": "utf-8" });
 			return true;
-		}else{
+		} else {
 			this.testRunner.getDebugConsoleLogger().log("Error getting stacktraces. Aborting!");
 			return false;
 		}
 	}
 
 	private getRelevantFiles(stacktraceFile: string, lastDebugPath: string, componentName: string) {
+		log4js.getLogger().trace("getRelevantFiles");
 		let relevantFiles = this.getAllFileNames(this.testRunner.getModelBasePath()).filter(fn => fn.endsWith(".emam") || fn.endsWith(".stream"));
 		relevantFiles.push(this.testRunner.getGeneratorJarPath());
 		relevantFiles.push(stacktraceFile);
@@ -58,6 +61,7 @@ export class TestCache {
 	}
 
 	private loadFileTimestamps(lastDebugPath: string, componentName: string) {
+		log4js.getLogger().trace("loadFileTimestamps");
 		try {
 			const lastDebugContent = readFileSync(lastDebugPath, { "encoding": "utf-8", "flag": "r" });
 			if (lastDebugContent) {
@@ -75,12 +79,13 @@ export class TestCache {
 			this.testRunner.getDebugConsoleLogger().log("Can not load cache =>  Recompiling!");
 		}
 
-		if(this.lastModifiedMap == null){
+		if (this.lastModifiedMap == null) {
 			this.lastModifiedMap = new Object();
 		}
 	}
 
 	public hasChangedAndUpdateAll(paths: string[]): boolean {
+		log4js.getLogger().trace("hasChangedAndUpdateAll");
 		let res = false;
 		for (let p of paths) {
 			const newLocal = this.hasChangedAndUpdate(p);
@@ -90,6 +95,7 @@ export class TestCache {
 	}
 
 	public hasChangedAndUpdate(path: string): boolean {
+		log4js.getLogger().trace("hasChangedAndUpdate");
 		let prefix = "";
 		if (!isAbsolute(path)) {
 			prefix = this.testRunner.getModelBasePath() + "/";
@@ -101,7 +107,7 @@ export class TestCache {
 			if (this.lastModifiedMap.hasOwnProperty(fullPath)) {
 				const newLocal = Math.abs(this.lastModifiedMap[fullPath] - lastTime) < Number.EPSILON;
 				res = !newLocal;
-				if(res){
+				if (res) {
 					log4js.getLogger().debug("File " + fullPath + " changed! Timestamp was " + this.lastModifiedMap[fullPath] + " and is " + lastTime + "now");
 				}
 			} else {
@@ -116,7 +122,8 @@ export class TestCache {
 		return res;
 	}
 
-	private getAllFileNames(dir:string): string[] {
+	private getAllFileNames(dir: string): string[] {
+		log4js.getLogger().trace("getAllFileNames");
 		let tmpDir = dir.endsWith("/") ? dir : dir + "/";
 		let files = readdirSync(dir);
 		let res: string[] = [];

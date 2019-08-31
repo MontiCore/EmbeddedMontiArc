@@ -44,9 +44,9 @@ export function activate(context: vscode.ExtensionContext) {
 		new StreamTestCodeLensProvider()
 	);
 
-  // Push the command and CodeLens provider to the context so it can be disposed of later
-  context.subscriptions.push(commandDisposable);
-  context.subscriptions.push(codeLensProviderDisposable);
+	// Push the command and CodeLens provider to the context so it can be disposed of later
+	context.subscriptions.push(commandDisposable);
+	context.subscriptions.push(codeLensProviderDisposable);
 
 	if (EMBED_DEBUG_ADAPTER) {
 		const factory = new EmamDebugAdapterDescriptorFactory();
@@ -59,17 +59,17 @@ export function deactivate() {
 	// nothing to do
 }
 
-function setupLog(extensionPath: string){
+function setupLog(extensionPath: string) {
 	const logFileName = extensionPath + '/logs/emam-debug.log';
 	log4js.configure({
 		appenders: {
-		  out: { type: 'console' },
-		  app: { type: 'file', filename: logFileName, maxLogSize: 1000000, backups: 1 }
+			out: { type: 'console' },
+			app: { type: 'file', filename: logFileName, maxLogSize: 1000000, backups: 1 }
 		},
 		categories: {
-		  default: { appenders: [ 'out', 'app' ], level: 'debug' }
+			default: { appenders: ['out', 'app'], level: 'debug' }
 		}
-	  });
+	});
 	log4js.getLogger().debug("Logger created! Will write to " + logFileName);
 }
 
@@ -86,7 +86,7 @@ class EmamConfigurationProvider implements vscode.DebugConfigurationProvider {
 			const editor = vscode.window.activeTextEditor;
 			if (editor && editor.document.languageId === 'EmbeddedMontiArcMath') {
 				let tmpConfig = getConfigForCurrentFile();
-				if(tmpConfig){
+				if (tmpConfig) {
 					config = tmpConfig;
 				}
 			}
