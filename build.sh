@@ -1,7 +1,7 @@
+# (c) https://github.com/MontiCore/monticore
 curDir=$(readlink -f `dirname $0`)
-# (c) https://github.com/MontiCore/monticore  
 fileName="${curDir}/resources/emam-generator.jar"
-curl -o "$fileName" "https://nexus.se.rwth-aachen.de/repository/public/de/monticore/lang/monticar/embedded-montiarc-math-generator/0.1.11-SNAPSHOT/embedded-montiarc-math-generator-0.1.11-20190523.153355-1-jar-with-dependencies.jar"
+curl -o "$fileName" "https://nexus.se.rwth-aachen.de/repository/public/de/monticore/lang/monticar/embedded-montiarc-math-generator/0.1.15-SNAPSHOT/embedded-montiarc-math-generator-0.1.15-20190830.195219-1-jar-with-dependencies.jar"
 if [ ! -f "${fileName}" ]
 then
 	echo "Can not find generator jar"
