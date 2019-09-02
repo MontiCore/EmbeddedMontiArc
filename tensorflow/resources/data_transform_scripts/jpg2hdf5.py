@@ -15,9 +15,8 @@ import os
 import cv2
 
 #DIR Dictionary setup
-#Data_Dir = '/media/felixh/hdd/extracted_dataset.bag/'
-Data_Dir = '/media/felixh/hdd/extracted_dataset-2-2.bag/'
-#Data_Dir = '../test_set/'
+#Data_Dir = '/media/felixh/hdd/extracted_dataset-2-2.bag/'
+Data_Dir = '../test_set/'
 
 center_cam = Data_Dir + 'center/'
 left_cam =   Data_Dir + 'left/'
@@ -34,7 +33,6 @@ len_pictures = len([name for name in os.listdir(center_cam) if os.path.isfile(os
 print "Number pictures to format: center cam",len_pictures
 
 start = 0
-#ende = 1000
 ende = len_pictures
 print "---------------------------"
 
@@ -146,7 +144,6 @@ def parse_center_to_angle():
 def center_to_hdf5(csv_data,begin,end):
 
     dic = csv_to_dic(csv_data,0)
-
     pic_ids = dic.keys()
     pic_ids.sort()
 
@@ -199,7 +196,6 @@ def center_to_hdf5(csv_data,begin,end):
 def parse_center_to_left_right():
 
     print "STARTING Step  parse center to left"
-    # bla bla
     dic = parse_center_to_angle()
     pic_ids = dic.keys()
     lable_csv = Data_Dir + 'steering.csv'
@@ -244,7 +240,7 @@ def load_parsed_images_from_csv(v_file):
     return dic
 
 
-def bild_slope():
+def build_slope():
 
     dic = load_parsed_images_from_csv("center_to_angle.csv")
     ordered_list = dic.keys()
@@ -297,9 +293,9 @@ def select_subset_of_turns():
 
 if __name__== "__main__":
 
-   # parse_center_to_angle()
-    center_to_hdf5("selected_subset.csv",100,300)
-    #bild_slope()
+    parse_center_to_angle()
+    center_to_hdf5("center_to_angle.csv",-1,-1)
+    #build_slope()
     #select_subset_of_turns()
 
 
