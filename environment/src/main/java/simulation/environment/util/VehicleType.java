@@ -18,7 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package simulation.vehicle;
+package simulation.environment.util;
 
 public enum VehicleType {
 	NONE, ELECTRIC, GAS, FUELL

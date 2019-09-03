@@ -13,8 +13,8 @@ import simulation.environment.util.ChargingStationNavigator;
 import simulation.environment.util.IBattery;
 import simulation.util.Log;
 import static simulation.vehicle.VehicleActuatorType.*;
-import simulation.vehicle.Battery;
-import simulation.vehicle.VehicleType;
+
+import simulation.environment.util.VehicleType;
 import java.util.Optional;
 
 /**
@@ -47,6 +47,9 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
 
     /** Is the Vehicle Chargeable */
     protected boolean isChargeable = false;
+
+    /** IsCharging flag ## TODO: I added because of Erros, somebody removed it. necessary?*/
+    protected boolean isCharging;
 
     /**
      * Constructor for a none powered physical vehicle that is standing at its position
@@ -82,7 +85,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
 
         // Electrical Vehicle
         // Create battery if vehicle is electric
-        if (vehicleType == VehicleType.ELECTRICAL) {
+        if (vehicleType == VehicleType.ELECTRIC) {
             this.isChargeable = true;
             Battery battery = new Battery(simulationVehicle, 3000000, fuellPercentage);
             simulationVehicle.setBattery(battery);
@@ -346,14 +349,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     public Vehicle getSimulationVehicle() {
         return simulationVehicle;
     }
-	
-	/**
-     * Checks the Vehicle
-     * @return true if Vehicle is electrical Vehicle
-     */
-	public boolean isElectricVehicle(){
-		return isElectricVehicle;
-	}
 
     /**
      * Function that initialises the physical components and parameters
