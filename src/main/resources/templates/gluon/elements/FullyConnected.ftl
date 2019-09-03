@@ -4,15 +4,12 @@
 <#assign flatten = element.flatten?string("True","False")>
 <#if mode == "ARCHITECTURE_DEFINITION">
         <#if element.partOfUnroll>
-            ${element.name} = Net_1().${element.name}(${input})
+        <#assign unrollIndex = element.unrollIndex>
+            self.${element.name} = gluon.nn.Dense(units=${units}, use_bias=${use_bias}, flatten=${flatten}, params=Net_${unrollIndex + tc.architecture.streams?size}().${element.name}.collect_params())
         <#else>
             self.${element.name} = gluon.nn.Dense(units=${units}, use_bias=${use_bias}, flatten=${flatten})
         </#if>
         <#include "OutputShape.ftl">
 <#elseif mode == "FORWARD_FUNCTION">
-    <#if element.partOfUnroll>
-        ${element.name} = Net_1().${element.name}(${input})
-    <#else>
         ${element.name} = self.${element.name}(${input})
-    </#if>
 </#if>

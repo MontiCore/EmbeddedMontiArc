@@ -48,7 +48,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         getTemplateConfiguration().processTemplate(ftlContext, templatePath, writer);
     }
 
-    public void include(VariableSymbol element, boolean partOfUnroll, Writer writer, NetDefinitionMode netDefinitionMode){
+    public void include(VariableSymbol element, boolean partOfUnroll, int unrollIndex, Writer writer, NetDefinitionMode netDefinitionMode){
         ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(element);
 
@@ -66,13 +66,13 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             }
         }
         else {
-            include(element.getResolvedThis().get(), partOfUnroll, writer, netDefinitionMode);
+            include(element.getResolvedThis().get(), partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
 
         setCurrentElement(previousElement);
     }
 
-    public void include(ConstantSymbol constant, boolean partOfUnroll, Writer writer, NetDefinitionMode netDefinitionMode) {
+    public void include(ConstantSymbol constant, boolean partOfUnroll, int unrollIndex, Writer writer, NetDefinitionMode netDefinitionMode) {
         ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(constant);
 
@@ -80,85 +80,88 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             include(TEMPLATE_ELEMENTS_DIR_PATH, "Const", writer, netDefinitionMode);
         }
         else {
-            include(constant.getResolvedThis().get(), partOfUnroll, writer, netDefinitionMode);
+            include(constant.getResolvedThis().get(), partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
 
         setCurrentElement(previousElement);
     }
 
-    public void include(LayerSymbol layer, boolean partOfUnroll, Writer writer, NetDefinitionMode netDefinitionMode){
+    public void include(LayerSymbol layer, boolean partOfUnroll, int unrollIndex, Writer writer, NetDefinitionMode netDefinitionMode){
         ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(layer);
         getCurrentElement().setPartOfUnroll(partOfUnroll);
+        getCurrentElement().setUnrollIndex(unrollIndex);
 
         if (layer.isAtomic()){
             String templateName = layer.getDeclaration().getName();
             include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
         }
         else {
-            include(layer.getResolvedThis().get(), partOfUnroll, writer, netDefinitionMode);
+            include(layer.getResolvedThis().get(), partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
 
         setCurrentElement(previousElement);
     }
 
-    public void include(UnrollSymbol unrollElement, boolean partOfUnroll, Writer writer, NetDefinitionMode netDefinitionMode){
-        include(unrollElement.getBody(), partOfUnroll, writer, netDefinitionMode);
+    public void include(UnrollSymbol unrollElement, boolean partOfUnroll, int unrollIndex, Writer writer, NetDefinitionMode netDefinitionMode){
+        include(unrollElement.getBody(), partOfUnroll, unrollIndex, writer, netDefinitionMode);
         String templateName = unrollElement.getDeclaration().getName();
         include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
     }
 
-    public void include(CompositeElementSymbol compositeElement, boolean partOfUnroll, Writer writer, NetDefinitionMode netDefinitionMode){
+    public void include(CompositeElementSymbol compositeElement, boolean partOfUnroll, int unrollIndex, Writer writer, NetDefinitionMode netDefinitionMode){
         ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(compositeElement);
 
         for (ArchitectureElementSymbol element : compositeElement.getElements()){
-            include(element, partOfUnroll, writer, netDefinitionMode);
+            include(element, partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
 
         setCurrentElement(previousElement);
     }
 
-    public void include(ArchitectureElementSymbol architectureElement, boolean partOfUnroll, Writer writer, NetDefinitionMode netDefinitionMode){
+    public void include(ArchitectureElementSymbol architectureElement, boolean partOfUnroll, int unrollIndex, Writer writer, NetDefinitionMode netDefinitionMode){
         if (architectureElement instanceof CompositeElementSymbol){
-            include((CompositeElementSymbol) architectureElement, partOfUnroll, writer, netDefinitionMode);
+            include((CompositeElementSymbol) architectureElement, partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
         else if (architectureElement instanceof LayerSymbol){
-            include((LayerSymbol) architectureElement, partOfUnroll, writer, netDefinitionMode);
+            include((LayerSymbol) architectureElement, partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
         else if (architectureElement instanceof ConstantSymbol) {
-            include((ConstantSymbol) architectureElement, partOfUnroll, writer, netDefinitionMode);
+            include((ConstantSymbol) architectureElement, partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
         else {
-            include((VariableSymbol) architectureElement, partOfUnroll, writer, netDefinitionMode);
+            include((VariableSymbol) architectureElement, partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
     }
 
     public void include(ArchitectureElementSymbol architectureElementSymbol, String netDefinitionMode) {
-        include(architectureElementSymbol, false, NetDefinitionMode.fromString(netDefinitionMode));
+        include(architectureElementSymbol, false, -1, NetDefinitionMode.fromString(netDefinitionMode));
     }
 
-    public void include(ArchitectureElementSymbol architectureElementSymbol, boolean partOfUnroll, String netDefinitionMode) {
-            include(architectureElementSymbol, partOfUnroll, NetDefinitionMode.fromString(netDefinitionMode));
+    public void include(ArchitectureElementSymbol architectureElementSymbol, boolean partOfUnroll, int unrollIndex, String netDefinitionMode) {
+
+        int layerIndex = -1;
+        include(architectureElementSymbol, partOfUnroll, unrollIndex, NetDefinitionMode.fromString(netDefinitionMode));
     }
 
-    public void include(UnrollSymbol unrollSymbol, boolean partOfUnroll, String netDefinitionMode) {
-        include(unrollSymbol, partOfUnroll, NetDefinitionMode.fromString(netDefinitionMode));
+    public void include(UnrollSymbol unrollSymbol, boolean partOfUnroll, int unrollIndex, String netDefinitionMode) {
+        include(unrollSymbol, partOfUnroll, unrollIndex, NetDefinitionMode.fromString(netDefinitionMode));
     }
 
 
-    public void include(ArchitectureElementSymbol architectureElement, boolean partOfUnroll, NetDefinitionMode netDefinitionMode){
+    public void include(ArchitectureElementSymbol architectureElement, boolean partOfUnroll, int unrollIndex, NetDefinitionMode netDefinitionMode){
         if (getWriter() == null){
             throw new IllegalStateException("missing writer");
         }
-        include(architectureElement, partOfUnroll, getWriter(), netDefinitionMode);
+        include(architectureElement, partOfUnroll, unrollIndex, getWriter(), netDefinitionMode);
     }
 
-    public void include(UnrollSymbol unroll, boolean partOfUnroll, NetDefinitionMode netDefinitionMode){
+    public void include(UnrollSymbol unroll, boolean partOfUnroll, int unrollIndex, NetDefinitionMode netDefinitionMode){
         if (getWriter() == null){
             throw new IllegalStateException("missing writer");
         }
-        include(unroll, partOfUnroll, getWriter(), netDefinitionMode);
+        include(unroll, partOfUnroll, unrollIndex, getWriter(), netDefinitionMode);
     }
 
     public Set<String> getStreamInputNames(SerialCompositeElementSymbol stream) {
