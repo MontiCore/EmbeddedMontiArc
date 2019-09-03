@@ -146,7 +146,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testRNNtest() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/architectures", "-r", "RNNtest", "-o", "./target/generated-sources-cnnarch/"};
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "RNNtest", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2GluonCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }

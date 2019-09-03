@@ -4,8 +4,8 @@
 <#assign flatten = element.flatten?string("True","False")>
 <#if mode == "ARCHITECTURE_DEFINITION">
         <#if element.partOfUnroll>
-        <#assign unrollIndex = element.unrollIndex>
-            self.${element.name} = gluon.nn.Dense(units=${units}, use_bias=${use_bias}, flatten=${flatten}, params=Net_${unrollIndex + tc.architecture.streams?size}().${element.name}.collect_params())
+            self.${element.name} = gluon.nn.Dense(units=${units}, use_bias=${use_bias}, flatten=${flatten},
+            params=Net_${element.unrollIndex + tc.architecture.streams?size}().${element.name}.collect_params())
         <#else>
             self.${element.name} = gluon.nn.Dense(units=${units}, use_bias=${use_bias}, flatten=${flatten})
         </#if>

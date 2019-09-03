@@ -1,13 +1,26 @@
-architecture RNNencdec(max_length=5, vocabulary_size=30000, hidden_size=1000){
-   def input Q(0:1)^{vocabulary_size} source
-   def output Q(0:1)^{vocabulary_size} target[6]
+architecture RNNencdec(max_length=50, vocabulary_size=30000, hidden_size=1000){
+  def input N(0:29999)^{50} source
+  def output Q(0:29999)^{1} target[50]
 
-    source -> Softmax() -> target[0];
+     layer LSTM(units=hidden_size) encoder;
 
-   timed <t=0> BeamSearchStart(max_length=5) {
-       source ->
-       FullyConnected(units=vocabulary_size) ->
-       Softmax() ->
-       target[t+1]
-   };
- }
+     source ->
+     Embedding(output_dim=hidden_size) ->
+     encoder;
+
+     layer LSTM(units=hidden_size) decoder;
+
+     1 -> target[0];
+
+     encoder.state -> decoder.state;
+
+     timed<t=1> BeamSearchStart(max_length=50) {
+         target[t-1] ->
+         Embedding(output_dim=hidden_size) ->
+         decoder ->
+         FullyConnected(units=vocabulary_size) ->
+         Softmax() ->
+         target[t]
+     };
+
+}
