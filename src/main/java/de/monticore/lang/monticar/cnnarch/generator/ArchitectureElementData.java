@@ -39,12 +39,14 @@ public class ArchitectureElementData {
     private ArchitectureElementSymbol element;
     private CNNArchTemplateController templateController;
     private boolean partOfUnroll;
+    private int unrollIndex;
 
     public ArchitectureElementData(String name, ArchitectureElementSymbol element, CNNArchTemplateController templateController) {
         this.name = name;
         this.element = element;
         this.templateController = templateController;
         this.partOfUnroll = partOfUnroll;
+        this.unrollIndex = unrollIndex;
     }
 
     public String getName() {
@@ -77,6 +79,14 @@ public class ArchitectureElementData {
 
     public void setPartOfUnroll(boolean partOfUnroll) {
         this.partOfUnroll= partOfUnroll;
+    }
+
+    public int getUnrollIndex(){
+        return unrollIndex;
+    }
+
+    public void setUnrollIndex(int unrollIndex){
+        this.unrollIndex = unrollIndex;
     }
 
     private LayerSymbol getLayerSymbol() {

@@ -31,6 +31,8 @@ public class LayerNameCreator {
 
     private Map<ArchitectureElementSymbol, String> elementToName = new HashMap<>();
     private Map<String, ArchitectureElementSymbol> nameToElement = new HashMap<>();
+    private ArrayList<String> currentUnrollElementNames = new ArrayList<>();
+    private int elementIndex = 0;
     private boolean partOfUnroll = false;
     private boolean inFirstUnrollTimestep = true;
 
@@ -41,11 +43,13 @@ public class LayerNameCreator {
         }
         stage = 1;
         for (UnrollSymbol unroll : architecture.getUnrolls()) {
+            currentUnrollElementNames = new ArrayList<>();
             partOfUnroll = true;
             for(int index = 0; index < unroll.getBodiesForAllTimesteps().size(); index++) {
                 if(index > 0){
                     inFirstUnrollTimestep = false;
                 }
+                elementIndex = 0;
                 stage = name(unroll.getBodiesForAllTimesteps().get(index), stage, new ArrayList<>());
             }
         }
@@ -121,7 +125,8 @@ public class LayerNameCreator {
                     elementToName.put(architectureElement, name);
                     return endStage;
                 }else if(partOfUnroll && !inFirstUnrollTimestep){
-                    elementToName.put(architectureElement, name);
+                    elementToName.put(architectureElement, currentUnrollElementNames.get(elementIndex));
+                    elementIndex++;
                     return endStage;
                 }
 
@@ -141,6 +146,13 @@ public class LayerNameCreator {
             // for now the name to element mapping is not used anywhere so it doesn't matter
             if (!isLayerVariable) {
                 nameToElement.put(name, architectureElement);
+            }
+
+            if(inFirstUnrollTimestep){
+                currentUnrollElementNames.add(name);
+            }
+            if(partOfUnroll){
+                elementIndex++;
             }
         }
         return endStage;
