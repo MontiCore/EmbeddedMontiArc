@@ -1,22 +1,18 @@
 component RNNtest{
-    ports in Q(-oo:oo)^{50, 30001} source[2],
-         out Q(-oo:oo)^{50, 30001} target[2];
+   ports in Q(0:1)^{30000} source,
+        out Q(0:1)^{30000} target[5];
 
-    implementation CNN {
-        layer RNN(units=500, layers=2) encoder;
-        layer RNN(units=500, layers=2) decoder;
+   implementation CNN{
 
-        source[0] ->
-        encoder;
+        source -> Softmax() -> target[0];
 
-        encoder.output ->
-        target[0];
+        timed <t=1> BeamSearchStart(max_length=5){
+           (target[0] | target[t-1]) ->
+           Concatenate() ->
+           FullyConnected(units=30000) ->
+           Softmax() ->
+           target[t]
+        };
 
-        encoder.state ->
-        decoder.state;
-
-        source[1] ->
-        decoder ->
-        target[1];
-    }
-}
+       }
+ }
