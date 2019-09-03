@@ -44,7 +44,6 @@ public class AllCoCoTest extends AbstractCoCoTest {
 
     @Test
     public void testValidCoCos(){
-        checkValid("valid_tests", "RNNencdec");
         checkValid("architectures", "ResNeXt50");
         checkValid("architectures", "ResNet152");
         checkValid("architectures", "Alexnet");
@@ -52,7 +51,6 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("architectures", "SequentialAlexnet");
         checkValid("architectures", "ThreeInputCNN_M14");
         checkValid("architectures", "VGG16");
-        checkValid("architectures", "RNNtest");
 
         checkValid("valid_tests", "ArgumentSequenceTest");
         checkValid("valid_tests", "Fixed_Alexnet");
@@ -68,6 +66,8 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("valid_tests", "Alexnet_alt2");
         checkValid("valid_tests", "MultipleOutputs");
         checkValid("valid_tests", "MultipleStreams");
+        checkValid("valid_tests", "RNNencdec");
+        checkValid("valid_tests", "RNNtest");
 
     }
 

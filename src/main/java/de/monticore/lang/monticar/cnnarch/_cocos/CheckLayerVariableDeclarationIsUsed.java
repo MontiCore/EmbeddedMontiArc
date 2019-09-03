@@ -51,6 +51,19 @@ public class CheckLayerVariableDeclarationIsUsed extends CNNArchSymbolCoCo {
                 }
             }
 
+            for (UnrollSymbol unroll : layerVariableDeclaration.getLayer().getArchitecture().getUnrolls()) {
+               for (ArchitectureElementSymbol element : unroll.getBodiesForAllTimesteps().get(0).getElements()) {
+                    if (element instanceof VariableSymbol && ((VariableSymbol) element).getMember() == VariableSymbol.Member.NONE) {
+                        isUsed = true;
+                        break;
+                    }
+                }
+
+                if (isUsed) {
+                    break;
+                }
+            }
+
             if (!isUsed) {
                 Log.error("0" + ErrorCodes.UNUSED_LAYER + " Unused layer. " +
                                 "Declared layer variables need to be used as layer at least once.",

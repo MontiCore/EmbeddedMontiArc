@@ -52,7 +52,7 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.BEAMSEARCH_T_NAME)
                         .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
-                        .defaultValue(0)
+                        .defaultValue(1)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.BEAMSEARCH_WIDTH_NAME)
