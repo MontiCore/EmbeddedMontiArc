@@ -51,7 +51,7 @@ public class ChargingProcess implements SimulationLoopExecutable {
         this.battery = vehicle.getBattery();
         // ==== TODO ====
         // Add method Car.getBattery(); to Car
-        if (! vehicle.isElectricVehicle()){
+        if (vehicle.getVehicleType()!=VehicleType.ELECTRIC){
             String msg =  "Vehicle is not electric vehicle, it can't be charged at charging station";
             throw new Exception(msg);
         }
