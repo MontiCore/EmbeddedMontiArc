@@ -19,6 +19,8 @@ component RNNencdec<Z(2:oo) classes = 10>{
         softmax[t] ->
         FullyConnected(units=classes) ->
         Softmax() ->
+        FullyConnected(units=classes) ->
+        Softmax() ->
         softmax[t+1]
        };
        }

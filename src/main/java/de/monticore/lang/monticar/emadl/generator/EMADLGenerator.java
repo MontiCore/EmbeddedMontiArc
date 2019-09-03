@@ -30,6 +30,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.SerialCompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.UnrollSymbol;
 import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnnarch.generator.DataPathConfigParser;
@@ -487,6 +488,16 @@ public class EMADLGenerator {
             }
 
             ++i;
+        }
+
+        for(UnrollSymbol unroll: architecture.getUnrolls()) {
+            for (SerialCompositeElementSymbol body : unroll.getBodiesForAllTimesteps()) {
+                if (body.isTrainable()) {
+                    networkAttributes += "\n" + predictorClassName + "_" + i + " _predictor_" + i + "_;";
+                }
+
+                ++i;
+            }
         }
 
         component = component.replaceFirst("public:", networkAttributes);
