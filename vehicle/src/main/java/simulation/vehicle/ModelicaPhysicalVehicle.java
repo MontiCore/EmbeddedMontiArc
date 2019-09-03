@@ -6,7 +6,10 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
+import simulation.environment.util.VehicleType;
 import simulation.util.MathHelper;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,8 +63,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 	/**
      * Constructor for an uninitialised electrical physical vehicle
      */
-    public ModelicaPhysicalVehicle(boolean isElectrical, double batteryPercentage){
-        super(isElectrical, batteryPercentage);
+    public ModelicaPhysicalVehicle(VehicleType type, double batteryPercentage){
+        super(type, batteryPercentage);
 		
 		initModelicaPhysicalVehicle();
     }
@@ -658,5 +661,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
                 " , error: " + error +
                 " , physicalVehicleInitialised: " + physicalVehicleInitialised +
                 " , simulationVehicle: " + simulationVehicle;
+    }
+
+    @Override
+    public void setCharging(boolean isCharging) {
+        //TODO
+        throw new NotImplementedException();
     }
 }

@@ -125,7 +125,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /**
      * Function to set isCharging flag
      */
-    @Override
     public void isCharging(boolean isCharging){
         this.isCharging = isCharging;
     }

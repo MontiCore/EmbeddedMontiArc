@@ -4,6 +4,7 @@ package simulation.vehicle;
 import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.environment.util.VehicleType;
 
 /**
  * Abstract Builder class for a ModelicaPhysicalVehicle to avoid complex constructors
@@ -24,7 +25,7 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      */
     @Override
     public PhysicalVehicle buildPhysicalVehicle(){
-        PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle(true, 100);
+        PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC, 100);
 
         if(this.velocity.isPresent()){
             // Get rotation

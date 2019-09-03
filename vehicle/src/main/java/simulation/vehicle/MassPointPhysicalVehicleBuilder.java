@@ -9,6 +9,8 @@ import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import simulation.environment.util.VehicleType;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -33,7 +35,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      */
     @Override
     public PhysicalVehicle buildPhysicalVehicle(){
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(true, 100);
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC, 100);
 
         if(this.velocity.isPresent()){
             // Get rotation
