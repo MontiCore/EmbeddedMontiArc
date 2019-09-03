@@ -47,6 +47,7 @@ public class AllPredefinedLayers {
     public static final String FLATTEN_NAME = "Flatten";
     public static final String ONE_HOT_NAME = "OneHot";
     public static final String BEAMSEARCH_NAME = "BeamSearchStart";
+    public static final String GREEDYSEARCH_NAME = "GreedySearch";
     public static final String RNN_NAME = "RNN";
     public static final String LSTM_NAME = "LSTM";
     public static final String GRU_NAME = "GRU";
@@ -74,9 +75,9 @@ public class AllPredefinedLayers {
     public static final String OUTPUT_DIM_NAME = "output_dim";
     public static final String BIDIRECTIONAL_NAME = "bidirectional";
     public static final String FLATTEN_PARAMETER_NAME = "flatten";
-    public static final String BEAMSEARCH_MAX_LENGTH = "max_length";
-    public static final String BEAMSEARCH_WIDTH_NAME = "width";
-    public static final String BEAMSEARCH_T_NAME = "t";
+    public static final String MAX_LENGTH_NAME = "max_length";
+    public static final String WIDTH_NAME = "width";
+    public static final String T_NAME = "t";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
@@ -114,7 +115,8 @@ public class AllPredefinedLayers {
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){
         return Arrays.asList(
-          BeamSearchStart.create());
+                GreedySearch.create(),
+                BeamSearchStart.create());
     }
 
 }

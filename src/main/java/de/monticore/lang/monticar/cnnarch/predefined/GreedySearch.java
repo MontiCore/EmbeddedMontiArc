@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BeamSearchStart extends PredefinedUnrollDeclaration {
+public class GreedySearch extends PredefinedUnrollDeclaration {
 
-    private BeamSearchStart() {
-        super(AllPredefinedLayers.BEAMSEARCH_NAME);
+    private GreedySearch() {
+        super(AllPredefinedLayers.GREEDYSEARCH_NAME);
     }
 
     @Override
@@ -42,8 +42,8 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
         errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
-    public static BeamSearchStart create(){
-        BeamSearchStart declaration = new BeamSearchStart();
+    public static GreedySearch create(){
+        GreedySearch declaration = new GreedySearch();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.MAX_LENGTH_NAME)
@@ -53,10 +53,6 @@ public class BeamSearchStart extends PredefinedUnrollDeclaration {
                         .name(AllPredefinedLayers.T_NAME)
                         .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
                         .defaultValue(1)
-                        .build(),
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.WIDTH_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;
