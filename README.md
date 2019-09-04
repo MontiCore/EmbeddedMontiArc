@@ -1,6 +1,6 @@
 # End2EndDriving
 
-This repository consists of a neural network for end to end driving and some usefull tools. It implements the [paper](https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) by Nvidia on End to End driving.
+This repository consists of a neural network for end to end driving and some useful tools. It implements [this paper](https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) by Nvidia on End to End driving. In summary, the paper describes a method to predict steering angels for a given input image of a camera, which is mounted to the front of a car.
 
 ## Requirements
 
@@ -25,6 +25,9 @@ This repository consists of a neural network for end to end driving and some use
 | 2 | &#9745; | &#9745; | `python3 v-tool/cli.py -i test.h5 -p -v` |
 | 3 |  | &#9745; | `python3 v-tool/cli.py -i test.h5 -v` (execute 1 or 2 first)|
 
+### Visualisation
+
+Predictions are visualized through a Python GUI using Matplotlib. It shows the input frames (frontal camera), the according real steering angels and predicted steering angels as rotating wheels, and the predction error (in angels).
 ![Prediction Visualisations](ss.png)
 
 
