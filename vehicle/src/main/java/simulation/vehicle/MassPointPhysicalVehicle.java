@@ -9,7 +9,6 @@ import simulation.environment.WorldModel;
 import simulation.environment.util.VehicleType;
 import simulation.util.Log;
 import simulation.util.MathHelper;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.AbstractMap;
 import java.util.LinkedList;
@@ -1290,6 +1289,6 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     @Override
     public void setCharging(boolean isCharging) {
         //TODO
-        throw new NotImplementedException();
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -32,7 +32,7 @@ public class Battery implements BatteryInterface, IBattery{
 	
 	private static final double defaultAmpere = 1.0;
 	
-	private double local_deltaT;
+	private double local_deltaT = 0;
 
 	private ConsumptionMethod preferredConsumptionMethod;
 	
@@ -68,7 +68,9 @@ public class Battery implements BatteryInterface, IBattery{
 		
 		setThrottle (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE));
 		setGear     (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR));
-		local_deltaT = (double) vehicle.getControllerBus().get().getData(BusEntry.SIMULATION_DELTA_TIME.toString());
+		if(vehicle.getControllerBus().isPresent()) {
+			local_deltaT = (double) vehicle.getControllerBus().get().getData(BusEntry.SIMULATION_DELTA_TIME.toString());
+		}
 		oldKineticEnergy = 0;
 		
 		ChargingStationConnectionStatus = false;
