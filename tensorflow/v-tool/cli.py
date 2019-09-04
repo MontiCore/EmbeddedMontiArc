@@ -47,9 +47,9 @@ if args.v:
             num_chunks = data_total_size // MAX_SIZE + 1
             chunk_size = f[data_key].shape[0] // num_chunks
             chunk_id = 0
-            while (chunk_id < 1 or chunk_id >= num_chunks):
-                chunk_id = int(input("Dataset is too large. It was divided into " + str(num_chunks) + " chunks. Which chunk [1-" + str(num_chunks) + "] should be selected?: ")) - 1
-
+            while (chunk_id < 1 or chunk_id > num_chunks):
+                chunk_id = int(input("Dataset is too large. It was divided into " + str(num_chunks) + " chunks. Which chunk [1-" + str(num_chunks) + "] should be selected?: "))
+            chunk_id=chunk_id-1
             images = np.array(f[data_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size][:])
             images = images.reshape((-1,480,640,3)).astype("uint8")
             targets_real = np.array(f[target_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size])
