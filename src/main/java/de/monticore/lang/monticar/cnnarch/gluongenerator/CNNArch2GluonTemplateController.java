@@ -66,7 +66,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             }
         }
         else {
-            include(element.getResolvedThis().get(), partOfUnroll, unrollIndex, writer, netDefinitionMode);
+            include((ArchitectureElementSymbol) element.getResolvedThis().get(), partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
 
         setCurrentElement(previousElement);
@@ -80,7 +80,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             include(TEMPLATE_ELEMENTS_DIR_PATH, "Const", writer, netDefinitionMode);
         }
         else {
-            include(constant.getResolvedThis().get(), partOfUnroll, unrollIndex, writer, netDefinitionMode);
+            include((ArchitectureElementSymbol) constant.getResolvedThis().get(), partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
 
         setCurrentElement(previousElement);
@@ -97,7 +97,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
         }
         else {
-            include(layer.getResolvedThis().get(), partOfUnroll, unrollIndex, writer, netDefinitionMode);
+            include((ArchitectureElementSymbol) layer.getResolvedThis().get(), partOfUnroll, unrollIndex, writer, netDefinitionMode);
         }
 
         setCurrentElement(previousElement);

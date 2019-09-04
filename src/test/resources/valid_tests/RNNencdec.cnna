@@ -1,6 +1,6 @@
 architecture RNNencdec(max_length=50, vocabulary_size=30000, hidden_size=1000){
-  def input N(0:29999)^{50} source
-  def output Q(0:29999)^{1} target[50]
+  def input Z(0:29999)^{50} source
+  def output Z(0:29999)^{1} target[50]
 
      layer LSTM(units=hidden_size) encoder;
 
@@ -20,6 +20,7 @@ architecture RNNencdec(max_length=50, vocabulary_size=30000, hidden_size=1000){
          decoder ->
          FullyConnected(units=vocabulary_size) ->
          Softmax() ->
+         ArgMax() ->
          target[t]
      };
 
