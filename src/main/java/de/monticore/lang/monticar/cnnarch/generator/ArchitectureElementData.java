@@ -45,8 +45,6 @@ public class ArchitectureElementData {
         this.name = name;
         this.element = element;
         this.templateController = templateController;
-        this.partOfUnroll = partOfUnroll;
-        this.unrollIndex = unrollIndex;
     }
 
     public String getName() {

@@ -68,22 +68,22 @@ public class LayerNameCreator {
             return nameSerialComposite((SerialCompositeElementSymbol) architectureElement, stage, streamIndices);
         } else if (architectureElement instanceof ParallelCompositeElementSymbol) {
             return nameParallelComposite((ParallelCompositeElementSymbol) architectureElement, stage, streamIndices);
-        } else{
-            if (architectureElement.isAtomic()){
+        } else {
+            if (architectureElement.isAtomic()) {
                 if (architectureElement.getMaxSerialLength().get() > 0){
                     return add(architectureElement, stage, streamIndices);
                 } else {
                     return stage;
                 }
             } else {
-                if(!architectureElement.isResolved()){
+                if (!architectureElement.isResolved()) {
                     try {
                         architectureElement.resolve();
                     } catch (ArchResolveException e) {
                         e.printStackTrace();
                     }
                 }
-                ArchitectureElementSymbol resolvedElement = architectureElement.getResolvedThis().get();
+                ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) architectureElement.getResolvedThis().get();
                 return name(resolvedElement, stage, streamIndices);
             }
         }
