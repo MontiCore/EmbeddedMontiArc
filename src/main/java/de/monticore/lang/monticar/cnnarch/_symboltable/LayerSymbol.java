@@ -81,7 +81,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
     public void setInputElement(ArchitectureElementSymbol inputElement) {
         super.setInputElement(inputElement);
         if (getResolvedThis().isPresent() && getResolvedThis().get() != this){
-            getResolvedThis().get().setInputElement(inputElement);
+            ((ArchitectureElementSymbol) getResolvedThis().get()).setInputElement(inputElement);
         }
     }
 
@@ -89,7 +89,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
     public void setOutputElement(ArchitectureElementSymbol outputElement) {
         super.setOutputElement(outputElement);
         if (getResolvedThis().isPresent() && getResolvedThis().get() != this){
-            getResolvedThis().get().setOutputElement(outputElement);
+            ((ArchitectureElementSymbol) getResolvedThis().get()).setOutputElement(outputElement);
         }
     }
 
@@ -118,7 +118,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
             return Collections.singletonList(this);
         }
         else {
-            return getResolvedThis().get().getFirstAtomicElements();
+            return ((ArchitectureElementSymbol) getResolvedThis().get()).getFirstAtomicElements();
         }
     }
 
@@ -128,7 +128,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
             return Collections.singletonList(this);
         }
         else {
-            return getResolvedThis().get().getLastAtomicElements();
+            return ((ArchitectureElementSymbol) getResolvedThis().get()).getLastAtomicElements();
         }
     }
 
@@ -260,7 +260,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
                 return ((PredefinedLayerDeclaration) getDeclaration()).computeOutputTypes(getInputTypes(), this, VariableSymbol.Member.NONE);
             }
             else {
-                return getResolvedThis().get().getOutputTypes();
+                return ((ArchitectureElementSymbol) getResolvedThis().get()).getOutputTypes();
 
             }
         }
@@ -276,7 +276,7 @@ public class LayerSymbol extends ArchitectureElementSymbol {
                 ((PredefinedLayerDeclaration) getDeclaration()).checkInput(getInputTypes(), this, VariableSymbol.Member.NONE);
             }
             else {
-                getResolvedThis().get().checkInput();
+                ((ArchitectureElementSymbol) getResolvedThis().get()).checkInput();
             }
         }
     }

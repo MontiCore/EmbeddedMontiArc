@@ -181,7 +181,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
     @Override
     public List<ArchitectureElementSymbol> getFirstAtomicElements() {
         if (getResolvedThis().isPresent() && getResolvedThis().get() != this) {
-            return getResolvedThis().get().getFirstAtomicElements();
+            return ((ArchitectureElementSymbol) getResolvedThis().get()).getFirstAtomicElements();
         }
         else {
             return Collections.singletonList(this);
@@ -191,7 +191,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
     @Override
     public List<ArchitectureElementSymbol> getLastAtomicElements() {
         if (getResolvedThis().isPresent() && getResolvedThis().get() != this) {
-            return getResolvedThis().get().getLastAtomicElements();
+            return ((ArchitectureElementSymbol) getResolvedThis().get()).getLastAtomicElements();
         }
         else {
             return Collections.singletonList(this);
@@ -371,7 +371,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                 throw new IllegalStateException("The architecture resolve() method was never called");
             }
 
-            return getResolvedThis().get().computeOutputTypes();
+            return ((ArchitectureElementSymbol) getResolvedThis().get()).computeOutputTypes();
         }
     }
 
@@ -428,7 +428,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                 throw new IllegalStateException("The architecture resolve() method was never called");
             }
 
-            getResolvedThis().get().checkInput();
+            ((ArchitectureElementSymbol) getResolvedThis().get()).checkInput();
         }
     }
 
