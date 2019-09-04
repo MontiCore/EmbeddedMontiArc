@@ -39,7 +39,7 @@ public class UnrollSymbol extends ResolvableSymbol {
     private ParameterSymbol timeParameter;
     private SerialCompositeElementSymbol body;
 
-    private List<SerialCompositeElementSymbol> bodies = new ArrayList<>();
+    private ArrayList<SerialCompositeElementSymbol> bodies = new ArrayList<>();
 
     protected UnrollSymbol(String name) {
         super(name, KIND);
@@ -58,7 +58,7 @@ public class UnrollSymbol extends ResolvableSymbol {
         }
         return declaration;
     }
-    public List<SerialCompositeElementSymbol> getBodiesForAllTimesteps() {
+    public ArrayList<SerialCompositeElementSymbol> getBodiesForAllTimesteps() {
         return bodies;
     }
 
@@ -265,7 +265,6 @@ public class UnrollSymbol extends ResolvableSymbol {
         }
     }
 
-
     protected ResolvableSymbol preResolveDeepCopy() {
         UnrollSymbol copy = new UnrollSymbol(getName());
         if (getAstNode().isPresent()){
@@ -277,6 +276,9 @@ public class UnrollSymbol extends ResolvableSymbol {
             args.add(argument.preResolveDeepCopy());
         }
         copy.setArguments(args);
+
+        copy.setTimeParameter(getTimeParameter());
+        copy.getTimeParameter().putInScope(copy.getSpannedScope());
 
         copy.setBody(getBody().preResolveDeepCopy());
         copy.getBody().putInScope(copy.getSpannedScope());
