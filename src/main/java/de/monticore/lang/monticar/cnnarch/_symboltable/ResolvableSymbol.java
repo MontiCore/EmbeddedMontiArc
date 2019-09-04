@@ -123,5 +123,5 @@ public abstract class ResolvableSymbol extends CommonScopeSpanningSymbol {
      * Creates a deep copy in the state before the architecture resolution.
      * @return returns a deep copy of this object in the pre-resolve version.
      */
-    protected abstract ArchitectureElementSymbol preResolveDeepCopy();
+    protected abstract ResolvableSymbol preResolveDeepCopy();
 }

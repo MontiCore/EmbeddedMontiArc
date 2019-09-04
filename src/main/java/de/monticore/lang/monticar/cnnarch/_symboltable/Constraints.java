@@ -209,16 +209,6 @@ public enum Constraints {
         return valid;
     }
 
-    public static boolean checkUnroll(ArgumentSymbol argument){
-        boolean valid = true;
-        ParameterSymbol parameter = argument.getUnrollParameter();
-        for (Constraints constraint : parameter.getConstraints()) {
-            valid = valid &&
-                    constraint.check(argument.getRhs(), argument.getSourcePosition(), parameter.getName());
-        }
-        return valid;
-    }
-
     public boolean check(ArchExpressionSymbol exp, SourcePosition sourcePosition, String name){
         if (exp instanceof ArchRangeExpressionSymbol){
             ArchRangeExpressionSymbol range = (ArchRangeExpressionSymbol)exp;

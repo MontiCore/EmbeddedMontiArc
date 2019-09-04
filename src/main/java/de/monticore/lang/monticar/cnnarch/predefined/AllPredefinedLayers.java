@@ -52,6 +52,7 @@ public class AllPredefinedLayers {
     public static final String LSTM_NAME = "LSTM";
     public static final String GRU_NAME = "GRU";
     public static final String EMBEDDING_NAME = "Embedding";
+    public static final String ARG_MAX_NAME = "ArgMax";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -110,7 +111,8 @@ public class AllPredefinedLayers {
                 RNN.create(),
                 LSTM.create(),
                 GRU.create(),
-                Embedding.create());
+                Embedding.create(),
+                ArgMax.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){

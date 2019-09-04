@@ -43,24 +43,27 @@ public class ArgumentSymbol extends CommonSymbol {
 
     public ParameterSymbol getParameter() {
         if (parameter == null){
-            if (getLayer().getDeclaration() != null){
-                Optional<ParameterSymbol> optParam = getLayer().getDeclaration().getParameter(getName());
-                optParam.ifPresent(this::setParameter);
+            Symbol spanningSymbol = getEnclosingScope().getSpanningSymbol().get();
+
+            if (spanningSymbol instanceof UnrollSymbol) {
+                UnrollSymbol unroll = (UnrollSymbol) getEnclosingScope().getSpanningSymbol().get();
+
+                if (unroll.getDeclaration() != null){
+                    Optional<ParameterSymbol> optParam = unroll.getDeclaration().getParameter(getName());
+                    optParam.ifPresent(this::setParameter);
+                }
+            }
+            else {
+                LayerSymbol layer = (LayerSymbol) getEnclosingScope().getSpanningSymbol().get();
+
+                if (layer.getDeclaration() != null){
+                    Optional<ParameterSymbol> optParam = layer.getDeclaration().getParameter(getName());
+                    optParam.ifPresent(this::setParameter);
+                }
             }
         }
         return parameter;
     }
-
-    public ParameterSymbol getUnrollParameter() {
-        if (parameter == null){
-            if (getUnroll().getDeclaration() != null){
-                Optional<ParameterSymbol> optParam = getUnroll().getDeclaration().getParameter(getName());
-                optParam.ifPresent(this::setParameter);
-            }
-        }
-        return parameter;
-    }
-
 
     protected void setParameter(ParameterSymbol parameter) {
         this.parameter = parameter;
@@ -104,7 +107,6 @@ public class ArgumentSymbol extends CommonSymbol {
     public void set(){
         if (getRhs().isResolved() && getRhs().isSimpleValue()){
             getParameter().setExpression((ArchSimpleExpressionSymbol) getRhs());
-            getUnrollParameter().setExpression((ArchSimpleExpressionSymbol) getRhs());
         }
         else {
             throw new IllegalStateException("The value of the parameter is set to a sequence or the expression is not resolved. This should never happen.");
@@ -114,14 +116,6 @@ public class ArgumentSymbol extends CommonSymbol {
     public void resolveExpression() throws ArchResolveException {
         getRhs().resolveOrError();
         boolean valid = Constraints.check(this);
-        if (!valid){
-            throw new ArchResolveException();
-        }
-    }
-
-    public void resolveUnrollExpression() throws ArchResolveException {
-        getRhs().resolveOrError();
-        boolean valid = Constraints.checkUnroll(this);
         if (!valid){
             throw new ArchResolveException();
         }

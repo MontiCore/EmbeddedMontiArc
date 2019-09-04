@@ -252,6 +252,15 @@ public class ArchTypeSymbol extends CommonSymbol {
             domain.setRange(range);
             return this;
         }
+        public Builder elementType(String name, String start, String end){
+            domain = new ASTElementType();
+            domain.setName(name); //("Q(" + start + ":" + end +")");
+            ASTRange range = new ASTRange();
+            range.setStartValue(start);
+            range.setEndValue(end);
+            domain.setRange(range);
+            return this;
+        }
 
         public ArchTypeSymbol build(){
             ArchTypeSymbol sym = new ArchTypeSymbol();

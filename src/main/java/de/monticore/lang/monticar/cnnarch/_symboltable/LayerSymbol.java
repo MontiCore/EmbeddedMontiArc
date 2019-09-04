@@ -252,9 +252,6 @@ public class LayerSymbol extends ArchitectureElementSymbol {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes() {
-
-
-
         if (getResolvedThis().isPresent()) {
             if (getResolvedThis().get() == this) {
                 return ((PredefinedLayerDeclaration) getDeclaration()).computeOutputTypes(getInputTypes(), this, VariableSymbol.Member.NONE);

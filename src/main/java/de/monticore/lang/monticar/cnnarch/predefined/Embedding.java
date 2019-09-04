@@ -90,13 +90,13 @@ public class Embedding extends PredefinedLayerDeclaration {
 
         ASTElementType domain = layer.getInputTypes().get(0).getDomain();
 
-        if (!domain.isNaturalNumber()) {
+        if (!domain.isWholeNumber() && !domain.isNaturalNumber()) {
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: Input must be natural. ", layer.getSourcePosition());
         }
         else if (!domain.isPresentRange() || domain.getRange().hasNoUpperLimit()) {
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: Input range must have an upper limit. ", layer.getSourcePosition());
         }
-        else if (domain.getRange().getEndValue().intValue() > inputDim) {
+        else if (domain.getRange().getStartValue().intValue() < 0 || domain.getRange().getEndValue().intValue() > inputDim) {
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: Input upper limit must be smaller than 'input_dim'. ", layer.getSourcePosition());
         }
     }

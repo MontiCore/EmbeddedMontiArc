@@ -123,15 +123,13 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         }
 
         for (UnrollSymbol unroll : unrolls) {
-            if(unroll.isResolvable());
-            {
-                try {
-                    unroll.resolve();
-                    unroll = unroll.createUnrollForBackend();
-                }
-                catch (ArchResolveException e) {
-                    // Do nothing; error is already logged
-                }
+            unroll.checkIfResolvable();
+
+            try {
+                unroll.resolveOrError();
+            }
+            catch (ArchResolveException e) {
+                // Do nothing; error is already logged
             }
         }
     }
@@ -199,19 +197,14 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             }
         }
 
-        for (UnrollDeclarationSymbol unrollDeclaration : getSpannedScope().<UnrollDeclarationSymbol>resolveLocally(UnrollDeclarationSymbol.KIND)){
-            if (!unrollDeclaration.isPredefined()) {
-                copy.getSpannedScope().getAsMutableScope().add(unrollDeclaration.deepCopy());
-            }
+        List<LayerVariableDeclarationSymbol> copyLayerVariableDeclarations = new ArrayList<>();
+        for (LayerVariableDeclarationSymbol layerVariableDeclaration : getLayerVariableDeclarations()) {
+            LayerVariableDeclarationSymbol copyLayerVariableDeclaration =
+                    (LayerVariableDeclarationSymbol) layerVariableDeclaration.preResolveDeepCopy();
+            copyLayerVariableDeclaration.putInScope(copy.getSpannedScope());
+            copyLayerVariableDeclarations.add(copyLayerVariableDeclaration);
         }
-        List<LayerVariableDeclarationSymbol> copyLayerParameterDeclarations = new ArrayList<>();
-        for (LayerVariableDeclarationSymbol layerParameterDeclaration : getLayerVariableDeclarations()) {
-            LayerVariableDeclarationSymbol copyLayerParameterDeclaration =
-                    (LayerVariableDeclarationSymbol) layerParameterDeclaration.preResolveDeepCopy();
-            copyLayerParameterDeclaration.putInScope(copy.getSpannedScope());
-            copyLayerParameterDeclarations.add(copyLayerParameterDeclaration);
-        }
-        copy.setLayerVariableDeclarations(copyLayerParameterDeclarations);
+        copy.setLayerVariableDeclarations(copyLayerVariableDeclarations);
 
         List<SerialCompositeElementSymbol> copyStreams = new ArrayList<>();
         for (SerialCompositeElementSymbol stream : getStreams()) {
@@ -223,7 +216,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
         List<UnrollSymbol> copyUnrolls = new ArrayList<>();
         for (UnrollSymbol unroll : getUnrolls()) {
-            UnrollSymbol copyUnroll = unroll.preResolveDeepCopy();
+            UnrollSymbol copyUnroll = (UnrollSymbol) unroll.preResolveDeepCopy();
             copyUnroll.putInScope(copy.getSpannedScope());
             copyUnrolls.add(copyUnroll);
         }

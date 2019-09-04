@@ -30,17 +30,37 @@ import de.monticore.symboltable.Symbol;
 import java.util.*;
 import java.util.function.Function;
 
-public class UnrollSymbol extends CommonScopeSpanningSymbol {
+public class UnrollSymbol extends ResolvableSymbol {
 
     public static final UnrollKind KIND = new UnrollKind();
 
     private UnrollDeclarationSymbol declaration = null;
     private List<ArgumentSymbol> arguments;
     private ParameterSymbol timeParameter;
-    private UnrollSymbol resolvedThis = null;
     private SerialCompositeElementSymbol body;
-    private ArrayList<SerialCompositeElementSymbol> bodies = new ArrayList<>();
-    private boolean isExtendedForBackend = false;
+
+    private List<SerialCompositeElementSymbol> bodies = new ArrayList<>();
+
+    protected UnrollSymbol(String name) {
+        super(name, KIND);
+    }
+
+    public UnrollDeclarationSymbol getDeclaration() {
+        if (declaration == null) {
+            Collection<UnrollDeclarationSymbol> collection = getEnclosingScope().resolveMany(getName(), UnrollDeclarationSymbol.KIND);
+
+            if (!collection.isEmpty()) {
+                declaration = collection.iterator().next();
+            }
+            else {
+                throw new IllegalStateException("No unroll declaration found");
+            }
+        }
+        return declaration;
+    }
+    public List<SerialCompositeElementSymbol> getBodiesForAllTimesteps() {
+        return bodies;
+    }
 
     public SerialCompositeElementSymbol getBody() {
         return body;
@@ -50,47 +70,13 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
         this.body = body;
     }
 
-    public ArrayList<SerialCompositeElementSymbol> getBodiesForAllTimesteps() {
-        return bodies;
-    }
-
-    protected void setBodiesForAllTimesteps(ArrayList<SerialCompositeElementSymbol> bodies) {
-        this.bodies = bodies;
-    }
-
-    public boolean isExtended(){
-        return this.isExtendedForBackend;
-    }
-
-    private void setExtended(boolean extended){
-        this.isExtendedForBackend = extended;
-    }
-
     public boolean isTrainable() {
-        return body.isTrainable();
+        return getBody().isTrainable();
     }
 
-    protected UnrollSymbol(String name) {
-        super(name, KIND);
-    }
-
-    public UnrollDeclarationSymbol getDeclaration() {
-        if (declaration == null){
-            Collection<UnrollDeclarationSymbol> declarationCollection = getEnclosingScope().resolveMany(getName(), UnrollDeclarationSymbol.KIND);
-            if (!declarationCollection.isEmpty()){
-                setDeclaration(declarationCollection.iterator().next());
-            }
-        }
-        return declaration;
-    }
-
-
+    @Override
     public boolean isResolvable() {
         return getBody().isResolvable() && getDeclaration() != null;
-    }
-
-    private void setDeclaration(UnrollDeclarationSymbol declaration) {
-        this.declaration = declaration;
     }
 
     public List<ArgumentSymbol> getArguments() {
@@ -109,16 +95,6 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
         this.timeParameter = timeParameter;
     }
 
-    public ArchExpressionSymbol getIfExpression(){
-        Optional<ArgumentSymbol> argument = getArgument(AllPredefinedVariables.CONDITIONAL_ARG_NAME);
-        if (argument.isPresent()){
-            return argument.get().getRhs();
-        }
-        else {
-            return ArchSimpleExpressionSymbol.of(true);
-        }
-    }
-
     protected void putInScope(Scope scope){
         Collection<Symbol> symbolsInScope = scope.getLocalSymbols().get(getName());
         if (symbolsInScope == null || !symbolsInScope.contains(this)){
@@ -132,63 +108,64 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
         }
     }
 
-    protected void setResolvedThis(UnrollSymbol resolvedThis) {
-        if (resolvedThis != null){
-            //resolvedThis.putInScope(getSpannedScope());
-        }
-        this.resolvedThis = resolvedThis;
-    }
-
-
-
     public Set<ParameterSymbol> resolve() throws ArchResolveException {
-        if (true) {
+        if (!isResolved()) {
             if (isResolvable()) {
                 getDeclaration();
                 resolveExpressions();
 
-                //resolve the unroll call
                 getBody().resolveOrError();
+
+                for (int timestep = this.getIntValue(AllPredefinedLayers.T_NAME).get(); timestep < this.getIntValue(AllPredefinedLayers.MAX_LENGTH_NAME).get(); timestep++) {
+                    SerialCompositeElementSymbol newBody = new SerialCompositeElementSymbol();
+                    List<ArchitectureElementSymbol> newBodyList = new ArrayList<>();
+                    SerialCompositeElementSymbol body = getBody().preResolveDeepCopy();
+                    body.putInScope(getBody().getSpannedScope());
+
+                    for (ArchitectureElementSymbol element : body.getElements()) {
+                        if (element.getEnclosingScope() == null) {
+                            element.setEnclosingScope(getEnclosingScope().getAsMutableScope());
+                        }
+
+                        ((ParameterSymbol)((ArrayList<Symbol>)getSpannedScope().getLocalSymbols().get(AllPredefinedLayers.T_NAME)).get(0)).getExpression().setValue(timestep);
+
+                        try {
+                            this.resolveExpressions();
+
+                            for (ParameterSymbol p:declaration.getParameters()) {
+                                if (p.getEnclosingScope() == null) {
+                                    p.putInScope(getSpannedScope());
+                                }
+                            }
+
+                            element.resolve();
+                        }
+                        catch (ArchResolveException e) {
+                            e.printStackTrace();
+                        }
+
+                        newBodyList.add(element);
+                    }
+
+                    newBody.putInScope(this.getBody().getSpannedScope());
+                    newBody.setElements(newBodyList);
+
+                    bodies.add(newBody);
+                }
+
                 UnrollSymbol resolvedUnroll = getDeclaration().call(this);
                 setResolvedThis(resolvedUnroll);
             }
         }
-        return new HashSet<ParameterSymbol>() ;
-    }
 
-    private boolean isActive(){
-        if (getIfExpression().isSimpleValue() && !getIfExpression().getBooleanValue().get()){
-            return false;
-        }
-        else {
-            return true;
-        }
+        return getUnresolvableParameters();
     }
 
     protected void resolveExpressions() throws ArchResolveException{
         for (ArgumentSymbol argument : getArguments()){
-            argument.resolveUnrollExpression();
+            argument.resolveExpression();
         }
     }
-
-
-    private ArchitectureElementSymbol createSerialSequencePart(List<ArchitectureElementSymbol> elements){
-        if (elements.size() == 1){
-            return elements.get(0);
-        }
-        else {
-            SerialCompositeElementSymbol serialComposite = new SerialCompositeElementSymbol();
-            serialComposite.setElements(elements);
-
-            if (getAstNode().isPresent()){
-                serialComposite.setAstNode(getAstNode().get());
-            }
-            return serialComposite;
-        }
-    }
-
-
-
 
     protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableVariables, Set<ParameterSymbol> allVariables) {
         for (ArgumentSymbol argument : getArguments()){
@@ -288,59 +265,8 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
         }
     }
 
-    // creates a body for each timestep of the unroll
-    public UnrollSymbol createUnrollForBackend(){
-        if(this.isExtendedForBackend){
-            return this;
-        }else {
-            int timestep;
-            SerialCompositeElementSymbol newBody;
-            List<ArchitectureElementSymbol> newBodyList;
 
-            for (timestep = this.getIntValue(AllPredefinedLayers.T_NAME).get(); timestep < this.getIntValue(AllPredefinedLayers.MAX_LENGTH_NAME).get(); timestep++) {
-                newBody = new SerialCompositeElementSymbol();
-                newBodyList = new ArrayList<>();
-                SerialCompositeElementSymbol body = this.getBody().preResolveDeepCopy();
-                body.putInScope(this.getBody().getSpannedScope());
-
-                for (ArchitectureElementSymbol element : body.getElements()) {
-
-                    if(element.getEnclosingScope() == null) {
-                        element.setEnclosingScope(getEnclosingScope().getAsMutableScope());
-                    }
-
-                    ((ParameterSymbol)((ArrayList<Symbol>)getSpannedScope().getLocalSymbols().get(AllPredefinedLayers.T_NAME)).get(0)).getExpression().setValue(timestep);
-
-                    try {
-                        this.resolveExpressions();
-
-                        for(ParameterSymbol p:declaration.getParameters()){
-                            if(p.getEnclosingScope() == null) {
-                                p.putInScope(getSpannedScope());
-                            }
-                        }
-
-                        element.resolve();
-                    } catch (ArchResolveException e) {e.printStackTrace();}
-
-                    newBodyList.add(element);
-                }
-                newBody.putInScope(this.getBody().getSpannedScope());
-                newBody.setElements(newBodyList);
-                bodies.add(newBody);
-            }
-            newBody = new SerialCompositeElementSymbol();
-            ArrayList elementsList = new ArrayList();
-            elementsList.addAll(bodies);
-
-            this.setBody(newBody);
-            this.setExtended(true);
-            return this;
-        }
-    }
-
-
-    protected UnrollSymbol preResolveDeepCopy() {
+    protected ResolvableSymbol preResolveDeepCopy() {
         UnrollSymbol copy = new UnrollSymbol(getName());
         if (getAstNode().isPresent()){
             copy.setAstNode(getAstNode().get());
@@ -350,16 +276,6 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
         for (ArgumentSymbol argument : getArguments()){
             args.add(argument.preResolveDeepCopy());
         }
-
-        copy.setDeclaration(getDeclaration());
-
-        List<ParameterSymbol> parameterCopies = new ArrayList<>(getDeclaration().getParameters().size());
-        for (ParameterSymbol parameter : getDeclaration().getParameters()){
-            ParameterSymbol parameterCopy = parameter.deepCopy();
-            parameterCopies.add(parameterCopy);
-            parameterCopy.putInScope(copy.getSpannedScope());
-        }
-        copy.getDeclaration().setParameters(parameterCopies);
         copy.setArguments(args);
 
         copy.setBody(getBody().preResolveDeepCopy());
@@ -367,34 +283,4 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
 
         return copy;
     }
-
-    public static class Builder{
-        private UnrollDeclarationSymbol declaration;
-        private List<ArgumentSymbol> arguments = new ArrayList<>();
-        private boolean isResolved = false;
-
-        public Builder declaration(UnrollDeclarationSymbol declaration){
-            this.declaration = declaration;
-            return this;
-        }
-
-        public Builder arguments(List<ArgumentSymbol> arguments){
-            this.arguments = arguments;
-            return this;
-        }
-
-        public Builder arguments(ArgumentSymbol... arguments){
-            this.arguments = Arrays.asList(arguments);
-            return this;
-        }
-
-        public Builder isResolved(boolean isResolved){
-            this.isResolved = isResolved;
-            return this;
-        }
-
-
-
-    }
-
 }
