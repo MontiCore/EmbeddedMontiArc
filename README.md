@@ -14,13 +14,16 @@ This repository consists of a neural network for end to end driving and some use
 
 ### Training
 
-- Generate `train.h5` and `test.5` files and move them to resources/training_data. (See section Generation of Training Data). The pictures should have a dimensionality of 3x480x640 and the label *data*. The output is a steering angle with the label target. 
+- Generate `train.h5` and `test.h5` files and move them to resources/training_data. (See section Generation of Training Data). The pictures should have a dimensionality of 3x480x640 and the label *data*. The output is a steering angle with the label *target_label*.
 - Train by executing `./build.sh`
 
 ### Prediction
-- Predict with `./build/src/cpp/steeringAnglePredictor path_to_testh5`
-- **or** Predict and visualise with `python3 v-tool/cli.py -i absolute_path_to_testh5 -p absolute_path_to_tensorflow_dir/build/src/cpp/steeringAnglePredictor`
-- **or** Visualise with `python3 v-tool/cli.py -p absolute_path_to_tensorflow_dir/build/src/cpp/steeringAnglePredictor`. This requires execution of the previous command.
+
+|  | Predict | Visualise | Command |
+|:---|:---|:---|:---|
+| 1 | &#9745; | | `python3 v-tool/cli.py -i test.h5 -p` |
+| 2 | &#9745; | &#9745; | `python3 v-tool/cli.py -i test.h5 -p -v` |
+| 3 |  | &#9745; | `python3 v-tool/cli.py -i test.h5 -v` (execute 1 or 2 first)|
 
 
 ## Generation of Training Data
