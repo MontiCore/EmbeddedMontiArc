@@ -189,8 +189,8 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             copy.getSpannedScope().getAsMutableScope().add(layerDeclaration);
         }
 
-        for (UnrollDeclarationSymbol layerDeclaration : AllPredefinedLayers.createUnrollList()){
-            copy.getSpannedScope().getAsMutableScope().add(layerDeclaration);
+        for (UnrollDeclarationSymbol unrollDeclaration : AllPredefinedLayers.createUnrollList()){
+            copy.getSpannedScope().getAsMutableScope().add(unrollDeclaration);
         }
 
         for (LayerDeclarationSymbol layerDeclaration : getLayerDeclarations()){
@@ -199,9 +199,9 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             }
         }
 
-        for (UnrollDeclarationSymbol layerDeclaration : getSpannedScope().<UnrollDeclarationSymbol>resolveLocally(UnrollDeclarationSymbol.KIND)){
-            if (!layerDeclaration.isPredefined()) {
-                copy.getSpannedScope().getAsMutableScope().add(layerDeclaration.deepCopy());
+        for (UnrollDeclarationSymbol unrollDeclaration : getSpannedScope().<UnrollDeclarationSymbol>resolveLocally(UnrollDeclarationSymbol.KIND)){
+            if (!unrollDeclaration.isPredefined()) {
+                copy.getSpannedScope().getAsMutableScope().add(unrollDeclaration.deepCopy());
             }
         }
         List<LayerVariableDeclarationSymbol> copyLayerParameterDeclarations = new ArrayList<>();
@@ -222,7 +222,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         copy.setStreams(copyStreams);
 
         List<UnrollSymbol> copyUnrolls = new ArrayList<>();
-        for (UnrollSymbol unroll : unrolls) {
+        for (UnrollSymbol unroll : getUnrolls()) {
             UnrollSymbol copyUnroll = unroll.preResolveDeepCopy();
             copyUnroll.putInScope(copy.getSpannedScope());
             copyUnrolls.add(copyUnroll);

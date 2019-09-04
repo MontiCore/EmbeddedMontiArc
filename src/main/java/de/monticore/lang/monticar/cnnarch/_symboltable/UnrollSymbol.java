@@ -295,7 +295,6 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
         }else {
             int timestep;
             SerialCompositeElementSymbol newBody;
-            ArchitectureSymbol architecture = getBody().getArchitecture();
             List<ArchitectureElementSymbol> newBodyList;
 
             for (timestep = this.getIntValue(AllPredefinedLayers.T_NAME).get(); timestep < this.getIntValue(AllPredefinedLayers.MAX_LENGTH_NAME).get(); timestep++) {
@@ -336,10 +335,6 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
 
             this.setBody(newBody);
             this.setExtended(true);
-
-            List<UnrollSymbol> newUnrolls = new ArrayList<>();
-            newUnrolls.add(this);
-            architecture.setUnrolls(newUnrolls);
             return this;
         }
     }
@@ -367,18 +362,8 @@ public class UnrollSymbol extends CommonScopeSpanningSymbol {
         copy.getDeclaration().setParameters(parameterCopies);
         copy.setArguments(args);
 
-        copy.setTimeParameter(getTimeParameter().deepCopy());
-        // TODO: currently only the defaultValue for t is used, make it use the assigned value instead
-        ((ParameterSymbol)((ArrayList<Symbol>)getSpannedScope().getLocalSymbols().get("t")).get(0)).getExpression().setValue(this.getIntValue(AllPredefinedLayers.T_NAME));
-        copy.getTimeParameter().putInScope(getSpannedScope());
-
-
         copy.setBody(getBody().preResolveDeepCopy());
         copy.getBody().putInScope(copy.getSpannedScope());
-        //TODO: Find a nicer way to put the timeParameter into the unroll elements' scope
-        for(ArchitectureElementSymbol element: copy.getBody().getElements()){
-            element.getSpannedScope().add(copy.getTimeParameter());
-        }
 
         return copy;
     }

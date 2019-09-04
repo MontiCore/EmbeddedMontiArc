@@ -150,19 +150,12 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
             if (astInstruction.isPresentLayerVariableDeclaration()) {
                 layerVariableDeclarations.add((LayerVariableDeclarationSymbol) astInstruction.getLayerVariableDeclaration().getSymbolOpt().get());
             }
-            /*
-            if(astInstruction instanceof ASTStream) {
-                ASTStream astStream = (ASTStream) astInstruction;
-                streams.add((SerialCompositeElementSymbol) astStream.getSymbolOpt().get());*/
             else if (astInstruction.isPresentStream()) {
                 streams.add((SerialCompositeElementSymbol) astInstruction.getStream().getSymbolOpt().get());
             }else if(astInstruction.isPresentUnroll()) {
                 unrolls.add((UnrollSymbol) astInstruction.getUnroll().getSymbolOpt().get());
-                //System.err.println("Table 1: " + ((UnrollSymbol) astUnroll.getSymbolOpt().get()).getName());
-                //System.err.println("Table 1_1: " + ((UnrollSymbol) astUnroll.getSymbolOpt().get()).getBody().getElements().toString());
             }
         }
-
 
         architecture.setLayerVariableDeclarations(layerVariableDeclarations);
         architecture.setStreams(streams);
@@ -348,13 +341,16 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         UnrollSymbol layer = (UnrollSymbol) ast.getSymbolOpt().get();
         layer.setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
         List<ArgumentSymbol> arguments = new ArrayList<>(6);
-
-        //ast.getArgumentsList().add(ast.getTimeParameter());
+        
         for (ASTArchArgument astArgument : ast.getArgumentsList()){
             Optional<ArgumentSymbol> optArgument = astArgument.getSymbolOpt().map(e -> (ArgumentSymbol)e);
             optArgument.ifPresent(arguments::add);
         }
         layer.setArguments(arguments);
+
+        ArchSimpleExpressionSymbol t_value = new ArchSimpleExpressionSymbol();
+        t_value.setValue(1);
+        ((ParameterSymbol)ast.getTimeParameter().getSymbolOpt().get()).setDefaultExpression(t_value);
         layer.setTimeParameter((ParameterSymbol)ast.getTimeParameter().getSymbolOpt().get());
 
         removeCurrentScope();
