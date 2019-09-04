@@ -18,11 +18,12 @@ This repository consists of a neural network for end to end driving and some use
 - Train by executing `./build.sh`
 
 ### Prediction
+
 |  | Predict | Visualise | Command |
 |:---|:---|:---|:---|
-| 1 | &#9745; | | `./build/src/cpp/steeringAnglePredictor test.h5` |
-| 2 | &#9745; | &#9745; | `python3 v-tool/cli.py -i test.h5 -p build/src/cpp/steeringAnglePredictor` |
-| 3 |  | &#9745; | `python3 v-tool/cli.py -i test.h5` (execute 1 or 2 first)|
+| 1 | &#9745; | | `python3 v-tool/cli.py -i test.h5 -p` |
+| 2 | &#9745; | &#9745; | `python3 v-tool/cli.py -i test.h5 -p -v` |
+| 3 |  | &#9745; | `python3 v-tool/cli.py -i test.h5 -v` (execute 1 or 2 first)|
 
 
 ## Generation of Training Data
