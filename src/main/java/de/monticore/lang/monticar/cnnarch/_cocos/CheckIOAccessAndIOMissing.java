@@ -76,7 +76,7 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
                     boolean isUnroll = false;
 
                     for (UnrollSymbol unroll : architecture.getUnrolls()) {
-                        isUnroll = contains(unroll.getBody().getFirstAtomicElements(), ioElement);
+                        isUnroll = contains(unroll.getBody(), ioElement);
                     }
 
                     // Allow invalid indices in UnrollSymbols
@@ -101,18 +101,20 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
     }
 
 
-    private boolean contains(List<ArchitectureElementSymbol> list, ArchitectureElementSymbol element) {
-        boolean bool = false;
+    private boolean contains(ArchitectureElementSymbol element, ArchitectureElementSymbol containedElement) {
+        ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) element.getResolvedThis().get();
 
-        for (ArchitectureElementSymbol ele : list) {
-            if (ele.equals(element)) {
-                return true;
+        if (resolvedElement instanceof CompositeElementSymbol) {
+            List<ArchitectureElementSymbol> constructedElements = ((CompositeElementSymbol) resolvedElement).getElements();
+
+            for (ArchitectureElementSymbol constructedElement : constructedElements) {
+                if (contains(constructedElement, containedElement)) {
+                    return true;
+                }
             }
-
-            bool |= contains(ele.getNext(), element);
         }
 
-        return bool;
+        return resolvedElement.equals(containedElement);
     }
 
 }

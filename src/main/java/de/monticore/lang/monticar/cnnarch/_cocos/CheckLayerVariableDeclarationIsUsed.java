@@ -52,7 +52,10 @@ public class CheckLayerVariableDeclarationIsUsed extends CNNArchSymbolCoCo {
             }
 
             for (UnrollSymbol unroll : layerVariableDeclaration.getLayer().getArchitecture().getUnrolls()) {
-               for (ArchitectureElementSymbol element : unroll.getBodiesForAllTimesteps().get(0).getElements()) {
+                Collection<ArchitectureElementSymbol> elements =
+                        unroll.getBody().getSpannedScope().resolveMany(layerVariableDeclaration.getName(), ArchitectureElementSymbol.KIND);
+
+                for (ArchitectureElementSymbol element : elements) {
                     if (element instanceof VariableSymbol && ((VariableSymbol) element).getMember() == VariableSymbol.Member.NONE) {
                         isUsed = true;
                         break;
