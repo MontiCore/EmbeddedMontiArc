@@ -14,7 +14,7 @@ architecture RNNencdec(max_length=50, vocabulary_size=30000, hidden_size=1000){
 
      encoder.state -> decoder.state;
 
-     timed<t=1> GreedySearch(max_length=50) {
+     timed<t> GreedySearch(max_length=50) {
          target[t-1] ->
          Embedding(output_dim=hidden_size) ->
          decoder ->
