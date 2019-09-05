@@ -18,6 +18,7 @@ This repository consists of a neural network for end to end driving and some use
 - Train by executing `./build.sh`
 
 ### Prediction
+:warning:Prediction is only possible if you have trained first.:warning:
 
 |  | Predict | Visualise | Command |
 |:---|:---|:---|:---|
