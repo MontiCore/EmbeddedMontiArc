@@ -21,16 +21,6 @@ ${tc.include(stream, "CPP_INLINE")}
 </#if>
 </#list>
 
-<#list tc.architecture.unrolls as unroll>
-<#list unroll.getBodiesForAllTimesteps() as body>
-<#if body.isTrainable()>
-    _predictor_${tc.architecture.streams?size + body?index}_.predict(${tc.join(tc.getStreamInputNames(body), ", ")}, ${tc.join(tc.getStreamOutputNames(body), ", ")});
-<#else>
-${tc.include(unroll, true, "CPP_INLINE")}
-</#if>
-</#list>
-</#list>
-
 <#list tc.architecture.outputs as output>
 <#if tc.getName(output)??>
 <#assign shape = output.ioDeclaration.type.dimensions>

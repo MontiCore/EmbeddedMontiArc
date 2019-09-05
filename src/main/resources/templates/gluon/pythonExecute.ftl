@@ -14,13 +14,3 @@
 ${tc.include(stream, "PYTHON_INLINE")}
 </#if>
 </#list>
-
-<#list tc.architecture.unrolls as unroll>
-<#list unroll.getBodiesForAllTimesteps() as body>
-<#if body.isTrainable()>
-                    ${tc.join(tc.getStreamOutputNames(body), ", ")} = self._networks[${tc.architecture.streams?size + body?index}](${tc.join(tc.getStreamInputNames(body), ", ")})
-<#else>
-${tc.include(unroll, true, "PYTHON_INLINE")}
-</#if>
-</#list>
-</#list>
