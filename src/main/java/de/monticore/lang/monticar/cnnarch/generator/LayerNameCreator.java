@@ -30,7 +30,7 @@ import java.util.*;
 public class LayerNameCreator {
 
     private Map<ArchitectureElementSymbol, String> elementToName = new HashMap<>();
-    private Map<String, ArchitectureElementSymbol> nameToElement = new HashMap<>();
+    private Set<String> names = new HashSet<>();
 
     public LayerNameCreator(ArchitectureSymbol architecture) {
         int stage = 1;
@@ -39,11 +39,9 @@ public class LayerNameCreator {
         }
         for (UnrollSymbol unroll : architecture.getUnrolls()) {
             stage = name(unroll.getBody(), stage, new ArrayList<>());
-        }
-    }
 
-    public ArchitectureElementSymbol getArchitectureElement(String name){
-        return nameToElement.get(name);
+            // TODO: Add individual timesteps?
+        }
     }
 
     public String getName(ArchitectureElementSymbol architectureElement){
@@ -97,24 +95,15 @@ public class LayerNameCreator {
         if (!elementToName.containsKey(architectureElement)) {
             String name = createName(architectureElement, endStage, streamIndices);
 
-            while (nameToElement.containsKey(name)) {
-                endStage++;
-                name = createName(architectureElement, endStage, streamIndices);
+            if (!(architectureElement instanceof VariableSymbol)) {
+                while (names.contains(name)) {
+                    endStage++;
+                    name = createName(architectureElement, endStage, streamIndices);
+                }
             }
 
             elementToName.put(architectureElement, name);
-
-            boolean isLayerVariable = false;
-
-            if (architectureElement instanceof VariableSymbol) {
-                isLayerVariable = ((VariableSymbol) architectureElement).getType() == VariableSymbol.Type.LAYER;
-            }
-
-            // Do not map names of layer variables to their respective element since the names are not unique
-            // for now the name to element mapping is not used anywhere so it doesn't matter
-            if (!isLayerVariable) {
-                nameToElement.put(name, architectureElement);
-            }
+            names.add(name);
         }
         return endStage;
     }
