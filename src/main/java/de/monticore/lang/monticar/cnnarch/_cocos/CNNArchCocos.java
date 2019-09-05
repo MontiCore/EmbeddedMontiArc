@@ -64,6 +64,7 @@ public class CNNArchCocos {
     public static CNNArchSymbolCoCoChecker createCNNArchPostResolveSymbolChecker() {
         return new CNNArchSymbolCoCoChecker()
                 .addCoCo(new CheckIOType())
+                .addCoCo(new CheckIOArrayLength())
                 .addCoCo(new CheckElementInputs())
                 .addCoCo(new CheckIOAccessAndIOMissing())
                 .addCoCo(new CheckArchitectureFinished())

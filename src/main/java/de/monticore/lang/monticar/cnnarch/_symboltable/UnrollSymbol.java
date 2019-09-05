@@ -33,6 +33,7 @@ import java.util.function.Function;
 public class UnrollSymbol extends ResolvableSymbol {
 
     public static final UnrollKind KIND = new UnrollKind();
+    public static final Integer CONST_OFFSET = IODeclarationSymbol.MAX_ARRAY_LENGTH * 100;
 
     private UnrollDeclarationSymbol declaration = null;
     private List<ArgumentSymbol> arguments;
@@ -118,7 +119,7 @@ public class UnrollSymbol extends ResolvableSymbol {
                 int startValue = getTimeParameter().getDefaultExpression().get().getIntValue().get();
                 int endValue = getIntValue(AllPredefinedLayers.MAX_LENGTH_NAME).get();
 
-                getTimeParameter().getExpression().setValue(1); // TODO: Change constant
+                getTimeParameter().getExpression().setValue(CONST_OFFSET);
                 getBody().resolveOrError();
 
                 for (int timestep = startValue; timestep < endValue; timestep++) {

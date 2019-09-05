@@ -20,9 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch._cocos;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -74,10 +72,20 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
                     unusedIndices.remove(arrayAccess.get());
                 }
                 else {
-                    Log.error("0" + ErrorCodes.INVALID_ARRAY_ACCESS + " The IO array access value of '" + ioElement.getName() +
-                                    "' must be an integer between 0 and " + (ioDeclaration.getArrayLength()-1) + ". " +
-                                    "The current value is: " + ioElement.getArrayAccess().get().getValue().get().toString()
-                            , ioElement.getSourcePosition());
+                    ArchitectureSymbol architecture = ioDeclaration.getArchitecture();
+                    boolean isUnroll = false;
+
+                    for (UnrollSymbol unroll : architecture.getUnrolls()) {
+                        isUnroll = contains(unroll.getBody().getFirstAtomicElements(), ioElement);
+                    }
+
+                    // Allow invalid indices in UnrollSymbols
+                    if (!isUnroll) {
+                        Log.error("0" + ErrorCodes.INVALID_ARRAY_ACCESS + " The IO array access value of '" + ioElement.getName() +
+                                        "' must be an integer between 0 and " + (ioDeclaration.getArrayLength()-1) + ". " +
+                                        "The current value is: " + ioElement.getArrayAccess().get().getValue().get().toString()
+                                , ioElement.getSourcePosition());
+                    }
                 }
             }
             else{
@@ -90,6 +98,21 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
                             "The following indices are unused: " + Joiners.COMMA.join(unusedIndices) + "."
                     , ioDeclaration.getSourcePosition());
         }
+    }
+
+
+    private boolean contains(List<ArchitectureElementSymbol> list, ArchitectureElementSymbol element) {
+        boolean bool = false;
+
+        for (ArchitectureElementSymbol ele : list) {
+            if (ele.equals(element)) {
+                return true;
+            }
+
+            bool |= contains(ele.getNext(), element);
+        }
+
+        return bool;
     }
 
 }
