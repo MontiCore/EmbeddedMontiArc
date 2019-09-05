@@ -26,33 +26,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BeamSearchStart extends PredefinedUnrollDeclaration {
+public class BeamSearch extends UnrollDeclarationSymbol {
 
-    private BeamSearchStart() {
+    private BeamSearch() {
         super(AllPredefinedLayers.BEAMSEARCH_NAME);
     }
 
-    @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer, VariableSymbol.Member member) {
-        return new ArrayList<ArchTypeSymbol>();
-    }
-
-    @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer, VariableSymbol.Member member) {
-        errorIfInputSizeIsNotOne(inputTypes, layer);
-    }
-
-    public static BeamSearchStart create(){
-        BeamSearchStart declaration = new BeamSearchStart();
+    public static BeamSearch create(){
+        BeamSearch declaration = new BeamSearch();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.MAX_LENGTH_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .build(),
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.T_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
-                        .defaultValue(1)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.WIDTH_NAME)

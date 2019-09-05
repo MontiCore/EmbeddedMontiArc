@@ -26,20 +26,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class GreedySearch extends PredefinedUnrollDeclaration {
+public class GreedySearch extends UnrollDeclarationSymbol {
 
     private GreedySearch() {
         super(AllPredefinedLayers.GREEDYSEARCH_NAME);
-    }
-
-    @Override
-    public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer, VariableSymbol.Member member) {
-        return new ArrayList<ArchTypeSymbol>();
-    }
-
-    @Override
-    public void checkInput(List<ArchTypeSymbol> inputTypes, UnrollSymbol layer, VariableSymbol.Member member) {
-        errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
     public static GreedySearch create(){
@@ -48,11 +38,6 @@ public class GreedySearch extends PredefinedUnrollDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.MAX_LENGTH_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .build(),
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.T_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
-                        .defaultValue(1)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;

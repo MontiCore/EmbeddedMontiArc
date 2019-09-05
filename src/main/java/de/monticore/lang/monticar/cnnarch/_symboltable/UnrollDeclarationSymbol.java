@@ -35,9 +35,6 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     public static final UnrollDeclarationKind KIND = new UnrollDeclarationKind();
 
     private List<ParameterSymbol> parameters;
-    private List<LayerSymbol> layers;
-    private SerialCompositeElementSymbol body;
-
 
     protected UnrollDeclarationSymbol(String name) {
         super(name, KIND);
@@ -51,14 +48,6 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     @Override
     public UnrollDeclarationScope getSpannedScope() {
         return (UnrollDeclarationScope) super.getSpannedScope();
-    }
-
-    protected void setLayers(List<LayerSymbol> layers) {
-        this.layers = layers;
-    }
-
-    public List<LayerSymbol> getLayers() {
-        return layers;
     }
 
     public List<ParameterSymbol> getParameters() {
@@ -82,23 +71,9 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
             this.parameters.add(forParam);
             forParam.putInScope(getSpannedScope());
         }
-    }
-
-    public SerialCompositeElementSymbol getBody() {
-        return body;
-    }
-
-    protected void setBody(SerialCompositeElementSymbol body) {
-        this.body = body;
-    }
-
-    public boolean isPredefined() {
-        //Override by PredefinedUnrollDeclaration
-        return false;
-    }
-
-    public boolean isTrainable() {
-        return body.isTrainable();
+        for (ParameterSymbol param : parameters){
+            param.putInScope(getSpannedScope());
+        }
     }
 
     public Optional<ParameterSymbol> getParameter(String name) {
@@ -141,66 +116,4 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
             throw new IllegalArgumentException("Arguments with sequence expressions have to be resolved first before calling the layer method.");
         }
     }
-
-    public UnrollDeclarationSymbol deepCopy() {
-        UnrollDeclarationSymbol copy = new UnrollDeclarationSymbol(getName());
-        if (getAstNode().isPresent()){
-            copy.setAstNode(getAstNode().get());
-        }
-
-        System.err.println("parameters to copy: " + getParameters());
-        List<ParameterSymbol> parameterCopies = new ArrayList<>(getParameters().size());
-        for (ParameterSymbol parameter : getParameters()){
-            ParameterSymbol parameterCopy = parameter.deepCopy();
-            parameterCopies.add(parameterCopy);
-            parameterCopy.putInScope(copy.getSpannedScope());
-        }
-        copy.setParameters(parameterCopies);
-        copy.setBody(getBody().preResolveDeepCopy());
-        copy.getBody().putInScope(copy.getSpannedScope());
-        return copy;
-    }
-
-
-    /*public static class Builder{
-        private List<VariableSymbol> parameters = new ArrayList<>();
-        private CompositeElementSymbol body;
-        private String name = "";
-
-        public Builder parameters(List<VariableSymbol> parameters) {
-            this.parameters = parameters;
-            return this;
-        }
-
-        public Builder parameters(VariableSymbol... parameters) {
-            this.parameters = new ArrayList<>(Arrays.asList(parameters));
-            return this;
-        }
-
-        public Builder body(CompositeElementSymbol body) {
-            this.body = body;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public UnrollDeclarationSymbol build(){
-            if (name == null || name.equals("")){
-                throw new IllegalStateException("Missing or empty name for UnrollDeclarationSymbol");
-            }
-            UnrollDeclarationSymbol sym = new UnrollDeclarationSymbol(name);
-            sym.setBody(body);
-            if (body != null){
-                body.putInScope(sym.getSpannedScope());
-            }
-            for (VariableSymbol param : parameters){
-                param.putInScope(sym.getSpannedScope());
-            }
-            sym.setParameters(parameters);
-            return sym;
-        }
-    }*/
 }

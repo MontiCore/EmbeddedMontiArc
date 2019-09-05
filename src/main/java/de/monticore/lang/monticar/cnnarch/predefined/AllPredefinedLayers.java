@@ -46,7 +46,7 @@ public class AllPredefinedLayers {
     public static final String CONCATENATE_NAME = "Concatenate";
     public static final String FLATTEN_NAME = "Flatten";
     public static final String ONE_HOT_NAME = "OneHot";
-    public static final String BEAMSEARCH_NAME = "BeamSearchStart";
+    public static final String BEAMSEARCH_NAME = "BeamSearch";
     public static final String GREEDYSEARCH_NAME = "GreedySearch";
     public static final String RNN_NAME = "RNN";
     public static final String LSTM_NAME = "LSTM";
@@ -78,7 +78,6 @@ public class AllPredefinedLayers {
     public static final String FLATTEN_PARAMETER_NAME = "flatten";
     public static final String MAX_LENGTH_NAME = "max_length";
     public static final String WIDTH_NAME = "width";
-    public static final String T_NAME = "t";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
@@ -118,7 +117,7 @@ public class AllPredefinedLayers {
     public static List<UnrollDeclarationSymbol> createUnrollList(){
         return Arrays.asList(
                 GreedySearch.create(),
-                BeamSearchStart.create());
+                BeamSearch.create());
     }
 
 }

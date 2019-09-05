@@ -93,6 +93,7 @@ public class UnrollSymbol extends ResolvableSymbol {
 
     protected void setTimeParameter(ParameterSymbol timeParameter){
         this.timeParameter = timeParameter;
+        this.timeParameter.putInScope(getSpannedScope());
     }
 
     protected void putInScope(Scope scope){
@@ -114,44 +115,24 @@ public class UnrollSymbol extends ResolvableSymbol {
                 getDeclaration();
                 resolveExpressions();
 
+                int startValue = getTimeParameter().getDefaultExpression().get().getIntValue().get();
+                int endValue = getIntValue(AllPredefinedLayers.MAX_LENGTH_NAME).get();
+
+                getTimeParameter().getExpression().setValue(1); // TODO: Change constant
                 getBody().resolveOrError();
 
-                for (int timestep = this.getIntValue(AllPredefinedLayers.T_NAME).get(); timestep < this.getIntValue(AllPredefinedLayers.MAX_LENGTH_NAME).get(); timestep++) {
-                    SerialCompositeElementSymbol newBody = new SerialCompositeElementSymbol();
-                    List<ArchitectureElementSymbol> newBodyList = new ArrayList<>();
-                    SerialCompositeElementSymbol body = getBody().preResolveDeepCopy();
-                    body.putInScope(getBody().getSpannedScope());
+                for (int timestep = startValue; timestep < endValue; timestep++) {
+                    SerialCompositeElementSymbol currentBody = getBody().preResolveDeepCopy();
+                    currentBody.putInScope(getBody().getSpannedScope());
 
-                    for (ArchitectureElementSymbol element : body.getElements()) {
-                        if (element.getEnclosingScope() == null) {
-                            element.setEnclosingScope(getEnclosingScope().getAsMutableScope());
-                        }
+                    getTimeParameter().getExpression().setValue(timestep);
+                    getTimeParameter().putInScope(currentBody.getEnclosingScope());
 
-                        ((ParameterSymbol)((ArrayList<Symbol>)getSpannedScope().getLocalSymbols().get(AllPredefinedLayers.T_NAME)).get(0)).getExpression().setValue(timestep);
+                    currentBody.resolveOrError();
 
-                        try {
-                            this.resolveExpressions();
-
-                            for (ParameterSymbol p:declaration.getParameters()) {
-                                if (p.getEnclosingScope() == null) {
-                                    p.putInScope(getSpannedScope());
-                                }
-                            }
-
-                            element.resolve();
-                        }
-                        catch (ArchResolveException e) {
-                            e.printStackTrace();
-                        }
-
-                        newBodyList.add(element);
-                    }
-
-                    newBody.putInScope(this.getBody().getSpannedScope());
-                    newBody.setElements(newBodyList);
-
-                    bodies.add(newBody);
+                    bodies.add(currentBody);
                 }
+
 
                 UnrollSymbol resolvedUnroll = getDeclaration().call(this);
                 setResolvedThis(resolvedUnroll);

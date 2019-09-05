@@ -270,6 +270,26 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     @Override
+    public void visit(ASTTimeParameter ast) {
+        ParameterSymbol variable = new ParameterSymbol(ast.getName());
+        variable.setType(ParameterType.TIME_PARAMETER);
+        addToScopeAndLinkWithNode(variable, ast);
+    }
+
+    @Override
+    public void endVisit(ASTTimeParameter ast) {
+        ParameterSymbol variable = (ParameterSymbol) ast.getSymbolOpt().get();
+        if (ast.isPresentDefault()){
+            variable.setDefaultExpression((ArchSimpleExpressionSymbol) ast.getDefault().getSymbolOpt().get());
+        }
+        else {
+            ArchSimpleExpressionSymbol expression = new ArchSimpleExpressionSymbol();
+            expression.setValue(1);
+            variable.setDefaultExpression(expression);
+        }
+    }
+
+    @Override
     public void endVisit(ASTArchSimpleExpression ast) {
         ArchSimpleExpressionSymbol sym = new ArchSimpleExpressionSymbol();
         MathExpressionSymbol mathExp = null;
@@ -348,10 +368,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         }
         layer.setArguments(arguments);
 
-        ArchSimpleExpressionSymbol t_value = new ArchSimpleExpressionSymbol();
-        t_value.setValue(1);
-        ((ParameterSymbol)ast.getTimeParameter().getSymbolOpt().get()).setDefaultExpression(t_value);
-        layer.setTimeParameter((ParameterSymbol)ast.getTimeParameter().getSymbolOpt().get());
+        layer.setTimeParameter((ParameterSymbol) ast.getTimeParameter().getSymbolOpt().get());
 
         removeCurrentScope();
     }

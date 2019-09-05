@@ -39,6 +39,12 @@ public enum ParameterType {
             return "constant";
         }
     },
+    TIME_PARAMETER {
+        @Override
+        public String toString(){
+            return "time parameter";
+        }
+    },
     UNKNOWN {
         //describes a parameter which does not exist. Only used to avoid exceptions while checking Cocos.
         @Override
