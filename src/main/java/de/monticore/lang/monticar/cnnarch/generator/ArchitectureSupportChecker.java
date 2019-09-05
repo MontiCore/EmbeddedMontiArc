@@ -130,6 +130,16 @@ public abstract class ArchitectureSupportChecker {
         return true;
     }
 
+    protected boolean checkUnroll(ArchitectureSymbol architecture) {
+        if (!architecture.getUnrolls().isEmpty()) {
+            Log.error("This cnn architecture uses unrolls, which are currently not supported by the code generator."
+                      , architecture.getSourcePosition());
+            return false;
+        }
+
+        return true;
+    }
+
     public boolean check(ArchitectureSymbol architecture) {
         return checkMultipleStreams(architecture)
                 && checkMultipleInputs(architecture)
@@ -137,6 +147,7 @@ public abstract class ArchitectureSupportChecker {
                 && checkMultiDimensionalOutput(architecture)
                 && checkConstants(architecture)
                 && checkLayerVariables(architecture)
-                && checkOutputAsInput(architecture);
+                && checkOutputAsInput(architecture)
+                && checkUnroll(architecture);
     }
 }
