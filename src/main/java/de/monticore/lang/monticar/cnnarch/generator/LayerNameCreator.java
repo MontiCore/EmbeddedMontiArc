@@ -31,27 +31,14 @@ public class LayerNameCreator {
 
     private Map<ArchitectureElementSymbol, String> elementToName = new HashMap<>();
     private Map<String, ArchitectureElementSymbol> nameToElement = new HashMap<>();
-    private ArrayList<String> currentUnrollElementNames = new ArrayList<>();
-    private int elementIndex = 0;
-    private boolean partOfUnroll = false;
-    private boolean inFirstUnrollTimestep = true;
 
     public LayerNameCreator(ArchitectureSymbol architecture) {
         int stage = 1;
         for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
             stage = name(stream, stage, new ArrayList<>());
         }
-        stage = 1;
         for (UnrollSymbol unroll : architecture.getUnrolls()) {
-            currentUnrollElementNames = new ArrayList<>();
-            partOfUnroll = true;
-            for(int index = 0; index < unroll.getBodiesForAllTimesteps().size(); index++) {
-                if(index > 0){
-                    inFirstUnrollTimestep = false;
-                }
-                elementIndex = 0;
-                stage = name(unroll.getBodiesForAllTimesteps().get(index), stage, new ArrayList<>());
-            }
+            stage = name(unroll.getBody(), stage, new ArrayList<>());
         }
     }
 
@@ -76,13 +63,6 @@ public class LayerNameCreator {
                     return stage;
                 }
             } else {
-                if (!architectureElement.isResolved()) {
-                    try {
-                        architectureElement.resolve();
-                    } catch (ArchResolveException e) {
-                        e.printStackTrace();
-                    }
-                }
                 ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) architectureElement.getResolvedThis().get();
                 return name(resolvedElement, stage, streamIndices);
             }
@@ -112,24 +92,12 @@ public class LayerNameCreator {
         return Collections.max(endStages) + 1;
     }
 
-
     protected int add(ArchitectureElementSymbol architectureElement, int stage, List<Integer> streamIndices){
         int endStage = stage;
-        if (!elementToName.containsKey(architectureElement) || (partOfUnroll)) {
+        if (!elementToName.containsKey(architectureElement)) {
             String name = createName(architectureElement, endStage, streamIndices);
 
             while (nameToElement.containsKey(name)) {
-
-                // The element is already registered, just in a different scope now and thus unrecognized (technically a different symbol)
-                if(architectureElement instanceof VariableSymbol && ((VariableSymbol) architectureElement).getType() == VariableSymbol.Type.IO){
-                    elementToName.put(architectureElement, name);
-                    return endStage;
-                }else if(partOfUnroll && !inFirstUnrollTimestep){
-                    elementToName.put(architectureElement, currentUnrollElementNames.get(elementIndex));
-                    elementIndex++;
-                    return endStage;
-                }
-
                 endStage++;
                 name = createName(architectureElement, endStage, streamIndices);
             }
@@ -146,13 +114,6 @@ public class LayerNameCreator {
             // for now the name to element mapping is not used anywhere so it doesn't matter
             if (!isLayerVariable) {
                 nameToElement.put(name, architectureElement);
-            }
-
-            if(inFirstUnrollTimestep){
-                currentUnrollElementNames.add(name);
-            }
-            if(partOfUnroll){
-                elementIndex++;
             }
         }
         return endStage;
