@@ -6,7 +6,7 @@ component RNNencdec{
 
        source -> Softmax() -> target[0];
 
-       timed <t=0> BeamSearchStart(max_length=4){
+       timed <t> BeamSearch(max_length=4){
            source ->
            FullyConnected(units=30000) ->
            Softmax() ->
