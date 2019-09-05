@@ -42,4 +42,9 @@ public class CNNArch2GluonArchitectureSupportChecker extends ArchitectureSupport
         return true;
     }
 
+    @Override
+    protected boolean checkUnroll(ArchitectureSymbol architecture) {
+        return true;
+    }
+
 }
