@@ -66,8 +66,10 @@ public abstract class ArchitectureSupportChecker {
     }
 
     private boolean hasConstant(ArchitectureElementSymbol element) {
-        if (element instanceof CompositeElementSymbol) {
-            List<ArchitectureElementSymbol> constructedElements = ((CompositeElementSymbol) element).getElements();
+        ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) element.getResolvedThis().get();
+
+        if (resolvedElement instanceof CompositeElementSymbol) {
+            List<ArchitectureElementSymbol> constructedElements = ((CompositeElementSymbol) resolvedElement).getElements();
 
             for (ArchitectureElementSymbol constructedElement : constructedElements) {
                 if (hasConstant(constructedElement)) {
@@ -75,7 +77,7 @@ public abstract class ArchitectureSupportChecker {
                 }
             }
         }
-        else if (element instanceof ConstantSymbol) {
+        else if (resolvedElement instanceof ConstantSymbol) {
             return true;
         }
 

@@ -157,11 +157,6 @@ public abstract class CNNArchTemplateController {
         for (VariableSymbol element : getArchitecture().getInputs()){
             list.add(nameManager.getName(element));
         }
-        for (UnrollSymbol unroll : getArchitecture().getUnrolls()){
-            for (SerialCompositeElementSymbol element: unroll.getBodiesForAllTimesteps()) {
-                list.add(nameManager.getName(element.getFirstAtomicElements().get(0)));
-            }
-        }
         list.removeAll(Collections.singleton(null));
         return list;
     }

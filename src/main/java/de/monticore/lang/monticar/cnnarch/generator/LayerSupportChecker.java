@@ -17,10 +17,10 @@ public abstract class LayerSupportChecker {
     protected List<String> supportedLayerList = new ArrayList<>();
 
     private boolean isSupportedLayer(ArchitectureElementSymbol element){
-        List<ArchitectureElementSymbol> constructLayerElemList;
+        ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) element.getResolvedThis().get();
 
-        if (element instanceof CompositeElementSymbol) {
-            constructLayerElemList = ((CompositeElementSymbol) element).getElements();
+        if (resolvedElement instanceof CompositeElementSymbol) {
+            List<ArchitectureElementSymbol> constructLayerElemList = ((CompositeElementSymbol) resolvedElement).getElements();
             for (ArchitectureElementSymbol constructedLayerElement : constructLayerElemList) {
                 if (!isSupportedLayer(constructedLayerElement)) {
                     return false;
@@ -30,23 +30,23 @@ public abstract class LayerSupportChecker {
         }
 
         // Support all inputs and outputs
-        if (element instanceof VariableSymbol) {
-            if (((VariableSymbol) element).getType() == VariableSymbol.Type.LAYER) {
-                return isSupportedLayer(((VariableSymbol) element).getLayerVariableDeclaration().getLayer());
+        if (resolvedElement instanceof VariableSymbol) {
+            if (((VariableSymbol) resolvedElement).getType() == VariableSymbol.Type.LAYER) {
+                return isSupportedLayer(((VariableSymbol) resolvedElement).getLayerVariableDeclaration().getLayer());
             }
-            else if (element.isInput() || element.isOutput()) {
+            else if (resolvedElement.isInput() || resolvedElement.isOutput()) {
                 return true;
             }
         }
 
         // Support for constants is checked in ArchitectureSupportChecker
-        if (element instanceof ConstantSymbol) {
+        if (resolvedElement instanceof ConstantSymbol) {
             return true;
         }
 
         // Support all layer declarations
-        if (element instanceof LayerSymbol) {
-            if (!((LayerSymbol) element).getDeclaration().isPredefined()) {
+        if (resolvedElement instanceof LayerSymbol) {
+            if (!((LayerSymbol) resolvedElement).getDeclaration().isPredefined()) {
                 return true;
             }
         }
