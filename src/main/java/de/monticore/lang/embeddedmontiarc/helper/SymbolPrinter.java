@@ -284,7 +284,13 @@ public class SymbolPrinter {
         ip.println("{");
         ip.indent();
 
-        printPorts(instance.getPortInstanceList(), ip);
+        instance.getPortInstanceList()
+                .stream()
+                .map(p -> String.format("port %s %s %s;",
+                        p.isIncoming() ? "in" : "out",
+                        p.getTypeReference().getName(),
+                        normalize(p.getName())))
+                .forEach(ip::println);
 
         ip.println();
 
@@ -300,7 +306,12 @@ public class SymbolPrinter {
 
         ip.println();
 
-        instance.getConnectorInstances().forEach(con -> printConnector(con, ip));
+        instance.getConnectorInstances()
+                .stream()
+                .map(con -> String.format("connect %s -> %s;",
+                        normalize(con.getSource()),
+                        normalize(con.getTarget())))
+                .forEach(ip::println);
 
         ip.unindent();
         ip.println("}");
