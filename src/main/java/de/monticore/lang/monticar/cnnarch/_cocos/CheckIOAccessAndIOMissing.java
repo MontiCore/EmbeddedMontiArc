@@ -75,8 +75,10 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
                     ArchitectureSymbol architecture = ioDeclaration.getArchitecture();
                     boolean isUnroll = false;
 
-                    for (UnrollSymbol unroll : architecture.getUnrolls()) {
-                        isUnroll = contains(unroll.getBody(), ioElement);
+                    for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+                        if (networkInstruction.isUnroll()) {
+                            isUnroll = contains(networkInstruction.getBody(), ioElement);
+                        }
                     }
 
                     // Allow invalid indices in UnrollSymbols

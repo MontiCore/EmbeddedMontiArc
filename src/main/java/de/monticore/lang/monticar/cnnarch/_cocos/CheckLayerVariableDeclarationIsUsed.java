@@ -24,6 +24,7 @@ import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class CheckLayerVariableDeclarationIsUsed extends CNNArchSymbolCoCo {
@@ -35,25 +36,9 @@ public class CheckLayerVariableDeclarationIsUsed extends CNNArchSymbolCoCo {
 
             boolean isUsed = false;
 
-            for (SerialCompositeElementSymbol stream : layerVariableDeclaration.getLayer().getArchitecture().getStreams()) {
-                Collection<ArchitectureElementSymbol> elements =
-                        stream.getSpannedScope().resolveMany(layerVariableDeclaration.getName(), ArchitectureElementSymbol.KIND);
-
-                for (ArchitectureElementSymbol element : elements) {
-                    if (element instanceof VariableSymbol && ((VariableSymbol) element).getMember() == VariableSymbol.Member.NONE) {
-                        isUsed = true;
-                        break;
-                    }
-                }
-
-                if (isUsed) {
-                    break;
-                }
-            }
-
-            for (UnrollSymbol unroll : layerVariableDeclaration.getLayer().getArchitecture().getUnrolls()) {
-                Collection<ArchitectureElementSymbol> elements =
-                        unroll.getBody().getSpannedScope().resolveMany(layerVariableDeclaration.getName(), ArchitectureElementSymbol.KIND);
+            for (NetworkInstructionSymbol networkInstruction : layerVariableDeclaration.getLayer().getArchitecture().getNetworkInstructions()) {
+                Collection<ArchitectureElementSymbol> elements
+                        = networkInstruction.getBody().getSpannedScope().resolveMany(layerVariableDeclaration.getName(), ArchitectureElementSymbol.KIND);
 
                 for (ArchitectureElementSymbol element : elements) {
                     if (element instanceof VariableSymbol && ((VariableSymbol) element).getMember() == VariableSymbol.Member.NONE) {

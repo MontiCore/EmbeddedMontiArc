@@ -18,27 +18,22 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch._cocos;
+package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.NetworkInstructionSymbol;
-import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.symboltable.SymbolKind;
 
-public class CheckNetworkStreamMissing extends CNNArchSymbolCoCo {
+public class UnrollInstructionKind implements SymbolKind {
+
+    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.UnrollKind";
 
     @Override
-    public void check(ArchitectureSymbol architecture) {
-        boolean hasTrainableStream = false;
+    public String getName() {
+        return NAME;
+    }
 
-        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
-            hasTrainableStream |= networkInstruction.getBody().isTrainable();
-        }
-
-        if (!hasTrainableStream) {
-            Log.error("0" + ErrorCodes.MISSING_TRAINABLE_STREAM + " The architecture has no trainable stream. "
-                    , architecture.getSourcePosition());
-        }
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
 
 }

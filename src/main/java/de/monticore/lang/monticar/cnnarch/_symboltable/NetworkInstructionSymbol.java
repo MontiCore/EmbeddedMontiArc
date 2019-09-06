@@ -18,27 +18,32 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch._cocos;
+package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.NetworkInstructionSymbol;
-import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.symboltable.SymbolKind;
 
-public class CheckNetworkStreamMissing extends CNNArchSymbolCoCo {
+public abstract class NetworkInstructionSymbol extends ResolvableSymbol {
 
-    @Override
-    public void check(ArchitectureSymbol architecture) {
-        boolean hasTrainableStream = false;
+    private SerialCompositeElementSymbol body;
 
-        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
-            hasTrainableStream |= networkInstruction.getBody().isTrainable();
-        }
+    protected NetworkInstructionSymbol(String name, SymbolKind kind) {
+        super(name, kind);
+    }
 
-        if (!hasTrainableStream) {
-            Log.error("0" + ErrorCodes.MISSING_TRAINABLE_STREAM + " The architecture has no trainable stream. "
-                    , architecture.getSourcePosition());
-        }
+    public SerialCompositeElementSymbol getBody() {
+        return body;
+    }
+
+    protected void setBody(SerialCompositeElementSymbol body) {
+        this.body = body;
+    }
+
+    public boolean isStream() {
+        return false;
+    }
+
+    public boolean isUnroll() {
+        return false;
     }
 
 }

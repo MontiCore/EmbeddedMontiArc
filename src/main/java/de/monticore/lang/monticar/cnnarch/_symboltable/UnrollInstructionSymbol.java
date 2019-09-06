@@ -22,28 +22,30 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 
 
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
-import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
-import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 
 import java.util.*;
 import java.util.function.Function;
 
-public class UnrollSymbol extends ResolvableSymbol {
+public class UnrollInstructionSymbol extends NetworkInstructionSymbol {
 
-    public static final UnrollKind KIND = new UnrollKind();
+    public static final UnrollInstructionKind KIND = new UnrollInstructionKind();
     public static final Integer CONST_OFFSET = IODeclarationSymbol.MAX_ARRAY_LENGTH * 100;
 
     private UnrollDeclarationSymbol declaration = null;
     private List<ArgumentSymbol> arguments;
     private ParameterSymbol timeParameter;
-    private SerialCompositeElementSymbol body;
 
     private ArrayList<SerialCompositeElementSymbol> bodies = new ArrayList<>();
 
-    protected UnrollSymbol(String name) {
+    protected UnrollInstructionSymbol(String name) {
         super(name, KIND);
+    }
+
+    @Override
+    public boolean isUnroll() {
+        return true;
     }
 
     public UnrollDeclarationSymbol getDeclaration() {
@@ -61,18 +63,6 @@ public class UnrollSymbol extends ResolvableSymbol {
     }
     public ArrayList<SerialCompositeElementSymbol> getBodiesForAllTimesteps() {
         return bodies;
-    }
-
-    public SerialCompositeElementSymbol getBody() {
-        return body;
-    }
-
-    protected void setBody(SerialCompositeElementSymbol body) {
-        this.body = body;
-    }
-
-    public boolean isTrainable() {
-        return getBody().isTrainable();
     }
 
     @Override
@@ -101,9 +91,6 @@ public class UnrollSymbol extends ResolvableSymbol {
         Collection<Symbol> symbolsInScope = scope.getLocalSymbols().get(getName());
         if (symbolsInScope == null || !symbolsInScope.contains(this)){
             scope.getAsMutableScope().add(this);
-            /*if (getResolvedThis().isPresent()){
-                getResolvedThis().get().putInScope(getSpannedScope());
-            }*/
             for (ArgumentSymbol argument : getArguments()){
                 argument.putInScope(getSpannedScope().getAsMutableScope());
             }
@@ -135,7 +122,7 @@ public class UnrollSymbol extends ResolvableSymbol {
                 }
 
 
-                UnrollSymbol resolvedUnroll = getDeclaration().call(this);
+                UnrollInstructionSymbol resolvedUnroll = getDeclaration().call(this);
                 setResolvedThis(resolvedUnroll);
             }
         }
@@ -149,10 +136,10 @@ public class UnrollSymbol extends ResolvableSymbol {
         }
     }
 
-    protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableVariables, Set<ParameterSymbol> allVariables) {
+    protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters) {
         for (ArgumentSymbol argument : getArguments()){
-            argument.getRhs().checkIfResolvable(allVariables);
-            unresolvableVariables.addAll(argument.getRhs().getUnresolvableParameters());
+            argument.getRhs().checkIfResolvable(allParameters);
+            unresolvableParameters.addAll(argument.getRhs().getUnresolvableParameters());
         }
     }
 
@@ -248,7 +235,7 @@ public class UnrollSymbol extends ResolvableSymbol {
     }
 
     protected ResolvableSymbol preResolveDeepCopy() {
-        UnrollSymbol copy = new UnrollSymbol(getName());
+        UnrollInstructionSymbol copy = new UnrollInstructionSymbol(getName());
         if (getAstNode().isPresent()){
             copy.setAstNode(getAstNode().get());
         }

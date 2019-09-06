@@ -24,12 +24,9 @@ import de.monticore.lang.monticar.cnnarch._ast.ASTArchArgument;
 import de.monticore.lang.monticar.cnnarch._ast.ASTLayer;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.UnrollDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.UnrollSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ParameterSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 

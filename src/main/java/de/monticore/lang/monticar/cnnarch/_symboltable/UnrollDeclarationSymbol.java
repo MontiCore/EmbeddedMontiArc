@@ -26,7 +26,6 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,7 +86,7 @@ public class UnrollDeclarationSymbol extends CommonScopeSpanningSymbol {
     }
 
 
-    public UnrollSymbol call(UnrollSymbol layer) throws ArchResolveException{
+    public UnrollInstructionSymbol call(UnrollInstructionSymbol layer) throws ArchResolveException{
         checkForSequence(layer.getArguments());
         return layer;
 

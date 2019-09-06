@@ -78,7 +78,8 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
     public Set<ParameterSymbol> resolve() throws ArchResolveException {
         if (!isResolved()) {
             if (isResolvable()) {
-                List<ArchitectureElementSymbol> resolvedElements = new ArrayList<>();
+                resolveExpressions();
+
                 for (ArchitectureElementSymbol element : getElements()) {
                     element.resolve();
                 }

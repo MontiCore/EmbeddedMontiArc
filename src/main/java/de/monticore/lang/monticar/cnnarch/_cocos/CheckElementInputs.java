@@ -21,19 +21,14 @@
 package de.monticore.lang.monticar.cnnarch._cocos;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.UnrollSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.NetworkInstructionSymbol;
 
 public class CheckElementInputs extends CNNArchSymbolCoCo {
 
     @Override
     public void check(ArchitectureSymbol architecture) {
-        for (CompositeElementSymbol stream : architecture.getStreams()) {
-            stream.checkInput();
-        }
-
-        for (UnrollSymbol unroll : architecture.getUnrolls()) {
-            unroll.getBody().checkInput();
+        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+            networkInstruction.getBody().checkInput();
         }
     }
 }

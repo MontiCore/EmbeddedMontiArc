@@ -20,11 +20,8 @@
  */
 package de.monticore.lang.monticar.cnnarch._cocos;
 
-import de.monticore.commonexpressions._ast.ASTArguments;
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchArgument;
-import de.monticore.lang.monticar.cnnarch._ast.ASTLayer;
-import de.monticore.lang.monticar.cnnarch._ast.ASTLayerParameter;
-import de.monticore.lang.monticar.cnnarch._ast.ASTUnroll;
+import de.monticore.lang.monticar.cnnarch._ast.ASTUnrollInstruction;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.Joiners;
@@ -33,10 +30,10 @@ import de.se_rwth.commons.logging.Log;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CheckUnroll implements CNNArchASTUnrollCoCo{
+public class CheckUnroll implements CNNArchASTUnrollInstructionCoCo{
 
     @Override
-    public void check(ASTUnroll node) {
+    public void check(ASTUnrollInstruction node) {
         Set<String> nameSet = new HashSet<>();
 
         for (ASTArchArgument argument : node.getArgumentsList()){
@@ -52,7 +49,7 @@ public class CheckUnroll implements CNNArchASTUnrollCoCo{
         }
 
 
-        UnrollDeclarationSymbol layerDeclaration = ((UnrollSymbol) node.getSymbolOpt().get()).getDeclaration();
+        UnrollDeclarationSymbol layerDeclaration = ((UnrollInstructionSymbol) node.getSymbolOpt().get()).getDeclaration();
         if (layerDeclaration == null){
             ArchitectureSymbol architecture = node.getSymbolOpt().get().getEnclosingScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
             Log.error("0" + ErrorCodes.UNKNOWN_LAYER + " Unknown layer. " +

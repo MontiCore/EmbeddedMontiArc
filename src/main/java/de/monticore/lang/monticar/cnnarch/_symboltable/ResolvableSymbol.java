@@ -42,7 +42,7 @@ public abstract class ResolvableSymbol extends CommonScopeSpanningSymbol {
         if (sym instanceof ArchitectureSymbol){
             return (ArchitectureSymbol) sym;
         }
-        else if (sym instanceof UnrollSymbol) {
+        else if (sym instanceof NetworkInstructionSymbol) {
             sym = sym.getEnclosingScope().getSpanningSymbol().get();
             return (ArchitectureSymbol) sym;
         }

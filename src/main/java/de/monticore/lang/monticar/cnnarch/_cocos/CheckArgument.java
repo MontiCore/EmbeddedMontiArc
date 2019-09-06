@@ -40,7 +40,7 @@ public class CheckArgument implements CNNArchASTArchArgumentCoCo {
                                 "Possible arguments are: " + Joiners.COMMA.join(layerDeclaration.getParameters())
                         , node.get_SourcePositionStart());
             }
-        }else if(argument.getEnclosingScope().getSpanningSymbol().get() instanceof UnrollSymbol){
+        }else if(argument.getEnclosingScope().getSpanningSymbol().get() instanceof UnrollInstructionSymbol){
             UnrollDeclarationSymbol layerDeclaration = argument.getUnroll().getDeclaration();
             if (layerDeclaration != null && argument.getParameter() ==  null){
                 Log.error("0"+ ErrorCodes.UNKNOWN_ARGUMENT + " Unknown Argument. " +

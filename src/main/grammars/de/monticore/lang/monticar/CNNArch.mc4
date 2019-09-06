@@ -56,15 +56,19 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
     Architecture = methodDeclaration:LayerDeclaration*
                    instructions:(Instruction || ";")+ ";";
 
-    Instruction = (LayerVariableDeclaration | Stream | Unroll);
+    Instruction = (LayerVariableDeclaration | NetworkInstruction);
 
     LayerVariableDeclaration = "layer" Layer Name;
 
-    Stream = elements:(ArchitectureElement || "->")+;
+    interface NetworkInstruction;
 
-    Unroll =  "timed" "<" timeParameter:TimeParameter ">"
+    StreamInstruction implements NetworkInstruction = body:Stream;
+
+    UnrollInstruction implements NetworkInstruction = "timed" "<" timeParameter:TimeParameter ">"
                                      Name "(" arguments:(ArchArgument || ",")* ")"
                                      "{" body:Stream "}";
+
+    Stream = elements:(ArchitectureElement || "->")+;
 
     interface ArchitectureElement;
 
