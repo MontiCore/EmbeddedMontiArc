@@ -106,8 +106,19 @@ public class UnrollInstructionSymbol extends NetworkInstructionSymbol {
                 int startValue = getTimeParameter().getDefaultExpression().get().getIntValue().get();
                 int endValue = getIntValue(AllPredefinedLayers.MAX_LENGTH_NAME).get();
 
+                List<VariableSymbol> inputs = new ArrayList<>(getArchitecture().getInputs());
+                List<VariableSymbol> outputs = new ArrayList<>(getArchitecture().getOutputs());
+
+                // body is resolved and only used for network generation, t is set to CONST_OFFSET which results in
+                // high array indices to avoid clashing with regular array indices, e.g. when having a network with
+                // (target[0] | target[t-1]) as input, we generate one network and call it multiple times with different
+                // arguments for each timestep t
                 getTimeParameter().getExpression().setValue(CONST_OFFSET);
                 getBody().resolveOrError();
+
+                // we do not want those inputs and outputs with CONST_OFFSET as array index in our global inputs/outputs
+                getArchitecture().setInputs(inputs);
+                getArchitecture().setOutputs(outputs);
 
                 for (int timestep = startValue; timestep < endValue; timestep++) {
                     SerialCompositeElementSymbol currentBody = getBody().preResolveDeepCopy();
@@ -120,7 +131,6 @@ public class UnrollInstructionSymbol extends NetworkInstructionSymbol {
 
                     bodies.add(currentBody);
                 }
-
 
                 UnrollInstructionSymbol resolvedUnroll = getDeclaration().call(this);
                 setResolvedThis(resolvedUnroll);

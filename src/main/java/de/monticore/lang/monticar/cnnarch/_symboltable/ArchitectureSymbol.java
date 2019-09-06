@@ -92,13 +92,20 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return this.componentName;
     }
 
-
     public List<VariableSymbol> getInputs() {
         return inputs;
     }
 
+    public void setInputs(List<VariableSymbol> inputs) {
+        this.inputs = inputs;
+    }
+
     public List<VariableSymbol> getOutputs() {
         return outputs;
+    }
+
+    public void setOutputs(List<VariableSymbol> outputs) {
+        this.outputs = outputs;
     }
 
     public Collection<IODeclarationSymbol> getIODeclarations(){

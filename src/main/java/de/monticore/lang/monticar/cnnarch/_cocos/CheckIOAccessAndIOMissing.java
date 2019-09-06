@@ -61,7 +61,6 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
         }
     }
 
-
     private void checkIOArray(IODeclarationSymbol ioDeclaration){
         List<Integer> unusedIndices = IntStream.range(0, ioDeclaration.getArrayLength()).boxed().collect(Collectors.toList());
 
@@ -72,22 +71,10 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
                     unusedIndices.remove(arrayAccess.get());
                 }
                 else {
-                    ArchitectureSymbol architecture = ioDeclaration.getArchitecture();
-                    boolean isUnroll = false;
-
-                    for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
-                        if (networkInstruction.isUnroll()) {
-                            isUnroll = contains(networkInstruction.getBody(), ioElement);
-                        }
-                    }
-
-                    // Allow invalid indices in UnrollSymbols
-                    if (!isUnroll) {
-                        Log.error("0" + ErrorCodes.INVALID_ARRAY_ACCESS + " The IO array access value of '" + ioElement.getName() +
-                                        "' must be an integer between 0 and " + (ioDeclaration.getArrayLength()-1) + ". " +
-                                        "The current value is: " + ioElement.getArrayAccess().get().getValue().get().toString()
+                    Log.error("0" + ErrorCodes.INVALID_ARRAY_ACCESS + " The IO array access value of '" + ioElement.getName() +
+                                    "' must be an integer between 0 and " + (ioDeclaration.getArrayLength()-1) + ". " +
+                                    "The current value is: " + ioElement.getArrayAccess().get().getValue().get().toString()
                                 , ioElement.getSourcePosition());
-                    }
                 }
             }
             else{
@@ -100,23 +87,6 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
                             "The following indices are unused: " + Joiners.COMMA.join(unusedIndices) + "."
                     , ioDeclaration.getSourcePosition());
         }
-    }
-
-
-    private boolean contains(ArchitectureElementSymbol element, ArchitectureElementSymbol containedElement) {
-        ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) element.getResolvedThis().get();
-
-        if (resolvedElement instanceof CompositeElementSymbol) {
-            List<ArchitectureElementSymbol> constructedElements = ((CompositeElementSymbol) resolvedElement).getElements();
-
-            for (ArchitectureElementSymbol constructedElement : constructedElements) {
-                if (contains(constructedElement, containedElement)) {
-                    return true;
-                }
-            }
-        }
-
-        return resolvedElement.equals(containedElement);
     }
 
 }
