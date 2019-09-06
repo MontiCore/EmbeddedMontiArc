@@ -78,35 +78,18 @@ class NoNormalization(gluon.HybridBlock):
         return x
 
 
-<#list tc.architecture.streams as stream>
-<#if stream.isTrainable()>
-class Net_${stream?index}(gluon.HybridBlock):
+<#list tc.architecture.networkInstructions as networkInstruction>
+<#if networkInstruction.body.isTrainable()>
+class Net_${networkInstruction?index}(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net_${stream?index}, self).__init__(**kwargs)
+        super(Net_${networkInstruction?index}, self).__init__(**kwargs)
         self.last_layers = {}
         with self.name_scope():
-${tc.include(stream, "ARCHITECTURE_DEFINITION")}
+${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 
-    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(stream), ", ")}):
-${tc.include(stream, "FORWARD_FUNCTION")}
-        return ${tc.join(tc.getStreamOutputNames(stream), ", ")}
-
-</#if>
-</#list>
-
-
-<#list tc.architecture.unrolls as unroll>
-<#if unroll.body.isTrainable()>
-class Net_${unroll?index}(gluon.HybridBlock):
-    def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net_${unroll?index}, self).__init__(**kwargs)
-        self.last_layers = {}
-        with self.name_scope():
-${tc.include(unroll.body, "ARCHITECTURE_DEFINITION")}
-
-    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(unroll.body), ", ")}):
-${tc.include(unroll.body, "FORWARD_FUNCTION")}
-        return ${tc.join(tc.getStreamOutputNames(unroll.body), ", ")}
+    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")}):
+${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
+        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")}
 
 </#if>
 </#list>
