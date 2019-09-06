@@ -171,15 +171,33 @@ public abstract class CNNArchTemplateController {
         return list;
     }
 
-    public List getNoDuplicateArchitectureOutputs(){
-        List<String> names = new ArrayList();
+    public List getArchitectureInputSymbols(){
+        Set<String> names = new HashSet();
         List<VariableSymbol> noDuplicates = new ArrayList();
-        for(VariableSymbol output: getArchitecture().getOutputs()){
-            if(!names.contains(getName(output))){
+
+        for (VariableSymbol inputs : getArchitecture().getInputs()) {
+            if (getName(inputs) != null && !names.contains(getName(inputs))) {
+                names.add(getName(inputs));
+
+                noDuplicates.add(inputs);
+            }
+        }
+
+        return noDuplicates;
+    }
+
+    public List getArchitectureOutputSymbols(){
+        Set<String> names = new HashSet();
+        List<VariableSymbol> noDuplicates = new ArrayList();
+
+        for (VariableSymbol output : getArchitecture().getOutputs()) {
+            if (getName(output) != null && !names.contains(getName(output))) {
+                names.add(getName(output));
+
                 noDuplicates.add(output);
             }
-            names.add(getName(output));
         }
+
         return noDuplicates;
     }
 
