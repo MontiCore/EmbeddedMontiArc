@@ -37,7 +37,7 @@ public class UnrollInstructionSymbol extends NetworkInstructionSymbol {
     private List<ArgumentSymbol> arguments;
     private ParameterSymbol timeParameter;
 
-    private ArrayList<SerialCompositeElementSymbol> bodies = new ArrayList<>();
+    private ArrayList<SerialCompositeElementSymbol> resolvedBodies = new ArrayList<>();
 
     protected UnrollInstructionSymbol(String name) {
         super(name, KIND);
@@ -61,8 +61,8 @@ public class UnrollInstructionSymbol extends NetworkInstructionSymbol {
         }
         return declaration;
     }
-    public ArrayList<SerialCompositeElementSymbol> getBodiesForAllTimesteps() {
-        return bodies;
+    public ArrayList<SerialCompositeElementSymbol> getResolvedBodies() {
+        return resolvedBodies;
     }
 
     @Override
@@ -120,6 +120,8 @@ public class UnrollInstructionSymbol extends NetworkInstructionSymbol {
                 getArchitecture().setInputs(inputs);
                 getArchitecture().setOutputs(outputs);
 
+                resolvedBodies.clear();
+
                 for (int timestep = startValue; timestep < endValue; timestep++) {
                     SerialCompositeElementSymbol currentBody = getBody().preResolveDeepCopy();
                     currentBody.putInScope(getBody().getSpannedScope());
@@ -129,7 +131,7 @@ public class UnrollInstructionSymbol extends NetworkInstructionSymbol {
 
                     currentBody.resolveOrError();
 
-                    bodies.add(currentBody);
+                    resolvedBodies.add(currentBody);
                 }
 
                 UnrollInstructionSymbol resolvedUnroll = getDeclaration().call(this);
