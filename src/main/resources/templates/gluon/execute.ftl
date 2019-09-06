@@ -13,11 +13,11 @@
 </#if>
 </#list>
 
-<#list tc.architecture.streams as stream>
-<#if stream.isTrainable()>
-    _predictor_${stream?index}_.predict(${tc.join(tc.getStreamInputNames(stream), ", ")}, ${tc.join(tc.getStreamOutputNames(stream), ", ")});
+<#list tc.architecture.networkInstructions as networkInstruction>
+<#if networkInstruction.body.isTrainable()>
+    _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")}, ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")});
 <#else>
-${tc.include(stream, "CPP_INLINE")}
+${tc.include(networkInstruction.body, "CPP_INLINE")}
 </#if>
 </#list>
 

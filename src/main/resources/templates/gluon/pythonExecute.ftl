@@ -7,10 +7,10 @@
 </#if>
 </#list>
 
-<#list tc.architecture.streams as stream>
-<#if stream.isTrainable()>
-                    ${tc.join(tc.getStreamOutputNames(stream), ", ")} = self._networks[${stream?index}](${tc.join(tc.getStreamInputNames(stream), ", ")})
+<#list tc.architecture.networkInstructions as networkInstruction>
+<#if networkInstruction.body.isTrainable()>
+                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")})
 <#else>
-${tc.include(stream, "PYTHON_INLINE")}
+${tc.include(networkInstruction.body, "PYTHON_INLINE")}
 </#if>
 </#list>
