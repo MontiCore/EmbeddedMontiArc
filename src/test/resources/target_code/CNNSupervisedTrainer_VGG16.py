@@ -136,7 +136,7 @@ class CNNSupervisedTrainer_VGG16:
                 predictions_label = batch.label[0].as_in_context(mx_context)
 
                 with autograd.record():
-                    predictions_ = mx.nd.zeros((1000,), ctx=mx_context)
+                    predictions_ = mx.nd.zeros((batch_size, 1000,), ctx=mx_context)
 
                     predictions_ = self._networks[0](data_)
 
@@ -174,7 +174,7 @@ class CNNSupervisedTrainer_VGG16:
                 ]
 
                 if True: 
-                    predictions_ = mx.nd.zeros((1000,), ctx=mx_context)
+                    predictions_ = mx.nd.zeros((batch_size, 1000,), ctx=mx_context)
 
                     predictions_ = self._networks[0](data_)
 
@@ -196,7 +196,7 @@ class CNNSupervisedTrainer_VGG16:
                 ]
 
                 if True: 
-                    predictions_ = mx.nd.zeros((1000,), ctx=mx_context)
+                    predictions_ = mx.nd.zeros((batch_size, 1000,), ctx=mx_context)
 
                     predictions_ = self._networks[0](data_)
 
