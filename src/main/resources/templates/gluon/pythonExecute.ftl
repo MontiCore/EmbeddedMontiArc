@@ -6,9 +6,15 @@
 </#list>
 
 <#list tc.architecture.networkInstructions as networkInstruction>
+<#if networkInstruction.isUnroll()>
+<#list networkInstruction.toUnrollInstruction().resolvedBodies as resolvedBody>
+                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")})
+</#list>
+<#else>
 <#if networkInstruction.body.isTrainable()>
                     ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")})
 <#else>
 ${tc.include(networkInstruction.body, "PYTHON_INLINE")}
+</#if>
 </#if>
 </#list>
