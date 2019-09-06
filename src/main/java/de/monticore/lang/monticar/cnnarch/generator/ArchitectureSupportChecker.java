@@ -16,7 +16,7 @@ public abstract class ArchitectureSupportChecker {
 
     // Overload functions returning always true to enable the features
     protected boolean checkMultipleStreams(ArchitectureSymbol architecture) {
-        if (architecture.getStreams().size() + architecture.getUnrolls().size() != 1) {
+        if (architecture.getNetworkInstructions().size() != 1) {
             Log.error("This cnn architecture has multiple instructions, " +
                       "which is currently not supported by the code generator. "
                       , architecture.getSourcePosition());
@@ -85,18 +85,8 @@ public abstract class ArchitectureSupportChecker {
     }
 
     protected boolean checkConstants(ArchitectureSymbol architecture) {
-        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
-            for (ArchitectureElementSymbol element : stream.getElements()) {
-                if (hasConstant(element)) {
-                    Log.error("This cnn architecture has a constant, which is currently not supported by the code generator."
-                            , architecture.getSourcePosition());
-                    return false;
-                }
-            }
-        }
-
-        for (UnrollSymbol unroll: architecture.getUnrolls()) {
-            for (ArchitectureElementSymbol element : unroll.getBody().getElements()) {
+        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+            for (ArchitectureElementSymbol element : networkInstruction.getBody().getElements()) {
                 if (hasConstant(element)) {
                     Log.error("This cnn architecture has a constant, which is currently not supported by the code generator."
                             , architecture.getSourcePosition());
@@ -119,8 +109,8 @@ public abstract class ArchitectureSupportChecker {
     }
 
     protected boolean checkOutputAsInput(ArchitectureSymbol architecture) {
-        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
-            for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
+        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+            for (ArchitectureElementSymbol element : networkInstruction.getBody().getFirstAtomicElements()) {
                 if (element.isOutput()) {
                     Log.error("This cnn architecture uses an output as an input, which is currently not supported by the code generator."
                             , architecture.getSourcePosition());
@@ -133,10 +123,12 @@ public abstract class ArchitectureSupportChecker {
     }
 
     protected boolean checkUnroll(ArchitectureSymbol architecture) {
-        if (!architecture.getUnrolls().isEmpty()) {
-            Log.error("This cnn architecture uses unrolls, which are currently not supported by the code generator."
-                      , architecture.getSourcePosition());
-            return false;
+        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+            if (networkInstruction.isUnroll()) {
+                Log.error("This cnn architecture uses unrolls, which are currently not supported by the code generator."
+                        , architecture.getSourcePosition());
+                return false;
+            }
         }
 
         return true;

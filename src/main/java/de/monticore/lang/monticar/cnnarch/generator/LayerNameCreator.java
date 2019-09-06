@@ -34,13 +34,12 @@ public class LayerNameCreator {
 
     public LayerNameCreator(ArchitectureSymbol architecture) {
         int stage = 1;
-        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
-            stage = name(stream, stage, new ArrayList<>());
-        }
-        for (UnrollSymbol unroll : architecture.getUnrolls()) {
-            stage = name(unroll.getBody(), stage, new ArrayList<>());
+        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+            stage = name(networkInstruction.getBody(), stage, new ArrayList<>());
 
-            // TODO: Add individual timesteps?
+            if (networkInstruction.isUnroll()) {
+                // TODO: Add individual timesteps?
+            }
         }
     }
 

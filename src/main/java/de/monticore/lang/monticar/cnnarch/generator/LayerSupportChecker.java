@@ -60,16 +60,8 @@ public abstract class LayerSupportChecker {
     }
 
     public boolean check(ArchitectureSymbol architecture) {
-        for (CompositeElementSymbol stream : architecture.getStreams()) {
-            for (ArchitectureElementSymbol element : stream.getElements()) {
-                if (!isSupportedLayer(element)) {
-                    return false;
-                }
-            }
-        }
-
-        for (UnrollSymbol unroll: architecture.getUnrolls()) {
-            for (ArchitectureElementSymbol element : unroll.getBody().getElements()) {
+        for (NetworkInstructionSymbol networkInstructions : architecture.getNetworkInstructions()) {
+            for (ArchitectureElementSymbol element : networkInstructions.getBody().getElements()) {
                 if (!isSupportedLayer(element)) {
                     return false;
                 }
