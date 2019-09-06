@@ -66,7 +66,7 @@ public class Embedding extends PredefinedLayerDeclaration {
         if (layer.getIntValue(AllPredefinedLayers.INPUT_DIM_NAME).get() == 0
                 && domain.isPresentRange()
                 && !domain.getRange().hasNoUpperLimit()) {
-            int inputDim = domain.getRange().getEndValue().intValue();
+            int inputDim = domain.getRange().getEndValue().intValue() + 1;
 
             layer.setIntValue(AllPredefinedLayers.INPUT_DIM_NAME, inputDim);
         }
@@ -96,7 +96,7 @@ public class Embedding extends PredefinedLayerDeclaration {
         else if (!domain.isPresentRange() || domain.getRange().hasNoUpperLimit()) {
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: Input range must have an upper limit. ", layer.getSourcePosition());
         }
-        else if (domain.getRange().getStartValue().intValue() < 0 || domain.getRange().getEndValue().intValue() > inputDim) {
+        else if (domain.getRange().getStartValue().intValue() < 0 || domain.getRange().getEndValue().intValue() >= inputDim) {
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " Invalid layer input domain: Input upper limit must be smaller than 'input_dim'. ", layer.getSourcePosition());
         }
     }
