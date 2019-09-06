@@ -10,10 +10,16 @@
 </#list>
 
 <#list tc.architecture.networkInstructions as networkInstruction>
+<#if networkInstruction.isUnroll()>
+<#list networkInstruction.toUnrollInstruction().resolvedBodies as resolvedBody>
+    _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")}, ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")});
+</#list>
+<#else>
 <#if networkInstruction.body.isTrainable()>
     _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")}, ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")});
 <#else>
 ${tc.include(networkInstruction.body, "CPP_INLINE")}
+</#if>
 </#if>
 </#list>
 
