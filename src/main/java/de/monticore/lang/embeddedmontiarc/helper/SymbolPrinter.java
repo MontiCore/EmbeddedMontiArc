@@ -270,4 +270,47 @@ public class SymbolPrinter {
         printEMAComponentInstance(inst, ip, false);
         return ip.getContent();
     }
+
+    public static String printEMAComponentInstanceAsEMAComponent(EMAComponentInstanceSymbol instance) {
+        IndentPrinter ip = new IndentPrinter();
+        printEMAComponentInstanceAsEMAComponent(instance, ip);
+        return ip.getContent();
+    }
+
+
+    public static void printEMAComponentInstanceAsEMAComponent(EMAComponentInstanceSymbol instance, IndentPrinter ip) {
+
+        ip.print("component " + capitalize(normalize(instance.getName())));
+        ip.println("{");
+        ip.indent();
+
+        printPorts(instance.getPortInstanceList(), ip);
+
+        ip.println();
+
+        instance.getSubComponents()
+                .forEach(inst -> printEMAComponentInstanceAsEMAComponent(inst, ip));
+
+        ip.println();
+
+        instance.getSubComponents()
+                .stream()
+                .map(inst -> "instance " + capitalize(normalize(inst.getName())) + " " + normalize(inst.getName()) + ";")
+                .forEach(ip::println);
+
+        ip.println();
+
+        instance.getConnectorInstances().forEach(con -> printConnector(con, ip));
+
+        ip.unindent();
+        ip.println("}");
+    }
+
+    private static String normalize(String s){
+        return s.replace("[", "_").replace("]","");
+    }
+
+    private static String capitalize(String s){
+        return s.substring(0,1).toUpperCase() + s.substring(1);
+    }
 }
