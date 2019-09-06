@@ -5,6 +5,7 @@ from VTool import start_plot
 import numpy as np
 import csv
 from subprocess import call
+import os
 
 parser = argparse.ArgumentParser(description='Visualization of predictions for the end-to-end autonomous driving model.')
 parser.add_argument('-i', type=str, help='Path to H5 container which includes data and targets.')
@@ -14,8 +15,12 @@ args = parser.parse_args()
 
 print("Data:",args.i)
 print("Predict:",args.p)
-print("Visualise:",args.p)
+print("Visualise:",args.v)
 
+if not os.path.exists(args.i):
+    print("Data not existent")
+    quit()
+    
 #make predictions
 if args.p:
     call(['build/src/cpp/steeringAnglePredictor',args.i,'v-tool/predictions.csv'])
