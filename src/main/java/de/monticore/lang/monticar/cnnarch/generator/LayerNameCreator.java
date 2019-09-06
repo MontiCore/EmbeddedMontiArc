@@ -38,7 +38,11 @@ public class LayerNameCreator {
             stage = name(networkInstruction.getBody(), stage, new ArrayList<>());
 
             if (networkInstruction.isUnroll()) {
-                // TODO: Add individual timesteps?
+                UnrollInstructionSymbol unroll = (UnrollInstructionSymbol) networkInstruction;
+
+                for (SerialCompositeElementSymbol body : unroll.getResolvedBodies()) {
+                    stage = name(body, stage, new ArrayList<>());
+                }
             }
         }
     }
