@@ -15,7 +15,6 @@ component RNNencdec<Z(2:oo) classes = 10, max_length=5>{
         Softmax() ->
         softmax[0];
 
-
        timed <t> GreedySearch(max_length=5){
         softmax[t-1] ->
         FullyConnected(units=classes) ->

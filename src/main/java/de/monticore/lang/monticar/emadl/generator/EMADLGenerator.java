@@ -29,8 +29,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.SerialCompositeElementSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.UnrollSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.NetworkInstructionSymbol;
 import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnnarch.generator.DataPathConfigParser;
@@ -482,22 +481,12 @@ public class EMADLGenerator {
         String networkAttributes = "public:";
 
         int i = 0;
-        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
-            if (stream.isTrainable()) {
+        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+            if (networkInstruction.getBody().isTrainable()) {
                 networkAttributes += "\n" + predictorClassName + "_" + i + " _predictor_" + i + "_;";
             }
 
             ++i;
-        }
-
-        for(UnrollSymbol unroll: architecture.getUnrolls()) {
-            for (SerialCompositeElementSymbol body : unroll.getBodiesForAllTimesteps()) {
-                if (body.isTrainable()) {
-                    networkAttributes += "\n" + predictorClassName + "_" + i + " _predictor_" + i + "_;";
-                }
-
-                ++i;
-            }
         }
 
         component = component.replaceFirst("public:", networkAttributes);
