@@ -46,4 +46,12 @@ public abstract class NetworkInstructionSymbol extends ResolvableSymbol {
         return false;
     }
 
+    public StreamInstructionSymbol toStreamInstruction() {
+        return (StreamInstructionSymbol) this;
+    }
+
+    public UnrollInstructionSymbol toUnrollInstruction() {
+        return (UnrollInstructionSymbol) this;
+    }
+
 }
