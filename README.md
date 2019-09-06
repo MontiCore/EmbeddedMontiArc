@@ -5,7 +5,7 @@ This repository consists of a neural network for end to end driving and some use
 ## Requirements
 
 - OpenCV, h5py, numpy, PIL, matplotlib and scipy for Python: `pip install opencv h5py numpy PIL matplotlib scipy`
-- OpenCV for C
+- OpenCV for C e.g. `sudo apt install libopencv-dev`
 - Tensorflow for C: [This repo might help you](https://github.com/FloopCZ/tensorflow_cc)
 
 ## Usage
