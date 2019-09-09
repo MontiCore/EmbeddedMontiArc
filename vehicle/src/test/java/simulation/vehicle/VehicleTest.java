@@ -297,12 +297,15 @@ public class VehicleTest {
         vehicle2.checkBattery();
         //assertTrue(vehicle2.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent()!=0);
         assertTrue(!vehicle2.isGotoCharginstation());
+
         //Modelica
         Vehicle vehicle3 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0).getSimulationVehicle();
         vehicle3.checkBattery();
         assertTrue(vehicle3.isGotoCharginstation());
+        assertTrue(vehicle3.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE).getActuatorValueCurrent()==0);
         Vehicle vehicle4 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,30).getSimulationVehicle();
         vehicle4.checkBattery();
+        //assertTrue(vehicle4.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE).getActuatorValueCurrent()!=0);
         assertTrue(!vehicle4.isGotoCharginstation());
     }
 }
