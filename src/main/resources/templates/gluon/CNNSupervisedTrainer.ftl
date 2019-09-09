@@ -185,13 +185,19 @@ class ${tc.fileNameWithoutEnding}:
                 if True: <#-- Fix indentation -->
 <#include "pythonExecute.ftl">
 
-                predictions = [
-<#list tc.architectureOutputs as output_name>
-                    mx.nd.argmax(${output_name}, axis=1)<#sep>,
-</#list>
-]
+                out_names=[]
+                <#list tc.architectureOutputs as output_name>
+                out_names.append(${output_name})
+                </#list>
+                predictions = []
+                for output_name in out_names:
+                    if mx.nd.shape_array(output_name).size > 1:
+                        predictions.append(mx.nd.argmax(output_name, axis=1))
+                    #ArgMax already applied
+                    else:
+                        predictions.append(output_name)
 
-                <#include "elements/BeamSearchStart.ftl">
+                <#include "elements/BeamSearch.ftl">
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
@@ -213,12 +219,17 @@ class ${tc.fileNameWithoutEnding}:
                 if True: <#-- Fix indentation -->
 <#include "pythonExecute.ftl">
 
-                predictions = [
-<#list tc.architectureOutputs as output_name>
-                    mx.nd.argmax(${output_name}, axis=1)<#sep>,
-</#list>
-
-                ]
+                out_names=[]
+                <#list tc.architectureOutputs as output_name>
+                out_names.append(${output_name})
+                </#list>
+                predictions = []
+                for output_name in out_names:
+                    if mx.nd.shape_array(output_name).size > 1:
+                        predictions.append(mx.nd.argmax(output_name, axis=1))
+                    #ArgMax already applied
+                    else:
+                        predictions.append(output_name)
 
                 metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]

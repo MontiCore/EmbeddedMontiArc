@@ -140,7 +140,6 @@ class CNNSupervisedTrainer_VGG16:
 
                     predictions_ = self._networks[0](data_)
 
-
                     loss = \
                         loss_function(predictions_, predictions_label)
 
@@ -178,9 +177,15 @@ class CNNSupervisedTrainer_VGG16:
 
                     predictions_ = self._networks[0](data_)
 
-
-                predictions = [
-                    mx.nd.argmax(predictions_, axis=1)]
+                out_names=[]
+                out_names.append(predictions_)
+                predictions = []
+                for output_name in out_names:
+                    if mx.nd.shape_array(output_name).size > 1:
+                        predictions.append(mx.nd.argmax(output_name, axis=1))
+                    #ArgMax already applied
+                    else:
+                        predictions.append(output_name)
 
 
                 metric.update(preds=predictions, labels=labels)
@@ -200,10 +205,15 @@ class CNNSupervisedTrainer_VGG16:
 
                     predictions_ = self._networks[0](data_)
 
-
-                predictions = [
-                    mx.nd.argmax(predictions_, axis=1)
-                ]
+                out_names=[]
+                out_names.append(predictions_)
+                predictions = []
+                for output_name in out_names:
+                    if mx.nd.shape_array(output_name).size > 1:
+                        predictions.append(mx.nd.argmax(output_name, axis=1))
+                    #ArgMax already applied
+                    else:
+                        predictions.append(output_name)
 
                 metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]
