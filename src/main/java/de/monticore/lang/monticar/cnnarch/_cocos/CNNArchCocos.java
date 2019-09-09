@@ -79,6 +79,7 @@ public class CNNArchCocos {
         return new CNNArchSymbolCoCoChecker()
                 .addCoCo(new CheckVariableDeclarationName())
                 .addCoCo(new CheckVariableName())
+                .addCoCo(new CheckArgmaxLayer())
                 .addCoCo(new CheckExpressions());
     }
 
