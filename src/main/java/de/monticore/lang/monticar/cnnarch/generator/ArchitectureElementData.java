@@ -38,8 +38,6 @@ public class ArchitectureElementData {
     private String name;
     private ArchitectureElementSymbol element;
     private CNNArchTemplateController templateController;
-    private boolean partOfUnroll;
-    private int unrollIndex;
 
     public ArchitectureElementData(String name, ArchitectureElementSymbol element, CNNArchTemplateController templateController) {
         this.name = name;
@@ -69,22 +67,6 @@ public class ArchitectureElementData {
 
     public void setTemplateController(CNNArchTemplateController templateController) {
         this.templateController = templateController;
-    }
-
-    public boolean getPartOfUnroll() {
-        return partOfUnroll;
-    }
-
-    public void setPartOfUnroll(boolean partOfUnroll) {
-        this.partOfUnroll= partOfUnroll;
-    }
-
-    public int getUnrollIndex(){
-        return unrollIndex;
-    }
-
-    public void setUnrollIndex(int unrollIndex){
-        this.unrollIndex = unrollIndex;
     }
 
     private LayerSymbol getLayerSymbol() {
