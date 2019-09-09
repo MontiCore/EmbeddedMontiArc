@@ -52,9 +52,9 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         assertTrue(tags.size() == 1);
 
         SomeIPConnectionSymbol tag = (SomeIPConnectionSymbol) tags.iterator().next();
-        assertEquals(tag.getserviceID().get(), "/clock");
-        assertEquals(tag.getinstanceID().get(), "someip/Clock");
-        assertEquals(tag.geteventgroupID().get(), "clock.toSec()");
+        assertEquals(tag.getserviceID().get(), 1);
+        assertEquals(tag.getinstanceID().get(), 2);
+        assertEquals(tag.geteventgroupID().get(), 3);
 
         //someipOut
         EMAPortSymbol someIPOut = component.getPortInstance("someipOut").orElse(null);
@@ -64,9 +64,9 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         assertTrue(tags.size() == 1);
 
         tag = (SomeIPConnectionSymbol) tags.iterator().next();
-        assertEquals(tag.getserviceID().get(), "/echo");
-        assertEquals(tag.getinstanceID().get(), "automated_driving_msgs/StampedFloat64");
-        assertEquals(tag.geteventgroupID().get(), "data");
+        assertEquals(tag.getserviceID().get(), 1);
+        assertEquals(tag.getinstanceID().get(), 2);
+        assertEquals(tag.geteventgroupID().get(), 3);
 
         //emptyTagIn
         EMAPortSymbol emptyTagIn = component.getPortInstance("emptyTagIn").orElse(null);
