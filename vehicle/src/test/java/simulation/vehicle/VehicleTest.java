@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import simulation.environment.object.House;
+import simulation.environment.util.VehicleType;
 import simulation.util.Log;
 
 import java.util.ArrayList;
@@ -283,5 +284,25 @@ public class VehicleTest {
         physicalObjects.add(house);
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiffMs);
         assertTrue(vehicle1.getCollision() && !vehicle2.getCollision());
+    }
+
+    @Test
+    public void AutopilotBehaviorTest() {
+        //Masspoint
+        Vehicle vehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0).getSimulationVehicle();
+        vehicle.checkBattery();
+        assertTrue(vehicle.isGotoCharginstation());
+        assertTrue(vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent()==0);
+        Vehicle vehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,30).getSimulationVehicle();
+        vehicle2.checkBattery();
+        //assertTrue(vehicle2.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent()!=0);
+        assertTrue(!vehicle2.isGotoCharginstation());
+        //Modelica
+        Vehicle vehicle3 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0).getSimulationVehicle();
+        vehicle3.checkBattery();
+        assertTrue(vehicle3.isGotoCharginstation());
+        Vehicle vehicle4 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,30).getSimulationVehicle();
+        vehicle4.checkBattery();
+        assertTrue(!vehicle4.isGotoCharginstation());
     }
 }

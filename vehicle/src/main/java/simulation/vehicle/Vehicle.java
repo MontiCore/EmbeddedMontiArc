@@ -960,29 +960,31 @@ public class Vehicle{
         }
 
         //  Check Battery
-        try {
-            checkBattery();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        checkBattery();
     }
 
     /**
      * Check Battery state and move to the next Chargingstation if needed
      */
-    private void checkBattery() throws Exception {
-        if(isElectricVehicle() && !gotoCharginstation && battery.get().getBatteryPercentage()<=20){
-            gotoCharginstation = true;
-            long nearestcharg = ChargingStationNavigator.getNearestChargingStation(ChargingStationNavigator.RealVectortoOSMID(this.physicalVehicle.getPosition()));
-            RealVector point3d = ChargingStationNavigator.getPositionOfOsmNode(nearestcharg);
-            navigateTo(new ControllerNode(Geometry.realVector2Point3D(point3d),nearestcharg));
-            //      battery discharging failed, cannot accelerate the vehicle
-            //      set either motor OR throttle to zero, based on type of the car
-            if (batteryProblem == true) {
-                if (physicalVehicle instanceof MassPointPhysicalVehicle) {
-                    motor.setActuatorValueTarget(0.0);
-                } else {
-                    throttle.setActuatorValueTarget(0.0);
+    void checkBattery(){
+        if(battery.isPresent()) {
+            if (isElectricVehicle() && !gotoCharginstation && battery.get().getBatteryPercentage() <= 20) {
+                gotoCharginstation = true;
+                try {
+                    long nearestcharg = ChargingStationNavigator.getNearestChargingStation(ChargingStationNavigator.RealVectortoOSMID(this.physicalVehicle.getPosition()));
+                    RealVector point3d = ChargingStationNavigator.getPositionOfOsmNode(nearestcharg);
+                    navigateTo(new ControllerNode(Geometry.realVector2Point3D(point3d), nearestcharg));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //      battery discharging failed, cannot accelerate the vehicle
+                //      set either motor OR throttle to zero, based on type of the car
+                if (batteryProblem) {
+                    if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+                        motor.setActuatorValueTarget(0.0);
+                    } else {
+                        throttle.setActuatorValueTarget(0.0);
+                    }
                 }
             }
         }
@@ -1156,6 +1158,10 @@ public class Vehicle{
 
         // Fallback to empty list
         return new ArrayList<>();
+    }
+
+    public boolean isGotoCharginstation() {
+        return gotoCharginstation;
     }
 
     /**
