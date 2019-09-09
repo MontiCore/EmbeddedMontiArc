@@ -25,6 +25,7 @@
         <Embedded-montiarc-math-emam2someip-generator.version>1.1-SNAPSHOT</Embedded-montiarc-math-emam2someip-generator.version>
         <EMADL2CPP.version>0.2.8</EMADL2CPP.version>
         <EMADL.version>0.2.7-SNAPSHOT</EMADL.version>
+        <SOMEIP.version>1.1-SNAPSHOT</SOMEIP.version>
         <embedded-montiarc-component-clustering.version>0.0.2-SNAPSHOT</embedded-montiarc-component-clustering.version>
 
         <!-- .. Libraries .................................................. -->
@@ -110,7 +111,7 @@
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-emam2someip-generator</artifactId>
-            <version>${Embedded-montiarc-math-emam2someip-generator.version}</version>
+            <version>${SOMEIP.version}</version>
         </dependency>
 
 
