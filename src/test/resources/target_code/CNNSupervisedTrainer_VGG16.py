@@ -138,12 +138,17 @@ class CNNSupervisedTrainer_VGG16:
                 with autograd.record():
                     predictions_ = mx.nd.zeros((batch_size, 1000,), ctx=mx_context)
 
+                    lossList = []
                     predictions_ = self._networks[0](data_)
+                    lossList.append(loss_function(predictions_, predictions_label))
 
-                    loss = \
-                        loss_function(predictions_, predictions_label)
+                    loss = 0
+                    for element in lossList:
+                        loss = loss + element
+
 
                 loss.backward()
+
 
                 for trainer in trainers:
                     trainer.step(batch_size)

@@ -140,15 +140,15 @@ class ${tc.fileNameWithoutEnding}:
                 </#list>
 
                 with autograd.record():
-<#include "pythonExecute.ftl">
+<#include "pythonExecuteArgmax.ftl">
 
-                    loss = \
-<#list tc.architectureOutputs as output_name>
-                        loss_function(${output_name}, ${output_name}label)<#sep> + \
-</#list>
+                    loss = 0
+                    for element in lossList:
+                        loss = loss + element
 
 
                 loss.backward()
+
 
                 for trainer in trainers:
                     trainer.step(batch_size)
