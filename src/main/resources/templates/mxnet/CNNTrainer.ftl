@@ -1,4 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+# (c) https://github.com/MontiCore/monticore
 import logging
 import mxnet as mx
 <#list configurations as config>

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
     vector<float> CNN_softmax_(10);
 
     _predictor_0_.predict(CNNTranslator::translate(data),

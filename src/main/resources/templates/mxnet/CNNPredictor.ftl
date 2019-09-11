@@ -1,4 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef ${tc.fileNameWithoutEnding?upper_case}
 #define ${tc.fileNameWithoutEnding?upper_case}
 

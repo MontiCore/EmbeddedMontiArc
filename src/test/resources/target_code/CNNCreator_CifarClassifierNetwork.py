@@ -748,6 +748,7 @@ class CNNCreator_CifarClassifierNetwork:
         softmax_ = mx.symbol.SoftmaxOutput(data=softmax32_,
             name="softmax_")
 
+
         self.module = mx.mod.Module(symbol=mx.symbol.Group([softmax_]),
                                          data_names=self._input_names_,
                                          label_names=self._output_names_,

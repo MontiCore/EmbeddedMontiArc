@@ -546,6 +546,7 @@ class CNNCreator_VGG16:
         predictions_ = mx.symbol.SoftmaxOutput(data=softmax15_,
             name="predictions_")
 
+
         self.module = mx.mod.Module(symbol=mx.symbol.Group([predictions_]),
                                          data_names=self._input_names_,
                                          label_names=self._output_names_,

@@ -510,6 +510,7 @@ class CNNCreator_Alexnet:
         predictions_ = mx.symbol.SoftmaxOutput(data=softmax8_,
             name="predictions_")
 
+
         self.module = mx.mod.Module(symbol=mx.symbol.Group([predictions_]),
                                          data_names=self._input_names_,
                                          label_names=self._output_names_,

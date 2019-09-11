@@ -1,4 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+/* (c) https://github.com/MontiCore/monticore */
 <#list tc.architecture.outputs as output>
     <#assign shape = output.ioDeclaration.type.dimensions>
     vector<float> CNN_${tc.getName(output)}(<#list shape as dim>${dim?c}<#if  dim?has_next>*</#if></#list>);
