@@ -22,6 +22,11 @@ package de.rwth.monticore.EmbeddedMontiArc.simulators.basic_simulator.gui;
 
 import javax.swing.*;
 
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLProfile;
+
+import opengltest.OpenGLPanel;
+
 public class DefaultVis extends SimVis {
     public DefaultVis(){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -29,6 +34,11 @@ public class DefaultVis extends SimVis {
         add_text("Select one of the scenarios to start a simulation.");
         add_text("Visualize the available maps. (Coming)");
         add_text("Watch completed simulations in the results. (Coming)");
+        
+        /* System.out.println("Creating OpenGL context.");
+        GLProfile glprofile = GLProfile.getDefault();
+        GLCapabilities glcapabilities = new GLCapabilities( glprofile );
+        add(new OpenGLPanel(glcapabilities)); */
     }
 
     private void add_text(String text){
