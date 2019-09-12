@@ -35,7 +35,7 @@ public class CheckArgmaxLayer extends CNNArchSymbolCoCo {
     }
 
     public void checkArgmaxBeforeOutput(LayerSymbol layer) {
-        if(!(layer.getOutputElement().get() instanceof VariableSymbol && ((VariableSymbol) layer.getOutputElement().get()).getType() == VariableSymbol.Type.IO)){
+        if(!(layer.getOutputElement().get() instanceof VariableSymbol)){
             Log.error("0" + ErrorCodes.ILLEGAL_LAYER_USE + " ArgMax Layer must be applied directly before an output symbol.");
         }
     }
