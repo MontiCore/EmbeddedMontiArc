@@ -42,7 +42,7 @@ If not, the following documents aim at giving an introduction to project buildin
 
 This repository is a [Maven](https://maven.apache.org/) project. You will need the Java Developpment Kit (minimum version 8), Maven and [git](https://git-scm.com/) installed.
 
-In a folder (we recommend making a "MontiSim" folder containing all the cloned projects), clone the repository using the following in the bash:
+In a folder (we recommend making a "MontiSim" folder containing all the cloned projects), clone the repository using the following in the terminal:
 ```bash
 git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator
 ```
@@ -268,7 +268,7 @@ More on the dependency system in the next section.
 
 The `pom.xml` file also contains a list of **plugins** for the build process. This is the way of configuring the steps of the build process in maven. They are executed when running the `mvn install ...` command.
 
-The plugin handling java compilation is `maven-compiler-plugin`, the plugin handling the testing is `maven-surefire-plugin`. `maven-shade-plugin` handles the creation of the *fat-jar* (jar containing all the dependencies that can be executed a standalone). 
+The plugin handling java compilation is `maven-compiler-plugin`, the plugin handling the testing is `maven-surefire-plugin`. The `maven-shade-plugin` plugin handles the creation of the *fat-jar* (jar containing all the dependencies that can be executed as standalone). 
 
 The `license-maven-plugin` plugin will check that the content of a specified license file is at the top of all the files of the project. When adding new files to the project, it is good to run maven once before commiting to include the license headers in the new files.
 
