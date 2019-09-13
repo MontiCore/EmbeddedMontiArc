@@ -182,6 +182,31 @@ class ${tc.fileNameWithoutEnding}:
 
                 ]
 
+                #TODO still needs testing, currently one path will always end up with p ~ 1.0
+                def applyBeamSearch(input, depth, max_width, currProb, netIndex, bestOutput):
+                    bestProb = 0.0
+                    while depth < max_width:
+                        depth += 1
+                        for beam in input:
+                            top_k = mx.nd.topk(beam, axis=0, k=2)
+                            top_k_values = mx.nd.topk(beam, ret_typ='value', axis=0, k=2)
+                            for index in range(top_k.size):
+                                #print mx.nd.array(top_k[index])
+                                #print mx.nd.array(top_k_values[index])
+                                if depth == 1:
+                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k[index])), depth, max_width, currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k[index])))
+                                else:
+                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k[index])), depth, max_width, currProb * top_k_values[index], netIndex, bestOutput)
+
+                                if depth == max_width:
+                                    #print currProb
+                                    if currProb > bestProb:
+                                        bestProb = currProb
+                                        bestOutput = result
+                    #print bestOutput
+                    #print bestProb
+                    return bestOutput
+
                 if True: <#-- Fix indentation -->
 <#include "pythonExecute.ftl">
 
@@ -197,7 +222,6 @@ class ${tc.fileNameWithoutEnding}:
                     else:
                         predictions.append(output_name)
 
-                <#include "elements/BeamSearch.ftl">
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]

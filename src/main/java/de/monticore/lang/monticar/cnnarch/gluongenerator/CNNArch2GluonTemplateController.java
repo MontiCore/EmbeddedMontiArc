@@ -25,6 +25,7 @@ import de.monticore.lang.monticar.cnnarch.generator.CNNArchTemplateController;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
+import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 
 import java.io.Writer;
 import java.util.*;
@@ -313,6 +314,10 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             }
         }
         return members;
+    }
+
+    public int getBeamSearchWidth(UnrollInstructionSymbol unroll){
+        return unroll.getIntValue(AllPredefinedLayers.WIDTH_NAME).get();
     }
 
 }

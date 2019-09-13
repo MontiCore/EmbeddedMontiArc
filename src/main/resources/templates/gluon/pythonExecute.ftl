@@ -9,9 +9,13 @@
 <#if networkInstruction.isUnroll()>
 <#list networkInstruction.toUnrollInstruction().resolvedBodies as resolvedBody>
                     ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")})
+                    <#if networkInstruction.name == "BeamSearch">
+                    input = ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")}
+                    ${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]} = applyBeamSearch(input, 0, ${tc.getBeamSearchWidth(networkInstruction.toUnrollInstruction())}, 1.0, ${networkInstruction?index}, input)
+                    </#if>
                     <#list resolvedBody.elements as element>
                     <#if element.name == "ArgMax">
-                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")} = mx.nd.argmax(${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")}, axis=1)
+                    ${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]} = mx.nd.argmax(${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]}, axis=1)
                     </#if>
                     </#list>
 </#list>
@@ -20,7 +24,7 @@
                     ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")})
                     <#list networkInstruction.body.elements as element>
                     <#if element.name == "ArgMax">
-                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")} = mx.nd.argmax(${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")}, axis=1)
+                    ${tc.getStreamOutputNames(networkInstruction.body)[0]} = mx.nd.argmax(${tc.getStreamOutputNames(networkInstruction.body)[0]}, axis=1)
                     </#if>
                     </#list>
 <#else>
