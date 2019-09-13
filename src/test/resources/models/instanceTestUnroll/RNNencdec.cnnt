@@ -1,6 +1,6 @@
 configuration RNNencdec{
      num_epoch:10
-     batch_size:5
+     batch_size:8
      context:cpu
      optimizer:adam{
          learning_rate:0.01
