@@ -320,4 +320,8 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         return unroll.getIntValue(AllPredefinedLayers.WIDTH_NAME).get();
     }
 
+    public int getBeamSearchDepth(UnrollInstructionSymbol unroll){
+        return unroll.getIntValue(AllPredefinedLayers.DEPTH_NAME).get();
+    }
+
 }

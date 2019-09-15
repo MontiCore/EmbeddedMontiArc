@@ -177,6 +177,40 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
+
+                def applyBeamSearch(input, depth, width, maxDepth, currProb, netIndex, bestOutput):
+                    bestProb = 0.0
+                    while depth < maxDepth:
+                        depth += 1
+                        batchIndex = 0
+                        for batchEntry in input:
+                            top_k_indices = mx.nd.topk(batchEntry, axis=0, k=width)
+                            top_k_values = mx.nd.topk(batchEntry, ret_typ='value', axis=0, k=width)
+                            for index in range(top_k_indices.size):
+
+                                #print mx.nd.array(top_k_indices[index])
+                                #print top_k_values[index]
+                                if depth == 1:
+                                    #print mx.nd.array(top_k_indices[index])
+                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
+                                        currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k_indices[index])))
+                                else:
+                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
+                                        currProb * top_k_values[index], netIndex, bestOutput)
+
+                                if depth == maxDepth:
+                                    #print currProb
+                                    if currProb > bestProb:
+                                        bestProb = currProb
+                                        bestOutput[batchIndex] = result[batchIndex]
+                                        #print "new bestOutput: ", bestOutput
+
+                            batchIndex += 1
+                    #print bestOutput
+                    #print bestProb
+                    return bestOutput
+
+
                 if True: 
                     softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
 

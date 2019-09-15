@@ -182,30 +182,39 @@ class ${tc.fileNameWithoutEnding}:
 
                 ]
 
-                #TODO still needs testing, currently one path will always end up with p ~ 1.0
-                def applyBeamSearch(input, depth, max_width, currProb, netIndex, bestOutput):
-                    bestProb = 0.0
-                    while depth < max_width:
-                        depth += 1
-                        for beam in input:
-                            top_k = mx.nd.topk(beam, axis=0, k=2)
-                            top_k_values = mx.nd.topk(beam, ret_typ='value', axis=0, k=2)
-                            for index in range(top_k.size):
-                                #print mx.nd.array(top_k[index])
-                                #print mx.nd.array(top_k_values[index])
-                                if depth == 1:
-                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k[index])), depth, max_width, currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k[index])))
-                                else:
-                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k[index])), depth, max_width, currProb * top_k_values[index], netIndex, bestOutput)
 
-                                if depth == max_width:
+                def applyBeamSearch(input, depth, width, maxDepth, currProb, netIndex, bestOutput):
+                    bestProb = 0.0
+                    while depth < maxDepth:
+                        depth += 1
+                        batchIndex = 0
+                        for batchEntry in input:
+                            top_k_indices = mx.nd.topk(batchEntry, axis=0, k=width)
+                            top_k_values = mx.nd.topk(batchEntry, ret_typ='value', axis=0, k=width)
+                            for index in range(top_k_indices.size):
+
+                                #print mx.nd.array(top_k_indices[index])
+                                #print top_k_values[index]
+                                if depth == 1:
+                                    #print mx.nd.array(top_k_indices[index])
+                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
+                                        currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k_indices[index])))
+                                else:
+                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
+                                        currProb * top_k_values[index], netIndex, bestOutput)
+
+                                if depth == maxDepth:
                                     #print currProb
                                     if currProb > bestProb:
                                         bestProb = currProb
-                                        bestOutput = result
+                                        bestOutput[batchIndex] = result[batchIndex]
+                                        #print "new bestOutput: ", bestOutput
+
+                            batchIndex += 1
                     #print bestOutput
                     #print bestProb
                     return bestOutput
+
 
                 if True: <#-- Fix indentation -->
 <#include "pythonExecute.ftl">
