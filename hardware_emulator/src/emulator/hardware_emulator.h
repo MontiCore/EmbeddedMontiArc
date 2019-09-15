@@ -181,6 +181,7 @@ struct HardwareEmulator {
     
     Library real_program;
     bool test_real;
+	bool no_emulation;
     void *real_exec;
     void *real_init;
     
@@ -215,7 +216,11 @@ struct HardwareEmulator {
                      const char *port_prefix );
                      
     void setup_debug( MessageParser &parser );
-    
+	bool setup_direct_emulation();
+	bool init_ports_direct(Array<Port>& ports, const char* get_count, const char* get_name, const char* get_type,
+		const char* port_prefix);
+	void call_input_direct(Port& port);
+	void call_output_direct(Port& port);
     
     void export_tick();
 };
