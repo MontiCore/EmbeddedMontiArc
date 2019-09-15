@@ -3,9 +3,13 @@
 
 A project that generates MQTT-Adapter for EmbeddedMontiArcMath components.
 
+## Warning
+
+This generator is part of an composite generator and does not create an executable. Look at EMAM2Middleware if you want to generate one.
+
 ## Getting Started
 
-These instructions will get MQTT up and running on your **Ubuntu** system
+These instructions will get this project up and running on your **Ubuntu** system
 
 ### Installing project
 
