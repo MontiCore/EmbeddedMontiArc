@@ -31,6 +31,7 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
     simulation_time = 0;
     debug_time = false;
     test_real = false;
+	no_emulation = false;
     export_data = false;
     autopilot_name = "AutopilotAdapter";
     os_name = "";
@@ -65,6 +66,8 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
             computer.time.use_time = false;
         else if ( parser.is_cmd( "test_real" ) )
             test_real = true;
+		else if (parser.is_cmd("no_emulation"))
+			no_emulation = true;
         else if ( parser.is_cmd( "export" ) )
             export_data = true;
         else if ( parser.cmd_starts_with( "cache_" ) )
@@ -83,34 +86,48 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
     
     if ( !resolve_autopilot_os( manager ) )
         return false;
-        
-    computer.init();
-    if ( !computer.loaded() ) {
-        error_msg = "Could not initiate computer";
-        return false;
-    }
+       
+	if (no_emulation) {
+		return setup_direct_emulation();
+	}
+
+	computer.init();
+	if (!computer.loaded()) {
+		error_msg = "Could not initiate computer";
+		return false;
+	}
     
-    
+	bool os_mistmatch = false;
     if ( os_name.compare( "windows" ) == 0 ) {
-        computer.set_os( new OS::Windows() );
-        if ( Library::type != Library::OsType::WINDOWS )
-            test_real = false;
+		if (!no_emulation)
+			computer.set_os( new OS::Windows() );
+		if (Library::type != Library::OsType::WINDOWS) {
+			os_mistmatch = true;
+			test_real = false;
+		}
     }
     else if ( os_name.compare( "linux" ) == 0 ) {
-        computer.set_os( new OS::Linux() );
-        if ( Library::type != Library::OsType::LINUX )
-            test_real = false;
+		if (!no_emulation)
+			computer.set_os( new OS::Linux() );
+		if (Library::type != Library::OsType::LINUX) {
+			os_mistmatch = true;
+			test_real = false;
+		}
     }
     else
         return false;
         
+	if (os_mistmatch) {
+		error_msg = "Error: In direct mode, the autopilot OS must match the OS running the hardware_emulator.";
+		return false;
+	}
         
-    if ( !computer.os->load_file( autopilot_path.c_str() ) ) {
-        error_msg = "Error loading autopilot";
-        return false;
-    }
+	if ( !computer.os->load_file( autopilot_path.c_str() ) ) {
+		error_msg = "Error loading autopilot";
+		return false;
+	}
     
-    if ( test_real ) {
+    if ( test_real) {
         if ( !real_program.init( autopilot_path.c_str() ) ) {
             error_msg = "Could not load real program";
             return false;
@@ -125,10 +142,10 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
     if ( !init_ports( output_ports, "get_output_count", "get_output_name", "get_output_type", "get_output_" ) )
         return false;
         
-    if ( !resolve( "init", init_address ) || !resolve( "execute", execute_address ) )
-        return false;
+	if ( !resolve( "init", init_address ) || !resolve( "execute", execute_address ) )
+		return false;
         
-    if ( test_real )
+    if ( test_real)
         if ( !resolve_real( "init", real_init ) || !resolve_real( "execute", real_exec ) )
             return false;
             
@@ -138,22 +155,105 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
     
     computer.time.reset();
     
-    auto &section = computer.memory.sys_section;
-    auto &section_stack = computer.memory.sys_section_stack;
-    buffer_slot = section_stack.get_annotated( 1024, "Port Exchange buffer", Annotation::OBJECT );
-    
-    cache_settings.setup_computer( computer );
-    
-    Log::info << Log::tag << "Initiated emulator with autopilot: " << autopilot_name << ",\n"
-              << "os: " << os_name << ",\n";
-    if ( !computer.time.use_time )
-        Log::info << "time disabled,\n";
-    if ( test_real )
-        Log::info << "real autopilot compared,\n";
-    //debug_tick_count = 0;
+	auto& section = computer.memory.sys_section;
+	auto& section_stack = computer.memory.sys_section_stack;
+	buffer_slot = section_stack.get_annotated(1024, "Port Exchange buffer", Annotation::OBJECT);
+
+	cache_settings.setup_computer(computer);
+
+	Log::info << Log::tag << "Initiated emulator with autopilot: " << autopilot_name << ",\n"
+		<< "os: " << os_name << ",\n";
+	if (!computer.time.use_time)
+		Log::info << "time disabled,\n";
+	if (test_real)
+		Log::info << "real autopilot compared,\n";
+	//debug_tick_count = 0;
+	
     real_time_accumulator = 0;
     return true;
 }
+
+bool HardwareEmulator::setup_direct_emulation()
+{
+	bool os_mistmatch = false;
+	if (os_name.compare("windows") == 0) {
+		if (Library::type != Library::OsType::WINDOWS) {
+			os_mistmatch = true;
+		}
+	}
+	else if (os_name.compare("linux") == 0) {
+		if (Library::type != Library::OsType::LINUX) {
+			os_mistmatch = true;
+		}
+	}
+	else {
+		error_msg = "Error: Unkown autopilot os.";
+		return false;
+	}
+
+	if (os_mistmatch) {
+		error_msg = "Error: In direct mode, the autopilot OS must match the OS running the hardware_emulator.";
+		return false;
+	}
+	
+
+	if (!real_program.init(autopilot_path.c_str())) {
+		error_msg = "Could not load real program";
+		return false;
+	}
+
+
+	//Register port functions
+
+	if (!init_ports_direct(input_ports, "get_input_count", "get_input_name", "get_input_type", "set_input_"))
+		return false;
+	if (!init_ports_direct(output_ports, "get_output_count", "get_output_name", "get_output_type", "get_output_"))
+		return false;
+
+	if (!resolve_real("init", real_init) || !resolve_real("execute", real_exec))
+		return false;
+
+	using InitFunc = void(*)();
+	((InitFunc)real_init)();
+
+	Log::info << Log::tag << "Initiated autopilot in direct mode: " << autopilot_name << ",\n"
+		<< "os: " << os_name << "\n";
+
+	return true;
+}
+
+
+
+
+bool HardwareEmulator::init_ports_direct(Array<Port>& ports, const char* get_count,
+	const char* get_name, const char* get_type, const char* port_prefix) {
+	void* get_name_addr, * get_type_addr, * get_count_addr;
+	if (!resolve_real(get_count, get_count_addr) || !resolve_real(get_name, get_name_addr)
+		|| !resolve_real(get_type, get_type_addr))
+		return false;
+
+
+	using GetCountFunc = int(*)();
+	using GetStringFunc = const char*(*)(int);
+	
+	int port_count = ((GetCountFunc)get_count_addr)();
+	ports.init(port_count);
+	for (auto i : urange(port_count)) {
+		auto& port = ports[i];
+		port.name = ((GetStringFunc)get_name_addr)(i);
+		port_map.emplace(port.name, &port);
+		const char* type = ((GetStringFunc)get_type_addr)(i);
+		port.buffer.init(FunctionValue::get_type(type));
+		port.updated = false;
+		auto func_name = port_prefix + port.name;
+		if (!resolve_real(func_name, port.real_function))
+			return false;
+	}
+	return true;
+}
+
+
+
 
 bool HardwareEmulator::resolve_autopilot_os( EmulatorManager &manager ) {
     autopilot_path = FS::append(manager.autopilots_folder, autopilot_name);
@@ -189,6 +289,19 @@ bool HardwareEmulator::resolve_autopilot_os( EmulatorManager &manager ) {
 
 
 void HardwareEmulator::exec( ulong micro_delta ) {
+	if (no_emulation) {
+		for (auto& port : input_ports)
+			call_input_direct(port);
+		using ExecFunc = void(*)();
+		((ExecFunc)real_exec)();
+		if (export_data)
+			export_tick();
+
+		for (auto& port : output_ports)
+			call_output_direct(port);
+		simulation_time += micro_delta;
+		return;
+	}
     if ( !computing() || !computer.time.use_time ) {
         for ( auto &port : input_ports )
             call_input( port );
@@ -223,6 +336,43 @@ void HardwareEmulator::exec( ulong micro_delta ) {
     //++debug_tick_count;
     simulation_time += micro_delta;
 }
+
+void HardwareEmulator::call_input_direct(Port& port) {
+	auto& input = port.buffer;
+	switch (input.type) {
+	case VALUE_TYPE::DOUBLE:
+		using DoubleInputFunc = void(*)(double);
+		((DoubleInputFunc)port.real_function)(input.double_value);
+		break;
+	case VALUE_TYPE::INT:
+		using IntInputFunc = void(*)(int);
+		((IntInputFunc)port.real_function)(*(uint*)& input.int_value);
+		break;
+	case VALUE_TYPE::DOUBLE_ARRAY:
+		using DoubleArrayInputFunc = void(*)(double*, int);
+		((DoubleArrayInputFunc)port.real_function)(input.double_array.data.begin(), input.double_array.size);
+		break;
+	default:
+		Log::err << Log::tag << "Add Port type support in HardwareEmulator::call_input().\n";
+		break;
+	}
+}
+
+void HardwareEmulator::call_output_direct(Port& port) {
+	auto& output = port.buffer;
+	port.updated = true;
+
+	switch (output.type) {
+	case VALUE_TYPE::DOUBLE:
+		using DoubleOutputFunc = double(*)();
+		output.double_value = ((DoubleOutputFunc)port.real_function)();
+		break;
+	default:
+		Log::err << Log::tag << "Add Port type support in HardwareEmulator::call_output().\n";
+		break;
+	}
+}
+
 
 
 HardwareEmulator::Port *HardwareEmulator::get_port( const char *port_name ) {
@@ -391,6 +541,7 @@ bool HardwareEmulator::init_ports( Array<Port> &ports, const char *get_count,
     return true;
 }
 
+
 void HardwareEmulator::setup_debug( MessageParser &parser ) {
     computer.debug.debug = true;
     computer.debug.d_mem = false;
@@ -426,6 +577,8 @@ void HardwareEmulator::setup_debug( MessageParser &parser ) {
             Log::err << Log::tag << "Unknown debug flag\n";
     } while ( true );
 }
+
+
 
 void HardwareEmulator::export_tick() {
     if ( simulation_time > 60000000UL ) {
