@@ -15,7 +15,7 @@ component RNNencdec<Z(2:oo) classes = 10, max_length=5>{
         ArgMax() ->
         softmax[0];
 
-       timed <t> BeamSearch(max_length=5, width=2){
+       timed <t> BeamSearch(max_length=5, depth=2, width=2){
         softmax[t-1] ->
         FullyConnected(units=30) ->
         Softmax() ->
