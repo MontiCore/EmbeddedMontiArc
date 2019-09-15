@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include "memory.h"
 #include "computer_layout.h"
@@ -46,7 +51,7 @@ struct SystemCalls {
     MemorySection *section;
     SectionStack syscall_stack;
     
-    Array<SysCall> sys_calls;
+	std::vector<SysCall> sys_calls;
     uint sys_call_pos;
     
     SystemCalls() : section( nullptr ), computer( nullptr ) {}

@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include <cstddef>
 #include "computer/memory.h"
@@ -31,7 +36,7 @@ struct ComputerDebug {
     CodeDecoder *decoder;
     ZydisFormatter formatter;
     
-    Array<char> buffer;
+	std::vector<char> buffer;
     
     bool debug;
     bool d_code;

@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 find_path(PEPARSE_INCLUDE_DIR $<SHELL_PATH:"parser-library/parse.h">)
 find_library(PEPARSE_LIBRARIES NAMES "libpe-parser-library" "pe-parser-library")
 

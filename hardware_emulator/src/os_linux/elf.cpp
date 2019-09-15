@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "elf.h"
 #include <inttypes.h>
 
@@ -59,7 +64,7 @@ const char *ElfMag::MAG = "\177ELF";
 bool ElfFile::parse() {
     if ( data.size() < sizeof( ElfIdent ) )
         return false;
-    ident_ptr = ( ElfIdent * )data.begin();
+    ident_ptr = ( ElfIdent * )data.data();
     auto &id = ident();
     
     if ( !id.is_elf() )
@@ -68,7 +73,7 @@ bool ElfFile::parse() {
     if ( !is_64bit ) {
         if ( data.size() < sizeof( Elf32_Header ) )
             return false;
-        header32_ptr = ( Elf32_Header * )data.begin();
+        header32_ptr = ( Elf32_Header * )data.data();
         auto &header = header32();
         
         //Load Section Header table
@@ -76,18 +81,18 @@ bool ElfFile::parse() {
             return false;
         if ( header.e_shoff + header.e_shnum * header.e_shentsize > data.size() )
             return false;
-        sh32.init( ( Elf32_SectionHeader * )( data.begin() + header.e_shoff ), 0, header.e_shnum );
+        sh32.init( ( Elf32_SectionHeader * )( data.data() + header.e_shoff ), 0, header.e_shnum );
         
         //Load Program Header table
         if ( !header.program_header_size_valid() )
             return false;
         if ( header.e_phoff + header.e_phnum * header.e_phentsize > data.size() )
             return false;
-        ph32.init( ( Elf32_ProgramHeader * )( data.begin() + header.e_phoff ), 0, header.e_phnum );
+        ph32.init( ( Elf32_ProgramHeader * )( data.data() + header.e_phoff ), 0, header.e_phnum );
         
         //Section name table
         auto &sec_names = sh32[header.e_shstrndx];
-        sec_name_table.init( ( char * )data.begin(), sec_names.sh_offset, sec_names.sh_size );
+        sec_name_table.init( ( char * )data.data(), sec_names.sh_offset, sec_names.sh_size );
         
         //Load symbol table
         /*bool found = false;
@@ -99,16 +104,16 @@ bool ElfFile::parse() {
                     break;
                 }
                 found = true;
-                sym32.init( ( Elf32_Symbol * )( data.begin() + sh.sh_offset ), 0, sh.sh_size / sizeof( Elf32_Symbol ) );
+                sym32.init( ( Elf32_Symbol * )( data.data() + sh.sh_offset ), 0, sh.sh_size / sizeof( Elf32_Symbol ) );
                 auto &str_sh = sh32[sh.sh_link];
-                str_table.init( ( char * )data.begin(), str_sh.sh_offset, str_sh.sh_size );
+                str_table.init( ( char * )data.data(), str_sh.sh_offset, str_sh.sh_size );
             }
         }*/
     }
     else {
         if ( data.size() < sizeof( Elf64_Header ) )
             return false;
-        header64_ptr = ( Elf64_Header * )data.begin();
+        header64_ptr = ( Elf64_Header * )data.data();
         auto &header = header64();
         
         //Load section table
@@ -116,18 +121,18 @@ bool ElfFile::parse() {
             return false;
         if ( header.e_shoff + header.e_shnum * header.e_shentsize > data.size() )
             return false;
-        sh64.init( ( Elf64_SectionHeader * )( data.begin() + header.e_shoff ), 0, header.e_shnum );
+        sh64.init( ( Elf64_SectionHeader * )( data.data() + header.e_shoff ), 0, header.e_shnum );
         
         //Load Program Header table
         if ( !header.program_header_size_valid() )
             return false;
         if ( header.e_phoff + header.e_phnum * header.e_phentsize > data.size() )
             return false;
-        ph64.init( ( Elf64_ProgramHeader * )( data.begin() + header.e_phoff ), 0, header.e_phnum );
+        ph64.init( ( Elf64_ProgramHeader * )( data.data() + header.e_phoff ), 0, header.e_phnum );
         
         //Section name table
         auto &sec_names = sh64[header.e_shstrndx];
-        sec_name_table.init( ( char * )data.begin(), ( uint ) sec_names.sh_offset, ( uint )sec_names.sh_size );
+        sec_name_table.init( ( char * )data.data(), ( uint ) sec_names.sh_offset, ( uint )sec_names.sh_size );
         
         //Load symbol table
         /*bool found = false;
@@ -139,9 +144,9 @@ bool ElfFile::parse() {
                     break;
                 }
                 found = true;
-                sym64.init( ( Elf64_Symbol * )( data.begin() + sh.sh_offset ), 0, ( uint )( sh.sh_size / sizeof( Elf64_Symbol ) ) );
+                sym64.init( ( Elf64_Symbol * )( data.data() + sh.sh_offset ), 0, ( uint )( sh.sh_size / sizeof( Elf64_Symbol ) ) );
                 auto &str_sh = sh64[sh.sh_link];
-                str_table.init( ( char * )data.begin(), ( uint )str_sh.sh_offset, ( uint )str_sh.sh_size );
+                str_table.init( ( char * )data.data(), ( uint )str_sh.sh_offset, ( uint )str_sh.sh_size );
             }
         }*/
     }
@@ -219,13 +224,13 @@ void ElfFile::print_symbols() {
             auto type = sh.get_type();
             if ( type == ElfSecType::SHT_SYMTAB || type == ElfSecType::SHT_DYNSYM ) {
                 printf( "\n[Section %03d]", i );
-                ArraySlice<Elf64_Symbol> sym64;
+                vector_slice<Elf64_Symbol> sym64;
                 auto symbol_count = ( uint )( sh.sh_size / sizeof( Elf64_Symbol ) );
-                sym64.init( ( Elf64_Symbol * )( data.begin() + sh.sh_offset ), 0, symbol_count );
+                sym64.init( ( Elf64_Symbol * )( data.data() + sh.sh_offset ), 0, symbol_count );
                 
-                ArraySlice<char> str_table;
+                vector_slice<char> str_table;
                 auto &str_sh = sh64[sh.sh_link];
-                str_table.init( ( char * )data.begin(), ( uint )str_sh.sh_offset, ( uint )str_sh.sh_size );
+                str_table.init( ( char * )data.data(), ( uint )str_sh.sh_offset, ( uint )str_sh.sh_size );
                 
                 printf( " %d symbols\n", symbol_count );
                 hlpsym_print_header();
@@ -248,13 +253,13 @@ void ElfFile::print_symbols() {
             auto type = sh.get_type();
             if ( type == ElfSecType::SHT_SYMTAB || type == ElfSecType::SHT_DYNSYM ) {
                 printf( "\n[Section %03d]", i );
-                ArraySlice<Elf32_Symbol> sym32;
+                vector_slice<Elf32_Symbol> sym32;
                 auto symbol_count = ( uint )( sh.sh_size / sizeof( Elf32_Symbol ) );
-                sym32.init( ( Elf32_Symbol * )( data.begin() + sh.sh_offset ), 0, symbol_count );
+                sym32.init( ( Elf32_Symbol * )( data.data() + sh.sh_offset ), 0, symbol_count );
                 
-                ArraySlice<char> str_table;
+                vector_slice<char> str_table;
                 auto &str_sh = sh32[sh.sh_link];
-                str_table.init( ( char * )data.begin(), ( uint )str_sh.sh_offset, ( uint )str_sh.sh_size );
+                str_table.init( ( char * )data.data(), ( uint )str_sh.sh_offset, ( uint )str_sh.sh_size );
                 
                 printf( " %d symbols\n", symbol_count );
                 hlpsym_print_header();
@@ -545,7 +550,7 @@ void Elf64_Header::print() {
     printf( "\nFile flags \t= 0x%08x\n", e_flags );
 }
 
-void Elf32_SectionHeader::print( ArraySlice<char> &sec_name_table ) {
+void Elf32_SectionHeader::print( vector_slice<char> &sec_name_table ) {
     printf( "0x%08x ", sh_offset );
     printf( "0x%08x ", sh_addr );
     printf( "0x%08x ", sh_size );
@@ -565,7 +570,7 @@ void Elf32_SectionHeader::print( ArraySlice<char> &sec_name_table ) {
     printf( "\n" );
 }
 
-void Elf64_SectionHeader::print( ArraySlice<char> &sec_name_table ) {
+void Elf64_SectionHeader::print( vector_slice<char> &sec_name_table ) {
     printf( "0x%08" PRIx64 " ", sh_offset );
     printf( "0x%08" PRIx64 " ", sh_addr );
     printf( "0x%08" PRIx64 " ", sh_size );

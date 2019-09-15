@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "computer/system_calls.h"
 #include "computer/computer_layout.h"
 #include "computer.h"
@@ -6,7 +11,7 @@
 
 void SystemCalls::init( Computer &computer ) {
     this->computer = &computer;
-    sys_calls.init( ComputerLayout::SYSCALLS_RANGE );
+    sys_calls.resize( ComputerLayout::SYSCALLS_RANGE );
     section = &computer.memory.new_section( MemoryRange( ComputerLayout::SYSCALLS_ADDRESS, ComputerLayout::SYSCALLS_RANGE ),
                                             "SYSCALLS",
                                             "System",

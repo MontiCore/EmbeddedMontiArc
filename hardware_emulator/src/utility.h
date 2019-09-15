@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include <inttypes.h>
 #include <exception>
@@ -10,6 +15,7 @@
 #include <cstring>
 #include <cmath>
 #include <list>
+#include <vector>
 
 namespace Utility {
 
@@ -160,152 +166,12 @@ using ucrange = range<uchar>;
 
 
 
-
-//Type definition for a unique_ptr referencing an array.
-template <typename T>
-using UniqueArray = std::unique_ptr<T[], std::default_delete<T[]>>;
-/*
-    An Array is a static sized array for a given template type <T>, with the operator[] overloaded.
-    Use set_zero() to set all bytes (independent of type) to 0.
-    Use begin() and end() return the iterator boundaries. This means the Array can be used in for loops:
-    for(auto &e : array) {...}
-    It is non copyable.
-    It can be emptied with drop()
-*/
-template<typename T>
-class Array {
-        UniqueArray<T> data;
-        uint m_size;
-        
-        
-    public:
-        Array() : m_size( 0 ) {}
-        
-        Array( uint size ) {
-            m_size = 0;
-            init( size );
-        }
-        void init( uint size ) {
-            if ( size == m_size )
-                return;
-            drop();
-            m_size = size;
-            if ( size > 0 )
-                data = UniqueArray<T>( new T[size] );
-        }
-        void init( uint size, T *buffer ) {
-            init( size );
-            std::memcpy( data.get(), buffer, sizeof( T )*m_size );
-        }
-        //*
-        Array( const Array &x ) = delete;
-        Array &operator=( const Array &x ) = delete;
-        //*/
-        /*/
-        Array( const Array &x ) : m_size( 0 ) {
-        copy( x );
-        }
-        Array &operator=( const Array &x ) {
-        copy( x );
-        return *this;
-        }
-        void drop() {
-            data.reset();
-            m_size = 0;
-        }
-        uint size() const {
-            return m_size;
-        }
-        
-        T &operator[]( uint i ) {
-            throw_assert( i < m_size, "Array OOB" );
-            return data[i];
-        }
-        const T &operator[]( uint i ) const {
-            throw_assert( i < m_size, "Array OOB" );
-            return data[i];
-        }
-        void set_zero() {
-            if ( m_size > 0 )
-                std::memset( data.get(), 0, sizeof( T )*m_size );
-        }
-        T *begin() {
-            return data.get();
-        }
-        T *end() {
-            return data.get() + m_size;
-        }
-        const T *begin() const {
-            return data.get();
-        }
-        const T *end() const {
-            return data.get() + m_size;
-        }
-        
-        void swap( uint a, uint b ) {
-            throw_assert( a < m_size && b < m_size, "Array swap() OOB." );
-            if ( a == b )
-                return;
-            T temp = data[a];
-            data[a] = data[b];
-            data[b] = temp;
-        }
-        void resize( uint new_size ) {
-            if ( new_size == m_size )
-                return;
-            if ( new_size == 0 ) {
-                drop();
-                return;
-            }
-            if ( m_size == 0 ) {
-                this->init( new_size );
-                return;
-            }
-            UniqueArray<T> new_data = UniqueArray<T>( new T[new_size] );
-            uint min_size = new_size < m_size ? new_size : m_size;
-            
-            for ( uint i : urange( min_size ) )
-                new_data[i] = std::move( data[i] );
-                
-            data.reset();
-            data = std::move( new_data );
-            m_size = new_size;
-        }
-        
-        void copy( Array &other ) {
-            if ( m_size != other.size() )
-                init( other.size() );
-            for ( uint i : urange( m_size ) )
-                data[i] = other[i];
-        }
-        void mem_copy( Array &other ) {
-            if ( other.m_size == 0 )
-                return;
-            m_size = other.m_size;
-            auto p = new T[m_size];
-            data = UniqueArray<T>( p );
-            std::memcpy( p, other.data.get(), sizeof( T )*m_size );
-        }
-        
-        void mem_copy( Array &other, uint count ) {
-            throw_assert( count <= other.size(), "Copy outside source." );
-            if ( count == 0 )
-                return;
-            m_size = count;
-            auto p = new T[count];
-            data = UniqueArray<T>( p );
-            std::memcpy( p, other.data.get(), sizeof( T )*count );
-        }
-        
-        bool empty() { return m_size == 0; }
-};
-
 /*
     An ArraySlice proxies the content or a part of the content of an other array or array slice.
     It overloads the operator[] and the iteration functions.
 */
 template<typename T>
-class ArraySlice {
+class vector_slice {
         T *ref;
         uint m_start;
         uint m_size;
@@ -313,36 +179,36 @@ class ArraySlice {
         
         
     public:
-        ArraySlice() : ref( nullptr ), m_start( 0 ), m_size( 0 ), m_filler( 0 ) {}
-        ArraySlice( Array<T> &reference ) {
+        vector_slice() : ref( nullptr ), m_start( 0 ), m_size( 0 ), m_filler( 0 ) {}
+        vector_slice(std::vector<T> &reference ) {
             init( reference );
         }
-        void init( Array<T> &reference ) {
+        void init(std::vector<T> &reference ) {
             drop();
             if ( !reference.empty() ) {
-                ref = reference.begin();
+                ref = reference.data();
                 m_size = reference.size();
             }
         }
-        ArraySlice( ArraySlice<T> &reference, uint start, uint size ) {
+        vector_slice( vector_slice<T> &reference, uint start, uint size ) {
             init( reference, start, size );
         }
-        void init( ArraySlice<T> &reference, uint start, uint size ) {
+        void init( vector_slice<T> &reference, uint start, uint size ) {
             throw_assert( start + size <= reference.size(), "Slice outside reference." );
             drop();
-            ref = reference.begin() + start;
+            ref = reference.data() + start;
             m_size = size;
             m_start = start + reference.m_start;
         }
-        ArraySlice( Array<T> &reference, uint start, uint size ) {
+        vector_slice(std::vector<T> &reference, uint start, uint size ) {
             init( reference, start, size );
         }
-        void init( Array<T> &reference, uint start, uint size ) {
+        void init(std::vector<T> &reference, uint start, uint size ) {
             throw_assert( start + size <= reference.size(), "Slice outside reference." );
             drop();
             if ( !reference.empty() ) {
                 m_start = start;
-                ref = reference.begin() + start;
+                ref = reference.data() + start;
                 m_size = size;
             }
         }
@@ -388,9 +254,9 @@ class ArraySlice {
             return ref + m_size;
         }
         
-        void retarget( Array<T> &new_target ) {
+        void retarget(std::vector<T> &new_target ) {
             throw_assert( m_start + m_size <= new_target.size(), "Slice retarget outside reference." );
-            ref = new_target.begin() + m_start;
+            ref = new_target.data() + m_start;
         }
         
         void swap( uint a, uint b ) {
@@ -413,8 +279,7 @@ class ArraySlice {
 /*
     Optimization of the Array type for booleans: they are stored bitwise in 64 bit integers
 */
-template<>
-class Array < bool> {
+class vector_bool {
         class BoolMirror {
             private:
                 uchar   pos;
@@ -439,10 +304,10 @@ class Array < bool> {
         };
         
         class Iterator {
-                Array &array_ref;
+			vector_bool&array_ref;
                 uint pos;
             public:
-                Iterator( Array &array_ref, uint pos ) : array_ref( array_ref ), pos( pos ) {}
+                Iterator(vector_bool&array_ref, uint pos ) : array_ref( array_ref ), pos( pos ) {}
                 auto operator*() { return array_ref[pos]; }
                 auto operator++() {
                     pos++;
@@ -458,23 +323,23 @@ class Array < bool> {
         static uint get_array_size( uint size ) {
             return ( size - 1 ) / sizeof( ulong ) + 1;
         }
-        static inline BoolMirror get_bool_mirror( Array<ulong> &data, uint pos ) {
+        static inline BoolMirror get_bool_mirror( std::vector<ulong> &data, uint pos ) {
             return BoolMirror( pos % sizeof( ulong ), data[pos / sizeof( ulong )] );
         }
-        static inline bool get_bool( const Array<ulong> &data, uint pos ) {
+        static inline bool get_bool( const std::vector<ulong> &data, uint pos ) {
             return isBitHigh( data[pos / sizeof( ulong )], pos % sizeof( ulong ) );
         }
         
         
-        Array<ulong> data;
+		std::vector<ulong> data;
         uint m_size;
         
     public:
-        Array() : m_size( 0 ) {}
+		vector_bool() : m_size( 0 ) {}
         
         //Creates an owner array of size <size>
         //A bool array is initialized to false everywhere
-        Array( uint size ) {
+		vector_bool( uint size ) {
             init( size );
         }
         
@@ -482,15 +347,15 @@ class Array < bool> {
             m_size = size;
             if ( size != 0 ) {
                 uint array_size = get_array_size( size );
-                data.init( array_size );
+                data.resize( array_size );
                 set_zero();
             }
             else
-                data.drop();
+                data.clear();
         }
         
         void drop() {
-            data.drop();
+            data.clear();
             m_size = 0;
         }
         
@@ -503,7 +368,7 @@ class Array < bool> {
             return get_bool( data, i );
         }
         void set_zero() {
-            data.set_zero();
+			std::fill(data.begin(), data.end(), 0);
         }
         
         auto begin() {
@@ -666,22 +531,22 @@ struct FileReader {
         return file.is_open();
     }
     
-    void read( Array<char> &target ) {
+    void read( std::vector<char> &target ) {
         auto pos = file.tellg();
         uint size = ( uint )pos;
-        target.init( size + 1 );
+        target.resize( size + 1 );
         file.seekg( 0, std::ios::beg );
-        file.read( target.begin(), size );
+        file.read( target.data(), size );
         file.close();
         target[size] = '\0';
     }
     
-    void read( Array<uchar> &target ) {
+    void read( std::vector<uchar> &target ) {
         auto pos = file.tellg();
         uint size = ( uint )pos;
-        target.init( size + 1 );
+        target.resize( size + 1 );
         file.seekg( 0, std::ios::beg );
-        file.read( ( char * )target.begin(), size );
+        file.read( ( char * )target.data(), size );
         file.close();
         target[size] = '\0';
     }
@@ -691,7 +556,7 @@ struct FileReader {
     This function undecorates the C++ style name decoration of library functions.
     Only has an effect on Windows.
 */
-bool undercorate_function_name( const std::string &name, Array<char> &buffer );
+bool undercorate_function_name( const std::string &name, std::vector<char> &buffer );
 
 #include <iomanip>
 

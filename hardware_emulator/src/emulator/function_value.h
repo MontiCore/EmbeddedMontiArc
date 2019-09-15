@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include "utility.h"
 
@@ -18,7 +23,7 @@ struct FunctionValue {
     VALUE_TYPE type;
     struct {
         uint size;
-        Array<double> data;
+		std::vector<double> data;
     } double_array;
     double double_value;
     int int_value;
@@ -36,7 +41,7 @@ struct FunctionValue {
         this->double_array.size = size;
         this->type = VALUE_TYPE::DOUBLE_ARRAY;
         if ( size != 0 )
-            double_array.data.init( size, data );
+            double_array.data = std::vector( data, data+size );
     }
     
     void init( VALUE_TYPE type ) {

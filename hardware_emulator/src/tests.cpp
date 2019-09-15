@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "tests.h"
 #include "dll_interface.h"
 #include "emulator/emulator_manager.h"
@@ -325,7 +330,7 @@ bool test_input_double_array( HardwareEmulator &emulator, const char *name, doub
         Log::err << "Type of port: " << name << " not 'double[]'\n";
         return false;
     }
-    port.buffer.double_array.data.init( size, values );
+	port.buffer.double_array.data = std::vector(values, values + size);
     port.buffer.double_array.size = size;
     
     emulator.call_input( port );

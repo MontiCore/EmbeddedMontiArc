@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include <string>
 #include "utility.h"
@@ -20,7 +25,7 @@ namespace OS {
     */
     struct DllLoader {
         void *pe;
-        Array<char> file;
+		std::vector<char> file;
         std::string file_name;
         std::string module_name;
         bool module_name_set;
@@ -42,7 +47,7 @@ namespace OS {
         
         
         
-        Array<SectionInfo> sections;
+		std::vector<SectionInfo> sections;
         uint section_pos;
         
         DllLoader() : pe( nullptr ), sys_calls( nullptr ), mem( nullptr ), symbols( nullptr ) {}

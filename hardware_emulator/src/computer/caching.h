@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 
 #include "utility.h"
@@ -31,12 +36,12 @@ struct FifoCache : public MemoryAccessInterface {
             uint count;
             uint size;
             FifoBuffer() : count( 0 ), data( nullptr ), size( 0 ), start( 0 ), end( 0 ) {}
-            FifoBuffer( Array<ulong> &data ) {
+            FifoBuffer(std::vector<ulong> &data ) {
                 init( data );
             }
-            void init( Array<ulong> &data ) {
+            void init(std::vector<ulong> &data ) {
                 clear();
-                this->data = data.begin();
+                this->data = data.data();
                 this->size = data.size();
             }
             void clear() {
@@ -58,12 +63,12 @@ struct FifoCache : public MemoryAccessInterface {
                 return false;
             }
         } fifo_buffer;
-        Array<ulong> buffer;
+		std::vector<ulong> buffer;
         struct SectionTags {
             MemoryRange range;
-            Array<bool> bit_mask;
+			vector_bool bit_mask;
         };
-        Array<std::unique_ptr<SectionTags>> section_tags;
+		std::vector<std::unique_ptr<SectionTags>> section_tags;
         
         
         inline ulong to_key( ulong local_index, ulong sec_id ) {
@@ -83,13 +88,13 @@ struct FifoCache : public MemoryAccessInterface {
         uint block_size;
         
         FifoCache( Memory &mem, uint cache_size ) : read_time( 0 ), write_time( 0 ), block_size( 8 ) {
-            buffer.init( cache_size );
+            buffer.resize( cache_size );
             fifo_buffer.init( buffer );
-            section_tags.init( mem.section_count );
+            section_tags.resize( mem.section_count );
             for ( uint i : urange( mem.section_count ) ) {
                 auto tags = new SectionTags();
                 auto &sec = *mem.sections[i];
-                tags->bit_mask.init( sec.address_range.size / block_size + 1 );
+                tags->bit_mask.resize( (ulong)sec.address_range.size / block_size + 1 );
                 tags->range = sec.address_range;
                 section_tags[i] = std::unique_ptr<SectionTags>( tags );
             }

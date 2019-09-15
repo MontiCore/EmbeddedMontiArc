@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include "dll_loader.h"
 #include "computer/os.h"
@@ -112,7 +117,7 @@ namespace OS {
         MemoryRange io_stdout;
         MemoryRange io_stderr;
         
-        Array<char> name_buffer;
+		std::vector<char> name_buffer;
         
         Windows() : name_buffer( 1024 ) {}
         

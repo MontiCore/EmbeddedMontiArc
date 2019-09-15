@@ -1,4 +1,3 @@
-<!-- (c) https://github.com/MontiCore/monticore -->
 ![zydis logo](https://mainframe.pw/u/P94JAqY9XSDdPedv.svg?x)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Gitter](https://badges.gitter.im/zyantific/zyan-disassembler-engine.svg)](https://gitter.im/zyantific/zydis?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge) [![Discord](https://img.shields.io/discord/390136917779415060.svg)](https://discord.gg/pJaSX3n) [![Build status](https://ci.appveyor.com/api/projects/status/2tad27q0b9v6qtga/branch/master?svg=true)](https://ci.appveyor.com/project/athre0z/zydis/branch/master)
 

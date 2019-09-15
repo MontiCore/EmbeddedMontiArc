@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_HardwareEmulatorInterface.h"
 #include "emulator_manager.h"
 

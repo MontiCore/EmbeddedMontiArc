@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "hardware_emulator.h"
 #include "os_windows/os_windows.h"
 #include "os_linux/os_linux.h"
@@ -103,7 +108,6 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
 			computer.set_os( new OS::Windows() );
 		if (Library::type != Library::OsType::WINDOWS) {
 			os_mistmatch = true;
-			test_real = false;
 		}
     }
     else if ( os_name.compare( "linux" ) == 0 ) {
@@ -111,15 +115,14 @@ bool HardwareEmulator::init( EmulatorManager &manager, const char *config ) {
 			computer.set_os( new OS::Linux() );
 		if (Library::type != Library::OsType::LINUX) {
 			os_mistmatch = true;
-			test_real = false;
 		}
     }
     else
         return false;
         
-	if (os_mistmatch) {
-		error_msg = "Error: In direct mode, the autopilot OS must match the OS running the hardware_emulator.";
-		return false;
+	if (os_mistmatch && test_real) {
+		Log::err << Log::tag <<  "Error: In test-real mode, the autopilot OS must match the OS running the hardware_emulator.\nContinuing without test-real...\n";
+		test_real = false;
 	}
         
 	if ( !computer.os->load_file( autopilot_path.c_str() ) ) {
@@ -225,7 +228,7 @@ bool HardwareEmulator::setup_direct_emulation()
 
 
 
-bool HardwareEmulator::init_ports_direct(Array<Port>& ports, const char* get_count,
+bool HardwareEmulator::init_ports_direct(std::vector<Port>& ports, const char* get_count,
 	const char* get_name, const char* get_type, const char* port_prefix) {
 	void* get_name_addr, * get_type_addr, * get_count_addr;
 	if (!resolve_real(get_count, get_count_addr) || !resolve_real(get_name, get_name_addr)
@@ -237,7 +240,7 @@ bool HardwareEmulator::init_ports_direct(Array<Port>& ports, const char* get_cou
 	using GetStringFunc = const char*(*)(int);
 	
 	int port_count = ((GetCountFunc)get_count_addr)();
-	ports.init(port_count);
+	ports.resize(port_count);
 	for (auto i : urange(port_count)) {
 		auto& port = ports[i];
 		port.name = ((GetStringFunc)get_name_addr)(i);
@@ -350,7 +353,7 @@ void HardwareEmulator::call_input_direct(Port& port) {
 		break;
 	case VALUE_TYPE::DOUBLE_ARRAY:
 		using DoubleArrayInputFunc = void(*)(double*, int);
-		((DoubleArrayInputFunc)port.real_function)(input.double_array.data.begin(), input.double_array.size);
+		((DoubleArrayInputFunc)port.real_function)(input.double_array.data.data(), input.double_array.size);
 		break;
 	default:
 		Log::err << Log::tag << "Add Port type support in HardwareEmulator::call_input().\n";
@@ -412,12 +415,12 @@ void HardwareEmulator::call_input( Port &port ) {
                 return;
             }
             computer.memory.write_memory( buffer_slot.start_address, input.double_array.size * sizeof( double ),
-                                          ( uchar * )input.double_array.data.begin() );
+                                          ( uchar * )input.double_array.data.data() );
             computer.func_call->set_params_64( buffer_slot.start_address, ( ulong )input.double_array.size );
             if ( test_real ) {
                 timer.start();
                 using DoubleArrayInputFunc = void( * )( double *, int );
-                ( ( DoubleArrayInputFunc )port.real_function )( input.double_array.data.begin(), input.double_array.size );
+                ( ( DoubleArrayInputFunc )port.real_function )( input.double_array.data.data(), input.double_array.size );
                 timer.end();
             }
             break;
@@ -505,7 +508,7 @@ bool HardwareEmulator::resolve_real( const std::string &name, void *&target ) {
 }
 
 
-bool HardwareEmulator::init_ports( Array<Port> &ports, const char *get_count,
+bool HardwareEmulator::init_ports(std::vector<Port> &ports, const char *get_count,
                                    const char *get_name, const char *get_type, const char *port_prefix ) {
     uint64_t get_name_addr, get_type_addr, get_count_addr;
     if ( !resolve( get_count, get_count_addr ) || !resolve( get_name, get_name_addr )
@@ -514,7 +517,7 @@ bool HardwareEmulator::init_ports( Array<Port> &ports, const char *get_count,
         
     computer.call( get_count_addr, get_count );
     uint port_count = computer.func_call->get_return_32();
-    ports.init( port_count );
+    ports.resize( port_count );
     for ( auto i : urange( port_count ) ) {
         auto &port = ports[i];
         
