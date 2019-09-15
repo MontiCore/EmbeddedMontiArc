@@ -3,9 +3,6 @@ RUN apt-get update
 RUN apt-get install -y unzip g++
 RUN apt-get install -y libopenblas-dev libhdf5-serial-dev
 ENV PATH="/usr/lib/x86_64-linux-gnu/:${PATH}"
-ADD https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.10.24-armadillo-linux&files=armadillo-8.500.1-linux.zip /root/armadillo.zip
-RUN unzip /root/armadillo.zip -d /root/
-ENV Armadillo_HOME=/root/armadillo-8.500.1-linux
 ENV ROS_HOME=/opt/ros/kinetic
 CMD ["bash"]
 
@@ -15,31 +12,14 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 RUN python get-pip.py
 RUN pip install h5py numpy pyprind matplotlib
 
-# Install Open CV - Warning, this takes absolutely forever
-RUN apt-get update && apt-get install -y libgdal-dev
-RUN mkdir -p ~/opencv cd ~/opencv && \
-    wget https://github.com/Itseez/opencv/archive/3.0.0.zip && \
-    unzip 3.0.0.zip && \
-    rm 3.0.0.zip && \
-    mv opencv-3.0.0 OpenCV
-RUN apt-get install -y qtbase5-dev
-RUN apt-get install -y build-essential
-ENV PATH="${PATH}:/usr/include/"
-RUN cd OpenCV && \
-    mkdir build && \
-    cd build && \
-    cmake \
-    -DWITH_QT=ON \
-    -DWITH_OPENGL=ON \
-    -DFORCE_VTK=ON \
-    -DWITH_TBB=ON \
-    -DWITH_GDAL=ON \
-    -DWITH_XINE=ON \
-    -DBUILD_EXAMPLES=ON \
-    -D ENABLE_PRECOMPILED_HEADERS=OFF ..
-RUN cd OpenCV/build && make -j4
-RUN cd OpenCV/build && make install
-RUN cd OpenCV/build && ldconfig
+# Armadillo
+ADD armadillo-9.600.6.zip /root/armadillo.zip
+RUN unzip /root/armadillo.zip -d /root/armadillo
+RUN apt-get install -y libopenblas-dev liblapack-dev
+RUN cd /root/armadillo/armadillo-9.600.6 && \
+    cmake . && \
+    make    && \
+    make install
 
 # MXNET
 RUN apt-get install -y libopenblas-dev
@@ -62,7 +42,8 @@ RUN git clone https://github.com/openai/gym.git openai_gym && \
     cd ..
 
 # Numpy Library
-RUN if [ ! -d "/usr/include/numpy" && -L "/usr/include/numpy" ]; then cp -r "$(python -c 'import numpy; print(numpy.get_include())')/numpy" /usr/include; fi
+RUN rm -rf /usr/include/numpy && \
+    ln -s "$(python -c 'import numpy; print(numpy.get_include())')/numpy" /usr/include
 
 # Set Display for TKInter
 RUN mkdir -p /root/.config/matplotlib
