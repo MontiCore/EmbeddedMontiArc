@@ -64,17 +64,15 @@ run
 ```bash
 git clone https://github.com/eclipse/paho.mqtt.c.git
 cd paho.mqtt.c
-git checkout v1.2.1
-cmake -Bbuild -H. -DPAHO_WITH_SSL=ON
+cmake -Bbuild -H. -DPAHO_WITH_SSL=OFF
 sudo cmake --build build/ --target install
-sudo ldconfig
 ```
 #### Installing PahoMQTT C++ library
 **after** installation of C library run
 ```bash
 git clone https://github.com/eclipse/paho.mqtt.cpp
 cd paho.mqtt.cpp
-cmake -Bbuild -H.
+cmake -Bbuild -H. -DPAHO_WITH_SSL=OFF
 sudo cmake --build build/ --target install
 ```
 #### Set environment variables for MQTT
