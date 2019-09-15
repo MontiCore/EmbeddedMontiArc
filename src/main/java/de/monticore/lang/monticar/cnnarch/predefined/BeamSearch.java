@@ -42,6 +42,10 @@ public class BeamSearch extends UnrollDeclarationSymbol {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.WIDTH_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.DEPTH_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;
