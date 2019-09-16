@@ -6,7 +6,7 @@
  */
 package simulation.vehicle;
 
-import commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

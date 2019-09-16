@@ -1186,7 +1186,7 @@ public class SimulatorTest {
         assertTrue(!expectedTime.isAfter(sim.getSimulationTime())&& sim.getSimulationTime().isBefore(expectedTime.plusMillis(tolerance)));
     }
 
-    private class StepSizeChecker implements SimulationLoopNotifiable {
+    private class StepSizeChecker extends SimulationLoopNotifiable {
         private Duration expectedStepSize;
 
         public StepSizeChecker(Duration expectedStepSize){

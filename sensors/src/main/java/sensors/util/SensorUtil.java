@@ -7,34 +7,47 @@
 package sensors.util;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
+import sensors.abstractsensors.AbstractSensor;
 import sensors.factory.SensorFactory;
-import simulation.vehicle.PhysicalVehicle;
+import simulation.bus.Bus;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Aklima Zaman on 2/15/2017.
  */
 public class SensorUtil {
-    public static PhysicalVehicle sensorAdder(PhysicalVehicle physicalVehicle) {
-        SensorFactory sensorFactory = new SensorFactory(physicalVehicle);
-
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_VELOCITY));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_GPS_COORDINATES));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_DISTANCE_TO_RIGHT));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_DISTANCE_TO_LEFT));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_STEERING));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_WEATHER));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_CAMERA));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_COMPASS));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_LEFT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_RIGHT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_RIGHT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_LEFT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_STREETTYPE));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_DAYNIGHT));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_LEFT_FRONT_DISTANCE));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_RIGHT_FRONT_DISTANCE));
-        physicalVehicle.getSimulationVehicle().addSensor(sensorFactory.getSensor(BusEntry.SENSOR_OBSTACLE));
-
-        return physicalVehicle;
+    public static List<AbstractSensor>  sensorAdder(IPhysicalVehicle physicalVehicle, Bus bus) {
+        return sensorAdder(physicalVehicle, Collections.singletonList(bus));
     }
+
+    public static List<AbstractSensor>  sensorAdder(IPhysicalVehicle physicalVehicle, List<Bus> buses) {
+        SensorFactory sensorFactory = new SensorFactory(physicalVehicle, buses);
+        List<AbstractSensor> sensors = new ArrayList<>();
+
+        sensorFactory.createSensor(BusEntry.SENSOR_VELOCITY).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_GPS_COORDINATES).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_DISTANCE_TO_RIGHT).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_DISTANCE_TO_LEFT).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_STEERING).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_WEATHER).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_CAMERA).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_COMPASS).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_LEFT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_RIGHT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_RIGHT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_LEFT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_STREETTYPE).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_DAYNIGHT).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_LEFT_FRONT_DISTANCE).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_RIGHT_FRONT_DISTANCE).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.SENSOR_OBSTACLE).ifPresent(s -> sensors.add(s));
+
+        return sensors;
+    }
+
+
 }

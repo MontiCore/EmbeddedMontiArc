@@ -1,15 +1,19 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 /* (c) https://github.com/MontiCore/monticore */
-package sensors;
+package sensors.abstractsensors;
 
-import commons.controller.commons.BusEntry;
-import commons.simulation.IPhysicalVehicle;
-import commons.simulation.PhysicalObject;
-import commons.simulation.Sensor;
+
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import org.apache.commons.lang3.Validate;
-import sensors.abstractsensors.AbstractSensor;
-import simulation.EESimulator.EESimulator;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +26,7 @@ public abstract class StaticPlannedTrajectorySensor extends  AbstractSensor {
     private final List<Double> trajectory;
 
     public StaticPlannedTrajectorySensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
-            HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<Double> trajectory) {
+                                         HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<Double> trajectory) {
         super(phyiscalVehicle,simulator, subscribedMessages, targetsByMessageId);
         Validate.notNull(trajectory);
         List<Double> defensiveCopy = new ArrayList<>(trajectory);

@@ -7,6 +7,7 @@
 package sensors;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.EESimulator.EEComponent;

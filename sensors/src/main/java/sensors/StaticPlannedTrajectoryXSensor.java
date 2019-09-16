@@ -6,8 +6,9 @@
  */
 package sensors;
 
-import commons.controller.commons.BusEntry;
-import commons.simulation.IPhysicalVehicle;
+
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import simulation.EESimulator.EESimulator;
 import sensors.abstractsensors.StaticPlannedTrajectorySensor;
 import simulation.EESimulator.EEComponent;
@@ -18,7 +19,7 @@ public class StaticPlannedTrajectoryXSensor extends StaticPlannedTrajectorySenso
 
 
     public StaticPlannedTrajectoryXSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
-            HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<Double> trajectoryX) {
+										  HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<Double> trajectoryX) {
     	super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId, trajectoryX);
     }
 

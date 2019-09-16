@@ -770,23 +770,23 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
 
         double deltaT = deltaTms / 1000.0;
         // Get motor acceleration and convert it in torque
-        double throttle = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_THROTTLE).getActuatorValueCurrent();
+        double throttle = getVehicleActuator(VEHICLE_ACTUATOR_TYPE_THROTTLE).getActuatorValueCurrent();
         vehicleDynamicsModel.setInput("t_input", throttle);
 
         // Get brake acceleration and convert it in torque
-        double breakinput = simulationVehicle.getVehicleActuator((VEHICLE_ACTUATOR_TYPE_BRAKE)).getActuatorValueCurrent();
+        double breakinput = getVehicleActuator((VEHICLE_ACTUATOR_TYPE_BRAKE)).getActuatorValueCurrent();
         vehicleDynamicsModel.setInput("b_input", breakinput);
 
         // Get steering angle and changerate
-        double steeringAngle = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
+        double steeringAngle = getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
         vehicleDynamicsModel.setInput("delta_sw", steeringAngle);
         double steeringAngleSpeed = (steeringAngle - old_sw_angle)/deltaT;
         vehicleDynamicsModel.setInput("omega_sw",steeringAngleSpeed);
 
-        double clutchinput = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_CLUTCH).getActuatorValueCurrent();
+        double clutchinput = getVehicleActuator(VEHICLE_ACTUATOR_TYPE_CLUTCH).getActuatorValueCurrent();
         vehicleDynamicsModel.setInput("c_input", clutchinput);
 
-        double gear = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_GEAR).getActuatorValueCurrent();
+        double gear = getVehicleActuator(VEHICLE_ACTUATOR_TYPE_GEAR).getActuatorValueCurrent();
         vehicleDynamicsModel.setInput("i", gear);
 
         // Express the force vector in local coordinates
@@ -833,10 +833,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         geometryPositionOffset = geometryPositionOffset.add(deltaZ);
 
         //remember old st_angle value
-        old_sw_angle = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
+        old_sw_angle = getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
         //Set velocity to zero when braking if very near to zero
         double velocity = getVelocity().getNorm();
-        if(velocity <= 0.1 && simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).getActuatorValueCurrent() > 0 && simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_THROTTLE).getActuatorValueCurrent() == 0) {
+        if(velocity <= 0.1 && getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).getActuatorValueCurrent() > 0 && getVehicleActuator(VEHICLE_ACTUATOR_TYPE_THROTTLE).getActuatorValueCurrent() == 0) {
 
             vehicleDynamicsModel.setInput("omega_wheel_1", 0.0);
             vehicleDynamicsModel.setInput("omega_wheel_2", 0.0);
@@ -877,6 +877,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
                 " , collision: " + collision +
                 " , error: " + error +
                 " , physicalVehicleInitialised: " + physicalVehicleInitialised +
-                " , simulationVehicle: " + simulationVehicle;
+                " , simulationVehicle: " + this.getVehicle();
     }
 }

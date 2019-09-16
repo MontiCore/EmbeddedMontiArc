@@ -4,20 +4,21 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-package simulation.EESimulator;
+package simulation.bus;
 
-public enum EEDiscreteEventTypeEnum {
-    
-	BUSMESSAGE("BUSMESSAGE"),
-    KEEP_ALIVE_EVENT("KEEP_ALIVE_EVENT");
+public enum BusType {
 
-    private final String name;
+    INSTANT_BUS("INSTANT_BUS"),
+    FLEXRAY("FLEXRAY"),
+    CAN("CAN");
 
-    private EEDiscreteEventTypeEnum(String name){
+    private String name;
+
+    private BusType(String name){
         this.name = name;
     }
 
-
+    @Override
     public String toString(){
         return this.name;
     }

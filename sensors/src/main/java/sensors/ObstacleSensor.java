@@ -7,6 +7,7 @@
 package sensors;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.EEComponent;
@@ -24,7 +25,7 @@ public class ObstacleSensor extends AbstractSensor {
     private List<PhysicalObject> result = Collections.synchronizedList(new LinkedList<>());
     private Object[] value = new Object[2];
 
-    public ObstacleSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator,List<BusEntry> subscribedMessages,
+    public ObstacleSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                           HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
     }

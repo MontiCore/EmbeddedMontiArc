@@ -6,14 +6,7 @@
  */
 package simulation.vehicle;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.print.attribute.HashAttributeSet;
-
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
@@ -25,12 +18,16 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import commons.controller.commons.BusEntry;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.util.Log;
 import simulation.util.MathHelper;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * JUnit test for the ModelicaPhysicalVehicle class

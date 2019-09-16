@@ -6,55 +6,24 @@
  */
 package simulation.vehicle;
 
-import sensors.CameraSensor;
-import sensors.CompassSensor;
-import sensors.DayNightSensor;
-import sensors.DistanceToLeftSensor;
-import sensors.DistanceToRightSensor;
-import sensors.LeftBackWheelDistanceToStreetSensor;
-import sensors.LeftFrontDistanceSensor;
-import sensors.LeftFrontWheelDistanceToStreetSensor;
-import sensors.LocationSensor;
-import sensors.ObstacleSensor;
-import sensors.RightBackWheelDistanceToStreetSensor;
-import sensors.RightFrontDistanceSensor;
-import sensors.RightFrontWheelDistanceToStreetSensor;
-import sensors.SpeedSensor;
-import sensors.StaticPlannedTrajectoryXSensor;
-import sensors.StaticPlannedTrajectoryYSensor;
-import sensors.SteeringAngleSensor;
-import sensors.WeatherSensor;
-import sensors.abstractsensors.AbstractSensor;
-
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.NavigationEntry;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Surface;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Vertex;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IAdjacency;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
-import de.topobyte.osm4j.core.model.iface.OsmNode;
-import org.apache.commons.math3.linear.ArrayRealVector;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
 import org.apache.commons.math3.linear.RealVector;
-
+import sensors.abstractsensors.AbstractSensor;
+import sensors.util.SensorUtil;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.EESimulator.NavigationBlockAsEEComponent;
 import simulation.bus.Bus;
 import simulation.bus.InstantBus;
-import simulation.environment.WorldModel;
-import simulation.environment.osm.IntersectionFinder;
-import simulation.util.Log;
 
 import java.awt.*;
 import java.io.File;
 import java.time.Instant;
-import java.util.*;
 import java.util.List;
-import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.*;
-import static simulation.vehicle.VehicleActuatorType.*;
+import java.util.*;
 
 /**
  * Simulation objects for a generic vehicle.
@@ -194,27 +163,8 @@ public class Vehicle {
 		Bus bus = new InstantBus(eeSimulator);
 		List<EEComponent> components = new ArrayList<EEComponent>();
 
-
-		//create all sensors
-		components.add(AbstractSensor.createSensor(CameraSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(CompassSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(DayNightSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(DistanceToLeftSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(DistanceToRightSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(LeftBackWheelDistanceToStreetSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(LeftFrontDistanceSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(LeftFrontWheelDistanceToStreetSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(LocationSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(ObstacleSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(RightBackWheelDistanceToStreetSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(RightFrontDistanceSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(RightFrontWheelDistanceToStreetSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(SpeedSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(StaticPlannedTrajectoryXSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(StaticPlannedTrajectoryYSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(SteeringAngleSensor.class, physicalVehicle, bus).get());
-		components.add(AbstractSensor.createSensor(WeatherSensor.class, physicalVehicle, bus).get());
-
+        //create all sensors
+		components.addAll(SensorUtil.sensorAdder(physicalVehicle, bus));
 
 		//create all actuators
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE, bus));

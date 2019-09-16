@@ -6,10 +6,10 @@
  */
 package sensors.abstractsensors;
 
-import commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
-import commons.simulation.IPhysicalVehicle;
 import java.util.HashMap;
 import java.util.List;
 

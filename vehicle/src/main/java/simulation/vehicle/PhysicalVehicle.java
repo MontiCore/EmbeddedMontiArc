@@ -6,16 +6,11 @@
  */
 package simulation.vehicle;
 
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IdGenerator;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
 import org.apache.commons.math3.linear.RealVector;
-import simulation.EESimulator.EESimulator;
-import simulation.util.Log;
-import static simulation.vehicle.VehicleActuatorType.*;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -252,8 +247,8 @@ public abstract class PhysicalVehicle implements IPhysicalVehicle {
     }
     
     /**
-     * Function that sets the vehicle this PhyiscalVehicle belongs to
-     * @param Reference to the vehicle this PhysicalVehicle 
+     * Function that sets the vehicle this PhysicalVehicle belongs to
+     * @param vehicle vehicle this PhysicalVehicle belongs tp
      */
     protected void setVehicle(Vehicle vehicle) {
     	if(this.vehicle != null) {

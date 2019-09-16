@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.bus;
 
 import org.jfree.util.Log;
@@ -153,6 +159,11 @@ public class CAN extends Bus{
     @Override
     protected boolean hasMessages() {
         return !messages.isEmpty() && !partialMessage.isPresent();
+    }
+
+    @Override
+    public BusType getBusType() {
+        return BusType.CAN;
     }
 
     protected long calculateTransmissionTime(long transmittedBytes) {

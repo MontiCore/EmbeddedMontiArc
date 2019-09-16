@@ -7,59 +7,124 @@
 package sensors.factory;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
+import org.jfree.util.Log;
 import sensors.*;
-import simulation.vehicle.PhysicalVehicle;
+import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
+import simulation.bus.Bus;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * Created by Aklima Zaman on 2/8/2017.
  */
 public class SensorFactory {
-    private PhysicalVehicle physicalVehicle;
+    private IPhysicalVehicle physicalVehicle;
 
-    public SensorFactory(PhysicalVehicle physicalVehicle) {
+    private List<Bus> buses;
+
+    public SensorFactory(IPhysicalVehicle physicalVehicle, List<Bus> buses) {
         this.physicalVehicle = physicalVehicle;
+        this.buses = buses;
     }
 
-    public Sensor getSensor(BusEntry busEntry) {
+    public SensorFactory(IPhysicalVehicle physicalVehicle, Bus bus) {
+        this.physicalVehicle = physicalVehicle;
+        this.buses = Collections.singletonList(bus);
+    }
+
+    public  Optional<AbstractSensor> createSensor(BusEntry busEntry) {
         switch (busEntry) {
         case SENSOR_VELOCITY:
-            return new SpeedSensor(this.physicalVehicle);
+            return createSensor(SpeedSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_GPS_COORDINATES:
-            return new LocationSensor(this.physicalVehicle);
+            return createSensor( LocationSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_STEERING:
-            return new SteeringAngleSensor(this.physicalVehicle);
+            return createSensor(SteeringAngleSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_DISTANCE_TO_RIGHT:
-            return new DistanceToRightSensor(this.physicalVehicle);
+            return createSensor(DistanceToRightSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_DISTANCE_TO_LEFT:
-            return new DistanceToLeftSensor(this.physicalVehicle);
+            return createSensor(DistanceToLeftSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_WEATHER:
-            return new WeatherSensor(this.physicalVehicle);
+            return createSensor(WeatherSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_CAMERA:
-            return new CameraSensor(this.physicalVehicle);
+            return createSensor(CameraSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_COMPASS:
-            return new CompassSensor(this.physicalVehicle);
+            return createSensor(CompassSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_LEFT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return new LeftBackWheelDistanceToStreetSensor(this.physicalVehicle);
+            return createSensor(LeftBackWheelDistanceToStreetSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_LEFT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return new LeftFrontWheelDistanceToStreetSensor(this.physicalVehicle);
+            return createSensor(LeftFrontDistanceSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_RIGHT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return new RightFrontWheelDistanceToStreetSensor(this.physicalVehicle);
+            return createSensor(RightFrontDistanceSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_RIGHT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return new RightBackWheelDistanceToStreetSensor(this.physicalVehicle);
+            return createSensor(RightBackWheelDistanceToStreetSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_STREETTYPE:
-            return new StreetTypeSensor(this.physicalVehicle);
+            return createSensor(StreetTypeSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_DAYNIGHT:
-            return new DayNightSensor(this.physicalVehicle);
+            return createSensor(DayNightSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_LEFT_FRONT_DISTANCE:
-            return new LeftFrontDistanceSensor(this.physicalVehicle);
+            return createSensor(LeftFrontDistanceSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_RIGHT_FRONT_DISTANCE:
-            return new RightFrontDistanceSensor(this.physicalVehicle);
+            return createSensor(RightFrontDistanceSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_OBSTACLE:
-            return new ObstacleSensor(this.physicalVehicle);
+            return createSensor(ObstacleSensor.class, this.physicalVehicle, this.buses);
         default:
             break;
         }
-        return null;
+        return Optional.empty();
+    }
+
+    /**
+     * Creates a sensor. The simulator for the sensor is taken from the first bus in buses.
+     * SubscribedMessages is empty.
+     * TargetsByMessageId is inferred from buses and sensorClass.
+     *
+     * @param sensorClass the class of the sensor that should be created
+     * @param physicalVehicle the physicalVehicle the created sensor belongs to
+     * @param buses the buses that the sensor is connected to
+     */
+    public static Optional<AbstractSensor> createSensor(Class<? extends AbstractSensor> sensorClass, IPhysicalVehicle physicalVehicle, List<Bus> buses) {
+        if(buses == null || buses.isEmpty()) {
+            throw new IllegalArgumentException("Buses can not be null or empty");
+        }
+        try {
+            Method getSensorType = sensorClass.getMethod("getSensorType");
+            BusEntry sensorType = (BusEntry) getSensorType.invoke(null);
+            List<BusEntry> subscribedMessages = Collections.emptyList();
+            HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
+            targetsByMessageId.put(sensorType, new ArrayList<EEComponent>(buses));
+            if(sensorType.equals(CameraSensor.getSensorType()) || sensorType.equals(StaticPlannedTrajectoryXSensor.getSensorType())
+                    || sensorType.equals(StaticPlannedTrajectoryYSensor.getSensorType())) {
+                Constructor<? extends AbstractSensor> constructor = sensorClass.getConstructor(IPhysicalVehicle.class, EESimulator.class, List.class, HashMap.class, List.class);
+                return Optional.of(constructor.newInstance(physicalVehicle, buses.get(0).getSimulator(), subscribedMessages, targetsByMessageId, Collections.emptyList()));
+            }
+            else {
+                Constructor<? extends AbstractSensor> constructor = sensorClass.getConstructor(IPhysicalVehicle.class, EESimulator.class, List.class, HashMap.class);
+                return Optional.of(constructor.newInstance(physicalVehicle, buses.get(0).getSimulator(), subscribedMessages, targetsByMessageId));
+            }
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
+            Log.error("Failed to create sensor " + sensorClass);
+        }
+        return Optional.empty();
+    }
+
+
+    /**
+     * Creates a sensor. The simulator for the sensor is taken from bus.
+     * SubscribedMessages is empty.
+     * TargetsByMessageId is inferred from bus and sensorClass.
+     *
+     * @param sensorClass the class of the sensor that should be created
+     * @param physicalVehicle the physicalVehicle the created sensor belongs to
+     * @param bus the bus that the sensor is connected to
+     */
+    public static Optional<AbstractSensor> createSensor(Class<? extends AbstractSensor> sensorClass, IPhysicalVehicle physicalVehicle, Bus bus) {
+        return createSensor(sensorClass, physicalVehicle, Collections.singletonList(bus));
     }
 }

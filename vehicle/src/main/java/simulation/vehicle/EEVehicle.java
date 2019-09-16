@@ -1,34 +1,21 @@
 /**
+ * (c) https://github.com/MontiCore/monticore
  *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
 package simulation.vehicle;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
-import commons.controller.commons.BusEntry;
 
-import commons.controller.interfaces.FunctionBlockInterface;
+
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import org.apache.commons.lang3.tuple.Pair;
 
 import sensors.abstractsensors.AbstractSensor;
+import sensors.factory.SensorFactory;
 import simulation.EESimulator.*;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
@@ -117,7 +104,7 @@ public class EEVehicle {
 			for (ParsableBusStructureProperties.Pair sensor : busStructure.getSensors()) {
 				try {
 					Class<? extends AbstractSensor> sensorClass = (Class<? extends AbstractSensor>) Class.forName(sensor.eeComponent);
-					AbstractSensor newSensor = AbstractSensor.createSensor(sensorClass, vehicle.getPhysicalVehicle(), busList.get((int) sensor.busAndParameter[0])).get();
+					AbstractSensor newSensor = SensorFactory.createSensor(sensorClass, vehicle.getPhysicalVehicle(), busList.get((int) sensor.busAndParameter[0])).get();
 					sensorList.add(newSensor);
 					busList.get((int) sensor.busAndParameter[0]).registerComponent(newSensor);
 				} catch (ClassNotFoundException e) {
@@ -482,7 +469,7 @@ class ParsableBusStructureProperties {
 
 		for (Bus bus : vehicle.getBusList()) {
 			double[] busIdArr = {busId};
-			buses.add(new Pair(bus.getBusType(), busIdArr));
+			buses.add(new Pair(bus.getBusType().toString(), busIdArr));
 			for (AbstractSensor sensor : vehicle.getSensorList()) {
 				if (bus.getConnectedComponents().contains(sensor)) {
 					sensors.add(new Pair(sensor.getClass().getName(), busIdArr));

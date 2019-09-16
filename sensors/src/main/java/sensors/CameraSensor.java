@@ -9,7 +9,9 @@ package sensors;
 import com.jhlabs.image.MotionBlurFilter;
 import com.jhlabs.image.PerspectiveFilter;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import org.apache.commons.math3.linear.ArrayRealVector;
@@ -66,7 +68,7 @@ public class CameraSensor extends AbstractSensor {
         super(phyiscalVehicle,simulator, subscribedMessages, targetsByMessageId);
         otherVehicles = new ArrayList<IPhysicalVehicle>();
         for (PhysicalObject object : simulationObjects) {
-            if(object.getPhysicalObjectType()==PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR){
+            if(object.getPhysicalObjectType()== PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR){
             	IPhysicalVehicle otherVehicle = (IPhysicalVehicle)object;
             	if(otherVehicle.getId() != this.getPhysicalVehicle().getId()) {
             		otherVehicles.add(otherVehicle);

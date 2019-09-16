@@ -1,34 +1,20 @@
 /**
+ * (c) https://github.com/MontiCore/monticore
  *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
 package simulation.vehicle;
 
-import commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Test;
 import sensors.CameraSensor;
 import sensors.CompassSensor;
 import sensors.LocationSensor;
 import sensors.ObstacleSensor;
 import sensors.abstractsensors.AbstractSensor;
-
-import org.junit.*;
+import sensors.factory.SensorFactory;
 import simulation.EESimulator.Bridge;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
@@ -116,14 +102,14 @@ public class EEVehicleTest {
         VehicleActuator actuator4 = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, busTwo);
         VehicleActuator actuator5 = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, busTwo);
         VehicleActuator motor = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR, busTwo);
-        CameraSensor cam = (CameraSensor) AbstractSensor.createSensor(CameraSensor.class, physicalVehicle, busTwo).get();
-        LocationSensor location = (LocationSensor) AbstractSensor.createSensor(LocationSensor.class, physicalVehicle, busTwo).get();
+        CameraSensor cam = (CameraSensor) SensorFactory.createSensor(CameraSensor.class, physicalVehicle, busTwo).get();
+        LocationSensor location = (LocationSensor) SensorFactory.createSensor(LocationSensor.class, physicalVehicle, busTwo).get();
 
 
         VehicleActuator actuator6 = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, busThree);
         VehicleActuator gear = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR, busThree);
         VehicleActuator throttle = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE, busThree);
-        ObstacleSensor obstacle = (ObstacleSensor) AbstractSensor.createSensor(ObstacleSensor.class, physicalVehicle, busThree).get();
+        ObstacleSensor obstacle = (ObstacleSensor) SensorFactory.createSensor(ObstacleSensor.class, physicalVehicle, busThree).get();
 
         //all components in general minus bridges
         componentList.add(actuator1);

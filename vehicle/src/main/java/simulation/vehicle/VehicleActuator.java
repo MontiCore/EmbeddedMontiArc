@@ -6,17 +6,17 @@
  */
 package simulation.vehicle;
 
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import simulation.EESimulator.*;
+import simulation.bus.Bus;
+import simulation.bus.BusMessage;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import commons.controller.commons.BusEntry;
-import simulation.EESimulator.*;
-import simulation.bus.Bus;
-import simulation.bus.BusMessage;
 
 /**
  * Class that represents an actuator of the vehicle
