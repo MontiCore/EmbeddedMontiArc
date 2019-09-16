@@ -1,23 +1,4 @@
-/**
- *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 package simulation.vehicle;
 
 import java.time.Duration;
@@ -181,7 +162,7 @@ public class VehicleActuator extends ImmutableEEComponent {
 		return new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate,
 				buses.get(0).getSimulator(), subscribedMessages, targetsByMessageId);
 	}
-	
+
 	/**
 	 * Creates a new actuator. Sets minimum, maximum and change rate
 	 * to default values. Current value and target value are initialised to 0.0 or the given
@@ -259,7 +240,7 @@ public class VehicleActuator extends ImmutableEEComponent {
 		return createVehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate,
 				Collections.singletonList(bus));
 	}
-	
+
 	/**
 	 * Creates a new actuator. Sets minimum, maximum and change rate
 	 * to default values. Current value and target value are initialised to 0.0 or the given
@@ -395,7 +376,7 @@ public class VehicleActuator extends ImmutableEEComponent {
 
 	/**
 	 * Overwrite toString() to get a nice output for vehicles
-	 * 
+	 *
 	 * @return String that contains all information of vehicles
 	 */
 	@Override

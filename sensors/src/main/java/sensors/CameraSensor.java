@@ -1,23 +1,4 @@
-/**
- *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 package sensors;
 
 import com.jhlabs.image.MotionBlurFilter;
@@ -63,14 +44,14 @@ public class CameraSensor extends AbstractSensor {
     private double baseline = 0.02; // [m]
 
     //private static World world;
-    private final List<IPhysicalVehicle> otherVehicles; 
-    
+    private final List<IPhysicalVehicle> otherVehicles;
+
     public Optional<Image> getOriginalImage() {
         return originalImage;
     }
 
     /**
-     * 
+     *
      * @param phyiscalVehicle
      * @param simulator
      * @param subscribedMessages
@@ -95,11 +76,11 @@ public class CameraSensor extends AbstractSensor {
     public BusEntry getType() {
         return BusEntry.SENSOR_CAMERA;
     }
-    
+
 	public static BusEntry getSensorType() {
 		return BusEntry.SENSOR_CAMERA;
 	}
-	
+
 
     @Override
     public int getDataLength() {
@@ -431,6 +412,4 @@ public class CameraSensor extends AbstractSensor {
         return filteredImage;
 
     }
-
-
 }

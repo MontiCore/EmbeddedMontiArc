@@ -1,23 +1,4 @@
-/**
- *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 package sensors.abstractsensors;
 
 import commons.controller.commons.BusEntry;
@@ -47,7 +28,7 @@ import simulation.bus.Bus;
  * Created by Aklima Zaman on 1/20/2017.
  */
 public abstract class AbstractSensor extends ImmutableEEComponent implements Sensor {
-	
+
 	private final IPhysicalVehicle physicalVehicle;
 
 	public AbstractSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
@@ -85,9 +66,9 @@ public abstract class AbstractSensor extends ImmutableEEComponent implements Sen
 	public void processEvent(EEDiscreteEvent event) {
 		// TODO implement
 	}
-	
+
 	/**
-	 * Creates a sensor. The simulator for the sensor is taken from the first bus in buses. 
+	 * Creates a sensor. The simulator for the sensor is taken from the first bus in buses.
 	 * SubscribedMessages is empty.
 	 * TargetsByMessageId is inferred from buses and sensorClass.
 	 *
@@ -113,16 +94,16 @@ public abstract class AbstractSensor extends ImmutableEEComponent implements Sen
 			else {
 				Constructor<? extends AbstractSensor> constructor = sensorClass.getConstructor(IPhysicalVehicle.class, EESimulator.class, List.class, HashMap.class);
 				return Optional.of(constructor.newInstance(physicalVehicle, buses.get(0).getSimulator(), subscribedMessages, targetsByMessageId));
-			}			
+			}
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
 			Log.error("Failed to create sensor " + sensorClass);
 		}
 		return Optional.empty();
 	}
 
-	
+
 	/**
-	 * Creates a sensor. The simulator for the sensor is taken from bus. 
+	 * Creates a sensor. The simulator for the sensor is taken from bus.
 	 * SubscribedMessages is empty.
 	 * TargetsByMessageId is inferred from bus and sensorClass.
 	 *

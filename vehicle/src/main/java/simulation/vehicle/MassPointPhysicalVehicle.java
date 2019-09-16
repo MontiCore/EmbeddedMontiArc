@@ -1,23 +1,4 @@
-/**
- *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 package simulation.vehicle;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
@@ -135,7 +116,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 		this.rotation = new BlockRealMatrix(rot.getMatrix());
 		velocity = new ArrayRealVector(3);
 		angularMomentum = new ArrayRealVector(3);
-		
+
 		// the center of geometry position is at the origin
 		this.geometryPositionOffset = new ArrayRealVector(new double[] { 0.0, 0.0, this.getHeight() / 2 });
 
@@ -144,7 +125,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that returns a copy of the center of mass position vector
-	 * 
+	 *
 	 * @return Position vector of the center of mass
 	 */
 	@Override
@@ -154,7 +135,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that sets the center of mass position vector
-	 * 
+	 *
 	 * @param position New position vector of the center of mass
 	 */
 	@Override
@@ -171,7 +152,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that returns a copy of the rotation matrix around the center of mass
-	 * 
+	 *
 	 * @return Rotation matrix around the center of mass
 	 */
 	@Override
@@ -181,7 +162,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that sets the rotation matrix around the center of mass
-	 * 
+	 *
 	 * @param rotation New rotation matrix around the center of mass
 	 */
 	@Override
@@ -207,13 +188,13 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 		calcMassPointPosition();
 		calcMassPointVelocity();
 	}
-	
+
 	@Override
 	public void instantiatePhysicalVehicle() {	}
 
 	/**
 	 * Function that returns a copy of the velocity vector of the center of mass
-	 * 
+	 *
 	 * @return Velocity vector of the center of mass
 	 */
 	@Override
@@ -223,7 +204,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that sets the velocity vector of the center of mass
-	 * 
+	 *
 	 * @param velocity New velocity vector of the center of mass
 	 */
 	@Override
@@ -237,7 +218,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 	/**
 	 * Function that returns a copy of the angular velocity vector around the center
 	 * of mass
-	 * 
+	 *
 	 * @return Angular velocity vector around the center of mass
 	 */
 	@Override
@@ -247,7 +228,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that sets the angular velocity vector around the center of mass
-	 * 
+	 *
 	 * @param angularVelocity New angular velocity around of the center of mass
 	 */
 	@Override
@@ -262,7 +243,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that adds an external force acting on the center of mass
-	 * 
+	 *
 	 * @param force Force vector that acts on the center of mass
 	 */
 	@Override
@@ -272,7 +253,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that add an external torque acting around the center of mass
-	 * 
+	 *
 	 * @param torque Torque vector that acts around the center of mass
 	 */
 	@Override
@@ -282,7 +263,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that returns the mass of the object
-	 * 
+	 *
 	 * @return Mass of the physical object
 	 */
 	@Override
@@ -292,7 +273,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that sets the mass of the object
-	 * 
+	 *
 	 * @param mass New mass of the physical object
 	 */
 	@Override
@@ -436,7 +417,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that returns a copy of center of geometry position vector
-	 * 
+	 *
 	 * @return Position vector of the center of geometry
 	 */
 	@Override
@@ -446,7 +427,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that sets the center of geometry position vector.
-	 * 
+	 *
 	 * @param geometryPosition New position vector of the center of geometry
 	 */
 	@Override
@@ -458,7 +439,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 	/**
 	 * Function that returns a copy of the vector pointing from the center of mass
 	 * position to the center of geometry position
-	 * 
+	 *
 	 * @return Offset vector of the center of mass position to the center of
 	 *         geometry position
 	 */
@@ -470,7 +451,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 	/**
 	 * Function that sets the vector pointing from the center of mass position to
 	 * the center of geometry position
-	 * 
+	 *
 	 * @param geometryPositionOffset New offset vector of the center of mass
 	 *                               position to the center of geometry position
 	 */
@@ -483,7 +464,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 	/**
 	 * Function that returns a list of pairs of 3D coordinates, indicating a vector
 	 * on the edges of the physical object
-	 * 
+	 *
 	 * @return List of pairs of 3D points, indicating a vector on the edges of the
 	 *         physical object
 	 */
@@ -525,7 +506,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that computes one step of the physical behaviour of the object
-	 * 
+	 *
 	 * @param deltaTime Duration of the current simulation step
 	 */
 	@Override
@@ -565,7 +546,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 	 * Function that sets the position of the center of mass and the rotation of the
 	 * object, in order to place the object on the surface of the world. given a x,
 	 * y coordinate and a z rotation
-	 * 
+	 *
 	 * @param posX X component of the position of the physical object
 	 * @param posY Y component of the position of the physical object
 	 * @param rotZ Z component of the rotation of the physical object
@@ -668,7 +649,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 	/**
 	 * Function that returns a copy of the position vector of the center of the
 	 * front right wheel
-	 * 
+	 *
 	 * @return Position vector of the center of the front right wheel
 	 */
 	@Override
@@ -679,7 +660,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 	/**
 	 * Function that returns a copy of the position vector of the center of the
 	 * front left wheel
-	 * 
+	 *
 	 * @return Position vector of the center of the front left wheel
 	 */
 	@Override
@@ -690,7 +671,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 	/**
 	 * Function that returns a copy of the position vector of the center of the back
 	 * right wheel
-	 * 
+	 *
 	 * @return Position vector of the center of the back right wheel
 	 */
 	@Override
@@ -701,7 +682,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 	/**
 	 * Function that returns a copy of the position vector of the center of the back
 	 * left wheel
-	 * 
+	 *
 	 * @return Position vector of the center of the back left wheel
 	 */
 	@Override
@@ -743,7 +724,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 			}
 		}
 	}
-	
+
     /**
      * Function that returns the current vehicle actuators
      *
@@ -768,8 +749,8 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Function that initialises the physics computations when the physicalVehicle
 	 * is created Should only be called by builder
@@ -812,7 +793,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that returns the force that is acting on the vehicle
-	 * 
+	 *
 	 * @return Force acting on the vehicle
 	 */
 	@Override
@@ -822,7 +803,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that returns the torque that is acting on the vehicle
-	 * 
+	 *
 	 * @return Torque acting on the vehicle
 	 */
 	@Override
@@ -832,7 +813,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Function that returns the mass points Should only be called for tests
-	 * 
+	 *
 	 * @return The mass points of the vehicle
 	 */
 	public MassPoint[] getMassPoints() {
@@ -1599,7 +1580,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 	/**
 	 * Overwrite toString() to get a nice output for MassPointPhysicalVehicles
-	 * 
+	 *
 	 * @return String that contains all information of MassPointPhysicalVehicles
 	 */
 	@Override
