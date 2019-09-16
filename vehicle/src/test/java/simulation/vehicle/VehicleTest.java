@@ -296,43 +296,59 @@ public class VehicleTest {
     public void AutopilotBehaviorTest() {
         /*       Masspoint       */
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0);
-        PhysicalVehicle physicalVehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,30);
+        PhysicalVehicle physicalVehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0.1);
+        PhysicalVehicle physicalVehicle3 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,1);
 
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
         Vehicle vehicle2 = physicalVehicle2.getSimulationVehicle();
+        Vehicle vehicle3 = physicalVehicle3.getSimulationVehicle();
 
         vehicle.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
         vehicle.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
         vehicle2.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
         vehicle2.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        vehicle3.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle3.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
 
         physicalVehicle.executeLoopIteration(10);
         physicalVehicle2.executeLoopIteration(10);
+        physicalVehicle3.executeLoopIteration(10);
 
         assertTrue(vehicle.batteryProblem);
         assertFalse(vehicle2.batteryProblem);
+        assertFalse(vehicle3.batteryProblem);
         assertTrue(vehicle.isGotoCharginstation());
-        assertFalse(vehicle2.isGotoCharginstation());
+        assertTrue(vehicle2.isGotoCharginstation());
+        assertFalse(vehicle3.isGotoCharginstation());
 
         /*       Modelica       */
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle3 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0);
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle4 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,30);
-        Vehicle vehicle3 = modelicaPhysicalVehicle3.getSimulationVehicle();
-        Vehicle vehicle4 = modelicaPhysicalVehicle4.getSimulationVehicle();
+        ModelicaPhysicalVehicle modelicaPhysicalVehicle4 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0);
+        ModelicaPhysicalVehicle modelicaPhysicalVehicle5 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0.1);
+        ModelicaPhysicalVehicle modelicaPhysicalVehicle6 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,1);
 
-        vehicle3.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
-        vehicle3.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        Vehicle vehicle4 = modelicaPhysicalVehicle4.getSimulationVehicle();
+        Vehicle vehicle5 = modelicaPhysicalVehicle5.getSimulationVehicle();
+        Vehicle vehicle6 = modelicaPhysicalVehicle6.getSimulationVehicle();
+
         vehicle4.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
         vehicle4.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        vehicle5.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle5.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        vehicle6.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle6.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
 
-        modelicaPhysicalVehicle3.initPhysics();
         modelicaPhysicalVehicle4.initPhysics();
-        modelicaPhysicalVehicle3.executeLoopIteration(10);
+        modelicaPhysicalVehicle5.initPhysics();
+        modelicaPhysicalVehicle6.initPhysics();
         modelicaPhysicalVehicle4.executeLoopIteration(10);
+        modelicaPhysicalVehicle5.executeLoopIteration(10);
+        modelicaPhysicalVehicle6.executeLoopIteration(10);
 
-        assertTrue(vehicle3.batteryProblem);
-        assertFalse(vehicle4.batteryProblem);
-        assertTrue(vehicle3.isGotoCharginstation());
-        assertFalse(vehicle4.isGotoCharginstation());
+        assertTrue(vehicle4.batteryProblem);
+        assertTrue(vehicle5.batteryProblem);
+        assertFalse(vehicle6.batteryProblem);
+        assertTrue(vehicle4.isGotoCharginstation());
+        assertTrue(vehicle5.isGotoCharginstation());
+        assertFalse(vehicle6.isGotoCharginstation());
     }
 }
