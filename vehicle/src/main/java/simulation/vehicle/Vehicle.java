@@ -974,7 +974,8 @@ public class Vehicle{
                     long nearestcharg = ChargingStationNavigator.getNearestChargingStation(ChargingStationNavigator.RealVectortoOSMID(this.physicalVehicle.getPosition()));
                     RealVector point3d = ChargingStationNavigator.getPositionOfOsmNode(nearestcharg);
                     navigateTo(new ControllerNode(Geometry.realVector2Point3D(point3d), nearestcharg));
-                } catch (Exception expected_in_Tests) {
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 //      battery discharging failed, cannot accelerate the vehicle
                 //      set either motor OR throttle to zero, based on type of the car

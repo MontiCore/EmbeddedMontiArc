@@ -345,7 +345,7 @@ public class VehicleTest {
         modelicaPhysicalVehicle6.executeLoopIteration(10);
 
         assertTrue(vehicle4.batteryProblem);
-        assertTrue(vehicle5.batteryProblem);
+        assertFalse(vehicle5.batteryProblem);
         assertFalse(vehicle6.batteryProblem);
         assertTrue(vehicle4.isGotoCharginstation());
         assertTrue(vehicle5.isGotoCharginstation());
