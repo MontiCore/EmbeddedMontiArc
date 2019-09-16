@@ -21,63 +21,32 @@ package simulation.bus;
  * *******************************************************************************
  */
 
-public class FlexRayOperationMode {
-	
-	/**
-	 * Bit error rate for redundancy mode
-	 */
-	private static final int BIT_ERROR_RATE_REDUNDANCY = 100000;
-	
-	/**
-	 * Bit error rate for data rate mode
-	 */
-	private static final int BIT_ERROR_RATE_MAX_DATA = 1000;
-	
-	/**
-	 * Data rate of redundancy mode in Mbit/s
-	 */
-	private static final int DATA_RATE_REDUNDANCY = 10;
-	
-	/**
-	 * Data rate of data rate mode in Mbit/s
-	 */
-	private static final int DATA_RATE_MAX_DATA = 20;
-	
-	/**
-	 * Defines the operation mode
-	 */
-	private FlexRayOperationModeEnum mode;
-	
-	public FlexRayOperationMode(FlexRayOperationModeEnum mode) {
-		this.mode = mode;
+public enum FlexRayOperationMode implements OperationMode{
+	REDUNDANCY("REDUNDANCY", 10),
+	MAX_DATA_RATE("MAX_DATA_RATE", 20),
+	;
+
+	private final double dataRate;
+
+	private final String name;
+
+	private FlexRayOperationMode(String name, double dataRate){
+		this.dataRate = dataRate;
+		this.name = name;
 	}
 
-	/**
-	 * @return The data rate according to the operation mode
-	 */
-	public int getDataRate() {
-		if(this.mode == FlexRayOperationModeEnum.REDUNDANCY) {
-			return DATA_RATE_REDUNDANCY;
-		}
-		else if(this.mode == FlexRayOperationModeEnum.MAX_DATA) {
-			return DATA_RATE_MAX_DATA;
-		}
-		return -1;
+	@Override
+	public double getDataRate() {
+		return dataRate;
 	}
 
-	/**
-	 * @return Bit error rate of the current mode
-	 */
-	public int getBitErrorRate() {
-		if(this.mode == FlexRayOperationModeEnum.REDUNDANCY) {
-			return BIT_ERROR_RATE_REDUNDANCY;
-		}
-		else if(this.mode == FlexRayOperationModeEnum.MAX_DATA) {
-			return BIT_ERROR_RATE_MAX_DATA;
-		}
-		return -1;
+	@Override
+	public double getBitErrorRate() {
+		return 0;
 	}
 
-	
-	
+	@Override
+	public String toString(){
+		return name;
+	}
 }

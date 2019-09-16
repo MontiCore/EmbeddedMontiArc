@@ -65,11 +65,11 @@ public class FlexRayTest {
 	public void testSlotSize() {
 		FlexRay flexRay = createBusStructure();
 
-		flexRay.setMode(new FlexRayOperationMode(FlexRayOperationModeEnum.MAX_DATA));
+		flexRay.setMode(FlexRayOperationMode.MAX_DATA_RATE);
 		long expectedNs = (int) Math.ceil((262 * 8 * 1000000) / ((double) 20));
 		assertEquals(expectedNs, flexRay.getSlotSize().toNanos());
 
-		flexRay.setMode(new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY));
+		flexRay.setMode(FlexRayOperationMode.REDUNDANCY);
 		expectedNs = (int) Math.ceil((262 * 8 * 1000000) / ((double) 10));
 		System.out.println(flexRay.getSlotSize().toMillis());
 		assertEquals(expectedNs, flexRay.getSlotSize().toNanos());
@@ -89,8 +89,8 @@ public class FlexRayTest {
 		FlexRay flexray = createBusStructure();
 
 		// Mode setup
-		FlexRayOperationMode modeOne = new FlexRayOperationMode(FlexRayOperationModeEnum.REDUNDANCY);
-		FlexRayOperationMode modeTwo = new FlexRayOperationMode(FlexRayOperationModeEnum.MAX_DATA);
+		FlexRayOperationMode modeOne = FlexRayOperationMode.REDUNDANCY;
+		FlexRayOperationMode modeTwo = FlexRayOperationMode.MAX_DATA_RATE;
 
 		// Test of the set and get mode functions
 		flexray.setMode(modeOne);
