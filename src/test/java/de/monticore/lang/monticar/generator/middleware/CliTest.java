@@ -127,7 +127,6 @@ public class CliTest {
         }
     }
 
-    @Ignore
     @Test
     public void testSingleEMADLGenerator() {
         String targetDir = "target/cliTest/SingleEmadlTest/";
@@ -148,7 +147,6 @@ public class CliTest {
         }
     }
 
-    @Ignore
     @Test
     public void testEMADLAndRosGenerator(){
         String targetDir = "target/cliTest/EmadlRosTest/";
@@ -168,7 +166,6 @@ public class CliTest {
         }
     }
 
-    @Ignore
     @Test
     public void testEMADLConfigFile(){
         String targetDir = "target/cliTest/emadlConfigFile/";
