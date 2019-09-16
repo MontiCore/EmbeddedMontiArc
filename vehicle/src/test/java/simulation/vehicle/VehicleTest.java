@@ -297,7 +297,7 @@ public class VehicleTest {
         /*       Masspoint       */
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0);
         PhysicalVehicle physicalVehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0.1);
-        PhysicalVehicle physicalVehicle3 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,1);
+        PhysicalVehicle physicalVehicle3 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,30);
 
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
         Vehicle vehicle2 = physicalVehicle2.getSimulationVehicle();
@@ -324,7 +324,7 @@ public class VehicleTest {
         /*       Modelica       */
         ModelicaPhysicalVehicle modelicaPhysicalVehicle4 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0);
         ModelicaPhysicalVehicle modelicaPhysicalVehicle5 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0.1);
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle6 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,1);
+        ModelicaPhysicalVehicle modelicaPhysicalVehicle6 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,30);
 
         Vehicle vehicle4 = modelicaPhysicalVehicle4.getSimulationVehicle();
         Vehicle vehicle5 = modelicaPhysicalVehicle5.getSimulationVehicle();
