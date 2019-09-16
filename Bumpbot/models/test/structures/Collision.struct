@@ -1,0 +1,8 @@
+package test.structures;
+import test.structures.*;
+
+struct Collision{
+        Z other_actor_id;
+        Vector3 normal_impulse;
+}
+

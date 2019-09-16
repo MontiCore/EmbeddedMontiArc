@@ -1,0 +1,8 @@
+package wrapper.structures;
+import wrapper.structures.*;
+
+struct Point{
+	Q x;
+	Q y;
+	Q z;
+}

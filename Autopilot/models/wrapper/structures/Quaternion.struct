@@ -1,0 +1,9 @@
+package wrapper.structures;
+import wrapper.structures.*;
+
+struct Quaternion{
+	Q x;
+	Q y;
+	Q z;
+	Q w;
+}

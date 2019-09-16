@@ -1,0 +1,7 @@
+package wrapper.structures;
+import wrapper.structures.*;
+
+struct Pose{
+	Point point;
+	Quaternion orientation;
+}

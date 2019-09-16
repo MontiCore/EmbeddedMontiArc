@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "type": "emam",
+            "request": "launch",
+            "name": "Wrapper.emam",
+            "program": "wrapper.wrapper",
+            "stopOnEntry": true,
+            "modelBase": "${workspaceFolder}"
+        }
+    ]
+}
