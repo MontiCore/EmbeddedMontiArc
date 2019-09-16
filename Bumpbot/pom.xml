@@ -39,7 +39,7 @@
         </configuration>
         <executions>
           <execution>
-	  <id>compilemiddleware</id>
+	        <id>compilemiddleware</id>
             <configuration>
               <middlewareGenerator>
                   <param>cpp</param>
@@ -52,6 +52,13 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-roscpp-generator</artifactId>
+            <version>0.1.5-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>
