@@ -8,6 +8,8 @@ package de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 
+import java.time.Instant;
+
 /**
  * Created by Aklima Zaman on 16-Dec-16. This is an interface for a sensor. It
  * includes all of the mandatory functions of a sensor should be implement.
@@ -35,7 +37,8 @@ public interface Sensor {
 
     /**
      * This method update the value of the sensor.
+     * @param actualTime time when the update happens
      */
-    void update();
+    void update(Instant actualTime);
 
 }
