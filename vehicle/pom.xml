@@ -17,7 +17,7 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>2.0.1</version>
+        <version>${revision}</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
@@ -54,14 +54,14 @@
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>bus</artifactId>
-            <version>1.0.8</version>
+            <version>${revision}</version>
         </dependency>
 
         <!-- Vehicle has dependency to commons -->
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.9</version>
+            <version>${commons.version}</version>
         </dependency>
 
         <!-- Vehicle has dependency to fmu-wrapper-->
@@ -71,10 +71,11 @@
             <version>LATEST</version>
         </dependency>
 
+        <!-- Vehicle has dependency to controller -->
         <dependency>
             <groupId>montisim-controller</groupId>
             <artifactId>navigation</artifactId>
-            <version>1.0.2</version>
+            <version>${controller.version}</version>
         </dependency>
 
         <dependency>
@@ -82,43 +83,6 @@
             <artifactId>commons-csv</artifactId>
             <version>1.6</version>
         </dependency>
-        <dependency>
-            <groupId>montisim</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.0.9</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>montisim</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.0.9</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>montisim</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.0.9</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>montisim</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.0.9</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>montisim</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.0.9</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>sensors</artifactId>
-            <version>2.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-
     </dependencies>
 
 

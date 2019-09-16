@@ -29,13 +29,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>2.0.1</version>
+        <version>${revision}</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>bus</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.8</version>
+    <version>${revision}</version>
 
 
     <!-- PROJECT DEPENDENCIES -->
@@ -50,11 +50,25 @@
             <version>${revision}</version>
         </dependency>
 		
+		<!-- Bus has dependency to environment -->
+		<dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>environment</artifactId>
+            <version>${revision}</version>
+        </dependency>
+		
+		<!-- Bus has dependency to navigation -->
+        <dependency>
+            <groupId>montisim-controller</groupId>
+            <artifactId>navigation</artifactId>
+            <version>${controller.version}</version>
+        </dependency>
+		
 		<!-- Bus has dependency to commons -->
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.9</version>
+            <version>${commons.version}</version>
         </dependency>
 
 		<dependency>
@@ -68,23 +82,8 @@
 			<artifactId>guava</artifactId>
 			<version>11.0.2</version>
 		</dependency>
-        <dependency>
-            <groupId>montisim</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.0.6</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>environment</artifactId>
-            <version>2.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>montisim-controller</groupId>
-            <artifactId>navigation</artifactId>
-            <version>1.0.2</version>
-        </dependency>
+
+
 
     </dependencies>
 

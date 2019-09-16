@@ -46,7 +46,7 @@
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.9</version>
+            <version>${commons.version}</version>
         </dependency>
 
     </dependencies>

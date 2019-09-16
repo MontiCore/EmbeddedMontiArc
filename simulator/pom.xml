@@ -49,13 +49,6 @@
             <version>${revision}</version>
         </dependency>
 
-<!-- Simulator has dependency to sensor -->
-<!--<dependency>-->
-<!--<groupId>montisim-simulation</groupId>-->
-<!--<artifactId>sensors</artifactId>-->
-<!--<version>1.0.4</version>-->
-<!--</dependency>-->
-
         <!-- Simulator has dependency to network -->
         <dependency>
             <groupId>montisim-simulation</groupId>
@@ -67,8 +60,9 @@
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.9</version>
+            <version>${commons.version}</version>
         </dependency>
+		
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

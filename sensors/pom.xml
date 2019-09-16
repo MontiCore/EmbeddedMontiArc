@@ -16,7 +16,7 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>2.0.1</version>
+        <version>${revision}</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
@@ -47,27 +47,21 @@
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>bus</artifactId>
-            <version>1.0.8</version>
+            <version>${revision}</version>
         </dependency>
 
         <!-- Sensors have dependency to commons -->
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.9</version>
+            <version>${commons.version}</version>
         </dependency>
+		
         <dependency>
             <groupId>com.jhlabs</groupId>
             <artifactId>filters</artifactId>
             <version>2.0.235-1</version>
         </dependency>
-        <dependency>
-            <groupId>montisim</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.0.9</version>
-            <scope>compile</scope>
-        </dependency>
-
     </dependencies>
 
     <!-- PROJECT PLUGINS AND PROPERTIES -->
