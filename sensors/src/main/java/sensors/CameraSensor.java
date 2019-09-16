@@ -1,12 +1,15 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package sensors;
 
 import com.jhlabs.image.MotionBlurFilter;
 import com.jhlabs.image.PerspectiveFilter;
-import commons.controller.commons.BusEntry;
-import commons.simulation.IPhysicalVehicle;
-import commons.simulation.PhysicalObject;
-import commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import org.apache.commons.math3.linear.ArrayRealVector;

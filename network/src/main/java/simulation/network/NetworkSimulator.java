@@ -1,10 +1,15 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.network;
 
-import commons.simulation.DiscreteEvent;
-import commons.simulation.DiscreteEventSimulator;
-import commons.simulation.PhysicalObject;
-import commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.DiscreteEvent;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.DiscreteEventSimulator;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import simulation.network.settings.SettingsDirect;
 import simulation.util.Log;
 import simulation.vehicle.PhysicalVehicle;

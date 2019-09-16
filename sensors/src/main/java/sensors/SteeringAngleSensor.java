@@ -1,8 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package sensors;
 
-import commons.controller.commons.BusEntry;
-import commons.simulation.IPhysicalVehicle;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
@@ -43,7 +47,7 @@ public class SteeringAngleSensor extends AbstractSensor {
     public BusEntry getType() {
         return BusEntry.SENSOR_STEERING;
     }
-    
+
     public static BusEntry getSensorType() {
         return BusEntry.SENSOR_STEERING;
     }

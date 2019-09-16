@@ -1,7 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.simulator;
 
-import commons.simulation.*;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.*;
 import org.apache.commons.math3.linear.*;
 import org.junit.*;
 import simulation.util.*;
@@ -441,7 +446,7 @@ public class SimulatorTest {
 
         // Continue simulation for the specified time
         sim.continueSimulation(Duration.ofMillis(continueSimulationTime));
-        
+
         Instant minimumSimulationTime = Instant.ofEpochMilli(continueSimulationTime + simulationPauseTime);
         // Check if simulation was continued for the specified time
         assertTrue(!minimumSimulationTime.isAfter(sim.getSimulationTime()));
@@ -596,7 +601,7 @@ public class SimulatorTest {
      */
     @Test
     public void setSlowDownFactorAsync() {
-        // Set up reference run       
+        // Set up reference run
         Duration simulationDuration = Duration.ofMillis(5000);
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
@@ -766,8 +771,8 @@ public class SimulatorTest {
         sim.setSimulationDuration(simulationDuration);
         sim.setSimulationPauseTime(simulationPauseTime);
         sim.startSimulation();
-        
-        Instant expectedTime = Instant.ofEpochMilli(simulationPauseTime); 
+
+        Instant expectedTime = Instant.ofEpochMilli(simulationPauseTime);
         // Check if simulation paused correctly
         checkSimTime(sim, expectedTime);
     }
@@ -798,7 +803,7 @@ public class SimulatorTest {
             }
         }
 
-        Instant expectedTime = Instant.ofEpochMilli(simulationPauseTime); 
+        Instant expectedTime = Instant.ofEpochMilli(simulationPauseTime);
         // Check if simulation reached the set pause time and is paused
         assertTrue(sim.isPaused());
         checkSimTime(sim, expectedTime);
@@ -1146,7 +1151,7 @@ public class SimulatorTest {
         // Wait
         sim.waitFor(waitForTime);
 
-        Instant expectedTime = Instant.ofEpochMilli(simulationDuration.toMillis()); 
+        Instant expectedTime = Instant.ofEpochMilli(simulationDuration.toMillis());
         // Check if thread was notified at the end of the simulation
         checkSimTime(sim, expectedTime);
         // Check if simulation has stopped
@@ -1160,7 +1165,7 @@ public class SimulatorTest {
     public void waitUntilSimulationStopped(){
         // Calculate expected values
     	Duration simulationDuration = Duration.ofMillis(5000);
-    	
+
         // Set up, run simulation and wait
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
@@ -1169,7 +1174,7 @@ public class SimulatorTest {
         sim.startSimulation();
         sim.waitUntilSimulationStopped();
 
-        Instant expectedTime = Instant.ofEpochMilli(simulationDuration.toMillis()); 
+        Instant expectedTime = Instant.ofEpochMilli(simulationDuration.toMillis());
         // Check if thread was notified at the end of the simulation
         checkSimTime(sim, expectedTime);
         // Check if simulation has stopped
@@ -1197,25 +1202,25 @@ public class SimulatorTest {
 		public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime,
 				Duration deltaTime) {
 			assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
-			
+
 		}
 		@Override
 		public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime,
 				Duration deltaTime) {
 			assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
-			
+
 		}
 		@Override
 		public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime,
 				Duration deltaTime) {
 			assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
-			
+
 		}
 		@Override
 		public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, Instant totalTime) {}
     }
 
-    private class TestObserver implements SimulationLoopNotifiable {
+    private class TestObserver extends SimulationLoopNotifiable {
         private long startCounter = 0;
         private long stopCounter = 0;
         private long willExecCounter = 0;
@@ -1229,19 +1234,19 @@ public class SimulatorTest {
 		@Override
 		public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, Instant totalTime) {
 			stopCounter++;
-			
+
 		}
 		@Override
 		public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime,
 				Duration deltaTime) {
 			willExecCounter++;
-			
+
 		}
 		@Override
 		public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime,
 				Duration deltaTime) {
 			didExecCounter++;
-			
+
 		}
 		@Override
 		public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime,
@@ -1259,7 +1264,7 @@ public class SimulatorTest {
 		@Override
 		public void executeLoopIteration(Duration timeDiff) {
 			execCounter++;
-			
+
 		}
     }
 
@@ -1352,7 +1357,7 @@ public class SimulatorTest {
 		@Override
 		public void computePhysics(Duration deltaTime) {
 			 computePhysicsCounter++;
-			
+
 		}
         public void putOnSurface(double posX, double posY, double rotZ){
             putOnSurfaceCounter++;
@@ -1361,7 +1366,7 @@ public class SimulatorTest {
 		@Override
 		public void executeLoopIteration(Duration timeDiff) {
 			executeCounter++;
-			
+
 		}
     }
 }

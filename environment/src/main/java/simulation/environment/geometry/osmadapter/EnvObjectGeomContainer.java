@@ -1,7 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.environment.geometry.osmadapter;
 
-import commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvObject;
 

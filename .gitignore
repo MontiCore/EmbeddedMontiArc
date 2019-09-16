@@ -10,3 +10,5 @@
 *.log*
 *logs*
 .flattened-pom.xml
+.vscode/
+./lib/

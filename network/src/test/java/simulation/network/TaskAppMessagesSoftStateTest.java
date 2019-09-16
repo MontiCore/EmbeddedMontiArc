@@ -1,7 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.network;
 
-import commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import org.junit.Test;
 import simulation.network.settings.SettingsSimple;
 import simulation.network.tasks.TaskAppMessagesSoftState;

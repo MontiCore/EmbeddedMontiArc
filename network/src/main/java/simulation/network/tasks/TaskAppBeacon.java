@@ -1,9 +1,14 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.network.tasks;
 
-import commons.controller.commons.BusEntry;
-import commons.controller.commons.Vertex;
-import commons.simulation.Sensor;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Vertex;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import sensors.abstractsensors.AbstractSensor;
@@ -14,9 +19,9 @@ import simulation.vehicle.Vehicle;
 
 import java.time.Duration;
 import java.util.*;
-import static commons.controller.commons.BusEntry.SENSOR_COMPASS;
-import static commons.controller.commons.BusEntry.SENSOR_GPS_COORDINATES;
-import static commons.controller.commons.BusEntry.SENSOR_VELOCITY;
+import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.SENSOR_COMPASS;
+import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.SENSOR_GPS_COORDINATES;
+import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.SENSOR_VELOCITY;
 import static simulation.network.NetworkDiscreteEventId.*;
 
 /**

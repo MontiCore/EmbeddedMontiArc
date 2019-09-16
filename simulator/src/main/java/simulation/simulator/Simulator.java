@@ -1,12 +1,17 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.simulator;
 
-import commons.simulation.IdGenerator;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IdGenerator;
 import simulation.util.*;
-import commons.simulation.SimulationLoopNotifiable;
-import commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopNotifiable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import simulation.vehicle.*;
-import commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 
 import java.time.Duration;
 import java.time.Instant;

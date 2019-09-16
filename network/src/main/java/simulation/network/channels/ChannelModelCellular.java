@@ -1,8 +1,13 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.network.channels;
 
-import commons.simulation.PhysicalObject;
-import commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.util.FastMath;
 

@@ -1,14 +1,19 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.environment;
 
 
-import commons.map.Adjacency;
-import commons.map.ControllerContainer;
-import commons.map.IAdjacency;
-import commons.map.IControllerNode;
-import commons.simulation.IPhysicalVehicle;
-import commons.simulation.PhysicalObject;
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.Adjacency;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.ControllerContainer;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IAdjacency;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.geometry.DetailedMapConstructor;
 import simulation.environment.geometry.StreetSignPositioner;
@@ -63,12 +68,12 @@ public class WorldModel implements World{
 
     /**
      * Initialise singleton World instance.
-     * 
+     *
      * No map parsing done in this method,
-     * rather only weather settings are 
+     * rather only weather settings are
      * getting parsed and already prepared
      * visualisation container is set and used.
-     * 
+     *
      * @param visContainer - already parsed map
      * @param weatherSettings - weather settings
      * @return singleton World instance
@@ -78,13 +83,13 @@ public class WorldModel implements World{
 
         return ourInstance;
     }
-    
+
     /**
      * Parse only the world map and return
      * its VisualisationEnvironmentContainer.
-     * 
+     *
      * This method does not initialise the singleton World instance!
-     * 
+     *
      * @param pSettings - parser settings
      * @return VisualisationEnvironmentContainer object
      * @throws Exception
@@ -92,18 +97,18 @@ public class WorldModel implements World{
     public static VisualisationEnvironmentContainer prepareWorldMap(ParserSettings pSettings) throws Exception {
     	return new WorldModel(pSettings).getContainer();
     }
-    
-    /** 
-     * Builds controller-container only. 
-     *  
+
+    /**
+     * Builds controller-container only.
+     *
      * Singleton instance is not initialised.
-     *  
-     * @param visContainer - pre-built VisualisationEnvironmentContainer 
-     * @param wSettings - weather settings 
-     * @return ControllerContainer 
-     */ 
-    public static ControllerContainer prepareControllerContainer(VisualisationEnvironmentContainer visContainer, WeatherSettings wSettings) { 
-      return new WorldModel(visContainer, wSettings).getControllerMap(); 
+     *
+     * @param visContainer - pre-built VisualisationEnvironmentContainer
+     * @param wSettings - weather settings
+     * @return ControllerContainer
+     */
+    public static ControllerContainer prepareControllerContainer(VisualisationEnvironmentContainer visContainer, WeatherSettings wSettings) {
+      return new WorldModel(visContainer, wSettings).getControllerMap();
     }
 
     private VisualisationEnvironmentContainer visualisationContainer;
@@ -139,11 +144,11 @@ public class WorldModel implements World{
         constructControllerContainer();
         initPedestrians();
     }
-    
+
     /**
-     * Parse world only, no operations 
+     * Parse world only, no operations
      * on weather settings required.
-     * 
+     *
      * @param pSettings - parser settings
      * @throws Exception
      */
@@ -155,7 +160,7 @@ public class WorldModel implements World{
     /**
      * Parse weather settings only.
      * VisualizationContainer is already prepared.
-     * 
+     *
      * @param visContainer - parsed map
      * @param weatherSettings - weather settings
      */
@@ -409,7 +414,7 @@ public class WorldModel implements World{
 
     public boolean isPointOnStreet(RealVector v) {
         return isPointOnStreet(v.getEntry(0), v.getEntry(1), v.getEntry(2));
-    } 
+    }
 
     @Override
     public StreetPavements getSurfaceType(RealVector v) {

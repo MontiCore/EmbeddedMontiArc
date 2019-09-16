@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package sensors.abstractsensors;
 
 import commons.controller.commons.BusEntry;
@@ -13,7 +18,7 @@ import java.util.List;
  */
 public abstract class AbstractDistanceSensor extends AbstractSensor {
     private Double value;
-   
+
 
     public AbstractDistanceSensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                                   HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
@@ -25,7 +30,7 @@ public abstract class AbstractDistanceSensor extends AbstractSensor {
     protected void calculateValue() {
         this.value = calculateDistance(this.getPhysicalVehicle());
     }
-	
+
 
 
     protected abstract Double calculateDistance(IPhysicalVehicle phyiscalVehicle);

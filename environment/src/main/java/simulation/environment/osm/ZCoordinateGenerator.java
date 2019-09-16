@@ -1,7 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.environment.osm;
 
-import javafx.geometry.Point2D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point2D;
 import simulation.environment.geometry.height.*;
 import simulation.environment.visualisationadapter.implementation.Bounds2D;
 import simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D;

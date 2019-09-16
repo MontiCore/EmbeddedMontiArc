@@ -1,7 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.environment.geometry;
 
-import javafx.geometry.Point2D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point2D;
 import org.junit.*;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;

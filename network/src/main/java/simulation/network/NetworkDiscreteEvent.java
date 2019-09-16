@@ -1,9 +1,14 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.network;
 
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.DiscreteEvent;
 import java.time.Instant;
 
-import commons.simulation.DiscreteEvent;
 
 /**
  * Class that holds all relevant information for a network discrete event

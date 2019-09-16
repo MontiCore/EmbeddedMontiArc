@@ -1,9 +1,14 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.environment.geometry.splines;
 
-import commons.map.IControllerNode;
-import commons.simulation.PhysicalObject;
-import commons.utils.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import simulation.environment.pedestrians.PedestrianStreetParameters;
 import java.util.ArrayList;
 

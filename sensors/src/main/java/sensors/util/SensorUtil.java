@@ -1,7 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package sensors.util;
 
-import commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import sensors.factory.SensorFactory;
 import simulation.vehicle.PhysicalVehicle;
 

@@ -1,8 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package sensors;
 
-import commons.controller.commons.BusEntry;
-import commons.simulation.IPhysicalVehicle;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.EESimulator.EEComponent;
@@ -59,7 +63,7 @@ public class LocationSensor extends AbstractSensor {
     public BusEntry getType() {
         return BusEntry.SENSOR_GPS_COORDINATES;
     }
-    
+
     public static BusEntry getSensorType() {
         return BusEntry.SENSOR_GPS_COORDINATES;
     }

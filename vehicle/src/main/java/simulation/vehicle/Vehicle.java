@@ -1,11 +1,11 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.vehicle;
 
-import commons.controller.commons.BusEntry;
-import commons.controller.commons.Vertex;
-import commons.map.IControllerNode;
-//import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
-import navigationBlock.NavigationBlock;
 import sensors.CameraSensor;
 import sensors.CompassSensor;
 import sensors.DayNightSensor;
@@ -26,7 +26,16 @@ import sensors.SteeringAngleSensor;
 import sensors.WeatherSensor;
 import sensors.abstractsensors.AbstractSensor;
 
-
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.NavigationEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Surface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Vertex;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IAdjacency;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
+import de.topobyte.osm4j.core.model.iface.OsmNode;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
@@ -44,7 +53,8 @@ import java.io.File;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
-import static commons.controller.commons.BusEntry.*;
+import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.*;
+import static simulation.vehicle.VehicleActuatorType.*;
 
 /**
  * Simulation objects for a generic vehicle.
@@ -105,7 +115,7 @@ public class Vehicle {
 
     /** Navigation for vehicle */
     private Optional<NavigationBlockAsEEComponent> navigation;
-    
+
     /** EEVehicle that models the in Vehicle communication */
     private EEVehicle eeVehicle;
 
@@ -178,12 +188,12 @@ public class Vehicle {
         this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
     }
 
-    
+
     private EEVehicle createEEVehicle(PhysicalVehicle physicalVehicle) {
 		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		Bus bus = new InstantBus(eeSimulator);
 		List<EEComponent> components = new ArrayList<EEComponent>();
-		
+
 
 		//create all sensors
 		components.add(AbstractSensor.createSensor(CameraSensor.class, physicalVehicle, bus).get());
@@ -223,25 +233,25 @@ public class Vehicle {
 
         return new EEVehicle(this, eeSimulator, Collections.singletonList(bus), components);
     }
-    
+
     public Optional<AbstractSensor> getSensorByType(BusEntry type){
     	return this.eeVehicle.getSensorByType(type);
     }
-    
+
     public void executeLoopIteration(Instant time) {
     	//update physical vehicle?
     	this.eeVehicle.executeLoopIteration(time);
     	this.physicalVehicle.setCollision(false);
     }
-    
+
 	public EEVehicle getEEVehicle() {
 		return this.eeVehicle;
 	}
-	
+
 	public PhysicalVehicle getPhysicalVehicle() {
 		return this.physicalVehicle;
 	}
-	
+
 	public boolean isInitialized() {
 			return this.physicalVehicle.getPhysicalVehicleInitialised();
 	}
@@ -338,13 +348,13 @@ public class Vehicle {
         }
         return new ArrayList<>();
     }
-    
+
 	public void navigateTo(IControllerNode target, LinkedList<RealVector> avoidCoordinates) {
         if(navigation.isPresent()) {
             navigation.get().navigateTo(target, avoidCoordinates);
         }
 	}
- 
+
     /**
      * Get nearest position that is located on the ordered trajectory
      *
