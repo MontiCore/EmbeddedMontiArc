@@ -1,18 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
 package simulation.vehicle;
 
+import commons.controller.interfaces.Bus;
+import commons.controller.interfaces.FunctionBlockInterface;
 import commons.simulation.PhysicalObject;
+import org.apache.commons.math3.analysis.function.Power;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import simulation.environment.object.House;
 import simulation.environment.util.VehicleType;
 import simulation.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * JUnit test for the Vehicle class
@@ -289,23 +295,44 @@ public class VehicleTest {
     @Test
     public void AutopilotBehaviorTest() {
         //Masspoint
-        Vehicle vehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0).getSimulationVehicle();
-        vehicle.checkBattery();
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0);
+        PhysicalVehicle physicalVehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,30);
+
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+        Vehicle vehicle2 = physicalVehicle2.getSimulationVehicle();
+
+        vehicle.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        vehicle2.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle2.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+
+        physicalVehicle.executeLoopIteration(10);
+        physicalVehicle2.executeLoopIteration(10);
+
+        assertTrue(vehicle.batteryProblem);
+        assertFalse(vehicle2.batteryProblem);
         assertTrue(vehicle.isGotoCharginstation());
-        assertTrue(vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent()==0);
-        Vehicle vehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,30).getSimulationVehicle();
-        vehicle2.checkBattery();
-        //assertTrue(vehicle2.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent()!=0);
-        assertTrue(!vehicle2.isGotoCharginstation());
+        assertFalse(vehicle2.isGotoCharginstation());
 
         //Modelica
-        Vehicle vehicle3 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0).getSimulationVehicle();
-        vehicle3.checkBattery();
+        ModelicaPhysicalVehicle modelicaPhysicalVehicle3 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0);
+        ModelicaPhysicalVehicle modelicaPhysicalVehicle4 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,30);
+        Vehicle vehicle3 = modelicaPhysicalVehicle3.getSimulationVehicle();
+        Vehicle vehicle4 = modelicaPhysicalVehicle4.getSimulationVehicle();
+
+        vehicle3.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle3.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        vehicle4.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle4.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+
+        modelicaPhysicalVehicle3.initPhysics();
+        modelicaPhysicalVehicle4.initPhysics();
+        modelicaPhysicalVehicle3.executeLoopIteration(10);
+        modelicaPhysicalVehicle4.executeLoopIteration(10);
+
+        assertTrue(vehicle3.batteryProblem);
+        assertFalse(vehicle4.batteryProblem);
         assertTrue(vehicle3.isGotoCharginstation());
-        assertTrue(vehicle3.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE).getActuatorValueCurrent()==0);
-        Vehicle vehicle4 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,30).getSimulationVehicle();
-        vehicle4.checkBattery();
-        //assertTrue(vehicle4.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE).getActuatorValueCurrent()!=0);
-        assertTrue(!vehicle4.isGotoCharginstation());
+        assertFalse(vehicle4.isGotoCharginstation());
     }
 }

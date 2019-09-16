@@ -134,7 +134,7 @@ public class Battery implements BatteryInterface, IBattery{
 		// frictionEffect can be calculated based on surface, if needed
 		Double frictionEffect = 20.0;
 		
-		Double velocityVal = null;
+		Double velocityVal = 0.0;
         Object velocityObj = vehicle.getControllerBus().get().getData(BusEntry.SENSOR_VELOCITY.toString());
         if (velocityObj != null){
         	velocityVal = (Double) velocityObj;
