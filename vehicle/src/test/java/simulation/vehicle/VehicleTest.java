@@ -294,7 +294,7 @@ public class VehicleTest {
 
     @Test
     public void AutopilotBehaviorTest() {
-        //Masspoint
+        /*       Masspoint       */
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0);
         PhysicalVehicle physicalVehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,30);
 
@@ -314,7 +314,7 @@ public class VehicleTest {
         assertTrue(vehicle.isGotoCharginstation());
         assertFalse(vehicle2.isGotoCharginstation());
 
-        //Modelica
+        /*       Modelica       */
         ModelicaPhysicalVehicle modelicaPhysicalVehicle3 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0);
         ModelicaPhysicalVehicle modelicaPhysicalVehicle4 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,30);
         Vehicle vehicle3 = modelicaPhysicalVehicle3.getSimulationVehicle();
