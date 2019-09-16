@@ -52,7 +52,7 @@ public class EEVehicle {
 
 	private final Vehicle vehicle;
 
-	private FunctionBlockAsEEComponent autoPilot;
+	private DirectModelAsEEComponent autoPilot;
 
 	private List<Bus> busList = new LinkedList<>();
 
@@ -241,7 +241,7 @@ public class EEVehicle {
 		return Optional.empty();
 	}
 
-	public FunctionBlockAsEEComponent getAutoPilot() {
+	public DirectModelAsEEComponent getAutoPilot() {
 		return this.autoPilot;
 	}
 

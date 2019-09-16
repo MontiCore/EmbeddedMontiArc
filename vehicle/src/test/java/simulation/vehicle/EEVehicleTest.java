@@ -244,8 +244,8 @@ public class EEVehicleTest {
         vehicle.getEEVehicle().getEESimulator().addEvent(messageBrak);
 
         //set reference actuator
-        steeringReference.setActuatorValueTarget(10);
-        brakeReference.setActuatorValueTarget(5);
+        steeringReference.setActuatorValueTarget(4);
+        brakeReference.setActuatorValueTarget(3000);
         steeringReference.update(Instant.EPOCH.plusMillis(33));
         brakeReference.update(Instant.EPOCH.plusMillis(33));
 

@@ -9,7 +9,8 @@ package simulation.EESimulator;
 public enum EEDiscreteEventTypeEnum {
     
 	BUSMESSAGE("BUSMESSAGE"),
-    KEEP_ALIVE_EVENT("KEEP_ALIVE_EVENT");
+    KEEP_ALIVE_EVENT("KEEP_ALIVE_EVENT"),
+    CONTROLLER_EXECUTE_EVENT("CONTROLLER_EXECUTE_EVENT");
 
     private final String name;
 
