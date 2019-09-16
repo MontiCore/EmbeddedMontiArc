@@ -21,8 +21,11 @@
 package simulation.vehicle;
 
 import commons.controller.commons.BusEntry;
-import commons.simulation.Sensor;
+import org.apache.commons.lang3.tuple.Pair;
+import sensors.CameraSensor;
 import sensors.CompassSensor;
+import sensors.LocationSensor;
+import sensors.ObstacleSensor;
 import sensors.abstractsensors.AbstractSensor;
 
 import org.junit.*;
@@ -30,6 +33,7 @@ import simulation.EESimulator.Bridge;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.bus.Bus;
+import simulation.bus.BusMessage;
 import simulation.bus.FlexRay;
 import simulation.bus.InstantBus;
 
@@ -80,83 +84,193 @@ public class EEVehicleTest {
     public void testConstructor() throws IOException {
         //set up all needed classes
         EESimulator simulator = new EESimulator(Instant.EPOCH);
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().createPhysicalVehicle();
 
-        HashMap<Bus, List<EEComponent>> busSystem = new HashMap<>();
-        Set<Sensor> sensorCompareSet = new HashSet<>();
-        Set<VehicleActuator> actuatorCompareSet = new HashSet<>();
-        Set<Bus> busCompareSet = new HashSet<>();
-        Set<Bridge> bridgeCompareSet = new HashSet<>();
+        List<Bus> busList = new LinkedList<>();
+        List<EEComponent> componentList = new LinkedList<>();
+        List<EEComponent> sensorCompareList = new LinkedList<>();
+        List<VehicleActuator> actuatorCompareList = new LinkedList<>();
+        List<Bus> busCompareList = new LinkedList<>();
+        List<EEComponent> bridgeCompareList = new LinkedList<>();
+        List<EEComponent> busOneCompareList = new LinkedList<>();
+        List<EEComponent> busTwoCompareList = new LinkedList<>();
+        List<EEComponent> busThreeCompareList = new LinkedList<>();
+
 
 
         FlexRay busOne = new FlexRay(simulator);
         FlexRay busTwo = new FlexRay(simulator);
         InstantBus busThree = new InstantBus(simulator);
-        busCompareSet.add(busOne);
-        busCompareSet.add(busTwo);
-        busCompareSet.add(busThree);
+        busList.add(busOne);
+        busList.add(busTwo);
+        busList.add(busThree);
+        busCompareList.add(busOne);
+        busCompareList.add(busTwo);
+        busCompareList.add(busThree);
 
-        HashMap<BusEntry, List<EEComponent>> emptyMap = new HashMap<BusEntry, List<EEComponent>>();
-        VehicleActuator actuator1 = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT,0,1,4,simulator, Collections.emptyList(), emptyMap);
-        VehicleActuator actuator2 = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE, 1, 10, 6, simulator, Collections.emptyList(), emptyMap);
-        VehicleActuator actuator3 = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, 2, 8, 2, simulator, Collections.emptyList(), emptyMap);
-        VehicleActuator actuator4 = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, 4, 9, 6, simulator, Collections.emptyList(), emptyMap);
-        VehicleActuator actuator5 = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, 12, 16, 4, simulator, Collections.emptyList(), emptyMap);
-        VehicleActuator actuator6 = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, 4, 5, 1, simulator, Collections.emptyList(), emptyMap);
-        actuatorCompareSet.add(actuator1);
-        actuatorCompareSet.add(actuator2);
-        actuatorCompareSet.add(actuator3);
-        actuatorCompareSet.add(actuator4);
-        actuatorCompareSet.add(actuator5);
-        actuatorCompareSet.add(actuator6);
+        VehicleActuator actuator1 = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, busOne);
+        VehicleActuator actuator2 = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE, busOne);
+        VehicleActuator actuator3 = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, busOne);
+        VehicleActuator clutch = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_CLUTCH, busOne);
 
-        Bridge bridgeOneTwo = new Bridge(simulator, org.apache.commons.lang3.tuple.Pair.of(busOne, busTwo), Duration.ofNanos(1));
-        Bridge bridgeTwoThree = new Bridge(simulator, org.apache.commons.lang3.tuple.Pair.of(busTwo, busThree), Duration.ofNanos(4));
-        bridgeCompareSet.add(bridgeOneTwo);
-        bridgeCompareSet.add(bridgeTwoThree);
+        VehicleActuator actuator4 = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, busTwo);
+        VehicleActuator actuator5 = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, busTwo);
+        VehicleActuator motor = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR, busTwo);
+        CameraSensor cam = (CameraSensor) AbstractSensor.createSensor(CameraSensor.class, physicalVehicle, busTwo).get();
+        LocationSensor location = (LocationSensor) AbstractSensor.createSensor(LocationSensor.class, physicalVehicle, busTwo).get();
 
-        //set up the bus system
-        List<EEComponent> connectedToBusOne = new LinkedList<>();
-        connectedToBusOne.add(actuator1);
-        connectedToBusOne.add(actuator2);
-        connectedToBusOne.add(actuator3);
-        connectedToBusOne.add(bridgeOneTwo);
-        busSystem.put(busOne, connectedToBusOne);
 
-        List<EEComponent> connectedToBusTwo = new LinkedList<>();
-        connectedToBusTwo.add(actuator4);
-        connectedToBusTwo.add(actuator5);
-        connectedToBusTwo.add(bridgeOneTwo);
-        connectedToBusTwo.add(bridgeTwoThree);
-        busSystem.put(busTwo, connectedToBusTwo);
+        VehicleActuator actuator6 = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, busThree);
+        VehicleActuator gear = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR, busThree);
+        VehicleActuator throttle = VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE, busThree);
+        ObstacleSensor obstacle = (ObstacleSensor) AbstractSensor.createSensor(ObstacleSensor.class, physicalVehicle, busThree).get();
 
-        List<EEComponent> connectedToBusThree = new LinkedList<>();
-        connectedToBusThree.add(actuator6);
-        connectedToBusThree.add(bridgeTwoThree);
-        busSystem.put(busThree, connectedToBusThree);
+        //all components in general minus bridges
+        componentList.add(actuator1);
+        componentList.add(actuator2);
+        componentList.add(actuator3);
+        componentList.add(actuator4);
+        componentList.add(actuator5);
+        componentList.add(actuator6);
+        componentList.add(clutch);
+        componentList.add(motor);
+        componentList.add(gear);
+        componentList.add(throttle);
+        componentList.add(cam);
+        componentList.add(location);
+        componentList.add(obstacle);
+        //all actuator
+        actuatorCompareList.add(actuator1);
+        actuatorCompareList.add(actuator2);
+        actuatorCompareList.add(actuator3);
+        actuatorCompareList.add(actuator4);
+        actuatorCompareList.add(actuator5);
+        actuatorCompareList.add(actuator6);
+        actuatorCompareList.add(clutch);
+        actuatorCompareList.add(motor);
+        actuatorCompareList.add(gear);
+        actuatorCompareList.add(throttle);
+        //all sensors
+        sensorCompareList.add(cam);
+        sensorCompareList.add(location);
+        sensorCompareList.add(obstacle);
+        //bus one
+        busOneCompareList.add(actuator1);
+        busOneCompareList.add(actuator2);
+        busOneCompareList.add(actuator3);
+        busOneCompareList.add(clutch);
+        //bus two
+        busTwoCompareList.add(actuator4);
+        busTwoCompareList.add(actuator5);
+        busTwoCompareList.add(motor);
+        busTwoCompareList.add(cam);
+        busTwoCompareList.add(location);
+        //bus three
+        busThreeCompareList.add(actuator6);
+        busThreeCompareList.add(gear);
+        busThreeCompareList.add(throttle);
+        busThreeCompareList.add(obstacle);
 
-        System.out.println("Test create EEVehicle by using HashMap");
+
+
+        Bridge bridgeOneTwo = new Bridge(simulator, Pair.of(busOne, busTwo), Duration.ofNanos(1));
+        Bridge bridgeTwoThree = new Bridge(simulator, Pair.of(busTwo, busThree), Duration.ofNanos(4));
+        componentList.add(bridgeOneTwo);
+        componentList.add(bridgeTwoThree);
+        bridgeCompareList.add(bridgeOneTwo);
+        bridgeCompareList.add(bridgeTwoThree);
+        busOneCompareList.add(bridgeOneTwo);
+        busTwoCompareList.add(bridgeOneTwo);
+        busTwoCompareList.add(bridgeTwoThree);
+        busThreeCompareList.add(bridgeTwoThree);
+
+
+        System.out.println("Test create EEVehicle by using Lists");
         //set up EEVehicle
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().createPhysicalVehicle();
-        Vehicle vehicle = new Vehicle(physicalVehicle);
-        //this should not be done since eeVehicle is not registered at vehicle!
-        EEVehicle eeVehicle = new EEVehicle(vehicle, simulator, busSystem);
+        Vehicle vehicle = new Vehicle(physicalVehicle, simulator, busList, componentList);
+
+
 
         //tests
-        assertEquals(busCompareSet, new HashSet<>(eeVehicle.getBusList()));
-        assertEquals(actuatorCompareSet, new HashSet<>(eeVehicle.getActuatorList()));
-        assertEquals(bridgeCompareSet, new HashSet<>(eeVehicle.getBridgeList()));
+        assertEquals(new HashSet<>(busCompareList), new HashSet<>(vehicle.getEEVehicle().getBusList()));
+        assertEquals(new HashSet<>(actuatorCompareList), new HashSet<>(vehicle.getEEVehicle().getActuatorList()));
+        assertEquals(new HashSet<>(bridgeCompareList), new HashSet<>(vehicle.getEEVehicle().getBridgeList()));
+        assertEquals(new HashSet<>(sensorCompareList), new HashSet<>(vehicle.getEEVehicle().getSensorList()));
+        assertEquals(new HashSet<>(busOneCompareList), new HashSet<>(busOne.getConnectedComponents()));
+        assertEquals(new HashSet<>(busTwoCompareList), new HashSet<>(busTwo.getConnectedComponents()));
+        assertEquals(new HashSet<>(busThreeCompareList), new HashSet<>(busThree.getConnectedComponents()));
+
+
 
         System.out.println("Test create EEVehicle by using JSON File");
         //store and load from JSON file
-//        File file = new File("C:/Users/Freddy/Desktop/SWP/EEVehicle Testordner/test.txt");
-//        eeVehicle.storeInFile(file, eeVehicle);
-//
-//        EEVehicle eeVehicleJSON = new EEVehicle(simulator, file);
-//
-//        //tests
-//        assertEquals(busCompareSet, new HashSet<>(eeVehicleJSON.getBusList()));
-//        assertEquals(actuatorCompareSet, new HashSet<>(eeVehicleJSON.getActuatorList()));
-//        assertEquals(bridgeCompareSet, new HashSet<>(eeVehicleJSON.getBridgeList()));
+        File file = new File("C:/Users/Freddy/Desktop/SWP/EEVehicle Testordner/test.txt");
+        vehicle.getEEVehicle().storeInFile(file, vehicle.getEEVehicle());
+
+        PhysicalVehicle physicalVehicleJSON = new MassPointPhysicalVehicleBuilder().createPhysicalVehicle();
+        Vehicle vehicleJSON = new Vehicle(physicalVehicleJSON, simulator, file);
+
+        //tests
+        assertTrue(componentIsConnected(new LinkedList<EEComponent>(busCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getBusList())));
+        assertTrue(componentIsConnected(new LinkedList<EEComponent>(actuatorCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getActuatorList())));
+        assertTrue(componentIsConnected(new LinkedList<EEComponent>(bridgeCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getBridgeList())));
+        assertTrue(componentIsConnected(new LinkedList<EEComponent>(sensorCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getSensorList())));
+        assertTrue(componentIsConnected(busOneCompareList, busOne.getConnectedComponents()));
+        assertTrue(componentIsConnected(busTwoCompareList, busTwo.getConnectedComponents()));
+        assertTrue(componentIsConnected(busThreeCompareList, busThree.getConnectedComponents()));
+
 
     }
+
+    private boolean componentIsConnected(List<EEComponent> shouldBeConnected, List<EEComponent> isConnected) {
+        boolean notFound = false;
+        for (EEComponent shouldBe : shouldBeConnected) {
+            if (notFound) {
+                return false;
+            }
+            notFound = true;
+            for (EEComponent is : isConnected) {
+                if (shouldBe.getClass() == is.getClass()) {
+                    notFound = false;
+                    break;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Test
+    public void testMessageToActuator(){
+	    //create vehicle
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().createPhysicalVehicle();
+        Vehicle vehicle = new Vehicle(physicalVehicle);
+
+        //create reference actuator
+        VehicleActuator steeringReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MIN, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_RATE, vehicle.getEEVehicle().getEESimulator(), null, null);
+        VehicleActuator brakeReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE, Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MIN, Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MAX, Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_RATE, vehicle.getEEVehicle().getEESimulator(), null, null);
+
+
+
+        //create messages
+        BusMessage messageSteering = new BusMessage(10, 6, BusEntry.ACTUATOR_STEERING, Instant.EPOCH.plusMillis(1), UUID.randomUUID(), vehicle.getEEVehicle().getBusList().get(0));
+        BusMessage messageBrak = new BusMessage(5, 6, BusEntry.ACTUATOR_BRAKE, Instant.EPOCH.plusMillis(2), UUID.randomUUID(), vehicle.getEEVehicle().getBusList().get(0));
+        vehicle.getEEVehicle().getEESimulator().addEvent(messageSteering);
+        vehicle.getEEVehicle().getEESimulator().addEvent(messageBrak);
+
+        //set reference actuator
+        steeringReference.setActuatorValueTarget(10);
+        brakeReference.setActuatorValueTarget(5);
+        steeringReference.update(Instant.EPOCH.plusMillis(33));
+        brakeReference.update(Instant.EPOCH.plusMillis(33));
+
+        //loop für 33 milliseconds
+        vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
+
+        //test if value of actuator are correct
+        assertEquals(steeringReference.getActuatorValueCurrent(), vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).get().getActuatorValueCurrent());
+        assertEquals(brakeReference.getActuatorValueCurrent(), vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE).get().getActuatorValueCurrent());
+
+    }
+
+
 }

@@ -23,11 +23,11 @@ package simulation.EESimulator;
 import commons.controller.commons.BusEntry;
 import commons.controller.commons.NavigationEntry;
 import commons.controller.commons.Vertex;
-import commons.controller.interfaces.FunctionBlockInterface;
 import commons.map.IAdjacency;
 import commons.map.IControllerNode;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
+//import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
+import navigationBlock.NavigationBlock;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.bus.Bus;
@@ -41,7 +41,6 @@ import java.time.Instant;
 import java.util.*;
 
 public class NavigationBlockAsEEComponent extends ImmutableEEComponent {
-
     private List<Vertex> trajectory;
     private Optional<IControllerNode> lastNavigationTarget;
     private Instant lastUpdate;
@@ -60,13 +59,13 @@ public class NavigationBlockAsEEComponent extends ImmutableEEComponent {
         List<EEComponent> targets = new ArrayList<EEComponent>(buses);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         targetsByMessageId.put(BusEntry.NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE, targets);
-        return new NavigationBlockAsEEComponent(buses.get(0).getSimulator(), subscribedMessages, targetsByMessageId, new NavigationBlock());
+        return new NavigationBlockAsEEComponent(buses.get(0).getSimulator(), subscribedMessages, targetsByMessageId);
 
     }
 
-    public NavigationBlockAsEEComponent(EESimulator simulator, List<BusEntry> subscribedMessages, HashMap<BusEntry, List<EEComponent>> targetsByMessageId, NavigationBlock functionBlock) {
+    public NavigationBlockAsEEComponent(EESimulator simulator, List<BusEntry> subscribedMessages, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(simulator, EEComponentType.NAVIGATION, subscribedMessages, targetsByMessageId);
-        this.functionBlock = functionBlock;
+        this.functionBlock = new NavigationBlock(simulator);
         this.externalInputs = new HashMap<BusEntry, Object>();
         this.lastNavigationTarget = Optional.empty();
         this.lastUpdate = this.getSimulator().getSimulationTime();
@@ -249,7 +248,7 @@ public class NavigationBlockAsEEComponent extends ImmutableEEComponent {
         return new ArrayList<>();
     }
 
-    public FunctionBlockInterface getNavigationBlock(){
+    public NavigationBlock getNavigationBlock(){
         return functionBlock;
     }
 

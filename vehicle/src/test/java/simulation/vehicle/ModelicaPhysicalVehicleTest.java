@@ -83,27 +83,27 @@ public class ModelicaPhysicalVehicleTest {
         VehicleActuator throttle = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE);
         throttle.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_MIN);
         throttle.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_MAX);
-        
+
         VehicleActuator brake = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE);
         brake.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MIN);
         brake.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MAX);
-        
+
         VehicleActuator clutch = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_CLUTCH);
         clutch.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_CLUTCH_POSITION_MIN);
         clutch.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_CLUTCH_POSITION_MAX);
-        
+
         VehicleActuator gear = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR);
         gear.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_GEAR_MIN);
         gear.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_GEAR_MAX);
-        
+
         VehicleActuator steering = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
         steering.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MIN);
         steering.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX);
 
         EESimulator eeSim = new EESimulator(Instant.EPOCH);
-        
+
         HashMap<BusEntry, List<EEComponent>> emptyMap = new HashMap<BusEntry, List<EEComponent>>();
-        
+
         // Create reference actuators
         VehicleActuator throttleReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE,
                 throttle.getActuatorValueMin(),
@@ -142,7 +142,7 @@ public class ModelicaPhysicalVehicleTest {
 
         // Execute loop iteration
         Vehicle vehicle = physicalVehicle.getVehicle();
-        
+
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
         throttleReference.update(Instant.EPOCH.plusMillis(33));
         brakeReference.update(Instant.EPOCH.plusMillis(33));
@@ -170,23 +170,23 @@ public class ModelicaPhysicalVehicleTest {
         VehicleActuator throttle = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE);
         throttle.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_MIN);
         throttle.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_MAX);
-        
+
         VehicleActuator brake = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE);
         brake.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MIN);
         brake.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKE_PRESSURE_MAX);
-        
+
         VehicleActuator clutch = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_CLUTCH);
         clutch.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_CLUTCH_POSITION_MIN);
         clutch.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_CLUTCH_POSITION_MAX);
-        
+
         VehicleActuator gear = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR);
         gear.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_GEAR_MIN);
         gear.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_GEAR_MAX);
-        
+
         VehicleActuator steering = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
         steering.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MIN);
         steering.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX);
-        
+
         EESimulator eeSim = new EESimulator(Instant.EPOCH);
 
         VehicleActuator steeringReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING,
@@ -195,11 +195,11 @@ public class ModelicaPhysicalVehicleTest {
                 steering.getActuatorValueChangeRate(), eeSim, Collections.emptyList(), new HashMap<BusEntry, List<EEComponent>>());
         steeringReference.setActuatorValueTarget(steering.getActuatorValueTarget());
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
-        
+
 
         // Execute loop iteration
         Vehicle vehicle = physicalVehicle.getVehicle();
-        
+
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
         steeringReference.update(Instant.EPOCH.plusMillis(33));
 
@@ -239,7 +239,7 @@ public class ModelicaPhysicalVehicleTest {
 
         // Execute loop iteration
         Vehicle vehicle = physicalVehicle.getVehicle();
-        
+
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
 
         // All actuators should not be updated

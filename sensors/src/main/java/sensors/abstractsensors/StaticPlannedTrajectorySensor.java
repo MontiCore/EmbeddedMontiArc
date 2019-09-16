@@ -26,14 +26,15 @@ import commons.simulation.PhysicalObject;
 import commons.simulation.Sensor;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
-
 import org.apache.commons.lang3.Validate;
-
+import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EESimulator;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
 
 public abstract class StaticPlannedTrajectorySensor extends  AbstractSensor {
 

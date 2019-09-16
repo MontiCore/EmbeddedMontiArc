@@ -59,4 +59,8 @@ public class InstantBus extends Bus {
 		return false;
 	}
 
+	@Override
+	public String getBusType() {
+		return "instantBus";
+	}
 }

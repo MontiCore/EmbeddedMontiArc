@@ -22,14 +22,14 @@ package sensors;
 
 import commons.controller.commons.BusEntry;
 import commons.simulation.IPhysicalVehicle;
+import simulation.EESimulator.EESimulator;
 import sensors.abstractsensors.StaticPlannedTrajectorySensor;
 import simulation.EESimulator.EEComponent;
-import simulation.EESimulator.EESimulator;
-
 import java.util.HashMap;
 import java.util.List;
 
 public class StaticPlannedTrajectoryYSensor extends StaticPlannedTrajectorySensor {
+
 
     public StaticPlannedTrajectoryYSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
             HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<Double> trajectoryY) {

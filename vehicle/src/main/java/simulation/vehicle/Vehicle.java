@@ -22,8 +22,9 @@ package simulation.vehicle;
 
 import commons.controller.commons.BusEntry;
 import commons.controller.commons.Vertex;
-import commons.controller.interfaces.FunctionBlockInterface;
 import commons.map.IControllerNode;
+//import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
+import navigationBlock.NavigationBlock;
 import sensors.CameraSensor;
 import sensors.CompassSensor;
 import sensors.DayNightSensor;
@@ -56,9 +57,9 @@ import simulation.bus.InstantBus;
 import simulation.environment.WorldModel;
 import simulation.environment.osm.IntersectionFinder;
 import simulation.util.Log;
-import simulator.integration.HardwareEmulatorInterface;
 
 import java.awt.*;
+import java.io.File;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
@@ -162,12 +163,47 @@ public class Vehicle {
         this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
     }
 
+    public Vehicle(PhysicalVehicle physicalVehicle, EESimulator simulator, List<Bus> buses, List<EEComponent> components) {
+        // Create the status logger
+        this.statusLogger = new StatusLogger();
+        // Create the navigation unit
+        this.navigation = Optional.empty();
+        //Set physicalVehicle
+        this.physicalVehicle = physicalVehicle;
+        physicalVehicle.setVehicle(this);
+        //Set eeVehicle
+        this.eeVehicle = new EEVehicle(this, simulator, buses, components);
+        physicalVehicle.initializeActuators();
+        // Initialise camera image with empty optional
+        cameraImage = Optional.empty();
+        // When created, maximum temporary allowed velocity is not limited
+        this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
+    }
+
+    public Vehicle(PhysicalVehicle physicalVehicle, EESimulator simulator, File file) {
+        // Create the status logger
+        this.statusLogger = new StatusLogger();
+        // Create the navigation unit
+        this.navigation = Optional.empty();
+        //Set physicalVehicle
+        this.physicalVehicle = physicalVehicle;
+        physicalVehicle.setVehicle(this);
+        //Set eeVehicle
+        this.eeVehicle = new EEVehicle(this, simulator, file);
+        physicalVehicle.initializeActuators();
+        // Initialise camera image with empty optional
+        cameraImage = Optional.empty();
+        // When created, maximum temporary allowed velocity is not limited
+        this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
+    }
+
     
     private EEVehicle createEEVehicle(PhysicalVehicle physicalVehicle) {
 		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		Bus bus = new InstantBus(eeSimulator);
 		List<EEComponent> components = new ArrayList<EEComponent>();
 		
+
 		//create all sensors
 		components.add(AbstractSensor.createSensor(CameraSensor.class, physicalVehicle, bus).get());
 		components.add(AbstractSensor.createSensor(CompassSensor.class, physicalVehicle, bus).get());
@@ -187,6 +223,7 @@ public class Vehicle {
 		components.add(AbstractSensor.createSensor(StaticPlannedTrajectoryYSensor.class, physicalVehicle, bus).get());
 		components.add(AbstractSensor.createSensor(SteeringAngleSensor.class, physicalVehicle, bus).get());
 		components.add(AbstractSensor.createSensor(WeatherSensor.class, physicalVehicle, bus).get());
+
 
 		//create all actuators
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE, bus));
@@ -251,7 +288,7 @@ public class Vehicle {
      *
      * @return Optional navigation of the vehicle
      */
-    public Optional<FunctionBlockInterface> getNavigation()
+    public Optional<NavigationBlock> getNavigation()
     {
         if(navigation.isPresent()) {
             return Optional.of(navigation.get().getNavigationBlock());

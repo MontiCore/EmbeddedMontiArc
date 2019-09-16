@@ -27,10 +27,12 @@ import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import simulation.EESimulator.EESimulator;
 import simulation.environment.object.House;
 import simulation.util.Log;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,4 +74,6 @@ public class VehicleTest {
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(vehicle1.getCollision() && !vehicle2.getCollision());
     }
+
+
 }

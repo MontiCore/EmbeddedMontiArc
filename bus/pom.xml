@@ -83,7 +83,7 @@
         <dependency>
             <groupId>montisim-controller</groupId>
             <artifactId>navigation</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.2</version>
         </dependency>
 
     </dependencies>

@@ -127,7 +127,7 @@ public class VehicleActuator extends ImmutableEEComponent {
 	 * Creates a new actuator, only sets the type, minimum, maximum and change rate
 	 * values. Current value and target value are initialised to 0.0 or the given
 	 * minimum value if 0.0 is not in the given range. The simulator for the
-	 * actuator is taken from the first bus. SubscribedMessages is inferred from
+	 * actuator is taken from the first busAndParameter. SubscribedMessages is inferred from
 	 * actuatorType. TargetsByMessageId is inferred from buses and actuatorType.
 	 *
 	 * @param actuatorType       Type of the actuator
@@ -186,7 +186,7 @@ public class VehicleActuator extends ImmutableEEComponent {
 	 * Creates a new actuator. Sets minimum, maximum and change rate
 	 * to default values. Current value and target value are initialised to 0.0 or the given
 	 * minimum value if 0.0 is not in the given range. The simulator for the
-	 * actuator is taken from the first bus. SubscribedMessages is inferred from
+	 * actuator is taken from the first busAndParameter. SubscribedMessages is inferred from
 	 * actuatorType. TargetsByMessageId is inferred from buses and actuatorType.
 	 *
 	 * @param actuatorType       Type of the actuator
@@ -245,8 +245,8 @@ public class VehicleActuator extends ImmutableEEComponent {
 	 * Creates a new actuator, only sets the type, minimum, maximum and change rate
 	 * values. Current value and target value are initialised to 0.0 or the given
 	 * minimum value if 0.0 is not in the given range. The simulator for the
-	 * actuator is taken from bus. SubscribedMessages is inferred from actuatorType.
-	 * TargetsByMessageId is inferred from bus and actuatorType.
+	 * actuator is taken from busAndParameter. SubscribedMessages is inferred from actuatorType.
+	 * TargetsByMessageId is inferred from busAndParameter and actuatorType.
 	 *
 	 * @param actuatorType       Type of the actuator
 	 * @param actuatorValueMin   Minimum allowed value of the actuator
@@ -264,8 +264,8 @@ public class VehicleActuator extends ImmutableEEComponent {
 	 * Creates a new actuator. Sets minimum, maximum and change rate
 	 * to default values. Current value and target value are initialised to 0.0 or the given
 	 * minimum value if 0.0 is not in the given range. The simulator for the
-	 * actuator is taken from bus. SubscribedMessages is inferred from actuatorType.
-	 * TargetsByMessageId is inferred from bus and actuatorType.
+	 * actuator is taken from busAndParameter. SubscribedMessages is inferred from actuatorType.
+	 * TargetsByMessageId is inferred from busAndParameter and actuatorType.
 	 *
 	 * @param actuatorType       Type of the actuator
 	 * @param bus                Bus that the actuator is connected to
@@ -306,6 +306,15 @@ public class VehicleActuator extends ImmutableEEComponent {
 	 */
 	public VehicleActuatorType getActuatorType() {
 		return actuatorType;
+	}
+
+	/**
+	 * getter for the type of message the actuator wants to send to the busAndParameter
+	 *
+	 * @return BusEntry of the messages the actuator send
+	 */
+	public BusEntry getSendMsgId() {
+		return sendMsgId;
 	}
 
 	/**
