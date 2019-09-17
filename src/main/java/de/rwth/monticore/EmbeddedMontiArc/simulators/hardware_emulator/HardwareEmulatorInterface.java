@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.io.Serializable;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.LibraryService;
+import java.time.Duration;
 
 public class HardwareEmulatorInterface implements ModelServer {
     String lib_path = "";
@@ -58,8 +59,23 @@ public class HardwareEmulatorInterface implements ModelServer {
         query_outputs(id, outputs);
         return outputs;
     }
-    private native void execute_one(int id, long time_delta);
 
+    @Override
+    public void set_inputs(int id, HashMap<String, Serializable> inputs){
+        for (HashMap.Entry<String, Serializable> entry : inputs.entrySet()){
+            add_one_input(id, entry.getKey(), entry.getValue());
+        }
+    }
+
+    @Override
+    public Duration time_execute(int id, Duration unused_time){
+        execute_one_Event(id, (unused_time.toNanos()/1000);// to milliseconds or to nanoseconds??
+        return Duration.ofMillis(time_execute(id));
+    }
+
+    private native void execute_one(int id, long time_delta);
+    private native void execute_one_Event(int id, long unused_time);
+    private native long time_execute(int id);
 
     @Override
     public native void start_tick(long time_delta);
