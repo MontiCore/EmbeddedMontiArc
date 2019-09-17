@@ -34,11 +34,9 @@ public class ChargingStationTest {
         // Test ChargingStation not occupied
         Assert.assertFalse(chargingStation.isOccupied());
 
-
-        // Create Vehicle
-
         // TODO
         /*
+        // Create Vehicle
         ModelicaPhysicalVehicle vehicle = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC, 100.0);
         // Test ChargingStation occupied
         chargingStation.startCharging(vehicle);
