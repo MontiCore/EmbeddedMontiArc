@@ -35,6 +35,8 @@ public abstract class PhysicalVehicleBuilder {
     protected Optional<Optional<FunctionBlockInterface>> controller = Optional.empty();
     protected Optional<Optional<FunctionBlockInterface>> navigation = Optional.empty();
 
+    protected Optional<String> globalID = Optional.empty();
+
     /**
      * Constructor
      */
@@ -126,6 +128,11 @@ public abstract class PhysicalVehicleBuilder {
 
     public PhysicalVehicleBuilder setNavigation(Optional<FunctionBlockInterface> navigation) {
         this.navigation = Optional.of(navigation);
+        return this;
+    }
+
+    public PhysicalVehicleBuilder setGlobalId(String id) {
+        this.globalID = Optional.of(id);
         return this;
     }
 }

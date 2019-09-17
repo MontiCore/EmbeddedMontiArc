@@ -82,6 +82,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 
         physicalVehicle.initPhysics();
 
+        this.globalID.ifPresent(physicalVehicle::setGlobalId);
         this.position.ifPresent(physicalVehicle::setPosition);
         this.rotation.ifPresent(rotation -> physicalVehicle.setRotation(new BlockRealMatrix(rotation.getMatrix())));
         //TODO: Add all default sensor per default to the physical vehicle using the sensor util

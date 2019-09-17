@@ -51,6 +51,9 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /** IsCharging flag ## TODO: I added because of Erros, somebody removed it. necessary?*/
     protected boolean isCharging;
 
+    /** For server to keep track of vehicles between sectors */
+    protected String globalId;
+
     /**
      * Constructor for a none powered physical vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
@@ -373,6 +376,20 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     public boolean getPhysicalVehicleInitialised() {
         return physicalVehicleInitialised;
+    }
+
+
+    /**
+     * Getter and setter for globalId
+     *
+     * @return
+     */
+    public String getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(String globalId) {
+        this.globalId = globalId;
     }
 
 }
