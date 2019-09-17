@@ -2,6 +2,7 @@
 package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
 import de.monticore.lang.monticar.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.clustering.ClusteringResult;
 import de.monticore.lang.monticar.clustering.ClusteringResultList;
@@ -16,6 +17,7 @@ import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.middleware.templates.compile.CompilationGenerator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,11 +107,26 @@ public class DistributedTargetGenerator{
             middlewareTagGen.setGenerationTargetPath(generationTargetPath + "emam/");
             middlewareTagGen.setClusteringResults(clusteringResults);
             files.addAll(middlewareTagGen.generate(componentInstanceSymbol,taggingResolver));
+
+            File file = saveModel(componentInstanceSymbol);
+
+            files.add(file);
         }
 
         files.addAll(completeGenerator.generate(componentInstanceSymbol, taggingResolver));
         files.addAll(generateCompileScripts(useStructMsgs));
         return files;
+    }
+
+    private File saveModel(EMAComponentInstanceSymbol componentInstance) throws IOException {
+        String name = componentInstance.getName().substring(0,1).toUpperCase() + componentInstance.getName().substring(1);
+        String pathname = generationTargetPath + "/emam/model/" + name + ".emam";
+        Log.info("Writing component into file: " + pathname, "files");
+        String modelData = SymbolPrinter.printEMAComponentInstanceAsEMAComponent(componentInstance);
+        File file = new File(pathname);
+        file.getParentFile().mkdirs();
+        FileUtils.write(file, modelData,"UTF-8");
+        return file;
     }
 
     private EMAComponentInstanceSymbol preprocessing(EMAComponentInstanceSymbol genComp) {
