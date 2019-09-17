@@ -11,14 +11,8 @@ then
     exit 1
 fi
 
-if [ ! -d logs ]
-then
-    mkdir logs
-fi
-
 echo "Start training..."
 cd "${TARGET_OUTPUT}/agent/src/${AGENT_ROOT_COMPONENT}/cpp"
 sh start_training.sh
-cp -r ./model/${AGENT_NEURAL_NET_NAME}/* ${PROJECT_ROOT}/logs
-cp -r ./model ${PROJECT_ROOT}/${BINARY_OUTPUT}/agent
+cp -r ./model "${PROJECT_ROOT}/${BINARY_OUTPUT}"
 cd ${PROJECT_ROOT}
