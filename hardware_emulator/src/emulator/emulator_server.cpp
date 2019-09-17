@@ -44,6 +44,16 @@ JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardwa
     EmulatorManager::instance.emulators[id]->exec( time_delta );
 }
 
+JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_execute_1one_1Event
+( JNIEnv *, jobject, jint id, jlong unused_time ) {
+	EmulatorManager::instance.emulators[id]->exec_Event( unused_time );
+}
+
+JNIEXPORT jlong JNICALL Java_simulator_integration_HardwareEmulatorInterface_time_1execute
+( JNIEnv *, jobject, jint id) {
+	return EmulatorManager::instance.emulators[id]->time_execute();
+}
+
 JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_start_1tick
 ( JNIEnv *, jobject, jlong time_delta ) {
     EmulatorManager::instance.start_tick( time_delta );

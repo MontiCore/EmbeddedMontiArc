@@ -69,7 +69,7 @@ public class HardwareEmulatorInterface implements ModelServer {
 
     @Override
     public Duration time_execute(int id, Duration unused_time){
-        execute_one_Event(id, (unused_time.toNanos()/1000);// to milliseconds or to nanoseconds??
+        execute_one_Event(id, (unused_time.toNanos()/1000));// to milliseconds or to nanoseconds??
         return Duration.ofMillis(time_execute(id));
     }
 

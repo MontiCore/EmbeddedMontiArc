@@ -340,6 +340,37 @@ void HardwareEmulator::exec( ulong micro_delta ) {
     simulation_time += micro_delta;
 }
 
+
+void HardwareEmulator::exec_Event(ulong unused_time){
+	if ( !computing() || !computer.time.use_time ) {
+		for ( auto &port : input_ports )
+		call_input( port );
+		call_execute();
+		if ( debug_time )
+		Log::info << Log::tag << "Execute time: " << computer.time.micro_time << "\n";
+		execution_time = computer.time.micro_time;
+	}
+	
+	if ( export_data )
+	export_tick();
+	
+	//Upate time
+	avg_runtime.add( computer.time.micro_time );
+	
+	//Upate outputs
+	for ( auto &port : output_ports )
+	call_output( port );
+	
+	computer.time.reset();
+	
+	//++debug_tick_count;
+	simulation_time += computer.time.micro_time + unused_time;
+}
+
+ulong HardwareEmulator::time_execute(){
+	return execution_time;
+}
+
 void HardwareEmulator::call_input_direct(Port& port) {
 	auto& input = port.buffer;
 	switch (input.type) {

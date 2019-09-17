@@ -41,6 +41,22 @@ JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardwa
 
 /*
  * Class:     de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_HardwareEmulatorInterface
+ * Method:    execute_one_Event
+ * Signature: (IJ)V
+ */
+JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_execute_1one_1Event
+  (JNIEnv *, jobject, jint, jlong);
+
+/*
+ * Class:     de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_HardwareEmulatorInterface
+ * Method:    time_execute
+ * Signature: (I)J
+ */
+JNIEXPORT jlong JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_time_1execute
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_HardwareEmulatorInterface
  * Method:    start_tick
  * Signature: (J)V
  */
