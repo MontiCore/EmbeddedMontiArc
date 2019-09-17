@@ -4,6 +4,8 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import simulation.environment.util.ChargingProcess;
 import simulation.environment.object.ChargingStation;
+import simulation.vehicle.ModelicaPhysicalVehicle;
+import simulation.vehicle.VehicleType;
 
 
 /**
