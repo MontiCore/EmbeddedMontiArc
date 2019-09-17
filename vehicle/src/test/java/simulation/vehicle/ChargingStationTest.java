@@ -4,9 +4,8 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import simulation.environment.util.ChargingProcess;
 import simulation.environment.object.ChargingStation;
-// TODO
-// import simulation.vehicle.ModelicaPhysicalVehicle;
-// import simulation.environment.util.VehicleType;
+import simulation.vehicle.ModelicaPhysicalVehicle;
+import simulation.environment.util.VehicleType;
 
 
 /**
@@ -37,14 +36,10 @@ public class ChargingStationTest {
 
         // Create Vehicle
 
-        // TODO
-
-        /*
-        ModelicaPhysicalVehicle vehicle = ModelicaPhysicalVehicle(VehicleType.ELECTRIC, 100.0);
+        ModelicaPhysicalVehicle vehicle = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC, 100.0);
         // Test ChargingStation occupied
         chargingStation.startCharging(vehicle);
         Assert.assertTrue(chargingStation.isOccupied());
-         */
     }
 
     @Test
