@@ -9,6 +9,8 @@ package simulation.vehicle;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
@@ -58,7 +60,6 @@ public class ModelicaBuilderTest {
         double expectedWheelDistLeftRightBackSide = referenceVDM.getValue("TW_r");
         double expectedWheelDistToFront = referenceVDM.getValue("L_1");
         double expectedWheelDistToBack = referenceVDM.getValue("L_2");
-        Optional<FunctionBlockInterface> expectedNavigation = Optional.empty();
 
         // Calculate expected remaining values
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
@@ -85,7 +86,6 @@ public class ModelicaBuilderTest {
         Assert.assertEquals(expectedWheelDistLeftRightBackSide, physicalVehicle.getWheelDistLeftRightBackSide(), 0);
         Assert.assertEquals(expectedWheelDistToFront, physicalVehicle.getWheelDistToFront(), 0);
         Assert.assertEquals(expectedWheelDistToBack, physicalVehicle.getWheelDistToBack(), 0);
-        Assert.assertEquals(expectedNavigation, vehicle.getNavigation());
 
         // Test internal values
         Assert.assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());

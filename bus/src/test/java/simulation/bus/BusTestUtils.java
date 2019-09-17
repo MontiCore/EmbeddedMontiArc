@@ -27,10 +27,11 @@ public class BusTestUtils {
 
     private static Map<Integer, BusEntry> busEntryByOrdinal = new HashMap<Integer, BusEntry>();
 
-    @BeforeClass
-    public static void oneTimeSetUp() {
-        for (BusEntry entry : BusEntry.values()) {
-            busEntryByOrdinal.put(entry.ordinal(), entry);
+    public static void init() {
+        if(busEntryByOrdinal.size() == 0) {
+        	for (BusEntry entry : BusEntry.values()) {
+                busEntryByOrdinal.put(entry.ordinal(), entry);
+            }
         }
     }
 

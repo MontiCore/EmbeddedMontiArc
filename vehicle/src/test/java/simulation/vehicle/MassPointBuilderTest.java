@@ -58,9 +58,6 @@ public class MassPointBuilderTest {
         double expectedWheelDistLeftRightBackSide = PhysicalVehicle.VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_REAR;
         double expectedWheelDistToFront = PhysicalVehicle.VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT;
         double expectedWheelDistToBack = PhysicalVehicle.VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK;
-        Optional<Bus> expectedControllerBus = Optional.empty();
-        Optional<FunctionBlockInterface> expectedController = Optional.empty();
-        Optional<FunctionBlockInterface> expectedNavigation = Optional.empty();
 
         // Calculate expected remaining values
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
@@ -85,8 +82,7 @@ public class MassPointBuilderTest {
         assertEquals(expectedWheelDistLeftRightBackSide, physicalVehicle.getWheelDistLeftRightBackSide(), 0);
         assertEquals(expectedWheelDistToFront, physicalVehicle.getWheelDistToFront(), 0);
         assertEquals(expectedWheelDistToBack, physicalVehicle.getWheelDistToBack(), 0);
-        assertEquals(expectedNavigation, physicalVehicle.getVehicle().getNavigation());
-
+        
         // Test internal values
         assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
         assertFalse(physicalVehicle.getError());

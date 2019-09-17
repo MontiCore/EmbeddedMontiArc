@@ -69,12 +69,10 @@
 			<version>11.0.2</version>
 		</dependency>
         <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>simulator</artifactId>
-            <version>${montisim.simulation.version}</version>
+            <groupId>montisim</groupId>
+            <artifactId>rmi-model-server</artifactId>
+            <version>${rmimodelserver.version}</version>
         </dependency>
-
-
     </dependencies>
 
     <!-- PROJECT PLUGINS AND PROPERTIES -->

@@ -42,6 +42,8 @@ public abstract class AbstractSensor extends ImmutableEEComponent implements Sen
 			HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
 		super(simulator, EEComponentType.SENSOR, subscribedMessages, targetsByMessageId);
 		this.physicalVehicle = physicalVehicle;
+		//initialize value
+		calculateValue();
 	}
 
 	@Override

@@ -79,18 +79,19 @@ public class CAN extends Bus{
         //only forward time for bits actually send
         currentTime = currentTime.plusNanos(getBitTransmissionTime()*toTransmit);
         //finish last frame
-        BusMessage msg = partialMessage.get();
+        BusMessage msg = null;
         if(partialMessage.isPresent() && partialFrameBits != 0) {
+        	msg = partialMessage.get();
             if (partialFrameBits < HEADER_SIZE) {
                 partialFrameBits += Math.min(HEADER_SIZE - partialFrameBits, toTransmit);
                 toTransmit -= Math.max(0, HEADER_SIZE - partialFrameBits);
             }
             int messageBytes = MAX_PAYLOAD_SIZE;
             if (partialFrameBits < HEADER_SIZE + MAX_PAYLOAD_SIZE) {
-                partialFrameBits += Math.min(HEADER_SIZE + MAX_PAYLOAD_SIZE - partialFrameBits, toTransmit);
-                messageBytes = Math.min(toTransmit, MAX_PAYLOAD_SIZE - partialFrameBits);
+                messageBytes = Math.min(HEADER_SIZE + MAX_PAYLOAD_SIZE - partialFrameBits, toTransmit);
                 messageBytes = msg.transmitBytes(messageBytes, operationMode.getBitErrorRate());
                 toTransmit -= messageBytes;
+                this.partialFrameBits += messageBytes;
                 if (msg.isTransmitted()) {
                     registerMessageAtSimulator(msg);
                     msg = messages.poll();
@@ -101,32 +102,30 @@ public class CAN extends Bus{
                 toTransmit -= Math.max(0, HEADER_SIZE + messageBytes + TRAILER_SIZE - partialFrameBits);
             }
         }
+        if(msg == null) {
+        	msg = messages.poll();
+        }
         //send full frames and incomplete last one
         while(toTransmit > HEADER_SIZE && msg != null) {
             partialFrameBits = toTransmit;
             toTransmit -= HEADER_SIZE;
-            int messageBytes = Math.min(toTransmit, MAX_PAYLOAD_SIZE);
-            messageBytes = msg.transmitBytes(messageBytes, operationMode.getBitErrorRate());
-            toTransmit -= messageBytes;
+            int messageBits = Math.min(toTransmit, MAX_PAYLOAD_SIZE);
+            messageBits = msg.transmitBytes(messageBits, operationMode.getBitErrorRate());
+            toTransmit -= messageBits;
             if (msg.isTransmitted()) {
                 registerMessageAtSimulator(msg);
                 msg = messages.poll();
             }
-            toTransmit -= TRAILER_SIZE;
-        }
-        //0  < toTransmit  < HEADER_SIZE
-        if(toTransmit > 0 && msg != null){
-            partialFrameBits = toTransmit;
+            toTransmit -= HEADER_SIZE;
         }
         //all messages send
         if(msg == null){
             partialFrameBits = 0;
             partialMessage = Optional.empty();
         }
-        else{
-            partialMessage = Optional.of(msg);
+        else {
+        	partialMessage = Optional.of(msg);
         }
-        
     }
 
     @Override
