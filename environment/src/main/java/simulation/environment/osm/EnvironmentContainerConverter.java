@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package simulation.environment.osm;
 
+import simulation.environment.object.ChargingStation;
 import simulation.environment.visualisationadapter.implementation.*;
 import simulation.environment.visualisationadapter.interfaces.*;
 import simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D;
@@ -44,6 +45,8 @@ public class EnvironmentContainerConverter {
         ArrayList<EnvStreet> meterStreets = new ArrayList<>();
         ArrayList<Building> meterBuildings = new ArrayList<>();
         ArrayList<Waterway> meterWaterway = new ArrayList<>();
+        ArrayList<ChargingStation> meterChargingStations = new ArrayList<>();
+
         for(EnvStreet longLatStreet : containerLongLat.getStreets()) {
             ArrayList<EnvNode> nodes = new ArrayList<>();
             for(EnvNode node : longLatStreet.getNodes()) {
@@ -110,15 +113,36 @@ public class EnvironmentContainerConverter {
 
             meterWaterway.add(new Waterway2D(nodes, longLatWaterway.getOsmId()));
         }
-        computeMinMax(meterStreets, meterBuildings, meterWaterway);
-        containerMeters = new EnvironmentContainer2D(bounds,meterStreets, meterBuildings, meterWaterway);
+
+        for(ChargingStation chargingStation: containerLongLat.getChargingStations()) {
+            EnvNode node = chargingStation.getNodes().get(0);
+            double nLong = node.getX().doubleValue();
+            double nLat = node.getY().doubleValue();
+
+            double mY = converter.convertLatToMeters(nLat);
+            double mX = converter.convertLongToMeters(nLong, nLat);
+
+            double mZ = node.getZ().doubleValue();
+            long osmId = node.getOsmId();
+
+            Node2D nodeInMeter = new Node2D(mX, mY, mZ, osmId);
+            meterChargingStations.add(new ChargingStation(
+                    osmId, nodeInMeter, chargingStation.getCapacity(), chargingStation.getName()));
+        }
+        computeMinMax(meterStreets, meterBuildings, meterWaterway, meterChargingStations);
+        containerMeters = new EnvironmentContainer2D(
+                bounds,meterStreets, meterBuildings, meterWaterway, meterChargingStations);
     }
 
     /**
      * computes the min and max values for x,y,z and thus the bounds of the environment
      * @param streets
      */
-    private void computeMinMax(ArrayList<EnvStreet> streets,ArrayList<Building> buildings, ArrayList<Waterway> waterways) {
+    private void computeMinMax(
+            ArrayList<EnvStreet> streets,
+            ArrayList<Building> buildings,
+            ArrayList<Waterway> waterways,
+            ArrayList<ChargingStation> chargingStations) {
         //assure that every street (including pavements lies in the bounds of the environment
         double minX = 0 - Waterway.RIVER_WIDTH;
         double minY = 0 - Waterway.RIVER_WIDTH;
@@ -160,6 +184,21 @@ public class EnvironmentContainerConverter {
         }
         for(Waterway waterway: waterways) {
             for(EnvNode nodes: waterway.getNodes()) {
+                if(nodes.getX().doubleValue() > maxX) {
+                    maxX = nodes.getX().doubleValue();
+                }
+
+                if(nodes.getY().doubleValue() > maxY) {
+                    maxY = nodes.getY().doubleValue();
+                }
+
+                if(nodes.getZ().doubleValue() > maxZ) {
+                    maxZ = nodes.getZ().doubleValue();
+                }
+            }
+        }
+        for(ChargingStation chargingStation: chargingStations) {
+            for(EnvNode nodes: chargingStation.getNodes()) {
                 if(nodes.getX().doubleValue() > maxX) {
                     maxX = nodes.getX().doubleValue();
                 }

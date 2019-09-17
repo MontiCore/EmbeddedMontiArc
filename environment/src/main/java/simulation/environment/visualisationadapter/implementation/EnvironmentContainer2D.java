@@ -4,6 +4,7 @@ package simulation.environment.visualisationadapter.implementation;
 import commons.simulation.IPhysicalVehicle;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
+import simulation.environment.object.ChargingStation;
 import simulation.environment.object.House;
 import simulation.environment.visualisationadapter.interfaces.*;
 
@@ -23,6 +24,7 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
 
     private Collection<EnvNode> trees;
     private Collection<Waterway> waterway;
+    private Collection<ChargingStation> chargingStations;
     private EnvBounds bounds = null;
 
     private Collection<IPhysicalVehicle> vehicles;
@@ -34,11 +36,17 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
     private Point2D heightMapMinPoint;
     private Point2D heightMapMaxPoint;
 
-    public EnvironmentContainer2D(EnvBounds bounds, Collection<EnvStreet> streets, Collection<Building> buildings, Collection<Waterway> waterway) {
+    public EnvironmentContainer2D(
+            EnvBounds bounds,
+            Collection<EnvStreet> streets,
+            Collection<Building> buildings,
+            Collection<Waterway> waterway,
+            Collection<ChargingStation> chargingStations) {
         this.bounds = bounds;
         this.streets = streets;
         this.buildings = buildings;
         this.waterway = waterway;
+        this.chargingStations = chargingStations;
     }    
 
     public Collection<IPhysicalVehicle> getVehicles(){
@@ -49,6 +57,14 @@ public class EnvironmentContainer2D implements VisualisationEnvironmentContainer
     @Override
     public Collection<Waterway> getWaterway() {
         return this.waterway;
+    }
+
+    public Collection<ChargingStation> getChargingStations() {
+        return chargingStations;
+    }
+
+    public void setChargingStations(Collection<ChargingStation> chargingStations) {
+        this.chargingStations = chargingStations;
     }
 
     @Override

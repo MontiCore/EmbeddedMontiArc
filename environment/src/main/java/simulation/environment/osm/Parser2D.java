@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 /* (c) https://github.com/MontiCore/monticore */
 package simulation.environment.osm;
 
@@ -245,9 +251,12 @@ public class Parser2D implements IParser {
                     name = "chargingStation";
                 }
 
-                RealVector location = new ArrayRealVector(new double[]{node.getLongitude(), node.getLatitude(), 0});
-
-                this.chargingStations.add(new ChargingStation(node.getId(), location, Integer.parseInt(capacity), name));
+                this.chargingStations.add(new ChargingStation(
+                        node.getId(),
+                        new Node2D(node.getLongitude(), node.getLatitude(), 0),
+                        Integer.parseInt(capacity),
+                        name)
+                );
             }
         }
     }
@@ -274,7 +283,7 @@ public class Parser2D implements IParser {
 
         this.container = new simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D(
                 new Bounds2D(this.dataSet.getBounds().getLeft(), this.dataSet.getBounds().getRight(), this.dataSet.getBounds().getBottom(), this.dataSet.getBounds().getTop(), 0, 0),
-                this.streets, this.buildings, this.waterway);
+                this.streets, this.buildings, this.waterway, this.chargingStations);
 
     }
 

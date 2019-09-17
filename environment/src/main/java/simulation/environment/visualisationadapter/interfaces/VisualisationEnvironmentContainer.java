@@ -3,6 +3,8 @@ package simulation.environment.visualisationadapter.interfaces;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
+import simulation.environment.object.ChargingStation;
+
 import java.util.Collection;
 
 /**
@@ -25,6 +27,11 @@ public interface VisualisationEnvironmentContainer {
      * @return a Collection of all buildings in the container
      */
     public abstract Collection<Building> getBuildings();
+
+    /**
+     * @return a Collection of all charging stations in the container
+     */
+    public abstract Collection<ChargingStation> getChargingStations();
 
     /**
      * @return a Collection of all trees in the container
