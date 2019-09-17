@@ -1,10 +1,5 @@
 #!/bin/bash
 # (c) https://github.com/MontiCore/monticore  
-if [ ! -d logs ]
-then
-    mkdir logs
-fi
-
 PROJECT_ROOT="$(pwd)"
 TRAINING_ROOT="target/src/lander_master/cpp"
 
@@ -18,6 +13,5 @@ fi
 cd "${TRAINING_ROOT}"
 python CNNTrainer_lander_master_lander.py
 
-cp -r ./model/LunarLanderActor/* ${PROJECT_ROOT}/logs
 cp -r ./model ${PROJECT_ROOT}/target/bin
 cd "${PROJECT_ROOT}"
