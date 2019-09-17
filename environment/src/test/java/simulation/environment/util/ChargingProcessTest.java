@@ -15,17 +15,17 @@ public class ChargingProcessTest {
 
     @Test
     public void executeLoopIteration() {
-
+        // TODO
     }
 
     @Test
     public void startProcess() {
-
+        // TODO
     }
 
     @Test
     public void stopProcess() {
-
+        // TODO
     }
 
 }

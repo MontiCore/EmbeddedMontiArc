@@ -7,9 +7,22 @@ import simulation.environment.object.ChargingStation;
 
 
 /**
- * Created by ChargingStation Team on 02.09.2019
+ * Charging Station Test Class
+ *
+ * @version 1.0
+ * @since 2019-09-17
  */
 public class ChargingStationTest {
+
+    @Test
+    public void startCharging() {
+        // TODO
+    }
+
+    @Test
+    public void stopCharging() {
+        // TODO
+    }
 
     @Test
     public void isOccupied() {
