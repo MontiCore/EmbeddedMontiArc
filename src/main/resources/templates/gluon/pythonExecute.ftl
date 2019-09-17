@@ -1,5 +1,9 @@
 <#list tc.getLayerVariableMembers("batch_size")?keys as member>
-                    ${member} = mx.nd.zeros((${tc.join(tc.getLayerVariableMembers("batch_size")[member], ", ")},), ctx=mx_context)
+<#if member?ends_with("_state_")>
+                    encoder_state_ = self._networks[${tc.getLayerVariableMembers("batch_size")[member][1][0]}].${member?replace("_state_","_output_")}.begin_state(batch_size=0, ctx=mx_context)
+<#else>
+                    ${member} = mx.nd.zeros((${tc.join(tc.getLayerVariableMembers("batch_size")[member][0], ", ")},), ctx=mx_context)
+</#if>
 </#list>
 <#list tc.architectureOutputSymbols as output>
                     ${tc.getName(output)} = mx.nd.zeros((batch_size, ${tc.join(output.ioDeclaration.type.dimensions, ", ")},), ctx=mx_context)

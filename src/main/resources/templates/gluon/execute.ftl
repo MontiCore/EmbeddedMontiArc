@@ -2,7 +2,7 @@
     vector<float> ${tc.getName(input)} = CNNTranslator::translate(${input.name}<#if input.arrayAccess.isPresent()>[${input.arrayAccess.get().intValue.get()?c}]</#if>);
 </#list>
 <#list tc.getLayerVariableMembers("1")?keys as member>
-    vector<float> ${member}(${tc.join(tc.getLayerVariableMembers("1")[member], " * ")})
+    vector<float> ${member}(${tc.join(tc.getLayerVariableMembers("1")[member][0], " * ")});
 </#list>
 
 <#list tc.architectureOutputSymbols as output>
@@ -18,7 +18,7 @@
 <#if networkInstruction.body.isTrainable()>
     _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")}, ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")});
 <#else>
-${tc.include(networkInstruction.body, "CPP_INLINE")}
+<#-- ${tc.include(networkInstruction.body, "CPP_INLINE")}; -->
 </#if>
 </#if>
 </#list>
