@@ -1,22 +1,8 @@
 /**
+ * (c) https://github.com/MontiCore/monticore
  *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
 package simulation.environment.object;
 
@@ -25,6 +11,10 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.util.Chargeable;
 import simulation.environment.util.ChargingProcess;
+import simulation.environment.visualisationadapter.implementation.Node2D;
+import simulation.environment.visualisationadapter.interfaces.EnvNode;
+import simulation.environment.visualisationadapter.interfaces.EnvObject;
+import simulation.environment.visualisationadapter.interfaces.EnvTag;
 
 import java.util.*;
 
@@ -36,7 +26,7 @@ import java.util.*;
  * @version 1.0
  * @since 2019-05-22
  */
-public class ChargingStation implements SimulationLoopExecutable {
+public class ChargingStation implements SimulationLoopExecutable, EnvObject {
 
     /**
      * Name of the Charging Station
@@ -64,6 +54,7 @@ public class ChargingStation implements SimulationLoopExecutable {
      * Location of the Charging Station
      */
     private RealVector location;
+    private ArrayList<EnvNode> nodes;
 
     /**
      * Car tracing Radius of the Charging Station
@@ -78,6 +69,7 @@ public class ChargingStation implements SimulationLoopExecutable {
      * Default Positon: 0,0,0
      */
     public ChargingStation() {
+        this.nodes = new ArrayList<EnvNode>(){{add(new Node2D(0, 0, 0));}};
         this.location = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         this.name = "Charging Station ";
     }
@@ -86,13 +78,15 @@ public class ChargingStation implements SimulationLoopExecutable {
      * Cunstructor
      *
      * @param osmId
-     * @param location
+     * @param node
      * @param capacity number of cars that can be placed in the Charging Station
      * @param name
      */
-    public ChargingStation(long osmId, RealVector location, int capacity, String name) {
+    public ChargingStation(long osmId, EnvNode node, int capacity, String name) {
         this.osmId = osmId;
-        this.location = location.copy();
+        this.nodes = new ArrayList<EnvNode>(){{add(node);}};
+        this.location = new ArrayRealVector(new double[]{
+                node.getX().doubleValue(), node.getY().doubleValue(), node.getZ().doubleValue()});
         this.capacity = capacity;
         this.name = name;
     }
@@ -230,6 +224,16 @@ public class ChargingStation implements SimulationLoopExecutable {
     @Override
     public void executeLoopIteration(long timeDiffMs) {
         // do nothing: Charging stations do not move
+    }
+
+    @Override
+    public ArrayList<EnvNode> getNodes() {
+        return nodes;
+    }
+
+    @Override
+    public EnvTag getTag() {
+        return EnvTag.CHARGING_STATION;
     }
 
 
