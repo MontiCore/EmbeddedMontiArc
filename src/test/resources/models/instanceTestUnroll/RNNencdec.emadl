@@ -1,10 +1,13 @@
 package instanceTestUnroll;
 
 component RNNencdec<Z(2:oo) classes = 10, max_length=5>{
-    ports in Z(0:255)^{3, 224, 224} data,
+    ports in Z(0:255)^{3, 32, 32} data,
          out Q(0:29999)^{1} softmax[5];
 
    implementation CNN{
+
+     layer LSTM(units=10) encoder;
+     layer LSTM(units=10) decoder;
 
 
         data ->
@@ -15,7 +18,15 @@ component RNNencdec<Z(2:oo) classes = 10, max_length=5>{
         ArgMax() ->
         softmax[0];
 
-       timed <t> BeamSearch(max_length=5, depth=2, width=2){
+        data ->
+        Flatten() ->
+        Softmax() ->
+        Embedding(output_dim=10) ->
+        encoder;
+
+        encoder.state -> decoder.state;
+
+       timed <t> GreedySearch(max_length=5){
         softmax[t-1] ->
         FullyConnected(units=30) ->
         Softmax() ->

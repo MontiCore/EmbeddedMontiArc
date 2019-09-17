@@ -458,9 +458,11 @@ public class EMADLGenerator {
         }
         contentMap.remove(executeKey);
 
+        String applyBeamSearchMethod = contentMap.get("BeamSearch_" + fullName);
+
         String component = emamGen.generateString(taggingResolver, instance, (MathStatementsSymbol) null);
         FileContent componentFileContent = new FileContent(
-                transformComponent(component, "CNNPredictor_" + fullName, executeMethod, architecture),
+                transformComponent(component, "CNNPredictor_" + fullName, applyBeamSearchMethod, executeMethod, architecture),
                 instance);
 
         for (String fileName : contentMap.keySet()){
@@ -470,7 +472,7 @@ public class EMADLGenerator {
         fileContents.add(new FileContent(readResource("CNNTranslator.h", Charsets.UTF_8), "CNNTranslator.h"));
     }
 
-    protected String transformComponent(String component, String predictorClassName, String executeMethod, ArchitectureSymbol architecture){
+    protected String transformComponent(String component, String predictorClassName, String applyBeamSearchMethod, String executeMethod, ArchitectureSymbol architecture){
         //insert includes
         component = component.replaceFirst("using namespace",
                 "#include \"" + predictorClassName + ".h" + "\"\n" +
@@ -490,6 +492,9 @@ public class EMADLGenerator {
         }
 
         component = component.replaceFirst("public:", networkAttributes);
+
+        //insert BeamSearch method
+        //component = component.replaceFirst("void init\\(\\)", applyBeamSearchMethod + "\nvoid init()");
 
         //insert execute method
         component = component.replaceFirst("void execute\\(\\)\\s\\{\\s\\}",

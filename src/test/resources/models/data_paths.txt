@@ -13,4 +13,4 @@ MultipleOutputs src/test/resources/training_data/MultipleOutputs
 MultipleStreams src/test/resources/training_data/MultipleStreams
 Invariant src/test/resources/training_data/Invariant
 RNNtest src/test/resources/training_data/RNNtest
-instanceTestUnroll.RNNencdec src/test/resources/training_data/Show_attend_tell
+instanceTestUnroll.RNNencdec src/test/resources/training_data/Cifar/data_outArray
