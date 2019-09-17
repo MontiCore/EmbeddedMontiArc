@@ -12,35 +12,26 @@ import simulation.environment.object.ChargingStation;
 public class ChargingStationTest {
 
     @Test
-    public void testApp() throws Exception {
+    public void isOccupied() {
         // Create ChargingStation
         ChargingStation chargingStation = new ChargingStation();
+        try {
+            Assert.assertFalse(chargingStation.isOccupied());
+        } catch (AssertionError e) {
+            System.out.println("New ChargingStation is Occupied");
+            throw e;
+        }
+
         // Create Vehicle
+        /*
         ModelicaPhysicalVehicleBuilder vehicleBuilder = new ModelicaPhysicalVehicleBuilder();
         PhysicalVehicle physicalVehicle = vehicleBuilder.buildPhysicalVehicle();
-
-    }
-
-    // ================================
-    // TODO Test the following Methodes
-    // ================================
-    @Test
-    public void startCharging() {
-        // TODO
-    }
-
-    @Test
-    public void stopCharging() {
-        // TODO
-    }
-
-    @Test
-    public void isOccupied() {
-        // TODO
-    }
-
-    @Test
-    public void carStandingAtTheCS() {
-        // TODO
+        try {
+            Assert.assertTrue(chargingStation.isOccupied());
+        } catch (AssertionError e) {
+            System.out.println("New ChargingStation is Occupied");
+            throw e;
+        }
+        */
     }
 }
