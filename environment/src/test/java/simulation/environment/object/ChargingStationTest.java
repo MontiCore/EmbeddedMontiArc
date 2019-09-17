@@ -43,11 +43,11 @@ public class ChargingStationTest {
         ChargingStation chargingStation = new ChargingStation();
 
         // Test consumption 0
-        double consumption = chargingStation.setConsumption(chargingStation.getConsumption()+0);
-        assertEquals(0, consumption);
+        chargingStation.setConsumption(chargingStation.getConsumption()+0);
+        assertEquals(0, chargingStation.getConsumption());
 
         // Test consumption 100
         consumption = chargingStation.setConsumption(chargingStation.getConsumption()+100);
-        assertEquals(100, consumption);
+        assertEquals(100, chargingStation.getConsumption());
     }
 }
