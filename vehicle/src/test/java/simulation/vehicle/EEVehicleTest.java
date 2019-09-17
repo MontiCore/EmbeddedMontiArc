@@ -17,6 +17,7 @@ import sensors.abstractsensors.AbstractSensor;
 import sensors.factory.SensorFactory;
 import simulation.EESimulator.Bridge;
 import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EESimulator;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
@@ -265,5 +266,16 @@ public class EEVehicleTest {
 
     }
 
+    
+    @Test
+    public void notifySensorsTest() {
+    	PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	EEVehicle eeVehicle = physicalVehicle.getVehicle().getEEVehicle();
+    	eeVehicle.notifySensors(Instant.EPOCH.plusMillis(30));
+    	List<EEDiscreteEvent> events = new ArrayList<EEDiscreteEvent>(eeVehicle.getEESimulator().getEventList());
+    	for(EEDiscreteEvent event : events) {
+    		assertEquals(eeVehicle.getEESimulator().getSimulationTime(), event.getEventTime());
+    	}
+    }
 
 }

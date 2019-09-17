@@ -25,6 +25,7 @@ public class SteeringAngleSensor extends AbstractSensor {
     public SteeringAngleSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                                HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
+        value = 0.d;
     }
 
     @Override

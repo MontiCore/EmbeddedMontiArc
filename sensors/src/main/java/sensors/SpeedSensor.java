@@ -28,6 +28,7 @@ public class SpeedSensor extends AbstractSensor {
     public SpeedSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                        HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator,subscribedMessages,targetsByMessageId);
+        value = 0.d;
     }
 
     @Override

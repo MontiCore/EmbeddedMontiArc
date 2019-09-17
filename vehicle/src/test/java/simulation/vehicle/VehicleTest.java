@@ -9,9 +9,13 @@ package simulation.vehicle;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.AfterClass;
+
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EESimulator;
 import simulation.environment.object.House;
 import simulation.util.Log;
@@ -58,5 +62,15 @@ public class VehicleTest {
         physicalObjects.add(house);
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(vehicle1.getCollision() && !vehicle2.getCollision());
+    }
+    
+    @Test
+    public void executeLoopiterationTest() {
+    	PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle vehicle = physicalVehicle.getVehicle();
+    	EEVehicle eeVehicle = vehicle.getEEVehicle();
+    	vehicle.executeLoopIteration(eeVehicle.getEESimulator().getSimulationTime().plusMillis(30));
+    	List<EEDiscreteEvent> events = new ArrayList<EEDiscreteEvent>(eeVehicle.getEESimulator().getEventList());
+    	for(EEDiscreteEvent event : events) {}
     }
 }
