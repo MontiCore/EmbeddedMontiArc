@@ -2,7 +2,7 @@
 configuration WalkerActor {
     agent_name: "WalkerAgent"
     
-    context: gpu
+    context: cpu
 
     learning_method: reinforcement
     rl_algorithm: td3-algorithm
@@ -16,14 +16,14 @@ configuration WalkerActor {
     noise_clip: 0.5
     policy_delay: 2
 
-    num_episodes: 2500
+    num_episodes: 50
     start_training_at: 1
     
     num_max_steps: 10000
     training_interval: 1
 
     snapshot_interval: 250
-    evaluation_samples: 100
+    evaluation_samples: 20
 
     soft_target_update_rate: 0.005
 
