@@ -44,10 +44,10 @@ public class ChargingStationTest {
 
         // Test consumption 0
         chargingStation.setConsumption(chargingStation.getConsumption()+0);
-        assertEquals(0, chargingStation.getConsumption());
+        Assert.assertTrue(chargingStation.getConsumption() == 0);
 
         // Test consumption 100
         chargingStation.setConsumption(chargingStation.getConsumption()+100);
-        assertEquals(100, chargingStation.getConsumption());
+        Assert.assertTrue(chargingStation.getConsumption() == 100);
     }
 }
