@@ -28,6 +28,7 @@ public class DayNightSensor extends AbstractSensor {
     public DayNightSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                           HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId);
+        value = Daytime.Day;
     }
 
     @Override

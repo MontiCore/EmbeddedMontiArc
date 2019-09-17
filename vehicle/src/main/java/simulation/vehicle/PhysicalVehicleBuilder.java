@@ -80,7 +80,8 @@ public abstract class PhysicalVehicleBuilder {
         this.wheelDistToBack.ifPresent(physicalVehicle::setWheelDistToBack);
         
         //create vehicle that pyhsicalVehicle belongs to
-        new Vehicle(physicalVehicle);
+        physicalVehicle.setVehicle(new Vehicle(physicalVehicle));
+        physicalVehicle.initializeActuators();
         
         physicalVehicle.initPhysics();
         

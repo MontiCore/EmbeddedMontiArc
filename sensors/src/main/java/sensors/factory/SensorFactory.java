@@ -110,6 +110,7 @@ public class SensorFactory {
             }
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
             Log.error("Failed to create sensor " + sensorClass);
+            e.printStackTrace();
         }
         return Optional.empty();
     }

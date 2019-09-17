@@ -8,12 +8,15 @@ package simulation.EESimulator;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
+
+import org.apache.commons.math3.analysis.function.Add;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.bus.BusMessage;
 
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +27,23 @@ import java.util.Optional;
 public class DirectModelAsEEComponent extends ImmutableEEComponent {
     private static final int MAX_TRAJECTORY_LENGTH = 100;
 
+    private static final ArrayList<BusEntry> STANDARD_SUBSCRIBED_MESSAGES = new ArrayList<BusEntry>() {{
+    	add(BusEntry.SENSOR_VELOCITY);
+    	add(BusEntry.SENSOR_GPS_COORDINATES);
+        add(BusEntry.SENSOR_COMPASS);
+        add(BusEntry.ACTUATOR_ENGINE_CURRENT);
+        add(BusEntry.ACTUATOR_BRAKE_CURRENT);
+        add(BusEntry.ACTUATOR_STEERING_CURRENT);
+        add(BusEntry.PLANNED_TRAJECTORY_X);
+        add(BusEntry.PLANNED_TRAJECTORY_Y);
+    }};
+    
+    public static final ArrayList<BusEntry> MASSPOINT_OUTPUT_MESSAGES = new ArrayList<BusEntry>() {{
+    	add(BusEntry.ACTUATOR_STEERING);
+    	add(BusEntry.ACTUATOR_BRAKE);
+        add(BusEntry.ACTUATOR_ENGINE);
+    }};
+    
     HardwareEmulatorInterface model_server;
     int model_id;
     HashMap<String, Serializable> inputs = new HashMap<String, Serializable>();
@@ -34,22 +54,15 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
 
 
     public DirectModelAsEEComponent(HardwareEmulatorInterface model_server, String autopilot_config, EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) throws Exception {
-        super(simulator, EEComponentType.AUTOPILOT, new LinkedList<>(), targetsByMessageId);
-        getSubscribedMessages().add(BusEntry.SENSOR_VELOCITY);
-        getSubscribedMessages().add(BusEntry.SENSOR_GPS_COORDINATES);
-        getSubscribedMessages().add(BusEntry.SENSOR_COMPASS);
-        getSubscribedMessages().add(BusEntry.ACTUATOR_ENGINE_CURRENT);
-        getSubscribedMessages().add(BusEntry.ACTUATOR_BRAKE_CURRENT);
-        getSubscribedMessages().add(BusEntry.ACTUATOR_STEERING_CURRENT);
-        getSubscribedMessages().add(BusEntry.PLANNED_TRAJECTORY_X);
-        getSubscribedMessages().add(BusEntry.PLANNED_TRAJECTORY_Y);
-
+        super(simulator, EEComponentType.AUTOPILOT, STANDARD_SUBSCRIBED_MESSAGES, targetsByMessageId);
         this.model_server = model_server;
         this.model_id = model_server.alloc_autopilot(autopilot_config);
         if (this.model_id < 0){
             String error_msg = model_server.query("get_error_msg");
             throw new Exception("Error allocating autopilot. Config:\n"+autopilot_config+"\n"+error_msg);
         }
+        EEDiscreteEvent nextExecute = new ControllerExecuteEvent(simulator.getSimulationTime().plusMillis(30), this);
+        simulator.addEvent(nextExecute);
     }
 
 
@@ -73,12 +86,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     @Override
     public void processEvent(EEDiscreteEvent event) {
         if (event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
-
             BusMessage currentMessage = (BusMessage) event;
-
-            double timeIncrement = Duration.between(currentMessage.getEventTime(), lastTime).toMillis();
-            lastTime = currentMessage.getEventTime();
-            this.inputs.put("timeIncrement", timeIncrement);
 
             switch (currentMessage.getMessageID()) {
                 case SENSOR_VELOCITY:
@@ -124,7 +132,10 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
             }
 
         } else if (event.getEventType() == EEDiscreteEventTypeEnum.CONTROLLER_EXECUTE_EVENT) {
-
+            double timeIncrement = Duration.between(event.getEventTime(), lastTime).toMillis();
+            lastTime = event.getEventTime();
+            this.inputs.put("timeIncrement", timeIncrement);
+            
             this.outputs = model_server.old_execute(model_id, (Duration.between(lastTime, event.getEventTime()).toMillis() * 1000000), inputs);
 
             Object engine = outputs.get("engine");

@@ -47,7 +47,7 @@ public abstract class AbstractSensor extends ImmutableEEComponent implements Sen
 	@Override
 	public void update(Instant actualTime) {
 		calculateValue();
-		this.sendMessage(this.getValue(), this.getDataLength(), this.getType(), actualTime);
+		this.sendMessage(this.getValue(), this.getDataLength(), this.getType(), this.getSimulator().getSimulationTime());
 	}
 
 	/**

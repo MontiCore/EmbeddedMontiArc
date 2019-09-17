@@ -36,7 +36,7 @@ public class InstantBus extends Bus {
 	@Override
 	protected void registerMessage(BusMessage msg) {
 		msg.transmitBytes(msg.getRemainingBytes(), 0.0);
-		msg.setFinishTime(currentTime);
+		msg.setFinishTime(msg.getEventTime());
 		this.registerMessageAtSimulator(msg);
 	}
 

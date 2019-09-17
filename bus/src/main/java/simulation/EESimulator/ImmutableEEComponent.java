@@ -19,6 +19,9 @@ public abstract class ImmutableEEComponent extends AbstractEEComponent {
 	public ImmutableEEComponent(EESimulator simulator, EEComponentType type, List<BusEntry> subscribedMessages,
 			HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
 		super(simulator, type);
+		if(subscribedMessages == null || targetsByMessageId == null) {
+			throw new IllegalArgumentException("subscribedMessages and targetsByMessageId can not be null");
+		}
 		this.subscribedMessages = subscribedMessages;
 		this.targetsByMessageId = targetsByMessageId;
 	}

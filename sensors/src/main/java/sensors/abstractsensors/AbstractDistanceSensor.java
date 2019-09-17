@@ -23,6 +23,7 @@ public abstract class AbstractDistanceSensor extends AbstractSensor {
     public AbstractDistanceSensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                                   HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(phyiscalVehicle, simulator, subscribedMessages, targetsByMessageId);
+        value = 0.d;
     }
 
 

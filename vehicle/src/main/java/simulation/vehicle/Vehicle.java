@@ -110,11 +110,8 @@ public class Vehicle {
 
         //Set physicalVehicle
         this.physicalVehicle = physicalVehicle;
-        physicalVehicle.setVehicle(this);
         //Set eeVehicle
         this.eeVehicle = createEEVehicle(physicalVehicle);
-        //Register actuators at physical vehicle
-        physicalVehicle.initializeActuators();
         //Register navigation at vehicle
         this.navigation = eeVehicle.getNavigation();
         // Initialise camera image with empty optional

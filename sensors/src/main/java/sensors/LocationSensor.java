@@ -9,6 +9,8 @@ package sensors;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
+
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
@@ -26,7 +28,7 @@ public class LocationSensor extends AbstractSensor {
     public LocationSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                           HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
-
+        value = new ArrayRealVector();
     }
 
     @Override

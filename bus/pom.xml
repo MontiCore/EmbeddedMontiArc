@@ -78,8 +78,6 @@
             <artifactId>hardware_emulator</artifactId>
             <version>1.0.0</version>
         </dependency>
-
-
     </dependencies>
 
     <!-- PROJECT PLUGINS AND PROPERTIES -->

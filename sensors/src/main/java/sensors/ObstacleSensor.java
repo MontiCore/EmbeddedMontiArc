@@ -22,16 +22,18 @@ import java.util.List;
  */
 public class ObstacleSensor extends AbstractSensor {
 
-    private List<PhysicalObject> result = Collections.synchronizedList(new LinkedList<>());
-    private Object[] value = new Object[2];
+    private List<PhysicalObject> result;
+    private Object[] value;
 
     public ObstacleSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                           HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
+    	value = new Object[2];
+    	result = Collections.synchronizedList(new LinkedList<>());
     }
 
     protected void calculateValue() {
-        result.clear();
+    	result.clear();
         //TODO: result.addAll Collections.synchronizedList (Alle physikalischen Objekte in einer Liste brauchen wir)
         value[0] = Double.MAX_VALUE;
         for(PhysicalObject k : result){
