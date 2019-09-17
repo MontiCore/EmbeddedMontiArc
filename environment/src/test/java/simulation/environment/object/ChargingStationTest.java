@@ -15,6 +15,9 @@ public class ChargingStationTest {
     public void isOccupied() {
         // Create ChargingStation
         ChargingStation chargingStation = new ChargingStation();
+        Assert.assertFalse(chargingStation.isOccupied());
+
+        /*
         try {
             Assert.assertFalse(chargingStation.isOccupied());
         } catch (AssertionError e) {
@@ -23,7 +26,6 @@ public class ChargingStationTest {
         }
 
         // Create Vehicle
-        /*
         ModelicaPhysicalVehicleBuilder vehicleBuilder = new ModelicaPhysicalVehicleBuilder();
         PhysicalVehicle physicalVehicle = vehicleBuilder.buildPhysicalVehicle();
         try {
@@ -33,5 +35,19 @@ public class ChargingStationTest {
             throw e;
         }
         */
+    }
+
+    @Test
+    public void setConsumption() {
+        // Create ChargingStation
+        ChargingStation chargingStation = new ChargingStation();
+
+        // Test consumption 0
+        double consumption = chargingStation.setConsumption(chargingStation.getConsumption()+0);
+        assertEquals(0, consumption);
+
+        // Test consumption 100
+        consumption = chargingStation.setConsumption(chargingStation.getConsumption()+100);
+        assertEquals(100, consumption);
     }
 }
