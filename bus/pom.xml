@@ -68,15 +68,11 @@
 			<artifactId>guava</artifactId>
 			<version>11.0.2</version>
 		</dependency>
-        <dependency>
-            <groupId>de.rwth-aachen.se.montisim.simulators</groupId>
-            <artifactId>basic-simulator</artifactId>
-            <version>1.0</version>
-        </dependency>
+
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>hardware_emulator</artifactId>
-            <version>1.0.0</version>
+            <version>${hardwareemulator.version}</version>
         </dependency>
     </dependencies>
 

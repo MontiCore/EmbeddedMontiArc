@@ -44,8 +44,14 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         add(BusEntry.ACTUATOR_ENGINE);
     }};
     
-    HardwareEmulatorInterface model_server;
-    int model_id;
+    boolean newInputs = false;
+    
+    boolean wakeUpNeeded = false;
+    
+    Duration cycleTime;
+    
+    HardwareEmulatorInterface modelServer;
+    int modelId;
     HashMap<String, Serializable> inputs = new HashMap<String, Serializable>();
     HashMap<String, Serializable>  outputs = new HashMap<String, Serializable>();
     Optional<Object> trajectoryX = Optional.empty();
@@ -53,23 +59,37 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     Instant lastTime = Instant.EPOCH;
 
 
-    public DirectModelAsEEComponent(HardwareEmulatorInterface model_server, String autopilot_config, EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) throws Exception {
+    public DirectModelAsEEComponent(HardwareEmulatorInterface modelServer, String autopilotConfig, Duration cycleTime, EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) throws Exception {
         super(simulator, EEComponentType.AUTOPILOT, STANDARD_SUBSCRIBED_MESSAGES, targetsByMessageId);
-        this.model_server = model_server;
-        this.model_id = model_server.alloc_autopilot(autopilot_config);
-        if (this.model_id < 0){
-            String error_msg = model_server.query("get_error_msg");
-            throw new Exception("Error allocating autopilot. Config:\n"+autopilot_config+"\n"+error_msg);
+        this.modelServer = modelServer;
+        this.modelId = modelServer.alloc_autopilot(autopilotConfig);
+        if (this.modelId < 0){
+            String error_msg = modelServer.query("get_error_msg");
+            throw new Exception("Error allocating autopilot. Config:\n"+autopilotConfig+"\n"+error_msg);
         }
-        EEDiscreteEvent nextExecute = new ControllerExecuteEvent(simulator.getSimulationTime().plusMillis(30), this);
-        simulator.addEvent(nextExecute);
+        this.cycleTime = cycleTime;
+        //add controller execute event
+        simulator.addEvent(new ControllerExecuteEvent(simulator.getSimulationTime().plus(cycleTime), this));
+    }
+    
+    public DirectModelAsEEComponent(HardwareEmulatorInterface modelServer, String autopilotConfig, EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) throws Exception {
+    	this(modelServer, autopilotConfig, Duration.ofMillis(30), simulator, targetsByMessageId);
     }
 
 
+    public void setCycleTime(Duration cycleTime) {
+    	this.cycleTime = cycleTime;
+    }
+    
+    public Duration getCycleTime() {
+    	return cycleTime;
+    }
+    
+    
     public void free(){
-        if (model_id >= 0){
-            model_server.free_autopilot(model_id);
-            model_id = -1;
+        if (modelId >= 0){
+            modelServer.free_autopilot(modelId);
+            modelId = -1;
         }
     }
 
@@ -87,7 +107,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     public void processEvent(EEDiscreteEvent event) {
         if (event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
             BusMessage currentMessage = (BusMessage) event;
-
+            newInputs = true;
             switch (currentMessage.getMessageID()) {
                 case SENSOR_VELOCITY:
                     double currentVelocity = (double) currentMessage.getMessage();
@@ -122,7 +142,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
                     this.trajectoryY = Optional.of(currentMessage.getMessage());
                     break;
                 default:
-                    //noop;
+                    throw new IllegalArgumentException("Received unsubscribed Message. Message type was: " + currentMessage.getMessageID().toString());
             }
             if (trajectoryX.isPresent() && trajectoryY.isPresent()) {
                 if (trajectoryX.get() instanceof List<?> && trajectoryY.get() instanceof List<?>) {
@@ -130,34 +150,56 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
                     this.inputs.put("trajectory_length", trajectoryLength);
                 }
             }
-
+            if(wakeUpNeeded) {
+            	executeController(event);
+            }
         } else if (event.getEventType() == EEDiscreteEventTypeEnum.CONTROLLER_EXECUTE_EVENT) {
-            double timeIncrement = Duration.between(event.getEventTime(), lastTime).toMillis();
-            lastTime = event.getEventTime();
-            this.inputs.put("timeIncrement", timeIncrement);
-            
-            this.outputs = model_server.old_execute(model_id, (Duration.between(lastTime, event.getEventTime()).toMillis() * 1000000), inputs);
-
-            Object engine = outputs.get("engine");
-            if (engine != null) {
-                this.sendMessage(engine, 6, BusEntry.ACTUATOR_ENGINE, event.getEventTime());
+            if(newInputs) {
+            	executeController(event);
+            } 
+            else {
+            	wakeUpNeeded = true;
             }
-
-            Object brakes = outputs.get("brakes");
-            if (brakes != null) {
-                this.sendMessage(brakes, 6, BusEntry.ACTUATOR_BRAKE, event.getEventTime());
-            }
-
-            Object steering = outputs.get("steering");
-            if (steering != null) {
-                this.sendMessage(steering, 6, BusEntry.ACTUATOR_STEERING, event.getEventTime());
-            }
-            EEDiscreteEvent nextExecute = new ControllerExecuteEvent(event.getEventTime().plusMillis(30), this);
-            this.getSimulator().addEvent(nextExecute);
         } else {
             throw new IllegalArgumentException("DirectModelAsEEComponent expect BusMessage or ControllerExecuteEvent as event. Event was: " + event.getEventType());
         }
     }
+
+	private void executeController(EEDiscreteEvent event) {
+		double timeIncrement = Duration.between(event.getEventTime(), lastTime).toMillis();
+		lastTime = event.getEventTime();
+		this.inputs.put("timeIncrement", timeIncrement);
+		
+		Duration delay = modelServer.time_execute(modelId, Duration.between(lastTime, event.getEventTime()));
+		this.outputs = modelServer.get_outputs(modelId);
+		Instant finishTime = event.getEventTime().plus(delay);
+		
+		Object engine = outputs.get("engine");
+		if (engine != null) {
+		    this.sendMessage(engine, 6, BusEntry.ACTUATOR_ENGINE, finishTime);
+		}
+
+		Object brakes = outputs.get("brakes");
+		if (brakes != null) {
+		    this.sendMessage(brakes, 6, BusEntry.ACTUATOR_BRAKE, finishTime);
+		}
+
+		Object steering = outputs.get("steering");
+		if (steering != null) {
+		    this.sendMessage(steering, 6, BusEntry.ACTUATOR_STEERING, finishTime);
+		}
+		
+		//set next execute event
+		Instant nextExecuteTime = event.getEventTime().plus(cycleTime);
+		if(finishTime.isBefore(nextExecuteTime)) {
+			this.getSimulator().addEvent(new ControllerExecuteEvent(nextExecuteTime, this));
+		}
+		else {
+			this.getSimulator().addEvent(new ControllerExecuteEvent(finishTime, this));
+		}
+		wakeUpNeeded = false;
+		newInputs = false;
+	}
 
 
     private int processTrajectory(List<Double> xCoords, List<Double> yCoords) {

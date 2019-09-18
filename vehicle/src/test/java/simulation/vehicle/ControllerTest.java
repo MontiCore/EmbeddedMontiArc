@@ -64,11 +64,23 @@ public class ControllerTest {
         for(BusEntry busEntry : DirectModelAsEEComponent.MASSPOINT_OUTPUT_MESSAGES) {
         	targetsByMessageId.put(busEntry, Collections.singletonList(eeVehicle.getBusList().get(0)));
         }
-		DirectModelAsEEComponent controller = new DirectModelAsEEComponent(modelServer, AUTOPILOT_CONFIG, eeVehicle.getEESimulator(), targetsByMessageId);
-		eeVehicle.getBusList().get(0).registerComponent(controller);
-		vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(30));
+		DirectModelAsEEComponent ecu = new DirectModelAsEEComponent(modelServer, AUTOPILOT_CONFIG, eeVehicle.getEESimulator(), targetsByMessageId);
+		eeVehicle.getBusList().get(0).registerComponent(ecu);
+		vehicle.executeLoopIteration(eeVehicle.getEESimulator().getDeltaSimulationTime().plusMillis(30));
 		
-		vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(30));
+		//ecu emits 3 messages
+		int controllerMessagesCount = 0;
+		for(EEDiscreteEvent event : eeVehicle.getEESimulator().getEventList()) {
+			if(event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
+				BusMessage msg = (BusMessage) event;
+				if(msg.getControllerID() == ecu.getId()) {
+					controllerMessagesCount++;
+				}
+			}
+		}
+		
+		vehicle.executeLoopIteration(eeVehicle.getEESimulator().getDeltaSimulationTime().plusMillis(30));
+	
 		boolean initialValuesChanged = false;
 		for(Map.Entry<VehicleActuator, Double> initialValueByActuator : initialValuesByActuator.entrySet()) {
 			if(Math.abs(initialValueByActuator.getKey().getActuatorValueTarget()-initialValueByActuator.getValue()) > 0.001) {
