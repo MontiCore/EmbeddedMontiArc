@@ -265,7 +265,6 @@ public class EEVehicleTest {
         assertEquals(brakeReference.getActuatorValueCurrent(), vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).get().getActuatorValueCurrent());
 
     }
-
     
     @Test
     public void notifySensorsTest() {
@@ -273,8 +272,22 @@ public class EEVehicleTest {
     	EEVehicle eeVehicle = physicalVehicle.getVehicle().getEEVehicle();
     	eeVehicle.notifySensors(Instant.EPOCH.plusMillis(30));
     	List<EEDiscreteEvent> events = new ArrayList<EEDiscreteEvent>(eeVehicle.getEESimulator().getEventList());
+    	assertEquals(eeVehicle.getSensorList().size(), events.size());
     	for(EEDiscreteEvent event : events) {
     		assertEquals(eeVehicle.getEESimulator().getSimulationTime(), event.getEventTime());
+    	}
+    }
+    
+    @Test
+    public void notifyActuatorsTest() {
+    	PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	EEVehicle eeVehicle = physicalVehicle.getVehicle().getEEVehicle();
+    	Instant endTime = eeVehicle.getEESimulator().getSimulationTime().plusMillis(30);
+    	eeVehicle.notifyActuator(endTime);
+    	List<EEDiscreteEvent> events = new ArrayList<EEDiscreteEvent>(eeVehicle.getEESimulator().getEventList());
+    	assertEquals(eeVehicle.getActuatorList().size(), events.size());
+    	for(EEDiscreteEvent event : events) {
+    		assertEquals(endTime, event.getEventTime());
     	}
     }
 
