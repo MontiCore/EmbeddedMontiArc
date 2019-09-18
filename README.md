@@ -9,19 +9,21 @@ This generator is part of an composite generator and does not create an executab
 
 ## Getting Started
 
-These instructions will get this project up and running on your **Ubuntu** system
+These instructions will get this project installed on your **Ubuntu** system
 
 ### Installing project
 
-Download this project to your computer
+[Download](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2mqtt/-/archive/master/emam2mqtt-master.zip) this project to your computer
 
-[Download](https://maven.apache.org/guides/getting-started/) and install Maven
+[Download](https://openjdk.java.net/install/) and install Java JDK (alternatively via `apt install openjdk-8-jdk`)
+
+[Download](https://maven.apache.org/guides/getting-started/) and install Maven (alternatively via `apt install maven`)
 
 [Download](https://www.eclipse.org/downloads/) and install Ecplise IDE
 
 Import the project as "Maven Project" in Eclipse
 
-Open terminal and switch to your project directory
+Open terminal and switch to the root of your project directory
 
 In terminal run
 
@@ -33,17 +35,17 @@ Open terminal
 
 Add new MQTT repository
 
-`sudo apt-add-repository ppa:mosquitto-dev/mosquitto-ppa`
+`apt-add-repository ppa:mosquitto-dev/mosquitto-ppa`
 
 Run update
 
-`sudo apt-get update`
+`apt-get update`
 
 Install mosquitto and mosquitto-clients
 
-`sudo apt-get install mosquitto`
+`apt install mosquitto`
 
-`sudo apt-get install mosquitto-clients`
+`apt install mosquitto-clients`
 
 ### Installing MQTT broker (locally on Windows)
 
@@ -57,7 +59,7 @@ Mosquitto is now available and can be accessed via command line using `mosquitto
 
 Open terminal and run
 
-`sudo apt-get install build-essential gcc make cmake cmake-gui cmake-curses-gui`
+`apt install build-essential gcc make cmake`
 
 #### Installing PahoMQTT C library
 run 
@@ -75,7 +77,7 @@ cd paho.mqtt.cpp
 cmake -Bbuild -H. -DPAHO_WITH_SSL=OFF
 sudo cmake --build build/ --target install
 ```
-#### Set environment variables for MQTT
+#### Set environment variables for MQTT (optional)
 additionaly, you can set the environment variables for MQTT libs and includes directory by modifying the environment file on your system
 ```bash
 sudo nano /etc/environment
