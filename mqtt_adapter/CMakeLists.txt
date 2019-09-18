@@ -1,4 +1,3 @@
-
 # Setting cmake version
 cmake_minimum_required(VERSION 3.1...3.14)
 if(${CMAKE_VERSION} VERSION_LESS 3.12)
@@ -9,15 +8,10 @@ endif()
 set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 
-# Setting search paths for cmake modules
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
-
 # Setting project name and description
-project(MqttAdapter VERSION 1.0
-                  DESCRIPTION "MQTT adapter"
-                  LANGUAGES CXX)
+project(tests.a.compA)
 
-set(SEARCH_MQTT FALSE)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 
 # Check is environment variable was set
 IF(DEFINED ENV{MQTT_INCLUDE_DIR} AND DEFINED ENV{MQTT_LIBS})
@@ -36,14 +30,15 @@ CallbackN.cpp
 CallbackZ.cpp
 CallbackB.cpp
 MqttAdapter_tests_a_compA.cpp
-tests_a_compA.cpp
 CallbackQ.hpp
 CallbackN.hpp
 CallbackZ.hpp
 CallbackB.hpp
 MqttAdapter_tests_a_compA.h
-tests_a_compA.h
 )
+
+list(APPEND LIBRARIES tests_a_compA)
+list(APPEND LIBRARIES IAdapter_tests_a_compA)
 
 # Checking if everything was found
 if(SEARCH_MQTT)
@@ -58,10 +53,10 @@ if(SEARCH_MQTT)
 endif()
 
 # Adding include directory to a target
-target_include_directories(MqttAdapter_tests_a_compA PUBLIC ${MQTT_INCLUDE_DIR})
+target_include_directories(MqttAdapter_tests_a_compA PUBLIC ${LIBRARIES} ${MQTT_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Linking libraries to target
-target_link_libraries(MqttAdapter_tests_a_compA PUBLIC ${MQTT_LIBS})
+target_link_libraries(MqttAdapter_tests_a_compA PUBLIC ${LIBRARIES} ${MQTT_LIBS})
 
 # Export target to a cmake module file for outside usage
-export(TARGETS MqttAdapter_tests_a_compA FILE MqttAdapter_tests_a_compA.cmake)
+export(TARGETS MqttAdapter_tests_a_compA FILE MQTTAdapter_tests_a_compA.cmake)
