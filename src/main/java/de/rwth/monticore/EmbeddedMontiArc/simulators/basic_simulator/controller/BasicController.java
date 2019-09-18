@@ -23,6 +23,8 @@ import simulation.simulator.SimulationType;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 public class BasicController extends SimulationLoopNotifiable implements Runnable {
@@ -70,7 +72,7 @@ public class BasicController extends SimulationLoopNotifiable implements Runnabl
         //Setup simulator
         Simulator.resetSimulator();
         simulator = Simulator.getSharedInstance();
-        simulator.setSimulationDuration(config.max_sim_duration*1000);
+        simulator.setSimulationDuration(Duration.ofMillis(config.max_sim_duration*1000));
         simulator.setSimulationLoopFrequency((int) config.sim_frequ);
         simulator.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
         simulator.setStartDaytime(config.time.toDate());
@@ -90,18 +92,18 @@ public class BasicController extends SimulationLoopNotifiable implements Runnabl
         result.export();
     }
 
-    @Override
+
     public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
         this.result.setup_next_frame(totalTime);
         System.out.print("T: "+totalTime);
     }
 
-    @Override
+
     public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {
         if (simulationObject instanceof PhysicalVehicle){
             PhysicalVehicle vehicle = ((PhysicalVehicle) simulationObject);
             if (this.result.add_car_frame(vehicle)){
-                simulator.setSimulationDuration(1000+simulator.getSimulationTime());
+                simulator.setSimulationDuration(Duration.between(Instant.EPOCH, simulator.getSimulationTime().plusMillis(1000)));
             }
         }
     }
