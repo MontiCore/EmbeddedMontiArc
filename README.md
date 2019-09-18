@@ -64,7 +64,7 @@ Open terminal and run
 #### Installing PahoMQTT C library
 run 
 ```bash
-git clone https://github.com/eclipse/paho.mqtt.c.git
+git clone https://github.com/eclipse/paho.mqtt.c
 cd paho.mqtt.c
 cmake -Bbuild -H. -DPAHO_WITH_SSL=OFF
 sudo cmake --build build/ --target install
