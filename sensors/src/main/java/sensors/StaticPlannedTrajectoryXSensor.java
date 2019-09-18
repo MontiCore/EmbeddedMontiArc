@@ -9,9 +9,13 @@ package sensors;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
+import org.apache.commons.lang3.Validate;
 import simulation.EESimulator.EESimulator;
 import sensors.abstractsensors.StaticPlannedTrajectorySensor;
 import simulation.EESimulator.EEComponent;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,6 +26,14 @@ public class StaticPlannedTrajectoryXSensor extends StaticPlannedTrajectorySenso
 										  HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<Double> trajectoryX) {
     	super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId, trajectoryX);
     }
+
+	public StaticPlannedTrajectoryXSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+										  HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+		super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId);
+	}
+
+
+
 
 	public static BusEntry getSensorType() {
 		return BusEntry.PLANNED_TRAJECTORY_X;

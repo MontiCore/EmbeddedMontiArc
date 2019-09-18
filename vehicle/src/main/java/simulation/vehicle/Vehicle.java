@@ -13,6 +13,7 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navig
 import org.apache.commons.math3.linear.RealVector;
 import sensors.abstractsensors.AbstractSensor;
 import sensors.util.SensorUtil;
+import simulation.EESimulator.DirectModelAsEEComponent;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.EESimulator.NavigationBlockAsEEComponent;
@@ -174,6 +175,9 @@ public class Vehicle {
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR, bus));
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, bus));
         components.add(VehicleActuator.createVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE, bus));
+
+        //create autopilot
+        components.add(DirectModelAsEEComponent.createDirectModelAsEEComponent(bus));
 
         //create navigation
         components.add(NavigationBlockAsEEComponent.createNavigationBlockAsEEComponent(bus));

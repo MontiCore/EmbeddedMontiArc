@@ -15,20 +15,29 @@ import simulation.EESimulator.EESimulator;
 import org.apache.commons.lang3.Validate;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 public abstract class StaticPlannedTrajectorySensor extends  AbstractSensor {
 
-    private final List<Double> trajectory;
+    private List<Double> trajectory;
 
     public StaticPlannedTrajectorySensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<Double> trajectory) {
         super(phyiscalVehicle,simulator, subscribedMessages, targetsByMessageId);
         Validate.notNull(trajectory);
+        List<Double> defensiveCopy = new ArrayList<>(trajectory);
+        Validate.noNullElements(defensiveCopy);
+        this.trajectory = Collections.unmodifiableList(defensiveCopy);
+    }
+
+    public StaticPlannedTrajectorySensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                                         HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(phyiscalVehicle,simulator, subscribedMessages, targetsByMessageId);
+    }
+
+    public void initializeTrajectory(List<Double> trajectoryX) {
+        Validate.notNull(this.trajectory);
         List<Double> defensiveCopy = new ArrayList<>(trajectory);
         Validate.noNullElements(defensiveCopy);
         this.trajectory = Collections.unmodifiableList(defensiveCopy);

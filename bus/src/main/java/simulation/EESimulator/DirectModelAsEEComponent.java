@@ -11,17 +11,13 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareE
 
 import org.apache.commons.math3.analysis.function.Add;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.bus.Bus;
 import simulation.bus.BusMessage;
 
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
+import java.util.*;
 
 
 public class DirectModelAsEEComponent extends ImmutableEEComponent {
@@ -53,14 +49,32 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     Instant lastTime = Instant.EPOCH;
 
 
-    public DirectModelAsEEComponent(HardwareEmulatorInterface model_server, String autopilot_config, EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) throws Exception {
-        super(simulator, EEComponentType.AUTOPILOT, STANDARD_SUBSCRIBED_MESSAGES, targetsByMessageId);
-        this.model_server = model_server;
-        this.model_id = model_server.alloc_autopilot(autopilot_config);
-        if (this.model_id < 0){
-            String error_msg = model_server.query("get_error_msg");
-            throw new Exception("Error allocating autopilot. Config:\n"+autopilot_config+"\n"+error_msg);
+    public static DirectModelAsEEComponent createDirectModelAsEEComponent(Bus bus) {
+        return createDirectModelAsEEComponent(Collections.singletonList(bus));
+    }
+
+    public static DirectModelAsEEComponent createDirectModelAsEEComponent(List<Bus> buses) {
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        targetsByMessageId.put(BusEntry.ACTUATOR_BRAKE, new LinkedList<>());
+        targetsByMessageId.put(BusEntry.ACTUATOR_STEERING, new LinkedList<>());
+        targetsByMessageId.put(BusEntry.ACTUATOR_ENGINE, new LinkedList<>());
+        for (Bus bus : buses) {
+            if (bus.subscribedMessages.contains(BusEntry.ACTUATOR_ENGINE)) {
+                targetsByMessageId.get(BusEntry.ACTUATOR_ENGINE).add(bus);
+            }
+            if (bus.subscribedMessages.contains(BusEntry.ACTUATOR_STEERING)) {
+                targetsByMessageId.get(BusEntry.ACTUATOR_STEERING).add(bus);
+            }
+            if (bus.subscribedMessages.contains(BusEntry.ACTUATOR_BRAKE)) {
+                targetsByMessageId.get(BusEntry.ACTUATOR_BRAKE).add(bus);
+            }
         }
+        return new DirectModelAsEEComponent(buses.get(0).getSimulator(), targetsByMessageId);
+    }
+
+
+    public DirectModelAsEEComponent(EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(simulator, EEComponentType.AUTOPILOT, STANDARD_SUBSCRIBED_MESSAGES, targetsByMessageId);
         EEDiscreteEvent nextExecute = new ControllerExecuteEvent(simulator.getSimulationTime().plusMillis(30), this);
         simulator.addEvent(nextExecute);
     }
@@ -70,6 +84,15 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         if (model_id >= 0){
             model_server.free_autopilot(model_id);
             model_id = -1;
+        }
+    }
+
+    public void initializeController(HardwareEmulatorInterface model_server, String autopilot_config) throws Exception {
+        this.model_server = model_server;
+        this.model_id = model_server.alloc_autopilot(autopilot_config);
+        if (this.model_id < 0){
+            String error_msg = model_server.query("get_error_msg");
+            throw new Exception("Error allocating autopilot. Config:\n"+autopilot_config+"\n"+error_msg);
         }
     }
 
@@ -85,6 +108,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
 
     @Override
     public void processEvent(EEDiscreteEvent event) {
+        //buffer new values arrived by busMessage
         if (event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
             BusMessage currentMessage = (BusMessage) event;
 
@@ -131,6 +155,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
                 }
             }
 
+        // execute controller with buffered values
         } else if (event.getEventType() == EEDiscreteEventTypeEnum.CONTROLLER_EXECUTE_EVENT) {
             double timeIncrement = Duration.between(event.getEventTime(), lastTime).toMillis();
             lastTime = event.getEventTime();

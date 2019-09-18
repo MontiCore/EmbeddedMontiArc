@@ -123,6 +123,11 @@ public class EEVehicle {
 				bridgeList.add(newBridge);
 			}
 
+			if (busStructure.getAutopilot() != null) {
+				navigation = Optional.of(NavigationBlockAsEEComponent.createNavigationBlockAsEEComponent(busList.get((int) busStructure.getAutopilot().busAndParameter[0])));
+				busList.get((int) busStructure.getAutopilot().busAndParameter[0]).registerComponent(navigation.get());
+			}
+
 		} catch (IOException e) {
 			throw  new IllegalArgumentException("Can not create EEVehicle. Failed to read file: " + data);
 		}
@@ -147,6 +152,10 @@ public class EEVehicle {
 			case SENSOR:
 				this.sensorList.add((AbstractSensor) component);
 			case AUTOPILOT:
+				if(navigation.isPresent()){
+					throw new IllegalStateException("Autopilot can only be set once");
+				}
+				autoPilot = (DirectModelAsEEComponent) component;
 				break;
 			case BRIDGE:
 				this.bridgeList.add((Bridge) component);
@@ -260,6 +269,10 @@ public class EEVehicle {
 			}
 		}
 		this.sensorList.add(sensor);
+	}
+
+	public void setAutoPilot(DirectModelAsEEComponent autoPilot) {
+		this.autoPilot = autoPilot;
 	}
 
 	/**
@@ -459,6 +472,7 @@ class ParsableBusStructureProperties {
 	private List<Pair> actuators = new LinkedList<>();
 	private List<Pair> bridges = new LinkedList<>();
 	private Pair autopilot;
+	private Pair controller;
 
 	public ParsableBusStructureProperties(EEVehicle vehicle) {
 
@@ -488,7 +502,7 @@ class ParsableBusStructureProperties {
 					processedBridges.add(bridge);
 				}
 			}
-			if (bus.getConnectedComponents().contains(vehicle.getAutoPilot())) {
+			if (bus.getConnectedComponents().contains(vehicle.getNavigation())) {
 				autopilot = new Pair("navigation", busIdArr);
 			}
 
