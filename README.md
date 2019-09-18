@@ -59,7 +59,7 @@ Mosquitto is now available and can be accessed via command line using `mosquitto
 
 Open terminal and run
 
-`apt install build-essential gcc make cmake`
+`apt install build-essential gcc make cmake git`
 
 #### Installing PahoMQTT C library
 run 
