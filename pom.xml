@@ -41,6 +41,8 @@
         <controller.version>1.0.3-EE-SNAPSHOT</controller.version>
         <server.version>1.0.7</server.version>
         <rmimodelserver.version>1.1.3</rmimodelserver.version>
+		<hardwareemulator.version>1.0.0-EE-SNAPSHOT</hardwareemulator.version>
+
 
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.3</compiler.plugin>

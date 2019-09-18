@@ -187,9 +187,14 @@ public class EEVehicle {
 	}
 
 	public void executeLoopIteration(Instant time) {
-		this.notifySensors(time);
-		this.eeSimulator.simulateNextTick(time);
-		this.notifyActuator(time);
+		if(time.isAfter(this.eeSimulator.getSimulationTime())) {
+			System.out.println("Notify sensors");
+			this.notifySensors(time);
+			System.out.println("SimulateNextTick");
+			this.eeSimulator.simulateNextTick(time);
+			System.out.println("Notify Actuator");
+			this.notifyActuator(time);
+		}
 	}
 
 	/**
