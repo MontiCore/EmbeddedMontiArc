@@ -253,7 +253,7 @@ public class Parser2D implements IParser {
 
                 this.chargingStations.add(new ChargingStation(
                         node.getId(),
-                        new Node2D(node.getLongitude(), node.getLatitude(), 0),
+                        new Node2D(node.getLongitude(), node.getLatitude(), 0, node.getId()),
                         Integer.parseInt(capacity),
                         name)
                 );
