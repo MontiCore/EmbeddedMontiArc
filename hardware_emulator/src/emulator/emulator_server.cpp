@@ -49,8 +49,8 @@ JNIEXPORT void JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardwa
 	EmulatorManager::instance.emulators[id]->exec_Event( unused_time );
 }
 
-JNIEXPORT jlong JNICALL Java_simulator_integration_HardwareEmulatorInterface_time_1execute
-( JNIEnv *, jobject, jint id) {
+JNIEXPORT jlong JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_HardwareEmulatorInterface_time_1execute
+(JNIEnv*, jobject, jint id){
 	return EmulatorManager::instance.emulators[id]->time_execute();
 }
 
