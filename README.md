@@ -77,7 +77,7 @@ cd paho.mqtt.cpp
 cmake -Bbuild -H. -DPAHO_WITH_SSL=OFF
 sudo cmake --build build/ --target install
 ```
-#### Set environment variables for MQTT
+#### Set environment variables for MQTT (optional)
 additionaly, you can set the environment variables for MQTT libs and includes directory by modifying the environment file on your system
 ```bash
 sudo nano /etc/environment
