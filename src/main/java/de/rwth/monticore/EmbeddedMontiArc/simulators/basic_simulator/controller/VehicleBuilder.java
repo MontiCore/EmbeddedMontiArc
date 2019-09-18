@@ -6,7 +6,7 @@
  */
 package de.rwth.monticore.EmbeddedMontiArc.simulators.basic_simulator.controller;
 
-import commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.basic_simulator.filesystem.MapData;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point2D;
 import sensors.StaticPlannedTrajectoryXSensor;
@@ -70,8 +70,7 @@ public class VehicleBuilder {
         //  setup the vehicle's trajectory
         Map<String, List<Double>> trajectoryCoordinates = getTrajectoryCoordinates(trajectory.trajectory);
         Vehicle simVehicle = new Vehicle(physicalVehicle);
-        DirectModelAsEEComponent controller = DirectModelAsEEComponent.createDirectModelAsEEComponent(simVehicle.getEEVehicle().getBusList().get(0), model_server, config.autopilot_config);
-        simVehicle.getEEVehicle().setAutoPilot(controller);
+        simVehicle.getEEVehicle().getAutoPilot().initializeController(model_server, config.autopilot_config);
 
         HashMap<BusEntry, LinkedList<EEComponent>> targetsByMessageIdX = new HashMap<>();
         LinkedList<EEComponent> compListX = new LinkedList<>();
