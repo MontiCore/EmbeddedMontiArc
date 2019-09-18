@@ -65,16 +65,22 @@ public class ChargingStationNavigatorTest {
         environmentVariables.set("SIM_SERVER", "");
         environmentVariables.set("SIM_PORT", "");
         // Should return 0L since server is not configured
-        long id = ChargingStationNavigator.getNearestChargingStationFromServer(267028542L);
+        long id = ChargingStationNavigator.getNearestChargingStationFromServer("", 267028542L);
         assertEquals(0L, id);
 
         environmentVariables.set("SIM_SERVER", "localhost");
         environmentVariables.set("SIM_PORT", "8888");
         PowerMockito.mockStatic(ServerRequest.class);
         PowerMockito.when(ServerRequest.sendChargingStationRequest(
-                "http://localhost:8888", "supercharger", 1111111)).thenReturn("999999");
+                "localhost", "8888", "id", 1111111)).thenReturn("999999");
         // Should query from server since server is provided
-        id = ChargingStationNavigator.getNearestChargingStationFromServer(1111111);
+        id = ChargingStationNavigator.getNearestChargingStationFromServer("id", 1111111);
         assertEquals(999999L, id);
+
+        PowerMockito.when(ServerRequest.sendChargingStationRequest(
+                "localhost", "8888", "id", 1111111)).thenReturn("randomstuff");
+        // Should query from server since server is provided
+        id = ChargingStationNavigator.getNearestChargingStationFromServer("id", 1111111);
+        assertEquals(0, id);
     }
 }

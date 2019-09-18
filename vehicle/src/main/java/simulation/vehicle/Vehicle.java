@@ -971,7 +971,10 @@ public class Vehicle{
             if (isElectricVehicle() && !gotoCharginstation && battery.get().getBatteryPercentage() <= 20) {
                 gotoCharginstation = true;
                 try {
-                    long nearestcharg = ChargingStationNavigator.getNearestChargingStation(ChargingStationNavigator.RealVectortoOSMID(this.physicalVehicle.getPosition()));
+                    long nearestcharg = ChargingStationNavigator.getNearestChargingStation(
+                            physicalVehicle.getGlobalId(),
+                            ChargingStationNavigator.RealVectortoOSMID(this.physicalVehicle.getPosition())
+                    );
                     RealVector point3d = ChargingStationNavigator.getPositionOfOsmNode(nearestcharg);
                     navigateTo(new ControllerNode(Geometry.realVector2Point3D(point3d), nearestcharg));
                 } catch (Exception e) {

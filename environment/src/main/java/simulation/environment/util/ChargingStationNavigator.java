@@ -39,16 +39,15 @@ public class ChargingStationNavigator {
      *
      * @param from reference osm node
      * @return OsmID of the nearest station
-     * 1. If it locates in current sector, return the OsmID of that station.
-     * 2. If it locates in other sector, OsmID will be the an edge Node where the vehicle will be switched to
+     * 1 If it locates in current sector, return the OsmID of that station.
+     * 2 If it locates in other sector, OsmID will be the an edge Node where the vehicle will be switched to
      * other sector by the server.
-     * 3. 0 if no charging station can be found.
+     * 3 0 if no charging station can be found.
      */
-
     static ChargingStation nearestCS = null;
 
-    public static long getNearestChargingStation(long from) {
-        long result = getNearestChargingStationFromServer(from);
+    public static long getNearestChargingStation(String vehilcleGlobalId, long from) {
+        long result = getNearestChargingStationFromServer(vehilcleGlobalId, from);
         if (result != 0) {
             return result;
         }
@@ -63,32 +62,32 @@ public class ChargingStationNavigator {
         return 0;
     }
 
-    static long getNearestChargingStationFromServer(long from) {
-        ChargingStation station = null;
+    static long getNearestChargingStationFromServer(String globalId, long from) {
+        long result = 0;
 
         String serverHost = System.getenv("SIM_SERVER");
         String serverPort = System.getenv("SIM_PORT");
         if (serverHost.equals("") || serverPort.equals("")) {
-            return 0;
+            return result;
         }
 
         String resp = "";
         try {
             resp = ServerRequest.sendChargingStationRequest(
-                    "http://" + serverHost + ":" + serverPort,
-                    WorldModel.getInstance().getParser().getMapName(),
+                    serverHost, serverPort,
+                    globalId,
                     from);
         } catch (Exception e) {
             Log.warn(e);
             e.printStackTrace();
         }
 
-        if (resp.equals("")) {
-            return 0;
-        } else {
-            // TODO validate format of resp
-            return Long.valueOf(resp);
+        try {
+            result = Long.valueOf(resp);
+        } catch (NumberFormatException ignore){
+            Log.info("Unexpected server response: " + resp + ". Expect a number.");
         }
+        return result;
     }
 
     static long getNearestChargingStationFromLocalSector(long from) throws Exception {
@@ -97,7 +96,7 @@ public class ChargingStationNavigator {
 
         try {
             // Iterate over all charging stations in current sector and find the nearest charging station
-            Collection<ChargingStation> stations = WorldModel.getInstance().getParser().getChargingStations();
+            Collection<ChargingStation> stations = WorldModel.getInstance().getContainer().getChargingStations();
             for (ChargingStation station : stations) {
                 ChargingStation tmp = station;
 

@@ -16,13 +16,14 @@ import java.util.List;
 
 public class ServerRequest {
 
-    public static String sendChargingStationRequest(String uri, String mapName, long osmID){
+    public static String sendChargingStationRequest(String host, String port, String vehicleGlobalId, long osmID){
         CloseableHttpClient client = HttpClients.createDefault();
+        String uri = String.format(
+                "http://%s:%s/vehicle/%s/navigate-to-charging-station", host, port, vehicleGlobalId);
         HttpPost req = new HttpPost(uri);
         try {
             List<NameValuePair> form = new ArrayList<NameValuePair>();
-            form.add(new BasicNameValuePair("mapName", mapName));
-            form.add(new BasicNameValuePair("node", String.valueOf(osmID)));
+            form.add(new BasicNameValuePair("from", String.valueOf(osmID)));
             req.setEntity(new UrlEncodedFormEntity(form));
 
             CloseableHttpResponse resp = client.execute(req);
