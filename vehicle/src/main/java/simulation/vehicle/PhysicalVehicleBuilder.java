@@ -6,21 +6,16 @@
  */
 package simulation.vehicle;
 
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
+import java.util.Optional;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealVector;
-import simulation.EESimulator.EESimulator;
-
-import java.util.Optional;
 
 /**
  * Abstract Builder class for a PhysicalVehicle to avoid complex constructors
  */
 public abstract class PhysicalVehicleBuilder {
-
-	protected Optional<Vehicle> vehicle = Optional.empty();
 	
     protected Optional<RealVector> position = Optional.empty();
     protected Optional<Rotation> rotation = Optional.empty();
@@ -41,8 +36,6 @@ public abstract class PhysicalVehicleBuilder {
 
     //TODO: Add actuators to the build process and to the JSON serialisation
 
-    protected Optional<Optional<FunctionBlockInterface>> navigation = Optional.empty();
-
     /**
      * Constructor
      */
@@ -55,7 +48,7 @@ public abstract class PhysicalVehicleBuilder {
      *
      * @return PhysicalVehicle that was built with the builder
      */
-    public PhysicalVehicle buildPhysicalVehicle() {
+    public PhysicalVehicle buildPhysicalVehicle(Vehicle vehicle) {
     	PhysicalVehicle physicalVehicle = this.createPhysicalVehicle();
         
     	if(this.velocity.isPresent()) {
@@ -65,7 +58,7 @@ public abstract class PhysicalVehicleBuilder {
     		physicalVehicle.setAngularVelocity(this.calculateAngularVelocity(angularVelocity.get()));
     	}
     	
-    	this.vehicle.ifPresent(physicalVehicle::setVehicle);
+    	physicalVehicle.setVehicle(vehicle);
     	
     	this.mass.ifPresent(physicalVehicle::setMass);
 
@@ -78,11 +71,7 @@ public abstract class PhysicalVehicleBuilder {
         this.wheelDistLeftRightBackSide.ifPresent(physicalVehicle::setWheelDistLeftRightBackSide);
         this.wheelDistToFront.ifPresent(physicalVehicle::setWheelDistToFront);
         this.wheelDistToBack.ifPresent(physicalVehicle::setWheelDistToBack);
-        
-        //create vehicle that pyhsicalVehicle belongs to
-        physicalVehicle.setVehicle(new Vehicle(physicalVehicle));
-        physicalVehicle.initializeActuators();
-        
+                
         physicalVehicle.initPhysics();
         
         this.position.ifPresent(physicalVehicle::setPosition);
@@ -104,6 +93,7 @@ public abstract class PhysicalVehicleBuilder {
     
     abstract void setVelocity(PhysicalVehicle vehicle, RealVector velocity);
 
+    
     public PhysicalVehicleBuilder setPosition(RealVector position){
         this.position = Optional.of(position);
         return this;
@@ -166,11 +156,6 @@ public abstract class PhysicalVehicleBuilder {
 
     public  PhysicalVehicleBuilder setWheelDistToBack(double wheelDistToBack){
         this.wheelDistToBack = Optional.of(wheelDistToBack);
-        return this;
-    }
-
-    public PhysicalVehicleBuilder setNavigation(Optional<FunctionBlockInterface> navigation) {
-        this.navigation = Optional.of(navigation);
         return this;
     }
 }

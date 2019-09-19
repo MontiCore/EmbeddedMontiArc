@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 import simulation.util.Log;
 import simulation.util.MathHelper;
 
@@ -52,15 +53,17 @@ public class ModelicaPhysicalVehicleTest {
 
     @Test(expected = IllegalStateException.class)
     public void setHeightFail(){
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
         physicalVehicle.setHeight(1.0);
     }
 
     @Test
     public void executeLoopIterationNoFlags(){
         // Set up normal vehicle
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
-
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
+        
         // Set values for vehicle actuators
         VehicleActuator throttle = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE);
         throttle.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_MIN);
@@ -123,8 +126,6 @@ public class ModelicaPhysicalVehicleTest {
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
-        Vehicle vehicle = physicalVehicle.getVehicle();
-
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
         throttleReference.update(Instant.EPOCH.plusMillis(33));
         brakeReference.update(Instant.EPOCH.plusMillis(33));
@@ -145,7 +146,8 @@ public class ModelicaPhysicalVehicleTest {
     @Test
     public void executeLoopIterationCollisionFlag(){
         // Set up vehicle with collision
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
         physicalVehicle.setCollision(true);
 
         // Set values for vehicle actuators
@@ -180,8 +182,6 @@ public class ModelicaPhysicalVehicleTest {
 
 
         // Execute loop iteration
-        Vehicle vehicle = physicalVehicle.getVehicle();
-
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
         steeringReference.update(Instant.EPOCH.plusMillis(33));
 
@@ -201,7 +201,8 @@ public class ModelicaPhysicalVehicleTest {
     @Test
     public void executeLoopIterationErrorFlag(){
         // Set up vehicle with an error
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
         physicalVehicle.setError(true);
 
         // Set values for vehicle actuators
@@ -220,8 +221,6 @@ public class ModelicaPhysicalVehicleTest {
         double steeringValueReference = steering.getActuatorValueCurrent();
 
         // Execute loop iteration
-        Vehicle vehicle = physicalVehicle.getVehicle();
-
         vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
 
         // All actuators should not be updated
@@ -235,7 +234,8 @@ public class ModelicaPhysicalVehicleTest {
 
     @Test
     public void setPositionNormal(){
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
         RealVector position = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
         physicalVehicle.setPosition(position);
         Assert.assertTrue(MathHelper.vectorEquals(position, physicalVehicle.getPosition(), 0.00000001));
@@ -249,7 +249,8 @@ public class ModelicaPhysicalVehicleTest {
 
     @Test
     public void setRotationNormal(){
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 1.0, 2.0, 3.0);
         RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
         physicalVehicle.setRotation(rotation);
@@ -272,13 +273,15 @@ public class ModelicaPhysicalVehicleTest {
 
     @Test(expected = IllegalStateException.class)
     public void setVelocityInitialised(){
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
         physicalVehicle.setVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
     }
 
     @Test(expected = IllegalStateException.class)
     public void setAngularVelocityInitialized(){
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
         physicalVehicle.setAngularVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
     }
 
@@ -292,14 +295,15 @@ public class ModelicaPhysicalVehicleTest {
 
     @Test(expected = IllegalStateException.class)
     public void setMassFail() {
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
         physicalVehicle.setMass(1000.0);
     }
 
     @Test
     public void setGeometryPositionNormal(){
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
-        RealVector geometryPosition = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();        RealVector geometryPosition = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
         physicalVehicle.setGeometryPosition(geometryPosition);
         Assert.assertTrue(MathHelper.vectorEquals(geometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
     }
@@ -312,8 +316,8 @@ public class ModelicaPhysicalVehicleTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void setGeometryPositionOffsetFail(){
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
-        physicalVehicle.setGeometryPositionOffset(new ArrayRealVector(3));
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();        physicalVehicle.setGeometryPositionOffset(new ArrayRealVector(3));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -324,7 +328,16 @@ public class ModelicaPhysicalVehicleTest {
 
     @Test(expected = IllegalStateException.class)
     public void initPhysicsFail(){
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
         physicalVehicle.initPhysics();
+    }
+    
+    private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
+    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
     }
 }

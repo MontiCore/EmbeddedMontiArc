@@ -27,6 +27,7 @@ import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EEDiscreteEventTypeEnum;
 import simulation.EESimulator.EESimulator;
 import simulation.bus.BusMessage;
+import simulation.bus.InstantBus;
 
 public class ControllerTest {
 
@@ -38,10 +39,13 @@ public class ControllerTest {
 	@Test
 	public void testController() throws Exception {
 		HardwareEmulatorInterface modelServer = new HardwareEmulatorInterface("autopilots_folder=autopilots", "");
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        Vehicle vehicle = physicalVehicle.getVehicle();
-        EEVehicle eeVehicle = vehicle.getEEVehicle();
-        EESimulator eeSimulator = eeVehicle.getEESimulator();
+		PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+		EEVehicle eeVehicle = vehicle.getEEVehicle();
         
         //get actuators
         VehicleActuator steering = vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).get();
@@ -78,6 +82,8 @@ public class ControllerTest {
 				}
 			}
 		}
+		
+		assertEquals(3, controllerMessagesCount);
 		
 		vehicle.executeLoopIteration(eeVehicle.getEESimulator().getDeltaSimulationTime().plusMillis(30));
 	

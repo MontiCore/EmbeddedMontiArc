@@ -591,12 +591,12 @@ public class FlexRayTest {
 			sub1.registerComponent(component);
 		}
 
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(sub1, sub2), Duration.ZERO);
+		new Bridge(new ImmutablePair<Bus, Bus>(sub1, sub2), Duration.ZERO);
 		FlexRay main = new FlexRay(EEsim);// mainComponents
 		for (EEComponent component : mainComponents) {
 			main.registerComponent(component);
 		}
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(main, sub1), Duration.ZERO);
+		new Bridge(new ImmutablePair<Bus, Bus>(main, sub1), Duration.ZERO);
 		return main;
 	}
 

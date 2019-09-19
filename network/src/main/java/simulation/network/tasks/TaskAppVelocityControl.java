@@ -246,7 +246,7 @@ public class TaskAppVelocityControl extends NetworkTask {
         // Only perform this for vehicles
         if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
             PhysicalVehicle physicalVehicle = (PhysicalVehicle) (networkNode.getPhysicalObject());
-            Vehicle vehicle = new Vehicle(physicalVehicle);
+            Vehicle vehicle = physicalVehicle.getVehicle();
 
             // Get velocity sensor value
             double currentVelocity = 0.0;

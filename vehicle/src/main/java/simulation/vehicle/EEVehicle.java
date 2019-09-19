@@ -52,8 +52,6 @@ public class EEVehicle {
 
 	private final Vehicle vehicle;
 
-	private DirectModelAsEEComponent autoPilot;
-
 	private List<Bus> busList = new LinkedList<>();
 
 	private List<AbstractSensor> sensorList = new LinkedList<>();
@@ -119,7 +117,7 @@ public class EEVehicle {
 			}
 
 			for (ParsableBusStructureProperties.Pair bridge : busStructure.getBridges()) {
-				Bridge newBridge = new Bridge(eeSimulator, Pair.of(busList.get((int) bridge.busAndParameter[0]), busList.get((int) bridge.busAndParameter[1])), Duration.ofMillis((long) bridge.busAndParameter[2]));
+				Bridge newBridge = new Bridge(Pair.of(busList.get((int) bridge.busAndParameter[0]), busList.get((int) bridge.busAndParameter[1])), Duration.ofMillis((long) bridge.busAndParameter[2]));
 				bridgeList.add(newBridge);
 			}
 
@@ -131,7 +129,7 @@ public class EEVehicle {
 
 
 
-	public EEVehicle(Vehicle vehicle, EESimulator eeSimulator, List<Bus> buses, List<EEComponent> components) {
+	public EEVehicle(Vehicle vehicle, EESimulator eeSimulator, Set<Bus> buses, List<EEComponent> components) {
 		this.vehicle = vehicle;
 		this.eeSimulator = eeSimulator;
 		this.busList = new ArrayList<Bus>(buses);
@@ -244,10 +242,6 @@ public class EEVehicle {
 			}
 		}
 		return Optional.empty();
-	}
-
-	public DirectModelAsEEComponent getAutoPilot() {
-		return this.autoPilot;
 	}
 
 	/**
@@ -463,7 +457,7 @@ class ParsableBusStructureProperties {
 	private List<Pair> sensors = new LinkedList<>();
 	private List<Pair> actuators = new LinkedList<>();
 	private List<Pair> bridges = new LinkedList<>();
-	private Pair autopilot;
+	private Pair navigation;
 
 	public ParsableBusStructureProperties(EEVehicle vehicle) {
 
@@ -493,8 +487,8 @@ class ParsableBusStructureProperties {
 					processedBridges.add(bridge);
 				}
 			}
-			if (bus.getConnectedComponents().contains(vehicle.getAutoPilot())) {
-				autopilot = new Pair("navigation", busIdArr);
+			if (vehicle.getNavigation().isPresent() && bus.getConnectedComponents().contains(vehicle.getNavigation().get())) {
+				navigation = new Pair("navigation", busIdArr);
 			}
 
 			busId++;
@@ -519,7 +513,7 @@ class ParsableBusStructureProperties {
 		return sensors;
 	}
 
-	public Pair getAutopilot() {
-		return autopilot;
+	public Pair getNavigation() {
+		return navigation;
 	}
 }

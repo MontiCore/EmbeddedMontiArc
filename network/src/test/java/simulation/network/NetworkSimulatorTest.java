@@ -10,9 +10,16 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Discrete
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.Test;
+
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 import simulation.network.settings.SettingsSimple;
 import simulation.util.Log;
 import simulation.vehicle.PhysicalVehicle;
+import simulation.vehicle.PhysicalVehicleBuilder;
+import simulation.vehicle.Vehicle;
+import simulation.vehicle.EEVehicle;
+import simulation.vehicle.EEVehicleBuilder;
 import simulation.vehicle.MassPointPhysicalVehicleBuilder;
 
 import java.time.Duration;
@@ -40,9 +47,15 @@ public class NetworkSimulatorTest {
         NetworkStatistics.resetInstance();
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
-        PhysicalVehicle vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
-        NetworkNode networkNode = new NetworkNode(vehicle1);
+        PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+		PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
+		physicalVehicle.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
+        NetworkNode networkNode = new NetworkNode(physicalVehicle);
 
         List<NetworkNode> nodeList = new LinkedList<>();
         nodeList.add(networkNode);
@@ -72,9 +85,15 @@ public class NetworkSimulatorTest {
         NetworkStatistics.resetInstance();
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
-        PhysicalVehicle vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
-        NetworkNode networkNode = new NetworkNode(vehicle1);
+        PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+		PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
+		physicalVehicle.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
+        NetworkNode networkNode = new NetworkNode(physicalVehicle);
 
         List<NetworkNode> nodeList = new LinkedList<>();
         nodeList.add(networkNode);
@@ -105,9 +124,15 @@ public class NetworkSimulatorTest {
         NetworkStatistics.resetInstance();
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
-        PhysicalVehicle vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
-        NetworkNode networkNode = new NetworkNode(vehicle1);
+        PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+		PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
+		physicalVehicle.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
+        NetworkNode networkNode = new NetworkNode(physicalVehicle);
 
         List<NetworkNode> nodeList = new LinkedList<>();
         nodeList.add(networkNode);
@@ -147,9 +172,15 @@ public class NetworkSimulatorTest {
         NetworkStatistics.resetInstance();
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
-        PhysicalVehicle vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
-        NetworkNode networkNode = new NetworkNode(vehicle1);
+        PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+		PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();        
+		physicalVehicle.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
+        NetworkNode networkNode = new NetworkNode(physicalVehicle);
 
         List<NetworkNode> nodeList = new LinkedList<>();
         nodeList.add(networkNode);

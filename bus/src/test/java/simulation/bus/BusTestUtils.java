@@ -68,14 +68,15 @@ public class BusTestUtils {
         for (EEComponent component : comps3) {
             bus3.registerComponent(component);
         }
+        buses.add(bus3);
 
         //add new buses to structure as they are implemented
 
-        new Bridge(eeSimulator, new ImmutablePair<Bus, Bus>(bus1, bus2), Duration.ofMillis(1));
+        new Bridge(new ImmutablePair<Bus, Bus>(bus1, bus2), Duration.ofMillis(1));
 
-        new Bridge(eeSimulator, new ImmutablePair<Bus, Bus>(bus2, bus3), Duration.ZERO);
+        new Bridge(new ImmutablePair<Bus, Bus>(bus2, bus3), Duration.ZERO);
 
-        new Bridge(eeSimulator, new ImmutablePair<Bus, Bus>(bus1, bus3), Duration.ofNanos(200));
+        new Bridge(new ImmutablePair<Bus, Bus>(bus1, bus3), Duration.ofNanos(200));
 
         return buses;
     }
