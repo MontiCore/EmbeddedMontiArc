@@ -1,0 +1,353 @@
+<!--
+
+    (c) https://github.com/MontiCore/monticore
+
+    The license generally applicable for this project
+    can be found under https://github.com/MontiCore/monticore
+
+-->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Unbekannt </title></head><body>
+<p><img alt="basic-simulator" src="basic-sim-banner-1.png" title="Basic-simulator."/></p>
+<h1 id="basic-simulator">basic-simulator</h1>
+<p>This project is a minimal setup running the MontiSim simulator in a self-contained jar.</p>
+<h2 id="quickstart">Quickstart</h2>
+<p>If you know about MontiSim and Maven, the following will suffice you:</p>
+<blockquote>
+<p><code>bash
+git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator
+cd basic-simulator
+mvn clean install -s settings.xml</code>
+The resulting jar (<code>install/basic-simulator.jar</code>) can be launched normally in any folder and will create
+the required sub-folders and export the needed libraries to run simulations.</p>
+</blockquote>
+<p>If not, the following documents aim at giving an introduction to project building, the basic-simulator, Maven, scripts and MontiSim.</p>
+<h1 id="documentation-contents">Documentation Contents</h1>
+<ul>
+<li><a href="#installing-and-using-the-basic-simulator"><strong>Installing and using the Basic Simulator</strong></a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#using-the-basic-simulator">Using the Basic Simulator</a></li>
+<li><a href="#scenario-format">Scenario format</a></li>
+<li><a href="#working-on-maven-projects">Working on Maven projects</a></li>
+<li><a href="#debugging-the-simulator">Debugging the simulator</a></li>
+<li><a href="#maven-project-tutorial"><strong>Maven Project tutorial</strong></a></li>
+<li><a href="#git-recap">Git Recap</a></li>
+<li><a href="#merge-requests">Merge requests</a></li>
+<li><a href="#maven-projects">Maven Projects</a></li>
+<li><a href="#maven-dependency-system">Maven dependency system</a></li>
+<li><a href="#scripts-tutorial"><strong>Scripts tutorial</strong></a></li>
+<li><a href="#montisim-overview"><strong>MontiSim overview</strong></a></li>
+</ul>
+<h1 id="installing-and-using-the-basic-simulator">Installing and using the Basic Simulator</h1>
+<h2 id="installation">Installation</h2>
+<p>This repository is a <a href="https://maven.apache.org/">Maven</a> project. You will need the Java Developpment Kit (minimum version 8), Maven and <a href="https://git-scm.com/">git</a> installed.</p>
+<p>In a folder (we recommend making a "MontiSim" folder containing all the cloned projects), clone the repository using the following in the terminal:
+<code>bash
+git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator</code>
+This will create a folder named <code>basic-simulator</code> and download the contents of this repository inside.</p>
+<p>
+</p><details>
+<summary><b>NOTE</b>: How to open a bash in a specific working directory rapidly.</summary>
+
+&gt; Under Linux choose *Right Clic -&gt; Open in terminal* on or inside the folder.
+&gt;
+&gt; In Windows Type "cmd" in the navigation bar of the windows explorer and press *Enter*.
+&gt;
+&gt; ![Select the navigation bar.](docs/images/cmd1.png "Select the navigation bar.")
+&gt;
+&gt; ![Type in "cmd" then press Enter.](docs/images/cmd2.png "Type in cmd then press Enter.")
+
+</details>
+<p/>
+
+<p>To compile the Maven project, run the following command:
+<code>bash
+mvn clean install -s settings.xml</code>
+This will execute the target "install" of the maven project which will compile, test and create a jar of the project. 
+It will then put the jar in the <code>install</code> directory of this project as well as in the <strong>local maven repository</strong>. 
+More on Maven in the <a href="#project_tutorial">Maven Project tutorial</a> section. </p>
+<blockquote>
+<p><strong>NOTE</strong>: Don't forget the <code>-s settings.xml</code> option. This tells Maven where the dependencies of the MontiSim project are located 
+(<em>in the <strong>Nexus</strong> of the Software Engineering Chair</em>).</p>
+</blockquote>
+<p>The <code>install</code> folder contains a script to start the simulator as well as a sample map, scenario and autopilot that can be 
+executed.</p>
+<h2 id="using-the-basic-simulator">Using the Basic Simulator</h2>
+<p>The compiled jar file can be executed with this java command:
+<code>bash
+java -jar basic-simulator.jar</code></p>
+<p>This will open a window listing the available <strong>autopilots</strong>, <strong>maps</strong>, <strong>scenarios</strong> and simulation <strong>results</strong>. These are 
+located alongside the <code>basic-simulator.jar</code> file inside folders with the same names.</p>
+<h3 id="scenarios">Scenarios</h3>
+<p>By selecting a <strong>scenario</strong>, you can press the "Start Simulation" button to run this scenario in the simulator.</p>
+<p><img alt="Scenario select." src="usage-1.png" title="Select a scenario and press the button."/></p>
+<blockquote>
+<p><strong>NOTE</strong>: <em>Currently the output of the simulation is only shown in the bash.</em></p>
+</blockquote>
+<p>You can start a simulation directly without interacting with the GUI by passing a scenario name as command line argument
+to the simulator:
+<code>bash
+java -jar basic-simulator.jar straight</code></p>
+<blockquote>
+<ul>
+<li><em>This would start a simulation directly with the scenario "straight"</em></li>
+<li><em>This can be used in a script as well</em></li>
+</ul>
+</blockquote>
+<h3 id="maps">Maps</h3>
+<p>By selecting a map, you can have an overview of its content.</p>
+<p>TODO Selecting start and end positions from the map.</p>
+<h3 id="results">Results</h3>
+<p>By selecting a result in the list, you have an overview of the map and see a dot for the simulated vehicles that move at 4x the speed of the simulation.</p>
+<p>TODO navigate the timeline, set playback speed, start/pause/stop playback.</p>
+<p>TODO Add data visualization tabs for frame based data.</p>
+<h2 id="scenario-format">Scenario format</h2>
+<p>The Basic Simulator uses <strong>JSON</strong> scenarios. This is for easier prototyping and parsing of the scenarios. The scenario <a href="install/scenarios/straight.json">straight</a> is a good
+example of how to configure a scenario. For the complete configuration entries currently supported, look at the entries in the 
+<a href="src/main/java/de/rwth_aachen/se/montisim/simulators/basic_simulator/controller/BasicController.java#L35">BasicController.ScenarioSettings</a> Enum.
+The configuration specific to vehicles can be seen in 
+<a href="src/main/java/de/rwth_aachen/se/montisim/simulators/basic_simulator/controller/VehicleBuilder.java#L72">VehicleBuilder.VehicleSettings</a>.</p>
+<h2 id="working-on-maven-projects">Working on Maven projects</h2>
+<ul>
+<li>To easily work on maven projects, you can use the <a href="https://www.jetbrains.com/idea/">IntelliJ</a> editor.</li>
+<li>To automatically import a Maven project inside IntelliJ, open the <strong>pom.xml</strong> file with IntelliJ (<em>Open with... -&gt; IntelliJ</em>).</li>
+<li>You can enable "<strong>Auto import</strong>" in the IntelliJ settings (<em>File -&gt; Settings -&gt; Build, Execution, Deployment -&gt; Build Tools -&gt; Maven -&gt; Import Maven projects automatically</em>).
+  This will try to update the project when the <em>pom.xml</em> file is changed or Maven has downloaded new dependencies.</li>
+</ul>
+<h3 id="compiling">Compiling</h3>
+<p>Compiling might not work in IntelliJ natively because of the complex dependency setup of the simulator. Because of this compile the project using
+the Maven command (<em>mvn clean install ...</em>), the easiest is to have it in a script.</p>
+<p>To avoid running all the tests <em>when compiling for a small change</em> (<strong>always run the tests before commiting/pushing</strong>), add the <strong>-DskipTests</strong> argument to the 
+maven command. (<code>mvn clean install -s settings.xml -DskipTests</code>)</p>
+<h2 id="debugging-the-simulator">Debugging the simulator</h2>
+<p>This setup of the MontiSim simulator is local and self-contained. This allows you to run the java debugger on the jar.</p>
+<p>For this create a Run/Debug configuration that executes the jar and specify a folder in which to run it. (Ex: the <em>install</em> folder inside the basic-simulator project).
+You can then start the simulator in normal or debug mode, set breakpoints and step through almost the entire code. </p>
+<p>(<strong>NOTE</strong>: To step through the <a href="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/hardware_emulator">Hardware Emulator</a> you need to attach a C++
+debugger to the Java simulator process and set breakpoints in the HardwareEmulator library.)</p>
+<p>
+</p><details>
+<summary>IntelliJ configuration example for running the jar in the **install** folder:</summary>
+
+&gt; ![Config1](docs/images/config1.png "Select Edit configurations.")
+&gt;
+&gt; ![Config2](docs/images/config2.png "Create a new JAR config.")
+&gt;
+&gt; ![Config3](docs/images/config3.png "Select the jar and the working directory.")
+
+</details>
+<p/>
+
+<h1 id="maven-project-tutorial">Maven Project tutorial</h1>
+<h2 id="git-recap">Git Recap</h2>
+<p>Using Git is central to working with EmbeddedMontiArc projects since they are all hosted on the GitLab instance of RWTH. For a graphical user interface you can use <a href="https://desktop.github.com/">GitHub Desktop</a> and link the different repositories in its interface. This allows to stage, commit, push, pull and merge from the GUI. For installing GitHub Desktop under linux, check out <a href="https://github.com/shiftkey/desktop">this repository</a>.</p>
+<p>The following is a recap of the git process and a list of usefull git commands.</p>
+<h3 id="gitignore">Gitignore</h3>
+<p>The <code>.gitignore</code> file contains folder and file names or patterns (using the wildcard <strong>*</strong>) of files that will not be included in any way in the reporitory: the files will not be listed in the unstaged changes. To explicitely include a file use the negative pattern <code>!name_to_include</code>.</p>
+<h3 id="git-branches-and-repositories">Git branches and repositories</h3>
+<p>Git works by having <strong>remote</strong> and <strong>local</strong> repositories. The remote repositories are hosted on the GitLab and are common to everybody. The local repositories are an instance of a remote repository somewhere in a folder on your computer (e.g. created through <code>git clone &lt;link.git&gt;</code>).</p>
+<p>Every repository can have multiple <strong>branches</strong>: different versions of the repository content. To create a branch locally use <code>git checkout &lt;branchName&gt;</code>. If the branch exists in the remote repository, it will update the local files to the state of the remote repository. The changes made to the local repository will be attributed to the current branch.</p>
+<p>Changes to files in the local repository are at first in an <em>unstaged</em> state. By <em>staging</em> them (<code>git add ...</code>), they will be part of the next commit. When a commit is created with <code>git commit -m "Commit Description"</code>, only the staged changes will be included in it.</p>
+<p>Commits are only in the local repository at first. The state between the local and the remote repository is handled with the <code>git pull</code> and <code>git push</code> commands. <em>Pulling</em> is downloading the lastest changes from the remote repository. <em>Pushing</em> is sending the local commits to the remote repository.</p>
+<h3 id="usefull-git-commands">Usefull Git Commands</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>git status</code></td>
+<td>Shows the state of the local repository (changes, commits, ...)</td>
+</tr>
+<tr>
+<td><code>git clone &lt;repo&gt;</code></td>
+<td>Creates a folder and copies the remote repository to it.</td>
+</tr>
+<tr>
+<td><code>git checkout branch</code></td>
+<td>If the local branch exists: update the files to the state of the branch. If not, creates a local branch.</td>
+</tr>
+<tr>
+<td><code>git add .</code></td>
+<td>Stages all the local changes (except for files and folders in the <em>.gitignore</em>)</td>
+</tr>
+<tr>
+<td><code>git stash</code></td>
+<td>Resets the unstaged changes but stores them in a <em>stash</em>.</td>
+</tr>
+<tr>
+<td><code>git commit -m "commit description"</code></td>
+<td>Creates a commit with all the staged changes.</td>
+</tr>
+<tr>
+<td><code>git push</code></td>
+<td>Sends all the local commits to the remote repository.</td>
+</tr>
+<tr>
+<td><code>git branch</code></td>
+<td>Shows the active branch</td>
+</tr>
+<tr>
+<td><code>git pull</code></td>
+<td>Downloads the last changes of the remote repository to the local one. Tries to merge the changes with the local changes. Can create <em>Merge Conflicts</em>.</td>
+</tr>
+<tr>
+<td><code>git merge &lt;branch&gt;</code></td>
+<td>Pulls the content of the specified <em>branch</em> into the active branch.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="merge-requests">Merge requests</h2>
+<p>The Master branch of the projects represent their current latest stand. To put the changes from a branch into the master, a <em>Merge Request</em> has to be created on the branch webpage. For a branch to be merged into the master, following criteria must be met:
+- The branch contains the latest commit of the master.
+- All merge conflicts with the master branch are resolved.
+- For Maven projects, the project version number must be incremented from the current master state.</p>
+<h2 id="maven-projects">Maven Projects</h2>
+<p>A maven project contains Java source code, tests, resources and a description file, the <code>pom.xml</code> file.</p>
+<h3 id="project-structure">Project Structure</h3>
+<p>The project folder contains the <code>pom.xml</code> file. The maven commands must be run in the folder containing this file. Alongside this file is the <code>src</code> folder, containing all the code and resources. The <code>src</code> folder contains two sub-folders: <code>main</code> and <code>test</code>. These specify if the contents are for the final jar or if they are the sources and resources of the JUnit tests.</p>
+<p>The <code>main</code> and <code>test</code> folders then in turn contain a <code>java</code> folder with all the <code>.java</code> files. The folder structure for the sources should match the java package structure even if maven does not care and will read any java source file as-is from this sub-folder. </p>
+<p>Alongside the <code>java</code> folder can be a <code>resource</code> folder with files that will be packaged into the jar for the <code>main</code> target or be available to the <code>test</code> target.</p>
+<p><img alt="Maven project structure" src="maven-structure-1.svg"/></p>
+<p>The <code>target</code> folder is created by maven when building the project and contains all the temporary files. It can be deleted at any time and should not appear in the remote repository.</p>
+<p>There can be any other folder alongside those mentionned here in the project folder. (Example: <code>docs</code> folder with documentation, graphics, ..., a <code>scripts</code> folder with various scripts, ...)</p>
+<h3 id="pom-file">Pom file</h3>
+<p>The <code>pom.xml</code> file is what describes the details of the project to maven.</p>
+<p>The following entries describe the group, id, version and name of the project:
+<code>xml
+&lt;groupId&gt;de.rwth-aachen.se.montisim.simulators&lt;/groupId&gt;
+&lt;artifactId&gt;basic-simulator&lt;/artifactId&gt;
+&lt;version&gt;1.1&lt;/version&gt;
+&lt;name&gt;basic-simulator&lt;/name&gt;</code></p>
+<p>The <code>&lt;properties&gt;</code> entry allows to define variables. Example:
+<code>xml
+&lt;properties&gt;
+    &lt;montisim.commons.version&gt;1.0.9&lt;/montisim.commons.version&gt;
+    &lt;java.version&gt;1.8&lt;/java.version&gt;
+&lt;/properties&gt;</code>
+Where the <code>&lt;montisim.commons.version&gt;1.0.9&lt;/montisim.commons.version&gt;</code> entry can be used as follow in the rest of the pom: <code>${montisim.commons.version}</code>. Generally the properties entries look as follow: <code>&lt;var_name&gt;VALUE&lt;/var_name&gt;</code> and can be used as: <code>${var_name}</code> and will resolve to <code>VALUE</code>.</p>
+<p>The <code>&lt;dependencies&gt;</code> entry contains a list of project dependencies that will be used in the project. An example entry would be:
+<code>xml
+&lt;dependencies&gt;
+    ...
+    &lt;dependency&gt;
+        &lt;groupId&gt;montisim&lt;/groupId&gt;
+        &lt;artifactId&gt;commons&lt;/artifactId&gt;
+        &lt;version&gt;${montisim.commons.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    ...
+&lt;/dependencies&gt;</code>
+More on the dependency system in the next section.</p>
+<p>The <code>pom.xml</code> file also contains a list of <strong>plugins</strong> for the build process. This is the way of configuring the steps of the build process in maven. They are executed when running the <code>mvn install ...</code> command.</p>
+<p>The plugin handling java compilation is <code>maven-compiler-plugin</code>, the plugin handling the testing is <code>maven-surefire-plugin</code>. The <code>maven-shade-plugin</code> plugin handles the creation of the <em>fat-jar</em> (jar containing all the dependencies that can be executed as standalone). </p>
+<p>The <code>license-maven-plugin</code> plugin will check that the content of a specified license file is at the top of all the files of the project. When adding new files to the project, it is good to run maven once before commiting to include the license headers in the new files.</p>
+<p>The <code>&lt;plugin&gt;</code> entries are used to specify which version of those plugins to use and to set their settings.</p>
+<p>Finally the <code>settings.xml</code> file contains information about the remote maven repositories containing all the dependencies of MontiSim.</p>
+<h2 id="maven-dependency-system">Maven dependency system</h2>
+<p>A <strong>dependency</strong> in the <code>pom.xml</code> describes a needed <strong>artifact</strong> for the project. When building, maven will do the following:
+1. Look inside the <strong>local maven repository</strong> (<code>%HOME_DIR%\.m2\repository</code>) for the artifact with the given version.
+2. If not found, look-up the different <strong>remote maven repositories</strong> for the artifact and download it to the local repository. The <code>settings.xml</code> file includes the <strong>nexus</strong> repository of the SE-chair, which contains the artifacts of all the master branches of the projects of the SE-GitLab (MontiSim, MontiCore, ...).</p>
+<p>When running the <code>install</code> target of maven (<code>mvn clean install ...</code>), if the compilation and tests succeed, the resulting <em>artifact</em> will be placed in the <strong>local repository</strong> (overriding any artifact with the same id and version).</p>
+<p>This means that to make local changes to a <strong>dependency</strong> of a project, the project of the dependency can be compiled locally and will be available to the other project through the local maven repository.</p>
+<h3 id="versionning">Versionning</h3>
+<p><em>Comming Soon</em></p>
+<blockquote>
+<ul>
+<li>Maven dependency system: nexus, local repository and versioning</li>
+<li>Nexus: from the SE chair, contains all the versions from the master branch. Linked to in settings.xml.</li>
+<li>Local repository: (.m2/repository in your user folder) contains the dependencies from the nexus + the projects compiled using the "install" target: you can override versions/...</li>
+<li>Versioning: use next version with -SNAPSHOT when developing in a branch. Refer to this version locally. The commit that will be merged to master must NOT contain the -SNAPSHOT.</li>
+<li>Maven plug-ins: build targets and plug-ins</li>
+<li>Gitlab CI and other Repository plug-ins</li>
+<li>CI stages, runners</li>
+</ul>
+<p>git config credential.helper store</p>
+</blockquote>
+<h1 id="scripts-tutorial">Scripts tutorial</h1>
+<p><em>Comming Soon</em></p>
+<blockquote>
+<ul>
+<li>Recommendation: create scripts to automate processes that take more than one short step.</li>
+<li>Cheatsheet: most usefull commands under linux and windows.</li>
+<li>
+<p>Use cases: building, inter-project copy, testing.</p>
+</li>
+<li>
+<p>chmod +x filename.sh</p>
+</li>
+<li>msbuild -verbosity:quiet build\hardware-emulator.sln /m /p:Configuration=Release /p:Platform=x64</li>
+<li>sudo apt-get install -y default-jdk</li>
+<li>sudo apt-get install -y openjdk-8-jdk</li>
+</ul>
+</blockquote>
+<h1 id="montisim-overview">MontiSim overview</h1>
+<p><em>Comming Soon</em></p>
+<blockquote>
+<ul>
+<li>Project Structure</li>
+<li>Simulation project</li>
+<li>Vehicle</li>
+<li>Maps</li>
+<li>Simulator</li>
+<li>Autopilots</li>
+<li>RMIModelServer</li>
+<li>Basic Simulator</li>
+<li>Distributed System</li>
+<li>RPC</li>
+<li>Restful</li>
+</ul>
+</blockquote>
+<h3 id="markdown-tests">Markdown Tests</h3>
+<ul>
+<li>[x] Completed task</li>
+<li>[ ] Incomplete task</li>
+<li>[ ] Sub-task 1</li>
+<li>[x] Sub-task 2</li>
+<li>
+<p>[ ] Sub-task 3</p>
+</li>
+<li>
+<p>[x] Completed task</p>
+</li>
+<li>[ ] Incomplete task</li>
+<li>[ ] Sub-task 1</li>
+<li>[x] Sub-task 2</li>
+</ul>
+<p><code>#F00</code><br/>
+<code>#F00A</code><br/>
+<code>#FF0000</code><br/>
+<code>#FF0000AA</code><br/>
+<code>RGB(0,255,0)</code><br/>
+<code>RGB(0%,100%,0%)</code><br/>
+<code>RGBA(0,255,0,0.3)</code><br/>
+<code>HSL(540,70%,50%)</code><br/>
+<code>HSLA(540,70%,50%,0.3)</code></p>
+<p><code>mermaid
+graph TD;
+  A--&gt;B;
+  A--&gt;C;
+  B--&gt;D;
+  C--&gt;D;</code></p>
+<p><code>math
+a^2+b^2=c^2</code>
+- {+ addition 1 +}
+- [+ addition 2 +]
+- {- deletion 3 -}
+- [- deletion 4 -]</p>
+<p>Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:</p>
+<p>:zap: You can use emoji anywhere GFM is supported. :v:</p>
+<p>You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.</p>
+<p>If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.</p>
+<p>Consult the <a href="https://www.emojicopy.com">Emoji Cheat Sheet</a> for a list of all supported emoji codes. :thumbsup:</p>
+<p>The formula for water is H<sub>2</sub>O
+while the equation for the theory of relativity is E = mc<sup>2</sup>.</p>
+<dl>
+  <dt>Definition list</dt>
+  <dd>Is something people use sometimes.</dd>
+
+  <dt>Markdown in HTML</dt>
+  <dd>Does *not* work **very** well. HTML <em>tags</em> will <b>always</b> work.</dd>
+</dl>
+</body></html>
