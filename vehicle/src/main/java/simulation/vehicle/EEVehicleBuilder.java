@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.vehicle;
 
 import java.time.Duration;
@@ -79,7 +85,8 @@ public class EEVehicleBuilder {
         	targetsByMessageId.put(busEntry, targets);
         }
 		try {
-			comp = Optional.of(new DirectModelAsEEComponent(modelServer, autopilotConfig, eeSimulator, targetsByMessageId));
+			comp = Optional.of(new DirectModelAsEEComponent(eeSimulator, targetsByMessageId));
+			comp.get().initializeController(modelServer, autopilotConfig);
 			components.add(comp.get());
 		} catch (Exception e) {
 			Log.error("Could not generate controller");

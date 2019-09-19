@@ -44,6 +44,7 @@ public class ControllerTest {
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
 		InstantBus bus = new InstantBus(eeSimulator);
 		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		DirectModelAsEEComponent ecu = eeVehicleBuilder.createController(modelServer, AUTOPILOT_CONFIG, bus).get();
 		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
 		EEVehicle eeVehicle = vehicle.getEEVehicle();
         
@@ -63,13 +64,6 @@ public class ControllerTest {
         initialValuesByActuator.put(brakeFR, brakeFR.getActuatorValueTarget());
         initialValuesByActuator.put(motor, motor.getActuatorValueTarget());
 
-
-        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        for(BusEntry busEntry : DirectModelAsEEComponent.MASSPOINT_OUTPUT_MESSAGES) {
-        	targetsByMessageId.put(busEntry, Collections.singletonList(eeVehicle.getBusList().get(0)));
-        }
-		DirectModelAsEEComponent ecu = new DirectModelAsEEComponent(modelServer, AUTOPILOT_CONFIG, eeVehicle.getEESimulator(), targetsByMessageId);
-		eeVehicle.getBusList().get(0).registerComponent(ecu);
 		vehicle.executeLoopIteration(eeVehicle.getEESimulator().getDeltaSimulationTime().plusMillis(30));
 		
 		//ecu emits 3 messages

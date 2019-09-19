@@ -7,8 +7,7 @@
 package simulation.EESimulator;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator;
-import org.apache.commons.math3.analysis.function.Add;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
@@ -61,7 +60,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         return createDirectModelAsEEComponent(Collections.singletonList(bus));
     }
 
-    public static DirectModelAsEEComponent createDirectModelAsEEComponent(List<Bus> buses) {
+    public static DirectModelAsEEComponent createDirectModelAsEEComponent(List<Bus> buses){
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         targetsByMessageId.put(BusEntry.ACTUATOR_BRAKE, new LinkedList<>());
         targetsByMessageId.put(BusEntry.ACTUATOR_STEERING, new LinkedList<>());
@@ -86,10 +85,10 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         this.cycleTime = cycleTime;
         //add controller execute event
         simulator.addEvent(new ControllerExecuteEvent(simulator.getSimulationTime().plus(cycleTime), this));
-
+    }
     
-    public DirectModelAsEEComponent(HardwareEmulatorInterface modelServer, String autopilotConfig, EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) throws Exception {
-    	this(modelServer, autopilotConfig, Duration.ofMillis(30), simulator, targetsByMessageId);
+    public DirectModelAsEEComponent(EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+    	this(simulator, targetsByMessageId, Duration.ofMillis(30));
     }
 
 
@@ -109,12 +108,12 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         }
     }
 
-    public void initializeController(HardwareEmulatorInterface model_server, String autopilot_config) throws Exception {
-        this.model_server = model_server;
-        this.model_id = model_server.alloc_autopilot(autopilot_config);
-        if (this.model_id < 0){
-            String error_msg = model_server.query("get_error_msg");
-            throw new Exception("Error allocating autopilot. Config:\n"+autopilot_config+"\n"+error_msg);
+    public void initializeController(HardwareEmulatorInterface modelServer, String autopilotConfig) throws Exception {
+        this.modelServer = modelServer;
+        this.modelId = modelServer.alloc_autopilot(autopilotConfig);
+        if (this.modelId < 0){
+            String error_msg = modelServer.query("get_error_msg");
+            throw new Exception("Error allocating autopilot. Config:\n"+autopilotConfig+"\n"+error_msg);
         }
     }
 
