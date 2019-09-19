@@ -4,7 +4,6 @@ import os
 
 from CNNNet_CifarClassifierNetwork import Net_0
 
-
 class CNNCreator_CifarClassifierNetwork:
     _model_dir_ = "model/CifarClassifierNetwork/"
     _model_prefix_ = "model"
@@ -52,8 +51,8 @@ class CNNCreator_CifarClassifierNetwork:
         self.networks[0] = Net_0(data_mean=data_mean, data_std=data_std)
         self.networks[0].collect_params().initialize(self.weight_initializer, ctx=context)
         self.networks[0].hybridize()
-        self.networks[0](mx.nd.zeros((1,3,32,32,), ctx=context))
-
+        self.networks[0](
+        mx.nd.zeros((1,3,32,32,), ctx=context) )
 
         if not os.path.exists(self._model_dir_):
             os.makedirs(self._model_dir_)
