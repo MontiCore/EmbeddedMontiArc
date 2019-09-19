@@ -6,6 +6,7 @@
 @REM
 
 
+
 @REM -------------------------------------------------------------------------------------------------------------
 @REM This script generates the MinGW makefiles and compiles them.
 @REM Call from within a CMake project directory

@@ -12,7 +12,7 @@
     
     <groupId>montisim</groupId>
     <artifactId>hardware_emulator</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     
     
     <properties>
@@ -106,10 +106,6 @@
                 <version>3.0</version>
                 <configuration>
                     <header>${project.baseUri}/src/license/se/license.txt</header>
-                    <properties>
-                        <owner>Michael von Wenckstern</owner>
-                        <email>vonwenckstern@se-rwth.de</email>
-                    </properties>
                     <excludes>
                         <exclude>**/README</exclude>
                         <exclude>src/test/resources/**</exclude>
