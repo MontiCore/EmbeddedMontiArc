@@ -1,7 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.environment.object;
 
-import commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import simulation.environment.visualisationadapter.implementation.TrafficLight;
 import simulation.environment.visualisationadapter.interfaces.SignTypeAndState;
 import java.util.ArrayList;

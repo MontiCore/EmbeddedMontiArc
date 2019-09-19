@@ -1,8 +1,13 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.simulator;
 
-import commons.simulation.SimulationLoopExecutable;
-import commons.simulation.SimulationLoopNotifiable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopNotifiable;
 import simulation.util.Plotter2D;
 import simulation.vehicle.PhysicalVehicle;
 import java.util.List;
@@ -10,7 +15,7 @@ import java.util.List;
 /**
  * Debug Plotter that visualizes the movement for a simulation with only one physical vehicle
  */
-public class SimulationDebugPlotter implements SimulationLoopNotifiable {
+public class SimulationDebugPlotter extends SimulationLoopNotifiable {
 
     private long counter = 0;
     private String name;

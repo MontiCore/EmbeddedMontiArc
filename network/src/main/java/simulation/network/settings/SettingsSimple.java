@@ -1,7 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.network.settings;
 
-import commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
 import simulation.network.NetworkSettings;
 import simulation.network.NetworkSettingsId;
 import simulation.network.NetworkTaskId;

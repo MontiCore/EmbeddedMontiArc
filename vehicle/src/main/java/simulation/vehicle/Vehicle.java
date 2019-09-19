@@ -1,15 +1,20 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.vehicle;
 
-import commons.controller.commons.BusEntry;
-import commons.controller.commons.NavigationEntry;
-import commons.controller.commons.Surface;
-import commons.controller.commons.Vertex;
-import commons.controller.interfaces.Bus;
-import commons.controller.interfaces.FunctionBlockInterface;
-import commons.map.IAdjacency;
-import commons.map.IControllerNode;
-import commons.simulation.Sensor;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.NavigationEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Surface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Vertex;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IAdjacency;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
@@ -19,7 +24,7 @@ import simulation.util.Log;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import static commons.controller.commons.BusEntry.*;
+import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.*;
 import static simulation.vehicle.VehicleActuatorType.*;
 
 /**

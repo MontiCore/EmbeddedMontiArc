@@ -1,9 +1,14 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package sensors;
 
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import commons.simulation.Sensor;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.MassPointPhysicalVehicleBuilder;
 

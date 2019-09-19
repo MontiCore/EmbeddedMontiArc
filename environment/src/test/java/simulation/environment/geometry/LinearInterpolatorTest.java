@@ -1,8 +1,13 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.environment.geometry;
 
-import commons.map.IControllerNode;
-import javafx.geometry.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import org.junit.*;
 import static  org.junit.Assert.*;
 import simulation.environment.WorldModel;

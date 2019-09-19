@@ -1,7 +1,12 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.simulator;
 
-import commons.simulation.*;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.*;
 import org.apache.commons.math3.linear.*;
 import org.junit.*;
 import simulation.util.*;
@@ -1149,7 +1154,7 @@ public class SimulatorTest {
         assertTrue(expectedTime <= sim.getSimulationTime()&& sim.getSimulationTime() < expectedTime + tolerance);
     }
 
-    private class StepSizeChecker implements SimulationLoopNotifiable {
+    private class StepSizeChecker extends SimulationLoopNotifiable {
         private long expectedStepSize;
 
         public StepSizeChecker(long expectedStepSize){
@@ -1171,7 +1176,7 @@ public class SimulatorTest {
         }
     }
 
-    private class TestObserver implements SimulationLoopNotifiable {
+    private class TestObserver extends SimulationLoopNotifiable {
         private long startCounter = 0;
         private long stopCounter = 0;
         private long willExecCounter = 0;

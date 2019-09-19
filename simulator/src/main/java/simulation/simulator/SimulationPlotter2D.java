@@ -1,9 +1,14 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.simulator;
 
 import org.apache.commons.math3.linear.RealVector;
-import commons.simulation.SimulationLoopExecutable;
-import commons.simulation.SimulationLoopNotifiable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopNotifiable;
 import simulation.util.Plotter2D;
 import simulation.vehicle.MassPointPhysicalVehicle;
 import simulation.vehicle.ModelicaPhysicalVehicle;
@@ -14,7 +19,7 @@ import java.util.List;
  * Class that collects vehicle logging data stores them and sends them to to Plotter 2D for  plotting
  */
 
-public class SimulationPlotter2D implements SimulationLoopNotifiable {
+public class SimulationPlotter2D extends SimulationLoopNotifiable {
 
     // Lists to store the data separately for plotting later
     private List<Long> simulationTimePoints = new LinkedList<>();

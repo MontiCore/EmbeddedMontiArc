@@ -1,8 +1,13 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.environment.geometry.height;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point2D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import simulation.environment.osm.ApproximateConverter;
 import simulation.environment.visualisationadapter.interfaces.EnvBounds;

@@ -1,8 +1,13 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package sensors;
 
-import commons.controller.commons.BusEntry;
-import commons.simulation.Sensor;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
 import org.apache.commons.lang3.Validate;
 import java.util.ArrayList;
 import java.util.Collections;
