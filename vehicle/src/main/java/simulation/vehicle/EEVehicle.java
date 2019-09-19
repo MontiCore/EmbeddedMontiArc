@@ -121,6 +121,11 @@ public class EEVehicle {
 				bridgeList.add(newBridge);
 			}
 
+			if (busStructure.getAutopilot() != null) {
+				navigation = Optional.of(NavigationBlockAsEEComponent.createNavigationBlockAsEEComponent(busList.get((int) busStructure.getAutopilot().busAndParameter[0])));
+				busList.get((int) busStructure.getAutopilot().busAndParameter[0]).registerComponent(navigation.get());
+			}
+
 		} catch (IOException e) {
 			throw  new IllegalArgumentException("Can not create EEVehicle. Failed to read file: " + data);
 		}
@@ -145,6 +150,10 @@ public class EEVehicle {
 			case SENSOR:
 				this.sensorList.add((AbstractSensor) component);
 			case AUTOPILOT:
+				if(navigation.isPresent()){
+					throw new IllegalStateException("Autopilot can only be set once");
+				}
+				autoPilot = (DirectModelAsEEComponent) component;
 				break;
 			case BRIDGE:
 				this.bridgeList.add((Bridge) component);
@@ -188,7 +197,7 @@ public class EEVehicle {
 
 	/**
 	 * function that notifies all sensors to send their actual data to the busAndParameter
-	 * 
+	 *
 	 * @param actualTime actual time of the simulation
 	 */
 	public void notifySensors(Instant actualTime) {
@@ -199,7 +208,7 @@ public class EEVehicle {
 
 	/**
 	 * function that notifies all actuators to update
-	 * 
+	 *
 	 * @param actualTime time the actuators get to update their value
 	 */
 	public void notifyActuator(Instant actualTime) {
@@ -246,7 +255,7 @@ public class EEVehicle {
 
 	/**
 	 * Add sensor to sensor list and register at target buses
-	 * 
+	 *
 	 * @param sensor to be registered
 	 */
 	public void addSensor(AbstractSensor sensor) {
@@ -261,9 +270,13 @@ public class EEVehicle {
 		this.sensorList.add(sensor);
 	}
 
+	public void setAutoPilot(DirectModelAsEEComponent autoPilot) {
+		this.autoPilot = autoPilot;
+	}
+
 	/**
 	 * Add actuator to actuator list and register at target buses
-	 * 
+	 *
 	 * @param actuator actuator to be registered
 	 */
 	private void addActuator(VehicleActuator actuator) {

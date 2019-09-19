@@ -23,7 +23,7 @@ import java.util.*;
 /**
  * Created by Aklima Zaman on 2/8/2017.
  */
-public class SensorFactory {
+public class  SensorFactory {
     private IPhysicalVehicle physicalVehicle;
 
     private List<Bus> buses;

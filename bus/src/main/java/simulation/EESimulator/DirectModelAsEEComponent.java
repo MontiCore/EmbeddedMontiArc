@@ -7,21 +7,18 @@
 package simulation.EESimulator;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
-
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator;
 import org.apache.commons.math3.analysis.function.Add;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.bus.Bus;
 import simulation.bus.BusMessage;
 
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import static com.vividsolutions.jts.util.Memory.free;
 
 
 public class DirectModelAsEEComponent extends ImmutableEEComponent {
@@ -59,18 +56,37 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     Instant lastTime = Instant.EPOCH;
 
 
-    public DirectModelAsEEComponent(HardwareEmulatorInterface modelServer, String autopilotConfig, Duration cycleTime, EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) throws Exception {
-        super(simulator, EEComponentType.AUTOPILOT, STANDARD_SUBSCRIBED_MESSAGES, targetsByMessageId);
-        this.modelServer = modelServer;
-        this.modelId = modelServer.alloc_autopilot(autopilotConfig);
-        if (this.modelId < 0){
-            String error_msg = modelServer.query("get_error_msg");
-            throw new Exception("Error allocating autopilot. Config:\n"+autopilotConfig+"\n"+error_msg);
+
+    public static DirectModelAsEEComponent createDirectModelAsEEComponent(Bus bus) {
+        return createDirectModelAsEEComponent(Collections.singletonList(bus));
+    }
+
+    public static DirectModelAsEEComponent createDirectModelAsEEComponent(List<Bus> buses) {
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        targetsByMessageId.put(BusEntry.ACTUATOR_BRAKE, new LinkedList<>());
+        targetsByMessageId.put(BusEntry.ACTUATOR_STEERING, new LinkedList<>());
+        targetsByMessageId.put(BusEntry.ACTUATOR_ENGINE, new LinkedList<>());
+        for (Bus bus : buses) {
+            if (bus.subscribedMessages.contains(BusEntry.ACTUATOR_ENGINE)) {
+                targetsByMessageId.get(BusEntry.ACTUATOR_ENGINE).add(bus);
+            }
+            if (bus.subscribedMessages.contains(BusEntry.ACTUATOR_STEERING)) {
+                targetsByMessageId.get(BusEntry.ACTUATOR_STEERING).add(bus);
+            }
+            if (bus.subscribedMessages.contains(BusEntry.ACTUATOR_BRAKE)) {
+                targetsByMessageId.get(BusEntry.ACTUATOR_BRAKE).add(bus);
+            }
         }
+        return new DirectModelAsEEComponent(buses.get(0).getSimulator(), targetsByMessageId);
+    }
+
+
+    public DirectModelAsEEComponent(EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId, Duration cycleTime) {
+        super(simulator, EEComponentType.AUTOPILOT, STANDARD_SUBSCRIBED_MESSAGES, targetsByMessageId);
         this.cycleTime = cycleTime;
         //add controller execute event
         simulator.addEvent(new ControllerExecuteEvent(simulator.getSimulationTime().plus(cycleTime), this));
-    }
+
     
     public DirectModelAsEEComponent(HardwareEmulatorInterface modelServer, String autopilotConfig, EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) throws Exception {
     	this(modelServer, autopilotConfig, Duration.ofMillis(30), simulator, targetsByMessageId);
@@ -93,6 +109,15 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         }
     }
 
+    public void initializeController(HardwareEmulatorInterface model_server, String autopilot_config) throws Exception {
+        this.model_server = model_server;
+        this.model_id = model_server.alloc_autopilot(autopilot_config);
+        if (this.model_id < 0){
+            String error_msg = model_server.query("get_error_msg");
+            throw new Exception("Error allocating autopilot. Config:\n"+autopilot_config+"\n"+error_msg);
+        }
+    }
+
     @Override
     protected void finalize(){
         free();
@@ -105,6 +130,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
 
     @Override
     public void processEvent(EEDiscreteEvent event) {
+        //buffer new values arrived by busMessage
         if (event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
             BusMessage currentMessage = (BusMessage) event;
             newInputs = true;
@@ -150,6 +176,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
                     this.inputs.put("trajectory_length", trajectoryLength);
                 }
             }
+
             if(wakeUpNeeded) {
             	executeController(event);
             }
