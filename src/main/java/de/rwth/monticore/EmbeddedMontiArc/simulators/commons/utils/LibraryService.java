@@ -27,9 +27,12 @@ public class LibraryService {
             if (OS.contains("win")){
                 systemName = "windows";
                 libraryExtension = ".dll";
-            } else if (OS.contains("nix")|| OS.contains("nux")|| OS.contains("aix")|| OS.contains("mac")){
+            } else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix") ){
                 systemName = "linux";
                 libraryExtension = ".so";
+            } else if (OS.contains("mac")){
+                systemName = "mac";
+                libraryExtension = ".dylib";
             }
             else throw new ExceptionInInitializerError(new LibraryException(LibraryExceptionType.OS_RESOLVE, OS));
         }
@@ -74,11 +77,11 @@ public class LibraryService {
     }
 
     /*
-        Prepares a system dependent library:
-        It is under windows/lib_name or linux/lib_name in the resources.
-        (lib_name can contain a relative path plus the library name).
+        Exports a resource as file.
+        If system_dependent is true it will lookup "lib_name" under "windows", "linux" or "mac" depending on the system.
+        (lib_name can contain a relative path plus the library name. The file will have the same relative path to the working directory.)
     */
-    public static void prepareLibrary(String lib_name) throws LibraryException {
+    public static void prepareLibrary(String lib_name, boolean system_dependent) throws LibraryException {
         String lib_path = getWorkingDirectory()+lib_name;
         //System.out.println("lib_path: " + lib_path);
         File target_file = new File(lib_path);
@@ -87,7 +90,8 @@ public class LibraryService {
         }
         //Write library to disk
         try {
-            InputStream res = LibraryService.class.getResourceAsStream("/"+getSystemName()+"/"+lib_name);
+            String path_to_resource = system_dependent ? "/"+getSystemName()+"/"+lib_name : "/"+lib_name;
+            InputStream res = LibraryService.class.getResourceAsStream(path_to_resource);
             target_file.getParentFile().mkdirs();
             FileOutputStream fout= new FileOutputStream(target_file);
             BufferedOutputStream out = new BufferedOutputStream(fout);
