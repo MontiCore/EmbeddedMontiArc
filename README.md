@@ -49,6 +49,7 @@ Hyperparameters that we experimented with were:
 - Image resolution (640x480, 160x120, 80x60, 64x48)
 - Time gap between images (30FPS, 10FPS)
 - Model architecture (modifications to the original architecture from the paper)
+    - Different Activations (ReLU, Sigmoid)
     - With(out) Batch-normalization
     - With(out) large fully connected layer after convolutional layers
     - With(out) input/output normalization (mean 0, std 1)
@@ -64,3 +65,11 @@ Hyperparameters that we experimented with were:
         - Using mixed images of both curves and driving straight with different ratios (1:2, 1:3, 1:5)
 
 ### Observations
+
+The task of end2end learning in itself turned out to be very hard. We concluded from our tests that, unless there is access to a very large dataset and computational resources, the results are very poor. Additionally, as the only input we have is up to 3 images of one specific "moment" i.e. we don't actually know where the driver *wants* to drive, it doesn't really make sense to interpret the prediction as "Where should we drive?" but rather "Where are we driving?". Some key obersvations were.
+- As the dataset consists mostly of sections of "straight driving", learning to take curves is difficult. Unless the training data is tailored to include larger sections with curves, the model only learns to drive straight. It even goes as far as predicting the exact same value for almost every input image.
+- Larger image resolutions results in worse predictions with equal amount of computational power.
+- Batch-normalization almost always had a negative effect.
+- When using ReLU activation, longer training frequently resulted in dying ReLUs.
+- Input/output normalization didn't have a large effect.
+
