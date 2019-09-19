@@ -13,11 +13,14 @@ import sensors.StaticPlannedTrajectoryXSensor;
 import sensors.StaticPlannedTrajectoryYSensor;
 import simulation.EESimulator.DirectModelAsEEComponent;
 import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 import simulation.simulator.Simulator;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
 import simulation.vehicle.*;
 import sensors.*;
 
+import java.time.Instant;
 import java.util.*;
 
 public class VehicleBuilder {
@@ -53,10 +56,15 @@ public class VehicleBuilder {
         - Setup from config/simlang
      */
     public void createVehicle(VehicleConfig config, MapData map) throws Exception {
+    	EESimulator eeSim = new EESimulator(Instant.EPOCH);
+    	EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSim);
+    	InstantBus bus = new InstantBus(eeSim);
+    	eeVehicleBuilder.createAllSensorsNActuators(bus);
+    	eeVehicleBuilder.createController(model_server, config.autopilot_config, bus).get();
+        PhysicalVehicleBuilder physicalVehicleBuilder = getVehicleBuilder(config.physics_model);
+        Vehicle simVehicle = new Vehicle(physicalVehicleBuilder ,eeVehicleBuilder);
 
-        PhysicalVehicleBuilder vehicleBuilder = getVehicleBuilder(config.physics_model);
-
-        PhysicalVehicle physicalVehicle = vehicleBuilder.buildPhysicalVehicle();
+        PhysicalVehicle physicalVehicle = simVehicle.getPhysicalVehicle();
 
         // compute trajectory for the vehicle
         VehicleTrajectory trajectory = new VehicleTrajectory(config.start_coords, config.target_coords, map);
@@ -69,20 +77,12 @@ public class VehicleBuilder {
 
         //  setup the vehicle's trajectory
         Map<String, List<Double>> trajectoryCoordinates = getTrajectoryCoordinates(trajectory.trajectory);
-        Vehicle simVehicle = new Vehicle(physicalVehicle);
-        simVehicle.getEEVehicle().getAutoPilot().initializeController(model_server, config.autopilot_config);
 
-        HashMap<BusEntry, LinkedList<EEComponent>> targetsByMessageIdX = new HashMap<>();
-        LinkedList<EEComponent> compListX = new LinkedList<>();
-        compListX.add(simVehicle.getEEVehicle().getBusList().get(0));
-        targetsByMessageIdX.put(BusEntry.PLANNED_TRAJECTORY_X, compListX);
-        simVehicle.getEEVehicle().addSensor(new StaticPlannedTrajectoryXSensor(physicalVehicle, simVehicle.getEEVehicle().getEESimulator(), new LinkedList<>(), targetsByMessageIdX, trajectoryCoordinates.get("x")));
-
-        HashMap<BusEntry, LinkedList<EEComponent>> targetsByMessageIdY = new HashMap<>();
-        LinkedList<EEComponent> compListY = new LinkedList<>();
-        compListY.add(simVehicle.getEEVehicle().getBusList().get(0));
-        targetsByMessageIdX.put(BusEntry.PLANNED_TRAJECTORY_Y, compListY);
-        simVehicle.getEEVehicle().addSensor(new StaticPlannedTrajectoryYSensor(physicalVehicle, simVehicle.getEEVehicle().getEESimulator(), new LinkedList<>(), targetsByMessageIdY, trajectoryCoordinates.get("Y")));
+        StaticPlannedTrajectoryXSensor plannedX = (StaticPlannedTrajectoryXSensor) simVehicle.getEEVehicle().getSensorByType(BusEntry.PLANNED_TRAJECTORY_X).get();
+        plannedX.initializeTrajectory(trajectoryCoordinates.get("x"));
+        
+        StaticPlannedTrajectoryXSensor plannedY = (StaticPlannedTrajectoryXSensor) simVehicle.getEEVehicle().getSensorByType(BusEntry.PLANNED_TRAJECTORY_Y).get();
+        plannedY.initializeTrajectory(trajectoryCoordinates.get("Y"));
 
         result.register_car(physicalVehicle.getId(), config.name, config.config, trajectory);
     }
