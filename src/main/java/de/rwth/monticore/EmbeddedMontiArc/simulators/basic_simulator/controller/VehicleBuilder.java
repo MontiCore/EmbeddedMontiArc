@@ -24,7 +24,13 @@ import java.time.Instant;
 import java.util.*;
 
 public class VehicleBuilder {
-    public static class VehicleTrajectory {
+    
+	//hardcoded config
+	private final String AUTOPILOT_CONFIG = "autopilot=AutopilotAdapter\n"+
+												"os=windows\n" + 
+												"no_time=true";
+	
+	public static class VehicleTrajectory {
         Point2D[] trajectory;
         Point2D start;
         Point2D target;
@@ -37,11 +43,6 @@ public class VehicleBuilder {
             target = trajectory[trajectory.length-1];
         }
     }
-
-    
-
-    
-
 
     HardwareEmulatorInterface model_server;
     SimulationResult result;
@@ -60,7 +61,7 @@ public class VehicleBuilder {
     	EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSim);
     	InstantBus bus = new InstantBus(eeSim);
     	eeVehicleBuilder.createAllSensorsNActuators(bus);
-    	eeVehicleBuilder.createController(model_server, config.autopilot_config, bus).get();
+    	eeVehicleBuilder.createController(model_server, AUTOPILOT_CONFIG, bus);
         PhysicalVehicleBuilder physicalVehicleBuilder = getVehicleBuilder(config.physics_model);
         Vehicle simVehicle = new Vehicle(physicalVehicleBuilder ,eeVehicleBuilder);
 
@@ -81,7 +82,7 @@ public class VehicleBuilder {
         StaticPlannedTrajectoryXSensor plannedX = (StaticPlannedTrajectoryXSensor) simVehicle.getEEVehicle().getSensorByType(BusEntry.PLANNED_TRAJECTORY_X).get();
         plannedX.initializeTrajectory(trajectoryCoordinates.get("x"));
         
-        StaticPlannedTrajectoryXSensor plannedY = (StaticPlannedTrajectoryXSensor) simVehicle.getEEVehicle().getSensorByType(BusEntry.PLANNED_TRAJECTORY_Y).get();
+        StaticPlannedTrajectoryYSensor plannedY = (StaticPlannedTrajectoryYSensor) simVehicle.getEEVehicle().getSensorByType(BusEntry.PLANNED_TRAJECTORY_Y).get();
         plannedY.initializeTrajectory(trajectoryCoordinates.get("Y"));
 
         result.register_car(physicalVehicle.getId(), config.name, config.config, trajectory);
