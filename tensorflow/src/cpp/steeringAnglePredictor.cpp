@@ -22,20 +22,10 @@ int main(int argc,char* argv[])
     Ptr<hdf::HDF5> h5io =hdf::open( filename );
     std::vector<int> dims = h5io->dsgetsize("data", hdf::HDF5::H5_GETDIMS);
     int num_pictures=dims.at(0);
-    int num_channels=dims.at(1);
-    int height=dims.at(2);
-    int width=dims.at(3);
     vector<float> prediction;
-    vector<float> data(num_channels*height*width);
+    int picture_offset=dims.at(1)*dims.at(2)*dims.at(3);
+    vector<float> data(picture_offset);
     CNNPredictor_endtoend_nvidia_0 predictor;
-    int picture_offset=width*height*num_channels;
-
-    //Debug information
-    cout << "Dimension of data is: "
-         << "N" << num_pictures
-         << "C" << num_channels
-         << "H" << height
-         << "W" << width << endl;
 
     //Read data from h5 file
     Mat M;
