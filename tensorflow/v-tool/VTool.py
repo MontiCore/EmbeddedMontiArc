@@ -1,4 +1,5 @@
 import numpy as np
+from time import sleep
 import matplotlib.pyplot as plt
 from Player import Player
 from WheelFig import WheelFig
@@ -30,11 +31,12 @@ def create_fig():
     ax_acc.set_xticks(np.arange(-360,361,90))
     return fig, ax_player, ax_image, ax_real, ax_pred, ax_acc
 
-def start_plot(images, targets_real, targets_pred):
+def start_plot(images, targets_real, targets_pred, delay):
     fig, ax_player, ax_image, ax_real, ax_pred, ax_acc = create_fig()
 
     # Callback
     def update(i):
+        sleep(delay/1000)
         image.set_data(images[i])
         wheel_real.update(-targets_real[i])#negative values because predicted angles are inverted
         wheel_pred.update(-targets_pred[i])

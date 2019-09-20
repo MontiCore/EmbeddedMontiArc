@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(description='Visualization of predictions for t
 parser.add_argument('-i', type=str, help='Path to H5 container which includes data and targets.')
 parser.add_argument('-p', action='store_true' , help='Set this flag in order to predict. Default is no prediction.')
 parser.add_argument('-v', action='store_true' , help='Set this flag in order to visualise. Default is no visualisaton.')
+parser.add_argument('-d', action='store_true' , help='Set delay (in ms) between each image to be plotted.')
 args = parser.parse_args()
 
 print("Data:",args.i)
@@ -68,9 +69,14 @@ if args.v:
 
         #print('predictions:',targets_pred)
 
+        if args.d:
+            delay = args.d
+        else:
+            delay = 0
+
         print("-"*40)
         print('Starting plot...')
-        start_plot(images, targets_real, targets_pred)
+        start_plot(images, targets_real, targets_pred, delay)
 
         
         print("-"*40)
