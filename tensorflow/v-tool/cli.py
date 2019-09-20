@@ -7,6 +7,7 @@ import csv
 from subprocess import call
 import os
 
+
 parser = argparse.ArgumentParser(description='Visualization of predictions for the end-to-end autonomous driving model.')
 parser.add_argument('-i', type=str, help='Path to H5 container which includes data and targets.')
 parser.add_argument('-p', action='store_true' , help='Set this flag in order to predict. Default is no prediction.')
@@ -36,6 +37,8 @@ if args.v:
         print("Data:")
         for i,k in enumerate(data_keys):
             print("  ("+str(i)+") "+k, "->", f[k].shape)
+            HEIGHT=f[k].shape[2]
+            WIDTH=f[k].shape[3]
         #data_key = data_keys[int(input("Pick data number: "))]
         data_key = data_keys[0]
         target_key = target_keys[0] #hard-coded: pick first target in list
@@ -46,7 +49,7 @@ if args.v:
 
         if data_total_size < MAX_SIZE:
             images = np.array(f[data_key])
-            images = images.reshape((-1,480,640,3)).astype("uint8")
+            images = images.reshape((-1,HEIGHT,WIDTH,3)).astype("uint8")
             targets_real = np.array(f[target_key])
         else:
             num_chunks = data_total_size // MAX_SIZE + 1
@@ -56,7 +59,7 @@ if args.v:
                 chunk_id = int(input("Dataset is too large. It was divided into " + str(num_chunks) + " chunks. Which chunk [1-" + str(num_chunks) + "] should be selected?: "))
             chunk_id=chunk_id-1
             images = np.array(f[data_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size][:])
-            images = images.reshape((-1,480,640,3)).astype("uint8")
+            images = images.reshape((-1,HEIGHT,WIDTH,3)).astype("uint8")
             targets_real = np.array(f[target_key][chunk_size*chunk_id:chunk_size*chunk_id+chunk_size])
 
         with open('v-tool/predictions.csv') as f:
