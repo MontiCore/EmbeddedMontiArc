@@ -110,7 +110,7 @@ public class SomeIPConnectionSymbolCreator implements TagSymbolCreator {
                     .forEachOrdered(m ->
                             taggedSymbols.stream()
                                     .forEachOrdered(s -> {
-                                        SomeIPConnectionSymbol tmpSymbol = new SomeIPConnectionSymbol(m.group(1), m.group(2), m.group(4));
+                                        SomeIPConnectionSymbol tmpSymbol = new SomeIPConnectionSymbol(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), 																																Integer.parseInt(m.group(4)));
                                         tagging.addTag(s, tmpSymbol);
                                         if (s.isKindOf(EMAPortSymbol.KIND)) {
                                             EMAPortSymbol p = (EMAPortSymbol) s;
