@@ -154,10 +154,10 @@ public class EESimulatorTest {
 		bus4.registerComponent(listnerCarDetection);
 
 		// create cycle
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus1, bus2), Duration.ofMillis(2));
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus1, bus3), Duration.ofMillis(2));
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus2, bus3), Duration.ofMillis(2));
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus1, bus4), Duration.ofMillis(2));
+		new Bridge(new ImmutablePair<Bus, Bus>(bus1, bus2), Duration.ofMillis(2));
+		new Bridge(new ImmutablePair<Bus, Bus>(bus1, bus3), Duration.ofMillis(2));
+		new Bridge(new ImmutablePair<Bus, Bus>(bus2, bus3), Duration.ofMillis(2));
+		new Bridge(new ImmutablePair<Bus, Bus>(bus1, bus4), Duration.ofMillis(2));
 		
 		List<Bus> buses = new ArrayList<Bus>();
 		buses.add(bus1);

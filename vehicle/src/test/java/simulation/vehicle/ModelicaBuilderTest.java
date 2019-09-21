@@ -19,8 +19,13 @@ import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
+
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 import simulation.util.Log;
 import simulation.util.MathHelper;
+
+import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -40,7 +45,8 @@ public class ModelicaBuilderTest {
     @Test
     public void buildDefaultVehicle(){
         // Get default VDM values
-        ModelicaPhysicalVehicle referencePhysicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle referenceVehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle referencePhysicalVehicle = (ModelicaPhysicalVehicle) referenceVehicle.getPhysicalVehicle();
         VehicleDynamicsModel referenceVDM = referencePhysicalVehicle.getVDM();
 
         // Calculate expected values
@@ -68,9 +74,8 @@ public class ModelicaBuilderTest {
 
         // Build default car
         ModelicaPhysicalVehicleBuilder builder = new ModelicaPhysicalVehicleBuilder();
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) builder.buildPhysicalVehicle();
-
-        Vehicle vehicle = physicalVehicle.getVehicle();
+        Vehicle vehicle = createStandardVehicle(builder);
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         // Test default/not set parameters
         Assert.assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
@@ -105,7 +110,9 @@ public class ModelicaBuilderTest {
     @Test
     public void buildCustomVehicle(){
         // Get default VDM values
-        ModelicaPhysicalVehicle referencePhysicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        ModelicaPhysicalVehicleBuilder modelicaBuilder = new ModelicaPhysicalVehicleBuilder();
+        Vehicle referenceVehicle = createStandardVehicle(modelicaBuilder);
+        ModelicaPhysicalVehicle referencePhysicalVehicle = (ModelicaPhysicalVehicle) referenceVehicle.getPhysicalVehicle();
         VehicleDynamicsModel referenceVDM = referencePhysicalVehicle.getVDM();
 
         // Calculate expected values
@@ -153,7 +160,8 @@ public class ModelicaBuilderTest {
         builder.setWheelDistLeftRightBackSide(expectedWheelDistLeftRightBackSide);
         builder.setWheelDistToFront(expectedWheelDistToFront);
         builder.setWheelDistToBack(expectedWheelDistToBack);
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) builder.buildPhysicalVehicle();
+        Vehicle vehicle = createStandardVehicle(builder);
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         // Test custom set parameters
         Assert.assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
@@ -183,5 +191,13 @@ public class ModelicaBuilderTest {
         Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_2"), 0);
         Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_3"), 0);
         Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_4"), 0);
+    }
+    
+    private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
+    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
     }
 }

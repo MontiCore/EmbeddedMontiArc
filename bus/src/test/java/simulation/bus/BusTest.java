@@ -243,9 +243,9 @@ public class BusTest {
 		bus3.registerComponent(listnerSteering);
 
 		// create cycle
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus1, bus2), Duration.ofSeconds(2));
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus1, bus3), Duration.ofSeconds(2));
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(bus2, bus3), Duration.ofSeconds(2));
+		new Bridge(new ImmutablePair<Bus, Bus>(bus1, bus2), Duration.ofSeconds(2));
+		new Bridge(new ImmutablePair<Bus, Bus>(bus1, bus3), Duration.ofSeconds(2));
+		new Bridge(new ImmutablePair<Bus, Bus>(bus2, bus3), Duration.ofSeconds(2));
 
 		List<Bus> buses = new ArrayList<Bus>();
 		buses.add(bus1);
@@ -279,12 +279,12 @@ public class BusTest {
 			sub1.registerComponent(component);
 		}
 
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(sub1, sub2), Duration.ZERO);
+		new Bridge(new ImmutablePair<Bus, Bus>(sub1, sub2), Duration.ZERO);
 		FlexRay main = new FlexRay(EEsim);// mainComponents
 		for (EEComponent component : mainComponents) {
 			main.registerComponent(component);
 		}
-		new Bridge(EEsim, new ImmutablePair<Bus, Bus>(main, sub1), Duration.ZERO);
+		new Bridge(new ImmutablePair<Bus, Bus>(main, sub1), Duration.ZERO);
 		return main;
 	}
 

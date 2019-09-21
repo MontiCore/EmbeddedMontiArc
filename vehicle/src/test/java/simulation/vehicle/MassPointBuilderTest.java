@@ -18,11 +18,15 @@ import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
+
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 import simulation.util.Log;
 import simulation.util.MathHelper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.util.Optional;
 import static org.junit.Assert.*;
 
@@ -65,8 +69,13 @@ public class MassPointBuilderTest {
         RealVector expectedGeometryPosition = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
 
         // Build default car
-        MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
-        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
+    	PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+		MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         // Test not set/default parameters
         assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
@@ -135,7 +144,13 @@ public class MassPointBuilderTest {
         builder.setWheelDistLeftRightBackSide(expectedWheelDistLeftRightBackSide);
         builder.setWheelDistToFront(expectedWheelDistToFront);
         builder.setWheelDistToBack(expectedWheelDistToBack);
-        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
+        
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(builder, eeVehicleBuilder);
+		MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         // Test custom set parameters
         assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
@@ -184,7 +199,12 @@ public class MassPointBuilderTest {
         MassPointPhysicalVehicleBuilder.ParsableVehicleProperties properties = g.fromJson(fileContent, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
 
         // Load car from file
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().loadFromFile(testFile);
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(testFile, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         // Check if both are equal
         checkTheCar(properties, physicalVehicle);
@@ -210,7 +230,13 @@ public class MassPointBuilderTest {
         MassPointPhysicalVehicleBuilder.ParsableVehicleProperties properties = g.fromJson(fileContent, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
 
         // Create default reference car
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+		Vehicle vehicle = new Vehicle(massPointBuilder, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         checkTheCar(properties, physicalVehicle);
     }

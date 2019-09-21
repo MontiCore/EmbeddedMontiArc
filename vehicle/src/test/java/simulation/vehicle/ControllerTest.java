@@ -27,6 +27,7 @@ import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EEDiscreteEventTypeEnum;
 import simulation.EESimulator.EESimulator;
 import simulation.bus.BusMessage;
+import simulation.bus.InstantBus;
 
 public class ControllerTest {
 
@@ -38,10 +39,14 @@ public class ControllerTest {
 	@Test
 	public void testController() throws Exception {
 		HardwareEmulatorInterface modelServer = new HardwareEmulatorInterface("autopilots_folder=autopilots", "");
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        Vehicle vehicle = physicalVehicle.getVehicle();
-        EEVehicle eeVehicle = vehicle.getEEVehicle();
-        EESimulator eeSimulator = eeVehicle.getEESimulator();
+		PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		DirectModelAsEEComponent ecu = eeVehicleBuilder.createController(modelServer, AUTOPILOT_CONFIG, bus).get();
+		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+		EEVehicle eeVehicle = vehicle.getEEVehicle();
         
         //get actuators
         VehicleActuator steering = vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).get();
@@ -59,13 +64,6 @@ public class ControllerTest {
         initialValuesByActuator.put(brakeFR, brakeFR.getActuatorValueTarget());
         initialValuesByActuator.put(motor, motor.getActuatorValueTarget());
 
-
-        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-        for(BusEntry busEntry : DirectModelAsEEComponent.MASSPOINT_OUTPUT_MESSAGES) {
-        	targetsByMessageId.put(busEntry, Collections.singletonList(eeVehicle.getBusList().get(0)));
-        }
-		DirectModelAsEEComponent ecu = new DirectModelAsEEComponent(modelServer, AUTOPILOT_CONFIG, eeVehicle.getEESimulator(), targetsByMessageId);
-		eeVehicle.getBusList().get(0).registerComponent(ecu);
 		vehicle.executeLoopIteration(eeVehicle.getEESimulator().getDeltaSimulationTime().plusMillis(30));
 		
 		//ecu emits 3 messages
@@ -78,6 +76,8 @@ public class ControllerTest {
 				}
 			}
 		}
+		
+		assertEquals(3, controllerMessagesCount);
 		
 		vehicle.executeLoopIteration(eeVehicle.getEESimulator().getDeltaSimulationTime().plusMillis(30));
 	

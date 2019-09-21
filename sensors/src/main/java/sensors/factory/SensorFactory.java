@@ -38,7 +38,7 @@ public class  SensorFactory {
         this.buses = Collections.singletonList(bus);
     }
 
-    public  Optional<AbstractSensor> createSensor(BusEntry busEntry) {
+    public Optional<AbstractSensor> createSensor(BusEntry busEntry) {
         switch (busEntry) {
         case SENSOR_VELOCITY:
             return createSensor(SpeedSensor.class, this.physicalVehicle, this.buses);
@@ -74,6 +74,52 @@ public class  SensorFactory {
             return createSensor(RightFrontDistanceSensor.class, this.physicalVehicle, this.buses);
         case SENSOR_OBSTACLE:
             return createSensor(ObstacleSensor.class, this.physicalVehicle, this.buses);
+        default:
+            break;
+        }
+        return Optional.empty();
+    }
+    
+    public static Optional<AbstractSensor> createSensor(BusEntry sensorType, IPhysicalVehicle physicalVehicle, Bus bus) {
+    	return createSensor(sensorType, physicalVehicle, Collections.singletonList(bus));
+    }
+    
+    public static Optional<AbstractSensor> createSensor(BusEntry sensorType, IPhysicalVehicle physicalVehicle, List<Bus> buses) {
+        switch (sensorType) {
+        case SENSOR_VELOCITY:
+            return createSensor(SpeedSensor.class, physicalVehicle, buses);
+        case SENSOR_GPS_COORDINATES:
+            return createSensor( LocationSensor.class, physicalVehicle, buses);
+        case SENSOR_STEERING:
+            return createSensor(SteeringAngleSensor.class, physicalVehicle, buses);
+        case SENSOR_DISTANCE_TO_RIGHT:
+            return createSensor(DistanceToRightSensor.class, physicalVehicle, buses);
+        case SENSOR_DISTANCE_TO_LEFT:
+            return createSensor(DistanceToLeftSensor.class, physicalVehicle, buses);
+        case SENSOR_WEATHER:
+            return createSensor(WeatherSensor.class, physicalVehicle, buses);
+        case SENSOR_CAMERA:
+            return createSensor(CameraSensor.class, physicalVehicle, buses);
+        case SENSOR_COMPASS:
+            return createSensor(CompassSensor.class, physicalVehicle, buses);
+        case SENSOR_LEFT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
+            return createSensor(LeftBackWheelDistanceToStreetSensor.class, physicalVehicle, buses);
+        case SENSOR_LEFT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
+            return createSensor(LeftFrontDistanceSensor.class, physicalVehicle, buses);
+        case SENSOR_RIGHT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
+            return createSensor(RightFrontDistanceSensor.class, physicalVehicle, buses);
+        case SENSOR_RIGHT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
+            return createSensor(RightBackWheelDistanceToStreetSensor.class, physicalVehicle, buses);
+        case SENSOR_STREETTYPE:
+            return createSensor(StreetTypeSensor.class, physicalVehicle, buses);
+        case SENSOR_DAYNIGHT:
+            return createSensor(DayNightSensor.class, physicalVehicle, buses);
+        case SENSOR_LEFT_FRONT_DISTANCE:
+            return createSensor(LeftFrontDistanceSensor.class, physicalVehicle, buses);
+        case SENSOR_RIGHT_FRONT_DISTANCE:
+            return createSensor(RightFrontDistanceSensor.class, physicalVehicle, buses);
+        case SENSOR_OBSTACLE:
+            return createSensor(ObstacleSensor.class, physicalVehicle, buses);
         default:
             break;
         }

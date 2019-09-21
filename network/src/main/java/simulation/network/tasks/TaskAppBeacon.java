@@ -118,7 +118,7 @@ public class TaskAppBeacon extends NetworkTask {
         // Convert to vehicle
         if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
             PhysicalVehicle physicalVehicle = (PhysicalVehicle)(networkNode.getPhysicalObject());
-            Vehicle vehicle = new Vehicle(physicalVehicle);
+            Vehicle vehicle = physicalVehicle.getVehicle();
             List<Float> messageFloats = Collections.synchronizedList(new LinkedList<>());
             NetworkMessage message = new NetworkMessage();
 

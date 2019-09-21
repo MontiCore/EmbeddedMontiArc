@@ -7,8 +7,7 @@
 package simulation.EESimulator;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator;
-import org.apache.commons.math3.analysis.function.Add;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
@@ -61,7 +60,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         return createDirectModelAsEEComponent(Collections.singletonList(bus));
     }
 
-    public static DirectModelAsEEComponent createDirectModelAsEEComponent(List<Bus> buses) {
+    public static DirectModelAsEEComponent createDirectModelAsEEComponent(List<Bus> buses){
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         targetsByMessageId.put(BusEntry.ACTUATOR_BRAKE, new LinkedList<>());
         targetsByMessageId.put(BusEntry.ACTUATOR_STEERING, new LinkedList<>());
@@ -83,12 +82,6 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
 
     public DirectModelAsEEComponent(EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(simulator, EEComponentType.AUTOPILOT, STANDARD_SUBSCRIBED_MESSAGES, targetsByMessageId);
-
-    }
-
-    
-    public DirectModelAsEEComponent(HardwareEmulatorInterface modelServer, String autopilotConfig, EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
-    	this(modelServer, autopilotConfig, simulator, targetsByMessageId);
     }
 
 

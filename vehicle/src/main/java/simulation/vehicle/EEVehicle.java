@@ -52,8 +52,6 @@ public class EEVehicle {
 
 	private final Vehicle vehicle;
 
-	private DirectModelAsEEComponent autoPilot;
-
 	private List<Bus> busList = new LinkedList<>();
 
 	private List<AbstractSensor> sensorList = new LinkedList<>();
@@ -119,14 +117,14 @@ public class EEVehicle {
 			}
 
 			for (ParsableBusStructureProperties.Pair bridge : busStructure.getBridges()) {
-				Bridge newBridge = new Bridge(eeSimulator, Pair.of(busList.get((int) bridge.busAndParameter[0]), busList.get((int) bridge.busAndParameter[1])), Duration.ofMillis((long) bridge.busAndParameter[2]));
+				Bridge newBridge = new Bridge(Pair.of(busList.get((int) bridge.busAndParameter[0]), busList.get((int) bridge.busAndParameter[1])), Duration.ofMillis((long) bridge.busAndParameter[2]));
 				bridgeList.add(newBridge);
 			}
 
-			if (busStructure.getAutopilot() != null) {
-				navigation = Optional.of(NavigationBlockAsEEComponent.createNavigationBlockAsEEComponent(busList.get((int) busStructure.getAutopilot().busAndParameter[0])));
-				busList.get((int) busStructure.getAutopilot().busAndParameter[0]).registerComponent(navigation.get());
-			}
+//			if (busStructure.getAutopilot() != null) {
+//				navigation = Optional.of(NavigationBlockAsEEComponent.createNavigationBlockAsEEComponent(busList.get((int) busStructure.getAutopilot().busAndParameter[0])));
+//				busList.get((int) busStructure.getAutopilot().busAndParameter[0]).registerComponent(navigation.get());
+//			}
 
 		} catch (IOException e) {
 			throw  new IllegalArgumentException("Can not create EEVehicle. Failed to read file: " + data);
@@ -136,7 +134,7 @@ public class EEVehicle {
 
 
 
-	public EEVehicle(Vehicle vehicle, EESimulator eeSimulator, List<Bus> buses, List<EEComponent> components) {
+	public EEVehicle(Vehicle vehicle, EESimulator eeSimulator, Set<Bus> buses, List<EEComponent> components) {
 		this.vehicle = vehicle;
 		this.eeSimulator = eeSimulator;
 		this.busList = new ArrayList<Bus>(buses);
@@ -151,12 +149,6 @@ public class EEVehicle {
 				break;
 			case SENSOR:
 				this.sensorList.add((AbstractSensor) component);
-			case AUTOPILOT:
-				if(navigation.isPresent()){
-					throw new IllegalStateException("Autopilot can only be set once");
-				}
-				autoPilot = (DirectModelAsEEComponent) component;
-				break;
 			case BRIDGE:
 				this.bridgeList.add((Bridge) component);
 				break;
@@ -166,6 +158,8 @@ public class EEVehicle {
 					}
 					navigation = Optional.of((NavigationBlockAsEEComponent) component);
 					break;
+			case AUTOPILOT:
+				break;
 			default:
 				throw new IllegalStateException("Invalid component type. Component type was: " + component.getComponentType());
 			}
@@ -199,7 +193,7 @@ public class EEVehicle {
 
 	/**
 	 * function that notifies all sensors to send their actual data to the busAndParameter
-	 * 
+	 *
 	 * @param actualTime actual time of the simulation
 	 */
 	public void notifySensors(Instant actualTime) {
@@ -210,7 +204,7 @@ public class EEVehicle {
 
 	/**
 	 * function that notifies all actuators to update
-	 * 
+	 *
 	 * @param actualTime time the actuators get to update their value
 	 */
 	public void notifyActuator(Instant actualTime) {
@@ -255,13 +249,9 @@ public class EEVehicle {
 		return Optional.empty();
 	}
 
-	public DirectModelAsEEComponent getAutoPilot() {
-		return this.autoPilot;
-	}
-
 	/**
 	 * Add sensor to sensor list and register at target buses
-	 * 
+	 *
 	 * @param sensor to be registered
 	 */
 	public void addSensor(AbstractSensor sensor) {
@@ -276,13 +266,9 @@ public class EEVehicle {
 		this.sensorList.add(sensor);
 	}
 
-	public void setAutoPilot(DirectModelAsEEComponent autoPilot) {
-		this.autoPilot = autoPilot;
-	}
-
 	/**
 	 * Add actuator to actuator list and register at target buses
-	 * 
+	 *
 	 * @param actuator actuator to be registered
 	 */
 	private void addActuator(VehicleActuator actuator) {
@@ -476,8 +462,7 @@ class ParsableBusStructureProperties {
 	private List<Pair> sensors = new LinkedList<>();
 	private List<Pair> actuators = new LinkedList<>();
 	private List<Pair> bridges = new LinkedList<>();
-	private Pair autopilot;
-	private Pair controller;
+	private Pair navigation;
 
 	public ParsableBusStructureProperties(EEVehicle vehicle) {
 
@@ -507,8 +492,8 @@ class ParsableBusStructureProperties {
 					processedBridges.add(bridge);
 				}
 			}
-			if (bus.getConnectedComponents().contains(vehicle.getNavigation())) {
-				autopilot = new Pair("navigation", busIdArr);
+			if (vehicle.getNavigation().isPresent() && bus.getConnectedComponents().contains(vehicle.getNavigation().get())) {
+				navigation = new Pair("navigation", busIdArr);
 			}
 
 			busId++;
@@ -533,7 +518,7 @@ class ParsableBusStructureProperties {
 		return sensors;
 	}
 
-	public Pair getAutopilot() {
-		return autopilot;
+	public Pair getNavigation() {
+		return navigation;
 	}
 }

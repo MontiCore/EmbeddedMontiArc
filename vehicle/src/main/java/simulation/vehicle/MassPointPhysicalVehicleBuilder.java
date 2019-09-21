@@ -15,6 +15,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -75,7 +76,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * @return MassPointPhysicalVehicle according to the JSON contents
      * @throws IOException thrown if the given file could either not be found or accessed/read.
      */
-    public MassPointPhysicalVehicle loadFromFile(File file) throws IOException {
+    public MassPointPhysicalVehicle loadFromFile(Vehicle vehicle,File file) throws IOException {
         String jsonContents = new String(Files.readAllBytes(file.toPath()));
         Gson g = new Gson();
         ParsableVehicleProperties data = g.fromJson(jsonContents, ParsableVehicleProperties.class);
@@ -99,7 +100,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         builder.setWheelDistToFront(data.getWheelDistToFront());
         builder.setWheelDistToBack(data.getWheelDistToBack());
         
-        return (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
+        return (MassPointPhysicalVehicle) builder.buildPhysicalVehicle(vehicle);
     }
 
     /**
@@ -111,8 +112,13 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * @throws IOException thrown if the given path cannot be accessed.
      */
     public void storeInFile(File whereToStore) throws IOException {
-        PhysicalVehicle physicalVehicle = this.buildPhysicalVehicle();
-        ParsableVehicleProperties properties = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties((MassPointPhysicalVehicle) physicalVehicle);
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(this, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
+        ParsableVehicleProperties properties = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties((MassPointPhysicalVehicle) physicalVehicle) ;
 
         Gson g = new Gson();
         String json = g.toJson(properties, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);

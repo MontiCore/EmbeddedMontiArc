@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 import simulation.environment.object.House;
 import simulation.util.Log;
 
@@ -34,8 +35,8 @@ public class VehicleTest {
         Duration timeDiff = Duration.ofMillis(10);
 
         // 2 colliding vehicles
-        PhysicalObject vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        PhysicalObject vehicle2 = new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {1, 0, 0})).buildPhysicalVehicle();
+        PhysicalObject vehicle1 = createStandardVehicle(new MassPointPhysicalVehicleBuilder()).getPhysicalVehicle();
+        PhysicalObject vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {1, 0, 0}))).getPhysicalVehicle();
         List<PhysicalObject> physicalObjects = new ArrayList<>();
         physicalObjects.add(vehicle2);
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
@@ -43,16 +44,16 @@ public class VehicleTest {
 
         // 2 non colliding vehicles
         physicalObjects.clear();
-        vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        vehicle2 = new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {10, 0, 0})).buildPhysicalVehicle();
+        vehicle1 = createStandardVehicle(new MassPointPhysicalVehicleBuilder()).getPhysicalVehicle();
+        vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {10, 0, 0}))).getPhysicalVehicle();
         physicalObjects.add(vehicle2);
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(!vehicle1.getCollision() && !vehicle2.getCollision());
 
         // Vehicle colliding with non vehicle
         physicalObjects.clear();
-        vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        vehicle2 = new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {30, 0, 0})).buildPhysicalVehicle();
+        vehicle1 = createStandardVehicle(new MassPointPhysicalVehicleBuilder()).getPhysicalVehicle();
+        vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {30, 0, 0}))).getPhysicalVehicle();
         House house = new House();
         house.setPosition(new ArrayRealVector(new double[] {1, 0, 0}));
         house.setWidth(10.0);
@@ -63,14 +64,12 @@ public class VehicleTest {
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(vehicle1.getCollision() && !vehicle2.getCollision());
     }
-    
-    @Test
-    public void executeLoopiterationTest() {
-    	PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-    	Vehicle vehicle = physicalVehicle.getVehicle();
-    	EEVehicle eeVehicle = vehicle.getEEVehicle();
-    	vehicle.executeLoopIteration(eeVehicle.getEESimulator().getSimulationTime().plusMillis(30));
-    	List<EEDiscreteEvent> events = new ArrayList<EEDiscreteEvent>(eeVehicle.getEESimulator().getEventList());
-    	for(EEDiscreteEvent event : events) {}
+        
+    private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
+    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
     }
 }

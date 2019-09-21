@@ -20,8 +20,11 @@ public class Bridge extends MutableEEComponent{
          protected Pair<Bus, Bus> connected;
          private final Duration delay;
 
-         public Bridge (EESimulator simulator, Pair<Bus, Bus> connected, Duration delay){
-             super(simulator, EEComponentType.BRIDGE);
+         public Bridge (Pair<Bus, Bus> connected, Duration delay){
+             super(connected.getLeft().getSimulator(), EEComponentType.BRIDGE);
+             if(connected.getLeft().getSimulator() != connected.getRight().getSimulator()) {
+            	 throw new IllegalArgumentException("Bus with different simulators can not be connected");
+             }
              this.connected = connected;
              this.delay = delay;
              
@@ -42,9 +45,9 @@ public class Bridge extends MutableEEComponent{
              
              connected.getKey().registerComponent(this);
              connected.getValue().registerComponent(this);
-         }
+         } 
 
-        public void processEvent(EEDiscreteEvent event){
+		public void processEvent(EEDiscreteEvent event){
              if(event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE){
                  BusMessage msg = (BusMessage) event;
                  msg.setFinishTime(msg.getEventTime().plus(delay));
