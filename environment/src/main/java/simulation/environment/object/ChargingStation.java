@@ -58,8 +58,9 @@ public class ChargingStation implements SimulationLoopExecutable, EnvObject {
 
     /**
      * Car tracing Radius of the Charging Station
+     * 0.00005 long/lat are approx. 5m
      */
-    private double stationRadius = 10.00;
+    private double stationRadius = 0.00005;
 
     // ===================
     // Constructor
@@ -140,8 +141,8 @@ public class ChargingStation implements SimulationLoopExecutable, EnvObject {
     }
 
     public boolean carStandingAtTheCS(Chargeable vehicle) {
-        // Is the Car not moving and near the CS
-        return vehicle.isParkedChargingStation(this);
+        // Is the Car near the CS
+        return location.getDistance(vehicle.getPosition()) < stationRadius;
     }
 
     // ===================
