@@ -1,22 +1,8 @@
 /**
+ * (c) https://github.com/MontiCore/monticore
  *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.middleware.someip;
@@ -45,28 +31,28 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         assertNotNull(component);
 
         //someipIn
-        EMAPortSymbol someIPIn = component.getPortInstance("someipIn").orElse(null);
+        EMAPortSymbol someIPIn = component.getPortInstance("someIPIn").orElse(null);
         assertNotNull(someIPIn);
 
         Collection<TagSymbol> tags = symtab.getTags(someIPIn, SomeIPConnectionSymbol.KIND);
         assertTrue(tags.size() == 1);
 
         SomeIPConnectionSymbol tag = (SomeIPConnectionSymbol) tags.iterator().next();
-        assertEquals(tag.getserviceID().get(), 1);
-        assertEquals(tag.getinstanceID().get(), 2);
-        assertEquals(tag.geteventgroupID().get(), 3);
+        assertEquals((int)tag.getserviceID().get(), 1);
+        assertEquals((int)tag.getinstanceID().get(), 2);
+        assertEquals((int)tag.geteventgroupID().get(), 3);
 
         //someipOut
-        EMAPortSymbol someIPOut = component.getPortInstance("someipOut").orElse(null);
+        EMAPortSymbol someIPOut = component.getPortInstance("someIPOut").orElse(null);
         assertNotNull(someIPOut);
 
         tags = symtab.getTags(someIPOut, SomeIPConnectionSymbol.KIND);
         assertTrue(tags.size() == 1);
 
         tag = (SomeIPConnectionSymbol) tags.iterator().next();
-        assertEquals(tag.getserviceID().get(), 1);
-        assertEquals(tag.getinstanceID().get(), 2);
-        assertEquals(tag.geteventgroupID().get(), 3);
+        assertEquals((int)tag.getserviceID().get(), 1);
+        assertEquals((int)tag.getinstanceID().get(), 2);
+        assertEquals((int)tag.geteventgroupID().get(), 3);
 
         //emptyTagIn
         EMAPortSymbol emptyTagIn = component.getPortInstance("emptyTagIn").orElse(null);

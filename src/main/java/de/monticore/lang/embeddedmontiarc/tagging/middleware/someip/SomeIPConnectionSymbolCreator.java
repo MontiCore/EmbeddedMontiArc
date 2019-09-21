@@ -34,7 +34,7 @@ public class SomeIPConnectionSymbolCreator implements TagSymbolCreator {
      * at http://www.regexplanet.com/advanced/java/index.html
      */
 
-    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*serviceID\\s*=\\s*[0-9]*,\\s*instanceID\\s*=\\s*[0-9]*,\\s*eventgroupID\\s*=\\s*[0-9]*\\}\\s*");
+    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*topic\\s*=\\s*\\(\\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\\s*,\\s*([a-z|A-Z][0-9|a-z|A-Z|_|/]*)\\s*\\)\\s*(s*,\\s*msgField\\s*=\\s*([a-z|A-Z][a-z|A-Z|1-9|_|\\.|::|\\(|\\)]*)\\s*)?\\s*\\}\\s*");
 
     public static Scope getGlobalScope(final Scope scope) {
         Scope s = scope;
