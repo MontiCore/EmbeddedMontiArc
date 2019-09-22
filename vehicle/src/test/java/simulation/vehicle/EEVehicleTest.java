@@ -109,7 +109,7 @@ public class EEVehicleTest {
         brakeReference.update(Instant.EPOCH.plusMillis(33));
 
         //loop for 33 milliseconds
-        vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
+        vehicle.executeLoopIteration(Duration.ofMillis(33));
 
         //test if value of actuator are correct
         assertEquals(steeringReference.getActuatorValueCurrent(), vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).get().getActuatorValueCurrent());

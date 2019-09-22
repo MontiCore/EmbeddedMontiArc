@@ -9,19 +9,18 @@ package simulation.vehicle;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Vertex;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
 import org.apache.commons.math3.linear.RealVector;
 import sensors.abstractsensors.AbstractSensor;
-import sensors.util.SensorUtil;
-import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.EESimulator.NavigationBlockAsEEComponent;
-import simulation.bus.Bus;
-import simulation.bus.InstantBus;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.*;
@@ -29,7 +28,7 @@ import java.util.*;
 /**
  * Simulation objects for a generic vehicle.
  */
-public class Vehicle {
+public class Vehicle implements SimulationLoopExecutable {
     /** Default average values for vehicle constructor */
     /** Minimum acceleration that can be made by the motor */
     public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN = -1.5;
@@ -100,6 +99,8 @@ public class Vehicle {
     /** Maximum temporary allowed velocity of vehicle */
     private double maxTemporaryAllowedVelocity;
 
+    private Instant lastSimulationTime = Instant.EPOCH;
+
 
     /**
      * Constructor for a vehicle that is standing at its position
@@ -110,7 +111,7 @@ public class Vehicle {
         this.physicalVehicle = physicalVehicleBuidler.buildPhysicalVehicle(this);
     	//create eeVehicle
         this.eeVehicle = eeVehicleBuilder.buildEEVehicle(this, physicalVehicle);
-        initVehcile();
+        initVehicle();
     }
 
     public Vehicle(PhysicalVehicleBuilder physicalVehicleBuidler, EESimulator simulator, File file) {
@@ -118,7 +119,7 @@ public class Vehicle {
         this.physicalVehicle = physicalVehicleBuidler.buildPhysicalVehicle(this);
     	//create eeVehicle
         this.eeVehicle = new EEVehicle(this, simulator, file);
-    	initVehcile();
+    	initVehicle();
     }
     
     public Vehicle(File massPointPhysicalVehicleFile, EEVehicleBuilder eeVehicleBuilder) throws IOException {
@@ -126,7 +127,7 @@ public class Vehicle {
         this.physicalVehicle = new MassPointPhysicalVehicleBuilder().loadFromFile(this, massPointPhysicalVehicleFile);
     	//create eeVehicle
         this.eeVehicle = eeVehicleBuilder.buildEEVehicle(this, physicalVehicle);
-        initVehcile();
+        initVehicle();
     }
 
     public Vehicle(File massPointPhysicalVehicleFile, EESimulator simulator, File eeFile) throws IOException {
@@ -134,10 +135,10 @@ public class Vehicle {
         this.physicalVehicle = new MassPointPhysicalVehicleBuilder().loadFromFile(this, massPointPhysicalVehicleFile);
     	//create eeVehicle
         this.eeVehicle = new EEVehicle(this, simulator, eeFile);
-    	initVehcile();
+    	initVehicle();
     }
 
-	private void initVehcile() {
+	private void initVehicle() {
     	// Create the status logger
         this.statusLogger = new StatusLogger();
         // register the navigation unit
@@ -154,10 +155,12 @@ public class Vehicle {
     	return this.eeVehicle.getSensorByType(type);
     }
 
-    public void executeLoopIteration(Instant time) {
-    	//update physical vehicle?
-    	this.eeVehicle.executeLoopIteration(time);
-    	this.physicalVehicle.setCollision(false);
+    @Override
+    public void executeLoopIteration(Duration timeDiff) {
+
+        this.lastSimulationTime = this.lastSimulationTime.plus(timeDiff);
+        this.eeVehicle.executeLoopIteration(this.lastSimulationTime);
+        this.physicalVehicle.setCollision(false);
     }
 
 	public EEVehicle getEEVehicle() {

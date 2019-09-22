@@ -21,6 +21,7 @@ import org.jfree.util.Log;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
+import sensors.abstractsensors.AbstractSensor;
 import sensors.factory.SensorFactory;
 import sensors.util.SensorUtil;
 import simulation.EESimulator.Bridge;
@@ -35,7 +36,7 @@ public class EEVehicleBuilder {
 	
 	private final EESimulator eeSimulator;
 	
-	private Map<BusEntry,List<Bus>> busesBySensorClass = new HashMap<BusEntry, List<Bus>>();
+	private Map<BusEntry,List<Bus>> busesBySensorBusEntry = new HashMap<BusEntry, List<Bus>>();
 	
 	Set<Bus> addAllSensors = new HashSet<Bus>();
 	
@@ -48,11 +49,17 @@ public class EEVehicleBuilder {
 	public EEVehicle buildEEVehicle(Vehicle vehicle, PhysicalVehicle physicalVehicle) {
 		Set<Bus> buses = new HashSet<Bus>();
 		if(!addAllSensors.isEmpty()) {
-			SensorUtil.sensorAdder(physicalVehicle, new ArrayList<Bus>(addAllSensors));
-
+			components.addAll(SensorUtil.sensorAdder(physicalVehicle, new ArrayList<Bus>(addAllSensors)));
+		
 		}
-		for(Map.Entry<BusEntry ,List<Bus>> entry: busesBySensorClass.entrySet()) {
-			SensorFactory.createSensor(entry.getKey(), physicalVehicle, entry.getValue()).ifPresent(s -> components.add(s));
+		for(Map.Entry<BusEntry ,List<Bus>> entry: busesBySensorBusEntry.entrySet()) {
+			Optional<AbstractSensor> sensor = SensorFactory.createSensor(entry.getKey(), physicalVehicle, entry.getValue());
+			if(sensor.isPresent()) {
+				components.add(sensor.get());
+			}
+			else {
+				throw new IllegalStateException("Could not create sensor " + entry.getKey());
+			}
 		}
 		for(EEComponent component : components) {
 			for(List<EEComponent> targets : component.getTargetsByMessageId().values()){
@@ -77,29 +84,28 @@ public class EEVehicleBuilder {
 		return createNavigation(Collections.singletonList(bus));
 	}
 
-	public Optional<DirectModelAsEEComponent> createController(HardwareEmulatorInterface modelServer, String autopilotConfig, List<Bus> buses) {
+	public DirectModelAsEEComponent createController(HardwareEmulatorInterface modelServer, String autopilotConfig, List<Bus> buses) {
 		List<EEComponent> targets = new ArrayList<EEComponent>(buses);
 		HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-		Optional<DirectModelAsEEComponent> comp = Optional.empty();
 		for(BusEntry busEntry : DirectModelAsEEComponent.MASSPOINT_OUTPUT_MESSAGES) {
         	targetsByMessageId.put(busEntry, targets);
         }
+		DirectModelAsEEComponent comp = new DirectModelAsEEComponent(eeSimulator, targetsByMessageId);
 		try {
-			comp = Optional.of(new DirectModelAsEEComponent(eeSimulator, targetsByMessageId));
-			comp.get().initializeController(modelServer, autopilotConfig);
-			components.add(comp.get());
+			comp.initializeController(modelServer, autopilotConfig);
 		} catch (Exception e) {
-			Log.error("Could not generate controller");
+			throw new IllegalStateException("Controller could not be created. " + e.getMessage() + "\r\n" + e.getStackTrace());
 		}
+		components.add(comp);
 		return comp;
 	}
 
-	public Optional<DirectModelAsEEComponent> createController(HardwareEmulatorInterface modelServer, String autopilotConfig, Bus bus) {
+	public DirectModelAsEEComponent createController(HardwareEmulatorInterface modelServer, String autopilotConfig, Bus bus) {
 		return createController(modelServer, autopilotConfig, Collections.singletonList(bus));
 	}
 	
 	public void createSensor(BusEntry sensorType, List<Bus> buses) {
-		busesBySensorClass.put(sensorType, buses);
+		busesBySensorBusEntry.put(sensorType, buses);
 	}
 	
 	public void createSensor(BusEntry sensorType, Bus bus) {
@@ -134,6 +140,33 @@ public class EEVehicleBuilder {
 	
 	public List<VehicleActuator> createAllActuators(Bus bus) {
 		return createAllActuators(Collections.singletonList(bus));
+	}
+
+	public List<VehicleActuator> createMassPointActuators(List<Bus> buses){
+		List<VehicleActuator> comps = new ArrayList<VehicleActuator>();
+		comps.add(createActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, buses));
+		comps.add(createActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, buses));
+		comps.add(createActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, buses));
+		comps.add(createActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, buses));
+		comps.add(createActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR, buses));
+		comps.add(createActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, buses));
+		return comps;
+	}
+
+	public List<VehicleActuator> createMassPointActuators(Bus bus){
+		return createMassPointActuators(Collections.singletonList(bus));
+	}
+
+	public void createControllerSensors(List<Bus> buses){
+		createSensor(BusEntry.SENSOR_VELOCITY, buses);
+		createSensor(BusEntry.SENSOR_GPS_COORDINATES, buses);
+		createSensor(BusEntry.SENSOR_COMPASS, buses);
+		createSensor(BusEntry.PLANNED_TRAJECTORY_X, buses);
+		createSensor(BusEntry.PLANNED_TRAJECTORY_Y, buses);
+	}
+
+	public void createControllerSensors(Bus bus){
+		createControllerSensors(Collections.singletonList(bus));
 	}
 	
 	public void createAllSensorsNActuators(Bus bus) {

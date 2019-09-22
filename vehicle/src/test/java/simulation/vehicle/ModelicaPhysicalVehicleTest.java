@@ -126,7 +126,7 @@ public class ModelicaPhysicalVehicleTest {
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
-        vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
+        vehicle.executeLoopIteration(Duration.ofMillis(33));
         throttleReference.update(Instant.EPOCH.plusMillis(33));
         brakeReference.update(Instant.EPOCH.plusMillis(33));
         clutchReference.update(Instant.EPOCH.plusMillis(33));
@@ -182,7 +182,7 @@ public class ModelicaPhysicalVehicleTest {
 
 
         // Execute loop iteration
-        vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
+        vehicle.executeLoopIteration(Duration.ofMillis(33));
         steeringReference.update(Instant.EPOCH.plusMillis(33));
 
         // Throttle, brake, gear, and clutch actuators should be reset to minimum
@@ -221,7 +221,7 @@ public class ModelicaPhysicalVehicleTest {
         double steeringValueReference = steering.getActuatorValueCurrent();
 
         // Execute loop iteration
-        vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
+        vehicle.executeLoopIteration(Duration.ofMillis(33));
 
         // All actuators should not be updated
         Assert.assertEquals(motorValueReference, throttle.getActuatorValueCurrent(), 0);

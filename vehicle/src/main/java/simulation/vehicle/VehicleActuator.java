@@ -267,8 +267,14 @@ public class VehicleActuator extends ImmutableEEComponent {
 	 *                   difference considered in the update measured in seconds
 	 */
 	protected void update(Instant actualTime) {
-		// Total change of value in given time span
-		double timeDiff = Duration.between(lastUpdate, actualTime).toMillis() / 1000;
+		this.updateValue(actualTime);
+		System.out.println(this.actuatorType + " send message: " + this.sendMsgId + "; with value: " + this.actuatorValueCurrent);
+		this.sendMessage(this.actuatorValueCurrent, 8, this.sendMsgId, actualTime);
+	}
+
+	private void updateValue(Instant actualTime){
+		// Total change of value in given time span in seconds
+		double timeDiff = Duration.between(lastUpdate, actualTime).toNanos() / 1000000000.0d;
 		double valueDiff = (actuatorChangeRate * timeDiff);
 
 		if (Math.abs(actuatorValueTarget - actuatorValueCurrent) <= valueDiff) {
@@ -281,8 +287,6 @@ public class VehicleActuator extends ImmutableEEComponent {
 					+ ((actuatorValueCurrent < actuatorValueTarget) ? valueDiff : -valueDiff);
 		}
 		lastUpdate = actualTime;
-
-		this.sendMessage(this.actuatorValueCurrent, 8, this.sendMsgId, actualTime);
 	}
 
 	/**
@@ -395,8 +399,15 @@ public class VehicleActuator extends ImmutableEEComponent {
 	@Override
 	public void processEvent(EEDiscreteEvent event) {
 		if (event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE && event.getTarget() == this) {
-			setActuatorValueTarget((double) ((BusMessage) event).getMessage());
-			this.lastUpdate = event.getEventTime();
+			BusMessage msg = (BusMessage) event;
+			//update actuator with old target
+			this.updateValue(event.getEventTime());
+			//send message
+			System.out.println(actuatorType.toString() + " received message: " +  msg.getMessageID() + "; with value: " + msg.getMessage());
+			setActuatorValueTarget((double) msg.getMessage());
+		}
+		else{
+			throw new IllegalArgumentException(this.actuatorType.toString() + " received illegal event type or with wrong target. Message type was" + event.getEventType());
 		}
 	}
 

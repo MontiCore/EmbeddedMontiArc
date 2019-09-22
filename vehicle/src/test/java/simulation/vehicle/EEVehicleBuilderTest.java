@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -186,6 +187,43 @@ public class EEVehicleBuilderTest {
 //        assertTrue(componentIsConnected(busThreeCompareList, busThree.getConnectedComponents()));
 
 
+    }
+    
+    @Test
+    public void addAllSensorsTest() {
+    	PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensors(bus);
+		eeVehicleBuilder.createAllActuators(bus);
+		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+		EEVehicle eeVehicle = vehicle.getEEVehicle();
+        Set<BusEntry> sensorBusEntries = new HashSet<>();
+        sensorBusEntries.add(BusEntry.SENSOR_CAMERA);
+        sensorBusEntries.add(BusEntry.SENSOR_COMPASS);
+        sensorBusEntries.add(BusEntry.SENSOR_DAYNIGHT);
+        sensorBusEntries.add(BusEntry.SENSOR_DISTANCE_TO_LEFT);
+        sensorBusEntries.add(BusEntry.SENSOR_DISTANCE_TO_RIGHT);
+        sensorBusEntries.add(BusEntry.SENSOR_GPS_COORDINATES);
+        sensorBusEntries.add(BusEntry.SENSOR_LEFT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR);
+        sensorBusEntries.add(BusEntry.SENSOR_LEFT_FRONT_DISTANCE);
+        sensorBusEntries.add(BusEntry.SENSOR_LEFT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR);
+        sensorBusEntries.add(BusEntry.SENSOR_OBSTACLE);
+        sensorBusEntries.add(BusEntry.SENSOR_RIGHT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR);
+        sensorBusEntries.add(BusEntry.SENSOR_RIGHT_FRONT_DISTANCE);
+        sensorBusEntries.add(BusEntry.SENSOR_RIGHT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR);        
+        sensorBusEntries.add(BusEntry.SENSOR_STEERING);
+        sensorBusEntries.add(BusEntry.SENSOR_STREETTYPE);
+        sensorBusEntries.add(BusEntry.SENSOR_VELOCITY);
+        sensorBusEntries.add(BusEntry.SENSOR_WEATHER);
+        sensorBusEntries.add(BusEntry.PLANNED_TRAJECTORY_X);
+        sensorBusEntries.add(BusEntry.PLANNED_TRAJECTORY_Y);
+        
+        for(BusEntry entry : sensorBusEntries) {
+        	Optional<AbstractSensor> sensor = eeVehicle.getSensorByType(entry);
+        	Assert.assertTrue(sensor.isPresent());
+        }
     }
     
     private boolean componentIsConnected(List<EEComponent> shouldBeConnected, List<EEComponent> isConnected) {

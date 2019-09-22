@@ -45,7 +45,8 @@ public class SensorUtil {
         sensorFactory.createSensor(BusEntry.SENSOR_LEFT_FRONT_DISTANCE).ifPresent(s -> sensors.add(s));
         sensorFactory.createSensor(BusEntry.SENSOR_RIGHT_FRONT_DISTANCE).ifPresent(s -> sensors.add(s));
         sensorFactory.createSensor(BusEntry.SENSOR_OBSTACLE).ifPresent(s -> sensors.add(s));
-
+        sensorFactory.createSensor(BusEntry.PLANNED_TRAJECTORY_X).ifPresent(s -> sensors.add(s));
+        sensorFactory.createSensor(BusEntry.PLANNED_TRAJECTORY_Y).ifPresent(s -> sensors.add(s));
         return sensors;
     }
 

@@ -54,9 +54,9 @@ public class EEVehicle {
 
 	private List<Bus> busList = new LinkedList<>();
 
-	private List<AbstractSensor> sensorList = new LinkedList<>();
+	private List<AbstractSensor> sensorList = new ArrayList<>();
 
-	private List<VehicleActuator> actuatorList = new LinkedList<>();
+	private List<VehicleActuator> actuatorList = new ArrayList<>();
 
 	private List<Bridge> bridgeList = new LinkedList<>();
 
@@ -149,10 +149,11 @@ public class EEVehicle {
 				break;
 			case SENSOR:
 				this.sensorList.add((AbstractSensor) component);
+				break;
 			case BRIDGE:
 				this.bridgeList.add((Bridge) component);
 				break;
-				case NAVIGATION:
+			case NAVIGATION:
 					if(navigation.isPresent()){
 						throw new IllegalStateException("Navigation can only be set once");
 					}
@@ -324,12 +325,12 @@ public class EEVehicle {
 	}
 
 	public Optional<AbstractSensor> getSensorByType(BusEntry type) {
-		Predicate<EEComponent> IsSensorType = new Predicate<EEComponent>() {
-			public boolean apply(EEComponent comp) {
-				return comp.getTargetsByMessageId().containsKey(type);
+		Predicate<AbstractSensor> IsSensorType = new Predicate<AbstractSensor>() {
+			public boolean apply(AbstractSensor comp) {
+				return comp.getType().equals(type);
 			}
 		};
-		return Optional.ofNullable(Iterables.find(this.sensorList, IsSensorType, null));
+ 		return Optional.ofNullable(Iterables.find(this.sensorList, IsSensorType, null));
 	}
 
 	protected void setCollision(boolean collision) {
@@ -342,11 +343,6 @@ public class EEVehicle {
 		components.addAll(actuatorList);
 		components.addAll(sensorList);
 
-		Predicate<EEComponent> containsOne = new Predicate<EEComponent>() {
-			public boolean apply(EEComponent comp) {
-				return comp.getComponentType() == EEComponentType.BRIDGE;
-			}
-		};
 		for (EEComponent component : components) {
 			List<BusEntry> subscribedConstMsgs = this.getSubscribedConstantMessages(component);
 			if (!subscribedConstMsgs.isEmpty()) {

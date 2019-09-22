@@ -38,45 +38,11 @@ public class  SensorFactory {
         this.buses = Collections.singletonList(bus);
     }
 
-    public Optional<AbstractSensor> createSensor(BusEntry busEntry) {
-        switch (busEntry) {
-        case SENSOR_VELOCITY:
-            return createSensor(SpeedSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_GPS_COORDINATES:
-            return createSensor( LocationSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_STEERING:
-            return createSensor(SteeringAngleSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_DISTANCE_TO_RIGHT:
-            return createSensor(DistanceToRightSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_DISTANCE_TO_LEFT:
-            return createSensor(DistanceToLeftSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_WEATHER:
-            return createSensor(WeatherSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_CAMERA:
-            return createSensor(CameraSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_COMPASS:
-            return createSensor(CompassSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_LEFT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return createSensor(LeftBackWheelDistanceToStreetSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_LEFT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return createSensor(LeftFrontDistanceSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_RIGHT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return createSensor(RightFrontDistanceSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_RIGHT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return createSensor(RightBackWheelDistanceToStreetSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_STREETTYPE:
-            return createSensor(StreetTypeSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_DAYNIGHT:
-            return createSensor(DayNightSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_LEFT_FRONT_DISTANCE:
-            return createSensor(LeftFrontDistanceSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_RIGHT_FRONT_DISTANCE:
-            return createSensor(RightFrontDistanceSensor.class, this.physicalVehicle, this.buses);
-        case SENSOR_OBSTACLE:
-            return createSensor(ObstacleSensor.class, this.physicalVehicle, this.buses);
-        default:
-            break;
-        }
+    public Optional<AbstractSensor> createSensor(BusEntry sensorType) {
+    	Optional<Class<? extends AbstractSensor>> sensorClass = getSensorClassByBusEntry(sensorType);
+    	if(sensorClass.isPresent()) {
+    		return createSensor(sensorClass.get(), physicalVehicle, buses);
+    	}
         return Optional.empty();
     }
     
@@ -85,44 +51,10 @@ public class  SensorFactory {
     }
     
     public static Optional<AbstractSensor> createSensor(BusEntry sensorType, IPhysicalVehicle physicalVehicle, List<Bus> buses) {
-        switch (sensorType) {
-        case SENSOR_VELOCITY:
-            return createSensor(SpeedSensor.class, physicalVehicle, buses);
-        case SENSOR_GPS_COORDINATES:
-            return createSensor( LocationSensor.class, physicalVehicle, buses);
-        case SENSOR_STEERING:
-            return createSensor(SteeringAngleSensor.class, physicalVehicle, buses);
-        case SENSOR_DISTANCE_TO_RIGHT:
-            return createSensor(DistanceToRightSensor.class, physicalVehicle, buses);
-        case SENSOR_DISTANCE_TO_LEFT:
-            return createSensor(DistanceToLeftSensor.class, physicalVehicle, buses);
-        case SENSOR_WEATHER:
-            return createSensor(WeatherSensor.class, physicalVehicle, buses);
-        case SENSOR_CAMERA:
-            return createSensor(CameraSensor.class, physicalVehicle, buses);
-        case SENSOR_COMPASS:
-            return createSensor(CompassSensor.class, physicalVehicle, buses);
-        case SENSOR_LEFT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return createSensor(LeftBackWheelDistanceToStreetSensor.class, physicalVehicle, buses);
-        case SENSOR_LEFT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return createSensor(LeftFrontDistanceSensor.class, physicalVehicle, buses);
-        case SENSOR_RIGHT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return createSensor(RightFrontDistanceSensor.class, physicalVehicle, buses);
-        case SENSOR_RIGHT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
-            return createSensor(RightBackWheelDistanceToStreetSensor.class, physicalVehicle, buses);
-        case SENSOR_STREETTYPE:
-            return createSensor(StreetTypeSensor.class, physicalVehicle, buses);
-        case SENSOR_DAYNIGHT:
-            return createSensor(DayNightSensor.class, physicalVehicle, buses);
-        case SENSOR_LEFT_FRONT_DISTANCE:
-            return createSensor(LeftFrontDistanceSensor.class, physicalVehicle, buses);
-        case SENSOR_RIGHT_FRONT_DISTANCE:
-            return createSensor(RightFrontDistanceSensor.class, physicalVehicle, buses);
-        case SENSOR_OBSTACLE:
-            return createSensor(ObstacleSensor.class, physicalVehicle, buses);
-        default:
-            break;
-        }
+    	Optional<Class<? extends AbstractSensor>> sensorClass = getSensorClassByBusEntry(sensorType);
+    	if(sensorClass.isPresent()) {
+    		return createSensor(sensorClass.get(), physicalVehicle, buses);
+    	}
         return Optional.empty();
     }
 
@@ -173,5 +105,71 @@ public class  SensorFactory {
      */
     public static Optional<AbstractSensor> createSensor(Class<? extends AbstractSensor> sensorClass, IPhysicalVehicle physicalVehicle, Bus bus) {
         return createSensor(sensorClass, physicalVehicle, Collections.singletonList(bus));
+    }
+    
+    public static Optional<Class<? extends AbstractSensor>> getSensorClassByBusEntry(BusEntry busEntry){
+    	Optional<Class<? extends AbstractSensor>> sensorClass = Optional.empty();
+        switch(busEntry) {
+    	case SENSOR_VELOCITY:
+    		sensorClass = Optional.of(SpeedSensor.class);
+    		break;
+        case SENSOR_GPS_COORDINATES:
+			sensorClass = Optional.of(LocationSensor.class);
+			break;
+        case SENSOR_STEERING:
+			sensorClass = Optional.of(SteeringAngleSensor.class);
+			break;
+        case SENSOR_DISTANCE_TO_RIGHT:
+			sensorClass = Optional.of(DistanceToRightSensor.class);
+			break;
+        case SENSOR_DISTANCE_TO_LEFT:
+			sensorClass = Optional.of(DistanceToLeftSensor.class);
+			break;
+        case SENSOR_WEATHER:
+			sensorClass = Optional.of(WeatherSensor.class);
+			break;
+        case SENSOR_CAMERA:
+  			sensorClass = Optional.of(CameraSensor.class);
+			break;
+        case SENSOR_COMPASS:
+			sensorClass = Optional.of(CompassSensor.class);
+			break;
+        case SENSOR_LEFT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
+			sensorClass = Optional.of(LeftBackWheelDistanceToStreetSensor.class);
+			break;
+        case SENSOR_LEFT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
+			sensorClass = Optional.of(LeftFrontWheelDistanceToStreetSensor.class);
+			break;
+        case SENSOR_RIGHT_FRONT_WHEEL_DISTANCE_TO_STREET_SENSOR:
+			sensorClass = Optional.of(RightFrontWheelDistanceToStreetSensor.class);
+			break;
+        case SENSOR_RIGHT_BACK_WHEEL_DISTANCE_TO_STREET_SENSOR:
+			sensorClass = Optional.of(RightBackWheelDistanceToStreetSensor.class);
+			break;
+        case SENSOR_STREETTYPE:
+			sensorClass = Optional.of(StreetTypeSensor.class);
+			break;
+        case SENSOR_DAYNIGHT:
+			sensorClass = Optional.of(DayNightSensor.class);
+			break;
+        case SENSOR_LEFT_FRONT_DISTANCE:
+			sensorClass = Optional.of(LeftFrontDistanceSensor.class);
+			break;
+        case SENSOR_RIGHT_FRONT_DISTANCE:
+			sensorClass = Optional.of(RightFrontDistanceSensor.class);
+			break;
+        case SENSOR_OBSTACLE:
+			sensorClass = Optional.of(ObstacleSensor.class);
+			break;
+        case PLANNED_TRAJECTORY_X:
+			sensorClass = Optional.of(StaticPlannedTrajectoryXSensor.class);
+			break;
+        case PLANNED_TRAJECTORY_Y:
+			sensorClass = Optional.of(StaticPlannedTrajectoryYSensor.class);
+			break;	
+        default:
+            break;
+        }
+        return sensorClass;
     }
 }

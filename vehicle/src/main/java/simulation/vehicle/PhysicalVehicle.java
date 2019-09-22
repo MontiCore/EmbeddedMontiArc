@@ -6,11 +6,11 @@
  */
 package simulation.vehicle;
 
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IdGenerator;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.*;
 import org.apache.commons.math3.linear.RealVector;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * Class that represents all physical properties of a vehicle and performs physics computations
  */
-public abstract class PhysicalVehicle implements IPhysicalVehicle {
+public abstract class PhysicalVehicle implements IPhysicalVehicle, SimulationLoopExecutable {
 	
     /** Length of the vehicle in meters */
 	protected static final double VEHICLE_DEFAULT_LENGTH = 4.236423828125;
@@ -208,7 +208,7 @@ public abstract class PhysicalVehicle implements IPhysicalVehicle {
     @Override
     public void setCollision(boolean collision){
         this.collision = collision;
-        this.vehicle.getEEVehicle().setCollision(true);
+        this.vehicle.getEEVehicle().setCollision(collision);
     }
 
     /**
@@ -451,5 +451,7 @@ public abstract class PhysicalVehicle implements IPhysicalVehicle {
     public abstract void setWheelDistToBack(double wheelDistToBack);
 
 
-
+    public void executeLoopIteration(Duration timeDiff) {
+        this.vehicle.executeLoopIteration(timeDiff);
+    }
 }
