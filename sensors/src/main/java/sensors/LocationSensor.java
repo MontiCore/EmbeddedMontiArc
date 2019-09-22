@@ -38,7 +38,7 @@ public class LocationSensor extends AbstractSensor {
 
     @Override
     public int getDataLength() {
-        return 15;
+        return value.getDimension() * 8;
     }
 
     @Override

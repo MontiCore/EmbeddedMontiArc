@@ -56,7 +56,7 @@ public class ObstacleSensor extends AbstractSensor {
 
     @Override
     public int getDataLength() {
-        return 12;
+        return 16;
     }
 
     @Override

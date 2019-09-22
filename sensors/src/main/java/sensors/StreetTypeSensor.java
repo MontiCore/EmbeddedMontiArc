@@ -47,7 +47,7 @@ public class StreetTypeSensor extends AbstractSensor {
 
     @Override
     public int getDataLength() {
-        return (value.length() * 4);
+        return (value.length() * 2);
     }
 
     @Override
