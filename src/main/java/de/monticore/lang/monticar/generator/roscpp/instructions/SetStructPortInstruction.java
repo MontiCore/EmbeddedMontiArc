@@ -19,42 +19,13 @@ public class SetStructPortInstruction{
     private SetStructPortInstruction() {
     }
 
-    public static String getInstruction(EMAPortSymbol port, RosMsg rosMsg, String fieldPrefix) {
+    public static String getStructInstruction(EMAPortSymbol port, RosMsg rosMsg, String fieldPrefix) {
         String inst;
         if (rosMsg.getName().startsWith("std_msgs/")) {
-            if (rosMsg.getName().endsWith("MultiArray")) {
-                ASTCommonMatrixType matrixType = (ASTCommonMatrixType) ((MCASTTypeSymbol) port.getTypeReference().getReferencedSymbol()).getAstType();
-                List<String> dimSizes = IndexHelper.getDimSizesOfMatrixType(matrixType);
-
-                inst = "";
-                inst += "int counter = 0;\n";
-                String indexString = "";
-                for (int i = 0; i < dimSizes.size(); i++) {
-                    String curInd = "i" + i;
-                    indexString += (i == 0 ? "" : ", ") + curInd;
-                    inst += "for(int " + curInd + " = 0; " + curInd + " < " + dimSizes.get(i) + "; " + curInd + "++){\n";
-                }
-
-                inst += "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = msg->" + fieldPrefix + "data[counter]";
-                //TODO: check type not name
-                if (rosMsg.getName().equals("std_msgs/ByteMultiArray")) {
-                    //is a bool msg
-                    inst += " != 0";
-                }
-                inst += ";\n";
-                inst += "counter++;\n";
-
-                for (int i = 0; i < dimSizes.size(); i++) {
-                    inst += "}\n";
-                }
-
-
-            } else {
                 inst = NameHelper.getAllFieldNames(rosMsg).stream()
                         .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + " = msg->" + fieldPrefix + field + ";")
                         .sorted()
                         .collect(Collectors.joining("\n"));
-            }
         } else {
             StructSymbol structSymbol = (StructSymbol) port.getTypeReference().getReferencedSymbol();
 
@@ -94,4 +65,79 @@ public class SetStructPortInstruction{
         return inst;
     }
 
+    public static String getMatrixInstruction(EMAPortSymbol port, RosMsg rosMsg, String fieldPrefix){
+                    String inst;
+                ASTCommonMatrixType matrixType = (ASTCommonMatrixType) ((MCASTTypeSymbol) port.getTypeReference().getReferencedSymbol()).getAstType();
+                List<String> dimSizes =  IndexHelper.getDimSizesOfMatrixType(matrixType);	
+
+                inst = "";
+                inst += "int counter = 0;\n";
+                String indexString = "";
+                for (int i = 0; i < dimSizes.size(); i++) {
+                    String curInd = "i" + i;
+                    indexString += (i == 0 ? "" : ", ") + curInd;
+                    inst += "for(int " + curInd + " = 0; " + curInd + " < " + dimSizes.get(i) + "; " + curInd + "++){\n";
+                }
+
+                    String upperBound;
+                    String lowerBound;
+
+                    if (!fieldPrefix.isEmpty() && fieldPrefix.contains(":")){
+                        String split[] = fieldPrefix.split(":", 2);
+                        boolean boundExists = !split[0].replaceAll("[^0-9]", "").isEmpty();
+
+                        lowerBound = boundExists ? split[0].replaceAll("[^0-9]", "") : "0";
+                        boundExists = !split[1].replaceAll("[^0-9]", "").isEmpty();
+
+                        upperBound = boundExists ? split[1].replaceAll("[^0-9]", "") : String.valueOf(Integer.valueOf(dimSizes.get(dimSizes.size()-1))-1);  
+                    } else {
+                        lowerBound = "0";
+												if(dimSizes.get(dimSizes.size()-1).equals("n")){
+													upperBound = "";
+												}else{
+                        	upperBound = String.valueOf(Integer.valueOf(dimSizes.get(dimSizes.size()-1))-1);  
+												}
+                    }
+										if(!upperBound.equals("")){
+		                  if (Integer.parseInt(lowerBound) > Integer.parseInt(upperBound)) {
+		                          Log.error(" ArrayBoundsHandler: lowerBound > upperBound!");
+		                  }
+
+		                  inst += "if(" + lowerBound + " <= counter && counter <= " + upperBound + "){\n";
+                    }
+                    String tmp;
+                    
+                    if (fieldPrefix.isEmpty()){
+                        tmp = "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = msg->" + fieldPrefix + "data[counter]";
+                    } else {
+                        tmp = "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + "-" + lowerBound + ") = msg->" + fieldPrefix.replaceAll("[0-9]", "").replace(":","counter");
+                        tmp = tmp.substring(0,tmp.length()-1);
+                    }
+                    inst += tmp;
+	                  //TODO: check type not name
+	                  if (rosMsg.getName().equals("std_msgs/ByteMultiArray")) {
+			                //is a bool msg
+			                inst += " != 0";
+			              }
+	 
+		                inst += ";\n";
+                    if(!upperBound.equals("")){
+		                  inst += "}\n";
+		                  
+		                  inst += "else if(" + lowerBound + " > counter){\n";
+		                  inst += "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + "+" + upperBound + "-" + lowerBound + "+1" +") = 0" + ";\n";
+		                  inst += "}\n";
+
+		                  inst += "else{\n";
+		                  inst += "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = 0" + ";\n";
+		                  inst += "}\n";
+									}
+                
+                inst += "counter++;\n";
+
+                for (int i = 0; i < dimSizes.size(); i++) {
+                    inst += "}\n";
+                }
+                return inst;       
+    }
 }
