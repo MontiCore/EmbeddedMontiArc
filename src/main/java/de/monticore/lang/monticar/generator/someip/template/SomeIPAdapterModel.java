@@ -49,6 +49,66 @@ public class SomeIPAdapterModel {
 		outgoing = outgoing.stream().filter(fc -> fc.isSomeIPPort()).filter(fc -> fc.isOutgoing()).collect(Collectors.toList());
 	}
 
+	public int getServiceId(EMAPortInstanceSymbol p)
+	{
+		Optional<MiddlewareSymbol> symbol = p.getMiddlewareSymbol();
+		if(symbol.isPresent() && symbol.get().isKindOf(SomeIPConnectionKind.INSTANCE))
+		{
+			SomeIPConnectionSymbol sym = (SomeIPConnectionSymbol) symbol.get();
+			int serviceID = sym.getserviceID().isPresent()?sym.getserviceID().get():-1;
+			return serviceID;
+		}
+		return -1;
+	}
+
+	public int getInstanceId(EMAPortInstanceSymbol p)
+	{
+		Optional<MiddlewareSymbol> symbol = p.getMiddlewareSymbol();
+		if(symbol.isPresent() && symbol.get().isKindOf(SomeIPConnectionKind.INSTANCE))
+		{
+			SomeIPConnectionSymbol sym = (SomeIPConnectionSymbol) symbol.get();
+			int instanceID = sym.getinstanceID().isPresent()?sym.getinstanceID().get():-1;
+			return instanceID;
+		}
+		return -1;
+	}
+
+	public int getEventGroupId(EMAPortInstanceSymbol p)
+	{
+		Optional<MiddlewareSymbol> symbol = p.getMiddlewareSymbol();
+		if(symbol.isPresent() && symbol.get().isKindOf(SomeIPConnectionKind.INSTANCE))
+		{
+			SomeIPConnectionSymbol sym = (SomeIPConnectionSymbol) symbol.get();
+			int eventgroupID = sym.geteventgroupID().isPresent()?sym.geteventgroupID().get():-1;
+			return eventgroupID;
+		}
+		return -1;
+	}
+
+	public int getEventId(EMAPortInstanceSymbol p)
+	{
+		Optional<MiddlewareSymbol> symbol = p.getMiddlewareSymbol();
+		if(symbol.isPresent() && symbol.get().isKindOf(SomeIPConnectionKind.INSTANCE))
+		{
+			SomeIPConnectionSymbol sym = (SomeIPConnectionSymbol) symbol.get();
+			int eventID = 0;//sym.geteventID().isPresent()?sym.geteventID().get():-1;
+			return eventID;
+		}
+		return -1;
+	}
+
+	public int getMethodId(EMAPortInstanceSymbol p)
+	{
+		Optional<MiddlewareSymbol> symbol = p.getMiddlewareSymbol();
+		if(symbol.isPresent() && symbol.get().isKindOf(SomeIPConnectionKind.INSTANCE))
+		{
+			SomeIPConnectionSymbol sym = (SomeIPConnectionSymbol) symbol.get();
+			int methodID = 0;//sym.getmethodID().isPresent()?sym.getmethodID().get():-1;
+			return methodID;
+		}
+		return -1;
+	}
+
 	// Parse through component to find information about its ports
 	public void addPortsDesc(Collection<EMAPortInstanceSymbol> ports)
 	{
