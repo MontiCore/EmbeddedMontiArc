@@ -10,8 +10,8 @@ include_directories (
     ${VSOMEIP_INCLUDE_DIRS}
 )
 
-add_executable(service-example ../src/service-example.cpp)
-target_link_libraries(service-example vsomeip ${Boost_LIBRARIES})
-add_executable(client-example ../src/client-example.cpp)
-target_link_libraries(client-example vsomeip ${Boost_LIBRARIES})
+add_executable(publisher ../src/publisher.cpp)
+target_link_libraries(publisher vsomeip ${Boost_LIBRARIES})
+add_executable(subscriber ../src/subscriber.cpp)
+target_link_libraries(subscriber vsomeip ${Boost_LIBRARIES})
 
