@@ -52,9 +52,10 @@ One example which uses SOME/IP can be found in the example folder. Building it w
 
 A docker image with installed vsomeip can be found in the container registry of this project. The docker image can also be produced by using the dockerfile in the docker folder.
 
-## Install the project
+## Install and use the project
 
-The SomeIP-Adapter can be installed with maven and java, using the command
+The SomeIP-Adapter can be installed and used with maven and java, using the command
 ```bash
 mvn clean install -s settings.xml
 ```
+The project uses Freemarker template to produce the adapter files, which are built in target/generated-sources.
