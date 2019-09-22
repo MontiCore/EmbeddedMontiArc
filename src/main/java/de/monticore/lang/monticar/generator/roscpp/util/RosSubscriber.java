@@ -33,12 +33,24 @@ public class RosSubscriber extends RosInterface {
     @Override
     public String getRosSetStructInstruction() {
         String fieldPrefix = this.rosConnectionSymbol.getMsgField().map(msgfield -> msgfield + ".").orElse("");
-        return SetStructPortInstruction.getInstruction(getPort(), getRosMsg(), fieldPrefix);
+        return SetStructPortInstruction.getStructInstruction(getPort(), getRosMsg(), fieldPrefix);
+    }
+ 
+    @Override
+    public String getRosSetMatrixInstruction() {
+        String fieldPrefix = this.rosConnectionSymbol.getMsgField().map(msgfield -> msgfield + ".").orElse("");
+        return SetStructPortInstruction.getMatrixInstruction(getPort(), getRosMsg(), fieldPrefix);
     }
 
     @Override
     public String getRos2SetStructInstruction() {
         String fieldPrefix = this.rosConnectionSymbol.getMsgField().map(msgfield -> msgfield + ".").orElse("");
-        return SetStructPortInstruction.getInstruction(getPort(), getRos2Msg(), fieldPrefix);
+        return SetStructPortInstruction.getStructInstruction(getPort(), getRos2Msg(),fieldPrefix);
+    }
+
+    @Override
+    public String getRos2SetMatrixInstruction() {
+        String fieldPrefix = this.rosConnectionSymbol.getMsgField().map(msgfield -> msgfield + ".").orElse("");
+        return SetStructPortInstruction.getMatrixInstruction(getPort(), getRos2Msg(),fieldPrefix);
     }
 }

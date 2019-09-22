@@ -61,6 +61,10 @@ public abstract class RosInterface {
 
     public abstract String getRos2SetStructInstruction();
 
+    public abstract String getRosSetMatrixInstruction();
+
+    public abstract String getRos2SetMatrixInstruction();
+
     public String getTopicType() {
         return getRosConnectionSymbol().getTopicType().get();
     }
@@ -79,6 +83,15 @@ public abstract class RosInterface {
         }
 
         return port.getTypeReference().getReferencedSymbol() instanceof StructSymbol;
+    }
+
+    public boolean isMatrixInterface(){
+
+        if(!port.getTypeReference().existsReferencedSymbol()){
+            return false;
+        }
+
+        return port.getTypeReference().toString().equals("CommonMatrixType");
     }
 
 }

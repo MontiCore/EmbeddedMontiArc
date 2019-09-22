@@ -33,12 +33,28 @@ public class RosPublisher extends RosInterface {
     @Override
     public String getRosSetStructInstruction() {
         String fieldPrefix = this.rosConnectionSymbol.getMsgField().map(msgfield -> msgfield + ".").orElse("");
+        //return SetStructMsgInstruction.getStructInstruction(getPort(), getRosMsg(), fieldPrefix);
+        return SetStructMsgInstruction.getInstruction(getPort(), getRosMsg(), fieldPrefix);
+    }
+ 
+    @Override
+    public String getRosSetMatrixInstruction() {
+        String fieldPrefix = this.rosConnectionSymbol.getMsgField().map(msgfield -> msgfield + ".").orElse("");
+        //return SetStructMsgInstruction.getMatrixInstruction(getPort(), getRosMsg(), fieldPrefix);
         return SetStructMsgInstruction.getInstruction(getPort(), getRosMsg(), fieldPrefix);
     }
 
     @Override
     public String getRos2SetStructInstruction() {
         String fieldPrefix = this.rosConnectionSymbol.getMsgField().map(msgfield -> msgfield + ".").orElse("");
-        return SetStructMsgInstruction.getInstruction(getPort(), getRos2Msg(),fieldPrefix);
+        //return SetStructMsgInstruction.getStructInstruction(getPort(), getRos2Msg(),fieldPrefix);
+        return SetStructMsgInstruction.getInstruction(getPort(), getRosMsg(), fieldPrefix);
+    }
+
+    @Override
+    public String getRos2SetMatrixInstruction() {
+        String fieldPrefix = this.rosConnectionSymbol.getMsgField().map(msgfield -> msgfield + ".").orElse("");
+        //return SetStructMsgInstruction.getMatrixInstruction(getPort(), getRos2Msg(),fieldPrefix);
+        return SetStructMsgInstruction.getInstruction(getPort(), getRosMsg(), fieldPrefix);
     }
 }

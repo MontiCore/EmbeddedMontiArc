@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #pragma once
 #include "IAdapter_tests_structs_arrayHandlingComp.h"
 #include "tests_structs_arrayHandlingComp.h"
