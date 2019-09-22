@@ -3,7 +3,6 @@
 #pragma once
 #include "${model.getEscapedCompName()}.h"
 #include "IAdapter_${model.getEscapedCompName()}.h"
-
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -32,16 +31,17 @@ private:
 
 	<#list model.getIncomingPorts() as sub>
 		std::shared_ptr<vsomeip::application> ${sub.getName()}_Subscriber;
+		std::mutex mutex_${sub.getName()};
+		std::condition_variable condition_${sub.getName()};
 
-		void on_message_${sub.getName()}(const std::shared_ptr<vsomeip::message> &_request);
-		void on_state_${sub.getName()}(vsomeip::state_type_e _state);
+		void run_${sub.getName()}();
+		void on_message_${sub.getName()}(const std::shared_ptr<vsomeip::message> &_message);
+		void on_availability_${sub.getName()}(vsomeip::service_t _service, vsomeip::instance_t _instance, bool _is_available);
     </#list>
 
 	<#list model.getOutgoingPorts() as pub>
 		std::shared_ptr<vsomeip::application> ${pub.getName()}_Publisher;
 
-		void publish${pub.getName()}_Publisher()();
+		void publish${pub.getName()}_Publisher();
     </#list>
-
-	void on_availability(vsomeip::service_t _service, vsomeip::instance_t _instance, bool _is_available);
 };
