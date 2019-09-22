@@ -21,8 +21,7 @@
                 "cache_IL1": "262144,4,4",
                 "cache_L2": "2097152,6,6",
                 "cache_L3": "12582912,40,40",
-                "no_time": true,
-                "no_emulation": true
+				"no_time": true
             }
         }
     ]

@@ -60,8 +60,9 @@ public class VehicleBuilder {
     	EESimulator eeSim = new EESimulator(Instant.EPOCH);
     	EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSim);
     	InstantBus bus = new InstantBus(eeSim);
-    	eeVehicleBuilder.createAllSensorsNActuators(bus);
-    	eeVehicleBuilder.createController(model_server, AUTOPILOT_CONFIG, bus);
+    	eeVehicleBuilder.createControllerSensors(bus);
+    	eeVehicleBuilder.createMassPointActuators(bus);
+    	eeVehicleBuilder.createController(model_server, config.autopilot_config, bus);
         PhysicalVehicleBuilder physicalVehicleBuilder = getVehicleBuilder(config.physics_model);
         Vehicle simVehicle = new Vehicle(physicalVehicleBuilder ,eeVehicleBuilder);
 
@@ -83,7 +84,7 @@ public class VehicleBuilder {
         plannedX.initializeTrajectory(trajectoryCoordinates.get("x"));
         
         StaticPlannedTrajectoryYSensor plannedY = (StaticPlannedTrajectoryYSensor) simVehicle.getEEVehicle().getSensorByType(BusEntry.PLANNED_TRAJECTORY_Y).get();
-        plannedY.initializeTrajectory(trajectoryCoordinates.get("Y"));
+        plannedY.initializeTrajectory(trajectoryCoordinates.get("y"));
 
         result.register_car(physicalVehicle.getId(), config.name, config.config, trajectory);
     }

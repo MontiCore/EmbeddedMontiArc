@@ -92,14 +92,14 @@ public class BasicController extends SimulationLoopNotifiable implements Runnabl
         result.export();
     }
 
-
-    public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
-        this.result.setup_next_frame(totalTime);
+    @Override
+    public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime, Duration deltaTime) {
+        this.result.setup_next_frame(Duration.between(Instant.EPOCH, totalTime).toMillis());
         System.out.print("T: "+totalTime);
     }
 
-
-    public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {
+    @Override
+    public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime, Duration deltaTime) {
         if (simulationObject instanceof PhysicalVehicle){
             PhysicalVehicle vehicle = ((PhysicalVehicle) simulationObject);
             if (this.result.add_car_frame(vehicle)){
