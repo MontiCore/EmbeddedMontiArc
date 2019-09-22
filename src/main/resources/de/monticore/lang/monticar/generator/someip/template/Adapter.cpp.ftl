@@ -3,21 +3,7 @@
 #include "<@m.mwIdent/>Adapter_${model.getEscapedCompName()}.h"
 
 <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::<@m.mwIdent/>Adapter_${model.getEscapedCompName()}() : public IAdapter_${model.getEscapedCompName()} {
-	<#-- <#list model.getIncomingPorts() as sub>
-    ${sub.getName()}_service_id = 11;
-	${sub.getName()}_instance_id = 12;
-	${sub.getName()}_method_id = 13;
-	${sub.getName()}_event_id = 14;
-	${sub.getName()}_eventgroup_id = 15;
-    </#list>
 
-	<#list model.getOutgoingPorts() as pub>
-    ${pub.getName()}_service_id = 111;
-	${pub.getName()}_instance_id = 112;
-	${pub.getName()}_method_id = 113;
-	${pub.getName()}_event_id = 114;
-	${pub.getName()}_eventgroup_id = 115;
-    </#list> -->
 }
 
 void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscapedCompName()} *comp) {
@@ -35,14 +21,14 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscaped
 		
         ${sub.getName()}_Subscriber->register_state_handler(std::bind(&SomeIPAdapter_${model.getEscapedCompName()}::on_state, this, std::placeholders::_1);
 
-		${sub.getName()}_Subscriber->register_message_handler(${sub.getSomeIPConnectionSymbol().getserviceID()}, ${sub.getSomeIPConnectionSymbol().getinstanceID()}, ${sub.getSomeIPConnectionSymbol().getmethodID()}, std::bind(&SomeIPAdapter_${model.getEscapedCompName()}::on_message_${sub.getName()}, this, std::placeholders::_1));
-		${sub.getName()}_Subscriber->register_availability_handler(${sub.getSomeIPConnectionSymbol().getserviceID()}, ${sub.getSomeIPConnectionSymbol().getinstanceID()}, std::bind(&SomeIPAdapter_${model.getEscapedCompName()}::on_availability, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+		${sub.getName()}_Subscriber->register_message_handler(${model.getServiceId(sub)}, ${model.getInstanceId(sub)}, ${model.getMethodId(sub)}, std::bind(&SomeIPAdapter_${model.getEscapedCompName()}::on_message_${sub.getName()}, this, std::placeholders::_1));
+		${sub.getName()}_Subscriber->register_availability_handler(${model.getServiceId(sub)}, ${model.getInstanceId(sub)}, std::bind(&SomeIPAdapter_${model.getEscapedCompName()}::on_availability, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
 		// Subscribe
 		std::set<vsomeip::eventgroup_t> event_group;
-		event_group.insert(${sub.getSomeIPConnectionSymbol().geteventgroupID()});
-		${sub.getName()}_Subscriber->request_event(${sub.getSomeIPConnectionSymbol().getserviceID()}, ${sub.getSomeIPConnectionSymbol().getinstanceID()}, ${sub.getSomeIPConnectionSymbol().geteventID()}, event_group, true);
-		${sub.getName()}_Subscriber->subscribe(${sub.getSomeIPConnectionSymbol().getserviceID()}, ${sub.getSomeIPConnectionSymbol().getinstanceID()}, ${sub.getSomeIPConnectionSymbol().geteventgroupID()});
+		event_group.insert(${model.getEventGroupId(sub)});
+		${sub.getName()}_Subscriber->request_event(${model.getServiceId(sub)}, ${model.getInstanceId(sub)}, ${model.getEventId(sub)}, event_group, true);
+		${sub.getName()}_Subscriber->subscribe(${model.getServiceId(sub)}, ${model.getInstanceId(sub)}, ${model.getEventGroupId(sub)});
     </#list>
 
 
@@ -53,7 +39,7 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::init(${model.getEscaped
             std::cerr << "Couldn't initialize Publisher ${pub.getName()}" << std::endl;
             return false;
         }
-    	${pub.getName()}_Publisher->offer_service(${pub.getSomeIPConnectionSymbol().getserviceID()}, ${pub.getSomeIPConnectionSymbol().getinstanceID()});
+    	${pub.getName()}_Publisher->offer_service(${model.getServiceId(pub)}, ${model.getInstanceId(pub)});
     </#list>
 
 	// Start Subscriber
@@ -97,16 +83,16 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publish${pub.getName()}
 
 	//Publish
 	std::set<vsomeip::eventgroup_t> event_group;
-	event_group.insert(${pub.getSomeIPConnectionSymbol().geteventgroupID()});
-	${pub.getName()}_Publisher->offer_event(${pub.getSomeIPConnectionSymbol().getserviceID()}, ${pub.getSomeIPConnectionSymbol().getinstanceID()}, ${pub.getSomeIPConnectionSymbol().geteventID()}, event_group, true);
-	${pub.getName()}_Publisher->notify(${pub.getSomeIPConnectionSymbol().getserviceID()}, ${pub.getSomeIPConnectionSymbol().getinstanceID()}, ${pub.getSomeIPConnectionSymbol().geteventID()}, payload);
+	event_group.insert(${model.getEventGroupId(pub)});
+	${pub.getName()}_Publisher->offer_event(${model.getServiceId(pub)}, ${model.getInstanceId(pub)}, ${model.getEventId(pub)}, event_group, true);
+	${pub.getName()}_Publisher->notify(${model.getServiceId(pub)}, ${model.getInstanceId(pub)}, ${model.getEventId(pub)}, payload);
 }
 </#list>
 
 <#list model.getIncomingPorts() as sub>
 void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::on_state_${sub.getName()}(vsomeip::state_type_e _state) {
 	if (_state == vsomeip::state_type_e::ST_REGISTERED) {
-		${sub.getName()}_Subscriber->request_service(${pub.getSomeIPConnectionSymbol().getserviceID()}, ${pub.getSomeIPConnectionSymbol().getinstanceID()});
+		${sub.getName()}_Subscriber->request_service(${model.getServiceId(sub)}, ${model.getInstanceId(sub)});
 	}
 }
 </#list>

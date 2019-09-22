@@ -44,21 +44,4 @@ private:
     </#list>
 
 	void on_availability(vsomeip::service_t _service, vsomeip::instance_t _instance, bool _is_available);
-
-
-	<#-- <#list model.getIncomingPorts() as sub>
-		int ${sub.getName()}_service_id;
-		int ${sub.getName()}_instance_id;
-		int ${sub.getName()}_method_id;
-		int ${sub.getName()}_event_id;
-		int ${sub.getName()}_eventgroup_id;
-    </#list>
-
-	<#list model.getOutgoingPorts() as pub>
-		int ${pub.getName()}_service_id;
-		int ${pub.getName()}_instance_id;
-		int ${pub.getName()}_method_id;
-		int ${pub.getName()}_event_id;
-		int ${pub.getName()}_eventgroup_id;
-    </#list> -->
 };
