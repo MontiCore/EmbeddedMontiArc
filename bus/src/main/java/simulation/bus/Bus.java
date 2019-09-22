@@ -25,8 +25,11 @@ public abstract class Bus extends MutableEEComponent {
 
 	public void processEvent(EEDiscreteEvent evt) {
 		if (evt.getEventTime().isBefore(this.getCurrentTime())) {
-			System.out.println("Can not process event: Time of event already simulated! Last time was " + this.getCurrentTime());
-			throw new IllegalArgumentException("Can not process event: Time of event already simulated! Last time was " + this.getCurrentTime());
+			String msgId = " ";
+			if(evt.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE){
+				msgId = " " +((BusMessage)evt).getMessageID() + " ";
+			}
+			throw new IllegalArgumentException("Can not process event:" +msgId+ "Time of event already simulated! Last time was " + this.getCurrentTime() + " Event time is: " + evt.getEventTime());
 		}
 		if (evt.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
 			BusMessage msg = (BusMessage) evt;

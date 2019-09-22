@@ -88,7 +88,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     }
     
     public DirectModelAsEEComponent(EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
-    	this(simulator, targetsByMessageId, Duration.ofMillis(30));
+    	this(simulator, targetsByMessageId, Duration.ofMillis(200));
     }
 
 
