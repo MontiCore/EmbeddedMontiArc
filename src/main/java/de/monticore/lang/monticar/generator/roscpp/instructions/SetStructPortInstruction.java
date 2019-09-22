@@ -92,18 +92,17 @@ public class SetStructPortInstruction{
                         upperBound = boundExists ? split[1].replaceAll("[^0-9]", "") : String.valueOf(Integer.valueOf(dimSizes.get(dimSizes.size()-1))-1);  
                     } else {
                         lowerBound = "0";
-												if(dimSizes.get(dimSizes.size()-1).equals("n")){
-													upperBound = "";
-												}else{
-                        	upperBound = String.valueOf(Integer.valueOf(dimSizes.get(dimSizes.size()-1))-1);  
-												}
+			if(dimSizes.get(dimSizes.size()-1).equals("n")){
+			    upperBound = "";
+		        }else{
+                    	    upperBound = String.valueOf(Integer.valueOf(dimSizes.get(dimSizes.size()-1))-1);  
+		        }
                     }
-										if(!upperBound.equals("")){
-		                  if (Integer.parseInt(lowerBound) > Integer.parseInt(upperBound)) {
-		                          Log.error(" ArrayBoundsHandler: lowerBound > upperBound!");
-		                  }
-
-		                  inst += "if(" + lowerBound + " <= counter && counter <= " + upperBound + "){\n";
+		    if(!upperBound.equals("")){
+		        if (Integer.parseInt(lowerBound) > Integer.parseInt(upperBound)) {
+		            Log.error(" ArrayBoundsHandler: lowerBound > upperBound!");
+		        }
+		        inst += "if(" + lowerBound + " <= counter && counter <= " + upperBound + "){\n";
                     }
                     String tmp;
                     
