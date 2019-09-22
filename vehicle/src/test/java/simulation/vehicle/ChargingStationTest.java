@@ -6,6 +6,7 @@
  */
 package simulation.vehicle;
 
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.*;
 import static org.junit.Assert.*;
 import simulation.environment.util.ChargingProcess;
@@ -23,12 +24,46 @@ public class ChargingStationTest {
 
     @Test
     public void startCharging() {
-        // TODO
+        // Create ChargingStation with capacity=1
+        ChargingStation chargingStation = new ChargingStation();
+
+        // Test for non-electric Vehicle
+        PhysicalVehicle vehicleNotElectric = new ModelicaPhysicalVehicle();
+        assertFalse(chargingStation.startCharging(vehicleNotElectric));
+
+        // Test for car that is not standing near CS
+        PhysicalVehicle vehicleNotNear = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,25);
+        vehicleNotNear.initPhysics();
+        vehicleNotNear.setPosition(new ArrayRealVector(new double[]{10,5,0}));
+        assertFalse(chargingStation.startCharging(vehicleNotNear));
+
+        // Test for electric car standing near CS
+        PhysicalVehicle vehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,10);
+        assertTrue(chargingStation.startCharging(vehicle));
+        assertTrue(chargingStation.getCarObjects().size()==1);
+
+        // Test for occupied CS
+        PhysicalVehicle vehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,10);
+        assertFalse(chargingStation.startCharging(vehicle2));
     }
 
     @Test
     public void stopCharging() {
-        // TODO
+        // Create ChargingStation with capacity=1
+        ChargingStation chargingStation = new ChargingStation();
+
+        // Create and charge vehicle
+        PhysicalVehicle vehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,50);
+        chargingStation.startCharging(vehicle);
+
+        // Test for vehicle that is not charged at the CS
+        PhysicalVehicle vehicleNotCharged = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,80);
+        assertFalse(chargingStation.stopCharging(vehicleNotCharged));
+
+        // Stop charging
+        assertTrue(chargingStation.stopCharging(vehicle));
+        assertTrue(chargingStation.getCarObjects().isEmpty());
+        assertFalse(chargingStation.stopCharging(vehicle));
     }
 
     @Test
@@ -40,8 +75,8 @@ public class ChargingStationTest {
         chargingStation2.setCapacity(3);
 
         // Test ChargingStation not occupied
-        Assert.assertFalse(chargingStation1.isOccupied());
-        Assert.assertFalse(chargingStation2.isOccupied());
+        assertFalse(chargingStation1.isOccupied());
+        assertFalse(chargingStation2.isOccupied());
 
         // Create Vehicle
         ModelicaPhysicalVehicle vehicle1 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC, 10.0);
@@ -50,15 +85,15 @@ public class ChargingStationTest {
 
         // Test ChargingStation occupied for ChargingStation1
         chargingStation1.startCharging(vehicle1);
-        Assert.assertTrue(chargingStation1.isOccupied());
+        assertTrue(chargingStation1.isOccupied());
 
         // Test ChargingStation occupied for ChargingStation2
         chargingStation2.startCharging(vehicle1);
-        Assert.assertFalse(chargingStation2.isOccupied());
+        assertFalse(chargingStation2.isOccupied());
         chargingStation2.startCharging(vehicle2);
-        Assert.assertFalse(chargingStation2.isOccupied());
+        assertFalse(chargingStation2.isOccupied());
         chargingStation2.startCharging(vehicle3);
-        Assert.assertTrue(chargingStation2.isOccupied());
+        assertTrue(chargingStation2.isOccupied());
     }
 
     @Test

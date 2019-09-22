@@ -141,8 +141,10 @@ public class ChargingStation implements SimulationLoopExecutable, EnvObject {
     }
 
     public boolean carStandingAtTheCS(Chargeable vehicle) {
-        // Is the Car near the CS
-        return location.getDistance(vehicle.getPosition()) < stationRadius;
+        // Is the Car near the CS (consider only x,y coordinates)
+        RealVector location2D = new ArrayRealVector(new double[]{location.getEntry(0),location.getEntry(1)});
+        RealVector vehiclePos2D = new ArrayRealVector(new double[]{vehicle.getPosition().getEntry(0),vehicle.getPosition().getEntry(1)});
+        return location2D.getDistance(vehiclePos2D) < stationRadius;
     }
 
     // ===================
@@ -183,9 +185,9 @@ public class ChargingStation implements SimulationLoopExecutable, EnvObject {
         return getName() + ", Capacity: " + getCapacity() + ", OsmID: " + getOsmId() + "\n" + getLocation();
     }
 
-//	public ArrayList<PhysicalVehicle> getCarObjects() {
-//		return this.carObjects;
-//	}
+	public ArrayList<Chargeable> getCarObjects() {
+		return this.carObjects;
+	}
 
     public double getConsumption() {
         return consumption;
