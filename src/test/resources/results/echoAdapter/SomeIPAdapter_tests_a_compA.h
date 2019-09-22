@@ -21,14 +21,6 @@ public:
 
     void init(tests_a_compA *comp);
 
-    void on_message_in1(const std::shared_ptr<vsomeip::message> &_request);
-
-    void on_message_in2(const std::shared_ptr<vsomeip::message> &_request);
-
-    void publishout1_Publisher();
-
-	void publishout2_Publisher();
-
     void tick();
 
 
@@ -36,35 +28,25 @@ private:
 
     tests_a_compA* component = nullptr;
 
-	std::shared_ptr<vsomeip::application> in1_Subscriber;
+		std::shared_ptr<vsomeip::application> in1_Subscriber;
+		std::mutex mutex_in1;
+		std::condition_variable condition_in1;
 
-	std::shared_ptr<vsomeip::application> in2_Subscriber;
+		void run_in1();
+		void on_message_in1(const std::shared_ptr<vsomeip::message> &_message);
+		void on_availability_in1(vsomeip::service_t _service, vsomeip::instance_t _instance, bool _is_available);
+		std::shared_ptr<vsomeip::application> in2_Subscriber;
+		std::mutex mutex_in2;
+		std::condition_variable condition_in2;
 
-	std::shared_ptr<vsomeip::application> out1_Publisher;
+		void run_in2();
+		void on_message_in2(const std::shared_ptr<vsomeip::message> &_message);
+		void on_availability_in2(vsomeip::service_t _service, vsomeip::instance_t _instance, bool _is_available);
 
-	std::shared_ptr<vsomeip::application> out2_Publisher;
+		std::shared_ptr<vsomeip::application> out1_Publisher;
 
-    int in1_service_id;
-	int in1_instance_id;
-	int in1_method_id;
-	int in1_event_id;
-	int in1_eventgroup_id;
+		void publishout1_Publisher();
+		std::shared_ptr<vsomeip::application> out2_Publisher;
 
-	int in2_service_id;
-	int in2_instance_id;
-	int in2_method_id;
-	int in2_event_id;
-	int in2_eventgroup_id;
-
-	int out1_service_id;
-	int out1_instance_id;
-	int out1_method_id;
-	int out1_event_id;
-	int out1_eventgroup_id;
-
-	int out2_service_id;
-	int out2_instance_id;
-	int out2_method_id;
-	int out2_event_id;
-	int out2_eventgroup_id;
+		void publishout2_Publisher();
 };
