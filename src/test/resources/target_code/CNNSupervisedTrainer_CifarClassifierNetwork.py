@@ -32,10 +32,10 @@ class LogCoshLoss(gluon.loss.Loss):
         return F.mean(loss, axis=self._batch_axis, exclude=True)
 
 class CNNSupervisedTrainer_CifarClassifierNetwork:
-    def applyBeamSearch(input, depth, width, maxDepth, currProb, netIndex, bestOutput):
+    def applyBeamSearch(input, length, width, maxLength, currProb, netIndex, bestOutput):
         bestProb = 0.0
-        while depth < maxDepth:
-            depth += 1
+        while length < maxLength:
+            length += 1
             batchIndex = 0
             for batchEntry in input:
                 top_k_indices = mx.nd.topk(batchEntry, axis=0, k=width)
@@ -44,15 +44,15 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
 
                     #print mx.nd.array(top_k_indices[index])
                     #print top_k_values[index]
-                    if depth == 1:
+                    if length == 1:
                         #print mx.nd.array(top_k_indices[index])
-                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
+                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), length, width, maxLength,
                             currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k_indices[index])))
                     else:
-                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
+                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), length, width, maxLength,
                             currProb * top_k_values[index], netIndex, bestOutput)
 
-                    if depth == maxDepth:
+                    if length == maxLength:
                         #print currProb
                         if currProb > bestProb:
                             bestProb = currProb
@@ -223,6 +223,9 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     #ArgMax already applied
                     else:
                         predictions.append(output_name)
+
+                #print [word[0] for word in predictions]
+                #print labels[0]
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]

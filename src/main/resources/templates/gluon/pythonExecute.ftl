@@ -15,9 +15,9 @@
 <#list networkInstruction.toUnrollInstruction().resolvedBodies as resolvedBody>
                     <#if networkInstruction.name == "BeamSearch">
                     input = ${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")}
-                    <#assign depth = tc.getBeamSearchDepth(networkInstruction.toUnrollInstruction())>
+                    <#assign length = tc.getBeamSearchLength(networkInstruction.toUnrollInstruction())>
                     <#assign width = tc.getBeamSearchWidth(networkInstruction.toUnrollInstruction())>
-                    ${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]} = applyBeamSearch(input, 0, ${depth}, ${width}, 1.0, ${networkInstruction?index}, input)
+                    ${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]} = applyBeamSearch(input, 0, ${length}, ${width}, 1.0, ${networkInstruction?index}, input)
                     <#else>
                     ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")})
                     <#if !(tc.getStreamOutputNames(networkInstruction.body)[0]?ends_with("_output_"))>
