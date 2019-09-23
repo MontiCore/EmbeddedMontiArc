@@ -11,6 +11,7 @@
 #include <thread>
 
 #include <vsomeip/vsomeip.hpp>
+#include <math.h>
 
 using namespace std;
 
