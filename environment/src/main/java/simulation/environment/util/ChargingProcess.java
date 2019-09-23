@@ -14,11 +14,6 @@ import java.util.Optional;
 /**
  * Charging Station Class
  *
- * TODO Class Car needs Car.getBattery();
- * TODO Calculate consumtionOfThisLoop for every 2 seconds
- * TODO Update Batterie charge
- * TODO Add method Battery.fullCharged()
- *
  * @version 1.0
  * @since 2019-05-22
  */
@@ -53,15 +48,6 @@ public class ChargingProcess implements SimulationLoopExecutable {
 				    stopProcess();
 					return;
 				}
-
-
-				// ==== TODO ====
-				// Needs to be calculated with values of the battery battery like the maxLoadingSpeed
-				// ...
-
-				// ==== TODO ====
-				// Update Battery battery charge like this.battery.updateCharging();
-				// ...
 				
 				double consumtionOfThisLoop = this.battery.get().charge();
 				// Increased consumption through transaction

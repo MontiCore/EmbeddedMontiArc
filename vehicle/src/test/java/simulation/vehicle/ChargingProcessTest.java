@@ -28,7 +28,20 @@ public class ChargingProcessTest {
 
     @Test
     public void executeLoopIteration() {
-        // TODO
+        ChargingStation chargingStation = new ChargingStation();
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0.1);
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+
+        vehicle.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+
+        physicalVehicle.executeLoopIteration(10);
+
+        ChargingProcess chargingProcess = new ChargingProcess(physicalVehicle,chargingStation);
+        chargingProcess.startProcess();
+        double timeToCharge = vehicle.getBattery().get().timeToCharge(100);
+        chargingProcess.executeLoopIteration((long)timeToCharge);
+        assertTrue(vehicle.getBattery().get().getBatteryPercentage() == 100);
     }
 
     @Test
