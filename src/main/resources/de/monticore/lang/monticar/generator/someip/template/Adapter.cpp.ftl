@@ -54,7 +54,28 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::on_message_${sub.getNam
     std::shared_ptr<vsomeip::payload> its_payload = _message->get_payload();
     vsomeip::length_t l = its_payload->get_length();
     double dataFromMessage = *((double*)its_payload->get_data());
-    component->${sub.getName()} = dataFromMessage;
+	
+	<#switch sub.getTypeReference().getName()>
+		<#case "Q">
+        // double
+		component->${sub.getName()} = dataFromMessage;
+        <#break>
+        <#case "N">
+        //int
+		component->${sub.getName()} = (int) round(dataFromMessage);
+        <#break>
+        <#case "Z">
+        //int
+		component->${sub.getName()} = (int) round(dataFromMessage);
+        <#break>
+        <#case "B">
+        //bool
+		component->${sub.getName()} = (dataFromMessage > 1.0e-10);
+        <#break>
+        <#default>
+        //error
+    </#switch>
+
 	//print data to std out
     std::cout << "SERVICE ${sub.getName()}: Received message from ["
 			<< std::setw(4) << std::setfill('0') << std::hex << _message->get_client() << "/"
@@ -77,7 +98,26 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::on_availability_${sub.g
 void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publish${pub.getName()}_Publisher()
 {
     //Read data from component
-    double d = component->${pub.getName()};
+	<#switch pub.getTypeReference().getName()>
+        <#case "Q">
+        // double
+    	double d = component->${pub.getName()};
+        <#break>
+        <#case "N">
+        //int
+    	double d = 1.0 * component->${pub.getName()};
+        <#break>
+        <#case "Z">
+        //int
+    	double d = 1.0 * component->${pub.getName()};
+        <#break>
+        <#case "B">
+        //bool
+    	double d = component->${pub.getName()} ? 1.0 : 0.0;
+        <#break>
+        <#default>
+        //error
+    </#switch>
 
 	const vsomeip::byte_t its_data[] = { (uint8_t) d };
 	std::shared_ptr<vsomeip::payload> payload = vsomeip::runtime::get()->create_payload();
