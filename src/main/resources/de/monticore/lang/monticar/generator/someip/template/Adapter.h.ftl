@@ -3,7 +3,6 @@
 #pragma once
 #include "${model.getEscapedCompName()}.h"
 #include "IAdapter_${model.getEscapedCompName()}.h"
-
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -12,6 +11,7 @@
 #include <thread>
 
 #include <vsomeip/vsomeip.hpp>
+#include <math.h>
 
 using namespace std;
 
@@ -23,14 +23,6 @@ public:
 
     void init(${model.getEscapedCompName()} *comp);
 
-    void on_message_in1(const std::shared_ptr<vsomeip::message> &_request);
-
-    void on_message_in2(const std::shared_ptr<vsomeip::message> &_request);
-
-    void publishout1_Publisher();
-
-	void publishout2_Publisher();
-
     void tick();
 
 
@@ -38,35 +30,19 @@ private:
 
     ${model.getEscapedCompName()}* component = nullptr;
 
-	std::shared_ptr<vsomeip::application> in1_Subscriber;
+	<#list model.getIncomingPorts() as sub>
+		std::shared_ptr<vsomeip::application> ${sub.getName()}_Subscriber;
+		std::mutex mutex_${sub.getName()};
+		std::condition_variable condition_${sub.getName()};
 
-	std::shared_ptr<vsomeip::application> in2_Subscriber;
+		void run_${sub.getName()}();
+		void on_message_${sub.getName()}(const std::shared_ptr<vsomeip::message> &_message);
+		void on_availability_${sub.getName()}(vsomeip::service_t _service, vsomeip::instance_t _instance, bool _is_available);
+    </#list>
 
-	std::shared_ptr<vsomeip::application> out1_Publisher;
+	<#list model.getOutgoingPorts() as pub>
+		std::shared_ptr<vsomeip::application> ${pub.getName()}_Publisher;
 
-	std::shared_ptr<vsomeip::application> out2_Publisher;
-
-    int in1_service_id;
-	int in1_instance_id;
-	int in1_method_id;
-	int in1_event_id;
-	int in1_eventgroup_id;
-
-	int in2_service_id;
-	int in2_instance_id;
-	int in2_method_id;
-	int in2_event_id;
-	int in2_eventgroup_id;
-
-	int out1_service_id;
-	int out1_instance_id;
-	int out1_method_id;
-	int out1_event_id;
-	int out1_eventgroup_id;
-
-	int out2_service_id;
-	int out2_instance_id;
-	int out2_method_id;
-	int out2_event_id;
-	int out2_eventgroup_id;
+		void publish${pub.getName()}_Publisher();
+    </#list>
 };
