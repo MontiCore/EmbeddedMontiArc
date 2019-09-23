@@ -14,12 +14,14 @@ import sensors.StaticPlannedTrajectoryYSensor;
 import simulation.EESimulator.DirectModelAsEEComponent;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
+import simulation.bus.FlexRay;
 import simulation.bus.InstantBus;
 import simulation.simulator.Simulator;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
 import simulation.vehicle.*;
 import sensors.*;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
@@ -59,10 +61,15 @@ public class VehicleBuilder {
     public void createVehicle(VehicleConfig config, MapData map) throws Exception {
     	EESimulator eeSim = new EESimulator(Instant.EPOCH);
     	EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSim);
-    	InstantBus bus = new InstantBus(eeSim);
-    	eeVehicleBuilder.createControllerSensors(bus);
-    	eeVehicleBuilder.createMassPointActuators(bus);
-    	eeVehicleBuilder.createController(model_server, config.autopilot_config, bus);
+    	InstantBus sensorBus = new InstantBus(eeSim);
+    	InstantBus actuatorBus = new InstantBus(eeSim);
+        FlexRay controllerBus = new FlexRay(eeSim);
+        eeVehicleBuilder.connectBuses(sensorBus, controllerBus, Duration.ofMillis(1));
+        eeVehicleBuilder.connectBuses(actuatorBus, controllerBus, Duration.ofMillis(1));
+    	eeVehicleBuilder.createControllerSensors(sensorBus);
+    	eeVehicleBuilder.createMassPointActuators(actuatorBus);
+    	DirectModelAsEEComponent controller = eeVehicleBuilder.createController(model_server, config.autopilot_config, controllerBus);
+    	//controller.setCycleTime(bus.getCycleTime());
         PhysicalVehicleBuilder physicalVehicleBuilder = getVehicleBuilder(config.physics_model);
         Vehicle simVehicle = new Vehicle(physicalVehicleBuilder ,eeVehicleBuilder);
 
