@@ -66,29 +66,4 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         assertEquals(tag.getinstanceID(), Optional.empty());
 		assertEquals(tag.geteventgroupID(), Optional.empty());
     }
-
-    @Test
-    public void testSomeIPConnectionParsingOptionalMsgField() {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
-
-        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("middleware.someip.optionalMsgField", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(component);
-
-        EMAPortSymbol in1 = component.getPortInstance("in1").orElse(null);
-        EMAPortSymbol out1 = component.getPortInstance("out1").orElse(null);
-
-        assertNotNull(in1);
-        assertNotNull(out1);
-
-        SomeIPConnectionSymbol tagIn1 = (SomeIPConnectionSymbol) symtab.getTags(in1, SomeIPConnectionSymbol.KIND).stream().findFirst().orElse(null);
-        SomeIPConnectionSymbol tagOut1 = (SomeIPConnectionSymbol) symtab.getTags(out1, SomeIPConnectionSymbol.KIND).stream().findFirst().orElse(null);
-
-        assertNotNull(tagIn1);
-        assertNotNull(tagOut1);
-
-        assertFalse(tagIn1.getserviceID().isPresent());
-        assertTrue(tagOut1.getserviceID().isPresent());
-        //assertTrue(tagOut1.getserviceID().get().equals("msgField1"));
-
-    }
 }
