@@ -32,6 +32,39 @@ class LogCoshLoss(gluon.loss.Loss):
         return F.mean(loss, axis=self._batch_axis, exclude=True)
 
 class CNNSupervisedTrainer_Alexnet:
+    def applyBeamSearch(input, depth, width, maxDepth, currProb, netIndex, bestOutput):
+        bestProb = 0.0
+        while depth < maxDepth:
+            depth += 1
+            batchIndex = 0
+            for batchEntry in input:
+                top_k_indices = mx.nd.topk(batchEntry, axis=0, k=width)
+                top_k_values = mx.nd.topk(batchEntry, ret_typ='value', axis=0, k=width)
+                for index in range(top_k_indices.size):
+
+                    #print mx.nd.array(top_k_indices[index])
+                    #print top_k_values[index]
+                    if depth == 1:
+                        #print mx.nd.array(top_k_indices[index])
+                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
+                            currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k_indices[index])))
+                    else:
+                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
+                            currProb * top_k_values[index], netIndex, bestOutput)
+
+                    if depth == maxDepth:
+                        #print currProb
+                        if currProb > bestProb:
+                            bestProb = currProb
+                            bestOutput[batchIndex] = result[batchIndex]
+                            #print "new bestOutput: ", bestOutput
+
+                batchIndex += 1
+        #print bestOutput
+        #print bestProb
+        return bestOutput
+
+
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -146,9 +179,7 @@ class CNNSupervisedTrainer_Alexnet:
                     for element in lossList:
                         loss = loss + element
 
-
                 loss.backward()
-
 
                 for trainer in trainers:
                     trainer.step(batch_size)
@@ -177,55 +208,21 @@ class CNNSupervisedTrainer_Alexnet:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-
-                def applyBeamSearch(input, depth, width, maxDepth, currProb, netIndex, bestOutput):
-                    bestProb = 0.0
-                    while depth < maxDepth:
-                        depth += 1
-                        batchIndex = 0
-                        for batchEntry in input:
-                            top_k_indices = mx.nd.topk(batchEntry, axis=0, k=width)
-                            top_k_values = mx.nd.topk(batchEntry, ret_typ='value', axis=0, k=width)
-                            for index in range(top_k_indices.size):
-
-                                #print mx.nd.array(top_k_indices[index])
-                                #print top_k_values[index]
-                                if depth == 1:
-                                    #print mx.nd.array(top_k_indices[index])
-                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
-                                        currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k_indices[index])))
-                                else:
-                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
-                                        currProb * top_k_values[index], netIndex, bestOutput)
-
-                                if depth == maxDepth:
-                                    #print currProb
-                                    if currProb > bestProb:
-                                        bestProb = currProb
-                                        bestOutput[batchIndex] = result[batchIndex]
-                                        #print "new bestOutput: ", bestOutput
-
-                            batchIndex += 1
-                    #print bestOutput
-                    #print bestProb
-                    return bestOutput
-
+                outputs=[]
 
                 if True: 
                     predictions_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
 
                     predictions_ = self._networks[0](data_)
+                    outputs.append(predictions_)
 
-                out_names=[]
-                out_names.append(predictions_)
                 predictions = []
-                for output_name in out_names:
+                for output_name in outputs:
                     if mx.nd.shape_array(output_name).size > 1:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     #ArgMax already applied
                     else:
                         predictions.append(output_name)
-
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
@@ -239,15 +236,16 @@ class CNNSupervisedTrainer_Alexnet:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
+                outputs=[]
+
                 if True: 
                     predictions_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
 
                     predictions_ = self._networks[0](data_)
+                    outputs.append(predictions_)
 
-                out_names=[]
-                out_names.append(predictions_)
                 predictions = []
-                for output_name in out_names:
+                for output_name in outputs:
                     if mx.nd.shape_array(output_name).size > 1:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     #ArgMax already applied

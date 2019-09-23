@@ -32,6 +32,39 @@ class LogCoshLoss(gluon.loss.Loss):
         return F.mean(loss, axis=self._batch_axis, exclude=True)
 
 class ${tc.fileNameWithoutEnding}:
+    def applyBeamSearch(input, depth, width, maxDepth, currProb, netIndex, bestOutput):
+        bestProb = 0.0
+        while depth < maxDepth:
+            depth += 1
+            batchIndex = 0
+            for batchEntry in input:
+                top_k_indices = mx.nd.topk(batchEntry, axis=0, k=width)
+                top_k_values = mx.nd.topk(batchEntry, ret_typ='value', axis=0, k=width)
+                for index in range(top_k_indices.size):
+
+                    #print mx.nd.array(top_k_indices[index])
+                    #print top_k_values[index]
+                    if depth == 1:
+                        #print mx.nd.array(top_k_indices[index])
+                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
+                            currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k_indices[index])))
+                    else:
+                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
+                            currProb * top_k_values[index], netIndex, bestOutput)
+
+                    if depth == maxDepth:
+                        #print currProb
+                        if currProb > bestProb:
+                            bestProb = currProb
+                            bestOutput[batchIndex] = result[batchIndex]
+                            #print "new bestOutput: ", bestOutput
+
+                batchIndex += 1
+        #print bestOutput
+        #print bestProb
+        return bestOutput
+
+
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -140,15 +173,13 @@ class ${tc.fileNameWithoutEnding}:
                 </#list>
 
                 with autograd.record():
-<#include "pythonExecuteArgmax.ftl">
+<#include "pythonExecuteWithLoss.ftl">
 
                     loss = 0
                     for element in lossList:
                         loss = loss + element
 
-
                 loss.backward()
-
 
                 for trainer in trainers:
                     trainer.step(batch_size)
@@ -182,55 +213,18 @@ class ${tc.fileNameWithoutEnding}:
 
                 ]
 
-
-                def applyBeamSearch(input, depth, width, maxDepth, currProb, netIndex, bestOutput):
-                    bestProb = 0.0
-                    while depth < maxDepth:
-                        depth += 1
-                        batchIndex = 0
-                        for batchEntry in input:
-                            top_k_indices = mx.nd.topk(batchEntry, axis=0, k=width)
-                            top_k_values = mx.nd.topk(batchEntry, ret_typ='value', axis=0, k=width)
-                            for index in range(top_k_indices.size):
-
-                                #print mx.nd.array(top_k_indices[index])
-                                #print top_k_values[index]
-                                if depth == 1:
-                                    #print mx.nd.array(top_k_indices[index])
-                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
-                                        currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k_indices[index])))
-                                else:
-                                    result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), depth, width, maxDepth,
-                                        currProb * top_k_values[index], netIndex, bestOutput)
-
-                                if depth == maxDepth:
-                                    #print currProb
-                                    if currProb > bestProb:
-                                        bestProb = currProb
-                                        bestOutput[batchIndex] = result[batchIndex]
-                                        #print "new bestOutput: ", bestOutput
-
-                            batchIndex += 1
-                    #print bestOutput
-                    #print bestProb
-                    return bestOutput
-
+                outputs=[]
 
                 if True: <#-- Fix indentation -->
 <#include "pythonExecute.ftl">
 
-                out_names=[]
-                <#list tc.architectureOutputs as output_name>
-                out_names.append(${output_name})
-                </#list>
                 predictions = []
-                for output_name in out_names:
+                for output_name in outputs:
                     if mx.nd.shape_array(output_name).size > 1:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     #ArgMax already applied
                     else:
                         predictions.append(output_name)
-
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
@@ -249,15 +243,13 @@ class ${tc.fileNameWithoutEnding}:
 
                 ]
 
+                outputs=[]
+
                 if True: <#-- Fix indentation -->
 <#include "pythonExecute.ftl">
 
-                out_names=[]
-                <#list tc.architectureOutputs as output_name>
-                out_names.append(${output_name})
-                </#list>
                 predictions = []
-                for output_name in out_names:
+                for output_name in outputs:
                     if mx.nd.shape_array(output_name).size > 1:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     #ArgMax already applied

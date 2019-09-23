@@ -1,8 +1,8 @@
-<#list tc.getLayerVariableMembers("batch_size")?keys as member>
+<#list tc.getLayerVariableMembers("batch_size", false)?keys as member>
 <#if member?ends_with("_state_")>
-                    encoder_state_ = self._networks[${tc.getLayerVariableMembers("batch_size")[member][1][0]}].${member?replace("_state_","_output_")}.begin_state(batch_size=0, ctx=mx_context)
+                    ${member} = self._networks[${tc.getLayerVariableMembers("batch_size", false)[member][1][0]}].${member?replace("_state_","_output_")}.begin_state(batch_size=batch_size, ctx=mx_context)
 <#else>
-                    ${member} = mx.nd.zeros((${tc.join(tc.getLayerVariableMembers("batch_size")[member][0], ", ")},), ctx=mx_context)
+                    ${member} = mx.nd.zeros((${tc.join(tc.getLayerVariableMembers("batch_size", false)[member][0], ", ")},), ctx=mx_context)
 </#if>
 </#list>
 <#list tc.architectureOutputSymbols as output>
@@ -20,9 +20,12 @@
                     ${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]} = applyBeamSearch(input, 0, ${depth}, ${width}, 1.0, ${networkInstruction?index}, input)
                     <#else>
                     ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")})
+                    <#if !(tc.getStreamOutputNames(networkInstruction.body)[0]?ends_with("_output_"))>
+                    outputs.append(${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]})
+                    </#if>
                     <#list resolvedBody.elements as element>
                     <#if element.name == "ArgMax">
-                    ${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]} = mx.nd.argmax(${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]}, axis=1)
+                    ${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]} = mx.nd.argmax(${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]}, axis=1).expand_dims(1)
                     </#if>
                     </#list>
                     </#if>
@@ -30,13 +33,19 @@
 <#else>
 <#if networkInstruction.body.isTrainable()>
                     ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")})
+                    <#if !(tc.getStreamOutputNames(networkInstruction.body)[0]?ends_with("_output_"))>
+                    outputs.append(${tc.getStreamOutputNames(networkInstruction.body)[0]})
+                    </#if>
                     <#list networkInstruction.body.elements as element>
                     <#if element.name == "ArgMax" && (tc.architecture.networkInstructions?size <= instructionCounter+1 || tc.architecture.networkInstructions[instructionCounter+1].getName() != "BeamSearch")>
-                    ${tc.getStreamOutputNames(networkInstruction.body)[0]} = mx.nd.argmax(${tc.getStreamOutputNames(networkInstruction.body)[0]}, axis=1)
+                    ${tc.getStreamOutputNames(networkInstruction.body)[0]} = mx.nd.argmax(${tc.getStreamOutputNames(networkInstruction.body)[0]}, axis=1).expand_dims(1)
                     </#if>
                     </#list>
 <#else>
 ${tc.include(networkInstruction.body, "PYTHON_INLINE")}
+<#if !(tc.getStreamOutputNames(networkInstruction.body)[0]?ends_with("_state_"))>
+                    outputs.append(${tc.getStreamOutputNames(networkInstruction.body)[0]})
+</#if>
 </#if>
 </#if>
 <#assign instructionCounter = instructionCounter + 1>

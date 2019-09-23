@@ -188,7 +188,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             }
         }
 
-        outputNames.addAll(getStreamLayerVariableMembers(stream, "1", true).keySet());
+        outputNames.addAll(getStreamLayerVariableMembers(stream, "1", true, false).keySet());
 
         return outputNames;
     }
@@ -208,13 +208,13 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     }
 
     // Used to initialize all layer variable members which are passed through the networks
-    public Map<String, List<List<String>>> getLayerVariableMembers(String batchSize) {
+    public Map<String, List<List<String>>> getLayerVariableMembers(String batchSize, boolean includeStates) {
         Map<String, List<List<String>>> members = new LinkedHashMap<>();
 
         int index = 0;
         for (SerialCompositeElementSymbol stream : getArchitecture().getStreams()) {
             List<List<String>> value = new ArrayList<>();
-            Map<String, List<String>> member = getStreamLayerVariableMembers(stream, batchSize, true);
+            Map<String, List<String>> member = getStreamLayerVariableMembers(stream, batchSize, true, includeStates);
             for (List<String> entry: member.values()){
                 value.add(entry);
                 ArrayList<String> streamIndex = new ArrayList<String>();
@@ -222,7 +222,9 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                 value.add(streamIndex);
             }
             for(String name: member.keySet()){
-                members.put(name, value);
+                if(!members.containsKey(name)) {
+                    members.put(name, value);
+                }
             }
             index++;
         }
@@ -277,12 +279,12 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             }
         }
 
-        inputs.putAll(getStreamLayerVariableMembers(stream, "1", false));
+        inputs.putAll(getStreamLayerVariableMembers(stream, "1", false, false));
 
         return inputs;
     }
 
-    private Map<String, List<String>> getStreamLayerVariableMembers(SerialCompositeElementSymbol stream, String batchSize, boolean includeOutput) {
+    private Map<String, List<String>> getStreamLayerVariableMembers(SerialCompositeElementSymbol stream, String batchSize, boolean includeOutput, boolean includeStates) {
         Map<String, List<String>> members = new LinkedHashMap<>();
 
         List<ArchitectureElementSymbol> elements = stream.getSpannedScope().resolveLocally(ArchitectureElementSymbol.KIND);
@@ -290,7 +292,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             if (element instanceof VariableSymbol) {
                 VariableSymbol variable = (VariableSymbol) element;
 
-                if (variable.getType() == VariableSymbol.Type.LAYER && variable.getMember() == VariableSymbol.Member.NONE) {
+                if (variable.getType() == VariableSymbol.Type.LAYER && (variable.getMember() == VariableSymbol.Member.NONE || includeStates)) {
                     LayerVariableDeclarationSymbol layerVariableDeclaration = variable.getLayerVariableDeclaration();
 
                     if (layerVariableDeclaration.getLayer().getDeclaration().isPredefined()) {

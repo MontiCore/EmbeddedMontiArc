@@ -1,8 +1,8 @@
 <#list tc.architectureInputSymbols as input>
     vector<float> ${tc.getName(input)} = CNNTranslator::translate(${input.name}<#if input.arrayAccess.isPresent()>[${input.arrayAccess.get().intValue.get()?c}]</#if>);
 </#list>
-<#list tc.getLayerVariableMembers("1")?keys as member>
-    vector<float> ${member}(${tc.join(tc.getLayerVariableMembers("1")[member][0], " * ")});
+<#list tc.getLayerVariableMembers("1", true)?keys as member>
+    vector<float> ${member}(${tc.join(tc.getLayerVariableMembers("1", true)[member][0], " * ")});
 </#list>
 
 <#list tc.architectureOutputSymbols as output>
@@ -26,12 +26,25 @@
 <#list tc.architectureOutputSymbols as output>
 <#assign shape = output.ioDeclaration.type.dimensions>
 <#if shape?size == 1>
+<#if (output.ioDeclaration.type.domain.isNaturalNumber() || output.ioDeclaration.type.domain.isWholeNumber())>
+    ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToIntCol(${tc.getName(output)}, std::vector<size_t> {${shape[0]?c}});
+<#else>
     ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToCol(${tc.getName(output)}, std::vector<size_t> {${shape[0]?c}});
 </#if>
+</#if>
 <#if shape?size == 2>
+<#if (output.ioDeclaration.type.domain.isNaturalNumber() || output.ioDeclaration.type.domain.isWholeNumber())>
+    ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToIntMat(${tc.getName(output)}, std::vector<size_t> {${shape[0]?c}, ${shape[1]?c}});
+<#else>
     ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToMat(${tc.getName(output)}, std::vector<size_t> {${shape[0]?c}, ${shape[1]?c}});
 </#if>
+</#if>
 <#if shape?size == 3>
+<#if (output.ioDeclaration.type.domain.isNaturalNumber() || output.ioDeclaration.type.domain.isWholeNumber())>
+    ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToIntCube(${tc.getName(output)}, std::vector<size_t> {${shape[0]?c}, ${shape[1]?c}, ${shape[2]?c}});
+<#else>
     ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToCube(${tc.getName(output)}, std::vector<size_t> {${shape[0]?c}, ${shape[1]?c}, ${shape[2]?c}});
+
+</#if>
 </#if>
 </#list>
