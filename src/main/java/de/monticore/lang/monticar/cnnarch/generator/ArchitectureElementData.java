@@ -160,6 +160,18 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntValue(AllPredefinedLayers.SIZE_NAME).get();
     }
 
+    public int getRepeats(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.REPEATS_NAME).get();
+    }
+
+    public int getAxis(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.AXIS_NAME).get();
+    }
+
+    public int getDim(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.DIM_NAME).get();
+    }
+
     public int getLayers(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.LAYERS_NAME).get();
     }
