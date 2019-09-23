@@ -59,7 +59,7 @@ public class Battery implements BatteryInterface, IBattery{
 		setAmpereChargingStation(0);		
 	}
 
-	Battery(Vehicle v, double bCapacity, double initialBatteryPercentage) {
+	public Battery(Vehicle v, double bCapacity, double initialBatteryPercentage) {
 		vehicle = v;
 		dummyBattery = new DummyBattery(bCapacity);
 		dummyBattery.setPercentage(initialBatteryPercentage);
