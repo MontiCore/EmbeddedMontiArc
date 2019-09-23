@@ -45,6 +45,11 @@ public class ChargingProcessTest {
             timeToCharge = timeToCharge-2;
         }
 
+        // TODO
+        System.out.println(" ");
+        System.out.println(vehicle.getBattery().get().getBatteryPercentage());
+        System.out.println(" ");
+
         assertTrue(vehicle.getBattery().get().getBatteryPercentage() == 100);
     }
 
