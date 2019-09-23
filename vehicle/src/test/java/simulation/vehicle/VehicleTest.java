@@ -1,10 +1,14 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.vehicle;
 
-import commons.controller.interfaces.Bus;
-import commons.controller.interfaces.FunctionBlockInterface;
-import commons.simulation.PhysicalObject;
-import org.apache.commons.math3.analysis.function.Power;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -287,7 +291,7 @@ public class VehicleTest {
         house.setLength(10.0);
         house.setHeight(10.0);
         physicalObjects.add(vehicle2);
-        physicalObjects.add(house);
+        physicalObjects.add((PhysicalObject) house);
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiffMs);
         assertTrue(vehicle1.getCollision() && !vehicle2.getCollision());
     }

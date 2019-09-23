@@ -1,9 +1,14 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.environment.geometry;
 
-import commons.map.IControllerNode;
-import commons.map.PathListener;
-import javafx.geometry.Point3D;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.PathListener;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import simulation.environment.geometry.splines.LinearInterpolator;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -4,7 +4,6 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-/* (c) https://github.com/MontiCore/monticore */
 package simulation.environment.osm;
 
 import de.topobyte.osm4j.core.access.OsmInputException;

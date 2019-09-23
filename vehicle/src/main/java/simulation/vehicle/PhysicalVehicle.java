@@ -1,10 +1,15 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.vehicle;
 
-import commons.simulation.SimulationLoopExecutable;
-import commons.simulation.IPhysicalVehicle;
-import commons.simulation.PhysicalObjectType;
-import commons.simulation.IdGenerator;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IdGenerator;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.object.ChargingStation;
@@ -334,7 +339,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
 
         if (simulationVehicle.getGotoChargingStation() && !isCharging){
             ChargingStation nearest = ChargingStationNavigator.getNearestCS();
-            if (isParkedChargingStation(nearest) && getVelocity() == new ArrayRealVector(new double[]{0, 0, 0}) ){
+            if (isParkedChargingStation(nearest) && getVelocity().equals(new ArrayRealVector(new double[]{0, 0, 0}))){
 
                 initCharging(nearest);
 
