@@ -6,21 +6,21 @@
  */
 package simulation.vehicle;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+import com.google.gson.Gson;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jfree.util.Log;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
+import sensors.abstractsensors.AbstractSensor;
 import sensors.factory.SensorFactory;
 import sensors.util.SensorUtil;
 import simulation.EESimulator.Bridge;
@@ -29,7 +29,7 @@ import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
 import simulation.EESimulator.NavigationBlockAsEEComponent;
-import simulation.bus.Bus;
+import simulation.bus.*;
 
 public class EEVehicleBuilder {
 	
@@ -67,6 +67,83 @@ public class EEVehicleBuilder {
 		return new EEVehicle(vehicle, eeSimulator, buses, components);
 	}
 
+	/**
+	 * function to build an EEVehicle by using a JSON File with the bus structure
+	 * @param vehicle
+	 * @param data JSON file with bus structure (ParsableBusStructure class)
+	 * @return
+	 */
+	public EEVehicle buildEEVehicle(Vehicle vehicle, File data) {
+		List<Bus> busList = new LinkedList<>();
+		//set busAndParameter, sensor, actuator and bridge lists
+		ParsableBusStructureProperties busStructure;
+
+		try {
+			busStructure = loadFromFile(data);
+
+			//create buses
+			for (ParsableBusStructureProperties.Tupel component : busStructure.getBuses()) {
+				if (component.eeComponent.equals("flexRay")) {
+					FlexRay flexRay = new FlexRay(eeSimulator);
+					flexRay.setMode(FlexRayOperationMode.valueOf(component.parameter[0]));
+					busList.add(flexRay);
+				} else if (component.eeComponent.equals("instantBus")) {
+					InstantBus instantBus = new InstantBus(eeSimulator);
+					busList.add(instantBus);
+				} else if (component.eeComponent.equals("can")) {
+//					CAN canBus = new CAN(eeSimulator, CANOperationMode.valueOf(component.parameter[0]));
+//					busList.add(canBus);
+				}
+			}
+
+			//create sensors, actuator and bridges
+			for (ParsableBusStructureProperties.Tupel sensor : busStructure.getSensors()) {
+				try {
+					Class<? extends AbstractSensor> sensorClass = (Class<? extends AbstractSensor>) Class.forName(sensor.eeComponent);
+					AbstractSensor newSensor = SensorFactory.createSensor(sensorClass, vehicle.getPhysicalVehicle(), busList.get(sensor.busIds[0])).get();
+					components.add(newSensor);
+//					busList.get(sensor.busIds[0]).registerComponent(newSensor);
+				} catch (ClassNotFoundException e) {
+					throw new IllegalArgumentException("Can not create EEVehicle. File contains non-existent sensor: " + sensor.eeComponent);
+				}
+			}
+
+			for (ParsableBusStructureProperties.Tupel actuator : busStructure.getActuators()) {
+				VehicleActuator newActuator = VehicleActuator.createVehicleActuator(VehicleActuatorType.valueOf(actuator.eeComponent), Double.parseDouble(actuator.parameter[0]), Double.parseDouble(actuator.parameter[1]), Double.parseDouble(actuator.parameter[2]), busList.get(actuator.busIds[0]));
+				components.add(newActuator);
+//				busList.get(actuator.busIds[0]).registerComponent(newActuator);
+			}
+
+			for (ParsableBusStructureProperties.Tupel bridge : busStructure.getBridges()) {
+				Bridge newBridge = new Bridge(Pair.of(busList.get((bridge.busIds[0])), busList.get(Integer.parseInt(bridge.parameter[1]))), Duration.ofMillis(Long.parseLong(bridge.parameter[2])));
+				components.add(newBridge);
+			}
+
+			if (busStructure.getNavigation() != null && busStructure.getNavigation().busIds != null) {
+				NavigationBlockAsEEComponent navigation;
+				navigation = NavigationBlockAsEEComponent.createNavigationBlockAsEEComponent(busList.get(busStructure.getNavigation().busIds[0]));
+				vehicle.initNavigation(navigation);
+				components.add(navigation);
+//				busList.get(busStructure.getNavigation().busIds[0]).registerComponent(navigation);
+			}
+
+			if (!busStructure.getController().isEmpty()) {
+				for (ParsableBusStructureProperties.Tupel controller : busStructure.getController()) {
+					DirectModelAsEEComponent newController = DirectModelAsEEComponent.createDirectModelAsEEComponent(busList.get(controller.busIds[0]));
+					newController.setCycleTime(Duration.parse(controller.parameter[0]));
+					components.add(newController);
+//					busList.get(controller.busIds[0]).registerComponent(newController);
+				}
+			}
+
+
+		} catch (IOException e) {
+			throw  new IllegalArgumentException("Can not create EEVehicle. Failed to read file: " + data);
+		}
+
+		return new EEVehicle(vehicle, eeSimulator, new HashSet<>(busList), components);
+	}
+
 	public NavigationBlockAsEEComponent createNavigation(List<Bus> buses) {
 		NavigationBlockAsEEComponent comp = NavigationBlockAsEEComponent.createNavigationBlockAsEEComponent(buses);
 		components.add(NavigationBlockAsEEComponent.createNavigationBlockAsEEComponent(buses));
@@ -86,7 +163,7 @@ public class EEVehicleBuilder {
         }
 		try {
 			comp = Optional.of(new DirectModelAsEEComponent(eeSimulator, targetsByMessageId));
-			comp.get().initializeController(modelServer, autopilotConfig);
+			comp.get().initializeController(modelServer, autopilotConfig, Duration.ofMillis(30));
 			components.add(comp.get());
 		} catch (Exception e) {
 			Log.error("Could not generate controller");
@@ -114,8 +191,8 @@ public class EEVehicleBuilder {
 		addAllSensors.add(bus);
 	}
 	
-	public VehicleActuator createActuator(VehicleActuatorType actuatorTpye, List<Bus> buses) {
-		VehicleActuator comp = VehicleActuator.createVehicleActuator(actuatorTpye, buses);
+	public VehicleActuator createActuator(VehicleActuatorType actuatorType, List<Bus> buses) {
+		VehicleActuator comp = VehicleActuator.createVehicleActuator(actuatorType, buses);
 		components.add(comp);
 		return comp;
 	}
@@ -155,4 +232,157 @@ public class EEVehicleBuilder {
 	public Bridge connectBuses(Bus bus1, Bus bus2) {
 		return connectBuses(bus1, bus2, Duration.ofMillis(1));
 	}
+
+
+	/**
+	 * Function that load the ParsableBusStructure out of a JSON file
+	 * @param file JSON File of the bus structure of an EEVehicle
+	 * @return the bus structure as a ParsabelBusStructure
+	 * @throws IOException
+	 */
+
+	public ParsableBusStructureProperties loadFromFile(File file) throws IOException {
+
+		String jsonContents = new String(Files.readAllBytes(file.toPath()));
+		Gson g = new Gson();
+		ParsableBusStructureProperties data = g.fromJson(jsonContents, ParsableBusStructureProperties.class);
+
+		return data;
+	}
+
+	/**
+	 * stores the actual bus structure in JSON file
+	 * @param whereToStore path where the JSON file will be stored
+	 * @param vehicle vehicle which bus should be stored
+	 * @throws IOException
+	 */
+	public void storeInFile(File whereToStore, EEVehicle vehicle) throws IOException {
+
+		ParsableBusStructureProperties properties = new ParsableBusStructureProperties(vehicle);
+
+		Gson g = new Gson();
+		String json = g.toJson(properties, ParsableBusStructureProperties.class);
+
+		FileWriter fileWriter = new FileWriter(whereToStore, false);
+
+		fileWriter.write(json);
+		fileWriter.flush();
+		fileWriter.close();
+	}
 }
+
+
+/**
+ * all data of a busAndParameter structure, including all connected actuators, buses,
+ * sensors and autopilots.
+ * Sensors are saved by their class name.
+ * Actuators are saved by their actuatorType.
+ * Buses are saved by their busType.
+ * Autopilot is saved by String "navigation".
+ */
+class ParsableBusStructureProperties {
+
+	class Tupel {
+		String eeComponent;
+		int[] busIds;
+		String[] parameter;
+
+		public Tupel(String eeComponent, int[] bus, String[] parameter) {
+			this.eeComponent = eeComponent;
+			this.busIds= bus;
+			this.parameter = parameter;
+		}
+	}
+
+
+	private List<Tupel> buses = new LinkedList<>();
+	private List<Tupel> sensors = new LinkedList<>();
+	private List<Tupel> actuators = new LinkedList<>();
+	private List<Tupel> bridges = new LinkedList<>();
+	private Tupel navigation;
+	private List<Tupel> controller = new LinkedList<>();
+
+	public ParsableBusStructureProperties(EEVehicle vehicle) {
+
+		List<Bridge> processedBridges = new LinkedList<>();
+		List<AbstractSensor> processedSensors = new LinkedList<>();
+		List<VehicleActuator> processedActuators = new LinkedList<>();
+		List<DirectModelAsEEComponent> processedController = new LinkedList<>();
+
+		//id to assign component to the busAndParameter and index of the busAndParameter in busList of the eeVehicle
+		int busId = 0;
+
+		for (Bus bus : vehicle.getBusList()) {
+			int[] busIdArr = {busId};
+			switch (bus.getBusType()) {
+				case CAN:
+//					String[] param = {((CAN) bus).getMode()};
+//					buses.add(new Tupel(bus.getBusType().toString(), busIdArr, param));
+					break;
+				case FLEXRAY:
+					String[] param = {((FlexRay) bus).getMode().toString()};
+					buses.add(new Tupel(bus.getBusType().toString(), busIdArr, param));
+					break;
+				case INSTANT_BUS:
+					buses.add(new Tupel(bus.getBusType().toString(), busIdArr, null));
+					break;
+				default:
+					throw new IllegalStateException("connected Bus has unknown type. Type was " + bus.getBusType());
+			}
+			for (EEComponent component : bus.getConnectedComponents()) {
+				switch (component.getComponentType()) {
+					case SENSOR:
+						sensors.add(new Tupel(component.getClass().getName(), busIdArr, null));
+						break;
+					case ACTUATOR:
+						String[] paramAct = {(((VehicleActuator) component).getActuatorValueMin()) + "", ((VehicleActuator) component).getActuatorValueMax() + "", ((VehicleActuator) component).getActuatorValueChangeRate() + ""};
+						actuators.add(new Tupel(((VehicleActuator) component).getActuatorType().toString(), busIdArr, paramAct));
+						break;
+					case AUTOPILOT:
+						String[] paramController = {((DirectModelAsEEComponent) component).getCycleTime().toString()};
+						controller.add(new Tupel("autopilot", busIdArr, paramController));
+						break;
+					case NAVIGATION:
+						navigation = new Tupel("navigation", busIdArr, null);
+						break;
+					case BRIDGE:
+						if (!processedBridges.contains(component)) {
+							String[] paramBridge = {vehicle.getBusList().indexOf(((Bridge) component).getConnectedBuses().getRight()) + "", ((Bridge) component).getDelay().toMillis() + ""};
+							bridges.add(new Tupel("bridge", busIdArr, paramBridge));
+							processedBridges.add((Bridge) component);
+						}
+						break;
+					default:
+						throw new IllegalStateException("connected component was unknown type. Type was " + component.getComponentType());
+				}
+			}
+			busId++;
+		}
+	}
+
+	public List<Tupel> getBuses(){
+		return buses;
+	}
+
+	public List<Tupel> getActuators() {
+		return actuators;
+	}
+
+	public List<Tupel> getBridges() {
+		return bridges;
+	}
+
+	public List<Tupel> getSensors() {
+		return sensors;
+	}
+
+	public List<Tupel> getController() {
+		return controller;
+	}
+
+	public Tupel getNavigation() {
+		return navigation;
+	}
+
+}
+

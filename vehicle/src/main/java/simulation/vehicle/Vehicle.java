@@ -12,12 +12,8 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode
 import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
 import org.apache.commons.math3.linear.RealVector;
 import sensors.abstractsensors.AbstractSensor;
-import sensors.util.SensorUtil;
-import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
 import simulation.EESimulator.NavigationBlockAsEEComponent;
-import simulation.bus.Bus;
-import simulation.bus.InstantBus;
 
 import java.awt.*;
 import java.io.File;
@@ -105,20 +101,20 @@ public class Vehicle {
      * Constructor for a vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
      */
-    public Vehicle(PhysicalVehicleBuilder physicalVehicleBuidler, EEVehicleBuilder eeVehicleBuilder) {
+    public Vehicle(PhysicalVehicleBuilder physicalVehicleBuilder, EEVehicleBuilder eeVehicleBuilder) {
     	//Create physicalVehicle
-        this.physicalVehicle = physicalVehicleBuidler.buildPhysicalVehicle(this);
+        this.physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(this);
     	//create eeVehicle
         this.eeVehicle = eeVehicleBuilder.buildEEVehicle(this, physicalVehicle);
-        initVehcile();
+        initVehicle();
     }
 
-    public Vehicle(PhysicalVehicleBuilder physicalVehicleBuidler, EESimulator simulator, File file) {
+    public Vehicle(PhysicalVehicleBuilder physicalVehicleBuilder, EEVehicleBuilder eeVehicleBuilder, File eeFile) {
     	//Create physicalVehicle
-        this.physicalVehicle = physicalVehicleBuidler.buildPhysicalVehicle(this);
+        this.physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(this);
     	//create eeVehicle
-        this.eeVehicle = new EEVehicle(this, simulator, file);
-    	initVehcile();
+        this.eeVehicle = eeVehicleBuilder.buildEEVehicle(this, eeFile);
+    	initVehicle();
     }
     
     public Vehicle(File massPointPhysicalVehicleFile, EEVehicleBuilder eeVehicleBuilder) throws IOException {
@@ -126,22 +122,20 @@ public class Vehicle {
         this.physicalVehicle = new MassPointPhysicalVehicleBuilder().loadFromFile(this, massPointPhysicalVehicleFile);
     	//create eeVehicle
         this.eeVehicle = eeVehicleBuilder.buildEEVehicle(this, physicalVehicle);
-        initVehcile();
+        initVehicle();
     }
 
-    public Vehicle(File massPointPhysicalVehicleFile, EESimulator simulator, File eeFile) throws IOException {
+    public Vehicle(File massPointPhysicalVehicleFile, EEVehicleBuilder eeVehicleBuilder, File eeFile) throws IOException {
     	//Create physicalVehicle
         this.physicalVehicle = new MassPointPhysicalVehicleBuilder().loadFromFile(this, massPointPhysicalVehicleFile);
     	//create eeVehicle
-        this.eeVehicle = new EEVehicle(this, simulator, eeFile);
-    	initVehcile();
+        this.eeVehicle = eeVehicleBuilder.buildEEVehicle(this, eeFile);
+    	initVehicle();
     }
 
-	private void initVehcile() {
+	private void initVehicle() {
     	// Create the status logger
         this.statusLogger = new StatusLogger();
-        // register the navigation unit
-        this.navigation = eeVehicle.getNavigation();
         //Register actuators at physicalVehicle
         this.physicalVehicle.initializeActuators();
         // Initialise camera image with empty optional
@@ -149,6 +143,18 @@ public class Vehicle {
         // When created, maximum temporary allowed velocity is not limited
         this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
 	}
+
+    /**
+     * function that is used by EEVehicleBuilder to initialize the navigation
+     * @param navigation navigation should be used by the vehicle
+     */
+    protected void initNavigation(NavigationBlockAsEEComponent navigation) {
+        if (this.navigation.isPresent()) {
+            throw new IllegalStateException("Navigation can only be set once");
+        }
+        this.navigation = Optional.of(navigation);
+
+    }
 
     public Optional<AbstractSensor> getSensorByType(BusEntry type){
     	return this.eeVehicle.getSensorByType(type);

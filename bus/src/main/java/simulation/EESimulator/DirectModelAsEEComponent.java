@@ -102,9 +102,9 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     }
 
     public void initializeController(HardwareEmulatorInterface model_server, String autopilot_config, Duration cycleTime) throws Exception {
-        this.model_server = model_server;
-        this.model_id = model_server.alloc_autopilot(autopilot_config);
-        if (this.model_id < 0){
+        this.modelServer = model_server;
+        this.modelId = model_server.alloc_autopilot(autopilot_config);
+        if (this.modelId < 0){
             String error_msg = model_server.query("get_error_msg");
             throw new Exception("Error allocating autopilot. Config:\n"+autopilot_config+"\n"+error_msg);
         }
