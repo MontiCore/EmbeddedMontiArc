@@ -19,6 +19,7 @@ import java.util.*;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -326,8 +327,13 @@ public class FlexRayTest {
 		for (int i = 2; i < flexray.getConnectedComponents().size(); i++) {
 			System.out.println("--------------new Message-----------------");
 			int slotNumber = 0;
-			//int messageLen = rand.nextInt(FlexRay.MAX_SLOT_PAYLOAD) + 1;
-			int messageLen = 16;
+			int messageLen = 0;
+			if(i==2){
+				messageLen = FlexRay.MAX_SLOT_PAYLOAD;
+			}
+			else{
+				messageLen = rand.nextInt(FlexRay.MAX_SLOT_PAYLOAD) + 1;
+			}
 			//start from incomplete static segment
 			BusMessage controller = createNregisterMessage(flexray, "static", i-1, messageLen, 0);
 			for (PriorityQueue<BusMessage> controllerMsgs : flexray.getMessagesByControllerId().values()) {
@@ -345,7 +351,7 @@ public class FlexRayTest {
 			minFinishTime = lastFinishedCycle.plus(flexray.getSlotSize().multipliedBy(slotNumber));
 			System.out.println("Min finish time: " +minFinishTime + " max finish time " + minFinishTime.plus(flexray.getSlotSize()) + " actual finish time " + finishTime );
 			assertTrue(minFinishTime.isBefore(finishTime));
-			assertTrue(minFinishTime.plus(flexray.getSlotSize()).isAfter(finishTime));
+			assertTrue(!minFinishTime.plus(flexray.getSlotSize()).isBefore(finishTime));
 			flexray.simulateUntil(finishTime);
 			assertTrue(controller.isTransmitted());
 			assertEquals(finishTime, controller.getFinishTime());
@@ -366,20 +372,111 @@ public class FlexRayTest {
 			}
 			minFinishTime = lastFinishedCycle.plus(flexray.getSlotSize().multipliedBy(slotNumber));
 			assertTrue(minFinishTime.isBefore(finishTime));
-			assertTrue(minFinishTime.plus(flexray.getSlotSize()).isAfter(finishTime));
+			assertTrue(!minFinishTime.plus(flexray.getSlotSize()).isBefore(finishTime));
 			flexray.simulateUntil(finishTime);
 			assertTrue(controller.isTransmitted());
 			assertEquals(finishTime, controller.getFinishTime());
 
-			controller = createNregisterMessage(flexray, "static", i, 16 - messageLen, 0);
-			copy = new BusMessage(controller);
-			finishTime = flexray.getNextFinishTime();
-			assertEquals(copy.getTransmittedBytes(), controller.getTransmittedBytes());			assertEquals(minFinishTime.plus(flexray.getSlotSize()), finishTime);
+			if(messageLen != FlexRay.MAX_SLOT_PAYLOAD){
+				controller = createNregisterMessage(flexray, "static", i, 16 - messageLen, 0);
+				copy = new BusMessage(controller);
+				finishTime = flexray.getNextFinishTime();
+				assertEquals(copy.getTransmittedBytes(), controller.getTransmittedBytes());
+			}
+			assertEquals(minFinishTime.plus(flexray.getSlotSize()), finishTime);
 			flexray.simulateUntil(finishTime);
 			assertTrue(controller.isTransmitted());
 			assertEquals(finishTime, controller.getFinishTime());
 		}
+	}
 
+	@Test
+	public void testGetNextFinishTimeLongMsgs(){
+
+		FlexRay flexRay = createBusStructure();
+		BusMessage c00 = createNregisterMessage(flexRay, 33, 0, 741, BusEntry.ENVIRONMENT.ordinal());
+		BusMessage c10 = createNregisterMessage(flexRay, 17, 1, 183, BusEntry.COMPUTERVISION_TRACKED_CARS.ordinal());
+		BusMessage c20 = createNregisterMessage(flexRay, 36, 2, 128, BusEntry.COMPUTERVISION_DETECTED_LANES.ordinal());
+		BusMessage c21 = createNregisterMessage(flexRay, 36, 2, 1407, BusEntry.COMPUTERVISION_DETECTED_PEDESTRIANS.ordinal());
+		BusMessage c30 = createNregisterMessage(flexRay, 50, 3, 548, BusEntry.SIMULATION_DELTA_TIME.ordinal());
+		BusMessage c40 = createNregisterMessage(flexRay, 41, 4, 421, BusEntry.ACTUATOR_GEAR.ordinal());
+		BusMessage c50 = createNregisterMessage(flexRay, 14, 5, 1161, BusEntry.VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.ordinal());
+
+		Instant finishTime = flexRay.getNextFinishTime();
+		flexRay.simulateUntil(finishTime);
+		assertEquals(finishTime, flexRay.getCurrentTime());
+		assertTrue(c20.isTransmitted());
+		assertEquals(finishTime, c20.getFinishTime());
+
+		System.out.println("-------------------------------");
+		finishTime = flexRay.getNextFinishTime();
+		flexRay.simulateUntil(finishTime);
+		assertEquals(finishTime, flexRay.getCurrentTime());
+		assertTrue(c00.isTransmitted());
+		assertEquals(finishTime, c00.getFinishTime());
+
+		flexRay = createBusStructure();
+		BusMessage init = createNregisterMessage(flexRay, 42, 0, 32, BusEntry.COMPUTERVISION_VANISHING_POINT.ordinal());
+
+		System.out.println("-------------------------------");
+		System.out.println("-------------------------------");
+
+		finishTime = flexRay.getNextFinishTime();
+		flexRay.simulateUntil(finishTime);
+		assertEquals(finishTime, flexRay.getCurrentTime());
+		assertTrue(init.isTransmitted());
+		assertEquals(finishTime, init.getFinishTime());
+
+		c00 = createNregisterMessage(flexRay, 42, 0, 450, BusEntry.COMPUTERVISION_VANISHING_POINT.ordinal());
+		c10 = createNregisterMessage(flexRay, 36, 1, 899, BusEntry.SENSOR_LANE.ordinal());
+		c20 = createNregisterMessage(flexRay, 44, 2, 1484, BusEntry.ACTUATOR_THROTTLE_CURRENT.ordinal());
+		c30 = createNregisterMessage(flexRay, 48, 3, 355, BusEntry.ACTUATOR_GEAR_CURRENT.ordinal());
+		c40 = createNregisterMessage(flexRay, 16, 4, 412, BusEntry.ACTUATOR_STEERING.ordinal());
+		c50 = createNregisterMessage(flexRay, 1, 5, 163, BusEntry.COMPUTERVISION_DETECTED_CARS.ordinal());
+
+		System.out.println("-------------------------------");
+
+		finishTime = flexRay.getNextFinishTime();
+		flexRay.simulateUntil(finishTime);
+		assertEquals(finishTime, flexRay.getCurrentTime());
+		assertTrue(c50.isTransmitted());
+		assertEquals(finishTime, c50.getFinishTime());
+
+		System.out.println("-------------------------------");
+		System.out.println("-------------------------------");
+
+		flexRay = createBusStructure();
+		c00 = createNregisterMessage(flexRay, 33, 0, 1183, BusEntry.COMPUTERVISION_DETECTED_LANES.ordinal());
+		c10 = createNregisterMessage(flexRay, 14, 1, 1102, BusEntry.SIMULATION_DELTA_TIME.ordinal());
+		BusMessage c11 = createNregisterMessage(flexRay, 4, 1, 653, BusEntry.ACTUATOR_THROTTLE.ordinal());
+		c20 = createNregisterMessage(flexRay, 11, 2, 315, BusEntry.VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.ordinal());
+		c21 = createNregisterMessage(flexRay, 2, 2, 699, BusEntry.VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.ordinal());
+		c30 = createNregisterMessage(flexRay, 29, 3, 1138, BusEntry.COMPUTERVISION_DETECTED_SIGNS.ordinal());
+		c40 = createNregisterMessage(flexRay, 30, 4, 1148, BusEntry.ACTUATOR_THROTTLE_CURRENT.ordinal());
+		c50 = createNregisterMessage(flexRay, 25, 5, 495, BusEntry.COMPUTERVISION_DETECTED_PEDESTRIANS.ordinal());
+
+
+		finishTime = flexRay.getNextFinishTime();
+		flexRay.simulateUntil(finishTime);
+		assertEquals(finishTime, flexRay.getCurrentTime());
+		assertTrue(c10.isTransmitted());
+		assertEquals(finishTime, c10.getFinishTime());
+
+		System.out.println("-------------------------------");
+
+		finishTime = flexRay.getNextFinishTime();
+		flexRay.simulateUntil(finishTime);
+		assertEquals(finishTime, flexRay.getCurrentTime());
+		assertTrue(c20.isTransmitted());
+		assertEquals(finishTime, c20.getFinishTime());
+
+		System.out.println("-------------------------------");
+
+		finishTime = flexRay.getNextFinishTime();
+		flexRay.simulateUntil(finishTime);
+		assertEquals(finishTime, flexRay.getCurrentTime());
+		assertTrue(c21.isTransmitted());
+		assertEquals(finishTime, c21.getFinishTime());
 	}
 
 	@Test
@@ -627,7 +724,7 @@ public class FlexRayTest {
 		Random rand = new Random();
 		for (int j = 0; j < busEntryByOrdinal.size(); j++) {
 			int senderPos = rand.nextInt(connectedComponents.size());
-			int messageLength = rand.nextInt(1500);
+			int messageLength = rand.nextInt(1499) +1;
 			int priority = priorities.remove(rand.nextInt(priorities.size()));
 			msgs.add(createNregisterMessage(flexray, j, senderPos, messageLength, priority));
 		}
