@@ -6,32 +6,50 @@ component RNNencdec{
 
    implementation CNN{
 
-     layer LSTM(units=50) encoder;
+    layer GRU(units=10, bidirectional=true) encoder;
 
-     source ->
-     FullyConnected(units=30000) ->
-     Softmax() ->
-     ArgMax() ->
-     target[0];
+    source ->
+    Embedding(output_dim=10) ->
+    encoder;
 
-     target[0] ->
-     Embedding(output_dim=50) ->
-     encoder;
+    layer FullyConnected(units=10, flatten=false) fc;
+    encoder.output ->
+    fc;
 
-     layer LSTM(units=50) decoder;
+    1 -> target[0];
 
+    layer GRU(units=10) decoder;
 
-     encoder.state -> decoder.state;
+    encoder.state -> Split(n=2) -> Get(index=1) -> decoder.state;
 
-     timed<t> GreedySearch(max_length=91) {
-         target[t-1] ->
-         Embedding(output_dim=50) ->
-         decoder ->
-         FullyConnected(units=30000) ->
-         Softmax() ->
-         ArgMax() ->
-         target[t]
-     };
-
-       }
+    timed<t> GreedySearch(max_length=91) {
+        (
+            (
+                (
+                    decoder.state ->
+                    Repeat(n=91, axis=1)
+                |
+                    fc.output
+                ) ->
+                Concatenate(dim=2) ->
+                FullyConnected(units=10, flatten=false) ->
+                Tanh() ->
+                FullyConnected(units=91) ->
+                Softmax()
+            |
+                fc.output
+            ) ->
+            Dot()
+        |
+            target[t-1] ->
+            Embedding(output_dim=10)
+        ) ->
+        Concatenate() ->
+        decoder ->
+        FullyConnected(units=30000) ->
+        Softmax() ->
+        ArgMax() ->
+        target[t]
+    };
+ }
  }
