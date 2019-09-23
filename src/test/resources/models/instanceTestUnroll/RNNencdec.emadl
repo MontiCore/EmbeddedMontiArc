@@ -1,37 +1,37 @@
 package instanceTestUnroll;
 
-component RNNencdec<Z(2:oo) classes = 10, max_length=5>{
-    ports in Z(0:255)^{3, 32, 32} data,
-         out Q(0:29999)^{1} softmax[5];
+component RNNencdec{
+   ports in Z(0:29999)^{75} source,
+        out Z(0:29999)^{1} target[91];
 
    implementation CNN{
 
-     layer LSTM(units=10) encoder;
-     layer LSTM(units=10) decoder;
+     layer LSTM(units=50) encoder;
+
+     source ->
+     FullyConnected(units=30000) ->
+     Softmax() ->
+     ArgMax() ->
+     target[0];
+
+     target[0] ->
+     Embedding(output_dim=50) ->
+     encoder;
+
+     layer LSTM(units=50) decoder;
 
 
-        data ->
-        Convolution(kernel=(5,5), channels=8, padding="valid") ->
-        Convolution(kernel=(5,5), channels=8, padding="valid") ->
-        FullyConnected(units=30) ->
-        Softmax() ->
-        ArgMax() ->
-        softmax[0];
+     encoder.state -> decoder.state;
 
-        data ->
-        Flatten() ->
-        Softmax() ->
-        Embedding(output_dim=10) ->
-        encoder;
+     timed<t> GreedySearch(max_length=91) {
+         target[t-1] ->
+         Embedding(output_dim=50) ->
+         decoder ->
+         FullyConnected(units=30000) ->
+         Softmax() ->
+         ArgMax() ->
+         target[t]
+     };
 
-        encoder.state -> decoder.state;
-
-       timed <t> GreedySearch(max_length=5){
-        softmax[t-1] ->
-        FullyConnected(units=30) ->
-        Softmax() ->
-        ArgMax() ->
-        softmax[t]
-       };
        }
  }

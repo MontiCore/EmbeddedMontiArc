@@ -1,26 +1,26 @@
 component RNNencdec2{
-   ports in Z(0:29999)^{50} source,
-        out Q(0:29999)^{1} target[50];
+   ports in Z(0:29999)^{75} source,
+        out Z(0:29999)^{1} target[91];
 
    implementation CNN{
 
-     layer LSTM(units=1000) encoder;
+     layer LSTM(units=10) encoder;
 
      source ->
-     Embedding(output_dim=1000) ->
+     Embedding(output_dim=10) ->
      encoder;
 
-     layer LSTM(units=1000) decoder;
+     layer LSTM(units=10) decoder;
 
      1 -> target[0];
 
      encoder.state -> decoder.state;
 
-     timed<t> GreedySearch(max_length=50) {
+     timed<t> GreedySearch(max_length=91) {
          target[t-1] ->
-         Embedding(output_dim=1000) ->
+         Embedding(output_dim=10) ->
          decoder ->
-         FullyConnected(units=30000) ->
+         FullyConnected(units=30) ->
          Softmax() ->
          ArgMax() ->
          target[t]
