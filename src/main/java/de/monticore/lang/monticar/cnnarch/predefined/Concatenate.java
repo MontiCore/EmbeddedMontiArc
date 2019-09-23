@@ -20,15 +20,13 @@
  */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.PredefinedLayerDeclaration;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -83,7 +81,13 @@ public class Concatenate extends PredefinedLayerDeclaration {
 
     public static Concatenate create(){
         Concatenate declaration = new Concatenate();
-        declaration.setParameters(new ArrayList<>());
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.DIM_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
+                        .defaultValue(1)
+                        .build()));
+        declaration.setParameters(parameters);
         return declaration;
     }
 }

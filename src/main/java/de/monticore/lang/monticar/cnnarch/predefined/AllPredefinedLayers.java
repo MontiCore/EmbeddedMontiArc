@@ -53,6 +53,8 @@ public class AllPredefinedLayers {
     public static final String GRU_NAME = "GRU";
     public static final String EMBEDDING_NAME = "Embedding";
     public static final String ARG_MAX_NAME = "ArgMax";
+    public static final String DOT_NAME = "Dot";
+    public static final String REPEAT_NAME = "Repeat";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -74,10 +76,13 @@ public class AllPredefinedLayers {
     public static final String LAYERS_NAME = "layers";
     public static final String INPUT_DIM_NAME = "input_dim";
     public static final String OUTPUT_DIM_NAME = "output_dim";
+    public static final String DIM_NAME = "dim";
     public static final String BIDIRECTIONAL_NAME = "bidirectional";
     public static final String FLATTEN_PARAMETER_NAME = "flatten";
     public static final String MAX_LENGTH_NAME = "max_length";
     public static final String WIDTH_NAME = "width";
+    public static final String REPEATS_NAME = "n";
+    public static final String AXIS_NAME = "axis";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
@@ -111,7 +116,9 @@ public class AllPredefinedLayers {
                 LSTM.create(),
                 GRU.create(),
                 Embedding.create(),
-                ArgMax.create());
+                ArgMax.create(),
+                Dot.create(),
+                Repeat.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){
