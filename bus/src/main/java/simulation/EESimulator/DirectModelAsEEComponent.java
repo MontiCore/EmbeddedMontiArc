@@ -23,6 +23,8 @@ import static com.vividsolutions.jts.util.Memory.free;
 public class DirectModelAsEEComponent extends ImmutableEEComponent {
     private static final int MAX_TRAJECTORY_LENGTH = 100;
 
+    private Map<Object, BusEntry> lastValueByMessageId = new HashMap<>();
+
     private static final ArrayList<BusEntry> STANDARD_SUBSCRIBED_MESSAGES = new ArrayList<BusEntry>() {{
     	add(BusEntry.SENSOR_VELOCITY);
     	add(BusEntry.SENSOR_GPS_COORDINATES);
@@ -203,20 +205,27 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
 		
 		Object engine = outputs.get("engine");
 		if (engine != null) {
-            System.out.println("Controller send msg: Engine; with value: " + engine);
-            this.sendMessage(engine, 8, BusEntry.ACTUATOR_ENGINE, lastFinishTime);
+            if(!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_ENGINE) || !lastValueByMessageId.get(BusEntry.ACTUATOR_ENGINE).equals(engine)) {
+                System.out.println("Controller send msg: Engine; with value: " + engine);
+                this.sendMessage(engine, 8, BusEntry.ACTUATOR_ENGINE, lastFinishTime);
+            }
 		}
 
 		Object brakes = outputs.get("brakes");
 		if (brakes != null) {
-            System.out.println("Controller send msg: Brakes; with value: " + brakes);
-		    this.sendMessage(brakes, 8, BusEntry.ACTUATOR_BRAKE, lastFinishTime);
+		    if(!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_BRAKE) || !lastValueByMessageId.get(BusEntry.ACTUATOR_BRAKE).equals(brakes)){
+                System.out.println("Controller send msg: Brakes; with value: " + brakes);
+                this.sendMessage(brakes, 8, BusEntry.ACTUATOR_BRAKE, lastFinishTime);
+            }
+
 		}
 
 		Object steering = outputs.get("steering");
 		if (steering != null) {
-            System.out.println("Controller send msg: Steering; with value: " + steering);
-            this.sendMessage(steering, 8, BusEntry.ACTUATOR_STEERING, lastFinishTime);
+            if(!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_STEERING) || !lastValueByMessageId.get(BusEntry.ACTUATOR_STEERING).equals(steering)) {
+                System.out.println("Controller send msg: Steering; with value: " + steering);
+                this.sendMessage(steering, 8, BusEntry.ACTUATOR_STEERING, lastFinishTime);
+            }
 		}
 		
 		//set next execute event

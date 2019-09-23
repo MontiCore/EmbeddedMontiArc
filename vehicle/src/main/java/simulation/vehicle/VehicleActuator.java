@@ -11,12 +11,10 @@ import simulation.EESimulator.*;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
 
+import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class that represents an actuator of the vehicle
@@ -34,6 +32,9 @@ public class VehicleActuator extends ImmutableEEComponent {
 
 	/** Current value */
 	private double actuatorValueCurrent;
+
+	/** last sent value */
+	private Optional<Double> actuatorValueLastSent = Optional.empty();
 
 	/** Value that should be set */
 	private double actuatorValueTarget;
@@ -268,8 +269,12 @@ public class VehicleActuator extends ImmutableEEComponent {
 	 */
 	protected void update(Instant actualTime) {
 		this.updateValue(actualTime);
-		System.out.println(this.actuatorType + " send message: " + this.sendMsgId + "; with value: " + this.actuatorValueCurrent);
-		this.sendMessage(this.actuatorValueCurrent, 8, this.sendMsgId, actualTime);
+		if(!actuatorValueLastSent.isPresent() || !actuatorValueLastSent.get().equals(actuatorValueCurrent)){
+			actuatorValueLastSent = Optional.of(actuatorValueCurrent);
+			System.out.println(this.actuatorType + " send message: " + this.sendMsgId + "; with value: " + this.actuatorValueCurrent);
+			this.sendMessage(this.actuatorValueCurrent, 8, this.sendMsgId, actualTime);
+		}
+
 	}
 
 	private void updateValue(Instant actualTime){
