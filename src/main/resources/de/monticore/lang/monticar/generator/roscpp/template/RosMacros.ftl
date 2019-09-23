@@ -39,10 +39,17 @@ ros::Publisher ${name};
 
 <#macro callback sub>
 void ${sub.getMethodName()}(const ${sub.getTypeNameInTargetLanguage()}::ConstPtr& msg){
-    <#if !sub.isStructInterface() && sub.getRosConnectionSymbol().getMsgField().isPresent()>
+    <#if !sub.isStructInterface() && !sub.isMatrixInterface() && sub.getRosConnectionSymbol().getMsgField().isPresent()>
     component->${sub.getPortNameInTargetLanguage()} = msg->${sub.getRosConnectionSymbol().getMsgField().get()};
     <#else>
-    ${sub.getRosSetStructInstruction()}
+       <#-- ${sub.getRosSetStructInstruction()} -->
+      
+        <#if sub.isMatrixInterface()>
+        ${sub.getRosSetMatrixInstruction()}
+        <#else>
+        ${sub.getRosSetStructInstruction()}
+        </#if>
+
     </#if>
 }
 </#macro>

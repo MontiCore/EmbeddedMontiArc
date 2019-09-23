@@ -199,6 +199,25 @@ public class TaggingTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testArrayHandlingComp() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        RosToEmamTagSchema.registerTagTypes(symtab);
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        String generationTargetPath = "./target/generated-sources-roscpp/arrayHandlingComp/";
+        generatorRosCpp.setGenerationTargetPath(generationTargetPath);
+
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.structs.arrayHandlingComp", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+        Map<EMAPortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
+
+        List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
+
+        testFilesAreEqual(files, "arrayHandlingComp/", generationTargetPath);
+    }
+
+
+    @Test
     public void testMissingTopicName() throws IOException {
         Log.enableFailQuick(false);
 
