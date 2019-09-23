@@ -51,7 +51,7 @@ public class ChargingStationNavigatorTest {
                         ParserSettings.ZCoordinates.ALLZERO, "supercharger"),
                 new WeatherSettings());
         long id = ChargingStationNavigator.getNearestChargingStationFromLocalSector(267028542L);
-        assertEquals(2871079478L, id);
+        assertEquals(4846216969L, id);
     }
 
     @Test
