@@ -41,11 +41,11 @@ class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_ma
 		int counter = 0;
 		for(int i0 = 0; i0 < 3; i0++){
 			for(int i1 = 0; i1 < 1; i1++){
-				if(0 <= counter && counter <= 0){
+				if(0 <= counter && counter <= 1-1){
 					(component->in1)(i0, i1) = msg->data[counter];
 				}
 				else if(0 > counter){
-					(component->in1)(i0, i1+0-0+1) = 0;
+					(component->in1)(i0, i1+1-1-0+1) = 0;
 				}
 				else{
 					(component->in1)(i0, i1) = 0;
@@ -61,11 +61,11 @@ class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_ma
 		int counter = 0;
 		for(int i0 = 0; i0 < 4; i0++){
 			for(int i1 = 0; i1 < 4; i1++){
-				if(0 <= counter && counter <= 3){
+				if(0 <= counter && counter <= 4-1){
 					(component->in2)(i0, i1) = msg->data[counter] != 0;
 				}
 				else if(0 > counter){
-					(component->in2)(i0, i1+3-0+1) = 0;
+					(component->in2)(i0, i1+4-1-0+1) = 0;
 				}
 				else{
 					(component->in2)(i0, i1) = 0;
