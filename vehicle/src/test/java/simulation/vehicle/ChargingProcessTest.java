@@ -40,7 +40,11 @@ public class ChargingProcessTest {
         ChargingProcess chargingProcess = new ChargingProcess(physicalVehicle,chargingStation);
         chargingProcess.startProcess();
         double timeToCharge = vehicle.getBattery().get().timeToCharge(100);
-        chargingProcess.executeLoopIteration((long)timeToCharge);
+        while(timeToCharge >= 0){
+            chargingProcess.executeLoopIteration(2000);
+            timeToCharge = timeToCharge-2;
+        }
+
         assertTrue(vehicle.getBattery().get().getBatteryPercentage() == 100);
     }
 
