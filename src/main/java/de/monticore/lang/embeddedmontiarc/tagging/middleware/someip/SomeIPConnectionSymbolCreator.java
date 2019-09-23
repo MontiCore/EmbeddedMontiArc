@@ -30,11 +30,11 @@ public class SomeIPConnectionSymbolCreator implements TagSymbolCreator {
      * regular expression pattern:
      * {serviceID = {serviceID}, instanceID = {instanceID}, eventgroupID = {eventgroupID}}
      * to test the pattern just enter:
-     * \s*\{\s*serviceID\s*=\s*[0-9]*,\s*instanceID\s*=\s*[0-9]*,\s*eventgroupID\s*=\s*[0-9]*\}\s*
+     * \s*\{\s*serviceid\s*=\s*([0-9]*)\s*,\s*instanceid\s*=\s*([0-9]*)\s*,\s*eventgroupid\s*=\s*([0-9]*)\s*\}\s*
      * at http://www.regexplanet.com/advanced/java/index.html
      */
 
-    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*topic\\s*=\\s*\\(\\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\\s*,\\s*([a-z|A-Z][0-9|a-z|A-Z|_|/]*)\\s*\\)\\s*(s*,\\s*msgField\\s*=\\s*([a-z|A-Z][a-z|A-Z|1-9|_|\\.|::|\\(|\\)]*)\\s*)?\\s*\\}\\s*");
+    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*serviceID\\s*=\\s*([0-9]*)\\s*,\\s*instanceID\\s*=\\s*([0-9]*)\\s*,\\s*eventgroupID\\s*=\\s*([0-9]*)\\s*\\}\\s*");
 
     public static Scope getGlobalScope(final Scope scope) {
         Scope s = scope;
@@ -110,7 +110,7 @@ public class SomeIPConnectionSymbolCreator implements TagSymbolCreator {
                     .forEachOrdered(m ->
                             taggedSymbols.stream()
                                     .forEachOrdered(s -> {
-                                        SomeIPConnectionSymbol tmpSymbol = new SomeIPConnectionSymbol(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), 																																Integer.parseInt(m.group(4)));
+                                        SomeIPConnectionSymbol tmpSymbol = new SomeIPConnectionSymbol(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
                                         tagging.addTag(s, tmpSymbol);
                                         if (s.isKindOf(EMAPortSymbol.KIND)) {
                                             EMAPortSymbol p = (EMAPortSymbol) s;
