@@ -12,7 +12,6 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Vertex;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.ControllerNode;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IAdjacency;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
@@ -981,7 +980,7 @@ public class Vehicle{
                             ChargingStationNavigator.getNearestOsmNodeFrom(this.physicalVehicle.getPosition())
                     );
                     RealVector point3d = ChargingStationNavigator.getPositionOfOsmNode(nearestcharg);
-                    navigateTo(new ControllerNode(Geometry.realVector2Point3D(point3d), nearestcharg));
+                    navigateTo(new ControllerNodeImpl(Geometry.realVector2Point3D(point3d), nearestcharg));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1160,8 +1159,8 @@ public class Vehicle{
     public List<Vertex> getTrajectory() {
         // Check if trajectory is available and return copy if valid
         if (controllerBus.isPresent() && (controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) != null)) {
-                ArrayList<Vertex> originalList = (ArrayList<Vertex>)(controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
-                return new ArrayList<>(originalList);
+                List<Vertex> originalList = (List<Vertex>) controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString());
+                return originalList;
         }
 
         // Fallback to empty list
