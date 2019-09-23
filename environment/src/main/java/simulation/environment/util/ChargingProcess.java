@@ -1,22 +1,8 @@
 /**
+ * (c) https://github.com/MontiCore/monticore
  *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
 package simulation.environment.util;
 
@@ -27,11 +13,6 @@ import java.util.Optional;
 
 /**
  * Charging Station Class
- *
- * TODO Class Car needs Car.getBattery();
- * TODO Calculate consumtionOfThisLoop for every 2 seconds
- * TODO Update Batterie charge
- * TODO Add method Battery.fullCharged()
  *
  * @version 1.0
  * @since 2019-05-22
@@ -48,7 +29,6 @@ public class ChargingProcess implements SimulationLoopExecutable {
 	public ChargingProcess(Chargeable vehicle, ChargingStation cs){
 		this.vehicle = vehicle;
 		this.chargingStation = cs;
-		this.battery = vehicle.getBattery();
 		this.battery = Optional.of(vehicle.getBattery().get());
 	}
 
@@ -68,15 +48,6 @@ public class ChargingProcess implements SimulationLoopExecutable {
 				    stopProcess();
 					return;
 				}
-
-
-				// ==== TODO ====
-				// Needs to be calculated with values of the battery battery like the maxLoadingSpeed
-				// ...
-
-				// ==== TODO ====
-				// Update Battery battery charge like this.battery.updateCharging();
-				// ...
 				
 				double consumtionOfThisLoop = this.battery.get().charge();
 				// Increased consumption through transaction
