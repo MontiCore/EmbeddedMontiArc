@@ -127,7 +127,7 @@ public class MassPointPhysicalVehicleTest {
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
-        vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
+        vehicle.executeLoopIteration(Duration.ofMillis(33));
         motorReference.update(Instant.EPOCH.plusMillis(33));
         frontLeftBrakeReference.update(Instant.EPOCH.plusMillis(33));
         frontRightBrakeReference.update(Instant.EPOCH.plusMillis(33));
@@ -190,7 +190,7 @@ public class MassPointPhysicalVehicleTest {
         steeringReference.setActuatorValueCurrent(steering.getActuatorValueCurrent());
 
         // Execute loop iteration
-        vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
+        vehicle.executeLoopIteration(Duration.ofMillis(33));
         steeringReference.update(Instant.EPOCH.plusMillis(33));
 
         // Motor and brake actuators should be reset to zero
@@ -243,7 +243,7 @@ public class MassPointPhysicalVehicleTest {
         double steeringValueReference = steering.getActuatorValueCurrent();
 
         // Execute loop iteration
-        vehicle.executeLoopIteration(Instant.EPOCH.plusMillis(33));
+        vehicle.executeLoopIteration(Duration.ofMillis(33));
 
         // Ass actuators should not be updated
         Assert.assertEquals(motorValueReference, motor.getActuatorValueCurrent(), 0);

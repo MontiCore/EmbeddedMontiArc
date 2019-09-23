@@ -22,23 +22,23 @@ public abstract class StaticPlannedTrajectorySensor extends  AbstractSensor {
 
     private List<Double> trajectory;
 
-    public StaticPlannedTrajectorySensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+    public StaticPlannedTrajectorySensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<Double> trajectory) {
-        super(phyiscalVehicle,simulator, subscribedMessages, targetsByMessageId);
+        super(physicalVehicle,simulator, subscribedMessages, targetsByMessageId);
         Validate.notNull(trajectory);
         List<Double> defensiveCopy = new ArrayList<>(trajectory);
         Validate.noNullElements(defensiveCopy);
         this.trajectory = Collections.unmodifiableList(defensiveCopy);
     }
 
-    public StaticPlannedTrajectorySensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+    public StaticPlannedTrajectorySensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
-        super(phyiscalVehicle,simulator, subscribedMessages, targetsByMessageId);
+        super(physicalVehicle,simulator, subscribedMessages, targetsByMessageId);
     }
 
     public void initializeTrajectory(List<Double> trajectoryX) {
-        Validate.notNull(this.trajectory);
-        List<Double> defensiveCopy = new ArrayList<>(trajectory);
+        Validate.notNull(trajectoryX);
+        List<Double> defensiveCopy = new ArrayList<>(trajectoryX);
         Validate.noNullElements(defensiveCopy);
         this.trajectory = Collections.unmodifiableList(defensiveCopy);
     }
@@ -51,10 +51,6 @@ public abstract class StaticPlannedTrajectorySensor extends  AbstractSensor {
     @Override
     public String getTypeName() {
         return Collections.<Double>emptyList().getClass().getTypeName();
-    }
-
-    @Override
-    public void update(Instant actualTime) {
     }
 
     @Override

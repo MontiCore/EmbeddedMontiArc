@@ -8,6 +8,7 @@ package simulation.vehicle;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +45,7 @@ public class ControllerTest {
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
 		InstantBus bus = new InstantBus(eeSimulator);
 		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		DirectModelAsEEComponent ecu = eeVehicleBuilder.createController(modelServer, AUTOPILOT_CONFIG, bus).get();
+		DirectModelAsEEComponent ecu = eeVehicleBuilder.createController(modelServer, AUTOPILOT_CONFIG, bus);
 		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
 		EEVehicle eeVehicle = vehicle.getEEVehicle();
         
@@ -64,7 +65,7 @@ public class ControllerTest {
         initialValuesByActuator.put(brakeFR, brakeFR.getActuatorValueTarget());
         initialValuesByActuator.put(motor, motor.getActuatorValueTarget());
 
-		vehicle.executeLoopIteration(eeVehicle.getEESimulator().getDeltaSimulationTime().plusMillis(30));
+		vehicle.executeLoopIteration(Duration.ofMillis(30));
 		
 		//ecu emits 3 messages
 		int controllerMessagesCount = 0;
@@ -79,7 +80,7 @@ public class ControllerTest {
 		
 		assertEquals(3, controllerMessagesCount);
 		
-		vehicle.executeLoopIteration(eeVehicle.getEESimulator().getDeltaSimulationTime().plusMillis(30));
+		vehicle.executeLoopIteration(Duration.ofMillis(30));
 	
 		boolean initialValuesChanged = false;
 		for(Map.Entry<VehicleActuator, Double> initialValueByActuator : initialValuesByActuator.entrySet()) {

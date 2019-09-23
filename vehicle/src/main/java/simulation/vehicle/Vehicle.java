@@ -9,6 +9,8 @@ package simulation.vehicle;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Vertex;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
 import org.apache.commons.math3.linear.RealVector;
 import sensors.abstractsensors.AbstractSensor;
@@ -18,6 +20,7 @@ import simulation.EESimulator.NavigationBlockAsEEComponent;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.*;
@@ -25,7 +28,7 @@ import java.util.*;
 /**
  * Simulation objects for a generic vehicle.
  */
-public class Vehicle {
+public class Vehicle implements SimulationLoopExecutable {
     /** Default average values for vehicle constructor */
     /** Minimum acceleration that can be made by the motor */
     public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN = -1.5;
@@ -96,6 +99,8 @@ public class Vehicle {
     /** Maximum temporary allowed velocity of vehicle */
     private double maxTemporaryAllowedVelocity;
 
+    private Instant lastSimulationTime = Instant.EPOCH;
+
 
     /**
      * Constructor for a vehicle that is standing at its position
@@ -160,10 +165,12 @@ public class Vehicle {
     	return this.eeVehicle.getSensorByType(type);
     }
 
-    public void executeLoopIteration(Instant time) {
-    	//update physical vehicle?
-    	this.eeVehicle.executeLoopIteration(time);
-    	this.physicalVehicle.setCollision(false);
+    @Override
+    public void executeLoopIteration(Duration timeDiff) {
+
+        this.lastSimulationTime = this.lastSimulationTime.plus(timeDiff);
+        this.eeVehicle.executeLoopIteration(this.lastSimulationTime);
+        this.physicalVehicle.setCollision(false);
     }
 
 	public EEVehicle getEEVehicle() {

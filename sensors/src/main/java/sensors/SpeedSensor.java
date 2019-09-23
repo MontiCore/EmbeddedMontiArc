@@ -38,7 +38,7 @@ public class SpeedSensor extends AbstractSensor {
 
     @Override
     public int getDataLength() {
-        return 6;
+        return 8;
     }
 
     /**

@@ -35,7 +35,7 @@ public class SteeringAngleSensor extends AbstractSensor {
 
     @Override
     public int getDataLength() {
-        return 6;
+        return 8;
     }
 
     @Override

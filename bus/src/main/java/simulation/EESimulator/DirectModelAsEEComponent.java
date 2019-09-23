@@ -52,7 +52,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     HashMap<String, Serializable>  outputs = new HashMap<String, Serializable>();
     Optional<Object> trajectoryX = Optional.empty();
     Optional<Object> trajectoryY = Optional.empty();
-    Instant lastTime = Instant.EPOCH;
+    Instant lastFinishTime = Instant.EPOCH;
 
 
 
@@ -129,6 +129,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         if (event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
             BusMessage currentMessage = (BusMessage) event;
             newInputs = true;
+            System.out.println("Controller received msg: " + currentMessage.getMessageID() + "; with value: " + currentMessage.getMessage());
             switch (currentMessage.getMessageID()) {
                 case SENSOR_VELOCITY:
                     double currentVelocity = (double) currentMessage.getMessage();
@@ -188,36 +189,39 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     }
 
 	private void executeController(EEDiscreteEvent event) {
-		double timeIncrement = Duration.between(event.getEventTime(), lastTime).toMillis();
-		lastTime = event.getEventTime();
+		double timeIncrement = Duration.between(event.getEventTime(), lastFinishTime).toMillis();
 		this.inputs.put("timeIncrement", timeIncrement);
-		
-		Duration delay = modelServer.time_execute(modelId, Duration.between(lastTime, event.getEventTime()));
+        this.modelServer.set_inputs(modelId, inputs);
+
+		Duration delay = modelServer.time_execute(modelId, Duration.between(lastFinishTime, event.getEventTime()));
 		this.outputs = modelServer.get_outputs(modelId);
-		Instant finishTime = event.getEventTime().plus(delay);
+        lastFinishTime = event.getEventTime().plus(delay);
 		
 		Object engine = outputs.get("engine");
 		if (engine != null) {
-		    this.sendMessage(engine, 6, BusEntry.ACTUATOR_ENGINE, finishTime);
+            System.out.println("Controller send msg: Engine; with value: " + engine);
+            this.sendMessage(engine, 8, BusEntry.ACTUATOR_ENGINE, lastFinishTime);
 		}
 
 		Object brakes = outputs.get("brakes");
 		if (brakes != null) {
-		    this.sendMessage(brakes, 6, BusEntry.ACTUATOR_BRAKE, finishTime);
+            System.out.println("Controller send msg: Brakes; with value: " + brakes);
+		    this.sendMessage(brakes, 8, BusEntry.ACTUATOR_BRAKE, lastFinishTime);
 		}
 
 		Object steering = outputs.get("steering");
 		if (steering != null) {
-		    this.sendMessage(steering, 6, BusEntry.ACTUATOR_STEERING, finishTime);
+            System.out.println("Controller send msg: Steering; with value: " + steering);
+            this.sendMessage(steering, 8, BusEntry.ACTUATOR_STEERING, lastFinishTime);
 		}
 		
 		//set next execute event
 		Instant nextExecuteTime = event.getEventTime().plus(cycleTime);
-		if(finishTime.isBefore(nextExecuteTime)) {
+		if(lastFinishTime.isBefore(nextExecuteTime)) {
 			this.getSimulator().addEvent(new ControllerExecuteEvent(nextExecuteTime, this));
 		}
 		else {
-			this.getSimulator().addEvent(new ControllerExecuteEvent(finishTime, this));
+			this.getSimulator().addEvent(new ControllerExecuteEvent(lastFinishTime, this));
 		}
 		wakeUpNeeded = false;
 		newInputs = false;
