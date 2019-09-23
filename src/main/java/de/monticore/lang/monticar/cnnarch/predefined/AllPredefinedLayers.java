@@ -78,7 +78,6 @@ public class AllPredefinedLayers {
     public static final String FLATTEN_PARAMETER_NAME = "flatten";
     public static final String MAX_LENGTH_NAME = "max_length";
     public static final String WIDTH_NAME = "width";
-    public static final String DEPTH_NAME = "depth";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
