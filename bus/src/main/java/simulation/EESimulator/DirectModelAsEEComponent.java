@@ -26,8 +26,8 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     private Map<Object, BusEntry> lastValueByMessageId = new HashMap<>();
 
     private static final ArrayList<BusEntry> STANDARD_SUBSCRIBED_MESSAGES = new ArrayList<BusEntry>() {{
-    	add(BusEntry.SENSOR_VELOCITY);
-    	add(BusEntry.SENSOR_GPS_COORDINATES);
+        add(BusEntry.SENSOR_VELOCITY);
+        add(BusEntry.SENSOR_GPS_COORDINATES);
         add(BusEntry.SENSOR_COMPASS);
         add(BusEntry.ACTUATOR_ENGINE_CURRENT);
         add(BusEntry.ACTUATOR_BRAKE_CURRENT);
@@ -37,8 +37,8 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     }};
     
     public static final ArrayList<BusEntry> MASSPOINT_OUTPUT_MESSAGES = new ArrayList<BusEntry>() {{
-    	add(BusEntry.ACTUATOR_STEERING);
-    	add(BusEntry.ACTUATOR_BRAKE);
+        add(BusEntry.ACTUATOR_STEERING);
+        add(BusEntry.ACTUATOR_BRAKE);
         add(BusEntry.ACTUATOR_ENGINE);
     }};
     
@@ -82,15 +82,8 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     }
 
 
-    public DirectModelAsEEComponent(EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId, Duration cycleTime) {
-        super(simulator, EEComponentType.AUTOPILOT, STANDARD_SUBSCRIBED_MESSAGES, targetsByMessageId);
-        this.cycleTime = cycleTime;
-        //add controller execute event
-        simulator.addEvent(new ControllerExecuteEvent(simulator.getSimulationTime().plus(cycleTime), this));
-    }
-    
     public DirectModelAsEEComponent(EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
-    	this(simulator, targetsByMessageId, Duration.ofMillis(200));
+        super(simulator, EEComponentType.AUTOPILOT, STANDARD_SUBSCRIBED_MESSAGES, targetsByMessageId);
     }
 
 
@@ -110,13 +103,16 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         }
     }
 
-    public void initializeController(HardwareEmulatorInterface modelServer, String autopilotConfig) throws Exception {
-        this.modelServer = modelServer;
-        this.modelId = modelServer.alloc_autopilot(autopilotConfig);
+    public void initializeController(HardwareEmulatorInterface model_server, String autopilot_config, Duration cycleTime) throws Exception {
+        this.modelServer = model_server;
+        this.modelId = model_server.alloc_autopilot(autopilot_config);
         if (this.modelId < 0){
-            String error_msg = modelServer.query("get_error_msg");
-            throw new Exception("Error allocating autopilot. Config:\n"+autopilotConfig+"\n"+error_msg);
+            String error_msg = model_server.query("get_error_msg");
+            throw new Exception("Error allocating autopilot. Config:\n"+autopilot_config+"\n"+error_msg);
         }
+        this.cycleTime = cycleTime;
+        //add controller execute event
+        this.getSimulator().addEvent(new ControllerExecuteEvent(this.getSimulator().getSimulationTime().plus(cycleTime), this));
     }
 
     @Override

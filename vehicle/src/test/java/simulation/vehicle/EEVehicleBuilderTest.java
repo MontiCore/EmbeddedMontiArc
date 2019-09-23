@@ -7,7 +7,9 @@
 package simulation.vehicle;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.HashSet;
@@ -25,6 +27,7 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.Bridge;
 import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
 import simulation.EESimulator.EESimulator;
 import simulation.bus.Bus;
 import simulation.bus.FlexRay;
@@ -132,13 +135,22 @@ public class EEVehicleBuilderTest {
 		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
 		EEVehicle eeVehicle = vehicle.getEEVehicle();
 
+		//search and collect all created bridges
+        HashSet<Bridge> createdBridges = new HashSet<>();
+        for (Bus bus : eeVehicle.getBusList()) {
+            for (EEComponent comp : bus.getConnectedComponents()) {
+                if (comp.getComponentType() == EEComponentType.BRIDGE) {
+                    createdBridges.add((Bridge) comp);
+                }
+            }
+        }
 
         //tests
         assertEquals(new HashSet<>(busCompareList), new HashSet<>(eeVehicle.getBusList()));
         Set<VehicleActuator> symDiffAct = Sets.symmetricDifference(new HashSet<>(actuatorCompareList), new HashSet<>(eeVehicle.getActuatorList()));
         assertEquals(0, symDiffAct.size());
         assertEquals(new HashSet<>(actuatorCompareList), new HashSet<>(eeVehicle.getActuatorList()));
-        assertEquals(new HashSet<>(bridgeCompareList), new HashSet<>(eeVehicle.getBridgeList()));
+        assertEquals(new HashSet<>(bridgeCompareList), createdBridges);
         assertEquals(3, eeVehicle.getSensorList().size());
         AbstractSensor cam = null;
         AbstractSensor location = null;
@@ -172,21 +184,30 @@ public class EEVehicleBuilderTest {
 //        System.out.println("Test create EEVehicle by using JSON File");
 //        //store and load from JSON file
 //        File file = new File("C:/Users/Freddy/Desktop/SWP/EEVehicle Testordner/test.txt");
-//        vehicle.getEEVehicle().storeInFile(file, vehicle.getEEVehicle());
+//        eeVehicleBuilder.storeInFile(file, vehicle.getEEVehicle());
 //
-//        PhysicalVehicle physicalVehicleJSON = new MassPointPhysicalVehicleBuilder().createPhysicalVehicle();
-//        Vehicle vehicleJSON = new Vehicle(physicalVehicleJSON, simulator, file);
+//        Vehicle vehicleJSON = new Vehicle(new MassPointPhysicalVehicleBuilder(), eeVehicleBuilder, file);
+//
+//        //search and collect all created bridges
+//        HashSet<Bridge> createdBridgesJSON = new HashSet<>();
+//        for (Bus bus : eeVehicle.getBusList()) {
+//            for (EEComponent comp : bus.getConnectedComponents()) {
+//                if (comp.getComponentType() == EEComponentType.BRIDGE) {
+//                    createdBridges.add((Bridge) comp);
+//                }
+//            }
+//        }
 //
 //        //tests
 //        assertTrue(componentIsConnected(new LinkedList<EEComponent>(busCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getBusList())));
 //        assertTrue(componentIsConnected(new LinkedList<EEComponent>(actuatorCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getActuatorList())));
-//        assertTrue(componentIsConnected(new LinkedList<EEComponent>(bridgeCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getBridgeList())));
-//        assertTrue(componentIsConnected(new LinkedList<EEComponent>(sensorCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getSensorList())));
+//        assertTrue(componentIsConnected(new LinkedList<EEComponent>(bridgeCompareList), new LinkedList<EEComponent>(createdBridgesJSON)));
+//        assertTrue(allSensorsConnected(vehicleJSON.getEEVehicle().getSensorList()));
 //        assertTrue(componentIsConnected(busOneCompareList, busOne.getConnectedComponents()));
 //        assertTrue(componentIsConnected(busTwoCompareList, busTwo.getConnectedComponents()));
 //        assertTrue(componentIsConnected(busThreeCompareList, busThree.getConnectedComponents()));
-
-
+//
+//
     }
     
     @Test
@@ -237,6 +258,25 @@ public class EEVehicleBuilderTest {
                 if (shouldBe.getClass() == is.getClass()) {
                     notFound = false;
                     break;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean allSensorsConnected(List<AbstractSensor> isConnected) {
+        boolean notFound = false;
+        for (BusEntry entry : BusEntry.values()) {
+            if (notFound) {
+                return false;
+            }
+            notFound = true;
+            if (entry.toString().contains("SENSOR_")){
+                for (AbstractSensor sensor : isConnected) {
+                    if (sensor.getType() == entry) {
+                        notFound = false;
+                        break;
+                    }
                 }
             }
         }
