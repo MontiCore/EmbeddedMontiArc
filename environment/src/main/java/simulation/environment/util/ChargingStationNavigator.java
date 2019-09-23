@@ -67,7 +67,7 @@ public class ChargingStationNavigator {
 
         String serverHost = System.getenv("SIM_SERVER");
         String serverPort = System.getenv("SIM_PORT");
-        if (serverHost.equals("") || serverPort.equals("")) {
+        if (serverHost== null || serverPort == null || serverHost.equals("") || serverPort.equals("")) {
             return result;
         }
 
@@ -116,7 +116,7 @@ public class ChargingStationNavigator {
             return 0;
         }
         nearestCS = nearest;
-        return nearest.getOsmId();
+        return getNearestOsmNodeFrom(nearest.getLocation());
     }
 
     public static RealVector getPositionOfOsmNode(long osmID) throws Exception {
@@ -130,15 +130,22 @@ public class ChargingStationNavigator {
 
         throw new Exception("OsmNode " + osmID + " not found in current map");
     }
-    public static long RealVectortoOSMID(RealVector realVector) throws Exception {
+    public static long getNearestOsmNodeFrom(RealVector realVector) throws Exception {
+        long nearest = 0;
+        double bestDist = Double.MAX_VALUE;
         structures.Graph g = new structures.Graph(
                 WorldModel.getInstance().getControllerMap().getAdjacencies(), true);
         for (Vertex v : g.getVertices()) {
-            if (v.getPosition() == realVector) {
-                return v.getOsmId();
+            double dist =  v.getPosition().getDistance(realVector);
+            if (dist < bestDist){
+                bestDist = dist;
+                nearest = v.getOsmId();
             }
         }
 
+        if (nearest != 0){
+            return nearest;
+        }
         throw new Exception("Realvector " + realVector.toString() + " not found in current map");
     }
 

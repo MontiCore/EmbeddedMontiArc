@@ -973,7 +973,7 @@ public class Vehicle{
                 try {
                     long nearestcharg = ChargingStationNavigator.getNearestChargingStation(
                             physicalVehicle.getGlobalId(),
-                            ChargingStationNavigator.RealVectortoOSMID(this.physicalVehicle.getPosition())
+                            ChargingStationNavigator.getNearestOsmNodeFrom(this.physicalVehicle.getPosition())
                     );
                     RealVector point3d = ChargingStationNavigator.getPositionOfOsmNode(nearestcharg);
                     navigateTo(new ControllerNode(Geometry.realVector2Point3D(point3d), nearestcharg));
