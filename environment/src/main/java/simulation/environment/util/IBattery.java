@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.environment.util;
 
 public interface IBattery {
@@ -19,7 +25,11 @@ public interface IBattery {
 
     public double getCurrentCapacity();
 
+    public double getVoltageChargingStation();
+
     public void setVoltageChargingStation(double voltage);
+
+    public double getAmpereChargingStation();
 
     public void setAmpereChargingStation(double ampere);
 
