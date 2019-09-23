@@ -42,28 +42,38 @@ Execute `python jpg2hdf5.py` in `tensorflow/resources/data_transform_scripts` to
 
 Hyperparameters that we experimented with were:
 
-
-- Batchsize (1, 5, 10, 20, 40, 50)
-- Epochs (10, 100, 500)
+- Batchsize (1, 5, 10, 20, 40, 50, 100)
+- Epochs (10, 100, 150, 250, 500)
 - Optimizer (Adam), Learning Rate (0.01, 0.005, 0.001) & Weight Decay
 - Image resolution (640x480, 160x120, 80x60, 64x48)
 - Time gap between images (30FPS, 10FPS)
-- Model architecture (modifications to the original architecture from the paper)
+- Model architecture (modifications to the original architecture from the [paper](https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf))
     - Different Activations (ReLU, Sigmoid)
+    - Different usage of Dropout to learn learn curves
     - With(out) Batch-normalization
     - With(out) large fully connected layer after convolutional layers
+    - Different number of layers with different kernel sizes 
     - With(out) input/output normalization (mean 0, std 1)
 - Training data
     - Training data is from  [Udacity](https://github.com/udacity/self-driving-car)
+    - 1st Dataset: Combined Driving Dataset / Legacy Data 09/29/2016 &  10/03/2016
+    - 2nd Dataset: Driving Dataset CH2
     - Number of inputs
         - 3 cams (left, center, right)
         - 1 cam (only center)
-    - Size of training set (100, 1000, 10000)
+    - Number of training images (100, 1000, 10000, 33000)
     - Used subsets of the training data
         - Using only images of slightly before, during and slightly after driving curves
         - Using only images of driving straight
-        - Using mixed images of both curves and driving straight with different ratios (1:2, 1:3, 1:5)
-
+        - Using mixed images of both curves and driving straight with different ratios (50% , 30%, 20%, 10%) 
+            - condition at least 50% driving curves 
+    - Changes to targets (original value is radians of steering angle, > 0 for left turns, < 0 for right turns, range [-10,10])
+        - 1/angle following paper
+        - angle in degree (continues value)
+        - angle in degree (natural discrete number)
+        - angle in radian > 0 (+ 10)
+        - turning radius of the specific car used 
+        
 ### Observations
 
 The task of end2end learning in itself turned out to be very hard. We concluded from our tests that, unless there is access to a very large dataset and computational resources, the results are very poor. Additionally, as the only input we have is up to 3 images of one specific "moment" i.e. we don't actually know where the driver *wants* to drive, it doesn't really make sense to interpret the prediction as "Where should we drive?" but rather "Where are we driving?". Some key obersvations were.
