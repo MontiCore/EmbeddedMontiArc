@@ -1,0 +1,9 @@
+package middleware.mqtt;
+
+component BasicParsing{
+    port in Q mqttIn;
+    port in Q noMqttIn;
+    port in Q emptyTagIn;
+    port out Q mqttOut;
+    port out Q noMqttOut;
+}

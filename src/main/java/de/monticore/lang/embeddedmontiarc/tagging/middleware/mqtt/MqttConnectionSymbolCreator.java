@@ -1,5 +1,25 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.embeddedmontiarc.tagging.middleware.ros;
+package de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
@@ -18,17 +38,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class RosConnectionSymbolCreator implements TagSymbolCreator {
+public class MqttConnectionSymbolCreator implements TagSymbolCreator {
 
     /**
      * regular expression pattern:
      * topic = {({name}, {type}), \( msgField = {msgField} \)\?}
      * to test the pattern just enter:
-     * \s*\{\s*topic\s*=\s*\(\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\s*,\s*([a-z|A-Z][0-9|a-z|A-Z|_|/]*)\s*\)\s*(s*,\s*msgField\s*=\s*([a-z|A-Z][a-z|A-Z|1-9|_|\.|::|\(|\)|(\[(:|([0-9]*:[0-9]*))\])]*)\s*)?\s*\}\s*
+     * \s*\{\s*topic\s*=\s*\(\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\s*,\s*([a-z|A-Z][0-9|a-z|A-Z|_|/]*)\s*\)\s*(s*,\s*msgField\s*=\s*([a-z|A-Z][a-z|A-Z|1-9|_|\.|::|\(|\)]*)\s*)?\s*\}\s*
      * at http://www.regexplanet.com/advanced/java/index.html
      */
 
-    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*topic\\s*=\\s*\\(\\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\\s*,\\s*([a-z|A-Z][0-9|a-z|A-Z|_|/]*)\\s*\\)\\s*(s*,\\s*msgField\\s*=\\s*([a-z|A-Z][a-z|A-Z|1-9|_|\\.|::|\\(|\\)|(\\[(:|([0-9]*:[0-9]*))\\])]*)\\s*)?\\s*\\}\\s*");
+	// \s*\{\s*topic\s*=\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\s*(s*,\s*msgField\s*=\s*([a-z|A-Z][a-z|A-Z|1-9|_|\.|::|\(|\)]*)\s*)?\s*\}\s*
+    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*topic\\s*=\\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\\s*(s*,\\s*msgField\\s*=\\s*([a-z|A-Z][a-z|A-Z|1-9|_|\\.|::|\\(|\\)]*)\\s*)?\\s*\\}\\s*");
 
     public static Scope getGlobalScope(final Scope scope) {
         Scope s = scope;
@@ -41,7 +62,7 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
     public void create(ASTTaggingUnit unit, TaggingResolver tagging) {
         if (unit.getQualifiedNameList().stream()
                 .map(q -> q.toString())
-                .filter(n -> n.endsWith("RosToEmamTagSchema"))
+                .filter(n -> n.endsWith("MqttToEmamTagSchema"))
                 .count() == 0) {
             return; // the tagging model is not conform to the traceability tagging schema
         }
@@ -54,7 +75,7 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
 
         for (ASTTag element : unit.getTagBody().getTagList()) {
             List<ASTTagElement> tagElements = element.getTagElementList().stream()
-                    .filter(t -> t.getName().equals("RosConnection"))
+                    .filter(t -> t.getName().equals("MqttConnection"))
                     .collect(Collectors.toList());
             // after that point we can throw error messages
             List<Symbol> ports = element.getScopeList().stream()
@@ -84,7 +105,7 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
                     .forEachOrdered(tag -> {
                         taggedSymbols.stream()
                                 .forEachOrdered(s -> {
-                                    RosConnectionSymbol tmpSymbol = new RosConnectionSymbol();
+                                    MqttConnectionSymbol tmpSymbol = new MqttConnectionSymbol();
                                     tagging.addTag(s, tmpSymbol);
                                     if (s.isKindOf(EMAPortSymbol.KIND)) {
                                         EMAPortSymbol p = (EMAPortSymbol) s;
@@ -104,7 +125,7 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
                     .forEachOrdered(m ->
                             taggedSymbols.stream()
                                     .forEachOrdered(s -> {
-                                        RosConnectionSymbol tmpSymbol = new RosConnectionSymbol(m.group(1), m.group(2), m.group(4));
+                                    	MqttConnectionSymbol tmpSymbol = new MqttConnectionSymbol(m.group(1), m.group(3)); // topicName, msgField
                                         tagging.addTag(s, tmpSymbol);
                                         if (s.isKindOf(EMAPortSymbol.KIND)) {
                                             EMAPortSymbol p = (EMAPortSymbol) s;
@@ -132,7 +153,7 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
         if (scope.getScopeKind().equals("NameScope")) {
             return true;
         }
-        Log.error(String.format("Invalid scope kind: '%s'. RosConnection expects as scope kind 'NameScope'.", scope.getScopeKind()));
+        Log.error(String.format("Invalid scope kind: '%s'. MqttConnection expects as scope kind 'NameScope'.", scope.getScopeKind()));
         return false;
     }
 }

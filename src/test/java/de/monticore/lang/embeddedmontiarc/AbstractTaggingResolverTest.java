@@ -3,6 +3,7 @@ package de.monticore.lang.embeddedmontiarc;
 
 
 import de.monticore.lang.embeddedmontiarc.tagging.adaptable.AdaptableTagSchema;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttToEmamTagSchema;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.someip.SomeIPToEmamTagSchema;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -18,7 +19,7 @@ public class AbstractTaggingResolverTest extends AbstractSymtabTest {
         AdaptableTagSchema.registerTagTypes(tagging);
         RosToEmamTagSchema.registerTagTypes(tagging);
         SomeIPToEmamTagSchema.registerTagTypes(tagging);
-
+        MqttToEmamTagSchema.registerTagTypes(tagging);
         return tagging;
     }
 
