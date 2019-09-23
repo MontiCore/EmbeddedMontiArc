@@ -6,7 +6,7 @@
  */
 package simulation.environment.util;
 
-import commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import simulation.environment.object.ChargingStation;
 
 import java.util.Optional;

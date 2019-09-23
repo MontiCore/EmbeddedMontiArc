@@ -20,7 +20,7 @@
  */
 package simulation.vehicle;
 
-import commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import simulation.environment.util.IBattery;
 
 public class Battery implements BatteryInterface, IBattery{

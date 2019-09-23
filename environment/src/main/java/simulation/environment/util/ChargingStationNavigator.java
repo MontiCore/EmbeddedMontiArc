@@ -20,7 +20,8 @@
  */
 package simulation.environment.util;
 
-import commons.controller.commons.Vertex;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Vertex;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.library.structures.Graph;
 import org.apache.commons.math3.linear.RealVector;
 import org.jfree.util.Log;
 import simulation.environment.WorldModel;
@@ -120,7 +121,7 @@ public class ChargingStationNavigator {
     }
 
     public static RealVector getPositionOfOsmNode(long osmID) throws Exception {
-        structures.Graph g = new structures.Graph(
+        Graph g = new Graph(
                 WorldModel.getInstance().getControllerMap().getAdjacencies(), true);
         for (Vertex v : g.getVertices()) {
             if (v.getOsmId() == osmID) {
@@ -133,7 +134,7 @@ public class ChargingStationNavigator {
     public static long getNearestOsmNodeFrom(RealVector realVector) throws Exception {
         long nearest = 0;
         double bestDist = Double.MAX_VALUE;
-        structures.Graph g = new structures.Graph(
+        Graph g = new Graph(
                 WorldModel.getInstance().getControllerMap().getAdjacencies(), true);
         for (Vertex v : g.getVertices()) {
             double dist =  v.getPosition().getDistance(realVector);

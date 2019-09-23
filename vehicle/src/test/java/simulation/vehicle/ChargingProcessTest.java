@@ -6,8 +6,8 @@
  */
 package simulation.vehicle;
 
-import commons.controller.interfaces.Bus;
-import commons.controller.interfaces.FunctionBlockInterface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
 import org.junit.*;
 import static org.junit.Assert.*;
 
