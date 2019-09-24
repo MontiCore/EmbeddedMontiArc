@@ -15,7 +15,7 @@ This repository consists of a neural network for end to end driving and some use
 
 ### Training
 
-- Generate `train.h5` and `test.h5` files and move them to resources/training_data. (See section Generation of Training Data). The pictures should have the same dimensionality as described in the model and the label *data*. The output is a steering angle with the label *target_label*.
+- Generate `train.h5` and `test.h5` files and move them to resources/training_data. (See section Generation of Training Data)[https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/end2enddriving/tree/develop/tensorflow/resources/data_transform_scripts]. The pictures should have the same dimensionality as described in the model and the label *data*. The output is a steering angle with the label *target_label*.
 - Train by executing `./build.sh`
 
 ### Prediction
