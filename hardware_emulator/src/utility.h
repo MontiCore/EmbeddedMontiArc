@@ -200,7 +200,6 @@ class Array {
         //*
         Array( const Array &x ) = delete;
         Array &operator=( const Array &x ) = delete;
-        //*/
         /*/
         Array( const Array &x ) : m_size( 0 ) {
         copy( x );
@@ -209,6 +208,7 @@ class Array {
         copy( x );
         return *this;
         }
+        //*/
         void drop() {
             data.reset();
             m_size = 0;
