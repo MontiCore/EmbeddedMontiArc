@@ -6,6 +6,7 @@
 @REM
 
 
+
 @REM -------------------------------------------------------------------------------------------------------------
 @REM This script generates the Visual Studio project and compiles it.
 @REM Call from within a CMake project directory and give SOLUTION NAME as parameter
