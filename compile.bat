@@ -5,6 +5,6 @@
 @REM can be found under https://github.com/MontiCore/monticore.
 @REM
 
-@rem (c) https://github.com/MontiCore/monticore  
+
 
 mvn clean install -DskipTests -s settings.xml

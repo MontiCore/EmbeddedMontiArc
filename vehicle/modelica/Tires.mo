@@ -1,4 +1,3 @@
-// (c) https://github.com/MontiCore/monticore 
 model Tires
   //Types for all Models
   type Mass=Real(unit="kg");

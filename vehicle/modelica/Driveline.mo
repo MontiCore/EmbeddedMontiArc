@@ -1,4 +1,3 @@
-// (c) https://github.com/MontiCore/monticore 
 model Driveline
 //Types for all Models
   type Mass=Real(unit="kg");
