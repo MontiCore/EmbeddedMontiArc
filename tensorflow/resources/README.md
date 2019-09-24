@@ -12,6 +12,8 @@ Follow the download instructions and use the Udacity Reader tool to extract the 
 
 ## Usage of jpg2hdf5.py script 
 
+The script can be found in the folder data_transform_script
+
 The script has 3 stages:
  - The first step parses image ids to steering ids. The id  specifies the time when the measurment was done. However, images and steering are measured at different times. Thereby, requring nearest neighbour matching.
  - The second step creates based on the specified flag a selection of images
@@ -33,6 +35,8 @@ To achive these steps a number of csv files are generated and can be reviewed.
 The -i flag is mandatory scince it specifies the path to the folder containg the images (needs to be named center) and the steering csv (needs to be named steering.csv).
 In addition exactly one of the following flags has to be set (-a,-c,-l,-s)
 Optional -n to set 
+Note: Image resolution is hard coded to 120/180.
+Change:  PIXEL_WIDTH  = int(640/4) and PIXEL_HEIGHT = int(480/4) in the script to change that. 
 
 ## Examples 
 
@@ -40,10 +44,9 @@ Optional -n to set
     - assumtion: script is inside a folder containing  the center/ folder with images and  steering.csv 
     - generates: train.h5 containing 20% straight driving and 80% curves and saves it to working directory
     
-
-
-- python jpg2hdf5.py -i ./test_set -n 1000 -c
-    - generates: train.h5 containg 100% curves and 1000/3 images.
+- python jpg2hdf5.py -i ./test_set/ -n 100 -a
+    - generates: train.h5 containg 100% curves and 100/3 images.
+    - Note: If you try using -c, be aware that there might not be curves in the dataset 
 
 To generate test.h5 simply use this script and rename the associated file. 
 
