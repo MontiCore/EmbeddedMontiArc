@@ -10,10 +10,10 @@ Follow the download instructions and use the Udacity Reader tool to extract the 
 
 ## Usage of jpg2hdf5.py script 
 
-|  | Predict | Visualise | Command |
-|:---|:---|:---|:---|
-| 1 | &#9745; | | `python3 v-tool/cli.py -i test.h5 -p` |
-| 2 | &#9745; | &#9745; | `python3 v-tool/cli.py -i test.h5 -p -v` |
+|  | Flags | Description 
+|:---|:---|:---|
+| 1 | -h | help | 
+| 2 | -i datapath | Path to training_image, the folder in which all images are stroed needs to be named center (udacity extraction format)  | 
 
 
 
