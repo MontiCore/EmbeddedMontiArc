@@ -41,7 +41,7 @@ struct FunctionValue {
         this->double_array.size = size;
         this->type = VALUE_TYPE::DOUBLE_ARRAY;
         if ( size != 0 )
-            double_array.data = std::vector( data, data+size );
+            double_array.data = std::vector<double>( data, data+size );
     }
     
     void init( VALUE_TYPE type ) {
