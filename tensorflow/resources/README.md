@@ -39,14 +39,14 @@ Note: Image resolution is hard coded to 120/180.
 Change:  PIXEL_WIDTH  = int(640/4) and PIXEL_HEIGHT = int(480/4) in the script to change that. 
 
 ## Examples 
-
-- python jpg2hdf5.py -i ./ -s 0.2
-    - assumtion: script is inside a folder containing  the center/ folder with images and  steering.csv 
-    - generates: train.h5 containing 20% straight driving and 80% curves and saves it to working directory
-    
-- python jpg2hdf5.py -i ./test_set/ -n 100 -a
+- python jpg2hdf5.py -i ../test_set/ -n 100 -a
+    - assumption: script is executed inside data_transform_script
     - generates: train.h5 containg 100% curves and 100/3 images.
     - Note: If you try using -c, be aware that there might not be curves in the dataset 
+
+- python jpg2hdf5.py -i ./ -s 0.2
+    - assumtion: script is inside a folder containing  the center/ folder with images and  steering.csv
+    - generates: train.h5 containing 20% straight driving and 80% curves and saves it to working directory
 
 To generate test.h5 simply use this script and rename the associated file. 
 
