@@ -1,0 +1,11 @@
+stages:
+- linux
+
+masterJobLinux:
+  stage: linux
+  image: maven:3-jdk-8
+  script:
+  - cd tensorflow
+  - ./build.sh
+  only:
+  - master
