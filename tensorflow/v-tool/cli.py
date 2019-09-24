@@ -12,7 +12,8 @@ parser = argparse.ArgumentParser(description='Visualization of predictions for t
 parser.add_argument('-i', type=str, help='Path to H5 container which includes data and targets.')
 parser.add_argument('-p', action='store_true' , help='Set this flag in order to predict. Default is no prediction.')
 parser.add_argument('-v', action='store_true' , help='Set this flag in order to visualise. Default is no visualisaton.')
-parser.add_argument('-d', action='store_true' , help='Set delay (in ms) between each image to be plotted.')
+parser.add_argument('-d', type=int, help='Set delay (in ms) between each image to be plotted.')
+parser.add_argument('-t', action='store_true', 'Set this flag to create a plot showing both real target and prediction in a time series graph.')
 args = parser.parse_args()
 
 print("Data:",args.i)
@@ -73,6 +74,16 @@ if args.v:
             delay = args.d
         else:
             delay = 0
+
+         ### plot real target and prediction tme series 
+
+        if args.t:
+            fig = plt.figure()
+            fig.plot(targets_real)
+            fig.plot(targets_pred)
+            fig.show()
+
+         ###
 
         print("-"*40)
         print('Starting plot...')
