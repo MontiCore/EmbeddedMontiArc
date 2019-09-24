@@ -9,12 +9,10 @@ package simulation.vehicle;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.Vertex;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
 import org.apache.commons.math3.linear.RealVector;
 import sensors.abstractsensors.AbstractSensor;
-import simulation.EESimulator.EESimulator;
 import simulation.EESimulator.NavigationBlockAsEEComponent;
 
 import java.awt.*;
@@ -83,7 +81,7 @@ public class Vehicle implements SimulationLoopExecutable {
     private StatusLogger statusLogger;
 
     /** Navigation for vehicle */
-    private Optional<NavigationBlockAsEEComponent> navigation;
+    private Optional<NavigationBlockAsEEComponent> navigation = Optional.empty();
 
     /** EEVehicle that models the in Vehicle communication */
     private EEVehicle eeVehicle;

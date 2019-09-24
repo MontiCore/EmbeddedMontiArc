@@ -6,12 +6,14 @@
  */
 package simulation.bus;
 
-import java.time.Instant;
-import java.util.*;
-
-
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import simulation.EESimulator.*;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class Bus extends MutableEEComponent {
 

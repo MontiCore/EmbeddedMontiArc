@@ -6,30 +6,26 @@
  */
 package simulation.vehicle;
 
+import com.google.gson.Gson;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import sensors.abstractsensors.AbstractSensor;
+import sensors.factory.SensorFactory;
+import sensors.util.SensorUtil;
+import simulation.EESimulator.*;
+import simulation.bus.Bus;
+import simulation.bus.FlexRay;
+import simulation.bus.FlexRayOperationMode;
+import simulation.bus.InstantBus;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.*;
-
-import com.google.gson.Gson;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jfree.util.Log;
-
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
-import sensors.abstractsensors.AbstractSensor;
-import sensors.factory.SensorFactory;
-import sensors.util.SensorUtil;
-import simulation.EESimulator.Bridge;
-import simulation.EESimulator.DirectModelAsEEComponent;
-import simulation.EESimulator.EEComponent;
-import simulation.EESimulator.EEComponentType;
-import simulation.EESimulator.EESimulator;
-import simulation.EESimulator.NavigationBlockAsEEComponent;
-import simulation.bus.*;
 
 public class EEVehicleBuilder {
 	
@@ -91,7 +87,7 @@ public class EEVehicleBuilder {
 			for (ParsableBusStructureProperties.Tupel component : busStructure.getBuses()) {
 				if (component.eeComponent.equals("flexRay")) {
 					FlexRay flexRay = new FlexRay(eeSimulator);
-					flexRay.setMode(FlexRayOperationMode.valueOf(component.parameter[0]));
+					flexRay.setOperationMode(FlexRayOperationMode.valueOf(component.parameter[0]));
 					busList.add(flexRay);
 				} else if (component.eeComponent.equals("instantBus")) {
 					InstantBus instantBus = new InstantBus(eeSimulator);
@@ -352,7 +348,7 @@ class ParsableBusStructureProperties {
 //					buses.add(new Tupel(bus.getBusType().toString(), busIdArr, param));
 					break;
 				case FLEXRAY:
-					String[] param = {((FlexRay) bus).getMode().toString()};
+					String[] param = {((FlexRay) bus).getOperationMode().toString()};
 					buses.add(new Tupel(bus.getBusType().toString(), busIdArr, param));
 					break;
 				case INSTANT_BUS:

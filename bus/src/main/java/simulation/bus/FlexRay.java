@@ -5,16 +5,18 @@
  * can be found under https://github.com/MontiCore/monticore.
  */
 package simulation.bus;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jfree.util.Log;
-
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EESimulator;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.UUID;
 
 public class FlexRay extends Bus {
 
@@ -124,7 +126,7 @@ public class FlexRay extends Bus {
 	}
 
 	@Override
-	protected OperationMode getOperationMode() {
+	public OperationMode getOperationMode() {
 		return mode;
 	}
 
