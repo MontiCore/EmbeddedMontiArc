@@ -1,4 +1,3 @@
-<!-- (c) https://github.com/MontiCore/monticore -->
 # Zyan Core Library for C
 
 Internal library providing platform independent types, macros and a fallback for environments without LibC.

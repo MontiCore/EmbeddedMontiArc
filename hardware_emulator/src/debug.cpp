@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "debug.h"
 #include <iostream>
 using namespace std;
@@ -51,8 +56,8 @@ void ComputerDebug::debug_code( ulong addr, uint size, ulong ticks, ulong time )
         Log::code << buff;
         
         // Format & print the binary instruction structure to human readable format
-        ZydisFormatterFormatInstruction( &formatter, &decoder->instruction, buffer.begin(), buffer.size(), addr );
-        sprintf( buff, "%-40s", buffer.begin() );
+        ZydisFormatterFormatInstruction( &formatter, &decoder->instruction, buffer.data(), buffer.size(), addr );
+        sprintf( buff, "%-40s", buffer.data() );
         Log::code << buff;
     }
     Log::info << "ticks: " << ticks << " (time: " << ( time / 1000 ) << "ns)    ";
@@ -62,8 +67,8 @@ void ComputerDebug::debug_code( ulong addr, uint size, ulong ticks, ulong time )
 
 void ComputerDebug::debug_code_noval( ulong addr, uint size ) {
     if ( decoder->succeeded ) {
-        ZydisFormatterFormatInstruction( &formatter, &decoder->instruction, buffer.begin(), buffer.size(), addr );
-        Log::code << "No time for instruction: " << buffer.begin() << "\n";
+        ZydisFormatterFormatInstruction( &formatter, &decoder->instruction, buffer.data(), buffer.size(), addr );
+        Log::code << "No time for instruction: " << buffer.data() << "\n";
     }
 }
 
@@ -129,6 +134,6 @@ void ComputerDebug::debug_register_syscall( SysCall const &call, ulong addr, con
              3 ) << "\n";
              
     if ( undercorate_function_name( call.name, buffer )
-            && call.name.compare( buffer.begin() ) != 0 )
-        Log::debug << buffer.begin() << "\n";
+            && call.name.compare( buffer.data() ) != 0 )
+        Log::debug << buffer.data() << "\n";
 }

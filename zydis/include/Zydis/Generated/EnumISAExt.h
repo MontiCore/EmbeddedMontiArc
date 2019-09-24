@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 /**
  * @brief   Defines the `ZydisISAExt` enum.
  */

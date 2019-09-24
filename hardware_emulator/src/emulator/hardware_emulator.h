@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include <thread>
 #include <fstream>
@@ -130,8 +135,8 @@ struct HardwareEmulator {
     };
     using PortMap = std::unordered_map<std::string, Port *>;
     PortMap port_map;
-    Array<Port> input_ports;
-    Array<Port> output_ports;
+	std::vector<Port> input_ports;
+	std::vector<Port> output_ports;
     
     uint64_t init_address;
     uint64_t execute_address;
@@ -162,6 +167,7 @@ struct HardwareEmulator {
     
     Library real_program;
     bool test_real;
+	bool no_emulation;
     void *real_exec;
     void *real_init;
     
@@ -192,11 +198,15 @@ struct HardwareEmulator {
     bool resolve( const std::string &name, uint64_t &target );
     bool resolve_real( const std::string &name, void *&target );
     
-    bool init_ports( Array<Port> &ports, const char *get_count, const char *get_name, const char *get_type,
+    bool init_ports(std::vector<Port> &ports, const char *get_count, const char *get_name, const char *get_type,
                      const char *port_prefix );
                      
     void setup_debug( MessageParser &parser );
-    
+	bool setup_direct_emulation();
+	bool init_ports_direct(std::vector<Port>& ports, const char* get_count, const char* get_name, const char* get_type,
+		const char* port_prefix);
+	void call_input_direct(Port& port);
+	void call_output_direct(Port& port);
     
     void export_tick();
 };

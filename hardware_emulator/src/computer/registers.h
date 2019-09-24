@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include "utility.h"
 
@@ -11,10 +16,10 @@
 */
 struct Registers {
     static constexpr ulong BUFFER_SIZE = 32;
-    void *internal_uc;
+    void *internal_uc = nullptr;
     uchar mini_buff[16];
-    ulong reg;
-    ulong reg2;
+    ulong reg = 0;
+    ulong reg2 = 0;
     ulong regs[BUFFER_SIZE];
     ulong regs_old[BUFFER_SIZE];
     

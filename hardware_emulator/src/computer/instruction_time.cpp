@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "instruction_time.h"
 
 #include "computer/memory.h"
@@ -44,7 +49,7 @@ void MemoryModel::init( Memory &memory, ComputerTime &computer_time ) {
     this->computer_time = &computer_time;
     this->memory = &memory;
     
-    memory_layers.init( 5 );
+    memory_layers.resize( 5 );
     instruction_memory = &base_time;
     data_memory = &base_time;
     mem_layer_count = 0;

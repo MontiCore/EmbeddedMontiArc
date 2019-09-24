@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include <stdint.h>
 #include "utility.h"
@@ -210,7 +215,7 @@ struct Elf32_SectionHeader {
     bool has_flag( ElfSecFlags flag ) {
         return sh_flags & static_cast<Elf32_Word>( flag );
     }
-    void print( ArraySlice<char> &sec_name_table );
+    void print( vector_slice<char> &sec_name_table );
 };
 
 struct Elf64_SectionHeader {
@@ -231,7 +236,7 @@ struct Elf64_SectionHeader {
     bool has_flag( ElfSecFlags flag ) {
         return sh_flags & static_cast<Elf64_Xword>( flag );
     }
-    void print( ArraySlice<char> &sec_name_table );
+    void print( vector_slice<char> &sec_name_table );
 };
 
 
@@ -763,16 +768,16 @@ static_assert( sizeof( Elf64_Header ) == 64 );
 
 
 struct ElfFile {
-    Array<uchar> data;
+	std::vector<uchar> data;
     ElfIdent *ident_ptr;
     bool is_64bit;
     Elf32_Header *header32_ptr;
     Elf64_Header *header64_ptr;
-    ArraySlice<Elf32_SectionHeader> sh32;
-    ArraySlice<Elf64_SectionHeader> sh64;
-    ArraySlice<Elf32_ProgramHeader> ph32;
-    ArraySlice<Elf64_ProgramHeader> ph64;
-    ArraySlice<char> sec_name_table;
+    vector_slice<Elf32_SectionHeader> sh32;
+    vector_slice<Elf64_SectionHeader> sh64;
+    vector_slice<Elf32_ProgramHeader> ph32;
+    vector_slice<Elf64_ProgramHeader> ph64;
+    vector_slice<char> sec_name_table;
     
     bool parse();
     
@@ -797,10 +802,10 @@ struct ElfFile {
     
     
     template<typename T, typename V>
-    ArraySlice<T> get_section_as_table( V &sh ) {
-        ArraySlice<T> table;
+    vector_slice<T> get_section_as_table( V &sh ) {
+        vector_slice<T> table;
         auto symbol_count = ( uint )( sh.sh_size / sizeof( T ) );
-        table.init( ( T * )( data.begin() + sh.sh_offset ), 0, symbol_count );
+        table.init( ( T * )( data.data() + sh.sh_offset ), 0, symbol_count );
         return table;
     }
 };

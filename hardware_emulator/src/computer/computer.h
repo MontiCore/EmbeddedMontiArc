@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include "memory.h"
 #include "registers.h"
@@ -104,7 +109,7 @@ struct Computer {
         
         static bool exit_callback( Computer &inter );
         
-        InternalComputer *internal;
-        ulong exit_code_addr;
-        bool stopped;
+        InternalComputer *internal = nullptr;
+        ulong exit_code_addr = 0;
+        bool stopped = false;
 };

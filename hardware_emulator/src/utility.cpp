@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "utility.h"
 #include <iomanip>
 
@@ -62,7 +67,7 @@ uint32_t Utility::read_uint32_t( char *mem_pos ) {
 }
 
 
-void Array<bool>::resize( uint new_size ) {
+void vector_bool::resize( uint new_size ) {
     if ( new_size == m_size )
         return;
         
@@ -150,11 +155,11 @@ void ConsoleColor::Console::set_color( Color which ) {
 #endif
 #if defined _WIN32 || defined _WIN64
 
-bool undercorate_function_name( const std::string &name, Array<char> &buffer ) {
-    return UnDecorateSymbolName( name.c_str(), buffer.begin(), buffer.size(), UNDNAME_COMPLETE );
+bool undercorate_function_name( const std::string &name, std::vector<char> &buffer ) {
+    return UnDecorateSymbolName( name.c_str(), buffer.data(), buffer.size(), UNDNAME_COMPLETE );
 }
 #else
-bool undercorate_function_name( const std::string &name, Array<char> &buffer ) {
+bool undercorate_function_name( const std::string &name, std::vector<char> &buffer ) {
     return false;
 }
 

@@ -1,4 +1,11 @@
-@rem (c) https://github.com/MontiCore/monticore  
+@REM
+@REM (c) https://github.com/MontiCore/monticore
+@REM
+@REM The license generally applicable for this project
+@REM can be found under https://github.com/MontiCore/monticore.
+@REM
+
+
 
 @REM -------------------------------------------------------------------------------------------------------------
 @REM This script re-compiles all the sample programs used in the hardware_emulator tests.

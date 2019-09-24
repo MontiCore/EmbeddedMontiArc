@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- (c) https://github.com/MontiCore/monticore -->
+<!--
+
+    (c) https://github.com/MontiCore/monticore
+
+    The license generally applicable for this project
+    can be found under https://github.com/MontiCore/monticore.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
     <groupId>montisim</groupId>
     <artifactId>hardware_emulator</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     
     
     <properties>
-        <commons.version>1.0.9</commons.version>
+        <commons.version>1.0.10</commons.version>
         
         
         <wagon.provider.version>2.6</wagon.provider.version>
@@ -99,10 +106,6 @@
                 <version>3.0</version>
                 <configuration>
                     <header>${project.baseUri}/src/license/se/license.txt</header>
-                    <properties>
-                        <owner>Michael von Wenckstern</owner>
-                        <email>vonwenckstern@se-rwth.de</email>
-                    </properties>
                     <excludes>
                         <exclude>**/README</exclude>
                         <exclude>src/test/resources/**</exclude>

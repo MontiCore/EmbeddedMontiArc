@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "os_windows/dll_loader.h"
 #include <parser-library/parse.h>
 #include "computer/system_calls.h"
@@ -39,7 +44,7 @@ int iter_sections( void *data, VA secBase, std::string &name, image_section_head
                     secBase,
                     header.SizeOfRawData < header.Misc.VirtualSize ? header.SizeOfRawData : header.Misc.VirtualSize
                 ),
-                loader.file.begin() + header.PointerToRawData );
+                loader.file.data() + header.PointerToRawData );
                 
     auto &sec_info = loader.sections[loader.section_pos++];
     sec_info.mem = &sec;
@@ -76,24 +81,24 @@ bool OS::DllLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
     }
     
     fr.read( file );
-    pe = ParsePEFromMemory( file.begin(), file.size() );
+    pe = ParsePEFromMemory( file.data(), file.size() );
     if ( pe == NULL ) {
         Log::err << Log::tag << "PEParse: " << to_string( GetPEErr() ) << " (" << GetPEErrString() << ")\n";
         Log::err << "      Location: " << GetPEErrLoc() << "\n";
-        file.drop();
+        file.clear();
         return false;
     }
     
     info.load_values( pe );
     
-    sections.init( GET_H( pe, NumberOfSections ) );
+    sections.resize( GET_H( pe, NumberOfSections ) );
     section_pos = 0;
     
     //Upload DLL Header
     auto &sec = mem.new_section( MemoryRange( info.base_address, info.size_of_headers ), "DLL Header", file_name,
                                  false, true, false );
     sec.set_mapped_range( MemoryRange( info.base_address, info.size_of_headers ), 0 );
-    sec.upload( MemoryRange( info.base_address, info.size_of_headers ), file.begin() );
+    sec.upload( MemoryRange( info.base_address, info.size_of_headers ), file.data() );
     
     module_name_set = false;
     IterSec( static_cast<peparse::parsed_pe *>( pe ), iter_sections, this );
@@ -101,7 +106,7 @@ bool OS::DllLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
     IterExpVA( static_cast<peparse::parsed_pe *>( pe ), iter_exports, this );
     IterSymbols( static_cast<peparse::parsed_pe *>( pe ), iter_symbols, this );
     
-    file.drop();
+    file.clear();
     
     return true;
 }

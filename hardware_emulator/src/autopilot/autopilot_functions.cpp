@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "autopilot_functions.h"
 
 const char *AutopilotFunction::module_name = "Java_simulator_integration_AutopilotAdapter_";

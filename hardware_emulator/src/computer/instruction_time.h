@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include "utility.h"
 #include <Zydis/Zydis.h>
@@ -129,7 +134,7 @@ struct MemoryModel {
         
         MemoryAccessInterface *instruction_memory;
         MemoryAccessInterface *data_memory;
-        Array<std::unique_ptr< MemoryAccessInterface>> memory_layers;
+		std::vector<std::unique_ptr< MemoryAccessInterface>> memory_layers;
         uint mem_layer_count;
         
     public:

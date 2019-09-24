@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "elf_loader.h"
 #include <unordered_map>
 
@@ -39,7 +44,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
                 seg_count++;
                 
     }
-    sections.init( seg_count );
+    sections.resize( seg_count );
     section_pos = 0;
     //Setup segments
     
@@ -59,7 +64,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
                                 
                 if ( seg.p_filesz > 0 ) {
                     sec.set_mapped_range( MemoryRange( seg.p_vaddr, ( uint )seg.p_filesz ), seg.p_offset );
-                    sec.upload( MemoryRange( seg.p_vaddr, ( uint )seg.p_filesz ), ( char * ) ( elf.data.begin() + seg.p_offset ) );
+                    sec.upload( MemoryRange( seg.p_vaddr, ( uint )seg.p_filesz ), ( char * ) ( elf.data.data() + seg.p_offset ) );
                 }
                 
                 auto &sec_info = sections[section_pos++];
@@ -139,7 +144,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
         //TODO
     }
     
-    elf.data.drop();
+    elf.data.clear();
     //No more access to any ElfFile elements
     loaded = true;
     return true;
