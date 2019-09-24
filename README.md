@@ -47,6 +47,10 @@ Install mosquitto and mosquitto-clients
 
 `apt install mosquitto-clients`
 
+Start the Mosquitto Brocker
+
+`/etc/init.d/mosquitto start`
+
 ### Installing MQTT broker (locally on Windows)
 
 [Download](https://mosquitto.org/files/binary/win64/mosquitto-1.6.2-install-windows-x64.exe) and install Mosquitto
