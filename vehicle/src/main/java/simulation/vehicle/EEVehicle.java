@@ -105,7 +105,7 @@ public class EEVehicle {
 	}
 
 	public void executeLoopIteration(Instant time) {
-		if(time.isAfter(this.eeSimulator.getSimulationTime())) {
+		if(!vehicle.getPhysicalVehicle().getError() && time.isAfter(this.eeSimulator.getSimulationTime())) {
 			System.out.println("Notify sensors");
 			this.notifySensors(time);
 			System.out.println("SimulateNextTick");
@@ -138,7 +138,12 @@ public class EEVehicle {
 			}
 		} else {
 			for (VehicleActuator actuator : actuatorList) {
-				actuator.reset();
+				if(actuator.getActuatorType() == VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING){
+					actuator.update(actualTime);
+				}
+				else{
+					actuator.reset();
+				}
 			}
 			this.collision = false;
 		}

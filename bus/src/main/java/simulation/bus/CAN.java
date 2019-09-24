@@ -19,19 +19,19 @@ public class CAN extends Bus{
     private static final BusMessageComparatorIdDesc COMP_ID_DESC = new BusMessageComparatorIdDesc();
 
     /**
-     * Header size in bits (Extended Frame Format since this is used in cars)
+     * Header size in bytes (Extended Frame Format since this is used in cars)
      */
-    protected static final int HEADER_SIZE = 48;
+    protected static final int HEADER_SIZE = 6;
 
     /**
-     * Maximum payload size in bits
+     * Maximum payload size in bytes
      */
-    protected static final int MAX_PAYLOAD_SIZE = 64;
+    protected static final int MAX_PAYLOAD_SIZE = 8;
 
     /**
      * Trailer size in bits
      */
-    protected static final int TRAILER_SIZE = 64;
+    protected static final int TRAILER_SIZE = 3;
 
     protected static final int MAX_MESSAGE_SIZE = HEADER_SIZE + MAX_PAYLOAD_SIZE + TRAILER_SIZE;
 
@@ -47,9 +47,11 @@ public class CAN extends Bus{
     private Optional<BusMessage> partialMessage = Optional.empty();
 
     /**
-     * The bits of the current frame that are already send. Transmissions can go over multiple calls of simulateUntil.
+     * The bytes of the current frame that are already send. Transmissions can go over multiple calls of simulateUntil.
      */
-    private int partialFrameBits = 0;
+    private int partialFrameBytes = 0;
+
+    private int partialFramePayloadBytes = 0;
 
     protected CAN(EESimulator simulator, CANOperationMode operationMode) {
         super(simulator);
@@ -57,15 +59,6 @@ public class CAN extends Bus{
         this.operationMode = operationMode;
 
     }
-
-    /**
-     * Return time to transmit one bit in nanoseconds.
-     * @return time to transmit one bit in nanoseconds.
-     */
-    private long getBitTransmissionTime(){
-        return (long) Math.ceil(1000000L / operationMode.getDataRate());
-    }
-
 
     @Override
     public Instant getCurrentTime() {
@@ -75,73 +68,123 @@ public class CAN extends Bus{
     @Override
     protected void simulateUntil(Instant endTime) {
         Duration timeDelta = Duration.between(currentTime, endTime);
-        int toTransmit = Math.toIntExact(timeDelta.toNanos()/getBitTransmissionTime());
-        //only forward time for bits actually send
-        currentTime = currentTime.plusNanos(getBitTransmissionTime()*toTransmit);
+        long byteTransmissionTime = calculateTransmissionTime(1);
+        int toTransmit = Math.toIntExact(timeDelta.toNanos()/byteTransmissionTime);
         //finish last frame
         BusMessage msg = null;
-        if(partialMessage.isPresent() && partialFrameBits != 0) {
-        	msg = partialMessage.get();
-            if (partialFrameBits < HEADER_SIZE) {
-                partialFrameBits += Math.min(HEADER_SIZE - partialFrameBits, toTransmit);
-                toTransmit -= Math.max(0, HEADER_SIZE - partialFrameBits);
+        if(partialMessage.isPresent() && partialFrameBytes > 0 && partialFrameBytes < HEADER_SIZE + partialFramePayloadBytes + TRAILER_SIZE) {
+            final int partialFrameBytesCopy = partialFrameBytes;
+            msg = partialMessage.get();
+            if (partialFrameBytes < HEADER_SIZE) {
+                int headerBytes = HEADER_SIZE - partialFrameBytes;
+                partialFrameBytes += Math.min(headerBytes, toTransmit);
+                toTransmit -= headerBytes;
             }
-            int messageBytes = MAX_PAYLOAD_SIZE;
-            if (partialFrameBits < HEADER_SIZE + MAX_PAYLOAD_SIZE) {
-                messageBytes = Math.min(HEADER_SIZE + MAX_PAYLOAD_SIZE - partialFrameBits, toTransmit);
+            if (partialFrameBytes < HEADER_SIZE + MAX_PAYLOAD_SIZE) {
+                int messageBytes = Math.min(HEADER_SIZE + MAX_PAYLOAD_SIZE - partialFrameBytes, toTransmit);
                 messageBytes = msg.transmitBytes(messageBytes, operationMode.getBitErrorRate());
                 toTransmit -= messageBytes;
-                this.partialFrameBits += messageBytes;
+                partialFramePayloadBytes += messageBytes;
+                partialFrameBytes += messageBytes;
                 if (msg.isTransmitted()) {
+                    msg.setFinishTime(currentTime.plusNanos(calculateTransmissionTime(partialFrameBytes - partialFrameBytesCopy)));
                     registerMessageAtSimulator(msg);
-                    msg = messages.poll();
+                    messages.poll();
+                    msg = messages.peek();
                 }
             }
-            if (partialFrameBits < HEADER_SIZE + messageBytes + TRAILER_SIZE) {
-                partialFrameBits += Math.min(HEADER_SIZE + messageBytes + TRAILER_SIZE - partialFrameBits, toTransmit);
-                toTransmit -= Math.max(0, HEADER_SIZE + messageBytes + TRAILER_SIZE - partialFrameBits);
+            if (partialFrameBytes < HEADER_SIZE + partialFramePayloadBytes + TRAILER_SIZE) {
+                int trailerBytes = HEADER_SIZE + partialFramePayloadBytes + TRAILER_SIZE - partialFrameBytes;
+                partialFrameBytes += Math.min(trailerBytes, toTransmit);
+                toTransmit -= trailerBytes;
+            }
+            //set time
+            currentTime = currentTime.plusNanos(calculateTransmissionTime(partialFrameBytes - partialFrameBytesCopy));
+            //packet completed
+            if(partialFrameBytes == CAN.HEADER_SIZE + partialFramePayloadBytes + CAN.TRAILER_SIZE){
+                partialFrameBytes = 0;
+                partialFramePayloadBytes = 0;
+                partialMessage = Optional.empty();
             }
         }
         if(msg == null) {
-        	msg = messages.poll();
+            msg = messages.peek();
         }
+        if(toTransmit > 0){
+            partialFrameBytes = toTransmit;
+        }
+        int messageBytes = partialFramePayloadBytes;
         //send full frames and incomplete last one
         while(toTransmit > HEADER_SIZE && msg != null) {
-            partialFrameBits = toTransmit;
+            partialFrameBytes = toTransmit;
             toTransmit -= HEADER_SIZE;
-            int messageBits = Math.min(toTransmit, MAX_PAYLOAD_SIZE);
-            messageBits = msg.transmitBytes(messageBits, operationMode.getBitErrorRate());
-            toTransmit -= messageBits;
+            messageBytes = Math.min(toTransmit, MAX_PAYLOAD_SIZE);
+            messageBytes = msg.transmitBytes(messageBytes, operationMode.getBitErrorRate());
+            toTransmit -= messageBytes;
             if (msg.isTransmitted()) {
+                msg.setFinishTime(currentTime.plusNanos(calculateTransmissionTime(CAN.HEADER_SIZE + messageBytes + CAN.TRAILER_SIZE)));
                 registerMessageAtSimulator(msg);
-                msg = messages.poll();
+               messages.poll();
+                msg = messages.peek();
             }
-            toTransmit -= HEADER_SIZE;
+            toTransmit -= TRAILER_SIZE;
+            if(toTransmit >= 0){
+                currentTime = currentTime.plusNanos(calculateTransmissionTime(CAN.HEADER_SIZE + messageBytes + CAN.TRAILER_SIZE));
+            }
+            else{
+                currentTime = currentTime.plusNanos((calculateTransmissionTime(partialFrameBytes)));
+            }
         }
-        //all messages send
-        if(msg == null){
-            partialFrameBits = 0;
+        //add time for header
+        if(toTransmit > 0){
+            currentTime = currentTime.plusNanos((calculateTransmissionTime(toTransmit)));
+        }
+
+        //all messages send or packet completed
+        if((msg == null && toTransmit >= 0) || partialFrameBytes == MAX_MESSAGE_SIZE) {
+            partialFrameBytes = 0;
+            partialFramePayloadBytes = 0;
             partialMessage = Optional.empty();
         }
         else {
         	partialMessage = Optional.of(msg);
+            partialFramePayloadBytes = messageBytes;
         }
     }
 
     @Override
     protected Instant getNextFinishTime() {
-        BusMessage msg = partialMessage.get();
+        BusMessage msg;
+
+        int necessaryBytes = 0;
+        int partialPayload = 0;
         if(!partialMessage.isPresent()){
-            msg = messages.poll();
+            msg = messages.peek();
+        }
+        else{
+            msg = partialMessage.get();
+            if (partialFrameBytes < HEADER_SIZE) {
+                necessaryBytes += HEADER_SIZE - partialFrameBytes;
+            }
+            if (partialFrameBytes + necessaryBytes < HEADER_SIZE + MAX_PAYLOAD_SIZE) {
+                partialPayload = Math.min(HEADER_SIZE + MAX_PAYLOAD_SIZE - partialFrameBytes, msg.getRemainingBytes());
+                necessaryBytes += partialPayload;
+            }
+            if (partialFrameBytes + necessaryBytes < HEADER_SIZE + partialFramePayloadBytes + partialPayload + TRAILER_SIZE) {
+                necessaryBytes += HEADER_SIZE + partialFramePayloadBytes + TRAILER_SIZE - partialFrameBytes;
+            }
         }
         if(msg == null){
             return currentTime;
         }
-        int necessaryFrames = (msg.getRemainingBytes()*8) / MAX_PAYLOAD_SIZE;
-        int remainingBits = (msg.getRemainingBytes()*8) % MAX_PAYLOAD_SIZE;
-        int necessaryBits = necessaryFrames * MAX_MESSAGE_SIZE;
-        necessaryBits += HEADER_SIZE + remainingBits + TRAILER_SIZE;
-        return currentTime.plusNanos(calculateTransmissionTime(necessaryBits));
+        int remainingMsgBytes = msg.getRemainingBytes() - partialPayload;
+        int necessaryFrames = remainingMsgBytes/ MAX_PAYLOAD_SIZE;
+        int remainingBytes = remainingMsgBytes % MAX_PAYLOAD_SIZE;
+        necessaryBytes += necessaryFrames * MAX_MESSAGE_SIZE;
+        if(remainingBytes != 0){
+            necessaryBytes += HEADER_SIZE + remainingBytes + TRAILER_SIZE;
+        }
+        return currentTime.plusNanos(calculateTransmissionTime(necessaryBytes));
     }
 
     @Override
@@ -161,12 +204,13 @@ public class CAN extends Bus{
     }
 
     @Override
+    protected OperationMode getOperationMode() {
+        return operationMode;
+    }
+
+    @Override
     public BusType getBusType() {
         return BusType.CAN;
     }
 
-    protected long calculateTransmissionTime(long transmittedBytes) {
-        long transmittedMikroBits = transmittedBytes * 1000000l;
-        return (long) Math.ceil(transmittedMikroBits / operationMode.getDataRate());
-    }
 }

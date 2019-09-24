@@ -123,11 +123,12 @@ public class FlexRay extends Bus {
 				* (this.getConnectedComponents().size() * FlexRay.STATIC_SLOTS);
 	}
 
-	public FlexRayOperationMode getMode() {
+	@Override
+	protected OperationMode getOperationMode() {
 		return mode;
 	}
 
-	public void setMode(FlexRayOperationMode mode) {
+	public void setOperationMode(FlexRayOperationMode mode) {
 		this.mode = mode;
 	}
 
@@ -796,11 +797,6 @@ public class FlexRay extends Bus {
 			}
 			entry.setValue(controllerMessages);
 		}
-	}
-
-	private long calculateTransmissionTime(long transmittedBytes) {
-		long transmittedMikroBits = transmittedBytes * 1000000L * 8L;
-		return (long) Math.ceil(transmittedMikroBits / mode.getDataRate());
 	}
 
 }

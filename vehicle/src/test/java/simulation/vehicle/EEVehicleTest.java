@@ -98,15 +98,17 @@ public class EEVehicleTest {
 
         //create messages
         BusMessage messageSteering = new BusMessage(4.0d, 6, BusEntry.ACTUATOR_STEERING, Instant.EPOCH.plusMillis(1), UUID.randomUUID(), vehicle.getEEVehicle().getBusList().get(0));
-        BusMessage messageBrak = new BusMessage(3.0d, 6, BusEntry.ACTUATOR_BRAKE, Instant.EPOCH.plusMillis(2), UUID.randomUUID(), vehicle.getEEVehicle().getBusList().get(0));
+        BusMessage messageBrake = new BusMessage(3.0d, 6, BusEntry.ACTUATOR_BRAKE, Instant.EPOCH.plusMillis(2), UUID.randomUUID(), vehicle.getEEVehicle().getBusList().get(0));
         eeSimulator.addEvent(messageSteering);
-        eeSimulator.addEvent(messageBrak);
+        eeSimulator.addEvent(messageBrake);
 
         //set reference actuator
         steeringReference.setActuatorValueTarget(4);
         brakeReference.setActuatorValueTarget(3);
-        steeringReference.update(Instant.EPOCH.plusMillis(33));
-        brakeReference.update(Instant.EPOCH.plusMillis(33));
+        //steering event arrives at 1 ms at actual actuator (33-1 = 32)
+        steeringReference.update(Instant.EPOCH.plusMillis(32));
+        //brake event arrives at 2 ms at actual actuator (33-2 = 31)
+        brakeReference.update(Instant.EPOCH.plusMillis(31));
 
         //loop for 33 milliseconds
         vehicle.executeLoopIteration(Duration.ofMillis(33));

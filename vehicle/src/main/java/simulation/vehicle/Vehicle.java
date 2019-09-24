@@ -167,7 +167,6 @@ public class Vehicle implements SimulationLoopExecutable {
 
     @Override
     public void executeLoopIteration(Duration timeDiff) {
-
         this.lastSimulationTime = this.lastSimulationTime.plus(timeDiff);
         this.eeVehicle.executeLoopIteration(this.lastSimulationTime);
         this.physicalVehicle.setCollision(false);

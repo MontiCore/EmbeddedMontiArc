@@ -12,6 +12,8 @@ import simulation.EESimulator.EESimulator;
 
 public class InstantBus extends Bus {
 
+	private InstantOperationMode operationMode = new InstantOperationMode();
+
 	private Instant currentTime = Instant.EPOCH;
 	
 	public InstantBus(EESimulator sim) {
@@ -46,7 +48,25 @@ public class InstantBus extends Bus {
 	}
 
 	@Override
+	protected OperationMode getOperationMode() {
+		return operationMode;
+	}
+
+	@Override
 	public BusType getBusType() {
 		return BusType.INSTANT_BUS;
+	}
+
+	private class InstantOperationMode implements OperationMode{
+
+		@Override
+		public double getDataRate() {
+			return Double.POSITIVE_INFINITY;
+		}
+
+		@Override
+		public double getBitErrorRate() {
+			return 0;
+		}
 	}
 }

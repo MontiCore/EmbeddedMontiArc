@@ -44,7 +44,8 @@ public class ControllerTest {
 		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
 		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		eeVehicleBuilder.createControllerSensors(bus);
+		eeVehicleBuilder.createMassPointActuators(bus);
 		DirectModelAsEEComponent ecu = eeVehicleBuilder.createController(modelServer, AUTOPILOT_CONFIG, bus);
 		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
 		EEVehicle eeVehicle = vehicle.getEEVehicle();

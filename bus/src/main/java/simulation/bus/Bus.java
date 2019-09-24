@@ -115,6 +115,14 @@ public abstract class Bus extends MutableEEComponent {
 		}
 	}
 
+	protected long calculateTransmissionTime(long transmittedBytes) {
+		if(transmittedBytes < 0){
+			throw new IllegalArgumentException("Transmitted bytes must be zero or positive. Transmitted bytes was: " + transmittedBytes);
+		}
+		long transmittedMikroBits = transmittedBytes * 8000000L;
+		return (long) Math.ceil(transmittedMikroBits / this.getOperationMode().getDataRate());
+	}
+
 	protected abstract void simulateUntil(Instant endTime);
 
 	protected abstract Instant getNextFinishTime();
@@ -122,6 +130,8 @@ public abstract class Bus extends MutableEEComponent {
 	protected abstract void registerMessage(BusMessage msg);
 
 	protected abstract boolean hasMessages();
+
+	protected abstract OperationMode getOperationMode();
 
 	public abstract BusType  getBusType();
 

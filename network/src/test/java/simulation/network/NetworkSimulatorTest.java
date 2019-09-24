@@ -144,6 +144,9 @@ public class NetworkSimulatorTest {
         assertTrue(networkSimulator.getEventList().size() == 1);
 
         if (!firstEvent.getEventTime().equals(Instant.EPOCH)) {
+            //make sure vehicle executed loop at least once before( normally simulator would also execute vehicle before
+            //executing didExecute of listener
+            vehicle.executeLoopIteration(Duration.ofMillis(1));
             networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, Duration.ZERO);
             assertTrue(!networkSimulator.getEventList().isEmpty());
             firstEvent = NetworkSimulator.getInstance().getEventList().get(0);

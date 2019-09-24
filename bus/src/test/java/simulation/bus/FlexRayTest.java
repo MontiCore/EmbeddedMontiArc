@@ -45,11 +45,11 @@ public class FlexRayTest {
 	public void testSlotSize() {
 		FlexRay flexRay = createBusStructure();
 
-		flexRay.setMode(FlexRayOperationMode.MAX_DATA_RATE);
+		flexRay.setOperationMode(FlexRayOperationMode.MAX_DATA_RATE);
 		long expectedNs = (int) Math.ceil((FlexRay.MAX_SLOT_SIZE * 8 * 1000000) / ((double) 20));
 		assertEquals(expectedNs, flexRay.getSlotSize().toNanos());
 
-		flexRay.setMode(FlexRayOperationMode.REDUNDANCY);
+		flexRay.setOperationMode(FlexRayOperationMode.REDUNDANCY);
 		expectedNs = (int) Math.ceil((FlexRay.MAX_SLOT_SIZE  * 8 * 1000000) / ((double) 10));
 		System.out.println(flexRay.getSlotSize().toMillis());
 		assertEquals(expectedNs, flexRay.getSlotSize().toNanos());
@@ -62,22 +62,6 @@ public class FlexRayTest {
 		long expectedNs = flexRay.getSlotSize().toNanos()
 				* (flexRay.getConnectedComponents().size() + FlexRay.DYNAMIC_SLOTS);
 		assertEquals(expectedNs, flexRay.getCycleTime().toNanos());
-	}
-
-	@Test
-	public void testMode() {
-		FlexRay flexray = createBusStructure();
-
-		// Mode setup
-		FlexRayOperationMode modeOne = FlexRayOperationMode.REDUNDANCY;
-		FlexRayOperationMode modeTwo = FlexRayOperationMode.MAX_DATA_RATE;
-
-		// Test of the set and get mode functions
-		flexray.setMode(modeOne);
-		assertEquals(modeOne, flexray.getMode());
-
-		flexray.setMode(modeTwo);
-		assertEquals(modeTwo, flexray.getMode());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
