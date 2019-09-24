@@ -40,8 +40,8 @@ linux_build:
   - g++ --version
   
   script:
-  - chmod -x scripts/unix/build_dependencies.sh
-  - chmod -x scripts/unix/build_emulator.sh
+  - chmod +x scripts/unix/build_dependencies.sh
+  - chmod +x scripts/unix/build_emulator.sh
   - scripts/unix/build_dependencies.sh
   - scripts/unix/build_emulator.sh
   artifacts:
