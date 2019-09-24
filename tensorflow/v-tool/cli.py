@@ -6,6 +6,7 @@ import numpy as np
 import csv
 from subprocess import call
 import os
+import matplotlib.pyplot as plt
 
 
 parser = argparse.ArgumentParser(description='Visualization of predictions for the end-to-end autonomous driving model.')
@@ -13,7 +14,7 @@ parser.add_argument('-i', type=str, help='Path to H5 container which includes da
 parser.add_argument('-p', action='store_true' , help='Set this flag in order to predict. Default is no prediction.')
 parser.add_argument('-v', action='store_true' , help='Set this flag in order to visualise. Default is no visualisaton.')
 parser.add_argument('-d', type=int, help='Set delay (in ms) between each image to be plotted.')
-parser.add_argument('-t', action='store_true', 'Set this flag to create a plot showing both real target and prediction in a time series graph.')
+parser.add_argument('-t', action='store_true', help='Set this flag to create a plot showing both real target and prediction in a time series graph.')
 args = parser.parse_args()
 
 print("Data:",args.i)
@@ -78,10 +79,11 @@ if args.v:
          ### plot real target and prediction tme series 
 
         if args.t:
-            fig = plt.figure()
-            fig.plot(targets_real)
-            fig.plot(targets_pred)
-            fig.show()
+            plt.figure('Plot of real and predicted targets.')
+            plt.plot(targets_real*3.141*2,c='green')
+            plt.plot(targets_pred*3.141*2,c='red')
+            plt.legend(['Real targets (in degrees)','Predicted targets (in degrees)'])
+            plt.show()
 
          ###
 
