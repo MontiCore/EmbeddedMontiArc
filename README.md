@@ -4,7 +4,8 @@ This repository consists of a neural network for end to end driving and some use
 
 ## Requirements
 
-- OpenCV, h5py, numpy, PIL, matplotlib and scipy for Python: `pip install opencv h5py numpy PIL matplotlib scipy`
+- OpenCV, h5py, numpy, PIL, matplotlib and scipy for Python 3: `pip3 install opencv-python h5py numpy Pillow matplotlib scipy`
+- Tensorflow for Python: `pip install tensorflow==1.13.1`
 - OpenCV for C e.g. `sudo apt install libopencv-dev libarmadillo-dev`
 - Tensorflow for C: [This repo might help you](https://github.com/FloopCZ/tensorflow_cc)
 
@@ -14,7 +15,7 @@ This repository consists of a neural network for end to end driving and some use
 
 ### Training
 
-- Generate `train.h5` and `test.h5` files and move them to resources/training_data. (See section Generation of Training Data). The pictures should have a dimensionality of 3x480x640 and the label *data*. The output is a steering angle with the label *target_label*.
+- Generate `train.h5` and `test.h5` files and move them to resources/training_data. (See section Generation of Training Data). The pictures should have the same dimensionality as described in the model and the label *data*. The output is a steering angle with the label *target_label*.
 - Train by executing `./build.sh`
 
 ### Prediction
@@ -26,7 +27,7 @@ This repository consists of a neural network for end to end driving and some use
 | 2 | &#9745; | &#9745; | `python3 v-tool/cli.py -i test.h5 -p -v` |
 | 3 |  | &#9745; | `python3 v-tool/cli.py -i test.h5 -v` (execute 1 or 2 first)|
 
-Additionally you can control the delay between the pictures with `-d` and add a plot showing both real target and prediction in a time series graph by adding the `-t flag.` 
+Additionally you can control the delay between the pictures with `-d` and add a plot showing both real target and prediction in a time series graph by adding the `-t` flag. 
 
 ### Visualisation
 
