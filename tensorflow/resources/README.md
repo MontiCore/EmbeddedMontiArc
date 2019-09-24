@@ -2,11 +2,13 @@
 
 This readme describes the geration of the test and train sets we used. 
 Predefined datasets can be downloaded (here).
+Otherwise use this the jpg2hdf5.py script to generate train.h5 and test.h5 and place them into the training_data folder. After that proceed as described in the root Readme.
 
 ## Udacity data download 
 
 The raw data, which needs to be first prerpocessed and then turned into an hdf5 file format, such that it can be used in training,  can be downloaded here https://github.com/udacity/self-driving-car/tree/master/datasets . In our experiments we used the Challenge 2 Driving Data. 
 Follow the download instructions and use the Udacity Reader tool to extract the .bag files.
+
 
 ## Usage of jpg2hdf5.py script 
 
