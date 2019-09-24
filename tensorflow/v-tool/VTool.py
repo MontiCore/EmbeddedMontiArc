@@ -62,4 +62,4 @@ if __name__ == "__main__":
     targets_real = 2*np.sin(np.linspace(0,5,num_images))+6*np.cos(np.linspace(0,5,num_images))
     targets_pred = targets_real + np.random.normal(0,0.2,(num_images,))
 
-    start_plot(images, targets_real, targets_pred)
+    start_plot(images, targets_real, targets_pred,0)
