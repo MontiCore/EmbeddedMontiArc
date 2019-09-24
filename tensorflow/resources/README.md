@@ -11,7 +11,7 @@ Follow the download instructions and use the Udacity Reader tool to extract the 
 ## Usage of jpg2hdf5.py script 
 
 The script has 3 stages:
- - The first step parses image ids to steering ids. The id is specifies the time when the measurment was done. However, images and steering ids are measuret at different times. Thereby requring nearest neighbour matching.
+ - The first step parses image ids to steering ids. The id  specifies the time when the measurment was done. However, images and steering are measured at different times. Thereby, requring nearest neighbour matching.
  - The second step creates based on the specified flag a selection of images
  - The thrid step creates a hdf5 file called train.h5.  Because of high frame rates we select only each third image to avoid to similar images and therefore reduce overfitting. 
 
@@ -37,12 +37,13 @@ Optional -n to set
 - python jpg2hdf5.py -i ./ -s 0.2
     - assumtion: script is inside a folder containing  the center/ folder with images and  steering.csv 
     - generates: train.h5 containing 20% straight driving and 80% curves and saves it to working directory
+    
 
-- python jpg2hdf5.py -i ./ -n 1000 -c
-    - assumtions: same as before
+
+- python jpg2hdf5.py -i ./test_set -n 1000 -c
     - generates: train.h5 containg 100% curves and 1000/3 images.
 
-
+To generate test.h5 simply use this script and rename the associated file. 
 
 
 
