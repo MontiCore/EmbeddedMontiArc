@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
@@ -195,9 +201,15 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
             param.setValue(lossParamValue);
             configuration.getLoss().getLossParamMap().put(nodeParam.getName(), param);
         }
-
     }
 
+	@Override
+    public void endVisit(ASTLossWeightsEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForDoubleVector(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry); 
+    }
 
     @Override
     public void endVisit(ASTLRPolicyValue node) {
@@ -250,7 +262,8 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         }
         addToScopeAndLinkWithNode(value, node);
     }
-
+	
+	
     private ValueSymbol getValueSymbolForInteger(ASTIntegerValue astIntegerValue) {
         ValueSymbol value = new ValueSymbol();
         Integer value_as_int = getIntegerFromNumber(astIntegerValue);
@@ -279,6 +292,13 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         return value;
     }
 
+    private ValueSymbol getValueSymbolForDoubleVector(ASTDoubleVectorValue astDoubleVectorValue) {
+        ValueSymbol value = new ValueSymbol();
+		List<Double> value_as_double_list = getDoubleVectorFromList(astDoubleVectorValue);
+        value.setValue(value_as_double_list);
+        return value;
+    }
+    
     private ValueSymbol getValueSymbolForComponentName(ASTComponentNameValue astComponentNameValue) {
         ValueSymbol value = new ValueSymbol();
         List<String> valueAsList = astComponentNameValue.getNameList();
@@ -309,6 +329,14 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         return value2.isPresentTRUE();
     }
 
+    private List<Double> getDoubleVectorFromList(ASTDoubleVectorValue value) {
+        return value.getNumberList().stream()
+                .filter(n -> n.getNumber().isPresent())
+                .map(n -> n.getNumber().get())
+                .collect(Collectors.toList());
+    }
+    
+    
     @Override
     public void visit(ASTLearningMethodEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
@@ -547,7 +575,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
                     retrievePrimitiveValueByConfigValue(nodeParam.getValue()));
         }
     }
-
+	
     private Object retrievePrimitiveValueByConfigValue(final ASTConfigValue configValue) {
         if (configValue instanceof ASTIntegerValue) {
             return getIntegerFromNumber((ASTIntegerValue)configValue);
