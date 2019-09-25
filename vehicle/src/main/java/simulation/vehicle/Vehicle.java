@@ -1018,10 +1018,6 @@ public class Vehicle{
         navigateTo(node, Collections.synchronizedList(new LinkedList<RealVector>()));
     }
 
-    public boolean getGotoChargingStation(){
-        return gotoCharginstation;
-    }
-
     /**
      * Function that initiates or updates navigation of the vehicle to a specified point in the map
      * Controller is periodically called such that setting these values in the function here should work without issues

@@ -53,7 +53,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /** Is the Vehicle Chargeable */
     protected boolean isChargeable = false;
 
-    /** IsCharging flag ## TODO: I added because of Erros, somebody removed it. necessary?*/
+    /** IsCharging flag */
     protected boolean isCharging;
 
     /** For server to keep track of vehicles between sectors */
@@ -337,12 +337,13 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         this.collision = false;
 
 
-        if (simulationVehicle.getGotoChargingStation() && !isCharging){
+        if (simulationVehicle.isGotoCharginstation() && !isCharging){
             ChargingStation nearest = ChargingStationNavigator.getNearestCS();
-            if (isParkedChargingStation(nearest) && getVelocity().equals(new ArrayRealVector(new double[]{0, 0, 0}))){
-
-                initCharging(nearest);
-
+            //nearest is null, if nearest charging station is not located in current sector
+            if (nearest != null){
+                if (isParkedChargingStation(nearest) && getVelocity().equals(new ArrayRealVector(new double[]{0, 0, 0}))){
+                    initCharging(nearest);
+                }
             }
         }
 
