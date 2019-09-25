@@ -28,13 +28,13 @@
         <version>0.0.6-SNAPSHOT</version>
         <configuration>
           <pathMain>Bumpbot/models</pathMain>
-          <pathTest>Bumpbot/src/test/emam</pathTest>
+          <pathTest>Bumpbot/models</pathTest>
 	  <runStreamTestBefore>true</runStreamTestBefore>
           <pathTmpOut>Bumpbot/target/tmp</pathTmpOut>
           <generator>MinGW</generator>
           <pathMiddlewareOut>Bumpbot/target/middleware</pathMiddlewareOut>
           <middlewareRootModels>
-              <param>test.bumpBot</param>
+              <param>bumper.bumpBot</param>
           </middlewareRootModels>
         </configuration>
         <executions>
