@@ -29,7 +29,7 @@ public class Battery implements BatteryInterface, IBattery{
 	private double AmpereChargingStation;
 	
 	
-	Battery(Vehicle v, double bCapacity) {
+	public Battery(Vehicle v, double bCapacity) {
 		vehicle = v;
 		dummyBattery = new DummyBattery(bCapacity);
 		
