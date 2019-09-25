@@ -1,57 +1,42 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-## Steps to build a component:
+## Dependences 
+[Here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/carlacomponents/blob/merge-attempt-1/HowToInstall.md) is how to install everything (and how to run it manually).
 
-1.  Move **mw-generator.jar** to the directory of the component you wish to build.
-2.  Open shell, cd to the directory of the component and execute: 
+# How to move the Car by using ROS and reading information from the collision Sensor:
+## How to run it on Linux
 
-        java -jar mw-generator.jar project.json
-        
-    (in this case it's called **valid.json** or **settings.json**)
-3.  Switch to the target directory:
+1. Start the Carla-Simulator (`CarlaUE4.sh`)
 
-        cd target/
-4.  Execute compile.sh:
+2. Start the ego-vehicle: 
 
-         ./compile.sh
-5.  If the generator can't find carla_msgs message type: execute the following command and retry step 4:
+        docker/egovehicle.sh
 
-        export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:/path/to/rosbridge/catkin_ws/devel/share/carla_msgs/cmake
-       
-    usually the path is something like `~/carla-ros-bridge/catkin_ws/devel/share/carla_msgs/cmake`.
-6.  After successfull compiling the generated code switch to install/bin directory:
+    It executes `python manual_control.py --rolename=ego_vehicle` in PythonAPI/examples to create a vehicle for the ros-bridge.
+3.  To start the (docker-) container and carla-ros-bridge:  
 
-        cd install/bin/
-7.  Execute Coordinator_\<model-package\>_\<component-name\>. Here it's: 
- 
-         ./Coordinator_test_bumpBot 
-
-    or 
-    
-        ./Coordinator_test_collisionDetection
-
-## How to move the Car by using ROS and reading information from the collision Sensor:
-
-
-1. Start the Carla-Simulator.
-
-2.  Run the following command within the PythonAPI/examples directory: 
-
-        python manual_control.py --rolename=ego_vehicle  
-3.  To start the (docker-) container go to the project containing directory and run:  
-
-        docker/run.sh
+        docker/Linux/carla-ros-bridge.sh
 
 4.  To move the vehicle by using ROS, open a new terminal and run:  
 
-        docker/compile_exec.sh
-
+        docker/Linux/bumpbot.sh
+    
+    This builds the bumpbot component and runs it.
 5.  You can now read information from the collision sensor by running: 
 
-        docker/open_shell.sh 
+        docker/Linux/open_shell.sh 
         
     and within the shell:
     
         rostopic echo /carla/ego_vehicle/collision
+
+## Running with docker on Windows
+I tested this code in a Command Prompt/Power Shell. For the use of other consoles the commands might need to be adjusted for example with winpty.
+
+Similarly to how you run it on Linux, there are shell scripts for Windows: carla-ros-bridge.sh, [component].sh and open_shell.sh. Depending on your system, these might need to be edited.
+The scripts worked on the Setup: Windows 10 Home, Docker Toolbox, executed in git-bash.     
+To copy the assets into the docker container, I had to have the project folder in an shared-drive (you need to edit the carla-ros-bridge.sh). For me the output in `rostopic echo /carla/ego_vehicle/collision` was with great delay (~1 minute) or none at all, which just might be because of my slow system vs the Carla-simulator.
+
+I do not recommend trying to run everything on Windows.
 
 ## Correlation with other projects:
 
