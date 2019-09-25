@@ -93,6 +93,13 @@ public class ConfigurationData {
         } else{
             return mapToStrings;}
     }
+    
+    public String getLossWeights() {
+        if (!getConfiguration().getEntryMap().containsKey("loss_weights")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("loss_weights").getValue());
+    }
 
     public String getOptimizerName() {
         if (getConfiguration().getOptimizer() == null) {
