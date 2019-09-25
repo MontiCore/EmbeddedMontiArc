@@ -108,7 +108,7 @@ public class BusTestUtils {
         Random rand = new Random();
         for (int j = 0; j < busEntryByOrdinal.size(); j++) {
             int senderPos = rand.nextInt(connectedComponents.size());
-            int messageLength = rand.nextInt(1500);
+            int messageLength = rand.nextInt(1500) + 1;
             int priority = priorities.remove(rand.nextInt(priorities.size()));
             msgs.add(createNregisterMessage(bus, j, senderPos, messageLength, priority));
         }

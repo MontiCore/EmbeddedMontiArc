@@ -53,7 +53,7 @@ public class CAN extends Bus{
 
     private int partialFramePayloadBytes = 0;
 
-    protected CAN(EESimulator simulator, CANOperationMode operationMode) {
+    public CAN(EESimulator simulator, CANOperationMode operationMode) {
         super(simulator);
         this.currentTime = simulator.getSimulationTime();
         this.operationMode = operationMode;
@@ -70,11 +70,57 @@ public class CAN extends Bus{
         Duration timeDelta = Duration.between(currentTime, endTime);
         long byteTransmissionTime = calculateTransmissionTime(1);
         int toTransmit = Math.toIntExact(timeDelta.toNanos()/byteTransmissionTime);
+        toTransmit = finishLastFrame(toTransmit);
         //finish last frame
-        BusMessage msg = null;
+        BusMessage msg =  messages.peek();
+
+        if(toTransmit > 0){
+            partialFrameBytes = toTransmit;
+            int messageBytes = 0;
+            //send full frames and incomplete last one
+            while(toTransmit > HEADER_SIZE && msg != null) {
+                partialFrameBytes = toTransmit;
+                toTransmit -= HEADER_SIZE;
+                messageBytes = Math.min(toTransmit, MAX_PAYLOAD_SIZE);
+                messageBytes = msg.transmitBytes(messageBytes, operationMode.getBitErrorRate());
+                toTransmit -= messageBytes;
+                if (msg.isTransmitted()) {
+                    msg.setFinishTime(currentTime.plusNanos(calculateTransmissionTime(CAN.HEADER_SIZE + messageBytes + CAN.TRAILER_SIZE)));
+                    registerMessageAtSimulator(msg);
+                    messages.poll();
+                    msg = messages.peek();
+                }
+                toTransmit -= TRAILER_SIZE;
+                if(toTransmit >= 0){
+                    currentTime = currentTime.plusNanos(calculateTransmissionTime(CAN.HEADER_SIZE + messageBytes + CAN.TRAILER_SIZE));
+                }
+                else {
+                    currentTime = currentTime.plusNanos((calculateTransmissionTime(partialFrameBytes)));
+                }
+            }
+            //add time for header
+            if(toTransmit > 0){
+                currentTime = currentTime.plusNanos((calculateTransmissionTime(toTransmit)));
+            }
+
+            //all messages send or packet completed
+            if(msg == null ||
+                    (partialFrameBytes < MAX_MESSAGE_SIZE && partialFrameBytes == CAN.HEADER_SIZE + messageBytes + CAN.TRAILER_SIZE) ) {
+                partialFrameBytes = 0;
+                partialFramePayloadBytes = 0;
+                partialMessage = Optional.empty();
+            }
+            else {
+                partialMessage = Optional.of(msg);
+                partialFramePayloadBytes = messageBytes;
+            }
+        }
+    }
+
+    private int finishLastFrame(int toTransmit) {
         if(partialMessage.isPresent() && partialFrameBytes > 0 && partialFrameBytes < HEADER_SIZE + partialFramePayloadBytes + TRAILER_SIZE) {
             final int partialFrameBytesCopy = partialFrameBytes;
-            msg = partialMessage.get();
+            BusMessage msg = partialMessage.get();
             if (partialFrameBytes < HEADER_SIZE) {
                 int headerBytes = HEADER_SIZE - partialFrameBytes;
                 partialFrameBytes += Math.min(headerBytes, toTransmit);
@@ -90,7 +136,6 @@ public class CAN extends Bus{
                     msg.setFinishTime(currentTime.plusNanos(calculateTransmissionTime(partialFrameBytes - partialFrameBytesCopy)));
                     registerMessageAtSimulator(msg);
                     messages.poll();
-                    msg = messages.peek();
                 }
             }
             if (partialFrameBytes < HEADER_SIZE + partialFramePayloadBytes + TRAILER_SIZE) {
@@ -106,50 +151,11 @@ public class CAN extends Bus{
                 partialFramePayloadBytes = 0;
                 partialMessage = Optional.empty();
             }
-        }
-        if(msg == null) {
-            msg = messages.peek();
-        }
-        if(toTransmit > 0){
-            partialFrameBytes = toTransmit;
-        }
-        int messageBytes = partialFramePayloadBytes;
-        //send full frames and incomplete last one
-        while(toTransmit > HEADER_SIZE && msg != null) {
-            partialFrameBytes = toTransmit;
-            toTransmit -= HEADER_SIZE;
-            messageBytes = Math.min(toTransmit, MAX_PAYLOAD_SIZE);
-            messageBytes = msg.transmitBytes(messageBytes, operationMode.getBitErrorRate());
-            toTransmit -= messageBytes;
-            if (msg.isTransmitted()) {
-                msg.setFinishTime(currentTime.plusNanos(calculateTransmissionTime(CAN.HEADER_SIZE + messageBytes + CAN.TRAILER_SIZE)));
-                registerMessageAtSimulator(msg);
-               messages.poll();
-                msg = messages.peek();
-            }
-            toTransmit -= TRAILER_SIZE;
-            if(toTransmit >= 0){
-                currentTime = currentTime.plusNanos(calculateTransmissionTime(CAN.HEADER_SIZE + messageBytes + CAN.TRAILER_SIZE));
-            }
-            else{
-                currentTime = currentTime.plusNanos((calculateTransmissionTime(partialFrameBytes)));
+            if(toTransmit > 0 && (partialFrameBytes != 0 || partialFramePayloadBytes != 0 || partialMessage.isPresent())){
+                throw new IllegalStateException("to transmit can not be greater than 0 while packet not completed");
             }
         }
-        //add time for header
-        if(toTransmit > 0){
-            currentTime = currentTime.plusNanos((calculateTransmissionTime(toTransmit)));
-        }
-
-        //all messages send or packet completed
-        if((msg == null && toTransmit >= 0) || partialFrameBytes == MAX_MESSAGE_SIZE) {
-            partialFrameBytes = 0;
-            partialFramePayloadBytes = 0;
-            partialMessage = Optional.empty();
-        }
-        else {
-        	partialMessage = Optional.of(msg);
-            partialFramePayloadBytes = messageBytes;
-        }
+        return toTransmit;
     }
 
     @Override
