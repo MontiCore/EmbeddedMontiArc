@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include <string>
 #include "utility.h"
@@ -24,7 +29,7 @@ namespace OS {
         Symbols *symbols;
         Memory *mem;
         
-        Array<SectionInfo> sections;
+		std::vector<SectionInfo> sections;
         uint section_pos;
         
         ElfLoader() : sys_calls( nullptr ), mem( nullptr ), loaded( false ), symbols( nullptr ) {}

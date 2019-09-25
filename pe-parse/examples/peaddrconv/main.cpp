@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #include <iostream>
 #include <limits>
 #include <memory>

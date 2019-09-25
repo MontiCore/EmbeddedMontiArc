@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator;
 
 import java.io.File;
@@ -20,7 +25,7 @@ public class HardwareEmulatorInterface implements ModelServer {
     public void load_library() throws LibraryService.LibraryException {
         //Use LibraryService to get the library from resources to the working directory (if not already there)
         String system_library_name = LibraryService.getSystemLibraryName("HardwareEmulator");
-        LibraryService.prepareLibrary(system_library_name);
+        LibraryService.prepareLibrary(system_library_name, true);
         //Load the library
         lib_path = LibraryService.getWorkingDirectory() + system_library_name;
         System.load(lib_path);

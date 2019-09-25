@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include "hardware_emulator.h"
 #include <list>
@@ -13,7 +18,7 @@
 */
 struct EmulatorManager {
     static EmulatorManager instance;
-    Array<std::unique_ptr<HardwareEmulator>> emulators;
+	std::vector<std::unique_ptr<HardwareEmulator>> emulators;
     uint emulator_count;
     
     //std::list<fs::directory_entry> entries;

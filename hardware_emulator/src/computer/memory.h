@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #pragma once
 #include "utility.h"
 #include "computer/computer_layout.h"
@@ -78,7 +83,7 @@ struct Annotation {
 struct AnnotationTable {
 
     static constexpr ulong DEFAULT_ANNOTATION_SIZE = 128;
-    Array<Annotation> annotations;
+	std::vector<Annotation> annotations;
     //'Stack' position in the annotations array (= first free position).
     uint annotation_pos;
     
@@ -96,7 +101,7 @@ struct AnnotationTable {
 struct SectionAnnotations {
     AnnotationTable *annotation_table;
     MemoryRange address_range;
-    Array<uint> annotation_id;
+	std::vector<uint> annotation_id;
     
     SectionAnnotations() : annotation_table( nullptr ) {}
     
@@ -217,11 +222,11 @@ struct Memory {
     ulong page_size;
     
     AnnotationTable annotation_table;
-    Array<std::unique_ptr<MemorySection>> sections;
+	std::vector<std::unique_ptr<MemorySection>> sections;
     uint section_count;
     std::map<MemoryRange, uint> section_lookup; //Sorts the section ids by their addresses
     
-    Array<uint8_t> buffer;
+	std::vector<uint8_t> buffer;
     MemorySection *sys_section;
     SectionStack sys_section_stack;
     
@@ -287,8 +292,8 @@ struct VirtualHeap {
     MemorySection *section;
     ulong heap_handle;
     ulong heap_size;
-    Array<bool> free_map;
-    Array<uint> size_map;
+	vector_bool free_map;
+	std::vector<uint> size_map;
     static constexpr ulong BLOCK_SIZE = 0x100;
     static constexpr ulong HEAP_BLOCKS = ComputerLayout::HEAP_SIZE / BLOCK_SIZE;
     

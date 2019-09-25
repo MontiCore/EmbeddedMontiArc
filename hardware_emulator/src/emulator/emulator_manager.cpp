@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "emulator_manager.h"
 #include "config.h"
 #include <thread>
@@ -37,7 +42,7 @@ bool EmulatorManager::init( const char *config, const char *default_config ) {
             available_autopilots_string += file.name;
         }
     }
-    emulators.drop();
+    emulators.clear();
     emulator_count = 0;
     return true;
 }
@@ -63,6 +68,7 @@ int EmulatorManager::alloc_emulator( const char *config ) {
             }
         }
     }
+    error_msg = "Unknown Error";
     return -1;
 }
 

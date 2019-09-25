@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 /***************************************************************************************************
 
   Zyan Disassembler Library (Zydis)
@@ -4381,7 +4380,7 @@ static ZyanStatus ZydisCheckErrorConditions(ZydisDecoderContext* context,
     }
     case ZYDIS_REG_CONSTRAINTS_CR:
     {
-        // Attempts to reference CR1, CR5, CR6, CR7, and CR9–CR15 result in undefined opcode (#UD)
+        // Attempts to reference CR1, CR5, CR6, CR7, and CR9ï¿½CR15 result in undefined opcode (#UD)
         // exceptions
         const ZyanU8 value = instruction->raw.modrm.reg | (context->cache.R << 3);
         static const ZyanU8 lookup[16] =
@@ -4396,7 +4395,7 @@ static ZyanStatus ZydisCheckErrorConditions(ZydisDecoderContext* context,
         break;
     }
     case ZYDIS_REG_CONSTRAINTS_DR:
-        // Attempts to reference DR8–DR15 result in undefined opcode (#UD) exceptions. DR4 and DR5
+        // Attempts to reference DR8ï¿½DR15 result in undefined opcode (#UD) exceptions. DR4 and DR5
         // are only valid, if the debug extension (DE) flag in CR4 is set. As we can't check this,
         // we just allow them.
         if (context->cache.R)

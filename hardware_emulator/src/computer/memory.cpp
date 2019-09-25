@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "computer/memory.h"
 #include <unicorn/unicorn.h>
 #include "computer/computer_layout.h"
@@ -7,7 +12,7 @@
 #include <iostream>
 
 void AnnotationTable::init() {
-    annotations.init( DEFAULT_ANNOTATION_SIZE );
+    annotations.resize( DEFAULT_ANNOTATION_SIZE );
     annotation_pos = 0;
     new_annotation( 0, Annotation( "NULL-NOTE", Annotation::NONE ) );
 }
@@ -25,8 +30,8 @@ uint AnnotationTable::new_annotation( ulong base, Annotation const &annotation )
 void SectionAnnotations::init( AnnotationTable *annotation_table, MemoryRange address_range ) {
     this->annotation_table = annotation_table;
     this->address_range = address_range;
-    annotation_id.init( address_range.size >> 3 );
-    annotation_id.set_zero();
+    annotation_id.resize( address_range.size >> 3 );
+	std::fill(annotation_id.begin(), annotation_id.end(), 0);
 }
 
 void SectionAnnotations::add_annotation( MemoryRange range, Annotation const &annotation ) {
@@ -158,10 +163,10 @@ MemoryRange SectionStack::get_annotated( uint size, const std::string &name, Ann
     
     
     //if ( undercorate_function_name( name, name_buffer )
-    //        && name.compare( name_buffer.begin() ) != 0 ) {
+    //        && name.compare( name_buffer.data() ) != 0 ) {
     //    // UnDecorateSymbolName returned success
     //    Utility::color_reg();
-    //    printf( "%s\n", name_buffer.begin() );
+    //    printf( "%s\n", name_buffer.data() );
     //}
     return r;
 }
@@ -185,7 +190,7 @@ uint64_t SectionStack::get_8byte_slot() {
 
 
 void Memory::init( void *uc ) {
-    buffer.init( BUFFER_SIZE );
+    buffer.resize( BUFFER_SIZE );
     this->internal_uc = uc;
     section_count = 0;
     uc_query( static_cast<uc_engine *>( internal_uc ), UC_QUERY_PAGE_SIZE, &page_size );
@@ -202,11 +207,11 @@ void Memory::init( void *uc ) {
 void *Memory::read_memory( ulong address, ulong size ) {
     if ( size > BUFFER_SIZE )
         size = BUFFER_SIZE;
-    if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), size ) ) {
+    if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address, buffer.data(), size ) ) {
         Log::err << Log::tag << "Error reading from memory at address " << address << " with size " << size << "\n";
         buffer[0] = 0;
     }
-    return buffer.begin();
+    return buffer.data();
 }
 
 void Memory::write_memory( ulong address, ulong size, void *data ) {
@@ -214,7 +219,7 @@ void Memory::write_memory( ulong address, ulong size, void *data ) {
     uchar *ptr = ( uchar * )data;
     for ( uint i : urange( ( uint )s ) )
         buffer[i] = ptr[i];
-    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), s ) )
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.data(), s ) )
         Log::err << Log::tag << "Error writing to memory at address " << address << " with size " << size << "\n";
 }
 
@@ -294,18 +299,18 @@ wchar_t *Memory::read_wstr( ulong address ) {
     uint size = 0;
     wchar_t c;
     do {
-        if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.begin() + size, 2 ) ) {
+        if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.data() + size, 2 ) ) {
             Log::err << Log::tag << "Error reading wstr at address " << address << "\n";
             size = 2;
             break;
         }
-        c = *( wchar_t * )( buffer.begin() + size );
+        c = *( wchar_t * )( buffer.data() + size );
         size += 2;
     } while ( c != 0 && size < BUFFER_SIZE );
     
     if ( size >= BUFFER_SIZE )
-        *( wchar_t * )( buffer.begin() + ( size - 2 ) ) = 0;
-    return ( wchar_t * )buffer.begin();
+        *( wchar_t * )( buffer.data() + ( size - 2 ) ) = 0;
+    return ( wchar_t * )buffer.data();
 }
 
 uchar *Memory::read_wstr_as_str( ulong address ) {
@@ -318,14 +323,14 @@ uchar *Memory::read_wstr_as_str( ulong address ) {
         buffer[( uint )p] = c;
         ++p;
     } while ( next != 0 );
-    return buffer.begin();
+    return buffer.data();
 }
 
 uchar *Memory::read_str( ulong address ) {
     uint size = 0;
     uchar c;
     do {
-        if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.begin() + size, 1 ) ) {
+        if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.data() + size, 1 ) ) {
             Log::err << Log::tag << "Error reading str at address " << address << "\n";
             size = 1;
             break;
@@ -336,11 +341,11 @@ uchar *Memory::read_str( ulong address ) {
     
     if ( size >= BUFFER_SIZE )
         buffer[size - 1] = 0;
-    return buffer.begin();
+    return buffer.data();
 }
 
 void Memory::write_str( ulong address, std::string const &text ) {
-    char *buff = ( char * )buffer.begin();
+    char *buff = ( char * )buffer.data();
     uint size = ( uint )text.size();
     for ( uint i : urange( size ) )
         buff[i] = text[i];
@@ -350,7 +355,7 @@ void Memory::write_str( ulong address, std::string const &text ) {
 }
 
 void Memory::write_wstr( ulong address, std::string const &text ) {
-    wchar_t *buff = ( wchar_t * )buffer.begin();
+    wchar_t *buff = ( wchar_t * )buffer.data();
     uint size = ( uint )text.size();
     for ( uint i : urange( size ) ) {
         wchar_t t = 0;
@@ -363,8 +368,8 @@ void Memory::write_wstr( ulong address, std::string const &text ) {
 }
 
 void Memory::write_long_word( ulong address, ulong value ) {
-    Utility::write_uint64_t( ( char * )buffer.begin(), value );
-    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), 8 ) != UC_ERR_OK )
+    Utility::write_uint64_t( ( char * )buffer.data(), value );
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.data(), 8 ) != UC_ERR_OK )
         Log::err << Log::tag << "Error writing long\n";
 }
 
@@ -421,9 +426,9 @@ ulong Handles::add_handle( const char *name ) {
 
 void VirtualHeap::init( Memory &mem, Handles &handles ) {
     heap_size = ComputerLayout::HEAP_SIZE;
-    free_map.init( HEAP_BLOCKS );
-    size_map.init( HEAP_BLOCKS );
-    size_map.set_zero();
+    free_map.resize( HEAP_BLOCKS );
+    size_map.resize( HEAP_BLOCKS );
+	std::fill(size_map.begin(), size_map.end(), 0);
     heap_handle = handles.add_handle( "HeapHandle" );
     section = &mem.new_section(
                   MemoryRange( ComputerLayout::HEAP_ADDRESS, ComputerLayout::HEAP_SIZE ),
@@ -496,7 +501,7 @@ void VirtualStack::push_long( ulong val ) {
     throw_assert( loaded(), "VirtualStack::push_long() on uninitialized VirtualStack." );
     uint32_t size = 8;
     auto rsp = registers->get_rsp() - size; //Read stack pointer
-    auto data = section->mem->buffer.begin();
+    auto data = section->mem->buffer.data();
     Utility::write_uint64_t( ( char * )data, val );
     section->mem->write_memory( MemoryRange( rsp, size ), data ); //Set memory at stack pointer location
     registers->set_rsp( rsp ); //Decrease stack pointer
@@ -516,7 +521,7 @@ void VirtualStack::push_int( uint val ) {
     throw_assert( loaded(), "VirtualStack::push_int() on uninitialized VirtualStack." );
     uint32_t size = 4;
     auto rsp = registers->get_rsp() - size; //Read stack pointer
-    auto data = section->mem->buffer.begin();
+    auto data = section->mem->buffer.data();
     Utility::write_uint32_t( ( char * )data, val );
     section->mem->write_memory( MemoryRange( rsp, size ), data ); //Set memory at stack pointer location
     registers->set_rsp( rsp ); //Decrease stack pointer

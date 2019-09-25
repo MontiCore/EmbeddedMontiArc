@@ -1,4 +1,9 @@
-/* (c) https://github.com/MontiCore/monticore */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 #include "dll_interface.h"
 #include "utility.h"
 
@@ -16,7 +21,7 @@ bool ADD_DLL::Interface::init( Computer &computer, bool windows ) {
     ProgramInterface::init( computer );
     if ( !computer.os->load_file( "sample_simple" ) )
         return false;
-    addresses.init( FUNCTION_COUNT );
+    addresses.resize( FUNCTION_COUNT );
     if ( !add_symbol( addresses[ADD], windows ? "add" : "add", computer ) )
         return false;
     return true;
@@ -35,7 +40,7 @@ bool LOADED_DLL::Interface::init( Computer &computer ) {
     ProgramInterface::init( computer );
     if ( !computer.os->load_file( "sample_syscall" ) )
         return false;
-    addresses.init( FUNCTION_COUNT );
+    addresses.resize( FUNCTION_COUNT );
     if ( !add_symbol( addresses[TEST_METHOD], "test_method", computer ) )
         return false;
     return true;
