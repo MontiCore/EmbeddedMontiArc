@@ -1,7 +1,7 @@
 {
-  "modelsDir": "Bumpbot/models/",
-  "outputDir": "Bumpbot/target/",
-  "rootModel": "test.bumpBot",
+  "modelsDir": "models/",
+  "outputDir": "target/",
+  "rootModel": "bumper.bumpBot",
   "generators": ["cpp", "roscpp"]
 }
 

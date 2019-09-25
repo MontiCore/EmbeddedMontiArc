@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package test.structures;
+package bumper.structures;
 
 struct Ego_Vehicle{
 	Q throttle;

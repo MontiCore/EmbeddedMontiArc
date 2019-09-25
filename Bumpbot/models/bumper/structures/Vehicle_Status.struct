@@ -1,5 +1,5 @@
-package test.structures;
-import test.structures.*;
+package bumper.structures;
+import bumper.structures.*;
 
 struct Vehicle_Status{
         Q velocity;

@@ -1,4 +1,4 @@
-package test.structures;
+package bumper.structures;
 
 struct Quaternion{
 	Q x;
