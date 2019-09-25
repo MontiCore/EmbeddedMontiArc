@@ -30,6 +30,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.*;
+import java.util.stream.Collectors;
+
 import static simulation.vehicle.VehicleActuatorType.*;
 
 /**
@@ -878,6 +880,12 @@ public class Vehicle{
 
         // Send sensor data: Write values to bus
         for (Sensor sensor : sensorList) {
+            if(sensor.getType() == PLANNED_TRAJECTORY_X && controllerBus.get().getData(PLANNED_TRAJECTORY_X.toString()) != null){
+                continue;
+            }
+            if(sensor.getType() == PLANNED_TRAJECTORY_Y && controllerBus.get().getData(PLANNED_TRAJECTORY_Y.toString()) != null){
+                continue;
+            }
             // Put data from sensor on the bus
             controllerBus.get().setData(sensor.getType().toString(), sensor.getValue());
 
@@ -1124,7 +1132,9 @@ public class Vehicle{
 
         // If trajectory with avoiding is null or empty, just set original result without avoiding
         if (navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) == null) {
-            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
+            //controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
+            controllerBus.get().setData(PLANNED_TRAJECTORY_X.toString(), trajectoryWithoutAvoiding.stream().map(x -> x.getPosition().toArray()[0]).collect(Collectors.toList()));
+            controllerBus.get().setData(PLANNED_TRAJECTORY_Y.toString(), trajectoryWithoutAvoiding.stream().map(x -> x.getPosition().toArray()[1]).collect(Collectors.toList()));
             afterTrajectoryUpdate();
             return;
         }
