@@ -1,3 +1,10 @@
+/**
+ *
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
@@ -11,6 +18,7 @@ public class AllPredefinedLayers {
     //predefined layer names
     public static final String FULLY_CONNECTED_NAME = "FullyConnected";
     public static final String CONVOLUTION_NAME = "Convolution";
+    public static final String UP_CONVOLUTION_NAME = "UpConvolution";
     public static final String SOFTMAX_NAME = "Softmax";
     public static final String SIGMOID_NAME = "Sigmoid";
     public static final String TANH_NAME = "Tanh";
@@ -70,6 +78,7 @@ public class AllPredefinedLayers {
         return Arrays.asList(
                 FullyConnected.create(),
                 Convolution.create(),
+                UpConvolution.create(),
                 Softmax.create(),
                 Sigmoid.create(),
                 Tanh.create(),
@@ -88,7 +97,7 @@ public class AllPredefinedLayers {
                 RNN.create(),
                 LSTM.create(),
                 GRU.create(),
-                Embedding.create());
+                Embedding.create(),
+                RNN.create());
     }
-
 }

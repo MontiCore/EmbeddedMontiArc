@@ -5,7 +5,6 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
@@ -14,15 +13,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Convolution extends PredefinedLayerDeclaration {
+public class UpConvolution extends PredefinedLayerDeclaration {
 
-    private Convolution() {
-        super(AllPredefinedLayers.CONVOLUTION_NAME);
+    private UpConvolution() {
+        super(AllPredefinedLayers.UP_CONVOLUTION_NAME);
     }
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        return computeConvAndPoolOutputShape(layer.getInputTypes().get(0),
+        return computeUpConvOutputShape(inputTypes.get(0),
                 layer,
                 layer.getIntValue(AllPredefinedLayers.CHANNELS_NAME).get());
     }
@@ -30,11 +29,10 @@ public class Convolution extends PredefinedLayerDeclaration {
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
-        errorIfInputSmallerThanKernel(inputTypes, layer);
     }
 
-    public static Convolution create(){
-        Convolution declaration = new Convolution();
+    public static UpConvolution create(){
+        UpConvolution declaration = new UpConvolution();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.KERNEL_NAME)
