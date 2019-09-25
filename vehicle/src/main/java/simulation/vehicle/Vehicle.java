@@ -963,7 +963,13 @@ public class Vehicle{
             double brakePressure = brakeValue*brakes.getActuatorValueMax();
             brakes.setActuatorValueTarget(brakePressure);
         }
-
+        if (isParkedChargingStation(ChargingStationNavigator.getNearestCS())){
+            if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+                motor.setActuatorValueTarget(0.0);
+            } else {
+                throttle.setActuatorValueTarget(0.0);
+            }
+        }
         //  Check Battery
         checkBattery();
     }
