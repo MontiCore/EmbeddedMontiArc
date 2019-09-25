@@ -330,7 +330,7 @@ bool test_input_double_array( HardwareEmulator &emulator, const char *name, doub
         Log::err << "Type of port: " << name << " not 'double[]'\n";
         return false;
     }
-	port.buffer.double_array.data = std::vector(values, values + size);
+	port.buffer.double_array.data = std::vector<double>(values, values + size);
     port.buffer.double_array.size = size;
     
     emulator.call_input( port );
