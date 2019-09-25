@@ -25,11 +25,11 @@
       <plugin>
         <groupId>de.monticore.lang.monticar.utilities</groupId>
         <artifactId>maven-streamtest</artifactId>
-        <version>0.0.6-SNAPSHOT</version>
+        <version>0.0.11-SNAPSHOT</version>
         <configuration>
           <pathMain>Bumpbot/models</pathMain>
           <pathTest>Bumpbot/models</pathTest>
-	  <runStreamTestBefore>true</runStreamTestBefore>
+	        <runStreamTestBefore>true</runStreamTestBefore>
           <pathTmpOut>Bumpbot/target/tmp</pathTmpOut>
           <generator>MinGW</generator>
           <pathMiddlewareOut>Bumpbot/target/middleware</pathMiddlewareOut>
