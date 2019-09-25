@@ -1,0 +1,20 @@
+{
+  "name": "@embeddedmontiarc/sol-external-monaco",
+  "description": "",
+  "version": "2019.6.25-SNAPSHOT",
+  "files": [
+    "src",
+    "lib"
+  ],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {
+    "@theia/monaco": "latest"
+  }
+}

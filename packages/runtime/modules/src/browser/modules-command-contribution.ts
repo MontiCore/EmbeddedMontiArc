@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { Command, CommandContribution, CommandRegistry, SelectionService } from "@theia/core/lib/common";
 import { WorkspaceService } from "@theia/workspace/lib/browser";
 import { inject, injectable } from "inversify";

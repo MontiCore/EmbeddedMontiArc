@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 package de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.collector;
 
 import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTInstruction;

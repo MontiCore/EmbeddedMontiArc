@@ -1,5 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
-
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { injectable } from "inversify";
 import { EmbeddedMontiArcMathClientContributionTop } from "./embeddedmontiarcmath-client-contribution-top";
 

@@ -10,8 +10,7 @@
     "prepare": "yarn run clean && yarn run build",
     "clean": "rimraf lib",
     "build": "tsc -p compile.tsconfig.json",
-    "watch": "tsc -p compile.tsconfig.json -w",
-    "test": "tsc++"
+    "watch": "tsc -p compile.tsconfig.json -w"
   },
   "bin": {
     "tsc++": "bin/tsc++"
@@ -21,13 +20,15 @@
     "gulp-rename": "^1.4.0",
     "gulp-typescript": "^5.0.1",
     "minimist": "^1.2.0",
-    "strip-dirs": "^3.0.0",
+    "strip-dirs": "^3.0.0"
+  },
+  "peerDependencies": {
     "typescript": "^3.5.3"
   },
   "devDependencies": {
     "@types/gulp": "^4.0.6",
     "@types/gulp-rename": "^0.0.33",
     "@types/minimist": "^1.2.0",
-    "@types/node": "^12.7.2"
+    "@types/node": "12.0.10"
   }
 }

@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 package de.monticore.lang.monticar.sol.plugins.lc.plugin;
 
 import com.google.common.collect.ImmutableList;

@@ -1,0 +1,29 @@
+{
+  "name": "@embeddedmontiarc/sol-external-gui-process",
+  "description": "",
+  "version": "2019.6.25-SNAPSHOT",
+  "files": ["src", "lib"],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-external-docker": "2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-workspace": "2019.6.25-SNAPSHOT",
+    "@theia/core": "latest",
+    "@theia/process": "latest",
+    "helpful-decorators": "^2.0.5",
+    "inversify": "^4.14.0"
+  },
+  "devDependencies": {
+    "electron": "^6.0.7"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/gui-process-frontend-module",
+      "backend": "lib/node/gui-process-backend-module"
+    }
+  ]
+}

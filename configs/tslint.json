@@ -39,7 +39,7 @@
     },
     "file-header": [
       true,
-      "[\n\r]+ \\* Copyright \\(C\\) \\d{4}(-\\d{4})? .*[\n\r]+"
+      "\\(c\\) https://github.com/MontiCore/monticore"
     ],
     "class-name": true,
     "comment-format": [

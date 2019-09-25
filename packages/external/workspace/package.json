@@ -1,0 +1,46 @@
+{
+  "name": "@embeddedmontiarc/sol-external-workspace",
+  "description": "",
+  "version": "2019.6.25-SNAPSHOT",
+  "files": [
+    "src",
+    "lib"
+  ],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-external-core": "^2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-preparation": "^2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-docker": "^2019.6.25-SNAPSHOT",
+    "@material-ui/core": "^4.4.0",
+    "@material-ui/icons": "^4.2.1",
+    "@theia/core": "latest",
+    "@theia/workspace": "latest",
+    "@theia/filesystem": "latest",
+    "eventemitter3": "^3.1.2",
+    "fs-extra": "7.0.1",
+    "helpful-decorators": "^2.0.5",
+    "inversify": "^4.14.0",
+    "inversify-inject-decorators": "^3.1.0",
+    "mdi-material-ui": "^6.6.0",
+    "react": "16.8.6",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-dom": "16.8.6",
+    "styled-components": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "4.0.9",
+    "@types/react-custom-scrollbars": "^4.0.6",
+    "@types/styled-components": "^4.1.19",
+    "electron": "^6.0.7"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/workspace-frontend-module"
+    }
+  ]
+}

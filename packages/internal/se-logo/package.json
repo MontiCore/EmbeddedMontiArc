@@ -1,0 +1,25 @@
+{
+  "name": "@embeddedmontiarc/sol-internal-se-logo",
+  "description": "",
+  "version": "2019.6.25-SNAPSHOT",
+  "files": [
+    "src",
+    "lib"
+  ],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {
+    "@theia/core": "latest"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/se-logo-module"
+    }
+  ]
+}

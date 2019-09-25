@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 package de.monticore.lang.monticar.sol.plugins.ls;
 
 import com.google.inject.AbstractModule;

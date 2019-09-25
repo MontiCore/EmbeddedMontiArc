@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 
 import * as gulp from "gulp";
 import * as ts from "gulp-typescript";

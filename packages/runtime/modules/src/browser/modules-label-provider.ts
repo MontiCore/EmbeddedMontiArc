@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { MaybePromise } from "@theia/core/lib/common";
 import { LabelProviderContribution } from "@theia/core/lib/browser";
 import URI from "@theia/core/lib/common/uri";

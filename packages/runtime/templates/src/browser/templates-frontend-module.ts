@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { CommandContribution, MenuContribution } from "@theia/core";
 import { WebSocketConnectionProvider } from "@theia/core/lib/browser";
 import { ContainerModule } from "inversify";

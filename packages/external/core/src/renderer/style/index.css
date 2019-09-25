@@ -1,0 +1,17 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+@import "~typeface-roboto/index.css";
+@import "~@theia/core/src/browser/style/materialcolors.css";
+@import "~@theia/core/src/browser/style/variables-dark.useable.css";
+
+body, html {
+    height:100%;
+}
+
+body {
+    background-color:var(--theia-layout-color0);
+    margin:0;
+    padding:0;
+    overflow:hidden;
+}

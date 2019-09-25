@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { boundMethod } from "autobind-decorator";
 import { interfaces } from "inversify";
 import * as React from "react";

@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import URI from "@theia/core/lib/common/uri";
 import { UriCommandHandler } from "@theia/core/lib/common/uri-command-handler";
 import { inject, injectable } from "inversify";

@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 package de.monticore.lang.monticar.sol.plugins.common.plugin.common.configuration;
 
 import org.apache.maven.project.MavenProject;

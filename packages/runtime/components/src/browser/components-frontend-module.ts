@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { bindContributionProvider } from "@theia/core";
 import { ContainerModule } from "inversify";
 import { ComponentFactory, ComponentManager, ComponentManagerImpl } from "./component-manager";

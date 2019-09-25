@@ -1,4 +1,6 @@
-<!-- (c) https://github.com/MontiCore/monticore -->
+<!--
+  ~ (c) https://github.com/MontiCore/monticore
+  -->
 <div align="center">
     <img src="docs/media/images/logo.gif" width="500"/>
 </div>
@@ -10,7 +12,7 @@
     [**Getting Started**](docs/GettingStarted.md) <b>|</b>
     [**Contributing**](docs/Contributing.md) <b>|</b>
     [**Web Page**](https://monticore.pages.rwth-aachen.de/EmbeddedMontiArc/utilities/Sol) <b>|</b>
-    [**License**](#license)
+    [**License**](LICENSE)
 </div>
 
 <hr/>

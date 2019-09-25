@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { AbstractDialog, DialogMode, DialogProps } from "@theia/core/lib/browser";
 import { ComponentManager } from "./component-manager";
 import { GroupComponent } from "./group-component";

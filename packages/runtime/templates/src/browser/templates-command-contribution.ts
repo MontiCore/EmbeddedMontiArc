@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { DynamicDialogProps } from "@embeddedmontiarc/sol-runtime-components/lib/browser";
 import { ComponentManager } from "@embeddedmontiarc/sol-runtime-components/lib/browser/component-manager";
 import { open, SingleTextInputDialog } from "@theia/core/lib/browser";
