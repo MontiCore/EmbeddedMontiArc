@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnntrain.cocos;
 
@@ -34,6 +40,11 @@ public class AllCoCoTest extends AbstractCoCoTest{
         checkValid("valid_tests","FullConfig2");
     }
 
+	@Test
+    public void testValidFlowNetEPEConfig() {
+        checkValid("valid_tests","FlowNetEPEConfig");
+    }
+	
     @Test
     public void testValidReinforcementConfig() {
         checkValid("valid_tests","ReinforcementConfig");
