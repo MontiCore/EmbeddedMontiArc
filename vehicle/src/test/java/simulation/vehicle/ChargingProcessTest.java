@@ -6,8 +6,10 @@
  */
 package simulation.vehicle;
 
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.library.databus.DataBus;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -28,14 +30,17 @@ public class ChargingProcessTest {
 
     @Test
     public void executeLoopIteration() {
-        /*
         ChargingStation chargingStation = new ChargingStation();
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0.1);
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         vehicle.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
-        vehicle.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
-
+        //vehicle.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        Bus bus = new DataBus();
+        bus.setData(BusEntry.SIMULATION_DELTA_TIME.toString(),33d);
+        vehicle.setControllerBus(Optional.of(bus));
+        Battery battery = new Battery (vehicle, 10000, 50);
+        vehicle.setBattery(battery);
         physicalVehicle.executeLoopIteration(10);
 
         ChargingProcess chargingProcess = new ChargingProcess(physicalVehicle,chargingStation);
@@ -43,11 +48,10 @@ public class ChargingProcessTest {
         double timeToCharge = vehicle.getBattery().get().timeToCharge(100);
 
         while(timeToCharge >= 0){
-            chargingProcess.executeLoopIteration(2000);
+            chargingProcess.executeLoopIteration(2001);
             timeToCharge = timeToCharge-2;
         }
         assertTrue(vehicle.getBattery().get().getBatteryPercentage() == 100);
-        */
 
     }
 
