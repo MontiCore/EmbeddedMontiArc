@@ -106,11 +106,11 @@ class RosAdapter_tests_structs_arrayHandlingComp: public IAdapter_tests_structs_
 		int counter = 0;
 		for(int i0 = 0; i0 < 1; i0++){
 			for(int i1 = 0; i1 < 7; i1++){
-				if(2 <= counter && counter <= 6){
-					(component->in4)(i0, i1-2) = msg->poses[counter].pose.orientation.x;
+				if(2-1 <= counter && counter <= 6-1){
+					(component->in4)(i0, i1-2-1) = msg->poses[counter].pose.orientation.x;
 				}
-				else if(2 > counter){
-					(component->in4)(i0, i1+6-2+1) = 0;
+				else if(2-1 > counter){
+					(component->in4)(i0, i1+6-1-2-1+1) = 0;
 				}
 				else{
 					(component->in4)(i0, i1) = 0;
