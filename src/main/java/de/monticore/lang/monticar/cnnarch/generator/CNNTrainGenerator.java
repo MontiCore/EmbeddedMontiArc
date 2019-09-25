@@ -106,6 +106,7 @@ public abstract class CNNTrainGenerator {
         setInstanceName(compilationUnit.get().getFullName());
         CNNTrainCocos.checkAll(compilationUnit.get());
         supportCheck(compilationUnit.get().getConfiguration());
+		
         return compilationUnit.get().getConfiguration();
     }
 

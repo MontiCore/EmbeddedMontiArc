@@ -168,7 +168,16 @@ public class ArchitectureElementData {
 
     @Nullable
     public List<Integer> getPadding(){
-        return getPadding(getLayerSymbol());
+        
+    	String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.PADDING_NAME).get();
+
+        if(pad.equals("same")){
+            return getPadding(getLayerSymbol()); //The padding calculated here is only used in the gluon/ mxnet backend, in the tensorlflow one it is interpreted as "same"
+        }else if(pad.equals("valid")){
+            return Arrays.asList(0,-1,0,0,0,0,0,0);
+        }else{ //"no loss"
+            return Arrays.asList(0,0,-1,0,0,0,0,0);
+        }
     }
 
     @Nullable
