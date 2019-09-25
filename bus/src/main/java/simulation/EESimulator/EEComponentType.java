@@ -14,7 +14,8 @@ public enum EEComponentType{
     ACTUATOR("ACTUATOR"),
     AUTOPILOT("AUTOPILOT"),
 	TEST_COMPONENT("TEST_COMPONENT"),
-    NAVIGATION("NAVIGATION");
+    NAVIGATION("NAVIGATION"),
+    FUNCTION_BLOCK("FUNCTION_BLOCK");
 
     private final String name;
 

@@ -275,6 +275,12 @@ public class Vehicle implements SimulationLoopExecutable {
         return new ArrayList<>();
     }
 
+    public void navigateTo(IControllerNode target) {
+        if(navigation.isPresent()) {
+            navigation.get().navigateTo(target);
+        }
+    }
+
 	public void navigateTo(IControllerNode target, LinkedList<RealVector> avoidCoordinates) {
         if(navigation.isPresent()) {
             navigation.get().navigateTo(target, avoidCoordinates);

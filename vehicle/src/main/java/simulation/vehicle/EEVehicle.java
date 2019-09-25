@@ -8,26 +8,15 @@ package simulation.vehicle;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.gson.Gson;
-
-
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import org.apache.commons.lang3.tuple.Pair;
-
 import sensors.abstractsensors.AbstractSensor;
-import sensors.factory.SensorFactory;
-import simulation.EESimulator.*;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
+import simulation.EESimulator.EESimulator;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
-import simulation.bus.FlexRay;
 import simulation.bus.BusUtils;
-import simulation.bus.InstantBus;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
@@ -82,6 +71,7 @@ public class EEVehicle {
 				case BRIDGE:
 				case AUTOPILOT:
 				case NAVIGATION:
+				case FUNCTION_BLOCK:
 					//noop
 					break;
 				default:

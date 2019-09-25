@@ -8,6 +8,7 @@ package simulation.vehicle;
 
 import com.google.gson.Gson;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -261,13 +262,42 @@ public class EEVehicleBuilder {
 		return connectBuses(bus1, bus2, Duration.ofMillis(1));
 	}
 
+	public FunctionBlockAsEEComponent createFunctionBlock(List<Bus> buses, HashMap<BusEntry, Integer> sizeByMessageId, FunctionBlockInterface functionBlock){
+		Set<String> subscribedMessagesNames = new HashSet<>(Arrays.asList(functionBlock.getImportNames()));
+		List<BusEntry> subscribedMessages = new ArrayList<>();
 
-	/**
-	 * Function that load the ParsableBusStructure out of a JSON file
-	 * @param file JSON File of the bus structure of an EEVehicle
-	 * @return the bus structure as a ParsabelBusStructure
-	 * @throws IOException
-	 */
+		Set<String> outputMessagesNames = functionBlock.getOutputs().keySet();
+		List<EEComponent> targets = new ArrayList<>(buses);
+		HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+		for(BusEntry entry : BusEntry.values()){
+			if(outputMessagesNames.contains(entry.toString())){
+				targetsByMessageId.put(entry, targets);
+			}
+			if(subscribedMessages.contains(entry.toString())){
+				subscribedMessages.add(entry);
+			}
+		}
+		FunctionBlockAsEEComponent comp = new FunctionBlockAsEEComponent(eeSimulator, EEComponentType.FUNCTION_BLOCK, subscribedMessages, targetsByMessageId, sizeByMessageId, functionBlock);
+		components.add(comp);
+		return comp;
+	}
+
+	public boolean addComponent(EEComponent comp){
+		return components.add(comp);
+	}
+
+	public FunctionBlockAsEEComponent createFunctionBlock(Bus bus, HashMap<BusEntry, Integer> sizeByMessageId, FunctionBlockInterface functionBlock){
+		return createFunctionBlock(Collections.singletonList(bus), sizeByMessageId, functionBlock);
+	}
+
+
+
+		/**
+         * Function that load the ParsableBusStructure out of a JSON file
+         * @param file JSON File of the bus structure of an EEVehicle
+         * @return the bus structure as a ParsabelBusStructure
+         * @throws IOException
+         */
 
 	public ParsableBusStructureProperties loadFromFile(File file) throws IOException {
 
