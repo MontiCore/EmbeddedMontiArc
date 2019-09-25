@@ -7,29 +7,34 @@
 - If you want to build the CarlaRosBridge Docker Container yourself you can use the scripts in docker/carla-ros-bridge; note that we use the tag 0.9.5.1 of the carla-ros-bridge as the latest version is not compatible with Carla 0.9.5 anymore.
     You can edit your IP adress in the Dockerfile.
 
-# How to run it on Linux
-## How to execute the code for the bumper bot and read the collision sensor?
+## Steps to build a component:
 
-- Start Carla by executing: `CarlaUE4.sh`
-- Start the ego-vehicle: `docker/egovehicle.sh`      
-It executes `python manual_control.py --rolename=ego_vehicle` in PythonAPI/examples to create a vehicle for the ros-bridge.
-- To start the container execute inside the project folder:  
-`docker/Linux/carla-ros-bridge.sh`
+1.  Move **mw-generator.jar** to the directory of the component you wish to build.
+2.  Open shell, cd to the directory of the component and execute: 
 
-Then execute in a new terminal to compile and execute the generated code for the bumpbot:  
-`docker/Linux/bumpbot.sh`
+        java -jar mw-generator.jar [component].json
+        
+3.  Switch to the target directory:
 
-If you want to read additional messages from a rostopic you can execute:  
-`docker/Linux/open_shell.sh` and inside the container read the topic with e.g. `rostopic echo /carla/ego_vehicle/collision`
+        cd target/
+4.  Execute compile.sh:
 
-# Running with docker on Windows
-I tested this code in a Command Prompt/Power Shell. For the use of other consoles the commands might need to be adjusted for example with winpty.
+         ./compile.sh
+5.  If the generator can't find carla_msgs message type: execute the following command and retry step 4:
 
-Similarly to how you run it on Linux, there are shell scripts for Windows: carla-ros-bridge.sh, [component].sh and open_shell.sh. Depending on your system, these might need to be edited.
-The scripts worked on the Setup: Windows 10 Home, Docker Toolbox, executed in git-bash.     
-To copy the assets into the docker container, I had to have the project folder in an shared-drive (you need to edit the carla-ros-bridge.sh). For me the output in `rostopic echo /carla/ego_vehicle/collision` was with great delay (~1 minute) or none at all, which just might be because of my slow system vs the Carla-simulator.
+        export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:/path/to/rosbridge/catkin_ws/devel/share/carla_msgs/cmake
+       
+    usually the path is something like `~/carla-ros-bridge/catkin_ws/devel/share/carla_msgs/cmake`.
+6.  After successfull compiling the generated code switch to install/bin directory:
 
-I do not recommend trying to run everything on Windows.
+        cd install/bin/
+7.  Execute Coordinator_\<model-package\>_\<component-name\>. Here it's: 
+ 
+         ./Coordinator_test_bumpBot 
+
+    or 
+    
+        ./Coordinator_test_collisionDetection
 
 ## Running the code
 - In the Docker Settings GUI select the drive where you want to work on as shared drive, else using volumes won't work.
