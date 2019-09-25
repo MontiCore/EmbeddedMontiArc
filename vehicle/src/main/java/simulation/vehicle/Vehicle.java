@@ -403,12 +403,9 @@ public class Vehicle{
 
     public boolean isParkedChargingStation(ChargingStation station) {
         if(gotoCharginstation){
-            List<Vertex> trajectory = getTrajectory();
-            if (trajectory.isEmpty()) {
-                return true;
-            } else {
-                return false;
-            }
+            RealVector location2D = new ArrayRealVector(new double[]{station.getLocation().getEntry(0),station.getLocation().getEntry(1)});
+            RealVector vehiclePos2D = new ArrayRealVector(new double[]{physicalVehicle.getPosition().getEntry(0),physicalVehicle.getPosition().getEntry(1)});
+            return location2D.getDistance(vehiclePos2D) < 3;
         }
         return false;
     }
