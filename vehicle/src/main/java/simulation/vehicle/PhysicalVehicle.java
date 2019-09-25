@@ -298,6 +298,10 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         return false;
     }
 
+    public void stopCharging(){
+        isCharging = false;
+    }
+
 
     /**
      * Function that requests the called object to update its state for given time difference
