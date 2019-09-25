@@ -963,13 +963,16 @@ public class Vehicle{
             double brakePressure = brakeValue*brakes.getActuatorValueMax();
             brakes.setActuatorValueTarget(brakePressure);
         }
-        if (isParkedChargingStation(ChargingStationNavigator.getNearestCS())){
+        if (isParkedChargingStation(ChargingStationNavigator.getNearestCS())) {
             if (physicalVehicle instanceof MassPointPhysicalVehicle) {
                 motor.setActuatorValueTarget(0.0);
-                getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).setActuatorValueTarget(getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).getActuatorValueMax());
+                brakesBackLeft.setActuatorValueTarget(brakesBackLeft.getActuatorValueMax());
+                brakesBackRight.setActuatorValueTarget(brakesBackRight.getActuatorValueMax());
+                brakesFrontLeft.setActuatorValueTarget(brakesFrontLeft.getActuatorValueMax());
+                brakesFrontRight.setActuatorValueTarget(brakesFrontRight.getActuatorValueMax());
             } else {
                 throttle.setActuatorValueTarget(0.0);
-                getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).setActuatorValueTarget(getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).getActuatorValueMax());
+                brakes.setActuatorValueTarget(brakes.getActuatorValueMax());
             }
         }
         //  Check Battery
