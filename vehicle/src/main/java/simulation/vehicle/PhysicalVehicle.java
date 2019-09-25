@@ -159,6 +159,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     @Override
     public void onRechargeReady(){
         simulationVehicle.onRechargeReady();
+        isCharging = false;
     }
 
     /**
@@ -297,11 +298,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         }
         return false;
     }
-
-    public void stopCharging(){
-        isCharging = false;
-    }
-
 
     /**
      * Function that requests the called object to update its state for given time difference

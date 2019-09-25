@@ -76,7 +76,6 @@ public class ChargingProcess implements SimulationLoopExecutable {
 		// Here can added more in case the chargingStation process ends
 		this.battery.get().disconnectFromChargingStation();
         this.vehicle.onRechargeReady();
-        this.vehicle.stopCharging();
 		this.chargingStation.stopCharging(vehicle);
 		return chargeCar;
 	}
