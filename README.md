@@ -37,9 +37,7 @@ Predictions are visualized through a Python GUI using Matplotlib. It shows the i
 
 ## Generation of Training Data
 
-Execute `python jpg2hdf5.py` in `tensorflow/resources/data_transform_scripts` to generate a small test data set. Create bigger data sets similiarly to the steps in this python file.
-
-## Evaluation
+Read the README.md located in the `tensorflow/resourcess` directory.
 
 ### Hyperparametes
 
