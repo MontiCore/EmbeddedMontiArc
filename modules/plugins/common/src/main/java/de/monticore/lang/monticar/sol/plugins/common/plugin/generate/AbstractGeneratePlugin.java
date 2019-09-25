@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 package de.monticore.lang.monticar.sol.plugins.common.plugin.generate;
 
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.AbstractPlugin;

@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 export * from "./component-manager";
 export * from "./dynamic-dialog";
 export * from "./group-component";

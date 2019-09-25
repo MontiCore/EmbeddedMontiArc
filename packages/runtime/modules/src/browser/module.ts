@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { Emitter, Event } from "@theia/core/lib/common";
 import URI from "@theia/core/lib/common/uri";
 import { FileSystem } from "@theia/filesystem/lib/common";

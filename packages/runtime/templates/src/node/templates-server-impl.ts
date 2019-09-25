@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { inject, injectable } from "inversify";
 import { Template, TemplatesServer } from "../common/templates-protocol";
 import * as fs from "fs-extra";

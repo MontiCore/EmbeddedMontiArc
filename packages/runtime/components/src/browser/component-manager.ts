@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { ContributionProvider } from "@theia/core";
 import { inject, injectable, named, postConstruct } from "inversify";
 import { ValueComponent, ValueComponentProps } from "./value-component";

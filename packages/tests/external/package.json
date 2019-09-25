@@ -1,0 +1,37 @@
+{
+  "private": true,
+  "name": "@embeddedmontiarc/sol-test-external",
+  "description": "",
+  "version": "2019.6.25-SNAPSHOT",
+  "files": [
+    "src",
+    "lib"
+  ],
+  "main": "lib/main/index",
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "webpack --config configs/webpack.config.js --mode development",
+    "watch": "echo Watcher not bound.",
+    "start": "electron . --enable-logging"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-external-core": "^2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-docker": "^2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-preparation": "^2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-workspace": "^2019.6.25-SNAPSHOT",
+    "inversify": "^4.14.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "css-loader": "0.28.11",
+    "electron": "^6.0.7",
+    "file-loader": "1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "svg-inline-loader": "^0.8.0",
+    "ts-loader": "^6.0.4",
+    "webpack": "4.36.1",
+    "webpack-cli": "2.0.12"
+  },
+  "theiaExtensions": []
+}

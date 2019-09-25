@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { CommandContribution, MenuContribution } from "@theia/core";
 import { ContainerModule } from "inversify";
 import { ModulesCommandContribution } from "./modules-command-contribution";

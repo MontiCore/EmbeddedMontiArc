@@ -1,0 +1,53 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package de.monticore.lang.monticar.sol.grammars;
+
+/**
+ *
+ */
+grammar Tool extends de.monticore.MCBasics, de.monticore.MCLiterals, de.monticore.types.Types {
+    // =========================================
+    // INTERFACE DEFINITIONS
+    // =========================================
+
+    interface ToolElement;
+
+    interface ResourceElement;
+
+    // =========================================
+    // PARSER RULES
+    // =========================================
+
+    ToolCompilationUnit =
+        "package" package:(Name || ".")+ ";"
+        import:ImportStatement*
+        Tool
+    ;
+
+    start ToolCompilationUnit;
+
+    symbol scope Tool =
+        ["external"]? "tool" Name Alias? ( "extends" parent:(Name || ",")+ )? "{" element:ToolElement* "}"
+    ;
+
+    symbol Attribute implements ToolElement, ResourceElement =
+        "attribute" Name "=" literal:SignedLiteral ";"
+    ;
+
+    symbol scope Resource implements ToolElement =
+        ["external"]? "resource" Name Alias? "for" path:StringLiteral ( ("{" element:ResourceElement* "}") | ";" )
+    ;
+
+    Alias =
+        ("as" alias:Name)? "in" (["ENV"] | ["KEY"])
+    ;
+
+    // =========================================
+    // LEXER RULES
+    // =========================================
+
+    // =========================================
+    // AST DEFINITIONS
+    // =========================================
+}

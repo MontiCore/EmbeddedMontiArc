@@ -1,4 +1,6 @@
-/* (c) https://github.com/MontiCore/monticore */
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 package de.monticore.lang.monticar.sol.grammars.options.cocos;
 
 public class PropTypeCoCoTests extends AbstractCoCoTests {
