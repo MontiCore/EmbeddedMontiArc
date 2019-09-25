@@ -2,7 +2,7 @@
 
 This readme describes the geration of the test and train sets we used. 
 Predefined datasets can be downloaded [here](https://rwth-aachen.sciebo.de/apps/files/?dir=/LabSS19/end2end_training_testing_data&fileid=1993075326) (contact felix.hermsen@rwth-aachen.de or kusmenko@se-rwth.de to get access to training and testing files) .
-Otherwise use this the jpg2hdf5.py script to generate train.h5 and test.h5 and place them into the training_data folder. After that proceed as described in the root Readme.
+Otherwise use the jpg2hdf5.py script to generate train.h5 and test.h5 and place them into the training_data folder. After that proceed as described in the root Readme.
 
 ## Udacity data download 
 
