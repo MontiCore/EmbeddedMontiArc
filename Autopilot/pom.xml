@@ -52,8 +52,8 @@
 	          <id>compilemiddleware</id>
             <configuration>
               <middlewareGenerator>
-                  <param>cpp</param>
-                  <param>roscpp</param>
+                <param>cpp</param>
+                <param>roscpp</param>
               </middlewareGenerator>
               <enableExecutionLogging>false</enableExecutionLogging>
             </configuration>
