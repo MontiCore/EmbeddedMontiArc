@@ -1,23 +1,10 @@
 /**
+ * (c) https://github.com/MontiCore/monticore
  *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
+/* (c) https://github.com/MontiCore/monticore */
 package simulation.vehicle;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
@@ -28,8 +15,14 @@ import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import simulation.environment.WorldModel;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetPavements;
+
+
+import simulation.vehicle.Battery;
+import simulation.vehicle.BatteryInterface;
 
 public class BatteryTest {
 	Vehicle v;
@@ -65,4 +58,59 @@ public class BatteryTest {
 	// 	v.getBattery().discharge();
 	// 	Assert.assertEquals(800, v.getBattery().getCurrentCapacity(), 1.0);
 	// }
+	
+	@Test
+	public void testBatteryCharging_on_Battery() {
+		battery.setPercentage(90);
+		battery.charge(100.0, 1.0);
+		Assert.assertEquals(1000.0, battery.getCurrentCapacity(), 1.0);
+	}
+	
+	@Test
+	public void testBatteryCharging_on_Vehicle() {
+		battery.setPercentage(90);
+		battery.charge(100.0, 1.0);
+		Assert.assertEquals(1000.0, v.getBattery().get().getCurrentCapacity(), 1.0);
+	}
+	
+	@Test
+	public void testBatteryTimeToCharge(){
+		battery.setPercentage(0.0);
+		
+		double t1 = battery.timeToCharge(10.0, 100.0, 1.0);
+		Assert.assertEquals(t1, 1.0, 1.0);
+		
+		double t2 = battery.timeToCharge(20.0, 100.0, 1.0);
+		Assert.assertEquals(t2, 2.0, 1.0);
+		
+		double t3 = battery.timeToCharge(30.0, 100.0, 1.0);
+		Assert.assertEquals(t3, 3.0, 1.0);
+		
+//		battery.charge(100.0, 1.0);		
+//		assertEquals(30, v.getBattery().get().getCurrentCapacity(), 1.0);
+//		battery.timeToCharge(100.0, 100.0, 1.0);
+	}
+	
+	@Test
+	public void testDischarge_success() {
+		battery.setPercentage(100.0);
+		double c1 = battery.getCurrentCapacity();
+		
+		double consumption = battery.getBatteryConsumption_test_only();
+		double remainCapacity = c1 - consumption;
+		
+		battery.discharge();
+		double c2 = battery.getCurrentCapacity();
+		
+		Assert.assertEquals(remainCapacity, c2 , 0.1);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testDischarge_fail() {
+		battery.setPercentage(battery.getCriticalPercentage() - 1);
+		battery.discharge();
+	}
+	
+	
+	
 }

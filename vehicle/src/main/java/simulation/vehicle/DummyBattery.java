@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package simulation.vehicle;
 
 /**
@@ -38,7 +44,7 @@ public class DummyBattery {
 	}
 
 	public void setPercentage(double percentage) {
-		this.capacityCurrent = capacityMax * percentage;
+		this.capacityCurrent = capacityMax * percentage / 100.0;
 	}
 	
 	public double getPercentage() {
@@ -59,7 +65,7 @@ public class DummyBattery {
 	}
 	
 	public void discharge(double VoltageInput, double AmpereInput, double deltaT) {
-		double power = VoltageInput * AmpereInput * deltaT;
+		double power = VoltageInput * AmpereInput * deltaT / 1000.0;
 		double percentageAfterConsumption = (capacityCurrent - power) / capacityMax * 100;
 		
 		// if the battery percentage drops below a critical level after consumption,
@@ -78,7 +84,7 @@ public class DummyBattery {
 		double currentPercentage = this.getPercentage();
 		if (currentPercentage >= aimedPercentage)
 			return 0.0;
-		double capacityToBeCharged = capacityMax - capacityCurrent;
+		double capacityToBeCharged = capacityMax* (aimedPercentage/100.0) - capacityCurrent;
 		double power = VoltageInput * AmpereInput;
 		double time = capacityToBeCharged / power;
 		return time;
