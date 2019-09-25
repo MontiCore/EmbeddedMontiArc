@@ -1,22 +1,8 @@
 /**
+ * (c) https://github.com/MontiCore/monticore
  *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.middleware.mqtt;
@@ -44,39 +30,101 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("middleware.mqtt.basicParsing", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
-        //mqttIn
-        EMAPortSymbol mqttIn = component.getPortInstance("mqttIn").orElse(null);
-        assertNotNull(mqttIn);
+        //mqttInQ
+        EMAPortSymbol mqttInQ = component.getPortInstance("mqttInQ").orElse(null);
+        assertNotNull(mqttInQ);
 
-        Collection<TagSymbol> tags = symtab.getTags(mqttIn, MqttConnectionSymbol.KIND);
+        Collection<TagSymbol> tags = symtab.getTags(mqttInQ, MqttConnectionSymbol.KIND);
         assertTrue(tags.size() == 1);
 
         MqttConnectionSymbol tag = (MqttConnectionSymbol) tags.iterator().next();
-        assertEquals(tag.getTopicName().get(), "/clock");
-        assertEquals(tag.getMsgField().get(), "clock.toSec()");
-        
-        //mqttOut
-        EMAPortSymbol mqttOut = component.getPortInstance("mqttOut").orElse(null);
-        assertNotNull(mqttOut);
+        assertEquals(tag.getTopicName().get(), "/echoQ");
+        assertEquals(tag.getMsgField().get(), "dataQ");
 
-        tags = symtab.getTags(mqttOut, MqttConnectionSymbol.KIND);
+        //mqttInN
+        EMAPortSymbol mqttInN = component.getPortInstance("mqttInN").orElse(null);
+        assertNotNull(mqttInN);
+
+        tags = symtab.getTags(mqttInN, MqttConnectionSymbol.KIND);
         assertTrue(tags.size() == 1);
 
         tag = (MqttConnectionSymbol) tags.iterator().next();
-        assertEquals(tag.getTopicName().get(), "/echo");
-        assertEquals(tag.getMsgField().get(), "data");
-        
+        assertEquals(tag.getTopicName().get(), "/echoN");
+        assertEquals(tag.getMsgField().get(), "dataN");
+
+        //mqttInZ
+        EMAPortSymbol mqttInZ = component.getPortInstance("mqttInZ").orElse(null);
+        assertNotNull(mqttInZ);
+
+        tags = symtab.getTags(mqttInZ, MqttConnectionSymbol.KIND);
+        assertTrue(tags.size() == 1);
+
+        tag = (MqttConnectionSymbol) tags.iterator().next();
+        assertEquals(tag.getTopicName().get(), "/echoZ");
+        assertEquals(tag.getMsgField().get(), "dataZ");
+
+        //mqttInB
+        EMAPortSymbol mqttInB = component.getPortInstance("mqttInB").orElse(null);
+        assertNotNull(mqttInB);
+
+        tags = symtab.getTags(mqttInB, MqttConnectionSymbol.KIND);
+        assertTrue(tags.size() == 1);
+
+        tag = (MqttConnectionSymbol) tags.iterator().next();
+        assertEquals(tag.getTopicName().get(), "/echoB");
+        assertEquals(tag.getMsgField().get(), "true");
+
+        //mqttOutQ
+        EMAPortSymbol mqttOutQ = component.getPortInstance("mqttOutQ").orElse(null);
+        assertNotNull(mqttOutQ);
+
+        tags = symtab.getTags(mqttOutQ, MqttConnectionSymbol.KIND);
+        assertTrue(tags.size() == 1);
+
+        tag = (MqttConnectionSymbol) tags.iterator().next();
+        assertEquals(tag.getTopicName().get(), "/echoQ");
+
+        //mqttOutN
+        EMAPortSymbol mqttOutN = component.getPortInstance("mqttOutN").orElse(null);
+        assertNotNull(mqttOutN);
+
+        tags = symtab.getTags(mqttOutN, MqttConnectionSymbol.KIND);
+        assertTrue(tags.size() == 1);
+
+        tag = (MqttConnectionSymbol) tags.iterator().next();
+        assertEquals(tag.getTopicName().get(), "/echoN");
+
+        //mqttOutZ
+        EMAPortSymbol mqttOutZ = component.getPortInstance("mqttOutZ").orElse(null);
+        assertNotNull(mqttOutZ);
+
+        tags = symtab.getTags(mqttOutZ, MqttConnectionSymbol.KIND);
+        assertTrue(tags.size() == 1);
+
+        tag = (MqttConnectionSymbol) tags.iterator().next();
+        assertEquals(tag.getTopicName().get(), "/echoZ");
+
+        //mqttOutB
+        EMAPortSymbol mqttOutB = component.getPortInstance("mqttOutB").orElse(null);
+        assertNotNull(mqttOutB);
+
+        tags = symtab.getTags(mqttOutB, MqttConnectionSymbol.KIND);
+        assertTrue(tags.size() == 1);
+
+        tag = (MqttConnectionSymbol) tags.iterator().next();
+        assertEquals(tag.getTopicName().get(), "/echoB");
+
         //emptyTagIn
         EMAPortSymbol emptyTagIn = component.getPortInstance("emptyTagIn").orElse(null);
         assertNotNull(emptyTagIn);
 
         tags = symtab.getTags(emptyTagIn, MqttConnectionSymbol.KIND);
         assertTrue(tags.size() == 1);
-        
+
         tag = (MqttConnectionSymbol) tags.iterator().next();
         assertEquals(tag.getTopicName(), Optional.empty());
         assertEquals(tag.getMsgField(), Optional.empty());
-        
+
     }
 
     @Test
