@@ -24,21 +24,32 @@
       <plugin>
         <groupId>de.monticore.lang.monticar.utilities</groupId>
         <artifactId>maven-streamtest</artifactId>
-        <version>0.0.8-SNAPSHOT</version>
+        <version>0.0.11-SNAPSHOT</version>
         <configuration>
           <pathMain>Autopilot/models</pathMain>
-          <pathTest>Autopilot/src/test/emam</pathTest>
-	  <runStreamTestBefore>true</runStreamTestBefore>
+          <pathTest>Autopilot/models</pathTest>
+	        <runStreamTestBefore>false</runStreamTestBefore>
           <pathTmpOut>Autopilot/target/tmp</pathTmpOut>
           <generator>MinGW</generator>
           <pathMiddlewareOut>Autopilot/target/middleware</pathMiddlewareOut>
           <middlewareRootModels>
               <param>wrapper.wrapper</param>
           </middlewareRootModels>
+          <enableExecutionLogging>false</enableExecutionLogging>
         </configuration>
         <executions>
           <execution>
-	  <id>compilemiddleware</id>
+	          <id>test</id>
+            <configuration>
+              <enableExecutionLogging>false</enableExecutionLogging>
+            </configuration>
+            <phase>test</phase>
+            <goals>
+              <goal>streamtest-execute</goal>
+            </goals>
+          </execution>
+          <execution>
+	          <id>compilemiddleware</id>
             <configuration>
               <middlewareGenerator>
                   <param>cpp</param>
@@ -56,4 +67,3 @@
     </plugins>
   </build>
 </project>
-
