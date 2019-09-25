@@ -1,6 +1,6 @@
 configuration Nvidia{
      num_epoch:2
-     batch_size:32
+     batch_size:20
      normalize:true
      context:gpu
      load_checkpoint:false
