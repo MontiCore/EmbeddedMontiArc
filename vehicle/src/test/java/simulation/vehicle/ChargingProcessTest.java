@@ -46,14 +46,14 @@ public class ChargingProcessTest {
         long sysTime = System.currentTimeMillis();
         long timeToCharge2=0;
         while(vehicle.getBattery().get().getBatteryPercentage() != 100){
-            chargingProcess.executeLoopIteration(2000);
+            chargingProcess.executeLoopIteration(3000);
             timeToCharge2 = timeToCharge2+2;
 
             if(System.currentTimeMillis() - sysTime > 60000){
                 break;
             }
         }
-        assertTrue(timeToCharge2 < 10000000);
+        assertTrue(System.currentTimeMillis() - sysTime > 60000);
 
         /*
         while(timeToCharge >= 0){
