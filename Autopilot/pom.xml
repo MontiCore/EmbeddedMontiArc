@@ -44,7 +44,7 @@
                   <param>cpp</param>
                   <param>roscpp</param>
               </middlewareGenerator>
-              <enableExecutionLogging>true</enableExecutionLogging>
+              <enableExecutionLogging>false</enableExecutionLogging>
             </configuration>
             <phase>test</phase>
             <goals>
