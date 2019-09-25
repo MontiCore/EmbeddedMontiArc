@@ -405,7 +405,7 @@ public class Vehicle{
         if(gotoCharginstation){
             RealVector location2D = new ArrayRealVector(new double[]{station.getLocation().getEntry(0),station.getLocation().getEntry(1)});
             RealVector vehiclePos2D = new ArrayRealVector(new double[]{physicalVehicle.getPosition().getEntry(0),physicalVehicle.getPosition().getEntry(1)});
-            return location2D.getDistance(vehiclePos2D) < 3;
+            return location2D.getDistance(vehiclePos2D) < 10;
         }
         return false;
     }
@@ -966,8 +966,10 @@ public class Vehicle{
         if (isParkedChargingStation(ChargingStationNavigator.getNearestCS())){
             if (physicalVehicle instanceof MassPointPhysicalVehicle) {
                 motor.setActuatorValueTarget(0.0);
+                getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).setActuatorValueTarget(getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).getActuatorValueMax());
             } else {
                 throttle.setActuatorValueTarget(0.0);
+                getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).setActuatorValueTarget(getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).getActuatorValueMax());
             }
         }
         //  Check Battery
