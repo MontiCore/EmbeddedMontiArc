@@ -29,7 +29,7 @@
         <configuration>
           <pathMain>Bumpbot/models</pathMain>
           <pathTest>Bumpbot/models</pathTest>
-	        <runStreamTestBefore>true</runStreamTestBefore>
+	        <runStreamTestBefore>false</runStreamTestBefore>
           <pathTmpOut>Bumpbot/target/tmp</pathTmpOut>
           <generator>MinGW</generator>
           <pathMiddlewareOut>Bumpbot/target/middleware</pathMiddlewareOut>
@@ -38,6 +38,16 @@
           </middlewareRootModels>
         </configuration>
         <executions>
+          <execution>
+	          <id>test</id>
+            <configuration>
+              <enableExecutionLogging>false</enableExecutionLogging>
+            </configuration>
+            <phase>test</phase>
+            <goals>
+              <goal>streamtest-execute</goal>
+            </goals>
+          </execution>
           <execution>
 	        <id>compilemiddleware</id>
             <configuration>

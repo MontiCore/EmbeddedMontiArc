@@ -12,7 +12,7 @@ component Wrapper{
 		in Q (-oo m : 0.01 m : oo m) ^ {1,100} trajectory_x,
 		in Q (-oo m : 0.01 m : oo m) ^ {1,100} trajectory_y,
 
-		out Ego_Vehicle vehicle_control,
+		out Ego_Vehicle vehicle_control;
 
 
 	//Connections for CARLA to Autopilot:

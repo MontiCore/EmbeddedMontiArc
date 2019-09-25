@@ -4,9 +4,10 @@ import bumper.structures.*;
 
 component BumpBot{
 
-	ports	out Ego_Vehicle vehicle_control,
-		in Quaternion orientation,
+	ports	in Quaternion orientation,
 		in Vector3 collision_normale,
+
+                out Ego_Vehicle vehicle_control,
                 out Vector3 collision_normale_out;
 
 	implementation Math{

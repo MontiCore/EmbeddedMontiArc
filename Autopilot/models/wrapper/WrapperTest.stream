@@ -5,8 +5,8 @@ stream WrapperTest for Wrapper{
     vehicle_status.velocity: 0;
     vehicle_status.acceleration: 0;
 
-    orientation.x: -3.40606290796e-05;
-    orientation.y: -1.96673991356e-06;
+    orientation.x: -3.40606290796;
+    orientation.y: -1.96673991356;
     orientation.z: -0.715650891876;
     orientation.w: 0.698458158942;
 
@@ -32,5 +32,4 @@ stream WrapperTest for Wrapper{
 	vehicle_control.reverse: false;
 	vehicle_control.gear: -;
 	vehicle_control.manual_gear_shift: false;
-
 }
