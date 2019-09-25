@@ -7,21 +7,17 @@
 package simulation.simulator;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IdGenerator;
-import simulation.util.*;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopNotifiable;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
-import simulation.vehicle.*;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopNotifiable;
+import simulation.util.*;
+import simulation.vehicle.PhysicsEngine;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.io.IOException;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 /**
  * Logic and object management of the simulation
@@ -111,7 +107,7 @@ public class Simulator {
      * Simulator constructor. Should not be called directly but only by the initialization of "sharedInstance".
      */
     protected Simulator() {
-        InformationService.getSharedInstance().offerInformation(Information.SIMULATION_TIME, this::getSimulationTime);
+        InformationService.getSharedInstance().offerInformation(Information.SIMULATION_TIME, () -> Duration.between(Instant.EPOCH, this.getSimulationTime()).toMillis());
     }
 
     /**
