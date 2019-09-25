@@ -10,6 +10,9 @@ import java.time.Instant;
 
 import simulation.EESimulator.EESimulator;
 
+/**
+ * Model for instant transmission of BusMessage.
+ */
 public class InstantBus extends Bus {
 
 	private InstantOperationMode operationMode = new InstantOperationMode();

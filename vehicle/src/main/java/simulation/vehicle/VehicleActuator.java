@@ -262,7 +262,7 @@ public class VehicleActuator extends ImmutableEEComponent {
 	}
 
 	/**
-	 * Function that computes an update tick for the actuator
+	 * Function that computes an update tick for the actuator and sends the new value as message.
 	 *
 	 * @param actualTime actual time of the simulation. Used to calculate the time
 	 *                   difference considered in the update measured in seconds
@@ -271,12 +271,17 @@ public class VehicleActuator extends ImmutableEEComponent {
 		this.updateValue(actualTime);
 		if(!actuatorValueLastSent.isPresent() || !actuatorValueLastSent.get().equals(actuatorValueCurrent)){
 			actuatorValueLastSent = Optional.of(actuatorValueCurrent);
-			System.out.println(this.actuatorType + " send message: " + this.sendMsgId + "; with value: " + this.actuatorValueCurrent);
 			this.sendMessage(this.actuatorValueCurrent, 8, this.sendMsgId, actualTime);
 		}
 
 	}
 
+	/**
+	 * Function that computes an update tick for the actuator
+	 *
+	 * @param actualTime actual time of the simulation. Used to calculate the time
+	 *                   difference considered in the update measured in seconds
+	 */
 	private void updateValue(Instant actualTime){
 		// Total change of value in given time span in seconds
 		double timeDiff = Duration.between(lastUpdate, actualTime).toNanos() / 1000000000.0d;
@@ -408,7 +413,6 @@ public class VehicleActuator extends ImmutableEEComponent {
 			//update actuator with old target
 			this.updateValue(event.getEventTime());
 			//send message
-			System.out.println(actuatorType.toString() + " received message: " +  msg.getMessageID() + "; with value: " + msg.getMessage());
 			setActuatorValueTarget((double) msg.getMessage());
 		}
 		else{

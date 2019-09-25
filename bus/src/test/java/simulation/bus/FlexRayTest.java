@@ -19,7 +19,6 @@ import java.util.*;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -47,21 +46,21 @@ public class FlexRayTest {
 
 		flexRay.setOperationMode(FlexRayOperationMode.MAX_DATA_RATE);
 		long expectedNs = (int) Math.ceil((FlexRay.MAX_SLOT_SIZE * 8 * 1000000) / ((double) 20));
-		assertEquals(expectedNs, flexRay.getSlotSize().toNanos());
+		assertEquals(expectedNs, flexRay.getSlotDuration().toNanos());
 
 		flexRay.setOperationMode(FlexRayOperationMode.REDUNDANCY);
 		expectedNs = (int) Math.ceil((FlexRay.MAX_SLOT_SIZE  * 8 * 1000000) / ((double) 10));
-		System.out.println(flexRay.getSlotSize().toMillis());
-		assertEquals(expectedNs, flexRay.getSlotSize().toNanos());
+		System.out.println(flexRay.getSlotDuration().toMillis());
+		assertEquals(expectedNs, flexRay.getSlotDuration().toNanos());
 	}
 
 	@Test
 	public void testCycleTime() {
 		FlexRay flexRay = createBusStructure();
 
-		long expectedNs = flexRay.getSlotSize().toNanos()
+		long expectedNs = flexRay.getSlotDuration().toNanos()
 				* (flexRay.getConnectedComponents().size() + FlexRay.DYNAMIC_SLOTS);
-		assertEquals(expectedNs, flexRay.getCycleTime().toNanos());
+		assertEquals(expectedNs, flexRay.getCycleDuration().toNanos());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -272,10 +271,10 @@ public class FlexRayTest {
 		BusMessage copy = new BusMessage(dynamic);
 		Instant finishTime = flexray.getNextFinishTime();
 		assertEquals(copy.getTransmittedBytes(), dynamic.getTransmittedBytes());
-		Instant minFinishTime = Instant.EPOCH.plus(flexray.getStaticSegmentSize())
-				.plus(flexray.getSlotSize().multipliedBy(3));
+		Instant minFinishTime = Instant.EPOCH.plus(flexray.getStaticSegmentDuration())
+				.plus(flexray.getSlotDuration().multipliedBy(3));
 		assertTrue(minFinishTime.isBefore(finishTime));
-		assertTrue(minFinishTime.plus(flexray.getSlotSize()).isAfter(finishTime));
+		assertTrue(minFinishTime.plus(flexray.getSlotDuration()).isAfter(finishTime));
 		flexray.simulateUntil(finishTime);
 		assertTrue(dynamic.isTransmitted());
 		assertEquals(finishTime, dynamic.getFinishTime());
@@ -285,7 +284,7 @@ public class FlexRayTest {
 		copy = new BusMessage(dynamic);
 		finishTime = flexray.getNextFinishTime();
 		assertEquals(copy.getTransmittedBytes(), dynamic.getTransmittedBytes());
-		assertEquals(Instant.EPOCH.plus(flexray.getCycleTime()), finishTime);
+		assertEquals(Instant.EPOCH.plus(flexray.getCycleDuration()), finishTime);
 		flexray.simulateUntil(finishTime);
 		assertTrue(dynamic.isTransmitted());
 		assertEquals(finishTime, dynamic.getFinishTime());
@@ -295,10 +294,10 @@ public class FlexRayTest {
 		copy = new BusMessage(dynamic);
 		finishTime = flexray.getNextFinishTime();
 		assertEquals(copy.getTransmittedBytes(), dynamic.getTransmittedBytes());
-		minFinishTime = Instant.EPOCH.plus(flexray.getCycleTime()).plus(flexray.getStaticSegmentSize())
-				.plus(flexray.getSlotSize().multipliedBy(3));
+		minFinishTime = Instant.EPOCH.plus(flexray.getCycleDuration()).plus(flexray.getStaticSegmentDuration())
+				.plus(flexray.getSlotDuration().multipliedBy(3));
 		assertTrue(minFinishTime.isBefore(finishTime));
-		assertTrue(minFinishTime.plus(flexray.getSlotSize()).isAfter(finishTime));
+		assertTrue(minFinishTime.plus(flexray.getSlotDuration()).isAfter(finishTime));
 		flexray.simulateUntil(finishTime);
 		assertTrue(dynamic.isTransmitted());
 		assertEquals(finishTime, dynamic.getFinishTime());
@@ -307,7 +306,7 @@ public class FlexRayTest {
 		dynamic = createNregisterMessage(flexray, "dynamic", 0, Integer.MAX_VALUE, 20);
 
 		Random rand = new Random();
-		Instant lastFinishedCycle = Instant.EPOCH.plus(flexray.getCycleTime().multipliedBy(2));
+		Instant lastFinishedCycle = Instant.EPOCH.plus(flexray.getCycleDuration().multipliedBy(2));
 		for (int i = 2; i < flexray.getConnectedComponents().size(); i++) {
 			System.out.println("--------------new Message-----------------");
 			int slotNumber = 0;
@@ -329,13 +328,13 @@ public class FlexRayTest {
 			copy = new BusMessage(controller);
 			finishTime = flexray.getNextFinishTime();
 			assertEquals(copy.getTransmittedBytes(), controller.getTransmittedBytes());
-			if(lastFinishedCycle.plus(flexray.getCycleTime()).isBefore(finishTime)) {
-				lastFinishedCycle= lastFinishedCycle.plus(flexray.getCycleTime());
+			if(lastFinishedCycle.plus(flexray.getCycleDuration()).isBefore(finishTime)) {
+				lastFinishedCycle= lastFinishedCycle.plus(flexray.getCycleDuration());
 			}
-			minFinishTime = lastFinishedCycle.plus(flexray.getSlotSize().multipliedBy(slotNumber));
-			System.out.println("Min finish time: " +minFinishTime + " max finish time " + minFinishTime.plus(flexray.getSlotSize()) + " actual finish time " + finishTime );
+			minFinishTime = lastFinishedCycle.plus(flexray.getSlotDuration().multipliedBy(slotNumber));
+			System.out.println("Min finish time: " +minFinishTime + " max finish time " + minFinishTime.plus(flexray.getSlotDuration()) + " actual finish time " + finishTime );
 			assertTrue(minFinishTime.isBefore(finishTime));
-			assertTrue(!minFinishTime.plus(flexray.getSlotSize()).isBefore(finishTime));
+			assertTrue(!minFinishTime.plus(flexray.getSlotDuration()).isBefore(finishTime));
 			flexray.simulateUntil(finishTime);
 			assertTrue(controller.isTransmitted());
 			assertEquals(finishTime, controller.getFinishTime());
@@ -351,12 +350,12 @@ public class FlexRayTest {
 			copy = new BusMessage(controller);
 			finishTime = flexray.getNextFinishTime();
 			assertEquals(copy.getTransmittedBytes(), controller.getTransmittedBytes());
-			if(lastFinishedCycle.plus(flexray.getCycleTime()).isBefore(finishTime)) {
-				lastFinishedCycle= lastFinishedCycle.plus(flexray.getCycleTime());
+			if(lastFinishedCycle.plus(flexray.getCycleDuration()).isBefore(finishTime)) {
+				lastFinishedCycle= lastFinishedCycle.plus(flexray.getCycleDuration());
 			}
-			minFinishTime = lastFinishedCycle.plus(flexray.getSlotSize().multipliedBy(slotNumber));
+			minFinishTime = lastFinishedCycle.plus(flexray.getSlotDuration().multipliedBy(slotNumber));
 			assertTrue(minFinishTime.isBefore(finishTime));
-			assertTrue(!minFinishTime.plus(flexray.getSlotSize()).isBefore(finishTime));
+			assertTrue(!minFinishTime.plus(flexray.getSlotDuration()).isBefore(finishTime));
 			flexray.simulateUntil(finishTime);
 			assertTrue(controller.isTransmitted());
 			assertEquals(finishTime, controller.getFinishTime());
@@ -367,7 +366,7 @@ public class FlexRayTest {
 				finishTime = flexray.getNextFinishTime();
 				assertEquals(copy.getTransmittedBytes(), controller.getTransmittedBytes());
 			}
-			assertEquals(minFinishTime.plus(flexray.getSlotSize()), finishTime);
+			assertEquals(minFinishTime.plus(flexray.getSlotDuration()), finishTime);
 			flexray.simulateUntil(finishTime);
 			assertTrue(controller.isTransmitted());
 			assertEquals(finishTime, controller.getFinishTime());
@@ -523,7 +522,7 @@ public class FlexRayTest {
 			int msgCycles = (int) Math.ceil(
 					cur.getRemainingBytes() / ((double) (FlexRay.MAX_SLOT_PAYLOAD * (FlexRay.DYNAMIC_SLOTS + 1))));
 			simulateUntil.invoke(flexray,
-					flexray.getCurrentTime().plus(flexray.getCycleTime().multipliedBy(msgCycles)));
+					flexray.getCurrentTime().plus(flexray.getCycleDuration().multipliedBy(msgCycles)));
 			assertTrue(cur.isTransmitted());
 
 			firstMsgs.clear();
@@ -566,35 +565,35 @@ public class FlexRayTest {
 		// finish in first cycle (static)
 		BusMessage c34 = createNregisterMessage(flexray, "c34", 3, FlexRay.MAX_SLOT_PAYLOAD-10, 6);
 
-		long slotSizeNs = flexray.getSlotSize().toNanos();
-		long totalStaticSegmentSizeNs = Math.toIntExact(flexray.getStaticSegmentSize().toNanos());
-		long cycleTimeNs = flexray.getCycleTime().toNanos();
+		long slotSizeNs = flexray.getSlotDuration().toNanos();
+		long totalStaticSegmentSizeNs = Math.toIntExact(flexray.getStaticSegmentDuration().toNanos());
+		long cycleTimeNs = flexray.getCycleDuration().toNanos();
 
 		Method simulateUntil = FlexRay.class.getDeclaredMethod("simulateUntil", Instant.class);
 		simulateUntil.setAccessible(true);
 
 		Instant currentTime = Instant.EPOCH;
-		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
+		currentTime = currentTime.plusNanos(flexray.getCycleDuration().dividedBy(2).toNanos());
 		simulateUntil.invoke(flexray, currentTime);
 		assertEquals(currentTime, flexray.getCurrentTime());
 
-		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
+		currentTime = currentTime.plusNanos(flexray.getCycleDuration().dividedBy(3).toNanos());
 		simulateUntil.invoke(flexray, currentTime);
 		assertEquals(currentTime, flexray.getCurrentTime());
 
-		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
+		currentTime = currentTime.plusNanos(flexray.getCycleDuration().dividedBy(3).toNanos());
 		simulateUntil.invoke(flexray, currentTime);
 		assertEquals(currentTime, flexray.getCurrentTime());
 
-		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(2).toNanos());
+		currentTime = currentTime.plusNanos(flexray.getCycleDuration().dividedBy(2).toNanos());
 		simulateUntil.invoke(flexray, currentTime);
 		assertEquals(currentTime, flexray.getCurrentTime());
 
-		currentTime = currentTime.plusNanos(flexray.getCycleTime().dividedBy(3).toNanos());
+		currentTime = currentTime.plusNanos(flexray.getCycleDuration().dividedBy(3).toNanos());
 		simulateUntil.invoke(flexray, currentTime);
 		assertEquals(currentTime, flexray.getCurrentTime());
 
-		currentTime = currentTime.plusNanos(flexray.getCycleTime().toNanos());
+		currentTime = currentTime.plusNanos(flexray.getCycleDuration().toNanos());
 		simulateUntil.invoke(flexray, currentTime);
 		assertEquals(currentTime, flexray.getCurrentTime());
 

@@ -15,10 +15,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Abstract calls that implements all common functionality of a the different protocols.
+ * Buses are used to transmit messages in the vehicle.
+ */
 public abstract class Bus extends MutableEEComponent {
 
+	/**
+	 * Components that are connected to this bus.
+	 */
 	private List<EEComponent> connectedComponents = new ArrayList<EEComponent>();
 
+	/**
+	 * Event with time of the next finished message.
+	 */
 	private Optional<KeepAliveEvent> keepAlive = Optional.empty();
 
 	protected Bus(EESimulator simulator) {
@@ -36,13 +46,13 @@ public abstract class Bus extends MutableEEComponent {
 		if (evt.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
 			BusMessage msg = (BusMessage) evt;
 			// only work on messages if it was not already seen before
-			if (!msg.hasTraveresed(this)) {
+			if (!msg.hasTraversed(this)) {
 				this.simulateUntil(msg.getEventTime());
 				this.registerMessage(msg);
 				this.setKeepAlive();
 			}
 		} else if (evt.getEventType() == EEDiscreteEventTypeEnum.KEEP_ALIVE_EVENT) {
-			if (this.keepAlive.get().getId() == evt.getId()) {
+			if (keepAlive.isPresent() && keepAlive.get().getId() == evt.getId()) {
 				this.simulateUntil(evt.getEventTime());
 				if (this.hasMessages()) {
 					this.setKeepAlive();
@@ -57,6 +67,10 @@ public abstract class Bus extends MutableEEComponent {
 
 	}
 
+	/**
+	 * Register a component to the bus.
+	 * @param component Component that should be added.
+	 */
 	public void registerComponent(EEComponent component) {
 		if (connectedComponents.contains(component)) {
 			throw new IllegalArgumentException(
@@ -68,6 +82,12 @@ public abstract class Bus extends MutableEEComponent {
 
 	}
 
+	/**
+	 * Add messages to subscribed messages of this bus.
+	 * Add component as target for messages.
+	 * @param component Component that is target of the messages
+	 * @param messages Messages that are transmitted over this bus to component
+	 */
 	public void addSubscribedMessages(EEComponent component, List<BusEntry> messages) {
 		List<BusEntry> newMessages = new ArrayList<BusEntry>();
 		for (BusEntry message : messages) {
@@ -97,12 +117,19 @@ public abstract class Bus extends MutableEEComponent {
 
 	public abstract Instant getCurrentTime();
 
+	/**
+	 * Creates a new BusMessage for each component that is subscribed to msg.
+	 * @param msg Message to transmit to next target.
+	 */
 	protected void registerMessageAtSimulator(BusMessage msg) {
 		for (EEComponent target : this.targetsByMessageId.getOrDefault(msg.getMessageID(), Collections.emptyList())) {
 			this.getSimulator().addEvent(msg.forwardTo(target));
 		}
 	}
 
+	/**
+	 * Set a event that is register to the bus itself with event time of the next expected finish time of the next message.
+	 */
 	protected void setKeepAlive() {
 		Instant nextFinishTime = this.getNextFinishTime();
 		// at least one message present AND (old keepAlive empty OR old keepAlive
@@ -113,10 +140,14 @@ public abstract class Bus extends MutableEEComponent {
 						|| nextFinishTime.isBefore(keepAlive.get().getEventTime()))) {
 			keepAlive = Optional.of(new KeepAliveEvent(nextFinishTime, this));
 			this.getSimulator().addEvent(keepAlive.get());
-			System.out.println("Bus: " + this.getId() + " has set new keepAliveEvent with time: " + nextFinishTime);
 		}
 	}
 
+	/**
+	 * Calculate the amount of time that is necessary to transmit transmittedBytes.
+	 * @param transmittedBytes Bytes for which the transmission time should be calculated.
+	 * @return Amount of time necessary to transmit transmittedBytes in nanoseconds.
+	 */
 	protected long calculateTransmissionTime(long transmittedBytes) {
 		if(transmittedBytes < 0){
 			throw new IllegalArgumentException("Transmitted bytes must be zero or positive. Transmitted bytes was: " + transmittedBytes);
@@ -125,16 +156,28 @@ public abstract class Bus extends MutableEEComponent {
 		return (long) Math.ceil(transmittedMikroBits / this.getOperationMode().getDataRate());
 	}
 
+	/**
+	 * Simulate the transmission of messages until endTime.
+	 * @param endTime Time to which point the simulation can advance.
+	 */
 	protected abstract void simulateUntil(Instant endTime);
 
+	/**
+	 * Calculate the time when the next BusMessage would be finished, if no further messages are added.
+	 * @return Time when the next BusMessage would be finished, if no further messages are added.
+	 */
 	protected abstract Instant getNextFinishTime();
 
+	/**
+	 * Register a message for transmission at the bus.
+	 * @param msg Message to be registered to the bus.
+	 */
 	protected abstract void registerMessage(BusMessage msg);
 
 	protected abstract boolean hasMessages();
 
 	protected abstract OperationMode getOperationMode();
 
-	public abstract BusType  getBusType();
+	public abstract BusType getBusType();
 
 }

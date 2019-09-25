@@ -18,6 +18,9 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.UUID;
 
+/**
+ * Models the transmission of BusMessage over a FlexRay. Calculates delay accordingly.
+ */
 public class FlexRay extends Bus {
 
 	/**
@@ -76,6 +79,9 @@ public class FlexRay extends Bus {
 	 */
 	private FlexRayOperationMode mode = FlexRayOperationMode.REDUNDANCY;
 
+	/**
+	 * Messages sorted by id. Separate for each controller
+	 */
 	private Map<UUID, PriorityQueue<BusMessage>> messagesByControllerId = new LinkedHashMap<UUID, PriorityQueue<BusMessage>>();
 
 	/**
@@ -137,7 +143,7 @@ public class FlexRay extends Bus {
 	/**
 	 * @return The duration of a slot
 	 */
-	Duration getSlotSize() {
+	Duration getSlotDuration() {
 		long mikroBits = ((long) (HEADER_SIZE + TRAILER_SIZE + MAX_SLOT_PAYLOAD)) * 8l * 1000000l;
 		double nanoseconds = mikroBits / ((double) mode.getDataRate());
 		return Duration.ofNanos((long) Math.ceil(nanoseconds));
@@ -146,23 +152,23 @@ public class FlexRay extends Bus {
 	/**
 	 * @return The duration of the static segment
 	 */
-	Duration getStaticSegmentSize() {
-		return this.getSlotSize().multipliedBy(this.messagesByControllerId.size() * FlexRay.STATIC_SLOTS);
+	Duration getStaticSegmentDuration() {
+		return this.getSlotDuration().multipliedBy(this.messagesByControllerId.size() * FlexRay.STATIC_SLOTS);
 	}
 
 	/**
 	 * @return The duration of the dynamic segment
 	 */
-	Duration getDynamicSegmentSize() {
-		long nanoseconds = this.getSlotSize().toNanos() * FlexRay.DYNAMIC_SLOTS;
+	Duration getDynamicSegmentDuration() {
+		long nanoseconds = this.getSlotDuration().toNanos() * FlexRay.DYNAMIC_SLOTS;
 		return Duration.ofNanos(nanoseconds);
 	}
 
 	/**
 	 * @return The duration of a cycle
 	 */
-	public Duration getCycleTime() {
-		return this.getSlotSize()
+	public Duration getCycleDuration() {
+		return this.getSlotDuration()
 				.multipliedBy((this.messagesByControllerId.size() * FlexRay.STATIC_SLOTS) + FlexRay.DYNAMIC_SLOTS);
 	}
 
@@ -180,11 +186,6 @@ public class FlexRay extends Bus {
 		return BusType.FLEXRAY;
 	}
 
-	/**
-	 * Determines if messagesByControllerId contains no messages
-	 *
-	 * @return true if messagesByControllerId contains at least one message
-	 */
 	@Override
 	protected boolean hasMessages() {
 		return getNextDynamicMessage() != null;
@@ -206,8 +207,8 @@ public class FlexRay extends Bus {
 
 		if (toTransmit > 0) {
 			Instant segmentStartTime = this.currentTime;
-			Duration staticSegmentDuration = this.getStaticSegmentSize();
-			Duration dynamicSegmentDuration = this.getDynamicSegmentSize();
+			Duration staticSegmentDuration = this.getStaticSegmentDuration();
+			Duration dynamicSegmentDuration = this.getDynamicSegmentDuration();
 
 			long fullCycles = (toTransmit / (this.getTotalStaticSegmentSize() + DYNAMIC_SEGMENT_SIZE));
 
@@ -225,14 +226,14 @@ public class FlexRay extends Bus {
 			if (toTransmit <= this.getTotalStaticSegmentSize()) {
 				this.lastPartialStaticSegmentBytes = toTransmit;
 				this.lastPartialDynamicSegmentBytes = 0;
-				this.lastPartialCycleStart = this.currentTime.plus(this.getCycleTime().multipliedBy(fullCycles));
+				this.lastPartialCycleStart = this.currentTime.plus(this.getCycleDuration().multipliedBy(fullCycles));
 			} else {
 				toTransmit -= this.getTotalStaticSegmentSize();
 				segmentStartTime = segmentStartTime.plusNanos(staticSegmentDuration.toNanos());
 				this.fillIncompleteDynamicSegment(segmentStartTime, toTransmit, 0);
 				this.lastPartialStaticSegmentBytes = this.getTotalStaticSegmentSize();
 				this.lastPartialDynamicSegmentBytes = toTransmit;
-				this.lastPartialCycleStart = this.currentTime.plus(this.getCycleTime().multipliedBy(fullCycles));
+				this.lastPartialCycleStart = this.currentTime.plus(this.getCycleDuration().multipliedBy(fullCycles));
 			}
 		}
 		this.currentTime = this.currentTime.plusNanos(calculateTransmissionTime(totalBytes));
@@ -289,7 +290,7 @@ public class FlexRay extends Bus {
 		// finish last incomplete cycle
 		if (lastPartialStaticSegmentBytes < this.getTotalStaticSegmentSize() && lastPartialStaticSegmentBytes > 0) {
 			Log.info("Start from incomplete static segment with " + lastPartialStaticSegmentBytes + " bytes");
-			Pair<Integer, Instant> pair = mockFillIncompleteStaticSegement(firstMsgByControllerId);
+			Pair<Integer, Instant> pair = mockFillIncompleteStaticSegment(firstMsgByControllerId);
 			if (pair.getRight().isBefore(earliestFinishTime)) {
 				earliestFinishTime = pair.getRight();
 				Log.info("New earliest finished msg in incomplete static segment with: " + pair.getLeft()
@@ -367,16 +368,16 @@ public class FlexRay extends Bus {
 						}
 					}
 					 //complete cycles and incomplete slots
-					Instant finishTime = time.plus(getCycleTime().multipliedBy(completeCycles)).plusNanos(partialSlotNs);
+					Instant finishTime = time.plus(getCycleDuration().multipliedBy(completeCycles)).plusNanos(partialSlotNs);
 					 //complete slots
 					 if (completeSlots < FlexRay.STATIC_SLOTS || (completeSlots == FlexRay.STATIC_SLOTS && remainingBytes == 0)) {
-						finishTime = finishTime.plus(slotOffset).plus(getSlotSize().multipliedBy(completeSlots));
+						finishTime = finishTime.plus(slotOffset).plus(getSlotDuration().multipliedBy(completeSlots));
 						Log.info("Message: " + msg + "finished in static slot @" + finishTime);
 					} 
 					// only possible for message with highest priority
 					else {
-						finishTime = finishTime.plus(getStaticSegmentSize())
-								.plus(getSlotSize().multipliedBy(completeSlots - 1));
+						finishTime = finishTime.plus(getStaticSegmentDuration())
+								.plus(getSlotDuration().multipliedBy(completeSlots - 1));
 						Log.info("Message: " + msg + "finished in dynamic slot@" + finishTime);
 					}
 					if (finishTime.isBefore(earliestFinishTime)) {
@@ -385,7 +386,7 @@ public class FlexRay extends Bus {
 								+ " cycles; " + completeSlots + " slots; " + remainingBytes + " remaining bytes");
 					}
 				}
-				slotOffset = slotOffset.plus(getSlotSize());
+				slotOffset = slotOffset.plus(getSlotDuration());
 			}
 		}
 		if (earliestFinishTime.isBefore(Instant.MAX)) {
@@ -400,8 +401,7 @@ public class FlexRay extends Bus {
 	 * otherwise.
 	 * 
 	 * @param toTransmit amount of bytes for which the bus is simulated
-	 * @return duration minus the amount of time it took the finish of the last
-	 *         cycle.
+	 * @return toTransmit - the amount of bytes that were transmitted finishing off the last cycle
 	 */
 	private int finishLastCycle(int toTransmit) {
 		int totalBytes = toTransmit;
@@ -420,14 +420,14 @@ public class FlexRay extends Bus {
 				toTransmit -= remainingBytes;
 				remainingBytes = FlexRay.DYNAMIC_SEGMENT_SIZE;
 				if (toTransmit < remainingBytes) {
-					this.fillIncompleteDynamicSegment(this.lastPartialCycleStart.plus(this.getStaticSegmentSize()), toTransmit, 0);
+					this.fillIncompleteDynamicSegment(this.lastPartialCycleStart.plus(this.getStaticSegmentDuration()), toTransmit, 0);
 					this.currentTime = this.currentTime.plusNanos(calculateTransmissionTime(totalBytes));
 					this.lastPartialDynamicSegmentBytes = toTransmit;
 					this.lastPartialStaticSegmentBytes = this.getTotalStaticSegmentSize();
 					toTransmit = 0;
 				} else {
-					this.fillDynamicSegment(this.lastPartialCycleStart.plus(this.getStaticSegmentSize()));
-					this.currentTime = this.lastPartialCycleStart.plus(this.getCycleTime());
+					this.fillDynamicSegment(this.lastPartialCycleStart.plus(this.getStaticSegmentDuration()));
+					this.currentTime = this.lastPartialCycleStart.plus(this.getCycleDuration());
 					this.lastPartialCycleStart = Instant.EPOCH;
 					this.lastPartialDynamicSegmentBytes = 0;
 					this.lastPartialStaticSegmentBytes = 0;
@@ -439,14 +439,14 @@ public class FlexRay extends Bus {
 			Log.info("Start simulation from incomplete dynamic slot with " + lastPartialDynamicSegmentBytes + "bytes transmitted");
 			int remainingBytes = FlexRay.DYNAMIC_SEGMENT_SIZE - this.lastPartialDynamicSegmentBytes;
 			if (toTransmit < remainingBytes) {
-				this.fillIncompleteDynamicSegment(this.lastPartialCycleStart.plus(this.getStaticSegmentSize()), toTransmit, lastPartialDynamicSegmentBytes);
+				this.fillIncompleteDynamicSegment(this.lastPartialCycleStart.plus(this.getStaticSegmentDuration()), toTransmit, lastPartialDynamicSegmentBytes);
 				this.currentTime = this.currentTime.plusNanos(calculateTransmissionTime(totalBytes));
 				this.lastPartialDynamicSegmentBytes += toTransmit;
 				this.lastPartialStaticSegmentBytes = this.getTotalStaticSegmentSize();
 				toTransmit = 0;
 			} else {
-				this.fillIncompleteDynamicSegment(this.lastPartialCycleStart.plus(this.getStaticSegmentSize()), remainingBytes, lastPartialDynamicSegmentBytes);
-				this.currentTime = this.lastPartialCycleStart.plus(this.getCycleTime());
+				this.fillIncompleteDynamicSegment(this.lastPartialCycleStart.plus(this.getStaticSegmentDuration()), remainingBytes, lastPartialDynamicSegmentBytes);
+				this.currentTime = this.lastPartialCycleStart.plus(this.getCycleDuration());
 				this.lastPartialCycleStart = Instant.EPOCH;
 				this.lastPartialDynamicSegmentBytes = 0;
 				this.lastPartialStaticSegmentBytes = 0;
@@ -472,7 +472,7 @@ public class FlexRay extends Bus {
 	}
 
 	/**
-	 * Fill an incomplete (it was already started or is not finished) static
+	 * Fill an incomplete (it was already started or is can not be finished) static
 	 * segment.
 	 * 
 	 * @param segmentStartTime the time at which the segment was started
@@ -579,7 +579,13 @@ public class FlexRay extends Bus {
 		return msgs;
 	}
 
-	private ImmutablePair<Integer, Instant> mockFillIncompleteStaticSegement(
+	/**
+	 * Fill an incomplete static slot for getting the next finish time
+	 * @param firstMessageByControllerId the first message of each controller
+	 * @return Tuple of the transmitted bytes and the time when a message was finished.
+	 * If no message was finished the time is Instant.Max.
+	 */
+	private ImmutablePair<Integer, Instant> mockFillIncompleteStaticSegment(
 			Map<UUID, BusMessage> firstMessageByControllerId) {
 		Instant finishTime = Instant.MAX;
 		int startByte = lastPartialStaticSegmentBytes;
@@ -617,6 +623,13 @@ public class FlexRay extends Bus {
 		return new ImmutablePair<Integer, Instant>(transmittedBytes, finishTime);
 	}
 
+	/**
+	 * Fill a slot for getting the next finish time.
+	 * @param msg Message that is transmitted in this slot.
+	 * @param transmittedBytes Already transmitted bytes in this segment.
+	 * @param slotPayload Maximum number of payload that can be transmitted during this slot.
+	 * @return The finish time of this message if this message was finished. Instant.Max otherwise.
+	 */
 	private Instant mockFillSlot(BusMessage msg, int transmittedBytes, int slotPayload) {
 		Instant finishTime = Instant.MAX;
 		if (msg != null) {
@@ -653,7 +666,7 @@ public class FlexRay extends Bus {
 	}
 
 	/**
-	 * Fill an incomplete (it was already started or is not finished) dynamic
+	 * Fill an incomplete (it was already started or can not be finished) dynamic
 	 * segment.
 	 * 
 	 * @param segmentStartTime the time at which the segment was started
@@ -695,7 +708,7 @@ public class FlexRay extends Bus {
 	}
 
 	/**
-	 * Fill a dynamic slot for one controller.
+	 * Fill a dynamic slot.
 	 * 
 	 * @param segmentStartTime the time at which the segment has started
 	 * @param transmittedBytes the bytes that were already transmitted during this
@@ -790,7 +803,11 @@ public class FlexRay extends Bus {
 		}
 		return res;
 	}
-	
+
+	/**
+	 * Remove msg from the corresponding list of messages of one controller.
+	 * @param msg
+	 */
 	private void removeFirstMessage(BusMessage msg) {
 		for (Map.Entry<UUID, PriorityQueue<BusMessage>> entry : messagesByControllerId.entrySet()) {
 			PriorityQueue<BusMessage> controllerMessages = entry.getValue();

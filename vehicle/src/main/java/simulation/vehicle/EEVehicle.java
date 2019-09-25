@@ -96,11 +96,8 @@ public class EEVehicle {
 
 	public void executeLoopIteration(Instant time) {
 		if(!vehicle.getPhysicalVehicle().getError() && time.isAfter(this.eeSimulator.getSimulationTime())) {
-			System.out.println("Notify sensors");
 			this.notifySensors(time);
-			System.out.println("SimulateNextTick");
 			this.eeSimulator.simulateNextTick(time);
-			System.out.println("Notify Actuator");
 			this.notifyActuator(time);
 		}
 	}
@@ -213,6 +210,9 @@ public class EEVehicle {
 		this.collision = collision;
 	}
 
+	/**
+	 * Sent the constant bus data to all components that need it.
+	 */
 	protected void setConstantBusData() {
 		List<EEComponent> components = new ArrayList<EEComponent>(
 				this.actuatorList.size() + this.sensorList.size() + 5);
@@ -234,6 +234,12 @@ public class EEVehicle {
 		}
 	}
 
+	/**
+	 * Send constant messages in constMsgs over the bus to the component.
+	 * @param constMsgs BusEntries of constant messages that should be transmitted.
+	 * @param bus Bus that transmit the messages.
+	 * @param component Component that needs the messages.
+	 */
 	private void sendConstMsgs(List<BusEntry> constMsgs, Bus bus, EEComponent component) {
 		PhysicalVehicle physicalVehilce = vehicle.getPhysicalVehicle();
 		VehicleActuator brakes = physicalVehilce

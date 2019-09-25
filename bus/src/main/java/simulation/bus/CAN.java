@@ -14,6 +14,9 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.PriorityQueue;
 
+/**
+ * Models the transmission of BusMessages of a CAN. Calculates the delay accordingly.
+ */
 public class CAN extends Bus{
 
     private static final BusMessageComparatorIdDesc COMP_ID_DESC = new BusMessageComparatorIdDesc();
@@ -39,6 +42,9 @@ public class CAN extends Bus{
 
     private Instant currentTime;
 
+    /**
+     * Currently registered messages at this bus.
+     */
     private PriorityQueue<BusMessage> messages = new PriorityQueue<>(COMP_ID_DESC);
 
     /**
@@ -117,6 +123,11 @@ public class CAN extends Bus{
         }
     }
 
+    /**
+     * Finish last partial frame
+     * @param toTransmit Maximum number of bytes to transmit
+     * @return toTransmit - bytes that were transmitted during finishing last frame
+     */
     private int finishLastFrame(int toTransmit) {
         if(partialMessage.isPresent() && partialFrameBytes > 0 && partialFrameBytes < HEADER_SIZE + partialFramePayloadBytes + TRAILER_SIZE) {
             final int partialFrameBytesCopy = partialFrameBytes;

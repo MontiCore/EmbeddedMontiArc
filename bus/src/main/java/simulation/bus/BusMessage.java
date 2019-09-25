@@ -20,25 +20,46 @@ import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EEDiscreteEventTypeEnum;
 
+/**
+ * Messages that are transmitted over buses between EEComponent(e.g. Sensors, Actuators)
+ */
 public class BusMessage extends EEDiscreteEvent {
 
+	/**
+	 * Message to be transmitted.
+	 */
 	private Object message;
 
-	// in bytes
+	/**
+	 * Message length in bytes
+	 */
 	private int messageLen;
+
 
 	private int transmittedBytes;
 
 	private boolean transmitted;
 
+	/**
+	 * Id of the sender of this message
+	 */
 	private UUID controllerID;
 
+	/**
+	 * The type of the message
+	 */
 	private BusEntry messageID;
 
+	/**
+	 * Time when the this message arrives at the target
+	 */
 	private Instant finishTime;
 
 	private boolean error;
-	
+
+	/**
+	 * Ids of components this message has traversed. (Avoid infinite loops)
+	 */
 	private Set<UUID> seenComponentIds;
 
 	/**
@@ -59,7 +80,7 @@ public class BusMessage extends EEDiscreteEvent {
 		this.error = false;
 		this.seenComponentIds = new HashSet<UUID>();
 	}
-	
+
 	private BusMessage(Object message, int messageLen, BusEntry messageID, Instant eventTime, UUID sourceID,
 			EEComponent target, Set<UUID> seenComponentsIds) {
 		super(EEDiscreteEventTypeEnum.BUSMESSAGE, eventTime, target);
@@ -128,6 +149,12 @@ public class BusMessage extends EEDiscreteEvent {
 		return this.messageLen - this.transmittedBytes;
 	}
 
+	/**
+	 * Transmit maximum number of bytes bytes of this message.
+	 * @param bytes Maximum number of bytes to be transmitted
+	 * @param bitErrorRate Rate of bit errors
+	 * @return Actual transmitted bytes
+	 */
 	public int transmitBytes(int bytes, double bitErrorRate) {
 		int res = -1;
 		if (bytes >= 0) {
@@ -149,14 +176,13 @@ public class BusMessage extends EEDiscreteEvent {
 	}
 
 	/**
-	 * Creates a new message with target as destination. Finish time of this is the
-	 * event time of the forwarded message.
-	 * @param target
-	 * @return
+	 * Creates a new message with target as destination and the finish time of this event as event time.
+	 * @param target Target of the new message
+	 * @return New BusMessage with the updated target and event time.
 	 */
 	public BusMessage forwardTo(EEComponent target) {
 		if(!this.transmitted) {
-			throw new IllegalArgumentException("Only transmitted messages can be forwareded.");
+			throw new IllegalArgumentException("Only transmitted messages can be forwarded.");
 		}
 		else if(target == null){
 			throw new NullArgumentException();
@@ -167,7 +193,7 @@ public class BusMessage extends EEDiscreteEvent {
 		}
 	}
 	
-	public boolean hasTraveresed(Bus bus) {
+	public boolean hasTraversed(Bus bus) {
 		return !this.seenComponentIds.add(bus.getId());
 	}
 	
@@ -187,16 +213,11 @@ public class BusMessage extends EEDiscreteEvent {
 
 }
 
+/**
+ * Used for sorting in descending order of messageId ordinal value
+ */
 class BusMessageComparatorIdDesc implements Comparator<BusMessage> {
-	// Used for sorting in descending order of
 	public int compare(BusMessage a, BusMessage b) {
 		return b.getMessageID().compareTo(a.getMessageID());
-	}
-}
-
-class BusMessageComparatorTimeAsc implements Comparator<BusMessage> {
-	// Used for sorting in ascending order of
-	public int compare(BusMessage a, BusMessage b) {
-		return a.getEventTime().compareTo(b.getEventTime());
 	}
 }

@@ -16,6 +16,10 @@ import org.apache.commons.math3.exception.NullArgumentException;
 
 import simulation.bus.BusMessage;
 
+
+/**
+ * Abstract class that implements all common functionality of EEComponents.
+ */
 abstract class AbstractEEComponent implements EEComponent{
 
 	private final EESimulator simulator;

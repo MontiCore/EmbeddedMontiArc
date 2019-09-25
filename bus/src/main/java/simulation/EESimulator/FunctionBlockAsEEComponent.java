@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Generic wrapper for function blocks
+ */
 public class FunctionBlockAsEEComponent extends ImmutableEEComponent{
 
     FunctionBlockInterface functionBlock;
@@ -46,9 +49,11 @@ public class FunctionBlockAsEEComponent extends ImmutableEEComponent{
             throw new IllegalArgumentException("FunctionBlockAsEEComponent expects BusMessage as event. Event type was" + event.getEventType());
         }
         BusMessage busMessage = (BusMessage)event;
+        //Save the message that arrive
         inputs.put(busMessage.getMessageID().toString(), busMessage.getMessage());
         //all inputs present
         if (inputs.size() == this.getSubscribedMessages().size()){
+            //Execute function block
             Duration timeDiff = Duration.between(lastExecutionTime, event.getEventTime());
 
             functionBlock.setInputs(inputs);

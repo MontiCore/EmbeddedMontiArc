@@ -103,6 +103,8 @@ public class Vehicle implements SimulationLoopExecutable {
     /**
      * Constructor for a vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
+     * @param physicalVehicleBuilder Builder for the physical vehicle that belongs to this vehicle
+     * @param eeVehicleBuilder Builder for the ee vehicle that belongs to this vehicle.
      */
     public Vehicle(PhysicalVehicleBuilder physicalVehicleBuilder, EEVehicleBuilder eeVehicleBuilder) {
     	//Create physicalVehicle
@@ -112,6 +114,13 @@ public class Vehicle implements SimulationLoopExecutable {
         initVehicle();
     }
 
+    /**
+     * Constructor for a vehicle that is standing at its position
+     * Use other functions to initiate movement and position updates
+     * @param physicalVehicleBuilder Builder for the physical vehicle that belongs to this vehicle
+     * @param eeVehicleBuilder Builder for the ee vehicle that belongs to this vehicle.
+     * @param eeFile File from which the ee vehicle should be parsed
+     */
     public Vehicle(PhysicalVehicleBuilder physicalVehicleBuilder, EEVehicleBuilder eeVehicleBuilder, File eeFile) {
     	//Create physicalVehicle
         this.physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(this);
@@ -119,7 +128,13 @@ public class Vehicle implements SimulationLoopExecutable {
         this.eeVehicle = eeVehicleBuilder.buildEEVehicle(this, eeFile);
     	initVehicle();
     }
-    
+
+    /**
+     * Constructor for a vehicle that is standing at its position
+     * Use other functions to initiate movement and position updates
+     * @param massPointPhysicalVehicleFile File from which the physical vehicle should be parsed
+     * @param eeVehicleBuilder Builder for the ee vehicle that belongs to this vehicle.
+     */
     public Vehicle(File massPointPhysicalVehicleFile, EEVehicleBuilder eeVehicleBuilder) throws IOException {
     	//Create physicalVehicle
         this.physicalVehicle = new MassPointPhysicalVehicleBuilder().loadFromFile(this, massPointPhysicalVehicleFile);
@@ -128,6 +143,13 @@ public class Vehicle implements SimulationLoopExecutable {
         initVehicle();
     }
 
+    /**
+     * Constructor for a vehicle that is standing at its position
+     * Use other functions to initiate movement and position updates
+     * @param massPointPhysicalVehicleFile File from which the physical vehicle should be parsed
+     * @param eeVehicleBuilder Builder for the ee vehicle that belongs to this vehicle.
+     * @param eeFile File from which the ee vehicle should be parsed
+     */
     public Vehicle(File massPointPhysicalVehicleFile, EEVehicleBuilder eeVehicleBuilder, File eeFile) throws IOException {
     	//Create physicalVehicle
         this.physicalVehicle = new MassPointPhysicalVehicleBuilder().loadFromFile(this, massPointPhysicalVehicleFile);
@@ -136,6 +158,9 @@ public class Vehicle implements SimulationLoopExecutable {
     	initVehicle();
     }
 
+    /**
+     * Common initialisation process
+     */
 	private void initVehicle() {
     	// Create the status logger
         this.statusLogger = new StatusLogger();
@@ -159,6 +184,12 @@ public class Vehicle implements SimulationLoopExecutable {
 
     }
 
+    /**
+     * Get the sensor that belongs to type. If multiple exist, return arbitrary one.
+     * If no such sensor exist return Optional.Empty()
+     * @param type Type of the sensor that should be returned
+     * @return Optional of respective sensor or Optional.Empty()
+     */
     public Optional<AbstractSensor> getSensorByType(BusEntry type){
     	return this.eeVehicle.getSensorByType(type);
     }
@@ -262,7 +293,6 @@ public class Vehicle implements SimulationLoopExecutable {
         this.maxTemporaryAllowedVelocity = maxTemporaryAllowedVelocity;
     }
 
-    //TODO: What is it and do we still need it?
     /**
      * Get current trajectory of the vehicle, if available. Otherwise return empty list.
      *

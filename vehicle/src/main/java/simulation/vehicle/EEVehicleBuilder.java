@@ -28,20 +28,38 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.util.*;
 
+/**
+ * Build a customisable EEVehicle
+ */
 public class EEVehicleBuilder {
 	
 	private final EESimulator eeSimulator;
-	
+
+	/**
+	 * Determines to which buses each sensor is added.
+	 */
 	private Map<BusEntry,List<Bus>> busesBySensorBusEntry = new HashMap<BusEntry, List<Bus>>();
-	
+
+	/**
+	 * Set of buses to which all sensor should be added.
+	 */
 	Set<Bus> addAllSensors = new HashSet<Bus>();
-	
+
+	/**
+	 * All components that were created or added in this EEVehicleBuilder
+	 */
 	private List<EEComponent> components = new ArrayList<EEComponent>();   
 	
 	public EEVehicleBuilder(EESimulator eeSimulator) {
 		this.eeSimulator = eeSimulator;
 	}
-	
+
+	/**
+	 * Build the EEVehicle with the created/added components
+	 * @param vehicle Vehicle the created EEVehicle belongs to
+	 * @param physicalVehicle Physical vehicle that belongs to the vehicle.
+	 * @return EEVehicle that belongs to Vehicle. Configured in the specified way.
+	 */
 	public EEVehicle buildEEVehicle(Vehicle vehicle, PhysicalVehicle physicalVehicle) {
 		Set<Bus> buses = new HashSet<Bus>();
 		if(!addAllSensors.isEmpty()) {

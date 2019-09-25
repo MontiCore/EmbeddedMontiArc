@@ -13,11 +13,28 @@ import simulation.bus.Bus;
 
 import java.util.*;
 
+/**
+ * Wrapper for a function block that always sends the messages.
+ */
 public class ConstantFunctionBlockAsEEComponent extends ImmutableEEComponent{
 
+    /**
+     * BusEntries that are send by this component by their name.
+     */
     private Map<String, BusEntry> busEntryByName = new HashMap<>();
+
+    /**
+     * Size of the message by BusEntry
+     */
     private final HashMap<BusEntry, Integer> sizeByMessageId;
 
+    /**
+     * Create a constant function block as EEComponent with default settings.
+     * @param buses Buses that the EEComponent should be connected
+     * @param sizeByMessageId Size of the messages that are transmitted
+     * @param functionBlock The function block that is wrapped.
+     * @return ConstantFunctionBlockAsEEComponent
+     */
     public static ConstantFunctionBlockAsEEComponent createConstantFunctionBlockAsEEComponent(List<Bus> buses, HashMap<BusEntry, Integer> sizeByMessageId, FunctionBlockInterface functionBlock){
         if(buses == null || buses.isEmpty()){
             throw new IllegalArgumentException("Buses can not be null or empty");
@@ -33,6 +50,13 @@ public class ConstantFunctionBlockAsEEComponent extends ImmutableEEComponent{
         return new ConstantFunctionBlockAsEEComponent(buses.get(0).getSimulator(), targetsByMessageId, sizeByMessageId, functionBlock);
     }
 
+    /**
+     * Create a constant function block as EEComponent with default settings.
+     * @param bus Bus that the EEComponent should be connected
+     * @param sizeByMessageId Size of the messages that are transmitted
+     * @param functionBlock The function block that is wrapped.
+     * @return ConstantFunctionBlockAsEEComponent
+     */
     public  static ConstantFunctionBlockAsEEComponent createConstantFunctionBlockAsEEComponent(Bus bus, HashMap<BusEntry, Integer> sizeByMessageId, FunctionBlockInterface functionBlock){
         return createConstantFunctionBlockAsEEComponent(Collections.singletonList(bus), sizeByMessageId, functionBlock);
     }
@@ -49,10 +73,14 @@ public class ConstantFunctionBlockAsEEComponent extends ImmutableEEComponent{
         this.setConstantOutput(functionBlock.getOutputs());
     }
 
+    /**
+     * Send the constant messages by the wrapped function block
+     * @param outputs Messages that should be send. Indexed by the names of the message Ids.
+     */
     private void setConstantOutput(Map<String, Object> outputs) {
         for(Map.Entry<String, Object> entry : outputs.entrySet()){
-            BusEntry messsageId = busEntryByName.get(entry.getKey());
-            this.sendMessage(entry.getValue(), sizeByMessageId.get(messsageId), messsageId, getSimulator().getSimulationTime());
+            BusEntry messageId = busEntryByName.get(entry.getKey());
+            this.sendMessage(entry.getValue(), sizeByMessageId.get(messageId), messageId, getSimulator().getSimulationTime());
         }
     }
 
