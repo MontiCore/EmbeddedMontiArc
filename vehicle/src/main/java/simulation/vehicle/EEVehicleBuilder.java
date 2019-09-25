@@ -282,6 +282,14 @@ public class EEVehicleBuilder {
 		return comp;
 	}
 
+	public ConstantFunctionBlockAsEEComponent createConstantFunctionBlock(List<Bus> buses, HashMap<BusEntry, Integer> sizeByMessageId, FunctionBlockInterface functionBlock){
+		return ConstantFunctionBlockAsEEComponent.createConstantFunctionBlockAsEEComponent(buses, sizeByMessageId, functionBlock);
+	}
+
+	public ConstantFunctionBlockAsEEComponent createConstantFunctionBlock(Bus bus, HashMap<BusEntry, Integer> sizeByMessageId, FunctionBlockInterface functionBlock){
+		return ConstantFunctionBlockAsEEComponent.createConstantFunctionBlockAsEEComponent(bus, sizeByMessageId, functionBlock);
+	}
+
 	public boolean addComponent(EEComponent comp){
 		return components.add(comp);
 	}
