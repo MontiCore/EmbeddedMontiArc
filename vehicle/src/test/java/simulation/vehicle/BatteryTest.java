@@ -7,22 +7,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package simulation.vehicle;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.BlockRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-import org.junit.*;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import simulation.environment.WorldModel;
-import simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetPavements;
-
-
-import simulation.vehicle.Battery;
-import simulation.vehicle.BatteryInterface;
 
 public class BatteryTest {
 	Vehicle v;
@@ -85,7 +72,7 @@ public class BatteryTest {
 		
 		double t3 = battery.timeToCharge(30.0, 100.0, 1.0);
 		Assert.assertEquals(t3, 3.0, 1.0);
-		
+
 //		battery.charge(100.0, 1.0);		
 //		assertEquals(30, v.getBattery().get().getCurrentCapacity(), 1.0);
 //		battery.timeToCharge(100.0, 100.0, 1.0);
