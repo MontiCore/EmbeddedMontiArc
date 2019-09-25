@@ -1,6 +1,6 @@
 package bumper;
 
-stream BumpbotTest for Bumpbot{
+stream BumpbotTest for BumpBot{
     // Input
     vehicle_status.velocity: 0;
     vehicle_status.acceleration: 0;
