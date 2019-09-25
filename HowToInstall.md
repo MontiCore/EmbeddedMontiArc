@@ -1,10 +1,10 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # How to install everything
-- Download Carla (We are using the precompiled version 0.9.5, because this version is currently supported by the ros-bridge) from `https://github.com/carla-simulator/carla/releases/tag/0.9.5`
+- Download Carla (We are using the precompiled version 0.9.5, because this is the latest version that was supported by the ros-bridge at the time) from `https://github.com/carla-simulator/carla/releases/tag/0.9.5`
 - Extract it
 - If the file carla-0.9.5-py2.7-linux-x86_64.egg is not present inside the PythonAPI folder copy it there from PythonAPI/carla/dist
 - Install Docker
-- If you want to build the CarlaRosBridge Docker Container yourself you can use the scripts in docker/carla-ros-bridge
+- If you want to build the CarlaRosBridge Docker Container yourself you can use the scripts in docker/carla-ros-bridge; note that we use the tag 0.9.5.1 of the carla-ros-bridge as the latest version is not compatible with Carla 0.9.5 anymore
 
 # How to run it on Linux
 ## How to execute the code for the bumper bot and read the collision sensor?
@@ -21,7 +21,9 @@ If you want to read additional messages from a rostopic you can execute:
 `docker/bumpbot/open_shell.sh` and inside the container read the topic with e.g. `rostopic echo /carla/ego_vehicle/collision`
 
 # Running with docker on Windows
-I tested this code in a Command Prompt/Power Shell. For the use of other consoles the commands might need to be adjusted for example with winpty
+I tested this code in a Command Prompt/Power Shell. For the use of other consoles the commands might need to be adjusted for example with winpty.
+
+Similarly to how you run it on Linux, there are the win_run.sh, win_compile_shell.sh and win_open_shell.sh scripts. Depending on your system, these might need to be edited.
 
 ## Running the code
 - In the Docker Settings GUI select the drive where you want to work on as shared drive, else using volumes won't work.
