@@ -6,9 +6,9 @@ component CalculateWrappedValues{
 		// ports for CARLA to Autopilot:
 
 	ports
-	    	in Vehicle_Status vehicle_status,  
+	    
+		in Vehicle_Status vehicle_status,  
 		in Quaternion orientation,
-		in Ego_Vehicle tmp_vehicle,
 
 		out Q (0.0 m/s : 0.01 m/s : oo m/s) velocity,		
 		out Q (0.0 : 0.001 : 2.5) throttle,
@@ -26,7 +26,7 @@ component CalculateWrappedValues{
 	implementation Math{
 		//Wrapping CARLA output into Autopilot input:	
 
-		tmp_vehicle = vehicle_status.control;
+		Ego_Vehicle tmp_vehicle = vehicle_status.control;
 	
 		//autopilot: engine actuation (0, 2.5)
 		throttle = (tmp_vehicle.throttle * 2.5);
