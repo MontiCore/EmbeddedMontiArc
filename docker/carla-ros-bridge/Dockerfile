@@ -22,7 +22,9 @@ RUN cp -r /opt/carla-ros-bridge/git/carla_manual_control /opt/carla-ros-bridge/s
 RUN cp -r /opt/carla-ros-bridge/git/carla_msgs /opt/carla-ros-bridge/src/carla_msgs
 RUN cp -r /opt/carla-ros-bridge/git/carla_ego_vehicle /opt/carla-ros-bridge/src/carla_ego_vehicle
 RUN cp -r /opt/carla-ros-bridge/git/carla_waypoint_publisher /opt/carla-ros-bridge/src/carla_waypoint_publisher
-RUN sed -i 's/localhost/134.61.174.75/g' /opt/carla-ros-bridge/src/carla_ros_bridge/config/settings.yaml
+
+# REPLACE WITH YOUR IP
+RUN sed -i 's/localhost/134.61.74.137/g' /opt/carla-ros-bridge/src/carla_ros_bridge/config/settings.yaml
 RUN /bin/bash -c 'source /opt/ros/kinetic/setup.bash; cd  /opt/carla-ros-bridge; catkin_make -DCMAKE_BUILD_TYPE=Release install'
 
 # replace entrypoint
