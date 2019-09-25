@@ -1,0 +1,28 @@
+package bumper;
+
+stream BumpbotTest for Bumpbot{
+    // Input
+    vehicle_status.velocity: 0;
+    vehicle_status.acceleration: 0;
+
+    orientation.x: -3.40606290796e-05;
+    orientation.y: -1.96673991356e-06;
+    orientation.z: -0.715650891876;
+    orientation.w: 0.698458158942;
+
+	collision_normale.x: 0.0;
+        collision_normale.y: 0.0;
+        collision_normale.z: 0.0;
+
+    // Output
+    // - means: all values are allowed
+    // 100 +/- 1 means: all values from 99 to 101 are allowed
+    vehicle_control.throttle: 0 +/- 1;
+	vehicle_control.steer: -;
+	vehicle_control.brake: -;
+	vehicle_control.hand_brake: false;
+	vehicle_control.reverse: false;
+	vehicle_control.gear: -;
+	vehicle_control.manual_gear_shift: false;
+
+}
