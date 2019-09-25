@@ -21,12 +21,12 @@ public class SetStructPortInstruction{
 
     public static String getStructInstruction(EMAPortSymbol port, RosMsg rosMsg, String fieldPrefix) {
         String inst;
-        if (rosMsg.getName().startsWith("std_msgs/")) {
+        if (rosMsg.getName().startsWith("std_msgs/")) { 
                 inst = NameHelper.getAllFieldNames(rosMsg).stream()
                         .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + " = msg->" + fieldPrefix + field + ";")
                         .sorted()
                         .collect(Collectors.joining("\n"));
-        } else {
+        } else { //port is a struct -> further handling necessary
             StructSymbol structSymbol = (StructSymbol) port.getTypeReference().getReferencedSymbol();
 
             List<String> structFieldNames = NameHelper.getAllFieldNames(structSymbol);
@@ -79,29 +79,34 @@ public class SetStructPortInstruction{
                     inst += "for(int " + curInd + " = 0; " + curInd + " < " + dimSizes.get(i) + "; " + curInd + "++){\n";
                 }
 
+		    
+                    //part of the improved array handling
                     String upperBound;
                     String lowerBound;
 
-                    if (!fieldPrefix.isEmpty() && fieldPrefix.contains(":")){
+                    if (!fieldPrefix.isEmpty() && fieldPrefix.contains(":")){ //syntax correct?
                         String split[] = fieldPrefix.split(":", 2);
-                        boolean boundExists = !split[0].replaceAll("[^0-9]", "").isEmpty();
+                        boolean boundExists = !split[0].replaceAll("[^0-9]", "").isEmpty() && !split[0].replaceAll("[^0-9]", "").equals("0"); //0 is not a valid bound in EMAM
 
-                        lowerBound = boundExists ? split[0].replaceAll("[^0-9]", "") : "0";
-                        boundExists = !split[1].replaceAll("[^0-9]", "").isEmpty();
-
-                        upperBound = boundExists ? split[1].replaceAll("[^0-9]", "") : dimSizes.get(dimSizes.size()-1)+"-1";  
-                    } else {
+                        //extract bounds from msgField
+                        lowerBound = boundExists ? split[0].replaceAll("[^0-9]", "")+"-1" : "0";
+                        boundExists = !split[1].replaceAll("[^0-9]", "").isEmpty() && !split[1].replaceAll("[^0-9]", "").equals("0"); //0 is not a valid bound in EMAM;
+                        upperBound = boundExists ? split[1].replaceAll("[^0-9]", "")+"-1" : dimSizes.get(dimSizes.size()-1)+"-1";  
+                    } else { //no bounds given
                         lowerBound = "0";
-                   	    upperBound = dimSizes.get(dimSizes.size()-1)+"-1";
+                   	upperBound = dimSizes.get(dimSizes.size()-1)+"-1";
                     }
+
+
 		    if(!upperBound.equals("")){
 //		        if (Integer.parseInt(lowerBound) > Integer.parseInt(upperBound)) { If 
 //		            Log.error(" ArrayBoundsHandler: lowerBound > upperBound!");
 //		        }
 		        inst += "if(" + lowerBound + " <= counter && counter <= " + upperBound + "){\n";
                     }
+ 
+                    //three if-cases will be generated: lB <= counter <= uB, counter < lB, counter > uB
                     String tmp;
-                    
                     if (fieldPrefix.isEmpty()){
                         tmp = "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = msg->" + fieldPrefix + "data[counter]";
                     } else {
@@ -126,13 +131,13 @@ public class SetStructPortInstruction{
 		                  inst += "else{\n";
 		                  inst += "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = 0" + ";\n";
 		                  inst += "}\n";
-									}
+                    }
                 
-                inst += "counter++;\n";
+                    inst += "counter++;\n";
 
-                for (int i = 0; i < dimSizes.size(); i++) {
-                    inst += "}\n";
-                }
-                return inst;       
+                    for (int i = 0; i < dimSizes.size(); i++) {
+                        inst += "}\n";
+                    }
+                    return inst;       
     }
 }
