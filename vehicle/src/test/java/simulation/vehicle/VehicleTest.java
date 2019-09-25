@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 /* (c) https://github.com/MontiCore/monticore */
 package simulation.vehicle;
 
@@ -315,7 +321,7 @@ public class VehicleTest {
         physicalVehicle3.executeLoopIteration(10);
 
         assertTrue(vehicle.batteryProblem);
-        assertFalse(vehicle2.batteryProblem);
+        assertTrue(vehicle2.batteryProblem);
         assertFalse(vehicle3.batteryProblem);
         assertTrue(vehicle.isGotoCharginstation());
         assertTrue(vehicle2.isGotoCharginstation());
@@ -345,7 +351,7 @@ public class VehicleTest {
         modelicaPhysicalVehicle6.executeLoopIteration(10);
 
         assertTrue(vehicle4.batteryProblem);
-        assertFalse(vehicle5.batteryProblem);
+        assertTrue(vehicle5.batteryProblem);
         assertFalse(vehicle6.batteryProblem);
         assertTrue(vehicle4.isGotoCharginstation());
         assertTrue(vehicle5.isGotoCharginstation());

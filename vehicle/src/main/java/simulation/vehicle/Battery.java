@@ -1,22 +1,8 @@
 /**
+ * (c) https://github.com/MontiCore/monticore
  *
- * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
 package simulation.vehicle;
 
@@ -51,7 +37,10 @@ public class Battery implements BatteryInterface, IBattery{
 		
 		setThrottle (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE));
 		setGear     (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR));
-		local_deltaT = (double) vehicle.getControllerBus().get().getData(BusEntry.SIMULATION_DELTA_TIME.toString());
+		if (vehicle.getControllerBus().isPresent())
+			local_deltaT = (double) vehicle.getControllerBus().get().getData(BusEntry.SIMULATION_DELTA_TIME.toString());
+		else
+			local_deltaT = 133;
 		oldKineticEnergy = 0;
 		
 		ChargingStationConnectionStatus = false;
@@ -112,8 +101,6 @@ public class Battery implements BatteryInterface, IBattery{
 		
 		double consumption = gearEffectiveValue * throttleEffectiveValue;
 
-		System.out.println(String.valueOf(tVal) + " " + String.valueOf(gVal));
-		System.out.println("Total Consumption now: " + consumption);
 		return consumption;
 	}
 	
@@ -157,6 +144,26 @@ public class Battery implements BatteryInterface, IBattery{
         
         return difference + frictionEffect;
 	}
+
+	public void setPercentage(double aimedPercentage) {
+		this.dummyBattery.setPercentage(aimedPercentage);
+	}
+	
+	public double getBatteryConsumption_test_only() {
+		double consumptionValue;
+		if (this.preferredConsumptionMethod == ConsumptionMethod.CONSUMPTION_MASS_VELOCITY)
+			consumptionValue = this.calculateBatteryConsumption_MASS_VELOCITY();
+		else
+			consumptionValue = this.calculateBatteryConsumption_THROTTLE_GEAR();
+		
+		if (consumptionValue < 100)
+			consumptionValue = 100;
+		return consumptionValue * local_deltaT / 1000.0;
+	}
+	
+	public double getCriticalPercentage() {
+		return this.dummyBattery.getCriticalPercentage();
+	}
 	
 	public void discharge() {
 		
@@ -189,7 +196,7 @@ public class Battery implements BatteryInterface, IBattery{
 		 * 		(setting throttle or motor actuator target values to zero, effectively)
 		 */
 		catch (IllegalArgumentException e) {
-			System.out.println("Failed to discharge the battery");
+			//System.out.println("Failed to discharge the battery");
 			throw new IllegalArgumentException("Cannot discharge the battery");
 		}
 	}
