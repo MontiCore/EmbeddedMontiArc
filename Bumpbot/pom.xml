@@ -48,7 +48,7 @@
             </configuration>
             <phase>test</phase>
             <goals>
-              <goal>streamtest-middleware-build</goal>
+              <goal>streamtest-middleare-build</goal>
             </goals>
           </execution>
         </executions>
