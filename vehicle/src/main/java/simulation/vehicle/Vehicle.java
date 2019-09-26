@@ -996,11 +996,11 @@ public class Vehicle{
             if (isElectricVehicle() && !gotoCharginstation && battery.get().getBatteryPercentage() <= 20) {
                 gotoCharginstation = true;
                 try {
-                    ArrayList<Double> x1 = new ArrayList<>();
-                    ArrayList<Double> y1 = new ArrayList<>();
-                    x1 = (ArrayList<Double>) controllerBus.get().getData(PLANNED_TRAJECTORY_X.toString());
-                    y1 = (ArrayList<Double>) controllerBus.get().getData(PLANNED_TRAJECTORY_Y.toString());
-                    lastdestination = new ControllerNodeImpl(new Point3D( x1.get(x1.size()), y1.get(y1.size()), 0), -1L);
+                    List<Double> x1;
+                    List<Double> y1;
+                    x1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_X).get().getValue());
+                    y1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_Y).get().getValue());
+                    lastdestination = new ControllerNodeImpl(new Point3D( x1.get(x1.size()-1), y1.get(y1.size()-1), 0), -1L);
                     long nearestcharg = ChargingStationNavigator.getNearestChargingStation(
                             physicalVehicle.getGlobalId(),
                             ChargingStationNavigator.getNearestOsmNodeFrom(this.physicalVehicle.getPosition())
