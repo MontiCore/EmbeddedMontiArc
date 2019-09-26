@@ -20,6 +20,6 @@ component Network<Z(2:oo) classes = 10>{
         Dropout() ->
         FullyConnected(units=classes) ->
         Softmax() ->
-        softmax
+        softmax;
     }
 }
