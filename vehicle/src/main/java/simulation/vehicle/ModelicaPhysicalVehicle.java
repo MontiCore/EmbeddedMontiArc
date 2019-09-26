@@ -11,7 +11,9 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
+import simulation.environment.util.VehicleType;
 import simulation.util.MathHelper;
+
 import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,8 +60,21 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     public ModelicaPhysicalVehicle(){
         super();
-
-        vehicleDynamicsModel = new VehicleDynamicsModel();
+		
+		initModelicaPhysicalVehicle();
+    }
+	
+	/**
+     * Constructor for an uninitialised electrical physical vehicle
+     */
+    public ModelicaPhysicalVehicle(VehicleType type, double batteryPercentage){
+        super(type, batteryPercentage);
+		
+		initModelicaPhysicalVehicle();
+    }
+	
+	private void initModelicaPhysicalVehicle(){
+		vehicleDynamicsModel = new VehicleDynamicsModel();
 
         // Before initialisation
         // the center of mass position is at the origin
@@ -68,7 +83,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         this.position = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         this.rotation = coordinateRotation.copy();
         this.geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-    }
+	}
 
     /**
      * Function that returns a copy of the center of mass position vector
@@ -650,5 +665,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
                 " , error: " + error +
                 " , physicalVehicleInitialised: " + physicalVehicleInitialised +
                 " , simulationVehicle: " + simulationVehicle;
+    }
+
+    @Override
+    public void setCharging(boolean isCharging) {
+        //TODO
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 }

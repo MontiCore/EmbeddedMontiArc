@@ -10,14 +10,22 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Simulati
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IdGenerator;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+import simulation.environment.object.ChargingStation;
+import simulation.environment.util.Chargeable;
+import simulation.environment.util.ChargingStationNavigator;
+import simulation.environment.util.IBattery;
 import simulation.util.Log;
 import static simulation.vehicle.VehicleActuatorType.*;
+
+import simulation.environment.util.VehicleType;
+import java.util.Optional;
 
 /**
  * Class that represents all physical properties of a vehicle and performs physics computations
  */
-public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhysicalVehicle {
+public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhysicalVehicle, Chargeable{
 
     /** Variables for the IPhysicalVehicle interface */
     /** Type of the physical object */
@@ -32,18 +40,27 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     /** Unique ID */
     private final long uniqueId = IdGenerator.getSharedInstance().generateUniqueId();
 
-
     /** The vehicle */
     protected final Vehicle simulationVehicle;
-
 
     /** Internal flags*/
     /** Flag whether the vehicle is fully initialised or not */
     protected boolean physicalVehicleInitialised;
 
+    /** PowerType of the Vehicle */
+    protected VehicleType vehicleType = VehicleType.NONE;
+
+    /** Is the Vehicle Chargeable */
+    protected boolean isChargeable = false;
+
+    /** IsCharging flag */
+    protected boolean isCharging;
+
+    /** For server to keep track of vehicles between sectors */
+    protected String globalId;
 
     /**
-     * Constructor for a physical vehicle that is standing at its position
+     * Constructor for a none powered physical vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
      */
     protected PhysicalVehicle() {
@@ -60,10 +77,95 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     }
 
     /**
+     * Constructor for a physical vehicle with a Vehicle Type
+     */
+    protected PhysicalVehicle(VehicleType vehicleType, double fuellPercentage){
+        // Set the type of the Vehicle
+        this.vehicleType = vehicleType;
+        // Set physical object type car
+        this.physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR;
+        // Set error flag
+        error = false;
+        // Set collision flag
+        collision = false;
+        // Create default simulation vehicle
+        this.simulationVehicle = new Vehicle(this);
+
+        // Electrical Vehicle
+        // Create battery if vehicle is electric
+        if (vehicleType == VehicleType.ELECTRIC) {
+            this.isChargeable = true;
+            Battery battery = new Battery(simulationVehicle, 3000000, fuellPercentage);
+            simulationVehicle.setBattery(battery);
+        }
+
+        // Other Vehicle like Fuell or Gas Vehicle
+        // ...
+
+        // When created, the physical vehicle is not initialised
+        physicalVehicleInitialised = false;
+    }
+
+    /**
+     * @return VehicleType the type of the Vehicle
+     */
+    @Override
+    public VehicleType getVehicleType(){
+        return this.vehicleType;
+    }
+
+    /**
+     * @return true if vehicle is chargeable
+     */
+    @Override
+    public boolean isChargeable() {
+        return isChargeable;
+    }
+
+    /**
+     * @return true if vehicle is charging
+     */
+    @Override
+    public boolean isCharging() {
+        return isCharging;
+    }
+
+    /**
+     * Function to set isCharging flag
+     */
+    public void isCharging(boolean isCharging){
+        this.isCharging = isCharging;
+    }
+
+    /**
+     * @return Battery of the vehicle
+     */
+    @Override
+    public Optional<IBattery> getBattery(){
+        return simulationVehicle.getBattery();
+    }
+
+    /**
+     * @return true if vehicle is parked at charging station
+     */
+    @Override
+    public boolean isParkedChargingStation(ChargingStation station){
+        return simulationVehicle.isParkedChargingStation(station);
+    }
+
+    /**
+     * Function that allows vehicle to move on after charging
+     */
+    @Override
+    public void onRechargeReady(){
+        simulationVehicle.onRechargeReady();
+        isCharging = false;
+    }
+
+    /**
      * Function that returns the width of the object
      * @return Width of the object
      */
-
     @Override
     public double getWidth(){
         return simulationVehicle.getWidth();
@@ -189,6 +291,13 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         return simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
     }
 
+    private boolean initCharging(ChargingStation station){
+        if(station.startCharging(this)){
+            isCharging = true;
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Function that requests the called object to update its state for given time difference
@@ -227,6 +336,17 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).update(deltaT);
         this.collision = false;
 
+
+        if (simulationVehicle.isGotoCharginstation() && !isCharging){
+            ChargingStation nearest = ChargingStationNavigator.getNearestCS();
+            //nearest is null, if nearest charging station is not located in current sector
+            if (nearest != null){
+                if (isParkedChargingStation(nearest) && getVelocity().equals(new ArrayRealVector(new double[]{0, 0, 0}))){
+                    initCharging(nearest);
+                }
+            }
+        }
+
         Log.finest("PhysicalVehicle: executeLoopIteration - timeDiffMs: " + timeDiffMs +  ", PhysicalVehicle at end: " + this);
     }
 
@@ -262,6 +382,20 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     public boolean getPhysicalVehicleInitialised() {
         return physicalVehicleInitialised;
+    }
+
+
+    /**
+     * Getter and setter for globalId
+     *
+     * @return
+     */
+    public String getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(String globalId) {
+        this.globalId = globalId;
     }
 
 }

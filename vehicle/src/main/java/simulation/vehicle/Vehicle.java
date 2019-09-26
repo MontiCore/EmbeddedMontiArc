@@ -15,22 +15,30 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfac
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IAdjacency;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Geometry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.WorldModel;
+import simulation.environment.object.ChargingStation;
 import simulation.environment.osm.IntersectionFinder;
+import simulation.environment.util.Chargeable;
+import simulation.environment.util.ChargingStationNavigator;
+import simulation.environment.util.IBattery;
 import simulation.util.Log;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.*;
+import java.util.stream.Collectors;
+
 import static simulation.vehicle.VehicleActuatorType.*;
 
 /**
  * Simulation objects for a generic vehicle.
  */
-public class Vehicle {
+public class Vehicle{
 
     /** Default average values for vehicle constructor */
     /** Minimum acceleration that can be made by the motor */
@@ -134,6 +142,9 @@ public class Vehicle {
     /** List of all the sensors of the vehicle */
     private List<Sensor> sensorList;
 
+    /** Manage the battery state of the vehicle */
+    private Optional<IBattery> battery;
+
     /** Bus for the controller */
     private Optional<Bus> controllerBus;
 
@@ -146,6 +157,12 @@ public class Vehicle {
     /** PhysicalVehicle that this vehicle is part of */
     private PhysicalVehicle physicalVehicle;
 
+    /** Battery Stuff */
+    /** Flag go to Chargingstation */
+    private boolean gotoCharginstation = false;
+
+    /** Last Destination */
+    private IControllerNode lastdestination;
 
     /** Properties */
     /** M of formula */
@@ -189,12 +206,13 @@ public class Vehicle {
     /** Flag whether the vehicle is initialised */
     private boolean vehicleInitialised;
 
+    Boolean batteryProblem = false;
 
     /**
      * Constructor for a vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
      */
-    protected Vehicle(PhysicalVehicle physicalVehicle) {
+    protected Vehicle(PhysicalVehicle physicalVehicle){
         // Create the motor
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_MOTOR, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE);
         // Create the brakes
@@ -213,6 +231,8 @@ public class Vehicle {
         this.statusLogger = new StatusLogger();
         // Create the sensor list
         this.sensorList = new ArrayList<>();
+        // Create battery
+        this.battery = Optional.empty();
         // Create the controller bus
         this.controllerBus = Optional.empty();
         // Create the controller
@@ -368,6 +388,38 @@ public class Vehicle {
      */
     public void addSensor(Sensor sensor) {
         this.sensorList.add(sensor);
+    }
+
+    /**
+     * Set battery
+     * @param battery
+     */
+    public void setBattery(IBattery battery) {
+        this.battery = Optional.of(battery);
+    }
+
+    /**
+     * @return Battery of the vehicle
+     */
+    public Optional<IBattery> getBattery() {
+        return battery;
+    }
+
+
+    public boolean isParkedChargingStation(ChargingStation station) {
+        if(gotoCharginstation){
+            RealVector location2D = new ArrayRealVector(new double[]{station.getLocation().getEntry(0),station.getLocation().getEntry(1)});
+            RealVector vehiclePos2D = new ArrayRealVector(new double[]{physicalVehicle.getPosition().getEntry(0),physicalVehicle.getPosition().getEntry(1)});
+            return location2D.getDistance(vehiclePos2D) < station.getStationRadius();
+        }
+        return false;
+    }
+
+    /**
+     * @return true if it's an EV
+     */
+    public boolean isElectricVehicle(){
+        return this.battery.isPresent();
     }
 
     /**
@@ -770,6 +822,44 @@ public class Vehicle {
         if (!controllerBus.isPresent() || !controller.isPresent()) {
             return;
         }
+
+        batteryProblem = false;
+        
+        if (battery != null) {
+            
+            // check if connection to ChargingStation is established
+            if ( battery.get().getChargingStationConnectionStatus() == true ) {
+                
+                // dummy placeholders for ChargingStation specifications
+                double ChargingStationVoltage = 100;
+                double ChargingStationAmpere = 1;
+                
+                // depending on the ChargingStation implementation, 
+                // they also can invoke this function themselves
+                //      here, for demonstration purposes, we set them to some dummy values
+                battery.get().setVoltageChargingStation(ChargingStationVoltage);
+                battery.get().setAmpereChargingStation(ChargingStationAmpere);
+                // leave charging initiation to ChargingStation, not to the Vehicle
+                //battery.get().charge();
+            }
+            
+            // check vehicle type,
+            //      set consumption calculation based on the vehicle type
+            if (physicalVehicle instanceof MassPointPhysicalVehicle)
+                battery.get().setConsumptionMethod(IBattery.ConsumptionMethod.CONSUMPTION_MASS_VELOCITY);
+            else
+                battery.get().setConsumptionMethod(IBattery.ConsumptionMethod.CONSUMPTION_THROTTLE_GEAR);
+            
+            try {
+                battery.get().discharge();
+            }
+            catch (IllegalArgumentException e) {
+                // this flag would cause motor/throttle to be updated to zero,
+                //      exactly at the end of this function
+                batteryProblem = true;
+            }   
+        }
+
         // Send vehicle data to controller
         if (!constantBusDataSent) {
             controllerBus.get().setData(CONSTANT_NUMBER_OF_GEARS.toString(), 1);
@@ -788,6 +878,12 @@ public class Vehicle {
 
         // Send sensor data: Write values to bus
         for (Sensor sensor : sensorList) {
+            if(sensor.getType() == PLANNED_TRAJECTORY_X && controllerBus.get().getData(PLANNED_TRAJECTORY_X.toString()) != null){
+                continue;
+            }
+            if(sensor.getType() == PLANNED_TRAJECTORY_Y && controllerBus.get().getData(PLANNED_TRAJECTORY_Y.toString()) != null){
+                continue;
+            }
             // Put data from sensor on the bus
             controllerBus.get().setData(sensor.getType().toString(), sensor.getValue());
 
@@ -825,19 +921,6 @@ public class Vehicle {
             setMaxTemporaryAllowedVelocity(Math.min(getMaxTemporaryAllowedVelocity(), allowedVelocityByStreetType));
         }
 
-        // Set other values on bus that can change during simulation
-        controllerBus.get().setData(SIMULATION_DELTA_TIME.toString(), deltaT);
-        controllerBus.get().setData(VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.toString(), getMaxTemporaryAllowedVelocity());
-
-        //Give the bus to the mainControlBlock
-        controller.get().setInputs(controllerBus.get().getAllData());
-
-        // Call controller to compute new values
-        controller.get().execute(deltaT);
-
-        //Pass the data of the mainControlBlock to the bus
-        controllerBus.get().setAllData(controller.get().getOutputs());
-
         // Read new values from bus
         double motorValue = 0;
         double brakeValue = 0;
@@ -872,8 +955,81 @@ public class Vehicle {
             double brakePressure = brakeValue*brakes.getActuatorValueMax();
             brakes.setActuatorValueTarget(brakePressure);
         }
+        ChargingStation nearestCS = ChargingStationNavigator.getNearestCS();
+        if (nearestCS != null){
+            if (isParkedChargingStation(nearestCS)) {
+                if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+                    motor.setActuatorValueTarget(0.0);
+                    brakesBackLeft.setActuatorValueTarget(brakesBackLeft.getActuatorValueMax());
+                    brakesBackRight.setActuatorValueTarget(brakesBackRight.getActuatorValueMax());
+                    brakesFrontLeft.setActuatorValueTarget(brakesFrontLeft.getActuatorValueMax());
+                    brakesFrontRight.setActuatorValueTarget(brakesFrontRight.getActuatorValueMax());
+                } else {
+                    throttle.setActuatorValueTarget(0.0);
+                    brakes.setActuatorValueTarget(brakes.getActuatorValueMax());
+                }
+            }
+        }
+
+        //  Check Battery
+        checkBattery();
+
+	// Set other values on bus that can change during simulation
+        controllerBus.get().setData(SIMULATION_DELTA_TIME.toString(), deltaT);
+        controllerBus.get().setData(VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.toString(), getMaxTemporaryAllowedVelocity());
+
+        //Give the bus to the mainControlBlock
+        controller.get().setInputs(controllerBus.get().getAllData());
+
+        // Call controller to compute new values
+        controller.get().execute(deltaT);
+
+        //Pass the data of the mainControlBlock to the bus
+        controllerBus.get().setAllData(controller.get().getOutputs());
     }
 
+    /**
+     * Check Battery state and move to the next Chargingstation if needed
+     */
+    void checkBattery(){
+        if(battery.isPresent()) {
+            if (isElectricVehicle() && !gotoCharginstation && battery.get().getBatteryPercentage() <= 20) {
+                gotoCharginstation = true;
+                try {
+                    List<Double> x1;
+                    List<Double> y1;
+                    x1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_X).get().getValue());
+                    y1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_Y).get().getValue());
+                    lastdestination = new ControllerNodeImpl(new Point3D( x1.get(x1.size()-1), y1.get(y1.size()-1), 0), -1L);
+                    long nearestcharg = ChargingStationNavigator.getNearestChargingStation(
+                            physicalVehicle.getGlobalId(),
+                            ChargingStationNavigator.getNearestOsmNodeFrom(this.physicalVehicle.getPosition())
+                    );
+                    RealVector point3d = ChargingStationNavigator.getPositionOfOsmNode(nearestcharg);
+                    navigateTo(new ControllerNodeImpl(Geometry.realVector2Point3D(point3d), nearestcharg));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+		    //      battery discharging failed, cannot accelerate the vehicle
+ 			//      set either motor OR throttle to zero, based on type of the car
+            if (batteryProblem) {
+                if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+                    motor.setActuatorValueTarget(0.0);
+                } else {
+                    throttle.setActuatorValueTarget(0.0);
+                }
+            }
+        }
+    }
+
+    /**
+     * Can be called from the Chargingstation
+     */
+    public void onRechargeReady(){
+        gotoCharginstation = false;
+        navigateTo(lastdestination);
+    }
 
     /**
      * Function that initiates or updates navigation of the vehicle to a specified point in the map
@@ -883,6 +1039,10 @@ public class Vehicle {
      */
     public void navigateTo(IControllerNode node) {
         navigateTo(node, Collections.synchronizedList(new LinkedList<RealVector>()));
+    }
+
+    public boolean getGotoChargingStation(){
+        return gotoCharginstation;
     }
 
     /**
@@ -923,7 +1083,8 @@ public class Vehicle {
 
         List<Vertex> trajectoryWithoutAvoiding = (List<Vertex>)(navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
         if (trajectoryWithoutAvoiding.isEmpty() || avoidCoordinates.isEmpty()) {
-            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
+            controllerBus.get().setData(PLANNED_TRAJECTORY_X.toString(), trajectoryWithoutAvoiding.stream().map(x -> x.getPosition().toArray()[0]).collect(Collectors.toList()));
+            controllerBus.get().setData(PLANNED_TRAJECTORY_Y.toString(), trajectoryWithoutAvoiding.stream().map(x -> x.getPosition().toArray()[1]).collect(Collectors.toList()));
             afterTrajectoryUpdate();
             return;
         }
@@ -987,7 +1148,6 @@ public class Vehicle {
 
         // If trajectory with avoiding is null or empty, just set original result without avoiding
         if (navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) == null) {
-            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
             afterTrajectoryUpdate();
             return;
         }
@@ -1022,12 +1182,16 @@ public class Vehicle {
     public List<Vertex> getTrajectory() {
         // Check if trajectory is available and return copy if valid
         if (controllerBus.isPresent() && (controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) != null)) {
-                ArrayList<Vertex> originalList = (ArrayList<Vertex>)(controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
-                return new ArrayList<>(originalList);
+                List<Vertex> originalList = (List<Vertex>) controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString());
+                return originalList;
         }
 
         // Fallback to empty list
         return new ArrayList<>();
+    }
+
+    public boolean isGotoCharginstation() {
+        return gotoCharginstation;
     }
 
     /**

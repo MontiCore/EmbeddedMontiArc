@@ -90,6 +90,7 @@ public class MassPointBuilderTest {
         assertEquals(expectedControllerBus, vehicle.getControllerBus());
         assertEquals(expectedController, vehicle.getController());
         assertEquals(expectedNavigation, vehicle.getNavigation());
+        assertNull(physicalVehicle.getGlobalId());
 
         // Test internal values
         assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
@@ -121,6 +122,7 @@ public class MassPointBuilderTest {
         double expectedWheelDistLeftRightBackSide = 2;
         double expectedWheelDistToFront = 2.75;
         double expectedWheelDistToBack = 4.25;
+        String expectedGlobalId = "global-id";
 
         // Calculate remaining expected values
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
@@ -143,6 +145,7 @@ public class MassPointBuilderTest {
         builder.setWheelDistLeftRightBackSide(expectedWheelDistLeftRightBackSide);
         builder.setWheelDistToFront(expectedWheelDistToFront);
         builder.setWheelDistToBack(expectedWheelDistToBack);
+        builder.setGlobalId(expectedGlobalId);
         MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
 
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();

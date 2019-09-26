@@ -11,8 +11,10 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
+import simulation.environment.util.VehicleType;
 import simulation.util.Log;
 import simulation.util.MathHelper;
+
 import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,7 +86,21 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     public MassPointPhysicalVehicle(){
         super();
-        // Before initialisation
+        
+		initMassPointPhysicalVehicle();
+    }
+	
+	/**
+     * Constructor for an uninitialised electrical physical vehicle
+     */
+    public MassPointPhysicalVehicle(VehicleType type, double batteryPercentage){
+        super(type, batteryPercentage);
+        
+		initMassPointPhysicalVehicle();
+    }
+	
+	private void initMassPointPhysicalVehicle(){
+		// Before initialisation
         // the center of mass position is at the center of the bottom side of the vehicle
         // no rotation
         this.position = new ArrayRealVector(new double[]{0.0, 0.0, - simulationVehicle.getHeight()/2});
@@ -97,7 +113,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         this.geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight()/2});
 
         targetAngularVelocity = new ArrayRealVector(3);
-    }
+	}
 
     /**
      * Function that returns a copy of the center of mass position vector
@@ -1273,5 +1289,11 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
                 (physicalVehicleInitialised ? " , massPoints[2]: " + massPoints[2] : "") +
                 (physicalVehicleInitialised ? " , massPoints[3]: " + massPoints[3] : "") +
                 " , simulationVehicle: " + simulationVehicle;
+    }
+
+    @Override
+    public void setCharging(boolean isCharging) {
+        //TODO
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -42,11 +42,18 @@
             <version>${revision}</version>
         </dependency>
 
-        <!-- Dependency to commons -->
+        <!-- Dependency to control -->
         <dependency>
-            <groupId>montisim</groupId>
-            <artifactId>commons</artifactId>
-            <version>${commons.version}</version>
+            <groupId>montisim-controller</groupId>
+            <artifactId>control</artifactId>
+            <version>${controller.version}</version>
+        </dependency>
+
+        <!-- Dependency on structures.Graph class -->
+        <dependency>
+            <groupId>montisim-controller</groupId>
+            <artifactId>library</artifactId>
+            <version>${controller.version}</version>
         </dependency>
 
         <dependency>
@@ -120,6 +127,25 @@
             <version>1.6.1</version>
         </dependency>
 
+        <!-- testing -->
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.19.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>2.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <version>2.0.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 

@@ -6,17 +6,23 @@
  */
 package simulation.vehicle;
 
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import simulation.environment.object.House;
+import simulation.environment.util.VehicleType;
 import simulation.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * JUnit test for the Vehicle class
@@ -285,8 +291,68 @@ public class VehicleTest {
         house.setLength(10.0);
         house.setHeight(10.0);
         physicalObjects.add(vehicle2);
-        physicalObjects.add(house);
+        physicalObjects.add((PhysicalObject) house);
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiffMs);
         assertTrue(vehicle1.getCollision() && !vehicle2.getCollision());
+    }
+
+    @Test
+    public void AutopilotBehaviorTest() {
+        /*       Masspoint       */
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0);
+        PhysicalVehicle physicalVehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0.1);
+        PhysicalVehicle physicalVehicle3 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,30);
+
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+        Vehicle vehicle2 = physicalVehicle2.getSimulationVehicle();
+        Vehicle vehicle3 = physicalVehicle3.getSimulationVehicle();
+
+        vehicle.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        vehicle2.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle2.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        vehicle3.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle3.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+
+        physicalVehicle.executeLoopIteration(10);
+        physicalVehicle2.executeLoopIteration(10);
+        physicalVehicle3.executeLoopIteration(10);
+
+        assertTrue(vehicle.batteryProblem);
+        assertTrue(vehicle2.batteryProblem);
+        assertFalse(vehicle3.batteryProblem);
+        assertTrue(vehicle.isGotoCharginstation());
+        assertTrue(vehicle2.isGotoCharginstation());
+        assertFalse(vehicle3.isGotoCharginstation());
+
+        /*       Modelica       */
+        ModelicaPhysicalVehicle modelicaPhysicalVehicle4 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0);
+        ModelicaPhysicalVehicle modelicaPhysicalVehicle5 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0.1);
+        ModelicaPhysicalVehicle modelicaPhysicalVehicle6 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,30);
+
+        Vehicle vehicle4 = modelicaPhysicalVehicle4.getSimulationVehicle();
+        Vehicle vehicle5 = modelicaPhysicalVehicle5.getSimulationVehicle();
+        Vehicle vehicle6 = modelicaPhysicalVehicle6.getSimulationVehicle();
+
+        vehicle4.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle4.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        vehicle5.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle5.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        vehicle6.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
+        vehicle6.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+
+        modelicaPhysicalVehicle4.initPhysics();
+        modelicaPhysicalVehicle5.initPhysics();
+        modelicaPhysicalVehicle6.initPhysics();
+        modelicaPhysicalVehicle4.executeLoopIteration(10);
+        modelicaPhysicalVehicle5.executeLoopIteration(10);
+        modelicaPhysicalVehicle6.executeLoopIteration(10);
+
+        assertTrue(vehicle4.batteryProblem);
+        assertTrue(vehicle5.batteryProblem);
+        assertFalse(vehicle6.batteryProblem);
+        assertTrue(vehicle4.isGotoCharginstation());
+        assertTrue(vehicle5.isGotoCharginstation());
+        assertFalse(vehicle6.isGotoCharginstation());
     }
 }
