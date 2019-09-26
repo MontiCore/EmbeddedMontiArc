@@ -35,6 +35,8 @@ Additionally you can control the delay between the pictures with `-d` and add a 
 Predictions are visualized through a Python GUI using Matplotlib. It shows the input frames (frontal camera), the according real steering angels and predicted steering angels as rotating wheels, and the predction error (in angels).
 ![Prediction Visualisations](ss.png)
 
+![Prediction Visualisations](plot.png)
+
 
 ## Generation of Training Data
 
