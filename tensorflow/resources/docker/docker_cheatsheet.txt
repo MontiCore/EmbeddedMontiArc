@@ -1,0 +1,8 @@
+sudo docker ps -a  // alle containers
+sudo docker images // siehe alle images
+
+( sudo docker start container_name )
+sudo docker exec -it continer_name /bin/bash
+
+
+

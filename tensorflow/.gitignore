@@ -1,0 +1,13 @@
+*.h5
+target
+*idea
+*.csv
+*.log
+*.pyc
+CMakeCache.txt
+CMakeFiles
+*.cmake
+model
+Makefile
+steeringAnglePredictor
+
