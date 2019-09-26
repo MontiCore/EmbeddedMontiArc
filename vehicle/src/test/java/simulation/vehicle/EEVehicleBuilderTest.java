@@ -189,11 +189,11 @@ public class EEVehicleBuilderTest {
 
         //search and collect all created bridges
         HashSet<Bridge> createdBridgesJSON = new HashSet<>();
-        //List<UUID> processedBridges = new LinkedList<>();
+        List<UUID> processedBridges = new LinkedList<>();
         for (Bus bus : eeVehicle.getBusList()) {
             for (EEComponent comp : bus.getConnectedComponents()) {
                 if (comp.getComponentType() == EEComponentType.BRIDGE && !createdBridgesJSON.contains(comp)) {
-                    //processedBridges.add(comp.getId());
+                    processedBridges.add(comp.getId());
                     createdBridgesJSON.add((Bridge) comp);
                 }
             }
