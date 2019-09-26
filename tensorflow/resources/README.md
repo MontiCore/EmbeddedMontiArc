@@ -41,7 +41,7 @@ Change:  PIXEL_WIDTH  = int(640/4) and PIXEL_HEIGHT = int(480/4) in the script t
 ## Examples 
 - python jpg2hdf5.py -i ../test_set/ -n 100 -a
     - assumption: script is executed inside data_transform_script
-    - generates: train.h5 containg 100% curves and 100/3 images.
+    - generates: train.h5 containg 100% of the data inside transfrom_script which are 100 pictures. That means the generated h5 files contains floor(100/3) images.
     - Note: If you try using -c, be aware that there might not be curves in the dataset 
 
 - python jpg2hdf5.py -i ./ -s 0.2
