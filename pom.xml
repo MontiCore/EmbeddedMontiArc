@@ -82,13 +82,14 @@
 
         <!-- .. Classifiers ................................................... -->
 
+        <grammars.classifier>grammars</grammars.classifier>
+
         <!-- .. Misc .......................................................... -->
 
         <java.version>8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.public>${project.basedir}/public/pages</project.public>
-        <grammars.classifier>grammars</grammars.classifier>
 
         <!-- .. Resources ..................................................... -->
 
@@ -302,7 +303,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <!--suppress UnresolvedMavenProperty -->
+                    <!-- For IDE --><!--suppress UnresolvedMavenProperty -->
                     <argLine>${surefire-argument-line}</argLine>
                 </configuration>
             </plugin>
@@ -441,6 +442,25 @@
 
         </plugins>
     </build>
+
+    <!-- == PROJECT PROFILES ================================================== -->
+
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <sonar.host.url>https://metric.se.rwth-aachen.de</sonar.host.url>
+                <sonar.login>jenkins</sonar.login>
+                <!-- For IDE --><!--suppress UnresolvedMavenProperty -->
+                <sonar.password>${env.sonar}</sonar.password>
+                <sonar.exclusions>**/*Module.java,**/*.ts,**/*.js</sonar.exclusions>
+                <sonar.test.exclusions>**/*Module.java</sonar.test.exclusions>
+            </properties>
+        </profile>
+    </profiles>
 
     <!-- == PROJECT DISTRIBUTION ============================================== -->
 
