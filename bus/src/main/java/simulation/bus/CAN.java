@@ -137,7 +137,7 @@ public class CAN extends Bus{
                 partialFrameBytes += Math.min(headerBytes, toTransmit);
                 toTransmit -= headerBytes;
             }
-            if (partialFrameBytes < HEADER_SIZE + MAX_PAYLOAD_SIZE) {
+            if (partialFrameBytes < HEADER_SIZE + MAX_PAYLOAD_SIZE && toTransmit > 0) {
                 int messageBytes = Math.min(HEADER_SIZE + MAX_PAYLOAD_SIZE - partialFrameBytes, toTransmit);
                 messageBytes = msg.transmitBytes(messageBytes, operationMode.getBitErrorRate());
                 toTransmit -= messageBytes;
@@ -149,7 +149,7 @@ public class CAN extends Bus{
                     messages.poll();
                 }
             }
-            if (partialFrameBytes < HEADER_SIZE + partialFramePayloadBytes + TRAILER_SIZE) {
+            if (partialFrameBytes < HEADER_SIZE + partialFramePayloadBytes + TRAILER_SIZE && toTransmit > 0) {
                 int trailerBytes = HEADER_SIZE + partialFramePayloadBytes + TRAILER_SIZE - partialFrameBytes;
                 partialFrameBytes += Math.min(trailerBytes, toTransmit);
                 toTransmit -= trailerBytes;
