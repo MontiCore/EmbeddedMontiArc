@@ -11,12 +11,10 @@ import simulation.EESimulator.*;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
 
+import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class that represents an actuator of the vehicle
@@ -34,6 +32,9 @@ public class VehicleActuator extends ImmutableEEComponent {
 
 	/** Current value */
 	private double actuatorValueCurrent;
+
+	/** last sent value */
+	private Optional<Double> actuatorValueLastSent = Optional.empty();
 
 	/** Value that should be set */
 	private double actuatorValueTarget;
@@ -261,16 +262,25 @@ public class VehicleActuator extends ImmutableEEComponent {
 	}
 
 	/**
-	 * Function that computes an update tick for the actuator
+	 * Function that computes an update tick for the actuator and sends the new value as message.
 	 *
 	 * @param actualTime actual time of the simulation. Used to calculate the time
 	 *                   difference considered in the update measured in seconds
 	 */
 	protected void update(Instant actualTime) {
 		this.updateValue(actualTime);
-		this.sendMessage(this.actuatorValueCurrent, 8, this.sendMsgId, actualTime);
+		if(!actuatorValueLastSent.isPresent() || !actuatorValueLastSent.get().equals(actuatorValueCurrent)){
+			actuatorValueLastSent = Optional.of(actuatorValueCurrent);
+			this.sendMessage(this.actuatorValueCurrent, 8, this.sendMsgId, actualTime);
+		}
 	}
 
+	/**
+	 * Function that computes an update tick for the actuator
+	 *
+	 * @param actualTime actual time of the simulation. Used to calculate the time
+	 *                   difference considered in the update measured in seconds
+	 */
 	private void updateValue(Instant actualTime){
 		// Total change of value in given time span in seconds
 		double timeDiff = Duration.between(lastUpdate, actualTime).toNanos() / 1000000000.0d;

@@ -11,10 +11,20 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.
 import java.util.HashMap;
 import java.util.List;
 
-
+/**
+ * EEComponent that knows its targets upon creating the component
+ */
 public abstract class ImmutableEEComponent extends AbstractEEComponent {
-	private final HashMap<BusEntry, List<EEComponent>> targetsByMessageId; // which message to which component
-	private final List<BusEntry> subscribedMessages; // which message do I want to get
+
+	/**
+	 * Targets indexed by message ids. (To which target does this component send which message)
+	 */
+	private final HashMap<BusEntry, List<EEComponent>> targetsByMessageId;
+
+	/**
+	 * Messages that this component listens to.
+	 */
+	private final List<BusEntry> subscribedMessages;
 
 	public ImmutableEEComponent(EESimulator simulator, EEComponentType type, List<BusEntry> subscribedMessages,
 			HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {

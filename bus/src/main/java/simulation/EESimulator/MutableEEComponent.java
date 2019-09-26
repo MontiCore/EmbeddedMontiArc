@@ -15,10 +15,20 @@ import org.apache.commons.math3.exception.NullArgumentException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * EEComponent that does not know its targets upon creating the component.
+ */
 public abstract class MutableEEComponent extends AbstractEEComponent{
 
-	protected HashMap<BusEntry, List<EEComponent>> targetsByMessageId; // which message to which component
-	protected List<BusEntry> subscribedMessages; // which message do I want to get
+	/**
+	 * Targets indexed by message ids. (To which target does this component send which message)
+	 */
+	protected final HashMap<BusEntry, List<EEComponent>> targetsByMessageId;
+
+	/**
+	 * Messages that this component listens to.
+	 */
+	protected final List<BusEntry> subscribedMessages;
 
 	protected MutableEEComponent(EESimulator simulator, EEComponentType type) {
 		super(simulator, type);

@@ -38,6 +38,8 @@ public abstract class AbstractSensor extends ImmutableEEComponent implements Sen
 
 	private final IPhysicalVehicle physicalVehicle;
 
+	private Optional<Object> lastSentValue = Optional.empty();
+
 	public AbstractSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
 			HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
 		super(simulator, EEComponentType.SENSOR, subscribedMessages, targetsByMessageId);
@@ -47,7 +49,11 @@ public abstract class AbstractSensor extends ImmutableEEComponent implements Sen
 	@Override
 	public void update(Instant actualTime) {
 		calculateValue();
-		this.sendMessage(this.getValue(), this.getDataLength(), this.getType(), this.getSimulator().getSimulationTime());
+		if(!lastSentValue.isPresent() || !lastSentValue.get().equals(this.getValue())){
+			lastSentValue = Optional.of(this.getValue());
+			this.sendMessage(this.getValue(), this.getDataLength(), this.getType(), this.getSimulator().getSimulationTime());
+		}
+
 	}
 
 	/**

@@ -25,18 +25,44 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+/**
+ * Wrapper for navigation blocks, so they can communicate over buses with other components.
+ */
 public class NavigationBlockAsEEComponent extends ImmutableEEComponent {
+
+    /**
+     * Last calculated trajectory
+     */
     private List<Vertex> trajectory;
+
     private Optional<IControllerNode> lastNavigationTarget;
+
+    /**
+     * Time of last update
+     */
     private Instant lastUpdate;
 
     private final NavigationBlock functionBlock;
+
+    /**
+     * Inputs needed from other components.
+     */
     private final Map<BusEntry, Object> externalInputs;
 
+    /**
+     * Create default NavigationBlockAsEEComponent connected to bus.
+     * @param bus Bus that the created NavigationBlockAsEEComponent is connected to.
+     * @return NavigationBlockAsEEComponent with default configuration
+     */
     public static NavigationBlockAsEEComponent createNavigationBlockAsEEComponent(Bus bus) {
         return createNavigationBlockAsEEComponent(Collections.singletonList(bus));
     }
 
+    /**
+     * Create default NavigationBlockAsEEComponent connected to bus.
+     * @param bus Bus that the created NavigationBlockAsEEComponent is connected to.
+     * @return NavigationBlockAsEEComponent with default configuration
+     */
     public static NavigationBlockAsEEComponent createNavigationBlockAsEEComponent(List<Bus> buses){
         List<BusEntry> subscribedMessages = new ArrayList<>();
         subscribedMessages.add(BusEntry.CONSTANT_WHEELBASE);

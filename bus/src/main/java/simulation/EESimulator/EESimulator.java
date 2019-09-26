@@ -17,6 +17,9 @@ import java.util.Comparator;
 import org.jfree.util.Log;
 import simulation.bus.BusMessage;
 
+/**
+ * Discrete event simulator that takes care of the communication in the car.
+ */
 public class EESimulator {
 
 	/** Comparator for events. Sorts in ascending order of event time*/
@@ -29,11 +32,6 @@ public class EESimulator {
 	 * list of all discrete events
 	 */
 	private PriorityQueue<EEDiscreteEvent> eventList = new PriorityQueue<>(listComparator);
-
-	/**
-	 * lists of objects that can get addressed by messages
-	 */
-	private List<EEComponent> busList = Collections.synchronizedList(new LinkedList<>());
 
 
 	public EESimulator(Instant simulationTime) {
@@ -88,9 +86,11 @@ public class EESimulator {
 	}
 }
 
+/**
+ *  Used for sorting in ascending order of event time
+ */
 class EESimulatorComparator implements Comparator<EEDiscreteEvent>
 {
-    // Used for sorting in ascending order of event time
     public int compare(EEDiscreteEvent a, EEDiscreteEvent b)
     {
         return a.getEventTime().compareTo(b.getEventTime());

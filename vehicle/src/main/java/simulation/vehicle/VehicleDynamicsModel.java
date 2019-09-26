@@ -59,7 +59,7 @@ public class VehicleDynamicsModel {
 
     private Simulation loadSimulation(String name){
         try{
-            LibraryService.prepareLibrary(name);
+            LibraryService.prepareLibrary(name, false);
         } catch (LibraryService.LibraryException e) {
             e.printStackTrace();
         }

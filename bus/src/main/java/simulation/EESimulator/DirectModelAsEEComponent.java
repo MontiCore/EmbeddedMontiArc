@@ -19,10 +19,22 @@ import java.util.*;
 
 import static com.vividsolutions.jts.util.Memory.free;
 
-
+/**
+ * Autopilot that communicate directly with the HardwareEmulatorServer.
+ * Controls the velocity and path of the vehicle.
+ * Calculates actuator values for brakes, engine, steering.
+ */
 public class DirectModelAsEEComponent extends ImmutableEEComponent {
     private static final int MAX_TRAJECTORY_LENGTH = 100;
 
+    /**
+     * Last values that were send indexed by the bus entry
+     */
+    private Map<Object, BusEntry> lastValueByMessageId = new HashMap<>();
+
+    /**
+     * Necessary messages that the controller needs
+     */
     private static final ArrayList<BusEntry> STANDARD_SUBSCRIBED_MESSAGES = new ArrayList<BusEntry>() {{
         add(BusEntry.SENSOR_VELOCITY);
         add(BusEntry.SENSOR_GPS_COORDINATES);
@@ -33,33 +45,64 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         add(BusEntry.PLANNED_TRAJECTORY_X);
         add(BusEntry.PLANNED_TRAJECTORY_Y);
     }};
-    
+
+    /**
+     * Outputs when created for a MassPointVehicle
+     */
     public static final ArrayList<BusEntry> MASSPOINT_OUTPUT_MESSAGES = new ArrayList<BusEntry>() {{
         add(BusEntry.ACTUATOR_STEERING);
         add(BusEntry.ACTUATOR_BRAKE);
         add(BusEntry.ACTUATOR_ENGINE);
     }};
-    
+
+    /**
+     * Determines if the controller has received new inputs
+     */
     boolean newInputs = false;
-    
+
+    /**
+     * Determines if the controller needs to start the calculation again afer receiving the next message.
+     */
     boolean wakeUpNeeded = false;
-    
+
+    /**
+     * The duration of the an update cycle of this controller
+     */
     Duration cycleTime;
-    
+
+    /**
+     * Direct reference to the hardware emulator
+     */
     HardwareEmulatorInterface modelServer;
+
     int modelId;
+
     HashMap<String, Serializable> inputs = new HashMap<String, Serializable>();
     HashMap<String, Serializable>  outputs = new HashMap<String, Serializable>();
+
     Optional<Object> trajectoryX = Optional.empty();
     Optional<Object> trajectoryY = Optional.empty();
+
+    /**
+     * Time when the controller was executed last
+     */
     Instant lastFinishTime = Instant.EPOCH;
 
 
-
+    /**
+     * Create a DirectModelAsEEComponent that is connected to bus.
+     * @param bus Bus that the DirectModelAsEEComponent is connected to
+     * @return DirectModelAsEEComponent with default configuration
+     */
     public static DirectModelAsEEComponent createDirectModelAsEEComponent(Bus bus) {
         return createDirectModelAsEEComponent(Collections.singletonList(bus));
     }
 
+    /**
+     * Create a DirectModelAsEEComponent that is connected to bus.
+     * @param buses Buses that the DirectModelAsEEComponent is connected to
+     * @return DirectModelAsEEComponent with default configuration
+     */
     public static DirectModelAsEEComponent createDirectModelAsEEComponent(List<Bus> buses){
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         targetsByMessageId.put(BusEntry.ACTUATOR_BRAKE, new LinkedList<>());
@@ -101,6 +144,13 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         }
     }
 
+    /**
+     * Set the HardwareEmulatorInterface, create the autopilot and set the cycle time.
+     * @param model_server
+     * @param autopilot_config
+     * @param cycleTime
+     * @throws Exception
+     */
     public void initializeController(HardwareEmulatorInterface model_server, String autopilot_config, Duration cycleTime) throws Exception {
         this.modelServer = model_server;
         this.modelId = model_server.alloc_autopilot(autopilot_config);
@@ -118,18 +168,12 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         free();
     }
 
-    /*
-    TODO: change time of nextExecute event
-     */
-
-
     @Override
     public void processEvent(EEDiscreteEvent event) {
         //buffer new values arrived by busMessage
         if (event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
             BusMessage currentMessage = (BusMessage) event;
             newInputs = true;
-            System.out.println("Controller received msg: " + currentMessage.getMessageID() + "; with value: " + currentMessage.getMessage());
             switch (currentMessage.getMessageID()) {
                 case SENSOR_VELOCITY:
                     double currentVelocity = (double) currentMessage.getMessage();
@@ -188,6 +232,10 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
         }
     }
 
+    /**
+     * Execute the controller once. Add a ControllerExecuteEvent for the next cycle.
+     * @param event
+     */
 	private void executeController(EEDiscreteEvent event) {
 		double timeIncrement = Duration.between(event.getEventTime(), lastFinishTime).toMillis();
 		this.inputs.put("timeIncrement", timeIncrement);
@@ -199,20 +247,24 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
 		
 		Object engine = outputs.get("engine");
 		if (engine != null) {
-            System.out.println("Controller send msg: Engine; with value: " + engine);
-            this.sendMessage(engine, 8, BusEntry.ACTUATOR_ENGINE, lastFinishTime);
+            if(!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_ENGINE) || !lastValueByMessageId.get(BusEntry.ACTUATOR_ENGINE).equals(engine)) {
+                this.sendMessage(engine, 8, BusEntry.ACTUATOR_ENGINE, lastFinishTime);
+            }
 		}
 
 		Object brakes = outputs.get("brakes");
 		if (brakes != null) {
-            System.out.println("Controller send msg: Brakes; with value: " + brakes);
-		    this.sendMessage(brakes, 8, BusEntry.ACTUATOR_BRAKE, lastFinishTime);
+		    if(!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_BRAKE) || !lastValueByMessageId.get(BusEntry.ACTUATOR_BRAKE).equals(brakes)){
+                this.sendMessage(brakes, 8, BusEntry.ACTUATOR_BRAKE, lastFinishTime);
+            }
+
 		}
 
 		Object steering = outputs.get("steering");
 		if (steering != null) {
-            System.out.println("Controller send msg: Steering; with value: " + steering);
-            this.sendMessage(steering, 8, BusEntry.ACTUATOR_STEERING, lastFinishTime);
+            if(!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_STEERING) || !lastValueByMessageId.get(BusEntry.ACTUATOR_STEERING).equals(steering)) {
+                this.sendMessage(steering, 8, BusEntry.ACTUATOR_STEERING, lastFinishTime);
+            }
 		}
 		
 		//set next execute event

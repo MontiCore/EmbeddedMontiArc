@@ -9,15 +9,29 @@ package simulation.EESimulator;
 import java.time.Instant;
 import java.util.UUID;
 
-
+/**
+ * Discrete Events that are processed by the EESimulator.
+ */
 public abstract class EEDiscreteEvent {
 
+    /**
+     * The time of this event
+     */
     private final Instant eventTime;
 
+    /**
+     * The target of the event
+     */
     private final EEComponent target;
-    
+
+    /**
+     * Event type of the event
+     */
     private final EEDiscreteEventTypeEnum eventType;
-    
+
+    /**
+     * Id of the event
+     */
     private final UUID Id;
 
     public EEDiscreteEvent(EEDiscreteEventTypeEnum eventType, Instant eventTime, EEComponent target){

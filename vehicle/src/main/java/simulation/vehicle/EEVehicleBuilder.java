@@ -6,6 +6,21 @@
  */
 package simulation.vehicle;
 
+import com.google.gson.Gson;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import sensors.abstractsensors.AbstractSensor;
+import sensors.factory.SensorFactory;
+import sensors.util.SensorUtil;
+import simulation.EESimulator.*;
+import simulation.bus.Bus;
+import simulation.bus.FlexRay;
+import simulation.bus.FlexRayOperationMode;
+import simulation.bus.InstantBus;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,38 +28,38 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.util.*;
 
-import com.google.gson.Gson;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jfree.util.Log;
-
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
-import sensors.abstractsensors.AbstractSensor;
-import sensors.factory.SensorFactory;
-import sensors.util.SensorUtil;
-import simulation.EESimulator.Bridge;
-import simulation.EESimulator.DirectModelAsEEComponent;
-import simulation.EESimulator.EEComponent;
-import simulation.EESimulator.EEComponentType;
-import simulation.EESimulator.EESimulator;
-import simulation.EESimulator.NavigationBlockAsEEComponent;
-import simulation.bus.*;
-
+/**
+ * Build a customisable EEVehicle
+ */
 public class EEVehicleBuilder {
 	
 	private final EESimulator eeSimulator;
-	
+
+	/**
+	 * Determines to which buses each sensor is added.
+	 */
 	private Map<BusEntry,List<Bus>> busesBySensorBusEntry = new HashMap<BusEntry, List<Bus>>();
-	
+
+	/**
+	 * Set of buses to which all sensor should be added.
+	 */
 	Set<Bus> addAllSensors = new HashSet<Bus>();
-	
+
+	/**
+	 * All components that were created or added in this EEVehicleBuilder
+	 */
 	private List<EEComponent> components = new ArrayList<EEComponent>();   
 	
 	public EEVehicleBuilder(EESimulator eeSimulator) {
 		this.eeSimulator = eeSimulator;
 	}
-	
+
+	/**
+	 * Build the EEVehicle with the created/added components
+	 * @param vehicle Vehicle the created EEVehicle belongs to
+	 * @param physicalVehicle Physical vehicle that belongs to the vehicle.
+	 * @return EEVehicle that belongs to Vehicle. Configured in the specified way.
+	 */
 	public EEVehicle buildEEVehicle(Vehicle vehicle, PhysicalVehicle physicalVehicle) {
 		Set<Bus> buses = new HashSet<Bus>();
 		if(!addAllSensors.isEmpty()) {
@@ -92,7 +107,7 @@ public class EEVehicleBuilder {
 			for (ParsableBusStructureProperties.Tupel component : busStructure.getBuses()) {
 				if (component.eeComponent.equals("flexRay")) {
 					FlexRay flexRay = new FlexRay(eeSimulator);
-					flexRay.setMode(FlexRayOperationMode.valueOf(component.parameter[0]));
+					flexRay.setOperationMode(FlexRayOperationMode.valueOf(component.parameter[0]));
 					busList.add(flexRay);
 				} else if (component.eeComponent.equals("instantBus")) {
 					InstantBus instantBus = new InstantBus(eeSimulator);
@@ -262,13 +277,50 @@ public class EEVehicleBuilder {
 		return connectBuses(bus1, bus2, Duration.ofMillis(1));
 	}
 
+	public FunctionBlockAsEEComponent createFunctionBlock(List<Bus> buses, HashMap<BusEntry, Integer> sizeByMessageId, FunctionBlockInterface functionBlock){
+		Set<String> subscribedMessagesNames = new HashSet<>(Arrays.asList(functionBlock.getImportNames()));
+		List<BusEntry> subscribedMessages = new ArrayList<>();
 
-	/**
-	 * Function that load the ParsableBusStructure out of a JSON file
-	 * @param file JSON File of the bus structure of an EEVehicle
-	 * @return the bus structure as a ParsabelBusStructure
-	 * @throws IOException
-	 */
+		Set<String> outputMessagesNames = functionBlock.getOutputs().keySet();
+		List<EEComponent> targets = new ArrayList<>(buses);
+		HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+		for(BusEntry entry : BusEntry.values()){
+			if(outputMessagesNames.contains(entry.toString())){
+				targetsByMessageId.put(entry, targets);
+			}
+			if(subscribedMessages.contains(entry.toString())){
+				subscribedMessages.add(entry);
+			}
+		}
+		FunctionBlockAsEEComponent comp = new FunctionBlockAsEEComponent(eeSimulator, EEComponentType.FUNCTION_BLOCK, subscribedMessages, targetsByMessageId, sizeByMessageId, functionBlock);
+		components.add(comp);
+		return comp;
+	}
+
+	public ConstantFunctionBlockAsEEComponent createConstantFunctionBlock(List<Bus> buses, HashMap<BusEntry, Integer> sizeByMessageId, FunctionBlockInterface functionBlock){
+		return ConstantFunctionBlockAsEEComponent.createConstantFunctionBlockAsEEComponent(buses, sizeByMessageId, functionBlock);
+	}
+
+	public ConstantFunctionBlockAsEEComponent createConstantFunctionBlock(Bus bus, HashMap<BusEntry, Integer> sizeByMessageId, FunctionBlockInterface functionBlock){
+		return ConstantFunctionBlockAsEEComponent.createConstantFunctionBlockAsEEComponent(bus, sizeByMessageId, functionBlock);
+	}
+
+	public boolean addComponent(EEComponent comp){
+		return components.add(comp);
+	}
+
+	public FunctionBlockAsEEComponent createFunctionBlock(Bus bus, HashMap<BusEntry, Integer> sizeByMessageId, FunctionBlockInterface functionBlock){
+		return createFunctionBlock(Collections.singletonList(bus), sizeByMessageId, functionBlock);
+	}
+
+
+
+		/**
+         * Function that load the ParsableBusStructure out of a JSON file
+         * @param file JSON File of the bus structure of an EEVehicle
+         * @return the bus structure as a ParsabelBusStructure
+         * @throws IOException
+         */
 
 	public ParsableBusStructureProperties loadFromFile(File file) throws IOException {
 
@@ -349,8 +401,8 @@ class ParsableBusStructureProperties {
 //					buses.add(new Tupel(bus.getBusType().toString(), busIdArr, param));
 					break;
 				case FLEXRAY:
-					String[] param = {((FlexRay) bus).getMode().toString()};
-					buses.add(new Tupel("flexRay", busIdArr, param));
+					String[] param = {((FlexRay) bus).getOperationMode().toString()};
+					buses.add(new Tupel(bus.getBusType().toString(), busIdArr, param));
 					break;
 				case INSTANT_BUS:
 					buses.add(new Tupel("instantBus", busIdArr, null));

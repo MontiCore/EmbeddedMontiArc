@@ -8,26 +8,15 @@ package simulation.vehicle;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.gson.Gson;
-
-
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import org.apache.commons.lang3.tuple.Pair;
-
 import sensors.abstractsensors.AbstractSensor;
-import sensors.factory.SensorFactory;
-import simulation.EESimulator.*;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EEComponentType;
+import simulation.EESimulator.EESimulator;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
-import simulation.bus.FlexRay;
 import simulation.bus.BusUtils;
-import simulation.bus.InstantBus;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
@@ -82,6 +71,7 @@ public class EEVehicle {
 				case BRIDGE:
 				case AUTOPILOT:
 				case NAVIGATION:
+				case FUNCTION_BLOCK:
 					//noop
 					break;
 				default:
@@ -105,7 +95,7 @@ public class EEVehicle {
 	}
 
 	public void executeLoopIteration(Instant time) {
-		if(time.isAfter(this.eeSimulator.getSimulationTime())) {
+		if(!vehicle.getPhysicalVehicle().getError() && time.isAfter(this.eeSimulator.getSimulationTime())) {
 			this.notifySensors(time);
 			this.eeSimulator.simulateNextTick(time);
 			this.notifyActuator(time);
@@ -135,7 +125,12 @@ public class EEVehicle {
 			}
 		} else {
 			for (VehicleActuator actuator : actuatorList) {
-				actuator.reset();
+				if(actuator.getActuatorType() == VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING){
+					actuator.update(actualTime);
+				}
+				else{
+					actuator.reset();
+				}
 			}
 			this.collision = false;
 		}
@@ -215,6 +210,9 @@ public class EEVehicle {
 		this.collision = collision;
 	}
 
+	/**
+	 * Sent the constant bus data to all components that need it.
+	 */
 	protected void setConstantBusData() {
 		List<EEComponent> components = new ArrayList<EEComponent>(
 				this.actuatorList.size() + this.sensorList.size() + 5);
@@ -236,6 +234,12 @@ public class EEVehicle {
 		}
 	}
 
+	/**
+	 * Send constant messages in constMsgs over the bus to the component.
+	 * @param constMsgs BusEntries of constant messages that should be transmitted.
+	 * @param bus Bus that transmit the messages.
+	 * @param component Component that needs the messages.
+	 */
 	private void sendConstMsgs(List<BusEntry> constMsgs, Bus bus, EEComponent component) {
 		PhysicalVehicle physicalVehilce = vehicle.getPhysicalVehicle();
 		VehicleActuator brakes = physicalVehilce

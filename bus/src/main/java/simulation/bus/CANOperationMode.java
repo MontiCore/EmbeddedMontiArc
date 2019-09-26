@@ -12,7 +12,7 @@ public enum CANOperationMode implements OperationMode{
     //100m length
     MEDIUM_SPEED_CAN("MEDIUM_SPEED_CAN", 0.5),
     //500m length
-    LOW_SPEED_CAM("LOW_SPEED_CAN",0.125);
+    LOW_SPEED_CAN("LOW_SPEED_CAN",0.125);
 
     private final double dataRate;
 
