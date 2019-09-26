@@ -36,14 +36,21 @@ Predictions are visualized through a Python GUI using Matplotlib. It shows the i
 ![Prediction Visualisations](ss.png)
 
 
-Example of using python3 v-tool/cli.py -i test.h5 -v -t. 
+Example of using python3 v-tool/cli.py -i train.h5 -v -t. 
+Note: This plot reflects the prediction on a training set.  
+    - 400 Epoches
+    - resolution sclaed down fron 480/640 to 60/80 
+    - learning rate 0.001 
+    - 20% straight driving 80% curves
+Furthermore, if the ground truth is availiable for the testing set the command can be adjusted acordingly.
+(Udacity's CH2 testing data which was our testing data does not provide the ground truth)
 
 ![Prediction Visualisations](plot.png)
 
 
 ## Generation of Training Data
 
-Read the README.md located in the `tensorflow/resourcess` directory.
+Read the README.md located in the `tensorflow/resourcess` mddirectory.
 
 ### Hyperparametes
 
