@@ -59,7 +59,7 @@ public class ChargingStation implements SimulationLoopExecutable, EnvObject {
     /**
      * Car tracing Radius of the Charging Station
      */
-    private double stationRadius = 10;
+    private double stationRadius = 8;
 
     // ===================
     // Constructor

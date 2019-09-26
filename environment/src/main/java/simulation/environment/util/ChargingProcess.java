@@ -40,22 +40,18 @@ public class ChargingProcess {
 				stopProcess();
 			}
 
-			if (timeDiffMs > 1000 * 2) {
-				// Loop of the Charging Process every 2 Seconds
-
-				if(this.battery.get().getBatteryPercentage() == 100){
+			if(this.battery.get().getBatteryPercentage() == 100){
 				    stopProcess();
 					return;
-				}
+			}
 				
-				double consumtionOfThisLoop = this.battery.get().charge();
+			double consumtionOfThisLoop = this.battery.get().charge();
 				// Increased consumption through transaction
-				double IncreaseConsumptionPercent = 5;
-				consumtionOfThisLoop = (5 * consumtionOfThisLoop / 100) + consumtionOfThisLoop;
+            double IncreaseConsumptionPercent = 5;
+            consumtionOfThisLoop = (5 * consumtionOfThisLoop / 100) + consumtionOfThisLoop;
 
 				// Update Charging Station consumtion
-				this.chargingStation.setConsumption(this.chargingStation.getConsumption() + consumtionOfThisLoop);
-			}
+            this.chargingStation.setConsumption(this.chargingStation.getConsumption() + consumtionOfThisLoop);
 		}
 	}
 
