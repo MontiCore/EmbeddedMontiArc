@@ -21,34 +21,51 @@
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
+import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Dot extends PredefinedLayerDeclaration {
+public class ReduceSum extends PredefinedLayerDeclaration {
 
-    private Dot() {
-        super(AllPredefinedLayers.DOT_NAME);
+    private ReduceSum() {
+        super(AllPredefinedLayers.REDUCE_SUM_NAME);
     }
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        if(layer.getInputTypes().get(0).getWidth() == 1 || layer.getInputTypes().get(0).getHeight() == 1) {
-            // if dot product between vectors
+
+        int axis;
+        boolean axisIsNone = layer.getStringValue(AllPredefinedLayers.AXIS_NAME).isPresent();
+
+        int channels = layer.getInputTypes().get(0).getChannels();
+        int height = layer.getInputTypes().get(0).getHeight();
+        int width = layer.getInputTypes().get(0).getWidth();
+
+        if (axisIsNone) {
+            return Collections.singletonList(
+                    new ArchTypeSymbol.Builder()
+                            .channels(1)
+                            .height(1)
+                            .width(1)
+                            .elementType("-oo", "oo")
+                            .build());
+        } else {
+            axis = layer.getIntValue(AllPredefinedLayers.AXIS_NAME).get();
+            if (axis == 0) {
+                height = 1;
+            }else{
+                width = 1;
+            }
+
+
             return Collections.singletonList(new ArchTypeSymbol.Builder()
-                    .channels(layer.getInputTypes().get(0).getChannels())
-                    .height(1)
-                    .width(1)
-                    .elementType("-oo", "oo")
-                    .build());
-        }else {
-            // if dot product between matrices
-            return Collections.singletonList(new ArchTypeSymbol.Builder()
-                    .channels(layer.getInputTypes().get(0).getChannels())
-                    .height(layer.getInputTypes().get(0).getHeight())
-                    .width(layer.getInputTypes().get(0).getWidth())
+                    .channels(channels)
+                    .height(height)
+                    .width(width)
                     .elementType("-oo", "oo")
                     .build());
         }
@@ -57,12 +74,16 @@ public class Dot extends PredefinedLayerDeclaration {
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputIsEmpty(inputTypes, layer);
-        errorIfInputNotFeasibleForDotProduct(inputTypes, layer);
+        errorIfAxisNotFeasible(inputTypes, layer);
     }
 
-    public static Dot create(){
-        Dot declaration = new Dot();
-        declaration.setParameters(new ArrayList<>());
+    public static ReduceSum create(){
+        ReduceSum declaration = new ReduceSum();
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.AXIS_NAME)
+                        .build()));
+        declaration.setParameters(parameters);
         return declaration;
     }
 }

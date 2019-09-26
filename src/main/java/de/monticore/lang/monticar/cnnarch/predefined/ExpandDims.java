@@ -21,48 +21,59 @@
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
+import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Dot extends PredefinedLayerDeclaration {
+public class ExpandDims extends PredefinedLayerDeclaration {
 
-    private Dot() {
-        super(AllPredefinedLayers.DOT_NAME);
+    private ExpandDims() {
+        super(AllPredefinedLayers.EXPAND_DIMS_NAME);
     }
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        if(layer.getInputTypes().get(0).getWidth() == 1 || layer.getInputTypes().get(0).getHeight() == 1) {
-            // if dot product between vectors
-            return Collections.singletonList(new ArchTypeSymbol.Builder()
-                    .channels(layer.getInputTypes().get(0).getChannels())
-                    .height(1)
-                    .width(1)
-                    .elementType("-oo", "oo")
-                    .build());
-        }else {
-            // if dot product between matrices
-            return Collections.singletonList(new ArchTypeSymbol.Builder()
-                    .channels(layer.getInputTypes().get(0).getChannels())
-                    .height(layer.getInputTypes().get(0).getHeight())
-                    .width(layer.getInputTypes().get(0).getWidth())
-                    .elementType("-oo", "oo")
-                    .build());
+
+        int dim = layer.getIntValue(AllPredefinedLayers.DIM_NAME).get();
+        int channels = layer.getInputTypes().get(0).getChannels();
+        int height = layer.getInputTypes().get(0).getHeight();
+        int width = layer.getInputTypes().get(0).getWidth();
+
+        if (dim == 0) {
+            width = height;
+            height = channels;
+            channels = 1;
+        }else if (dim == 1) {
+            width = height;
+            height = 1;
         }
+
+        return Collections.singletonList(new ArchTypeSymbol.Builder()
+                .channels(channels)
+                .height(height)
+                .width(width)
+                .elementType("-oo", "oo")
+                .build());
     }
 
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputIsEmpty(inputTypes, layer);
-        errorIfInputNotFeasibleForDotProduct(inputTypes, layer);
+        errorIfDimNotFeasible(inputTypes, layer);
     }
 
-    public static Dot create(){
-        Dot declaration = new Dot();
-        declaration.setParameters(new ArrayList<>());
+    public static ExpandDims create(){
+        ExpandDims declaration = new ExpandDims();
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.DIM_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
+                        .build()));
+        declaration.setParameters(parameters);
         return declaration;
     }
 }

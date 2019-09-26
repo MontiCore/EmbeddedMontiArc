@@ -29,6 +29,7 @@ public class ErrorCodes {
     public static final String MISSING_VAR_VALUE = "x02572";
     public static final String ILLEGAL_ASSIGNMENT = "x03444";
     public static final String ILLEGAL_SEQUENCE_LENGTH = "x24772";
+    public static final String ILLEGAL_PARAMETER_VALUE = "x74AB0";
     public static final String UNKNOWN_VARIABLE_NAME = "x32487";
     public static final String UNKNOWN_LAYER = "x33585";
     public static final String ILLEGAL_NAME = "x93567";

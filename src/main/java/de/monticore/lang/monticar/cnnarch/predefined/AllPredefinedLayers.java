@@ -55,6 +55,9 @@ public class AllPredefinedLayers {
     public static final String ARG_MAX_NAME = "ArgMax";
     public static final String DOT_NAME = "Dot";
     public static final String REPEAT_NAME = "Repeat";
+    public static final String REDUCE_SUM_NAME = "ReduceSum";
+    public static final String EXPAND_DIMS_NAME = "ExpandDims";
+    public static final String MULTIPLY_NAME = "Multiply";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -118,7 +121,10 @@ public class AllPredefinedLayers {
                 Embedding.create(),
                 ArgMax.create(),
                 Dot.create(),
-                Repeat.create());
+                Repeat.create(),
+                ReduceSum.create(),
+                ExpandDims.create(),
+                Multiply.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){

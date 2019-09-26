@@ -39,7 +39,7 @@ public class Repeat extends PredefinedLayerDeclaration {
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
 
         int repeats = layer.getIntValue(AllPredefinedLayers.REPEATS_NAME).get();
-        int axis = layer.getIntValue(AllPredefinedLayers.AXIS_NAME).get();
+        int axis;
         boolean axisIsNone = layer.getStringValue(AllPredefinedLayers.AXIS_NAME).isPresent();
 
         int channels = layer.getInputTypes().get(0).getChannels();
@@ -55,14 +55,11 @@ public class Repeat extends PredefinedLayerDeclaration {
                             .elementType("-oo", "oo")
                             .build());
         }else {
+            axis = layer.getIntValue(AllPredefinedLayers.AXIS_NAME).get();
             if(axis == 0){
                 height *= repeats;
-            }else if(axis == 1){
-                width *= repeats;
             }else{
-                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid axis in Repeat layer. Axis for " +
-                                getName() + " layer must be None, 0 or 1"
-                        , layer.getSourcePosition());
+                width *= repeats;
             }
 
             return Collections.singletonList(
@@ -78,6 +75,7 @@ public class Repeat extends PredefinedLayerDeclaration {
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
+        errorIfAxisNotFeasible(inputTypes, layer);
     }
 
     public static Repeat create(){
