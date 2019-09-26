@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNPREDICTOR_CARTPOLE_MASTER_DQN
 #define CNNPREDICTOR_CARTPOLE_MASTER_DQN
 

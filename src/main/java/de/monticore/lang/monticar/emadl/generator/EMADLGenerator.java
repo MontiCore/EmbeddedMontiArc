@@ -44,6 +44,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
+import java.io.File;
+
 public class EMADLGenerator {
 
     private GeneratorEMAMOpt2CPP emamGen;
@@ -181,6 +183,15 @@ public class EMADLGenerator {
         }
     }
 
+    public String getChecksumForLargerFile(String filePath) throws IOException {
+        try {
+            return (new File(filePath)).lastModified() + "";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Exception_calculating_hash_large_file";
+        }
+    }
+
     public void generateFiles(TaggingResolver taggingResolver, EMAComponentInstanceSymbol EMAComponentSymbol, Scope symtab, String pythonPath, String forced) throws IOException {
         Set<EMAComponentInstanceSymbol> allInstances = new HashSet<>();
         List<FileContent> fileContents = generateStrings(taggingResolver, EMAComponentSymbol, symtab, allInstances, forced);
@@ -220,15 +231,16 @@ public class EMADLGenerator {
             String b = backend.getBackendString(backend);
             String trainingDataHash = "";
             String testDataHash = "";
+			
             if (architecture.get().getDataPath() != null) {
                 if (b.equals("CAFFE2")) {
-                    trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train_lmdb/data.mdb");
-                    testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test_lmdb/data.mdb");
-                } else {
-                    trainingDataHash = getChecksumForFile(architecture.get().getDataPath() + "/train.h5");
-                    testDataHash = getChecksumForFile(architecture.get().getDataPath() + "/test.h5");
-                }
-            }
+                    trainingDataHash = getChecksumForLargerFile(architecture.get().getDataPath() + "/train_lmdb/data.mdb");
+                    testDataHash = getChecksumForLargerFile(architecture.get().getDataPath() + "/test_lmdb/data.mdb");
+            	}else{
+                    trainingDataHash = getChecksumForLargerFile(architecture.get().getDataPath() + "/train.h5");
+                    testDataHash = getChecksumForLargerFile(architecture.get().getDataPath() + "/test.h5");
+            	}
+			}
             String trainingHash = emadlHash + "#" + cnntHash + "#" + trainingDataHash + "#" + testDataHash;
 
             boolean alreadyTrained = newHashes.contains(trainingHash) || isAlreadyTrained(trainingHash, componentInstance);

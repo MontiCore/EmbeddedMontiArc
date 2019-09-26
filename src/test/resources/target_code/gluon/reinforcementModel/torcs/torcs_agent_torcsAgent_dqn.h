@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef TORCS_AGENT_TORCSAGENT_DQN
 #define TORCS_AGENT_TORCSAGENT_DQN
 #ifndef M_PI

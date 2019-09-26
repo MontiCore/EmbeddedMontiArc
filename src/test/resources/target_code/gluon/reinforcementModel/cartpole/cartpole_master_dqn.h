@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef CARTPOLE_MASTER_DQN
 #define CARTPOLE_MASTER_DQN
 #ifndef M_PI

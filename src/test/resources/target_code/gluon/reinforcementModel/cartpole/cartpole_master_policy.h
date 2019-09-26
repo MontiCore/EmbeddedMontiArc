@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef CARTPOLE_MASTER_POLICY
 #define CARTPOLE_MASTER_POLICY
 #ifndef M_PI

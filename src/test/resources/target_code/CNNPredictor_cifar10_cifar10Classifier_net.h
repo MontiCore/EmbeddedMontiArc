@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNPREDICTOR_CIFAR10_CIFAR10CLASSIFIER_NET
 #define CNNPREDICTOR_CIFAR10_CIFAR10CLASSIFIER_NET
 
