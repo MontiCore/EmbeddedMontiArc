@@ -965,8 +965,10 @@ public class Vehicle{
                 stopVehicle();
             }
         }
-        if(isAtLocation(lastdestinationrealvector)){
-            stopVehicle();
+        if(lastdestinationrealvector != null) {
+            if (isAtLocation(lastdestinationrealvector)) {
+                stopVehicle();
+            }
         }
         //  Check Battery
         checkBattery();
