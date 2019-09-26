@@ -23,7 +23,6 @@ import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.WorldModel;
 import simulation.environment.object.ChargingStation;
 import simulation.environment.osm.IntersectionFinder;
-import simulation.environment.util.Chargeable;
 import simulation.environment.util.ChargingStationNavigator;
 import simulation.environment.util.IBattery;
 import simulation.util.Log;
@@ -161,6 +160,7 @@ public class Vehicle{
     /** Flag go to Chargingstation */
     private boolean gotoCharginstation = false;
 
+    RealVector lastdestinationrealvector;
     /** Last Destination */
     private IControllerNode lastdestination;
 
@@ -415,6 +415,10 @@ public class Vehicle{
         return false;
     }
 
+    public boolean isAtLocation(RealVector location2D){
+        RealVector vehiclePos2D = new ArrayRealVector(new double[]{physicalVehicle.getPosition().getEntry(0),physicalVehicle.getPosition().getEntry(1)});
+        return location2D.getDistance(vehiclePos2D) < 2.5;
+    }
     /**
      * @return true if it's an EV
      */
@@ -958,19 +962,12 @@ public class Vehicle{
         ChargingStation nearestCS = ChargingStationNavigator.getNearestCS();
         if (nearestCS != null){
             if (isParkedChargingStation(nearestCS)) {
-                if (physicalVehicle instanceof MassPointPhysicalVehicle) {
-                    motor.setActuatorValueTarget(0.0);
-                    brakesBackLeft.setActuatorValueTarget(brakesBackLeft.getActuatorValueMax());
-                    brakesBackRight.setActuatorValueTarget(brakesBackRight.getActuatorValueMax());
-                    brakesFrontLeft.setActuatorValueTarget(brakesFrontLeft.getActuatorValueMax());
-                    brakesFrontRight.setActuatorValueTarget(brakesFrontRight.getActuatorValueMax());
-                } else {
-                    throttle.setActuatorValueTarget(0.0);
-                    brakes.setActuatorValueTarget(brakes.getActuatorValueMax());
-                }
+                stopVehicle();
             }
         }
-
+        if(isAtLocation(lastdestinationrealvector)){
+            stopVehicle();
+        }
         //  Check Battery
         checkBattery();
 
@@ -988,6 +985,19 @@ public class Vehicle{
         controllerBus.get().setAllData(controller.get().getOutputs());
     }
 
+    private void stopVehicle() {
+        if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+            motor.setActuatorValueTarget(0.0);
+            brakesBackLeft.setActuatorValueTarget(brakesBackLeft.getActuatorValueMax());
+            brakesBackRight.setActuatorValueTarget(brakesBackRight.getActuatorValueMax());
+            brakesFrontLeft.setActuatorValueTarget(brakesFrontLeft.getActuatorValueMax());
+            brakesFrontRight.setActuatorValueTarget(brakesFrontRight.getActuatorValueMax());
+        } else {
+            throttle.setActuatorValueTarget(0.0);
+            brakes.setActuatorValueTarget(brakes.getActuatorValueMax());
+        }
+    }
+
     /**
      * Check Battery state and move to the next Chargingstation if needed
      */
@@ -1001,7 +1011,8 @@ public class Vehicle{
                     x1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_X).get().getValue());
                     y1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_Y).get().getValue());
                     lastdestination = new ControllerNodeImpl(new Point3D( x1.get(x1.size()-1), y1.get(y1.size()-1), 0), ChargingStationNavigator.getNearestOsmNodeFrom(
-                            new ArrayRealVector(new double[]{x1.get(x1.size()-1), y1.get(y1.size()-1)})));
+                            new ArrayRealVector(new double[]{x1.get(x1.size()-1), y1.get(y1.size()-1),0})));
+                    lastdestinationrealvector = new ArrayRealVector(new double[]{x1.get(x1.size()-1), y1.get(y1.size()-1),0});
                     long nearestcharg = ChargingStationNavigator.getNearestChargingStation(
                             physicalVehicle.getGlobalId(),
                             ChargingStationNavigator.getNearestOsmNodeFrom(this.physicalVehicle.getPosition())
