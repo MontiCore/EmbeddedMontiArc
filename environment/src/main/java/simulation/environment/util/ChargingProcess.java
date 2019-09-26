@@ -40,7 +40,7 @@ public class ChargingProcess {
 				stopProcess();
 			}
 
-			if(this.battery.get().getBatteryPercentage() == 100){
+			if(this.battery.get().getBatteryPercentage() > 99d){
 				    stopProcess();
 					return;
 			}
