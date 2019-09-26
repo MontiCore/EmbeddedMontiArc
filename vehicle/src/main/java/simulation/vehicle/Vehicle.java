@@ -417,7 +417,7 @@ public class Vehicle{
 
     public boolean isAtLocation(RealVector location2D){
         RealVector vehiclePos2D = new ArrayRealVector(new double[]{physicalVehicle.getPosition().getEntry(0),physicalVehicle.getPosition().getEntry(1)});
-        return location2D.getDistance(vehiclePos2D) < 1.8;
+        return location2D.getDistance(vehiclePos2D) < 2.0;
     }
     /**
      * @return true if it's an EV
@@ -1096,6 +1096,7 @@ public class Vehicle{
         }
 
         List<Vertex> trajectoryWithoutAvoiding = (List<Vertex>)(navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
+        trajectoryWithoutAvoiding.stream().filter(x -> x.getOsmId() > 0).collect(Collectors.toList());
         if (trajectoryWithoutAvoiding.isEmpty() || avoidCoordinates.isEmpty()) {
             controllerBus.get().setData(PLANNED_TRAJECTORY_X.toString(), trajectoryWithoutAvoiding.stream().map(x -> x.getPosition().toArray()[0]).collect(Collectors.toList()));
             controllerBus.get().setData(PLANNED_TRAJECTORY_Y.toString(), trajectoryWithoutAvoiding.stream().map(x -> x.getPosition().toArray()[1]).collect(Collectors.toList()));
