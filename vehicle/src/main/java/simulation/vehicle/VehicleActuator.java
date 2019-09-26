@@ -268,7 +268,6 @@ public class VehicleActuator extends ImmutableEEComponent {
 	 */
 	protected void update(Instant actualTime) {
 		this.updateValue(actualTime);
-		System.out.println(this.actuatorType + " send message: " + this.sendMsgId + "; with value: " + this.actuatorValueCurrent);
 		this.sendMessage(this.actuatorValueCurrent, 8, this.sendMsgId, actualTime);
 	}
 
@@ -403,7 +402,6 @@ public class VehicleActuator extends ImmutableEEComponent {
 			//update actuator with old target
 			this.updateValue(event.getEventTime());
 			//send message
-			System.out.println(actuatorType.toString() + " received message: " +  msg.getMessageID() + "; with value: " + msg.getMessage());
 			setActuatorValueTarget((double) msg.getMessage());
 		}
 		else{
