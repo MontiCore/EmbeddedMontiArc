@@ -15,7 +15,7 @@ component Network<Z(2:oo) classes = 10>{
         Relu() ->
         FullyConnected(units=classes) ->
         Softmax() ->
-        predictions
+        predictions;
 
     }
 }
