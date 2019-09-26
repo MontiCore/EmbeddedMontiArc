@@ -7,7 +7,7 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang</groupId>
     <artifactId>Tagging</artifactId>
-    <version>0.0.7</version>
+    <version>0.0.8-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -306,11 +306,11 @@
     <distributionManagement>
         <repository>
             <id>se-nexus</id>
-            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/</url>
         </repository>
         <snapshotRepository>
             <id>se-nexus</id>
-            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
