@@ -7,7 +7,7 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang</groupId>
     <artifactId>Tagging</artifactId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.0.7</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
