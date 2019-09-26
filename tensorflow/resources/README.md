@@ -34,7 +34,7 @@ To achive these steps a number of csv files are generated and can be reviewed.
 
 The -i flag is mandatory scince it specifies the path to the folder containg the images (needs to be named center) and the steering csv (needs to be named steering.csv).
 In addition exactly one of the following flags has to be set (-a,-c,-l,-s)
-Optional -n to set 
+Optional: set the -n flag to specify how many images should be taken.  
 Note: Image resolution is hard coded to 120/180.
 Change:  PIXEL_WIDTH  = int(640/4) and PIXEL_HEIGHT = int(480/4) in the script to change that. 
 
