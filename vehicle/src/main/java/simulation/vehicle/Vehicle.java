@@ -920,19 +920,6 @@ public class Vehicle{
             setMaxTemporaryAllowedVelocity(Math.min(getMaxTemporaryAllowedVelocity(), allowedVelocityByStreetType));
         }
 
-        // Set other values on bus that can change during simulation
-        controllerBus.get().setData(SIMULATION_DELTA_TIME.toString(), deltaT);
-        controllerBus.get().setData(VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.toString(), getMaxTemporaryAllowedVelocity());
-
-        //Give the bus to the mainControlBlock
-        controller.get().setInputs(controllerBus.get().getAllData());
-
-        // Call controller to compute new values
-        controller.get().execute(deltaT);
-
-        //Pass the data of the mainControlBlock to the bus
-        controllerBus.get().setAllData(controller.get().getOutputs());
-
         // Read new values from bus
         double motorValue = 0;
         double brakeValue = 0;
@@ -981,6 +968,19 @@ public class Vehicle{
         }
         //  Check Battery
         checkBattery();
+
+	// Set other values on bus that can change during simulation
+        controllerBus.get().setData(SIMULATION_DELTA_TIME.toString(), deltaT);
+        controllerBus.get().setData(VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.toString(), getMaxTemporaryAllowedVelocity());
+
+        //Give the bus to the mainControlBlock
+        controller.get().setInputs(controllerBus.get().getAllData());
+
+        // Call controller to compute new values
+        controller.get().execute(deltaT);
+
+        //Pass the data of the mainControlBlock to the bus
+        controllerBus.get().setAllData(controller.get().getOutputs());
     }
 
     /**
@@ -1000,14 +1000,14 @@ public class Vehicle{
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //      battery discharging failed, cannot accelerate the vehicle
-                //      set either motor OR throttle to zero, based on type of the car
-                if (batteryProblem) {
-                    if (physicalVehicle instanceof MassPointPhysicalVehicle) {
-                        motor.setActuatorValueTarget(0.0);
-                    } else {
-                        throttle.setActuatorValueTarget(0.0);
-                    }
+            }
+		    //      battery discharging failed, cannot accelerate the vehicle
+ 			//      set either motor OR throttle to zero, based on type of the car
+            if (batteryProblem) {
+                if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+                    motor.setActuatorValueTarget(0.0);
+                } else {
+                    throttle.setActuatorValueTarget(0.0);
                 }
             }
         }

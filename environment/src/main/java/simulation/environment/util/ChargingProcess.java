@@ -17,7 +17,7 @@ import java.util.Optional;
  * @version 1.0
  * @since 2019-05-22
  */
-public class ChargingProcess implements SimulationLoopExecutable {
+public class ChargingProcess {
 	private Chargeable vehicle;
 	private ChargingStation chargingStation;
 	private Optional<IBattery> battery;
@@ -32,7 +32,6 @@ public class ChargingProcess implements SimulationLoopExecutable {
 		this.battery = Optional.of(vehicle.getBattery().get());
 	}
 
-	@Override
 	public void executeLoopIteration(long timeDiffMs) {
 		if (this.chargeCar) {
 
