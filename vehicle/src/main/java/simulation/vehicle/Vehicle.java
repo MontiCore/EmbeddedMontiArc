@@ -417,7 +417,7 @@ public class Vehicle{
 
     public boolean isAtLocation(RealVector location2D){
         RealVector vehiclePos2D = new ArrayRealVector(new double[]{physicalVehicle.getPosition().getEntry(0),physicalVehicle.getPosition().getEntry(1)});
-        return location2D.getDistance(vehiclePos2D) < 2.5;
+        return location2D.getDistance(vehiclePos2D) < 1.5;
     }
     /**
      * @return true if it's an EV
