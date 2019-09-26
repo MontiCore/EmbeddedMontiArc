@@ -226,7 +226,9 @@ public class ChargingStation implements SimulationLoopExecutable, EnvObject {
      */
     @Override
     public void executeLoopIteration(long timeDiffMs) {
-        // do nothing: Charging stations do not move
+            for(ChargingProcess cp : chargingProcessesMap.values()){
+                cp.executeLoopIteration(timeDiffMs);
+            }
     }
 
     @Override
