@@ -36,8 +36,8 @@ Predictions are visualized through a Python GUI using Matplotlib. It shows the i
 ![Prediction Visualisations](ss.png)
 
 
-- Example of using python3 v-tool/cli.py -i train.h5 -v -t. 
-- Note: This plot reflects the prediction on a training set.  
+- Example of using python3 v-tool/cli.py -i train.h5 -v -t 
+- Note: This plot reflects the prediction on a training set generated from  [Udacities CH2 driving challange](https://github.com/udacity/self-driving-car/tree/master/datasets/CH2).  
     - 400 Epoches
     - resolution sclaed down fron 480/640 to 60/80 
     - learning rate 0.001 
