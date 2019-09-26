@@ -1,30 +1,57 @@
-component RNNencdec2{
-   ports in Z(0:29999)^{75} source,
-        out Z(0:29999)^{1} target[91];
+component RNNencdec2<Z(2:oo) classes = 10, max_length=5>{
+    ports in Z(0:255)^{3, 224, 224} data,
+         out Z(0:29999)^{1} softmax[5];
 
    implementation CNN{
 
-     layer LSTM(units=10) encoder;
+      data ->
+      Convolution(kernel=(7,7), channels=8, stride=(7,7), padding="valid") ->
+      Convolution(kernel=(4,4), channels=8, stride=(4,4), padding="valid") ->
+      FullyConnected(units=200) ->
+      Softmax() ->
+      ArgMax() ->
+      softmax[0];
 
-     source ->
-     Embedding(output_dim=10) ->
-     encoder;
 
-     layer LSTM(units=10) decoder;
+       layer LSTM(units=10) encoder;
+       layer LSTM(units=10) decoder;
 
-     1 -> target[0];
 
-     encoder.state -> decoder.state;
+       softmax[0] ->
+       Embedding(output_dim=10) ->
+       encoder;
 
-     timed<t> GreedySearch(max_length=91) {
-         target[t-1] ->
-         Embedding(output_dim=10) ->
-         decoder ->
-         FullyConnected(units=30) ->
-         Softmax() ->
-         ArgMax() ->
-         target[t]
-     };
+       encoder.state -> decoder.state;
 
+       timed <t> GreedySearch(max_length=5){
+
+           (
+               (
+                   softmax[t-1] ->
+                   FullyConnected(units=512)
+               |
+                   data ->
+                   Convolution(kernel=(7,7), channels=8, stride=(7,7), padding="valid") ->
+                   Convolution(kernel=(4,4), channels=8, stride=(4,4), padding="valid") ->
+                   FullyConnected(units=512)
+               ) ->
+               Add() ->
+               Tanh() ->
+               FullyConnected(units=100) ->
+               Softmax()
+           |
+               data ->
+               Convolution(kernel=(7,7), channels=8, stride=(7,7), padding="valid") ->
+               Convolution(kernel=(4,4), channels=8, stride=(4,4), padding="valid") ->
+               FullyConnected(units=100)
+           ) ->
+           Multiply() ->
+           ExpandDims(dim=1) ->
+        decoder ->
+        FullyConnected(units=200) ->
+        Softmax() ->
+        ArgMax() ->
+        softmax[t]
+       };
        }
  }
