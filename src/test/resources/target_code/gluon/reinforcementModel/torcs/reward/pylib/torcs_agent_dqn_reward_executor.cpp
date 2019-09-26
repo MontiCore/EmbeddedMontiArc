@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #include "torcs_agent_dqn_reward_executor.h"
 
 void torcs_agent_dqn_reward_executor::init() {

@@ -31,9 +31,10 @@ public class EMADLGeneratorCli {
             .hasArg(true)
             .required(false)
             .build();
+    
     public static final Option OPTION_BACKEND = Option.builder("b")
             .longOpt("backend")
-            .desc("deep-learning-framework backend. Options: MXNET, CAFFE2, GLUON")
+            .desc("deep-learning-framework backend. Options: MXNET, CAFFE2, GLUON, TENSORFLOW")
             .hasArg(true)
             .required(false)
             .build();

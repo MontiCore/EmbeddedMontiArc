@@ -1,0 +1,22 @@
+Statistics NOT found.
+Calculating statistics...
+Calculating statistics for 1 inputs, 1 outputs, 10 data points...
+Calculating means... 
+Done calculating means!
+Input means: {'data': 119.01497650146486}
+
+
+Calculating stds...
+Done calculating stds!
+Input stds: {'data': 64.83483372441468}
+
+
+From /home/julian/.local/lib/python2.7/site-packages/tensorflow/python/ops/resource_variable_ops.py:435: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+From /home/julian/.local/lib/python2.7/site-packages/tensorflow/python/keras/layers/core.py:143: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.
+No lerning_rate_policy specified. Using step scheduler!
+
+

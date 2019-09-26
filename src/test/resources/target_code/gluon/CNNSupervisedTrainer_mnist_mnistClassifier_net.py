@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 import mxnet as mx
 import logging
 import numpy as np
@@ -173,7 +172,7 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                if True:
+                if True: 
                     predictions_ = mx.nd.zeros((10,), ctx=mx_context)
 
                     predictions_ = self._networks[0](image_)
@@ -194,7 +193,7 @@ class CNNSupervisedTrainer_mnist_mnistClassifier_net:
                     batch.label[0].as_in_context(mx_context)
                 ]
 
-                if True:
+                if True: 
                     predictions_ = mx.nd.zeros((10,), ctx=mx_context)
 
                     predictions_ = self._networks[0](image_)

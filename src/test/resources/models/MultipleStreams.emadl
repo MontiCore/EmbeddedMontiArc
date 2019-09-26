@@ -5,8 +5,8 @@ component MultipleStreams{
 
     implementation CNN {
         data[0] ->
-        Convolution(kernel=(5,5), channels=8, padding="valid") ->
-        Convolution(kernel=(5,5), channels=8, padding="valid") ->
+        Convolution(kernel=(5,5), channels=8) ->
+        Convolution(kernel=(5,5), channels=8) ->
         FullyConnected(units=128) ->
         Dropout()->
         FullyConnected(units=10) ->
@@ -14,8 +14,8 @@ component MultipleStreams{
         softmax[0];
 
         data[1] ->
-        Convolution(kernel=(5,5), channels=8, padding="valid") ->
-        Convolution(kernel=(5,5), channels=8, padding="valid") ->
+        Convolution(kernel=(5,5), channels=8) ->
+        Convolution(kernel=(5,5), channels=8) ->
         FullyConnected(units=128) ->
         Dropout()->
         FullyConnected(units=10) ->
