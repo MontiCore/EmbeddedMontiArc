@@ -1014,7 +1014,7 @@ public class Vehicle{
                     y1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_Y).get().getValue());
                     lastdestination = new ControllerNodeImpl(new Point3D( x1.get(x1.size()-1), y1.get(y1.size()-1), 0), ChargingStationNavigator.getNearestOsmNodeFrom(
                             new ArrayRealVector(new double[]{x1.get(x1.size()-1), y1.get(y1.size()-1),0})));
-                    lastdestinationrealvector = new ArrayRealVector(new double[]{x1.get(x1.size()-1), y1.get(y1.size()-1),0});
+                    lastdestinationrealvector = new ArrayRealVector(new double[]{x1.get(x1.size()-1), y1.get(y1.size()-1)});
                     long nearestcharg = ChargingStationNavigator.getNearestChargingStation(
                             physicalVehicle.getGlobalId(),
                             ChargingStationNavigator.getNearestOsmNodeFrom(this.physicalVehicle.getPosition())
