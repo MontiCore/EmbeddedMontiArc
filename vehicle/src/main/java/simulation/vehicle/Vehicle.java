@@ -1076,7 +1076,8 @@ public class Vehicle{
 
         List<Vertex> trajectoryWithoutAvoiding = (List<Vertex>)(navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
         if (trajectoryWithoutAvoiding.isEmpty() || avoidCoordinates.isEmpty()) {
-            controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
+            controllerBus.get().setData(PLANNED_TRAJECTORY_X.toString(), trajectoryWithoutAvoiding.stream().map(x -> x.getPosition().toArray()[0]).collect(Collectors.toList()));
+            controllerBus.get().setData(PLANNED_TRAJECTORY_Y.toString(), trajectoryWithoutAvoiding.stream().map(x -> x.getPosition().toArray()[1]).collect(Collectors.toList()));
             afterTrajectoryUpdate();
             return;
         }
@@ -1140,9 +1141,6 @@ public class Vehicle{
 
         // If trajectory with avoiding is null or empty, just set original result without avoiding
         if (navigation.get().getOutputs().get(NavigationEntry.DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) == null) {
-            //controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
-            controllerBus.get().setData(PLANNED_TRAJECTORY_X.toString(), trajectoryWithoutAvoiding.stream().map(x -> x.getPosition().toArray()[0]).collect(Collectors.toList()));
-            controllerBus.get().setData(PLANNED_TRAJECTORY_Y.toString(), trajectoryWithoutAvoiding.stream().map(x -> x.getPosition().toArray()[1]).collect(Collectors.toList()));
             afterTrajectoryUpdate();
             return;
         }
