@@ -34,9 +34,9 @@ public class ControllerTest {
 
 	//hardcoded config
 	private final String AUTOPILOT_CONFIG = "autopilot=AutopilotAdapter\n"+
-												"os=windows\n" + 
+												"os=windows\n" +
 												"no_time=true";
-	
+
 	@Test
 	public void testController() throws Exception {
 		HardwareEmulatorInterface modelServer = new HardwareEmulatorInterface("autopilots_folder=autopilots", "");
@@ -48,7 +48,7 @@ public class ControllerTest {
 		DirectModelAsEEComponent ecu = eeVehicleBuilder.createController(modelServer, AUTOPILOT_CONFIG, bus);
 		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
 		EEVehicle eeVehicle = vehicle.getEEVehicle();
-        
+
         //get actuators
         VehicleActuator steering = vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).get();
         VehicleActuator brakeBL = vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).get();
@@ -56,7 +56,7 @@ public class ControllerTest {
         VehicleActuator brakeFL = vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).get();
         VehicleActuator brakeFR = vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).get();
         VehicleActuator motor = vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).get();
-        
+
         HashMap<VehicleActuator, Double> initialValuesByActuator = new HashMap<VehicleActuator, Double>();
         initialValuesByActuator.put(steering, steering.getActuatorValueTarget());
         initialValuesByActuator.put(brakeBL, brakeBL.getActuatorValueTarget());
@@ -66,7 +66,7 @@ public class ControllerTest {
         initialValuesByActuator.put(motor, motor.getActuatorValueTarget());
 
 		vehicle.executeLoopIteration(Duration.ofMillis(30));
-		
+
 		//ecu emits 3 messages
 		int controllerMessagesCount = 0;
 		for(EEDiscreteEvent event : eeVehicle.getEESimulator().getEventList()) {
@@ -77,18 +77,18 @@ public class ControllerTest {
 				}
 			}
 		}
-		
+
 		assertEquals(3, controllerMessagesCount);
-		
+
 		vehicle.executeLoopIteration(Duration.ofMillis(30));
-	
+
 		boolean initialValuesChanged = false;
 		for(Map.Entry<VehicleActuator, Double> initialValueByActuator : initialValuesByActuator.entrySet()) {
 			if(Math.abs(initialValueByActuator.getKey().getActuatorValueTarget()-initialValueByActuator.getValue()) > 0.001) {
 				initialValuesChanged = true;
 			}
 		}
-		
+
 		Assert.isTrue(initialValuesChanged);
 	}
 

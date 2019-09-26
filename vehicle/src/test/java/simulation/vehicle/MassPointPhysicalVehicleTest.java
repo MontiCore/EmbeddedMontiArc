@@ -55,7 +55,7 @@ public class MassPointPhysicalVehicleTest {
     public void setHeightFail(){
     	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
 		Vehicle vehicle = createStandardVehicle(massPointBuilder);
-        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();     
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setHeight(1.0);
     }
 
@@ -63,12 +63,12 @@ public class MassPointPhysicalVehicleTest {
     public void executeLoopIterationNoFlags(){
         EESimulator simulator = new EESimulator(Instant.EPOCH);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
-        
+
         // Set up normal vehicle
     	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
 		Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
-        
+
         // Set values for vehicle actuators
         VehicleActuator motor = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR);
         motor.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
@@ -150,7 +150,7 @@ public class MassPointPhysicalVehicleTest {
     public void executeLoopIterationCollisionFlag(){
         EESimulator simulator = new EESimulator(Instant.EPOCH);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
-        
+
         // Set up vehicle with collision
     	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
 		Vehicle vehicle = createStandardVehicle(massPointBuilder);
@@ -280,7 +280,7 @@ public class MassPointPhysicalVehicleTest {
     	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
 		Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
-        
+
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 1.0, 2.0, 3.0);
         RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
         physicalVehicle.setRotation(rotation);
@@ -394,7 +394,7 @@ public class MassPointPhysicalVehicleTest {
         physicalVehicleBuilder.setVelocity(new ArrayRealVector(new double[]{0.0, 14.0, 0.0}));
 		Vehicle vehicle = createStandardVehicle(physicalVehicleBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
-        
+
         // Put physical vehicle on the surface
         physicalVehicle.putOnSurface(0.0, 0.0, 0.0);
 
@@ -425,7 +425,7 @@ public class MassPointPhysicalVehicleTest {
 		MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
 		Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
-        
+
         // Add physicalVehicle to simulation
         physicalVehicle.putOnSurface(0.0, 0.0, 0.0);
 
@@ -452,7 +452,7 @@ public class MassPointPhysicalVehicleTest {
         physicalVehicleBuilder.setVelocity(new ArrayRealVector(new double[]{0.0, 0.01, 0.0}));
 		Vehicle vehicle = createStandardVehicle(physicalVehicleBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
-        
+
         // Add physicalVehicle to simulation
         physicalVehicle.putOnSurface(0.0, 0.0, 0.0);
 
@@ -482,7 +482,7 @@ public class MassPointPhysicalVehicleTest {
         physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).update(Instant.EPOCH.plusMillis(timeDiffMs));
         physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).update(Instant.EPOCH.plusMillis(timeDiffMs));
     }
-    
+
     private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
     	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);

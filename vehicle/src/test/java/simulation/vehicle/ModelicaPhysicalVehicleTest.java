@@ -63,7 +63,7 @@ public class ModelicaPhysicalVehicleTest {
         // Set up normal vehicle
     	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
         ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
-        
+
         // Set values for vehicle actuators
         VehicleActuator throttle = physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE);
         throttle.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_MIN);
@@ -332,7 +332,7 @@ public class ModelicaPhysicalVehicleTest {
         ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
         physicalVehicle.initPhysics();
     }
-    
+
     private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
     	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);

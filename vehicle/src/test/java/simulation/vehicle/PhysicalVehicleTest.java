@@ -243,7 +243,7 @@ public class PhysicalVehicleTest {
     @Test(expected = IllegalStateException.class)
     public void setWheelDistToBackMassPoint(){
     	Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
-        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle(); 
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelDistToBack(1.0);
     }
 
@@ -253,7 +253,7 @@ public class PhysicalVehicleTest {
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelDistToBack(1.0);
     }
-    
+
     private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
     	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);

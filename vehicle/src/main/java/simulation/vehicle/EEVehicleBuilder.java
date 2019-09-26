@@ -80,6 +80,7 @@ public class EEVehicleBuilder {
 	 * @return
 	 */
 	public EEVehicle buildEEVehicle(Vehicle vehicle, File data) {
+		components.clear();
 		List<Bus> busList = new LinkedList<>();
 		//set busAndParameter, sensor, actuator and bridge lists
 		ParsableBusStructureProperties busStructure;
@@ -87,6 +88,9 @@ public class EEVehicleBuilder {
 		try {
 			busStructure = loadFromFile(data);
 
+			for (ParsableBusStructureProperties.Tupel comp : busStructure.getActuators()) {
+				System.out.println("comp type: " + comp.eeComponent);
+			}
 			//create buses
 			for (ParsableBusStructureProperties.Tupel component : busStructure.getBuses()) {
 				if (component.eeComponent.equals("flexRay")) {
@@ -105,6 +109,9 @@ public class EEVehicleBuilder {
 			//create sensors, actuator and bridges
 			for (ParsableBusStructureProperties.Tupel sensor : busStructure.getSensors()) {
 				try {
+					System.out.println("create sensor");
+					System.out.println(sensor.busIds[0]);
+					System.out.println(busList.get(sensor.busIds[0]));
 					Class<? extends AbstractSensor> sensorClass = (Class<? extends AbstractSensor>) Class.forName(sensor.eeComponent);
 					AbstractSensor newSensor = SensorFactory.createSensor(sensorClass, vehicle.getPhysicalVehicle(), busList.get(sensor.busIds[0])).get();
 					components.add(newSensor);
@@ -115,17 +122,20 @@ public class EEVehicleBuilder {
 			}
 
 			for (ParsableBusStructureProperties.Tupel actuator : busStructure.getActuators()) {
+				System.out.println("create actuator");
 				VehicleActuator newActuator = VehicleActuator.createVehicleActuator(VehicleActuatorType.valueOf(actuator.eeComponent), Double.parseDouble(actuator.parameter[0]), Double.parseDouble(actuator.parameter[1]), Double.parseDouble(actuator.parameter[2]), busList.get(actuator.busIds[0]));
 				components.add(newActuator);
 //				busList.get(actuator.busIds[0]).registerComponent(newActuator);
 			}
 
 			for (ParsableBusStructureProperties.Tupel bridge : busStructure.getBridges()) {
-				Bridge newBridge = new Bridge(Pair.of(busList.get((bridge.busIds[0])), busList.get(Integer.parseInt(bridge.parameter[1]))), Duration.ofMillis(Long.parseLong(bridge.parameter[2])));
+				System.out.println("create bridge");
+				Bridge newBridge = new Bridge(Pair.of(busList.get((bridge.busIds[0])), busList.get(Integer.parseInt(bridge.parameter[0]))), Duration.ofMillis(Long.parseLong(bridge.parameter[1])));
 				components.add(newBridge);
 			}
 
 			if (busStructure.getNavigation() != null && busStructure.getNavigation().busIds != null) {
+				System.out.println("create navigation");
 				NavigationBlockAsEEComponent navigation;
 				navigation = NavigationBlockAsEEComponent.createNavigationBlockAsEEComponent(busList.get(busStructure.getNavigation().busIds[0]));
 				vehicle.initNavigation(navigation);
@@ -134,6 +144,7 @@ public class EEVehicleBuilder {
 			}
 
 			if (!busStructure.getController().isEmpty()) {
+				System.out.println("create controller");
 				for (ParsableBusStructureProperties.Tupel controller : busStructure.getController()) {
 					DirectModelAsEEComponent newController = DirectModelAsEEComponent.createDirectModelAsEEComponent(busList.get(controller.busIds[0]));
 					newController.setCycleTime(Duration.parse(controller.parameter[0]));
@@ -147,6 +158,12 @@ public class EEVehicleBuilder {
 			throw  new IllegalArgumentException("Can not create EEVehicle. Failed to read file: " + data);
 		}
 
+		for (EEComponent comp : components) {
+			System.out.println("comp type in list: " + comp.getComponentType());
+			if (comp.getComponentType() == EEComponentType.ACTUATOR) {
+				System.out.println("actuator comp type in list: " + ((VehicleActuator) comp).getActuatorType());
+			}
+		}
 		return new EEVehicle(vehicle, eeSimulator, new HashSet<>(busList), components);
 	}
 
@@ -353,10 +370,10 @@ class ParsableBusStructureProperties {
 					break;
 				case FLEXRAY:
 					String[] param = {((FlexRay) bus).getMode().toString()};
-					buses.add(new Tupel(bus.getBusType().toString(), busIdArr, param));
+					buses.add(new Tupel("flexRay", busIdArr, param));
 					break;
 				case INSTANT_BUS:
-					buses.add(new Tupel(bus.getBusType().toString(), busIdArr, null));
+					buses.add(new Tupel("instantBus", busIdArr, null));
 					break;
 				default:
 					throw new IllegalStateException("connected Bus has unknown type. Type was " + bus.getBusType());

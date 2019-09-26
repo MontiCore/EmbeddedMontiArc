@@ -192,7 +192,7 @@ public class ModelicaBuilderTest {
         Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_3"), 0);
         Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_4"), 0);
     }
-    
+
     private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
     	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);

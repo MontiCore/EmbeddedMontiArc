@@ -58,11 +58,11 @@ public class FrictionTest {
 		EEVehicleBuilder eeVehicleBuilder1 = new EEVehicleBuilder(eeSimulator);
 		InstantBus bus1 = new InstantBus(eeSimulator);
 		eeVehicleBuilder1.createAllSensorsNActuators(bus1);
-    	
+
     	PhysicalVehicleBuilder physicalVehicleBuilder1 = new ModelicaPhysicalVehicleBuilder();
 		Vehicle vehicle1 = new Vehicle(physicalVehicleBuilder1, eeVehicleBuilder1);
 		ModelicaPhysicalVehicle physicalVehicle1 = (ModelicaPhysicalVehicle) vehicle1.getPhysicalVehicle();
-		
+
 		EEVehicleBuilder eeVehicleBuilder2 = new EEVehicleBuilder(eeSimulator);
 		InstantBus bus2 = new InstantBus(eeSimulator);
 		eeVehicleBuilder2.createAllSensorsNActuators(bus2);
@@ -96,7 +96,7 @@ public class FrictionTest {
     	physicalVehicleBuilder.setPosition(expectedPosition);
     	physicalVehicleBuilder.setVelocity(setVelocity);
     	physicalVehicleBuilder.setAngularVelocity(setAngularVelocity);
-    	
+
     	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
 		InstantBus bus = new InstantBus(eeSimulator);

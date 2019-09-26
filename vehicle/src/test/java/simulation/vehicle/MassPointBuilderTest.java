@@ -91,7 +91,7 @@ public class MassPointBuilderTest {
         assertEquals(expectedWheelDistLeftRightBackSide, physicalVehicle.getWheelDistLeftRightBackSide(), 0);
         assertEquals(expectedWheelDistToFront, physicalVehicle.getWheelDistToFront(), 0);
         assertEquals(expectedWheelDistToBack, physicalVehicle.getWheelDistToBack(), 0);
-        
+
         // Test internal values
         assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
         assertFalse(physicalVehicle.getError());
@@ -144,7 +144,7 @@ public class MassPointBuilderTest {
         builder.setWheelDistLeftRightBackSide(expectedWheelDistLeftRightBackSide);
         builder.setWheelDistToFront(expectedWheelDistToFront);
         builder.setWheelDistToBack(expectedWheelDistToBack);
-        
+
 		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
 		InstantBus bus = new InstantBus(eeSimulator);

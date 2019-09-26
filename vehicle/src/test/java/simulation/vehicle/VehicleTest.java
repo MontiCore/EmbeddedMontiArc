@@ -64,7 +64,7 @@ public class VehicleTest {
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(vehicle1.getCollision() && !vehicle2.getCollision());
     }
-        
+
     private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
     	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);

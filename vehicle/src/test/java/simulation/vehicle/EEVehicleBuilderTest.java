@@ -12,11 +12,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +20,11 @@ import org.junit.Test;
 import com.google.common.collect.Sets;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import sensors.CameraSensor;
+import sensors.LocationSensor;
+import sensors.ObstacleSensor;
 import sensors.abstractsensors.AbstractSensor;
+import sensors.factory.SensorFactory;
 import simulation.EESimulator.Bridge;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EEComponentType;
@@ -45,6 +45,7 @@ public class EEVehicleBuilderTest {
         Set<Bus> buses = new HashSet<>();
         List<EEComponent> componentList = new LinkedList<>();
         List<VehicleActuator> actuatorCompareList = new LinkedList<>();
+        List<AbstractSensor> sensorCompoareList = new LinkedList<>();
         List<Bus> busCompareList = new LinkedList<>();
         List<EEComponent> bridgeCompareList = new LinkedList<>();
         List<EEComponent> busOneCompareList = new LinkedList<>();
@@ -130,7 +131,6 @@ public class EEVehicleBuilderTest {
         busThreeCompareList.add(bridgeTwoThree);
 
 
-        System.out.println("Test create EEVehicle by using Lists");
         //set up EEVehicle
 		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
 		EEVehicle eeVehicle = vehicle.getEEVehicle();
@@ -181,33 +181,34 @@ public class EEVehicleBuilderTest {
         assertEquals(1, symDiffComps.size());
         Assert.assertTrue(symDiffComps.contains(obstacle));
         
-//        System.out.println("Test create EEVehicle by using JSON File");
-//        //store and load from JSON file
-//        File file = new File("C:/Users/Freddy/Desktop/SWP/EEVehicle Testordner/test.txt");
-//        eeVehicleBuilder.storeInFile(file, vehicle.getEEVehicle());
-//
-//        Vehicle vehicleJSON = new Vehicle(new MassPointPhysicalVehicleBuilder(), eeVehicleBuilder, file);
-//
-//        //search and collect all created bridges
-//        HashSet<Bridge> createdBridgesJSON = new HashSet<>();
-//        for (Bus bus : eeVehicle.getBusList()) {
-//            for (EEComponent comp : bus.getConnectedComponents()) {
-//                if (comp.getComponentType() == EEComponentType.BRIDGE) {
-//                    createdBridges.add((Bridge) comp);
-//                }
-//            }
-//        }
-//
-//        //tests
-//        assertTrue(componentIsConnected(new LinkedList<EEComponent>(busCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getBusList())));
-//        assertTrue(componentIsConnected(new LinkedList<EEComponent>(actuatorCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getActuatorList())));
-//        assertTrue(componentIsConnected(new LinkedList<EEComponent>(bridgeCompareList), new LinkedList<EEComponent>(createdBridgesJSON)));
-//        assertTrue(allSensorsConnected(vehicleJSON.getEEVehicle().getSensorList()));
-//        assertTrue(componentIsConnected(busOneCompareList, busOne.getConnectedComponents()));
-//        assertTrue(componentIsConnected(busTwoCompareList, busTwo.getConnectedComponents()));
-//        assertTrue(componentIsConnected(busThreeCompareList, busThree.getConnectedComponents()));
-//
-//
+        //store and load from JSON file
+        File file = new File("C:/Users/Freddy/Desktop/SWP/EEVehicle Testordner/test.txt");
+        eeVehicleBuilder.storeInFile(file, vehicle.getEEVehicle());
+
+        Vehicle vehicleJSON = new Vehicle(new MassPointPhysicalVehicleBuilder(), eeVehicleBuilder, file);
+
+        //search and collect all created bridges
+        HashSet<Bridge> createdBridgesJSON = new HashSet<>();
+        //List<UUID> processedBridges = new LinkedList<>();
+        for (Bus bus : eeVehicle.getBusList()) {
+            for (EEComponent comp : bus.getConnectedComponents()) {
+                if (comp.getComponentType() == EEComponentType.BRIDGE && !createdBridgesJSON.contains(comp)) {
+                    //processedBridges.add(comp.getId());
+                    createdBridgesJSON.add((Bridge) comp);
+                }
+            }
+        }
+
+        //tests
+        assertTrue(componentIsConnected(new LinkedList<EEComponent>(busCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getBusList())));
+        assertTrue(componentIsConnected(new LinkedList<EEComponent>(actuatorCompareList), new LinkedList<EEComponent>(vehicleJSON.getEEVehicle().getActuatorList())));
+        assertTrue(componentIsConnected(new LinkedList<EEComponent>(bridgeCompareList), new LinkedList<EEComponent>(createdBridgesJSON)));
+        assertTrue(correctSensors(vehicleJSON.getEEVehicle().getSensorList()));
+        assertTrue(componentIsConnected(busOneCompareList, busOne.getConnectedComponents()));
+        assertTrue(componentIsConnected(busTwoCompareList, busTwo.getConnectedComponents()));
+        assertTrue(componentIsConnected(busThreeCompareList, busThree.getConnectedComponents()));
+
+
     }
     
     @Test
@@ -264,23 +265,24 @@ public class EEVehicleBuilderTest {
         return true;
     }
 
-    private boolean allSensorsConnected(List<AbstractSensor> isConnected) {
+    private boolean correctSensors(List<AbstractSensor> isConnected) {
         boolean notFound = false;
-        for (BusEntry entry : BusEntry.values()) {
+        for (AbstractSensor is : isConnected) {
             if (notFound) {
                 return false;
             }
             notFound = true;
-            if (entry.toString().contains("SENSOR_")){
-                for (AbstractSensor sensor : isConnected) {
-                    if (sensor.getType() == entry) {
-                        notFound = false;
-                        break;
-                    }
-                }
+            if (is.getType() == BusEntry.SENSOR_CAMERA) {
+                notFound = false;
+            } else if (is.getType() == BusEntry.SENSOR_GPS_COORDINATES) {
+                notFound = false;
+            } else if (is.getType() == BusEntry.SENSOR_OBSTACLE) {
+                notFound = false;
             }
         }
         return true;
     }
+
+
 
 }
