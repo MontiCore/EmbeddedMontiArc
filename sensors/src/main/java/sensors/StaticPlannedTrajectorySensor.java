@@ -16,7 +16,7 @@ import java.util.List;
 public abstract class StaticPlannedTrajectorySensor implements Sensor {
 
     private final BusEntry type;
-    private final List<Double> trajectory;
+    private List<Double> trajectory;
 
     public StaticPlannedTrajectorySensor(BusEntry type, List<Double> trajectory) {
         this.type = Validate.notNull(type);
@@ -43,5 +43,9 @@ public abstract class StaticPlannedTrajectorySensor implements Sensor {
 
     @Override
     public void update() {
+    }
+
+    public void setTrajectory(List<Double> trajectory) {
+        this.trajectory = trajectory;
     }
 }
