@@ -16,6 +16,7 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IAdjacency;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Geometry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
@@ -995,6 +996,11 @@ public class Vehicle{
             if (isElectricVehicle() && !gotoCharginstation && battery.get().getBatteryPercentage() <= 20) {
                 gotoCharginstation = true;
                 try {
+                    ArrayList<Double> x1 = new ArrayList<>();
+                    ArrayList<Double> y1 = new ArrayList<>();
+                    x1 = (ArrayList<Double>) controllerBus.get().getData(PLANNED_TRAJECTORY_X.toString());
+                    y1 = (ArrayList<Double>) controllerBus.get().getData(PLANNED_TRAJECTORY_Y.toString());
+                    lastdestination = new ControllerNodeImpl(new Point3D( x1.get(x1.size()), y1.get(y1.size()), 0), -1L);
                     long nearestcharg = ChargingStationNavigator.getNearestChargingStation(
                             physicalVehicle.getGlobalId(),
                             ChargingStationNavigator.getNearestOsmNodeFrom(this.physicalVehicle.getPosition())
@@ -1032,9 +1038,6 @@ public class Vehicle{
      * @param node Target node for navigation
      */
     public void navigateTo(IControllerNode node) {
-        if(!gotoCharginstation) {
-            lastdestination = node;
-        }
         navigateTo(node, Collections.synchronizedList(new LinkedList<RealVector>()));
     }
 
