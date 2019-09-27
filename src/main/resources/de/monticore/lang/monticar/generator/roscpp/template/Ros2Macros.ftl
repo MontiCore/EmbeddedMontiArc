@@ -39,13 +39,20 @@
 </#macro>
 
 <#macro callback sub>
-    void ${sub.getMethodName()}(const ${sub.getTypeNameInTargetLanguage()}::SharedPtr msg){
-    <#if !sub.isStructInterface() && sub.getRosConnectionSymbol().getMsgField().isPresent()>
-        component->${sub.getPortNameInTargetLanguage()} = msg->${sub.getRosConnectionSymbol().getMsgField().get()};
+void ${sub.getMethodName()}(const ${sub.getTypeNameInTargetLanguage()}::SharedPtr msg){
+    <#if !sub.isStructInterface() && !sub.isMatrixInterface() && sub.getRosConnectionSymbol().getMsgField().isPresent()>
+    component->${sub.getPortNameInTargetLanguage()} = msg->${sub.getRosConnectionSymbol().getMsgField().get()};
     <#else>
+       <#-- ${sub.getRos2SetStructInstruction()} -->
+      
+        <#if sub.isMatrixInterface()>
+        ${sub.getRos2SetMatrixInstruction()}
+        <#else>
         ${sub.getRos2SetStructInstruction()}
+        </#if>
+
     </#if>
-    }
+}
 </#macro>
 
 
