@@ -73,7 +73,7 @@ void MqttAdapter_tests_a_compA::publish_echo_portC()
 		_pub_portC->publish(pubmsg);
 
 	}
-	catch (const exception& exc) {
+	catch (const mqtt::exception& exc) {
 	    cerr << exc.to_string() << endl;
 	}
 }
@@ -86,7 +86,7 @@ void MqttAdapter_tests_a_compA::publish_echo_portD()
 		_pub_portD->publish(pubmsg);
 
 	}
-	catch (const exception& exc) {
+	catch (const mqtt::exception& exc) {
 	    cerr << exc.to_string() << endl;
 	}
 }
@@ -99,7 +99,7 @@ void MqttAdapter_tests_a_compA::publish_echo_portF()
 		_pub_portF->publish(pubmsg);
 
 	}
-	catch (const exception& exc) {
+	catch (const mqtt::exception& exc) {
 	    cerr << exc.to_string() << endl;
 	}
 }
@@ -112,7 +112,7 @@ void MqttAdapter_tests_a_compA::publish_echo_portH()
 		_pub_portH->publish(pubmsg);
 
 	}
-	catch (const exception& exc) {
+	catch (const mqtt::exception& exc) {
 	    cerr << exc.to_string() << endl;
 	}
 }
@@ -125,7 +125,7 @@ void MqttAdapter_tests_a_compA::publish_echo_portJ()
 		_pub_portJ->publish(pubmsg);
 
 	}
-	catch (const exception& exc) {
+	catch (const mqtt::exception& exc) {
 	    cerr << exc.to_string() << endl;
 	}
 }
