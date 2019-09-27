@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 ![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/CNNTrainLang/badges/master/build.svg)
 ![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/CNNTrainLang/badges/master/coverage.svg)
 

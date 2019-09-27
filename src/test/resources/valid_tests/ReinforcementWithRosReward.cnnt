@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration ReinforcementWithRosReward {
     learning_method : reinforcement
 

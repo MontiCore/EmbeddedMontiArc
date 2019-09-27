@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration CheckRLAlgorithmParameter2 {
     learning_method : reinforcement
     rl_algorithm : ddpg-algorithm

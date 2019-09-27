@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration CheckLearningParameterCombination4{
      learning_method : supervised
 

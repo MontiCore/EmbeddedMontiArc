@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar;
 
 grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.NumberUnit{
@@ -32,7 +33,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     TrainContextEntry implements ConfigEntry = name:"context" ":" value:TrainContextValue;
     EvalMetricEntry implements ConfigEntry = name:"eval_metric" ":" value:EvalMetricValue;
     LossEntry implements ConfigEntry = name:"loss" ":" value:LossValue;
-
+    LossWeightsEntry implements ConfigEntry = name:"loss_weights" ":" value:DoubleVectorValue;
+    
     EvalMetricValue implements ConfigValue =(accuracy:"accuracy"
                                                | crossEntropy:"cross_entropy"
                                                | f1:"f1"
@@ -56,6 +58,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     L1Loss implements LossValue = name:"l1" ("{" params:Entry* "}")?;
 
     L2Loss implements LossValue = name:"l2" ("{" params:Entry* "}")?;
+
+    EPELoss implements LossValue = name:"epe" ("{" params:Entry* "}")?;
 
     LogCoshLoss implements LossValue = name:"log_cosh" ("{" params:Entry* "}")?;
 
@@ -125,7 +129,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     Gamma2Entry implements RmsPropEntry = name:"gamma2" ":" value:NumberValue;
     CenteredEntry implements RmsPropEntry = name:"centered" ":" value:BooleanValue;
     ClipWeightsEntry implements RmsPropEntry = name:"clip_weights" ":" value:NumberValue;
-    RhoEntry implements AdaDeltaEntry, HuberEntry = name:"rho" ":" value:NumberValue;
+    RhoEntry implements AdaDeltaEntry,RmsPropEntry,HuberEntry = name:"rho" ":" value:NumberValue;
 
     // Reinforcement Extensions
     interface MultiParamValue extends ConfigValue;

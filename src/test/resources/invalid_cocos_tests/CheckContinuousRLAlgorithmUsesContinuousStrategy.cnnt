@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration CheckContinuousRLAlgorithmUsesContinuousStrategy {
      learning_method : reinforcement
      rl_algorithm: ddpg-algorithm

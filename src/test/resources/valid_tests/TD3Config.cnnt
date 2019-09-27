@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration TD3Config {
     learning_method : reinforcement
     rl_algorithm : td3-algorithm
