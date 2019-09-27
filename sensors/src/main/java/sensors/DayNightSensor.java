@@ -7,8 +7,13 @@
 package sensors;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
-import simulation.vehicle.PhysicalVehicle;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Johannes on 12.09.2017.
@@ -20,8 +25,10 @@ public class DayNightSensor extends AbstractSensor {
 
     private Daytime value;
 
-    public DayNightSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public DayNightSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId);
+        value = Daytime.Day;
     }
 
     @Override
@@ -35,7 +42,16 @@ public class DayNightSensor extends AbstractSensor {
     }
 
     @Override
+    public int getDataLength() {
+        return 1;
+    }
+
+    @Override
     public BusEntry getType() {
+        return BusEntry.SENSOR_DAYNIGHT;
+    }
+
+    public static BusEntry getSensorType() {
         return BusEntry.SENSOR_DAYNIGHT;
     }
 

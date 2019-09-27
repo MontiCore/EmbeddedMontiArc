@@ -7,7 +7,6 @@
 package sensors;
 
 
-import javax.swing.text.html.Option;
 import java.awt.*;
 import java.util.Optional;
 import java.awt.image.BufferedImage;

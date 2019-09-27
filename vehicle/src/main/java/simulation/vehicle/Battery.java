@@ -7,6 +7,7 @@
 package simulation.vehicle;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
 import simulation.environment.util.IBattery;
 
 public class Battery implements BatteryInterface, IBattery{
@@ -14,6 +15,7 @@ public class Battery implements BatteryInterface, IBattery{
 	private Vehicle 		vehicle;
 	private VehicleActuator throttle;
 	private VehicleActuator gear;
+	private Sensor          velocity_sensor;
 	private DummyBattery 	dummyBattery;
 	
 	private static final double defaultAmpere = 1.0;
@@ -29,17 +31,19 @@ public class Battery implements BatteryInterface, IBattery{
 	private double AmpereChargingStation;
 	
 	
-	public Battery(Vehicle v, double bCapacity) {
+	public Battery(Vehicle v, double bCapacity) throws Exception {
 		vehicle = v;
 		dummyBattery = new DummyBattery(bCapacity);
 		
 		this.preferredConsumptionMethod = ConsumptionMethod.CONSUMPTION_THROTTLE_GEAR;
 		
-		setThrottle (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE));
-		setGear     (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR));
-		if (vehicle.getControllerBus().isPresent())
+		setThrottle (vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE).get());
+		setGear     (vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR).get());
+		setVelocity(vehicle.getEEVehicle().getSensorByType(BusEntry.SENSOR_VELOCITY).get());
+
+		/* if (vehicle.getControllerBus().isPresent())
 			local_deltaT = (double) vehicle.getControllerBus().get().getData(BusEntry.SIMULATION_DELTA_TIME.toString());
-		else
+		else */
 			local_deltaT = 133;
 		oldKineticEnergy = 0;
 		
@@ -48,18 +52,21 @@ public class Battery implements BatteryInterface, IBattery{
 		setAmpereChargingStation(0);		
 	}
 
-	public Battery(Vehicle v, double bCapacity, double initialBatteryPercentage) {
+	
+
+	public Battery(Vehicle v, double bCapacity, double initialBatteryPercentage) throws Exception {
 		vehicle = v;
 		dummyBattery = new DummyBattery(bCapacity);
 		dummyBattery.setPercentage(initialBatteryPercentage);
 		
 		this.preferredConsumptionMethod = ConsumptionMethod.CONSUMPTION_THROTTLE_GEAR;
 		
-		setThrottle (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE));
-		setGear     (vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR));
-		if(vehicle.getControllerBus().isPresent()) {
+		setThrottle (vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE).get());
+		setGear     (vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR).get());
+		setVelocity(vehicle.getEEVehicle().getSensorByType(BusEntry.SENSOR_VELOCITY).get());
+		/* if(vehicle.getControllerBus().isPresent()) {
 			local_deltaT = (double) vehicle.getControllerBus().get().getData(BusEntry.SIMULATION_DELTA_TIME.toString());
-		}
+		} */
 		oldKineticEnergy = 0;
 		
 		ChargingStationConnectionStatus = false;
@@ -67,6 +74,10 @@ public class Battery implements BatteryInterface, IBattery{
 		setAmpereChargingStation(0);	
 	}
 	
+	private void setVelocity(Sensor velocity_sensor) throws Exception {
+		this.velocity_sensor = velocity_sensor;
+		if (velocity_sensor == null) throw new Exception("No velocity sensor found.");
+	}
 	public void setConsumptionMethod(ConsumptionMethod method) {
 		this.preferredConsumptionMethod = method;
 	}
@@ -121,12 +132,8 @@ public class Battery implements BatteryInterface, IBattery{
 		// frictionEffect can be calculated based on surface, if needed
 		Double frictionEffect = 20.0;
 		
-		Double velocityVal = 0.0;
-        Object velocityObj = vehicle.getControllerBus().get().getData(BusEntry.SENSOR_VELOCITY.toString());
-        if (velocityObj != null){
-        	velocityVal = (Double) velocityObj;
-        }
-        Double mass = vehicle.getMass();
+		Double velocityVal = (Double)velocity_sensor.getValue();
+        Double mass = vehicle.getPhysicalVehicle().getMass();
 		
         // calculate the new kinetic energy
         Double newKineticEnergy = velocityVal * velocityVal * mass / 2;
@@ -302,5 +309,7 @@ public class Battery implements BatteryInterface, IBattery{
 	}
 
 
-	
+	public void set_local_delta_t(double local_deltaT){
+		this.local_deltaT = local_deltaT;
+	}
 }

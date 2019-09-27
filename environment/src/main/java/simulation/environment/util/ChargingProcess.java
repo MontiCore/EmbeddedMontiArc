@@ -9,6 +9,7 @@ package simulation.environment.util;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import simulation.environment.object.ChargingStation;
 
+import java.time.Duration;
 import java.util.Optional;
 
 /**
@@ -32,7 +33,7 @@ public class ChargingProcess {
 		this.battery = Optional.of(vehicle.getBattery().get());
 	}
 
-	public void executeLoopIteration(long timeDiffMs) {
+	public void executeLoopIteration(Duration timeDiffMs) {
 		if (this.chargeCar) {
 
 			// Car drives away?

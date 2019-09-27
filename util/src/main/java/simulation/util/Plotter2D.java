@@ -17,6 +17,8 @@ import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.axis.NumberAxis;
 import java.awt.*;
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.math3.linear.RealVector;
@@ -41,11 +43,11 @@ public final class Plotter2D{
     /**
      * Function that is used in the Simulation Debug Plotter
      */
-    public static void plotOne(IPhysicalVehicle physicalVehicle, long counter, long timeDiffms, String name){
+    public static void plotOne(IPhysicalVehicle physicalVehicle, long counter, Duration timeDiffms, String name){
         if(counter != 0){
             //return;
         }
-        double deltaT = timeDiffms / 1000.0;
+        double deltaT = timeDiffms.toMillis()/1000.0d;
         // Create axis
         NumberAxis xAxis = new NumberAxis();
         xAxis.setTickLabelsVisible(false);
@@ -187,7 +189,7 @@ public final class Plotter2D{
      * @param  simulationTimePoints Discrete time points during the simulation
      */
 
-    public static void plot(List<RealVector> vehiclePosition, List<RealVector> vehicleVelocity, List<List<Double>> wheelRotationRates, List<Long> simulationTimePoints) {
+    public static void plot(List<RealVector> vehiclePosition, List<RealVector> vehicleVelocity, List<List<Double>> wheelRotationRates, List<Instant> simulationTimePoints) {
         JFreeChart positionChart = vehiclePositionChart(vehiclePosition, simulationTimePoints);
         JFreeChart velocityChart = vehicleVelocityChart(vehicleVelocity, simulationTimePoints);
         JFreeChart rotationRatesChart = wheelRotationRatesChart(wheelRotationRates, simulationTimePoints);
@@ -208,7 +210,7 @@ public final class Plotter2D{
      * @return Returns a chart of the position of the center of mass of the vehicle
      */
 
-    private static JFreeChart vehiclePositionChart(List<RealVector> vehiclePosition, List<Long> simTime) {
+    private static JFreeChart vehiclePositionChart(List<RealVector> vehiclePosition, List<Instant> simTime) {
         // Create axis
         NumberAxis xAxis = new NumberAxis("Simulation Time (ms)");
         xAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
@@ -242,10 +244,10 @@ public final class Plotter2D{
      * Function that creates the vehicle velocity chart
      *
      * @param  vehicleVelocity Velocity of the center of mass of the vehicle
-     * @param  simTime Discrete time points during the simulation
+     * @param  simulationTimePoints Discrete time points during the simulation
      * @return Returns a chart of the velocity of the center of mass of the vehicle
      */
-    private static JFreeChart vehicleVelocityChart(List<RealVector> vehicleVelocity, List<Long> simTime ) {
+    private static JFreeChart vehicleVelocityChart(List<RealVector> vehicleVelocity, List<Instant> simulationTimePoints ) {
         // Create axis
         NumberAxis xAxis = new NumberAxis("Simulation Time (ms)");
         xAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
@@ -257,7 +259,7 @@ public final class Plotter2D{
         yAxis.setRange(0.0, 17.5);
 
         // Create velocity data set
-        XYDataset velocity = vehicleVelocityDataSet(vehicleVelocity, simTime);
+        XYDataset velocity = vehicleVelocityDataSet(vehicleVelocity, simulationTimePoints);
 
         // Create and customize renderer
         XYLineAndShapeRenderer velocityPlotRenderer = new XYLineAndShapeRenderer();
@@ -284,7 +286,7 @@ public final class Plotter2D{
      * @return Returns a chart of the rotation rates of the wheels of the vehicle
      */
 
-    private static JFreeChart wheelRotationRatesChart(List<List<Double>> wheelRotationRates, List<Long> simTime) {
+    private static JFreeChart wheelRotationRatesChart(List<List<Double>> wheelRotationRates, List<Instant> simTime) {
         // Create axis
         NumberAxis xAxis = new NumberAxis("Simulation Time (ms)");
         xAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
@@ -334,7 +336,7 @@ public final class Plotter2D{
      * @param  simTime Discrete time points during the simulation
      * @return Returns a XY date set of the position of the center of mass of the vehicle
      */
-    private static XYDataset vehiclePositionDataSet(List<RealVector> vehiclePosition, List<Long> simTime) {
+    private static XYDataset vehiclePositionDataSet(List<RealVector> vehiclePosition, List<Instant> simTime) {
 
         // Create XY series for storing the position
         XYSeries position = new XYSeries("x_y", false, true);
@@ -364,7 +366,7 @@ public final class Plotter2D{
      * @return Returns a XY date set of the velocity of the center of mass of the vehicle
      */
 
-    private static XYDataset vehicleVelocityDataSet(List<RealVector> vehicleVelocity, List<Long> simTime) {
+    private static XYDataset vehicleVelocityDataSet(List<RealVector> vehicleVelocity, List<Instant> simTime) {
 
         // Create XY series for storing the velocity
         XYSeries velocity = new XYSeries("v_y", false, true);
@@ -374,7 +376,7 @@ public final class Plotter2D{
         for(int i=0; i<vehicleVelocity.size(); i++){
 
             tempVelocity.add(vehicleVelocity.get(i).getEntry(1));
-            velocity.add(simTime.get(i), tempVelocity.get(i));
+            velocity.add(simTime.get(i).toEpochMilli(), tempVelocity.get(i));
 
         }
 
@@ -393,7 +395,7 @@ public final class Plotter2D{
      * @return Returns a XY date set of the rotation rates of the wheels of the vehicle
      */
 
-    private static XYDataset wheelRotationRatesDataSet(List<List<Double>> wheelRotationRates, List<Long> simTime) {
+    private static XYDataset wheelRotationRatesDataSet(List<List<Double>> wheelRotationRates, List<Instant> simTime) {
 
         // Create XY series for storing the wheel rotation rates
         XYSeries wheelOne = new XYSeries("omega_wheel_1", false, true);
@@ -412,10 +414,10 @@ public final class Plotter2D{
             tempTwo.add(wheelRotationRates.get(i).get(1));
             tempThree.add(wheelRotationRates.get(i).get(2));
             tempFour.add(wheelRotationRates.get(i).get(3));
-            wheelOne.add(simTime.get(i), tempOne.get(i));
-            wheelTwo.add(simTime.get(i), tempTwo.get(i));
-            wheelThree.add(simTime.get(i), tempThree.get(i));
-            wheelFour.add(simTime.get(i), tempFour.get(i));
+            wheelOne.add(simTime.get(i).toEpochMilli(), tempOne.get(i));
+            wheelTwo.add(simTime.get(i).toEpochMilli(), tempTwo.get(i));
+            wheelThree.add(simTime.get(i).toEpochMilli(), tempThree.get(i));
+            wheelFour.add(simTime.get(i).toEpochMilli(), tempFour.get(i));
 
         }
 

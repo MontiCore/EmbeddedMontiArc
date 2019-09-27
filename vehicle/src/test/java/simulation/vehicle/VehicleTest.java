@@ -11,15 +11,21 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfac
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.AfterClass;
+
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+
+import simulation.EESimulator.EEDiscreteEvent;
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 import simulation.environment.object.House;
 import simulation.environment.util.VehicleType;
 import simulation.util.Log;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,295 +34,64 @@ import java.util.Optional;
  * JUnit test for the Vehicle class
  */
 public class VehicleTest {
-    @BeforeClass
-    public static void setUpClass() {
-        Log.setLogEnabled(false);
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        Log.setLogEnabled(true);
-    }
-
-    @Test
-    public void setHeightNormal(){
-        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.setHeight(2.0);
-        assertEquals(2.0, vehicle.getHeight(), 0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setHeightFail(){
-        Vehicle vehicle = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setHeight(2.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void getMassFailModelica(){
-        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getMass();
-    }
-
-    @Test
-    public void setMassNormal(){
-        // Test MassPoint case
-        Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
-        vehicle.setMass(1000.0);
-        assertEquals(1000.0, vehicle.getMass(), 0);
-
-        // Test Modelica case
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
-        vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
-        vehicle.setMass(1000.0);
-        modelicaPhysicalVehicle.initPhysics();
-        assertEquals(1000.0, vehicle.getMass(), 0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setMassFailMassPoint(){
-        Vehicle vehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setMass(1000.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setMassFailModelica() {
-        Vehicle vehicle = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setMass(1000.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void getWheelRadiusFailModelica(){
-        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getWheelRadius();
-    }
-
-    @Test
-    public void setWheelRadiusNormal(){
-        // Test MassPoint case
-        Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelRadius(1.0);
-        assertEquals(1.0, vehicle.getWheelRadius(), 0);
-
-        // Test Modelica case
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
-        vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
-        vehicle.setWheelRadius(1.0);
-        modelicaPhysicalVehicle.initPhysics();
-        assertEquals(1.0, vehicle.getWheelRadius(), 0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setWheelRadiusMassPoint(){
-        Vehicle vehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelRadius(1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setWheelRadiusFailModelica() {
-        Vehicle vehicle = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelRadius(1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void getWheelDistLeftRightFrontSideFailModelica(){
-        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getWheelDistLeftRightFrontSide();
-    }
-
-    @Test
-    public void setWheelDistLeftRightFrontSideNormal(){
-        // Test MassPoint case
-        Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistLeftRightFrontSide(1.0);
-        assertEquals(1.0, vehicle.getWheelDistLeftRightFrontSide(), 0);
-
-        // Test Modelica case
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
-        vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
-        vehicle.setWheelDistLeftRightFrontSide(1.0);
-        modelicaPhysicalVehicle.initPhysics();
-        assertEquals(1.0, vehicle.getWheelDistLeftRightFrontSide(), 0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setWheelDistLeftRightFrontSideMassPoint(){
-        Vehicle vehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistLeftRightFrontSide(1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setWheelDistLeftRightFrontSideFailModelica() {
-        Vehicle vehicle = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistLeftRightFrontSide(1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void getWheelDistLeftRightBackSideFailModelica(){
-        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getWheelDistLeftRightBackSide();
-    }
-
-    @Test
-    public void setWheelDistLeftRightBackSideNormal(){
-        // Test MassPoint case
-        Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistLeftRightBackSide(1.0);
-        assertEquals(1.0, vehicle.getWheelDistLeftRightBackSide(), 0);
-
-        // Test Modelica case
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
-        vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
-        vehicle.setWheelDistLeftRightBackSide(1.0);
-        modelicaPhysicalVehicle.initPhysics();
-        assertEquals(1.0, vehicle.getWheelDistLeftRightBackSide(), 0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setWheelDistLeftRightBackSideMassPoint(){
-        Vehicle vehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistLeftRightBackSide(1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setWheelDistLeftRightBackSideFailModelica() {
-        Vehicle vehicle = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistLeftRightBackSide(1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void getWheelDistToFrontFailModelica(){
-        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getWheelDistToFront();
-    }
-
-    @Test
-    public void setWheelDistToFrontNormal(){
-        // Test MassPoint case
-        Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistToFront(1.0);
-        assertEquals(1.0, vehicle.getWheelDistToFront(), 0);
-
-        // Test Modelica case
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
-        vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
-        vehicle.setWheelDistToFront(1.0);
-        modelicaPhysicalVehicle.initPhysics();
-        assertEquals(1.0, vehicle.getWheelDistToFront(), 0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setWheelDistToFrontMassPoint(){
-        Vehicle vehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistToFront(1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setWheelDistToFrontFailModelica() {
-        Vehicle vehicle = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistToFront(1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void getWheelDistToBackFailModelica(){
-        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getWheelDistToBack();
-    }
-
-    @Test
-    public void setWheelDistToBackNormal(){
-        // Test MassPoint case
-        Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistToBack(1.0);
-        assertEquals(1.0, vehicle.getWheelDistToBack(), 0);
-
-        // Test Modelica case
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
-        vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
-        vehicle.setWheelDistToBack(1.0);
-        modelicaPhysicalVehicle.initPhysics();
-        assertEquals(1.0, vehicle.getWheelDistToBack(), 0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setWheelDistToBackMassPoint(){
-        Vehicle vehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistToBack(1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setWheelDistToBackFailModelica() {
-        Vehicle vehicle = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
-        vehicle.setWheelDistToBack(1.0);
-    }
-
-    @Test
-    public void setVehicleInitialisedTrue(){
-        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.setVehicleInitialised(true);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setVehicleInitialisedFail(){
-        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.setVehicleInitialised(false);
-    }
-
     @Test
     public void computePhysicsTest() {
-        long timeDiffMs = 10;
+        Duration timeDiff = Duration.ofMillis(10);
 
         // 2 colliding vehicles
-        PhysicalObject vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        PhysicalObject vehicle2 = new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {1, 0, 0})).buildPhysicalVehicle();
+        PhysicalObject vehicle1 = createStandardVehicle(new MassPointPhysicalVehicleBuilder()).getPhysicalVehicle();
+        PhysicalObject vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {1, 0, 0}))).getPhysicalVehicle();
         List<PhysicalObject> physicalObjects = new ArrayList<>();
         physicalObjects.add(vehicle2);
-        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiffMs);
+        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(vehicle1.getCollision() && vehicle2.getCollision());
 
         // 2 non colliding vehicles
         physicalObjects.clear();
-        vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        vehicle2 = new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {10, 0, 0})).buildPhysicalVehicle();
+        vehicle1 = createStandardVehicle(new MassPointPhysicalVehicleBuilder()).getPhysicalVehicle();
+        vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {10, 0, 0}))).getPhysicalVehicle();
         physicalObjects.add(vehicle2);
-        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiffMs);
+        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(!vehicle1.getCollision() && !vehicle2.getCollision());
 
         // Vehicle colliding with non vehicle
         physicalObjects.clear();
-        vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        vehicle2 = new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {30, 0, 0})).buildPhysicalVehicle();
+        vehicle1 = createStandardVehicle(new MassPointPhysicalVehicleBuilder()).getPhysicalVehicle();
+        vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new ArrayRealVector(new double[] {30, 0, 0}))).getPhysicalVehicle();
         House house = new House();
         house.setPosition(new ArrayRealVector(new double[] {1, 0, 0}));
         house.setWidth(10.0);
         house.setLength(10.0);
         house.setHeight(10.0);
         physicalObjects.add(vehicle2);
-        physicalObjects.add((PhysicalObject) house);
-        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiffMs);
+        physicalObjects.add(house);
+        PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(vehicle1.getCollision() && !vehicle2.getCollision());
     }
 
+    private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
+    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+    }
+
     @Test
-    public void AutopilotBehaviorTest() {
+    public void AutopilotBehaviorTest() throws Exception{
         /*       Masspoint       */
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0);
-        PhysicalVehicle physicalVehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0.1);
-        PhysicalVehicle physicalVehicle3 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,30);
 
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
-        Vehicle vehicle2 = physicalVehicle2.getSimulationVehicle();
-        Vehicle vehicle3 = physicalVehicle3.getSimulationVehicle();
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle.setVehicleType(VehicleType.ELECTRIC,0);
+        Vehicle vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle2.setVehicleType(VehicleType.ELECTRIC,0.1);
+        Vehicle vehicle3 = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle3.setVehicleType(VehicleType.ELECTRIC,30);
 
-        vehicle.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
-        vehicle.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
-        vehicle2.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
-        vehicle2.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
-        vehicle3.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
-        vehicle3.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
+        vehicle.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
+        vehicle2.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
+        vehicle3.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
 
-        physicalVehicle.executeLoopIteration(10);
-        physicalVehicle2.executeLoopIteration(10);
-        physicalVehicle3.executeLoopIteration(10);
 
         assertTrue(vehicle.batteryProblem);
         assertTrue(vehicle2.batteryProblem);
@@ -326,27 +101,18 @@ public class VehicleTest {
         assertFalse(vehicle3.isGotoCharginstation());
 
         /*       Modelica       */
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle4 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0);
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle5 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,0.1);
-        ModelicaPhysicalVehicle modelicaPhysicalVehicle6 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,30);
 
-        Vehicle vehicle4 = modelicaPhysicalVehicle4.getSimulationVehicle();
-        Vehicle vehicle5 = modelicaPhysicalVehicle5.getSimulationVehicle();
-        Vehicle vehicle6 = modelicaPhysicalVehicle6.getSimulationVehicle();
+        Vehicle vehicle4 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        vehicle4.setVehicleType(VehicleType.ELECTRIC,0);
+        Vehicle vehicle5 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        vehicle5.setVehicleType(VehicleType.ELECTRIC,0.1);
+        Vehicle vehicle6 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        vehicle6.setVehicleType(VehicleType.ELECTRIC,30);
 
-        vehicle4.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
-        vehicle4.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
-        vehicle5.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
-        vehicle5.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
-        vehicle6.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
-        vehicle6.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
-
-        modelicaPhysicalVehicle4.initPhysics();
-        modelicaPhysicalVehicle5.initPhysics();
-        modelicaPhysicalVehicle6.initPhysics();
-        modelicaPhysicalVehicle4.executeLoopIteration(10);
-        modelicaPhysicalVehicle5.executeLoopIteration(10);
-        modelicaPhysicalVehicle6.executeLoopIteration(10);
+        
+        vehicle4.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
+        vehicle5.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
+        vehicle6.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
 
         assertTrue(vehicle4.batteryProblem);
         assertTrue(vehicle5.batteryProblem);

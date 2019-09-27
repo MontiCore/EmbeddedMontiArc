@@ -7,27 +7,40 @@
 /* (c) https://github.com/MontiCore/monticore */
 package simulation.vehicle;
 
+import java.time.Instant;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 
 public class BatteryTest {
 	Vehicle v;
 	Battery battery;
 
+	private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
+    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+    }
+
 	@Before
-	public void setAll() {
-		v = new MassPointPhysicalVehicle().getSimulationVehicle();
+	public void setAll() throws Exception {
+		v = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
 		battery = new Battery(v, 1000);
 		v.setBattery(battery);
 
-        VehicleActuator steering = v.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
+        VehicleActuator steering = v.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).get();
         steering.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX);
 
-        VehicleActuator throttle = v.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE);
+        VehicleActuator throttle = v.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE).get();
         throttle.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_THROTTLE_POSITION_MAX);
 
-        VehicleActuator gear = v.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR);
+        VehicleActuator gear = v.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR).get();
         gear.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_GEAR_MAX);
 	}
 	

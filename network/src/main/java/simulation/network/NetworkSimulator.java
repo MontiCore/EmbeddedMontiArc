@@ -13,6 +13,8 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Simulati
 import simulation.network.settings.SettingsDirect;
 import simulation.util.Log;
 import simulation.vehicle.PhysicalVehicle;
+
+import java.time.Instant;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -148,11 +150,11 @@ public class NetworkSimulator extends DiscreteEventSimulator<NetworkDiscreteEven
                 NetworkStatistics.getInstance().processReceivedMessageLink(networkEvent.getEventMessage());
                 break;
             case NETWORK_EVENT_ID_APP_SEND:
-                networkEvent.getEventMessage().setSimCreateTimeNs(getSimulationTimeNs());
+                networkEvent.getEventMessage().setSimCreateTime(getSimulationTime());
                 NetworkStatistics.getInstance().processSendMessageApp(networkEvent.getEventMessage());
                 break;
             case NETWORK_EVENT_ID_APP_RECEIVE:
-                networkEvent.getEventMessage().setSimReceiveTimeNs(getSimulationTimeNs());
+                networkEvent.getEventMessage().setSimReceiveTime(getSimulationTime());
                 NetworkUtils.putMessageInNode(networkEvent.getNetworkNode(), networkEvent.getEventMessage());
                 NetworkStatistics.getInstance().processReceivedMessageApp(networkEvent.getEventMessage());
                 break;
@@ -190,10 +192,10 @@ public class NetworkSimulator extends DiscreteEventSimulator<NetworkDiscreteEven
      * Change function to show log output from network statistics
      *
      * @param simulationObjects List of all simulation objects
-     * @param totalTime Total simulation time in milliseconds
+     * @param totalTime Total simulation time
      */
     @Override
-    public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {
+    public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, Instant totalTime) {
         // Log network statistics output
         Log.info(NetworkStatistics.getInstance().generateStatisticsOutput());
     }

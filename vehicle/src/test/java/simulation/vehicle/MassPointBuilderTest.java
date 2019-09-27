@@ -18,11 +18,15 @@ import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
+
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 import simulation.util.Log;
 import simulation.util.MathHelper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.util.Optional;
 import static org.junit.Assert.*;
 
@@ -43,24 +47,21 @@ public class MassPointBuilderTest {
     @Test
     public void buildDefaultVehicle(){
         // Calculate expected values
-        double height = Vehicle.VEHICLE_DEFAULT_HEIGHT;
+        double height = PhysicalVehicle.VEHICLE_DEFAULT_HEIGHT;
         RealVector expectedPosition = new ArrayRealVector(new double[]{0.0, 0.0, - height/2});
         Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
         RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
         RealVector expectedVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         RealVector expectedAngularVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-        double expectedMass = Vehicle.VEHICLE_DEFAULT_MASS;
-        double expectedWidth = Vehicle.VEHICLE_DEFAULT_WIDTH;
-        double expectedLength = Vehicle.VEHICLE_DEFAULT_LENGTH;
-        double expectedHeight = Vehicle.VEHICLE_DEFAULT_HEIGHT;
-        double expectedWheelRadius = Vehicle.VEHICLE_DEFAULT_WHEEL_RADIUS;
-        double expectedWheelDistLeftRightFrontSide = Vehicle.VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_FRONT;
-        double expectedWheelDistLeftRightBackSide = Vehicle.VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_REAR;
-        double expectedWheelDistToFront = Vehicle.VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT;
-        double expectedWheelDistToBack = Vehicle.VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK;
-        Optional<Bus> expectedControllerBus = Optional.empty();
-        Optional<FunctionBlockInterface> expectedController = Optional.empty();
-        Optional<FunctionBlockInterface> expectedNavigation = Optional.empty();
+        double expectedMass = PhysicalVehicle.VEHICLE_DEFAULT_MASS;
+        double expectedWidth = PhysicalVehicle.VEHICLE_DEFAULT_WIDTH;
+        double expectedLength = PhysicalVehicle.VEHICLE_DEFAULT_LENGTH;
+        double expectedHeight = PhysicalVehicle.VEHICLE_DEFAULT_HEIGHT;
+        double expectedWheelRadius = PhysicalVehicle.VEHICLE_DEFAULT_WHEEL_RADIUS;
+        double expectedWheelDistLeftRightFrontSide = PhysicalVehicle.VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_FRONT;
+        double expectedWheelDistLeftRightBackSide = PhysicalVehicle.VEHICLE_DEFAULT_WHEEL_TRACK_WIDTH_REAR;
+        double expectedWheelDistToFront = PhysicalVehicle.VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT;
+        double expectedWheelDistToBack = PhysicalVehicle.VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK;
 
         // Calculate expected remaining values
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
@@ -68,29 +69,28 @@ public class MassPointBuilderTest {
         RealVector expectedGeometryPosition = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
 
         // Build default car
-        MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
-        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
-
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+    	PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+		MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         // Test not set/default parameters
         assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
         assertTrue(MathHelper.matrixEquals(expectedRotation, physicalVehicle.getRotation(), 0.00000001));
         assertTrue(MathHelper.vectorEquals(expectedVelocity, physicalVehicle.getVelocity(), 0.00000001));
         assertTrue(MathHelper.vectorEquals(expectedAngularVelocity, physicalVehicle.getAngularVelocity(), 0.00000001));
-        assertEquals(expectedMass, vehicle.getMass(), 0);
-        assertEquals(expectedWidth, vehicle.getWidth(), 0);
-        assertEquals(expectedLength, vehicle.getLength(), 0);
-        assertEquals(expectedHeight, vehicle.getHeight(), 0);
+        assertEquals(expectedMass, physicalVehicle.getMass(), 0);
+        assertEquals(expectedWidth, physicalVehicle.getWidth(), 0);
+        assertEquals(expectedLength, physicalVehicle.getLength(), 0);
+        assertEquals(expectedHeight, physicalVehicle.getHeight(), 0);
         assertEquals(expectedWheelRadius, physicalVehicle.getWheelRadius(), 0);
-        assertEquals(expectedWheelDistLeftRightFrontSide, vehicle.getWheelDistLeftRightFrontSide(), 0);
-        assertEquals(expectedWheelDistLeftRightBackSide, vehicle.getWheelDistLeftRightBackSide(), 0);
-        assertEquals(expectedWheelDistToFront, vehicle.getWheelDistToFront(), 0);
-        assertEquals(expectedWheelDistToBack, vehicle.getWheelDistToBack(), 0);
-        assertEquals(expectedControllerBus, vehicle.getControllerBus());
-        assertEquals(expectedController, vehicle.getController());
-        assertEquals(expectedNavigation, vehicle.getNavigation());
-        assertNull(physicalVehicle.getGlobalId());
+        assertEquals(expectedWheelDistLeftRightFrontSide, physicalVehicle.getWheelDistLeftRightFrontSide(), 0);
+        assertEquals(expectedWheelDistLeftRightBackSide, physicalVehicle.getWheelDistLeftRightBackSide(), 0);
+        assertEquals(expectedWheelDistToFront, physicalVehicle.getWheelDistToFront(), 0);
+        assertEquals(expectedWheelDistToBack, physicalVehicle.getWheelDistToBack(), 0);
 
         // Test internal values
         assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
@@ -146,24 +146,29 @@ public class MassPointBuilderTest {
         builder.setWheelDistToFront(expectedWheelDistToFront);
         builder.setWheelDistToBack(expectedWheelDistToBack);
         builder.setGlobalId(expectedGlobalId);
-        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
+        
 
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(builder, eeVehicleBuilder);
+		MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         // Test custom set parameters
         assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
         assertTrue(MathHelper.matrixEquals(expectedRotation, physicalVehicle.getRotation(), 0.00000001));
         assertTrue(MathHelper.vectorEquals(expectedVelocity, physicalVehicle.getVelocity(), 0.00000001));
         assertTrue(MathHelper.vectorEquals(expectedAngularVelocity, physicalVehicle.getAngularVelocity(), 0.00000001));
-        assertEquals(expectedMass, vehicle.getMass(), 0);
-        assertEquals(expectedWidth, vehicle.getWidth(), 0);
-        assertEquals(expectedLength, vehicle.getLength(), 0);
-        assertEquals(expectedHeight, vehicle.getHeight(), 0);
+        assertEquals(expectedMass, physicalVehicle.getMass(), 0);
+        assertEquals(expectedWidth, physicalVehicle.getWidth(), 0);
+        assertEquals(expectedLength, physicalVehicle.getLength(), 0);
+        assertEquals(expectedHeight, physicalVehicle.getHeight(), 0);
         Assert.assertEquals(expectedWheelRadius, physicalVehicle.getWheelRadius(), 0);
-        Assert.assertEquals(expectedWheelDistLeftRightFrontSide, vehicle.getWheelDistLeftRightFrontSide(), 0);
-        Assert.assertEquals(expectedWheelDistLeftRightBackSide, vehicle.getWheelDistLeftRightBackSide(), 0);
-        Assert.assertEquals(expectedWheelDistToFront, vehicle.getWheelDistToFront(), 0);
-        Assert.assertEquals(expectedWheelDistToBack, vehicle.getWheelDistToBack(), 0);
+        Assert.assertEquals(expectedWheelDistLeftRightFrontSide, physicalVehicle.getWheelDistLeftRightFrontSide(), 0);
+        Assert.assertEquals(expectedWheelDistLeftRightBackSide, physicalVehicle.getWheelDistLeftRightBackSide(), 0);
+        Assert.assertEquals(expectedWheelDistToFront, physicalVehicle.getWheelDistToFront(), 0);
+        Assert.assertEquals(expectedWheelDistToBack, physicalVehicle.getWheelDistToBack(), 0);
 
         // Test internal values
         Assert.assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
@@ -197,7 +202,12 @@ public class MassPointBuilderTest {
         MassPointPhysicalVehicleBuilder.ParsableVehicleProperties properties = g.fromJson(fileContent, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
 
         // Load car from file
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().loadFromFile(testFile);
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(testFile, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         // Check if both are equal
         checkTheCar(properties, physicalVehicle);
@@ -223,7 +233,13 @@ public class MassPointBuilderTest {
         MassPointPhysicalVehicleBuilder.ParsableVehicleProperties properties = g.fromJson(fileContent, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
 
         // Create default reference car
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+		Vehicle vehicle = new Vehicle(massPointBuilder, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         checkTheCar(properties, physicalVehicle);
     }
@@ -242,16 +258,16 @@ public class MassPointBuilderTest {
 
         Assert.assertTrue(MathHelper.vectorEquals(properties.getAngularVelocity(), physicalVehicle.getAngularVelocity(), 0.00000001));
 
-        Assert.assertEquals(properties.getMass(), physicalVehicle.getSimulationVehicle().getMass(), 0);
+        Assert.assertEquals(properties.getMass(), physicalVehicle.getMass(), 0);
 
-        Assert.assertEquals(properties.getWidth(), physicalVehicle.getSimulationVehicle().getWidth(), 0);
-        Assert.assertEquals(properties.getLength(), physicalVehicle.getSimulationVehicle().getLength(), 0);
-        Assert.assertEquals(properties.getHeight(), physicalVehicle.getSimulationVehicle().getHeight(), 0);
+        Assert.assertEquals(properties.getWidth(), physicalVehicle.getWidth(), 0);
+        Assert.assertEquals(properties.getLength(), physicalVehicle.getLength(), 0);
+        Assert.assertEquals(properties.getHeight(), physicalVehicle.getHeight(), 0);
 
-        Assert.assertEquals(properties.getWheelRadius(), physicalVehicle.getSimulationVehicle().getWheelRadius(), 0);
-        Assert.assertEquals(properties.getWheelDistToFront(), physicalVehicle.getSimulationVehicle().getWheelDistToFront(), 0);
-        Assert.assertEquals(properties.getWheelDistToBack(), physicalVehicle.getSimulationVehicle().getWheelDistToBack(), 0);
-        Assert.assertEquals(properties.getWheelDistLeftRightFrontSide(), physicalVehicle.getSimulationVehicle().getWheelDistLeftRightFrontSide(), 0);
-        Assert.assertEquals(properties.getWheelDistLeftRightBackSide(), physicalVehicle.getSimulationVehicle().getWheelDistLeftRightBackSide(), 0);
+        Assert.assertEquals(properties.getWheelRadius(), physicalVehicle.getWheelRadius(), 0);
+        Assert.assertEquals(properties.getWheelDistToFront(), physicalVehicle.getWheelDistToFront(), 0);
+        Assert.assertEquals(properties.getWheelDistToBack(), physicalVehicle.getWheelDistToBack(), 0);
+        Assert.assertEquals(properties.getWheelDistLeftRightFrontSide(), physicalVehicle.getWheelDistLeftRightFrontSide(), 0);
+        Assert.assertEquals(properties.getWheelDistLeftRightBackSide(), physicalVehicle.getWheelDistLeftRightBackSide(), 0);
     }
 }

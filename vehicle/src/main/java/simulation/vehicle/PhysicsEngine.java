@@ -18,7 +18,7 @@ import simulation.util.MathHelper;
 import simulation.util.OrientedBoundingBox;
 
 import java.io.*;
-
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -39,13 +39,13 @@ public class PhysicsEngine{
      *
      * @param object Is the physical object, which physics have to be computed
      * @param physicalObjects List of all physical objects, needed to check for collision
-     * @param timeDiffMs Difference in time measured in milliseconds
+     * @param timeDiff Difference in time
      */
-    public static void computePhysics(PhysicalObject object, List<PhysicalObject> physicalObjects, long timeDiffMs){
+    public static void computePhysics(PhysicalObject object, List<PhysicalObject> physicalObjects, Duration timeDiff){
         // Detect and handle possible collisions
-        computeCollision(object, physicalObjects, timeDiffMs);
+        computeCollision(object, physicalObjects, timeDiff);
 
-        object.computePhysics(timeDiffMs);
+        object.computePhysics(timeDiff);
     }
 
     /**
@@ -53,9 +53,9 @@ public class PhysicsEngine{
      *
      * @param object Is the physical object, which is the collision is computed for
      * @param physicalObjects List of all physical objects
-     * @param timeDiffMs Difference in time measured in milliseconds
+     * @param timeDiff Difference in time
      */
-    private static void computeCollision(PhysicalObject object, List<PhysicalObject> physicalObjects, long timeDiffMs){
+    private static void computeCollision(PhysicalObject object, List<PhysicalObject> physicalObjects, Duration timeDiff){
         //TODO: The collision computation currently detects and handles a collision between two cars twice
         // Do not compute collision if the object has a computational error
         if (object.getError()){
@@ -72,7 +72,7 @@ public class PhysicsEngine{
             if(detectCollision(object, objectB)){
                 object.setCollision(true);
                 objectB.setCollision(true);
-                calcCollisionForces(object, objectB, timeDiffMs);
+                calcCollisionForces(object, objectB, timeDiff);
             }
         }
     }
@@ -114,10 +114,10 @@ public class PhysicsEngine{
      *
      * @param objectA First object for which the force should be computed
      * @param objectB Second object for which force should be computed
-     * @param timeDiffMs Difference in time measured in milliseconds
+     * @param timeDiff Difference in time
      */
-    private static void calcCollisionForces(PhysicalObject objectA, PhysicalObject objectB, long timeDiffMs){
-        double deltaT = timeDiffMs / 1000.0;
+    private static void calcCollisionForces(PhysicalObject objectA, PhysicalObject objectB, Duration timeDiff){
+        double deltaT = timeDiff.toMillis() / 1000.0;
 
         //Initial calculations for object A
         RealVector velocityA = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});

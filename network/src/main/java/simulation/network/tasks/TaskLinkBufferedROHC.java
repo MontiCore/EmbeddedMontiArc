@@ -7,6 +7,10 @@
 package simulation.network.tasks;
 
 import simulation.network.*;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import static simulation.network.NetworkDiscreteEventId.*;
 
@@ -28,7 +32,7 @@ public class TaskLinkBufferedROHC extends NetworkTask {
     private Set<Integer> busyChannels = Collections.synchronizedSet(new HashSet<>());
 
     /** Time value indicating when forwarding to PHY is done */
-    private long forwardToPhyDoneTimeNs = 0L;
+    private Duration forwardToPhyDoneTime = Duration.ZERO;
 
     /**
      * Constructor for this task
@@ -40,7 +44,7 @@ public class TaskLinkBufferedROHC extends NetworkTask {
         setNetworkNode(node);
         this.messageQueue.clear();
         this.busyChannels.clear();
-        forwardToPhyDoneTimeNs = 0L;
+        forwardToPhyDoneTime = Duration.ZERO;
         setTaskEventIdList(Arrays.asList(NETWORK_EVENT_ID_LINK_RECEIVE, NETWORK_EVENT_ID_LINK_SEND,
                 NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, NETWORK_EVENT_ID_LINK_FORWARD_TO_PHY));
     }
@@ -75,8 +79,8 @@ public class TaskLinkBufferedROHC extends NetworkTask {
                 return;
             }
             case NETWORK_EVENT_ID_LINK_FORWARD_TO_PHY: {
-                long eventTime = forwardToPhyDoneTimeNs - 1;
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(eventTime, NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_SEND_START, networkNode, event.getEventMessage());
+                Duration eventTime = forwardToPhyDoneTime.minusNanos(1L);
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(Instant.ofEpochSecond(0, eventTime.toNanos()), NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_SEND_START, networkNode, event.getEventMessage());
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }
@@ -103,17 +107,17 @@ public class TaskLinkBufferedROHC extends NetworkTask {
 
                 // Put message in queue and check for channel status
                 messageQueue.add(0, event.getEventMessage());
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }
             case NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS: {
                 // Do not update if forwarding to PHY is in progress
-                if (forwardToPhyDoneTimeNs != 0L && NetworkUtils.simTimeWithDelay(0L) <= forwardToPhyDoneTimeNs) {
+                if (forwardToPhyDoneTime.toNanos() != 0L && Instant.EPOCH.until(NetworkUtils.simTimeWithDelay(Duration.ZERO), ChronoUnit.NANOS) <= forwardToPhyDoneTime.toNanos()) {
                     return;
                 }
 
-                forwardToPhyDoneTimeNs = 0L;
+                forwardToPhyDoneTime = Duration.ZERO;
 
                 // Do not update if node is sending a message, then this task will be notified when transmission finished
                 if (!networkNode.getSendingChannelsMap().isEmpty()) {
@@ -137,8 +141,8 @@ public class TaskLinkBufferedROHC extends NetworkTask {
                 if (!messageQueue.isEmpty() && !sendingChannelsBusy) {
                     NetworkMessage message = messageQueue.get(messageQueue.size() - 1);
                     messageQueue.remove(messageQueue.size() - 1);
-                    forwardToPhyDoneTimeNs = NetworkUtils.simTimeWithDelay(NetworkUtils.randomNextLayerSimulationTime()) + 1;
-                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_FORWARD_TO_PHY, networkNode, message);
+                    forwardToPhyDoneTime = Duration.between(Instant.EPOCH, NetworkUtils.simTimeWithDelay(NetworkUtils.randomNextLayerSimulationTime()).plusNanos(1));
+                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_FORWARD_TO_PHY, networkNode, message);
                     NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 }
 

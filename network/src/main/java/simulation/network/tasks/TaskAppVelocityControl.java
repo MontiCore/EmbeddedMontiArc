@@ -17,6 +17,7 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import sensors.abstractsensors.AbstractSensor;
 import simulation.environment.WorldModel;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.network.*;
@@ -25,6 +26,10 @@ import simulation.util.MathHelper;
 import simulation.util.OrientedBoundingBox;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.Vehicle;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import static simulation.network.NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_UPDATE;
@@ -185,7 +190,7 @@ public class TaskAppVelocityControl extends NetworkTask {
                 // Continue processing only if this network node is a vehicle
                 if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
                     PhysicalVehicle physicalVehicle = (PhysicalVehicle) (networkNode.getPhysicalObject());
-                    Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+                    //Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
                     // Remove nodes which were not received for a long time
                     // Changes to key set or value set are reflected in the map as well, thus retainAll call removes outdated map entries
@@ -205,13 +210,13 @@ public class TaskAppVelocityControl extends NetworkTask {
                         }
 
                         // Insert or update map entry
-                        Map.Entry<Long, List<Float>> mapEntry = new AbstractMap.SimpleEntry<>(event.getEventMessage().getSimReceiveTimeNs(), floatValues);
+                        Map.Entry<Long, List<Float>> mapEntry = new AbstractMap.SimpleEntry<>(Instant.EPOCH.until(event.getEventMessage().getSimReceiveTime(), ChronoUnit.NANOS), floatValues);
                         statusInfoMap.put(event.getEventMessage().getNetworkIpv6Sender(), mapEntry);
 
                     // Put trajectory message in map
                     } else if (event.getEventMessage().getTransportPortDestNumber() == TaskAppBeacon.APP_BEACON_PORT_NUMBER_TRAJECTORY_MSG) {
                         // Insert or update map entry
-                        Map.Entry<Long, List<Float>> mapEntry = new AbstractMap.SimpleEntry<>(event.getEventMessage().getSimReceiveTimeNs(), floatValues);
+                        Map.Entry<Long, List<Float>> mapEntry = new AbstractMap.SimpleEntry<>(Instant.EPOCH.until(event.getEventMessage().getSimReceiveTime(), ChronoUnit.NANOS), floatValues);
                         trajectoryInfoMap.put(event.getEventMessage().getNetworkIpv6Sender(), mapEntry);
                     }
 
@@ -220,7 +225,7 @@ public class TaskAppVelocityControl extends NetworkTask {
                         periodicUpdateScheduled = true;
                         NetworkMessage messageTaskName = new NetworkMessage();
                         messageTaskName.setMessageContent(getTaskId().name());
-                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(500000000L), NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);                       NetworkSimulator.getInstance().scheduleEvent(newEvent);
+                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ofMillis(500L)), NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);                       NetworkSimulator.getInstance().scheduleEvent(newEvent);
                     }
 
                     // Perform computation for velocity control
@@ -241,11 +246,11 @@ public class TaskAppVelocityControl extends NetworkTask {
         // Only perform this for vehicles
         if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
             PhysicalVehicle physicalVehicle = (PhysicalVehicle) (networkNode.getPhysicalObject());
-            Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+            Vehicle vehicle = physicalVehicle.getVehicle();
 
             // Get velocity sensor value
             double currentVelocity = 0.0;
-            Optional<Sensor> velocitySensor = vehicle.getSensorByType(BusEntry.SENSOR_VELOCITY);
+            Optional<AbstractSensor> velocitySensor = vehicle.getSensorByType(BusEntry.SENSOR_VELOCITY);
 
             if (velocitySensor.isPresent()) {
                 currentVelocity = (Double)(velocitySensor.get().getValue());
@@ -256,7 +261,7 @@ public class TaskAppVelocityControl extends NetworkTask {
 
             // Get compass sensor value
             double currentCompass = 0.0;
-            Optional<Sensor> compassSensor = vehicle.getSensorByType(BusEntry.SENSOR_COMPASS);
+            Optional<AbstractSensor> compassSensor = vehicle.getSensorByType(BusEntry.SENSOR_COMPASS);
 
             if (compassSensor.isPresent()) {
                 currentCompass = (Double) (compassSensor.get().getValue());
@@ -267,7 +272,7 @@ public class TaskAppVelocityControl extends NetworkTask {
 
             // Get GPS sensor value
             RealVector currentGps = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-            Optional<Sensor> gpsSensor = vehicle.getSensorByType(BusEntry.SENSOR_GPS_COORDINATES);
+            Optional<AbstractSensor> gpsSensor = vehicle.getSensorByType(BusEntry.SENSOR_GPS_COORDINATES);
 
             if (gpsSensor.isPresent()) {
                 currentGps = (RealVector) (gpsSensor.get().getValue());
@@ -278,8 +283,8 @@ public class TaskAppVelocityControl extends NetworkTask {
 
             // Process new data
             double maxAllowedVelocityTotal = Double.MAX_VALUE;
-            double maxAllowedVelocityPriorityToRight = computePriorityToTheRightVelocity(statusInfoMap, trajectoryInfoMap, vehicle.getTrajectory(), currentVelocity, currentCompass, currentGps, vehicle.getLength(), vehicle.getWidth(), vehicle.getHeight(), getNetworkNode().getIpv6Address(), priorityInfoMap, priorityTakenSimulationTimeNs);
-            double maxAllowedVelocityCollisionAvoidance = computeCollisionAvoidanceVelocity(statusInfoMap, trajectoryInfoMap, vehicle.getTrajectory(), currentVelocity, currentCompass, currentGps, vehicle.getLength(), vehicle.getWidth(), vehicle.getHeight(), getNetworkNode().getIpv6Address());
+            double maxAllowedVelocityPriorityToRight = computePriorityToTheRightVelocity(statusInfoMap, trajectoryInfoMap, vehicle.getTrajectory(), currentVelocity, currentCompass, currentGps, physicalVehicle.getLength(), physicalVehicle.getWidth(), physicalVehicle.getHeight(), getNetworkNode().getIpv6Address(), priorityInfoMap, priorityTakenSimulationTimeNs);
+            double maxAllowedVelocityCollisionAvoidance = computeCollisionAvoidanceVelocity(statusInfoMap, trajectoryInfoMap, vehicle.getTrajectory(), currentVelocity, currentCompass, currentGps, physicalVehicle.getLength(), physicalVehicle.getWidth(), physicalVehicle.getHeight(), getNetworkNode().getIpv6Address());
             maxAllowedVelocityTotal = Math.min(maxAllowedVelocityTotal, Math.min(maxAllowedVelocityPriorityToRight, maxAllowedVelocityCollisionAvoidance));
 
             // Set new data in vehicle
@@ -329,7 +334,7 @@ public class TaskAppVelocityControl extends NetworkTask {
         }
 
         // Handle deadlocks, ignore rules when priority is taken to resolve deadlocks
-        if (priorityTakenTime.get() != -1L && (NetworkUtils.simTimeWithDelay(0) - priorityTakenTime.get()) < VELOCITY_CONTROL_PRIORITY_MAX_VEHICLE_TIME_DELTA_DEADLOCK) {
+        if (priorityTakenTime.get() != -1L && (Instant.EPOCH.until(NetworkUtils.simTimeWithDelay(Duration.ZERO), ChronoUnit.NANOS) - priorityTakenTime.get()) < VELOCITY_CONTROL_PRIORITY_MAX_VEHICLE_TIME_DELTA_DEADLOCK) {
             return Double.MAX_VALUE;
         }
         priorityTakenTime.set(-1L);
@@ -553,7 +558,7 @@ public class TaskAppVelocityControl extends NetworkTask {
                 // In this case, take priority for this intersection
                 if (ipv6.equals(blockedNeighborIPv6.get(0))) {
                     priorityMap.values().remove(intersectionNodeOsmId);
-                    priorityTakenTime.set(NetworkUtils.simTimeWithDelay(0));
+                    priorityTakenTime.set(Instant.EPOCH.until(NetworkUtils.simTimeWithDelay(Duration.ZERO), ChronoUnit.NANOS));
                     return Double.MAX_VALUE;
                 }
             }

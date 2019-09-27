@@ -10,6 +10,9 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Simulati
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopNotifiable;
 import simulation.util.Plotter2D;
 import simulation.vehicle.PhysicalVehicle;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -25,7 +28,7 @@ public class SimulationDebugPlotter extends SimulationLoopNotifiable {
     }
 
     @Override
-    public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long timeDiffms) {
+    public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime, Duration timeDiffms) {
         if(simulationObject instanceof PhysicalVehicle) {
             PhysicalVehicle physicalVehicle = (PhysicalVehicle) simulationObject;
             Plotter2D.plotOne(physicalVehicle, counter, timeDiffms, name);
@@ -34,16 +37,16 @@ public class SimulationDebugPlotter extends SimulationLoopNotifiable {
     }
 
     @Override
-    public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {}
+    public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, Instant totalTime) {}
 
     @Override
-    public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {}
+    public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime, Duration deltaTime) {}
 
     @Override
-    public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {}
+    public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime, Duration deltaTime) {}
 
     @Override
-    public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
+    public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime, Duration deltaTime) {}
 
     @Override
     public void simulationStarted(List<SimulationLoopExecutable> simulationObjects) {}

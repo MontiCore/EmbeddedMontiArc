@@ -9,6 +9,8 @@ package simulation.vehicle;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
@@ -17,8 +19,13 @@ import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
+
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 import simulation.util.Log;
 import simulation.util.MathHelper;
+
+import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -38,29 +45,27 @@ public class ModelicaBuilderTest {
     @Test
     public void buildDefaultVehicle(){
         // Get default VDM values
-        ModelicaPhysicalVehicle referencePhysicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+    	Vehicle referenceVehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        ModelicaPhysicalVehicle referencePhysicalVehicle = (ModelicaPhysicalVehicle) referenceVehicle.getPhysicalVehicle();
         VehicleDynamicsModel referenceVDM = referencePhysicalVehicle.getVDM();
 
         // Calculate expected values
         double z = referenceVDM.getValue("z");
-        double height = Vehicle.VEHICLE_DEFAULT_HEIGHT;
+        double height = PhysicalVehicle.VEHICLE_DEFAULT_HEIGHT;
         RealVector expectedPosition = new ArrayRealVector(new Double[]{0.0, 0.0, - height/2 + z});
         Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
         RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
         RealVector expectedVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         RealVector expectedAngularVelocity = new ArrayRealVector(3);
         double expectedMass = referenceVDM.getValue("m");
-        double expectedWidth = Vehicle.VEHICLE_DEFAULT_WIDTH;
-        double expectedLength = Vehicle.VEHICLE_DEFAULT_LENGTH;
-        double expectedHeight = Vehicle.VEHICLE_DEFAULT_HEIGHT;
+        double expectedWidth = PhysicalVehicle.VEHICLE_DEFAULT_WIDTH;
+        double expectedLength = PhysicalVehicle.VEHICLE_DEFAULT_LENGTH;
+        double expectedHeight = PhysicalVehicle.VEHICLE_DEFAULT_HEIGHT;
         double expectedWheelRadius = referenceVDM.getValue("r_nom");
         double expectedWheelDistLeftRightFrontSide = referenceVDM.getValue("TW_f");
         double expectedWheelDistLeftRightBackSide = referenceVDM.getValue("TW_r");
         double expectedWheelDistToFront = referenceVDM.getValue("L_1");
         double expectedWheelDistToBack = referenceVDM.getValue("L_2");
-        Optional<Bus> expectedControllerBus = Optional.empty();
-        Optional<FunctionBlockInterface> expectedController = Optional.empty();
-        Optional<FunctionBlockInterface> expectedNavigation = Optional.empty();
 
         // Calculate expected remaining values
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
@@ -69,28 +74,23 @@ public class ModelicaBuilderTest {
 
         // Build default car
         ModelicaPhysicalVehicleBuilder builder = new ModelicaPhysicalVehicleBuilder();
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) builder.buildPhysicalVehicle();
-
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+        Vehicle vehicle = createStandardVehicle(builder);
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         // Test default/not set parameters
         Assert.assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
         Assert.assertTrue(MathHelper.matrixEquals(expectedRotation, physicalVehicle.getRotation(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedVelocity, physicalVehicle.getVelocity(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedAngularVelocity, physicalVehicle.getAngularVelocity(), 0.00000001));
-        Assert.assertEquals(expectedMass, vehicle.getMass(), 0);
-        Assert.assertEquals(expectedWidth, vehicle.getWidth(), 0);
-        Assert.assertEquals(expectedLength, vehicle.getLength(), 0);
-        Assert.assertEquals(expectedHeight, vehicle.getHeight(), 0);
+        Assert.assertEquals(expectedMass, physicalVehicle.getMass(), 0);
+        Assert.assertEquals(expectedWidth, physicalVehicle.getWidth(), 0);
+        Assert.assertEquals(expectedLength, physicalVehicle.getLength(), 0);
+        Assert.assertEquals(expectedHeight, physicalVehicle.getHeight(), 0);
         Assert.assertEquals(expectedWheelRadius, physicalVehicle.getWheelRadius(), 0);
-        Assert.assertEquals(expectedWheelDistLeftRightFrontSide, vehicle.getWheelDistLeftRightFrontSide(), 0);
-        Assert.assertEquals(expectedWheelDistLeftRightBackSide, vehicle.getWheelDistLeftRightBackSide(), 0);
-        Assert.assertEquals(expectedWheelDistToFront, vehicle.getWheelDistToFront(), 0);
-        Assert.assertEquals(expectedWheelDistToBack, vehicle.getWheelDistToBack(), 0);
-        Assert.assertEquals(expectedControllerBus, vehicle.getControllerBus());
-        Assert.assertEquals(expectedController, vehicle.getController());
-        Assert.assertEquals(expectedNavigation, vehicle.getNavigation());
-        Assert.assertNull(physicalVehicle.getGlobalId());
+        Assert.assertEquals(expectedWheelDistLeftRightFrontSide, physicalVehicle.getWheelDistLeftRightFrontSide(), 0);
+        Assert.assertEquals(expectedWheelDistLeftRightBackSide, physicalVehicle.getWheelDistLeftRightBackSide(), 0);
+        Assert.assertEquals(expectedWheelDistToFront, physicalVehicle.getWheelDistToFront(), 0);
+        Assert.assertEquals(expectedWheelDistToBack, physicalVehicle.getWheelDistToBack(), 0);
 
         // Test internal values
         Assert.assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
@@ -110,7 +110,9 @@ public class ModelicaBuilderTest {
     @Test
     public void buildCustomVehicle(){
         // Get default VDM values
-        ModelicaPhysicalVehicle referencePhysicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        ModelicaPhysicalVehicleBuilder modelicaBuilder = new ModelicaPhysicalVehicleBuilder();
+        Vehicle referenceVehicle = createStandardVehicle(modelicaBuilder);
+        ModelicaPhysicalVehicle referencePhysicalVehicle = (ModelicaPhysicalVehicle) referenceVehicle.getPhysicalVehicle();
         VehicleDynamicsModel referenceVDM = referencePhysicalVehicle.getVDM();
 
         // Calculate expected values
@@ -160,25 +162,24 @@ public class ModelicaBuilderTest {
         builder.setWheelDistToFront(expectedWheelDistToFront);
         builder.setWheelDistToBack(expectedWheelDistToBack);
         builder.setGlobalId(expectedGlobalId);
-        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) builder.buildPhysicalVehicle();
-
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+        Vehicle vehicle = createStandardVehicle(builder);
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         // Test custom set parameters
         Assert.assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
         Assert.assertTrue(MathHelper.matrixEquals(expectedRotation, physicalVehicle.getRotation(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedVelocity, physicalVehicle.getVelocity(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedAngularVelocity, physicalVehicle.getAngularVelocity(), 0.00000001));
-        Assert.assertEquals(expectedMass, vehicle.getMass(), 0);
-        Assert.assertEquals(expectedWidth, vehicle.getWidth(), 0);
-        Assert.assertEquals(expectedLength, vehicle.getLength(), 0);
-        Assert.assertEquals(expectedHeight, vehicle.getHeight(), 0);
+        Assert.assertEquals(expectedMass, physicalVehicle.getMass(), 0);
+        Assert.assertEquals(expectedWidth, physicalVehicle.getWidth(), 0);
+        Assert.assertEquals(expectedLength, physicalVehicle.getLength(), 0);
+        Assert.assertEquals(expectedHeight, physicalVehicle.getHeight(), 0);
         Assert.assertEquals(expectedWheelRadius, physicalVehicle.getWheelRadius(), 0);
-        Assert.assertEquals(expectedWheelDistLeftRightFrontSide, vehicle.getWheelDistLeftRightFrontSide(), 0);
-        Assert.assertEquals(expectedWheelDistLeftRightBackSide, vehicle.getWheelDistLeftRightBackSide(), 0);
-        Assert.assertEquals(expectedWheelDistToFront, vehicle.getWheelDistToFront(), 0);
-        Assert.assertEquals(expectedWheelDistToBack, vehicle.getWheelDistToBack(), 0);
-        Assert.assertEquals(expectedGlobalId, physicalVehicle.getGlobalId());
+        Assert.assertEquals(expectedWheelDistLeftRightFrontSide, physicalVehicle.getWheelDistLeftRightFrontSide(), 0);
+        Assert.assertEquals(expectedWheelDistLeftRightBackSide, physicalVehicle.getWheelDistLeftRightBackSide(), 0);
+        Assert.assertEquals(expectedWheelDistToFront, physicalVehicle.getWheelDistToFront(), 0);
+        Assert.assertEquals(expectedWheelDistToBack, physicalVehicle.getWheelDistToBack(), 0);
+        Assert.assertEquals(expectedGlobalId, vehicle.getGlobalId());
 
         // Test internal values
         Assert.assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
@@ -193,5 +194,13 @@ public class ModelicaBuilderTest {
         Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_2"), 0);
         Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_3"), 0);
         Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_4"), 0);
+    }
+
+    private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
+    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
     }
 }

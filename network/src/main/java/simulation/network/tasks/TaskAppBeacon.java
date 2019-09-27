@@ -11,10 +11,13 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+import sensors.abstractsensors.AbstractSensor;
 import simulation.network.*;
 import simulation.util.Log;
 import simulation.vehicle.PhysicalVehicle;
 import simulation.vehicle.Vehicle;
+
+import java.time.Duration;
 import java.util.*;
 import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.SENSOR_COMPASS;
 import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.SENSOR_GPS_COORDINATES;
@@ -64,7 +67,7 @@ public class TaskAppBeacon extends NetworkTask {
                 // Schedule periodic event
                 NetworkMessage messageTaskName = new NetworkMessage();
                 messageTaskName.setMessageContent(getTaskId().name());
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }
@@ -91,7 +94,7 @@ public class TaskAppBeacon extends NetworkTask {
                 }
 
                 // Redirect messages to other application tasks
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_UPDATE, networkNode, event.getEventMessage());
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_UPDATE, networkNode, event.getEventMessage());
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }
@@ -115,14 +118,14 @@ public class TaskAppBeacon extends NetworkTask {
         // Convert to vehicle
         if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
             PhysicalVehicle physicalVehicle = (PhysicalVehicle)(networkNode.getPhysicalObject());
-            Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+            Vehicle vehicle = physicalVehicle.getVehicle();
             List<Float> messageFloats = Collections.synchronizedList(new LinkedList<>());
             NetworkMessage message = new NetworkMessage();
 
             // Each third message is trajectory update message, otherwise regular status message
             if ((beaconCounter % 3L) == 0) {
                 // Read GPS sensor value
-                Optional<Sensor> gpsSensor = vehicle.getSensorByType(SENSOR_GPS_COORDINATES);
+                Optional<AbstractSensor> gpsSensor = vehicle.getSensorByType(SENSOR_GPS_COORDINATES);
                 RealVector gpsPosition = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
 
                 if (gpsSensor.isPresent()) {
@@ -171,7 +174,7 @@ public class TaskAppBeacon extends NetworkTask {
                 // Add sensor values to message
                 List<BusEntry> sensorEntries = Arrays.asList(SENSOR_GPS_COORDINATES, SENSOR_VELOCITY, SENSOR_COMPASS);
                 for (BusEntry sensorEntry : sensorEntries) {
-                    Optional<Sensor> sensor = vehicle.getSensorByType(sensorEntry);
+                    Optional<AbstractSensor> sensor = vehicle.getSensorByType(sensorEntry);
 
                     if (sensor.isPresent()) {
                         Object sensorValue = sensor.get().getValue();
@@ -199,9 +202,9 @@ public class TaskAppBeacon extends NetworkTask {
                 }
 
                 // Add vehicle values to message
-                messageFloats.add((float)(vehicle.getLength()));
-                messageFloats.add((float)(vehicle.getWidth()));
-                messageFloats.add((float)(vehicle.getHeight()));
+                messageFloats.add((float)(physicalVehicle.getLength()));
+                messageFloats.add((float)(physicalVehicle.getWidth()));
+                messageFloats.add((float)(physicalVehicle.getHeight()));
 
                 // Set message ports
                 message.setTransportPortSourceNumber(APP_BEACON_PORT_NUMBER_STATUS_MSG);
@@ -214,7 +217,7 @@ public class TaskAppBeacon extends NetworkTask {
             message.setNetworkIpv6Receiver(NetworkSimulator.getInstance().getNetworkSettings().getIpv6LinkLocalMulticastAddress());
 
             // Schedule event for sending
-            NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_SEND, networkNode, message);
+            NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_SEND, networkNode, message);
             NetworkSimulator.getInstance().scheduleEvent(newEvent);
         }
     }

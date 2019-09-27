@@ -6,6 +6,8 @@
  */
 package simulation.network;
 
+import java.time.Duration;
+
 import simulation.util.Log;
 
 /**
@@ -78,12 +80,12 @@ public class NetworkStatistics {
             return;
         }
 
-        if (message.getSimReceiveTimeNs() < message.getSimCreateTimeNs()) {
+        if (message.getSimReceiveTime().isBefore(message.getSimCreateTime())) {
             Log.warning("NetworkStatistics - processReceivedMessageApp: Skipped message, receive time is invalid: " + message);
             return;
         }
 
-        double latency = (double)(message.getSimReceiveTimeNs() - message.getSimCreateTimeNs());
+        double latency = (double)(Duration.between(message.getSimReceiveTime(), message.getSimCreateTime()).toNanos());
         averageLatencyNsApp = (((double)(receivedMessagesAmountApp) * averageLatencyNsApp + latency) / (double)(receivedMessagesAmountApp + 1L));
         receivedMessagesAmountApp++;
     }

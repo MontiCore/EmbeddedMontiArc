@@ -23,6 +23,8 @@ import simulation.environment.geometry.osmadapter.GeomStreet;
 import simulation.environment.geometry.splines.StreetInterpolator;
 import simulation.util.Log;
 import simulation.util.MathHelper;
+
+import java.time.Duration;
 import java.util.*;
 
 /**
@@ -396,10 +398,10 @@ public class Pedestrian implements SimulationLoopExecutable, PhysicalObject, IPe
 
     /**
      * Function that computes one step of the physical behaviour of the object
-     * @param deltaTms Duration of the current simulation step in milliseconds
+     * @param deltaTime Duration of the current simulation step
      */
     @Override
-    public void computePhysics(long deltaTms){
+    public void computePhysics(Duration deltaTime){
         //No physics computations for pedestrians
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         torque = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
@@ -422,10 +424,10 @@ public class Pedestrian implements SimulationLoopExecutable, PhysicalObject, IPe
 
     /**
      * Function that requests the called object to update its state for given time difference
-     * @param timeDiffMs Difference in time measured in milliseconds
+     * @param timeDiff Difference in time
      */
     @Override
-    public void executeLoopIteration(long timeDiffMs) {
+    public void executeLoopIteration(Duration timeDiff) {
         // get last movement parameters
         PedestrianStreetParameters movementParameters = this.getStreetParameters();
 
@@ -449,7 +451,7 @@ public class Pedestrian implements SimulationLoopExecutable, PhysicalObject, IPe
 
         // compute new movement parameters
         // movement a pedestrians does in each time step
-        double distance = PEDESTRIAN_SPEED_DEFAULT * timeDiffMs;
+        double distance = PEDESTRIAN_SPEED_DEFAULT * timeDiff.toMillis();
         //PedestrianStreetParameters newParams = this.geomStreet.getMovementOfPedestrian(movementParameters, distance);
         PedestrianStreetParameters newParams = mInterpolator.calculateNewMovement(movementParameters, distance);
 

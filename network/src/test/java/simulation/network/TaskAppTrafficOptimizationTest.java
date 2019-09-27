@@ -13,10 +13,13 @@ import org.junit.Test;
 import simulation.network.settings.SettingsSimple;
 import simulation.network.tasks.TaskAppTrafficOptimization;
 import simulation.util.Log;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import static org.junit.Assert.assertTrue;
 import static simulation.network.tasks.TaskAppTrafficOptimization.TRAFFIC_OPTIMIZATION_MIN_COUNT;
-import static simulation.network.tasks.TaskAppTrafficOptimization.TRAFFIC_OPTIMIZATION_MIN_TIME_NS;
+import static simulation.network.tasks.TaskAppTrafficOptimization.TRAFFIC_OPTIMIZATION_MIN_TIME;
 import static simulation.network.tasks.TaskAppTrafficOptimization.TRAFFIC_OPTIMIZATION_NOT_MOVED_GROUP_RANGE;
 
 /**
@@ -50,7 +53,7 @@ public class TaskAppTrafficOptimizationTest {
             }
         }
 
-        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), 0, TRAFFIC_OPTIMIZATION_MIN_TIME_NS / 1000000L);
+        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, TRAFFIC_OPTIMIZATION_MIN_TIME);
         TaskAppTrafficOptimization.trafficJamDetection(infoMap, outputPositionSet);
 
         assertTrue(outputPositionSet.isEmpty());
@@ -86,7 +89,7 @@ public class TaskAppTrafficOptimizationTest {
             }
         }
 
-        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), 0, TRAFFIC_OPTIMIZATION_MIN_TIME_NS / 1000000L);
+        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, TRAFFIC_OPTIMIZATION_MIN_TIME);
         TaskAppTrafficOptimization.trafficJamDetection(infoMap, outputPositionSet);
 
         assertTrue(outputPositionSet.isEmpty());
@@ -115,7 +118,7 @@ public class TaskAppTrafficOptimizationTest {
             infoMap.put("fe899fe796f9fa75" + i, entry);
         }
 
-        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), 0, TRAFFIC_OPTIMIZATION_MIN_TIME_NS / 1000000L);
+        networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, TRAFFIC_OPTIMIZATION_MIN_TIME);
         TaskAppTrafficOptimization.trafficJamDetection(infoMap, outputPositionSet);
 
         assertTrue(!outputPositionSet.isEmpty());

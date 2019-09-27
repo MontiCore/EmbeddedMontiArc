@@ -7,9 +7,16 @@
 package sensors;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
+
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
-import simulation.vehicle.PhysicalVehicle;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Aklima Zaman on 20-Jan-17.
@@ -18,14 +25,20 @@ public class LocationSensor extends AbstractSensor {
 
     private RealVector value;
 
-    public LocationSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
-
+    public LocationSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
+        value = new ArrayRealVector();
     }
 
     @Override
     public RealVector getValue() {
         return this.value;
+    }
+
+    @Override
+    public int getDataLength() {
+        return value.getDimension() * 8;
     }
 
     @Override
@@ -51,6 +64,10 @@ public class LocationSensor extends AbstractSensor {
 
     @Override
     public BusEntry getType() {
+        return BusEntry.SENSOR_GPS_COORDINATES;
+    }
+
+    public static BusEntry getSensorType() {
         return BusEntry.SENSOR_GPS_COORDINATES;
     }
 

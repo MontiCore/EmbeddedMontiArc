@@ -9,30 +9,39 @@ package sensors;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractDistanceSensor;
-import org.apache.commons.math3.distribution.NormalDistribution;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
-import simulation.vehicle.PhysicalVehicle;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Zaman on 2/8/2017.
  */
 public class DistanceToLeftSensor extends AbstractDistanceSensor {
 
-    public DistanceToLeftSensor(PhysicalVehicle vehicle) {
-        super(vehicle);
+    public DistanceToLeftSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                                HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages, targetsByMessageId);
     }
 
     @Override
-    protected Double calculateDistance(IPhysicalVehicle v) {
+    protected Double calculateDistance(IPhysicalVehicle physicalVehicle) {
         World world = WorldModel.getInstance();
-        double calculatedValue = world.getDistanceToLeftStreetBorder(v).doubleValue();
-        NormalDistribution normalDistribution = new NormalDistribution(calculatedValue, 0.01);
+        double calculatedValue = world.getDistanceToLeftStreetBorder(physicalVehicle).doubleValue();
+        //NormalDistribution normalDistribution = new NormalDistribution(calculatedValue, 0.01);
         return calculatedValue;//new Double(normalDistribution.sample());
     }
 
     @Override
     public BusEntry getType() {
+
+        return BusEntry.SENSOR_DISTANCE_TO_LEFT;
+    }
+
+    public static BusEntry getSensorType() {
 
         return BusEntry.SENSOR_DISTANCE_TO_LEFT;
     }

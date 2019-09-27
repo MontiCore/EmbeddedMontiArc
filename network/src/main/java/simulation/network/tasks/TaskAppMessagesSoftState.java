@@ -7,6 +7,8 @@
 package simulation.network.tasks;
 
 import simulation.network.*;
+
+import java.time.Duration;
 import java.util.*;
 import static simulation.network.NetworkDiscreteEventId.*;
 
@@ -40,7 +42,7 @@ public class TaskAppMessagesSoftState extends NetworkTask {
                 // Schedule periodic event
                 NetworkMessage messageTaskName = new NetworkMessage();
                 messageTaskName.setMessageContent(getTaskId().name());
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }
@@ -57,7 +59,7 @@ public class TaskAppMessagesSoftState extends NetworkTask {
                 // Create new event to repeat periodic call
                 NetworkMessage messageTaskName = new NetworkMessage();
                 messageTaskName.setMessageContent(getTaskId().name());
-                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(2000000000L), NetworkDiscreteEventId.NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);
+                NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ofSeconds(2L)), NetworkDiscreteEventId.NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);
                 NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 return;
             }
@@ -80,7 +82,8 @@ public class TaskAppMessagesSoftState extends NetworkTask {
 
             synchronized (messageList) {
                 for (NetworkMessage message : messageList) {
-                    if ((NetworkSimulator.getInstance().getSimulationTimeNs() - message.getSimReceiveTimeNs()) >= NetworkSimulator.getInstance().getNetworkSettings().getMessageBufferMaxTime()) {
+                	Duration diff = Duration.between(message.getSimReceiveTime(), NetworkSimulator.getInstance().getSimulationTime());
+                    if (diff.toNanos() >= NetworkSimulator.getInstance().getNetworkSettings().getMessageBufferMaxTime().toNanos()) {
                         removeList.add(message);
                     }
                 }

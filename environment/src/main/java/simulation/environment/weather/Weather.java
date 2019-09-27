@@ -7,6 +7,7 @@
 package simulation.environment.weather;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
+import java.time.Duration;
 import java.util.Random;
 
 /**
@@ -123,8 +124,8 @@ public class Weather implements SimulationLoopExecutable{
     }
 
     @Override
-    public void executeLoopIteration(long timeDiffMs) {
-        this.nextWeatherChange -= timeDiffMs;
+    public void executeLoopIteration(Duration timeDiff) {
+        this.nextWeatherChange -= timeDiff.toMillis();
 
         if(this.nextWeatherChange <= 0) {
 

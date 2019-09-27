@@ -7,10 +7,13 @@
 package sensors;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import sensors.abstractsensors.AbstractSensor;
-import simulation.vehicle.PhysicalVehicle;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,15 +22,18 @@ import java.util.List;
  */
 public class ObstacleSensor extends AbstractSensor {
 
-    private List<PhysicalObject> result = Collections.synchronizedList(new LinkedList<>());
-    private Object[] value = new Object[2];
+    private List<PhysicalObject> result;
+    private Object[] value;
 
-    public ObstacleSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public ObstacleSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                          HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
+    	value = new Object[2];
+    	result = Collections.synchronizedList(new LinkedList<>());
     }
 
     protected void calculateValue() {
-        result.clear();
+    	result.clear();
         //TODO: result.addAll Collections.synchronizedList (Alle physikalischen Objekte in einer Liste brauchen wir)
         value[0] = Double.MAX_VALUE;
         for(PhysicalObject k : result){
@@ -42,6 +48,15 @@ public class ObstacleSensor extends AbstractSensor {
     @Override
     public BusEntry getType() {
         return BusEntry.SENSOR_OBSTACLE;
+    }
+
+    public static BusEntry getSensorType() {
+        return BusEntry.SENSOR_OBSTACLE;
+    }
+
+    @Override
+    public int getDataLength() {
+        return 16;
     }
 
     @Override

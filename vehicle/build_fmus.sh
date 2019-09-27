@@ -7,6 +7,7 @@
 #
 
 
+
 # Get the folder containing this script to locate the project correclty
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Make script folder the current directory

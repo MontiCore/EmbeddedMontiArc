@@ -16,6 +16,7 @@ import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvObject;
 import simulation.environment.visualisationadapter.interfaces.EnvTag;
 
+import java.time.Duration;
 import java.util.*;
 
 
@@ -224,7 +225,7 @@ public class ChargingStation implements SimulationLoopExecutable, EnvObject {
      * @param timeDiffMs Difference in time measured in milliseconds
      */
     @Override
-    public void executeLoopIteration(long timeDiffMs) {
+    public void executeLoopIteration(Duration timeDiffMs) {
             for(ChargingProcess cp : chargingProcessesMap.values()){
                 cp.executeLoopIteration(timeDiffMs);
             }

@@ -14,12 +14,14 @@ import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import simulation.environment.util.VehicleType;
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 
 /**
  * Abstract Builder class for a MassPointPhysicalVehicle to avoid complex constructors
@@ -32,67 +34,39 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
     public MassPointPhysicalVehicleBuilder(){
         // Class has no uninitialized fields
     }
+    
+	@Override
+	PhysicalVehicle createPhysicalVehicle() {
+		return new MassPointPhysicalVehicle();
+	}
 
-    /**
-     * Function that returns a MassPointPhysicalVehicle with the attributes currently stored in the builder
-     *
-     * @return MassPointPhysicalVehicle that was built with the builder
-     */
-    @Override
-    public PhysicalVehicle buildPhysicalVehicle(){
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC, 100);
-
-        if(this.velocity.isPresent()){
-            // Get rotation
-            RealMatrix rotation;
-            if(this.rotation.isPresent()){
-                rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
-            }else{
-                rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0).getMatrix());
-            }
-            // Compute velocity in local coordinates
-            RealVector localVelocity = rotation.transpose().operate(this.velocity.get());
-            // Set velocity
-            physicalVehicle.setVelocity(localVelocity);
+	@Override
+	RealVector calculateAngularVelocity(RealVector angularVelocity) {
+		// Get rotation
+        RealMatrix rotation;
+        if(this.rotation.isPresent()){
+            rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
+        }else{
+            rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0).getMatrix());
         }
-        if(this.angularVelocity.isPresent()){
-            // Get rotation
-            RealMatrix rotation;
-            if(this.rotation.isPresent()){
-                rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
-            }else{
-                rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0).getMatrix());
-            }
-            // Compute angular velocity in local coordinates
-            RealVector localAngularVelocity = rotation.transpose().operate(this.angularVelocity.get());
-            // Set angular velocity
-            physicalVehicle.setAngularVelocity(localAngularVelocity);
+        // Compute angular velocity in local coordinates
+        return rotation.transpose().operate(this.angularVelocity.get());
+	}
+
+	@Override
+	void setVelocity(PhysicalVehicle physicalVehicle, RealVector velocity) {
+		// Get rotation
+        RealMatrix rotation;
+        if(this.rotation.isPresent()){
+            rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
+        }else{
+            rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0).getMatrix());
         }
-
-        this.mass.ifPresent(physicalVehicle::setMass);
-
-        this.width.ifPresent(physicalVehicle::setWidth);
-        this.length.ifPresent(physicalVehicle::setLength);
-        this.height.ifPresent(physicalVehicle::setHeight);
-
-        this.wheelRadius.ifPresent(physicalVehicle.getSimulationVehicle()::setWheelRadius);
-        this.wheelDistLeftRightFrontSide.ifPresent(physicalVehicle.getSimulationVehicle()::setWheelDistLeftRightFrontSide);
-        this.wheelDistLeftRightBackSide.ifPresent(physicalVehicle.getSimulationVehicle()::setWheelDistLeftRightBackSide);
-        this.wheelDistToFront.ifPresent(physicalVehicle.getSimulationVehicle()::setWheelDistToFront);
-        this.wheelDistToBack.ifPresent(physicalVehicle.getSimulationVehicle()::setWheelDistToBack);
-
-        this.controllerBus.ifPresent(physicalVehicle.getSimulationVehicle()::setControllerBus);
-        this.controller.ifPresent(physicalVehicle.getSimulationVehicle()::setController);
-        this.navigation.ifPresent(physicalVehicle.getSimulationVehicle()::setNavigation);
-
-        physicalVehicle.initPhysics();
-
-        this.globalID.ifPresent(physicalVehicle::setGlobalId);
-        this.position.ifPresent(physicalVehicle::setPosition);
-        this.rotation.ifPresent(rotation -> physicalVehicle.setRotation(new BlockRealMatrix(rotation.getMatrix())));
-        //TODO: Add all default sensor per default to the physical vehicle using the sensor util
-        return physicalVehicle;
-    }
+        // Compute velocity in local coordinates
+        RealVector localVelocity = rotation.transpose().operate(this.velocity.get());
+        // Set velocity
+        physicalVehicle.setVelocity(localVelocity);
+	}
 
     /**
      * Method takes a file that has to contain a valid JSON representation of a car.
@@ -102,7 +76,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * @return MassPointPhysicalVehicle according to the JSON contents
      * @throws IOException thrown if the given file could either not be found or accessed/read.
      */
-    public MassPointPhysicalVehicle loadFromFile(File file) throws IOException {
+    public MassPointPhysicalVehicle loadFromFile(Vehicle vehicle,File file) throws IOException {
         String jsonContents = new String(Files.readAllBytes(file.toPath()));
         Gson g = new Gson();
         ParsableVehicleProperties data = g.fromJson(jsonContents, ParsableVehicleProperties.class);
@@ -125,8 +99,8 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         builder.setWheelDistLeftRightBackSide(data.getWheelDistLeftRightBackSide());
         builder.setWheelDistToFront(data.getWheelDistToFront());
         builder.setWheelDistToBack(data.getWheelDistToBack());
-
-        return (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
+        
+        return (MassPointPhysicalVehicle) builder.buildPhysicalVehicle(vehicle);
     }
 
     /**
@@ -138,8 +112,13 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * @throws IOException thrown if the given path cannot be accessed.
      */
     public void storeInFile(File whereToStore) throws IOException {
-        PhysicalVehicle physicalVehicle = this.buildPhysicalVehicle();
-        ParsableVehicleProperties properties = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties((MassPointPhysicalVehicle) physicalVehicle);
+		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		Vehicle vehicle = new Vehicle(this, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
+        ParsableVehicleProperties properties = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties((MassPointPhysicalVehicle) physicalVehicle) ;
 
         Gson g = new Gson();
         String json = g.toJson(properties, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
@@ -209,17 +188,17 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             angularVelocityY = v.getAngularVelocity().getEntry(1);
             angularVelocityZ = v.getAngularVelocity().getEntry(2);
 
-            mass = v.getSimulationVehicle().getMass();
+            mass = v.getMass();
 
-            width = v.getSimulationVehicle().getWidth();
-            height = v.getSimulationVehicle().getHeight();
-            length = v.getSimulationVehicle().getLength();
+            width = v.getWidth();
+            height = v.getHeight();
+            length = v.getLength();
 
-            wheelRadius = v.getSimulationVehicle().getWheelRadius();
-            wheelDistLeftRightFrontSide = v.getSimulationVehicle().getWheelDistLeftRightFrontSide();
-            wheelDistLeftRightBackSide = v.getSimulationVehicle().getWheelDistLeftRightBackSide();
-            wheelDistToFront = v.getSimulationVehicle().getWheelDistToFront();
-            wheelDistToBack = v.getSimulationVehicle().getWheelDistToBack();
+            wheelRadius = v.getWheelRadius();
+            wheelDistLeftRightFrontSide = v.getWheelDistLeftRightFrontSide();
+            wheelDistLeftRightBackSide = v.getWheelDistLeftRightBackSide();
+            wheelDistToFront = v.getWheelDistToFront();
+            wheelDistToBack = v.getWheelDistToBack();
         }
 
         public RealVector getPosition(){

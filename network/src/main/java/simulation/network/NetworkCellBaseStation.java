@@ -20,6 +20,8 @@ import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.WorldModel;
 import simulation.util.Log;
 import simulation.util.MathHelper;
+
+import java.time.Duration;
 import java.util.*;
 
 /**
@@ -386,10 +388,10 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
 
     /**
      * Function that computes one step of the physical behaviour of the object
-     * @param deltaTms Duration of the current simulation step in milliseconds
+     * @param deltaTime Duration of the current simulation step
      */
     @Override
-    public void computePhysics(long deltaTms){
+    public void computePhysics(Duration deltaTime){
         //No physics computations for network cell base stations
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         torque = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
@@ -412,10 +414,10 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
 
     /**
      * Function that requests the called object to update its state for given time difference
-     * @param timeDiffMs Difference in time measured in milliseconds
+     * @param timeDiff Difference in time measured
      */
     @Override
-    public void executeLoopIteration(long timeDiffMs) {
+    public void executeLoopIteration(Duration timeDiff) {
         // Do nothing: Handled in network simulation
     }
 

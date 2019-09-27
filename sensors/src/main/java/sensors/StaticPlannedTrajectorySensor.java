@@ -9,6 +9,8 @@ package sensors;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Sensor;
 import org.apache.commons.lang3.Validate;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +44,7 @@ public abstract class StaticPlannedTrajectorySensor implements Sensor {
     }
 
     @Override
-    public void update() {
+    public void update(Instant actualTime) {
     }
 
     public void setTrajectory(List<Double> trajectory) {

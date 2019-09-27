@@ -6,7 +6,7 @@
 # can be found under https://github.com/MontiCore/monticore.
 #
 
-# (c) https://github.com/MontiCore/monticore  
+
 
 current_dir=$(pwd)
 parent_dir="$(dirname $current_dir)"

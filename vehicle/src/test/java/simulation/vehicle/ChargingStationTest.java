@@ -12,6 +12,9 @@ import static org.junit.Assert.*;
 import simulation.environment.util.ChargingProcess;
 import simulation.environment.object.ChargingStation;
 import simulation.environment.util.VehicleType;
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
+import java.time.Instant;
 
 
 /**
@@ -22,8 +25,15 @@ import simulation.environment.util.VehicleType;
  */
 public class ChargingStationTest {
 
+    private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
+    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+    }
     @Test
-    public void startCharging() {
+    public void startCharging() throws Exception {
         // Create ChargingStation with capacity=1
         ChargingStation chargingStation = new ChargingStation();
 
@@ -32,42 +42,46 @@ public class ChargingStationTest {
         assertFalse(chargingStation.startCharging(vehicleNotElectric));
 
         // Test for car that is not standing near CS
-        PhysicalVehicle vehicleNotNear = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,25);
-        vehicleNotNear.initPhysics();
-        vehicleNotNear.setPosition(new ArrayRealVector(new double[]{10,5,0}));
-        assertFalse(chargingStation.startCharging(vehicleNotNear));
+        Vehicle vehicleNotNear = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicleNotNear.setVehicleType(VehicleType.ELECTRIC,25);
+        vehicleNotNear.getPhysicalVehicle().setPosition(new ArrayRealVector(new double[]{10,5,0}));
+        assertFalse(chargingStation.startCharging(vehicleNotNear.getPhysicalVehicle()));
 
         // Test for electric car standing near CS
-        PhysicalVehicle vehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,10);
-        assertTrue(chargingStation.startCharging(vehicle));
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle.setVehicleType(VehicleType.ELECTRIC,10);
+        assertTrue(chargingStation.startCharging(vehicle.getPhysicalVehicle()));
         assertTrue(chargingStation.getCarObjects().size()==1);
 
         // Test for occupied CS
-        PhysicalVehicle vehicle2 = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,10);
-        assertFalse(chargingStation.startCharging(vehicle2));
+        Vehicle vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle2.setVehicleType(VehicleType.ELECTRIC,10);
+        assertFalse(chargingStation.startCharging(vehicle2.getPhysicalVehicle()));
     }
 
     @Test
-    public void stopCharging() {
+    public void stopCharging() throws Exception {
         // Create ChargingStation with capacity=1
         ChargingStation chargingStation = new ChargingStation();
 
         // Create and charge vehicle
-        PhysicalVehicle vehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,50);
-        chargingStation.startCharging(vehicle);
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle.setVehicleType(VehicleType.ELECTRIC,50);
+        chargingStation.startCharging(vehicle.getPhysicalVehicle());
 
         // Test for vehicle that is not charged at the CS
-        PhysicalVehicle vehicleNotCharged = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,80);
-        assertFalse(chargingStation.stopCharging(vehicleNotCharged));
+        Vehicle vehicleNotCharged = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicleNotCharged.setVehicleType(VehicleType.ELECTRIC,80);
+        assertFalse(chargingStation.stopCharging(vehicleNotCharged.getPhysicalVehicle()));
 
         // Stop charging
-        assertTrue(chargingStation.stopCharging(vehicle));
+        assertTrue(chargingStation.stopCharging(vehicle.getPhysicalVehicle()));
         assertTrue(chargingStation.getCarObjects().isEmpty());
-        assertFalse(chargingStation.stopCharging(vehicle));
+        assertFalse(chargingStation.stopCharging(vehicle.getPhysicalVehicle()));
     }
 
     @Test
-    public void isOccupied() {
+    public void isOccupied() throws Exception {
         // Create ChargingStation with capacity=1
         ChargingStation chargingStation1 = new ChargingStation();
         // Create ChargingStation with capacity=3
@@ -79,20 +93,23 @@ public class ChargingStationTest {
         assertFalse(chargingStation2.isOccupied());
 
         // Create Vehicle
-        ModelicaPhysicalVehicle vehicle1 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC, 10.0);
-        ModelicaPhysicalVehicle vehicle2 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC, 20.0);
-        ModelicaPhysicalVehicle vehicle3 = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC, 30.0);
+        Vehicle vehicle1 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        vehicle1.setVehicleType(VehicleType.ELECTRIC,10);
+        Vehicle vehicle2 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        vehicle2.setVehicleType(VehicleType.ELECTRIC,20);
+        Vehicle vehicle3 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        vehicle3.setVehicleType(VehicleType.ELECTRIC,30);
 
         // Test ChargingStation occupied for ChargingStation1
-        chargingStation1.startCharging(vehicle1);
+        chargingStation1.startCharging(vehicle1.getPhysicalVehicle());
         assertTrue(chargingStation1.isOccupied());
 
         // Test ChargingStation occupied for ChargingStation2
-        chargingStation2.startCharging(vehicle1);
+        chargingStation2.startCharging(vehicle1.getPhysicalVehicle());
         assertFalse(chargingStation2.isOccupied());
-        chargingStation2.startCharging(vehicle2);
+        chargingStation2.startCharging(vehicle2.getPhysicalVehicle());
         assertFalse(chargingStation2.isOccupied());
-        chargingStation2.startCharging(vehicle3);
+        chargingStation2.startCharging(vehicle3.getPhysicalVehicle());
         assertTrue(chargingStation2.isOccupied());
     }
 

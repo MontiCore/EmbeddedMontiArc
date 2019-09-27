@@ -10,9 +10,13 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.Physical
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObjectType;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.util.FastMath;
+
 import simulation.network.*;
 import simulation.util.Log;
 import simulation.vehicle.Vehicle;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -150,7 +154,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
     @Override
     public synchronized void handleNetworkEvent(NetworkDiscreteEvent event) {
         // Time values for ending transmission sending in sender node
-        long transmissionEnd = NetworkUtils.simTimeWithDelay(NetworkUtils.calcTransmissionTime(event.getEventMessage()));
+        Instant transmissionEnd = NetworkUtils.simTimeWithDelay(NetworkUtils.calcTransmissionTime(event.getEventMessage()));
         long transmissionEndDelay = 0L;
         lastMaxHarqDelay = 0L;
 
@@ -167,7 +171,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
         lastMaxHarqDelay = 0L;
 
         // Schedule end of transmission sending in sender node
-        NetworkDiscreteEvent sendingEnd = new NetworkDiscreteEvent(transmissionEnd + transmissionEndDelay, NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_SEND_END, event.getNetworkNode(), event.getEventMessage());
+        NetworkDiscreteEvent sendingEnd = new NetworkDiscreteEvent(transmissionEnd.plusNanos(transmissionEndDelay), NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_SEND_END, event.getNetworkNode(), event.getEventMessage());
         NetworkSimulator.getInstance().scheduleEvent(sendingEnd);
     }
 
@@ -186,7 +190,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
                 NetworkCellBaseStation senderStation = (NetworkCellBaseStation)(sender.getPhysicalObject());
 
                 if (senderStation.getConnectedBaseStationIDs().contains(otherNode.getPhysicalObject().getId())) {
-                    NetworkDiscreteEvent wiredEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(1500000L), NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_MESSAGE_END, otherNode, message);
+                    NetworkDiscreteEvent wiredEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ofNanos(1500000L)), NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_MESSAGE_END, otherNode, message);
                     NetworkSimulator.getInstance().scheduleEvent(wiredEvent);
                 }
             }
@@ -340,7 +344,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
         long harqDelay = 0L;
         if (packetSuccessProbability < randomChance) {
             if (packetSuccessProbability >= HARQ_LIMIT_ERROR_PROBABILITY) {
-                long baseTime = 2 * (2 * NetworkUtils.randomNextLayerSimulationTime() + NetworkUtils.calcPropagationTime(sender, otherNode) + NetworkUtils.calcTransmissionTime(message));
+                long baseTime = 2 * (2 * NetworkUtils.randomNextLayerSimulationTime().toNanos() + NetworkUtils.calcPropagationTime(sender, otherNode).toNanos() + NetworkUtils.calcTransmissionTime(message).toNanos());
                 double factor = (1.0 / packetSuccessProbability) - 1.0;
                 harqDelay = (long)(factor * baseTime);
                 packetSuccessProbability = 1.0;
@@ -354,8 +358,8 @@ public class ChannelModelCellular extends NetworkChannelModel {
 
         // If transmission successful, create successful transmission at receiver
         if (packetSuccessProbability >= randomChance && distance <= maxClearTransmissionRange) {
-            long transmissionReceiveStart = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode));
-            long transmissionReceiveEnd = NetworkUtils.simTimeWithDelay(harqDelay + NetworkUtils.calcPropagationTime(sender, otherNode) + NetworkUtils.calcTransmissionTime(message));
+            Instant transmissionReceiveStart = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode));
+            Instant transmissionReceiveEnd = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode).plusNanos(harqDelay).plus(NetworkUtils.calcTransmissionTime(message)));
             NetworkDiscreteEvent eventReceiveStart = new NetworkDiscreteEvent(transmissionReceiveStart, NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_MESSAGE_START, otherNode, message);
             NetworkDiscreteEvent eventReceiveEnd = new NetworkDiscreteEvent(transmissionReceiveEnd, NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_MESSAGE_END, otherNode, message);
             NetworkSimulator.getInstance().scheduleEvent(eventReceiveStart);
@@ -363,8 +367,8 @@ public class ChannelModelCellular extends NetworkChannelModel {
 
         // Otherwise if within interference range, create an interference receive at receiver
         } else if (distance <= maxInterferenceRange) {
-            long transmissionReceiveStart = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode));
-            long transmissionReceiveEnd = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode) + NetworkUtils.calcTransmissionTime(message));
+            Instant transmissionReceiveStart = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode));
+            Instant transmissionReceiveEnd = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode).plus(NetworkUtils.calcTransmissionTime(message)));
             NetworkDiscreteEvent eventReceiveStart = new NetworkDiscreteEvent(transmissionReceiveStart, NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_INTERFERENCE_START, otherNode, message);
             NetworkDiscreteEvent eventReceiveEnd = new NetworkDiscreteEvent(transmissionReceiveEnd, NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_INTERFERENCE_END, otherNode, message);
             NetworkSimulator.getInstance().scheduleEvent(eventReceiveStart);

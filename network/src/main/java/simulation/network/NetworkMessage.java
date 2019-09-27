@@ -6,6 +6,8 @@
  */
 package simulation.network;
 
+import java.time.Instant;
+
 /**
  * Class that represents the elements of a network message
  * This includes the message contents, length and header information
@@ -57,11 +59,11 @@ public class NetworkMessage {
     /** Channel ID on which message was sent and received, set by channel objects */
     private int phyChannelId = 0;
 
-    /** Time of creation of the message in simulation, in nanoseconds */
-    private long simCreateTimeNs = 0;
+    /** Time of creation of the message in simulation */
+    private Instant simCreateTime = Instant.EPOCH;
 
-    /** Time of receiving of the message in simulation, in nanoseconds */
-    private long simReceiveTimeNs = -1;
+    /** Time of receiving of the message in simulation */
+    private Instant simReceiveTime = Instant.MIN;
 
     /** Length of entire message in bits */
     private int messageLengthBits = 0;
@@ -355,39 +357,39 @@ public class NetworkMessage {
     }
 
     /**
-     * Function that returns simCreateTimeNs
+     * Function that returns simCreateTime
      *
-     * @return Value for simCreateTimeNs
+     * @return Value for simCreateTime
      */
-    public long getSimCreateTimeNs() {
-        return simCreateTimeNs;
+    public Instant getSimCreateTime() {
+        return simCreateTime;
     }
 
     /**
-     * Function that sets simCreateTimeNs
+     * Function that sets simCreateTime
      *
-     * @param simCreateTimeNs New value for simCreateTimeNs
+     * @param simCreateTime New value for simCreateTime
      */
-    public void setSimCreateTimeNs(long simCreateTimeNs) {
-        this.simCreateTimeNs = simCreateTimeNs;
+    public void setSimCreateTime(Instant simCreateTime) {
+        this.simCreateTime = simCreateTime;
     }
 
     /**
-     * Function that returns simReceiveTimeNs
+     * Function that returns simReceiveTime
      *
-     * @return Value for simReceiveTimeNs
+     * @return Value for simReceiveTime
      */
-    public long getSimReceiveTimeNs() {
-        return simReceiveTimeNs;
+    public Instant getSimReceiveTime() {
+        return simReceiveTime;
     }
 
     /**
-     * Function that sets simReceiveTimeNs
+     * Function that sets simReceiveTime
      *
-     * @param simReceiveTimeNs New value for simReceiveTimeNs
+     * @param simReceiveTime New value for simReceiveTime
      */
-    public void setSimReceiveTimeNs(long simReceiveTimeNs) {
-        this.simReceiveTimeNs = simReceiveTimeNs;
+    public void setSimReceiveTime(Instant simReceiveTime) {
+        this.simReceiveTime = simReceiveTime;
     }
 
     /**
@@ -520,8 +522,8 @@ public class NetworkMessage {
         copiedMessage.phyBitsPerSignal = phyBitsPerSignal;
         copiedMessage.phySlowTransmissionBits = phySlowTransmissionBits;
         copiedMessage.phyChannelId = phyChannelId;
-        copiedMessage.simCreateTimeNs = simCreateTimeNs;
-        copiedMessage.simReceiveTimeNs = simReceiveTimeNs;
+        copiedMessage.simCreateTime = simCreateTime;
+        copiedMessage.simReceiveTime = simReceiveTime;
         copiedMessage.messageLengthBits = messageLengthBits;
         copiedMessage.applicationLengthBits = applicationLengthBits;
         copiedMessage.transportAdditionalBits = transportAdditionalBits;
@@ -573,8 +575,8 @@ public class NetworkMessage {
                 ", phyBitsPerSignal=" + phyBitsPerSignal +
                 ", phySlowTransmissionBits=" + phySlowTransmissionBits +
                 ", phyChannelId=" + phyChannelId +
-                ", simCreateTimeNs=" + simCreateTimeNs +
-                ", simReceiveTimeNs=" + simReceiveTimeNs +
+                ", simCreateTimeNs=" + simCreateTime +
+                ", simReceiveTimeNs=" + simReceiveTime +
                 ", messageLengthBits=" + messageLengthBits +
                 ", applicationLengthBits=" + applicationLengthBits +
                 ", transportAdditionalBits=" + transportAdditionalBits +

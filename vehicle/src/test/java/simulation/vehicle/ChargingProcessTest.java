@@ -19,6 +19,11 @@ import simulation.environment.object.ChargingStation;
 import simulation.environment.util.VehicleType;
 
 import java.util.Optional;
+import simulation.EESimulator.EESimulator;
+import simulation.bus.InstantBus;
+
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * Charging Process Test Class
@@ -28,27 +33,31 @@ import java.util.Optional;
  */
 public class ChargingProcessTest {
 
+    private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
+    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+		InstantBus bus = new InstantBus(eeSimulator);
+		eeVehicleBuilder.createAllSensorsNActuators(bus);
+		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+    }
+
     @Test
-    public void executeLoopIteration() {
+    public void executeLoopIteration() throws Exception {
         ChargingStation chargingStation = new ChargingStation();
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0.1);
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle.setVehicleType(VehicleType.ELECTRIC,0.1);
 
-        vehicle.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
-        //vehicle.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
-        Bus bus = new DataBus();
-        bus.setData(BusEntry.SIMULATION_DELTA_TIME.toString(),33d);
-        vehicle.setControllerBus(Optional.of(bus));
         Battery battery = new Battery (vehicle, 10000, 50);
+        battery.set_local_delta_t(33d);
         vehicle.setBattery(battery);
-        physicalVehicle.executeLoopIteration(10);
+        vehicle.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
 
-        ChargingProcess chargingProcess = new ChargingProcess(physicalVehicle,chargingStation);
+        ChargingProcess chargingProcess = new ChargingProcess(vehicle.getPhysicalVehicle(),chargingStation);
         chargingProcess.startProcess();
         double timeToCharge = vehicle.getBattery().get().timeToCharge(100);
 
         while(timeToCharge >= 0){
-            chargingProcess.executeLoopIteration(33);
+            chargingProcess.executeLoopIteration(Duration.ofMillis(33));
             timeToCharge--;
         }
         assertTrue(vehicle.getBattery().get().getBatteryPercentage() == 100);
@@ -56,11 +65,12 @@ public class ChargingProcessTest {
     }
 
     @Test
-    public void startProcess() {
+    public void startProcess() throws Exception {
         ChargingStation chargingStation = new ChargingStation();
-        PhysicalVehicle vehicle = new ModelicaPhysicalVehicle(VehicleType.ELECTRIC,20);
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle.setVehicleType(VehicleType.ELECTRIC,20);
 
-        ChargingProcess chargingProcess = new ChargingProcess(vehicle,chargingStation);
+        ChargingProcess chargingProcess = new ChargingProcess(vehicle.getPhysicalVehicle(),chargingStation);
         chargingProcess.startProcess();
         assertTrue(vehicle.getBattery().get().getVoltageChargingStation() == 100);
         assertTrue(vehicle.getBattery().get().getAmpereChargingStation() == 1);
@@ -68,18 +78,15 @@ public class ChargingProcessTest {
     }
 
     @Test
-    public void stopProcess() {
+    public void stopProcess() throws Exception {
         ChargingStation chargingStation = new ChargingStation();
-        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle(VehicleType.ELECTRIC,0.1);
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle.setVehicleType(VehicleType.ELECTRIC,0.1);
 
-        vehicle.setController(Optional.of(PowerMockito.mock(FunctionBlockInterface.class)));
-        vehicle.setControllerBus(Optional.of(PowerMockito.mock(Bus.class)));
-
-        physicalVehicle.executeLoopIteration(10);
+        vehicle.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
         assertTrue(vehicle.isGotoCharginstation());
 
-        ChargingProcess chargingProcess = new ChargingProcess(physicalVehicle,chargingStation);
+        ChargingProcess chargingProcess = new ChargingProcess(vehicle.getPhysicalVehicle(),chargingStation);
         chargingProcess.startProcess();
         chargingProcess.stopProcess();
 

@@ -7,6 +7,8 @@
 package simulation.network.channels;
 
 import simulation.network.*;
+
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,8 +37,8 @@ public class ChannelModelSimple extends NetworkChannelModel {
         int channelBandwidthKHz = channelInfo[channelId][1];
 
         // Create events
-        long transmissionReceiveStart = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode));
-        long transmissionReceiveEnd = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode) + NetworkUtils.calcTransmissionTime(message));
+        Instant transmissionReceiveStart = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode));
+        Instant transmissionReceiveEnd = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode).plus(NetworkUtils.calcTransmissionTime(message)));
         NetworkDiscreteEvent eventReceiveStart = new NetworkDiscreteEvent(transmissionReceiveStart, NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_MESSAGE_START, otherNode, message);
         NetworkDiscreteEvent eventReceiveEnd = new NetworkDiscreteEvent(transmissionReceiveEnd, NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_MESSAGE_END, otherNode, message);
         NetworkSimulator.getInstance().scheduleEvent(eventReceiveStart);

@@ -6,11 +6,19 @@
  */
 package simulation.vehicle;
 
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
 import simulation.util.Log;
+
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Class that tests the VehicleActuator class
@@ -29,7 +37,9 @@ public class VehicleActuatorTest {
     @Test
     public void vehicleActuatorNormal() {
         // Test normal case
-        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
 
         Assert.assertEquals(0, actuator.getActuatorValueMin(), 0);
         Assert.assertEquals(10, actuator.getActuatorValueMax(), 0);
@@ -42,7 +52,7 @@ public class VehicleActuatorTest {
         Assert.assertTrue(actuator.getActuatorValueTarget() <= actuator.getActuatorValueMax());
 
         // Test non zero case
-        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 1, 10, 1);
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 1, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
 
         Assert.assertEquals(1, actuator.getActuatorValueMin(), 0);
         Assert.assertEquals(10, actuator.getActuatorValueMax(), 0);
@@ -55,7 +65,7 @@ public class VehicleActuatorTest {
         Assert.assertTrue(actuator.getActuatorValueTarget() <= actuator.getActuatorValueMax());
 
         // Test all negative case
-        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, -10, -1, 1);
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, -10, -1, 1, simulator, Collections.emptyList(), targetsByMessageId);
 
         Assert.assertEquals(-10, actuator.getActuatorValueMin(), 0);
         Assert.assertEquals(-1, actuator.getActuatorValueMax(), 0);
@@ -68,7 +78,7 @@ public class VehicleActuatorTest {
         Assert.assertTrue(actuator.getActuatorValueTarget() <= actuator.getActuatorValueMax());
 
         // Test min == max case
-        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 10, 10, 1);
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 10, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
 
         Assert.assertEquals(10, actuator.getActuatorValueMin(), 0);
         Assert.assertEquals(10, actuator.getActuatorValueMax(), 0);
@@ -83,45 +93,51 @@ public class VehicleActuatorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void vehicleActuatorFailMinMax() {
-        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 10, 0, 1);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 10, 0, 1, simulator, Collections.emptyList(), targetsByMessageId);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void vehicleActuatorFailRate(){
-        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, -1);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, -1, simulator, Collections.emptyList(), targetsByMessageId);
     }
 
     @Test
     public void updateTest(){
         // Test approach target
-        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueTarget(5.0);
         actuator.setActuatorValueCurrent(0.0);
-        actuator.update(1);
+        actuator.update(Instant.EPOCH.plusSeconds(1));
         Assert.assertEquals(5.0, actuator.getActuatorValueTarget(), 0);
         Assert.assertEquals(1.0, actuator.getActuatorValueCurrent(), 0);
 
         // Test reaching target
-        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueTarget(5.0);
         actuator.setActuatorValueCurrent(4.0);
-        actuator.update(1);
+        actuator.update(Instant.EPOCH.plusSeconds(2));
         Assert.assertEquals(5.0, actuator.getActuatorValueTarget(), 0);
         Assert.assertEquals(5.0, actuator.getActuatorValueCurrent(), 0);
 
         // Test not overshooting
-        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueTarget(5.0);
         actuator.setActuatorValueCurrent(4.5);
-        actuator.update(1);
+        actuator.update(Instant.EPOCH.plusSeconds(3));
         Assert.assertEquals(5.0, actuator.getActuatorValueTarget(), 0);
         Assert.assertEquals(5.0, actuator.getActuatorValueCurrent(), 0);
 
         // Test already reached target
-        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueTarget(5.0);
         actuator.setActuatorValueCurrent(5.0);
-        actuator.update(1);
+        actuator.update(Instant.EPOCH.plusSeconds(4));
         Assert.assertEquals(5.0, actuator.getActuatorValueTarget(), 0);
         Assert.assertEquals(5.0, actuator.getActuatorValueCurrent(), 0);
     }
@@ -129,61 +145,73 @@ public class VehicleActuatorTest {
     @Test
     public void setActuatorValueTargetNormal(){
         // Test normal case
-        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueTarget(5.0);
         Assert.assertEquals(5.0, actuator.getActuatorValueTarget(), 0);
 
         // Test setting on max value
-        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueTarget(10.0);
         Assert.assertEquals(10.0, actuator.getActuatorValueTarget(), 0);
 
         // Test setting on min value
-        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueTarget(0.0);
         Assert.assertEquals(0.0, actuator.getActuatorValueTarget(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setActuatorValueTargetOverMax() {
-        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueTarget(11.0);
         Assert.assertTrue(true);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setActuatorValueTargetUnderMin(){
-        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueTarget(-1.0);
     }
 
     @Test
     public void setActuatorValueCurrentNormal(){
         // Test normal case
-        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueCurrent(5.0);
         Assert.assertEquals(5.0, actuator.getActuatorValueCurrent(), 0);
 
         // Test setting on max value
-        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueCurrent(10.0);
         Assert.assertEquals(10.0, actuator.getActuatorValueCurrent(), 0);
 
         // Test setting on min value
-        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueCurrent(0.0);
         Assert.assertEquals(0.0, actuator.getActuatorValueCurrent(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setActuatorValueCurrentOverMax() {
-        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueCurrent(11.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setActuatorValueCurrentUnderMin(){
-        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        EESimulator simulator = new EESimulator(Instant.EPOCH);
+        HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
         actuator.setActuatorValueCurrent(-1.0);
     }
 }

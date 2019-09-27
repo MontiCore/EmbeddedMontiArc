@@ -6,12 +6,17 @@
  */
 package sensors;
 
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
 import simulation.environment.World;
 import simulation.environment.WorldModel;
-import simulation.vehicle.PhysicalVehicle;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by zaman on 2/8/2017.
@@ -19,8 +24,10 @@ import simulation.vehicle.PhysicalVehicle;
 public class WeatherSensor extends AbstractSensor {
     private Double value;
 
-    public WeatherSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public WeatherSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                         HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
+        value = 0.d;
     }
 
     @Override
@@ -37,7 +44,16 @@ public class WeatherSensor extends AbstractSensor {
     }
 
     @Override
+    public int getDataLength() {
+        return 8;
+    }
+
+    @Override
     public BusEntry getType() {
+        return BusEntry.SENSOR_WEATHER;
+    }
+
+    public static BusEntry getSensorType() {
         return BusEntry.SENSOR_WEATHER;
     }
 

@@ -68,12 +68,12 @@ public class WorldModel implements World{
 
     /**
      * Initialise singleton World instance.
-     * 
+     *
      * No map parsing done in this method,
-     * rather only weather settings are 
+     * rather only weather settings are
      * getting parsed and already prepared
      * visualisation container is set and used.
-     * 
+     *
      * @param visContainer - already parsed map
      * @param weatherSettings - weather settings
      * @return singleton World instance
@@ -83,13 +83,13 @@ public class WorldModel implements World{
 
         return ourInstance;
     }
-    
+
     /**
      * Parse only the world map and return
      * its VisualisationEnvironmentContainer.
-     * 
+     *
      * This method does not initialise the singleton World instance!
-     * 
+     *
      * @param pSettings - parser settings
      * @return VisualisationEnvironmentContainer object
      * @throws Exception
@@ -97,18 +97,18 @@ public class WorldModel implements World{
     public static VisualisationEnvironmentContainer prepareWorldMap(ParserSettings pSettings) throws Exception {
     	return new WorldModel(pSettings).getContainer();
     }
-    
-    /** 
-     * Builds controller-container only. 
-     *  
+
+    /**
+     * Builds controller-container only.
+     *
      * Singleton instance is not initialised.
-     *  
-     * @param visContainer - pre-built VisualisationEnvironmentContainer 
-     * @param wSettings - weather settings 
-     * @return ControllerContainer 
-     */ 
-    public static ControllerContainer prepareControllerContainer(VisualisationEnvironmentContainer visContainer, WeatherSettings wSettings) { 
-      return new WorldModel(visContainer, wSettings).getControllerMap(); 
+     *
+     * @param visContainer - pre-built VisualisationEnvironmentContainer
+     * @param wSettings - weather settings
+     * @return ControllerContainer
+     */
+    public static ControllerContainer prepareControllerContainer(VisualisationEnvironmentContainer visContainer, WeatherSettings wSettings) {
+      return new WorldModel(visContainer, wSettings).getControllerMap();
     }
 
     private VisualisationEnvironmentContainer visualisationContainer;
@@ -144,11 +144,11 @@ public class WorldModel implements World{
         constructControllerContainer();
         initPedestrians();
     }
-    
+
     /**
-     * Parse world only, no operations 
+     * Parse world only, no operations
      * on weather settings required.
-     * 
+     *
      * @param pSettings - parser settings
      * @throws Exception
      */
@@ -160,7 +160,7 @@ public class WorldModel implements World{
     /**
      * Parse weather settings only.
      * VisualizationContainer is already prepared.
-     * 
+     *
      * @param visContainer - parsed map
      * @param weatherSettings - weather settings
      */
@@ -328,7 +328,7 @@ public class WorldModel implements World{
 
     @Override
     public Number getDistanceFrontLeftWheelToLeftStreetBorder(IPhysicalVehicle v) {
-        RealVector pos = v.getFrontLeftWheelGeometryPosition();
+    	RealVector pos = v.getFrontLeftWheelGeometryPosition();
 
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
@@ -414,7 +414,7 @@ public class WorldModel implements World{
 
     public boolean isPointOnStreet(RealVector v) {
         return isPointOnStreet(v.getEntry(0), v.getEntry(1), v.getEntry(2));
-    } 
+    }
 
     @Override
     public StreetPavements getSurfaceType(RealVector v) {

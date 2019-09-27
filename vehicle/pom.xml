@@ -7,7 +7,6 @@
     can be found under https://github.com/MontiCore/monticore.
 
 -->
-<!-- (c) https://github.com/MontiCore/monticore -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -34,11 +33,26 @@
             <artifactId>util</artifactId>
             <version>${revision}</version>
         </dependency>
+		
+
+		<!-- Vehicle has dependency to sensors -->
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>sensors</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
         <!-- Vehicle has dependency to environment -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>environment</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- Vehicle has dependency to bus -->
+        <dependency>
+            <groupId>montisim-simulation</groupId>
+            <artifactId>bus</artifactId>
             <version>${revision}</version>
         </dependency>
 
@@ -54,6 +68,13 @@
             <groupId>org.siani.javafmi</groupId>
             <artifactId>fmu-wrapper</artifactId>
             <version>LATEST</version>
+        </dependency>
+
+        <!-- Vehicle has dependency to controller -->
+        <dependency>
+            <groupId>montisim-controller</groupId>
+            <artifactId>navigation</artifactId>
+            <version>${controller.version}</version>
         </dependency>
 
         <dependency>

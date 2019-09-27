@@ -7,7 +7,6 @@
     can be found under https://github.com/MontiCore/monticore.
 
 -->
-<!-- (c) https://github.com/MontiCore/monticore -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -49,13 +48,6 @@
             <version>${revision}</version>
         </dependency>
 
-<!-- Simulator has dependency to sensor -->
-<!--<dependency>-->
-<!--<groupId>montisim-simulation</groupId>-->
-<!--<artifactId>sensors</artifactId>-->
-<!--<version>1.0.4</version>-->
-<!--</dependency>-->
-
         <!-- Simulator has dependency to network -->
         <dependency>
             <groupId>montisim-simulation</groupId>
@@ -69,6 +61,7 @@
             <artifactId>commons</artifactId>
             <version>${commons.version}</version>
         </dependency>
+		
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

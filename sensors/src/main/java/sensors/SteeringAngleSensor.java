@@ -7,11 +7,13 @@
 package sensors;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
-import simulation.vehicle.PhysicalVehicle;
-import simulation.vehicle.Vehicle;
-import simulation.vehicle.VehicleActuator;
-import simulation.vehicle.VehicleActuatorType;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Aklima Zaman on 20-Jan-17.
@@ -20,8 +22,10 @@ public class SteeringAngleSensor extends AbstractSensor {
 
     private Double value;
 
-    public SteeringAngleSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public SteeringAngleSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                               HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator, subscribedMessages,targetsByMessageId);
+        value = 0.d;
     }
 
     @Override
@@ -30,17 +34,23 @@ public class SteeringAngleSensor extends AbstractSensor {
     }
 
     @Override
+    public int getDataLength() {
+        return 8;
+    }
+
+    @Override
     protected void calculateValue() {
-        Vehicle vehicle = getPhysicalVehicle().getSimulationVehicle();
-        VehicleActuator steering = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
-        double tempValue = steering.getActuatorValueCurrent();
         //NormalDistribution normalDistribution = new NormalDistribution(tempValue, .001);
         //tempValue = DoubleMath.mean(normalDistribution.sample(10));
-        this.value = new Double(tempValue);
+        this.value = this.getPhysicalVehicle().getSteeringAngle();
     }
 
     @Override
     public BusEntry getType() {
+        return BusEntry.SENSOR_STEERING;
+    }
+
+    public static BusEntry getSensorType() {
         return BusEntry.SENSOR_STEERING;
     }
 

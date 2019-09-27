@@ -6,17 +6,17 @@
  */
 package simulation.vehicle;
 
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.linear.RealVector;
 import java.util.Optional;
+
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 /**
  * Abstract Builder class for a PhysicalVehicle to avoid complex constructors
  */
 public abstract class PhysicalVehicleBuilder {
-
+	
     protected Optional<RealVector> position = Optional.empty();
     protected Optional<Rotation> rotation = Optional.empty();
     protected Optional<RealVector> velocity = Optional.empty();
@@ -36,10 +36,6 @@ public abstract class PhysicalVehicleBuilder {
 
     //TODO: Add actuators to the build process and to the JSON serialisation
 
-    protected Optional<Optional<Bus>> controllerBus = Optional.empty();
-    protected Optional<Optional<FunctionBlockInterface>> controller = Optional.empty();
-    protected Optional<Optional<FunctionBlockInterface>> navigation = Optional.empty();
-
     protected Optional<String> globalID = Optional.empty();
 
     /**
@@ -54,8 +50,55 @@ public abstract class PhysicalVehicleBuilder {
      *
      * @return PhysicalVehicle that was built with the builder
      */
-    public abstract PhysicalVehicle buildPhysicalVehicle();
+    public PhysicalVehicle buildPhysicalVehicle(Vehicle vehicle) {
+    	PhysicalVehicle physicalVehicle = this.createPhysicalVehicle();
+        
+    	if(this.velocity.isPresent()) {
+    		this.setVelocity(physicalVehicle, velocity.get());
+    	}
+    	if(this.angularVelocity.isPresent()) {
+    		physicalVehicle.setAngularVelocity(this.calculateAngularVelocity(angularVelocity.get()));
+    	}
+    	
+    	physicalVehicle.setVehicle(vehicle);
+    	
+    	this.mass.ifPresent(physicalVehicle::setMass);
 
+        this.width.ifPresent(physicalVehicle::setWidth);
+        this.length.ifPresent(physicalVehicle::setLength);
+        this.height.ifPresent(physicalVehicle::setHeight);
+        
+    	this.wheelRadius.ifPresent(physicalVehicle::setWheelRadius);
+        this.wheelDistLeftRightFrontSide.ifPresent(physicalVehicle::setWheelDistLeftRightFrontSide);
+        this.wheelDistLeftRightBackSide.ifPresent(physicalVehicle::setWheelDistLeftRightBackSide);
+        this.wheelDistToFront.ifPresent(physicalVehicle::setWheelDistToFront);
+        this.wheelDistToBack.ifPresent(physicalVehicle::setWheelDistToBack);
+
+        
+                
+        physicalVehicle.initPhysics();
+        
+        this.globalID.ifPresent(vehicle::setGlobalId);
+        this.position.ifPresent(physicalVehicle::setPosition);
+        this.rotation.ifPresent(rotation -> physicalVehicle.setRotation(new BlockRealMatrix(rotation.getMatrix())));
+    	
+       
+        
+        return physicalVehicle;
+    }
+    
+    /**
+     * Function that returns a uninitialized PhysicalVehicle (freshly created)
+     *
+     * @return PhysicalVehicle that is uninitialized
+     */
+    abstract PhysicalVehicle createPhysicalVehicle();
+    
+    abstract RealVector calculateAngularVelocity(RealVector angularVelocity);
+    
+    abstract void setVelocity(PhysicalVehicle vehicle, RealVector velocity);
+
+    
     public PhysicalVehicleBuilder setPosition(RealVector position){
         this.position = Optional.of(position);
         return this;
@@ -121,20 +164,6 @@ public abstract class PhysicalVehicleBuilder {
         return this;
     }
 
-    public PhysicalVehicleBuilder setControllerBus(Optional<Bus> controllerBus){
-        this.controllerBus = Optional.of(controllerBus);
-        return this;
-    }
-
-    public PhysicalVehicleBuilder setController(Optional<FunctionBlockInterface> controller) {
-        this.controller = Optional.of(controller);
-        return this;
-    }
-
-    public PhysicalVehicleBuilder setNavigation(Optional<FunctionBlockInterface> navigation) {
-        this.navigation = Optional.of(navigation);
-        return this;
-    }
 
     public PhysicalVehicleBuilder setGlobalId(String id) {
         this.globalID = Optional.of(id);

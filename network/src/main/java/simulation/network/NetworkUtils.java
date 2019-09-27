@@ -7,6 +7,9 @@
 package simulation.network;
 
 import simulation.util.MathHelper;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,8 +28,8 @@ public final class NetworkUtils {
      *
      * @param delay Delay to be added to current simulation time
      */
-    public static long simTimeWithDelay(long delay) {
-        return NetworkSimulator.getInstance().getSimulationTimeNs() + delay;
+    public static Instant simTimeWithDelay(Duration delay) {
+        return NetworkSimulator.getInstance().getSimulationTime().plusNanos(delay.toNanos());
     }
 
     /**
@@ -34,13 +37,13 @@ public final class NetworkUtils {
      *
      * @param message Message for which time should be computed
      */
-    public static long calcTransmissionTime(NetworkMessage message) {
+    public static Duration calcTransmissionTime(NetworkMessage message) {
         int slowDataRate = NetworkSimulator.getInstance().getNetworkSettings().getSlowDataRateKBits() * 1000;
         int slowDataLength = message.getPhySlowTransmissionBits();
         int dataRate = message.getPhyDataRateKBits() * 1000;
         int dataLength = message.getMessageLengthBits() - slowDataLength;
         long result = (long)(1000000000.0 * (((double)(slowDataLength) / (double)(slowDataRate)) + ((double)(dataLength) / (double)(dataRate))));
-        return result;
+        return Duration.ofNanos(result);
     }
 
     /**
@@ -49,10 +52,10 @@ public final class NetworkUtils {
      * @param node1 First communicating node
      * @param node2 Second communicating node
      */
-    public static long calcPropagationTime(NetworkNode node1, NetworkNode node2) {
+    public static Duration calcPropagationTime(NetworkNode node1, NetworkNode node2) {
         double distance = node1.getPhysicalObject().getGeometryPosition().getDistance(node2.getPhysicalObject().getGeometryPosition());
         long result = (long)(1000000000.0 * (distance / (double)(NetworkSettings.SPEED_OF_LIGHT)));
-        return result;
+        return Duration.ofNanos(result);
     }
 
     /**
@@ -178,8 +181,8 @@ public final class NetworkUtils {
      *
      * @return Long value for random delay of layer
      */
-    public static long randomNextLayerSimulationTime() {
-        long delay = MathHelper.randomLong(NetworkSimulator.getInstance().getNetworkSettings().getMinimumLocalDelayPerLayer(), NetworkSimulator.getInstance().getNetworkSettings().getMaximumLocalDelayPerLayer());
-        return delay;
+    public static Duration randomNextLayerSimulationTime() {
+        long delayNS = MathHelper.randomLong(NetworkSimulator.getInstance().getNetworkSettings().getMinimumLocalDelayPerLayer().toNanos(), NetworkSimulator.getInstance().getNetworkSettings().getMaximumLocalDelayPerLayer().toNanos());
+        return Duration.ofNanos(delayNS);
     }
 }

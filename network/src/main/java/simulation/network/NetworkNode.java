@@ -12,6 +12,8 @@ import simulation.util.Log;
 import simulation.util.MathHelper;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -228,8 +230,10 @@ public class NetworkNode implements NetworkEventHandler {
         }
 
         // Compute random start time for tasks with network settings
-        long startTime = MathHelper.randomLong(NetworkSimulator.getInstance().getNetworkSettings().getMinTaskStartTimeNs(), NetworkSimulator.getInstance().getNetworkSettings().getMaxTaskStartTimeNs());
-
+        Duration diffTime = Duration.between(NetworkSimulator.getInstance().getNetworkSettings().getMinTaskStartTime(), NetworkSimulator.getInstance().getNetworkSettings().getMaxTaskStartTime());
+        long randomOffset = MathHelper.randomLong(0 , diffTime.toNanos());
+        Instant startTime = NetworkSimulator.getInstance().getNetworkSettings().getMinTaskStartTime().plusNanos(randomOffset);
+         	
         // Create event for initial tasks with random start time and empty message
         NetworkMessage message = new NetworkMessage();
         NetworkDiscreteEvent event = new NetworkDiscreteEvent(startTime, NetworkDiscreteEventId.NETWORK_EVENT_ID_RANDOM_START_INITIALIZE, this, message);

@@ -7,9 +7,15 @@
 package sensors;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.IPhysicalVehicle;
 import sensors.abstractsensors.AbstractSensor;
 import org.apache.commons.math3.linear.RealVector;
-import simulation.vehicle.PhysicalVehicle;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Aklima Zaman on 18-Dec-16.
@@ -19,13 +25,20 @@ public class SpeedSensor extends AbstractSensor {
 
     private Double value;
 
-    public SpeedSensor(PhysicalVehicle physicalVehicle) {
-        super(physicalVehicle);
+    public SpeedSensor(IPhysicalVehicle physicalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
+                       HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+        super(physicalVehicle, simulator,subscribedMessages,targetsByMessageId);
+        value = 0.d;
     }
 
     @Override
     public Double getValue() {
         return this.value;
+    }
+
+    @Override
+    public int getDataLength() {
+        return 8;
     }
 
     /**
@@ -46,6 +59,10 @@ public class SpeedSensor extends AbstractSensor {
 
     @Override
     public BusEntry getType() {
+        return BusEntry.SENSOR_VELOCITY;
+    }
+
+    public static BusEntry getSensorType() {
         return BusEntry.SENSOR_VELOCITY;
     }
 

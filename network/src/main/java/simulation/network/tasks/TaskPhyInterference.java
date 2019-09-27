@@ -8,6 +8,8 @@ package simulation.network.tasks;
 
 import simulation.network.*;
 import simulation.util.Log;
+
+import java.time.Duration;
 import java.util.*;
 import static simulation.network.NetworkDiscreteEventId.*;
 
@@ -60,7 +62,7 @@ public class TaskPhyInterference extends NetworkTask {
                         Log.warning("TaskPhyInterference: Already existing sending value map entry is increased, should not happen! NetworkNode: " + networkNode);
                     } else {
                         sendingMap.put(channelID, 1);
-                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
+                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
                         NetworkSimulator.getInstance().scheduleEvent(newEvent);
                     }
 
@@ -150,7 +152,7 @@ public class TaskPhyInterference extends NetworkTask {
                             sendingMap.put(channelID, count - 1);
                         } else {
                             sendingMap.remove(channelID);
-                            NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
+                            NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
                             NetworkSimulator.getInstance().scheduleEvent(newEvent);
                         }
                     }
@@ -169,7 +171,7 @@ public class TaskPhyInterference extends NetworkTask {
                     interruptedReceiveChannels.add(channelID);
                 } else {
                     receivingMap.put(channelID, 1);
-                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
+                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
                     NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 }
 
@@ -189,7 +191,7 @@ public class TaskPhyInterference extends NetworkTask {
                         receivingMap.put(channelID, count - 1);
                     } else {
                         receivingMap.remove(channelID);
-                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
+                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
                         NetworkSimulator.getInstance().scheduleEvent(newEvent);
                         interruptedReceiveChannels.remove(channelID);
                     }
@@ -208,7 +210,7 @@ public class TaskPhyInterference extends NetworkTask {
                     interruptedReceiveChannels.add(channelID);
                 } else {
                     receivingMap.put(channelID, 1);
-                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
+                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
                     NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 }
 
@@ -242,7 +244,7 @@ public class TaskPhyInterference extends NetworkTask {
                         receiveSuccess = false;
                     } else {
                         receivingMap.remove(channelID);
-                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
+                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_CHECK_CHANNEL_STATUS, networkNode, event.getEventMessage());
                         NetworkSimulator.getInstance().scheduleEvent(newEvent);
 
                         if (interruptedReceiveChannels.contains(channelID)) {
@@ -256,7 +258,7 @@ public class TaskPhyInterference extends NetworkTask {
                     NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(NetworkUtils.randomNextLayerSimulationTime()), NetworkDiscreteEventId.NETWORK_EVENT_ID_LINK_RECEIVE, networkNode, event.getEventMessage());
                     NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 } else {
-                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(0), NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_INTERRUPTION_DETECTED, networkNode, event.getEventMessage());
+                    NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ZERO), NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_INTERRUPTION_DETECTED, networkNode, event.getEventMessage());
                     NetworkSimulator.getInstance().scheduleEvent(newEvent);
                 }
 
