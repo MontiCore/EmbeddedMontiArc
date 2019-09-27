@@ -1,22 +1,8 @@
 /**
+ * (c) https://github.com/MontiCore/monticore
  *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt;
@@ -48,8 +34,8 @@ public class MqttConnectionSymbolCreator implements TagSymbolCreator {
      * at http://www.regexplanet.com/advanced/java/index.html
      */
 
-	// \s*\{\s*topic\s*=\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\s*(s*,\s*msgField\s*=\s*([a-z|A-Z][a-z|A-Z|1-9|_|\.|::|\(|\)]*)\s*)?\s*\}\s*
-    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*topic\\s*=\\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\\s*(s*,\\s*msgField\\s*=\\s*([a-z|A-Z][a-z|A-Z|1-9|_|\\.|::|\\(|\\)]*)\\s*)?\\s*\\}\\s*");
+	// \s*\{\s*topic\s*=\s*([a-zA-Z~0-9_\/]*)\s*\}\s*
+    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*topic\\s*=\\s*([a-zA-Z~0-9_\\/]*)\\s*\\}\\s*");
 
     public static Scope getGlobalScope(final Scope scope) {
         Scope s = scope;
@@ -125,7 +111,7 @@ public class MqttConnectionSymbolCreator implements TagSymbolCreator {
                     .forEachOrdered(m ->
                             taggedSymbols.stream()
                                     .forEachOrdered(s -> {
-                                    	MqttConnectionSymbol tmpSymbol = new MqttConnectionSymbol(m.group(1), m.group(3)); // topicName, msgField
+                                    	MqttConnectionSymbol tmpSymbol = new MqttConnectionSymbol(m.group(1)); // topicName, msgField
                                         tagging.addTag(s, tmpSymbol);
                                         if (s.isKindOf(EMAPortSymbol.KIND)) {
                                             EMAPortSymbol p = (EMAPortSymbol) s;
@@ -145,7 +131,7 @@ public class MqttConnectionSymbolCreator implements TagSymbolCreator {
         }
         Log.error(String.format("'%s' does not match the specified regex pattern '%s'",
                 regex,
-                "{topic = ({name}, {type}), msgField = {msgField}}"));
+                "{topic = {name}}"));
         return null;
     }
 

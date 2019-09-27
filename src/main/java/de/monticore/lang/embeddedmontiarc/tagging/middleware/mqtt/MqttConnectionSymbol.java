@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt;
 
@@ -18,22 +24,14 @@ public class MqttConnectionSymbol extends MiddlewareSymbol {
         this(KIND, topicName);
     }
 
-    public MqttConnectionSymbol(MqttConnectionKind kind, String topicName) {
-        super(kind, Optional.ofNullable(topicName), Optional.empty());
-    }
-
-    public MqttConnectionSymbol(String topicName, String msgField) {
-        this(KIND, topicName, msgField);
-    }
-
-    protected MqttConnectionSymbol(MqttConnectionKind kind, String topicName, String msgField) {
-        super(kind, Optional.ofNullable(topicName), Optional.ofNullable(msgField));
+    protected MqttConnectionSymbol(MqttConnectionKind kind, String topicName) {
+        super(kind, Optional.ofNullable(topicName));
     }
 
     @Override
     public String toString() {
-        return String.format("MqttConnection = %s, %s",
-                getTopicName(), getMsgField());
+        return String.format("MqttConnection = %s",
+                getTopicName());
     }
 
     public Optional<String> getTopicName() {
@@ -42,14 +40,6 @@ public class MqttConnectionSymbol extends MiddlewareSymbol {
 
     public void setTopicName(String topicName) {
         this.values.set(0, Optional.ofNullable(topicName));
-    }
-
-    public Optional<String> getMsgField() {
-        return getValue(1);
-    }
-
-    public void setMsgField(String msgField) {
-        this.values.set(1, Optional.ofNullable(msgField));
     }
 
     public static class MqttConnectionKind extends TagKind {
