@@ -34,8 +34,8 @@ public class MqttConnectionSymbolCreator implements TagSymbolCreator {
      * at http://www.regexplanet.com/advanced/java/index.html
      */
 
-	// \s*\{\s*topic\s*=\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\s*(s*,\s*msgField\s*=\s*([a-z|A-Z][a-z|A-Z|1-9|_|\.|::|\(|\)]*)\s*)?\s*\}\s*
-    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*topic\\s*=\\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\\s*(s*,\\s*msgField\\s*=\\s*([a-z|A-Z][a-z|A-Z|1-9|_|\\.|::|\\(|\\)]*)\\s*)?\\s*\\}\\s*");
+	// \s*\{\s*topic\s*=\s*([a-zA-Z~0-9_\/]*)\s*\}\s*
+    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*topic\\s*=\\s*([a-zA-Z~0-9_\\/]*)\\s*\\}\\s*");
 
     public static Scope getGlobalScope(final Scope scope) {
         Scope s = scope;
@@ -111,7 +111,7 @@ public class MqttConnectionSymbolCreator implements TagSymbolCreator {
                     .forEachOrdered(m ->
                             taggedSymbols.stream()
                                     .forEachOrdered(s -> {
-                                    	MqttConnectionSymbol tmpSymbol = new MqttConnectionSymbol(m.group(1), m.group(3)); // topicName, msgField
+                                    	MqttConnectionSymbol tmpSymbol = new MqttConnectionSymbol(m.group(1)); // topicName, msgField
                                         tagging.addTag(s, tmpSymbol);
                                         if (s.isKindOf(EMAPortSymbol.KIND)) {
                                             EMAPortSymbol p = (EMAPortSymbol) s;
@@ -131,7 +131,7 @@ public class MqttConnectionSymbolCreator implements TagSymbolCreator {
         }
         Log.error(String.format("'%s' does not match the specified regex pattern '%s'",
                 regex,
-                "{topic = {name}, msgField = {msgField}}"));
+                "{topic = {name}}"));
         return null;
     }
 

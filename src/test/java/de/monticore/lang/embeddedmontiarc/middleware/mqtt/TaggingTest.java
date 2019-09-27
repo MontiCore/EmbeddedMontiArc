@@ -39,7 +39,6 @@ public class TaggingTest extends AbstractTaggingResolverTest {
 
         MqttConnectionSymbol tag = (MqttConnectionSymbol) tags.iterator().next();
         assertEquals(tag.getTopicName().get(), "/echoQ");
-        assertEquals(tag.getMsgField().get(), "dataQ");
 
         //mqttInN
         EMAPortSymbol mqttInN = component.getPortInstance("mqttInN").orElse(null);
@@ -50,7 +49,6 @@ public class TaggingTest extends AbstractTaggingResolverTest {
 
         tag = (MqttConnectionSymbol) tags.iterator().next();
         assertEquals(tag.getTopicName().get(), "/echoN");
-        assertEquals(tag.getMsgField().get(), "dataN");
 
         //mqttInZ
         EMAPortSymbol mqttInZ = component.getPortInstance("mqttInZ").orElse(null);
@@ -61,7 +59,6 @@ public class TaggingTest extends AbstractTaggingResolverTest {
 
         tag = (MqttConnectionSymbol) tags.iterator().next();
         assertEquals(tag.getTopicName().get(), "/echoZ");
-        assertEquals(tag.getMsgField().get(), "dataZ");
 
         //mqttInB
         EMAPortSymbol mqttInB = component.getPortInstance("mqttInB").orElse(null);
@@ -72,7 +69,6 @@ public class TaggingTest extends AbstractTaggingResolverTest {
 
         tag = (MqttConnectionSymbol) tags.iterator().next();
         assertEquals(tag.getTopicName().get(), "/echoB");
-        assertEquals(tag.getMsgField().get(), "true");
 
         //mqttOutQ
         EMAPortSymbol mqttOutQ = component.getPortInstance("mqttOutQ").orElse(null);
@@ -123,32 +119,6 @@ public class TaggingTest extends AbstractTaggingResolverTest {
 
         tag = (MqttConnectionSymbol) tags.iterator().next();
         assertEquals(tag.getTopicName(), Optional.empty());
-        assertEquals(tag.getMsgField(), Optional.empty());
-
-    }
-
-    @Test
-    public void testMqttConnectionParsingOptionalMsgField() {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
-
-        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("middleware.mqtt.optionalMsgField", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(component);
-
-        EMAPortSymbol in1 = component.getPortInstance("in1").orElse(null);
-        EMAPortSymbol out1 = component.getPortInstance("out1").orElse(null);
-
-        assertNotNull(in1);
-        assertNotNull(out1);
-
-        MqttConnectionSymbol tagIn1 = (MqttConnectionSymbol) symtab.getTags(in1, MqttConnectionSymbol.KIND).stream().findFirst().orElse(null);
-        MqttConnectionSymbol tagOut1 = (MqttConnectionSymbol) symtab.getTags(out1, MqttConnectionSymbol.KIND).stream().findFirst().orElse(null);
-
-        assertNotNull(tagIn1);
-        assertNotNull(tagOut1);
-
-        assertFalse(tagIn1.getMsgField().isPresent());
-        assertTrue(tagOut1.getMsgField().isPresent());
-        assertTrue(tagOut1.getMsgField().get().equals("msgField1"));
 
     }
 }
