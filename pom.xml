@@ -22,7 +22,7 @@
 
         <embedded-montiarc.version>0.1.16-SNAPSHOT</embedded-montiarc.version>
         <Embedded-montiarc-math-generator.version>0.1.14-SNAPSHOT</Embedded-montiarc-math-generator.version>
-        <Embedded-montiarc-math-roscpp-generator.version>0.1.7-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
+        <Embedded-montiarc-math-roscpp-generator.version>0.1.8-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
         <EMADL2CPP.version>0.3.6-SNAPSHOT</EMADL2CPP.version>
         <EMADL.version>0.2.10-SNAPSHOT</EMADL.version>
         <embedded-montiarc-component-clustering.version>0.0.2-SNAPSHOT</embedded-montiarc-component-clustering.version>
