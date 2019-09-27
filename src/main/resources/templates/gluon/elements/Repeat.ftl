@@ -1,7 +1,8 @@
-<#assign repeats = element.repeats?c>
 <#assign axis = element.axis?c>
-<#if mode == "FORWARD_FUNCTION">
-        ${element.name} = mx.symbol.repeat(repeats=${repeats}, axis=${axis})
-<#elseif mode == "PYTHON_INLINE">
-                    ${element.name} = mx.symbol.repeat(repeats=${repeats}, axis=${axis})
+<#assign repeats = element.repeats?c>
+<#if mode == "ARCHITECTURE_DEFINITION">
+            self.${element.name} = Repeat(repeats=${repeats}, axis=${axis})
+            <#include "OutputShape.ftl">
+<#elseif mode == "FORWARD_FUNCTION">
+        ${element.name} = self.${element.name}(${element.inputs[0]})
 </#if>

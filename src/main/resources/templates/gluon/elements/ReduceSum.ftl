@@ -1,6 +1,7 @@
 <#assign axis = element.axis?c>
-<#if mode == "FORWARD_FUNCTION">
-        ${element.name} = mx.symbol.sum(data = ${element.inputs[0]}, axis=${axis})
-<#elseif mode == "PYTHON_INLINE">
-                    ${element.name} = mx.symbol.sum(data = ${element.inputs[0]}, axis=${axis})
+<#if mode == "ARCHITECTURE_DEFINITION">
+            self.${element.name} = ReduceSum(axis=${axis})
+            <#include "OutputShape.ftl">
+<#elseif mode == "FORWARD_FUNCTION">
+        ${element.name} = self.${element.name}(${element.inputs[0]})
 </#if>

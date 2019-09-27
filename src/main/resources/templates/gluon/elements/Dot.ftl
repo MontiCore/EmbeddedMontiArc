@@ -1,5 +1,6 @@
-<#if mode == "FORWARD_FUNCTION">
-        ${element.name} = mx.symbol.dot(${element.inputs[0]}, ${element.inputs[1]})
-<#elseif mode == "PYTHON_INLINE">
-                    ${element.name} = mx.symbol.dot(${element.inputs[0]}, ${element.inputs[1]})
+<#if mode == "ARCHITECTURE_DEFINITION">
+            self.${element.name} = Dot()
+            <#include "OutputShape.ftl">
+<#elseif mode == "FORWARD_FUNCTION">
+        ${element.name} = self.${element.name}(${tc.join(element.inputs, ", ")})
 </#if>
