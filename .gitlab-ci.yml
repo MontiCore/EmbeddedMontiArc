@@ -28,6 +28,7 @@ masterJobWindows:
   stage: windows
   script:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
+  - mvn package sonar:sonar -s settings.xml
   tags:
   - Windows10
   only:

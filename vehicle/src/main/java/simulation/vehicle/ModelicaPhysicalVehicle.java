@@ -879,4 +879,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
                 " , physicalVehicleInitialised: " + physicalVehicleInitialised +
                 " , simulationVehicle: " + this.getVehicle();
     }
+
+    @Override
+    public void setCharging(boolean isCharging) {
+        //TODO
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    }
 }

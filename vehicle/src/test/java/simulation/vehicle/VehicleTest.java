@@ -6,6 +6,8 @@
  */
 package simulation.vehicle;
 
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.Bus;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.PhysicalObject;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.AfterClass;
@@ -19,12 +21,14 @@ import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EESimulator;
 import simulation.bus.InstantBus;
 import simulation.environment.object.House;
+import simulation.environment.util.VehicleType;
 import simulation.util.Log;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * JUnit test for the Vehicle class
@@ -71,5 +75,50 @@ public class VehicleTest {
 		InstantBus bus = new InstantBus(eeSimulator);
 		eeVehicleBuilder.createAllSensorsNActuators(bus);
 		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+    }
+
+    @Test
+    public void AutopilotBehaviorTest() throws Exception{
+        /*       Masspoint       */
+
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle.setVehicleType(VehicleType.ELECTRIC,0);
+        Vehicle vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle2.setVehicleType(VehicleType.ELECTRIC,0.1);
+        Vehicle vehicle3 = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+        vehicle3.setVehicleType(VehicleType.ELECTRIC,30);
+
+        vehicle.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
+        vehicle2.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
+        vehicle3.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
+
+
+        assertTrue(vehicle.batteryProblem);
+        assertTrue(vehicle2.batteryProblem);
+        assertFalse(vehicle3.batteryProblem);
+        assertTrue(vehicle.isGotoCharginstation());
+        assertTrue(vehicle2.isGotoCharginstation());
+        assertFalse(vehicle3.isGotoCharginstation());
+
+        /*       Modelica       */
+
+        Vehicle vehicle4 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        vehicle4.setVehicleType(VehicleType.ELECTRIC,0);
+        Vehicle vehicle5 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        vehicle5.setVehicleType(VehicleType.ELECTRIC,0.1);
+        Vehicle vehicle6 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        vehicle6.setVehicleType(VehicleType.ELECTRIC,30);
+
+        
+        vehicle4.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
+        vehicle5.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
+        vehicle6.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
+
+        assertTrue(vehicle4.batteryProblem);
+        assertTrue(vehicle5.batteryProblem);
+        assertFalse(vehicle6.batteryProblem);
+        assertTrue(vehicle4.isGotoCharginstation());
+        assertTrue(vehicle5.isGotoCharginstation());
+        assertFalse(vehicle6.isGotoCharginstation());
     }
 }

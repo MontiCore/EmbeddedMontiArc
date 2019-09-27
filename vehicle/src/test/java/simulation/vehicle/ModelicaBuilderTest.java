@@ -138,6 +138,7 @@ public class ModelicaBuilderTest {
         double expectedWheelDistLeftRightBackSide = 2;
         double expectedWheelDistToFront = 2.75;
         double expectedWheelDistToBack = 4.25;
+        String expectedGlobalId = "global-id";
 
         // Calculate remaining expected values
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
@@ -160,6 +161,7 @@ public class ModelicaBuilderTest {
         builder.setWheelDistLeftRightBackSide(expectedWheelDistLeftRightBackSide);
         builder.setWheelDistToFront(expectedWheelDistToFront);
         builder.setWheelDistToBack(expectedWheelDistToBack);
+        builder.setGlobalId(expectedGlobalId);
         Vehicle vehicle = createStandardVehicle(builder);
         ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
 
@@ -177,6 +179,7 @@ public class ModelicaBuilderTest {
         Assert.assertEquals(expectedWheelDistLeftRightBackSide, physicalVehicle.getWheelDistLeftRightBackSide(), 0);
         Assert.assertEquals(expectedWheelDistToFront, physicalVehicle.getWheelDistToFront(), 0);
         Assert.assertEquals(expectedWheelDistToBack, physicalVehicle.getWheelDistToBack(), 0);
+        Assert.assertEquals(expectedGlobalId, vehicle.getGlobalId());
 
         // Test internal values
         Assert.assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());

@@ -8,6 +8,13 @@ package simulation.vehicle;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.*;
 import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.linear.ArrayRealVector;
+
+import simulation.environment.object.ChargingStation;
+import simulation.environment.util.Chargeable;
+import simulation.environment.util.ChargingStationNavigator;
+import simulation.environment.util.IBattery;
+import simulation.environment.util.VehicleType;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -18,7 +25,7 @@ import java.util.Optional;
 /**
  * Class that represents all physical properties of a vehicle and performs physics computations
  */
-public abstract class PhysicalVehicle implements IPhysicalVehicle, SimulationLoopExecutable {
+public abstract class PhysicalVehicle implements IPhysicalVehicle, SimulationLoopExecutable, Chargeable {
 	
     /** Length of the vehicle in meters */
 	protected static final double VEHICLE_DEFAULT_LENGTH = 4.236423828125;
@@ -72,6 +79,15 @@ public abstract class PhysicalVehicle implements IPhysicalVehicle, SimulationLoo
     /** The vehicle that this physicalVehicle belongs to */
     private Vehicle vehicle;
 
+    /** PowerType of the Vehicle */
+    protected VehicleType vehicleType = VehicleType.NONE;
+
+    /** Is the Vehicle Chargeable */
+    protected boolean isChargeable = false;
+
+    /** IsCharging flag */
+    protected boolean isCharging;
+
 
     /**
      * Constructor for a physical vehicle that is standing at its position
@@ -105,6 +121,70 @@ public abstract class PhysicalVehicle implements IPhysicalVehicle, SimulationLoo
         this.setWheelDistToFront(VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT);
         this.setWheelDistToBack(VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK);
 		 
+    }
+
+
+    public void setVehicleType(VehicleType vehicleType){
+        this.vehicleType = vehicleType;
+        if (vehicleType == VehicleType.ELECTRIC) {
+            this.isChargeable = true;
+        }
+    }
+
+    /**
+     * @return VehicleType the type of the Vehicle
+     */
+    @Override
+    public VehicleType getVehicleType(){
+        return this.vehicleType;
+    }
+
+    /**
+     * @return true if vehicle is charging
+     */
+    @Override
+    public boolean isCharging() {
+        return isCharging;
+    }
+
+    /**
+     * Function to set isCharging flag
+     */
+    public void isCharging(boolean isCharging){
+        this.isCharging = isCharging;
+    }
+
+    /**
+     * @return Battery of the vehicle
+     */
+    @Override
+    public Optional<IBattery> getBattery(){
+        return vehicle.getBattery();
+    }
+
+    /**
+     * @return true if vehicle is parked at charging station
+     */
+    @Override
+    public boolean isParkedChargingStation(ChargingStation station){
+        return vehicle.isParkedChargingStation(station);
+    }
+
+    /**
+     * Function that allows vehicle to move on after charging
+     */
+    @Override
+    public void onRechargeReady(){
+        vehicle.onRechargeReady();
+        isCharging = false;
+    }
+
+    /**
+     * @return true if vehicle is chargeable
+     */
+    @Override
+    public boolean isChargeable() {
+        return isChargeable;
     }
 
     /**

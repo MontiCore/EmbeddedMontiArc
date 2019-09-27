@@ -18,7 +18,10 @@ import de.topobyte.osm4j.core.resolve.EntityNotFoundException;
 import de.topobyte.osm4j.xml.dynsax.OsmXmlReader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealVector;
 import org.w3c.dom.Document;
+import simulation.environment.object.ChargingStation;
+import simulation.environment.osm.Dto.OSMNode;
 import simulation.environment.visualisationadapter.implementation.*;
 import simulation.environment.visualisationadapter.interfaces.*;
 
@@ -48,8 +51,10 @@ public class Parser2D implements IParser {
     private HashSet<EnvStreet> streets;
     private HashSet<Building> buildings;
     private HashSet<Waterway> waterway;
+    private HashSet<ChargingStation> chargingStations;
 
     private String filePath;
+    private String mapName;
 
     private InputStream in;
 
@@ -66,6 +71,7 @@ public class Parser2D implements IParser {
     public Parser2D(ParserSettings pSettings) {
         this.in = pSettings.in;
         this.z = pSettings.z;
+        this.mapName = pSettings.mapName;
         init();
     }
 
@@ -73,6 +79,7 @@ public class Parser2D implements IParser {
         this.streets = new HashSet<>();
         this.buildings = new HashSet<>();
         this.waterway = new HashSet<>();
+        this.chargingStations = new HashSet<>();
     }
 
     /**
@@ -203,6 +210,8 @@ public class Parser2D implements IParser {
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
+
+        parseChargingStations();
         buildContainer();
         addSomeRandomTrees();
         generateZCoordinates();
@@ -222,6 +231,33 @@ public class Parser2D implements IParser {
         this.containerM.setHeightMapMinMax(ZCoordinateGenerator.getHeightMapMinPoint(), ZCoordinateGenerator.getHeightMapMaxPoint());
 
         addStreetSigns();
+    }
+
+    private void parseChargingStations() {
+        // Each charging station in OSM are represented by a node with tag amenity=charging_station
+        // We iterate over all nodes in the map to find charging stations
+        for (OsmNode node: dataSet.getNodes().valueCollection()){
+            Map<String, String> tags = OsmModelUtil.getTagsAsMap(node);
+            String amenity = tags.get("amenity");
+
+            if (amenity != null && amenity.equals("charging_station")){
+                String capacity = tags.get("capacity");
+                if (capacity == null) {
+                    capacity = "1";
+                }
+                String name = tags.get("name");
+                if (name == null) {
+                    name = "chargingStation";
+                }
+
+                this.chargingStations.add(new ChargingStation(
+                        node.getId(),
+                        new Node2D(node.getLongitude(), node.getLatitude(), 0, node.getId()),
+                        Integer.parseInt(capacity),
+                        name)
+                );
+            }
+        }
     }
 
     private void addStreetSigns() {
@@ -246,7 +282,7 @@ public class Parser2D implements IParser {
 
         this.container = new simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D(
                 new Bounds2D(this.dataSet.getBounds().getLeft(), this.dataSet.getBounds().getRight(), this.dataSet.getBounds().getBottom(), this.dataSet.getBounds().getTop(), 0, 0),
-                this.streets, this.buildings, this.waterway);
+                this.streets, this.buildings, this.waterway, this.chargingStations);
 
     }
 
@@ -272,7 +308,6 @@ public class Parser2D implements IParser {
             String surface = tags.get("surface");
 
 
-
         //  System.out.println("PARSE OBJECTS FUNCTION  "+highway);
           //  System.out.println(waterway);
 
@@ -292,9 +327,7 @@ public class Parser2D implements IParser {
 
             if (waterway != null) {
                 constructWaterway( way, waterway);
-
             }
-
         }
     }
 
@@ -369,6 +402,10 @@ public class Parser2D implements IParser {
         return this.waterway;
     }
 
+    public Collection<ChargingStation> getChargingStations() {
+        return this.chargingStations;
+    }
+
     public InMemoryMapDataSet getDataSet() {
         return this.dataSet;
     }
@@ -424,5 +461,9 @@ public class Parser2D implements IParser {
         } else {
             return EnvStreet.StreetPavements.PAVED;
         }
+    }
+
+    public String getMapName(){
+        return this.mapName;
     }
 }

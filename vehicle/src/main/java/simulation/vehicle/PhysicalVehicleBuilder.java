@@ -36,6 +36,8 @@ public abstract class PhysicalVehicleBuilder {
 
     //TODO: Add actuators to the build process and to the JSON serialisation
 
+    protected Optional<String> globalID = Optional.empty();
+
     /**
      * Constructor
      */
@@ -71,9 +73,12 @@ public abstract class PhysicalVehicleBuilder {
         this.wheelDistLeftRightBackSide.ifPresent(physicalVehicle::setWheelDistLeftRightBackSide);
         this.wheelDistToFront.ifPresent(physicalVehicle::setWheelDistToFront);
         this.wheelDistToBack.ifPresent(physicalVehicle::setWheelDistToBack);
+
+        
                 
         physicalVehicle.initPhysics();
         
+        this.globalID.ifPresent(vehicle::setGlobalId);
         this.position.ifPresent(physicalVehicle::setPosition);
         this.rotation.ifPresent(rotation -> physicalVehicle.setRotation(new BlockRealMatrix(rotation.getMatrix())));
     	
@@ -156,6 +161,12 @@ public abstract class PhysicalVehicleBuilder {
 
     public  PhysicalVehicleBuilder setWheelDistToBack(double wheelDistToBack){
         this.wheelDistToBack = Optional.of(wheelDistToBack);
+        return this;
+    }
+
+
+    public PhysicalVehicleBuilder setGlobalId(String id) {
+        this.globalID = Optional.of(id);
         return this;
     }
 }

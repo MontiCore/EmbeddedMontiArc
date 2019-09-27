@@ -25,7 +25,9 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 	@Override
 	PhysicalVehicle createPhysicalVehicle() {
 		return new ModelicaPhysicalVehicle();
-	}
+    }
+    
+    
 
 	@Override
 	RealVector calculateAngularVelocity(RealVector angularVelocity) {

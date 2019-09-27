@@ -122,6 +122,7 @@ public class MassPointBuilderTest {
         double expectedWheelDistLeftRightBackSide = 2;
         double expectedWheelDistToFront = 2.75;
         double expectedWheelDistToBack = 4.25;
+        String expectedGlobalId = "global-id";
 
         // Calculate remaining expected values
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
@@ -144,6 +145,8 @@ public class MassPointBuilderTest {
         builder.setWheelDistLeftRightBackSide(expectedWheelDistLeftRightBackSide);
         builder.setWheelDistToFront(expectedWheelDistToFront);
         builder.setWheelDistToBack(expectedWheelDistToBack);
+        builder.setGlobalId(expectedGlobalId);
+        
 
 		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);

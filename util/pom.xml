@@ -7,6 +7,15 @@
     can be found under https://github.com/MontiCore/monticore.
 
 -->
+<!--
+
+
+    /* (c) https://github.com/MontiCore/monticore */
+
+    The license generally applicable for this project
+    can be found under https://github.com/MontiCore/monticore.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -40,6 +49,24 @@
             <artifactId>commons</artifactId>
             <version>${commons.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.9</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--        <dependency>-->
+<!--            <groupId>montisim-simulation</groupId>-->
+<!--            <artifactId>environment</artifactId>-->
+<!--            <version>2.0.0</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>montisim</groupId>-->
+<!--            <artifactId>server</artifactId>-->
+<!--            <version>1.0.8</version>-->
+<!--        </dependency>-->
 
     </dependencies>
 

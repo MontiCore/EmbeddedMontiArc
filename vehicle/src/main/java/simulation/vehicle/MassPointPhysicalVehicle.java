@@ -1608,4 +1608,9 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 				+ (physicalVehicleInitialised ? " , massPoints[2]: " + massPoints[2] : "")
 				+ (physicalVehicleInitialised ? " , massPoints[3]: " + massPoints[3] : "");
 	}
+	@Override
+    public void setCharging(boolean isCharging) {
+        //TODO
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    }
 }

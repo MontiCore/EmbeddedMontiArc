@@ -7,6 +7,7 @@
 package simulation.environment.osm;
 
 import java.io.InputStream;
+import java.util.Optional;
 
 /**
  * Created by lukas on 16.02.17.
@@ -20,6 +21,7 @@ public class ParserSettings {
 
     public InputStream in;
     public ZCoordinates z;
+    public String mapName = "";
 
     public ParserSettings(String in, ZCoordinates z) {
         this.in = getClass().getResourceAsStream(in);
@@ -30,5 +32,11 @@ public class ParserSettings {
     public ParserSettings(InputStream in, ZCoordinates z) {
         this.in = in;
         this.z = z;
+    }
+
+    public ParserSettings(InputStream in, ZCoordinates z, String mapName) {
+        this.in = in;
+        this.z = z;
+        this.mapName = mapName;
     }
 }

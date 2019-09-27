@@ -11,9 +11,19 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.map.IControllerNode;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation.SimulationLoopExecutable;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.controller.navigation.navigationBlock.NavigationBlock;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Geometry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point3D;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import sensors.abstractsensors.AbstractSensor;
 import simulation.EESimulator.NavigationBlockAsEEComponent;
+import simulation.environment.WorldModel;
+import simulation.environment.object.ChargingStation;
+import simulation.environment.osm.IntersectionFinder;
+import simulation.environment.util.ChargingStationNavigator;
+import simulation.environment.util.IBattery;
+import simulation.environment.util.VehicleType;
+import static de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry.*;
 
 import java.awt.*;
 import java.io.File;
@@ -91,6 +101,19 @@ public class Vehicle implements SimulationLoopExecutable {
 
     /** Internal Attributes */
 
+    /** Manage the battery state of the vehicle */
+    private Optional<IBattery> battery;
+
+    /** Battery Stuff */
+    /** Flag go to Chargingstation */
+    private boolean gotoCharginstation = false;
+
+    RealVector lastdestinationrealvector = null;
+    /** Last Destination */
+    private IControllerNode lastdestination = null;
+
+    Boolean batteryProblem = false;
+
     /** Camera image from visualization */
     private Optional<Image> cameraImage;
 
@@ -98,6 +121,10 @@ public class Vehicle implements SimulationLoopExecutable {
     private double maxTemporaryAllowedVelocity;
 
     private Instant lastSimulationTime = Instant.EPOCH;
+
+    
+    /** For server to keep track of vehicles between sectors */
+    protected String globalId;
 
 
     /**
@@ -158,6 +185,13 @@ public class Vehicle implements SimulationLoopExecutable {
     	initVehicle();
     }
 
+    public void setVehicleType(VehicleType vehicleType, double fuellPercentage) throws Exception {
+        physicalVehicle.setVehicleType(vehicleType);
+        if (vehicleType == VehicleType.ELECTRIC) {
+            setBattery(new Battery(this, 3000000, fuellPercentage));
+        }
+    }
+
     /**
      * Common initialisation process
      */
@@ -170,6 +204,7 @@ public class Vehicle implements SimulationLoopExecutable {
         this.cameraImage = Optional.empty();
         // When created, maximum temporary allowed velocity is not limited
         this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
+        this.battery = Optional.empty();
 	}
 
     /**
@@ -197,8 +232,121 @@ public class Vehicle implements SimulationLoopExecutable {
     @Override
     public void executeLoopIteration(Duration timeDiff) {
         this.lastSimulationTime = this.lastSimulationTime.plus(timeDiff);
+        this.updateBattery();
         this.eeVehicle.executeLoopIteration(this.lastSimulationTime);
+        this.batteryOverride();
         this.physicalVehicle.setCollision(false);
+    }
+
+    public void batteryOverride(){
+        ChargingStation nearestCS = ChargingStationNavigator.getNearestCS();
+        if (nearestCS != null){
+            if (isParkedChargingStation(nearestCS)) {
+                stopVehicle();
+            }
+        }
+        if(lastdestinationrealvector != null) {
+            if (isAtLocation(lastdestinationrealvector)) {
+                stopVehicle();
+            }
+        }
+
+        //      battery discharging failed, cannot accelerate the vehicle
+        //      set either motor OR throttle to zero, based on type of the car
+            if (batteryProblem) {
+            if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+                VehicleActuator motor = eeVehicle.getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).get();
+                motor.setActuatorValueTarget(0.0);
+            } else {
+                VehicleActuator throttle = eeVehicle.getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE).get();
+                throttle.setActuatorValueTarget(0.0);
+            }
+        }
+    }
+
+    private void stopVehicle() {
+        if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+            VehicleActuator motor = eeVehicle.getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).get();
+            motor.setActuatorValueTarget(0.0);
+            VehicleActuator brakesBackLeft = eeVehicle.getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).get();
+            VehicleActuator brakesBackRight = eeVehicle.getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).get();
+            VehicleActuator brakesFrontLeft = eeVehicle.getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).get();
+            VehicleActuator brakesFrontRight = eeVehicle.getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).get();
+            brakesBackLeft.setActuatorValueTarget(brakesBackLeft.getActuatorValueMax());
+            brakesBackRight.setActuatorValueTarget(brakesBackRight.getActuatorValueMax());
+            brakesFrontLeft.setActuatorValueTarget(brakesFrontLeft.getActuatorValueMax());
+            brakesFrontRight.setActuatorValueTarget(brakesFrontRight.getActuatorValueMax());
+        } else {
+            VehicleActuator throttle = eeVehicle.getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE).get();
+            throttle.setActuatorValueTarget(0.0);
+            VehicleActuator brakes = eeVehicle.getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE).get();
+            brakes.setActuatorValueTarget(brakes.getActuatorValueMax());
+        }
+    }
+
+    public void updateBattery(){
+        batteryProblem = false;
+
+        if (!battery.isPresent()) return;
+        
+        IBattery bat = battery.get();
+
+        
+        // check if connection to ChargingStation is established
+        if (bat.getChargingStationConnectionStatus() == true ) {
+            
+            // dummy placeholders for ChargingStation specifications
+            double ChargingStationVoltage = 100;
+            double ChargingStationAmpere = 1;
+            
+            // depending on the ChargingStation implementation, 
+            // they also can invoke this function themselves
+            //      here, for demonstration purposes, we set them to some dummy values
+            bat.setVoltageChargingStation(ChargingStationVoltage);
+            bat.setAmpereChargingStation(ChargingStationAmpere);
+            // leave charging initiation to ChargingStation, not to the Vehicle
+            //bat.charge();
+        }
+        
+        // check vehicle type,
+        //      set consumption calculation based on the vehicle type
+        if (physicalVehicle instanceof MassPointPhysicalVehicle)
+            bat.setConsumptionMethod(IBattery.ConsumptionMethod.CONSUMPTION_MASS_VELOCITY);
+        else
+            bat.setConsumptionMethod(IBattery.ConsumptionMethod.CONSUMPTION_THROTTLE_GEAR);
+        
+        try {
+            bat.discharge();
+        }
+        catch (IllegalArgumentException e) {
+            // this flag would cause motor/throttle to be updated to zero,
+            //      exactly at the end of this function
+            batteryProblem = true;
+        } 
+
+        /**
+         * Check Battery state and move to the next Chargingstation if needed
+         */
+        if (!gotoCharginstation && battery.get().getBatteryPercentage() <= 20) {
+            gotoCharginstation = true;
+            try {
+                List<Double> x1;
+                List<Double> y1;
+                x1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_X).get().getValue());
+                y1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_Y).get().getValue());
+                lastdestination = new ControllerNodeImpl(new Point3D( x1.get(x1.size()-1), y1.get(y1.size()-1), 0), ChargingStationNavigator.getNearestOsmNodeFrom(
+                        new ArrayRealVector(new double[]{x1.get(x1.size()-1), y1.get(y1.size()-1),0})));
+                lastdestinationrealvector = new ArrayRealVector(new double[]{x1.get(x1.size()-1), y1.get(y1.size()-1)});
+                long nearestcharg = ChargingStationNavigator.getNearestChargingStation(
+                        getGlobalId(),
+                        ChargingStationNavigator.getNearestOsmNodeFrom(this.physicalVehicle.getPosition())
+                );
+                RealVector point3d = ChargingStationNavigator.getPositionOfOsmNode(nearestcharg);
+                navigateTo(new ControllerNodeImpl(Geometry.realVector2Point3D(point3d), nearestcharg));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 	public EEVehicle getEEVehicle() {
@@ -210,7 +358,7 @@ public class Vehicle implements SimulationLoopExecutable {
 	}
 
 	public boolean isInitialized() {
-			return this.physicalVehicle.getPhysicalVehicleInitialised();
+		return this.physicalVehicle.getPhysicalVehicleInitialised();
 	}
 
     /**
@@ -229,6 +377,55 @@ public class Vehicle implements SimulationLoopExecutable {
      */
     public void setStatusLogger(StatusLogger statusLogger) {
         this.statusLogger = statusLogger;
+    }
+
+
+    /**
+     * Set battery
+     * @param battery
+     */
+    public void setBattery(IBattery battery) {
+        this.battery = Optional.of(battery);
+    }
+
+    /**
+     * @return Battery of the vehicle
+     */
+    public Optional<IBattery> getBattery() {
+        return battery;
+    }
+
+
+    public boolean isParkedChargingStation(ChargingStation station) {
+        if(gotoCharginstation){
+            RealVector location2D = new ArrayRealVector(new double[]{station.getLocation().getEntry(0),station.getLocation().getEntry(1)});
+            RealVector vehiclePos2D = new ArrayRealVector(new double[]{physicalVehicle.getPosition().getEntry(0),physicalVehicle.getPosition().getEntry(1)});
+            return location2D.getDistance(vehiclePos2D) < station.getStationRadius();
+        }
+        return false;
+    }
+
+    public boolean isAtLocation(RealVector location2D){
+        RealVector vehiclePos2D = new ArrayRealVector(new double[]{physicalVehicle.getPosition().getEntry(0),physicalVehicle.getPosition().getEntry(1)});
+        return location2D.getDistance(vehiclePos2D) < 2.0;
+    }
+    /**
+     * @return true if it's an EV
+     */
+    public boolean isElectricVehicle(){
+        return this.battery.isPresent();
+    }
+
+    /**
+     * Can be called from the Chargingstation
+     */
+    public void onRechargeReady(){
+        gotoCharginstation = false;
+        navigateTo(lastdestination);
+    }
+
+    public boolean isGotoCharginstation() {
+        return gotoCharginstation;
     }
 
     /**
@@ -438,5 +635,18 @@ public class Vehicle implements SimulationLoopExecutable {
                 " , maxTemporaryAllowedVelocity: " + maxTemporaryAllowedVelocity +
                 " , navigation:" + navigation +
                 " , cameraImage:" + cameraImage;
+    }
+
+    /**
+     * Getter and setter for globalId
+     *
+     * @return
+     */
+    public String getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(String globalId) {
+        this.globalId = globalId;
     }
 }
