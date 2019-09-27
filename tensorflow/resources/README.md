@@ -30,11 +30,13 @@ To achive these steps a number of csv files are generated and can be reviewed.
 | 5 | -l | Set this flag in order to generate hdf5 file containing only images represeting straight driving | 
 | 6 | -s float | Set this flag in order to generate hdf5 file containing  in which the specified float specifies the percentage of how much the straigth driving the data contains. The rest of the data is curve driving. Make sure that the percentage does not exceed 0.5. | 
 | 7 | -n int | specifies number of training images used (default all images in center)| 
+| 8 | -t | use this flag to generate testing data scince it has different format than the training data | 
 
 
 The -i flag is mandatory scince it specifies the path to the folder containg the images (needs to be named center) and the steering csv (needs to be named steering.csv).
 In addition exactly one of the following flags has to be set (-a,-c,-l,-s)
-Optional: set the -n flag to specify how many images should be taken.  
+Optional: set the -n flag to specify how many images should be taken. 
+Use the -i and -t flag for generating testing data from images based on the udacity_ch02 challange dataset. The reason is that they changed the structure of this specific dataset. 
 Note: Image resolution is hard coded to 120/180.
 Change:  PIXEL_WIDTH  = int(640/4) and PIXEL_HEIGHT = int(480/4) in the script to change that. 
 
