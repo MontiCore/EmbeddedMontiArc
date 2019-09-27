@@ -114,3 +114,5 @@ subscribe to topic **/hello** with `mosquitto_sub -t /hello` and publish a messa
 Mqtt only needs an Topic to publish or subscribe to `{ topic = {topic} }`
 
 For example `{topic = /echo}` for topic "/echo"
+
+[Here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/EmbeddedMontiArc/tree/master/src/test/resources/middleware/mqtt) an Example for a Mqtt Tagging File
