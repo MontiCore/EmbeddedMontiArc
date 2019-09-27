@@ -184,7 +184,8 @@ struct HardwareEmulator {
     bool resolve_autopilot_os( EmulatorManager &manager );
     
     void exec( ulong micro_delta );
-    
+    void exec_Event(ulong unused_time);
+    ulong time_execute();
     
     //nullptr if not found
     Port *get_port( const char *port_name );

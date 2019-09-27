@@ -9,16 +9,16 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>montisim</groupId>
     <artifactId>hardware_emulator</artifactId>
-    <version>1.0.1</version>
-    
-    
+    <version>1.0.2</version>
+
+
     <properties>
-        <commons.version>1.0.10</commons.version>
-        
-        
+        <commons.version>1.0.11</commons.version>
+
+
         <wagon.provider.version>2.6</wagon.provider.version>
         <!-- .. Plugins ....................................................... -->
         <compiler.plugin>3.3</compiler.plugin>
@@ -28,8 +28,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-    
-    
+
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -37,19 +37,19 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
             <version>${commons.version}</version>
         </dependency>
     </dependencies>
-    
+
     <!-- == PROJECT BUILD SETTINGS =========================================== -->
-    
+
     <build>
         <plugins>
-            
+
             <!-- Add the option to generate the JNI headers directly to the CPP project -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -64,7 +64,7 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            
+
             <!-- Run the tests where the test/resources are located -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -76,7 +76,7 @@
                     <argLine>-Xmx2048m -XX:MaxPermSize=1024m</argLine>
                 </configuration>
             </plugin>
-            
+
             <!-- Source Jar Configuration -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -130,8 +130,8 @@
                     </execution>
                 </executions>
             </plugin>
-            
-            
+
+
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.1</version>
@@ -155,9 +155,9 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <!-- == DISTRIBUTION ==================================================== -->
-    
+
     <distributionManagement>
         <repository>
             <id>se-nexus</id>
@@ -168,5 +168,5 @@
             <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-    
+
 </project>
