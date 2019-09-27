@@ -6,6 +6,8 @@
  */
 package de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation;
 
+import java.time.Instant;
+
 /**
  * Interface for a discrete event in a discrete event simulation
  */
@@ -16,7 +18,7 @@ public abstract class DiscreteEvent {
      *
      * @return Time of the event
      */
-    public abstract long getEventTime();
+    public abstract Instant getEventTime();
 
     /**
      * Function that returns a numeric identifier for the event

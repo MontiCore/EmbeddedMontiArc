@@ -6,6 +6,8 @@
  */
 package de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,11 +19,11 @@ import java.util.Optional;
  */
 public abstract class DiscreteEventSimulator < DiscreteEventType extends DiscreteEvent > extends SimulationLoopNotifiable {
 
-    /** Current total time in the discrete event simulation measured in nanoseconds */
-    private long simulationTimeNs = 0;
+    /** Current total time in the discrete event simulation */
+    private Instant simulationTime = Instant.EPOCH;
 
-    /** Last amount of time by which the simulation was advanced measured in nanoseconds */
-    private long lastSimulationDeltaTimeNs = 0;
+    /** Last amount of time by which the simulation was advanced */
+    private Duration lastSimulationDeltaTime = Duration.ZERO;
 
     /** List of discrete events */
     private final List<DiscreteEventType> eventList = Collections.synchronizedList(new LinkedList<>());
@@ -44,8 +46,8 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
         }
 
         // Throw exception if event is in the past
-        if (event.getEventTime() < simulationTimeNs) {
-            throw new IllegalArgumentException("scheduleEvent: Event is timed in the past! Event: " + event + ", simulationTimeNs: " + simulationTimeNs);
+        if (event.getEventTime().isBefore(simulationTime)) {
+            throw new IllegalArgumentException("scheduleEvent: Event is timed in the past! Event: " + event + ", simulationTime: " + simulationTime);
         }
 
         // Find correct position in list to add event
@@ -54,7 +56,7 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
         synchronized (eventList) {
             for (DiscreteEventType e : eventList) {
                 // Stop increasing index if event in list is really later than new event
-                if (e.getEventTime() > event.getEventTime()) {
+                if (e.getEventTime().isAfter(event.getEventTime())) {
                     break;
                 }
 
@@ -79,7 +81,7 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
      *
      * @param deltaTime Delta simulation time in nanoseconds
      */
-    private void advanceSimulationTime(long deltaTime) {
+    private void advanceSimulationTime(Duration deltaTime) {
         // Inform notifiable objects
         synchronized (discreteEventSimulationNotifiableList) {
             for (DiscreteEventSimulationNotifiable notifiable : discreteEventSimulationNotifiableList) {
@@ -88,19 +90,21 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
         }
 
         // Store last delta time value
-        lastSimulationDeltaTimeNs = deltaTime;
+        lastSimulationDeltaTime = deltaTime;
 
         // Store initial time
-        long initialSimulationTimeNs = simulationTimeNs;
+        Instant initialSimulationTime = Instant.from(simulationTime);
+
+
 
         // Handle all events that are timed before new simulation time
-        long targetTime = initialSimulationTimeNs + deltaTime;
+        Instant targetTime = initialSimulationTime.plusNanos(deltaTime.toNanos());
         Optional<DiscreteEventType> event = getNextEventInTime(targetTime);
         while (event.isPresent()) {
             eventList.remove(0);
 
             // Advance time step by step and process event
-            simulationTimeNs = event.get().getEventTime();
+            simulationTime = event.get().getEventTime();
 
             // Inform notifiable objects
             synchronized (discreteEventSimulationNotifiableList) {
@@ -122,7 +126,7 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
         }
 
         // Set simulation time to the end of time advancement
-        simulationTimeNs = initialSimulationTimeNs + deltaTime;
+        simulationTime = targetTime;
 
         // Inform notifiable objects
         synchronized (discreteEventSimulationNotifiableList) {
@@ -139,14 +143,13 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
      * @param finalTime Final time before which events should be returned
      * @return Next event ready for event handling
      */
-    private Optional<DiscreteEventType> getNextEventInTime(long finalTime) {
+    private Optional<DiscreteEventType> getNextEventInTime(Instant finalTime) {
         Optional<DiscreteEventType> result = Optional.empty();
-
         if (!eventList.isEmpty()) {
             DiscreteEventType event = eventList.get(0);
 
             // Check if time of first event matches
-            if (event.getEventTime() <= finalTime) {
+            if (!event.getEventTime().isAfter(finalTime)) {
                 result = Optional.of(event);
             }
         }
@@ -169,21 +172,21 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
     }
 
     /**
-     * Get the current total discrete simulation time in nanoseconds
+     * Get the current total discrete simulation time
      *
-     * @return Current total discrete simulation time in nanoseconds
+     * @return Current total discrete simulation time
      */
-    public long getSimulationTimeNs() {
-        return simulationTimeNs;
+    public Instant getSimulationTime() {
+        return simulationTime;
     }
 
     /**
-     * Set the current total discrete simulation time in nanoseconds
+     * Set the current total discrete simulation time
      *
-     * @param simulationTimeNs New total discrete simulation time in nanoseconds
+     * @param simulationTime New total discrete simulation time
      */
-    protected void setSimulationTimeNs(long simulationTimeNs) {
-        this.simulationTimeNs = simulationTimeNs;
+    protected void setSimulationTime(Instant simulationTime) {
+        this.simulationTime = simulationTime;
     }
 
     /**
@@ -224,12 +227,12 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
     }
 
     /**
-     * Function that returns lastSimulationDeltaTimeNs
+     * Function that returns lastSimulationDeltaTime
      *
-     * @return Value for lastSimulationDeltaTimeNs
+     * @return Value for lastSimulationDeltaTime
      */
-    public long getLastSimulationDeltaTimeNs() {
-        return lastSimulationDeltaTimeNs;
+    public Duration getLastSimulationDeltaTime() {
+        return lastSimulationDeltaTime;
     }
 
     /**
@@ -240,10 +243,10 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
      * @param deltaTime Delta simulation time in milliseconds
      */
     @Override
-    public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
-        advanceSimulationTime(deltaTime * 1000000L);
+    public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime, Duration deltaTime) {
+        advanceSimulationTime(deltaTime);
     }
-    
+
     /**
      * Improved toString() method to get more information
      *
@@ -252,7 +255,7 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
     @Override
     public String toString() {
         return "DiscreteEventSimulator{" +
-                "simulationTimeNs=" + simulationTimeNs +
+                "simulationTimeNs=" + simulationTime +
                 ", eventList=" + eventList +
                 ", discreteEventSimulationNotifiableList=" + discreteEventSimulationNotifiableList +
                 '}';
@@ -262,17 +265,17 @@ public abstract class DiscreteEventSimulator < DiscreteEventType extends Discret
         Allow overriding of these methods from SimulationLoopNotifiable by sub-classes.
     */
     @Override
-    public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {}
+    public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, Instant totalTime, Duration deltaTime) {}
 
     @Override
-    public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
+    public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime, Duration deltaTime) {}
 
     @Override
-    public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
+    public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, Instant totalTime, Duration deltaTime) {}
 
     @Override
     public void simulationStarted(List<SimulationLoopExecutable> simulationObjects) {}
 
     @Override
-    public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {}
+    public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, Instant totalTime) {}
 }

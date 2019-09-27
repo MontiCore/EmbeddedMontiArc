@@ -6,6 +6,8 @@
  */
 package de.rwth.monticore.EmbeddedMontiArc.simulators.commons.simulation;
 
+import java.time.Duration;
+
 /**
  * Interface for objects that want to get notified by a discrete event simulation about specified actions
  */
@@ -41,15 +43,15 @@ public interface DiscreteEventSimulationNotifiable <T extends DiscreteEvent> {
     /**
      * Function that is called after the simulation time is advanced
      *
-     * @param deltaTime Delta simulation time in nanoseconds
+     * @param deltaTime Delta simulation time
      */
-    public void onAdvanceSimulationTime(long deltaTime);
+    public void onAdvanceSimulationTime(Duration deltaTime);
 
     /**
      * Function that is called after the simulation time is advanced
      *
-     * @param deltaTime Delta simulation time in nanoseconds
+     * @param deltaTime Delta simulation time
      */
-    public void afterAdvanceSimulationTime(long deltaTime);
+    public void afterAdvanceSimulationTime(Duration deltaTime);
 
 }
