@@ -111,6 +111,6 @@ subscribe to topic **/hello** with `mosquitto_sub -t /hello` and publish a messa
 `mosquitto_pub -t /hello -m "hi, how are you?"`
 
 ## Tagging for Mqtt
-Mqtt only needs an Topic to publish or subscribe to '{ topic = {topic} }'
+Mqtt only needs an Topic to publish or subscribe to `{ topic = {topic} }`
 
-For example '{topic = /echo}' for topic "/echo"
+For example `{topic = /echo}` for topic "/echo"
