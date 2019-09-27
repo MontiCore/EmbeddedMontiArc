@@ -66,7 +66,7 @@ Open terminal and run
 `apt install build-essential gcc make cmake git`
 
 #### Installing PahoMQTT C library
-run 
+run
 ```bash
 git clone https://github.com/eclipse/paho.mqtt.c
 cd paho.mqtt.c
@@ -81,6 +81,7 @@ cd paho.mqtt.cpp
 cmake -Bbuild -H. -DPAHO_WITH_SSL=OFF
 sudo cmake --build build/ --target install
 ```
+[Documentation](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2mqtt/-/archive/master/emam2mqtt-master.zip) of the PahoMqtt C++ library
 #### Set environment variables for MQTT (optional)
 additionaly, you can set the environment variables for MQTT libs and includes directory by modifying the environment file on your system
 ```bash
@@ -106,6 +107,5 @@ run the demo afterwards with `./mqtt_demo`
 additionaly, you can also use `mosquitto_pub` and `mosquitto_sub` commands from mosquitto broker to subscribe/publish messages
 
 for example:
-subscribe to topic **/hello** with `mosquitto_sub -t /hello` and publish a message to this topic with 
+subscribe to topic **/hello** with `mosquitto_sub -t /hello` and publish a message to this topic with
 `mosquitto_pub -t /hello -m "hi, how are you?"`
-

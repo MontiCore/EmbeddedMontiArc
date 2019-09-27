@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttConnectionSymbol;
 import de.monticore.lang.monticar.generator.mqtt.template.MqttAdapterModel;
 import de.monticore.lang.monticar.generator.mqtt.template.MqttTemplates;
+import de.monticore.lang.monticar.generator.mqtt.helper.FilesHelper;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -23,73 +24,40 @@ public class GeneratorMqtt
         this.generationTargetPath = generationTargetPath.endsWith("/") ? generationTargetPath : generationTargetPath + "/";
     }
 
-	public List<File> generateMqttAdapter(EMAComponentInstanceSymbol component)
-    {
-		List<File> files = new ArrayList<>();
-		List<String> contents = new ArrayList<String>();
-		List<FileWriter> frs = new ArrayList<FileWriter>();
+	public List<File> generateMqttAdapter(EMAComponentInstanceSymbol component) {
+		List<FilesHelper> generateList = new ArrayList<>();
+		List<File> res = new ArrayList<>();
 
 		// Create and fill model
 		MqttAdapterModel model = new MqttAdapterModel(component.getFullName());
 
 		model.addPorts(component.getPortInstanceList());
 
-		component.getPortArrays().forEach(port -> {
-		    port.setMiddlewareSymbol(new MqttConnectionSymbol(port.getFullName()));
-        });
-
 		//Generate files and write to project
-		contents.add(MqttTemplates.generateMqttAdapterH(model));
-		files.add(new File(generationTargetPath+"MqttAdapter_"+model.getEscapedCompName()+".h"));
-		contents.add(MqttTemplates.generateMqttAdapterCPP(model));
-		files.add(new File(generationTargetPath+"MqttAdapter_"+model.getEscapedCompName()+".cpp"));
-		contents.add(MqttTemplates.generateMqttCallbackQH(model));
-		files.add(new File(generationTargetPath+"CallbackQ.hpp"));
-		contents.add(MqttTemplates.generateMqttCallbackQCPP(model));
-		files.add(new File(generationTargetPath+"CallbackQ.cpp"));
-		contents.add(MqttTemplates.generateMqttCallbackNH(model));
-		files.add(new File(generationTargetPath+"CallbackN.hpp"));
-		contents.add(MqttTemplates.generateMqttCallbackNCPP(model));
-		files.add(new File(generationTargetPath+"CallbackN.cpp"));
-		contents.add(MqttTemplates.generateMqttCallbackZH(model));
-		files.add(new File(generationTargetPath+"CallbackZ.hpp"));
-		contents.add(MqttTemplates.generateMqttCallbackZCPP(model));
-		files.add(new File(generationTargetPath+"CallbackZ.cpp"));
-		contents.add(MqttTemplates.generateMqttCallbackBH(model));
-		files.add(new File(generationTargetPath+"CallbackB.hpp"));
-		contents.add(MqttTemplates.generateMqttCallbackBCPP(model));
-		files.add(new File(generationTargetPath+"CallbackB.cpp"));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"MqttAdapter_"+model.getEscapedCompName()+".h"), MqttTemplates.generateMqttAdapterH(model)));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"MqttAdapter_"+model.getEscapedCompName()+".cpp"), MqttTemplates.generateMqttAdapterCPP(model)));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"CallbackQ.hpp"), MqttTemplates.generateMqttCallbackQH(model)));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"CallbackQ.cpp"), MqttTemplates.generateMqttCallbackQCPP(model)));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"CallbackN.hpp"), MqttTemplates.generateMqttCallbackNH(model)));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"CallbackN.cpp"), MqttTemplates.generateMqttCallbackNCPP(model)));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"CallbackZ.hpp"), MqttTemplates.generateMqttCallbackZH(model)));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"CallbackZ.cpp"), MqttTemplates.generateMqttCallbackZCPP(model)));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"CallbackB.hpp"), MqttTemplates.generateMqttCallbackBH(model)));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"CallbackB.cpp"), MqttTemplates.generateMqttCallbackBCPP(model)));
 
 		//If file directory does not exist, create it so files can be created
 		File directory = new File(generationTargetPath);
 		directory.mkdirs();
 
+    for (FilesHelper filesHelper : generateList) {
+				createFile(filesHelper.getFile(), filesHelper.getContent());
+				res.add(filesHelper.getFile());
+		}
+    res.add(generateCMake(component));
+    res.add(generateFindMqtt(component));
 
-        try {
-        	int counter = 0;
-        	for (File file : files)
-        	{
-        		frs.add(new FileWriter(file));
-        		frs.get(counter).write(contents.get(counter));
-        		counter++;
-        	}
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            //Close resources
-            try {
-                for (FileWriter fr : frs)
-                	fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        files.add(generateCMake(component));
-        files.add(generateFindMqtt(component));
-
-    	return files;
-    }
+    return res;
+  }
 
 	public File generateCMake(EMAComponentInstanceSymbol component)
     {
@@ -115,12 +83,12 @@ public class GeneratorMqtt
 
 		//Generate files and write to project
 		String content = MqttTemplates.generateMqttFindMqtt(model);
-		
+
 		File directory = new File(generationTargetPath+"modules/");
 		directory.mkdirs();
-		
+
 		File file = new File(generationTargetPath+"modules/FindMQTT.cmake");
-		
+
         createFile(file, content);
 
     	return file;
