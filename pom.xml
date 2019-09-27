@@ -12,11 +12,11 @@
 
     <groupId>montisim</groupId>
     <artifactId>hardware_emulator</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 
 
     <properties>
-        <commons.version>1.0.10</commons.version>
+        <commons.version>1.0.11</commons.version>
 
 
         <wagon.provider.version>2.6</wagon.provider.version>
