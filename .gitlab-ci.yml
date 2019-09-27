@@ -47,8 +47,6 @@ linux_build:
   - g++ --version
   
   script:
-  - chmod +x scripts/unix/build_dependencies.sh
-  - chmod +x scripts/unix/build_emulator.sh
   - scripts/unix/build_dependencies.sh
   - scripts/unix/build_emulator.sh
   artifacts:
@@ -70,16 +68,9 @@ linux_maven_master:
   stage: maven
   image: maven:3-jdk-8
   before_script:
-  - apt update
-  - apt --assume-yes install libxext6
-  - apt --assume-yes install libxrender1
-  - apt --assume-yes install libxtst6
+  - scripts/unix/before_script.sh
   script: 
-  - "JAWT_LIB=$(find / -name libjawt.so -print -quit)"
-  - "echo JAWT_LIB: $JAWT_LIB"
-  - "JAWT_FOLDER=$(dirname ${JAWT_LIB})"
-  - "echo JAWT_FOLDER: $JAWT_FOLDER"
-  - "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${JAWT_FOLDER}"
+  - scripts/unix/awt_locate.sh
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
   only:
   - master
@@ -90,16 +81,9 @@ linux_maven_branch:
   stage: maven
   image: maven:3-jdk-8
   before_script:
-  - apt update
-  - apt --assume-yes install libxext6
-  - apt --assume-yes install libxrender1
-  - apt --assume-yes install libxtst6
+  - scripts/unix/before_script.sh
   script: 
-  - "JAWT_LIB=$(find / -name libjawt.so -print -quit)"
-  - "echo JAWT_LIB: $JAWT_LIB"
-  - "JAWT_FOLDER=$(dirname ${JAWT_LIB})"
-  - "echo JAWT_FOLDER: $JAWT_FOLDER"
-  - "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${JAWT_FOLDER}"
+  - scripts/unix/awt_locate.sh
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
   except:
   - master
