@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.middleware.cli;
 
 import java.util.Optional;
@@ -55,5 +56,4 @@ public class CliParameters {
     public Optional<ClusteringParameters> getClusteringParameters() {
         return Optional.ofNullable(clusteringParameters);
     }
-
 }

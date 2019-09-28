@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba.intersection;
 import ba.util.TrajectoryToLines;
 import ba.util.LineIntersection;

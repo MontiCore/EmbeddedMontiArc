@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba.collision;
 import ba.util.MultiOr;
 import ba.util.SingleSetCompareRectangle;

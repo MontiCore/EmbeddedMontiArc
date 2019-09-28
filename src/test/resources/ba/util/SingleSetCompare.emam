@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba.util;
 //TODO: x has to be (n-1)n/2
 //TODO: EMAM2Cpp does not work with matrix generics

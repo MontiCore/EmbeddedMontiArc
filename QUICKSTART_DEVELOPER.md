@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Quickstart guide for generator developers
 - Download and install Java(8+), Maven, as well as Git.
 - Clone this repository:  

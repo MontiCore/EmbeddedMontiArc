@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.middleware.cli;
 
 import de.monticore.lang.monticar.clustering.cli.algorithms.AlgorithmCliParameters;

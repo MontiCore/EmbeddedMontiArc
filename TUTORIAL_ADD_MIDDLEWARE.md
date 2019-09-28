@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Adding a new middleware generator
 
 ## EmbeddedMontiArc

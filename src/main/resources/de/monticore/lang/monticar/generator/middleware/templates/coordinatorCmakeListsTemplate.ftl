@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 cmake_minimum_required(VERSION 3.5)
 project (Coordinator_${compName} LANGUAGES CXX)
 

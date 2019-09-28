@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# (c) https://github.com/MontiCore/monticore  
 #starts all 4 components
 
 targetFolder=target/generated-sources-cmake/system/build

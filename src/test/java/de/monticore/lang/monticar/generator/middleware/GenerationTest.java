@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
@@ -10,6 +11,7 @@ import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
 import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
@@ -298,7 +300,7 @@ public class GenerationTest extends AbstractSymtabTest {
         middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
 
         middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
-        assertTrue(Log.getFindings().isEmpty());
+        assertTrue(Log.getFindings().stream().filter(Finding::isError).collect(Collectors.toList()).isEmpty());
     }
 
     @Test
