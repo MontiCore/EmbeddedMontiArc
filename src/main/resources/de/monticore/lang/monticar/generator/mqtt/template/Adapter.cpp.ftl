@@ -89,7 +89,7 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::publish_echo_${pub.getN
 		_pub_${pub.getName()}->publish(pubmsg);
 
 	}
-	catch (const exception& exc) {
+	catch (const mqtt::exception& exc) {
 	    cerr << exc.to_string() << endl;
 	}
 }
