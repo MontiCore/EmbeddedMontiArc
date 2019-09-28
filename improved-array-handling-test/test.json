@@ -1,7 +1,0 @@
-{
-  "modelsDir": "models/",
-  "outputDir": "target/",
-  "rootModel": "test.test",
-  "generators": ["cpp", "roscpp"]
-}
-
