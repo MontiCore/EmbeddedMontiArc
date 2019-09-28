@@ -18,11 +18,11 @@
 
     <properties>
         <!-- USE THESE TO SET THE VERSIONS OF THE DEPENDENCIES FOR ALL THE SUB-PROJECTS -->
-        <montisim.commons.version>1.0.9-EE-SNAPSHOT</montisim.commons.version>
-        <montisim.controller.version>1.0.3-EE-SNAPSHOT</montisim.controller.version>
-        <montisim.server.version>1.0.7</montisim.server.version>
-        <montisim.hardware_emulator.version>1.0.0-EE-SNAPSHOT</montisim.hardware_emulator.version>
-        <montisim.simulation.version>2.0.2-EE-SNAPSHOT</montisim.simulation.version>
+        <montisim.commons.version>1.0.11</montisim.commons.version>
+        <montisim.controller.version>1.0.4</montisim.controller.version>
+        <montisim.server.version>2.2.0</montisim.server.version>
+        <montisim.hardware_emulator.version>1.0.2</montisim.hardware_emulator.version>
+        <montisim.simulation.version>2.0.4</montisim.simulation.version>
 
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
