@@ -1,4 +1,4 @@
 winpty docker exec \
 -it carlacomponents \
 bash \
--c 'source /opt/ros/kinetic/setup.bash && cd /usr/src/carlacomponents/Bumpbot/ && rm -rf target && cd .. && mvn clean install -s settings.xml && Bumpbot/target/middleware/bumper_bumpBot/build/bumper_bumpBot/coordinator/Coordinator_bumper_bumpBot'
+-c 'source /opt/ros/kinetic/setup.bash && cd /usr/src/carlacomponents/Bumpbot/ && rm -rf target && cd .. && mvn clean install -pl Bumpbot -s settings.xml && Bumpbot/target/middleware/bumper_bumpBot/build/bumper_bumpBot/coordinator/Coordinator_bumper_bumpBot'
