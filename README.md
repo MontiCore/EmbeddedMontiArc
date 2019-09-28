@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 ## Dependences 
-[Here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/carlacomponents/blob/merge-attempt-1/HowToInstall.md) is how to install everything (and how to run it manually).
+[Here](HowToInstall.md) is how to install everything (and how to run it manually).
 
 # How to move the Car by using ROS and reading information from the collision Sensor:
 ## How to run it on Linux
@@ -50,5 +50,5 @@ EMAM2Middleware is build on top of EmbeddedMontiArc
 
 ## Sample projects:
 
-[EMAM2Carla](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/carlacomponents/tree/master/EMAM2Carla) is a project where a bumperbot controls a car in the carla-simulator.  
-[Autopilot](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/carlacomponents/tree/autopilot-wrapper_experiments) contains code to reuse an autopilot for steering a car in carla.
+[Bumpbot](Bumpbot) is a project where a bumperbot controls a car in the carla-simulator.  
+[Autopilot](Autopilot) contains code to reuse an autopilot for steering a car in carla.
