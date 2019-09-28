@@ -39,7 +39,7 @@
           <enableExecutionLogging>false</enableExecutionLogging>
         </configuration>
         <executions>
-          <execution>
+          <!-- <execution>
 	          <id>test</id>
             <configuration>
               <enableExecutionLogging>false</enableExecutionLogging>
@@ -48,7 +48,7 @@
             <goals>
               <goal>streamtest-execute</goal>
             </goals>
-          </execution>
+          </execution> -->
           <execution>
 	          <id>compilemiddleware</id>
             <configuration>

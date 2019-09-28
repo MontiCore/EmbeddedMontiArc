@@ -3,13 +3,13 @@ package bumper;
 stream BumpBotTest for BumpBot{
     // Input
     orientation.x: 3.41;
-    orientation.y: 1.97;
-    orientation.z: 0.72;
-    orientation.w: 0.69;
+    orientation.y: -1.97;
+    orientation.z: -0.72;
+    orientation.w: -0.69;
 
-    collision_normale.x: 0;
-    collision_normale.y: 0;
-    collision_normale.z: 0;
+    collision_normale.x: 1.23;
+    collision_normale.y: -2.34;
+    collision_normale.z: 0.56;
 
     // Output
     // - means: all values are allowed

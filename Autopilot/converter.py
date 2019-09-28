@@ -18,11 +18,11 @@ def callback(path):
     del trajectory_x.data[:]
     del trajectory_y.data[:]
 
-    for i in range(0, (trajectory_length-1)):
+    for i in range(0, (trajectory_length)):
         (trajectory_x.data).append(round((((path.poses)[i]).pose.position.x),2))
         (trajectory_y.data).append(round((((path.poses)[i]).pose.position.y),2))
     if (trajectory_length < 100):
-        for j in range(trajectory_length, 99):
+        for j in range(trajectory_length, 100):
             (trajectory_x.data).append(0.00)
             (trajectory_y.data).append(0.00)
 
