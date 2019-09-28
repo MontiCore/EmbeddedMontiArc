@@ -10,7 +10,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-middleware-generator</artifactId>
-    <version>0.0.29-SNAPSHOT</version>
+    <version>0.0.30-SNAPSHOT</version>
 
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
@@ -19,12 +19,13 @@
 
         <!-- .. SE-Libraries .................................................. -->
         <se-commons.version>1.7.7</se-commons.version>
-
+        
         <embedded-montiarc.version>0.1.16-SNAPSHOT</embedded-montiarc.version>
         <Embedded-montiarc-math-generator.version>0.1.14-SNAPSHOT</Embedded-montiarc-math-generator.version>
         <Embedded-montiarc-math-roscpp-generator.version>0.1.8-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
         <EMADL2CPP.version>0.3.6-SNAPSHOT</EMADL2CPP.version>
         <EMADL.version>0.2.10-SNAPSHOT</EMADL.version>
+        <MQTT.version>1.5-SNAPSHOT</MQTT.version>
         <embedded-montiarc-component-clustering.version>0.0.2-SNAPSHOT</embedded-montiarc-component-clustering.version>
 
         <!-- .. Libraries .................................................. -->
@@ -105,6 +106,12 @@
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-roscpp-generator</artifactId>
             <version>${Embedded-montiarc-math-roscpp-generator.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-mqtt-generator</artifactId>
+            <version>${MQTT.version}</version>
         </dependency>
 
         <dependency>

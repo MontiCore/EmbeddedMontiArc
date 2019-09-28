@@ -34,6 +34,14 @@ DeployJobLinux:
   only:
   - master
 
+MqttIntegrationJob:
+  stage: integration
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2mqtt:v1
+  dependencies:
+    - CompileJobLinux
+  script:
+    - ./src/test/bash/integrationTestMqtt.sh
+
 RosIntegrationJob:
   stage: integration
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2middleware/ema-ros-kinetic
