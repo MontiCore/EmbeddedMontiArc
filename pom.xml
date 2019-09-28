@@ -13,7 +13,7 @@
 
     <properties>
         <EMAM2CPP.version>0.1.15-SNAPSHOT</EMAM2CPP.version>
-        <EMAM2Middleware.version>0.0.28-SNAPSHOT</EMAM2Middleware.version>
+        <EMAM2Middleware.version>0.0.30-SNAPSHOT</EMAM2Middleware.version>
         <!--misc-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
