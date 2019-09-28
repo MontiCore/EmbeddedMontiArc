@@ -39,7 +39,7 @@
           <enableExecutionLogging>false</enableExecutionLogging>
         </configuration>
         <executions>
-          <!-- <execution>
+          <execution>
 	          <id>test</id>
             <configuration>
               <enableExecutionLogging>false</enableExecutionLogging>
@@ -48,7 +48,7 @@
             <goals>
               <goal>streamtest-execute</goal>
             </goals>
-          </execution> -->
+          </execution>
           <execution>
 	          <id>compilemiddleware</id>
             <configuration>
@@ -64,6 +64,13 @@
             </goals>
           </execution>
         </executions>
+	<dependencies>
+          <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-roscpp-generator</artifactId>
+            <version>0.1.8-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>

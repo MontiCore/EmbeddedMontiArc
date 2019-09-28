@@ -38,8 +38,8 @@
           </middlewareRootModels>
         </configuration>
         <executions>
-          <!-- <execution>
-	     <id>test</id>
+          <execution>
+	    <id>test</id>
             <configuration>
               <enableExecutionLogging>false</enableExecutionLogging>
             </configuration>
@@ -47,7 +47,7 @@
             <goals>
               <goal>streamtest-execute</goal>
             </goals>
-          </execution> -->
+          </execution>
           <execution>
 	        <id>compilemiddleware</id>
             <configuration>

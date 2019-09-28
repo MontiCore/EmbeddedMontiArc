@@ -18,7 +18,7 @@ stream BumpBotTest for BumpBot{
     vehicle_control.steer: -;
     vehicle_control.brake: -;
     vehicle_control.hand_brake: false;
-    vehicle_control.reverse: false;
+    vehicle_control.reverse: true;
     vehicle_control.gear: -;
     vehicle_control.manual_gear_shift: false;
 
