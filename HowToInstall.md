@@ -7,34 +7,30 @@
 - If you want to build the CarlaRosBridge Docker Container yourself you can use the scripts in docker/carla-ros-bridge; note that we use the tag 0.9.5.1 of the carla-ros-bridge as the latest version is not compatible with Carla 0.9.5 anymore.
     You can edit your IP adress in the Dockerfile.
 
-## Steps to build a component:
+## Steps to build and execute a component:
 
-1.  Move **mw-generator.jar** to the directory of the component you wish to build.
-2.  Open shell, cd to the directory of the component and execute: 
+1.  Switch to the project you want to build (i.e: "carlacomponents")
+2.  Open shell, and execute: 
 
-        java -jar mw-generator.jar [component].json
+        mvn clean install -s settings.xml
         
-3.  Switch to the target directory:
-
-        cd target/
-4.  Execute compile.sh:
-
-         ./compile.sh
-5.  If the generator can't find carla_msgs message type: execute the following command and retry step 4:
+3.  If maven can't find carla_msgs message type: execute the following command and retry step 2:
 
         export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:/path/to/rosbridge/catkin_ws/devel/share/carla_msgs/cmake
        
     usually the path is something like `~/carla-ros-bridge/catkin_ws/devel/share/carla_msgs/cmake`.
-6.  After successfull compiling the generated code switch to install/bin directory:
+        
+4.  Switch to the target directory (of the component you want to run):
 
-        cd install/bin/
+        cd <component>/target/middleware/<model-package>_<componentname>/build/<model-package>_<componentname>/coordinator
+
 7.  Execute Coordinator_\<model-package\>_\<component-name\>. Here it's: 
  
-         ./Coordinator_test_bumpBot 
+         ./Coordinator_bumper_bumpBot 
 
     or 
     
-        ./Coordinator_test_collisionDetection
+        ./Coordinator_wrapper_wrapper
 
 ## Running the code
 - In the Docker Settings GUI select the drive where you want to work on as shared drive, else using volumes won't work.
