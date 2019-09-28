@@ -18,7 +18,12 @@ component SteeringAngleCorrection {
 
     steeringAngleCorrection = 0.0;
 
-    Q dist = abs(signedDistanceToTrajectory);
+    Q dist = signedDistanceToTrajectory;
+
+    if dist < 0
+        dist = (-1) * dist; // dist = abs(signedDistanceToTrajectory)
+    end
+
     if (dist > EPSILON)
       if (dist < X1)
         steeringAngleCorrection = Y1;

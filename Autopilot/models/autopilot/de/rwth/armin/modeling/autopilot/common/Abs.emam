@@ -6,6 +6,10 @@ component Abs {
     out Q output;
 
   implementation Math {
-    output = abs(input);
+    if input < 0
+        output = (-1) * input;
+    else
+        output = input;
+    end
   }
 }
