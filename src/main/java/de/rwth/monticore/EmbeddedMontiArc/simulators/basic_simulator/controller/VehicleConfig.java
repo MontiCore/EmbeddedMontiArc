@@ -61,9 +61,6 @@ public class VehicleConfig {
             if (entry.getValue().getValueType() == JsonValue.ValueType.STRING){
                 autopilot_config += entry.getKey() + "=" + ((JsonString) entry.getValue()).getString() + "\n";
             }
-//            else if(entry.getValue().getValueType() == JsonValue.ValueType.TRUE) {
-//            	autopilot_config += entry.getKey() + "=true\n";
-//            }
             else {
                 autopilot_config += entry.getKey() + "\n";
             }
