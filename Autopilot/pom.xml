@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>de.monticore.lang.monticar.utilities</groupId>
+  <artifactId>Autopilot</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <parent>
+    <groupId>de.monticore.lang.monticar.utilities</groupId>
+    <artifactId>CarlaComponents</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>de.monticore.lang.monticar.utilities</groupId>
+        <artifactId>maven-streamtest</artifactId>
+        <version>0.0.11-SNAPSHOT</version>
+        <configuration>
+          <pathMain>Autopilot/models</pathMain>
+          <pathTest>Autopilot/models</pathTest>
+	        <runStreamTestBefore>false</runStreamTestBefore>
+          <pathTmpOut>Autopilot/target/tmp</pathTmpOut>
+          <generator>MinGW</generator>
+          <pathMiddlewareOut>Autopilot/target/middleware</pathMiddlewareOut>
+          <middlewareRootModels>
+              <param>wrapper.wrapper</param>
+          </middlewareRootModels>
+          <enableExecutionLogging>false</enableExecutionLogging>
+        </configuration>
+        <executions>
+          <execution>
+	          <id>test</id>
+            <configuration>
+              <enableExecutionLogging>false</enableExecutionLogging>
+            </configuration>
+            <phase>test</phase>
+            <goals>
+              <goal>streamtest-execute</goal>
+            </goals>
+          </execution>
+          <execution>
+	          <id>compilemiddleware</id>
+            <configuration>
+              <middlewareGenerator>
+                <param>cpp</param>
+                <param>roscpp</param>
+              </middlewareGenerator>
+              <enableExecutionLogging>false</enableExecutionLogging>
+            </configuration>
+            <phase>test</phase>
+            <goals>
+              <goal>streamtest-middleare-build</goal>
+            </goals>
+          </execution>
+        </executions>
+	<dependencies>
+          <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-roscpp-generator</artifactId>
+            <version>0.1.8-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+</project>
