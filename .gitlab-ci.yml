@@ -43,7 +43,7 @@ RosIntegrationJob:
 
 SomeIPIntegrationJob:
   stage: integration
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2someip
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2someip:v2
   dependencies:
     - CompileJobLinux
   script:
