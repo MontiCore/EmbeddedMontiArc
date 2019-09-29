@@ -1,8 +1,0 @@
-package test.structures;
-
-struct Vector3{
-	Q x;
-	Q y;
-	Q z;
-}
-

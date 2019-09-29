@@ -1,27 +1,36 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # How to install everything
-- Download Carla (We are using the precompiled version 0.9.5, because this version is currently supported by the ros-bridge) from `https://github.com/carla-simulator/carla/releases/tag/0.9.5`
+- Download Carla (We are using the precompiled version 0.9.5, because this is the latest version that was supported by the ros-bridge at the time) from `https://github.com/carla-simulator/carla/releases/tag/0.9.5`
 - Extract it
 - If the file carla-0.9.5-py2.7-linux-x86_64.egg is not present inside the PythonAPI folder copy it there from PythonAPI/carla/dist
 - Install Docker
-- If you want to build the CarlaRosBridge Docker Container yourself you can use the scripts in docker/carla-ros-bridge
+- If you want to build the CarlaRosBridge Docker Container yourself you can use the scripts in docker/carla-ros-bridge; note that we use the tag 0.9.5.1 of the carla-ros-bridge as the latest version is not compatible with Carla 0.9.5 anymore.
+    You can edit your IP adress in the Dockerfile.
 
-# How to run it on Linux
-## How to execute the code for the bumper bot and read the collision sensor?
+## Steps to build and execute a component:
 
-- Start Carla by executing: `CarlaUE4.sh`
-- Execute in PythonAPI/examples to create a vehicle for the ros-bridge: `python manual_control.py --rolename=ego_vehicle`  
-- To start the container execute inside the project folder:  
-`docker/bumpbot/run.sh`
+1.  Switch to the project you want to build (i.e: "carlacomponents")
+2.  Open shell, and execute: 
 
-Then execute in a new terminal to compile and execute the generated code for the bumpbot:  
-`docker/bumpbot/compile_exec.sh`
+        mvn clean install -s settings.xml
+        
+3.  If maven can't find carla_msgs message type: execute the following command and retry step 2:
 
-If you want to read additional messages from a rostopic you can execute:  
-`docker/bumpbot/open_shell.sh` and inside the container read the topic with e.g. `rostopic echo /carla/ego_vehicle/collision`
+        export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:/path/to/rosbridge/catkin_ws/devel/share/carla_msgs/cmake
+       
+    usually the path is something like `~/carla-ros-bridge/catkin_ws/devel/share/carla_msgs/cmake`.
+        
+4.  Switch to the target directory (of the component you want to run):
 
-# Running with docker on Windows
-I tested this code in a Command Prompt/Power Shell. For the use of other consoles the commands might need to be adjusted for example with winpty
+        cd <component>/target/middleware/<model-package>_<componentname>/build/<model-package>_<componentname>/coordinator
+
+7.  Execute Coordinator_\<model-package\>_\<component-name\>. Here it's: 
+ 
+         ./Coordinator_bumper_bumpBot 
+
+    or 
+    
+        ./Coordinator_wrapper_wrapper
 
 ## Running the code
 - In the Docker Settings GUI select the drive where you want to work on as shared drive, else using volumes won't work.

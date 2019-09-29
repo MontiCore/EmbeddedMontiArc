@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package wrapper.structures;
+import wrapper.structures.*;
+
+struct Ego_Vehicle{
+	Q throttle;
+	Q steer;
+	Q brake;
+	B hand_brake;
+	B reverse;
+	Z gear;
+	B manual_gear_shift;
+}
