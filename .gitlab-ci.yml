@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 stages:
 - windows
 - linuxCompile
@@ -32,6 +33,14 @@ DeployJobLinux:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B deploy --settings settings.xml -U
   only:
   - master
+
+MqttIntegrationJob:
+  stage: integration
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2mqtt:v1
+  dependencies:
+    - CompileJobLinux
+  script:
+    - ./src/test/bash/integrationTestMqtt.sh
 
 RosIntegrationJob:
   stage: integration

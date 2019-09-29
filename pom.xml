@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -18,14 +19,15 @@
 
         <!-- .. SE-Libraries .................................................. -->
         <se-commons.version>1.7.7</se-commons.version>
-
+        
         <embedded-montiarc.version>0.1.18-SNAPSHOT</embedded-montiarc.version>
-        <Embedded-montiarc-math-generator.version>0.1.12-SNAPSHOT</Embedded-montiarc-math-generator.version>
-        <Embedded-montiarc-math-roscpp-generator.version>0.1.6-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
+        <Embedded-montiarc-math-generator.version>0.1.14-SNAPSHOT</Embedded-montiarc-math-generator.version>
+        <Embedded-montiarc-math-roscpp-generator.version>0.1.8-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
         <Embedded-montiarc-math-emam2someip-generator.version>1.1-SNAPSHOT</Embedded-montiarc-math-emam2someip-generator.version>
-        <EMADL2CPP.version>0.2.8</EMADL2CPP.version>
-        <EMADL.version>0.2.7-SNAPSHOT</EMADL.version>
+        <EMADL2CPP.version>0.3.6</EMADL2CPP.version>
+        <EMADL.version>0.2.10-SNAPSHOT</EMADL.version>
         <SOMEIP.version>1.1-SNAPSHOT</SOMEIP.version>
+        <MQTT.version>1.5-SNAPSHOT</MQTT.version>
         <embedded-montiarc-component-clustering.version>0.0.2-SNAPSHOT</embedded-montiarc-component-clustering.version>
 
         <!-- .. Libraries .................................................. -->
@@ -114,6 +116,11 @@
             <version>${SOMEIP.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-mqtt-generator</artifactId>
+            <version>${MQTT.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>

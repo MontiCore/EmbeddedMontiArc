@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tests.emadlTests;
 
 component ResNet34{
@@ -34,6 +35,6 @@ component ResNet34{
         GlobalPooling(pool_type="avg") ->
         FullyConnected(units=1000) ->
         Softmax() ->
-        predictions
+        predictions;
     }
 }

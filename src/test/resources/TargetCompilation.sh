@@ -1,4 +1,5 @@
 #run from project root!
+# (c) https://github.com/MontiCore/monticore  
 #make sure all ros packages have been sourced!
 function quitOnError {
     if [ "$?" -ne 0 ]

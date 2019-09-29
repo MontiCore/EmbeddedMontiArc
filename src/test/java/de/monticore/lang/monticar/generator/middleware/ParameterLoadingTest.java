@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.monticar.clustering.cli.algorithms.*;
@@ -184,6 +185,5 @@ public class ParameterLoadingTest {
         Log.getFindings().clear();
         Log.enableFailQuick(true);
     }
-
 
 }

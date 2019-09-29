@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package ba.util;
 //TODO: n2 = n(n+1)/2
 //TODO: remove once EMAM2CPP supports matrix generics

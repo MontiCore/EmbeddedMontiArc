@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.pacman;
 
 import de.rwth.pacman.basicLibrary.Fallback;

@@ -1,4 +1,5 @@
 #!/bin/bash
+# (c) https://github.com/MontiCore/monticore  
 
 # Kill all spawned subshells on exit
 trap 'kill $(jobs -p)' EXIT

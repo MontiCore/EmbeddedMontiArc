@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 @echo off
 :: Substituting the current dir with a drive letter to bypass windows path length limit
 :: Set environment variable EMA_SUBST_LETTER to change letter is used

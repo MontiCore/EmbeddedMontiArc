@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# (c) https://github.com/MontiCore/monticore  
 #run from project root!
 #make sure all ros packages have been sourced!
 function quitOnError {

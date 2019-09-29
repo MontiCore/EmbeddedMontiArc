@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 import json
 import numpy as np
 import matplotlib.pyplot as plt

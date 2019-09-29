@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Dependencies needed to compile the generated projects
 ## Note
 The generator creates compile scripts for all supported compilers. A project with ROS or ROS2 contains `compile.sh` and `compileMsbuild.bat` as Linux and Windows(with Msbuild) are supported.

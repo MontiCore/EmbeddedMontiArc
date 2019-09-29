@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.middleware.impls;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
@@ -10,9 +11,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class EMADLGeneratorImpl implements GeneratorImpl {
     private String generationTargetPath;
@@ -36,7 +35,8 @@ public class EMADLGeneratorImpl implements GeneratorImpl {
         List<File> files = new ArrayList<>();
 
         emadlGenerator.setGenerationTargetPath(generationTargetPath);
-        List<FileContent> fileContents = emadlGenerator.generateStrings(taggingResolver, componentInstanceSymbol, taggingResolver);
+        List<FileContent> fileContents = emadlGenerator.generateStrings(taggingResolver, componentInstanceSymbol,
+                taggingResolver, new HashSet<>(), "n");
 
         for (FileContent fileContent : fileContents) {
             files.add(emadlGenerator.getEmamGen().generateFile(fileContent));
