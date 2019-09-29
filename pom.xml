@@ -44,8 +44,8 @@
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math-generator</artifactId>
-            <version>${EMAM2CPP.version}</version>
+            <artifactId>embedded-montiarc-emadl-generator</artifactId>
+            <version>0.3.6-SNAPSHOT</version>
         </dependency>
 
         <dependency>
