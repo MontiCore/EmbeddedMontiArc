@@ -25,7 +25,7 @@
         <Embedded-montiarc-math-roscpp-generator.version>0.1.8-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
         <EMADL2CPP.version>0.3.6-SNAPSHOT</EMADL2CPP.version>
         <EMADL.version>0.2.10-SNAPSHOT</EMADL.version>
-        <SOMEIP.version>1.1-SNAPSHOT</SOMEIP.version>
+        <SOMEIP.version>1.2-SNAPSHOT</SOMEIP.version>
         <MQTT.version>1.5-SNAPSHOT</MQTT.version>
         <embedded-montiarc-component-clustering.version>0.0.2-SNAPSHOT</embedded-montiarc-component-clustering.version>
 
