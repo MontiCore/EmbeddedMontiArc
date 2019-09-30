@@ -1,8 +1,13 @@
 # Udacity Data generation
 
-This readme describes the geration of the test and train sets we used. 
-Predefined datasets can be downloaded [here](https://rwth-aachen.sciebo.de/apps/files/?dir=/LabSS19/end2end_training_testing_data&fileid=1993075326) (contact kusmenko@se-rwth.de to get access to training and testing files) .
-Otherwise use the jpg2hdf5.py script to generate train.h5 and test.h5 and place them into the training_data folder. After that proceed as described in the root Readme.
+- This readme describes the geration of the test and train sets we used. 
+- Predefined datasets can be downloaded [here](https://rwth-aachen.sciebo.de/apps/files/?dir=/LabSS19/end2end_training_testing_data&fileid=1993075326) 
+    - among them are hdf5 files which can be used directly for training and testing. 
+        - lables describe the resolution of images the saved in them. (Adjust neuronal network acordingly) 
+    - there are also files which contain raw images + csv on which the jpg2hdf5 script can be exectuted (see section usage on how to do that).
+    - contact kusmenko@se-rwth.de to get access to training and testing files
+- Otherwise download the udacity data yourself (see section udacity data download).
+- The result should be a file named train.h5 and test.h5. Place them into the training_data folder. After that proceed as described in the root Readme.
 
 ## Udacity data download 
 
@@ -33,12 +38,13 @@ To achive these steps a number of csv files are generated and can be reviewed.
 | 8 | -t | use this flag to generate testing data scince it has different format than the training data | 
 
 
-The -i flag is mandatory scince it specifies the path to the folder containg the images (needs to be named center) and the steering csv (needs to be named steering.csv).
-In addition exactly one of the following flags has to be set (-a,-c,-l,-s)
-Optional: set the -n flag to specify how many images should be taken. 
-Use the -i and -t flag for generating testing data from images based on the udacity_ch02 challange dataset. The reason is that they changed the structure of this specific dataset. 
-Note: Image resolution is hard coded to 120/180.
-Change:  PIXEL_WIDTH  = int(640/4) and PIXEL_HEIGHT = int(480/4) in the script to change that. 
+- The -i flag is mandatory scince it specifies the path to the folder containg the images (needs to be named center) and the steering csv (needs to be named steering.csv).
+    - In addition exactly one of the following flags has to be set (-a,-c,-l,-s)
+- Optional: set the -n flag to specify how many images should be taken. 
+- Use the -i and -t flag for generating testing data from images based on the udacity_ch02 challange dataset. 
+    - The reason is that they changed the structure of this specific dataset. 
+- Note: Image resolution is hard coded to 120/180.
+    - Change:  PIXEL_WIDTH  = int(640/4) and PIXEL_HEIGHT = int(480/4) in the script to change that. 
 
 ## Examples 
 - python jpg2hdf5.py -i ../test_set/ -n 100 -a
