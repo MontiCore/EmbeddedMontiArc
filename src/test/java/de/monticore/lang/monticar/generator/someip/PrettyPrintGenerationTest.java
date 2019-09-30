@@ -34,7 +34,16 @@ public class PrettyPrintGenerationTest extends AbstractSymtabTest {
         generatorSomeIP.setGenerationTargetPath("./target/generated-sources/");
 
         // Connect component's ports to topics
-        componentInstanceSymbol.getPortInstance("in1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(1,2,3));
+        componentInstanceSymbol.getPortInstance("in1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(11,12,13/*,14,15*/));
+        componentInstanceSymbol.getPortInstance("in2").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(21,22,23/*,24,25*/));
+        componentInstanceSymbol.getPortInstance("in3").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(31,32,33/*,34,35*/));
+        componentInstanceSymbol.getPortInstance("in4").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(41,42,43/*,44,45*/));
+        componentInstanceSymbol.getPortInstance("in5").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(51,52,53/*,54,55*/));
+        componentInstanceSymbol.getPortInstance("out1").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(111,112,113/*,114,115*/));
+        componentInstanceSymbol.getPortInstance("out2").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(121,122,123/*,124,125*/));
+        componentInstanceSymbol.getPortInstance("out3").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(131,132,133/*,134,135*/));
+        componentInstanceSymbol.getPortInstance("out4").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(141,142,143/*,144,145*/));
+        componentInstanceSymbol.getPortInstance("out5").orElse(null).setMiddlewareSymbol(new SomeIPConnectionSymbol(151,152,153/*,154,155*/));
 
         List<File> files = generatorSomeIP.generatePrettyPrint(componentInstanceSymbol);
 
