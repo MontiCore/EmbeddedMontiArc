@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 #include "SomeIPAdapter_tests_a_compA.h"
 
-SomeIPAdapter_tests_a_compA::SomeIPAdapter_tests_a_compA() : public IAdapter_tests_a_compA {
+SomeIPAdapter_tests_a_compA::SomeIPAdapter_tests_a_compA() {
 
 }
 
