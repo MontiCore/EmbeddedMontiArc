@@ -15,11 +15,9 @@ include_directories (
 )
 
 # Linking libraries to target
-add_library(SomeIPAdapter_tests_a_compA SomeIPAdapter_tests_a_compA.cpp
+add_library(SomeIPAdapter_tests_a_compA
 SomeIPAdapter_tests_a_compA.cpp
 SomeIPAdapter_tests_a_compA.h
-tests_a_compA.cpp
-tests_a_compA.h
 )
 
 list(APPEND LIBRARIES tests_a_compA)

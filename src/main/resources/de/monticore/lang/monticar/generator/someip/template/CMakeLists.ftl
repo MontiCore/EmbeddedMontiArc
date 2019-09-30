@@ -17,11 +17,9 @@ include_directories (
 )
 
 # Linking libraries to target
-add_library(SomeIPAdapter_${model.getEscapedCompName()} SomeIPAdapter_${model.getEscapedCompName()}.cpp
+add_library(SomeIPAdapter_${model.getEscapedCompName()}
 SomeIPAdapter_${model.getEscapedCompName()}.cpp
 SomeIPAdapter_${model.getEscapedCompName()}.h
-${model.getEscapedCompName()}.cpp
-${model.getEscapedCompName()}.h
 )
 
 list(APPEND LIBRARIES ${model.getEscapedCompName()})
