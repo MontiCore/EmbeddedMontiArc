@@ -16,7 +16,7 @@ This repository consists of a neural network for end to end driving and some use
 
 ### Training
 
-- Generate `train.h5` and `test.h5` files and move them to resources/training_data.[(See section Generation of Training Data)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/end2enddriving/tree/develop/tensorflow/resources). The pictures should have the same dimensionality as described in the model and the label *data*. The output is a steering angle with the label *target_label*.
+- Generate `train.h5` and `test.h5` files and move them to resources/training_data.[(See section Generation of Training Data)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/end2enddriving/tree/master/tensorflow/resources). The pictures should have the same dimensionality as described in the model and the label *data*. The output is a steering angle with the label *target_label*.
 - Train by executing `./build.sh`
 
 ### Prediction
@@ -63,7 +63,7 @@ Hyperparameters that we experimented with were:
 - Time gap between images (30FPS, 10FPS)
 - Model architecture (modifications to the original architecture from the [paper](https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf))
     - Different Activations (ReLU, Sigmoid)
-    - Different usage of Dropout to learn learn curves
+    - Different usage of Dropout to learn curves
     - With(out) Batch-normalization
     - With(out) large fully connected layer after convolutional layers
     - Different number of layers with different kernel sizes 
