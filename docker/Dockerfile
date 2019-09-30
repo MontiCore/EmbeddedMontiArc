@@ -10,11 +10,12 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
 ENV PATH $JAVA_HOME/bin:$PATH
 
-#Install cmake, boost, maven, git
+#Install cmake, boost, armadillo, maven, git
 RUN apt-get update && apt-get -y install \
   build-essential \
   cmake \
   libboost-system1.58-dev libboost-thread1.58-dev libboost-log1.58-dev \
+  liblapack-dev libblas-dev libarmadillo-dev \
   maven \
   git
 

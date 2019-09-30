@@ -7,7 +7,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-emam2someip-generator</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
 
   <name>emam2someip</name>
 

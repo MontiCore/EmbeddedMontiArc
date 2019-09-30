@@ -3,9 +3,10 @@ package de.monticore.lang.monticar.generator.someip;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
-//import de.monticore.lang.embeddedmontiarc.tagging.middleware.someip.SomeIPConnectionSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.someip.SomeIPConnectionSymbol;
 import de.monticore.lang.monticar.generator.someip.template.SomeIPAdapterModel;
 import de.monticore.lang.monticar.generator.someip.template.SomeIPTemplates;
+import de.monticore.lang.monticar.generator.someip.helper.FilesHelper;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -20,17 +21,12 @@ public class GeneratorSomeIP {
 
 	public void setGenerationTargetPath(String generationTargetPath) {
         this.generationTargetPath = generationTargetPath.endsWith("/") ? generationTargetPath : generationTargetPath + "/";
-
-		File directory = new File(generationTargetPath);
-		directory.mkdirs();
-
     }
 
 
 	public List<File> generateSomeIPAdapter(EMAComponentInstanceSymbol component) {
+		List<FilesHelper> generateList = new ArrayList<>();
 		List<File> files = new ArrayList<>();
-		List<String> contents = new ArrayList<String>();
-		List<FileWriter> frs = new ArrayList<FileWriter>();
 
 		// Create and fill model
 		SomeIPAdapterModel model = new SomeIPAdapterModel(component.getFullName());
@@ -38,32 +34,21 @@ public class GeneratorSomeIP {
 		model.addPorts(component.getPortInstanceList());
 
 		//Generate files and write to project
-		contents.add(SomeIPTemplates.generateSomeIPAdapterH(model));
-		files.add(new File(generationTargetPath + "SomeIPAdapter_" + model.getEscapedCompName() + ".h"));
-		contents.add(SomeIPTemplates.generateSomeIPAdapterCPP(model));
-		files.add(new File(generationTargetPath + "SomeIPAdapter_" + model.getEscapedCompName() + ".cpp"));
 
-		 try {
-        	int counter = 0;
-        	for (File file : files)
-        	{
-        		frs.add(new FileWriter(file));
-        		frs.get(counter).write(contents.get(counter));
-        		counter++;
-        	}
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            //Close resources
-            try {
-                for (FileWriter fr : frs)
-                	fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+		generateList.add(new FilesHelper(new File(generationTargetPath+"SomeIPAdapter_" + model.getEscapedCompName() + ".h"), SomeIPTemplates.generateSomeIPAdapterH(model)));
+		generateList.add(new FilesHelper(new File(generationTargetPath+"SomeIPAdapter_" + model.getEscapedCompName() + ".cpp"), SomeIPTemplates.generateSomeIPAdapterCPP(model)));
 
-        files.add(generateCMake(component));
+
+		//If file directory does not exist, create it so files can be created
+		File directory = new File(generationTargetPath);
+		directory.mkdirs();
+
+		for (FilesHelper filesHelper : generateList) {
+			createFile(filesHelper.getFile(), filesHelper.getContent());
+			files.add(filesHelper.getFile());
+		}
+
+    	files.add(generateCMake(component));
 
     	return files;
 
@@ -97,8 +82,7 @@ public class GeneratorSomeIP {
     	return file;
     }
 
-    public List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)
-	{
+    public List<File> generatePrettyPrint(EMAComponentInstanceSymbol component)	{
 		List<File> files = new ArrayList<>();
 
 		// Get info about the ports from the component
@@ -132,8 +116,23 @@ public class GeneratorSomeIP {
 
     	return files;
 
-	}
+	 }
 
-
+	 private void createFile(File file, String content) {
+        FileWriter fr = null;
+        try {
+            fr = new FileWriter(file);
+            fr.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            //Close resources
+            try {
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+     }
 
 }
