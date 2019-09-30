@@ -4,7 +4,7 @@
 - Predefined datasets can be downloaded [here](https://rwth-aachen.sciebo.de/apps/files/?dir=/LabSS19/end2end_training_testing_data&fileid=1993075326) 
     - among them are hdf5 files which can be used directly for training and testing. 
         - lables describe the resolution of images the saved in them. (Adjust neuronal network acordingly) 
-    - there are also files which contain raw images + csv on which the jpg2hdf5 script can be exectuted (see section usage on how to do that).
+    - there are also files which contain the extracted data from udacity. On it the jpg2hdf5 script can be exectuted (see section usage on how to do that).
     - contact kusmenko@se-rwth.de to get access to training and testing files
 - Otherwise download the udacity data yourself (see section udacity data download).
 - The result should be a file named train.h5 and test.h5. Place them into the training_data folder. After that proceed as described in the root Readme.
