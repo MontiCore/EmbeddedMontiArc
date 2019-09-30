@@ -39,7 +39,8 @@ public class CNNTrainCocos {
         CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
                 .addCoCo(new CheckTrainedRlNetworkHasExactlyOneInput())
                 .addCoCo(new CheckTrainedRlNetworkHasExactlyOneOutput())
-                .addCoCo(new CheckOUParameterDimensionEqualsActionDimension());
+                .addCoCo(new CheckOUParameterDimensionEqualsActionDimension())
+                .addCoCo(new CheckTrainedArchitectureHasVectorAction());
         checker.checkAll(configurationSymbol);
     }
 
