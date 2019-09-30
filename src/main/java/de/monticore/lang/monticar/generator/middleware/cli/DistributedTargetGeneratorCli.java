@@ -5,12 +5,14 @@ import com.google.gson.Gson;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.mqtt.MqttToEmamTagSchema;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.someip.SomeIPToEmamTagSchema;
 import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
 import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
 import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.monticar.generator.mqtt.helper.MqttTagHelper;
+import de.monticore.lang.monticar.generator.someip.helper.SomeIPTagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -49,6 +51,7 @@ public final class DistributedTargetGeneratorCli {
     //ros2cpp is an alias for rclcpp
     public static final String GENERATOR_RCLCPP = "rclcpp";
     public static final String GENERATOR_ROS2CPP = "ros2cpp";
+    public static final String GENERATOR_SOMEIP = "someip";
 
     private DistributedTargetGeneratorCli() {}
 
@@ -88,6 +91,7 @@ public final class DistributedTargetGeneratorCli {
         res.add(GENERATOR_ODV);
         res.add(GENERATOR_ROS2CPP);
         res.add(GENERATOR_RCLCPP);
+        res.add(GENERATOR_SOMEIP);
         return res;
     }
 
@@ -182,6 +186,12 @@ public final class DistributedTargetGeneratorCli {
 
         if (generators.contains(GENERATOR_ODV)) {
             generator.add(new ODVGenImpl(), "odv");
+        }
+
+        if (generators.contains(GENERATOR_SOMEIP)) {
+            generator.add(new SomeIPGenImpl(), "someip");
+            SomeIPToEmamTagSchema.registerTagTypes(taggingResolver);
+            SomeIPTagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
         }
 
         if (cliParameters.getClusteringParameters().isPresent()) {

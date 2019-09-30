@@ -50,6 +50,14 @@ RosIntegrationJob:
   script:
   - ./src/test/bash/integrationTestRos.sh
 
+SomeIPIntegrationJob:
+  stage: integration
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2someip:v2
+  dependencies:
+    - CompileJobLinux
+  script:
+  - ./src/test/bash/integrationTestSomeIP.sh
+
 Ros2IntegrationJob:
   stage: integration
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2middleware/ema-ros-crystal
