@@ -18,6 +18,7 @@ public class CNNTrainCocos {
         return new CNNTrainCoCoChecker()
                 .addCoCo(new CheckEntryRepetition())
                 .addCoCo(new CheckInteger())
+                .addCoCo(new CheckRLParameterOnlyWithLearningMethodSet())
                 .addCoCo(new CheckFixTargetNetworkRequiresInterval())
                 .addCoCo(new CheckReinforcementRequiresEnvironment())
                 .addCoCo(new CheckLearningParameterCombination())
