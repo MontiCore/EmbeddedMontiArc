@@ -1,0 +1,21 @@
+{
+  "attributes": {
+    "prefix": {
+      "description": "Specifies the prefix for to be prepended to the file name in order to execute the tool.",
+      "type": "string"
+    },
+    "alias": {
+      "description": "Specifies an alias to be registered in the environmental variables.",
+      "type": "alias"
+    },
+    "environment": {
+      "description": "Specifies the environment to be used for the tool.",
+      "type": "environment"
+    },
+    "path": {
+      "description": "Specifies the path on which to locate the tool.",
+      "type": "string"
+    }
+  },
+  "required": ["path"]
+}

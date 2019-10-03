@@ -4,43 +4,76 @@
 package de.monticore.lang.monticar.sol.grammars;
 
 /**
- *
+ * The Tool grammar describes a language which will be used to define tools / resource collections and their resources.
  */
 grammar Tool extends de.monticore.MCBasics, de.monticore.MCLiterals, de.monticore.types.Types {
     // =========================================
     // INTERFACE DEFINITIONS
     // =========================================
 
+    /**
+     * An interface implemented by model elements which can be used inside a tool block.
+     */
     interface ToolElement;
 
+    /**
+     * An interface implemented by model elements which can be used inside a resources block.
+     */
+    interface ResourcesElement;
+
+    /**
+     * An interface implemented by model elements which can be used inside a resource block.
+     */
     interface ResourceElement;
 
     // =========================================
     // PARSER RULES
     // =========================================
 
+    /**
+     * The starting rule of the grammar which consists of package, imports, and a root block.
+     */
     ToolCompilationUnit =
         "package" package:(Name || ".")+ ";"
         import:ImportStatement*
-        Tool
+        (Tool | Resources)
     ;
 
     start ToolCompilationUnit;
 
+    /**
+     * A root block for tools / virtual tools. Tool extension has been disabled for the moment.
+     */
     symbol scope Tool =
-        ["external"]? "tool" Name Alias? ( "extends" parent:(Name || ",")+ )? "{" element:ToolElement* "}"
+        ["virtual"]? "tool" Name /* ( "extends" parent:(Name || ",")+ )? */ "{" element:ToolElement* "}"
     ;
 
-    symbol Attribute implements ToolElement, ResourceElement =
-        "attribute" Name "=" literal:SignedLiteral ";"
+    /**
+     * A root block for resources (resource collections).
+     */
+    symbol scope Resources =
+        "resources" Name "{" element:ResourcesElement* "}"
     ;
 
-    symbol scope Resource implements ToolElement =
-        ["external"]? "resource" Name Alias? "for" path:StringLiteral ( ("{" element:ResourceElement* "}") | ";" )
+    /**
+     * An attribute of either root block or resource block.
+     */
+    symbol Attribute implements ToolElement, ResourcesElement, ResourceElement =
+        "attribute" Name "=" (literal:SignedLiteral | environment:Name | alias:Alias) ";"
     ;
 
+    /**
+     * A resource block.
+     */
+    symbol scope Resource implements ToolElement, ResourcesElement =
+        "resource" Name "{" element:ResourceElement* "}"
+    ;
+
+    /**
+     * A construct which can be used to register a tool / resource as alias in the environmental variables.
+     */
     Alias =
-        ("as" alias:Name)? "in" (["ENV"] | ["KEY"])
+        identifier:Name "in" "ENV"
     ;
 
     // =========================================
