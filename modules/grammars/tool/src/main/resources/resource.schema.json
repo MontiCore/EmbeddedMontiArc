@@ -1,0 +1,13 @@
+{
+  "attributes": {
+    "alias": {
+      "description": "Specifies an alias to be registered in the environmental variables.",
+      "type": "alias"
+    },
+    "path": {
+      "description": "Specifies the path on which to locate the resource.",
+      "type": "string"
+    }
+  },
+  "required": ["path"]
+}

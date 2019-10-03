@@ -76,7 +76,18 @@
             <artifactId>commons-io</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
+
         <!-- .. Language .................................................. -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>grammar-environment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- .. Test Libraries ............................................ -->
 

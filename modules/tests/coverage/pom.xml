@@ -90,6 +90,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>grammar-tool</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- .. Libraries ................................................. -->
 
         <!-- .. Language .................................................. -->
