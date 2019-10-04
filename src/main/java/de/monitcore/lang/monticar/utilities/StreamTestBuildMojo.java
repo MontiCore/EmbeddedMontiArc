@@ -15,6 +15,7 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * builds the executable stream test out of the generated c++ code for testable components
@@ -221,7 +222,7 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         long startTime = System.nanoTime();
         File o = Paths.get(this.runProcessTMPDir().toString(), name+".cmake.out.txt").toFile();
         File e = Paths.get(this.runProcessTMPDir().toString(), name+".cmake.err.txt").toFile();
-        if(processRun(command, buildDir, o,e, "build")==0){
+        if(processRun(command, buildDir, o, e, "build")==0){
             logInfo("     -> Success in "+getReadableTime(System.nanoTime()-startTime));
         }else{
             logInfo("     -> Error. CMake failed for "+name);
@@ -301,6 +302,93 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         }
     }
 
+    protected boolean runTraining() throws MojoExecutionException, IOException {
+        if (!checkJarArchiveForDL()){
+            throw new MojoExecutionException("No training archive!");
+        }
+        String buildTarget = Paths.get(this.getPathTmpOut()).toString();
+
+        //check the location of DL framework mxnet.
+        File tempScript = createTempScript();
+        try {
+            ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
+            pb.inheritIO();
+            Process process = pb.start();
+            int returnCode = process.waitFor();
+            if(returnCode != 0) {
+                Log.error("During compilation, an error occured. See above for more details.");
+                System.exit(1);
+            }
+        }catch(Exception e){
+            Log.error("During compilation, the following error occured: '" + e.toString() + "'");
+            System.exit(1);
+        } finally {
+            tempScript.delete();
+        }
+
+        //Run EMADL generator:
+        List<String> command = new ArrayList<>();
+        command.add("java -jar  embedded-montiarc-emadl-generator-0.3.6-jar-with-dependencies.jar");
+        command.add("-m model");
+        command.add("-r VGG16");
+        command.add("-o " + buildTarget);
+        command.add("-b MXNET");
+
+        logInfo("   # Run Training with background MXNet ");
+        long startTime = System.nanoTime();
+        File o = Paths.get(this.runProcessTMPDir().toString(), ".build.out.txt").toFile();
+        File e = Paths.get(this.runProcessTMPDir().toString(), ".build.err.txt").toFile();
+
+        if(processRun(command, "./",o,e, "Train")==0){
+            logInfo("     -> Success in "+getReadableTime(System.nanoTime()-startTime));
+        }else{
+            logInfo("     -> Error. Training failed");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public File createTempScript() throws IOException{
+        File tempScript = File.createTempFile("script", null);
+        try{
+            Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+                    tempScript));
+            PrintWriter printWriter = new PrintWriter(streamWriter);
+
+            printWriter.println("MXNET_PATH=$(python -c \"import mxnet; print(mxnet.__file__)\")");
+            printWriter.println("# (c) https://github.com/MontiCore/monticore  ");
+            printWriter.println("MXNET_FOLDER=$(dirname $MXNET_PATH)");
+            printWriter.println("echo $MXNET_FOLDER");
+
+            printWriter.println("if [ ! -f $MXNET_FOLDER/libmxnet.so ]; then");
+            printWriter.println("echo \"libmxnet.so not found at default location\" $MXNET_FOLDER");
+            printWriter.println("echo \"It should be there if the python mxnet package is installed\"");
+            printWriter.println("echo \"Either fix the installation, or adapt the ./build.sh script to locate libmxnet.so correctly\"");
+            printWriter.println("exit 1");
+            printWriter.println("fi");
+
+            printWriter.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
+        return tempScript;
+    }
+
+
+    private boolean checkJarArchiveForDL() throws MojoExecutionException{
+        Map<String, File> files = SearchFiles.searchFilesMap("./", "jar");
+        for (Map.Entry<String,File> f:files.entrySet()) {
+            String ending = f.getKey().substring(f.getKey().lastIndexOf(".") + 1);
+            if (ending.equals("jar")){
+                return true;
+            }
+        }
+        return false;
+
+    }
     //</editor-fold>
 
     //<editor-fold desc="Hashfiles">
@@ -328,6 +416,9 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         }
     }
 
+
+
+    //Path in form ./{PATHTMPOUT}/{mojoDirectory}/{streamtest-build}/build
     protected File hashDirBuild(){
         return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "build").toFile();
     }

@@ -316,6 +316,7 @@ public class StreamTestMojoBase extends AbstractMojo {
             myParser.put("stream", new StreamUnitsParser());
             myParser.put("struct", new StructParser());
             myParser.put("enum", new EnumLangParser());
+         //   myParser.put("emadl", new )
             resetToMyLog();
         }
         return myParser;

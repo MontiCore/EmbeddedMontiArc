@@ -126,7 +126,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             return false;
         }
 
-        logInfo("Execution necessary: One or more input files chaned.");
+        logInfo("Execution necessary: One or more input files changed.");
         return true;
     }
 
@@ -143,13 +143,12 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
         Scope scope = getScope();
 
         logInfo("Cocos Check:");
-
         List<File> ff = SearchFiles.searchFiles(this.pathMain, "emam", "struct", "enum");
         Map<String, File> files = SearchFiles.searchFilesMap(this.pathMain, "emam", "struct", "enum");
         files.putAll(SearchFiles.searchFilesMap(this.pathTest, "emam", "stream"));
 
         for (Map.Entry<String,File> f:files.entrySet()) {
-            String ending = f.getKey().substring(f.getKey().lastIndexOf(".") + 1);
+            String ending = f.getKey().substring(f.getKey().lastIndexOf(".") + 1);//Get the file type
             if (!parser.keySet().contains(ending)) {
                 throw new MojoExecutionException("No parser for ." + ending + " files");
                 //errors.add(f.getKey()+" (error: no parser for file)");
@@ -225,7 +224,8 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                 continue;
             }
 
-            GeneratorCPP generatorCPP = new GeneratorCPP();
+            GeneratorCPP generatorCPP;
+            generatorCPP = new GeneratorCPP();
             generatorCPP.setModelsDirPath(Paths.get(this.getPathTmpOutEMAM()));
 
             generatorCPP.useArmadilloBackend();
