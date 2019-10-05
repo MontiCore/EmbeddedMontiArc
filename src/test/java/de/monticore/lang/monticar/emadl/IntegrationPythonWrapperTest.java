@@ -4,7 +4,6 @@ package de.monticore.lang.monticar.emadl;
 import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -12,6 +11,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assume.assumeFalse;
 
 /**
  *
@@ -19,6 +19,7 @@ import static junit.framework.TestCase.assertTrue;
 public class IntegrationPythonWrapperTest extends AbstractSymtabTest {
     @Test
     public void testGluonReinforcementModelRosEnvironment() {
+        assumeFalse(System.getProperty("os.name").toLowerCase().startsWith("win"));
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/models/reinforcementModel", "-r", "torcs.agent.TorcsAgent", "-b", "GLUON", "-f", "n", "-c", "n"};
         EMADLGeneratorCli.main(args);
