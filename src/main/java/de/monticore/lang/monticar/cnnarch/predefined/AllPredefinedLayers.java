@@ -30,10 +30,12 @@ public class AllPredefinedLayers {
     //predefined layer names
     public static final String FULLY_CONNECTED_NAME = "FullyConnected";
     public static final String CONVOLUTION_NAME = "Convolution";
+    public static final String TRANS_CONV_NAME = "TransConv";
     public static final String SOFTMAX_NAME = "Softmax";
     public static final String SIGMOID_NAME = "Sigmoid";
     public static final String TANH_NAME = "Tanh";
     public static final String RELU_NAME = "Relu";
+    public static final String LEAKY_RELU_NAME = "LeakyRelu";
     public static final String DROPOUT_NAME = "Dropout";
     public static final String POOLING_NAME = "Pooling";
     public static final String GLOBAL_POOLING_NAME = "GlobalPooling";
@@ -89,10 +91,12 @@ public class AllPredefinedLayers {
         return Arrays.asList(
                 FullyConnected.create(),
                 Convolution.create(),
+                TransConv.create(),
                 Softmax.create(),
                 Sigmoid.create(),
                 Tanh.create(),
                 Relu.create(),
+				LeakyRelu.create(),
                 Dropout.create(),
                 Flatten.create(),
                 Pooling.create(),
