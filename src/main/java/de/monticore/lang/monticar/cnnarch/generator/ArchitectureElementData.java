@@ -168,6 +168,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntValue(AllPredefinedLayers.AXIS_NAME).get();
     }
 
+    public List<Integer> getAxes(){
+        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.AXES_NAME).get();
+    }
+
     public int getDim(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.DIM_NAME).get();
     }
