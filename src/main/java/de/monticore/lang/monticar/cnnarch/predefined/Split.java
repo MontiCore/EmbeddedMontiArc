@@ -35,6 +35,11 @@ public class Split extends PredefinedLayerDeclaration {
     }
 
     @Override
+    public boolean isTrainable() {
+        return false;
+    }
+
+    @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         ArchTypeSymbol inputShape = layer.getInputTypes().get(0);
         int numberOfSplits = layer.getIntValue(AllPredefinedLayers.NUM_SPLITS_NAME).get();

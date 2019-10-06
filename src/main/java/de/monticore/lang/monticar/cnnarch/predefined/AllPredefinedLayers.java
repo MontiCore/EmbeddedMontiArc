@@ -58,6 +58,7 @@ public class AllPredefinedLayers {
     public static final String REDUCE_SUM_NAME = "ReduceSum";
     public static final String EXPAND_DIMS_NAME = "ExpandDims";
     public static final String MULTIPLY_NAME = "Multiply";
+    public static final String SWAPAXES_NAME = "SwapAxes";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -86,6 +87,7 @@ public class AllPredefinedLayers {
     public static final String WIDTH_NAME = "width";
     public static final String REPEATS_NAME = "n";
     public static final String AXIS_NAME = "axis";
+    public static final String AXES_NAME = "axes";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
@@ -124,7 +126,8 @@ public class AllPredefinedLayers {
                 Repeat.create(),
                 ReduceSum.create(),
                 ExpandDims.create(),
-                Multiply.create());
+                Multiply.create(),
+                SwapAxes.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){

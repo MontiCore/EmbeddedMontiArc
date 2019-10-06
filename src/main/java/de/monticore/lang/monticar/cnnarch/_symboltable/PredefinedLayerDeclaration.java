@@ -63,7 +63,11 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
     public boolean isTrainable(VariableSymbol.Member member) {
-        return true;
+        if(member == VariableSymbol.Member.STATE || member == VariableSymbol.Member.OUTPUT){
+            return false;
+        }else {
+            return true;
+        }
     }
 
     /**
