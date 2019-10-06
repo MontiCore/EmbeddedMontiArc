@@ -3,7 +3,7 @@
 <#if mode == "ARCHITECTURE_DEFINITION">
             self.${element.name} = gluon.rnn.GRU(hidden_size=${element.units?c},
                 num_layers=${element.layers?c},
-                bidirectional=${element.bidirectional?string("True", "False")}
+                bidirectional=${element.bidirectional?string("True", "False")},
                 layout='NTC')
             <#include "OutputShape.ftl">
 <#elseif mode == "FORWARD_FUNCTION">

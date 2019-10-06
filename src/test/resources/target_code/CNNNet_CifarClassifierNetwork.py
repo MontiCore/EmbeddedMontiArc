@@ -40,6 +40,50 @@ class Concatenate(gluon.HybridBlock):
     def hybrid_forward(self, F, *x):
         return F.concat(*x, dim=self.dim)
 
+class Repeat(gluon.HybridBlock):
+    def __init__(self, repeats, axis=1, **kwargs):
+        super(Repeat, self).__init__(**kwargs)
+        with self.name_scope():
+            self.axis = axis
+            self.repeats = repeats
+
+    def hybrid_forward(self, F, x):
+        return F.repeat(data=x, axis=self.axis, repeats=self.repeats)
+
+class Dot(gluon.HybridBlock):
+    def __init__(self, **kwargs):
+        super(Dot, self).__init__(**kwargs)
+
+    def hybrid_forward(self, F, *x):
+        return F.batch_dot(*x)
+
+class ExpandDims(gluon.HybridBlock):
+    def __init__(self, dim=1, **kwargs):
+        super(ExpandDims, self).__init__(**kwargs)
+        with self.name_scope():
+            self.dim = dim
+
+    def hybrid_forward(self, F, x):
+        return F.expand_dims(data=x, axis=self.dim)
+
+class SwapAxes(gluon.HybridBlock):
+    def __init__(self, dim1, dim2, **kwargs):
+        super(SwapAxes, self).__init__(**kwargs)
+        with self.name_scope():
+            self.dim1 = dim1
+            self.dim2 = dim2
+
+    def hybrid_forward(self, F, x):
+        return F.swapaxes(data=x, dim1=self.dim1, dim2=self.dim2)
+
+class ReduceSum(gluon.HybridBlock):
+    def __init__(self, axis=1, **kwargs):
+        super(ReduceSum, self).__init__(**kwargs)
+        with self.name_scope():
+            self.axis = axis
+
+    def hybrid_forward(self, F, x):
+        return F.sum(data=x, axis=self.axis)
 
 class ZScoreNormalization(gluon.HybridBlock):
     def __init__(self, data_mean, data_std, **kwargs):
@@ -467,6 +511,4 @@ class Net_0(gluon.HybridBlock):
         softmax_ = softmax32_
 
         return softmax_
-
-
 

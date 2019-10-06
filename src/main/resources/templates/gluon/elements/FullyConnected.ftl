@@ -1,3 +1,4 @@
+<#if element.member == "NONE">
 <#assign input = element.inputs[0]>
 <#assign units = element.units?c>
 <#assign use_bias = element.noBias?string("False","True")>
@@ -7,4 +8,16 @@
             <#include "OutputShape.ftl">
 <#elseif mode == "FORWARD_FUNCTION">
         ${element.name} = self.${element.name}(${input})
+</#if>
+<#elseif element.member == "STATE">
+<#if element.inputs?size gte 1>
+<#assign input = element.inputs[0]>
+<#if mode == "FORWARD_FUNCTION">
+        ${element.name} = ${input}
+<#elseif mode == "PYTHON_INLINE">
+                    ${element.name} = ${input}
+<#elseif mode == "CPP_INLINE">
+    ${element.name} = ${input}
+</#if>
+</#if>
 </#if>

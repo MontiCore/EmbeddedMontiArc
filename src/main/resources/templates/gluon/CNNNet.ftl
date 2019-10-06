@@ -55,7 +55,7 @@ class Dot(gluon.HybridBlock):
         super(Dot, self).__init__(**kwargs)
 
     def hybrid_forward(self, F, *x):
-        return F.dot(*x)
+        return F.batch_dot(*x)
 
 class ExpandDims(gluon.HybridBlock):
     def __init__(self, dim=1, **kwargs):
@@ -65,6 +65,16 @@ class ExpandDims(gluon.HybridBlock):
 
     def hybrid_forward(self, F, x):
         return F.expand_dims(data=x, axis=self.dim)
+
+class SwapAxes(gluon.HybridBlock):
+    def __init__(self, dim1, dim2, **kwargs):
+        super(SwapAxes, self).__init__(**kwargs)
+        with self.name_scope():
+            self.dim1 = dim1
+            self.dim2 = dim2
+
+    def hybrid_forward(self, F, x):
+        return F.swapaxes(data=x, dim1=self.dim1, dim2=self.dim2)
 
 class ReduceSum(gluon.HybridBlock):
     def __init__(self, axis=1, **kwargs):

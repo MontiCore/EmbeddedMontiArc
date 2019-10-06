@@ -40,6 +40,50 @@ class Concatenate(gluon.HybridBlock):
     def hybrid_forward(self, F, *x):
         return F.concat(*x, dim=self.dim)
 
+class Repeat(gluon.HybridBlock):
+    def __init__(self, repeats, axis=1, **kwargs):
+        super(Repeat, self).__init__(**kwargs)
+        with self.name_scope():
+            self.axis = axis
+            self.repeats = repeats
+
+    def hybrid_forward(self, F, x):
+        return F.repeat(data=x, axis=self.axis, repeats=self.repeats)
+
+class Dot(gluon.HybridBlock):
+    def __init__(self, **kwargs):
+        super(Dot, self).__init__(**kwargs)
+
+    def hybrid_forward(self, F, *x):
+        return F.batch_dot(*x)
+
+class ExpandDims(gluon.HybridBlock):
+    def __init__(self, dim=1, **kwargs):
+        super(ExpandDims, self).__init__(**kwargs)
+        with self.name_scope():
+            self.dim = dim
+
+    def hybrid_forward(self, F, x):
+        return F.expand_dims(data=x, axis=self.dim)
+
+class SwapAxes(gluon.HybridBlock):
+    def __init__(self, dim1, dim2, **kwargs):
+        super(SwapAxes, self).__init__(**kwargs)
+        with self.name_scope():
+            self.dim1 = dim1
+            self.dim2 = dim2
+
+    def hybrid_forward(self, F, x):
+        return F.swapaxes(data=x, dim1=self.dim1, dim2=self.dim2)
+
+class ReduceSum(gluon.HybridBlock):
+    def __init__(self, axis=1, **kwargs):
+        super(ReduceSum, self).__init__(**kwargs)
+        with self.name_scope():
+            self.axis = axis
+
+    def hybrid_forward(self, F, x):
+        return F.sum(data=x, axis=self.axis)
 
 class ZScoreNormalization(gluon.HybridBlock):
     def __init__(self, data_mean, data_std, **kwargs):
@@ -103,7 +147,7 @@ class Net_0(gluon.HybridBlock):
             # pool1_, output shape: {[96,27,27]}
 
             self.relu1_ = gluon.nn.Activation(activation='relu')
-            self.split1_ = Split(num_outputs=2, axis=1)
+            self.split1_ = Split(num_outputs=2, axis=0)
             # split1_, output shape: {[48,27,27][48,27,27]}
 
             self.conv2_1_padding = Padding(padding=(0,0,0,0,2,2,2,2))
@@ -133,25 +177,25 @@ class Net_0(gluon.HybridBlock):
 
             self.relu2_2_ = gluon.nn.Activation(activation='relu')
             self.concatenate3_ = Concatenate(dim=1)
-            # concatenate3_, output shape: {[256,13,13]}
+            # concatenate3_, output shape: {[128,26,13]}
 
             self.conv3_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv3_ = gluon.nn.Conv2D(channels=384,
                 kernel_size=(3,3),
                 strides=(1,1),
                 use_bias=True)
-            # conv3_, output shape: {[384,13,13]}
+            # conv3_, output shape: {[384,26,13]}
 
             self.relu3_ = gluon.nn.Activation(activation='relu')
-            self.split3_ = Split(num_outputs=2, axis=1)
-            # split3_, output shape: {[192,13,13][192,13,13]}
+            self.split3_ = Split(num_outputs=2, axis=0)
+            # split3_, output shape: {[192,26,13][192,26,13]}
 
             self.conv4_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
             self.conv4_1_ = gluon.nn.Conv2D(channels=192,
                 kernel_size=(3,3),
                 strides=(1,1),
                 use_bias=True)
-            # conv4_1_, output shape: {[192,13,13]}
+            # conv4_1_, output shape: {[192,26,13]}
 
             self.relu4_1_ = gluon.nn.Activation(activation='relu')
             self.conv5_1_padding = Padding(padding=(0,0,0,0,1,1,1,1))
@@ -159,12 +203,13 @@ class Net_0(gluon.HybridBlock):
                 kernel_size=(3,3),
                 strides=(1,1),
                 use_bias=True)
-            # conv5_1_, output shape: {[128,13,13]}
+            # conv5_1_, output shape: {[128,26,13]}
 
+            self.pool5_1_padding = Padding(padding=(0,0,0,0,1,0,0,0))
             self.pool5_1_ = gluon.nn.MaxPool2D(
                 pool_size=(3,3),
                 strides=(2,2))
-            # pool5_1_, output shape: {[128,6,6]}
+            # pool5_1_, output shape: {[128,13,6]}
 
             self.relu5_1_ = gluon.nn.Activation(activation='relu')
             self.conv4_2_padding = Padding(padding=(0,0,0,0,1,1,1,1))
@@ -172,7 +217,7 @@ class Net_0(gluon.HybridBlock):
                 kernel_size=(3,3),
                 strides=(1,1),
                 use_bias=True)
-            # conv4_2_, output shape: {[192,13,13]}
+            # conv4_2_, output shape: {[192,26,13]}
 
             self.relu4_2_ = gluon.nn.Activation(activation='relu')
             self.conv5_2_padding = Padding(padding=(0,0,0,0,1,1,1,1))
@@ -180,16 +225,17 @@ class Net_0(gluon.HybridBlock):
                 kernel_size=(3,3),
                 strides=(1,1),
                 use_bias=True)
-            # conv5_2_, output shape: {[128,13,13]}
+            # conv5_2_, output shape: {[128,26,13]}
 
+            self.pool5_2_padding = Padding(padding=(0,0,0,0,1,0,0,0))
             self.pool5_2_ = gluon.nn.MaxPool2D(
                 pool_size=(3,3),
                 strides=(2,2))
-            # pool5_2_, output shape: {[128,6,6]}
+            # pool5_2_, output shape: {[128,13,6]}
 
             self.relu5_2_ = gluon.nn.Activation(activation='relu')
             self.concatenate6_ = Concatenate(dim=1)
-            # concatenate6_, output shape: {[256,6,6]}
+            # concatenate6_, output shape: {[128,26,6]}
 
             self.fc6_ = gluon.nn.Dense(units=4096, use_bias=True, flatten=True)
             # fc6_, output shape: {[4096,1,1]}
@@ -219,7 +265,7 @@ class Net_0(gluon.HybridBlock):
         pool1_ = self.pool1_(lrn1_)
         relu1_ = self.relu1_(pool1_)
         split1_ = self.split1_(relu1_)
-        get2_1_ = split1_[0]
+        get2_1_ = [split1_[0]]
         conv2_1_padding = self.conv2_1_padding(get2_1_)
         conv2_1_ = self.conv2_1_(conv2_1_padding)
         lrn2_1_ = F.LRN(data=conv2_1_,
@@ -229,7 +275,7 @@ class Net_0(gluon.HybridBlock):
             nsize=5)
         pool2_1_ = self.pool2_1_(lrn2_1_)
         relu2_1_ = self.relu2_1_(pool2_1_)
-        get2_2_ = split1_[1]
+        get2_2_ = [split1_[1]]
         conv2_2_padding = self.conv2_2_padding(get2_2_)
         conv2_2_ = self.conv2_2_(conv2_2_padding)
         lrn2_2_ = F.LRN(data=conv2_2_,
@@ -244,21 +290,23 @@ class Net_0(gluon.HybridBlock):
         conv3_ = self.conv3_(conv3_padding)
         relu3_ = self.relu3_(conv3_)
         split3_ = self.split3_(relu3_)
-        get4_1_ = split3_[0]
+        get4_1_ = [split3_[0]]
         conv4_1_padding = self.conv4_1_padding(get4_1_)
         conv4_1_ = self.conv4_1_(conv4_1_padding)
         relu4_1_ = self.relu4_1_(conv4_1_)
         conv5_1_padding = self.conv5_1_padding(relu4_1_)
         conv5_1_ = self.conv5_1_(conv5_1_padding)
-        pool5_1_ = self.pool5_1_(conv5_1_)
+        pool5_1_padding = self.pool5_1_padding(conv5_1_)
+        pool5_1_ = self.pool5_1_(pool5_1_padding)
         relu5_1_ = self.relu5_1_(pool5_1_)
-        get4_2_ = split3_[1]
+        get4_2_ = [split3_[1]]
         conv4_2_padding = self.conv4_2_padding(get4_2_)
         conv4_2_ = self.conv4_2_(conv4_2_padding)
         relu4_2_ = self.relu4_2_(conv4_2_)
         conv5_2_padding = self.conv5_2_padding(relu4_2_)
         conv5_2_ = self.conv5_2_(conv5_2_padding)
-        pool5_2_ = self.pool5_2_(conv5_2_)
+        pool5_2_padding = self.pool5_2_padding(conv5_2_)
+        pool5_2_ = self.pool5_2_(pool5_2_padding)
         relu5_2_ = self.relu5_2_(pool5_2_)
         concatenate6_ = self.concatenate6_(relu5_1_, relu5_2_)
         fc6_ = self.fc6_(concatenate6_)
@@ -272,6 +320,4 @@ class Net_0(gluon.HybridBlock):
         predictions_ = softmax8_
 
         return predictions_
-
-
 
