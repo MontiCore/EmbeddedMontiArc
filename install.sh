@@ -2,7 +2,7 @@
 # (c) https://github.com/MontiCore/monticore  
 . config.sh
 
-GENERATOR_PATH="bin/embedded-montiarc-math-middleware-generator-0.0.26-SNAPSHOT-jar-with-dependencies.jar"
+GENERATOR_PATH="bin/embedded-montiarc-math-middleware-generator-0.0.33-SNAPSHOT-jar-with-dependencies.jar"
 PREPROCESSOR_BUILD="target/preprocessor/build"
 AGENT_BUILD="target/agent/build"
 
