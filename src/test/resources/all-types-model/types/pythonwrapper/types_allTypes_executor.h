@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef _TYPES_ALLTYPES_EXECUTOR_H_
 #define _TYPES_ALLTYPES_EXECUTOR_H_
 #include "armadillo"

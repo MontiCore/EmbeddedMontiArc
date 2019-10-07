@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #include "types_allTypes_executor.h"
 
 void types_allTypes_executor::init() {
