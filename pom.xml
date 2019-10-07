@@ -18,7 +18,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnn-train</artifactId>
-    <version>0.3.6-SNAPSHOT</version>
+    <version>0.3.7-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -129,6 +129,13 @@
             <artifactId>monticore-runtime</artifactId>
             <version>${monticore.version}</version>
             <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
 

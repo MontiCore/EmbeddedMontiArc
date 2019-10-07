@@ -122,6 +122,15 @@ class ParameterAlgorithmMapping {
             || EXCLUSIVE_TD3_PARAMETERS.contains(entryClazz);
     }
 
+    boolean isReinforcementLearningParameterOnly(Class<? extends ASTEntry> entryClazz) {
+        return (GENERAL_REINFORCEMENT_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_DQN_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_DDPG_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_TD3_PARAMETERS.contains(entryClazz))
+            && !GENERAL_PARAMETERS.contains(entryClazz)
+            && !EXCLUSIVE_SUPERVISED_PARAMETERS.contains(entryClazz);
+    }
+
     boolean isSupervisedLearningParameter(Class<? extends ASTEntry> entryClazz) {
         return GENERAL_PARAMETERS.contains(entryClazz)
             || EXCLUSIVE_SUPERVISED_PARAMETERS.contains(entryClazz);

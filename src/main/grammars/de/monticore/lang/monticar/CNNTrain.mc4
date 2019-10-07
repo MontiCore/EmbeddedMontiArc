@@ -208,7 +208,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     GymEnvironmentNameEntry implements GymEnvironmentEntry = name:"name" ":" value:StringValue;
 
     interface RosEnvironmentEntry extends Entry;
-    RosEnvironmentValue implements EnvironmentValue = | name:"ros_interface" ("{" params:RosEnvironmentEntry* "}")?;
+    RosEnvironmentValue implements EnvironmentValue = name:"ros_interface" ("{" params:RosEnvironmentEntry* "}")?;
     RosEnvironmentStateTopicEntry implements RosEnvironmentEntry = name:"state_topic" ":" value:StringValue;
     RosEnvironmentActionTopicEntry implements RosEnvironmentEntry = name:"action_topic" ":" value:StringValue;
     RosEnvironmentResetTopicEntry implements RosEnvironmentEntry = name:"reset_topic" ":" value:StringValue;
