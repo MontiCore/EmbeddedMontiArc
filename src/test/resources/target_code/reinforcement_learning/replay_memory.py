@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 import numpy as np
 
 class ReplayMemoryBuilder(object):

@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 import mxnet as mx
 import numpy as np
 from mxnet import gluon
@@ -91,13 +90,14 @@ class Net_0(gluon.HybridBlock):
             else:
                 self.input_normalization_data_ = NoNormalization()
 
-            self.conv1_padding = Padding(padding=(0,0,0,0,2,1,2,1))
+            self.conv1_padding = Padding(padding=(0,0,-1,0,0,0,0,0))
             self.conv1_ = gluon.nn.Conv2D(channels=96,
                 kernel_size=(11,11),
                 strides=(4,4),
                 use_bias=True)
             # conv1_, output shape: {[96,55,55]}
 
+            self.pool1_padding = Padding(padding=(0,0,-1,0,0,0,0,0))
             self.pool1_ = gluon.nn.MaxPool2D(
                 pool_size=(3,3),
                 strides=(2,2))
@@ -114,6 +114,7 @@ class Net_0(gluon.HybridBlock):
                 use_bias=True)
             # conv2_1_, output shape: {[128,27,27]}
 
+            self.pool2_1_padding = Padding(padding=(0,0,-1,0,0,0,0,0))
             self.pool2_1_ = gluon.nn.MaxPool2D(
                 pool_size=(3,3),
                 strides=(2,2))
@@ -127,6 +128,7 @@ class Net_0(gluon.HybridBlock):
                 use_bias=True)
             # conv2_2_, output shape: {[128,27,27]}
 
+            self.pool2_2_padding = Padding(padding=(0,0,-1,0,0,0,0,0))
             self.pool2_2_ = gluon.nn.MaxPool2D(
                 pool_size=(3,3),
                 strides=(2,2))
@@ -162,6 +164,7 @@ class Net_0(gluon.HybridBlock):
                 use_bias=True)
             # conv5_1_, output shape: {[128,13,13]}
 
+            self.pool5_1_padding = Padding(padding=(0,0,-1,0,0,0,0,0))
             self.pool5_1_ = gluon.nn.MaxPool2D(
                 pool_size=(3,3),
                 strides=(2,2))
@@ -183,6 +186,7 @@ class Net_0(gluon.HybridBlock):
                 use_bias=True)
             # conv5_2_, output shape: {[128,13,13]}
 
+            self.pool5_2_padding = Padding(padding=(0,0,-1,0,0,0,0,0))
             self.pool5_2_ = gluon.nn.MaxPool2D(
                 pool_size=(3,3),
                 strides=(2,2))
@@ -217,7 +221,8 @@ class Net_0(gluon.HybridBlock):
             beta=0.75,
             knorm=2,
             nsize=5)
-        pool1_ = self.pool1_(lrn1_)
+        pool1_padding = self.pool1_padding(lrn1_)
+        pool1_ = self.pool1_(pool1_padding)
         relu1_ = self.relu1_(pool1_)
         split1_ = self.split1_(relu1_)
         get2_1_ = split1_[0]
@@ -228,7 +233,8 @@ class Net_0(gluon.HybridBlock):
             beta=0.75,
             knorm=2,
             nsize=5)
-        pool2_1_ = self.pool2_1_(lrn2_1_)
+        pool2_1_padding = self.pool2_1_padding(lrn2_1_)
+        pool2_1_ = self.pool2_1_(pool2_1_padding)
         relu2_1_ = self.relu2_1_(pool2_1_)
         get2_2_ = split1_[1]
         conv2_2_padding = self.conv2_2_padding(get2_2_)
@@ -238,7 +244,8 @@ class Net_0(gluon.HybridBlock):
             beta=0.75,
             knorm=2,
             nsize=5)
-        pool2_2_ = self.pool2_2_(lrn2_2_)
+        pool2_2_padding = self.pool2_2_padding(lrn2_2_)
+        pool2_2_ = self.pool2_2_(pool2_2_padding)
         relu2_2_ = self.relu2_2_(pool2_2_)
         concatenate3_ = self.concatenate3_(relu2_1_, relu2_2_)
         conv3_padding = self.conv3_padding(concatenate3_)
@@ -251,7 +258,8 @@ class Net_0(gluon.HybridBlock):
         relu4_1_ = self.relu4_1_(conv4_1_)
         conv5_1_padding = self.conv5_1_padding(relu4_1_)
         conv5_1_ = self.conv5_1_(conv5_1_padding)
-        pool5_1_ = self.pool5_1_(conv5_1_)
+        pool5_1_padding = self.pool5_1_padding(conv5_1_)
+        pool5_1_ = self.pool5_1_(pool5_1_padding)
         relu5_1_ = self.relu5_1_(pool5_1_)
         get4_2_ = split3_[1]
         conv4_2_padding = self.conv4_2_padding(get4_2_)
@@ -259,7 +267,8 @@ class Net_0(gluon.HybridBlock):
         relu4_2_ = self.relu4_2_(conv4_2_)
         conv5_2_padding = self.conv5_2_padding(relu4_2_)
         conv5_2_ = self.conv5_2_(conv5_2_padding)
-        pool5_2_ = self.pool5_2_(conv5_2_)
+        pool5_2_padding = self.pool5_2_padding(conv5_2_)
+        pool5_2_ = self.pool5_2_(pool5_2_padding)
         relu5_2_ = self.relu5_2_(pool5_2_)
         concatenate6_ = self.concatenate6_(relu5_1_, relu5_2_)
         fc6_ = self.fc6_(concatenate6_)

@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 import signal
 import sys
 import numpy as np
