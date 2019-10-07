@@ -7,9 +7,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnntrain.helper;
 
-/**
- *
- */
 public class ConfigEntryNameConstants {
     public static final String LEARNING_METHOD = "learning_method";
     public static final String NUM_EPISODES = "num_episodes";

@@ -13,6 +13,8 @@ import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstant
 import java.util.Optional;
 
 class ASTConfigurationUtils {
+    final static ParameterAlgorithmMapping parameterChecker = new ParameterAlgorithmMapping();
+
     static boolean isReinforcementLearning(final ASTConfiguration configuration) {
         return configuration.getEntriesList().stream().anyMatch(e ->
                 (e instanceof ASTLearningMethodEntry)
@@ -93,5 +95,17 @@ class ASTConfigurationUtils {
 
     public static boolean isContinuousAlgorithm(final ASTConfiguration node) {
         return isDdpgAlgorithm(node) || isTd3Algorithm(node);
+    }
+
+    public static boolean hasRLEntry(ASTConfiguration node) {
+        //return node.getEntriesList().stream()
+        //    .anyMatch(e -> parameterChecker.isReinforcementLearningParameterOnly(e.getClass()));
+        for (ASTConfigEntry e : node.getEntriesList()) {
+            boolean b = parameterChecker.isReinforcementLearningParameterOnly(e.getClass());
+            if (b) {
+                return true;
+            }
+        }
+        return false;
     }
 }
