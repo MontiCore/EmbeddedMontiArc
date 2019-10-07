@@ -9,7 +9,7 @@ AGENT_TRAINING_ROOT="${TARGET_OUTPUT}/src/${ROOT_COMPONENT_NAME}/cpp"
 INSTANCE_NAME_NEURAL_NET="torcs_agent_torcsAgent_actor"
 ENVIRONMENT_NAME="ros-torcs"
 
-GENERATOR_PATH="bin/embedded-montiarc-math-middleware-generator-0.0.26-SNAPSHOT-jar-with-dependencies.jar"
+GENERATOR_PATH="bin/embedded-montiarc-math-middleware-generator-0.0.33-SNAPSHOT-jar-with-dependencies.jar"
 
 EXEC_ENVIRONMENT_TRAINING="python ./bin/ros-gym-torcs/launcher.py"
 
