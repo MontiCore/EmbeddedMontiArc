@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #include "dl_deepLearningComponent_executor.h"
 
 void dl_deepLearningComponent_executor::init() {

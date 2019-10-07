@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #include "calculator_calculator_executor.h"
 
 void calculator_calculator_executor::init() {

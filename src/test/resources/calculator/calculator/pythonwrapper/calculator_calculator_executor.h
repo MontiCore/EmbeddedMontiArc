@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef _CALCULATOR_CALCULATOR_EXECUTOR_H_
 #define _CALCULATOR_CALCULATOR_EXECUTOR_H_
 #include "armadillo"

@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #include "test_noOutputComponent_executor.h"
 
 void test_noOutputComponent_executor::init() {
