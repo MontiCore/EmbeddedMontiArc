@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 from reinforcement_learning.agent import DqnAgent
 from reinforcement_learning.util import AgentSignalHandler
 from reinforcement_learning.cnnarch_logger import ArchLogger

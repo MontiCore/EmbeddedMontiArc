@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 import os
 import h5py
 import mxnet as mx
