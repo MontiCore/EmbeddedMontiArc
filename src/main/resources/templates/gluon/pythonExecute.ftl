@@ -20,7 +20,7 @@
                     ${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]} = applyBeamSearch(input, 0, ${length}, ${width}, 1.0, ${networkInstruction?index}, input)
                     <#else>
                     ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")?replace("_state_","_state_[0]")})
-                    <#if !(tc.getStreamOutputNames(networkInstruction.body)[0]?ends_with("_output_"))>
+                    <#if !(tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]?ends_with("_output_"))>
                     outputs.append(${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]})
                     </#if>
                     <#list resolvedBody.elements as element>
