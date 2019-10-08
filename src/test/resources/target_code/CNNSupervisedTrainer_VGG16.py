@@ -4,6 +4,7 @@ import numpy as np
 import time
 import os
 import shutil
+import pickle
 from mxnet import gluon, autograd, nd
 
 class CrossEntropyLoss(gluon.loss.Loss):
@@ -30,6 +31,7 @@ class LogCoshLoss(gluon.loss.Loss):
         loss = F.log(F.cosh(pred - label))
         loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
         return F.mean(loss, axis=self._batch_axis, exclude=True)
+
 
 class CNNSupervisedTrainer_VGG16:
     def applyBeamSearch(input, length, width, maxLength, currProb, netIndex, bestOutput):
@@ -168,6 +170,8 @@ class CNNSupervisedTrainer_VGG16:
                 data_ = batch.data[0].as_in_context(mx_context)
                 predictions_label = batch.label[0].as_in_context(mx_context)
 
+                outputs=[]
+
                 with autograd.record():
                     predictions_ = mx.nd.zeros((batch_size, 1000,), ctx=mx_context)
 
@@ -224,8 +228,34 @@ class CNNSupervisedTrainer_VGG16:
                     else:
                         predictions.append(output_name)
 
-                #print [word[0] for word in predictions]
-                #print labels[0]
+                #Compute BLEU and NIST Score if data folder contains a dictionary -> NLP dataset
+                if(os.path.isfile('data/VGG16/dict.pkl')):
+                    with open('data/VGG16/dict.pkl', 'rb') as f:
+                        dict = pickle.load(f)
+
+                    import nltk.translate.bleu_score
+                    import nltk.translate.nist_score
+
+                    prediction = []
+                    for index in range(batch_size):
+                        sentence = ''
+                        for entry in predictions:
+                            sentence += dict[int(entry[index].asscalar())] + ' '
+                        prediction.append(sentence)
+
+                    for index in range(batch_size):
+                        sentence = ''
+                        for batchEntry in batch.label:
+                            sentence += dict[int(batchEntry[index].asscalar())] + ' '
+                        print "############################"
+                        print "label: ", sentence
+                        print "prediction: ", prediction[index]
+
+                        BLEUscore = nltk.translate.bleu_score.sentence_bleu([sentence], prediction[index])
+                        NISTscore = nltk.translate.nist_score.sentence_nist([sentence], prediction[index])
+                        print "BLEU: ", BLEUscore
+                        print "NIST: ", NISTscore
+                        print "############################"
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]

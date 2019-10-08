@@ -25,8 +25,10 @@ class CNNDataLoader_CifarClassifierNetwork:
             data_std[input_name + '_'] = nd.array(train_h5[input_name][:].std(axis=0) + 1e-5)
 
         train_label = {}
+        index = 0
         for output_name in self._output_names_:
-            train_label[output_name] = train_h5[output_name]
+            train_label[index] = train_h5[output_name]
+            index += 1
 
         train_iter = mx.io.NDArrayIter(data=train_data,
                                        label=train_label,
@@ -40,8 +42,10 @@ class CNNDataLoader_CifarClassifierNetwork:
                 test_data[input_name] = test_h5[input_name]
 
             test_label = {}
+            index = 0
             for output_name in self._output_names_:
-                test_label[output_name] = test_h5[output_name]
+                test_label[index] = test_h5[output_name]
+                index += 1
 
             test_iter = mx.io.NDArrayIter(data=test_data,
                                           label=test_label,
