@@ -14,6 +14,12 @@ public enum EvalMetric {
             return "accuracy";
         }
     },
+    BLEU{
+        @Override
+        public String toString() {
+            return "bleu";
+        }
+    },
     CROSS_ENTROPY{
         @Override
         public String toString() {

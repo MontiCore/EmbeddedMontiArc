@@ -36,6 +36,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     LossWeightsEntry implements ConfigEntry = name:"loss_weights" ":" value:DoubleVectorValue;
     
     EvalMetricValue implements ConfigValue =(accuracy:"accuracy"
+                                               | bleu:"bleu"
                                                | crossEntropy:"cross_entropy"
                                                | f1:"f1"
                                                | mae:"mae"
