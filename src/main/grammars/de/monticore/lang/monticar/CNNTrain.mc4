@@ -41,6 +41,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
                                                | f1:"f1"
                                                | mae:"mae"
                                                | mse:"mse"
+                                               | perplexity:"perplexity"
                                                | rmse:"rmse"
                                                | topKAccuracy:"top_k_accuracy");
 

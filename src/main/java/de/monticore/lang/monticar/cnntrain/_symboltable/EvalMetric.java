@@ -44,6 +44,12 @@ public enum EvalMetric {
             return "mse";
         }
     },
+    PERPLEXITY{
+        @Override
+        public String toString() {
+            return "perplexity";
+        }
+    },
     RMSE{
         @Override
         public String toString() {
