@@ -19,6 +19,7 @@ def print_FailedPipelineProjects(group, abs):
     print_FailedPipelineProjects(current_group, abspath)
 
 import gitlab
+import sys
 
 gl=gitlab.Gitlab('https://git.rwth-aachen.de/', private_token=str(sys.argv[1]))
 
