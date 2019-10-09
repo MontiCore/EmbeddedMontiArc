@@ -20,7 +20,7 @@ def print_FailedPipelineProjects(group, abs):
 
 import gitlab
 
-gl=gitlab.Gitlab('https://git.rwth-aachen.de/', private_token='BDwwZXqRkex-tx7GCRNz')
+gl=gitlab.Gitlab('https://git.rwth-aachen.de/', private_token=str(sys.argv[1]))
 
 gl.auth()
 
