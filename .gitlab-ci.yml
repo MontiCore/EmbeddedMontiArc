@@ -13,6 +13,15 @@ build_linux:
   stage: build
   image: maven:3-amazoncorretto-8
   before_script:
-  script:
+  - apt update
+  - apt --assume-yes install libxext6
+  - apt --assume-yes install libxrender1
+  - apt --assume-yes install libxtst6
+  script: 
+  - "JAWT_LIB=$(find / -name libjawt.so -print -quit)"
+  - "echo JAWT_LIB: $JAWT_LIB"
+  - "JAWT_FOLDER=$(dirname ${JAWT_LIB})"
+  - "echo JAWT_FOLDER: $JAWT_FOLDER"
+  - "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${JAWT_FOLDER}"
   - mvn clean install -s settings.xml
   
