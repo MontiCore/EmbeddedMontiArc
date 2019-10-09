@@ -1,0 +1,154 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore
+ */
+package de.rwth.monticore.EmbeddedMontiArc.simulators.basic_simulator.controller;
+
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.basic_simulator.filesystem.MapData;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.Point2D;
+import sensors.StaticPlannedTrajectoryXSensor;
+import sensors.StaticPlannedTrajectoryYSensor;
+import simulation.EESimulator.DirectModelAsEEComponent;
+import simulation.EESimulator.EEComponent;
+import simulation.EESimulator.EESimulator;
+import simulation.bus.Bus;
+import simulation.bus.CAN;
+import simulation.bus.CANOperationMode;
+import simulation.bus.FlexRay;
+import simulation.bus.InstantBus;
+import simulation.simulator.Simulator;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
+import simulation.vehicle.*;
+import sensors.*;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+
+public class VehicleBuilder {
+    
+	//hardcoded config
+	private final String AUTOPILOT_CONFIG = "autopilot=AutopilotAdapter\n"+
+												"os=windows\n" + 
+												"no_time=true";
+	
+	public static class VehicleTrajectory {
+        Point2D[] trajectory;
+        Point2D start;
+        Point2D target;
+        public VehicleTrajectory(double[] start_coords, double[] target_coords, MapData map) throws Exception {
+            start = map.conv.latlonToMeters(new Point2D(start_coords[0], start_coords[1]));
+            target = map.conv.latlonToMeters(new Point2D(target_coords[0], target_coords[1]));
+
+            trajectory = new Pathfinding(map).find_shortest_path(start, target);
+            start = trajectory[0];
+            target = trajectory[trajectory.length-1];
+        }
+    }
+
+    HardwareEmulatorInterface model_server;
+    SimulationResult result;
+
+    public VehicleBuilder(HardwareEmulatorInterface model_server, SimulationResult result){
+        this.model_server = model_server;
+        this.result = result;
+    }
+    /*
+        TODOS:
+        - Seperate PhysicalVehicleBuilder and the parts the create the "Vehicle" itself.
+        - Setup from config/simlang
+     */
+    public void createVehicle(VehicleConfig config, MapData map) throws Exception {
+    	EESimulator eeSim = new EESimulator(Instant.EPOCH);
+    	EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSim);
+    	InstantBus sensorBus = new InstantBus(eeSim);
+    	InstantBus actuatorBus = new InstantBus(eeSim);
+        FlexRay controllerBus = new FlexRay(eeSim);
+        eeVehicleBuilder.connectBuses(sensorBus, controllerBus, Duration.ofMillis(400));
+        eeVehicleBuilder.connectBuses(actuatorBus, controllerBus, Duration.ofMillis(400));
+    	eeVehicleBuilder.createControllerSensors(sensorBus);
+        eeVehicleBuilder.createMassPointActuators(actuatorBus);
+        addStandardActuators(config.physics_model, eeVehicleBuilder, actuatorBus);
+    	DirectModelAsEEComponent controller = eeVehicleBuilder.createController(model_server, config.autopilot_config, controllerBus);
+    	//controller.setCycleTime(bus.getCycleTime());
+        PhysicalVehicleBuilder physicalVehicleBuilder = getVehicleBuilder(config.physics_model);
+        Vehicle simVehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+
+        PhysicalVehicle physicalVehicle = simVehicle.getPhysicalVehicle();
+
+        // compute trajectory for the vehicle
+        VehicleTrajectory trajectory = new VehicleTrajectory(config.start_coords, config.target_coords, map);
+        // put vehicle on its start point
+        Simulator.getSharedInstance().registerAndPutObject(physicalVehicle,
+                trajectory.start.getX(),
+                trajectory.start.getY(),
+                getRotation(trajectory.trajectory)
+        );
+
+        //  setup the vehicle's trajectory
+        Map<String, List<Double>> trajectoryCoordinates = getTrajectoryCoordinates(trajectory.trajectory);
+
+        StaticPlannedTrajectoryXSensor plannedX = (StaticPlannedTrajectoryXSensor) simVehicle.getEEVehicle().getSensorByType(BusEntry.PLANNED_TRAJECTORY_X).get();
+        plannedX.initializeTrajectory(trajectoryCoordinates.get("x"));
+        
+        StaticPlannedTrajectoryYSensor plannedY = (StaticPlannedTrajectoryYSensor) simVehicle.getEEVehicle().getSensorByType(BusEntry.PLANNED_TRAJECTORY_Y).get();
+        plannedY.initializeTrajectory(trajectoryCoordinates.get("y"));
+
+        result.register_car(physicalVehicle.getId(), config.name, config.config, trajectory);
+    }
+
+
+
+    public static PhysicalVehicleBuilder getVehicleBuilder(String physics_model){
+        if (physics_model.equalsIgnoreCase(VehicleConfig.PhysicsModel.MODELICA.name)){
+            return new ModelicaPhysicalVehicleBuilder();
+        } else if (physics_model.equalsIgnoreCase(VehicleConfig.PhysicsModel.MASSPOINT.name)){
+            return new MassPointPhysicalVehicleBuilder();
+        }
+        //Allow the masspoint physical vehicle as DEFAULT
+        return new MassPointPhysicalVehicleBuilder();
+    }
+
+    public static void addStandardActuators(String physics_model, EEVehicleBuilder eeVehicleBuilder, Bus actuatorBus){
+        if (physics_model.equalsIgnoreCase(VehicleConfig.PhysicsModel.MODELICA.name)){
+            eeVehicleBuilder.createModelicaActuators(actuatorBus);
+            return;
+        } else if (physics_model.equalsIgnoreCase(VehicleConfig.PhysicsModel.MASSPOINT.name)){
+            eeVehicleBuilder.createMassPointActuators(actuatorBus);
+            return;
+        }
+        //Allow the masspoint physical vehicle as DEFAULT
+        eeVehicleBuilder.createMassPointActuators(actuatorBus);
+    }
+
+    public static double getRotation(Point2D[] trajectory) {
+        if (trajectory.length < 2) return 0d;
+        //compare first two vectors, to get correct start rotation
+        Point2D v1pos = trajectory[0];
+        Point2D v2pos = trajectory[1];
+
+        //slightly change the rotation from perfect straight line,
+        //otherwise the simulator calculates strange starting trajectory
+        return Math.atan2(v1pos.getX() - v2pos.getX(), v2pos.getY() - v1pos.getY()) -0.35d;
+    }
+
+    public static Map<String, List<Double>> getTrajectoryCoordinates(Point2D[] path) {
+        Map<String, List<Double>> result = new HashMap<String, List<Double>>();
+
+        List<Double> x = new ArrayList<Double>();
+        List<Double> y = new ArrayList<Double>();
+        for (Point2D p : path) {
+            x.add(p.getX());
+            y.add(p.getY());
+        }
+        result.put("x", x);
+        result.put("y", y);
+        return result;
+    }
+
+
+
+}
