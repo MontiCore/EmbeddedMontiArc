@@ -5,4 +5,9 @@
 @REM can be found under https://github.com/MontiCore/monticore
 @REM
 
-java -jar basic-simulator.jar %*
+
+@REM Make sure the script runs from its original location
+pushd %~dp0
+
+call mvn clean install -s "settings.xml" %*
+popd
