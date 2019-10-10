@@ -17,6 +17,7 @@ public class CoCoTestResultPrinter {
     private static int total = 0;
     private static int z = 0;
     private static FilePrinter ip;
+    private static boolean printProgress = true;
 
     private static String[] names = {
             "\"Root\"",
@@ -73,15 +74,21 @@ public class CoCoTestResultPrinter {
         }
     }
 
-    public static void printTestResults(List<CheckCoCoResult> testResults, String path, boolean merge, boolean group) {
+    public static void printTestResults(List<CheckCoCoResult> testResults, String path, boolean merge, boolean group, boolean print) {
+        if (!(new File(path)).exists())
+            merge = false;
+
         if (testResults.size() == 0) return;
         int depth = group ? 0 : 1;
         z = 0;
-        progress = 0;
-        total = calcTotal(testResults, group);
-        for (int j = 0; j < 50; j++)
-            CustomPrinter.print("|");
-        CustomPrinter.println("");
+        printProgress = print;
+        if (printProgress) {
+            progress = 0;
+            total = calcTotal(testResults, group);
+            for (int j = 0; j < 50; j++)
+                CustomPrinter.print("|");
+            CustomPrinter.println("");
+        }
 
         if (merge) {
             try {
@@ -89,7 +96,6 @@ public class CoCoTestResultPrinter {
                 str = str.substring(0, str.length() - 3);
                 FileUtils.writeStringToFile(new File(path),
                         str);
-                printTestResults(testResults, merge, "", depth, !group);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -97,10 +103,10 @@ public class CoCoTestResultPrinter {
             File file = new File(path);
             if (file.exists())
                 file.delete();
-            ip = new FilePrinter(path);
-            printTestResults(testResults, merge, "", depth, !group);
-            ip.end();
         }
+        ip = new FilePrinter(path);
+        printTestResults(testResults, merge, "", depth, !group);
+        ip.end();
 
         CustomPrinter.println("");
         CustomPrinter.println("");
@@ -125,7 +131,10 @@ public class CoCoTestResultPrinter {
 
             ip.println("{");
             ip.indent();
-            ip.println("\"Root\"" + ": \"" + (rootName.equals("") ? testResult.getRootName1() : rootName) + "\",");
+            if (depth == 1 && !rootName.equals(testResult.getRootName())){
+                int r = 1;
+            }
+            ip.println("\"Root\"" + ": \"" + (rootName.equals("") ? testResult.getRootName() : rootName) + "\",");
             ip.println("\"Project\"" + ": \"" + testResult.getProject() + "\",");
             ip.println("\"ChildExpansion\"" + ": \"" + getDepthImage(testResult, depth) + "\",");
             ip.println("\"ModelName\"" + ": \"" + testResult.getModelName() + "\",");
@@ -144,13 +153,13 @@ public class CoCoTestResultPrinter {
 
             ip.println("\"ChildData\"" + ": ");
             if (depth == 0)
-                printChildData(testResult, testResult.getRootName1(), depth + 1);
+                printChildData(testResult, testResult.getRootName(), depth + 1);
             else
                 ip.println("[]");
             ip.unindent();
             ip.print("}");
 
-            if (depth == 1)
+            if (depth == 1 && printProgress)
                 printProgress();
         }
         ip.println("");
@@ -206,9 +215,9 @@ public class CoCoTestResultPrinter {
 
     private static String getFilePath(CheckCoCoResult testResult) {
         if (testResult.isErrorResult()) return testResult.getModelName();
-        if (testResult.isMainPackage()) return testResult.getRootName1() + "/" + testResult.getProject();
+        if (testResult.isMainPackage()) return testResult.getRootName() + "/" + testResult.getProject();
         File file = testResult.getModelFile();
-        String name = file.getAbsolutePath().substring(testResult.getRootFile1().getAbsolutePath().length());
+        String name = file.getAbsolutePath().substring(testResult.getRootFile().getAbsolutePath().length());
         String displayName = name.replace("\\", "/");
         return displayName;
     }

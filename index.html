@@ -27,10 +27,13 @@
     <!--<p class="text-to-button">Shows all Grammars</p>-->
 </div>
 
-<script>
-    $(document).ready( function() {
-        $( ".widget input[type=submit], .widget a, .widget button" ).button();
-    } );
-</script>
+<div id="select-project-container" class="custom-button-container">
+    <label id="select-project-label" for="select-project">Select project</label>
+    <select name="select-project" id="select-project" class="custom-button">
+        <option selected="selected" value="-1">All Projects</option>
+    </select>
+</div>
+
+<script src="report/js/index.js"></script>
 </body>
 </html>

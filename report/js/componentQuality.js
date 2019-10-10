@@ -44,3 +44,6 @@ function expandedFrameInited() {
     $('#loadingFrame').css({'display': 'none'});
     $('#groupedFrame').css({'visibility': 'visible'});
 }
+
+document.getElementById('groupedFrame').src = "cocosReport.html" + window.location.search;
+document.getElementById('expandedFrame').src = "cocosReportExpanded.html" + window.location.search;

@@ -26,19 +26,7 @@ public class Main {
         CustomPrinter.init();
         ReportContext context = getContext(args);
         if (context.isTestCoCos()) {
-            CheckCoCos tcc = new CheckCoCos();
-            CustomPrinter.println("\n<================Test CoCos================>\n");
-            List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getTimeout(), context.getCoCoTimeOut(), "ema", "emam", "emadl");
-            OrderTestResults<CheckCoCoResult> order = new OrderTestResults();
-            order.orderTestResults(testResults, new CheckCoCoResultCreator());
-            List<CheckCoCoResult> rootModels = order.getRootModels();
-            List<CheckCoCoResult> mainPackages = order.getMainPackageModels();
-
-            CustomPrinter.println("\n<============Write Test Results============>\n");
-            CoCoTestResultPrinter.printTestResults(mainPackages, context.getOutput() + "data.json", context.isMerge(), true);
-            CoCoTestResultPrinter.printTestResults(testResults, context.getOutput() + "dataExpanded.json", context.isMerge(), false);
-            TestInfoPrinter.printInfo(testResults, context.getOutput() + "info.json", context.getDate(), context.isMerge());
-            CustomPrinter.println("SUCCESS\n");
+            ManageTesting.manageTesting(context);
         }
         if (context.isTestsEndWithTest()) {
             CheckTests tewt = new CheckTests();
@@ -65,9 +53,8 @@ public class Main {
             }
         }
         dataDir.mkdir();
-        File out = new File(context.getOutput());
         try {
-            FileUtils.copyDirectory(out, dataDir);
+            FileUtils.copyDirectory(new File(context.getOutput()), dataDir);
         } catch (IOException e) {
             e.printStackTrace();
         }

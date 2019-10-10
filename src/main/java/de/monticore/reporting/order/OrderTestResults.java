@@ -2,11 +2,7 @@
 package de.monticore.reporting.order;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTElement;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.reporting.helper.OrderableModelInfo;
 import de.monticore.reporting.helper.OrderableModelInfoCreator;
@@ -16,15 +12,30 @@ import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import java.io.File;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class OrderTestResults<T extends OrderableModelInfo> {
 
+    public static final String allProjects = "allProjects";
 
-    private List<T> rootModels = new LinkedList<>();
-    private List<T> hasNoParentModels = new LinkedList<>();
-    private List<T> mainPackageModels = new LinkedList<>();
+    private Map<String, List<T>> mainPackageModels = new HashMap<>();
 
-    public void orderTestResults(List<T> testResults, OrderableModelInfoCreator<T> creator) {
+    public void orderTestResults(File root, Set<String> projectsToTest, List<T> testResults, OrderableModelInfoCreator<T> creator) {
+        mainPackageModels.put(allProjects, new LinkedList<>());
+        orderTestResultsMain(allProjects, testResults, creator);
+
+        for (File project : root.listFiles()) {
+            if (project.isDirectory() && projectsToTest.contains(project.getName())) {
+                List<T> projectTestResults = testResults.stream().filter(
+                        t -> t.getProject().contains(project.getName())
+                ).collect(Collectors.toList());
+                mainPackageModels.put(project.getName(), new LinkedList<>());
+                orderTestResultsMain(project.getName(), projectTestResults, creator);
+            }
+        }
+    }
+
+    private void orderTestResultsMain(String projectName, List<T> testResults, OrderableModelInfoCreator<T> creator) {
 
         Map<String, Map<String, T>> maps = mapTestResults(testResults);
         Map<String, Map<String, List<T>>> mainPackages = new HashMap<>();
@@ -42,52 +53,41 @@ public class OrderTestResults<T extends OrderableModelInfo> {
 
         for (T testResult : testResults) {
             if (testResult.getParsed() != 1) {
-                if (notParsed.getRootName1().equals(""))
-                    notParsed.setRootName1(OrderableModelInfo.erroredString + "_" + testResult.getRootName1());
-                testResult.setRootName1(notParsed.getRootName1());
-                notParsed.addChild(new ChildElement("", testResult));
-                testResult.addParent(notParsed);
+                setErroredParent(testResult, notParsed);
             } else if (testResult.getResolved() != 1) {
-                if (notResolved.getRootName1().equals(""))
-                    notResolved.setRootName1(OrderableModelInfo.erroredString + "_" + testResult.getRootName1());
-                testResult.setRootName1(notResolved.getRootName1());
-                notResolved.addChild(new ChildElement("", testResult));
-                testResult.addParent(notResolved);
+                setErroredParent(testResult, notResolved);
             } else {
-
                 EMAComponentSymbol ast = testResult.getResolvedAST();
                 String modelPath = testResult.getModelPath();
                 Map<String, T> modelPathMap = maps.get(modelPath);
 
                 for (ASTSubComponent element : ((ASTComponent) ast.getAstNode().get()).getSubComponents()) {
-
                     testResult.setAtomic(false);
-
                     String type = ((ASTSimpleReferenceType) element.getType()).getName(0);
                     String name = "";
-                    for (ImportStatement importStatement: ast.getImports()) {
+                    for (ImportStatement importStatement : ast.getImports()) {
                         if (importStatement.getStatement().contains(".") &&
                                 importStatement.getStatement().substring(importStatement
-                                .getStatement().lastIndexOf(".")).equals(type)
+                                        .getStatement().lastIndexOf(".")).equals(type)
                                 || importStatement.getStatement().equals(type)) {
                             name = importStatement.getStatement();
                             break;
                         }
                     }
+
                     if (!name.contains(ast.getPackageName()))
                         name = ast.getPackageName() + "." + name;
                     OrderableModelInfo child = modelPathMap.get(name);
 
                     if (child != null) {
-
                         String referencedName = element.getInstancesList().get(0).getName();
                         ChildElement childElement = new ChildElement(referencedName, child);
                         testResult.addChild(childElement);
                         child.addParent(testResult);
                     }
-
                 }
             }
+
             if (testResult.getParsed() == 1) {
                 String modelName = testResult.getModelName();
                 if (modelName.startsWith("."))
@@ -99,9 +99,9 @@ public class OrderTestResults<T extends OrderableModelInfo> {
                     e.printStackTrace();
                 }
 
-                if (mainPackage == null) {
+                if (mainPackage == null)
                     mainPackage = "No Package";
-                } else if (mainPackage.equals(""))
+                else if (mainPackage.equals(""))
                     mainPackage = modelName.substring(1).substring(modelName.substring(1).indexOf("."));
 
                 if (mainPackages.get(testResult.getModelPath()) == null)
@@ -110,30 +110,14 @@ public class OrderTestResults<T extends OrderableModelInfo> {
 
                 if (modelPathModels.get(mainPackage) == null)
                     modelPathModels.put(mainPackage, new LinkedList<>());
-                List<T> insideMainPackage = modelPathModels.get(mainPackage);
-
-                insideMainPackage.add(testResult);
-
+                modelPathModels.get(mainPackage).add(testResult);
             }
         }
 
-        for (T testResult : testResults) {
-            if (testResult.getResolved() != 1) continue;
-            if (testResult.getParents().size() == 0 && testResult != notParsed && testResult != notResolved)
-                getHasNoParentModels().add(testResult);
-            if (testResult.getParents().size() == 0 && (testResult.getChildren().size() > 0 || !testResult.isAtomic())
-                    && testResult != notParsed && testResult != notResolved)
-                getRootModels().add(testResult);
-        }
-
-        if (notParsed.getChildren().size() > 0) {
-            hasNoParentModels.add(notParsed);
-            mainPackageModels.add(notParsed);
-        }
-        if (notResolved.getChildren().size() > 0) {
-            hasNoParentModels.add(notResolved);
-            mainPackageModels.add(notResolved);
-        }
+        if (notParsed.getChildren().size() > 0)
+            mainPackageModels.get(projectName).add(notParsed);
+        if (notResolved.getChildren().size() > 0)
+            mainPackageModels.get(projectName).add(notResolved);
 
         for (String modelPath : mainPackages.keySet()) {
             Map<String, List<T>> modelPathModels = mainPackages.get(modelPath);
@@ -142,17 +126,17 @@ public class OrderTestResults<T extends OrderableModelInfo> {
                 List<T> insideMainPackage = modelPathModels.get(mainPackage);
 
                 T mainPackageResult = creator.createNewInstance(modelPath + "." + mainPackage);
-                mainPackageModels.add(mainPackageResult);
+                mainPackageModels.get(projectName).add(mainPackageResult);
                 mainPackageResult.setMainPackage(true);
 
                 for (OrderableModelInfo testResult : insideMainPackage) {
                     if (mainPackageResult.getProject().equals(""))
                         mainPackageResult.setProject(testResult.getProject());
                     mainPackageResult.addChild(new ChildElement(testResult.getModelName(), testResult));
-                    if (mainPackageResult.getRootFile1() == null)
-                        mainPackageResult.setRootFile1(testResult.getRootFile1());
-                    if (mainPackageResult.getRootName1().equals(""))
-                        mainPackageResult.setRootName1(testResult.getRootName1());
+                    if (mainPackageResult.getRootFile() == null)
+                        mainPackageResult.setRootFile(testResult.getRootFile());
+                    if (mainPackageResult.getRootName().equals(""))
+                        mainPackageResult.setRootName(testResult.getRootName());
                     if (mainPackageResult.getModelPath().equals(""))
                         mainPackageResult.setModelPath(testResult.getModelPath());
 
@@ -175,38 +159,47 @@ public class OrderTestResults<T extends OrderableModelInfo> {
                 }
             }
         }
-        makeMainModelNamesUnique();
-        fixMainModelNames();
+        makeMainModelNamesUnique(projectName);
+        fixMainModelNames(projectName);
     }
 
-    private void fixMainModelNames() {
-        for (OrderableModelInfo mainModel: this.mainPackageModels)
+    private void setErroredParent(T child, T parent) {
+        if (parent.getRootName().equals("") && !child.getRootName().contains(OrderableModelInfo.erroredString))
+            parent.setRootName(OrderableModelInfo.erroredString + "_" + child.getRootName());
+        else if(parent.getRootName().equals("")) parent.setRootName(child.getRootName());
+        child.setRootName(parent.getRootName());
+        parent.addChild(new ChildElement("", child));
+        child.addParent(parent);
+    }
+
+    private void fixMainModelNames(String projectName) {
+        for (OrderableModelInfo mainModel : this.mainPackageModels.get(projectName))
             mainModel.setModelName(mainModel.getModelName().replaceFirst(Pattern.quote("."), " - "));
     }
 
-    private void makeMainModelNamesUnique() {
+    private void makeMainModelNamesUnique(String projectName) {
         boolean allUnique = true;
         Map<String, List<OrderableModelInfo>> mainPackagesMap = new HashMap<>();
-        for (OrderableModelInfo mainPackage: this.mainPackageModels) {
+        for (OrderableModelInfo mainPackage : this.mainPackageModels.get(projectName)) {
             String name = mainPackage.getModelName();
             if (mainPackagesMap.get(name) == null)
                 mainPackagesMap.put(name, new LinkedList<>());
             mainPackagesMap.get(name).add(mainPackage);
         }
 
-        for (String mainPackageName : mainPackagesMap.keySet()){
+        for (String mainPackageName : mainPackagesMap.keySet()) {
             List<OrderableModelInfo> mainPackageWithEqualNames = mainPackagesMap.get(mainPackageName);
-            if (mainPackageWithEqualNames.size() > 1){
+            if (mainPackageWithEqualNames.size() > 1) {
                 allUnique = false;
-                for (OrderableModelInfo mainPackage: mainPackageWithEqualNames){
-                    String project = mainPackage.getProject().replace("/","");
+                for (OrderableModelInfo mainPackage : mainPackageWithEqualNames) {
+                    String project = mainPackage.getProject().replace("/", "");
                     String oldName = mainPackageName.substring(mainPackageName.indexOf(project) + project.length() + 1);
                     String oldPrefix = ".";
-                    if(oldName.contains("."))
+                    if (oldName.contains("."))
                         oldPrefix = "." + oldName.substring(0, oldName.lastIndexOf("."));
                     String newPref = mainPackage.getModelPath().substring(mainPackage.getModelPath().
-                            indexOf(mainPackage.getRootName1() + "/" + project) +
-                            (mainPackage.getRootName1() + "/" + project).length()).
+                            indexOf(mainPackage.getRootName() + "/" + project) +
+                            (mainPackage.getRootName() + "/" + project).length()).
                             replace("/", ".");
                     newPref = newPref.substring(0, newPref.lastIndexOf(oldPrefix));
                     if (!newPref.equals(""))
@@ -218,7 +211,7 @@ public class OrderTestResults<T extends OrderableModelInfo> {
         }
 
         if (!allUnique)
-            makeMainModelNamesUnique();
+            makeMainModelNamesUnique(projectName);
     }
 
     private Map<String, Map<String, T>> mapTestResults(List<T> testResults) {
@@ -237,18 +230,7 @@ public class OrderTestResults<T extends OrderableModelInfo> {
         return res;
     }
 
-
-    public List<T> getRootModels() {
-        return rootModels;
-    }
-
-
-    public List<T> getHasNoParentModels() {
-        return hasNoParentModels;
-    }
-
-
-    public List<T> getMainPackageModels() {
+    public Map<String, List<T>> getMainPackageModels() {
         return mainPackageModels;
     }
 }

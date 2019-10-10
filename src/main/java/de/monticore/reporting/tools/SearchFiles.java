@@ -25,13 +25,12 @@ public class SearchFiles {
         if (list == null) return;
 
         for (File file : list) {
-            if (file.isDirectory()) {
+            if (file.isDirectory())
                 walk(file, fileTypes, result);
-            } else {
+            else
                 for (String fileType : fileTypes)
                     if (file.getName().endsWith("." + fileType))
                         result.add(file);
-            }
         }
     }
 }

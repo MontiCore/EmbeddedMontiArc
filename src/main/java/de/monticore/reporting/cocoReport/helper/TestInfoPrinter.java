@@ -4,17 +4,83 @@ package de.monticore.reporting.cocoReport.helper;
 import de.monticore.lang.monticar.helper.IndentPrinter;
 import de.monticore.reporting.helper.OrderableModelInfo;
 import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class TestInfoPrinter {
 
-    public static void printInfo(List<CheckCoCoResult> testResults, String infoPath, Date date, boolean merge){
+    public static void printInfo(List<CheckCoCoResult> testResults, String infoPath, Date date){
+        File infoFile = new File(infoPath);
+        boolean merge = false;
+        if (infoFile.exists()) merge = true;
+
+        ValidInfo info = getValidInfo(testResults);
+        JSONObject infoJSON = getJSONFile(infoFile, merge, info, date);
+
+        JSONObject infoValid = (JSONObject) infoJSON.get(info.root);
+        JSONObject infoErrored = (JSONObject) infoJSON.get(CheckCoCoResult.erroredString + "_" + info.root);
+
+        infoValid.put("Number", "" + (info.number + Integer.parseInt((String) infoValid.get("Number"))));
+        infoValid.put("Valid", "" + (info.valid + Integer.parseInt((String) infoValid.get("Valid"))));
+        infoValid.put("Invalid", "" + (info.invalid + Integer.parseInt((String) infoValid.get("Invalid"))));
+
+        infoErrored.put("Number", "" + (info.invalid + Integer.parseInt((String) infoErrored.get("Number"))));
+        infoErrored.put("Valid", "" + 0);
+        infoErrored.put("Invalid", "" + (info.invalid + Integer.parseInt((String) infoErrored.get("Invalid"))));
+
+        try {
+            FileUtils.write(infoFile, infoJSON.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static JSONObject getJSONFile(File infoFile, boolean merge, ValidInfo info, Date date) {
+        if(!merge) {
+            JSONObject infoJSON = new JSONObject();
+            JSONObject infoValid = new JSONObject();
+            JSONObject infoErrored = new JSONObject();
+
+            infoJSON.put(info.root, infoValid);
+            infoJSON.put(CheckCoCoResult.erroredString + "_" + info.root, infoErrored);
+
+            infoValid.put("Number", "" + 0);
+            infoValid.put("Valid", "" + 0);
+            infoValid.put("Invalid", "" + 0);
+
+            infoErrored.put("Number", "" + 0);
+            infoErrored.put("Valid", "" + 0);
+            infoErrored.put("Invalid", "" + 0);
+
+            String formattedTimeStamp = (new SimpleDateFormat("dd.MM.yyyy HH:mm").format(date));
+            infoJSON.put("date", formattedTimeStamp);
+
+            return infoJSON;
+        } else {
+            String str = null;
+            try {
+                str = FileUtils.readFileToString(infoFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            JSONParser jsonParser = new JSONParser();
+            try {
+                return (JSONObject) jsonParser.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public static void printInfo_(List<CheckCoCoResult> testResults, String infoPath, Date date, boolean merge){
         if (testResults.size() == 0) return;
         if (merge) {
             try {
@@ -86,15 +152,13 @@ public class TestInfoPrinter {
         int invalid = 0;
         int errored = 0;
 
-        String tempRoot = "";
-
-
+        String fallBackRoot = "";
         for(CheckCoCoResult testResult: testResults){
             number++;
-            if(root.equals("") && !testResult.getRootName1().contains(OrderableModelInfo.erroredString))
-                root = testResult.getRootName1();
+            if(root.equals("") && !testResult.getRootName().contains(OrderableModelInfo.erroredString))
+                root = testResult.getRootName();
             else if (root.equals(""))
-                tempRoot = testResult.getRootName1();
+                fallBackRoot = testResult.getRootName();
             if(testResult.isValid())
                 valid++;
             else
@@ -102,7 +166,7 @@ public class TestInfoPrinter {
             if(testResult.getParsed() != 1 || testResult.getResolved() != 1)
                 errored++;
         }
-        if ( root.equals("")) root = tempRoot;
+        if (root.equals("")) root = fallBackRoot;
         info.root = root;
         info.number = number;
         info.valid = valid;

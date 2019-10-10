@@ -71,19 +71,19 @@ public abstract class OrderableModelInfo extends CommonModelInfo {
 
     public abstract void setChildInfo();
 
-    public String getRootName1() {
+    public String getRootName() {
         return rootName;
     }
 
-    public void setRootName1(String rootName) {
+    public void setRootName(String rootName) {
         this.rootName = rootName;
     }
 
-    public File getRootFile1() {
+    public File getRootFile() {
         return rootFile;
     }
 
-    public void setRootFile1(File rootFile) {
+    public void setRootFile(File rootFile) {
         this.rootFile = rootFile;
         this.rootName = rootFile.getName();
     }

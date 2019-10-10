@@ -16,7 +16,6 @@
   <link rel="stylesheet" media="all" href="css/fixedHeader.dataTables.min.css">
   <link rel="stylesheet" media="all" href="css/select.dataTables.min.css">
   <link rel="stylesheet" media="all" href="css/jquery.dataTables.min.css">
-  <link rel="stylesheet" media="all" href="css/responsive.dataTables.min.css">
   <link rel="stylesheet" media="all" href="css/customTable.css">
   <link rel="stylesheet" media="all" href="css/childControlImages.css">
 </head>
@@ -176,8 +175,12 @@
   <script>
     var tableName = "my-table";
     var tableReference = "#" + tableName;
-    var dataFile = "data/data.json";
-    var infoFile = "data/info.json";
+    var project = getURLParameter('project');
+    var dataInfix = "";
+    if (project != undefined)
+      dataInfix = "projects/" + project + "/";
+    var dataFile = "data/" + dataInfix + "data.json";
+    var infoFile = "data/" + dataInfix + "info.json";
     var ide = (getURLParameter('ide') != 'false');
     var table;
     $(document).ready(function () {
