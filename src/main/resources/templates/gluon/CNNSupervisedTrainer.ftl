@@ -168,7 +168,7 @@ class ${tc.fileNameWithoutEnding}:
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
+                ${input_name} = batch.data[0].as_in_context(mx_context)
                 </#list>
                 <#list tc.architectureOutputs as output_name>
                 ${output_name}label = batch.label[${output_name?index}].as_in_context(mx_context)
@@ -207,7 +207,7 @@ class ${tc.fileNameWithoutEnding}:
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(train_iter):
                 <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
+                ${input_name} = batch.data[0].as_in_context(mx_context)
                 </#list>
 
                 labels = [
@@ -266,7 +266,7 @@ class ${tc.fileNameWithoutEnding}:
             metric = mx.metric.create(eval_metric)
             for batch_i, batch in enumerate(test_iter):
                 <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
+                ${input_name} = batch.data[0].as_in_context(mx_context)
                 </#list>
 
                 labels = [

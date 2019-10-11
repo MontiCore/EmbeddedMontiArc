@@ -131,7 +131,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         with self.name_scope():
 ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 
-    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")}):
+    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
 ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
         return ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")}
 
