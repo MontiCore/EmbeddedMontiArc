@@ -247,15 +247,15 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                         sentence = ''
                         for batchEntry in batch.label:
                             sentence += dict[int(batchEntry[index].asscalar())] + ' '
-                        print "############################"
-                        print "label: ", sentence
-                        print "prediction: ", prediction[index]
+                        print("############################")
+                        print("label: ", sentence)
+                        print("prediction: ", prediction[index])
 
                         BLEUscore = nltk.translate.bleu_score.sentence_bleu([sentence], prediction[index])
                         NISTscore = nltk.translate.nist_score.sentence_nist([sentence], prediction[index])
-                        print "BLEU: ", BLEUscore
-                        print "NIST: ", NISTscore
-                        print "############################"
+                        print("BLEU: ", BLEUscore)
+                        print("NIST: ", NISTscore)
+                        print("############################")
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
