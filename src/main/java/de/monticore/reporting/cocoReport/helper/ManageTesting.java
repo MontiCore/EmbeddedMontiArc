@@ -7,10 +7,7 @@ import de.monticore.reporting.tools.CustomPrinter;
 import de.monticore.reporting.tools.SearchFiles;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ManageTesting {
     private static final String[] fileTypes = {"ema", "emam", "emadl"};
@@ -25,15 +22,15 @@ public class ManageTesting {
         int max = projectsToTestList.size();
         boolean first = true;
         for (Set<String> projectsToTest: projectsToTestList) {
-            String numberCount = !severalSets ? "" : " (" + i + "/" + max + ")";
+            String numberCount = severalSets ? " (" + i + "/" + max + ")" : "";
             CheckCoCos tcc = new CheckCoCos();
             CustomPrinter.println("\n<================Test CoCos================>" + numberCount + "\n");
             List<CheckCoCoResult> testResults = tcc.testAllCocos(context, projectsToTest, fileTypes);
-            OrderTestResults<CheckCoCoResult> order = new OrderTestResults();
-            order.orderTestResults(new File(context.getProjectRoot()), projectsToTest, testResults, new CheckCoCoResultCreator());
+            Map<String, List<CheckCoCoResult>> mainPackageModels = OrderTestResults.orderTestResults(
+                    new File(context.getProjectRoot()), projectsToTest, testResults, new CheckCoCoResultCreator());
 
             CustomPrinter.println("\n<============Write Test Results============>" + numberCount + "\n");
-            CoCoTestResultPrinterManager.printForAllProjects(testResults, order, context);
+            CoCoTestResultPrinterManager.printForAllProjects(testResults, mainPackageModels, context);
             CustomPrinter.println("SUCCESS\n");
 
             if(first && severalSets) {

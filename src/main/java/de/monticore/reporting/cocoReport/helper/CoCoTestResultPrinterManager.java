@@ -9,14 +9,15 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CoCoTestResultPrinterManager {
-    public static void printForAllProjects(List<CheckCoCoResult> testResults, OrderTestResults<CheckCoCoResult> order, Main.ReportContext context) {
+    public static void printForAllProjects(List<CheckCoCoResult> testResults, Map<String, List<CheckCoCoResult>> mainPackageModels, Main.ReportContext context) {
         File projectsDir = new File(context.getOutput() + "projects");
         projectsDir.mkdirs();
-        for (String project: order.getMainPackageModels().keySet()){
-            List<CheckCoCoResult> mainPackages = order.getMainPackageModels().get(project);
+        for (String project: mainPackageModels.keySet()){
+            List<CheckCoCoResult> mainPackages = mainPackageModels.get(project);
             if (mainPackages.size() == 0) continue;
             CustomPrinter.println("\n<=======Project=======> " + project);
             List<CheckCoCoResult> projectTestResults = testResults;
@@ -36,12 +37,12 @@ public class CoCoTestResultPrinterManager {
             CoCoTestResultPrinter.printTestResults(projectTestResults, context.getOutput() + outputPostFix + "dataExpanded.json", context.isMerge(), false, print);
             TestInfoPrinter.printInfo(projectTestResults, context.getOutput() + outputPostFix + "info.json", context.getDate());
         }
-        printProjectsList(context, order);
+        printProjectsList(context, mainPackageModels);
     }
 
-    private static void printProjectsList(Main.ReportContext context, OrderTestResults<CheckCoCoResult> order) {
+    private static void printProjectsList(Main.ReportContext context, Map<String, List<CheckCoCoResult>> mainPackageModels) {
         File projectsList = new File(context.getOutput() + "projects/projectsList.json");
-        String toPrint = getPrintString(context, order);
+        String toPrint = getPrintString(context, mainPackageModels);
         if (context.isMerge()) {
             try {
                 String first = FileUtils.readFileToString(projectsList);
@@ -61,13 +62,14 @@ public class CoCoTestResultPrinterManager {
         }
     }
 
-    private static String getPrintString(Main.ReportContext context, OrderTestResults<CheckCoCoResult> order) {
+    private static String getPrintString(Main.ReportContext context, Map<String, List<CheckCoCoResult>> mainPackageModels) {
         IndentPrinter ip = new IndentPrinter();
         if(!context.isMerge())
             ip.print("[");
         boolean first = true;
-        for (String project: order.getMainPackageModels().keySet()) {
+        for (String project: mainPackageModels.keySet()) {
             if (project.equals(OrderTestResults.allProjects)) continue;
+            if (mainPackageModels.get(project).size() == 0) continue;
             if (!first)
                 ip.print(", ");
             else
