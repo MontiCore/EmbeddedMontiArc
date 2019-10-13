@@ -95,7 +95,7 @@ public class CoCoTestResultPrinter {
                 String str = FileUtils.readFileToString(new File(path));
                 str = str.substring(0, str.length() - 3);
                 FileUtils.writeStringToFile(new File(path),
-                        str);
+                        str + ",");
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -36,8 +36,9 @@ public class CheckCoCos {
             }
 
             for(File file: filesMap.get(projectDir)) {
+                String fileName = file.getAbsolutePath().substring(context.getProjectRoot().length() + 1);
                 CustomPrinter.println("[" + getFormattedNumber(z, max) + "/" + max + "]" +
-                        " Test CoCos of file \"" + file.getAbsolutePath());
+                        " Test CoCos of file " + fileName);
                 z++;
                 if(z == 70) {
                     int i = 9;
