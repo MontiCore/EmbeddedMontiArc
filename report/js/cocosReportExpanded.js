@@ -158,7 +158,7 @@ function formatLog_custom(d) {
 }
 
 function uniqueNameFunction_custom(data) {
-    var res = data['Root'] + "_" + data['Path'] + +"_" + data['Name'];
+    var res = data['Root'] + "_" + data['Path'] + "_" + data['Name'];
     res = res.split(' ').join('');
     res = res.replace(/\./g, "_").replace(/\(/g, "").replace(/\)/g,"")
         .replace(/\\/g, "_").replace(/\//g,"_");

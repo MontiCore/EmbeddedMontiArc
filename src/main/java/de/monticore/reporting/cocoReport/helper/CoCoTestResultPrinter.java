@@ -93,7 +93,7 @@ public class CoCoTestResultPrinter {
         if (merge) {
             try {
                 String str = FileUtils.readFileToString(new File(path));
-                str = str.substring(0, str.length() - 3);
+                str = str.substring(0, str.length() - 2);
                 FileUtils.writeStringToFile(new File(path),
                         str + ",");
             } catch (IOException e) {

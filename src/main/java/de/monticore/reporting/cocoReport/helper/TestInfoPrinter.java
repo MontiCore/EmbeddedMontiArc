@@ -64,79 +64,16 @@ public class TestInfoPrinter {
 
             return infoJSON;
         } else {
-            String str = null;
-            try {
-                str = FileUtils.readFileToString(infoFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             JSONParser jsonParser = new JSONParser();
             try {
-                return (JSONObject) jsonParser.parse(str);
+                return (JSONObject) jsonParser.parse(FileUtils.readFileToString(infoFile));
             } catch (ParseException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
         }
-    }
-
-    public static void printInfo_(List<CheckCoCoResult> testResults, String infoPath, Date date, boolean merge){
-        if (testResults.size() == 0) return;
-        if (merge) {
-            try {
-                String first = FileUtils.readFileToString(new File(infoPath));
-                first = first.substring(0, first.length() - 3);
-                String str = first + ",\n" + getInfo(testResults, date, merge);
-                FileUtils.writeStringToFile(new File(infoPath),
-                        str);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                FileUtils.writeStringToFile(new File(infoPath),
-                        getInfo(testResults, date, merge));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static String getInfo(List<CheckCoCoResult> testResults, Date date,  boolean merge){
-        ValidInfo info = getValidInfo(testResults);
-
-        IndentPrinter ip = new IndentPrinter();
-        if (!merge)
-            ip.println("{");
-        ip.indent();
-
-        ip.println("\"" + info.root + "\": {");
-        ip.indent();
-        ip.println("\"Number\": \"" + info.number + "\",");
-        ip.println("\"Valid\": \"" + info.valid + "\",");
-        ip.println("\"Invalid\": \"" + info.invalid + "\"");
-        ip.unindent();
-
-        ip.print("},");
-        ip.println();
-
-        ip.println("\"" + CheckCoCoResult.erroredString + "_" + info.root + "\": {");
-        ip.indent();
-        ip.println("\"Number\": \"" + info.errored + "\",");
-        ip.println("\"Valid\": \"" + 0 + "\",");
-        ip.println("\"Invalid\": \"" + info.errored + "\"");
-        ip.unindent();
-        ip.print("},");
-        ip.println();
-
-        String formattedTimeStamp = (new SimpleDateFormat("dd.MM.yyyy HH:mm").format(date));
-        ip.print("\"date\": " + "\"" + formattedTimeStamp + "\"");
-        ip.println();
-
-        ip.unindent();
-        ip.println("}");
-
-        return ip.getContent();
     }
 
     private static ValidInfo getValidInfo(List<CheckCoCoResult> testResults){
@@ -158,7 +95,7 @@ public class TestInfoPrinter {
             if(root.equals("") && !testResult.getRootName().contains(OrderableModelInfo.erroredString))
                 root = testResult.getRootName();
             else if (root.equals(""))
-                fallBackRoot = testResult.getRootName();
+                fallBackRoot = testResult.getRootName().substring(OrderableModelInfo.erroredString.length() + 1);
             if(testResult.isValid())
                 valid++;
             else

@@ -25,10 +25,7 @@ public class GitLabHelper {
     }
 
     public static String getHTMLLinkOf(String link, String name) {
-        String Name = name;
-        if (link.contains("MontiSim"))
-            Name = "MontiSim/" + Name;
-        return "<a target=\'_blank\' href=\'" + link + "\'>" + Name + "<\\a>";
+        return "<a target=\'_blank\' href=\'" + link + "\'>" + name + "<\\a>";
     }
 
     public static String getGitLabRoot(File dir) {
@@ -46,6 +43,7 @@ public class GitLabHelper {
             for (String line : lines) {
                 if (line.contains("Fetch URL")) {
                     url = line.substring(line.lastIndexOf(": ") + 2) + "/";
+                    url = "https://" + url.substring(url.indexOf("@git") + 1);
                 }
                 if (line.contains("HEAD branch"))
                     branch = line.substring(line.indexOf("HEAD branch") + "HEAD branch: ".length());
