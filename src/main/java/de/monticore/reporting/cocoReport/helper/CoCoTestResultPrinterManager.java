@@ -79,7 +79,7 @@ public class CoCoTestResultPrinterManager {
                     } else {
                         if (erroredResolving == null) {
                             init = true;
-                            erroredParsing = testResult;
+                            erroredResolving = testResult;
                         }
                         errored = erroredResolving;
                     }
