@@ -210,14 +210,14 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
     }
 
     protected void generateCPP(List<EMAComponentSymbol> toTest){
-        Scope scope = getScope();
-        TaggingResolver tagging = this.getTaggingResolver();
 
         logInfo("Generate CPP:");
         for (EMAComponentSymbol cs :toTest) {
             String name = cs.getPackageName() + "." + cs.getName().substring(0,1).toLowerCase()+cs.getName().substring(1);
             logInfo(" - "+cs.getFullName()+" = "+name);
 
+            Scope scope = getScope();
+            TaggingResolver tagging = this.getTaggingResolver();
             Optional<EMAComponentInstanceSymbol> ecis = scope.<EMAComponentInstanceSymbol>resolve(name, EMAComponentInstanceSymbol.KIND);
 
             if(!ecis.isPresent()){
@@ -253,7 +253,8 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             }catch (IOException ioex){
                 logError("   -> IOException generating cpp files for "+cs.getFullName());
             }
-
+            // Needed, as the C++ generator modifies the Symbol Table in destructive ways
+            resetTaggingResolver();
         }
     }
 

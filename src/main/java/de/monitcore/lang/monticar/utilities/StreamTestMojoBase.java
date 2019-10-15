@@ -367,6 +367,11 @@ public class StreamTestMojoBase extends AbstractMojo {
         return this.myTaggingResolver;
     }
 
+    protected void resetTaggingResolver(){
+        this.myScope = null;
+        this.myTaggingResolver = null;
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Get Component Symbols">
