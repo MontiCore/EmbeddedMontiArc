@@ -12,15 +12,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 public abstract class McLspServer implements LanguageServer, LanguageClientAware {
 
-    public void startFromArgs(String[] args) throws InterruptedException, ExecutionException, IOException {
+    public void startFromArgs(String[] rawArgs) throws InterruptedException, ExecutionException, IOException {
+        String[] args = Arrays.stream(rawArgs).flatMap(arg -> Arrays.stream(arg.split(" "))).toArray(String[]::new);
         boolean failed = false;
-        Exception err = null;
+        Exception err = new Exception("Invalid Arguments");
         DiagnosticsLog.init();
         Log.info("Starting server!", "default");
 
@@ -41,7 +45,7 @@ public abstract class McLspServer implements LanguageServer, LanguageClientAware
         }
 
         if(failed){
-            Log.warn("Error starting server. Arguments: [] | [-p <port>]", err);
+            Log.warn("Error starting server. Arguments should be: [] | [-p <port>]\nPassed arguments: " + Arrays.toString(args), err);
             System.exit(1);
         }
 
