@@ -9,9 +9,9 @@
     <packaging>jar</packaging>
     
     <properties>
-        <embedded-montiarc-math.version>0.1.9-SNAPSHOT</embedded-montiarc-math.version>
+        <embedded-montiarc-math.version>0.1.13-SNAPSHOT</embedded-montiarc-math.version>
         <se-commons-utilities.version>1.7.8</se-commons-utilities.version>
-        <monticore-lsp-commons.version>1.1-SNAPSHOT</monticore-lsp-commons.version>
+        <monticore-lsp-commons.version>1.2-SNAPSHOT</monticore-lsp-commons.version>
         <junit.version>5.5.2</junit.version>
         <commons-io.version>2.6</commons-io.version>
 
