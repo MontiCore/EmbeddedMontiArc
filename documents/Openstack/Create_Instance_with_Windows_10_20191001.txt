@@ -1,0 +1,13 @@
+Bei Instanz-Erzeugung:
+	- Source: Create New Volume: No
+	- Flavour: Mindestens m1.small
+	- Networks: external-lehre
+	- Security Groups: Windows_RemoteDesktop
+	- Key Pair: Erzeugen
+RemoteDesktop:
+	Username:
+		DESKTOP-DJNIBRO\admin
+	Passwort anfragen mit:
+		nova get-password <instance> [<ssh_private_key_path>]
+		oder
+		openstack dashboard / Instances / Instanz Drop-Down -> Retrieve Password / Private Key File
