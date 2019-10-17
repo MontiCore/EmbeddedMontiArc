@@ -2,7 +2,7 @@
     "logName":"struct-parser",
     "languageName":"Struct",
     "pomRoot":"settings/struct",
-    "mvnSettingsFile":"settings/settings.xml",
+    "relativeMvnSettingsPath":"../settings.xml",
     "useRunningServer":false,
     "manualPort": 0,
     "bufferSize": 1000,

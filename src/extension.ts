@@ -52,6 +52,7 @@ function activateClient(languageId: string) {
 }
 
 function wellnessCheck() {
+	return;
 	let reconnectFlag = false;
 	for (let client of activeClients) {
 		if (!client.isConnected()) {
@@ -59,6 +60,7 @@ function wellnessCheck() {
 			reconnectFlag = true;
 			if (reconnects < 3) {
 				getLogger().info(client.getLanguageId() + ": trying to reconnect");
+				client.stop();
 				client.connect();
 			} else {
 				getLogger().warn(client.getLanguageId() + ": max number of reconnects reached!");
