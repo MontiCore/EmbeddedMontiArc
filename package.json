@@ -1,0 +1,99 @@
+{
+  "name": "ema-linter",
+  "displayName": "ema-linter",
+  "description": "Linter for EmbeddedMontiArc Languages",
+  "publisher": "se-rwth",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.33.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:EmbeddedMontiArcMath",
+    "onLanguage:Struct",
+    "onLanguage:Stream",
+    "onLanguage:EmbeddedMontiArc"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "grammars": [
+      {
+        "language": "EmbeddedMontiArcMath",
+        "scopeName": "keywords.EmbeddedMontiArcMath",
+        "path": "syntax/gen/EmbeddedMontiArcMath.gen.tmGrammar.json"
+      },
+      {
+        "language": "Struct",
+        "scopeName": "keywords.Struct",
+        "path": "syntax/gen/Struct.gen.tmGrammar.json"
+      },
+      {
+        "language": "Stream",
+        "scopeName": "keywords.Stream",
+        "path": "syntax/gen/Stream.gen.tmGrammar.json"
+      },
+      {
+        "language": "EmbeddedMontiArc",
+        "scopeName": "keywords.EmbeddedMontiArc",
+        "path": "syntax/gen/EmbeddedMontiArc.gen.tmGrammar.json"
+      },
+      {
+        "injectTo": [
+          "keywords.EmbeddedMontiArcMath",
+          "keywords.Struct",
+          "keywords.Stream",
+          "keywords.EmbeddedMontiArc"
+        ],
+        "scopeName": "monticore.comment",
+        "path": "./syntax/comment.tmGrammar.json"
+      }
+    ],
+    "languages": [
+      {
+        "id": "EmbeddedMontiArcMath",
+        "extensions": [
+          ".emam"
+        ]
+      },
+      {
+        "id": "Struct",
+        "extensions": [
+          ".struct"
+        ]
+      },
+      {
+        "id": "Stream",
+        "extensions": [
+          ".stream"
+        ]
+      },
+      {
+        "id": "EmbeddedMontiArc",
+        "extensions": [
+          ".ema"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node scripts/createSyntax.js ./settings/global.json && npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^3.3.1",
+    "vscode": "^1.1.28",
+    "tslint": "^5.12.1",
+    "@types/node": "^10.12.21",
+    "@types/mocha": "^2.2.42"
+  },
+  "dependencies": {
+    "circularbuffer": "^0.1.1",
+    "log4js": "~4.4.0",
+    "vscode-languageclient": "~5.1.1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+    "logName":"emam-parser",
+    "languageName":"EmbeddedMontiArcMath",
+    "pomRoot":"settings/emam",
+    "mvnSettingsFile":"settings/settings.xml",
+    "useRunningServer":false,
+    "manualPort": 0,
+    "bufferSize": 1000,
+    "keywordsFile": "settings/emam/keywords.txt",
+    "fileExtension": ".emam"
+}

@@ -1,0 +1,9 @@
+{
+    "logName":"emam-lint",
+    "clientOptions":[
+        "settings/emam/emamConstants.json",
+        "settings/struct/structConstants.json",
+        "settings/stream/streamConstants.json",
+        "settings/ema/emaConstants.json"
+    ]
+}
