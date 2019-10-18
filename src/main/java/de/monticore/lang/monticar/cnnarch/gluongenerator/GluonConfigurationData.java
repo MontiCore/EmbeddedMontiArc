@@ -293,29 +293,6 @@ public class GluonConfigurationData extends ConfigurationData {
         return environmentParameters.containsKey(ENVIRONMENT_REWARD_TOPIC);
     }
 
-    private Map<String, Object> getMultiParamEntry(final String key, final String valueName) {
-        if (!configurationContainsKey(key)) {
-            return null;
-        }
-
-        Map<String, Object> resultView = new HashMap<>();
-
-        MultiParamValueSymbol multiParamValue = (MultiParamValueSymbol)this.getConfiguration().getEntryMap()
-                .get(key).getValue();
-
-        resultView.put(valueName, multiParamValue.getValue());
-        resultView.putAll(multiParamValue.getParameters());
-        return resultView;
-    }
-
-    private Boolean configurationContainsKey(final String key) {
-        return this.getConfiguration().getEntryMap().containsKey(key);
-    }
-
-    private Object retrieveConfigurationEntryValueByKey(final String key) {
-        return this.getConfiguration().getEntry(key).getValue().getValue();
-    }
-
     private Map<String, Object> getInputParameterWithName(final String parameterName) {
         if (!getRlRewardFunctionParameter().isPresent()
                 || !getRlRewardFunctionParameter().get().getTypeOfInputPort(parameterName).isPresent()

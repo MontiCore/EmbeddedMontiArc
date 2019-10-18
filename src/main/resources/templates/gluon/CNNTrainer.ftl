@@ -37,7 +37,12 @@ if __name__ == "__main__":
         normalize=${config.normalize?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
-        eval_metric='${config.evalMetric}',
+        eval_metric='${config.evalMetric.metric}',
+        eval_metric_params={
+<#if (config.evalMetric.exclude)??>
+            'exclude': [<#list config.evalMetric.exclude as value>${value}<#sep>, </#list>],
+</#if>
+        },
 </#if>
 <#if (config.configuration.loss)??>
         loss='${config.lossName}',

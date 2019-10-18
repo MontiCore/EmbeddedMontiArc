@@ -41,7 +41,7 @@ class BLEU(mx.metric.EvalMetric):
     def __init__(self, exclude=None, name='bleu', output_names=None, label_names=None):
         super(BLEU, self).__init__(name=name, output_names=output_names, label_names=label_names)
 
-        self._exclude = exclude or set()
+        self._exclude = exclude or []
 
         self._match_counts = [0 for _ in range(self.N)]
         self._counts = [0 for _ in range(self.N)]
@@ -186,6 +186,7 @@ class ${tc.fileNameWithoutEnding}:
     def train(self, batch_size=64,
               num_epoch=10,
               eval_metric='acc',
+              eval_metric_params={},
               loss ='softmax_cross_entropy',
               loss_params={},
               optimizer='adam',
@@ -315,7 +316,7 @@ class ${tc.fileNameWithoutEnding}:
             tic = None
 
             train_iter.reset()
-            metric = mx.metric.create(eval_metric)
+            metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(train_iter):
                 <#list tc.architectureInputs as input_name>
                 ${input_name} = batch.data[0].as_in_context(mx_context)
@@ -345,7 +346,7 @@ class ${tc.fileNameWithoutEnding}:
             train_metric_score = metric.get()[1]
 
             test_iter.reset()
-            metric = mx.metric.create(eval_metric)
+            metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
                 <#list tc.architectureInputs as input_name>
                 ${input_name} = batch.data[0].as_in_context(mx_context)

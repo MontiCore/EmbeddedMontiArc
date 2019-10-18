@@ -24,6 +24,8 @@ if __name__ == "__main__":
         context='gpu',
         normalize=True,
         eval_metric='mse',
+        eval_metric_params={
+        },
         loss='softmax_cross_entropy',
         loss_params={
             'sparse_label': True,
