@@ -3,7 +3,7 @@
     "languageName":"EmbeddedMontiArc",
     "fileExtension":".ema",
     "pomRoot":"settings/ema",
-    "mvnSettingsFile":"settings/settings.xml",
+    "relativeMvnSettingsPath":"../settings.xml",
     "useRunningServer":false,
     "manualPort": 0,
     "bufferSize": 1000,

@@ -2,7 +2,7 @@
     "logName":"ema-parser",
     "languageName":"Stream",
     "pomRoot":"settings/stream",
-    "mvnSettingsFile":"settings/settings.xml",
+    "relativeMvnSettingsPath":"../settings.xml",
     "useRunningServer":false,
     "manualPort": 0,
     "bufferSize": 1000,

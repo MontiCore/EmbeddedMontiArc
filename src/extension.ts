@@ -52,13 +52,16 @@ function activateClient(languageId: string) {
 }
 
 function wellnessCheck() {
+	getLogger().debug("Running wellness check on " + activeClients.length + " active of " + clients.length + " total clients" );
 	let reconnectFlag = false;
 	for (let client of activeClients) {
-		if (!client.isConnected()) {
-			getLogger().warn(client.getLanguageId() + ": not connected!");
+		if (!client.isProcessActive()) {
+			getLogger().warn(client.getLanguageId() + ": has no active process!");
 			reconnectFlag = true;
 			if (reconnects < 3) {
 				getLogger().info(client.getLanguageId() + ": trying to reconnect");
+				client.stop();
+				getLogger().debug("Reconnecting");
 				client.connect();
 			} else {
 				getLogger().warn(client.getLanguageId() + ": max number of reconnects reached!");

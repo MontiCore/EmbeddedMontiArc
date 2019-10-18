@@ -2,7 +2,7 @@
     "logName":"emam-parser",
     "languageName":"EmbeddedMontiArcMath",
     "pomRoot":"settings/emam",
-    "mvnSettingsFile":"settings/settings.xml",
+    "relativeMvnSettingsPath":"../settings.xml",
     "useRunningServer":false,
     "manualPort": 0,
     "bufferSize": 1000,
