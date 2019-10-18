@@ -38,6 +38,7 @@ class ParameterAlgorithmMapping {
         ASTBatchSizeEntry.class,
         ASTLoadCheckpointEntry.class,
         ASTEvalMetricEntry.class,
+        ASTExcludeBleuEntry.class,
         ASTNormalizeEntry.class,
         ASTNumEpochEntry.class,
         ASTLossEntry.class,
