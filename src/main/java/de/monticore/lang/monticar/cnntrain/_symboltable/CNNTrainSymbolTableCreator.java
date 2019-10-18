@@ -156,32 +156,12 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void visit(ASTEvalMetricEntry node) {
-        EntrySymbol entry = new EntrySymbol(node.getName());
-        ValueSymbol value = new ValueSymbol();
-        if (node.getValue().isPresentAccuracy()){
-            value.setValue(EvalMetric.ACCURACY);
-        }
-        else if (node.getValue().isPresentCrossEntropy()){
-            value.setValue(EvalMetric.CROSS_ENTROPY);
-        }
-        else if (node.getValue().isPresentF1()){
-            value.setValue(EvalMetric.F1);
-        }
-        else if (node.getValue().isPresentMae()){
-            value.setValue(EvalMetric.MAE);
-        }
-        else if (node.getValue().isPresentMse()){
-            value.setValue(EvalMetric.MSE);
-        }
-        else if (node.getValue().isPresentRmse()){
-            value.setValue(EvalMetric.RMSE);
-        }
-        else if (node.getValue().isPresentTopKAccuracy()){
-            value.setValue(EvalMetric.TOP_K_ACCURACY);
-        }
-        entry.setValue(value);
-        addToScopeAndLinkWithNode(entry, node);
-        configuration.getEntryMap().put(node.getName(), entry);
+        processMultiParamConfigVisit(node, node.getValue().getName());
+    }
+
+    @Override
+    public void endVisit(ASTEvalMetricEntry node) {
+        processMultiParamConfigEndVisit(node);
     }
 
     @Override
@@ -335,7 +315,13 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
                 .map(n -> n.getNumber().get())
                 .collect(Collectors.toList());
     }
-    
+
+    private List<Integer> getIntegerListFromValue(ASTIntegerListValue value) {
+        return value.getNumberList().stream()
+                .filter(n -> n.getNumber().isPresent())
+                .map(n -> n.getNumber().get().intValue())
+                .collect(Collectors.toList());
+    }
     
     @Override
     public void visit(ASTLearningMethodEntry node) {
@@ -598,6 +584,8 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
                 .filter(n -> n.getNumber().isPresent())
                 .map(n -> n.getNumber().get())
                 .collect(Collectors.toList());
+        } else if (configValue instanceof ASTIntegerListValue) {
+            return getIntegerListFromValue((ASTIntegerListValue)configValue);
         }
         throw new UnsupportedOperationException("Unknown Value type: " + configValue.getClass());
     }
