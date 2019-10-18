@@ -47,6 +47,7 @@ class ${tc.fileNameWithoutEnding}:
                 test_label[index] = test_h5[output_name]
                 index += 1
 
+
             test_iter = mx.io.NDArrayIter(data=test_data,
                                           label=test_label,
                                           batch_size=batch_size)

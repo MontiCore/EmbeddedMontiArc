@@ -14,12 +14,12 @@
 <#if networkInstruction.isUnroll()>
 <#list networkInstruction.toUnrollInstruction().resolvedBodies as resolvedBody>
                     <#if networkInstruction.name == "BeamSearch">
-                    input = ${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")}
+                    input = ${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody, true), ", ")}
                     <#assign length = tc.getBeamSearchLength(networkInstruction.toUnrollInstruction())>
                     <#assign width = tc.getBeamSearchWidth(networkInstruction.toUnrollInstruction())>
                     ${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]} = applyBeamSearch(input, 0, ${length}, ${width}, 1.0, ${networkInstruction?index}, input)
                     <#else>
-                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")?replace("_state_","_state_[0]")})
+                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody, true), ", ")?replace("_state_","_state_")})
                     <#if !(tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]?ends_with("_output_"))>
                     outputs.append(${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]})
                     </#if>
@@ -32,7 +32,7 @@
 </#list>
 <#else>
 <#if networkInstruction.body.isTrainable()>
-                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")?replace("_state_","_state_[0]")})
+                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, true), ", ")?replace("_state_","_state_")})
                     <#if !(tc.getStreamOutputNames(networkInstruction.body)[0]?ends_with("_output_"))>
                     outputs.append(${tc.getStreamOutputNames(networkInstruction.body)[0]})
                     </#if>
