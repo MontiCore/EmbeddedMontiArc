@@ -8,7 +8,15 @@ A Visual Studio Code extension that lints EmbeddedMontiArc Languages
 - Java 8 or higher
 - Maven
 
-Make sure that Java and Maven can be found in your PATH environment variable.
+Make sure that Java and Maven can be found in your PATH by executing in a terminal:
+```bash
+> java -version
+java version "1.8.0_141"
+...
+
+> mvn -version
+Apache Maven 3.3.3 ...
+```
 
 ### Extension
 
