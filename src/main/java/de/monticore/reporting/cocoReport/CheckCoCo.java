@@ -155,8 +155,8 @@ public class CheckCoCo {
             checker.addCoCo((CheckLayer) coco);
         else if (coco instanceof CheckRangeOperators)
             checker.addCoCo((CheckRangeOperators) coco);
-        else if (coco instanceof CheckVariableName)
-            checker.addCoCo((CheckVariableName) coco);
+//        else if (coco instanceof CheckVariableName)
+//            checker.addCoCo((CNNArchSymbolCoCo) coco);
         else if (coco instanceof CheckLayerName)
             checker.addCoCo((CheckLayerName) coco);
         else if (coco instanceof CheckArgument)

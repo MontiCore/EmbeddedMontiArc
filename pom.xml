@@ -9,7 +9,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>reporting</artifactId>
-    <version>0.9.3</version>
+    <version>0.9.6</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -17,7 +17,7 @@
 
         <!-- .. SE-Libraries .................................................. -->
 <!--        <Embedded-MontiArc-Math.version>0.1.9-SNAPSHOT</Embedded-MontiArc-Math.version>-->
-        <Embedded-MontiArc-DL.version>0.2.7-SNAPSHOT</Embedded-MontiArc-DL.version>
+        <Embedded-MontiArc-DL.version>0.2.10-SNAPSHOT</Embedded-MontiArc-DL.version>
         <!-- .. Libraries .................................................. -->
         <monticore.version>5.0.0</monticore.version>
 
