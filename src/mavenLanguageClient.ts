@@ -13,7 +13,7 @@ export interface MavenLanguageClientOptions {
     manualPort: number;
     bufferSize: number;
     pomRoot: string;
-    relativeMvnSettingsPath: string|null;
+    relativeMvnSettingsPath: string | null;
 }
 
 export class MavenLanguageClient {
@@ -22,6 +22,7 @@ export class MavenLanguageClient {
     private constants: MavenLanguageClientOptions;
     private connected: boolean;
     private lspProcess: ChildProcess | null;
+    private processRunning: boolean;
     private logger: Logger;
     private context: vscode.ExtensionContext;
 
@@ -33,40 +34,26 @@ export class MavenLanguageClient {
         this.lspProcess = null;
         this.logger = getLogger(this.constants.languageName);
         this.context = context;
+        this.processRunning = false;
     }
 
     startServerAndConnect(clientOptions: LanguageClientOptions) {
-        const mavenPath =  "C:\\Users\\Alexander\\IdeaProjects\\vscode-ema-linter\\settings\\emam";
-        // const mavenPath = join(this.context.extensionPath, this.constants.pomRoot);
-        this.logger.debug("maven path: " + mavenPath);
+        const mavenPath = join(this.context.extensionPath, this.constants.pomRoot);
+        this.logger.trace("maven path: " + mavenPath);
         let spawnOptions: SpawnOptions = {
             cwd: mavenPath,
             env: process.env,
-            stdio: "pipe"
+            stdio: "pipe",
+            shell: true
         };
         const args: string[] = ["exec:java", '-e', '-Dexec.args="-p ' + this.constants.manualPort + '"'];
-        if(this.constants.relativeMvnSettingsPath){
+        if (this.constants.relativeMvnSettingsPath) {
             args.push("-s", this.constants.relativeMvnSettingsPath);
         }
 
-        this.logger.debug("start mvn process")
-        let testProcess = spawn('dir', [], spawnOptions);
-        // let testProcess = spawn('mvn', ["exec:java" , "-s", "../settings.xml"], spawnOptions);
-        testProcess.stdout.on("data", (data) => this.logger.warn("ls data: " + data));
-        testProcess.on("error", (err) => this.logger.error(err));
-        this.logger.debug("process pid: " + testProcess.pid);
-        this.logger.debug("end mvn process");
-
-        return;
-
-        this.logger.debug("spwan(mvn, [" +  args + "] , " + spawnOptions.cwd + ")");
+        this.logger.trace("spwan(mvn, [" + args + "] , " + spawnOptions.cwd + ")");
         this.lspProcess = spawn("mvn", args, spawnOptions);
-
-        this.lspProcess.stdout.addListener("close" ,(event: any) => this.logger.debug("close: " + event));
-        this.lspProcess.stdout.addListener("data" ,(event: any) => this.logger.debug("data: " + event));
-        this.lspProcess.stdout.addListener("end" ,(event: any) => this.logger.debug("end: " + event));
-        this.lspProcess.stdout.addListener("readable" ,(event: any) => this.logger.debug("readable: " + event));
-        this.lspProcess.stdout.addListener("error" ,(event: any) => this.logger.debug("error: " + event));
+        this.processRunning = true;
 
         this.lspProcess.on("exit", (code, signal) => this.logger.error("code: " + code + ", signal: " + signal));
 
@@ -74,9 +61,9 @@ export class MavenLanguageClient {
             const dataAsString = "" + data;
             this.serverBuffer.enq(dataAsString);
             let curText = this.getText(this.serverBuffer);
-            this.logger.debug(dataAsString);
+
             if (!this.connected && (curText).includes("Listening on port ")) {
-                let portRegex = /.*Listening on port (\d+).*?\n/;
+                let portRegex = /.*Listening on port (\d+).*?[\r]?\n/;
                 let portMatch = portRegex.exec(curText);
                 if (portMatch) {
                     let portStr = portMatch[1];
@@ -93,6 +80,13 @@ export class MavenLanguageClient {
         this.lspProcess.on("close", (code, signal) => {
             this.logger.error("The server exited with code " + code + ". The last " + this.constants.bufferSize + " chunks of output follows:");
             this.stop();
+        });
+
+        this.lspProcess.on("exit", (code, signal) => this.stop());
+
+        this.lspProcess.on("error", (err) => {
+             this.logger.error("Maven process error: " + err);
+             this.stop();
         });
     }
 
@@ -137,17 +131,28 @@ export class MavenLanguageClient {
 
         if (this.lspProcess) {
             this.lspProcess.kill();
+            this.lspProcess = null;
         }
 
         if (this.client) {
             this.client.stop();
+            this.client = null;
         }
 
         this.connected = false;
+        this.processRunning = false;
+        this.serverBuffer = new CircularBuffer<string>(this.constants.bufferSize);
     }
 
     isConnected(): boolean {
         return this.connected;
+    }
+
+    isProcessActive(): boolean {
+        if(!this.lspProcess){
+            return false;
+        }
+        return this.processRunning;
     }
 
     getLanguageId(): string {
