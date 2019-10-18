@@ -1,5 +1,4 @@
 {
-    "logName":"ema-parser",
     "languageName":"Stream",
     "pomRoot":"settings/stream",
     "relativeMvnSettingsPath":"../settings.xml",

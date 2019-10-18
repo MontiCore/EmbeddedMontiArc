@@ -1,5 +1,4 @@
 {
-    "logName":"ema-parser",
     "languageName":"EmbeddedMontiArc",
     "fileExtension":".ema",
     "pomRoot":"settings/ema",

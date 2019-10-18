@@ -1,5 +1,4 @@
 {
-    "logName":"emam-parser",
     "languageName":"EmbeddedMontiArcMath",
     "pomRoot":"settings/emam",
     "relativeMvnSettingsPath":"../settings.xml",
