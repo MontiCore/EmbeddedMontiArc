@@ -51,7 +51,7 @@ Alternativly:
         - languageName: Name of the new Language(e.g. EmbeddedMontiArc)
         - fileExtension: File extension of the new Language(e.g. `.ema`)
         - pomRoot: relative path(from the **project root**) to the directory that contains the `pom.xml`
-        - relativeMvnSettingsPath: relative path(form the **pom.xml**) to the `settings.xml`
+        - relativeMvnSettingsPath: relative path(from the **pom.xml**) to the `settings.xml`
         - useRunningServer:
             - true => no Language Server will be spawned for the Language, instead a connection will be established on the port specified in manualPort. 
             - false => a Language Server will be spawned via maven and the port will be parsed from `stdout` of the Language Server
