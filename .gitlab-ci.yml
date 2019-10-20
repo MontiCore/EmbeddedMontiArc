@@ -17,9 +17,9 @@ windows_build:
   stage: build
   script: 
   - call VsDevCmd.bat
-  - call scripts\vs\build_emulator.bat "Visual Studio 15 2017 Win64"
+  - call scripts\\vs\\build_emulator.bat "Visual Studio 15 2017 Win64"
   tags:
-  - Windows10
+  - Windows10_OS
   artifacts:
     paths:
       - hardware_emulator/build/Release/hardware-emulator-test.exe
@@ -27,10 +27,10 @@ windows_build:
 windows_test:
   stage: test
   tags:
-  - Windows10
+  - Windows10_OS
   script:
-    - copy "hardware_emulator\build\Release\hardware-emulator-test.exe" "hardware_emulator\bin"
-    - cd hardware_emulator\bin
+    - copy "hardware_emulator\\build\\Release\\hardware-emulator-test.exe" "hardware_emulator\\bin"
+    - cd hardware_emulator\\bin
     - hardware-emulator-test
   dependencies:
     - windows_build
