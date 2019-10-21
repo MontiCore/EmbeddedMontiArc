@@ -9,7 +9,10 @@ stages:
 before_script:
   - git config user.name "gitlab-ci"
   - git config user.email "malte.heithoff@rwth-aachen.de"
-  - pip install python-gitlab
+  - git clone https://github.com/python-gitlab/python-gitlab
+  - cd python-gitlab
+  - sudo python setup.py install
+  - cd ..
 
 masterJobLinux:
   stage: linux
