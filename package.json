@@ -18,6 +18,20 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "EmbeddedMontiArc Linter",
+      "properties": {
+        "emalinter.autoupdate": {
+          "type": "string",
+          "default": "Ask",
+          "enum": [
+            "Ask",
+            "Always",
+            "Never"
+          ]
+        }
+      }
+    },
     "grammars": [
       {
         "language": "EmbeddedMontiArcMath",

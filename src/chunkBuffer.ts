@@ -14,4 +14,9 @@ export class ChunkBuffer extends CircularBuffer<String>{
         return res;
     }
 
+    clear(){
+        while(this.length > 0){
+            this.deq();
+        }
+    }
 }

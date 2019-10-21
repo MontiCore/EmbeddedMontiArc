@@ -6,7 +6,7 @@
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>struct-lsp-exec</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>struct-lsp-exec</name>
+  <name>struct-lsp-exec</name>  
 
   <properties>
     <!-- Dependency versions -->
