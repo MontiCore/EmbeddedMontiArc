@@ -66,6 +66,8 @@ function checkForUpdates() {
 				} else {
 					return askUpdate();
 				}
+			}else{
+				return false;
 			}
 		})
 		.then((update) => {
