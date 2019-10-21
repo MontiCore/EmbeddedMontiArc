@@ -9,8 +9,8 @@ stages:
 before_script:
   - git config user.name "gitlab-ci"
   - git config user.email "malte.heithoff@rwth-aachen.de"
-  - apt-get update -qy
-  - apt-get install -y python-pip
+  - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  - python get-pip.py
   - pip install python-gitlab
 
 masterJobLinux:
