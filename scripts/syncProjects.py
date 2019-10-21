@@ -36,5 +36,4 @@ import gitlab
 import sys
 import os
 
-print('Test')
 main('https://git.rwth-aachen.de/', 9834, str(sys.argv[1]), str(sys.argv[2]))
