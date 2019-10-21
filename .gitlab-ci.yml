@@ -10,9 +10,9 @@ before_script:
   - git config user.name "gitlab-ci"
   - git config user.email "malte.heithoff@rwth-aachen.de"
   - git clone https://github.com/python-gitlab/python-gitlab
-  - cd python-gitlab
-  - sudo python setup.py install
-  - cd ..
+  - apt-get update -qy
+  - apt-get install -y python-dev python-pip
+  - pip install python-gitlab
 
 masterJobLinux:
   stage: linux
