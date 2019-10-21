@@ -6,6 +6,7 @@ import { SocketMessageReader, SocketMessageWriter } from 'vscode-jsonrpc';
 import { Socket } from 'net';
 import { getLogger, Logger } from 'log4js';
 import CircularBuffer from 'circularbuffer';
+import { ChunkBuffer } from './chunkBuffer';
 
 export interface MavenLanguageClientOptions {
     languageName: string;
@@ -18,7 +19,7 @@ export interface MavenLanguageClientOptions {
 
 export class MavenLanguageClient {
     private client: LanguageClient | null;
-    private serverBuffer: CircularBuffer<string>;
+    private serverBuffer: ChunkBuffer;
     private constants: MavenLanguageClientOptions;
     private connected: boolean;
     private lspProcess: ChildProcess | null;
@@ -28,7 +29,7 @@ export class MavenLanguageClient {
 
     constructor(context: vscode.ExtensionContext, constants: MavenLanguageClientOptions) {
         this.constants = constants;
-        this.serverBuffer = new CircularBuffer<string>(constants.bufferSize);
+        this.serverBuffer = new ChunkBuffer(constants.bufferSize);
         this.connected = false;
         this.client = null;
         this.lspProcess = null;
@@ -60,7 +61,7 @@ export class MavenLanguageClient {
         this.lspProcess.stdout.on("data", (data) => {
             const dataAsString = "" + data;
             this.serverBuffer.enq(dataAsString);
-            let curText = this.getText(this.serverBuffer);
+            let curText = this.serverBuffer.getText();
 
             if (!this.connected && (curText).includes("Listening on port ")) {
                 let portRegex = /.*Listening on port (\d+).*?[\r]?\n/;
@@ -88,14 +89,6 @@ export class MavenLanguageClient {
              this.logger.error("Maven process error: " + err);
              this.stop();
         });
-    }
-
-    getText(buffer: CircularBuffer<string>): string {
-        let res = "";
-        for (let i of buffer.toArray()) {
-            res += i;
-        }
-        return res;
     }
 
     connectToServer(clientOptions: LanguageClientOptions, port: number, languageClientName: string) {
@@ -126,7 +119,7 @@ export class MavenLanguageClient {
     }
 
     stop() {
-        let result = "\n" + this.getText(this.serverBuffer);
+        let result = "\n" + this.serverBuffer.getText();
         this.logger.error(result);
 
         if (this.lspProcess) {
@@ -141,7 +134,7 @@ export class MavenLanguageClient {
 
         this.connected = false;
         this.processRunning = false;
-        this.serverBuffer = new CircularBuffer<string>(this.constants.bufferSize);
+        this.serverBuffer = new ChunkBuffer(this.constants.bufferSize);
     }
 
     isConnected(): boolean {
