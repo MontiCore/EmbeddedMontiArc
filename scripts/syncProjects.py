@@ -21,7 +21,6 @@ def syncProject(project, gitlabToken):
         os.system('git clone ' + repo_git_url + ' --quiet')
 
 def main(gitUrl, groupID, outDir, accessToken):
-    print("token: " + accessToken)
     gl = gitlab.Gitlab(gitUrl, private_token=accessToken)
     gl.auth()
     ema = gl.groups.get(groupID)
@@ -37,4 +36,5 @@ import gitlab
 import sys
 import os
 
+print('Test')
 main('https://git.rwth-aachen.de/', 9834, str(sys.argv[1]), str(sys.argv[2]))
