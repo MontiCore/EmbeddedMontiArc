@@ -54,7 +54,8 @@ public class EmaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEM
 
     @Override
     protected String getSymbolName(ASTEMACompilationUnit node) {
-        return node.getComponent().getName();
+        String name = node.getComponent().getName();
+        return name.substring(0, 1).toLowerCase() + name.substring(1);
     }
 
     @Override
