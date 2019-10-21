@@ -1,5 +1,4 @@
 def syncProjects(gl, group, gitlabToken):
-    print("token: " + gitlabToken)
     subgroups = group.subgroups
 
     for g in subgroups.list(all=True):
@@ -22,6 +21,7 @@ def syncProject(project, gitlabToken):
         os.system('git clone ' + repo_git_url + ' --quiet')
 
 def main(gitUrl, groupID, outDir, accessToken):
+    print("token: " + accessToken)
     gl = gitlab.Gitlab(gitUrl, private_token=accessToken)
     gl.auth()
     ema = gl.groups.get(groupID)
