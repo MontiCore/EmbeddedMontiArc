@@ -10,3 +10,8 @@ vsc-extension-quickstart.md
 **/*.ts
 scripts/*
 logs/*
+package.old.json
+.gitlab-ci.yml
+build.sh
+**/*.versionsBackup
+**/keywords.txt
