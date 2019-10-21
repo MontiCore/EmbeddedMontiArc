@@ -1,5 +1,5 @@
 {
-    "logName":"emam-lint",
+    "logName":"emam-lint.log",
     "clientOptions":[
         "settings/emam/emamConstants.json",
         "settings/struct/structConstants.json",
