@@ -52,14 +52,14 @@ function dependenciesAvailable():boolean {
 
 	let res = true;
 
-	if (spawnSync(checkCommand + " mvn").status !== 0) {
+	if (spawnSync(checkCommand, ["mvn"]).status !== 0) {
 		const errorMsg = "Can not find mvn in PATH. Is Maven installed?";
 		getLogger().error(errorMsg);
 		vscode.window.showErrorMessage(errorMsg);
 		res = false;
 	}
 
-	if (spawnSync(checkCommand + " java").status !== 0) {
+	if (spawnSync(checkCommand, ["java"]).status !== 0) {
 		const errorMsg = "Can not find java in PATH. Is Java installed?";
 		getLogger().error(errorMsg);
 		vscode.window.showErrorMessage(errorMsg);
