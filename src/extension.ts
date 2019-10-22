@@ -6,8 +6,9 @@ import { MavenLanguageClient, MavenLanguageClientOptions } from './mavenLanguage
 import { MavenUpdater } from './mavenUpdater';
 import { MavenUpdateManager } from './mavenUpdateManager';
 import { LanguageServerManager } from './languageServerManager';
+import { spawnSync } from 'child_process';
 
-let updateManager: MavenUpdateManager = new MavenUpdateManager("emalinter.autoupdate"); 
+let updateManager: MavenUpdateManager = new MavenUpdateManager("emalinter.autoupdate");
 let languageServerManager = new LanguageServerManager();
 
 export function activate(context: vscode.ExtensionContext) {
@@ -16,25 +17,56 @@ export function activate(context: vscode.ExtensionContext) {
 	setupLog(context.extensionPath, globalOptions.logName);
 	getLogger().debug("activate");
 
-	for (let clientOptionsPath of globalOptions.clientOptions) {
-		let clientOptions: MavenLanguageClientOptions = require(join(context.extensionPath, clientOptionsPath));
-		languageServerManager.addClient(new MavenLanguageClient(context, clientOptions));
-		updateManager.addUpdater(new MavenUpdater(clientOptions.languageName, join(context.extensionPath, clientOptions.pomRoot), clientOptions.relativeMvnSettingsPath));
-	}
-
-	vscode.window.onDidChangeVisibleTextEditors(editors => {
-		for (let editor of editors) {
+	if(dependenciesAvailable()){
+		for (let clientOptionsPath of globalOptions.clientOptions) {
+			let clientOptions: MavenLanguageClientOptions = require(join(context.extensionPath, clientOptionsPath));
+			languageServerManager.addClient(new MavenLanguageClient(context, clientOptions));
+			updateManager.addUpdater(new MavenUpdater(clientOptions.languageName, join(context.extensionPath, clientOptions.pomRoot), clientOptions.relativeMvnSettingsPath));
+		}
+	
+		vscode.window.onDidChangeVisibleTextEditors(editors => {
+			for (let editor of editors) {
+				languageServerManager.activateClient(editor.document.languageId);
+			}
+		});
+	
+		// activate linters for files that are visible at activation time
+		for (let editor of vscode.window.visibleTextEditors) {
 			languageServerManager.activateClient(editor.document.languageId);
 		}
-	});
+	
+		languageServerManager.activateWellnessCheck(10 * 1000);
+		setTimeout(() => updateManager.checkForUpdates(), 30 * 1000);
+	}else{
+		getLogger().fatal("Aborting: Missing executables!");
+	}
+}
 
-	// activate linters for files that are visible at activation time
-	for (let editor of vscode.window.visibleTextEditors) {
-		languageServerManager.activateClient(editor.document.languageId);
+function dependenciesAvailable():boolean {
+	let checkCommand: string;
+	if (process.platform === "win32") {
+		checkCommand = "where";
+	} else {
+		checkCommand = "whereis";
 	}
 
-	languageServerManager.activateWellnessCheck(10 * 1000);
-	setTimeout(() => updateManager.checkForUpdates(), 30 * 1000);
+	let res = true;
+
+	if (spawnSync(checkCommand + " mvn").status !== 0) {
+		const errorMsg = "Can not find mvn in PATH. Is Maven installed?";
+		getLogger().error(errorMsg);
+		vscode.window.showErrorMessage(errorMsg);
+		res = false;
+	}
+
+	if (spawnSync(checkCommand + " java").status !== 0) {
+		const errorMsg = "Can not find java in PATH. Is Java installed?";
+		getLogger().error(errorMsg);
+		vscode.window.showErrorMessage(errorMsg);
+		res = false;
+	}
+
+	return res;
 }
 
 function setupLog(extensionPath: string, logName: string) {
