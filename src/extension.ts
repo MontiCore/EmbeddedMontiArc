@@ -6,7 +6,7 @@ import { MavenLanguageClient, MavenLanguageClientOptions } from './mavenLanguage
 import { MavenUpdater } from './mavenUpdater';
 import { MavenUpdateManager } from './mavenUpdateManager';
 import { LanguageServerManager } from './languageServerManager';
-import { spawnSync } from 'child_process';
+import { spawnSync, SpawnSyncOptionsWithStringEncoding, SpawnSyncReturns } from 'child_process';
 
 let updateManager: MavenUpdateManager = new MavenUpdateManager("emalinter.autoupdate");
 let languageServerManager = new LanguageServerManager();
@@ -42,24 +42,27 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 }
 
-function dependenciesAvailable():boolean {
-	let checkCommand: string;
-	if (process.platform === "win32") {
-		checkCommand = "where";
-	} else {
-		checkCommand = "whereis";
+function spawnExecutableCheck(executable:string):SpawnSyncReturns<string> {
+	if (process.platform === "win32"){
+		let args = [executable];
+		return spawnSync("where", args);
+	}else{
+		let args = ["-v", executable];
+		const spawnOptions: SpawnSyncOptionsWithStringEncoding = { shell: true, encoding: "utf8" };
+		return spawnSync("command", args, spawnOptions);
 	}
+}
 
+function dependenciesAvailable():boolean {
 	let res = true;
-
-	if (spawnSync(checkCommand, ["mvn"]).status !== 0) {
+	if (spawnExecutableCheck("mvn").status !== 0) {
 		const errorMsg = "Can not find mvn in PATH. Is Maven installed?";
 		getLogger().error(errorMsg);
 		vscode.window.showErrorMessage(errorMsg);
 		res = false;
 	}
 
-	if (spawnSync(checkCommand, ["java"]).status !== 0) {
+	if (spawnExecutableCheck("java").status !== 0) {
 		const errorMsg = "Can not find java in PATH. Is Java installed?";
 		getLogger().error(errorMsg);
 		vscode.window.showErrorMessage(errorMsg);
