@@ -121,20 +121,6 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
     }
 
-    protected void errorIfAxisNotFeasible(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
-        if ((!layer.getStringValue(AllPredefinedLayers.AXIS_NAME).isPresent() && layer.getIntValue(AllPredefinedLayers.AXIS_NAME).get() > 1)){
-            Log.error("0" + ErrorCodes.ILLEGAL_PARAMETER_VALUE + " Illegal value for parameter axis. Value must be None, 0 or 1"
-                    , layer.getSourcePosition());
-        }
-    }
-
-    protected void errorIfDimNotFeasible(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
-        if (layer.getIntValue(AllPredefinedLayers.DIM_NAME).get() > 1){
-            Log.error("0" + ErrorCodes.ILLEGAL_PARAMETER_VALUE + " Illegal value for parameter dim. Value must be 0 or 1"
-                    , layer.getSourcePosition());
-        }
-    }
-
     protected void errorIfInputNotFeasibleForDotProduct(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
         if(!(layer.getInputTypes().get(1).getHeight() == layer.getInputTypes().get(0).getWidth())){
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Dot Product cannot be applied to input 1 with height " +

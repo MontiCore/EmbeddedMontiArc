@@ -29,6 +29,8 @@ import java.util.List;
 
 abstract public class BaseRNN extends PredefinedLayerDeclaration {
 
+    protected int numberOfStates = 1;
+
     public BaseRNN(String name) {
         super(name);
     }
@@ -47,8 +49,9 @@ abstract public class BaseRNN extends PredefinedLayerDeclaration {
             int layers = layer.getIntValue(AllPredefinedLayers.LAYERS_NAME).get();
 
             return Collections.singletonList(new ArchTypeSymbol.Builder()
-                    .channels(bidirectional ? 2 * layers : layers)
-                    .height(units)
+                    .channels(numberOfStates)
+                    .height(bidirectional ? 2 * layers : layers)
+                    .width(units)
                     .elementType("-oo", "oo")
                     .build());
         }
@@ -69,9 +72,9 @@ abstract public class BaseRNN extends PredefinedLayerDeclaration {
 
         if (member == VariableSymbol.Member.STATE) {
             errorIfInputSizeIsNotOne(inputTypes, layer);
-            errorIfInputChannelSizeIsInvalid(inputTypes, layer, bidirectional ? 2 * layers : layers);
-            errorIfInputHeightIsInvalid(inputTypes, layer, units);
-            errorIfInputWidthIsInvalid(inputTypes, layer, 1);
+            errorIfInputChannelSizeIsInvalid(inputTypes, layer, numberOfStates);
+            errorIfInputHeightIsInvalid(inputTypes, layer, bidirectional ? 2 * layers : layers);
+            errorIfInputWidthIsInvalid(inputTypes, layer, units);
         }
         else {
             errorIfInputSizeIsNotOne(inputTypes, layer);

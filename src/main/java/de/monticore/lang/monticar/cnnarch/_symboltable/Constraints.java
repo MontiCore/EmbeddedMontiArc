@@ -184,6 +184,70 @@ public enum Constraints {
             return AllPredefinedLayers.POOL_MAX + " or "
                     + AllPredefinedLayers.POOL_AVG;
         }
+    },
+    NULLABLE_AXIS {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            if (exp.getIntValue().isPresent()){
+                int intValue = exp.getIntValue().get();
+                return intValue >= -1 && intValue <= 2; // -1 is null
+            }
+
+            return false;
+        }
+
+        @Override
+        public String msgString() {
+            return "an axis between 0 and 2 or -1";
+        }
+    },
+    NULLABLE_AXIS_WITHOUT_2 {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            if (exp.getIntValue().isPresent()){
+                int intValue = exp.getIntValue().get();
+                return intValue >= -1 && intValue <= 2; // -1 is null
+            }
+
+            return false;
+        }
+
+        @Override
+        public String msgString() {
+            return "an axis between 0 and 1 or -1";
+        }
+    },
+    AXIS {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            if (exp.getIntValue().isPresent()){
+                int intValue = exp.getIntValue().get();
+                return intValue >= 0 && intValue <= 2;
+            }
+
+            return false;
+        }
+
+        @Override
+        public String msgString() {
+            return "an axis between 0 and 2";
+        }
+    },
+    AXIS_WITHOUT_2 {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            if (exp.getIntValue().isPresent()){
+                int intValue = exp.getIntValue().get();
+                return intValue >= 0 && intValue <= 1;
+            }
+
+            return false;
+        }
+
+        @Override
+        public String msgString() {
+            return "an axis between 0 and 1";
+        }
     };
 
     protected abstract boolean isValid(ArchSimpleExpressionSymbol exp);

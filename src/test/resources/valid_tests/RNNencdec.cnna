@@ -1,27 +1,27 @@
-architecture RNNencdec(max_length=50, vocabulary_size=30000, hidden_size=1000){
-  def input Z(0:29999)^{50} source
-  def output Z(0:29999)^{1} target[50]
+architecture RNNencdec{
+    def input Z(0:49999)^{30} source
+    def output Z(0:49999)^{1} target[30]
 
-     layer LSTM(units=hidden_size) encoder;
+    layer GRU(units=1000) encoder;
 
-     source ->
-     Embedding(output_dim=hidden_size) ->
-     encoder;
+    source ->
+    Embedding(output_dim=620) ->
+    encoder;
 
-     layer LSTM(units=hidden_size) decoder;
+    1 -> target[0];
 
-     1 -> target[0];
+    layer GRU(units=1000) decoder;
 
-     encoder.state -> decoder.state;
+    encoder.state -> decoder.state;
 
-     timed<t> GreedySearch(max_length=50) {
-         target[t-1] ->
-         Embedding(output_dim=hidden_size) ->
-         decoder ->
-         FullyConnected(units=vocabulary_size) ->
-         Softmax() ->
-         ArgMax() ->
-         target[t]
-     };
+    timed<t> GreedySearch(max_length=30) {
+        target[t-1] ->
+        Embedding(output_dim=620) ->
+        decoder ->
+        FullyConnected(units=50000) ->
+        Softmax() ->
+        ArgMax() ->
+        target[t]
+    };
 
 }

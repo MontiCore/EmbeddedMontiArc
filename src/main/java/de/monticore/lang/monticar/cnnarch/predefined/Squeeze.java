@@ -21,41 +21,37 @@
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
-import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Repeat extends PredefinedLayerDeclaration {
+public class Squeeze extends PredefinedLayerDeclaration {
 
-    private Repeat() {
-        super(AllPredefinedLayers.REPEAT_NAME);
+    private Squeeze() {
+        super(AllPredefinedLayers.SQUEEZE_NAME);
     }
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        int repeats = layer.getIntValue(AllPredefinedLayers.REPEATS_NAME).get();
+        List<Integer> dimensions = layer.getInputTypes().get(0).getDimensions();
+
         int axis = layer.getIntValue(AllPredefinedLayers.AXIS_NAME).get();
 
-        int channels = layer.getInputTypes().get(0).getChannels();
-        int height = layer.getInputTypes().get(0).getHeight();
-        int width = layer.getInputTypes().get(0).getWidth();
-
-        if (axis == 0) {
-            channels *= repeats;
-        } else if (axis == 1) {
-            height *= repeats;
-        } else if (axis == 2) {
-            width *= repeats;
+        if (axis == -1) {
+            dimensions.remove(new Integer(1));
         } else {
-            // when no axis is given, expand dimension and repeat in new, first dimension
-            width = height;
-            height = channels;
-            channels = repeats;
+            dimensions.remove(axis);
         }
+
+        while (dimensions.size() < 3) {
+            dimensions.add(1);
+        }
+
+        int channels = dimensions.get(0);
+        int height = dimensions.get(1);
+        int width = dimensions.get(2);
 
         return Collections.singletonList(
                 new ArchTypeSymbol.Builder()
@@ -72,18 +68,18 @@ public class Repeat extends PredefinedLayerDeclaration {
 
         int axis = layer.getIntValue(AllPredefinedLayers.AXIS_NAME).get();
 
-        if (axis == -1) {
+        if (axis == 0) {
+            errorIfInputChannelSizeIsInvalid(inputTypes, layer, 1);
+        } else if (axis == 1) {
+            errorIfInputHeightIsInvalid(inputTypes, layer, 1);
+        } else if (axis == 2) {
             errorIfInputWidthIsInvalid(inputTypes, layer, 1);
         }
     }
 
-    public static Repeat create(){
-        Repeat declaration = new Repeat();
+    public static Squeeze create(){
+        Squeeze declaration = new Squeeze();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.REPEATS_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.AXIS_NAME)
                         .constraints(Constraints.NULLABLE_AXIS)

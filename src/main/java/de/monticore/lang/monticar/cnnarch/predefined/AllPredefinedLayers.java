@@ -55,6 +55,7 @@ public class AllPredefinedLayers {
     public static final String ARG_MAX_NAME = "ArgMax";
     public static final String DOT_NAME = "Dot";
     public static final String REPEAT_NAME = "Repeat";
+    public static final String SQUEEZE_NAME = "Squeeze";
     public static final String REDUCE_SUM_NAME = "ReduceSum";
     public static final String EXPAND_DIMS_NAME = "ExpandDims";
     public static final String MULTIPLY_NAME = "Multiply";
@@ -80,7 +81,6 @@ public class AllPredefinedLayers {
     public static final String LAYERS_NAME = "layers";
     public static final String INPUT_DIM_NAME = "input_dim";
     public static final String OUTPUT_DIM_NAME = "output_dim";
-    public static final String DIM_NAME = "dim";
     public static final String BIDIRECTIONAL_NAME = "bidirectional";
     public static final String FLATTEN_PARAMETER_NAME = "flatten";
     public static final String MAX_LENGTH_NAME = "max_length";
@@ -124,6 +124,7 @@ public class AllPredefinedLayers {
                 ArgMax.create(),
                 Dot.create(),
                 Repeat.create(),
+                Squeeze.create(),
                 ReduceSum.create(),
                 ExpandDims.create(),
                 Multiply.create(),

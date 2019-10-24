@@ -37,17 +37,17 @@ public class ExpandDims extends PredefinedLayerDeclaration {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
+        int axis = layer.getIntValue(AllPredefinedLayers.AXIS_NAME).get();
 
-        int dim = layer.getIntValue(AllPredefinedLayers.DIM_NAME).get();
         int channels = layer.getInputTypes().get(0).getChannels();
         int height = layer.getInputTypes().get(0).getHeight();
         int width = layer.getInputTypes().get(0).getWidth();
 
-        if (dim == 0) {
+        if (axis == 0) {
             width = height;
             height = channels;
             channels = 1;
-        }else if (dim == 1) {
+        } else if (axis == 1) {
             width = height;
             height = 1;
         }
@@ -56,22 +56,22 @@ public class ExpandDims extends PredefinedLayerDeclaration {
                 .channels(channels)
                 .height(height)
                 .width(width)
-                .elementType("-oo", "oo")
+                .elementType(layer.getInputTypes().get(0).getDomain())
                 .build());
     }
 
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputIsEmpty(inputTypes, layer);
-        errorIfDimNotFeasible(inputTypes, layer);
+        errorIfInputWidthIsInvalid(inputTypes, layer, 1);
     }
 
     public static ExpandDims create(){
         ExpandDims declaration = new ExpandDims();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.DIM_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.NON_NEGATIVE)
+                        .name(AllPredefinedLayers.AXIS_NAME)
+                        .constraints(Constraints.AXIS_WITHOUT_2)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;

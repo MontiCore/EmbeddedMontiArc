@@ -24,6 +24,8 @@ public class LSTM extends BaseRNN {
 
     private LSTM() {
         super(AllPredefinedLayers.LSTM_NAME);
+
+        numberOfStates = 2;
     }
 
     public static LSTM create() {

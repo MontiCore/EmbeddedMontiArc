@@ -1,46 +1,46 @@
-architecture RNNsearch(max_length=50, vocabulary_size=30001, embedding_size=620, hidden_size=1000){
-    def input Q^{max_length, vocabulary_size} source
-    def output Q^{max_length, vocabulary_size} target
+architecture RNNsearch{
+    def input Z(0:49999)^{30} source
+    def output Z(0:49999)^{1} target[30]
 
-    layer GRU(units=hidden_size, bidirectional=true) encoder;
+    layer GRU(units=1000, bidirectional=true) encoder;
+    source -> Embedding(output_dim=620) -> encoder;
 
-    source ->
-    Embedding(input=vocabulary_size, output=embedding_size) ->
-    encoder ->
-    FullyConnected(units=hidden_size, flatten=false) -> encoder.output;
+    layer FullyConnected(units=1000, flatten=false) fc;
+    encoder.output -> fc;
 
-    layer GRU(units=hidden_size) decoder;
+    1 -> target[0];
 
-    1 -> OneHot(n=vocabulary_size) -> target[0];
-    encoder.state[1] -> decoder.state;
+    layer GRU(units=1000) decoder;
+    encoder.state -> SwapAxes(axes=(0, 1)) -> Split(n=2) -> [1] -> SwapAxes(axes=(0, 1)) -> decoder.state;
 
-    unroll<t=0> BeamSearchStart(width=5, max_length=50) {
+    timed<t> GreedySearch(max_length=30) {
         (
             (
                 (
                     decoder.state ->
-                    Repeat(n=max_length, dim=1)
+                    Repeat(n=30, axis=1)
                 |
-                    encoder.output
+                    fc.output
                 ) ->
                 Concatenate(dim=2) ->
-                FullyConnected(units=hidden_size, flatten=false) ->
+                FullyConnected(units=1000, flatten=false) ->
                 Tanh() ->
-                FullyConnected(units=max_length) ->
+                FullyConnected(units=30) ->
                 Softmax()
             |
-                encoder.output
+                fc.output
             ) ->
             Dot()
         |
             target[t-1] ->
-            Embedding(input=vocabulary_size, output=hidden_size)
+            Embedding(output_dim=620)
         ) ->
         Concatenate() ->
         decoder ->
-        FullyConnected(units=vocabulary_size) ->
+        FullyConnected(units=50000) ->
+        Softmax() ->
         ArgMax() ->
-        OneHot(n=vocabulary_size) ->
         target[t]
     };
+
 }
