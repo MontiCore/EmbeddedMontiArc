@@ -31,11 +31,12 @@ For more information see Wiki:
         ...
     </plugins>
 ```
-##Plugin Description
+## Plugin Description
 The test of a component can be divided into 3 steps:
-1. **Generating**: In this step, the components and unitstreams in language EMAM are read. Their correctness are checked with the help of CoCos (Context Conditions). If a component, including its tests received no error, its corresponding C++ code will be generated in the end of this step.
-2. **Building**: The C++ code generated from the first step is compiled in this step. With the help of a .jar package of a out-of-box EMADL generator, components in file form EMADL are adapted into C++ and compiled.
+1. **Generating**: In this step, the components and unitstreams in language EMAM and EMADL are read. Their correctness are checked with the help of CoCos (Context Conditions). If a component, including its tests received no error, its corresponding C++ code will be generated in the end of this step.
+2. **Building**: After generated in the first step, the C++ code is compiled in this step. Also, a neural network will be trained here if it is needed.
 3. **Execution**: In this step, the streamtests of the components will be executed. The result will be verified after the execution.
+
 ![diagram](Diagram.svg) 
 ## Configuration
 

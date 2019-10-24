@@ -39,12 +39,19 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
     }
 
     @Override
-    protected void mainExecution() throws MojoExecutionException, MojoFailureException {
+    protected void mainExecution() throws MojoExecutionException, MojoFailureException{
 
         Log.info("StreamTestBuildMojo", "StreamTestBuildMojo");
 
         this.removeMojoFiles();
         this.mkdir(this.runProcessTMPDir().toString());
+
+        if (checkJarArchiveForDL()){
+            logInfo("Generating training files for DL with EMADL2CPP generator");
+            //runTraining();
+        }else{
+            logInfo("No EMADL generator is found. Training will not be executed");
+        }
 
         if (SystemUtils.IS_OS_WINDOWS) {
             logInfo("Building with cmake for: \""+this.generator+"\"");
@@ -302,7 +309,7 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         }
     }
 
-    protected boolean runTraining() throws MojoExecutionException, IOException {
+    protected boolean runTraining() throws MojoExecutionException {
         if (!checkJarArchiveForDL()){
             throw new MojoExecutionException("No training archive!");
         }
@@ -349,9 +356,14 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         return true;
     }
 
-
-    public File createTempScript() throws IOException{
-        File tempScript = File.createTempFile("script", null);
+    //Generate a running script for EMADL generator.
+    private File createTempScript() {
+        File tempScript = null;
+        try {
+            tempScript = File.createTempFile("script", null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         try{
             Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
                     tempScript));
@@ -370,8 +382,8 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
             printWriter.println("fi");
 
             printWriter.close();
-        }catch(Exception e){
-            System.out.println(e);
+        }catch(IOException e){
+            e.printStackTrace();
         }
 
         return tempScript;
