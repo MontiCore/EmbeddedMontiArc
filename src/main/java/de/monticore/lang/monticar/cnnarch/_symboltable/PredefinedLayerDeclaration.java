@@ -121,14 +121,6 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
     }
 
-    protected void errorIfInputNotFeasibleForDotProduct(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
-        if(!(layer.getInputTypes().get(1).getHeight() == layer.getInputTypes().get(0).getWidth())){
-            Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Dot Product cannot be applied to input 1 with height " +
-                            layer.getInputTypes().get(1).getHeight() + " and input 0 with width " + layer.getInputTypes().get(0).getWidth()
-                    , layer.getSourcePosition());
-        }
-    }
-
     protected void errorIfInputChannelSizeIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int channels) {
         for (ArchTypeSymbol inputType : inputTypes) {
             if (inputType.getChannels() != channels) {
