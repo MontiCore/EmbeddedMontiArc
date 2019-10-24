@@ -5,7 +5,6 @@ import { join } from 'path';
 import { SocketMessageReader, SocketMessageWriter } from 'vscode-jsonrpc';
 import { Socket } from 'net';
 import { getLogger, Logger } from 'log4js';
-import CircularBuffer from 'circularbuffer';
 import { ChunkBuffer } from './chunkBuffer';
 
 export interface MavenLanguageClientOptions {
@@ -53,6 +52,10 @@ export class MavenLanguageClient {
         }
 
         this.logger.trace("spwan(mvn, [" + args + "] , " + spawnOptions.cwd + ")");
+        let statusBarItem = vscode.window.createStatusBarItem();
+        statusBarItem.text = this.constants.languageName + ": starting Language Server";
+        statusBarItem.show();
+
         this.lspProcess = spawn("mvn", args, spawnOptions);
         this.processRunning = true;
 
@@ -63,6 +66,10 @@ export class MavenLanguageClient {
             this.serverBuffer.enq(dataAsString);
             let curText = this.serverBuffer.getText();
 
+            if(curText.includes("Downloading")){
+                statusBarItem.text = this.constants.languageName + ": starting Language Server, Downloading dependencies";
+            }
+
             if (!this.connected && (curText).includes("Listening on port ")) {
                 let portRegex = /.*Listening on port (\d+).*?[\r]?\n/;
                 let portMatch = portRegex.exec(curText);
@@ -70,6 +77,8 @@ export class MavenLanguageClient {
                     let portStr = portMatch[1];
                     let port = parseInt(portStr);
                     getLogger(this.constants.languageName).debug("Connecting on port " + port);
+                    statusBarItem.hide();
+
                     this.connected = true;
                     this.connectToServer(clientOptions, port, this.constants.languageName + "LangClient");
                 } else {
