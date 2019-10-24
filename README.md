@@ -61,3 +61,4 @@ Alternatively:
     - pom.xml: a Maven file to start the Language Server(e.g. `mvn exec:java -s ../settings.xml`)
     - keywords.txt: a list of language keywords seperated by a newline(file can be renamed in constants.json)
 3. Register the Language by adding the relative path to the `constants.json` in [global.json](settings/global.json)::clientOptions
+4. Re-run: `node scripts/createSyntax.js ./settings/global.json`
