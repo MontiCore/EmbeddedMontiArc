@@ -59,21 +59,12 @@ public class FullyConnected extends PredefinedLayerDeclaration {
                             .build());
                 }
 
-                // if input is an RNN state or output. Can be used to store states in layer variables
-                if(layer.getInputElement().get() instanceof VariableSymbol && (((VariableSymbol)(layer.getInputElement().get())).getMember() == VariableSymbol.Member.STATE || ((VariableSymbol)((ArchitectureElementSymbol)layer.getInputElement().get())).getMember() == VariableSymbol.Member.OUTPUT)){
-                    return Collections.singletonList(new ArchTypeSymbol.Builder()
-                            .channels(inputType.getChannels())
-                            .height(units)
-                            .elementType("-oo", "oo")
-                            .build());
-                }else {
-                    return Collections.singletonList(new ArchTypeSymbol.Builder()
-                            .channels(inputType.getChannels())
-                            .height(units)
-                            .width(1)
-                            .elementType("-oo", "oo")
-                            .build());
-                }
+                return Collections.singletonList(new ArchTypeSymbol.Builder()
+                        .channels(inputType.getChannels())
+                        .height(units)
+                        .width(1)
+                        .elementType("-oo", "oo")
+                        .build());
             }
 
             return Collections.singletonList(new ArchTypeSymbol.Builder()

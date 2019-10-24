@@ -23,7 +23,6 @@ package de.monticore.lang.monticar.cnnarch.predefined;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
-import org.fusesource.jansi.internal.Kernel32;
 
 import java.util.ArrayList;
 import java.util.Arrays;
