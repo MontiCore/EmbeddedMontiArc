@@ -21,7 +21,6 @@
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
-import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.Sigmoid;
 import de.monticore.lang.monticar.cnnarch.predefined.Softmax;
 
@@ -142,13 +141,7 @@ public abstract class CNNArchTemplateController {
 
         for (ArchitectureElementSymbol input : layer.getPrevious()) {
             if (input.getOutputTypes().size() == 1) {
-                //If the input is an RNN state which is saved as list, take its first entry (unless a state is assigned to another state)
-                if(input instanceof VariableSymbol && ((VariableSymbol) input).getMember() == VariableSymbol.Member.STATE
-                        && !(getCurrentElement().getElement() instanceof VariableSymbol && ((VariableSymbol) getCurrentElement().getElement()).getMember() == VariableSymbol.Member.STATE)){
-                    inputNames.add(getName(input) + "[" + 0 + "]");
-                }else{
-                    inputNames.add(getName(input));
-                }
+                inputNames.add(getName(input));
             } else {
                 for (int i = 0; i < input.getOutputTypes().size(); i++) {
                     inputNames.add(getName(input) + "[" + i + "]");
