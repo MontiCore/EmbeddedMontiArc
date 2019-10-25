@@ -11,7 +11,7 @@ import java.util.*;
 
 public class ManageTesting {
     private static final String[] fileTypes = {"ema", "emam", "emadl"};
-    private static final int maxToTest = 1;
+    private static final int maxToTest = 1000;
 
     public static void manageTesting(Main.ReportContext context) {
         List<Set<String>> projectsToTestList = partitionProjects(context);
