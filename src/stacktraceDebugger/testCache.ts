@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { emaStacktraces, parseStacktraces } from "./stacktraceParser";
-import { readFileSync, statSync, readdirSync, writeFileSync } from "fs";
+import { readFileSync, statSync, readdirSync, writeFileSync, existsSync } from "fs";
 import { isAbsolute } from "path";
 import { EMATestRunner } from "./testRunner";
 import * as log4js from 'log4js';
@@ -30,8 +30,11 @@ export class TestCache {
 		} else {
 			this.testRunner.getDebugConsoleLogger().log("Files have not changed => Using cache");
 		}
-
-		return parseStacktraces(stacktraceFile, this.testRunner.getModelBasePath());
+		if(existsSync(stacktraceFile)){
+			return parseStacktraces(stacktraceFile, this.testRunner.getModelBasePath());
+		}else{
+			return null;
+		}
 
 	}
 
@@ -55,7 +58,7 @@ export class TestCache {
 	private getRelevantFiles(stacktraceFile: string, lastDebugPath: string, componentName: string) {
 		log4js.getLogger().trace("getRelevantFiles");
 		let relevantFiles = this.getAllFileNames(this.testRunner.getModelBasePath()).filter(fn => fn.endsWith(".emam") || fn.endsWith(".stream"));
-		relevantFiles.push(this.testRunner.getGeneratorJarPath());
+		relevantFiles.push(this.testRunner.getMavenPomPath());
 		relevantFiles.push(stacktraceFile);
 		return relevantFiles;
 	}

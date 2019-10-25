@@ -27,7 +27,7 @@ export class EmamRuntime extends EventEmitter {
 	private modelbase: string;
 	private lastManualIndex: number = -1;
 	private logger: RuntimeLogger = new RuntimeLogger(this);
-	private generatorJarPath: string;
+	private mavenPomPath: string;
 
 	public setSourceFile(path: string) {
 		this._sourceFile = path.replace("\/\/", "/");
@@ -66,9 +66,9 @@ export class EmamRuntime extends EventEmitter {
 	private _breakpointId = 1;
 
 
-	constructor(generatorJarPath: string) {
+	constructor(mavenPomPath: string) {
 		super();
-		this.generatorJarPath = generatorJarPath;
+		this.mavenPomPath = mavenPomPath;
 	}
 
 	public debugLog(text: string) {
@@ -86,7 +86,7 @@ export class EmamRuntime extends EventEmitter {
 		} else {
 			this.logger.log("Start debugging the Stream tests for " + program);
 			const targetBasePath = modelbase + "/target";
-			this.testRunner = new TestCache(new EMATestRunner(targetBasePath, this.generatorJarPath, modelbase, this.logger));
+			this.testRunner = new TestCache(new EMATestRunner(targetBasePath, this.mavenPomPath, modelbase, this.logger));
 			this.modelbase = modelbase;
 			this.logger.log("Parsing stacktraces...");
 			const tmpStacktraces = this.testRunner.getStacktraces(program);

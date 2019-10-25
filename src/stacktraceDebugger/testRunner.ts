@@ -5,11 +5,12 @@ import { RuntimeLogger } from "./RuntimeLogger";
 import { window } from 'vscode';
 import { existsSync, mkdirSync } from 'fs';
 import * as log4js from 'log4js';
+import { join } from 'path';
 
 
 export class EMATestRunner {
 	private targetBasePath: string;
-	private generatorJarPath: string;
+	private mavenPomPath: string;
 	private modelBasePath: string;
 	private logger: RuntimeLogger;
 
@@ -26,11 +27,11 @@ export class EMATestRunner {
 	}
 
     /**
-     * Getter generatorJarPath
+     * Getter mavenPomPath
      * @return {string}
      */
-	public getGeneratorJarPath(): string {
-		return this.normalizePath(this.generatorJarPath);
+	public getMavenPomPath(): string {
+		return this.normalizePath(this.mavenPomPath);
 	}
 
     /**
@@ -41,9 +42,9 @@ export class EMATestRunner {
 		return this.normalizePath(this.modelBasePath);
 	}
 
-	constructor(targetBasePath: string, generatorJarPath: string, modelBasePath: string, logger: RuntimeLogger) {
+	constructor(targetBasePath: string, mavenPomPath: string, modelBasePath: string, logger: RuntimeLogger) {
 		this.targetBasePath = this.normalizePath(targetBasePath);
-		this.generatorJarPath = this.normalizePath(generatorJarPath);
+		this.mavenPomPath = this.normalizePath(mavenPomPath);
 		this.modelBasePath = this.normalizePath(modelBasePath);
 		this.logger = logger;
 	}
@@ -80,26 +81,24 @@ export class EMATestRunner {
 		log4js.getLogger().trace("generateTests");
 		const targetDir = this.getTargetDir(componentName);
 		log4js.getLogger().trace("mkdir " + this.targetBasePath);
-		mkdirSync(this.targetBasePath);
+		if(!existsSync(this.targetBasePath)){
+			mkdirSync(this.targetBasePath);
+		}
 		log4js.getLogger().trace("mkdir " + targetDir);
-		mkdirSync(targetDir);
-		if (existsSync(this.generatorJarPath)) {
-			return this.execCommand("java",
+		if(!existsSync(targetDir)){
+			mkdirSync(targetDir);
+		}
+		if (existsSync(this.mavenPomPath)) {
+			return this.execCommand("mvn",
 				[
-					"-jar",
-					this.generatorJarPath,
-					"--models-dir=" + this.modelBasePath,
-					"-o=" + targetDir,
-					"--root-model=" + componentName,
-					"--flag-generate-tests",
-					"--flag-use-armadillo-backend",
-					"--flag-use-exec-logging",
-					"--flag-use-exec-logging",
-					"--flag-generate-cmake"
+					"exec:java",
+					`-Dexec.args="--models-dir ${this.modelBasePath} -o ${targetDir} --root-model ${componentName} --flag-generate-tests --flag-use-armadillo-backend --flag-use-exec-logging --flag-use-exec-logging --flag-generate-cmake"`,
+					"-s",
+					"settings.xml"
 				],
-				targetDir, true, true);
+				this.mavenPomPath, true, true);
 		} else {
-			this.getDebugConsoleLogger().log("Can not find generator jar: " + this.generatorJarPath);
+			this.getDebugConsoleLogger().log("Can not find generator jar: " + this.mavenPomPath);
 			return 1;
 		}
 	}
@@ -107,12 +106,15 @@ export class EMATestRunner {
 	public buildAndRunTests(componentName: string): boolean {
 		log4js.getLogger().trace("buildAndRunTests");
 		const targetDir = this.getTargetDir(componentName);
-		log4js.getLogger().trace(targetDir + "/build");
-		mkdirSync(targetDir + "/build");
-		let returnCode = this.execCommand("cmake", ["-B" + targetDir + "/build", "-H" + targetDir], process.cwd());
+		const buildDir = join(targetDir, "build");
+		log4js.getLogger().trace(buildDir);
+		if(!existsSync(buildDir)){
+			mkdirSync(buildDir);
+		}
+		let returnCode = this.execCommand("cmake", ["-B" + buildDir, "-H" + targetDir], process.cwd());
 		if (returnCode == 0) {
-			this.execCommand("cmake", ["--build", targetDir + "/build"], process.cwd());
-			return true;
+			this.execCommand("cmake", ["--build", buildDir], process.cwd());
+			return existsSync(join(targetDir,"build", "stacktrace.log"));
 		} else {
 			this.getDebugConsoleLogger().log("Error configuring CMake. Aborting!");
 			return false;
@@ -121,14 +123,23 @@ export class EMATestRunner {
 
 	public execCommand(command: string, args: string[], cwd, warn: boolean = true, popup: boolean = false): number {
 		log4js.getLogger().trace("execCommand");
+
+		if(!existsSync(cwd)){
+			log4js.getLogger().error("Cwd does not exist: " + cwd);
+		}
+
 		const child = spawnSync(command, args,
 			{
 				cwd: cwd,
 				env: process.env,
 				stdio: 'pipe',
-				encoding: 'utf-8'
+				encoding: 'utf-8',
+				shell: true
 			});
 		log4js.getLogger().debug("Command: " + command + " " + args.join(" "));
+		if(child.status  == null){
+			return 1;
+		}
 		if (child.status != 0) {
 			const output = child.stdout.toString();
 			const errOutput = child.stderr.toString();

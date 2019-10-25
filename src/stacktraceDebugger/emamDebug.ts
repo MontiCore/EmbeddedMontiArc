@@ -48,8 +48,8 @@ export class EmamDebugSession extends LoggingDebugSession {
 
 		let ext = vscode.extensions.getExtension("se-rwth.emam-debug");
 		if (ext) {
-			let generatorJarPath: string = path.join(ext.extensionPath, "resources", "emam-generator.jar");
-			this._runtime = new EmamRuntime(generatorJarPath);
+			let mavenPomPath: string = path.join(ext.extensionPath, "maven");
+			this._runtime = new EmamRuntime(mavenPomPath);
 			this._runtime.on('stopOnEntry', () => {
 				this.sendEvent(new StoppedEvent('entry', 1));
 			});

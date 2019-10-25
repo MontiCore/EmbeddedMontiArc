@@ -11,6 +11,8 @@ import { EmamDebugSession } from './stacktraceDebugger/emamDebug';
 import * as Net from 'net';
 import { StreamTestCodeLensProvider, runCurrentStreamTest, getConfigForCurrentFile } from './codeLens/StreamTestCodeLensProvider';
 import * as log4js from 'log4js';
+import { SpawnSyncReturns, spawnSync, SpawnSyncOptionsWithStringEncoding } from 'child_process';
+import { getLogger } from 'log4js';
 
 /*
  * Set the following compile time flag to true if the
@@ -22,36 +24,38 @@ const EMBED_DEBUG_ADAPTER = true;
 export function activate(context: vscode.ExtensionContext) {
 	setupLog(context.extensionPath);
 
-	// register a configuration provider for 'emam' debug type
-	const provider = new EmamConfigurationProvider();
-	context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('emam', provider));
+	if (dependenciesAvailable) {
+		// register a configuration provider for 'emam' debug type
+		const provider = new EmamConfigurationProvider();
+		context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('emam', provider));
 
-	let commandDisposable = vscode.commands.registerCommand(
-		"streamTest.runCurrentStreamTest",
-		runCurrentStreamTest
-	);
+		let commandDisposable = vscode.commands.registerCommand(
+			"streamTest.runCurrentStreamTest",
+			runCurrentStreamTest
+		);
 
-	// Get a document selector for the CodeLens provider
-	// This one is any file that has the language of javascript
-	let docSelector = {
-		language: "EmbeddedMontiArcMath",
-		pattern: "**/*.emam"
-	};
+		// Get a document selector for the CodeLens provider
+		// This one is any file that has the language of javascript
+		let docSelector = {
+			language: "EmbeddedMontiArcMath",
+			pattern: "**/*.emam"
+		};
 
-	// Register our CodeLens provider
-	let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
-		docSelector,
-		new StreamTestCodeLensProvider()
-	);
+		// Register our CodeLens provider
+		let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
+			docSelector,
+			new StreamTestCodeLensProvider()
+		);
 
-	// Push the command and CodeLens provider to the context so it can be disposed of later
-	context.subscriptions.push(commandDisposable);
-	context.subscriptions.push(codeLensProviderDisposable);
+		// Push the command and CodeLens provider to the context so it can be disposed of later
+		context.subscriptions.push(commandDisposable);
+		context.subscriptions.push(codeLensProviderDisposable);
 
-	if (EMBED_DEBUG_ADAPTER) {
-		const factory = new EmamDebugAdapterDescriptorFactory();
-		context.subscriptions.push(vscode.debug.registerDebugAdapterDescriptorFactory('emam', factory));
-		context.subscriptions.push(factory);
+		if (EMBED_DEBUG_ADAPTER) {
+			const factory = new EmamDebugAdapterDescriptorFactory();
+			context.subscriptions.push(vscode.debug.registerDebugAdapterDescriptorFactory('emam', factory));
+			context.subscriptions.push(factory);
+		}
 	}
 }
 
@@ -72,6 +76,37 @@ function setupLog(extensionPath: string) {
 	});
 	log4js.getLogger().debug("Logger created! Will write to " + logFileName);
 }
+
+function spawnExecutableCheck(executable: string): SpawnSyncReturns<string> {
+	if (process.platform === "win32") {
+		let args = [executable];
+		return spawnSync("where", args);
+	} else {
+		let args = ["-v", executable];
+		const spawnOptions: SpawnSyncOptionsWithStringEncoding = { shell: true, encoding: "utf8" };
+		return spawnSync("command", args, spawnOptions);
+	}
+}
+
+function dependenciesAvailable(): boolean {
+	let res = true;
+	if (spawnExecutableCheck("mvn").status !== 0) {
+		const errorMsg = "Can not find mvn in PATH. Is Maven installed?";
+		getLogger().error(errorMsg);
+		vscode.window.showErrorMessage(errorMsg);
+		res = false;
+	}
+
+	if (spawnExecutableCheck("java").status !== 0) {
+		const errorMsg = "Can not find java in PATH. Is Java installed?";
+		getLogger().error(errorMsg);
+		vscode.window.showErrorMessage(errorMsg);
+		res = false;
+	}
+
+	return res;
+}
+
 
 class EmamConfigurationProvider implements vscode.DebugConfigurationProvider {
 
