@@ -13,6 +13,9 @@ import { StreamTestCodeLensProvider, runCurrentStreamTest, getConfigForCurrentFi
 import * as log4js from 'log4js';
 import { SpawnSyncReturns, spawnSync, SpawnSyncOptionsWithStringEncoding } from 'child_process';
 import { getLogger } from 'log4js';
+import { MavenUpdateManager } from './util/mavenUpdateManager';
+import { MavenUpdater } from './util/mavenUpdater';
+import { join } from 'path';
 
 /*
  * Set the following compile time flag to true if the
@@ -56,6 +59,10 @@ export function activate(context: vscode.ExtensionContext) {
 			context.subscriptions.push(vscode.debug.registerDebugAdapterDescriptorFactory('emam', factory));
 			context.subscriptions.push(factory);
 		}
+
+		let updateManager = new MavenUpdateManager("emamdebug.autoupdate");
+		updateManager.addUpdater(new MavenUpdater("Generator", join(context.extensionPath, "maven"), "settings.xml"));
+		setTimeout(() => updateManager.checkForUpdates(), 10*1000);
 	}
 }
 
