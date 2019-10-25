@@ -10,6 +10,29 @@ function getURLParameter(sParam) {
     }
 }
 
+function loadJSONFiles(files, datas, callback) {
+    if (files.length == 0)
+        callback(datas);
+    else {
+        var file = files[0];
+        log('Read file ' + file);
+        files.shift();
+        var xobj = new XMLHttpRequest();
+        xobj.overrideMimeType('application/json');
+        xobj.open('GET', file, true);
+        var res;
+        var ready = 0;
+        xobj.onreadystatechange = function () {
+            if (xobj.readyState == 4 && xobj.status == '200') {
+                res = JSON.parse(xobj.responseText);
+                datas[file] = res;
+                loadJSONFiles(files, datas, callback);
+            }
+        };
+        xobj.send(null);
+    }
+}
+
 function initHeader() {
     $(tableReference + ' thead tr').clone(true).appendTo(tableReference + ' thead');
     $(tableReference + ' thead tr:eq(1)').addClass('group');
@@ -125,7 +148,7 @@ expandRow = function (tr, row, data, uniqueNameFunction) {
             for (var i = 0; i < data.ChildData.length; i++) {
                 var childData = data.ChildData[i];
                 childData['Order'] = name + "_Child";
-                const tmpRow = table.row.add(childData).node();
+                var tmpRow = table.row.add(childData).node();
                 $(tmpRow).addClass('childRow1')
                 $(tmpRow).addClass(name + "_Child");
             }
@@ -152,4 +175,13 @@ function insertTimeStamp(date) {
             '<label>Date: ' + date + '</label>' +
             '</div>')
     }
+}
+
+var isLogging = false;
+function enableLogging(value) {
+    isLogging = value;
+}
+
+function log(str) {
+    if (isLogging) console.log(str);
 }

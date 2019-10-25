@@ -11,7 +11,7 @@ import java.util.*;
 
 public class ManageTesting {
     private static final String[] fileTypes = {"ema", "emam", "emadl"};
-    private static final int maxToTest = 1000;
+    private static final int maxToTest = 1;
 
     public static void manageTesting(Main.ReportContext context) {
         List<Set<String>> projectsToTestList = partitionProjects(context);
@@ -25,7 +25,7 @@ public class ManageTesting {
             String numberCount = severalSets ? " (" + i + "/" + max + ")" : "";
             CheckCoCos tcc = new CheckCoCos();
             CustomPrinter.println("\n<================Test CoCos================>" + numberCount + "\n");
-            List<CheckCoCoResult> testResults = tcc.testAllCocos(context, projectsToTest, fileTypes);
+            List<CheckCoCoResult> testResults = tcc.testAllCocos(context, projectsToTest, numberCount, fileTypes);
             Map<String, List<CheckCoCoResult>> mainPackageModels = OrderTestResults.orderTestResults(
                     new File(context.getProjectRoot()), projectsToTest, testResults, new CheckCoCoResultCreator());
 

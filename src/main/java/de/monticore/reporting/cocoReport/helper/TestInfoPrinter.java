@@ -31,9 +31,9 @@ public class TestInfoPrinter {
         infoValid.put("Valid", "" + (info.valid + Integer.parseInt((String) infoValid.get("Valid"))));
         infoValid.put("Invalid", "" + (info.invalid + Integer.parseInt((String) infoValid.get("Invalid"))));
 
-        infoErrored.put("Number", "" + (info.invalid + Integer.parseInt((String) infoErrored.get("Number"))));
+        infoErrored.put("Number", "" + (info.errored + Integer.parseInt((String) infoErrored.get("Number"))));
         infoErrored.put("Valid", "" + 0);
-        infoErrored.put("Invalid", "" + (info.invalid + Integer.parseInt((String) infoErrored.get("Invalid"))));
+        infoErrored.put("Invalid", "" + (info.errored + Integer.parseInt((String) infoErrored.get("Invalid"))));
 
         try {
             FileUtils.write(infoFile, infoJSON.toJSONString());

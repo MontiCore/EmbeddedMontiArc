@@ -1,42 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 var infoDate = "";
 
-function createTable_custom(file, infoFile) {
-    loadInfo(file, infoFile, computeDataThenCreateTable);
+function createTable_custom(files) {
+    loadJSONFiles(files, {}, computeDataThenCreateTable)
 }
 
-function loadInfo(file, infoFile, callback) {
-    var xobj = new XMLHttpRequest();
-    xobj.overrideMimeType('application/json');
-    xobj.open('GET', infoFile, true);
-    var res;
-    var ready = 0;
-    xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4 && xobj.status == '200') {
-            res = JSON.parse(xobj.responseText);
-            loadJSON(file, res, callback);
-        }
-    };
-    xobj.send(null);
-}
-
-function loadJSON(file, info, callback) {
-    var xobj = new XMLHttpRequest();
-    xobj.overrideMimeType('application/json');
-    xobj.open('GET', file, true);
-    var res;
-    var ready = 0;
-    xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4 && xobj.status == '200') {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            res = JSON.parse(xobj.responseText);
-            callback(res, info);
-        }
-    };
-    xobj.send(null);
-}
-
-function computeDataThenCreateTable(data, info) {
+function computeDataThenCreateTable(datas) {
+    var data = datas[dataFile];
+    var info = datas[infoFile];
     infoDate = info["date"];
     createTable(data, info);
 }

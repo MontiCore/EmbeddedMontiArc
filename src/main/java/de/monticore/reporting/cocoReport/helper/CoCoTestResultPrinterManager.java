@@ -45,59 +45,30 @@ public class CoCoTestResultPrinterManager {
                 print = true;
             }
 
-            CoCoTestResultPrinter.printTestResults(mainPackages, context.getOutput() + outputPostFix + "data.json", context.isMerge(), true, print);
-            CoCoTestResultPrinter.printTestResults(projectTestResults, context.getOutput() + outputPostFix + "dataExpanded.json", context.isMerge(), false, print);
+            List<CheckCoCoResult> projectTestResultsParsingErrored = mainPackages.stream().filter(
+                    t -> t.getProject().contains("Errored_Parsing")
+            ).collect(Collectors.toList());
+            List<CheckCoCoResult> projectTestResultsResolvingErrored = mainPackages.stream().filter(
+                    t -> t.getProject().contains("Errored_Resolving")
+            ).collect(Collectors.toList());
+            mainPackages = mainPackages.stream().filter(
+                    t -> (!t.getProject().contains("Errored_Parsing") && !t.getProject().contains("Errored_Resolving"))
+            ).collect(Collectors.toList());
+
+            String dataOut = context.getOutput() + outputPostFix + "data.json";
+            String dataParsingErroredOut = context.getOutput() + outputPostFix + "dataParsingErrored.json";
+            String dataResolvingErroredOut = context.getOutput() + outputPostFix + "dataResolvingErrored.json";
+            String dataExtendedOut = context.getOutput() + outputPostFix + "dataExpanded.json";
+
+            CoCoTestResultPrinter.printTestResults(mainPackages, dataOut, context.isMerge(), true, print);
+            CoCoTestResultPrinter.printTestResults(projectTestResultsParsingErrored, dataParsingErroredOut, context.isMerge(), true, print);
+            CoCoTestResultPrinter.printTestResults(projectTestResultsResolvingErrored, dataResolvingErroredOut, context.isMerge(), true, print);
+            CoCoTestResultPrinter.printTestResults(projectTestResults, dataExtendedOut, context.isMerge(), false, print);
+
             TestInfoPrinter.printInfo(projectTestResults, context.getOutput() + outputPostFix + "info.json", context.getDate());
-            if (context.isMerge() && project.equals(OrderTestResults.allProjects)) {
-                mergeErroredMainPackages(context.getOutput() + outputPostFix + "data.json");
-                mergeErroredMainPackages(context.getOutput() + outputPostFix + "dataExpanded.json");
-            }
         }
 
         printProjectsList(context, mainPackageModels);
-    }
-
-    private static void mergeErroredMainPackages(String outputString) {
-        try {
-            JsonArray jsonOutput = Jsoner.deserialize(FileUtils.readFileToString(new File(outputString)), new JsonArray());
-            JsonArray newOutput = new JsonArray();
-            JsonObject erroredParsing = null;
-            JsonObject erroredResolving = null;
-            for (Object t: jsonOutput){
-                JsonObject testResult = (JsonObject) t;
-                if (!((String) testResult.get("Root")).contains(OrderableModelInfo.erroredString)) {
-                    newOutput.add(testResult);
-                } else {
-                    boolean init = false;
-                    JsonObject errored;
-                    if (((String) testResult.get("Project")).contains("Errored_Parsing")){
-                        if (erroredParsing == null) {
-                            init = true;
-                            erroredParsing = testResult;
-                        }
-                        errored = erroredParsing;
-                    } else {
-                        if (erroredResolving == null) {
-                            init = true;
-                            erroredResolving = testResult;
-                        }
-                        errored = erroredResolving;
-                    }
-                    if (!init) {
-                        JsonArray childDataErrored = ((JsonArray) errored.get("ChildData"));
-                        JsonArray childDataTestResult = ((JsonArray) errored.get("ChildData"));
-                        if (!childDataErrored.isEmpty() && !childDataTestResult.isEmpty())
-                            childDataErrored.addAll(childDataTestResult);
-                    }
-                }
-            }
-            if (erroredParsing != null) newOutput.add(erroredParsing);
-            if (erroredResolving != null) newOutput.add(erroredResolving);
-            FileUtils.writeStringToFile(new File(outputString), Jsoner.prettyPrint(Jsoner.serialize(newOutput)).
-                    replace("\\",""), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static void printProjectsList(Main.ReportContext context, Map<String, List<CheckCoCoResult>> mainPackageModels) {
@@ -105,9 +76,12 @@ public class CoCoTestResultPrinterManager {
         String toPrint = getPrintString(context, mainPackageModels);
         if (context.isMerge()) {
             try {
+                if (toPrint.equals("]")) return;
                 String first = FileUtils.readFileToString(projectsList);
                 first = first.substring(0, first.length() - 1);
-                String str = first + ", " + toPrint;
+                String needComma = ", ";
+                if (first.equals("[")) needComma = "";
+                String str = first + needComma + toPrint;
                 FileUtils.writeStringToFile(projectsList,
                         str);
             } catch (IOException e) {

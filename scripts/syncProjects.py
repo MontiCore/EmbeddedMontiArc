@@ -1,6 +1,5 @@
 def syncProjects(gl, group, gitlabToken):
     subgroups = group.subgroups
-
     for g in subgroups.list(all=True):
         current_group = gl.groups.get(g.id)
         for p in current_group.projects.list(all=True):

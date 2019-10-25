@@ -180,12 +180,14 @@
     if (project != undefined)
       dataInfix = "projects/" + project + "/";
     var dataFile = "data/" + dataInfix + "data.json";
+    var dataParsingErroredFile = "data/" + dataInfix + "dataParsingErrored.json";
+    var dataResolvingErroredFile = "data/" + dataInfix + "dataResolvingErrored.json";
     var infoFile = "data/" + dataInfix + "info.json";
-    var ide = (getURLParameter('ide') != 'false');
     var table;
     $(document).ready(function () {
+        // enableLogging(true)
         initHeader();
-        createTable_custom(dataFile, infoFile);
+        createTable_custom([dataFile, dataParsingErroredFile, dataResolvingErroredFile, infoFile]);
     });
   </script>
 

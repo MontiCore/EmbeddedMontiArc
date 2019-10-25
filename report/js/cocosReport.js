@@ -1,47 +1,34 @@
 /* (c) https://github.com/MontiCore/monticore */
 var infoDate = "";
 
-function createTable_custom(file, infoFile) {
-    loadInfo(file, infoFile, computeDataThenCreateTable);
+function createTable_custom(files) {
+    loadJSONFiles(files, {}, computeDataThenCreateTable)
 }
 
-function loadInfo(file, infoFile, callback) {
-    var xobj = new XMLHttpRequest();
-    xobj.overrideMimeType('application/json');
-    xobj.open('GET', infoFile, true);
-    var res;
-    var ready = 0;
-    xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4 && xobj.status == '200') {
-            res = JSON.parse(xobj.responseText);
-            loadJSON(file, res, callback);
-        }
-    };
-    xobj.send(null);
+function mergeErroredData(data) {
+    if (data.length == 0) return data;
+    log('Start merging');
+    var mainErrorPackage = data[0];
+    for (var i = 1; i < data.length; i++) {
+        mainErrorPackage['ChildData'] = mainErrorPackage['ChildData'].concat(data[i]['ChildData']);
+    }
+    var newName = mainErrorPackage['Name'];
+    mainErrorPackage['Name'] = newName.substring(0, newName.indexOf('(') + 1) + mainErrorPackage['ChildData'].length + ')';
+    log('End merging');
+    return [mainErrorPackage];
 }
 
-function loadJSON(file, info, callback) {
-    var xobj = new XMLHttpRequest();
-    xobj.overrideMimeType('application/json');
-    xobj.open('GET', file, true);
-    var res;
-    var ready = 0;
-    xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4 && xobj.status == '200') {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            res = JSON.parse(xobj.responseText);
-            callback(res, info);
-        }
-    };
-    xobj.send(null);
-}
-
-function computeDataThenCreateTable(data, info) {
+function computeDataThenCreateTable(datas) {
+    var data = datas[dataFile];
+    var dataParsingErrored = mergeErroredData(datas[dataParsingErroredFile]);
+    var dataResolvingErrored = mergeErroredData(datas[dataResolvingErroredFile]);
+    data.push(dataParsingErrored[0], dataResolvingErrored[0]);
+    var info = datas[infoFile];
     data.forEach(function (datum) {
         var order = uniqueNameFunction_custom(datum);
         datum['Order'] = order;
     });
-    infoDate = info["date"];
+    infoDate = info['date'];
     createTable(data, info);
 }
 

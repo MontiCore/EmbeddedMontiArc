@@ -11,7 +11,7 @@ import java.util.*;
 
 public class CheckCoCos {
 
-    public List<CheckCoCoResult> testAllCocos(Main.ReportContext context, Set<String> projectsToTest, String... fileType) {
+    public List<CheckCoCoResult> testAllCocos(Main.ReportContext context, Set<String> projectsToTest, String numberCount, String... fileType) {
         File root = new File(context.getProjectRoot());
         List<CheckCoCoResult> testResults = new LinkedList<>();
 
@@ -37,7 +37,7 @@ public class CheckCoCos {
 
             for(File file: filesMap.get(projectDir)) {
                 String fileName = file.getAbsolutePath().substring(context.getProjectRoot().length() + 1);
-                CustomPrinter.println("[" + getFormattedNumber(z, max) + "/" + max + "]" +
+                CustomPrinter.println("[" + getFormattedNumber(z, max) + "/" + max + "]" + numberCount +
                         " Test CoCos of file " + fileName);
                 z++;
                 if(z == 70) {
