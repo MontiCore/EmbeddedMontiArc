@@ -29,13 +29,11 @@ Download the latest build from [here](https://git.rwth-aachen.de/monticore/Embed
 3. Install new version as described above
 
 ## Building
-Change the download link in [build.sh](build.sh#L3) to match the EMAM2CPP(jar with dependencies) version you need.
-
-Then run `./build.sh` on a machine with:
+Run `./build.sh` on a machine with:
 - npm
 - vsce
 
-Alternatively you can copy your local version of EMAM2CPP(jar with dependencies) to `resources/emam-generator.jar` and then run
+Alternatively run
 ```bash
 npm install
 vsce package -o "emam-debug.vsix"
