@@ -13,11 +13,13 @@ class OneHot(gluon.HybridBlock):
 
 
 class Softmax(gluon.HybridBlock):
-    def __init__(self, **kwargs):
+    def __init__(self, axis=-1, **kwargs):
         super(Softmax, self).__init__(**kwargs)
+        with self.name_scope():
+            self.axis = axis
 
     def hybrid_forward(self, F, x):
-        return F.softmax(x)
+        return F.softmax(data=x, axis=self.axis)
 
 
 class Split(gluon.HybridBlock):
@@ -57,6 +59,13 @@ class Dot(gluon.HybridBlock):
     def hybrid_forward(self, F, *x):
         return F.batch_dot(*x)
 
+class BroadcastMultiply(gluon.HybridBlock):
+    def __init__(self, **kwargs):
+        super(BroadcastMultiply, self).__init__(**kwargs)
+
+    def hybrid_forward(self, F, *x):
+        return F.broadcast_mul(*x)
+
 class ExpandDims(gluon.HybridBlock):
     def __init__(self, dim=1, **kwargs):
         super(ExpandDims, self).__init__(**kwargs)
@@ -84,6 +93,23 @@ class ReduceSum(gluon.HybridBlock):
 
     def hybrid_forward(self, F, x):
         return F.sum(data=x, axis=self.axis)
+
+class BroadcastAdd(gluon.HybridBlock):
+    def __init__(self, **kwargs):
+        super(BroadcastAdd, self).__init__(**kwargs)
+
+    def hybrid_forward(self, F, *x):
+        return F.broadcast_add(*x)
+
+
+class Reshape(gluon.HybridBlock):
+    def __init__(self, shape, **kwargs):
+        super(Reshape, self).__init__(**kwargs)
+        with self.name_scope():
+            self.shape = shape
+
+    def hybrid_forward(self, F, x):
+        return F.reshape(data=x, shape=self.shape)
 
 class ZScoreNormalization(gluon.HybridBlock):
     def __init__(self, data_mean, data_std, **kwargs):

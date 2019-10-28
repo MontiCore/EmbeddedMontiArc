@@ -28,6 +28,14 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.GRU_NAME);
         supportedLayerList.add(AllPredefinedLayers.EMBEDDING_NAME);
         supportedLayerList.add(AllPredefinedLayers.ARG_MAX_NAME);
+        supportedLayerList.add(AllPredefinedLayers.REPEAT_NAME);
+        supportedLayerList.add(AllPredefinedLayers.DOT_NAME);
+        supportedLayerList.add(AllPredefinedLayers.BROADCAST_MULTIPLY_NAME);
+        supportedLayerList.add(AllPredefinedLayers.REDUCE_SUM_NAME);
+        supportedLayerList.add(AllPredefinedLayers.EXPAND_DIMS_NAME);
+        supportedLayerList.add(AllPredefinedLayers.SWAPAXES_NAME);
+        supportedLayerList.add(AllPredefinedLayers.BROADCAST_ADD_NAME);
+        supportedLayerList.add(AllPredefinedLayers.RESHAPE_NAME);
     }
 
 }
