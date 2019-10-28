@@ -145,7 +145,7 @@ public abstract class CNNArchTemplateController {
                 //If the input is an RNN state which is saved as list, take its first entry (unless a state is assigned to another state)
                 if(input instanceof VariableSymbol && ((VariableSymbol) input).getMember() == VariableSymbol.Member.STATE
                         && !(getCurrentElement().getElement() instanceof VariableSymbol && ((VariableSymbol) getCurrentElement().getElement()).getMember() == VariableSymbol.Member.STATE)){
-                    inputNames.add(getName(input) + "[" + 0 + "]");
+                    inputNames.add("F.swapaxes(" + getName(input) + "[" + 0 + "],0,1)");
                 }else{
                     inputNames.add(getName(input));
                 }
