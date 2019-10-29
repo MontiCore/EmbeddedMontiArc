@@ -1,34 +1,72 @@
 package de.monticore.lang.embeddedmontiarc.lsp;
 
+import de.monticore.util.lsp.ModelFileCache;
 import de.se_rwth.commons.logging.DiagnosticsLog;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class EmaDocumentServiceTest {
+class EmaDocumentServiceTest extends AbstractTextDocumentServiceTest {
+
+    public static final String BASE_PATH = "src/test/resources/ema";
+
+    private EmaDocumentService getDocumentService(String basePath) throws IOException {
+        EmaDocumentService res = new EmaDocumentService();
+        res.setClient(getMockClient());
+        res.setModelFileCache(new ModelFileCache(Paths.get(basePath).toAbsolutePath() , Collections.singleton(".ema")));
+        return res;
+    }
 
     @BeforeAll
     public static void setup(){
         DiagnosticsLog.init();
     }
 
+    @AfterAll
+    public static void reset(){
+        DiagnosticsLog.getFindings().clear();
+    }
+
     @Test
-    public void testValid() throws InterruptedException, ExecutionException, IOException {
-        EmaDocumentService documentService = new EmaDocumentService();
+    public void testValidSyntax() throws IOException {
+        EmaDocumentService documentService = getDocumentService(BASE_PATH);
         documentService.doParse(new StringReader("package a; component Abc{}"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());
     }
 
     @Test
-    public void testInvalid() throws InterruptedException, ExecutionException, IOException {
-        EmaDocumentService documentService = new EmaDocumentService();
+    public void testInvalidSyntax() throws IOException {
+        EmaDocumentService documentService = getDocumentService(BASE_PATH);
         documentService.doParse(new StringReader("package a; compoent Abc{}"));
-        assertTrue(!DiagnosticsLog.getFindings().isEmpty());
+        assertFalse(DiagnosticsLog.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testValidDidOpenEvent() throws IOException {
+        EmaDocumentService documentService = getDocumentService(BASE_PATH);
+        DiagnosticsLog.setLogToStdout(true);
+        File file = new File("src/test/resources/ema/valid/SimpleComponent.ema");
+        documentService.didOpen(createDidOpenEvent(file, "EmbeddedMontiArc"));
+        assertTrue(DiagnosticsLog.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testInvalidDidOpenEvent() throws IOException {
+        EmaDocumentService documentService = getDocumentService(BASE_PATH);
+
+        File file = new File("src/test/resources/ema/invalid/SimpleComponent.ema");
+        documentService.didOpen(createDidOpenEvent(file, "EmbeddedMontiArc"));
+        assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
 
 }

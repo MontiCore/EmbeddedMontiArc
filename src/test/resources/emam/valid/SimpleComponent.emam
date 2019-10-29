@@ -1,0 +1,6 @@
+package valid;
+
+component SimpleComponent{
+    port in Q p1,
+         out Q p2;
+}

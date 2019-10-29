@@ -54,8 +54,7 @@ public class EmaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEM
 
     @Override
     protected String getSymbolName(ASTEMACompilationUnit node) {
-        String name = node.getComponent().getName();
-        return name.substring(0, 1).toLowerCase() + name.substring(1);
+        return node.getComponent().getName();
     }
 
     @Override
@@ -102,10 +101,9 @@ public class EmaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEM
     protected ModelingLanguageFamily getModelingLanguageFamily() {
         if(modelFamily == null) {
             modelFamily = new ModelingLanguageFamily();
-            ModelingLanguageFamily fam = new ModelingLanguageFamily();
-            fam.addModelingLanguage(new EmbeddedMontiArcLanguage());
-            fam.addModelingLanguage(new StreamLanguage());
-            fam.addModelingLanguage(new StructLanguage());
+            modelFamily.addModelingLanguage(new EmbeddedMontiArcLanguage());
+            modelFamily.addModelingLanguage(new StreamLanguage());
+            modelFamily.addModelingLanguage(new StructLanguage());
         }
 
         return modelFamily;
