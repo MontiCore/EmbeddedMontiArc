@@ -115,21 +115,19 @@ public class LayerNameCreator {
         if (architectureElement instanceof VariableSymbol) {
             VariableSymbol element = (VariableSymbol) architectureElement;
 
-            String name = createBaseName(architectureElement);
+            String name = createBaseName(architectureElement) + "_";
 
-            if (element.getType() == VariableSymbol.Type.IO) {
-                if (element.getArrayAccess().isPresent()){
-                    int arrayAccess = element.getArrayAccess().get().getIntValue().get();
-                    name = name + "_" + arrayAccess + "_";
-                } else {
-                    name = name + "_";
-                }
-            } else if (element.getType() == VariableSymbol.Type.LAYER) {
+            if (element.getType() == VariableSymbol.Type.LAYER) {
                 if (element.getMember() == VariableSymbol.Member.STATE) {
-                    name = name + "_state_";
+                    name = name + "state_";
                 } else {
-                    name = name + "_output_";
+                    name = name + "output_";
                 }
+            }
+
+            if (element.getArrayAccess().isPresent()){
+                int arrayAccess = element.getArrayAccess().get().getIntValue().get();
+                name = name + arrayAccess + "_";
             }
 
             return name;
