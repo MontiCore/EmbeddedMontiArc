@@ -7,3 +7,4 @@ MultipleStreams data/MultipleStreams
 Invariant data/Invariant
 RNNencdec data/RNNencdec
 RNNtest data/RNNtest
+RNNsearch data/RNNsearch

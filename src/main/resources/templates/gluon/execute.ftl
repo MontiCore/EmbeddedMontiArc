@@ -1,8 +1,8 @@
 <#list tc.architectureInputSymbols as input>
     vector<float> ${tc.getName(input)} = CNNTranslator::translate(${input.name}<#if input.arrayAccess.isPresent()>[${input.arrayAccess.get().intValue.get()?c}]</#if>);
 </#list>
-<#list tc.getLayerVariableMembers("1", true)?keys as member>
-    vector<float> ${member}(${tc.join(tc.getLayerVariableMembers("1", true)[member][0], " * ")});
+<#list tc.getLayerVariableMembers()?keys as member>
+    vector<float> ${member}(${tc.join(tc.getLayerVariableMembers()[member], " * ")});
 </#list>
 
 <#list tc.architectureOutputSymbols as output>
@@ -12,11 +12,11 @@
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.isUnroll()>
 <#list networkInstruction.toUnrollInstruction().resolvedBodies as resolvedBody>
-    _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody, false), ", ")}, ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")});
+    _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")}, ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")});
 </#list>
 <#else>
 <#if networkInstruction.body.isTrainable()>
-    _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}, ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")});
+    _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")}, ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")});
 <#else>
 <#-- ${tc.include(networkInstruction.body, "CPP_INLINE")}; -->
 </#if>

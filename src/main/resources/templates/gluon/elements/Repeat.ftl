@@ -1,8 +1,5 @@
-<#assign axis = element.axis?c>
+<#assign axis = (element.axis != -1)?then((element.axis + 1)?c, 'None')>
 <#assign repeats = element.repeats?c>
-<#if mode == "ARCHITECTURE_DEFINITION">
-            self.${element.name} = Repeat(repeats=${repeats}, axis=${axis})
-            <#include "OutputShape.ftl">
-<#elseif mode == "FORWARD_FUNCTION">
-        ${element.name} = self.${element.name}(${element.inputs[0]})
+<#if mode == "FORWARD_FUNCTION">
+        ${element.name} = F.repeat(${element.inputs[0]}, repeats=${repeats}, axis=${axis})
 </#if>

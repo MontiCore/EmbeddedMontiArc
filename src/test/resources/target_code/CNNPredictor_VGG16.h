@@ -16,7 +16,7 @@ public:
     const std::vector<std::string> input_keys = {
         "data"
     };
-    const std::vector<std::vector<mx_uint>> input_shapes = {{1, 3, 224, 224}};
+    const std::vector<std::vector<mx_uint>> input_shapes = {{3, 224, 224}};
     const bool use_gpu = false;
 
     PredictorHandle handle;

@@ -160,6 +160,14 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testRNNsearch() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "RNNsearch", "-o", "./target/generated-sources-cnnarch/"};
+        CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
     public void testFullCfgGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String sourcePath = "src/test/resources/valid_tests";

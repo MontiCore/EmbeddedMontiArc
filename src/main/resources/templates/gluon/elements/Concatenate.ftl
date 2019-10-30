@@ -1,7 +1,4 @@
-<#assign dim = element.dim?c>
-<#if mode == "ARCHITECTURE_DEFINITION">
-            self.${element.name} = Concatenate(dim=${dim})
-            <#include "OutputShape.ftl">
-<#elseif mode == "FORWARD_FUNCTION">
-        ${element.name} = self.${element.name}(${tc.join(element.inputs, ", ")})
+<#assign axis = (element.axis + 1)?c>
+<#if mode == "FORWARD_FUNCTION">
+        ${element.name} = F.concat(${tc.join(element.inputs, ", ")}, dim=${axis})
 </#if>

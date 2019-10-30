@@ -57,8 +57,7 @@ class ${tc.fileNameWithoutEnding}:
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std)
         self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, ctx=context)
         self.networks[${networkInstruction?index}].hybridize()
-        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body, false) as dimensions>
-        <#if dimensions[0] == "-1">self.networks[${networkInstruction?index}].${dimensions[1]}<#else>mx.nd.zeros((${tc.join(dimensions, ",")},), ctx=context)</#if> <#sep>, </#list>)
+        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#sep>, </#list>)
 </#if>
 </#list>
 
