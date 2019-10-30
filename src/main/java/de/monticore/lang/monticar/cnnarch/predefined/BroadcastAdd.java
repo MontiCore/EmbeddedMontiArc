@@ -21,43 +21,43 @@
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
+import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
+import de.se_rwth.commons.logging.Log;
+import org.jscience.mathematics.number.Rational;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Softmax extends PredefinedLayerDeclaration {
+public class BroadcastAdd extends PredefinedLayerDeclaration {
 
-    private Softmax() {
-        super(AllPredefinedLayers.SOFTMAX_NAME);
+    private BroadcastAdd() {
+        super(AllPredefinedLayers.BROADCAST_ADD_NAME);
     }
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
+
+        List<String> range = computeStartAndEndValue(layer.getInputTypes(), Rational::plus, Rational::plus);
+
         return Collections.singletonList(
                 new ArchTypeSymbol.Builder()
-                        .channels(layer.getInputTypes().get(0).getChannels())
-                        .height(layer.getInputTypes().get(0).getHeight())
-                        .width(layer.getInputTypes().get(0).getWidth())
-                        .elementType("0", "1")
+                        .channels(Math.max(layer.getInputTypes().get(0).getChannels(), layer.getInputTypes().get(1).getChannels()))
+                        .height(Math.max(layer.getInputTypes().get(0).getHeight(), layer.getInputTypes().get(1).getHeight()))
+                        .width(Math.max(layer.getInputTypes().get(0).getWidth(), layer.getInputTypes().get(1).getWidth()))
+                        .elementType(range.get(0), range.get(1))
                         .build());
+
     }
 
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        errorIfInputSizeIsNotOne(inputTypes, layer);
+        errorIfInputIsEmpty(inputTypes, layer);
     }
 
-    public static Softmax create(){
-        Softmax declaration = new Softmax();
-        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.AXIS_NAME)
-                        .constraints(Constraints.INTEGER)
-                        .defaultValue(-1)
-                        .build()));
-        declaration.setParameters(parameters);
+    public static BroadcastAdd create(){
+        BroadcastAdd declaration = new BroadcastAdd();
+        declaration.setParameters(new ArrayList<>());
         return declaration;
     }
 }
