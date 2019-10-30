@@ -4,9 +4,9 @@ Also see [Dependencies](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/ge
 
 ## Dependencies
 - Download and install/extract
-    - [Gitlab Multirunner](Link) (to add)
+    - [Gitlab Multirunner](https://rwth-aachen.sciebo.de/s/xWQ9LKMulFSi7x1/download?path=%2F&files=gitlabRunner.zip)
     - [Git](https://git-scm.com/download/win)
-    - [Java JDK](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
+    - [Java JDK](https://rwth-aachen.sciebo.de/s/xWQ9LKMulFSi7x1/download?path=%2F&files=java.zip)
     - [Maven](https://maven.apache.org/download.cgi)
     - [Mingw64](https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=mingw64.zip)
     - [CMake](https://cmake.org/download/)
