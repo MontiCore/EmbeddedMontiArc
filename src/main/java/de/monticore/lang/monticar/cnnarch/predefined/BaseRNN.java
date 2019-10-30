@@ -29,8 +29,6 @@ import java.util.List;
 
 abstract public class BaseRNN extends PredefinedLayerDeclaration {
 
-    protected int numberOfStates = 1;
-
     public BaseRNN(String name) {
         super(name);
     }
@@ -38,6 +36,17 @@ abstract public class BaseRNN extends PredefinedLayerDeclaration {
     @Override
     public boolean isTrainable(VariableSymbol.Member member) {
         return member == VariableSymbol.Member.NONE;
+    }
+
+    @Override
+    public int getArrayLength(VariableSymbol.Member member) {
+        if (member == VariableSymbol.Member.NONE ||
+            member == VariableSymbol.Member.STATE ||
+            member == VariableSymbol.Member.OUTPUT) {
+            return 1;
+        }
+
+        return 0;
     }
 
     @Override
@@ -49,9 +58,9 @@ abstract public class BaseRNN extends PredefinedLayerDeclaration {
             int layers = layer.getIntValue(AllPredefinedLayers.LAYERS_NAME).get();
 
             return Collections.singletonList(new ArchTypeSymbol.Builder()
-                    .channels(numberOfStates)
-                    .height(bidirectional ? 2 * layers : layers)
-                    .width(units)
+                    .channels(bidirectional ? 2 * layers : layers)
+                    .height(units)
+                    .width(1)
                     .elementType("-oo", "oo")
                     .build());
         }
@@ -59,6 +68,7 @@ abstract public class BaseRNN extends PredefinedLayerDeclaration {
             return Collections.singletonList(new ArchTypeSymbol.Builder()
                     .channels(layer.getInputTypes().get(0).getChannels())
                     .height(bidirectional ? 2 * units : units)
+                    .width(1)
                     .elementType("-oo", "oo")
                     .build());
         }
@@ -70,24 +80,16 @@ abstract public class BaseRNN extends PredefinedLayerDeclaration {
         int units = layer.getIntValue(AllPredefinedLayers.UNITS_NAME).get();
         int layers = layer.getIntValue(AllPredefinedLayers.LAYERS_NAME).get();
 
+        errorIfInputSizeIsNotOne(inputTypes, layer);
+        errorIfInputWidthIsInvalid(inputTypes, layer, 1);
+
         if (member == VariableSymbol.Member.STATE) {
-            errorIfInputSizeIsNotOne(inputTypes, layer);
-            errorIfInputChannelSizeIsInvalid(inputTypes, layer, numberOfStates);
-            errorIfInputHeightIsInvalid(inputTypes, layer, bidirectional ? 2 * layers : layers);
-            errorIfInputWidthIsInvalid(inputTypes, layer, units);
+            errorIfInputChannelSizeIsInvalid(inputTypes, layer, bidirectional ? 2 * layers : layers);
+            errorIfInputHeightIsInvalid(inputTypes, layer, units);
         }
         else {
-            errorIfInputSizeIsNotOne(inputTypes, layer);
             errorIfInputChannelSizeIsInvalid(inputTypes, layer, layer.getInputTypes().get(0).getChannels());
-            errorIfInputWidthIsInvalid(inputTypes, layer, 1);
         }
-    }
-
-    @Override
-    public boolean isValidMember(VariableSymbol.Member member) {
-        return member == VariableSymbol.Member.NONE ||
-               member == VariableSymbol.Member.OUTPUT ||
-               member == VariableSymbol.Member.STATE;
     }
 
     @Override

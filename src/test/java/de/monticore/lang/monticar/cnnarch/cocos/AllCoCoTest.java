@@ -67,6 +67,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("valid_tests", "MultipleOutputs");
         checkValid("valid_tests", "MultipleStreams");
         checkValid("valid_tests", "RNNencdec");
+        checkValid("valid_tests", "RNNsearch");
         checkValid("valid_tests", "RNNtest");
 
     }

@@ -222,9 +222,9 @@ public class ArchTypeSymbol extends CommonSymbol {
     }
 
     public static class Builder{
-        private int height = 0;
-        private int width = 0;
-        private int channels = 0;
+        private int height = 1;
+        private int width = 1;
+        private int channels = 1;
         private ASTElementType domain = null;
 
         public Builder height(int height){
@@ -264,26 +264,10 @@ public class ArchTypeSymbol extends CommonSymbol {
 
         public ArchTypeSymbol build(){
             ArchTypeSymbol sym = new ArchTypeSymbol();
-
-            int index = 0;
-            List<Integer> dimensions = new ArrayList<>();
-
-            if (channels != 0) {
-                sym.setChannelIndex(index++);
-                dimensions.add(channels);
-            }
-
-            if (height != 0) {
-                sym.setHeightIndex(index++);
-                dimensions.add(height);
-            }
-
-            if (width != 0) {
-                sym.setWidthIndex(index);
-                dimensions.add(width);
-            }
-
-            sym.setDimensions(dimensions);
+            sym.setChannelIndex(0);
+            sym.setHeightIndex(1);
+            sym.setWidthIndex(2);
+            sym.setDimensions(Arrays.asList(channels, height, width));
 
             if (domain == null){
                 domain = new ASTElementType();
