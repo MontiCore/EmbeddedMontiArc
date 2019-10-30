@@ -33,6 +33,10 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.EXPAND_DIMS_NAME);
         supportedLayerList.add(AllPredefinedLayers.SQUEEZE_NAME);
         supportedLayerList.add(AllPredefinedLayers.SWAPAXES_NAME);
+        supportedLayerList.add(AllPredefinedLayers.BROADCAST_MULTIPLY_NAME);
+        supportedLayerList.add(AllPredefinedLayers.REDUCE_SUM_NAME);
+        supportedLayerList.add(AllPredefinedLayers.BROADCAST_ADD_NAME);
+        supportedLayerList.add(AllPredefinedLayers.RESHAPE_NAME);
     }
 
 }
