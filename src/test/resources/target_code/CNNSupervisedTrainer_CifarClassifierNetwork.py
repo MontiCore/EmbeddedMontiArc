@@ -34,6 +34,30 @@ class LogCoshLoss(gluon.loss.Loss):
         loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
         return F.mean(loss, axis=self._batch_axis, exclude=True)
 
+class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
+    def __init__(self, axis=-1, ignore_indices=[], sparse_label=True, from_logits=False, weight=None, batch_axis=0, **kwargs):
+        super(SoftmaxCrossEntropyLossIgnoreIndices, self).__init__(weight, batch_axis, **kwargs)
+        self._axis = axis
+        self._ignore_indices = ignore_indices
+        self._sparse_label = sparse_label
+        self._from_logits = from_logits
+
+    def hybrid_forward(self, F, pred, label, sample_weight=None):
+        log_softmax = F.log_softmax
+        pick = F.pick
+        if not self._from_logits:
+            pred = log_softmax(pred, self._axis)
+        if self._sparse_label:
+            loss = -pick(pred, label, axis=self._axis, keepdims=True)
+        else:
+            label = _reshape_like(F, label, pred)
+            loss = -(pred * label).sum(axis=self._axis, keepdims=True)
+        #loss = _apply_weighting(F, loss, self._weight, sample_weight)
+        # ignore some indices for loss, e.g. <pad> tokens in NLP applications
+        for i in self._ignore_indices:
+            loss = loss * mx.nd.logical_not(mx.nd.equal(mx.nd.argmax(pred, axis=1), mx.nd.ones_like(mx.nd.argmax(pred, axis=1))*i))
+        return loss.mean(axis=self._batch_axis, exclude=True)
+
 @mx.metric.register
 class BLEU(mx.metric.EvalMetric):
     N = 4
@@ -143,6 +167,8 @@ class BLEU(mx.metric.EvalMetric):
                 new_list[i].append(element[i].asscalar())
 
         return new_list
+
+
 
 class CNNSupervisedTrainer_CifarClassifierNetwork:
     def applyBeamSearch(input, length, width, maxLength, currProb, netIndex, bestOutput):
@@ -334,11 +360,42 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
 
                 predictions = []
                 for output_name in outputs:
-                    if mx.nd.shape_array(output_name).size > 1:
+                    if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     #ArgMax already applied
                     else:
                         predictions.append(output_name)
+
+                '''
+                #Compute BLEU and NIST Score if data folder contains a dictionary -> NLP dataset
+                if(os.path.isfile('src/test/resources/training_data/Show_attend_tell/dict.pkl')):
+                    with open('src/test/resources/training_data/Show_attend_tell/dict.pkl', 'rb') as f:
+                        dict = pickle.load(f)
+
+                    import nltk.translate.bleu_score
+                    import nltk.translate.nist_score
+
+                    prediction = []
+                    for index in range(batch_size):
+                        sentence = ''
+                        for entry in predictions:
+                            sentence += dict[int(entry[index].asscalar())] + ' '
+                        prediction.append(sentence)
+
+                    for index in range(batch_size):
+                        sentence = ''
+                        for batchEntry in batch.label:
+                            sentence += dict[int(batchEntry[index].asscalar())] + ' '
+                        print("############################")
+                        print("label1: ", sentence)
+                        print("prediction1: ", prediction[index])
+
+                        BLEUscore = nltk.translate.bleu_score.sentence_bleu([sentence], prediction[index])
+                        NISTscore = nltk.translate.nist_score.sentence_nist([sentence], prediction[index])
+                        print("BLEU: ", BLEUscore)
+                        print("NIST: ", NISTscore)
+                        print("############################")
+                '''
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
@@ -354,7 +411,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
 
                 outputs=[]
 
-                if True: 
+                if True:
                     softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
 
                     softmax_ = self._networks[0](data_)
@@ -362,7 +419,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
 
                 predictions = []
                 for output_name in outputs:
-                    if mx.nd.shape_array(output_name).size > 1:
+                    if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     #ArgMax already applied
                     else:

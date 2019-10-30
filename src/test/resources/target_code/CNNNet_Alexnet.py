@@ -40,6 +40,16 @@ class NoNormalization(gluon.HybridBlock):
         return x
 
 
+class Reshape(gluon.HybridBlock):
+    def __init__(self, shape, **kwargs):
+        super(Reshape, self).__init__(**kwargs)
+        with self.name_scope():
+            self.shape = shape
+
+    def hybrid_forward(self, F, x):
+        return F.reshape(data=x, shape=self.shape)
+
+
 class CustomRNN(gluon.HybridBlock):
     def __init__(self, hidden_size, num_layers, bidirectional, **kwargs):
         super(CustomRNN, self).__init__(**kwargs)
@@ -253,7 +263,7 @@ class Net_0(gluon.HybridBlock):
         relu7_ = self.relu7_(fc7_)
         dropout7_ = self.dropout7_(relu7_)
         fc8_ = self.fc8_(dropout7_)
-        softmax8_ = F.softmax(fc8_)
+        softmax8_ = F.softmax(fc8_, axis=-1)
         predictions_ = softmax8_
 
         return predictions_
