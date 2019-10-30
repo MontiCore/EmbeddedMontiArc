@@ -27,7 +27,7 @@ if __name__ == "__main__":
         context='${config.context}',
 </#if>
 <#if (config.evalMetric)??>
-        eval_metric='${config.evalMetric}',
+        eval_metric='${config.evalMetric.name}',
 </#if>
 <#if (config.loss)??>
         loss='${config.loss}',
