@@ -172,6 +172,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.AXES_NAME).get();
     }
 
+    public List<Integer> getShape(){
+        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.SHAPE_NAME).get();
+    }
+
     public int getLayers(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.LAYERS_NAME).get();
     }
