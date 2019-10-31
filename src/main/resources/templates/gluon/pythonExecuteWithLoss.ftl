@@ -23,7 +23,7 @@
 <#else>
 <#if networkInstruction.body.isTrainable()>
                     ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")})
-                    <#if !(tc.getStreamOutputNames(networkInstruction.body)[0]?ends_with("_output_"))>
+                    <#if !(tc.getStreamOutputNames(networkInstruction.body)[0]?ends_with("_output_")) && !(tc.getStreamOutputNames(networkInstruction.body)[0]?ends_with("_state_"))>
                     lossList.append(loss_function(${tc.getStreamOutputNames(networkInstruction.body)[0]}, ${tc.getStreamOutputNames(networkInstruction.body)[0]}label))
                     </#if>
                     <#list networkInstruction.body.elements as element>
