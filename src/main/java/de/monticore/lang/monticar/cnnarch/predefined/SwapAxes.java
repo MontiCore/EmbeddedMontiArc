@@ -36,11 +36,6 @@ public class SwapAxes extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isTrainable() {
-        return false;
-    }
-
-    @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
 
         int firstAxis = layer.getIntTupleValue(AllPredefinedLayers.AXES_NAME).get().get(0);
