@@ -266,7 +266,7 @@ class CNNSupervisedTrainer_Alexnet:
             if not os.path.isdir(self._net_creator._model_dir_):
                 raise
 
-        trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values()]
+        trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) if len(net.collect_params().values()) != 0 for network in self._networks.values()]
 
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
@@ -365,37 +365,6 @@ class CNNSupervisedTrainer_Alexnet:
                     #ArgMax already applied
                     else:
                         predictions.append(output_name)
-
-                '''
-                #Compute BLEU and NIST Score if data folder contains a dictionary -> NLP dataset
-                if(os.path.isfile('src/test/resources/training_data/Show_attend_tell/dict.pkl')):
-                    with open('src/test/resources/training_data/Show_attend_tell/dict.pkl', 'rb') as f:
-                        dict = pickle.load(f)
-
-                    import nltk.translate.bleu_score
-                    import nltk.translate.nist_score
-
-                    prediction = []
-                    for index in range(batch_size):
-                        sentence = ''
-                        for entry in predictions:
-                            sentence += dict[int(entry[index].asscalar())] + ' '
-                        prediction.append(sentence)
-
-                    for index in range(batch_size):
-                        sentence = ''
-                        for batchEntry in batch.label:
-                            sentence += dict[int(batchEntry[index].asscalar())] + ' '
-                        print("############################")
-                        print("label1: ", sentence)
-                        print("prediction1: ", prediction[index])
-
-                        BLEUscore = nltk.translate.bleu_score.sentence_bleu([sentence], prediction[index])
-                        NISTscore = nltk.translate.nist_score.sentence_nist([sentence], prediction[index])
-                        print("BLEU: ", BLEUscore)
-                        print("NIST: ", NISTscore)
-                        print("############################")
-                '''
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
