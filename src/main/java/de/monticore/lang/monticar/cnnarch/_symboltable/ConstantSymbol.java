@@ -41,6 +41,10 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
         return expression;
     }
 
+    public int getIntValue() {
+        return getExpression().getIntValue().get();
+    }
+
     protected void setExpression(ArchSimpleExpressionSymbol expression) {
         this.expression = expression;
     }
@@ -80,6 +84,9 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
         if (!isResolved()) {
             if (isResolvable()) {
                 resolveExpressions();
+
+                getArchitecture().getConstants().add(this);
+
                 setResolvedThis(this);
             }
         }

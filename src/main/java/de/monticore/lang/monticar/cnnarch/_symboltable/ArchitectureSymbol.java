@@ -41,6 +41,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private List<NetworkInstructionSymbol> networkInstructions = new ArrayList<>();
     private List<VariableSymbol> inputs = new ArrayList<>();
     private List<VariableSymbol> outputs = new ArrayList<>();
+    private List<ConstantSymbol> constants = new ArrayList<>();
     private String dataPath;
     private String componentName;
 
@@ -106,6 +107,10 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public void setOutputs(List<VariableSymbol> outputs) {
         this.outputs = outputs;
+    }
+
+    public List<ConstantSymbol> getConstants() {
+        return constants;
     }
 
     public Collection<IODeclarationSymbol> getIODeclarations(){

@@ -48,5 +48,6 @@ public class ErrorCodes {
     public static final String INVALID_MEMBER = "x04896";
     public static final String ILLEGAL_LAYER_USE = "x04845";
     public static final String UNUSED_LAYER = "x04847";
+    public static final String INVALID_CONSTANT = "x04856";
 
 }
