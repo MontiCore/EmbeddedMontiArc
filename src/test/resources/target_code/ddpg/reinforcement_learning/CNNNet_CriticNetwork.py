@@ -123,6 +123,7 @@ class Net_0(gluon.HybridBlock):
             # fc5_, output shape: {[1,1,1]}
 
 
+            pass
 
     def hybrid_forward(self, F, state_, action_):
         state_ = self.input_normalization_state_(state_)

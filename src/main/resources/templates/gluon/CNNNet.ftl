@@ -94,6 +94,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         self.last_layers = {}
         with self.name_scope():
 ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
+            pass
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")}):
 ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}

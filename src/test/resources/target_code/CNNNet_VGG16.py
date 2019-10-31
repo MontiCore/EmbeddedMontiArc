@@ -241,6 +241,7 @@ class Net_0(gluon.HybridBlock):
             # fc15_, output shape: {[1000,1,1]}
 
 
+            pass
 
     def hybrid_forward(self, F, data_):
         data_ = self.input_normalization_data_(data_)

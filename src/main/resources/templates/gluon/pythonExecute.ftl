@@ -4,6 +4,9 @@
 <#list tc.architectureOutputSymbols as output>
                     ${tc.getName(output)} = mx.nd.zeros((batch_size, ${tc.join(output.ioDeclaration.type.dimensions, ", ")},), ctx=mx_context)
 </#list>
+<#list tc.architecture.constants as constant>
+                    ${tc.getName(constant)} = mx.nd.full((batch_size, 1,), ${constant.intValue?c}, ctx=mx_context)
+</#list>
 
 <#assign instructionCounter = 0>
 <#list tc.architecture.networkInstructions as networkInstruction>

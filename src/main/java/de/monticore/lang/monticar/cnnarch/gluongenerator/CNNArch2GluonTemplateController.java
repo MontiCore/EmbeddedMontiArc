@@ -62,27 +62,15 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                 }
             }
             else if (element.getType() == VariableSymbol.Type.LAYER) {
-                if (element.getMember() != VariableSymbol.Member.OUTPUT) {
+                if (element.getMember() == VariableSymbol.Member.STATE) {
+                    include(TEMPLATE_ELEMENTS_DIR_PATH, "Output", writer, netDefinitionMode);
+                } else if (element.getMember() == VariableSymbol.Member.NONE) {
                     include(TEMPLATE_ELEMENTS_DIR_PATH, element.getLayerVariableDeclaration().getLayer().getName(), writer, netDefinitionMode);
                 }
             }
         }
         else {
             include((ArchitectureElementSymbol) element.getResolvedThis().get(), writer, netDefinitionMode);
-        }
-
-        setCurrentElement(previousElement);
-    }
-
-    public void include(ConstantSymbol constant, Writer writer, NetDefinitionMode netDefinitionMode) {
-        ArchitectureElementData previousElement = getCurrentElement();
-        setCurrentElement(constant);
-
-        if (constant.isAtomic()) {
-            include(TEMPLATE_ELEMENTS_DIR_PATH, "Const", writer, netDefinitionMode);
-        }
-        else {
-            include((ArchitectureElementSymbol) constant.getResolvedThis().get(), writer, netDefinitionMode);
         }
 
         setCurrentElement(previousElement);
@@ -122,7 +110,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             include((LayerSymbol) architectureElement, writer, netDefinitionMode);
         }
         else if (architectureElement instanceof ConstantSymbol) {
-            include((ConstantSymbol) architectureElement, writer, netDefinitionMode);
+
         }
         else {
             include((VariableSymbol) architectureElement, writer, netDefinitionMode);
@@ -242,6 +230,9 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                 }
 
                 inputs.put(getName(element), dimensions);
+            }
+            else if (element instanceof ConstantSymbol) {
+                inputs.put(getName(element), Arrays.asList("1"));
             }
         }
 

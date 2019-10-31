@@ -8,6 +8,9 @@
 <#list tc.architectureOutputSymbols as output>
     vector<float> ${tc.getName(output)}(${tc.join(output.ioDeclaration.type.dimensions, " * ")});
 </#list>
+<#list tc.architecture.constants as constant>
+    vector<float> ${tc.getName(constant)}{${constant.intValue?c}};
+</#list>
 
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.isUnroll()>
@@ -18,7 +21,7 @@
 <#if networkInstruction.body.isTrainable()>
     _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")}, ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")});
 <#else>
-<#-- ${tc.include(networkInstruction.body, "CPP_INLINE")}; -->
+${tc.include(networkInstruction.body, "CPP_INLINE")}
 </#if>
 </#if>
 </#list>
