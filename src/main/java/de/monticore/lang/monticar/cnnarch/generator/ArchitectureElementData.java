@@ -98,12 +98,6 @@ public class ArchitectureElementData {
 
     }
 
-    public int getConstValue() {
-        assert getElement() instanceof ConstantSymbol;
-
-        return ((ConstantSymbol) getElement()).getExpression().getIntValue().get();
-    }
-
     public List<Integer> getKernel(){
         return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get();
     }
