@@ -5,7 +5,11 @@ For additional help see:
         or
     [Link2](https://docs.openstack.org/image-guide/windows-image.html)
 
-1. Setup  
+1. Download ISO
+    1. Download a Windows10 Image from Microsoft (choose language of choice) [Link](https://www.microsoft.com/de-de/software-download/windows10)
+    2. Download [VirtIO Drivers](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso)   
+    3. Move to ~/openstack/iso
+2. Setup  
     `mkdir ~/openstack`  
     `mkdir ~/openstack/iso`  
     `mkdir ~/openstack/img`  
@@ -13,9 +17,12 @@ For additional help see:
     `sudo apt-get update`
     1. Install qemu-utils:  
         `sudo apt-get install qemu-utils`
-    2. [Install Python](https://docs.python-guide.org/starting/install3/linux/)
+    2. [Install Python](https://docs.python-guide.org/starting/install3/linux/)  
+        `sudo apt-get install python3.6`
     3. Setup openstack CLI
-        1. install the openstack CLI: [Link](https://docs.openstack.org/mitaka/user-guide/common/cli_install_openstack_command_line_clients.html)
+        1. install the openstack CLI: [Link](https://docs.openstack.org/mitaka/user-guide/common/cli_install_openstack_command_line_clients.html)  
+            `sudo apt-get install python-dev python-pip`  
+            `pip install python-openstackclient`  
         2. Download the credetial file:
             - In the openstack-dashboard (https://openstack.se.rwth-aachen.de/project/) -> user (top right corner) -> OpenStack RC File v3 
             - Move to ~/openstack/credentials
@@ -28,11 +35,6 @@ For additional help see:
         5. If there occur problems, try again from inside eduroam
     4. install virt-manager:  
         `sudo apt-get install virt-manager`
-
-2. Download ISO
-    1. Download a Windows10 Image from Microsoft (choose language of choice) [Link](https://www.microsoft.com/de-de/software-download/windows10)
-        1. Move to ~/openstack/iso
-    2. Download [VirtIO Drivers](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso)        
 3. Create an empty raw Image (Used to install Windows on. Gets uploaded later)  
     `cd ~/openstack/img`  
     `qemu-img create -f raw MyWindows10.img 15G`
