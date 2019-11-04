@@ -100,7 +100,7 @@ public class AllPredefinedLayers {
                 LSTM.create(),
                 GRU.create(),
                 Embedding.create(),
-                Reshape.create()),
+                Reshape.create(),
                 RNN.create());
     }
 }
