@@ -1,3 +1,10 @@
+/**
+ *
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
@@ -31,6 +38,7 @@ public class AllPredefinedLayers {
     public static final String LSTM_NAME = "LSTM";
     public static final String GRU_NAME = "GRU";
     public static final String EMBEDDING_NAME = "Embedding";
+    public static final String RESHAPE_NAME = "Reshape";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -56,6 +64,7 @@ public class AllPredefinedLayers {
     public static final String FLATTEN_PARAMETER_NAME = "flatten";
     public static final String BEAMSEARCH_MAX_LENGTH = "max_length";
     public static final String BEAMSEARCH_WIDTH_NAME = "width";
+    public static final String SHAPE_NAME = "shape";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
@@ -88,7 +97,8 @@ public class AllPredefinedLayers {
                 RNN.create(),
                 LSTM.create(),
                 GRU.create(),
-                Embedding.create());
+                Embedding.create(),
+                Reshape.create());
     }
 
 }
