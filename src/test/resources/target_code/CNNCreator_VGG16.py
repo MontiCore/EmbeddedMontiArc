@@ -72,14 +72,14 @@ class CNNCreator_VGG16:
                                        train_h5[self._output_data_names_[0]],
                                        batch_size=batch_size,
                                        data_name=self._input_names_[0],
-                                       label_name=self._output_names_[0])
+                                       label_name=self._output_names_[0], shuffle=True)
         test_iter = None
         if test_h5 != None:
             test_iter = mx.io.NDArrayIter(test_h5[self._input_data_names_[0]],
                                           test_h5[self._output_data_names_[0]],
                                           batch_size=batch_size,
                                           data_name=self._input_names_[0],
-                                          label_name=self._output_names_[0])
+                                          label_name=self._output_names_[0], shuffle=True)
         return train_iter, test_iter, data_mean, data_std
 
     def load_h5_files(self):
