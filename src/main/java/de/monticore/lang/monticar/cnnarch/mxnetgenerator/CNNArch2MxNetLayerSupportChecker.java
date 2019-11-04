@@ -15,6 +15,7 @@ public class CNNArch2MxNetLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.RELU_NAME);
         supportedLayerList.add(AllPredefinedLayers.DROPOUT_NAME);
         supportedLayerList.add(AllPredefinedLayers.POOLING_NAME);
+        supportedLayerList.add(AllPredefinedLayers.EMBEDDING_NAME);
         supportedLayerList.add(AllPredefinedLayers.GLOBAL_POOLING_NAME);
         supportedLayerList.add(AllPredefinedLayers.LRN_NAME);
         supportedLayerList.add(AllPredefinedLayers.BATCHNORM_NAME);
@@ -24,6 +25,7 @@ public class CNNArch2MxNetLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.CONCATENATE_NAME);
         supportedLayerList.add(AllPredefinedLayers.FLATTEN_NAME);
         supportedLayerList.add(AllPredefinedLayers.ONE_HOT_NAME);
+        supportedLayerList.add(AllPredefinedLayers.RESHAPE_NAME);
     }
 
 }
