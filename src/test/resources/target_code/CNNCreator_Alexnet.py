@@ -55,10 +55,10 @@ class CNNCreator_Alexnet:
         else:
             logging.info("Loading checkpoint: " + param_file)
             self.module.load(prefix=self._model_dir_ + self._model_prefix_,
-                              epoch=lastEpoch,
-                              data_names=self._input_names_,
-                              label_names=self._output_names_,
-                              context=context)
+                             epoch=lastEpoch,
+                             data_names=self._input_names_,
+                             label_names=self._output_names_,
+                             context=context)
             return lastEpoch
 
 
@@ -206,9 +206,9 @@ class CNNCreator_Alexnet:
                 min_learning_rate = optimizer_params['learning_rate_minimum']
                 del optimizer_params['learning_rate_minimum']
             optimizer_params['lr_scheduler'] = mx.lr_scheduler.FactorScheduler(
-                                                   optimizer_params['step_size'],
-                                                   factor=optimizer_params['learning_rate_decay'],
-                                                   stop_factor_lr=min_learning_rate)
+                optimizer_params['step_size'],
+                factor=optimizer_params['learning_rate_decay'],
+                stop_factor_lr=min_learning_rate)
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
@@ -258,7 +258,7 @@ class CNNCreator_Alexnet:
 
     def construct(self, context, data_mean=None, data_std=None):
         data_ = mx.sym.var("data_",
-            shape=(0,3,224,224))
+                           shape=(0,3,224,224))
         # data_, output shape: {[3,224,224]}
 
         if not data_mean is None:
@@ -270,247 +270,267 @@ class CNNCreator_Alexnet:
             data_ = mx.symbol.broadcast_sub(data_, _data_mean_)
             data_ = mx.symbol.broadcast_div(data_, _data_std_)
         conv1_ = mx.symbol.pad(data=data_,
-            mode='constant',
-            pad_width=(0,0,0,0,2,1,2,1),
-            constant_value=0)
+                               mode='constant',
+                               pad_width=(0,0,-1,0,0,0,0,0),
+                               constant_value=0)
         conv1_ = mx.symbol.Convolution(data=conv1_,
-            kernel=(11,11),
-            stride=(4,4),
-            num_filter=96,
-            no_bias=False,
-            name="conv1_")
+                                       kernel=(11,11),
+                                       stride=(4,4),
+                                       num_filter=96,
+                                       no_bias=False,
+                                       name="conv1_")
         # conv1_, output shape: {[96,55,55]}
 
         lrn1_ = mx.symbol.LRN(data=conv1_,
-            alpha=0.0001,
-            beta=0.75,
-            knorm=2,
-            nsize=5,
-            name="lrn1_")
-        pool1_ = mx.symbol.Pooling(data=lrn1_,
-            kernel=(3,3),
-            pool_type="max",
-            stride=(2,2),
-            name="pool1_")
+                              alpha=0.0001,
+                              beta=0.75,
+                              knorm=2,
+                              nsize=5,
+                              name="lrn1_")
+        pool1_ = mx.symbol.pad(data=lrn1_,
+                               mode='constant',
+                               pad_width=(0,0,-1,0,0,0,0,0),
+                               constant_value=0)
+        pool1_ = mx.symbol.Pooling(data=pool1_,
+                                   kernel=(3,3),
+                                   pool_type="max",
+                                   stride=(2,2),
+                                   name="pool1_")
         # pool1_, output shape: {[96,27,27]}
 
         relu1_ = mx.symbol.Activation(data=pool1_,
-            act_type='relu',
-            name="relu1_")
+                                      act_type='relu',
+                                      name="relu1_")
 
         split1_ = mx.symbol.split(data=relu1_,
-            num_outputs=2,
-            axis=1,
-            name="split1_")
+                                  num_outputs=2,
+                                  axis=1,
+                                  name="split1_")
         # split1_, output shape: {[48,27,27][48,27,27]}
 
         get2_1_ = split1_[0]
         conv2_1_ = mx.symbol.pad(data=get2_1_,
-            mode='constant',
-            pad_width=(0,0,0,0,2,2,2,2),
-            constant_value=0)
+                                 mode='constant',
+                                 pad_width=(0,0,0,0,2,2,2,2),
+                                 constant_value=0)
         conv2_1_ = mx.symbol.Convolution(data=conv2_1_,
-            kernel=(5,5),
-            stride=(1,1),
-            num_filter=128,
-            no_bias=False,
-            name="conv2_1_")
+                                         kernel=(5,5),
+                                         stride=(1,1),
+                                         num_filter=128,
+                                         no_bias=False,
+                                         name="conv2_1_")
         # conv2_1_, output shape: {[128,27,27]}
 
         lrn2_1_ = mx.symbol.LRN(data=conv2_1_,
-            alpha=0.0001,
-            beta=0.75,
-            knorm=2,
-            nsize=5,
-            name="lrn2_1_")
-        pool2_1_ = mx.symbol.Pooling(data=lrn2_1_,
-            kernel=(3,3),
-            pool_type="max",
-            stride=(2,2),
-            name="pool2_1_")
+                                alpha=0.0001,
+                                beta=0.75,
+                                knorm=2,
+                                nsize=5,
+                                name="lrn2_1_")
+        pool2_1_ = mx.symbol.pad(data=lrn2_1_,
+                                 mode='constant',
+                                 pad_width=(0,0,-1,0,0,0,0,0),
+                                 constant_value=0)
+        pool2_1_ = mx.symbol.Pooling(data=pool2_1_,
+                                     kernel=(3,3),
+                                     pool_type="max",
+                                     stride=(2,2),
+                                     name="pool2_1_")
         # pool2_1_, output shape: {[128,13,13]}
 
         relu2_1_ = mx.symbol.Activation(data=pool2_1_,
-            act_type='relu',
-            name="relu2_1_")
+                                        act_type='relu',
+                                        name="relu2_1_")
 
         get2_2_ = split1_[1]
         conv2_2_ = mx.symbol.pad(data=get2_2_,
-            mode='constant',
-            pad_width=(0,0,0,0,2,2,2,2),
-            constant_value=0)
+                                 mode='constant',
+                                 pad_width=(0,0,0,0,2,2,2,2),
+                                 constant_value=0)
         conv2_2_ = mx.symbol.Convolution(data=conv2_2_,
-            kernel=(5,5),
-            stride=(1,1),
-            num_filter=128,
-            no_bias=False,
-            name="conv2_2_")
+                                         kernel=(5,5),
+                                         stride=(1,1),
+                                         num_filter=128,
+                                         no_bias=False,
+                                         name="conv2_2_")
         # conv2_2_, output shape: {[128,27,27]}
 
         lrn2_2_ = mx.symbol.LRN(data=conv2_2_,
-            alpha=0.0001,
-            beta=0.75,
-            knorm=2,
-            nsize=5,
-            name="lrn2_2_")
-        pool2_2_ = mx.symbol.Pooling(data=lrn2_2_,
-            kernel=(3,3),
-            pool_type="max",
-            stride=(2,2),
-            name="pool2_2_")
+                                alpha=0.0001,
+                                beta=0.75,
+                                knorm=2,
+                                nsize=5,
+                                name="lrn2_2_")
+        pool2_2_ = mx.symbol.pad(data=lrn2_2_,
+                                 mode='constant',
+                                 pad_width=(0,0,-1,0,0,0,0,0),
+                                 constant_value=0)
+        pool2_2_ = mx.symbol.Pooling(data=pool2_2_,
+                                     kernel=(3,3),
+                                     pool_type="max",
+                                     stride=(2,2),
+                                     name="pool2_2_")
         # pool2_2_, output shape: {[128,13,13]}
 
         relu2_2_ = mx.symbol.Activation(data=pool2_2_,
-            act_type='relu',
-            name="relu2_2_")
+                                        act_type='relu',
+                                        name="relu2_2_")
 
         concatenate3_ = mx.symbol.concat(relu2_1_, relu2_2_,
-            dim=1,
-            name="concatenate3_")
+                                         dim=1,
+                                         name="concatenate3_")
         # concatenate3_, output shape: {[256,13,13]}
 
         conv3_ = mx.symbol.pad(data=concatenate3_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
+                               mode='constant',
+                               pad_width=(0,0,0,0,1,1,1,1),
+                               constant_value=0)
         conv3_ = mx.symbol.Convolution(data=conv3_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=384,
-            no_bias=False,
-            name="conv3_")
+                                       kernel=(3,3),
+                                       stride=(1,1),
+                                       num_filter=384,
+                                       no_bias=False,
+                                       name="conv3_")
         # conv3_, output shape: {[384,13,13]}
 
         relu3_ = mx.symbol.Activation(data=conv3_,
-            act_type='relu',
-            name="relu3_")
+                                      act_type='relu',
+                                      name="relu3_")
 
         split3_ = mx.symbol.split(data=relu3_,
-            num_outputs=2,
-            axis=1,
-            name="split3_")
+                                  num_outputs=2,
+                                  axis=1,
+                                  name="split3_")
         # split3_, output shape: {[192,13,13][192,13,13]}
 
         get4_1_ = split3_[0]
         conv4_1_ = mx.symbol.pad(data=get4_1_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
+                                 mode='constant',
+                                 pad_width=(0,0,0,0,1,1,1,1),
+                                 constant_value=0)
         conv4_1_ = mx.symbol.Convolution(data=conv4_1_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=192,
-            no_bias=False,
-            name="conv4_1_")
+                                         kernel=(3,3),
+                                         stride=(1,1),
+                                         num_filter=192,
+                                         no_bias=False,
+                                         name="conv4_1_")
         # conv4_1_, output shape: {[192,13,13]}
 
         relu4_1_ = mx.symbol.Activation(data=conv4_1_,
-            act_type='relu',
-            name="relu4_1_")
+                                        act_type='relu',
+                                        name="relu4_1_")
 
         conv5_1_ = mx.symbol.pad(data=relu4_1_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
+                                 mode='constant',
+                                 pad_width=(0,0,0,0,1,1,1,1),
+                                 constant_value=0)
         conv5_1_ = mx.symbol.Convolution(data=conv5_1_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=128,
-            no_bias=False,
-            name="conv5_1_")
+                                         kernel=(3,3),
+                                         stride=(1,1),
+                                         num_filter=128,
+                                         no_bias=False,
+                                         name="conv5_1_")
         # conv5_1_, output shape: {[128,13,13]}
 
-        pool5_1_ = mx.symbol.Pooling(data=conv5_1_,
-            kernel=(3,3),
-            pool_type="max",
-            stride=(2,2),
-            name="pool5_1_")
+        pool5_1_ = mx.symbol.pad(data=conv5_1_,
+                                 mode='constant',
+                                 pad_width=(0,0,-1,0,0,0,0,0),
+                                 constant_value=0)
+        pool5_1_ = mx.symbol.Pooling(data=pool5_1_,
+                                     kernel=(3,3),
+                                     pool_type="max",
+                                     stride=(2,2),
+                                     name="pool5_1_")
         # pool5_1_, output shape: {[128,6,6]}
 
         relu5_1_ = mx.symbol.Activation(data=pool5_1_,
-            act_type='relu',
-            name="relu5_1_")
+                                        act_type='relu',
+                                        name="relu5_1_")
 
         get4_2_ = split3_[1]
         conv4_2_ = mx.symbol.pad(data=get4_2_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
+                                 mode='constant',
+                                 pad_width=(0,0,0,0,1,1,1,1),
+                                 constant_value=0)
         conv4_2_ = mx.symbol.Convolution(data=conv4_2_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=192,
-            no_bias=False,
-            name="conv4_2_")
+                                         kernel=(3,3),
+                                         stride=(1,1),
+                                         num_filter=192,
+                                         no_bias=False,
+                                         name="conv4_2_")
         # conv4_2_, output shape: {[192,13,13]}
 
         relu4_2_ = mx.symbol.Activation(data=conv4_2_,
-            act_type='relu',
-            name="relu4_2_")
+                                        act_type='relu',
+                                        name="relu4_2_")
 
         conv5_2_ = mx.symbol.pad(data=relu4_2_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
+                                 mode='constant',
+                                 pad_width=(0,0,0,0,1,1,1,1),
+                                 constant_value=0)
         conv5_2_ = mx.symbol.Convolution(data=conv5_2_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=128,
-            no_bias=False,
-            name="conv5_2_")
+                                         kernel=(3,3),
+                                         stride=(1,1),
+                                         num_filter=128,
+                                         no_bias=False,
+                                         name="conv5_2_")
         # conv5_2_, output shape: {[128,13,13]}
 
-        pool5_2_ = mx.symbol.Pooling(data=conv5_2_,
-            kernel=(3,3),
-            pool_type="max",
-            stride=(2,2),
-            name="pool5_2_")
+        pool5_2_ = mx.symbol.pad(data=conv5_2_,
+                                 mode='constant',
+                                 pad_width=(0,0,-1,0,0,0,0,0),
+                                 constant_value=0)
+        pool5_2_ = mx.symbol.Pooling(data=pool5_2_,
+                                     kernel=(3,3),
+                                     pool_type="max",
+                                     stride=(2,2),
+                                     name="pool5_2_")
         # pool5_2_, output shape: {[128,6,6]}
 
         relu5_2_ = mx.symbol.Activation(data=pool5_2_,
-            act_type='relu',
-            name="relu5_2_")
+                                        act_type='relu',
+                                        name="relu5_2_")
 
         concatenate6_ = mx.symbol.concat(relu5_1_, relu5_2_,
-            dim=1,
-            name="concatenate6_")
+                                         dim=1,
+                                         name="concatenate6_")
         # concatenate6_, output shape: {[256,6,6]}
 
         fc6_ = mx.symbol.flatten(data=concatenate6_)
         fc6_ = mx.symbol.FullyConnected(data=fc6_,
-            num_hidden=4096,
-            no_bias=False,
-            name="fc6_")
+                                        num_hidden=4096,
+                                        no_bias=False,
+                                        name="fc6_")
         relu6_ = mx.symbol.Activation(data=fc6_,
-            act_type='relu',
-            name="relu6_")
+                                      act_type='relu',
+                                      name="relu6_")
 
         dropout6_ = mx.symbol.Dropout(data=relu6_,
-            p=0.5,
-            name="dropout6_")
+                                      p=0.5,
+                                      name="dropout6_")
         fc7_ = mx.symbol.FullyConnected(data=dropout6_,
-            num_hidden=4096,
-            no_bias=False,
-            name="fc7_")
+                                        num_hidden=4096,
+                                        no_bias=False,
+                                        name="fc7_")
         relu7_ = mx.symbol.Activation(data=fc7_,
-            act_type='relu',
-            name="relu7_")
+                                      act_type='relu',
+                                      name="relu7_")
 
         dropout7_ = mx.symbol.Dropout(data=relu7_,
-            p=0.5,
-            name="dropout7_")
+                                      p=0.5,
+                                      name="dropout7_")
         fc8_ = mx.symbol.FullyConnected(data=dropout7_,
-            num_hidden=10,
-            no_bias=False,
-            name="fc8_")
+                                        num_hidden=10,
+                                        no_bias=False,
+                                        name="fc8_")
         softmax8_ = mx.symbol.softmax(data=fc8_,
-            axis=1,
-            name="softmax8_")
+                                      axis=1,
+                                      name="softmax8_")
         predictions_ = mx.symbol.SoftmaxOutput(data=softmax8_,
-            name="predictions_")
+                                               name="predictions_")
 
 
         self.module = mx.mod.Module(symbol=mx.symbol.Group([predictions_]),
-                                         data_names=self._input_names_,
-                                         label_names=self._output_names_,
-                                         context=context)
+                                    data_names=self._input_names_,
+                                    label_names=self._output_names_,
+                                    context=context)
