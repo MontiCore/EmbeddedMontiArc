@@ -18,6 +18,7 @@ public class AllPredefinedLayers {
     //predefined layer names
     public static final String FULLY_CONNECTED_NAME = "FullyConnected";
     public static final String CONVOLUTION_NAME = "Convolution";
+    public static final String UP_CONVOLUTION_NAME = "UpConvolution";
     public static final String SOFTMAX_NAME = "Softmax";
     public static final String SIGMOID_NAME = "Sigmoid";
     public static final String TANH_NAME = "Tanh";
@@ -79,6 +80,7 @@ public class AllPredefinedLayers {
         return Arrays.asList(
                 FullyConnected.create(),
                 Convolution.create(),
+                UpConvolution.create(),
                 Softmax.create(),
                 Sigmoid.create(),
                 Tanh.create(),
@@ -98,7 +100,7 @@ public class AllPredefinedLayers {
                 LSTM.create(),
                 GRU.create(),
                 Embedding.create(),
-                Reshape.create());
+                Reshape.create()),
+                RNN.create());
     }
-
 }
