@@ -161,6 +161,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.FLATTEN_PARAMETER_NAME).get();
     }
 
+    public List<Integer> getShape() {
+        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.SHAPE_NAME).get();
+    }
+
     @Nullable
     public String getPoolType(){
         return getLayerSymbol().getStringValue(AllPredefinedLayers.POOL_TYPE_NAME).get();
