@@ -20,9 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch._cocos;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -63,7 +61,6 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
         }
     }
 
-
     private void checkIOArray(IODeclarationSymbol ioDeclaration){
         List<Integer> unusedIndices = IntStream.range(0, ioDeclaration.getArrayLength()).boxed().collect(Collectors.toList());
 
@@ -77,7 +74,7 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
                     Log.error("0" + ErrorCodes.INVALID_ARRAY_ACCESS + " The IO array access value of '" + ioElement.getName() +
                                     "' must be an integer between 0 and " + (ioDeclaration.getArrayLength()-1) + ". " +
                                     "The current value is: " + ioElement.getArrayAccess().get().getValue().get().toString()
-                            , ioElement.getSourcePosition());
+                                , ioElement.getSourcePosition());
                 }
             }
             else{

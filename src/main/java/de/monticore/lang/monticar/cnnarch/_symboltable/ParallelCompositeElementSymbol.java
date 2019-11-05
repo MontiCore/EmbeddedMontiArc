@@ -139,7 +139,7 @@ public class ParallelCompositeElementSymbol extends CompositeElementSymbol {
 
         List<ArchitectureElementSymbol> elements = new ArrayList<>(getElements().size());
         for (ArchitectureElementSymbol element : getElements()){
-            ArchitectureElementSymbol elementCopy = element.preResolveDeepCopy();
+            ArchitectureElementSymbol elementCopy = (ArchitectureElementSymbol) element.preResolveDeepCopy();
             elements.add(elementCopy);
         }
         copy.setElements(elements);

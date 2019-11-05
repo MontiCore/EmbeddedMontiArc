@@ -181,7 +181,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
     @Override
     public List<ArchitectureElementSymbol> getFirstAtomicElements() {
         if (getResolvedThis().isPresent() && getResolvedThis().get() != this) {
-            return getResolvedThis().get().getFirstAtomicElements();
+            return ((ArchitectureElementSymbol) getResolvedThis().get()).getFirstAtomicElements();
         }
         else {
             return Collections.singletonList(this);
@@ -191,7 +191,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
     @Override
     public List<ArchitectureElementSymbol> getLastAtomicElements() {
         if (getResolvedThis().isPresent() && getResolvedThis().get() != this) {
-            return getResolvedThis().get().getLastAtomicElements();
+            return ((ArchitectureElementSymbol) getResolvedThis().get()).getLastAtomicElements();
         }
         else {
             return Collections.singletonList(this);
@@ -269,13 +269,40 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                     // to the layer's state via member == STATE)
 
                     getLayerVariableDeclaration().getLayer().resolveOrError();
+                    LayerDeclarationSymbol layerDeclaration = getLayerVariableDeclaration().getLayer().getDeclaration();
 
-                    setResolvedThis(this);
+                    if (!getArrayAccess().isPresent() && layerDeclaration.isPredefined() && ((PredefinedLayerDeclaration) layerDeclaration).getArrayLength(getMember()) > 1) {
+                        List<ArchitectureElementSymbol> parallelElements = createExpandedParallelElements();
+                        ParallelCompositeElementSymbol composite = new ParallelCompositeElementSymbol();
+                        composite.setElements(parallelElements);
+
+                        getSpannedScope().getAsMutableScope().add(composite);
+                        composite.setAstNode(getAstNode().get());
+
+                        for (ArchitectureElementSymbol element : parallelElements) {
+                            element.putInScope(composite.getSpannedScope());
+                            element.setAstNode(getAstNode().get());
+                        }
+
+                        if (getInputElement().isPresent()) {
+                            composite.setInputElement(getInputElement().get());
+                        }
+
+                        if (getOutputElement().isPresent()) {
+                            composite.setOutputElement(getOutputElement().get());
+                        }
+
+                        composite.resolveOrError();
+
+                        setResolvedThis(composite);
+                    }
+                    else {
+                        setResolvedThis(this);
+                    }
                 }
                 else {
                     throw new ArchResolveException();
                 }
-
             }
         }
 
@@ -316,6 +343,44 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                     parallelElements.add(serialComposite);
                 }
             }
+        }
+        else if (getType() == Type.LAYER) {
+            LayerVariableDeclarationSymbol layerVariableDeclaration = getLayerVariableDeclaration();
+            PredefinedLayerDeclaration predefinedLayerDeclaration =
+                    (PredefinedLayerDeclaration) layerVariableDeclaration.getLayer().getDeclaration();
+            int layerArrayLength = predefinedLayerDeclaration.getArrayLength(getMember());
+
+            if (!getInputElement().isPresent()) {
+                for (int i = 0; i < layerArrayLength; ++i) {
+                    VariableSymbol element = new VariableSymbol(getName());
+                    element.setArrayAccess(i);
+                    element.setMember(getMember());
+                    parallelElements.add(element);
+                }
+            }
+            else {
+                for (int i = 0; i < layerArrayLength; ++i) {
+                    SerialCompositeElementSymbol serialComposite = new SerialCompositeElementSymbol();
+
+                    VariableSymbol element = new VariableSymbol(getName());
+                    element.setArrayAccess(i);
+                    element.setMember(getMember());
+                    element.setAstNode(getAstNode().get());
+
+                    LayerSymbol getLayer = new LayerSymbol(AllPredefinedLayers.GET_NAME);
+                    getLayer.setArguments(Collections.singletonList(
+                            new ArgumentSymbol.Builder()
+                                    .parameter(AllPredefinedLayers.INDEX_NAME)
+                                    .value(ArchSimpleExpressionSymbol.of(i))
+                                    .build()));
+                    getLayer.setAstNode(getAstNode().get());
+
+                    serialComposite.setElements(Arrays.asList(getLayer, element));
+
+                    parallelElements.add(serialComposite);
+                }
+            }
+
         }
 
         return parallelElements;
@@ -371,7 +436,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                 throw new IllegalStateException("The architecture resolve() method was never called");
             }
 
-            return getResolvedThis().get().computeOutputTypes();
+            return ((ArchitectureElementSymbol) getResolvedThis().get()).computeOutputTypes();
         }
     }
 
@@ -405,7 +470,6 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                                     "Actual type: " + inputType.getName() + ".");
                         }
                     }
-
                 }
             }
             else if (getType() == Type.LAYER) {
@@ -428,7 +492,7 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                 throw new IllegalStateException("The architecture resolve() method was never called");
             }
 
-            getResolvedThis().get().checkInput();
+            ((ArchitectureElementSymbol) getResolvedThis().get()).checkInput();
         }
     }
 
@@ -439,7 +503,9 @@ public class VariableSymbol extends ArchitectureElementSymbol {
             return Optional.of(ioDeclaration.getArrayLength());
         }
         else if (getType() == Type.LAYER) {
-            return Optional.of(1);
+            PredefinedLayerDeclaration predefinedLayerDeclaration =
+                    (PredefinedLayerDeclaration) getLayerVariableDeclaration().getLayer().getDeclaration();
+            return Optional.of(predefinedLayerDeclaration.getArrayLength(getMember()));
         }
         else {
             return Optional.empty();
