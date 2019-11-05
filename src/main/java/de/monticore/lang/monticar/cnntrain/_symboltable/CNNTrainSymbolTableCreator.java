@@ -322,6 +322,14 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
                 .map(n -> n.getNumber().get().intValue())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void endVisit(ASTSaveAttentionImage node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForBoolean(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
     
     @Override
     public void visit(ASTLearningMethodEntry node) {

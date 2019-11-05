@@ -139,6 +139,9 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     ClipWeightsEntry implements RmsPropEntry = name:"clip_weights" ":" value:NumberValue;
     RhoEntry implements AdaDeltaEntry,RmsPropEntry,HuberEntry = name:"rho" ":" value:NumberValue;
 
+    // Visual attention Extension
+    SaveAttentionImage implements ConfigEntry = name:"save_attention_image" ":" value:BooleanValue;
+
     // Reinforcement Extensions
     interface MultiParamValue extends ConfigValue;
 
