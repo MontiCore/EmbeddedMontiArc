@@ -10,35 +10,35 @@
 
 #include <CNNBufferFile.h>
 
-<#list tc.architecture.streams as stream>
-<#if stream.isTrainable()>
-class ${tc.fileNameWithoutEnding}_${stream?index}{
+<#list tc.architecture.networkInstructions as networkInstruction>
+<#if networkInstruction.body.isTrainable()>
+class ${tc.fileNameWithoutEnding}_${networkInstruction?index}{
 public:
-    const std::string json_file = "model/${tc.componentName}/model_${stream?index}_newest-symbol.json";
-    const std::string param_file = "model/${tc.componentName}/model_${stream?index}_newest-0000.params";
+    const std::string json_file = "model/${tc.componentName}/model_${networkInstruction?index}_newest-symbol.json";
+    const std::string param_file = "model/${tc.componentName}/model_${networkInstruction?index}_newest-0000.params";
     const std::vector<std::string> input_keys = {
-<#if tc.getStreamInputNames(stream)?size == 1>
+<#if tc.getStreamInputNames(networkInstruction.body)?size == 1>
         "data"
 <#else>
-        <#list tc.getStreamInputNames(stream) as variable>"data${variable?index}"<#sep>, </#list>
+        <#list tc.getStreamInputNames(networkInstruction.body) as variable>"data${variable?index}"<#sep>, </#list>
 </#if>
     };
-    const std::vector<std::vector<mx_uint>> input_shapes = {<#list tc.getStreamInputDimensions(stream) as dimensions>{${tc.join(dimensions, ", ")}}<#sep>, </#list>};
+    const std::vector<std::vector<mx_uint>> input_shapes = {<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>{${tc.join(dimensions, ", ")}}<#sep>, </#list>};
     const bool use_gpu = false;
 
     PredictorHandle handle;
 
-    explicit ${tc.fileNameWithoutEnding}_${stream?index}(){
+    explicit ${tc.fileNameWithoutEnding}_${networkInstruction?index}(){
         init(json_file, param_file, input_keys, input_shapes, use_gpu);
     }
 
-    ~${tc.fileNameWithoutEnding}_${stream?index}(){
+    ~${tc.fileNameWithoutEnding}_${networkInstruction?index}(){
         if(handle) MXPredFree(handle);
     }
 
-    void predict(${tc.join(tc.getStreamInputNames(stream), ", ", "const std::vector<float> &in_", "")},
-                 ${tc.join(tc.getStreamOutputNames(stream), ", ", "std::vector<float> &out_", "")}){
-<#list tc.getStreamInputNames(stream) as variable>
+    void predict(${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ", "const std::vector<float> &in_", "")},
+                 ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ", "std::vector<float> &out_", "")}){
+<#list tc.getStreamInputNames(networkInstruction.body) as variable>
         MXPredSetInput(handle, input_keys[${variable?index}].c_str(), in_${variable}.data(), static_cast<mx_uint>(in_${variable}.size()));
 </#list>
 
@@ -49,7 +49,7 @@ public:
         mx_uint shape_len;
         size_t size;
 
-<#list tc.getStreamOutputNames(stream) as variable>
+<#list tc.getStreamOutputNames(networkInstruction.body) as variable>
         output_index = ${variable?index?c};
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;

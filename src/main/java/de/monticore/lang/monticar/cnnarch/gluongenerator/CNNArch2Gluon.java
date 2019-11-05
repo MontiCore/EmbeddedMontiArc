@@ -9,6 +9,7 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
@@ -63,6 +64,9 @@ public class CNNArch2Gluon extends CNNArchGenerator {
 
         temp = controller.process("CNNSupervisedTrainer", Target.PYTHON);
         fileContentMap.put(temp.getKey(), temp.getValue());
+
+        temp = controller.process("BeamSearch", Target.CPP);
+        fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());
 
         temp = controller.process("execute", Target.CPP);
         fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());

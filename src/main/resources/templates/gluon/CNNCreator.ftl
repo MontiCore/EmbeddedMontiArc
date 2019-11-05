@@ -2,9 +2,10 @@
 import mxnet as mx
 import logging
 import os
-<#list tc.architecture.streams as stream>
-<#if stream.isTrainable()>
-from CNNNet_${tc.fullArchitectureName} import Net_${stream?index}
+
+<#list tc.architecture.networkInstructions as networkInstruction>
+<#if networkInstruction.body.isTrainable()>
+from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
 </#if>
 </#list>
 
@@ -52,12 +53,12 @@ class ${tc.fileNameWithoutEnding}:
         return earliestLastEpoch
 
     def construct(self, context, data_mean=None, data_std=None):
-<#list tc.architecture.streams as stream>
-<#if stream.isTrainable()>
-        self.networks[${stream?index}] = Net_${stream?index}(data_mean=data_mean, data_std=data_std)
-        self.networks[${stream?index}].collect_params().initialize(self.weight_initializer, ctx=context)
-        self.networks[${stream?index}].hybridize()
-        self.networks[${stream?index}](<#list tc.getStreamInputDimensions(stream) as dimensions>mx.nd.zeros((${tc.join(dimensions, ",")},), ctx=context)<#sep>, </#list>)
+<#list tc.architecture.networkInstructions as networkInstruction>
+<#if networkInstruction.body.isTrainable()>
+        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std)
+        self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, ctx=context)
+        self.networks[${networkInstruction?index}].hybridize()
+        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#sep>, </#list>)
 </#if>
 </#list>
 
