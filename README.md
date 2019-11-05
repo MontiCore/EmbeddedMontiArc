@@ -9,4 +9,4 @@
 4. OpenCV
 
 ## MXNet
-For detailed instructions on how to run the MXNet and Caffe2 example, see the README in the corresponding folder.
+For detailed instructions on how to run the MXNet example, see the README in the corresponding folder.
