@@ -220,6 +220,7 @@ class CNNSupervisedTrainer_VGG16:
               load_checkpoint=True,
               context='gpu',
               checkpoint_period=5,
+              save_attention_image=False,
               normalize=True):
         if context == 'gpu':
             mx_context = mx.gpu()
@@ -244,7 +245,7 @@ class CNNSupervisedTrainer_VGG16:
             del optimizer_params['learning_rate_decay']
 
 
-        train_iter, test_iter, data_mean, data_std = self._data_loader.load_data(batch_size)
+        train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
 
         if normalize:
             self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
@@ -270,9 +271,13 @@ class CNNSupervisedTrainer_VGG16:
 
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
+        #if loss == 'softmax_cross_entropy':
+        #    fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
+        #    loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)
         if loss == 'softmax_cross_entropy':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
-            loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)
+            ignore_indices = [2]
+            loss_function = SoftmaxCrossEntropyLossIgnoreIndices(ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel)
         elif loss == 'sigmoid_binary_cross_entropy':
             loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
         elif loss == 'cross_entropy':
@@ -352,11 +357,43 @@ class CNNSupervisedTrainer_VGG16:
 
                 outputs=[]
 
-                if True:
+                if True: 
                     predictions_ = mx.nd.zeros((batch_size, 1000,), ctx=mx_context)
 
+                    attentionList=[]
                     predictions_ = self._networks[0](data_)
                     outputs.append(predictions_)
+
+
+                    if save_attention_image == "True":
+                        import matplotlib.pyplot as plt
+                        logging.getLogger('matplotlib').setLevel(logging.ERROR)
+
+                        plt.clf()
+                        fig = plt.figure(figsize=(10,10))
+                        max_length = len(labels)-1
+
+                        if(os.path.isfile('src/test/resources/training_data/Show_attend_tell/dict.pkl')):
+                            with open('src/test/resources/training_data/Show_attend_tell/dict.pkl', 'rb') as f:
+                                dict = pickle.load(f)
+
+                        for l in range(max_length):
+                            attention = attentionList[l]
+                            attention = mx.nd.slice_axis(attention, axis=0, begin=0, end=1)
+                            attention = mx.nd.squeeze(attention)
+                            attention_resized = np.resize(attention.asnumpy(), (8, 8))
+                            ax = fig.add_subplot(max_length//3, max_length//4, l+1)
+                            ax.set_title(dict[int(labels[l+1][0].asscalar())])
+                            img = ax.imshow(train_images[0+batch_size*(batch_i)])
+                            ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
+
+
+                        plt.tight_layout()
+                        target_dir = 'target/attention_images'
+                        if not os.path.exists(target_dir):
+                                    os.makedirs(target_dir)
+                        plt.savefig(target_dir + '/attention_train.png')
+                        plt.close()
 
                 predictions = []
                 for output_name in outputs:
@@ -380,11 +417,34 @@ class CNNSupervisedTrainer_VGG16:
 
                 outputs=[]
 
-                if True:
+                if True: 
                     predictions_ = mx.nd.zeros((batch_size, 1000,), ctx=mx_context)
 
+                    attentionList=[]
                     predictions_ = self._networks[0](data_)
                     outputs.append(predictions_)
+
+
+                    if save_attention_image == "True":
+                        plt.clf()
+                        fig = plt.figure(figsize=(10,10))
+                        max_length = len(labels)-1
+
+                        for l in range(max_length):
+                            attention = attentionList[l]
+                            attention = mx.nd.slice_axis(attention, axis=2, begin=0, end=1)
+                            attention = mx.nd.slice_axis(attention, axis=0, begin=0, end=1)
+                            attention = mx.nd.squeeze(attention)
+                            attention_resized = np.resize(attention.asnumpy(), (8, 8))
+                            ax = fig.add_subplot(max_length//3, max_length//4, l+1)
+                            ax.set_title(dict[int(mx.nd.slice_axis(mx.nd.argmax(outputs[l+1], axis=1), axis=0, begin=0, end=1).asscalar())])
+                            img = ax.imshow(test_images[0+batch_size*(batch_i)])
+                            ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
+
+
+                        plt.tight_layout()
+                        plt.savefig(target_dir + '/attention_test.png')
+                        plt.close()
 
                 predictions = []
                 for output_name in outputs:

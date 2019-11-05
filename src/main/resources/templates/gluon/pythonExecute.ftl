@@ -1,5 +1,5 @@
-<#list tc.getLayerVariableMembers()?keys as member>
-                    ${member} = mx.nd.zeros((batch_size, ${tc.join(tc.cutDimensions(tc.getLayerVariableMembers()[member]), ", ")},), ctx=mx_context)
+<#list tc.getLayerVariableMembers(false)?keys as member>
+                    ${member} = mx.nd.zeros((batch_size, ${tc.join(tc.cutDimensions(tc.getLayerVariableMembers(false)[member]), ", ")},), ctx=mx_context)
 </#list>
 <#list tc.architectureOutputSymbols as output>
                     ${tc.getName(output)} = mx.nd.zeros((batch_size, ${tc.join(output.ioDeclaration.type.dimensions, ", ")},), ctx=mx_context)
@@ -8,6 +8,7 @@
                     ${tc.getName(constant)} = mx.nd.full((batch_size, 1,), ${constant.intValue?c}, ctx=mx_context)
 </#list>
 
+                    attentionList=[]
 <#assign instructionCounter = 0>
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.isUnroll()>
@@ -18,7 +19,12 @@
                     <#assign width = tc.getBeamSearchWidth(networkInstruction.toUnrollInstruction())>
                     ${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]} = applyBeamSearch(input, 0, ${length}, ${width}, 1.0, ${networkInstruction?index}, input)
                     <#else>
+                    <#if tc.isAttentionNetwork()>
+                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")}, attention_ = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")})
+                    attentionList.append(attention_)
+                    <#else>
                     ${tc.join(tc.getStreamOutputNames(networkInstruction.body, resolvedBody), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, resolvedBody), ", ")})
+                    </#if>
                     <#if !(tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]?ends_with("_output_"))>
                     outputs.append(${tc.getStreamOutputNames(networkInstruction.body, resolvedBody)[0]})
                     </#if>
@@ -42,7 +48,7 @@
                     </#list>
 <#else>
 ${tc.include(networkInstruction.body, "PYTHON_INLINE")}
-<#if !(tc.getStreamOutputNames(networkInstruction.body)[0]?ends_with("_state_"))>
+<#if !(tc.getStreamOutputNames(networkInstruction.body)[0]?contains("_state_"))>
                     outputs.append(${tc.getStreamOutputNames(networkInstruction.body)[0]})
 </#if>
 </#if>

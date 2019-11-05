@@ -18,11 +18,15 @@ class ${tc.fileNameWithoutEnding}:
         train_data = {}
         data_mean = {}
         data_std = {}
+        train_images = {}
 
         for input_name in self._input_names_:
             train_data[input_name] = train_h5[input_name]
             data_mean[input_name + '_'] = nd.array(train_h5[input_name][:].mean(axis=0))
             data_std[input_name + '_'] = nd.array(train_h5[input_name][:].std(axis=0) + 1e-5)
+
+            if 'images' in train_h5:
+                train_images = train_h5['images']
 
         train_label = {}
         index = 0
@@ -38,8 +42,12 @@ class ${tc.fileNameWithoutEnding}:
 
         if test_h5 != None:
             test_data = {}
+            test_images = {}
             for input_name in self._input_names_:
                 test_data[input_name] = test_h5[input_name]
+
+                if 'images' in test_h5:
+                    test_images = test_h5['images']
 
             test_label = {}
             index = 0
@@ -52,7 +60,7 @@ class ${tc.fileNameWithoutEnding}:
                                           label=test_label,
                                           batch_size=batch_size)
 
-        return train_iter, test_iter, data_mean, data_std
+        return train_iter, test_iter, data_mean, data_std, train_images, test_images
 
     def load_h5_files(self):
         train_h5 = None

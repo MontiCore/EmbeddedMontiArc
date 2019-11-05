@@ -98,7 +98,11 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")}):
 ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
+<#if tc.isAttentionNetwork() && networkInstruction.isUnroll() >
+        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")}, attention_output_
+<#else>
         return ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")}
+</#if>
 
 </#if>
 </#list>

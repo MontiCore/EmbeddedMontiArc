@@ -1,8 +1,8 @@
 <#list tc.architectureInputSymbols as input>
     vector<float> ${tc.getName(input)} = CNNTranslator::translate(${input.name}<#if input.arrayAccess.isPresent()>[${input.arrayAccess.get().intValue.get()?c}]</#if>);
 </#list>
-<#list tc.getLayerVariableMembers()?keys as member>
-    vector<float> ${member}(${tc.join(tc.getLayerVariableMembers()[member], " * ")});
+<#list tc.getLayerVariableMembers(true)?keys as member>
+    vector<float> ${member}(${tc.join(tc.getLayerVariableMembers(true)[member], " * ")});
 </#list>
 
 <#list tc.architectureOutputSymbols as output>

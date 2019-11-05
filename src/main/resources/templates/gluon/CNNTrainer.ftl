@@ -36,6 +36,9 @@ if __name__ == "__main__":
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
 </#if>
+<#if (config.saveAttentionImage)??>
+        save_attention_image='${config.saveAttentionImage?string("True","False")}',
+</#if>
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric.name}',
         eval_metric_params={

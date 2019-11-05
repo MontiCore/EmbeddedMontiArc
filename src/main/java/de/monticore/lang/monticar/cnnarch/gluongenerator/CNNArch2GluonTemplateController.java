@@ -159,7 +159,8 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             }
         }
 
-        outputNames.addAll(getStreamLayerVariableMembers(stream, true).keySet());
+        outputNames.addAll(getStreamLayerVariableMembers(stream, true, false).keySet());
+
 
         return outputNames;
     }
@@ -179,11 +180,11 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     }
 
     // Used to initialize all layer variable members which are passed through the networks
-    public  Map<String, List<String>> getLayerVariableMembers() {
+    public  Map<String, List<String>> getLayerVariableMembers(boolean generateStateInitializers) {
         Map<String, List<String>> members = new LinkedHashMap<>();
 
         for (SerialCompositeElementSymbol stream : getArchitecture().getStreams()) {
-            members.putAll(getStreamLayerVariableMembers(stream, true));
+            members.putAll(getStreamLayerVariableMembers(stream, true, generateStateInitializers));
         }
 
         return members;
@@ -236,12 +237,12 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             }
         }
 
-        inputs.putAll(getStreamLayerVariableMembers(stream, false));
+        inputs.putAll(getStreamLayerVariableMembers(stream, false, false));
 
         return inputs;
     }
 
-    private Map<String, List<String>> getStreamLayerVariableMembers(SerialCompositeElementSymbol stream, boolean includeOutput) {
+    private Map<String, List<String>> getStreamLayerVariableMembers(SerialCompositeElementSymbol stream, boolean includeOutput, boolean generateStateInitializaters) {
         Map<String, List<String>> members = new LinkedHashMap<>();
 
         List<ArchitectureElementSymbol> elements = stream.getSpannedScope().resolveLocally(ArchitectureElementSymbol.KIND);
@@ -249,7 +250,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             if (element instanceof VariableSymbol) {
                 VariableSymbol variable = (VariableSymbol) element;
 
-                if (variable.getType() == VariableSymbol.Type.LAYER && (variable.getMember() == VariableSymbol.Member.NONE)) {
+                if (variable.getType() == VariableSymbol.Type.LAYER && (variable.getMember() == VariableSymbol.Member.NONE || generateStateInitializaters)) {
                     LayerVariableDeclarationSymbol layerVariableDeclaration = variable.getLayerVariableDeclaration();
 
                     if (layerVariableDeclaration.getLayer().getDeclaration().isPredefined()) {
@@ -319,6 +320,10 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         }
 
         return dimensions;
+    }
+
+    public boolean isAttentionNetwork(){
+        return AllAttentionModels.getAttentionModels().contains(getComponentName());
     }
 
     public int getBeamSearchWidth(UnrollInstructionSymbol unroll){
