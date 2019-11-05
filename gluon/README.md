@@ -1,5 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# Calculator MXNET
+# MNISTGenerator MXNET
 
 
 ## Prerequisites
@@ -16,13 +16,13 @@ Generate and build the code for the EMADL model by executing:
 bash build.sh
 ```
 
-Finally, run the calculator as follows:
+Finally, run the Generator as follows:
 ```
-./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png
+./build/src/cpp/DigitCalculator [arbitrary integer]
 ```
 
-You can try different images from the provided `/resources/images` directory or even create your own images for testing. Note that the application program DigitCalculator will automatically rescale the given input image to the size 32x32.
-
+The integer is used as a seed for the random generator, thus different numbers result in different
+created images.
 
 
 ## Troubleshooting Help
