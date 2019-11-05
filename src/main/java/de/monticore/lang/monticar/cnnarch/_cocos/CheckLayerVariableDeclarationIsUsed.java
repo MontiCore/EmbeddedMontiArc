@@ -26,6 +26,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CheckLayerVariableDeclarationIsUsed extends CNNArchSymbolCoCo {
 
@@ -35,6 +37,9 @@ public class CheckLayerVariableDeclarationIsUsed extends CNNArchSymbolCoCo {
             LayerVariableDeclarationSymbol layerVariableDeclaration = (LayerVariableDeclarationSymbol) sym;
 
             boolean isUsed = false;
+
+            Set<String> allowedUnusedLayers = new HashSet();
+            allowedUnusedLayers.add("attention");
 
             for (NetworkInstructionSymbol networkInstruction : layerVariableDeclaration.getLayer().getArchitecture().getNetworkInstructions()) {
                 Collection<ArchitectureElementSymbol> elements
@@ -50,6 +55,10 @@ public class CheckLayerVariableDeclarationIsUsed extends CNNArchSymbolCoCo {
                 if (isUsed) {
                     break;
                 }
+            }
+
+            if(allowedUnusedLayers.contains(sym.getName())){
+                isUsed = true;
             }
 
             if (!isUsed) {
