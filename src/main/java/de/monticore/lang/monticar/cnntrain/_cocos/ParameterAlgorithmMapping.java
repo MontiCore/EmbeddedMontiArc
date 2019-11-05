@@ -38,6 +38,7 @@ class ParameterAlgorithmMapping {
         ASTBatchSizeEntry.class,
         ASTLoadCheckpointEntry.class,
         ASTEvalMetricEntry.class,
+        ASTExcludeBleuEntry.class,
         ASTNormalizeEntry.class,
         ASTNumEpochEntry.class,
         ASTLossEntry.class,
@@ -46,7 +47,8 @@ class ParameterAlgorithmMapping {
         ASTFromLogitsEntry.class,
         ASTMarginEntry.class,
         ASTLabelFormatEntry.class,
-        ASTRhoEntry.class
+        ASTRhoEntry.class,
+        ASTSaveAttentionImage.class
     );
 
     private static final List<Class> GENERAL_REINFORCEMENT_PARAMETERS = Lists.newArrayList(
