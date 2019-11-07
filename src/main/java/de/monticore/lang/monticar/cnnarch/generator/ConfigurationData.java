@@ -121,6 +121,13 @@ public class ConfigurationData {
         return mapToStrings;
     }
 
+    public Boolean getSaveAttentionImage() {
+        if (!getConfiguration().getEntryMap().containsKey("save_attention_image")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("save_attention_image").getValue().getValue();
+    }
+
     protected Map<String, Object> getMultiParamEntry(final String key, final String valueName) {
         if (!configurationContainsKey(key)) {
             return null;
