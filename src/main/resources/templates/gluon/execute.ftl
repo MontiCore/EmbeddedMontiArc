@@ -59,7 +59,7 @@
                 sort(topk.begin(), topk.end(), [] (const pair<int, float>& p1, const pair<int, float>& p2) {
                     return p1.second > p2.second;
                 };
-                topk = vector<pair<int, float>>(topk.begin(), topk.begin() + min(k, topk.size()));
+                topk = vector<pair<int, float>>(topk.begin(), topk.begin() + std::min(k, topk.size()));
 
                 for (const pair<int, float>& pair : topk) {
                     vector<vector<float>> currentSeq = seq;
@@ -71,13 +71,13 @@
             sort(allCandidates.begin(), allCandidates.end(), [] (const pair<vector<vector<float>>, double>& p1, const pair<vector<vector<float>>, double>& p2) {
                 return p1.second > p2.second;
             });
-            sequences = vector<pair<vector<vector<float>>, double>>(allCandidates.begin(), allCandidates.begin() + min(k, allCandidates.size()));
+            sequences = vector<pair<vector<vector<float>>, double>>(allCandidates.begin(), allCandidates.begin() + std::min(k, allCandidates.size()));
         }
 
         for (size_t i = 1; i < ${tc.getBeamSearchMaxLength(networkInstruction)}; ++i) {
 <#list tc.getUnrollOutputNames(networkInstruction, "i") as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
-            ${outputName} = sequences[0][0][i];
+            ${outputName} = sequences[0].first[i];
 </#if>
 </#list>
         }
