@@ -68,11 +68,11 @@ public class CNNArchCocos {
                 .addCoCo(new CheckElementInputs())
                 .addCoCo(new CheckIOAccessAndIOMissing())
                 .addCoCo(new CheckArchitectureFinished())
-                .addCoCo(new CheckNetworkStreamMissing())
                 .addCoCo(new CheckVariableMember())
                 .addCoCo(new CheckLayerVariableDeclarationLayerType())
                 .addCoCo(new CheckLayerVariableDeclarationIsUsed())
-                .addCoCo(new CheckConstants());
+                .addCoCo(new CheckConstants())
+                .addCoCo(new CheckUnrollInputsOutputsTooMany());
     }
 
     //checks cocos based on symbols before the resolve method of the ArchitectureSymbol is called

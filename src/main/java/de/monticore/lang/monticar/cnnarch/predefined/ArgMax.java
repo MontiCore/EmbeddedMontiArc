@@ -33,11 +33,6 @@ public class ArgMax extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isTrainable() {
-        return false;
-    }
-
-    @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         ArchTypeSymbol inputType = layer.getInputTypes().get(0);
 

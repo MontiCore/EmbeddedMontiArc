@@ -52,16 +52,6 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         return true;
     }
 
-    /**
-     * This method is used to distinguish between neural networks like "source -> FullyConnected() -> target" and
-     * basic assignments like "1 -> OneHot() -> target". The generators use this to avoid creating an own
-     * network for each assignment. Override by predefined layers which are trainable.
-     */
-    @Override
-    public boolean isTrainable() {
-        return isTrainable(VariableSymbol.Member.NONE);
-    }
-
     public boolean isTrainable(VariableSymbol.Member member) {
         if(member == VariableSymbol.Member.STATE || member == VariableSymbol.Member.OUTPUT){
             return false;
