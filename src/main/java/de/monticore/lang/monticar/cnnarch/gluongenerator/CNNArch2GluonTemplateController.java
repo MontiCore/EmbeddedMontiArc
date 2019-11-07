@@ -183,8 +183,12 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             if (element.isOutput()) {
                 String name = getName(element);
 
-                if (asArray) {
-                    name = getNameAsArray(name);
+                if (asArray && element instanceof VariableSymbol) {
+                    VariableSymbol variable = (VariableSymbol) element;
+
+                    if (variable.getType() == VariableSymbol.Type.IO) {
+                        name = getNameAsArray(name);
+                    }
                 }
 
                 outputNames.add(name);
@@ -287,8 +291,12 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
 
                 String name = getName(element);
 
-                if (element.isOutput() && outputAsArray) {
-                    name = getNameAsArray(name);
+                if (outputAsArray && element.isOutput() && element instanceof VariableSymbol) {
+                    VariableSymbol variable = (VariableSymbol) element;
+
+                    if (variable.getType() == VariableSymbol.Type.IO) {
+                        name = getNameAsArray(name);
+                    }
                 }
 
                 inputs.put(name, dimensions);
