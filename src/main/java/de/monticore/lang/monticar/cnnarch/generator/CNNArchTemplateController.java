@@ -171,7 +171,7 @@ public abstract class CNNArchTemplateController {
         return list;
     }
 
-    public List getArchitectureInputSymbols(){
+    public List<VariableSymbol> getArchitectureInputSymbols(){
         Set<String> names = new HashSet();
         List<VariableSymbol> noDuplicates = new ArrayList();
 
@@ -186,7 +186,7 @@ public abstract class CNNArchTemplateController {
         return noDuplicates;
     }
 
-    public List getArchitectureOutputSymbols(){
+    public List<VariableSymbol> getArchitectureOutputSymbols(){
         Set<String> names = new HashSet();
         List<VariableSymbol> noDuplicates = new ArrayList();
 
