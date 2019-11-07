@@ -10,16 +10,15 @@
 #include <CNNBufferFile.h>
 
 <#list tc.architecture.networkInstructions as networkInstruction>
-<#if networkInstruction.body.isTrainable()>
 class ${tc.fileNameWithoutEnding}_${networkInstruction?index}{
 public:
     const std::string json_file = "model/${tc.componentName}/model_${networkInstruction?index}_newest-symbol.json";
     const std::string param_file = "model/${tc.componentName}/model_${networkInstruction?index}_newest-0000.params";
     const std::vector<std::string> input_keys = {
-<#if tc.getStreamInputNames(networkInstruction.body)?size == 1>
+<#if tc.getStreamInputNames(networkInstruction.body, true)?size == 1>
         "data"
 <#else>
-        <#list tc.getStreamInputNames(networkInstruction.body) as variable>"data${variable?index}"<#sep>, </#list>
+        <#list tc.getStreamInputNames(networkInstruction.body, true) as variable>"data${variable?index}"<#sep>, </#list>
 </#if>
     };
     const std::vector<std::vector<mx_uint>> input_shapes = {<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>{${tc.join(dimensions, ", ")}}<#sep>, </#list>};
@@ -35,9 +34,9 @@ public:
         if(handle) MXPredFree(handle);
     }
 
-    void predict(${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ", "const std::vector<float> &in_", "")},
-                 ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ", "std::vector<float> &out_", "")}){
-<#list tc.getStreamInputNames(networkInstruction.body) as variable>
+    void predict(${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ", "const std::vector<float> &in_", "")},
+                 ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ", "std::vector<float> &out_", "")}){
+<#list tc.getStreamInputNames(networkInstruction.body, false) as variable>
         MXPredSetInput(handle, input_keys[${variable?index}].c_str(), in_${variable}.data(), static_cast<mx_uint>(in_${variable}.size()));
 </#list>
 
@@ -48,7 +47,7 @@ public:
         mx_uint shape_len;
         size_t size;
 
-<#list tc.getStreamOutputNames(networkInstruction.body) as variable>
+<#list tc.getStreamOutputNames(networkInstruction.body, false) as variable>
         output_index = ${variable?index?c};
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
@@ -113,7 +112,6 @@ public:
         assert(handle);
     }
 };
-</#if>
 </#list>
 
 #endif // ${tc.fileNameWithoutEnding?upper_case}

@@ -12,7 +12,7 @@ class CNNDataLoader_CifarClassifierNetwork:
     def __init__(self):
         self._data_dir = "data/CifarClassifierNetwork/"
 
-    def load_data(self, batch_size):
+    def load_data(self, train_batch_size, test_batch_size):
         train_h5, test_h5 = self.load_h5_files()
 
         train_data = {}
@@ -32,7 +32,11 @@ class CNNDataLoader_CifarClassifierNetwork:
 
         train_iter = mx.io.NDArrayIter(data=train_data,
                                        label=train_label,
-                                       batch_size=batch_size)
+                                       batch_size=train_batch_size)
+
+        train_test_iter = mx.io.NDArrayIter(data=train_data,
+                                            label=train_label,
+                                            batch_size=test_batch_size)
 
         test_iter = None
 
@@ -49,9 +53,9 @@ class CNNDataLoader_CifarClassifierNetwork:
 
             test_iter = mx.io.NDArrayIter(data=test_data,
                                           label=test_label,
-                                          batch_size=batch_size)
+                                          batch_size=test_batch_size)
 
-        return train_iter, test_iter, data_mean, data_std
+        return train_iter, train_test_iter, test_iter, data_mean, data_std
 
     def load_h5_files(self):
         train_h5 = None
