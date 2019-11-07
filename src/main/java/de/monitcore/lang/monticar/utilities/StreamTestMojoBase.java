@@ -11,6 +11,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.monticar.emadl._parser.EMADLParser;
+import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
 import de.monticore.lang.monticar.enumlang._parser.EnumLangParser;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
@@ -37,7 +39,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -78,6 +79,9 @@ public class StreamTestMojoBase extends AbstractMojo {
     }
     public String getPathTmpOutEMAM(){
         return Paths.get(this.pathTmpOut, "emam/").toString();
+    }
+    public String getPathTmpOutEMADL(){
+        return Paths.get(this.pathTmpOut,"emadl/").toString();
     }
     public String getPathTmpOutBUILD() {
         return Paths.get(this.getPathTmpOut(), "build/").toString();
@@ -173,6 +177,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         this.mkdir(this.getPathTmpOut());
         this.mkdir(this.getPathTmpOutCPP());
         this.mkdir(this.getPathTmpOutEMAM());
+        this.mkdir(this.getPathTmpOutEMADL());
         this.mkdir(this.getPathTmpOutBUILD());
         this.mkdir(Paths.get(this.getPathTmpOut(), mojoDirectory).toString());
         this.mkdir(Paths.get(this.getPathTmpOut(), mojoDirectory, this.MojoName()).toString());
@@ -186,7 +191,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         myLog.clear();
     }
 
-    protected  void mainExecution() throws MojoExecutionException, MojoFailureException{
+    protected  void mainExecution() throws MojoExecutionException, MojoFailureException {
         // tada
     }
 
@@ -317,7 +322,7 @@ public class StreamTestMojoBase extends AbstractMojo {
             myParser.put("stream", new StreamUnitsParser());
             myParser.put("struct", new StructParser());
             myParser.put("enum", new EnumLangParser());
-         //   myParser.put("emadl", new )
+            myParser.put("emadl",new EMADLParser());
             resetToMyLog();
         }
         return myParser;
@@ -332,6 +337,7 @@ public class StreamTestMojoBase extends AbstractMojo {
             fam.addModelingLanguage(new StreamUnitsLanguage());
             fam.addModelingLanguage(new StructLanguage());
             fam.addModelingLanguage(new EnumLangLanguage());
+            fam.addModelingLanguage(new EMADLLanguage());
             final ModelPath mp_main = new ModelPath();
 
             mp_main.addEntry(Paths.get(this.pathMain));
@@ -367,6 +373,11 @@ public class StreamTestMojoBase extends AbstractMojo {
             this.getScope();
         }
         return this.myTaggingResolver;
+    }
+
+    protected void resetTaggingResolver(){
+        this.myScope = null;
+        this.myTaggingResolver = null;
     }
 
     //</editor-fold>

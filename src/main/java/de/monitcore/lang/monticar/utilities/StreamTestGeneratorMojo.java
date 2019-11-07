@@ -60,15 +60,19 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
         if(femam.exists()){
             femam.delete();
         }
+        File femadl = hashEmadlFile();
+        if(femadl.exists()){
+            femadl.delete();
+        }
 
         if(!checkCocosOfInputFiles()){
             throw new MojoExecutionException("Some files are invalid");
         }
 
         try{
-            File temam = Paths.get(this.getPathTmpOutEMAM()).toFile();
-            FileUtils.copyDirectory(Paths.get(this.pathMain).toFile(), temam);
-            FileUtils.copyDirectory(Paths.get(this.pathTest).toFile(), temam);
+            File temadl = Paths.get(this.getPathTmpOutEMADL()).toFile();
+            FileUtils.copyDirectory(Paths.get(this.pathMain).toFile(), temadl);
+            FileUtils.copyDirectory(Paths.get(this.pathTest).toFile(), temadl);
         } catch (IOException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Could not copy files: "+e.getMessage() );
@@ -84,11 +88,11 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
         //Create hash of files
         String mainHash = SearchFiles.hashDirFiles(this.getPathMain());
         String testHash = SearchFiles.hashDirFiles(this.getPathTest());
-        String emamHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMAM());
+        String emadlHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMADL());
         try {
             FileUtils.write(hashFileMain(), mainHash, false);
             FileUtils.write(hashFileTest(), testHash, false);
-            FileUtils.write(hashEmamFile(), emamHash, false);
+            FileUtils.write(hashEmamFile(), emadlHash, false);
         } catch (IOException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Failed to create hash files for "+MojoName());
@@ -99,8 +103,8 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
     protected boolean checkForExecution() throws MojoExecutionException {
         File hmain = hashFileMain();
         File htest = hashFileTest();
-        File hemam = hashEmamFile();
-        if(!hmain.exists() || !htest.exists() || !hemam.exists() ){
+        File hemadl = hashEmadlFile();
+        if(!hmain.exists() || !htest.exists() || !hemadl.exists() ){
             logInfo("Execution necessary: Hashfiles not found.");
             return true;
         }
@@ -109,19 +113,19 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
         String newMainHash = SearchFiles.hashDirFiles(this.getPathMain());
         String newTestHash = SearchFiles.hashDirFiles(this.getPathTest());
-        String newEmamHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMAM());
+        String newEmadlHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMADL());
 
         try {
             oldMainHash = FileUtils.readFileToString(hmain);
             oldTestHash = FileUtils.readFileToString(htest);
-            oldEmamHash = FileUtils.readFileToString(hemam);
+            oldEmamHash = FileUtils.readFileToString(hemadl);
         } catch (IOException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Can't read old hash files");
         }
 
         if(newMainHash.equalsIgnoreCase(oldMainHash) && newTestHash.equalsIgnoreCase(oldTestHash) &&
-                newEmamHash.equalsIgnoreCase(oldEmamHash) ){
+                newEmadlHash.equalsIgnoreCase(oldEmamHash) ){
             logInfo("Execution of "+this.MojoName().toUpperCase()+" not necessary. No input files changed.");
             return false;
         }
@@ -144,8 +148,8 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
         logInfo("Cocos Check:");
         List<File> ff = SearchFiles.searchFiles(this.pathMain, "emam", "struct", "enum");
-        Map<String, File> files = SearchFiles.searchFilesMap(this.pathMain, "emam", "struct", "enum");
-        files.putAll(SearchFiles.searchFilesMap(this.pathTest, "emam", "stream"));
+        Map<String, File> files = SearchFiles.searchFilesMap(this.pathMain, "emam", "struct", "enum", "emadl");
+        files.putAll(SearchFiles.searchFilesMap(this.pathTest, "emam", "stream", "emadl"));
 
         for (Map.Entry<String,File> f:files.entrySet()) {
             String ending = f.getKey().substring(f.getKey().lastIndexOf(".") + 1);//Get the file type
@@ -185,6 +189,12 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                         modelName = modelNameCalculator(f.getValue(), "enum", ast.getPackageList());
                         Optional<EnumDeclarationSymbol> enumSym = scope.resolve(modelName, EnumDeclarationSymbol.KIND);
                         resolved = enumSym.isPresent();
+                    }else if(ending.equalsIgnoreCase("emadl")) {
+                        ASTEMACompilationUnit ast = (ASTEMACompilationUnit) node.get();
+
+                        modelName = modelNameCalculator(f.getValue(),"emadl", ast.getPackageList());
+                        Optional<EMAComponentSymbol> comp = scope.<EMAComponentSymbol>resolve(modelName, EMAComponentSymbol.KIND);
+                        resolved = comp.isPresent();
                     }else{
                         //TODO:
                         logWarn("   -> No resolving for "+ending+" implemented at the moment.");
@@ -272,6 +282,9 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
         return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Emam.txt").toFile();
     }
 
+    protected File hashEmadlFile(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Emadl.txt").toFile();
+    }
     //</editor-fold>
 
     //<editor-fold desc="Utilities">
