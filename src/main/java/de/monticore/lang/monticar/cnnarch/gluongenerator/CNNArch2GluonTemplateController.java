@@ -193,6 +193,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
 
         outputNames.addAll(getStreamLayerVariableMembers(stream, true).keySet());
 
+
         return outputNames;
     }
 
@@ -226,8 +227,8 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     public  Map<String, List<String>> getLayerVariableMembers() {
         Map<String, List<String>> members = new LinkedHashMap<>();
 
-        for (SerialCompositeElementSymbol stream : getArchitecture().getStreams()) {
-            members.putAll(getStreamLayerVariableMembers(stream, true));
+        for (NetworkInstructionSymbol networkInstruction : getArchitecture().getNetworkInstructions()) {
+            members.putAll(getStreamLayerVariableMembers(networkInstruction.getBody(), true));
         }
 
         return members;
@@ -390,6 +391,10 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         }
 
         return false;
+    }
+
+    public boolean isAttentionNetwork(){
+        return AllAttentionModels.getAttentionModels().contains(getComponentName());
     }
 
     public int getBeamSearchMaxLength(UnrollInstructionSymbol unroll){

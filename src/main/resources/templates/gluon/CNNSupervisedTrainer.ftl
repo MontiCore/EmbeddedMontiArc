@@ -187,6 +187,7 @@ class ${tc.fileNameWithoutEnding}:
               load_checkpoint=True,
               context='gpu',
               checkpoint_period=5,
+              save_attention_image=False,
               normalize=True):
         if context == 'gpu':
             mx_context = mx.gpu()
@@ -213,7 +214,7 @@ class ${tc.fileNameWithoutEnding}:
         train_batch_size = batch_size
         test_batch_size = ${tc.hasUnrollInstructions()?then('1', 'batch_size')}
 
-        train_iter, train_test_iter, test_iter, data_mean, data_std = self._data_loader.load_data(train_batch_size, test_batch_size)
+        train_iter, train_test_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(train_batch_size, test_batch_size)
 
         if normalize:
             self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
@@ -239,9 +240,13 @@ class ${tc.fileNameWithoutEnding}:
 
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
+        #if loss == 'softmax_cross_entropy':
+        #    fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
+        #    loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)
         if loss == 'softmax_cross_entropy':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
-            loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)
+            ignore_indices = [2]
+            loss_function = SoftmaxCrossEntropyLossIgnoreIndices(ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel)
         elif loss == 'sigmoid_binary_cross_entropy':
             loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
         elif loss == 'cross_entropy':
@@ -307,6 +312,10 @@ class ${tc.fileNameWithoutEnding}:
                 if True: <#-- Fix indentation -->
 <#include "pythonExecuteTest.ftl">
 
+
+<#include "saveAttentionImageTrain.ftl">
+
+
                 predictions = []
                 for output_name in outputs:
                     if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
@@ -322,6 +331,10 @@ class ${tc.fileNameWithoutEnding}:
             for batch_i, batch in enumerate(test_iter):
                 if True: <#-- Fix indentation -->
 <#include "pythonExecuteTest.ftl">
+
+
+<#include "saveAttentionImageTest.ftl">
+
 
                 predictions = []
                 for output_name in outputs:

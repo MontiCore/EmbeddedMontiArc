@@ -22,7 +22,7 @@
 </#list>
 
                     outputs = []
-
+                    attentionList=[]
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.isUnroll()>
                     k = ${tc.getBeamSearchWidth(networkInstruction)}
@@ -41,7 +41,12 @@
                             ${inputName} = seq[-1]
 </#if>
 </#list>
-                            ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), ", ")})
+<#if tc.isAttentionNetwork()>
+                        ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), ", ")}, attention_ = self._networks[${networkInstruction?index}](${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), ", ")})
+                        attentionList.append(attention_)
+<#else>
+                        ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), ", ")})
+</#if>
 <#list tc.getUnrollOutputNames(networkInstruction, "i") as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
                             out = ${outputName}
