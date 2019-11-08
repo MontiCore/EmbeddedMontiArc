@@ -88,22 +88,19 @@ class CustomGRU(gluon.HybridBlock):
 
 
 <#list tc.architecture.networkInstructions as networkInstruction>
-<#if networkInstruction.body.isTrainable()>
 class Net_${networkInstruction?index}(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
-        self.last_layers = {}
         with self.name_scope():
 ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
             pass
 
-    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body), ", ")}):
+    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
 ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 <#if tc.isAttentionNetwork() && networkInstruction.isUnroll() >
-        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")}, attention_output_
+        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}, attention_output_
 <#else>
-        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body), ", ")}
+        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}
 </#if>
 
-</#if>
 </#list>

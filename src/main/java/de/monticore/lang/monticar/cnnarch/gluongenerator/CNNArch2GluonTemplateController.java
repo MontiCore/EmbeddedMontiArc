@@ -11,6 +11,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.Writer;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     public static final String NET_DEFINITION_MODE_KEY = "mode";
@@ -19,6 +21,8 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                                            TemplateConfiguration templateConfiguration) {
         super(architecture, templateConfiguration);
     }
+
+
 
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer, NetDefinitionMode netDefinitionMode){
         String templatePath = relativePath + templateWithoutFileEnding + FTL_FILE_ENDING;
@@ -109,14 +113,13 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         include(architectureElement, getWriter(), netDefinitionMode);
     }
 
-    public Set<String> getStreamInputNames(SerialCompositeElementSymbol stream) {
-        return getStreamInputs(stream).keySet();
+    public Set<String> getStreamInputNames(SerialCompositeElementSymbol stream, boolean outputAsArray) {
+        return getStreamInputs(stream, outputAsArray).keySet();
     }
 
-    // used for unroll
-    public List<String> getStreamInputNames(SerialCompositeElementSymbol stream, SerialCompositeElementSymbol currentStream) {
-        List<String> inputNames = new LinkedList<>(getStreamInputNames(stream));
-        Map<String, String> pairs = getUnrollPairs(stream, currentStream);
+    public List<String> getUnrollInputNames(UnrollInstructionSymbol unroll, String variable) {
+        List<String> inputNames = new LinkedList<>(getStreamInputNames(unroll.getBody(), true));
+        Map<String, String> pairs = getUnrollPairs(unroll.getBody(), unroll.getResolvedBodies().get(0), variable);
 
         for (int i = 0; i != inputNames.size(); ++i) {
             if (pairs.containsKey(inputNames.get(i))) {
@@ -128,28 +131,60 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     }
 
     public Collection<List<String>> getStreamInputDimensions(SerialCompositeElementSymbol stream) {
-        return getStreamInputs(stream).values();
+        return getStreamInputs(stream, false).values();
     }
 
-    public Set<String> getStreamOutputNames(SerialCompositeElementSymbol stream) {
+    public String getOutputName() {
+        return getNameWithoutIndex(getName(getArchitectureOutputSymbols().get(0)));
+    }
+
+    public String getNameAsArray(String name) {
+        return name.replaceAll("([0-9]+)_$", "[$1]");
+    }
+
+    public String getNameWithoutIndex(String name) {
+        return name.replaceAll("([0-9]+)_$", "").replaceAll("\\[[^\\]]+\\]$", "");
+    }
+
+    public String getIndex(String name, boolean defaultToZero) {
+        Pattern pattern = Pattern.compile("\\[([^\\]]+)\\]$");
+        Matcher matcher = pattern.matcher(name);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        return defaultToZero ? "0" : "";
+    }
+
+    public Set<String> getStreamOutputNames(SerialCompositeElementSymbol stream, boolean asArray) {
         Set<String> outputNames = new LinkedHashSet<>();
 
         for (ArchitectureElementSymbol element : stream.getLastAtomicElements()) {
             if (element.isOutput()) {
-                outputNames.add(getName(element));
+                String name = getName(element);
+
+                if (asArray && element instanceof VariableSymbol) {
+                    VariableSymbol variable = (VariableSymbol) element;
+
+                    if (variable.getType() == VariableSymbol.Type.IO) {
+                        name = getNameAsArray(name);
+                    }
+                }
+
+                outputNames.add(name);
             }
         }
 
-        outputNames.addAll(getStreamLayerVariableMembers(stream, true, false).keySet());
+        outputNames.addAll(getStreamLayerVariableMembers(stream, true).keySet());
 
 
         return outputNames;
     }
 
-    // used for unroll
-    public List<String> getStreamOutputNames(SerialCompositeElementSymbol stream, SerialCompositeElementSymbol currentStream) {
-        List<String> outputNames = new LinkedList<>(getStreamOutputNames(stream));
-        Map<String, String> pairs = getUnrollPairs(stream, currentStream);
+    public List<String> getUnrollOutputNames(UnrollInstructionSymbol unroll, String variable) {
+        List<String> outputNames = new LinkedList<>(getStreamOutputNames(unroll.getBody(), true));
+        Map<String, String> pairs = getUnrollPairs(unroll.getBody(), unroll.getResolvedBodies().get(0), variable);
 
         for (int i = 0; i != outputNames.size(); ++i) {
             if (pairs.containsKey(outputNames.get(i))) {
@@ -160,12 +195,25 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         return outputNames;
     }
 
+    public boolean endsWithArgmax(SerialCompositeElementSymbol stream) {
+        List<ArchitectureElementSymbol> elements = stream.getElements();
+
+        if (elements.size() > 1) {
+            // Check second last element because last element is output
+            ArchitectureElementSymbol secondLastElement = elements.get(elements.size() - 2);
+
+            return secondLastElement.getName().equals(AllPredefinedLayers.ARG_MAX_NAME);
+        }
+
+        return false;
+    }
+
     // Used to initialize all layer variable members which are passed through the networks
-    public  Map<String, List<String>> getLayerVariableMembers(boolean generateStateInitializers) {
+    public  Map<String, List<String>> getLayerVariableMembers() {
         Map<String, List<String>> members = new LinkedHashMap<>();
 
-        for (SerialCompositeElementSymbol stream : getArchitecture().getStreams()) {
-            members.putAll(getStreamLayerVariableMembers(stream, true, generateStateInitializers));
+        for (NetworkInstructionSymbol networkInstruction : getArchitecture().getNetworkInstructions()) {
+            members.putAll(getStreamLayerVariableMembers(networkInstruction.getBody(), true));
         }
 
         return members;
@@ -173,7 +221,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
 
     // Calculate differently named VariableSymbol elements in two streams, currently used for the UnrollInstructionSymbol
     // body which is resolved with t = CONST_OFFSET and the current body of the actual timestep t
-    public Map<String, String> getUnrollPairs(ArchitectureElementSymbol element, ArchitectureElementSymbol current) {
+    public Map<String, String> getUnrollPairs(ArchitectureElementSymbol element, ArchitectureElementSymbol current, String variable) {
         Map<String, String> pairs = new HashMap<>();
 
         if (element instanceof CompositeElementSymbol && current instanceof CompositeElementSymbol) {
@@ -185,13 +233,24 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                     String name = getName(elements.get(i));
                     String currentName = getName(currentElements.get(i));
 
+                    if (elements.get(i).isOutput()) {
+                        name = getNameAsArray(name);
+                    }
+
+                    if (currentElements.get(i).isOutput()) {
+                        currentName = getNameAsArray(currentName);
+                    }
+
                     if (elements.get(i) instanceof VariableSymbol && currentElements.get(i) instanceof VariableSymbol) {
                         if (name != null && currentName != null && !name.equals(currentName)) {
+                            String newIndex = variable + "-1+" + getIndex(currentName, true);
+                            currentName = currentName.replaceAll("\\[([0-9]+)\\]$", "[" + newIndex + "]");
+
                             pairs.put(name, currentName);
                         }
                     }
 
-                    pairs.putAll(getUnrollPairs(elements.get(i), currentElements.get(i)));
+                    pairs.putAll(getUnrollPairs(elements.get(i), currentElements.get(i), variable));
                 }
             }
         }
@@ -199,7 +258,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         return pairs;
     }
 
-    private Map<String, List<String>> getStreamInputs(SerialCompositeElementSymbol stream) {
+    private Map<String, List<String>> getStreamInputs(SerialCompositeElementSymbol stream, boolean outputAsArray) {
         Map<String, List<String>> inputs = new LinkedHashMap<>();
 
         for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
@@ -211,19 +270,29 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                     dimensions.add(intDimension.toString());
                 }
 
-                inputs.put(getName(element), dimensions);
+                String name = getName(element);
+
+                if (outputAsArray && element.isOutput() && element instanceof VariableSymbol) {
+                    VariableSymbol variable = (VariableSymbol) element;
+
+                    if (variable.getType() == VariableSymbol.Type.IO) {
+                        name = getNameAsArray(name);
+                    }
+                }
+
+                inputs.put(name, dimensions);
             }
             else if (element instanceof ConstantSymbol) {
                 inputs.put(getName(element), Arrays.asList("1"));
             }
         }
 
-        inputs.putAll(getStreamLayerVariableMembers(stream, false, false));
+        inputs.putAll(getStreamLayerVariableMembers(stream, false));
 
         return inputs;
     }
 
-    private Map<String, List<String>> getStreamLayerVariableMembers(SerialCompositeElementSymbol stream, boolean includeOutput, boolean generateStateInitializaters) {
+    private Map<String, List<String>> getStreamLayerVariableMembers(SerialCompositeElementSymbol stream, boolean includeOutput) {
         Map<String, List<String>> members = new LinkedHashMap<>();
 
         List<ArchitectureElementSymbol> elements = stream.getSpannedScope().resolveLocally(ArchitectureElementSymbol.KIND);
@@ -231,7 +300,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             if (element instanceof VariableSymbol) {
                 VariableSymbol variable = (VariableSymbol) element;
 
-                if (variable.getType() == VariableSymbol.Type.LAYER && (variable.getMember() == VariableSymbol.Member.NONE || generateStateInitializaters)) {
+                if (variable.getType() == VariableSymbol.Type.LAYER && (variable.getMember() == VariableSymbol.Member.NONE)) {
                     LayerVariableDeclarationSymbol layerVariableDeclaration = variable.getLayerVariableDeclaration();
 
                     if (layerVariableDeclaration.getLayer().getDeclaration().isPredefined()) {
@@ -303,16 +372,27 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         return dimensions;
     }
 
+    public boolean hasUnrollInstructions() {
+        for (NetworkInstructionSymbol networkInstruction : getArchitecture().getNetworkInstructions()) {
+            if (networkInstruction.isUnroll()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public boolean isAttentionNetwork(){
         return AllAttentionModels.getAttentionModels().contains(getComponentName());
     }
 
-    public int getBeamSearchWidth(UnrollInstructionSymbol unroll){
-        return unroll.getIntValue(AllPredefinedLayers.WIDTH_NAME).get();
+    public int getBeamSearchMaxLength(UnrollInstructionSymbol unroll){
+        return unroll.getIntValue(AllPredefinedLayers.MAX_LENGTH_NAME).get();
     }
 
-    public int getBeamSearchLength(UnrollInstructionSymbol unroll){
-        return unroll.getIntValue(AllPredefinedLayers.MAX_LENGTH_NAME).get();
+    public int getBeamSearchWidth(UnrollInstructionSymbol unroll){
+        // Beam search with width 1 is greedy search
+        return unroll.getIntValue(AllPredefinedLayers.WIDTH_NAME).orElse(1);
     }
 
 }

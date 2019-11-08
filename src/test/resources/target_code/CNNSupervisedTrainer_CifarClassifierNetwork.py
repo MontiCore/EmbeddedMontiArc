@@ -171,39 +171,6 @@ class BLEU(mx.metric.EvalMetric):
 
 
 class CNNSupervisedTrainer_CifarClassifierNetwork:
-    def applyBeamSearch(input, length, width, maxLength, currProb, netIndex, bestOutput):
-        bestProb = 0.0
-        while length < maxLength:
-            length += 1
-            batchIndex = 0
-            for batchEntry in input:
-                top_k_indices = mx.nd.topk(batchEntry, axis=0, k=width)
-                top_k_values = mx.nd.topk(batchEntry, ret_typ='value', axis=0, k=width)
-                for index in range(top_k_indices.size):
-
-                    #print mx.nd.array(top_k_indices[index])
-                    #print top_k_values[index]
-                    if length == 1:
-                        #print mx.nd.array(top_k_indices[index])
-                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), length, width, maxLength,
-                            currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k_indices[index])))
-                    else:
-                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), length, width, maxLength,
-                            currProb * top_k_values[index], netIndex, bestOutput)
-
-                    if length == maxLength:
-                        #print currProb
-                        if currProb > bestProb:
-                            bestProb = currProb
-                            bestOutput[batchIndex] = result[batchIndex]
-                            #print "new bestOutput: ", bestOutput
-
-                batchIndex += 1
-        #print bestOutput
-        #print bestProb
-        return bestOutput
-
-
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -244,8 +211,10 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
+        train_batch_size = batch_size
+        test_batch_size = batch_size
 
-        train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
+        train_iter, train_test_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(train_batch_size, test_batch_size)
 
         if normalize:
             self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
@@ -310,17 +279,19 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
-                data_ = batch.data[0].as_in_context(mx_context)
-                softmax_label = batch.label[0].as_in_context(mx_context)
-
-                outputs=[]
-
                 with autograd.record():
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+
+                    data_ = batch.data[0].as_in_context(mx_context)
+
+                    softmax_ = mx.nd.zeros((train_batch_size, 10,), ctx=mx_context)
+
 
                     lossList = []
+
                     softmax_ = self._networks[0](data_)
-                    lossList.append(loss_function(softmax_, softmax_label))
+
+                    lossList.append(loss_function(softmax_, labels[0]))
 
                     loss = 0
                     for element in lossList:
@@ -346,22 +317,21 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
 
             tic = None
 
-            train_iter.reset()
+            train_test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
-            for batch_i, batch in enumerate(train_iter):
-                data_ = batch.data[0].as_in_context(mx_context)
+            for batch_i, batch in enumerate(train_test_iter):
+                if True:
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
 
-                labels = [
-                    batch.label[0].as_in_context(mx_context)
-                ]
+                    data_ = batch.data[0].as_in_context(mx_context)
 
-                outputs=[]
+                    softmax_ = mx.nd.zeros((test_batch_size, 10,), ctx=mx_context)
 
-                if True: 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
 
+                    outputs = []
                     attentionList=[]
                     softmax_ = self._networks[0](data_)
+
                     outputs.append(softmax_)
 
 
@@ -384,7 +354,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                             attention_resized = np.resize(attention.asnumpy(), (8, 8))
                             ax = fig.add_subplot(max_length//3, max_length//4, l+1)
                             ax.set_title(dict[int(labels[l+1][0].asscalar())])
-                            img = ax.imshow(train_images[0+batch_size*(batch_i)])
+                            img = ax.imshow(train_images[0+test_batch_size*(batch_i)])
                             ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
 
 
@@ -399,7 +369,6 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 for output_name in outputs:
                     if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
-                    #ArgMax already applied
                     else:
                         predictions.append(output_name)
 
@@ -409,19 +378,18 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                data_ = batch.data[0].as_in_context(mx_context)
+                if True:
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
 
-                labels = [
-                    batch.label[0].as_in_context(mx_context)
-                ]
+                    data_ = batch.data[0].as_in_context(mx_context)
 
-                outputs=[]
+                    softmax_ = mx.nd.zeros((test_batch_size, 10,), ctx=mx_context)
 
-                if True: 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
 
+                    outputs = []
                     attentionList=[]
                     softmax_ = self._networks[0](data_)
+
                     outputs.append(softmax_)
 
 
@@ -438,7 +406,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                             attention_resized = np.resize(attention.asnumpy(), (8, 8))
                             ax = fig.add_subplot(max_length//3, max_length//4, l+1)
                             ax.set_title(dict[int(mx.nd.slice_axis(mx.nd.argmax(outputs[l+1], axis=1), axis=0, begin=0, end=1).asscalar())])
-                            img = ax.imshow(test_images[0+batch_size*(batch_i)])
+                            img = ax.imshow(test_images[0+test_batch_size*(batch_i)])
                             ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
 
 

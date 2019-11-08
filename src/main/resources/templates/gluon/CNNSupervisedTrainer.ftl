@@ -172,39 +172,6 @@ class BLEU(mx.metric.EvalMetric):
 
 
 class ${tc.fileNameWithoutEnding}:
-    def applyBeamSearch(input, length, width, maxLength, currProb, netIndex, bestOutput):
-        bestProb = 0.0
-        while length < maxLength:
-            length += 1
-            batchIndex = 0
-            for batchEntry in input:
-                top_k_indices = mx.nd.topk(batchEntry, axis=0, k=width)
-                top_k_values = mx.nd.topk(batchEntry, ret_typ='value', axis=0, k=width)
-                for index in range(top_k_indices.size):
-
-                    #print mx.nd.array(top_k_indices[index])
-                    #print top_k_values[index]
-                    if length == 1:
-                        #print mx.nd.array(top_k_indices[index])
-                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), length, width, maxLength,
-                            currProb * top_k_values[index], netIndex, self._networks[netIndex](mx.nd.array(top_k_indices[index])))
-                    else:
-                        result = applyBeamSearch(self._networks[netIndex](mx.nd.array(top_k_indices[index])), length, width, maxLength,
-                            currProb * top_k_values[index], netIndex, bestOutput)
-
-                    if length == maxLength:
-                        #print currProb
-                        if currProb > bestProb:
-                            bestProb = currProb
-                            bestOutput[batchIndex] = result[batchIndex]
-                            #print "new bestOutput: ", bestOutput
-
-                batchIndex += 1
-        #print bestOutput
-        #print bestProb
-        return bestOutput
-
-
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -245,8 +212,10 @@ class ${tc.fileNameWithoutEnding}:
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
+        train_batch_size = batch_size
+        test_batch_size = ${tc.hasUnrollInstructions()?then('1', 'batch_size')}
 
-        train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
+        train_iter, train_test_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(train_batch_size, test_batch_size)
 
         if normalize:
             self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
@@ -311,19 +280,8 @@ class ${tc.fileNameWithoutEnding}:
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[0].as_in_context(mx_context)
-                </#list>
-                <#list tc.architectureOutputs as output_name>
-                <#if output_name != 'attention_'>
-                ${output_name}label = batch.label[${output_name?index}].as_in_context(mx_context)
-                </#if>
-                </#list>
-
-                outputs=[]
-
                 with autograd.record():
-<#include "pythonExecuteWithLoss.ftl">
+<#include "pythonExecuteTrain.ftl">
 
                     loss = 0
                     for element in lossList:
@@ -349,26 +307,11 @@ class ${tc.fileNameWithoutEnding}:
 
             tic = None
 
-            train_iter.reset()
+            train_test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
-            for batch_i, batch in enumerate(train_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[0].as_in_context(mx_context)
-                </#list>
-
-                labels = [
-<#list tc.architectureOutputs as output_name>
-<#if output_name != 'attention_'>
-                    batch.label[${output_name?index}].as_in_context(mx_context)<#sep>,
-</#if>
-</#list>
-
-                ]
-
-                outputs=[]
-
+            for batch_i, batch in enumerate(train_test_iter):
                 if True: <#-- Fix indentation -->
-<#include "pythonExecute.ftl">
+<#include "pythonExecuteTest.ftl">
 
 
 <#include "saveAttentionImageTrain.ftl">
@@ -378,7 +321,6 @@ class ${tc.fileNameWithoutEnding}:
                 for output_name in outputs:
                     if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
-                    #ArgMax already applied
                     else:
                         predictions.append(output_name)
 
@@ -388,23 +330,8 @@ class ${tc.fileNameWithoutEnding}:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[0].as_in_context(mx_context)
-                </#list>
-
-                labels = [
-<#list tc.architectureOutputs as output_name>
-<#if output_name != 'attention_'>
-                    batch.label[${output_name?index}].as_in_context(mx_context)<#sep>,
-</#if>
-</#list>
-
-                ]
-
-                outputs=[]
-
                 if True: <#-- Fix indentation -->
-<#include "pythonExecute.ftl">
+<#include "pythonExecuteTest.ftl">
 
 
 <#include "saveAttentionImageTest.ftl">

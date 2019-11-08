@@ -4,9 +4,7 @@ import logging
 import os
 
 <#list tc.architecture.networkInstructions as networkInstruction>
-<#if networkInstruction.body.isTrainable()>
 from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
-</#if>
 </#list>
 
 class ${tc.fileNameWithoutEnding}:
@@ -54,12 +52,10 @@ class ${tc.fileNameWithoutEnding}:
 
     def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
-<#if networkInstruction.body.isTrainable()>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std)
         self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, ctx=context)
         self.networks[${networkInstruction?index}].hybridize()
         self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#sep>, </#list>)
-</#if>
 </#list>
 
         if not os.path.exists(self._model_dir_):
