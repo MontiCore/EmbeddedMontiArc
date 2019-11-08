@@ -64,7 +64,6 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("valid_tests", "SimpleNetworkTanh");
         checkValid("valid_tests", "ResNeXt50_alt");
         checkValid("valid_tests", "Alexnet_alt2");
-        checkValid("valid_tests", "MultipleOutputs");
         checkValid("valid_tests", "MultipleStreams");
         checkValid("valid_tests", "RNNencdec");
         checkValid("valid_tests", "RNNsearch");
@@ -307,4 +306,21 @@ public class AllCoCoTest extends AbstractCoCoTest {
                 new ExpectedErrorInfo(2, ErrorCodes.MISSING_MERGE));
     }
 
+    @Test
+    public void testOutputWrittenToMultipleTimes() {
+        checkInvalid(new CNNArchCoCoChecker(),
+                new CNNArchSymbolCoCoChecker(),
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckIOAccessAndIOMissing()),
+                "invalid_tests", "OutputWrittenToMultipleTimes",
+                new ExpectedErrorInfo(1, ErrorCodes.OUTPUT_WRITTEN_TO_MULTIPLE_TIMES));
+    }
+
+    @Test
+    public void testUnrollInputsTooMany() {
+        checkInvalid(new CNNArchCoCoChecker(),
+                new CNNArchSymbolCoCoChecker(),
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckUnrollInputsOutputsTooMany()),
+                "invalid_tests", "UnrollInputsTooMany",
+                new ExpectedErrorInfo(1, ErrorCodes.UNROLL_INPUTS_TOO_MANY));
+    }
 }

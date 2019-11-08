@@ -49,5 +49,8 @@ public class ErrorCodes {
     public static final String ILLEGAL_LAYER_USE = "x04845";
     public static final String UNUSED_LAYER = "x04847";
     public static final String INVALID_CONSTANT = "x04856";
+    public static final String OUTPUT_WRITTEN_TO_MULTIPLE_TIMES = "x04836";
+    public static final String UNROLL_INPUTS_TOO_MANY = "x02384";
+    public static final String UNROLL_OUTPUTS_TOO_MANY = "x02385";
 
 }

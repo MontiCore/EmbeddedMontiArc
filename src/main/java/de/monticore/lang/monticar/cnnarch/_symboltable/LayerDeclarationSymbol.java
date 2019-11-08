@@ -79,10 +79,6 @@ public class LayerDeclarationSymbol extends CommonScopeSpanningSymbol {
         return body;
     }
 
-    public boolean isTrainable() {
-        return body.isTrainable();
-    }
-
     protected void setBody(SerialCompositeElementSymbol body) {
         this.body = body;
     }
