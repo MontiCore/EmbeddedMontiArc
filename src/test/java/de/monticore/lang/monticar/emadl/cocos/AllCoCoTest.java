@@ -45,7 +45,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("models", "ResNet34");
         checkValid("models", "ResNet152");
         checkValid("models", "ResNeXt50");
-        checkValid("models", "RNNencdec");
+        checkValid("models", "RNNsearch");
 
         checkValid("models", "simulator.MainController");
 
