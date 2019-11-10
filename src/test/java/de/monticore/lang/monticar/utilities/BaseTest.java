@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.utilities;
 
 
 import de.monitcore.lang.monticar.utilities.*;
+import de.monticore.lang.monticar.emadl.generator.Backend;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -49,6 +50,7 @@ public class BaseTest {
         stmb.setForceRun(false);
 
         stmb.setShowDateAndTime(true);
+        stmb.setBackend(Backend.GLUON);
     }
 
     //</editor-fold>

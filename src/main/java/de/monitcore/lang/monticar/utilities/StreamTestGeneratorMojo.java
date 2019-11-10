@@ -8,6 +8,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
 import de.monticore.lang.monticar.enumlang._ast.ASTEnumLangCompilationUnit;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumDeclarationSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
@@ -64,15 +65,14 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
         if(femadl.exists()){
             femadl.delete();
         }
-
         if(!checkCocosOfInputFiles()){
             throw new MojoExecutionException("Some files are invalid");
         }
 
         try{
-            File temadl = Paths.get(this.getPathTmpOutEMADL()).toFile();
-            FileUtils.copyDirectory(Paths.get(this.pathMain).toFile(), temadl);
-            FileUtils.copyDirectory(Paths.get(this.pathTest).toFile(), temadl);
+            File temam = Paths.get(this.getPathTmpOutEMAM()).toFile();
+            FileUtils.copyDirectory(Paths.get(this.pathMain).toFile(), temam);
+            FileUtils.copyDirectory(Paths.get(this.pathTest).toFile(), temam);
         } catch (IOException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Could not copy files: "+e.getMessage() );
@@ -88,11 +88,11 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
         //Create hash of files
         String mainHash = SearchFiles.hashDirFiles(this.getPathMain());
         String testHash = SearchFiles.hashDirFiles(this.getPathTest());
-        String emadlHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMADL());
+        String emamHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMAM());
         try {
             FileUtils.write(hashFileMain(), mainHash, false);
             FileUtils.write(hashFileTest(), testHash, false);
-            FileUtils.write(hashEmamFile(), emadlHash, false);
+            FileUtils.write(hashEmamFile(), emamHash, false);
         } catch (IOException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Failed to create hash files for "+MojoName());
@@ -103,8 +103,8 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
     protected boolean checkForExecution() throws MojoExecutionException {
         File hmain = hashFileMain();
         File htest = hashFileTest();
-        File hemadl = hashEmadlFile();
-        if(!hmain.exists() || !htest.exists() || !hemadl.exists() ){
+        File hemam = hashEmamFile();
+        if(!hmain.exists() || !htest.exists() || !hemam.exists() ){
             logInfo("Execution necessary: Hashfiles not found.");
             return true;
         }
@@ -113,24 +113,24 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
         String newMainHash = SearchFiles.hashDirFiles(this.getPathMain());
         String newTestHash = SearchFiles.hashDirFiles(this.getPathTest());
-        String newEmadlHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMADL());
+        String newEmamHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMAM());
 
         try {
             oldMainHash = FileUtils.readFileToString(hmain);
             oldTestHash = FileUtils.readFileToString(htest);
-            oldEmamHash = FileUtils.readFileToString(hemadl);
+            oldEmamHash = FileUtils.readFileToString(hemam);
         } catch (IOException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Can't read old hash files");
         }
 
         if(newMainHash.equalsIgnoreCase(oldMainHash) && newTestHash.equalsIgnoreCase(oldTestHash) &&
-                newEmadlHash.equalsIgnoreCase(oldEmamHash) ){
+                newEmamHash.equalsIgnoreCase(oldEmamHash) ){
             logInfo("Execution of "+this.MojoName().toUpperCase()+" not necessary. No input files changed.");
             return false;
         }
 
-        logInfo("Execution necessary: One or more input files changed.");
+        logInfo("Execution necessary: One or more input files chaned.");
         return true;
     }
 
@@ -147,12 +147,13 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
         Scope scope = getScope();
 
         logInfo("Cocos Check:");
-        List<File> ff = SearchFiles.searchFiles(this.pathMain, "emam", "struct", "enum");
-        Map<String, File> files = SearchFiles.searchFilesMap(this.pathMain, "emam", "struct", "enum", "emadl");
-        files.putAll(SearchFiles.searchFilesMap(this.pathTest, "emam", "stream", "emadl"));
+
+        List<File> ff = SearchFiles.searchFiles(this.pathMain, "emam", "struct", "enum","emadl");
+        Map<String, File> files = SearchFiles.searchFilesMap(this.pathMain, "emam", "struct", "enum","emadl");
+        files.putAll(SearchFiles.searchFilesMap(this.pathTest, "emam", "stream","emadl"));
 
         for (Map.Entry<String,File> f:files.entrySet()) {
-            String ending = f.getKey().substring(f.getKey().lastIndexOf(".") + 1);//Get the file type
+            String ending = f.getKey().substring(f.getKey().lastIndexOf(".") + 1);
             if (!parser.keySet().contains(ending)) {
                 throw new MojoExecutionException("No parser for ." + ending + " files");
                 //errors.add(f.getKey()+" (error: no parser for file)");
@@ -167,7 +168,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                 }else {
                     boolean resolved = false;
                     String modelName;
-                    if(ending.equalsIgnoreCase("emam")) {
+                    if(ending.equalsIgnoreCase("emam")||ending.equalsIgnoreCase("emadl")) {
                         ASTEMACompilationUnit ast = (ASTEMACompilationUnit) node.get();
 
                         modelName = modelNameCalculator(f.getValue(),"emam", ast.getPackageList());
@@ -189,12 +190,6 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                         modelName = modelNameCalculator(f.getValue(), "enum", ast.getPackageList());
                         Optional<EnumDeclarationSymbol> enumSym = scope.resolve(modelName, EnumDeclarationSymbol.KIND);
                         resolved = enumSym.isPresent();
-                    }else if(ending.equalsIgnoreCase("emadl")) {
-                        ASTEMACompilationUnit ast = (ASTEMACompilationUnit) node.get();
-
-                        modelName = modelNameCalculator(f.getValue(),"emadl", ast.getPackageList());
-                        Optional<EMAComponentSymbol> comp = scope.<EMAComponentSymbol>resolve(modelName, EMAComponentSymbol.KIND);
-                        resolved = comp.isPresent();
                     }else{
                         //TODO:
                         logWarn("   -> No resolving for "+ending+" implemented at the moment.");
@@ -219,14 +214,14 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
     }
 
     protected void generateCPP(List<EMAComponentSymbol> toTest){
-        Scope scope = getScope();
-        TaggingResolver tagging = this.getTaggingResolver();
 
         logInfo("Generate CPP:");
         for (EMAComponentSymbol cs :toTest) {
             String name = cs.getPackageName() + "." + cs.getName().substring(0,1).toLowerCase()+cs.getName().substring(1);
             logInfo(" - "+cs.getFullName()+" = "+name);
 
+            Scope scope = getScope();
+            TaggingResolver tagging = this.getTaggingResolver();
             Optional<EMAComponentInstanceSymbol> ecis = scope.<EMAComponentInstanceSymbol>resolve(name, EMAComponentInstanceSymbol.KIND);
 
             if(!ecis.isPresent()){
@@ -234,8 +229,9 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                 continue;
             }
 
-            GeneratorCPP generatorCPP;
-            generatorCPP = new GeneratorCPP();
+            EMADLGenerator emadlGenerator = new EMADLGenerator(this.backend);
+            GeneratorCPP generatorCPP = emadlGenerator.getEmamGen();
+            //GeneratorCPP generatorCPP = new GeneratorCPP();
             generatorCPP.setModelsDirPath(Paths.get(this.getPathTmpOutEMAM()));
 
             generatorCPP.useArmadilloBackend();
@@ -263,7 +259,8 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             }catch (IOException ioex){
                 logError("   -> IOException generating cpp files for "+cs.getFullName());
             }
-
+            // Needed, as the C++ generator modifies the Symbol Table in destructive ways
+            resetTaggingResolver();
         }
     }
 
@@ -283,8 +280,9 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
     }
 
     protected File hashEmadlFile(){
-        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Emadl.txt").toFile();
+        return Paths.get(this.pathTmpOut,mojoDirectory,this.MojoName(),"Emadl.txt").toFile();
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Utilities">

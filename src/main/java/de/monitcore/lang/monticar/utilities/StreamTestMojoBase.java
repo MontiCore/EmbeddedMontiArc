@@ -13,6 +13,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedM
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
+import de.monticore.lang.monticar.emadl.generator.Backend;
 import de.monticore.lang.monticar.enumlang._parser.EnumLangParser;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
@@ -104,6 +105,11 @@ public class StreamTestMojoBase extends AbstractMojo {
     public void setGenerator(GeneratorEnum generator) {
         this.generator = generator;
     }
+
+    @Parameter(defaultValue = "GLUON")
+    protected Backend backend;
+    public Backend getBackend(){ return backend;}
+    public void setBackend(Backend backend){ this.backend = backend;}
 
     @Parameter(defaultValue = "false")
     protected boolean combinebuilds;
@@ -218,6 +224,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.pathTmpOut = pathTmpOut;
         stmb.wrapperTestExtension = wrapperTestExtension;
         stmb.generator = generator;
+        stmb.backend = backend;
         stmb.combinebuilds = combinebuilds;
         stmb.showBuildAndRunOutput = showBuildAndRunOutput;
         stmb.forceRun = forceRun;
