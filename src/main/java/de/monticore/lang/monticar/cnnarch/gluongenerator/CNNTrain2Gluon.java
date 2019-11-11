@@ -192,7 +192,14 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
 
             // Generate Reward function if necessary
             if (configuration.getRlRewardFunction().isPresent()) {
-                generateRewardFunction(configuration.getRlRewardFunction().get(), Paths.get(rootProjectModelsDir));
+                if (configuration.getTrainedArchitecture().isPresent()) {
+                    generateRewardFunction(configuration.getTrainedArchitecture().get(),
+                            configuration.getRlRewardFunction().get(), Paths.get(rootProjectModelsDir));
+                } else {
+                    Log.error("No architecture model for the trained neural network but is required for " +
+                     "reinforcement learning configuration.");
+                }
+
             }
 
             ftlContext.put("trainerName", trainerName);
@@ -208,7 +215,8 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         return fileContentMap;
     }
 
-    private void generateRewardFunction(RewardFunctionSymbol rewardFunctionSymbol, Path modelsDirPath) {
+    private void generateRewardFunction(NNArchitectureSymbol trainedArchitecture,
+        RewardFunctionSymbol rewardFunctionSymbol, Path modelsDirPath) {
         GeneratorPythonWrapperStandaloneApi pythonWrapperApi = new GeneratorPythonWrapperStandaloneApi();
 
         List<String> fullNameOfComponent = rewardFunctionSymbol.getRewardFunctionComponentName();
@@ -241,7 +249,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             componentPortInformation = pythonWrapperApi.generate(emaSymbol, pythonWrapperOutputPath);
         }
         RewardFunctionParameterAdapter functionParameter = new RewardFunctionParameterAdapter(componentPortInformation);
-        new FunctionParameterChecker().check(functionParameter);
+        new FunctionParameterChecker().check(functionParameter, trainedArchitecture);
         rewardFunctionSymbol.setRewardFunctionParameter(functionParameter);
     }
 

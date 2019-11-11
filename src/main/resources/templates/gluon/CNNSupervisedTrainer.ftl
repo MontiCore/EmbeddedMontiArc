@@ -5,6 +5,9 @@ import numpy as np
 import time
 import os
 import shutil
+import pickle
+import math
+import sys
 from mxnet import gluon, autograd, nd
 
 class CrossEntropyLoss(gluon.loss.Loss):
@@ -32,6 +35,142 @@ class LogCoshLoss(gluon.loss.Loss):
         loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
         return F.mean(loss, axis=self._batch_axis, exclude=True)
 
+class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
+    def __init__(self, axis=-1, ignore_indices=[], sparse_label=True, from_logits=False, weight=None, batch_axis=0, **kwargs):
+        super(SoftmaxCrossEntropyLossIgnoreIndices, self).__init__(weight, batch_axis, **kwargs)
+        self._axis = axis
+        self._ignore_indices = ignore_indices
+        self._sparse_label = sparse_label
+        self._from_logits = from_logits
+
+    def hybrid_forward(self, F, pred, label, sample_weight=None):
+        log_softmax = F.log_softmax
+        pick = F.pick
+        if not self._from_logits:
+            pred = log_softmax(pred, self._axis)
+        if self._sparse_label:
+            loss = -pick(pred, label, axis=self._axis, keepdims=True)
+        else:
+            label = _reshape_like(F, label, pred)
+            loss = -(pred * label).sum(axis=self._axis, keepdims=True)
+        #loss = _apply_weighting(F, loss, self._weight, sample_weight)
+        # ignore some indices for loss, e.g. <pad> tokens in NLP applications
+        for i in self._ignore_indices:
+            loss = loss * mx.nd.logical_not(mx.nd.equal(mx.nd.argmax(pred, axis=1), mx.nd.ones_like(mx.nd.argmax(pred, axis=1))*i))
+        return loss.mean(axis=self._batch_axis, exclude=True)
+
+@mx.metric.register
+class BLEU(mx.metric.EvalMetric):
+    N = 4
+
+    def __init__(self, exclude=None, name='bleu', output_names=None, label_names=None):
+        super(BLEU, self).__init__(name=name, output_names=output_names, label_names=label_names)
+
+        self._exclude = exclude or []
+
+        self._match_counts = [0 for _ in range(self.N)]
+        self._counts = [0 for _ in range(self.N)]
+
+        self._size_ref = 0
+        self._size_hyp = 0
+
+    def update(self, labels, preds):
+        labels, preds = mx.metric.check_label_shapes(labels, preds, True)
+
+        new_labels = self._convert(labels)
+        new_preds = self._convert(preds)
+
+        for label, pred in zip(new_labels, new_preds):
+            reference = [word for word in label if word not in self._exclude]
+            hypothesis = [word for word in pred if word not in self._exclude]
+
+            self._size_ref += len(reference)
+            self._size_hyp += len(hypothesis)
+
+            for n in range(self.N):
+                reference_ngrams = self._get_ngrams(reference, n + 1)
+                hypothesis_ngrams = self._get_ngrams(hypothesis, n + 1)
+
+                match_count = 0
+
+                for ngram in hypothesis_ngrams:
+                    if ngram in reference_ngrams:
+                        reference_ngrams.remove(ngram)
+
+                        match_count += 1
+
+                self._match_counts[n] += match_count
+                self._counts[n] += len(hypothesis_ngrams)
+
+    def get(self):
+        precisions = [sys.float_info.min for n in range(self.N)]
+
+        i = 1
+
+        for n in range(self.N):
+            match_counts = self._match_counts[n]
+            counts = self._counts[n]
+
+            if counts != 0:
+                if match_counts == 0:
+                    i *= 2
+                    match_counts = 1 / i
+
+                precisions[n] = match_counts / counts
+
+        bleu = self._get_brevity_penalty() * math.exp(sum(map(math.log, precisions)) / self.N)
+
+        return (self.name, bleu)
+
+    def calculate(self):
+        precisions = [sys.float_info.min for n in range(self.N)]
+
+        i = 1
+
+        for n in range(self.N):
+            match_counts = self._match_counts[n]
+            counts = self._counts[n]
+
+            if counts != 0:
+                if match_counts == 0:
+                    i *= 2
+                    match_counts = 1 / i
+
+                precisions[n] = match_counts / counts
+
+        return self._get_brevity_penalty() * math.exp(sum(map(math.log, precisions)) / self.N)
+
+    def _get_brevity_penalty(self):
+        if self._size_hyp >= self._size_ref:
+            return 1
+        else:
+            return math.exp(1 - (self._size_ref / self._size_hyp))
+
+    @staticmethod
+    def _get_ngrams(sentence, n):
+        ngrams = []
+
+        if len(sentence) >= n:
+            for i in range(len(sentence) - n + 1):
+                ngrams.append(sentence[i:i+n])
+
+        return ngrams
+
+    @staticmethod
+    def _convert(nd_list):
+        if len(nd_list) == 0:
+            return []
+
+        new_list = [[] for _ in range(nd_list[0].shape[0])]
+
+        for element in nd_list:
+            for i in range(element.shape[0]):
+                new_list[i].append(element[i].asscalar())
+
+        return new_list
+
+
+
 class ${tc.fileNameWithoutEnding}:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
@@ -41,6 +180,7 @@ class ${tc.fileNameWithoutEnding}:
     def train(self, batch_size=64,
               num_epoch=10,
               eval_metric='acc',
+              eval_metric_params={},
               loss ='softmax_cross_entropy',
               loss_params={},
               optimizer='adam',
@@ -48,6 +188,7 @@ class ${tc.fileNameWithoutEnding}:
               load_checkpoint=True,
               context='gpu',
               checkpoint_period=5,
+              save_attention_image=False,
               normalize=True):
         if context == 'gpu':
             mx_context = mx.gpu()
@@ -71,8 +212,10 @@ class ${tc.fileNameWithoutEnding}:
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
+        train_batch_size = batch_size
+        test_batch_size = ${tc.hasUnrollInstructions()?then('1', 'batch_size')}
 
-        train_iter, test_iter, data_mean, data_std = self._data_loader.load_data(batch_size)
+        train_iter, train_test_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(train_batch_size, test_batch_size)
 
         if normalize:
             self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
@@ -94,13 +237,17 @@ class ${tc.fileNameWithoutEnding}:
             if not os.path.isdir(self._net_creator._model_dir_):
                 raise
 
-        trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values()]
+        trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
 
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
+        #if loss == 'softmax_cross_entropy':
+        #    fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
+        #    loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)
         if loss == 'softmax_cross_entropy':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
-            loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)
+            ignore_indices = [2]
+            loss_function = SoftmaxCrossEntropyLossIgnoreIndices(ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel)
         elif loss == 'sigmoid_binary_cross_entropy':
             loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
         elif loss == 'cross_entropy':
@@ -133,21 +280,12 @@ class ${tc.fileNameWithoutEnding}:
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
-                </#list>
-                <#list tc.architectureOutputs as output_name>
-                ${output_name}label = batch.label[${output_name?index}].as_in_context(mx_context)
-                </#list>
-
                 with autograd.record():
-<#include "pythonExecute.ftl">
+<#include "pythonExecuteTrain.ftl">
 
-                    loss = \
-<#list tc.architectureOutputs as output_name>
-                        loss_function(${output_name}, ${output_name}label)<#sep> + \
-</#list>
-
+                    loss = 0
+                    for element in lossList:
+                        loss = loss + element
 
                 loss.backward()
 
@@ -169,61 +307,49 @@ class ${tc.fileNameWithoutEnding}:
 
             tic = None
 
-            train_iter.reset()
-            metric = mx.metric.create(eval_metric)
-            for batch_i, batch in enumerate(train_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
-                </#list>
-
-                labels = [
-<#list tc.architectureOutputs as output_name>
-                    batch.label[${output_name?index}].as_in_context(mx_context)<#sep>,
-</#list>
-
-                ]
-
+            train_test_iter.reset()
+            metric = mx.metric.create(eval_metric, **eval_metric_params)
+            for batch_i, batch in enumerate(train_test_iter):
                 if True: <#-- Fix indentation -->
-<#include "pythonExecute.ftl">
+<#include "pythonExecuteTest.ftl">
 
-                predictions = [
-<#list tc.architectureOutputs as output_name>
-                    mx.nd.argmax(${output_name}, axis=1)<#sep>,
-</#list>
 
-                ]
+<#include "saveAttentionImageTrain.ftl">
+
+
+                predictions = []
+                for output_name in outputs:
+                    if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                        predictions.append(mx.nd.argmax(output_name, axis=1))
+                    else:
+                        predictions.append(output_name)
 
                 metric.update(preds=predictions, labels=labels)
             train_metric_score = metric.get()[1]
 
             test_iter.reset()
-            metric = mx.metric.create(eval_metric)
+            metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                <#list tc.architectureInputs as input_name>
-                ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
-                </#list>
-
-                labels = [
-<#list tc.architectureOutputs as output_name>
-                    batch.label[${output_name?index}].as_in_context(mx_context)<#sep>,
-</#list>
-
-                ]
-
                 if True: <#-- Fix indentation -->
-<#include "pythonExecute.ftl">
+<#include "pythonExecuteTest.ftl">
 
-                predictions = [
-<#list tc.architectureOutputs as output_name>
-                    mx.nd.argmax(${output_name}, axis=1)<#sep>,
-</#list>
 
-                ]
+<#include "saveAttentionImageTest.ftl">
+
+
+                predictions = []
+                for output_name in outputs:
+                    if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                        predictions.append(mx.nd.argmax(output_name, axis=1))
+                    #ArgMax already applied
+                    else:
+                        predictions.append(output_name)
 
                 metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]
 
             logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))
+
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
                 for i, network in self._networks.items():

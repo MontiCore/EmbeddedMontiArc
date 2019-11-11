@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement;
 
+import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.List;
 
 /**
  *
@@ -11,19 +14,40 @@ public class FunctionParameterChecker {
     private String inputTerminalParameterName;
     private String outputParameterName;
     private RewardFunctionParameterAdapter rewardFunctionParameter;
+    private NNArchitectureSymbol trainedArchitecture;
 
     public FunctionParameterChecker() {
     }
 
-    public void check(final RewardFunctionParameterAdapter rewardFunctionParameter) {
+    public void check(final RewardFunctionParameterAdapter rewardFunctionParameter,
+        final NNArchitectureSymbol trainedArchitecture) {
+        assert rewardFunctionParameter != null;
+        assert trainedArchitecture != null;
         this.rewardFunctionParameter = rewardFunctionParameter;
+        this.trainedArchitecture = trainedArchitecture;
+
         retrieveParameterNames();
         checkHasExactlyTwoInputs();
         checkHasExactlyOneOutput();
         checkHasStateAndTerminalInput();
-        checkInputStateDimension();
         checkInputTerminalTypeAndDimension();
+        checkStateDimensionEqualsTrainedArchitectureState();
+        checkInputStateDimension();
         checkOutputDimension();
+    }
+
+    private void checkStateDimensionEqualsTrainedArchitectureState() {
+        failIfConditionFails(stateInputOfNNArchitectureIsEqualToRewardState(),
+        "State dimension of trained architecture is not equal to reward state dimensions.");
+    }
+
+    private boolean stateInputOfNNArchitectureIsEqualToRewardState() {
+        assert trainedArchitecture.getInputs().size() == 1: "Trained architecture is not a policy network.";
+        final String nnStateInputName = trainedArchitecture.getInputs().get(0);
+        final List<Integer> dimensions = trainedArchitecture.getDimensions().get(nnStateInputName);
+
+        return rewardFunctionParameter.getInputPortDimensionOfPort(inputStateParameterName).isPresent()
+            && rewardFunctionParameter.getInputPortDimensionOfPort(inputStateParameterName).get().equals(dimensions);
     }
 
     private void checkHasExactlyTwoInputs() {
