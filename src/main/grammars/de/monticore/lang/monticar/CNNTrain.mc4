@@ -24,6 +24,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     BooleanValue implements ConfigValue = (TRUE:"true" | FALSE:"false");
     ComponentNameValue implements ConfigValue = Name ("."Name)*;
     DoubleVectorValue implements ConfigValue = "(" number:NumberWithUnit ("," number:NumberWithUnit)* ")";
+    IntegerTupelValue implements ConfigValue = "(" first:IntegerValue "," second:IntegerValue ")";
 
     NumEpochEntry implements ConfigEntry = name:"num_epoch" ":" value:IntegerValue;
     BatchSizeEntry implements ConfigEntry = name:"batch_size" ":" value:IntegerValue;
@@ -147,7 +148,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     StartTrainingAtEntry implements ConfigEntry = name:"start_training_at" ":" value:IntegerValue;
     EvaluationSamplesEntry implements ConfigEntry = name:"evaluation_samples" ":" value:IntegerValue;
 
-    LearningMethodValue implements ConfigValue = (supervisedLearning:"supervised" | reinforcement:"reinforcement");
+    LearningMethodValue implements ConfigValue = (supervisedLearning:"supervised" | reinforcement:"reinforcement" | gan:"gan");
 
     RLAlgorithmValue implements ConfigValue = (dqn:"dqn-algorithm" | ddpg:"ddpg-algorithm" | tdThree:"td3-algorithm");
 
@@ -230,4 +231,20 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     PolicyNoiseEntry implements ConfigEntry = name:"policy_noise" ":" value:NumberValue;
     NoiseClipEntry implements ConfigEntry = name:"noise_clip" ":" value:NumberValue;
     PolicyDelayEntry implements ConfigEntry = name:"policy_delay" ":" value:IntegerValue;
+
+
+    // GANs Extensions
+    DiscriminatorNetworkEntry implements ConfigEntry = name:"discriminator_name" ":" value:ComponentNameValue;
+    PreprocessingEntry implements ConfigEntry = name:"preprocessing_name" ":" value:ComponentNameValue;
+    ImgResizeEntry implements ConfigEntry = name:"img_resize" ":" value:IntegerTupelValue;
+
+    // Noise Distribution Creator
+    NoiseDistributionEntry implements MultiParamConfigEntry = name:"noise_distribution" ":" value:NoiseDistributionValue;
+    interface NoiseDistributionValue extends MultiParamValue;
+
+    interface NoiseDistributionGaussianEntry extends Entry;
+    NoiseDistributionGaussianValue implements NoiseDistributionValue = name:"gaussian" ("{" params:NoiseDistributionGaussianEntry* "}")?;
+
+    MeanValueEntry implements NoiseDistributionGaussianEntry = name:"mean_value" ":" value:IntegerValue;
+    SpreadValueEntry implements NoiseDistributionGaussianEntry = name:"spread_value" ":" value:IntegerValue;
 }

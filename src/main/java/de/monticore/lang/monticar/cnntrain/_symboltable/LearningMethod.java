@@ -22,5 +22,11 @@ public enum LearningMethod {
         public String toString() {
             return "reinforcement";
         }
+    },
+    GAN {
+        @Override
+        public String toString() {
+            return "gan";
+        }
     }
 }

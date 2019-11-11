@@ -344,6 +344,8 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
         if (node.getValue().isPresentReinforcement()) {
             value.setValue(LearningMethod.REINFORCEMENT);
+        } if (node.getValue().isPresentGan()) {
+            value.setValue(LearningMethod.GAN);
         } else if (node.getValue().isPresentSupervisedLearning()) {
             value.setValue(LearningMethod.SUPERVISED);
         }
@@ -459,7 +461,35 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         configuration.getEntryMap().put(node.getName(), entry);
     }
 
+    @Override
+    public void visit(ASTDiscriminatorNetworkEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForComponentNameAsString(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
 
+    @Override
+    public void visit(ASTPreprocessingEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForComponentNameAsString(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTImgResizeEntry node) {
+        EntrySymbol width_entry = new EntrySymbol(node.getName());
+        EntrySymbol height_entry = new EntrySymbol(node.getName());
+
+        width_entry.setValue(getValueSymbolForInteger(node.getValue().getFirst()));
+        height_entry.setValue(getValueSymbolForInteger(node.getValue().getSecond()));
+        addToScopeAndLinkWithNode(width_entry, node);
+        addToScopeAndLinkWithNode(height_entry, node);
+
+        configuration.getEntryMap().put(node.getName() + "_width", width_entry);
+        configuration.getEntryMap().put(node.getName() + "_height", height_entry);
+    }
 
     @Override
     public void visit(ASTReplayMemoryEntry node) {
@@ -490,6 +520,22 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void endVisit(ASTEnvironmentEntry node) {
+        processMultiParamConfigEndVisit(node);
+    }
+
+    @Override
+    public void visit(ASTNoiseDistributionEntry node) {
+        NoiseDistribution noiseDistribution;
+        if(node.getValue().getName().equals("gaussian")) {
+            noiseDistribution = NoiseDistribution.GAUSSIAN;
+        } else {
+            noiseDistribution = NoiseDistribution.GAUSSIAN;
+        }
+        processMultiParamConfigVisit(node, noiseDistribution);
+    }
+
+    @Override
+    public void endVisit(ASTNoiseDistributionEntry node) {
         processMultiParamConfigEndVisit(node);
     }
 
