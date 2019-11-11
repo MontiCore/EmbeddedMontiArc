@@ -64,13 +64,15 @@ public class CNNArchCocos {
     public static CNNArchSymbolCoCoChecker createCNNArchPostResolveSymbolChecker() {
         return new CNNArchSymbolCoCoChecker()
                 .addCoCo(new CheckIOType())
+                .addCoCo(new CheckIOArrayLength())
                 .addCoCo(new CheckElementInputs())
                 .addCoCo(new CheckIOAccessAndIOMissing())
                 .addCoCo(new CheckArchitectureFinished())
-                .addCoCo(new CheckNetworkStreamMissing())
                 .addCoCo(new CheckVariableMember())
                 .addCoCo(new CheckLayerVariableDeclarationLayerType())
-                .addCoCo(new CheckLayerVariableDeclarationIsUsed());
+                .addCoCo(new CheckLayerVariableDeclarationIsUsed())
+                .addCoCo(new CheckConstants())
+                .addCoCo(new CheckUnrollInputsOutputsTooMany());
     }
 
     //checks cocos based on symbols before the resolve method of the ArchitectureSymbol is called
@@ -78,6 +80,7 @@ public class CNNArchCocos {
         return new CNNArchSymbolCoCoChecker()
                 .addCoCo(new CheckVariableDeclarationName())
                 .addCoCo(new CheckVariableName())
+                .addCoCo(new CheckArgmaxLayer())
                 .addCoCo(new CheckExpressions());
     }
 

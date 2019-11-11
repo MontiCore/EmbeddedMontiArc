@@ -20,22 +20,15 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.symboltable.CommonScopeSpanningSymbol;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.Joiners;
-
 import java.util.*;
 
-public abstract class ArchitectureElementSymbol extends CommonScopeSpanningSymbol {
+public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
 
     public static final ArchitectureElementKind KIND = new ArchitectureElementKind();
 
     private ArchitectureElementSymbol inputElement = null;
     private ArchitectureElementSymbol outputElement = null;
     private List<ArchTypeSymbol> outputTypes = null;
-    private Set<ParameterSymbol> unresolvableParameters = null;
-    private ArchitectureElementSymbol resolvedThis = null;
 
     protected ArchitectureElementSymbol(String name) {
         super(name, KIND);
@@ -98,16 +91,6 @@ public abstract class ArchitectureElementSymbol extends CommonScopeSpanningSymbo
         return false;
     }
 
-    public ArchitectureSymbol getArchitecture(){
-        Symbol sym = getEnclosingScope().getSpanningSymbol().get();
-        if (sym instanceof ArchitectureSymbol){
-            return (ArchitectureSymbol) sym;
-        }
-        else {
-            return ((ArchitectureElementSymbol) sym).getArchitecture();
-        }
-    }
-
     /**
      * only call after resolve():
      * @return returns the non-empty atomic element which have the output of this element as input.
@@ -152,78 +135,21 @@ public abstract class ArchitectureElementSymbol extends CommonScopeSpanningSymbo
         }
     }
 
-    public Set<ParameterSymbol> getUnresolvableParameters() {
-        if (unresolvableParameters == null){
-            checkIfResolvable();
-        }
-        return unresolvableParameters;
-    }
-
-    protected void setUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters) {
-        this.unresolvableParameters = unresolvableParameters;
-    }
-
-    public boolean isResolvable(){
-        return getUnresolvableParameters().isEmpty();
-    }
-
-    public void checkIfResolvable(){
-        checkIfResolvable(new HashSet<>());
-    }
-
-    protected void checkIfResolvable(Set<ParameterSymbol> occurringParameters){
-        Set<ParameterSymbol> unresolvableParameters = new HashSet<>();
-        computeUnresolvableParameters(unresolvableParameters, occurringParameters);
-        setUnresolvableParameters(unresolvableParameters);
-    }
-
-    public Optional<ArchitectureElementSymbol> getResolvedThis() {
-        return Optional.ofNullable(resolvedThis);
-    }
-
     protected void setResolvedThis(ArchitectureElementSymbol resolvedThis) {
-        if (resolvedThis != null && resolvedThis != this){
-            resolvedThis.putInScope(getSpannedScope());
-            if (getInputElement().isPresent()){
-                resolvedThis.setInputElement(getInputElement().get());
-            }
-            if (getOutputElement().isPresent()){
-                resolvedThis.setOutputElement(getOutputElement().get());
-            }
-        }
-        this.resolvedThis = resolvedThis;
-    }
+        super.setResolvedThis(resolvedThis);
 
-    public void resolveOrError() throws ArchResolveException{
-        Set<ParameterSymbol> names = resolve();
-        if (!isResolved()){
-            throw new IllegalStateException("The following names could not be resolved: " + Joiners.COMMA.join(getUnresolvableParameters()));
+        ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) getResolvedThis().get();
+
+        if (getInputElement().isPresent()){
+            resolvedElement.setInputElement(getInputElement().get());
+        }
+        if (getOutputElement().isPresent()){
+            resolvedElement.setOutputElement(getOutputElement().get());
         }
     }
-
-    public boolean isResolved(){
-        if (getResolvedThis().isPresent() && getResolvedThis().get() != this){
-            return getResolvedThis().get().isResolved();
-        }
-        else {
-            return getResolvedThis().isPresent();
-        }
-    }
-
-    /**
-     * resolves all expressions and underlying architecture elements and handles layer method calls and sequences.
-     * Architecture parameters have to be set before calling resolve.
-     * Resolves prepares the architecture elements such that the output type and shape of each element can be calculated and checked.
-     * @return returns the set of all parameters which could not be resolved. Should be ignored.
-     * @throws ArchResolveException thrown to interrupt the recursive resolve process to avoid follow-up Runtime Exceptions in tests after an error was logged.
-     *                              Can be caught and ignored.
-     */
-    abstract public Set<ParameterSymbol> resolve() throws ArchResolveException;
 
     //only call after resolve
     protected abstract List<ArchTypeSymbol> computeOutputTypes();
-
-    abstract protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters);
 
     abstract public Optional<Integer> getParallelLength();
 
@@ -244,10 +170,6 @@ public abstract class ArchitectureElementSymbol extends CommonScopeSpanningSymbo
             return Optional.empty();
         }
     }
-
-    abstract protected void putInScope(Scope scope);
-
-    abstract protected void resolveExpressions() throws ArchResolveException;
 
     /**
      * only call after resolve.
@@ -270,10 +192,4 @@ public abstract class ArchitectureElementSymbol extends CommonScopeSpanningSymbo
 
     //only call after resolve; used in coco CheckElementInputs to check the input type and shape of each element.
     abstract public void checkInput();
-
-    /**
-     * Creates a deep copy in the state before the architecture resolution.
-     * @return returns a deep copy of this object in the pre-resolve version.
-     */
-    protected abstract ArchitectureElementSymbol preResolveDeepCopy();
 }

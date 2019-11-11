@@ -52,18 +52,12 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         return true;
     }
 
-    /**
-     * This method is used to distinguish between neural networks like "source -> FullyConnected() -> target" and
-     * basic assignments like "1 -> OneHot() -> target". The generators use this to avoid creating an own
-     * network for each assignment. Override by predefined layers which are trainable.
-     */
-    @Override
-    public boolean isTrainable() {
-        return isTrainable(VariableSymbol.Member.NONE);
-    }
-
     public boolean isTrainable(VariableSymbol.Member member) {
-        return true;
+        if(member == VariableSymbol.Member.STATE || member == VariableSymbol.Member.OUTPUT){
+            return false;
+        }else {
+            return true;
+        }
     }
 
     /**
@@ -81,8 +75,12 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                                     LayerSymbol layer,
                                     VariableSymbol.Member member);
 
-    public boolean isValidMember(VariableSymbol.Member member) {
-        return member == VariableSymbol.Member.NONE || member == VariableSymbol.Member.OUTPUT;
+    public int getArrayLength(VariableSymbol.Member member) {
+        if (member == VariableSymbol.Member.NONE || member == VariableSymbol.Member.OUTPUT) {
+            return 1;
+        }
+
+        return 0;
     }
 
     public boolean canBeInput(VariableSymbol.Member member) {
@@ -171,6 +169,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
             }
         }
     }
+
 
     //output type function for convolution and pooling
     protected static List<ArchTypeSymbol> computeConvAndPoolOutputShape(ArchTypeSymbol inputType, LayerSymbol method, int channels) {

@@ -41,6 +41,10 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
         return expression;
     }
 
+    public int getIntValue() {
+        return getExpression().getIntValue().get();
+    }
+
     protected void setExpression(ArchSimpleExpressionSymbol expression) {
         this.expression = expression;
     }
@@ -58,7 +62,7 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
     @Override
     public List<ArchitectureElementSymbol> getFirstAtomicElements() {
         if (getResolvedThis().isPresent() && getResolvedThis().get() != this) {
-            return getResolvedThis().get().getFirstAtomicElements();
+            return ((ArchitectureElementSymbol) getResolvedThis().get()).getFirstAtomicElements();
         }
         else {
             return Collections.singletonList(this);
@@ -68,7 +72,7 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
     @Override
     public List<ArchitectureElementSymbol> getLastAtomicElements() {
         if (getResolvedThis().isPresent() && getResolvedThis().get() != this) {
-            return getResolvedThis().get().getLastAtomicElements();
+            return ((ArchitectureElementSymbol) getResolvedThis().get()).getLastAtomicElements();
         }
         else {
             return Collections.singletonList(this);
@@ -80,6 +84,9 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
         if (!isResolved()) {
             if (isResolvable()) {
                 resolveExpressions();
+
+                getArchitecture().getConstants().add(this);
+
                 setResolvedThis(this);
             }
         }
@@ -114,7 +121,7 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
             if (!getResolvedThis().isPresent()){
                 throw new IllegalStateException("The architecture resolve() method was never called");
             }
-            outputShapes = getResolvedThis().get().computeOutputTypes();
+            outputShapes = ((ArchitectureElementSymbol) getResolvedThis().get()).computeOutputTypes();
         }
 
         return outputShapes;
@@ -132,7 +139,7 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
             if (!getResolvedThis().isPresent()) {
                 throw new IllegalStateException("The architecture resolve() method was never called");
             }
-            getResolvedThis().get().checkInput();
+            ((ArchitectureElementSymbol) getResolvedThis().get()).checkInput();
         }
     }
 

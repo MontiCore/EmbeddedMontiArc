@@ -24,7 +24,10 @@ import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CheckLayerVariableDeclarationIsUsed extends CNNArchSymbolCoCo {
 
@@ -35,9 +38,12 @@ public class CheckLayerVariableDeclarationIsUsed extends CNNArchSymbolCoCo {
 
             boolean isUsed = false;
 
-            for (SerialCompositeElementSymbol stream : layerVariableDeclaration.getLayer().getArchitecture().getStreams()) {
-                Collection<ArchitectureElementSymbol> elements =
-                        stream.getSpannedScope().resolveMany(layerVariableDeclaration.getName(), ArchitectureElementSymbol.KIND);
+            Set<String> allowedUnusedLayers = new HashSet();
+            allowedUnusedLayers.add("attention");
+
+            for (NetworkInstructionSymbol networkInstruction : layerVariableDeclaration.getLayer().getArchitecture().getNetworkInstructions()) {
+                Collection<ArchitectureElementSymbol> elements
+                        = networkInstruction.getBody().getSpannedScope().resolveMany(layerVariableDeclaration.getName(), ArchitectureElementSymbol.KIND);
 
                 for (ArchitectureElementSymbol element : elements) {
                     if (element instanceof VariableSymbol && ((VariableSymbol) element).getMember() == VariableSymbol.Member.NONE) {
@@ -49,6 +55,10 @@ public class CheckLayerVariableDeclarationIsUsed extends CNNArchSymbolCoCo {
                 if (isUsed) {
                     break;
                 }
+            }
+
+            if(allowedUnusedLayers.contains(sym.getName())){
+                isUsed = true;
             }
 
             if (!isUsed) {

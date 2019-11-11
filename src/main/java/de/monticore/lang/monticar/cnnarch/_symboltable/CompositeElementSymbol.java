@@ -40,35 +40,6 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
 
     abstract protected void setElements(List<ArchitectureElementSymbol> elements);
 
-    public boolean isTrainable() {
-        boolean isTrainable = false;
-
-        for (ArchitectureElementSymbol element : elements) {
-            if (element instanceof CompositeElementSymbol) {
-                isTrainable |= ((CompositeElementSymbol) element).isTrainable();
-            }
-            else if (element instanceof LayerSymbol) {
-                isTrainable |= ((LayerSymbol) element).getDeclaration().isTrainable();
-            }
-            else if (element instanceof VariableSymbol) {
-                VariableSymbol variable = (VariableSymbol) element;
-
-                if (variable.getType() == VariableSymbol.Type.LAYER) {
-                    LayerDeclarationSymbol layerDeclaration = ((LayerVariableDeclarationSymbol) variable.getDeclaration()).getLayer().getDeclaration();
-
-                    if (layerDeclaration.isPredefined()) {
-                        isTrainable |= ((PredefinedLayerDeclaration) layerDeclaration).isTrainable(variable.getMember());
-                    }
-                    else {
-                        isTrainable |= layerDeclaration.isTrainable();
-                    }
-                }
-            }
-        }
-
-        return isTrainable;
-    }
-
     @Override
     public boolean isAtomic() {
         return getElements().isEmpty();
@@ -78,7 +49,8 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
     public Set<ParameterSymbol> resolve() throws ArchResolveException {
         if (!isResolved()) {
             if (isResolvable()) {
-                List<ArchitectureElementSymbol> resolvedElements = new ArrayList<>();
+                resolveExpressions();
+
                 for (ArchitectureElementSymbol element : getElements()) {
                     element.resolve();
                 }

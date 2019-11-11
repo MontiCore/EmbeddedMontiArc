@@ -43,9 +43,23 @@ public class ArgumentSymbol extends CommonSymbol {
 
     public ParameterSymbol getParameter() {
         if (parameter == null){
-            if (getLayer().getDeclaration() != null){
-                Optional<ParameterSymbol> optParam = getLayer().getDeclaration().getParameter(getName());
-                optParam.ifPresent(this::setParameter);
+            Symbol spanningSymbol = getEnclosingScope().getSpanningSymbol().get();
+
+            if (spanningSymbol instanceof UnrollInstructionSymbol) {
+                UnrollInstructionSymbol unroll = (UnrollInstructionSymbol) getEnclosingScope().getSpanningSymbol().get();
+
+                if (unroll.getDeclaration() != null){
+                    Optional<ParameterSymbol> optParam = unroll.getDeclaration().getParameter(getName());
+                    optParam.ifPresent(this::setParameter);
+                }
+            }
+            else {
+                LayerSymbol layer = (LayerSymbol) getEnclosingScope().getSpanningSymbol().get();
+
+                if (layer.getDeclaration() != null){
+                    Optional<ParameterSymbol> optParam = layer.getDeclaration().getParameter(getName());
+                    optParam.ifPresent(this::setParameter);
+                }
             }
         }
         return parameter;
@@ -57,6 +71,10 @@ public class ArgumentSymbol extends CommonSymbol {
 
     public LayerSymbol getLayer() {
         return (LayerSymbol) getEnclosingScope().getSpanningSymbol().get();
+    }
+
+    public UnrollInstructionSymbol getUnroll() {
+        return (UnrollInstructionSymbol) getEnclosingScope().getSpanningSymbol().get();
     }
 
     public ArchExpressionSymbol getRhs() {

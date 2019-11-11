@@ -20,12 +20,10 @@
  */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.PredefinedLayerDeclaration;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,7 +51,13 @@ public class Softmax extends PredefinedLayerDeclaration {
 
     public static Softmax create(){
         Softmax declaration = new Softmax();
-        declaration.setParameters(new ArrayList<>());
+        List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.AXIS_NAME)
+                        .constraints(Constraints.INTEGER)
+                        .defaultValue(-1)
+                        .build()));
+        declaration.setParameters(parameters);
         return declaration;
     }
 }

@@ -25,9 +25,11 @@ public class ErrorCodes {
     public static final String INVALID_ARRAY_ACCESS = "x74358";
     public static final String MISSING_IO = "x10920";
     public static final String INVALID_IO_TYPE = "x0601C";
+    public static final String INVALID_IO_ARRAY_LENGTH = "x0601D";
     public static final String MISSING_VAR_VALUE = "x02572";
     public static final String ILLEGAL_ASSIGNMENT = "x03444";
     public static final String ILLEGAL_SEQUENCE_LENGTH = "x24772";
+    public static final String ILLEGAL_PARAMETER_VALUE = "x74AB0";
     public static final String UNKNOWN_VARIABLE_NAME = "x32487";
     public static final String UNKNOWN_LAYER = "x33585";
     public static final String ILLEGAL_NAME = "x93567";
@@ -46,5 +48,9 @@ public class ErrorCodes {
     public static final String INVALID_MEMBER = "x04896";
     public static final String ILLEGAL_LAYER_USE = "x04845";
     public static final String UNUSED_LAYER = "x04847";
+    public static final String INVALID_CONSTANT = "x04856";
+    public static final String OUTPUT_WRITTEN_TO_MULTIPLE_TIMES = "x04836";
+    public static final String UNROLL_INPUTS_TOO_MANY = "x02384";
+    public static final String UNROLL_OUTPUTS_TOO_MANY = "x02385";
 
 }

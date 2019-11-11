@@ -33,6 +33,15 @@ public class CNNArchSymbolCoCo {
         else if (sym instanceof LayerDeclarationSymbol){
             check((LayerDeclarationSymbol) sym);
         }
+        else if (sym instanceof UnrollDeclarationSymbol){
+            check((UnrollDeclarationSymbol) sym);
+        }
+        else if (sym instanceof UnrollInstructionSymbol){
+            check((UnrollInstructionSymbol) sym);
+        }
+        else if (sym instanceof StreamInstructionSymbol){
+            check((StreamInstructionSymbol) sym);
+        }
         else if (sym instanceof ArchitectureElementSymbol){
             check((ArchitectureElementSymbol) sym);
         }
@@ -72,6 +81,10 @@ public class CNNArchSymbolCoCo {
         //Override if needed
     }
 
+    public void check(UnrollDeclarationSymbol sym){
+        //Override if needed
+    }
+
     public void check(ArchitectureElementSymbol sym){
         //Override if needed
     }
@@ -101,6 +114,14 @@ public class CNNArchSymbolCoCo {
     }
 
     public void check(MathExpressionSymbol sym){
+        //Override if needed
+    }
+
+    public void check(UnrollInstructionSymbol sym){
+        //Override if needed
+    }
+
+    public void check(StreamInstructionSymbol sym){
         //Override if needed
     }
 }
