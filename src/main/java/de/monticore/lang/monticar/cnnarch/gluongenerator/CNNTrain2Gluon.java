@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 public class CNNTrain2Gluon extends CNNTrainGenerator {
     private static final String REINFORCEMENT_LEARNING_FRAMEWORK_MODULE = "reinforcement_learning";
+    private static final String GAN_LEARNING_FRAMEWORK_MODULE = "gan";
 
     private final RewardFunctionSourceGenerator rewardFunctionSourceGenerator;
     private String rootProjectModelsDir;
@@ -62,7 +63,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
 
         if (configuration.getLearningMethod().equals(LearningMethod.REINFORCEMENT)) {
             throw new IllegalStateException("Cannot call generate of reinforcement configuration without specifying " +
-             "the trained architecture");
+                    "the trained architecture");
         }
 
         generateFilesFromConfigurationSymbol(configuration);
@@ -115,6 +116,46 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         if (configData.isSupervisedLearning()) {
             String cnnTrainTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
             fileContentMap.put("CNNTrainer_" + getInstanceName() + ".py", cnnTrainTemplateContent);
+        } else if(configData.isGan()) {
+            final String trainerName = "CNNTrainer_" + getInstanceName();
+            if(!configuration.getDiscriminatorNetwork().isPresent()) {
+                Log.error("No architecture model for discriminator available but is required for chosen " +
+                        "GAN");
+            }
+
+            NNArchitectureSymbol genericArchitectureSymbol = configuration.getDiscriminatorNetwork().get();
+            ArchitectureSymbol architectureSymbol
+                    = ((ArchitectureAdapter)genericArchitectureSymbol).getArchitectureSymbol();
+
+            CNNArch2Gluon gluonGenerator = new CNNArch2Gluon();
+            gluonGenerator.setGenerationTargetPath(
+                    Paths.get(getGenerationTargetPath(), GAN_LEARNING_FRAMEWORK_MODULE).toString());
+            Map<String, String> architectureFileContentMap
+                    = gluonGenerator.generateStringsAllowMultipleIO(architectureSymbol, true);
+
+            final String creatorName = architectureFileContentMap.keySet().iterator().next();
+            final String discriminatorInstanceName = creatorName.substring(
+                    creatorName.indexOf('_') + 1, creatorName.lastIndexOf(".py"));
+
+
+            fileContentMap.putAll(architectureFileContentMap.entrySet().stream().collect(Collectors.toMap(
+                    k -> GAN_LEARNING_FRAMEWORK_MODULE + "/" + k.getKey(),
+                    Map.Entry::getValue))
+            );
+
+            ftlContext.put("ganFrameworkModule", GAN_LEARNING_FRAMEWORK_MODULE);
+            ftlContext.put("discriminatorInstanceName", discriminatorInstanceName);
+            ftlContext.put("trainerName", trainerName);
+
+            final String initContent = "";
+            fileContentMap.put(GAN_LEARNING_FRAMEWORK_MODULE + "/__init__.py", initContent);
+
+            final String ganTrainerContent = templateConfiguration.processTemplate(ftlContext, "gan/Trainer.ftl");
+            fileContentMap.put(trainerName + ".py", ganTrainerContent);
+
+            //final String startTrainerScriptContent = templateConfiguration.processTemplate(ftlContext, "gan/StartTrainer.ftl");
+            //fileContentMap.put("start_training.sh", startTrainerScriptContent);
+
         } else if (configData.isReinforcementLearning()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();
             final RLAlgorithm rlAlgorithm = configData.getRlAlgorithm();
