@@ -17,7 +17,7 @@
                             attention_resized = np.resize(attention.asnumpy(), (8, 8))
                             ax = fig.add_subplot(max_length//3, max_length//4, l+1)
                             ax.set_title(dict[int(labels[l+1][0].asscalar())])
-                            img = ax.imshow(train_images[0+test_batch_size*(batch_i)])
+                            img = ax.imshow(train_images[0+test_batch_size*(batch_i)].transpose(1,2,0))
                             ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
 
 
