@@ -9,6 +9,7 @@ package de.monticore.lang.monticar.cnntrain.helper;
 
 public class ConfigEntryNameConstants {
     public static final String LEARNING_METHOD = "learning_method";
+    public static final String EVAL_METRIC = "eval_metric";
     public static final String NUM_EPISODES = "num_episodes";
     public static final String DISCOUNT_FACTOR = "discount_factor";
     public static final String NUM_MAX_STEPS = "num_max_steps";

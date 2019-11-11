@@ -9,6 +9,7 @@ package de.monticore.lang.monticar.cnntrain._cocos;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.MultiParamValueSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
+import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -57,7 +58,8 @@ public class CheckOUParameterDimensionEqualsActionDimension implements CNNTrainC
                                          String ouParameterName) {
         final int ouParameterDimension = ((Collection<?>) strategyParameters.getParameter(ouParameterName)).size();
         if (ouParameterDimension != actionVectorDimension) {
-            Log.error("Vector parameter " + ouParameterName + " of parameter " + STRATEGY_OU + " must have"
+            Log.error("0" + ErrorCodes.TRAINED_ARCHITECTURE_ERROR
+                            + " Vector parameter " + ouParameterName + " of parameter " + STRATEGY_OU + " must have"
                             + " the same dimensions as the action dimension of output "
                             + outputNameOfTrainedArchitecture + " which is " + actionVectorDimension,
                     configurationSymbol.getSourcePosition());

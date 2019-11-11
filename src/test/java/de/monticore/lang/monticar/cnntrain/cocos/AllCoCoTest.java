@@ -188,4 +188,11 @@ public class AllCoCoTest extends AbstractCoCoTest{
                 "invalid_cocos_tests", "CheckRosEnvironmentHasOnlyOneRewardSpecification",
                 new ExpectedErrorInfo(1, ErrorCodes.CONTRADICTING_PARAMETERS));
     }
+
+    @Test
+    public void testInvalidCheckReinforcementLearningEntryIsSet () {
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckRLParameterOnlyWithLearningMethodSet()),
+                "invalid_cocos_tests", "CheckRLParameterOnlyWithLearningMethodSet",
+                new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
+    }
 }

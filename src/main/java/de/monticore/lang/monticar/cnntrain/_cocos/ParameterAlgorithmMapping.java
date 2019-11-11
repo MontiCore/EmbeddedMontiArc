@@ -38,6 +38,7 @@ class ParameterAlgorithmMapping {
         ASTBatchSizeEntry.class,
         ASTLoadCheckpointEntry.class,
         ASTEvalMetricEntry.class,
+        ASTExcludeBleuEntry.class,
         ASTNormalizeEntry.class,
         ASTNumEpochEntry.class,
         ASTLossEntry.class,
@@ -47,7 +48,8 @@ class ParameterAlgorithmMapping {
         ASTMarginEntry.class,
         ASTLabelFormatEntry.class,
         ASTRhoEntry.class,
-        ASTPreprocessingEntry.class
+        ASTPreprocessingEntry.class,
+        ASTSaveAttentionImage.class
     );
 
     private static final List<Class> GENERAL_REINFORCEMENT_PARAMETERS = Lists.newArrayList(
@@ -127,6 +129,15 @@ class ParameterAlgorithmMapping {
             || EXCLUSIVE_DQN_PARAMETERS.contains(entryClazz)
             || EXCLUSIVE_DDPG_PARAMETERS.contains(entryClazz)
             || EXCLUSIVE_TD3_PARAMETERS.contains(entryClazz);
+    }
+
+    boolean isReinforcementLearningParameterOnly(Class<? extends ASTEntry> entryClazz) {
+        return (GENERAL_REINFORCEMENT_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_DQN_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_DDPG_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_TD3_PARAMETERS.contains(entryClazz))
+            && !GENERAL_PARAMETERS.contains(entryClazz)
+            && !EXCLUSIVE_SUPERVISED_PARAMETERS.contains(entryClazz);
     }
 
     boolean isSupervisedLearningParameter(Class<? extends ASTEntry> entryClazz) {
