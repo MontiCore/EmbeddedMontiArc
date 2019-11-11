@@ -65,9 +65,6 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         temp = controller.process("CNNSupervisedTrainer", Target.PYTHON);
         fileContentMap.put(temp.getKey(), temp.getValue());
 
-        temp = controller.process("BeamSearch", Target.CPP);
-        fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());
-
         temp = controller.process("execute", Target.CPP);
         fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());
 
