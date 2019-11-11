@@ -166,6 +166,24 @@ public enum Constraints {
                     + AllPredefinedLayers.PADDING_NO_LOSS;
         }
     },
+    TRANSPADDING_TYPE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if (optString.get().equals(AllPredefinedLayers.PADDING_VALID)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.PADDING_VALID + "or "
+                    + AllPredefinedLayers.PADDING_SAME;
+        }
+    },
     POOL_TYPE {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {

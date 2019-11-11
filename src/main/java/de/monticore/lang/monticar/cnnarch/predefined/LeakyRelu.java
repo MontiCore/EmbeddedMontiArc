@@ -30,8 +30,7 @@ import java.util.*;
 
 public class LeakyRelu extends PredefinedLayerDeclaration {
 
-    private LeakyRelu() {
-        super(AllPredefinedLayers.LEAKY_RELU_NAME);
+    private LeakyRelu() { super(AllPredefinedLayers.LEAKY_RELU_NAME);
     }
 
     @Override

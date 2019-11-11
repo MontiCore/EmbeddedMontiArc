@@ -191,7 +191,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
 
     //output type function for transposed convolution
     protected static List<ArchTypeSymbol> computeTransConvOutputShape(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
-        String borderModeSetting = method.getStringValue(AllPredefinedLayers.PADDING_NAME).get();
+        String borderModeSetting = method.getStringValue(AllPredefinedLayers.TRANSPADDING_NAME).get();
         if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME)){
             return computeTransConvOutputShapeWithSamePadding(inputType, method, channels);
         }

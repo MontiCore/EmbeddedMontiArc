@@ -66,8 +66,8 @@ public class TransConv extends PredefinedLayerDeclaration {
                         .defaultValue(false)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.PADDING_NAME)
-                        .constraints(Constraints.PADDING_TYPE)
+                        .name(AllPredefinedLayers.TRANSPADDING_NAME)
+                        .constraints(Constraints.TRANSPADDING_TYPE)
                         .defaultValue(AllPredefinedLayers.PADDING_SAME)
                         .build()));
         declaration.setParameters(parameters);

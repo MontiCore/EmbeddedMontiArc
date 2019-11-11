@@ -52,6 +52,7 @@ public class AllPredefinedLayers {
     public static final String LSTM_NAME = "LSTM";
     public static final String GRU_NAME = "GRU";
     public static final String EMBEDDING_NAME = "Embedding";
+    public static final String IMG_RESIZE_NAME = "ImgResize";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -68,6 +69,7 @@ public class AllPredefinedLayers {
     public static final String ALPHA_NAME = "alpha";
     public static final String BETA_NAME = "beta";
     public static final String PADDING_NAME = "padding";
+    public static final String TRANSPADDING_NAME = "padding";
     public static final String POOL_TYPE_NAME = "pool_type";
     public static final String SIZE_NAME = "size";
     public static final String LAYERS_NAME = "layers";
