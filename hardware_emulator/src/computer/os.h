@@ -6,6 +6,7 @@
  */
 #pragma once
 #include <string>
+#include "utility/utility.h"
 struct Computer;
 struct MemorySection;
 
@@ -32,7 +33,7 @@ namespace OS {
         }
         
         //File without extension
-        virtual bool load_file( const char *file ) = 0;
+        virtual void load_file(const FS::File& file) = 0;
         virtual ~OS() {}
     };
 }

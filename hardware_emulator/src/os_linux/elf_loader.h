@@ -6,7 +6,7 @@
  */
 #pragma once
 #include <string>
-#include "utility.h"
+#include "utility/utility.h"
 #include "computer/computer.h"
 #include "computer/system_calls.h"
 #include "computer/memory.h"
@@ -32,9 +32,9 @@ namespace OS {
 		std::vector<SectionInfo> sections;
         uint section_pos;
         
-        ElfLoader() : sys_calls( nullptr ), mem( nullptr ), loaded( false ), symbols( nullptr ) {}
+        ElfLoader() : sys_calls( nullptr ), mem( nullptr ), loaded( false ), symbols( nullptr ), section_pos(0) {}
         
-        bool init( const std::string &file_name, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
+        void init(const FS::File& file, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
         
         void elf_main( Computer &computer );
         

@@ -30,25 +30,35 @@ set(LIBRARY_NAME "HardwareEmulator")
 
 #Basic source files
 list(APPEND HARDWARE_EMU_SOURCEFILES
-  src/debug.h
-  src/debug.cpp
-  src/tests.h
-  src/tests.cpp
-  src/utility.h
-  src/utility.cpp
-  src/config.h
-  src/config.cpp
+
+  src/software_simulator_manager.h
+  src/software_simulator_manager.cpp
+  src/software_simulator.h
+  src/software_simulator.cpp
+  src/hardware_emulator.h
+  src/hardware_emulator.cpp
+  src/direct_software_simulator.h
+  src/direct_software_simulator.cpp
+
+  src/utility/debug.h
+  src/utility/debug.cpp
+  src/utility/utility.h
+  src/utility/utility.cpp
+  src/utility/config.h
+  src/utility/config.cpp
+  src/utility/dll_interface.h
+  src/utility/dll_interface.cpp
+  src/utility/jni_interface.h
+  src/utility/jni_interface.cpp
   
-  src/dll_interface.h
-  src/dll_interface.cpp
-  
-  
-  src/emulator/emulator_manager.h
-  src/emulator/emulator_manager.cpp
-  src/emulator/hardware_emulator.h
-  src/emulator/hardware_emulator.cpp
-  src/emulator/function_value.h
-  src/emulator/function_value.cpp
+  src/port/port.h
+  src/port/port_simple.h
+  src/port/port_array.h
+
+  src/dynamic_interface/resolver.h
+  src/dynamic_interface/resolver.cpp
+  src/dynamic_interface/port_info.h
+  src/dynamic_interface/port_info.cpp
   
   src/computer/instruction_time.h
   src/computer/instruction_time.cpp
@@ -91,13 +101,14 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
 
 #Source files for the test project
 list(APPEND HARDWARE_EMU_TEST_SOURCEFILES
-    src/main.cpp
+    src/utility/main.cpp
+    src/utility/tests.h
+    src/utility/tests.cpp
 )
 
 #Source files for the Autopilot Library
 list(APPEND HARDWARE_EMU_LIB_SOURCEFILES
-  src/emulator/de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_HardwareEmulatorInterface.h
-  src/emulator/emulator_server.cpp
+  src/de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_CppBridge.h
 )
 
 #Setup the project file structure for Visual Studio projects (OPTIONAL)
@@ -142,6 +153,7 @@ if ( CMAKE_COMPILER_IS_GNUCC )
     -std=c++17
     -fPIC
     -fpermissive
+    -static-libgcc
     -static-libstdc++
     /DZYDIS_STATIC_DEFINE
   )
@@ -176,7 +188,7 @@ endif()
 
 
 #Test project
-LINK_DIRECTORIES(${PROJECT_NAME}-test ${HARDWARE_EMU_LIB_DIRS})
+link_directories(${PROJECT_NAME}-test ${HARDWARE_EMU_LIB_DIRS})
 add_executable(${PROJECT_NAME}-test ${HARDWARE_EMU_SOURCEFILES} ${HARDWARE_EMU_TEST_SOURCEFILES})
 target_include_directories(${PROJECT_NAME}-test PUBLIC ${HARDWARE_EMU_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME}-test ${HARDWARE_EMU_LIBRARIES})
@@ -186,7 +198,7 @@ set_target_properties(${PROJECT_NAME}-test PROPERTIES VS_DEBUGGER_WORKING_DIRECT
 
 
 #HardwareEmulatorLibrary
-LINK_DIRECTORIES(${LIBRARY_NAME} ${HARDWARE_EMU_LIB_DIRS} ${HARDWARE_EMU_LIB_LIB_DIRS})
+link_directories(${LIBRARY_NAME} ${HARDWARE_EMU_LIB_DIRS} ${HARDWARE_EMU_LIB_LIB_DIRS})
 add_library(${LIBRARY_NAME} SHARED ${HARDWARE_EMU_SOURCEFILES} ${HARDWARE_EMU_LIB_SOURCEFILES})
 target_include_directories(${LIBRARY_NAME} PUBLIC ${HARDWARE_EMU_INCLUDE_DIRS} ${HARDWARE_EMU_LIB_INCLUDE_DIRS} )
 target_link_libraries(${LIBRARY_NAME} ${HARDWARE_EMU_LIBRARIES} ${HARDWARE_EMU_LIB_LIBRARIES})

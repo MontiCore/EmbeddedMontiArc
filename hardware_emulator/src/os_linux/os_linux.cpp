@@ -17,12 +17,9 @@ namespace OS {
     }
     
     
-    bool Linux::load_file( const char *file ) {
-        if ( !elf.init( std::string( file ) +  ".so", computer->sys_calls, computer->memory, computer->symbols ) )
-            return false;
+    void Linux::load_file( const FS::File &file ) {
+        elf.init(FS::File(file.folder, file.get_full_name() + ".so"), computer->sys_calls, computer->memory, computer->symbols);
         elf.elf_main( *computer );
-        
-        return true;
     }
     
     

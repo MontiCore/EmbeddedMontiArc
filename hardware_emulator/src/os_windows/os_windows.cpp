@@ -123,10 +123,10 @@ void OS::Windows::init( Computer &computer ) {
     
     constexpr uint gdt_size = 2;
     auto gdt_slot = section_stack->get_annotated( sizeof( SegmentDescriptor ) * gdt_size, "Global Descriptor Table",
-                    Annotation::OBJECT );
-    auto tib_slot = section_stack->get_annotated( sizeof( LOCAL_TIB ), "Thread Information Block", Annotation::OBJECT );
+                    Annotation::Type::OBJECT );
+    auto tib_slot = section_stack->get_annotated( sizeof( LOCAL_TIB ), "Thread Information Block", Annotation::Type::OBJECT );
     auto eer_slot = section_stack->get_annotated( sizeof( LOCAL_EXCEPTION_REGISTRATION_RECORD ),
-                    "Exception Registration Record", Annotation::OBJECT );
+                    "Exception Registration Record", Annotation::Type::OBJECT );
                     
     //Setup TIB
     LOCAL_TIB thread_info_block;
@@ -145,7 +145,7 @@ void OS::Windows::init( Computer &computer ) {
     computer.memory.write_memory( eer_slot, ( uchar * )&eer );
     
     //Setup Segment Descriptor Table
-    SegmentDescriptor table[gdt_size];
+    SegmentDescriptor table[gdt_size] = {0};
     table[0].set_standard_segment( 0, 0xFFFFF, true );
     table[1].set_standard_segment( tib_slot.start_address, 0xFFF, false );
     
@@ -166,17 +166,20 @@ void OS::Windows::init( Computer &computer ) {
     //Set command line
     std::string cmd_line = "program_name";
     cmd_line_wstr = section_stack->get_annotated( ( ( uint )cmd_line.size() + 2 ) * 2, "Command Line WSTR",
-                    Annotation::OBJECT );
-    cmd_line_str = section_stack->get_annotated( ( uint )cmd_line.size() + 2, "Command Line STR", Annotation::OBJECT );
+                    Annotation::Type::OBJECT );
+    cmd_line_str = section_stack->get_annotated( ( uint )cmd_line.size() + 2, "Command Line STR", Annotation::Type::OBJECT );
     
     computer.memory.write_wstr( cmd_line_wstr.start_address, cmd_line );
     computer.memory.write_str( cmd_line_str.start_address, cmd_line );
     
-    auto cout_ptr_slot = section_stack->get_annotated( 8, "std::cout ptr", Annotation::OBJECT );
-    computer.symbols.add_symbol( "?cout@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A", Symbols::Symbol::OBJECT,
+    auto cout_ptr_slot = section_stack->get_annotated( 16, "std::cout ptr", Annotation::Type::OBJECT );
+    computer.symbols.add_symbol( "?cout@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A", Symbols::Symbol::Type::OBJECT,
                                  cout_ptr_slot.start_address );
+    computer.symbols.add_symbol("__fu0__ZSt4cout", Symbols::Symbol::Type::OBJECT,
+        cout_ptr_slot.start_address+8);
+    
                                  
-    auto cout_slot = section_stack->get_annotated( sizeof( std::cout ), "STD::COUT", Annotation::OBJECT );
+    auto cout_slot = section_stack->get_annotated( sizeof( std::cout ), "STD::COUT", Annotation::Type::OBJECT );
     computer.memory.write_memory( cout_ptr_slot, ( uchar * )&cout_slot.start_address );
     
     typedef struct {
@@ -191,9 +194,9 @@ void OS::Windows::init( Computer &computer ) {
         unsigned istemp;
     } FILE;
     FILE io_files[3] = {};
-    io_stdin = section_stack->get_annotated( sizeof( FILE ), "io_stdin", Annotation::OBJECT );
-    io_stdout = section_stack->get_annotated( sizeof( FILE ), "io_stdout", Annotation::OBJECT );
-    io_stderr = section_stack->get_annotated( sizeof( FILE ), "io_stderr", Annotation::OBJECT );
+    io_stdin = section_stack->get_annotated( sizeof( FILE ), "io_stdin", Annotation::Type::OBJECT );
+    io_stdout = section_stack->get_annotated( sizeof( FILE ), "io_stdout", Annotation::Type::OBJECT );
+    io_stderr = section_stack->get_annotated( sizeof( FILE ), "io_stderr", Annotation::Type::OBJECT );
     computer.memory.write_memory( io_stdin, &io_files[0] );
     computer.memory.write_memory( io_stdout, &io_files[1] );
     computer.memory.write_memory( io_stderr, &io_files[2] );
@@ -203,12 +206,9 @@ void OS::Windows::init( Computer &computer ) {
     computer.func_call = std::unique_ptr<FunctionCalling>( new WindowsFastCall( computer.registers ) );
 }
 
-bool OS::Windows::load_file( const char *file ) {
-    if ( !dll.init( std::string( file ) + ".dll", computer->sys_calls, computer->memory, computer->symbols ) )
-        return false;
+void OS::Windows::load_file(const FS::File& file) {
+    dll.init(FS::File(file.folder, file.get_full_name() + ".dll"), computer->sys_calls, computer->memory, computer->symbols);
     dll.dll_main( *computer );
-    
-    return true;
 }
 
 

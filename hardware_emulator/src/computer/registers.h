@@ -5,7 +5,7 @@
  * can be found under https://github.com/MontiCore/monticore.
  */
 #pragma once
-#include "utility.h"
+#include "utility/utility.h"
 
 /*
     A Simple wrapper to access the registers of the Unicorn Engine.
@@ -17,11 +17,11 @@
 struct Registers {
     static constexpr ulong BUFFER_SIZE = 32;
     void *internal_uc = nullptr;
-    uchar mini_buff[16];
+    uchar mini_buff[16] = {0};
     ulong reg = 0;
     ulong reg2 = 0;
-    ulong regs[BUFFER_SIZE];
-    ulong regs_old[BUFFER_SIZE];
+    ulong regs[BUFFER_SIZE] = { 0 };
+    ulong regs_old[BUFFER_SIZE] = { 0 };
     
     //All main registers
     static int regs_id[BUFFER_SIZE];

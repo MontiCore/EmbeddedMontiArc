@@ -7,13 +7,14 @@
 #pragma once
 #include "memory.h"
 #include "registers.h"
-#include "debug.h"
+#include "utility/debug.h"
 #include "system_calls.h"
 #include "function_calling.h"
 #include "instruction_time.h"
 #include "symbols.h"
 #include "os.h"
 #include "caching.h"
+#include "utility/config.h"
 
 
 struct InternalComputer;
@@ -84,7 +85,7 @@ struct Computer {
             return internal != nullptr;
         }
         
-        bool call( ulong address, const char *name );
+        void call( ulong address, const char *name );
         
         void set_os( OS::OS *os );
         
@@ -112,4 +113,39 @@ struct Computer {
         InternalComputer *internal = nullptr;
         ulong exit_code_addr = 0;
         bool stopped = false;
+
+        const char* unicorn_error();
+};
+
+
+/*
+    CacheSettings is used to configure the cache layout of the computer.
+    Replace the IL1, DL1, L2 and L3 members with Cache objects to enable and configure the given cache level.
+
+    if the next command of the MessageParser used to read the configuration of the autopilot starts with "cache_",
+    handle_config() will read the config entry and set the according cache settings.
+
+    setup_computer() will then apply the configuration to the computer.
+*/
+struct CacheSettings {
+    struct Cache {
+        bool used;
+        //Pico second times
+        uint write_ticks;
+        uint read_ticks;
+        uint block_size;
+        uint size; //Size is number of block entries
+        Cache() : used( false ), write_ticks(0), read_ticks(0), block_size(0), size(0) {}
+        Cache( uint read_ticks, uint write_ticks, uint size, uint block_size = 8 ) :
+            write_ticks( write_ticks ), read_ticks( read_ticks ), size( size ), block_size( block_size ), used( true ) {}
+    };
+    Cache IL1;
+    Cache DL1;
+    Cache L2;
+    Cache L3;
+    
+    void handle_config( MessageParser &parser );
+    
+    void setup_computer( Computer &computer );
+    
 };

@@ -6,7 +6,7 @@
  */
 #pragma once
 #include <string>
-#include "utility.h"
+#include "utility/utility.h"
 #include "computer/system_calls.h"
 #include "computer/memory.h"
 #include "computer/computer.h"
@@ -28,19 +28,19 @@ namespace OS {
 		std::vector<char> file;
         std::string file_name;
         std::string module_name;
-        bool module_name_set;
+        bool module_name_set = false;
         
         SystemCalls *sys_calls;
         Symbols *symbols;
         Memory *mem;
         
         struct DLLInfo {
-            ulong base_address;
-            ulong image_size;
-            ulong base_of_code;
-            ulong entry_point;
-            ulong section_align;
-            uint size_of_headers;
+            ulong base_address = 0;
+            ulong image_size = 0;
+            ulong base_of_code = 0;
+            ulong entry_point = 0;
+            ulong section_align = 0;
+            uint size_of_headers = 0;
             
             void load_values( void *pe );
         } info;
@@ -48,7 +48,7 @@ namespace OS {
         
         
 		std::vector<SectionInfo> sections;
-        uint section_pos;
+        uint section_pos = 0;
         
         DllLoader() : pe( nullptr ), sys_calls( nullptr ), mem( nullptr ), symbols( nullptr ) {}
         ~DllLoader() {
@@ -56,7 +56,7 @@ namespace OS {
         }
         
         //File without extension
-        bool init( const std::string &file_name, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
+        void init(const FS::File& file, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
         void drop();
         bool loaded() {
             return pe != nullptr;

@@ -14,7 +14,7 @@
 void AnnotationTable::init() {
     annotations.resize( DEFAULT_ANNOTATION_SIZE );
     annotation_pos = 0;
-    new_annotation( 0, Annotation( "NULL-NOTE", Annotation::NONE ) );
+    new_annotation( 0, Annotation( "NULL-NOTE", Annotation::Type::NONE ) );
 }
 
 uint AnnotationTable::new_annotation( ulong base, Annotation const &annotation ) {
@@ -350,7 +350,7 @@ void Memory::write_str( ulong address, std::string const &text ) {
     for ( uint i : urange( size ) )
         buff[i] = text[i];
     buff[size] = 0;
-    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, size + 1 ) )
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, size + 1LL ) )
         Log::err << Log::tag << "Error writing str at address " << address << "\n";
 }
 
@@ -363,7 +363,7 @@ void Memory::write_wstr( ulong address, std::string const &text ) {
         buff[i] = t;
     }
     buff[size] = 0;
-    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, ( size + 1 ) * sizeof( wchar_t ) ) )
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, ( size + 1LL ) * sizeof( wchar_t ) ) )
         Log::err << Log::tag << "Error writing wstr at address " << address << "\n";
 }
 
@@ -419,7 +419,7 @@ void Handles::init( Memory &mem ) {
 
 ulong Handles::add_handle( const char *name ) {
     throw_assert( loaded() && section->has_annotations(), "Handles::add_handle() on uninitialized Handles" );
-    auto handle = handle_stack.get_annotated_8byte( name, Annotation::HANDLE );
+    auto handle = handle_stack.get_annotated_8byte( name, Annotation::Type::HANDLE );
     return handle;
 }
 

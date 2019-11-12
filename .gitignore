@@ -14,3 +14,6 @@ zydis/dependencies/zycore/Release/
 .vscode/
 .classpath
 target/
+unicorn/
+zydis/
+pe-parse/

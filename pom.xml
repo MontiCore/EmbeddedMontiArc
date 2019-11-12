@@ -12,7 +12,7 @@
 
     <groupId>montisim</groupId>
     <artifactId>hardware_emulator</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
 
     <properties>
@@ -57,7 +57,7 @@
                 <configuration>
                     <compilerArgs>
                         <arg>-h</arg>
-                        <arg>hardware_emulator/src/emulator</arg>
+                        <arg>hardware_emulator/src</arg>
                     </compilerArgs>
                     <useIncrementalCompilation>true</useIncrementalCompilation>
                     <source>${java.version}</source>

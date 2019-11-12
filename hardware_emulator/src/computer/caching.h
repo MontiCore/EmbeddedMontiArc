@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "utility.h"
+#include "utility/utility.h"
 #include "memory.h"
 #include "instruction_time.h"
 
@@ -42,7 +42,7 @@ struct FifoCache : public MemoryAccessInterface {
             void init(std::vector<ulong> &data ) {
                 clear();
                 this->data = data.data();
-                this->size = data.size();
+                this->size = (uint) data.size();
             }
             void clear() {
                 count = 0;

@@ -49,11 +49,11 @@ bool WindowsCalls::load_library_exw( Computer &computer ) {
     }
     ulong handle;
     auto sym = computer.symbols.get_symbol( name );
-    if ( sym.type == Symbols::Symbol::HANDLE )
+    if ( sym.type == Symbols::Symbol::Type::HANDLE )
         handle = sym.addr;
     else {
         handle = computer.handles.add_handle( ( char * )name_str );
-        computer.symbols.add_symbol( name, Symbols::Symbol::HANDLE, handle );
+        computer.symbols.add_symbol( name, Symbols::Symbol::Type::HANDLE, handle );
     }
     computer.func_call->set_return_64( handle );
     return true;
@@ -76,7 +76,7 @@ bool WindowsCalls::get_proc_address( Computer &computer ) {
     
     ulong call_addr;
     auto sym = computer.symbols.get_symbol( name );
-    if ( sym.type == Symbols::Symbol::SYSCALL )
+    if ( sym.type == Symbols::Symbol::Type::SYSCALL )
         call_addr = sym.addr;
     else
         call_addr = computer.sys_calls.add_syscall( SysCall( name, "", nullptr ), "get_proc_address resolve" );
@@ -138,7 +138,7 @@ bool WindowsCalls::get_module_handle( Computer &computer ) {
     string name = ( char * )name_str;
     auto sym = computer.symbols.get_symbol( name );
     ulong res = 0;
-    if ( sym.type == sym.HANDLE )
+    if ( sym.type == Symbols::Symbol::Type::HANDLE )
         res = sym.addr;
     computer.func_call->set_return_64( res );
     return true;

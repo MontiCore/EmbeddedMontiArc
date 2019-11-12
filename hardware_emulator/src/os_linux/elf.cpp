@@ -79,14 +79,14 @@ bool ElfFile::parse() {
         //Load Section Header table
         if ( !header.section_header_size_valid() )
             return false;
-        if ( header.e_shoff + header.e_shnum * header.e_shentsize > data.size() )
+        if ( header.e_shoff + header.e_shnum * (ulong) header.e_shentsize > data.size() )
             return false;
         sh32.init( ( Elf32_SectionHeader * )( data.data() + header.e_shoff ), 0, header.e_shnum );
         
         //Load Program Header table
         if ( !header.program_header_size_valid() )
             return false;
-        if ( header.e_phoff + header.e_phnum * header.e_phentsize > data.size() )
+        if ( header.e_phoff + header.e_phnum * (ulong) header.e_phentsize > data.size() )
             return false;
         ph32.init( ( Elf32_ProgramHeader * )( data.data() + header.e_phoff ), 0, header.e_phnum );
         
@@ -119,14 +119,14 @@ bool ElfFile::parse() {
         //Load section table
         if ( !header.section_header_size_valid() )
             return false;
-        if ( header.e_shoff + header.e_shnum * header.e_shentsize > data.size() )
+        if ( header.e_shoff + header.e_shnum * (ulong) header.e_shentsize > data.size() )
             return false;
         sh64.init( ( Elf64_SectionHeader * )( data.data() + header.e_shoff ), 0, header.e_shnum );
         
         //Load Program Header table
         if ( !header.program_header_size_valid() )
             return false;
-        if ( header.e_phoff + header.e_phnum * header.e_phentsize > data.size() )
+        if ( header.e_phoff + header.e_phnum * (ulong) header.e_phentsize > data.size() )
             return false;
         ph64.init( ( Elf64_ProgramHeader * )( data.data() + header.e_phoff ), 0, header.e_phnum );
         

@@ -10,26 +10,27 @@
 
 using namespace std;
 
-bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
+void OS::ElfLoader::init(const FS::File& fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
     loaded = false;
     this->sys_calls = &sys_calls;
     this->mem = &mem;
     this->symbols = &symbols;
-    file_name = fn;
+    file_name = fn.get_full_name();
     
     module_name = "SYSTEM";
     
     FileReader fr;
-    if ( !fr.open( file_name ) ) {
-        Log::err << Log::tag << "Could not open DLL: " << file_name << "\n";
-        return false;
-    }
+    if ( !fr.open( file_name ) )
+        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not find software program: " + fn.to_string()));
+    
     
     fr.read( elf.data );
     
     if ( !elf.parse() )
-        return false;
+        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Error parsing software program."));
         
+    //elf.print();
+
     //info.load_values( &elf );
     uint seg_count = 0;
     //Count segments in memory
@@ -73,7 +74,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
         }
         //Log::info << "Reading symbols\n";
         for ( auto &sh : elf.sh64 ) {
-            if ( sh.get_type() == ElfSecType::SHT_DYNSYM ) {
+            if ( sh.get_type() == ElfSecType::SHT_DYNSYM || sh.get_type() == ElfSecType::SHT_SYMTAB) {
                 auto sym_sh = elf.get_section_as_table<Elf64_Symbol>( sh );
                 auto &str_sh = elf.sh64[sh.sh_link];
                 auto str_table = elf.get_section_as_table<char>( str_sh );
@@ -81,7 +82,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
                 for ( auto &sym : sym_sh ) {
                     auto t = sym.get_type();
                     if ( sym.st_value != 0 && ( t == ElfSymbolType::STT_FUNC || t == ElfSymbolType::STT_OBJECT ) ) {
-                        auto type = t == ElfSymbolType::STT_FUNC ? Symbols::Symbol::EXPORT : Symbols::Symbol::OBJECT;
+                        auto type = t == ElfSymbolType::STT_FUNC ? Symbols::Symbol::Type::EXPORT : Symbols::Symbol::Type::OBJECT;
                         symbols.add_symbol( str_table.begin() + sym.st_name, type, sym.st_value );
                         
                         auto sec = mem.get_section( sym.st_value );
@@ -89,7 +90,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
                             auto &mem = *sec;
                             if ( !mem.has_annotations() )
                                 mem.init_annotations();
-                            mem.annotations.add_annotation( sym.st_value, Annotation( str_table.begin() + sym.st_name, Annotation::OBJECT ) );
+                            mem.annotations.add_annotation( sym.st_value, Annotation( str_table.begin() + sym.st_name, Annotation::Type::OBJECT ) );
                         }
                     }
                 }
@@ -120,7 +121,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
                         ulong func_addr;
                         
                         auto sym = symbols.get_symbol( name );
-                        if ( sym.type != Symbols::Symbol::NONE )
+                        if ( sym.type != Symbols::Symbol::Type::NONE )
                             func_addr = sym.addr;
                         else
                             func_addr = sys_calls.add_syscall( SysCall( name, "", nullptr ), "elf resolve" );
@@ -132,7 +133,7 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
                         std::string name = sym_str.begin() + s.st_name;
                         
                         auto sym = symbols.get_symbol( name );
-                        if ( sym.type == sym.OBJECT )
+                        if ( sym.type == Symbols::Symbol::Type::OBJECT )
                             mem.write_long_word( r.r_offset, sym.addr );
                         //else Log::err << Log::tag << "Un-relocatable Object " << name << "\n";
                     }
@@ -147,14 +148,13 @@ bool OS::ElfLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
     elf.data.clear();
     //No more access to any ElfFile elements
     loaded = true;
-    return true;
 }
 
 void OS::ElfLoader::elf_main( Computer &computer ) {
     throw_assert( loaded, "ElfLoader::elf_main() on uninitialized ElfLoader." );
     auto init = symbols->get_symbol( "_init" );
-    if ( init.type == init.EXPORT )
+    if ( init.type == Symbols::Symbol::Type::EXPORT )
         computer.call( init.addr, "_init" );
     else
-        Log::err << "Could not locate _init function of ELF\n";
+        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not locate _init function of ELF."));
 }
