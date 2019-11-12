@@ -1,0 +1,2 @@
+rnnencdec.Network resources/training_data
+rnnsearch.Network resources/training_data

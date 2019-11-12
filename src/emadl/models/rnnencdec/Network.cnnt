@@ -1,0 +1,17 @@
+configuration Network{
+     num_epoch: 1
+     batch_size: 64
+     context: cpu
+     normalize: false
+     eval_metric: bleu{
+         exclude:[0, 2, 3]
+     }
+     optimizer: adadelta{
+         learning_rate: 0.0001
+         learning_rate_decay: 0.99
+         step_size: 100
+         learning_rate_minimum: 0.000000000001
+         epsilon: 0.000001
+         rho: 0.95
+     }
+}
