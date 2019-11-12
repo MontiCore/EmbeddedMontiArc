@@ -81,7 +81,7 @@ class ${tc.fileNameWithoutEnding}:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
 
         #train_iter = getDataIter(mx_context, batch_size, 100)
-        train_iter, test_iter, data_mean, data_std = self._data_loader.load_data(batch_size, img_resize)
+        train_iter, test_iter, data_mean, data_std = self._data_loader.load_data_img(batch_size, img_resize)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']

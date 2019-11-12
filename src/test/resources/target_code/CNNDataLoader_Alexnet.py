@@ -67,7 +67,7 @@ class CNNDataLoader_Alexnet:
 
         return train_iter, train_test_iter, test_iter, data_mean, data_std, train_images, test_images
 
-    def load_data(self, batch_size, img_size):
+    def load_data_img(self, batch_size, img_size):
         train_h5, test_h5 = self.load_h5_files()
         width = img_size[0]
         height = img_size[1]
