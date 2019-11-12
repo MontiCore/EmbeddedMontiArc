@@ -296,7 +296,7 @@ class Net_0(gluon.HybridBlock):
         dropout15_ = self.dropout15_(relu15_)
         fc15_ = self.fc15_(dropout15_)
         softmax15_ = F.softmax(fc15_, axis=-1)
-        predictions_ = softmax15_
+        predictions_ = F.identity(softmax15_)
 
         return predictions_
 

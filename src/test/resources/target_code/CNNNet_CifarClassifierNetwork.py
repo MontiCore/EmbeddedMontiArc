@@ -471,7 +471,7 @@ class Net_0(gluon.HybridBlock):
         dropout31_ = self.dropout31_(fc31_)
         fc32_ = self.fc32_(dropout31_)
         softmax32_ = F.softmax(fc32_, axis=-1)
-        softmax_ = softmax32_
+        softmax_ = F.identity(softmax32_)
 
         return softmax_
 

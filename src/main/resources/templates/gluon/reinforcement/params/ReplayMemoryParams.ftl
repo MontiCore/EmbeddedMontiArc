@@ -13,3 +13,4 @@
             'state_dtype': 'float32',
             'action_dtype': <#if config.rlAlgorithm=="dqn">'uint8'<#else>'float32'</#if>,
             'rewards_dtype': 'float32'
+

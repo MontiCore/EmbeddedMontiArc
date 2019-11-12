@@ -268,7 +268,7 @@ class Net_0(gluon.HybridBlock):
         dropout7_ = self.dropout7_(relu7_)
         fc8_ = self.fc8_(dropout7_)
         softmax8_ = F.softmax(fc8_, axis=-1)
-        predictions_ = softmax8_
+        predictions_ = F.identity(softmax8_)
 
         return predictions_
 

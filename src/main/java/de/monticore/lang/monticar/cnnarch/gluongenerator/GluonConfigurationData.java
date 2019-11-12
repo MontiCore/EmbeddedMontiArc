@@ -28,6 +28,10 @@ public class GluonConfigurationData extends ConfigurationData {
                 && retrieveConfigurationEntryValueByKey(LEARNING_METHOD).equals(LearningMethod.REINFORCEMENT);
     }
 
+    public Boolean isGan() {
+        return configurationContainsKey(LEARNING_METHOD)
+                && retrieveConfigurationEntryValueByKey(LEARNING_METHOD).equals(LearningMethod.GAN);
+    }
     public Integer getNumEpisodes() {
         return !configurationContainsKey(NUM_EPISODES)
                 ? null : (Integer)retrieveConfigurationEntryValueByKey(NUM_EPISODES);
@@ -161,6 +165,23 @@ public class GluonConfigurationData extends ConfigurationData {
         return getMultiParamEntry(REPLAY_MEMORY, "method");
     }
 
+    public Map<String, Object> getNoiseDistribution() {
+        return getMultiParamEntry(NOISE_DISTRIBUTION, "name");
+    }
+
+    public String getImgResizeWidth() {
+        if (!this.getConfiguration().getEntryMap().containsKey("img_resize_width")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("img_resize_width").getValue());
+    }
+
+    public String getImgResizeHeight() {
+        if (!this.getConfiguration().getEntryMap().containsKey("img_resize_height")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("img_resize_height").getValue());
+    }
     public Map<String, Object> getStrategy() {
         assert isReinforcementLearning(): "Strategy parameter only for reinforcement learning but called in a " +
          " non reinforcement learning context";
