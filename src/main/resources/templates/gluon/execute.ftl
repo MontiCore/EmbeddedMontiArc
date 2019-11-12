@@ -48,6 +48,10 @@
                 _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), ", ")}, ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), ", ")});
 <#list tc.getUnrollOutputNames(networkInstruction, "i") as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
+<#if tc.endsWithArgmax(networkInstruction.body)>
+                std::vector<float>::iterator maxElement = std::max_element(${outputName}.begin(), ${outputName}.end());
+                ${outputName} = std::vector<float>{static_cast<float>(std::distance(${outputName}.begin(), maxElement))};
+</#if>
                 vector<float> out = ${outputName};
 </#if>
 </#list>
@@ -85,6 +89,14 @@
     }
 <#else>
     _predictor_${networkInstruction?index}_.predict(${tc.join(tc.getStreamInputNames(networkInstruction.body, true), ", ")}, ${tc.join(tc.getStreamOutputNames(networkInstruction.body, true), ", ")});
+<#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
+<#if tc.getNameWithoutIndex(outputName) == tc.outputName>
+<#if tc.endsWithArgmax(networkInstruction.body)>
+    std::vector<float>::iterator maxElement = std::max_element(${outputName}.begin(), ${outputName}.end());
+    ${outputName} = std::vector<float>{static_cast<float>(std::distance(${outputName}.begin(), maxElement))};
+</#if>
+</#if>
+</#list>
 </#if>
 
 </#list>
