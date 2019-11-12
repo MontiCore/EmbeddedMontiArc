@@ -5,7 +5,7 @@
  * can be found under https://github.com/MontiCore/monticore.
  */
 #pragma once
-#include "utility.h"
+#include "utility/utility.h"
 
 /*
     Contains the virtual memory layout for the computer.

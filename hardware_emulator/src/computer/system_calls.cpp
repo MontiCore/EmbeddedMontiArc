@@ -7,7 +7,7 @@
 #include "computer/system_calls.h"
 #include "computer/computer_layout.h"
 #include "computer.h"
-#include "debug.h"
+#include "utility/debug.h"
 
 void SystemCalls::init( Computer &computer ) {
     this->computer = &computer;
@@ -24,7 +24,7 @@ void SystemCalls::init( Computer &computer ) {
 void SystemCalls::handle_call( ulong addr ) {
     //Use memory annotation system to find external procedure.
     auto note_ptr = section->annotations.get_annotation( addr );
-    if ( note_ptr == nullptr || note_ptr->type != Annotation::FUNC ) {
+    if ( note_ptr == nullptr || note_ptr->type != Annotation::Type::FUNC ) {
         Log::err << Log::tag << "Instruction pointer at invalid system call address" << "\n";
         //Execution will stop and return an error since the syscall section does not allow code execution.
         return;
@@ -52,12 +52,12 @@ ulong SystemCalls::add_syscall( SysCall const &call, const char *reason ) {
     //std::string res_name = call.module + "!" + call.name;
     
     auto id = sys_call_pos++;
-    auto proc_handle = syscall_stack.get_annotated_8byte( call.name, Annotation::FUNC, id );
+    auto proc_handle = syscall_stack.get_annotated_8byte( call.name, Annotation::Type::FUNC, id );
     
     sys_calls[id] = call;
     computer->debug.debug_register_syscall( call, section->address_range.get_local_index( proc_handle ), reason );
     
-    computer->symbols.add_symbol( call.name, Symbols::Symbol::SYSCALL, proc_handle );
+    computer->symbols.add_symbol( call.name, Symbols::Symbol::Type::SYSCALL, proc_handle );
     
     return proc_handle;
 }

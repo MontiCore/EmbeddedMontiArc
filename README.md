@@ -1,9 +1,13 @@
 # Hardware Emulator
 
+- Dynamic Interface
+- SoftwareSimulator
+- HardwareEmulator
+- Controller
 
 
 ## Overview
-This project allows to run **EmbeddedMontiArc** models and let them communicate with the MontiSim simulation. It allows the time evaluation of the model execution using a parametric computer model. The *Hardware Emulator* can execute multiple models independently of each other.
+This project allows to run **EmbeddedMontiArc** models that have a **DynamicInterface** and let them communicate with the MontiSim simulation. It allows the time evaluation of the model execution using a parametric computer model.
 
 
 
@@ -12,7 +16,7 @@ The project contains a **C++ CMake project** and a **Maven project**.
 The C++ project contains the logic of the Hardware Emulator.
 The Maven project takes this C++ library and wraps it in a Jar alongside its Java Interfaces. The resulting Jar is avaiable as dependency in the **nexus**.
 
-## C++ Project
+### C++ Project
 To compile the C++ project (under the [hardware_emulator](hardware_emulator) folder), use the `build_emulator` script for your system (located in the [scripts](scripts) folder).
 
 > For Visual Studio, the script has to be started inside the Visual Studio **Developer Command Prompt**.
@@ -23,13 +27,13 @@ The `build_emulator` script will directly install the compiled library inside th
 
 _**NOTE:** Any changes to the C++ project **MUST** be compiled and installed under both **Linux and Windows** before being merged into the Master branch so that both updated versions are included in the maven artifact._
 
-## Maven Project
+### Maven Project
 
 Simply use the `mvn install` command in the main directory to compile the maven project. 
 
 > The project uses the [LibraryService](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/commons/blob/master/src/main/java/commons/utils/LibraryService.java) system to make libraries stored inside the jar resources available at runtime (depending on the system).
 
-## C++ dependencies
+### C++ dependencies
 
 The libraries required by the C++ project are pre-compiled under [hardware_emulator/libs](hardware_emulator/libs). They can be recompiled using the `build_dependencies` scripts.
 
@@ -53,8 +57,20 @@ To use the Hardware Emulator inside another Maven project add the following depe
 ```
 Where `montisim.hardware_emulator.version` specifies the artifact version.
 
-The interface to use the Hardware Emulator is [HardwareEmulatorInterface.java](src/main/java/de/rwth_aachen/git/monticore/EmbeddedMontiArc/simulators/hardware_emulator/HardwareEmulatorInterface.java)
+The main interface for a simulator is [SoftwareSimulator](src/main/java/de/rwth/monticore/EmbeddedMontiArc/simulators/hardware_emulator/interfaces/SoftwareSimulator.java).
 
-> **NOTE**: The Hardware Emulator is currently used by the [RMIModelServer](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/RMIModelServer) to start models on seperate machines using RMI (Remote Method Invocation).
->
-> It is also used by the [basic-simulator](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator) directly.
+Depending on whether the usage of the SoftwareSimulator is remote or not, it has to be allocated through a different instance of a [SoftwareSimulatorManager](src/main/java/de/rwth/monticore/EmbeddedMontiArc/simulators/hardware_emulator/interfaces/SoftwareSimulatorManager.java): `DirectSoftwareSimulatorManager` or `RemoteSoftwareSimulatorManager`. The remote version will return a RMI reference to the remote simulator.
+
+## Details
+
+This project is build from the following main components:
+
+![Project Structure](docs/Structure.svg)
+
+The components used to discover the ports of a *DynamicInterface* software and responsible for the communication between the MontiSim simulator and the software are shown in the following:
+
+![Port Structure](docs/PortStructureVert.svg)
+
+The main idea is to discover the name and types of the ports (performed by the `DynamicInterfaceResolver`), to store these informations in `PortInformation` structures, then depending on the actual simulator implementation used, allocate actual `Port` instances that can store and transfer the specific data type (`PortSimpleIntDirect`, `PortArrayIntEmu`, ...).
+
+The templated `PortSimple` and `PortArray` implementations already define how the port communicates with the Java simulator (through JNI), but how the port data is given to the software is depending on how the software is loaded (as native library or in the Computer emulation), which is specified in the variants `Port...Emu` and `Port...Direct`.

@@ -115,12 +115,12 @@ namespace OS {
         
 		std::vector<char> name_buffer;
         
-        Linux() : name_buffer( 1024 ) {}
+        Linux() : name_buffer( 1024 ), section(nullptr), section_stack(nullptr) {}
         
         void init( Computer &computer );
         
         //File without extension
-        bool load_file( const char *file );
+        void load_file(const FS::File& file);
         
     };
 }

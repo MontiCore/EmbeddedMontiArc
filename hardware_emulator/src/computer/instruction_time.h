@@ -5,7 +5,7 @@
  * can be found under https://github.com/MontiCore/monticore.
  */
 #pragma once
-#include "utility.h"
+#include "utility/utility.h"
 #include <Zydis/Zydis.h>
 #include "memory.h"
 
@@ -166,7 +166,7 @@ struct MemoryModel {
         
         ulong handle_access( MemAccess type, ulong addr );
         
-        MemoryModel() : instruction_memory( nullptr ), data_memory( nullptr ), mem_layer_count( 0 ) {}
+        MemoryModel() : instruction_memory( nullptr ), data_memory( nullptr ), mem_layer_count( 0 ), computer_time(nullptr), memory(nullptr) {}
 };
 
 struct Memory;
@@ -186,7 +186,7 @@ struct CodeDecoder {
     bool succeeded;
     ZydisDecodedInstruction instruction;
     
-    CodeDecoder() : computer_time( nullptr ), memory( nullptr ), code( nullptr ) {}
+    CodeDecoder() : computer_time( nullptr ), memory( nullptr ), code( nullptr ), length(0), instruction(), succeeded(false), decoder(){}
     
     void init( Memory &memory, ComputerTime &computer_time );
     

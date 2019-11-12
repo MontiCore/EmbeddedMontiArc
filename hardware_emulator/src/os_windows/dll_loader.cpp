@@ -16,7 +16,7 @@ using namespace peparse;
 
 int iter_exports( void *data, VA address, std::string &module_name, std::string &symbol_name ) {
     auto &loader = *static_cast<OS::DllLoader *>( data );
-    loader.symbols->add_symbol( symbol_name, Symbols::Symbol::EXPORT, address );
+    loader.symbols->add_symbol( symbol_name, Symbols::Symbol::Type::EXPORT, address );
     return 0;
 }
 int iter_imports( void *data, VA address, const std::string &module_name, const std::string &symbol_name ) {
@@ -24,7 +24,7 @@ int iter_imports( void *data, VA address, const std::string &module_name, const 
     SysCall call( symbol_name, module_name, nullptr );
     ulong func_addr;
     auto sym = loader.symbols->get_symbol( symbol_name );
-    if ( sym.type == Symbols::Symbol::NONE )
+    if ( sym.type == Symbols::Symbol::Type::NONE )
         func_addr = loader.sys_calls->add_syscall( call, "dll resolve" );
     else
         func_addr = sym.addr;
@@ -57,37 +57,31 @@ int iter_symbols( void *data, std::string &str_name, uint32_t &value, int16_t &s
     auto &loader = *static_cast<OS::DllLoader *>( data );
     if ( section_number < 1 )
         return 0;
-    auto &sec = loader.sections[section_number - 1];
+    auto &sec = loader.sections[section_number - 1LL];
     auto &mem = *sec.mem;
     if ( !mem.has_annotations() )
         mem.init_annotations();
-    mem.annotations.add_annotation( mem.address_range.start_address + value, Annotation( str_name, Annotation::OBJECT ) );
+    mem.annotations.add_annotation( mem.address_range.start_address + value, Annotation( str_name, Annotation::Type::OBJECT ) );
     return 0;
 }
 
 //File without extension
-bool OS::DllLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
+void OS::DllLoader::init(const FS::File& fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
     drop();
     
     this->sys_calls = &sys_calls;
     this->mem = &mem;
     this->symbols = &symbols;
-    file_name = fn;
+    file_name = fn.get_full_name();
     
     FileReader fr;
-    if ( !fr.open( file_name ) ) {
-        Log::err << Log::tag << "Could not open DLL: " << file_name << "\n";
-        return false;
-    }
+    if ( !fr.open(fn) )
+        throw_error(Error::hardware_emu_software_load_error("[DllLoader] Could not find software program: " + fn.to_string()));
     
     fr.read( file );
-    pe = ParsePEFromMemory( file.data(), file.size() );
-    if ( pe == NULL ) {
-        Log::err << Log::tag << "PEParse: " << to_string( GetPEErr() ) << " (" << GetPEErrString() << ")\n";
-        Log::err << "      Location: " << GetPEErrLoc() << "\n";
-        file.clear();
-        return false;
-    }
+    pe = ParsePEFromMemory( file.data(), (unsigned long) file.size() );
+    if ( pe == NULL ) throw_error(Error::hardware_emu_software_load_error("[DllLoader] Error parsing software program: "
+        + GetPEErrString() + "\n\tLocation: " + GetPEErrLoc()));
     
     info.load_values( pe );
     
@@ -107,8 +101,6 @@ bool OS::DllLoader::init( const std::string &fn, SystemCalls &sys_calls, Memory 
     IterSymbols( static_cast<peparse::parsed_pe *>( pe ), iter_symbols, this );
     
     file.clear();
-    
-    return true;
 }
 
 void OS::DllLoader::drop() {

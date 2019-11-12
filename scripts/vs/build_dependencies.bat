@@ -14,10 +14,10 @@
 @echo off
 set SCRIPTS_DIR=%~dp0
 set ROOT_DIR=%~dp0\..\..
-set LIBS_DIR=%ROOT_DIR%\hardware_emulator\libs\vs
-if not exist %LIBS_DIR% mkdir %LIBS_DIR%
 
 IF [%1] == [] (SET DEP_TARGET=Release) else (SET DEP_TARGET=%1)
+set LIBS_DIR=%ROOT_DIR%\hardware_emulator\libs\vs\%DEP_TARGET%
+if not exist %LIBS_DIR% mkdir %LIBS_DIR%
 
 pushd %ROOT_DIR%
 

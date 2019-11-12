@@ -5,7 +5,7 @@
  * can be found under https://github.com/MontiCore/monticore.
  */
 #pragma once
-#include "utility.h"
+#include "utility/utility.h"
 #include "computer/computer_layout.h"
 #include <map>
 
@@ -62,17 +62,16 @@ struct MemoryRange {
     from the Annotations structure (which holds all the annotations).
 */
 struct Annotation {
-    enum Type {
+    ulong base;
+    ulong param;
+    std::string name;
+    enum class Type {
         NONE,
         HANDLE,
         FUNC,
         OBJECT,
-    };
-    ulong base;
-    std::string name;
-    Type type;
-    ulong param;
-    Annotation() {}
+    } type;
+    Annotation() : base(0), param(0), type(Type::NONE) {}
     Annotation( std::string const &name, Type type, ulong param = 0 )
         : base( 0 ), name( name ), type( type ), param( param ) {}
 };
@@ -85,7 +84,7 @@ struct AnnotationTable {
     static constexpr ulong DEFAULT_ANNOTATION_SIZE = 128;
 	std::vector<Annotation> annotations;
     //'Stack' position in the annotations array (= first free position).
-    uint annotation_pos;
+    uint annotation_pos = 0;
     
     void init();
     
@@ -144,7 +143,7 @@ struct MemorySection {
     
     SectionAnnotations annotations;
     
-    MemorySection() : internal_uc( nullptr ), mem( nullptr ) {}
+    MemorySection() : internal_uc( nullptr ), mem( nullptr ), file_pos(0), p_read(false), p_execute(false), p_write(false), page_size(0) {}
     
     bool init( MemoryRange address_range, std::string const &name, std::string const &mod,
                bool execute, bool read, bool write );
@@ -194,8 +193,8 @@ struct SectionStack {
             return mem != nullptr;
         }
         
-        MemoryRange get_annotated( uint size, const std::string &name, Annotation::Type type = Annotation::NONE );
-        uint64_t get_annotated_8byte( const std::string &name, Annotation::Type type = Annotation::NONE, ulong param = 0 );
+        MemoryRange get_annotated( uint size, const std::string &name, Annotation::Type type = Annotation::Type::NONE );
+        uint64_t get_annotated_8byte( const std::string &name, Annotation::Type type = Annotation::Type::NONE, ulong param = 0 );
         
     private:
         MemoryRange get_range( uint size );
@@ -230,7 +229,7 @@ struct Memory {
     MemorySection *sys_section;
     SectionStack sys_section_stack;
     
-    Memory() : internal_uc( nullptr ), section_count( 0 ) {}
+    Memory() : internal_uc( nullptr ), section_count( 0 ), page_size(0), sys_section(nullptr) {}
     
     void init( void *uc );
     bool loaded() {
@@ -297,7 +296,7 @@ struct VirtualHeap {
     static constexpr ulong BLOCK_SIZE = 0x100;
     static constexpr ulong HEAP_BLOCKS = ComputerLayout::HEAP_SIZE / BLOCK_SIZE;
     
-    VirtualHeap() : section( nullptr ) {}
+    VirtualHeap() : section( nullptr ), heap_handle(0), heap_size(0) {}
     
     bool loaded() {
         return section != nullptr;
@@ -320,7 +319,7 @@ struct VirtualStack {
     ulong stack_start;
     ulong stack_size;
     
-    VirtualStack() : section( nullptr ), registers( nullptr ) {}
+    VirtualStack() : section( nullptr ), registers( nullptr ), stack_start(0), stack_size(0) {}
     
     bool loaded() {
         return section != nullptr && registers != nullptr;

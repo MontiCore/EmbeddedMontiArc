@@ -54,7 +54,7 @@ struct SystemCalls {
 	std::vector<SysCall> sys_calls;
     uint sys_call_pos;
     
-    SystemCalls() : section( nullptr ), computer( nullptr ) {}
+    SystemCalls() : section( nullptr ), computer( nullptr ), sys_call_pos(0) {}
     
     bool loaded() {
         return section != nullptr;

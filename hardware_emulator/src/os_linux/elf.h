@@ -6,7 +6,7 @@
  */
 #pragma once
 #include <stdint.h>
-#include "utility.h"
+#include "utility/utility.h"
 
 struct ValueName {
     uint32_t value;
@@ -769,10 +769,10 @@ static_assert( sizeof( Elf64_Header ) == 64 );
 
 struct ElfFile {
 	std::vector<uchar> data;
-    ElfIdent *ident_ptr;
-    bool is_64bit;
-    Elf32_Header *header32_ptr;
-    Elf64_Header *header64_ptr;
+    ElfIdent *ident_ptr = nullptr;
+    bool is_64bit = false;
+    Elf32_Header *header32_ptr = nullptr;
+    Elf64_Header *header64_ptr = nullptr;
     vector_slice<Elf32_SectionHeader> sh32;
     vector_slice<Elf64_SectionHeader> sh64;
     vector_slice<Elf32_ProgramHeader> ph32;

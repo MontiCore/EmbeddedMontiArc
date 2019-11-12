@@ -6,14 +6,14 @@
  */
 #pragma once
 #include <unordered_map>
-#include "utility.h"
+#include "utility/utility.h"
 
 /*
     Wraps a simple name to symbol table using a hashmap.
 */
 struct Symbols {
     struct Symbol {
-        enum Type {
+        enum class Type {
             NONE,
             SYSCALL,
             EXPORT, //Func from dll/lib
@@ -22,7 +22,7 @@ struct Symbols {
         } type;
         ulong addr;
         
-        Symbol() : type( NONE ), addr( 0 ) {}
+        Symbol() : type(Type::NONE ), addr( 0 ) {}
         Symbol( Type type, ulong addr ) : type( type ), addr( addr ) {}
     };
     

@@ -105,8 +105,8 @@ namespace OS {
         objects needed by autopilots running under Windows.
     */
     struct Windows : public OS {
-        MemorySection *section;
-        SectionStack *section_stack;
+        MemorySection *section = nullptr;
+        SectionStack *section_stack = nullptr;
         
         DllLoader dll;
         
@@ -124,7 +124,7 @@ namespace OS {
         void init( Computer &computer );
         
         //File without extension
-        bool load_file( const char *file );
+        void load_file(const FS::File& file);
         
     };
     
