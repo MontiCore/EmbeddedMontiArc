@@ -1,5 +1,5 @@
 #include "CNNTranslator.h"
-#include "rnnencdec_main.h"
+#include "rnnsearch_main.h"
 
 #include <fstream>
 #include <iostream>
@@ -58,7 +58,7 @@ std::vector<int> sequenceToIndices(std::string sequence, const std::map<std::str
     }
 
     if (words.size() > MAX_LENGTH) {
-        throw std::runtime_error("Only sequences with 30 words or less are supported");
+        throw std::runtime_error("Only sequences with " + std::to_string(MAX_LENGTH) + " words or less are supported");
     }
 
     std::vector<int> indices{vocab.at("<s>")};
@@ -112,24 +112,18 @@ int main(int argc, char* argv[]) {
         std::vector<float> source(sourceIndices.begin(), sourceIndices.end());
 
         // do stuff
-        rnnencdec_main rnnsearch;
+        rnnsearch_main rnnsearch;
         rnnsearch.init();
 
         rnnsearch.source = conv_to<ivec>::from(CNNTranslator::translateToCol(source, std::vector<std::size_t>{source.size()}));
 
-        std::cout << "debug1" << std::endl;
-
         rnnsearch.execute();
-
-        std::cout << "debug2" << std::endl;
 
         std::vector<int> targetIndices;
 
-        for (std::size_t i = 0; i < sizeof(rnnsearch.target); ++i) {
+        for (std::size_t i = 0; i < MAX_LENGTH + 2; ++i) {
             targetIndices.push_back(rnnsearch.target[i](0));
         }
-
-        std::cout << "debug3" << std::endl;
 
         std::string targetSequence = indicesToSequence(targetIndices, targetVocab.second);
 
