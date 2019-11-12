@@ -22,7 +22,7 @@ public:
         <#list tc.getStreamInputNames(networkInstruction.body, true) as variable>"data${variable?index}"<#sep>, </#list>
 </#if>
     };
-    const std::vector<std::vector<mx_uint>> input_shapes = {<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>{${tc.join(dimensions, ", ")}}<#sep>, </#list>};
+    const std::vector<std::vector<mx_uint>> input_shapes = {<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>{1, ${tc.join(dimensions, ", ")}}<#sep>, </#list>};
     const bool use_gpu = false;
 
     PredictorHandle handle;
@@ -54,7 +54,7 @@ public:
         size = 1;
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
         assert(size == out_${variable}.size());
-        MXPredGetOutput(handle, ${variable?index?c}, &(out_${variable}[0]), out_${variable}.size());
+        MXPredGetOutput(handle, output_index, &(out_${variable}[0]), out_${variable}.size());
 
 </#list>
     }
