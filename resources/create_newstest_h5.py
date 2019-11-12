@@ -95,11 +95,13 @@ vocab_source = read_vocabulary(contents['vocab_source'])
 vocab_target = read_vocabulary(contents['vocab_target'])
 
 # Insert <pad>, remove last word so that our vocabulary size stays the same
-vocab_source.insert(0, PAD_TOKEN)
-del vocab_source[-1]
+if PAD_TOKEN not in vocab_source:
+    vocab_source.insert(0, PAD_TOKEN)
+    del vocab_source[-1]
 
-vocab_target.insert(0, PAD_TOKEN)
-del vocab_target[-1]
+if PAD_TOKEN not in vocab_target:
+    vocab_target.insert(0, PAD_TOKEN)
+    del vocab_target[-1]
 
 if not check_vocabulary(vocab_source):
     print('Source vocabulary is at least missing one of these words: <pad>, <unk>, <s> or </s>')
