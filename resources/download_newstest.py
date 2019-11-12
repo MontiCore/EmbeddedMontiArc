@@ -14,15 +14,8 @@ for url in urls:
         r.raise_for_status()
 
         with open(filename, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=100000): 
+            for chunk in r.iter_content(chunk_size=8192): 
                 if chunk:
                     f.write(chunk)
 
-                break
-
     print(filename + ' downloaded')
-
-
-
-
-

@@ -71,8 +71,8 @@ def read_corpus(string, vocabulary_dict, padding=None):
         while len(sequence) < MAX_LENGTH:
             if padding == 'back':
                 sequence.append(pad_token_index)
-            else if padding == 'front':
-                sequence.prepend(pad_token_index)
+            elif padding == 'front':
+                sequence.insert(0, pad_token_index)
 
         corpus.append(sequence)
 
