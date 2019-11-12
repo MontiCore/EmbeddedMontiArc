@@ -118,7 +118,6 @@ class ${tc.fileNameWithoutEnding}:
 
         if os.path.isfile(train_path):
             train_h5 = h5py.File(train_path, 'r')
-            print(train_path)
 
             for input_name in self._input_names_:
                 if not input_name in train_h5:

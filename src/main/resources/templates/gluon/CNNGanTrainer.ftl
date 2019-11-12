@@ -134,9 +134,7 @@ class ${tc.fileNameWithoutEnding}:
             activation_name = 'sigmoid'
 
 <#list tc.architecture.streams as stream>
-<#if stream.isTrainable()>
         input_shape = <#list tc.getStreamInputDimensions(stream) as dimensions>${tc.join(dimensions, ",")}</#list>
-</#if>
 </#list>
         shape_list = list(input_shape)
         shape_list[0] = batch_size
