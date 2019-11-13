@@ -16,7 +16,7 @@ public:
     const std::vector<std::string> input_keys = {
         "data"
     };
-    const std::vector<std::vector<mx_uint>> input_shapes = {{2}};
+    const std::vector<std::vector<mx_uint>> input_shapes = {{1, 2}};
     const bool use_gpu = false;
 
     PredictorHandle handle;
@@ -44,8 +44,8 @@ public:
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
-        assert(size == out_action_.size());
-        MXPredGetOutput(handle, 0, &(out_action_[0]), out_action_.size());
+        assert(out_action_.size() == 1 || size == out_action_.size());
+        MXPredGetOutput(handle, output_index, &(out_action_[0]), out_action_.size());
 
     }
 
