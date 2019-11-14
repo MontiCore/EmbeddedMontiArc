@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
@@ -26,7 +27,7 @@ public abstract class ArchitectureSupportChecker {
 
         return true;
     }
-
+	
     protected boolean checkMultipleInputs(ArchitectureSymbol architecture) {
         if (architecture.getInputs().size() > 1) {
             Log.error("This cnn architecture has multiple inputs, " +
@@ -35,7 +36,7 @@ public abstract class ArchitectureSupportChecker {
 
             return false;
         }
-
+        
         return true;
     }
 

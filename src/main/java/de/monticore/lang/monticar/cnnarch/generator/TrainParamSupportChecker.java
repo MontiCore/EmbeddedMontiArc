@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnntrain._ast.*;
@@ -44,7 +45,7 @@ public abstract class TrainParamSupportChecker implements CNNTrainVisitor {
     public void visit(ASTTrainContextEntry node){}
 
     public void visit(ASTEvalMetricEntry node){}
-
+	
     public void visit(ASTSGDOptimizer node){}
 
     public void visit(ASTAdamOptimizer node){}

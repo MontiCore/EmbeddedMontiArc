@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
@@ -89,6 +90,13 @@ public class ConfigurationData {
             return null;
         } else{
             return mapToStrings;}
+    }
+    
+    public String getLossWeights() {
+        if (!getConfiguration().getEntryMap().containsKey("loss_weights")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("loss_weights").getValue());
     }
 
     public String getOptimizerName() {

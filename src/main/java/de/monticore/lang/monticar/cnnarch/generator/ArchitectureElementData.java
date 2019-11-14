@@ -1,23 +1,4 @@
-/**
- *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
@@ -190,6 +171,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.FLATTEN_PARAMETER_NAME).get();
     }
 
+    public List<Integer> getShape() {
+        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.SHAPE_NAME).get();
+    }
+
     @Nullable
     public String getPoolType(){
         return getLayerSymbol().getStringValue(AllPredefinedLayers.POOL_TYPE_NAME).get();
@@ -197,7 +182,16 @@ public class ArchitectureElementData {
 
     @Nullable
     public List<Integer> getPadding(){
-        return getPadding(getLayerSymbol());
+        
+    	String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.PADDING_NAME).get();
+
+        if(pad.equals("same")){
+            return getPadding(getLayerSymbol()); //The padding calculated here is only used in the gluon/ mxnet backend, in the tensorlflow one it is interpreted as "same"
+        }else if(pad.equals("valid")){
+            return Arrays.asList(0,-1,0,0,0,0,0,0);
+        }else{ //"no loss"
+            return Arrays.asList(0,0,-1,0,0,0,0,0);
+        }
     }
 
     @Nullable
@@ -222,5 +216,41 @@ public class ArchitectureElementData {
         }
 
         return Arrays.asList(0,0,0,0,topPad,bottomPad,leftPad,rightPad);
+    }
+
+    @Nullable
+    public List<Integer> getTransPadding(){
+
+        String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.TRANSPADDING_NAME).get();
+
+        if(pad.equals("same")){
+            return getTransPadding(getLayerSymbol()); //The padding calculated here is only used in the gluon/ mxnet backend, in the tensorlflow one it is interpreted as "same"
+        }else if(pad.equals("valid")){
+            return Arrays.asList(0,0);
+        }else{ //"no loss"
+            return Arrays.asList(0,0,-1,0,0,0,0,0);
+        }
+    }
+
+    @Nullable
+    public List<Integer> getTransPadding(LayerSymbol layer){
+        List<Integer> kernel = layer.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get();
+        List<Integer> stride = layer.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
+        ArchTypeSymbol inputType = layer.getInputTypes().get(0);
+        ArchTypeSymbol outputType = layer.getOutputTypes().get(0);
+
+        int heightPad = kernel.get(0) - stride.get(0);
+        int widthPad = kernel.get(1) - stride.get(1);
+
+        int topPad = (int)Math.ceil(heightPad / 2.0);
+        int bottomPad = (int)Math.floor(heightPad / 2.0);
+        int leftPad = (int)Math.ceil(widthPad / 2.0);
+        int rightPad = (int)Math.floor(widthPad / 2.0);
+
+        /*if (topPad == 0 && bottomPad == 0 && leftPad == 0 && rightPad == 0){
+            return null;
+        }*/
+
+        return Arrays.asList(bottomPad, rightPad);
     }
 }
