@@ -386,6 +386,10 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         return AllAttentionModels.getAttentionModels().contains(getComponentName());
     }
 
+    public boolean isArchitectureOutput(String element){
+        return getArchitectureOutputs().contains(element.replace("1000000", "0"));
+    }
+
     public int getBeamSearchMaxLength(UnrollInstructionSymbol unroll){
         return unroll.getIntValue(AllPredefinedLayers.MAX_LENGTH_NAME).get();
     }
