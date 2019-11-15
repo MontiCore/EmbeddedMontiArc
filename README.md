@@ -74,3 +74,55 @@ The components used to discover the ports of a *DynamicInterface* software and r
 The main idea is to discover the name and types of the ports (performed by the `DynamicInterfaceResolver`), to store these informations in `PortInformation` structures, then depending on the actual simulator implementation used, allocate actual `Port` instances that can store and transfer the specific data type (`PortSimpleIntDirect`, `PortArrayIntEmu`, ...).
 
 The templated `PortSimple` and `PortArray` implementations already define how the port communicates with the Java simulator (through JNI), but how the port data is given to the software is depending on how the software is loaded (as native library or in the Computer emulation), which is specified in the variants `Port...Emu` and `Port...Direct`.
+
+
+
+
+
+
+# TODO Adapt
+
+# Dev Documentation
+
+## Emulator configuration
+
+The [emulator_configuration](docs/emulator_configuration.pdf) document shows the configuration possibilities for the autopilot emulators.
+
+## HardwareEmulator JNI interface
+
+The interface of between the RMIModelServer and the HardwareEmulator works with _Java Native Interface (JNI)_. In case of an update
+of the interface (file: [src/main/java/simulator/integration/HardwareEmulatorInterface.java](src/main/java/simulator/integration/HardwareEmulatorInterface.java)),
+the corresponding C header has to be generated.
+
+Currently, this happens in the [hardware_emulator](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/hardware_emulator) project under the `jni` folder,
+where the HardwareEmulatorInterface.java has to be copied. `generate.bat` shows how to update the interface on Windows.
+
+The java file has to be adapted to compile without its dependencies, since the JNI header will only
+be generated from compilable java files. Since the actual header file only depends on the `native` functions from the java file, the other dependencies can
+be safely deleted. The resulting header file then has to be renamed `emulator_server.h` and placed in the `hardware_emulator/src/emulator` source folder.
+The corresponding implementations of the C interface have to be updated in `hardware_emulator/src/emulator/emulator_server.cpp`.
+
+A better approach would be a script in the RMIModelServer project generating the header and copying it to the *hardware_emulator* project.
+
+## New autopilot EMA port types
+
+To communicate with the ports from the autopilot, an _AutopilotAdapter_ encapsulates the EMA model. For new port data types,
+the *EMAM2CPP* generator and the *hardware_emulator* have to be updated to handle the new data type.
+
+In the EMAM2CPP project, the `de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterDataModel` class is responsible to create the _AutopilotAdapter_.
+In its `addInput` and `addOutput` functions, the new function definition and declarations for the data type have to be defined.
+
+In the *hardware_emulator* projects, three places require updates for new data types.
+ 1. The `hardware_emulator/src/emulator/function_values.h / .cpp` files need to updated with the new data type (`enum class VALUE_TYPE`), buffer entry (`struct FunctionValue`) and type name (`FunctionValue::get_type()`).
+ 2. The `call_input()` and `call_output()` functions from the `HardwareEmulator` structure (`hardware_emulator/src/emulator/hardware_emulator.h`) must be updated. They need to know how to pass the arguments to the emulated autopilots.
+ 3. The `Java_simulator_integration_HardwareEmulatorInterface_add_1one_1input()` and `Java_simulator_integration_HardwareEmulatorInterface_query_1outputs()` functions need to know how to pass and read port data to and from Java. (`hardware_emulator/src/emulator/emulator_server.h`)
+ 
+## Unsupported autopilot functionalities.
+
+The emulator used in this RMIModelServer only implements features encountered in previous autopilots.
+
+New autopilots might trigger new unsupported features:
+ * Unsupported system calls (enable `debug=unsupported_syscalls` flag for the autopilot emulator). These are operating system functions for which no current emulation is implemented. These have to be added and registered in the `hardware_emulator/src/os_linux/linux_calls.h / .cpp` files for Linux and in the `hardware_emulator/src/os_windows/windows_calls.h / .cpp` files for Windows.
+ * Unsupported instruction time value. The time table (currently `hardware_emulator/src/timetable/skylake.txt`) describing the number of CPU cycles for every instruction is manually filled. It currently only contains entries (!=0) for encountered instructions. It can be filled with elements from the `hardware_emulator/docs/instruction_time.txt` file (which contains entries from the instruction_tables.pdf file).
+ 
+To make sure the autopilot emulation is correct, allocate an autopilot emulator with the `test_real` flag. When loading an autopilot with the same OS as the RMIModelServer, the emulator will compare the outputs of the emulated autopilot with the outputs of the actual autopilot program.

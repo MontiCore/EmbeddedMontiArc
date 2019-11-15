@@ -536,8 +536,8 @@ namespace FS {
 
     Directory Directory::canonical() const
     {
-        // if (!is_absolute())
-        //     throw_system_error("Directory.canonical() only supported on absolute paths.");
+        //if (!is_absolute())
+        //    throw_system_error("Directory.canonical() only supported on absolute paths.");
 
         char actualpath[PATH_MAX];
         if (realpath(path.c_str(), actualpath) != NULL)

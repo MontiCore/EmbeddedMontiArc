@@ -17,3 +17,5 @@ target/
 unicorn/
 zydis/
 pe-parse/
+src/main/resources/linux/
+src/main/resources/windows/

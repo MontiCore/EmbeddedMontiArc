@@ -15,9 +15,10 @@ import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.interface
 
 public class SoftwareSimulatorImpl implements SoftwareSimulator {
 
-    int id;
+    int id = -2;
     public SoftwareSimulatorImpl(ControllerConfig config) throws Exception {
         this.id = CppBridge.allocSimulator(config.get_config_string());
+        System.out.println("Allocated SoftwareSimulator, id="+this.id);
     }
 
     
@@ -43,6 +44,10 @@ public class SoftwareSimulatorImpl implements SoftwareSimulator {
     }
     @Override
     public void free() throws Exception {
-        CppBridge.freeSimulator(id);
+        if (this.id < 0)
+            throw new Exception("Already freed SoftwareSimulator with id: "+this.id);
+        CppBridge.freeSimulator(this.id);
+        System.out.println("Freed SoftwareSimulator, id="+this.id);
+        this.id = -1;
     }
 }

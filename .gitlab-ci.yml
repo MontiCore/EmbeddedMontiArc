@@ -23,6 +23,8 @@ windows_build:
   artifacts:
     paths:
       - hardware_emulator/build/Release/hardware-emulator-test.exe
+      - src/main/resources/windows/HardwareEmulator.dll
+    expire_in: 1 hour
 
 windows_test:
   stage: test
@@ -53,6 +55,7 @@ linux_build:
     paths:
       - hardware_emulator/build/hardware-emulator-test
       - src/main/resources/linux/HardwareEmulator.so
+    expire_in: 1 hour
 
 linux_test:
   stage: test
@@ -76,6 +79,7 @@ linux_maven_master:
   - master
   dependencies:
     - linux_build
+    - windows_build
 
 linux_maven_branch:
   stage: maven

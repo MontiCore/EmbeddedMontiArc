@@ -36,8 +36,6 @@ void SoftwareSimulator::init(SoftwareSimulatorManager& manager, const char* conf
         Log::err << "Unkown Time Model\n";
     }
 
-    //TODO time model
-
     if (software_name.size() == 0)
         throw_error(Error::hardware_emu_software_load_error("Missing the name of the Software program to load."));
 
