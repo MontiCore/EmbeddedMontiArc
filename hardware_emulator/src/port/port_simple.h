@@ -51,7 +51,6 @@ struct PortSimple : public Port {
 */
 template<typename PortTypeInfo>
 struct PortSimpleEmu : public PortSimple<PortTypeInfo> {
-    //TODO function name from PortTypeInfo
     PortSimpleEmu(const PortInformation& info, HardwareEmulator& emu) : PortSimple<PortTypeInfo>(info.name), computer(emu.computer)
     {
         emu.resolve(info.main_accessor_function_name, this->emu_function);

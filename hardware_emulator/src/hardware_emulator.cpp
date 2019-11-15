@@ -87,10 +87,11 @@ void HardwareEmulator::init_simulator( SoftwareSimulatorManager &manager, const 
     }
     
        
-	Log::info << Log::tag << "Initiated emulator with autopilot: " << software_name << ",\n"
-		<< "os: " << os_name << ",\n";
+	Log::info << Log::tag << "Initiated SoftwareSimulator with autopilot: " << software_name << ",\n"
+		<< "os: " << os_name;
 	if (test_real)
-		Log::info << "real autopilot compared,\n";
+		Log::info << ", native software execution comparison enabled (test_real)";
+    Log::info << '\n';
 }
 
 void HardwareEmulator::resolve_autopilot_os( SoftwareSimulatorManager &manager ) {

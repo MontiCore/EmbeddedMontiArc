@@ -29,7 +29,7 @@ JNI_OnLoad(JavaVM* vm, void* reserved) {
         std::cout << "GetEnv: version not supported" << std::endl;
     }
     JNIEnvironment::instance.init(jni);
-    std::cout << "JNI_OnLoad() called" << std::endl;
+    //std::cout << "JNI_OnLoad() called" << std::endl;
     //TODO DetachCurrentThread
     return JNI_VERSION_1_6;
 }
@@ -53,7 +53,7 @@ JNI_OnUnload(JavaVM* vm, void* reserved) {
         std::cout << "GetEnv: version not supported" << std::endl;
     }
     JNIEnvironment::instance.drop(jni);
-    std::cout << "JNI_OnUnload() called" << std::endl;
+    //std::cout << "JNI_OnUnload() called" << std::endl;
     //TODO DetachCurrentThread
     //vm->DetachCurrentThread();
 }

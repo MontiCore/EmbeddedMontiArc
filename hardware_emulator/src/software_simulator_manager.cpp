@@ -16,6 +16,10 @@ SoftwareSimulatorManager SoftwareSimulatorManager::instance;
 
 
 void SoftwareSimulatorManager::init( const char *config) {
+    if (loaded){
+        Log::info << Log::tag << "SoftwareSimulatorManager::init() on already loaded manager: skipping.\n";
+        return;
+    }
     available_threads = std::thread::hardware_concurrency();
     available_softwares_string = "";
     
@@ -44,6 +48,7 @@ void SoftwareSimulatorManager::init( const char *config) {
     }
     simulators.clear();
     simulator_count = 0;
+    loaded = true;
 }
 
 int SoftwareSimulatorManager::alloc_simulator( const char *config ) {
@@ -76,16 +81,14 @@ int SoftwareSimulatorManager::alloc_simulator( const char *config ) {
         if ( !simulators[i] ) {
             simulators[i] = std::move(simulator);
             simulator_count++;
-            Log::info << Log::tag << "Emulator allocated with id " << i << "\n"; //TODO log
             return i;
         }
     }
 
-    throw_error("Unknown Error");
+    throw_error("Unknown Error"); //Should not reach this point
 }
 
 void SoftwareSimulatorManager::free_simulator( int id ) {
-    Log::info << Log::tag << "Emulator " << id << " freed\n";
     simulator_count--;
     simulators[id].reset();
 }

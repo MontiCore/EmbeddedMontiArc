@@ -65,6 +65,32 @@ public class ControllerConfig {
             return value;
         }
     }
+    
+    public static class CacheOption {
+        private long size; //Cache Size in bytes
+        private long read_ticks; // Number of CPU cycles for a read action
+        private long write_ticks; //Number of CPU cycles for a write action
+
+        public CacheOption(long size, long read_ticks, long write_ticks){
+            this.size = size;
+            this.read_ticks = read_ticks;
+            this.write_ticks = write_ticks;
+        }
+
+        public String get_config_string(){
+            return "=" + size + "," + read_ticks + "," + write_ticks + "\n";
+        }
+
+        public long getSize(){
+            return size;
+        }
+        public long getReadSpeedCpuCycles(){
+            return read_ticks;
+        }
+        public long getWriteSpeedCpuCycles(){
+            return write_ticks;
+        }
+    }
 
     private String autopilot;
     private EmulatorType emulator_type;
@@ -156,21 +182,6 @@ public class ControllerConfig {
         return this;
     }
 
-    public static class CacheOption {
-        private long size; //Cache Size in bytes
-        private long read_ticks; // Number of CPU cycles for a read action
-        private long write_ticks; //Number of CPU cycles for a write action
-
-        public CacheOption(long size, long read_ticks, long write_ticks){
-            this.size = size;
-            this.read_ticks = read_ticks;
-            this.write_ticks = write_ticks;
-        }
-
-        public String get_config_string(){
-            return "=" + size + "," + read_ticks + "," + write_ticks + "\n";
-        }
-    }    
 
     //cache_
     public ControllerConfig set_cache_DL1(CacheOption cache) {
@@ -224,7 +235,7 @@ public class ControllerConfig {
         if (emulator_type == EmulatorType.HARDWARE_EMULATOR){
             res += os.get_config_entry();
             if (test_real){
-                res += "test_real\n";
+                res += "test_real";
                 if (test_real_required){
                     res += "=required\n";
                 } else{
@@ -255,5 +266,45 @@ public class ControllerConfig {
         }
         
         return res;
+    }
+
+    public String getSoftwareName(){
+        return autopilot;
+    }
+    public EmulatorType getSoftwareSimulatorType(){
+        return emulator_type;
+    }
+    public TimeModel getTimeModel(){
+        return time_model;
+    }
+    public Duration getExecutionTime(){
+        return execution_time;
+    }
+    public OS getOS(){
+        return os;
+    }
+    public boolean getTestReal(){
+        return test_real;
+    }
+    public boolean getTestRealRequired(){
+        return test_real_required;
+    }
+    public long getCpuFrequencyHertz(){
+        return cpu_frequency_hertz;
+    }
+    public long getRAMFrequencyHertz(){
+        return memory_frequency_hertz;
+    }
+    public CacheOption getCacheIL1Options(){
+        return IL1_cache;
+    }
+    public CacheOption getCacheDL1Options(){
+        return DL1_cache;
+    }
+    public CacheOption getCacheL2Options(){
+        return L2_cache;
+    }
+    public CacheOption getCacheL3Options(){
+        return L3_cache;
     }
 }

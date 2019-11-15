@@ -14,8 +14,9 @@
 */
 struct SoftwareSimulatorManager {
     static SoftwareSimulatorManager instance;
+    bool loaded = false;
 	std::vector<std::unique_ptr<SoftwareSimulator>> simulators;
-    uint simulator_count = 0;
+    uint simulator_count;
     
     //std::list<fs::directory_entry> entries;
     std::list<FS::File> available_softwares;
