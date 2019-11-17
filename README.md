@@ -1,6 +1,8 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # ShowAttendTellPredictor
 
+This project aims at using the trained Show, attend and tell architecture for inference. It will predict a caption for a given input image. Read further for information on how to run the project.
+
 ## Prerequisites
 1. Ubuntu Linux 16.04 LTS
 2. Deep Learning Framework **MXNET** for Python and C++. (For installation instructions see https://mxnet.apache.org/get_started/ubuntu_setup ).
