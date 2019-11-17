@@ -128,6 +128,13 @@ public class ConfigurationData {
         return (Boolean) getConfiguration().getEntry("save_attention_image").getValue().getValue();
     }
 
+    public Boolean getUseTeacherForcing() {
+        if (!getConfiguration().getEntryMap().containsKey("use_teacher_forcing")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("use_teacher_forcing").getValue().getValue();
+    }
+
     protected Map<String, Object> getMultiParamEntry(final String key, final String valueName) {
         if (!configurationContainsKey(key)) {
             return null;
