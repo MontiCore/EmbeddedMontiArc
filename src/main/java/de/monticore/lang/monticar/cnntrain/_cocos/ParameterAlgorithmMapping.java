@@ -45,10 +45,12 @@ class ParameterAlgorithmMapping {
 		ASTLossWeightsEntry.class,
         ASTSparseLabelEntry.class,
         ASTFromLogitsEntry.class,
+        ASTIgnoreIndicesEntry.class,
         ASTMarginEntry.class,
         ASTLabelFormatEntry.class,
         ASTRhoEntry.class,
         ASTPreprocessingEntry.class,
+        ASTUseTeacherForcing.class,
         ASTSaveAttentionImage.class
     );
 

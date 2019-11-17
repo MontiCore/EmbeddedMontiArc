@@ -81,6 +81,9 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     interface SoftmaxCrossEntropyEntry extends Entry;
     SoftmaxCrossEntropyLoss implements LossValue = name:"softmax_cross_entropy" ("{" params:SoftmaxCrossEntropyEntry* "}")?;
 
+    interface SoftmaxCrossEntropyIgnoreIndicesEntry extends Entry;
+    SoftmaxCrossEntropyIgnoreIndicesLoss implements LossValue = name:"softmax_cross_entropy_ignore_indices" ("{" params:SoftmaxCrossEntropyIgnoreIndicesEntry* "}")?;
+
     SigmoidBinaryCrossEntropyLoss implements LossValue = name:"sigmoid_binary_cross_entropy" ("{" params:Entry* "}")?;
 
     interface HingeEntry extends Entry;
@@ -95,8 +98,9 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     interface KullbackLeiblerEntry extends Entry;
     KullbackLeiblerLoss implements LossValue = name:"kullback_leibler" ("{" params:KullbackLeiblerEntry* "}")?;
 
-    SparseLabelEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry = name:"sparse_label" ":" value:BooleanValue;
-    FromLogitsEntry implements SoftmaxCrossEntropyEntry, KullbackLeiblerEntry = name:"from_logits" ":" value:BooleanValue;
+    SparseLabelEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry = name:"sparse_label" ":" value:BooleanValue;
+    FromLogitsEntry implements SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, KullbackLeiblerEntry = name:"from_logits" ":" value:BooleanValue;
+    IgnoreIndicesEntry implements SoftmaxCrossEntropyIgnoreIndicesEntry = name:"ignore_indices" ":" value:IntegerValue;
     MarginEntry implements HingeEntry, SquaredHingeEntry = name:"margin" ":" value:NumberValue;
     LabelFormatEntry implements LogisticEntry = name:"label_format" ":" value:StringValue;
 
@@ -139,6 +143,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     CenteredEntry implements RmsPropEntry = name:"centered" ":" value:BooleanValue;
     ClipWeightsEntry implements RmsPropEntry = name:"clip_weights" ":" value:NumberValue;
     RhoEntry implements AdaDeltaEntry,RmsPropEntry,HuberEntry = name:"rho" ":" value:NumberValue;
+
+    UseTeacherForcing implements ConfigEntry = name:"use_teacher_forcing" ":" value:BooleanValue;
 
     // Visual attention Extension
     SaveAttentionImage implements ConfigEntry = name:"save_attention_image" ":" value:BooleanValue;
