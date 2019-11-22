@@ -3,22 +3,32 @@
                         logging.getLogger('matplotlib').setLevel(logging.ERROR)
 
                         plt.clf()
-                        fig = plt.figure(figsize=(10,10))
+                        fig = plt.figure(figsize=(15,15))
                         max_length = len(labels)-1
 
                         if(os.path.isfile('src/test/resources/training_data/Show_attend_tell/dict.pkl')):
                             with open('src/test/resources/training_data/Show_attend_tell/dict.pkl', 'rb') as f:
                                 dict = pickle.load(f)
 
+
+                        ax = fig.add_subplot(max_length//3, max_length//4, 1)
+                        ax.imshow(train_images[0+test_batch_size*(batch_i)].transpose(1,2,0))
+
                         for l in range(max_length):
                             attention = attentionList[l]
                             attention = mx.nd.slice_axis(attention, axis=0, begin=0, end=1)
                             attention = mx.nd.squeeze(attention)
                             attention_resized = np.resize(attention.asnumpy(), (8, 8))
-                            ax = fig.add_subplot(max_length//3, max_length//4, l+1)
-                            ax.set_title(dict[int(labels[l+1][0].asscalar())])
-                            img = ax.imshow(train_images[0+test_batch_size*(batch_i)].transpose(1,2,0))
-                            ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
+                            ax = fig.add_subplot(max_length//3, max_length//4, l+2)
+                            if dict[int(labels[l+1][0].asscalar())] == "<end>":
+                                ax.set_title(".")
+                                img = ax.imshow(train_images[0+test_batch_size*(batch_i)].transpose(1,2,0))
+                                ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
+                                break
+                            else:
+                                ax.set_title(dict[int(labels[l+1][0].asscalar())])
+                                img = ax.imshow(train_images[0+test_batch_size*(batch_i)].transpose(1,2,0))
+                                ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
 
 
                         plt.tight_layout()

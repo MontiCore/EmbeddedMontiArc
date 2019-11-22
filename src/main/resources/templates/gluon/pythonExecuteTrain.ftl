@@ -38,6 +38,8 @@
 <#if tc.endsWithArgmax(networkInstruction.body)>
                         ${outputName} = mx.nd.argmax(${outputName}, axis=1).expand_dims(1)
 </#if>
+                        if use_teacher_forcing == "True":
+                            ${outputName} = mx.nd.expand_dims(labels[${tc.getIndex(outputName, true)}], axis=1)
 </#if>
 </#list>
 <#else>
