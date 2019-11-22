@@ -56,7 +56,7 @@ public:
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
 </#if>
 
-        assert(out_${variable}.size() == 1 || size == out_${variable}.size());
+        assert(size == out_${variable}.size());
         MXPredGetOutput(handle, output_index, &(out_${variable}[0]), out_${variable}.size());
 
 </#list>
