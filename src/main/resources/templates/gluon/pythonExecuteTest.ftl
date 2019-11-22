@@ -21,6 +21,8 @@
                     ${tc.getName(constant)} = mx.nd.full((test_batch_size, 1,), ${constant.intValue?c}, ctx=mx_context)
 </#list>
 
+                    nd.waitall()
+
                     outputs = []
                     attentionList=[]
 <#list tc.architecture.networkInstructions as networkInstruction>

@@ -44,7 +44,7 @@ public:
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
-        assert(out_softmax_.size() == 1 || size == out_softmax_.size());
+        assert(size == out_softmax_.size());
         MXPredGetOutput(handle, output_index, &(out_softmax_[0]), out_softmax_.size());
 
     }
