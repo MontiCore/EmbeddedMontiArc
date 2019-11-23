@@ -6,22 +6,20 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-/*add EMADL to dependencies @ //dl */
-//dl
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl._cocos.EmbeddedMontiArcDLCoCoChecker;
+/*add EMADL to dependencies @ //deeplearning */
+//deeplearning
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning._cocos.EmbeddedMontiArcDeepLearningCoCoChecker;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl._parser.EmbeddedMontiArcDLParser;
-
-//dl
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl._symboltable.EmbeddedMontiArcDLLanguage;
-//dl
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl.cocos.EmbeddedMontiArcDLCoCos;
+//deeplearning
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning._symboltable.EmbeddedMontiArcDLLanguage;
+//deeplearning
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning.cocos.EmbeddedMontiArcDLCoCos;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
-//dl
+//other
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
-//dl
+//other
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
-//dl
+//other
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
@@ -78,10 +76,10 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
     protected void doCheckSymbolCoCos(Path sourcePath, EMAComponentSymbol sym) {
         EmbeddedMontiArcDLCoCoChecker checker = EmbeddedMontiArcDLCoCos.createChecker();
         checker.checkAll((ASTComponent) sym.getAstNode().get());
-        if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
+        if (de.monticore.lang.deeplearning.LogConfig.getFindings().isEmpty()) {
             Log.info("No CoCos invalid", "default");
         } else {
-            Log.info("Findings: " + de.monticore.lang.math.LogConfig.getFindings(), "default");
+            Log.info("Findings: " + de.monticore.lang.deeplearning.LogConfig.getFindings(), "default");
         }
     }
 

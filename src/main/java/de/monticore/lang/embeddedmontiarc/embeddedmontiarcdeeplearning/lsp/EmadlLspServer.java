@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public class EmadlLspServer extends McLspServer {
-    private EmamDocumentService emamDocumentService = new EmamDocumentService();
+    private EmadlDocumentService emadlDocumentService = new EmadlDocumentService();
 
     public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
         EmadlLspServer server = new EmadlLspServer();
@@ -15,6 +15,6 @@ public class EmadlLspServer extends McLspServer {
 
     @Override
     public MontiCoreDocumentService getTextDocumentService() {
-        return emamDocumentService;
+        return emadlDocumentService;
     }
 }
