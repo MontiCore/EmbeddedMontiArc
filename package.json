@@ -107,7 +107,7 @@
   },
   "dependencies": {
     "log4js": "~4.4.0",
-    "monticore-vscode-commons": "git+https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/monticore-vscode-commons.git",
+    "@monticore/monticore-vscode-commons": "~1.0.0",
     "vscode-languageclient": "~5.1.1"
   }
 }
