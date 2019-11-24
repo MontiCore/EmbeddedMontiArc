@@ -1,5 +1,6 @@
 buildBranch:
-  except: master
+  except:
+    - master
   image: node:latest
   stage: build
   script:
