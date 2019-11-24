@@ -8,7 +8,8 @@ buildBranch:
   - npm run compile
 
 buildMaster:
-  only: master
+  only:
+  - master
   image: node:latest
   stage: build
   script:
