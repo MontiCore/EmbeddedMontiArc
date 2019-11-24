@@ -2,10 +2,7 @@ import * as vscode from 'vscode';
 import { join } from 'path';
 import * as log4js from 'log4js';
 import { getLogger } from 'log4js';
-import { MavenLanguageClient, MavenLanguageClientOptions } from './mavenLanguageClient';
-import { MavenUpdater } from './mavenUpdater';
-import { MavenUpdateManager } from './mavenUpdateManager';
-import { LanguageServerManager } from './languageServerManager';
+import { LanguageServerManager, MavenLanguageClient, MavenLanguageClientOptions, MavenUpdateManager, MavenUpdater, } from 'monticore-vscode-commons';
 import { spawnSync, SpawnSyncOptionsWithStringEncoding, SpawnSyncReturns } from 'child_process';
 
 let updateManager: MavenUpdateManager = new MavenUpdateManager("emalinter.autoupdate");

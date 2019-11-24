@@ -106,8 +106,8 @@
     "@types/mocha": "^2.2.42"
   },
   "dependencies": {
-    "circularbuffer": "^0.1.1",
     "log4js": "~4.4.0",
+    "monticore-vscode-commons": "git+https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/monticore-vscode-commons.git",
     "vscode-languageclient": "~5.1.1"
   }
 }
