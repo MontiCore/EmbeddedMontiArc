@@ -1,0 +1,27 @@
+{
+  "name": "monticore-vscode-commons",
+  "version": "1.0.0",
+  "description": "Common modules used for MontiCore vscode plugings",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "prepare": "npm run compile",
+    "watch": "tsc -watch -p ./",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.rwth-aachen.de:monticore/EmbeddedMontiArc/utilities/monticore-vscode-commons.git"
+  },
+  "author": "",
+  "license": "To be decided",
+  "devDependencies": {
+    "typescript": "^3.7.2",
+    "vscode": "^1.1.36"
+  },
+  "dependencies": {
+    "@types/node": "^12.12.12",
+    "circularbuffer": "^0.1.1",
+    "log4js": "^6.1.0",
+    "vscode-languageclient": "^5.2.1"
+  }
+}
