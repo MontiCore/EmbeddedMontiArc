@@ -1,0 +1,10 @@
+configuration
+num_epoch
+batch_size
+normalize
+load_checkpoint
+optimizer
+learning_rate
+learning_rate_decay
+step_size
+weight_decay

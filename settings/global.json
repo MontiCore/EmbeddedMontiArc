@@ -4,6 +4,8 @@
         "settings/emam/emamConstants.json",
         "settings/struct/structConstants.json",
         "settings/stream/streamConstants.json",
-        "settings/ema/emaConstants.json"
+        "settings/ema/emaConstants.json",
+        "settings/emadl/emadlConstants.json",
+        "settings/cnnt/cnntConstants.json"
     ]
 }
