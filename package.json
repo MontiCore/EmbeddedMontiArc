@@ -107,7 +107,7 @@
   },
   "dependencies": {
     "log4js": "~4.4.0",
-    "@monticore/monticore-vscode-commons": "~1.0.0",
+    "@monticore/monticore-vscode-commons": "~1.0.1",
     "vscode-languageclient": "~5.1.1"
   }
 }

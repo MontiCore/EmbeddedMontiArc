@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { join } from 'path';
 import * as log4js from 'log4js';
 import { getLogger } from 'log4js';
-import { LanguageServerManager, MavenLanguageClient, MavenLanguageClientOptions, MavenUpdateManager, MavenUpdater, } from '@monticore/monticore-vscode-commons';
+import { LanguageServerManager, MavenLanguageClient, MavenLanguageClientOptions, MavenUpdateManager, MavenUpdater, allDependenciesAvailable } from '@monticore/monticore-vscode-commons';
 import { spawnSync, SpawnSyncOptionsWithStringEncoding, SpawnSyncReturns } from 'child_process';
 
 let updateManager: MavenUpdateManager = new MavenUpdateManager("emalinter.autoupdate");
@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 	setupLog(context.extensionPath, globalOptions.logName);
 	getLogger().debug("activate");
 
-	if(dependenciesAvailable()){
+	if(allDependenciesAvailable(["java", "mvn"])){
 		for (let clientOptionsPath of globalOptions.clientOptions) {
 			let clientOptions: MavenLanguageClientOptions = require(join(context.extensionPath, clientOptionsPath));
 			languageServerManager.addClient(new MavenLanguageClient(context, clientOptions));
@@ -37,36 +37,6 @@ export function activate(context: vscode.ExtensionContext) {
 	}else{
 		getLogger().fatal("Aborting: Missing executables!");
 	}
-}
-
-function spawnExecutableCheck(executable:string):SpawnSyncReturns<string> {
-	if (process.platform === "win32"){
-		let args = [executable];
-		return spawnSync("where", args);
-	}else{
-		let args = ["-v", executable];
-		const spawnOptions: SpawnSyncOptionsWithStringEncoding = { shell: true, encoding: "utf8" };
-		return spawnSync("command", args, spawnOptions);
-	}
-}
-
-function dependenciesAvailable():boolean {
-	let res = true;
-	if (spawnExecutableCheck("mvn").status !== 0) {
-		const errorMsg = "Can not find mvn in PATH. Is Maven installed?";
-		getLogger().error(errorMsg);
-		vscode.window.showErrorMessage(errorMsg);
-		res = false;
-	}
-
-	if (spawnExecutableCheck("java").status !== 0) {
-		const errorMsg = "Can not find java in PATH. Is Java installed?";
-		getLogger().error(errorMsg);
-		vscode.window.showErrorMessage(errorMsg);
-		res = false;
-	}
-
-	return res;
 }
 
 function setupLog(extensionPath: string, logName: string) {
