@@ -22,6 +22,18 @@ public class DiagnosticsLog extends Log {
         Log.info("LogToStdout status: " + logToStdout, "default");
     }
 
+    public static void setDebug(boolean debug){
+        log.isDEBUG = debug;
+    }
+
+    public static void setTrace(boolean trace){
+        log.isTRACE = trace;
+    }
+
+    public static void setInfo(boolean info){
+        log.isINFO = info;
+    }
+
     public static void clearAndUse(){
         reuse();
         Log.getFindings().clear();
