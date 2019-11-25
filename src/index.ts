@@ -3,3 +3,4 @@ export { MavenLanguageClient, MavenLanguageClientOptions } from './mavenLanguage
 export { MavenUpdateManager } from './mavenUpdateManager';
 export { MavenUpdater } from './mavenUpdater';
 export { spawnExecutableCheck, dependencyAvailable, allDependenciesAvailable } from './utils';
+export { LspExtensionManager } from './lspExtensionManager';
