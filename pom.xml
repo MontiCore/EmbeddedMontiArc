@@ -12,8 +12,8 @@
         <se-commons.version>1.7.8</se-commons.version>
         <embedded-montiarc.version>0.1.19-SNAPSHOT</embedded-montiarc.version>
         <embedded-montiarc-math.version>0.1.13-SNAPSHOT</embedded-montiarc-math.version>
-        <embedded-montiarc-deeplearning.version>0.2.10-SNAPSHOT</embedded-montiarc-deeplearning.version>
-        <embedded-montiarc-deeplearning.version>0.2.10-SNAPSHOT</embedded-montiarc-deeplearning.version>
+        <!-- <embedded-montiarc-deeplearning.version>0.2.10-SNAPSHOT</embedded-montiarc-deeplearning.version> -->
+        <embedded-montiarc-deeplearning.version>0.2.6</embedded-montiarc-deeplearning.version>
         <cnn-train.version>0.3.8-SNAPSHOT</cnn-train.version>
         <cnn-arch.version>0.3.3-SNAPSHOT</cnn-arch.version>
         <se-commons-utilities.version>1.7.8</se-commons-utilities.version>

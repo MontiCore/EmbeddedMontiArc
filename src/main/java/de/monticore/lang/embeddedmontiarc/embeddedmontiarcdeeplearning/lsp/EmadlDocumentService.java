@@ -1,4 +1,4 @@
-package de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl.lsp;
+package de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning.lsp;
 
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
@@ -6,14 +6,20 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-/*add EMADL to dependencies @ //deeplearning */
-//deeplearning
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning._cocos.EmbeddedMontiArcDeepLearningCoCoChecker;
 
+/* TODO add EMADL to dependencies @ //deeplearning */
 //deeplearning
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning._symboltable.EmbeddedMontiArcDLLanguage;
+import de.monticore.lang.embeddedmontiarc.cocos.EmbeddedMontiArcCoCos;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
 //deeplearning
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning.cocos.EmbeddedMontiArcDLCoCos;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+
+// import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
+import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
+//deeplearning
+import de.monticore.lang.monticar.emadl._parser.EMADLParser;
+import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 //other
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
@@ -37,13 +43,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEMACompilationUnit, EMAComponentSymbol> {
-    private EmbeddedMontiArcDLParser parser = new EmbeddedMontiArcDLParser();
-
+    // private EmbeddedMontiArcDLParser parser = new EmbeddedMontiArcDLParser();
+    private EMADLParser parser = new EMADLParser();
     private ModelingLanguageFamily modelFamily;
 
     @Override
     public String getLanguageServerIdentifier() {
-        return "EMAM Parser";
+        return "EMADL Parser";
     }
 
     @Override
@@ -74,12 +80,14 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
 
     @Override
     protected void doCheckSymbolCoCos(Path sourcePath, EMAComponentSymbol sym) {
-        EmbeddedMontiArcDLCoCoChecker checker = EmbeddedMontiArcDLCoCos.createChecker();
-        checker.checkAll((ASTComponent) sym.getAstNode().get());
-        if (de.monticore.lang.deeplearning.LogConfig.getFindings().isEmpty()) {
+        // TODO
+        // EmbeddedMontiArcCoCoChecker checker = EmbeddedMontiArcCoCos.createChecker();
+        EMADLCocos checker = new EMADLCocos();
+        checker.checkAll((EMAComponentInstanceSymbol) sym.getAstNode().get());
+        if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
             Log.info("No CoCos invalid", "default");
         } else {
-            Log.info("Findings: " + de.monticore.lang.deeplearning.LogConfig.getFindings(), "default");
+            Log.info("Findings: " + de.monticore.lang.math.LogConfig.getFindings(), "default");
         }
     }
 
@@ -111,8 +119,11 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
     protected ModelingLanguageFamily getModelingLanguageFamily() {
         if(modelFamily == null) {
             modelFamily = new ModelingLanguageFamily();
-            EmbeddedMontiArcDLLanguage montiArcLanguage = new EmbeddedMontiArcDLLanguage();
-            modelFamily.addModelingLanguage(montiArcLanguage);
+            // TODO
+            // EmbeddedMontiArcMathLanguage montiArcMathLanguage = new EmbeddedMontiArcMathLanguage();
+            // modelFamily.addModelingLanguage(montiArcMathLanguage);
+            EMADLLanguage montiArcEMADLLanguage = new EMADLLanguage();
+            modelFamily.addModelingLanguage(montiArcEMADLLanguage);
             modelFamily.addModelingLanguage(new StreamUnitsLanguage());
             modelFamily.addModelingLanguage(new StructLanguage());
             modelFamily.addModelingLanguage(new EnumLangLanguage());
