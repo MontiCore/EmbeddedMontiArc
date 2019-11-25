@@ -9,4 +9,4 @@ then
 fi
 
 npm install --unsafe-perm
-echo "y" | vsce package --baseContentUrl "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/vscode-ema-linter/blob/master" -o "ema-linter.vsix"
+echo "y" | vsce package --baseContentUrl "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/ema-lsp/tree/treiber/dl" -o "ema-linter.vsix"
