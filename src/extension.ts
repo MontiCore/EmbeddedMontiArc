@@ -1,39 +1,15 @@
-import * as vscode from 'vscode';
+import { ExtensionContext } from 'vscode';
 import { join } from 'path';
-import * as log4js from 'log4js';
-import { getLogger } from 'log4js';
-import { LanguageServerManager, MavenLanguageClient, MavenLanguageClientOptions, MavenUpdateManager, MavenUpdater, allDependenciesAvailable } from '@monticore/monticore-vscode-commons';
-import { spawnSync, SpawnSyncOptionsWithStringEncoding, SpawnSyncReturns } from 'child_process';
+import { getLogger, configure } from 'log4js';
+import { allDependenciesAvailable, LspExtensionManager } from '@monticore/monticore-vscode-commons';
 
-let updateManager: MavenUpdateManager = new MavenUpdateManager("emalinter.autoupdate");
-let languageServerManager = new LanguageServerManager();
+let lspExtensionManager: LspExtensionManager | null = null;
 
-export function activate(context: vscode.ExtensionContext) {
-	let globalOptions = require(join(context.extensionPath, "settings", "global"));
-
-	setupLog(context.extensionPath, globalOptions.logName);
-	getLogger().debug("activate");
-
+export function activate(context: ExtensionContext) {
+	setupLog(context.extensionPath, "ema-lint.log");
 	if(allDependenciesAvailable(["java", "mvn"])){
-		for (let clientOptionsPath of globalOptions.clientOptions) {
-			let clientOptions: MavenLanguageClientOptions = require(join(context.extensionPath, clientOptionsPath));
-			languageServerManager.addClient(new MavenLanguageClient(context, clientOptions));
-			updateManager.addUpdater(new MavenUpdater(clientOptions.languageName, join(context.extensionPath, clientOptions.pomRoot), clientOptions.relativeMvnSettingsPath));
-		}
-	
-		vscode.window.onDidChangeVisibleTextEditors(editors => {
-			for (let editor of editors) {
-				languageServerManager.activateClient(editor.document.languageId);
-			}
-		});
-	
-		// activate linters for files that are visible at activation time
-		for (let editor of vscode.window.visibleTextEditors) {
-			languageServerManager.activateClient(editor.document.languageId);
-		}
-	
-		languageServerManager.activateWellnessCheck(10 * 1000);
-		setTimeout(() => updateManager.checkForUpdates(), 30 * 1000);
+		lspExtensionManager = LspExtensionManager.fromSettingsFile(context, "emalinter.autoupdate", join(context.extensionPath, "settings", "global"));
+		lspExtensionManager.activate();
 	}else{
 		getLogger().fatal("Aborting: Missing executables!");
 	}
@@ -41,19 +17,20 @@ export function activate(context: vscode.ExtensionContext) {
 
 function setupLog(extensionPath: string, logName: string) {
 	const logFileName = extensionPath + '/logs/' + logName;
-	log4js.configure({
+	configure({
 		appenders: {
 			out: { type: 'console' },
 			app: { type: 'file', filename: logFileName, maxLogSize: 1000000, backups: 1 }
 		},
 		categories: {
-			default: { appenders: ['out', 'app'], level: 'debug' }
+			default: { appenders: ['out', 'app'], level: 'trace' }
 		}
 	});
 	getLogger().debug("Logger created! Will write to " + logFileName);
 }
 
-
 export function deactivate() {
-	languageServerManager.deactivateAll();
+	if(lspExtensionManager){
+		lspExtensionManager.deactivate();
+	}
 }
