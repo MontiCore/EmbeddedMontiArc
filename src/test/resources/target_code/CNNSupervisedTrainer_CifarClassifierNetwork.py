@@ -246,7 +246,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
         if loss == 'softmax_cross_entropy':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
             loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)
-        if loss == 'softmax_cross_entropy_ignore_indices':
+        elif loss == 'softmax_cross_entropy_ignore_indices':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
             loss_function = SoftmaxCrossEntropyLossIgnoreIndices(ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel)
         elif loss == 'sigmoid_binary_cross_entropy':
@@ -324,7 +324,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             train_test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(train_test_iter):
-                if True:
+                if True: 
                     labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
 
                     data_ = batch.data[0].as_in_context(mx_context)
@@ -363,7 +363,12 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                             attention = mx.nd.squeeze(attention)
                             attention_resized = np.resize(attention.asnumpy(), (8, 8))
                             ax = fig.add_subplot(max_length//3, max_length//4, l+2)
-                            if dict[int(labels[l+1][0].asscalar())] == "<end>":
+                            if int(labels[l+1][0].asscalar()) > len(dict):
+                                ax.set_title("<unk>")
+                                img = ax.imshow(train_images[0+test_batch_size*(batch_i)].transpose(1,2,0))
+                                ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
+                                break
+                            elif dict[int(labels[l+1][0].asscalar())] == "<end>":
                                 ax.set_title(".")
                                 img = ax.imshow(train_images[0+test_batch_size*(batch_i)].transpose(1,2,0))
                                 ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
@@ -394,7 +399,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                if True:
+                if True: 
                     labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
 
                     data_ = batch.data[0].as_in_context(mx_context)
@@ -426,13 +431,18 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                             attention = mx.nd.squeeze(attention)
                             attention_resized = np.resize(attention.asnumpy(), (8, 8))
                             ax = fig.add_subplot(max_length//3, max_length//4, l+2)
-                            if dict[int(mx.nd.slice_axis(mx.nd.argmax(outputs[l+1], axis=1), axis=0, begin=0, end=1).asscalar())] == "<end>":
+                            if int(mx.nd.slice_axis(outputs[l+1], axis=0, begin=0, end=1).squeeze().asscalar()) > len(dict):
+                                ax.set_title("<unk>")
+                                img = ax.imshow(test_images[0+test_batch_size*(batch_i)].transpose(1,2,0))
+                                ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
+                                break
+                            elif dict[int(mx.nd.slice_axis(outputs[l+1], axis=0, begin=0, end=1).squeeze().asscalar())] == "<end>":
                                 ax.set_title(".")
                                 img = ax.imshow(test_images[0+test_batch_size*(batch_i)].transpose(1,2,0))
                                 ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
                                 break
                             else:
-                                ax.set_title(dict[int(mx.nd.slice_axis(mx.nd.argmax(outputs[l+1], axis=1), axis=0, begin=0, end=1).asscalar())])
+                                ax.set_title(dict[int(mx.nd.slice_axis(outputs[l+1], axis=0, begin=0, end=1).squeeze().asscalar())])
                                 img = ax.imshow(test_images[0+test_batch_size*(batch_i)].transpose(1,2,0))
                                 ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
 

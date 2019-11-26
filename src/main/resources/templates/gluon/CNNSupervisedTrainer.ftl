@@ -247,7 +247,7 @@ class ${tc.fileNameWithoutEnding}:
         if loss == 'softmax_cross_entropy':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
             loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)
-        if loss == 'softmax_cross_entropy_ignore_indices':
+        elif loss == 'softmax_cross_entropy_ignore_indices':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
             loss_function = SoftmaxCrossEntropyLossIgnoreIndices(ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel)
         elif loss == 'sigmoid_binary_cross_entropy':
