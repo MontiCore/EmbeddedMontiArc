@@ -52,7 +52,6 @@ class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
         else:
             label = _reshape_like(F, label, pred)
             loss = -(pred * label).sum(axis=self._axis, keepdims=True)
-        #loss = _apply_weighting(F, loss, self._weight, sample_weight)
         # ignore some indices for loss, e.g. <pad> tokens in NLP applications
         for i in self._ignore_indices:
             loss = loss * mx.nd.logical_not(mx.nd.equal(mx.nd.argmax(pred, axis=1), mx.nd.ones_like(mx.nd.argmax(pred, axis=1))*i))
