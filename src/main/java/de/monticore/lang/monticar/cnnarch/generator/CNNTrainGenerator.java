@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.io.paths.ModelPath;
@@ -105,6 +106,7 @@ public abstract class CNNTrainGenerator {
         setInstanceName(compilationUnit.get().getFullName());
         CNNTrainCocos.checkAll(compilationUnit.get());
         supportCheck(compilationUnit.get().getConfiguration());
+		
         return compilationUnit.get().getConfiguration();
     }
 
