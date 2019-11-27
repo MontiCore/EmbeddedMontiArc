@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture DuplicatedNames(inputs=10, inputs=10, classes=2){
     def input Q(-oo:+oo)^{inputs} in1
     def output Q(0:1)^{classes} out1

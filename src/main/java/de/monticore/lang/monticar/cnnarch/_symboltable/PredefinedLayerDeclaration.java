@@ -1,23 +1,11 @@
 /**
  *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
+ * (c) https://github.com/MontiCore/monticore
  *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
@@ -42,7 +30,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     @Override
     protected void setParameters(List<ParameterSymbol> parameters) {
         super.setParameters(parameters);
-        for (ParameterSymbol param : parameters){
+        for (ParameterSymbol param : parameters) {
             param.putInScope(getSpannedScope());
         }
     }
@@ -53,9 +41,9 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
     public boolean isTrainable(VariableSymbol.Member member) {
-        if(member == VariableSymbol.Member.STATE || member == VariableSymbol.Member.OUTPUT){
+        if (member == VariableSymbol.Member.STATE || member == VariableSymbol.Member.OUTPUT) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }
@@ -99,8 +87,8 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     //the following methods are only here to avoid duplication. They are used by multiple subclasses.
 
     //check if inputTypes is of size 1
-    protected void errorIfInputSizeIsNotOne(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
-        if (inputTypes.size() != 1){
+    protected void errorIfInputSizeIsNotOne(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+        if (inputTypes.size() != 1) {
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. " +
                             getName() + " layer can only handle one input stream. " +
                             "Current number of input streams " + inputTypes.size() + "."
@@ -108,8 +96,8 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
     }
 
-    protected void errorIfInputIsEmpty(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
-        if (inputTypes.size() == 0){
+    protected void errorIfInputIsEmpty(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+        if (inputTypes.size() == 0) {
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. Number of input streams is 0"
                     , layer.getSourcePosition());
         }
@@ -146,21 +134,20 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
     //check input for convolution and pooling
-    protected static void errorIfInputSmallerThanKernel(List<ArchTypeSymbol> inputTypes, LayerSymbol layer){
+    protected static void errorIfInputSmallerThanKernel(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
         if (!inputTypes.isEmpty()) {
             int inputHeight = inputTypes.get(0).getHeight();
             int inputWidth = inputTypes.get(0).getWidth();
             int kernelHeight = layer.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
             int kernelWidth = layer.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
 
-            if (kernelHeight > inputHeight || kernelWidth > inputWidth){
-                if (layer.getStringValue(AllPredefinedLayers.PADDING_NAME).equals(AllPredefinedLayers.PADDING_VALID)){
+            if (kernelHeight > inputHeight || kernelWidth > inputWidth) {
+                if (layer.getStringValue(AllPredefinedLayers.PADDING_NAME).equals(AllPredefinedLayers.PADDING_VALID)) {
                     Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. " +
                                     "The input resolution is smaller than the kernel and the padding mode is 'valid'." +
                                     "This would result in an output resolution of 0x0."
                             , layer.getSourcePosition());
-                }
-                else {
+                } else {
                     Log.warn("The input resolution is smaller than the kernel. " +
                                     "This results in an output resolution of 1x1. " +
                                     "If this warning appears multiple times, consider changing your architecture"
@@ -174,16 +161,13 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     //output type function for convolution and pooling
     protected static List<ArchTypeSymbol> computeConvAndPoolOutputShape(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
         String borderModeSetting = method.getStringValue(AllPredefinedLayers.PADDING_NAME).get();
-        if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME)){
+        if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME)) {
             return computeOutputShapeWithSamePadding(inputType, method, channels);
-        }
-        else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID)){
+        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID)) {
             return computeOutputShapeWithValidPadding(inputType, method, channels);
-        }
-        else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_NO_LOSS)){
+        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_NO_LOSS)) {
             return computeOutputShapeWithNoLossPadding(inputType, method, channels);
-        }
-        else{
+        } else {
             throw new IllegalStateException("border_mode is " + borderModeSetting + ". This should never happen.");
         }
     }
@@ -191,19 +175,42 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     //output type function for transposed convolution
     protected static List<ArchTypeSymbol> computeTransConvOutputShape(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
         String borderModeSetting = method.getStringValue(AllPredefinedLayers.TRANSPADDING_NAME).get();
-        if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME)){
+        if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME)) {
             return computeTransConvOutputShapeWithSamePadding(inputType, method, channels);
-        }
-        else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID)){
+        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID)) {
             return computeTransConvOutputShapeWithValidPadding(inputType, method, channels);
-        }
-        else{
+        } else {
             throw new IllegalStateException("border_mode is " + borderModeSetting + ". This should never happen.");
         }
     }
 
+    //output type function for upconvolution
+    protected static List<ArchTypeSymbol> computeUpConvOutputShape(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
+        String borderModeSetting = method.getStringValue(AllPredefinedLayers.PADDING_NAME).get();
+        if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME)) {
+            return computeOutputUpConvShapeWithSamePadding(inputType, method, channels);
+        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID)) {
+            return computeOutputUpConvShapeWithValidPadding(inputType, method, channels);
+        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_NO_LOSS)) {
+            return computeOutputUpConvShapeWithNoLossPadding(inputType, method, channels);
+        } else {
+            throw new IllegalStateException("border_mode is " + borderModeSetting + ". This should never happen.");
+        }
+    }
+
+
+    protected static void computeOneHotOutputSize(LayerSymbol layer) {
+        int outputChannels = 0;
+
+        if (layer.getOutputElement().get() instanceof VariableSymbol && layer.getOutputElement().get().isOutput()) {
+            outputChannels = ((VariableSymbol) layer.getOutputElement().get()).getIoDeclaration().getType().getChannels();
+        }
+        layer.setIntValue(AllPredefinedLayers.SIZE_NAME, outputChannels);
+    }
+
+
     //padding with border_mode=valid, no padding
-    private static List<ArchTypeSymbol> computeOutputShapeWithValidPadding(ArchTypeSymbol inputType, LayerSymbol method, int channels){
+    private static List<ArchTypeSymbol> computeOutputShapeWithValidPadding(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
         int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
         int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
         int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
@@ -213,11 +220,10 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
 
         int outputWidth;
         int outputHeight;
-        if (inputWidth < kernelWidth || inputHeight < kernelHeight){
+        if (inputWidth < kernelWidth || inputHeight < kernelHeight) {
             outputWidth = 0;
             outputHeight = 0;
-        }
-        else {
+        } else {
             outputWidth = 1 + (inputWidth - kernelWidth) / strideWidth;
             outputHeight = 1 + (inputHeight - kernelHeight) / strideHeight;
         }
@@ -231,7 +237,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
     //padding with border_mode=valid, no padding
-    private static List<ArchTypeSymbol> computeTransConvOutputShapeWithValidPadding(ArchTypeSymbol inputType, LayerSymbol method, int channels){
+    private static List<ArchTypeSymbol> computeTransConvOutputShapeWithValidPadding(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
         int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
         int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
         int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
@@ -254,7 +260,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
     //padding until no data gets discarded, same as valid with a stride of 1
-    private static List<ArchTypeSymbol> computeOutputShapeWithNoLossPadding(ArchTypeSymbol inputType, LayerSymbol method, int channels){
+    private static List<ArchTypeSymbol> computeOutputShapeWithNoLossPadding(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
         int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
         int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
         int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
@@ -274,7 +280,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
     //padding with border_mode='same'
-    private static List<ArchTypeSymbol> computeOutputShapeWithSamePadding(ArchTypeSymbol inputType, LayerSymbol method, int channels){
+    private static List<ArchTypeSymbol> computeOutputShapeWithSamePadding(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
         int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
         int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
         int inputHeight = inputType.getHeight();
@@ -282,6 +288,28 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
 
         int outputWidth = (inputWidth + strideWidth - 1) / strideWidth;
         int outputHeight = (inputHeight + strideWidth - 1) / strideHeight;
+
+        return Collections.singletonList(new ArchTypeSymbol.Builder()
+                .height(outputHeight)
+                .width(outputWidth)
+                .channels(channels)
+                .elementType("-oo", "oo")
+                .build());
+    }
+
+    private static List<ArchTypeSymbol> computeOutputUpConvShapeWithValidPadding(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
+        int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
+        int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
+        int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
+        int kernelWidth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
+        int inputHeight = inputType.getHeight();
+        int inputWidth = inputType.getWidth();
+
+        int outputWidth;
+        int outputHeight;
+
+        outputWidth = (inputWidth - 1) * strideWidth + kernelWidth;
+        outputHeight = (inputHeight - 1) * strideHeight + kernelHeight;
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .height(outputHeight)
@@ -309,35 +337,75 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                 .build());
     }
 
-    protected List<String> computeStartAndEndValue(List<ArchTypeSymbol> inputTypes, BinaryOperator<Rational> startValAccumulator, BinaryOperator<Rational> endValAccumulator){
-        Stream.Builder<Rational> startValues = Stream.builder();
-        Stream.Builder<Rational> endValues = Stream.builder();
-        String start = null;
-        String end = null;
-        for (ArchTypeSymbol inputType : inputTypes){
-            Optional<ASTRange> range = inputType.getDomain().getRangeOpt();
-            if (range.isPresent()) {
-                if (range.get().hasNoLowerLimit()){
-                    start = "-oo";
-                }
-                else {
-                    startValues.add(range.get().getStartValue());
-                }
-                if (range.get().hasNoUpperLimit()){
-                    end = "oo";
-                }
-                else {
-                    endValues.add(range.get().getEndValue());
-                }
-            }
-        }
-        if (start == null){
-            start = "" + startValues.build().reduce(startValAccumulator).get().doubleValue();
-        }
-        if (end == null){
-            end = "" + endValues.build().reduce(endValAccumulator).get().doubleValue();
+
+        private static List<ArchTypeSymbol> computeOutputUpConvShapeWithNoLossPadding (ArchTypeSymbol
+        inputType, LayerSymbol method,int channels){
+            int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
+            int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
+            int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
+            int kernelWidth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
+            int inputHeight = inputType.getHeight();
+            int inputWidth = inputType.getWidth();
+
+            int outputWidth = Math.max(0, ((inputWidth - 1) * strideWidth - strideWidth + kernelWidth + 1));
+            int outputHeight = Math.max(0, ((inputHeight - 1) * strideHeight - strideHeight + kernelHeight + 1));
+
+            return Collections.singletonList(new ArchTypeSymbol.Builder()
+                    .height(outputHeight)
+                    .width(outputWidth)
+                    .channels(channels)
+                    .elementType("-oo", "oo")
+                    .build());
         }
 
-        return Arrays.asList(start, end);
+        private static List<ArchTypeSymbol> computeOutputUpConvShapeWithSamePadding (ArchTypeSymbol
+        inputType, LayerSymbol method,int channels){
+            int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
+            int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
+            int inputHeight = inputType.getHeight();
+            int inputWidth = inputType.getWidth();
+
+            //no -strideWidth+1 at end as sugested by rearanging the corresponding formula for convolution. Tensorflow calculates it like this.
+            int outputWidth = inputWidth * strideWidth;
+            int outputHeight = inputHeight * strideHeight;
+
+            return Collections.singletonList(new ArchTypeSymbol.Builder()
+                    .height(outputHeight)
+                    .width(outputWidth)
+                    .channels(channels)
+                    .elementType("-oo", "oo")
+                    .build());
+        }
+
+        protected List<String> computeStartAndEndValue
+        (List < ArchTypeSymbol > inputTypes, BinaryOperator < Rational > startValAccumulator, BinaryOperator < Rational > endValAccumulator)
+        {
+            Stream.Builder<Rational> startValues = Stream.builder();
+            Stream.Builder<Rational> endValues = Stream.builder();
+            String start = null;
+            String end = null;
+            for (ArchTypeSymbol inputType : inputTypes) {
+                Optional<ASTRange> range = inputType.getDomain().getRangeOpt();
+                if (range.isPresent()) {
+                    if (range.get().hasNoLowerLimit()) {
+                        start = "-oo";
+                    } else {
+                        startValues.add(range.get().getStartValue());
+                    }
+                    if (range.get().hasNoUpperLimit()) {
+                        end = "oo";
+                    } else {
+                        endValues.add(range.get().getEndValue());
+                    }
+                }
+            }
+            if (start == null) {
+                start = "" + startValues.build().reduce(startValAccumulator).get().doubleValue();
+            }
+            if (end == null) {
+                end = "" + endValues.build().reduce(endValAccumulator).get().doubleValue();
+            }
+
+            return Arrays.asList(start, end);
+        }
     }
-}

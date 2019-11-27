@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture MultipleStreams{
     def input Q(-oo:+oo)^{10} data
     def output Q(0:1)^{4} pred

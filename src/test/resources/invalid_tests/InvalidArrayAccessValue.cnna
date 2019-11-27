@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture InvalidArrayAccessValue(img_height=200, img_width=300, img_channels=3, classes=3){
     def input Z(0:255)^{img_channels, img_height, img_width} image[3]
     def output Q(0:1)^{classes} predictions
