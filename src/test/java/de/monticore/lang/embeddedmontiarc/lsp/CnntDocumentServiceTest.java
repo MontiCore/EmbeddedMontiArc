@@ -40,4 +40,38 @@ class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
     public static void reset(){
         DiagnosticsLog.getFindings().clear();
     }
+    /*
+    @Test
+    public void testValidSyntax() throws InterruptedException, ExecutionException, IOException {
+        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+        DiagnosticsLog.setLogToStdout(true);
+        documentService.doParse(new StringReader("package a; component Abc{}"));
+        assertTrue(DiagnosticsLog.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testInvalidSyntax() throws InterruptedException, ExecutionException, IOException {
+        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+        documentService.doParse(new StringReader("package a; component Abc{}"));
+        assertFalse(DiagnosticsLog.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testValidDidOpenEvent() throws IOException {
+        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+
+        File file = new File("src/test/resources/cnnt/valid/SimpleConfig.cnnt");
+        documentService.didOpen(createDidOpenEvent(file, "CNNTrainLang"));
+        assertTrue(DiagnosticsLog.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testInvalidDidOpenEvent() throws IOException {
+        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+        File file = new File("src/test/resources/cnnt/invalid/SimpleConfig.cnnt");
+        documentService.didOpen(createDidOpenEvent(file, "CNNTrainLang"));
+        assertFalse(DiagnosticsLog.getFindings().isEmpty());
+    }
+    */
+
 }

@@ -1,9 +1,10 @@
-package de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning.lsp;
+package de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl.lsp;
 
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 
@@ -11,6 +12,7 @@ import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
@@ -66,12 +68,15 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
         return String.join(".",getPackageList(node)) + "." + getSymbolName(node);
     }
 
-    // TODO check architecture with CNNArchCocos
+    // TODO correct input for EMADLCocos
     // EmbeddedMontiArcDL/src/main/java/de/monticore/lang/monticar/emadl/_cocos/CheckArchitecture.java
     @Override
     protected void doCheckSymbolCoCos(Path sourcePath, EMAComponentSymbol sym) {
         EMADLCocos checker = new EMADLCocos();
-        checker.checkAll((EMAComponentInstanceSymbol) sym.getAstNode().get());
+        EMAComponentInstanceSymbol instancesym = (EMAComponentInstanceSymbol) sym.getEnclosingScope()
+                          .resolveLocally(EMAComponentInstanceSymbol.KIND)
+                          .stream().findFirst().get();
+        checker.checkAll(instancesym);
         if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
             Log.info("No CoCos invalid", "default");
         } else {
@@ -108,6 +113,8 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
         if(modelFamily == null) {
             modelFamily = new ModelingLanguageFamily();
             // TODO add all relevant languages
+            EmbeddedMontiArcMathLanguage montiArcMathLanguage = new EmbeddedMontiArcMathLanguage();
+            modelFamily.addModelingLanguage(montiArcMathLanguage);
             EMADLLanguage montiArcEMADLLanguage = new EMADLLanguage();
             modelFamily.addModelingLanguage(montiArcEMADLLanguage);
             CNNArchLanguage montiArcCNNArchLanguage = new CNNArchLanguage();

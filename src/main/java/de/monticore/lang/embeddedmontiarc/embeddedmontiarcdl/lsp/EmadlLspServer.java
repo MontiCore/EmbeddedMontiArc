@@ -1,4 +1,4 @@
-package de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning.lsp;
+package de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl.lsp;
 import de.monticore.util.lsp.McLspServer;
 import de.monticore.util.lsp.MontiCoreDocumentService;
 

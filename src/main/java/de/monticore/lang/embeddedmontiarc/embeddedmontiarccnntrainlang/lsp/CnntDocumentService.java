@@ -8,29 +8,20 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilatio
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainCompilationUnit;
 
-/* TODO add EMADL to dependencies @ //deeplearning */
-//deeplearning
 import de.monticore.lang.embeddedmontiarc.cocos.EmbeddedMontiArcCoCos;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
-//deeplearning
-// import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
-// import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
-//deeplearning
-// import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.cnntrain._parser.CNNTrainParser;
-// import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
-//other
+
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
-//other
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
-//other
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
+
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.SymbolKind;

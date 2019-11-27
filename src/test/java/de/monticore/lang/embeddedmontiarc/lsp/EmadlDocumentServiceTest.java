@@ -1,6 +1,6 @@
 package de.monticore.lang.embeddedmontiarc.lsp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning.lsp.EmadlDocumentService;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl.lsp.EmadlDocumentService;
 import de.monticore.util.lsp.ModelFileCache;
 import de.se_rwth.commons.logging.DiagnosticsLog;
 import org.junit.jupiter.api.AfterAll;
