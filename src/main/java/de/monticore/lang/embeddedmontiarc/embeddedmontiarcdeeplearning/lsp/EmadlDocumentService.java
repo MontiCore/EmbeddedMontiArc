@@ -3,28 +3,18 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcdeeplearning.lsp;
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-// import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-
-/* TODO add EMADL to dependencies @ //deeplearning */
-//deeplearning
-// import de.monticore.lang.embeddedmontiarc.cocos.EmbeddedMontiArcCoCos;
-// import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
-//deeplearning
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 
-import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
-//deeplearning
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
+import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
-// import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
+import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
+
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
-//other
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
-//other
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
-//other
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
@@ -76,6 +66,8 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
         return String.join(".",getPackageList(node)) + "." + getSymbolName(node);
     }
 
+    // TODO check architecture with CNNArchCocos
+    // EmbeddedMontiArcDL/src/main/java/de/monticore/lang/monticar/emadl/_cocos/CheckArchitecture.java
     @Override
     protected void doCheckSymbolCoCos(Path sourcePath, EMAComponentSymbol sym) {
         EMADLCocos checker = new EMADLCocos();
@@ -115,9 +107,11 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
     protected ModelingLanguageFamily getModelingLanguageFamily() {
         if(modelFamily == null) {
             modelFamily = new ModelingLanguageFamily();
-            // TODO
+            // TODO add all relevant languages
             EMADLLanguage montiArcEMADLLanguage = new EMADLLanguage();
             modelFamily.addModelingLanguage(montiArcEMADLLanguage);
+            CNNArchLanguage montiArcCNNArchLanguage = new CNNArchLanguage();
+            modelFamily.addModelingLanguage(montiArcCNNArchLanguage);
             modelFamily.addModelingLanguage(new StreamUnitsLanguage());
             modelFamily.addModelingLanguage(new StructLanguage());
             modelFamily.addModelingLanguage(new EnumLangLanguage());
