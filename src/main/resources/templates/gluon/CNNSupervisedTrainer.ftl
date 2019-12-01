@@ -214,7 +214,7 @@ class ${tc.fileNameWithoutEnding}:
             del optimizer_params['learning_rate_decay']
 
         train_batch_size = batch_size
-        test_batch_size = ${tc.hasUnrollInstructions()?then('1', 'batch_size')}
+        test_batch_size = ${tc.hasUnrollInstructions()?then('batch_size', 'batch_size')}
 
         train_iter, train_test_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(train_batch_size, test_batch_size)
 
