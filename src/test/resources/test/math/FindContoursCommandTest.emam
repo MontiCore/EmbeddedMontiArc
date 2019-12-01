@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component FindContoursCommandTest{
+    implementation Math{
+        Q a = findContours(0,0,0,0,0);
+    }
+}

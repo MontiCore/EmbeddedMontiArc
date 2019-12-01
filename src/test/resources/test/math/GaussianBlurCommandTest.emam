@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component GaussianBlurCommandTest{
+    implementation Math{
+        Q a = gaussianBlur(0,0,0,0,0);
+    }
+}

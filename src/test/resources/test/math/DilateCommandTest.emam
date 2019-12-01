@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component DilateCommandTest{
+    implementation Math{
+        Q a = dilate(0,0,0,0,0);
+    }
+}

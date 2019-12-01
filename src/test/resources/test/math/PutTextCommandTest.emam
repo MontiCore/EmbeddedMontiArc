@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component PutTextCommandTest{
+    implementation Math{
+        Q a = putText(0,0,0,0,0);
+    }
+}

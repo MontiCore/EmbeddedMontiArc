@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component InRangeCommandTest{
+    implementation Math{
+        Q a = inRange(0,0,0,0,0);
+    }
+}

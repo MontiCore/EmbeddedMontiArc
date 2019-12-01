@@ -33,6 +33,15 @@ public class LanguageUnitCPP extends LanguageUnit {
         this.generatorCPP = generatorCPP;
     }
 
+    // add a function for seareching a string form list<String> in string
+    private boolean containsString(String str, List<String> listOfStrings){
+        boolean isContained = false;
+        for(String foo: listOfStrings){
+            if(str.toLowerCase().contains(foo.toLowerCase()))
+                isContained = true;
+        }
+        return isContained;
+    }
     public void generateBluePrints() {
         for (int i = 0; i < symbolsToConvert.size(); ++i) {
             Symbol symbol = symbolsToConvert.get(i);
@@ -77,13 +86,34 @@ public class LanguageUnitCPP extends LanguageUnit {
         //includes
         //add default include
         String backendName = MathConverter.curBackend.getBackendName();
-        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend")) {
+        if (backendName.equals("OctaveBackend")) {
             resultString += "#include \"octave/oct.h\"\n";
             alreadyGeneratedIncludes.add("octave/oct");
-        } else if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
+        } else if (backendName.equals("ArmadilloBackend")) {
             resultString += "#include \"" + MathConverter.curBackend.getIncludeHeaderName() + "\"\n";
             alreadyGeneratedIncludes.add(MathConverter.curBackend.getIncludeHeaderName());
         }
+
+        List<String> cvImgprocCommands = Arrays.asList("dilate","erode", "cvtColor", "GaussianBlur", "threshold",
+                "findContours", "drawContours", "boundingRect", "putText", "circle");
+        List<String> cvCoreCommands = Arrays.asList("inRange");
+
+        // add iclude cv imgproc and cv core
+
+        String nameLowerCase = bluePrint.getName().toLowerCase();
+
+        boolean isUsedCV = false;
+        if (containsString(nameLowerCase, cvImgprocCommands)) {
+            resultString += "#include \"opencv2/imgproc.hpp\"\n";
+            alreadyGeneratedIncludes.add("opencv2/imgproc.hpp");
+            isUsedCV = true;
+        } else if(containsString(nameLowerCase, cvCoreCommands)){
+            resultString += "#include \"opencv2/core.hpp\"\n";
+            alreadyGeneratedIncludes.add("opencv2/core.hpp");
+            isUsedCV = true;
+        }
+
+
         for (Variable v : bluePrint.getVariables()) {
             //TODO remove multiple same includes
             if (v.hasInclude()) {
@@ -125,8 +155,12 @@ public class LanguageUnitCPP extends LanguageUnit {
             resultString += "using namespace arma;\n";
         }
 
+        if(isUsedCV){
+            resultString += "using namespace cv;\n";
+        }
+
         //class definition start
-        resultString += "class " + bluePrint.getName() ;
+        resultString += "class " + bluePrint.getName();
         resultString += "{\n";
 
         //const variables
