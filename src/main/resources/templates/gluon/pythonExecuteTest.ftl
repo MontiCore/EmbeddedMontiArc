@@ -72,6 +72,9 @@
                             ordered[batch_entry] = sorted(batchCandidate, key=lambda tup: tup[1].asscalar())
                             if batch_entry == 0:
                                 newSequences = ordered[batch_entry]
+                            elif batch_entry < (batch_size -1):
+                                newSequences = [([mx.nd.concat(newSequences[x][0][y], ordered[batch_entry][x][0][y], dim=0) for y in range(len(newSequences[x][0]))], mx.nd.concat(newSequences[x][1], ordered[batch_entry][x][1], dim=0)) for x in range(len(newSequences))]
+                            # expand dims only once
                             else:
                                 newSequences = [([mx.nd.concat(newSequences[x][0][y], ordered[batch_entry][x][0][y], dim=0).expand_dims(axis=1) for y in range(len(newSequences[x][0]))], mx.nd.concat(newSequences[x][1], ordered[batch_entry][x][1], dim=0).expand_dims(axis=1)) for x in range(len(newSequences))]
 
