@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.emadl.cocos;
 
@@ -26,6 +32,8 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("models", "ResNet34");
         checkValid("models", "ResNet152");
         checkValid("models", "ResNeXt50");
+        checkValid("models", "RNNsearch");
+        checkValid("models", "Show_attend_tell");
 
         checkValid("models", "simulator.MainController");
 

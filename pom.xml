@@ -1,3 +1,11 @@
+<!--
+
+    (c) https://github.com/MontiCore/monticore
+
+    The license generally applicable for this project
+    can be found under https://github.com/MontiCore/monticore.
+
+-->
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -10,7 +18,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-deeplearning</artifactId>
-    <version>0.2.10-SNAPSHOT</version>
+    <version>0.2.11-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -24,7 +32,7 @@
         <Embedded-MontiArc.version>0.1.9-SNAPSHOT</Embedded-MontiArc.version>
         <Embedded-MontiArc-Math.version>0.1.9-SNAPSHOT</Embedded-MontiArc-Math.version>
         <Embedded-MontiArc-Behaviour.version>0.0.16-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-        <CNNArch.version>0.3.3-SNAPSHOT</CNNArch.version>
+        <CNNArch.version>0.3.4-SNAPSHOT</CNNArch.version>
         <Math.version>0.0.19-SNAPSHOT</Math.version>
         <MathOpt.version>0.1.1-SNAPSHOT</MathOpt.version>
         <embedded-montiarc-dynamics.version>0.0.4-SNAPSHOT</embedded-montiarc-dynamics.version>
@@ -446,6 +454,7 @@
                     <maxmem>256m</maxmem>
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
+                    <check/>
                 </configuration>
             </plugin>
         </plugins>
