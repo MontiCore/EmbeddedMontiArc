@@ -76,7 +76,6 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
     @Override
     protected void doCheckSymbolCoCos(Path sourcePath, EMAComponentSymbol sym) {
         // TODO
-        // EmbeddedMontiArcCoCoChecker checker = EmbeddedMontiArcCoCos.createChecker();
         CNNTrainCocos checker = new CNNTrainCocos();
         checker.checkAll((CNNTrainCompilationUnitSymbol) sym.getAstNode().get());
         if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {

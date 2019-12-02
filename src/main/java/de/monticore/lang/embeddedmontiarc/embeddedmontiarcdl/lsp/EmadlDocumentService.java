@@ -113,16 +113,15 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
         return scope;
     }
 
+    // TODO add all relevant languages
     protected ModelingLanguageFamily getModelingLanguageFamily() {
         if(modelFamily == null) {
             modelFamily = new ModelingLanguageFamily();
-            // TODO add all relevant languages
-            EmbeddedMontiArcMathLanguage montiArcMathLanguage = new EmbeddedMontiArcMathLanguage();
-            modelFamily.addModelingLanguage(montiArcMathLanguage);
-            EMADLLanguage montiArcEMADLLanguage = new EMADLLanguage();
-            modelFamily.addModelingLanguage(montiArcEMADLLanguage);
-            CNNArchLanguage montiArcCNNArchLanguage = new CNNArchLanguage();
-            modelFamily.addModelingLanguage(montiArcCNNArchLanguage);
+
+            modelFamily.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
+            modelFamily.addModelingLanguage(new EMADLLanguage());
+            modelFamily.addModelingLanguage(new CNNArchLanguage());
+
             modelFamily.addModelingLanguage(new StreamUnitsLanguage());
             modelFamily.addModelingLanguage(new StructLanguage());
             modelFamily.addModelingLanguage(new EnumLangLanguage());
