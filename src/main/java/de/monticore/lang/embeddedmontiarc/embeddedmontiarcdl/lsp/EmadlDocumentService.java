@@ -68,14 +68,18 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
         return String.join(".",getPackageList(node)) + "." + getSymbolName(node);
     }
 
+    protected EMAComponentInstanceSymbol getInstanceSymbol(EMAComponentSymbol sym) {
+        return (EMAComponentInstanceSymbol) sym.getEnclosingScope()
+        .resolveLocally(EMAComponentInstanceSymbol.KIND)
+        .stream().findFirst().get();
+    }
+
     // TODO correct input for EMADLCocos
-    // EmbeddedMontiArcDL/src/main/java/de/monticore/lang/monticar/emadl/_cocos/CheckArchitecture.java
     @Override
     protected void doCheckSymbolCoCos(Path sourcePath, EMAComponentSymbol sym) {
         EMADLCocos checker = new EMADLCocos();
-        EMAComponentInstanceSymbol instancesym = (EMAComponentInstanceSymbol) sym.getEnclosingScope()
-                          .resolveLocally(EMAComponentInstanceSymbol.KIND)
-                          .stream().findFirst().get();
+        EMAComponentInstanceSymbol instancesym = getInstanceSymbol(sym);
+
         checker.checkAll(instancesym);
         if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
             Log.info("No CoCos invalid", "default");
