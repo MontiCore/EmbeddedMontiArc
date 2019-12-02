@@ -131,19 +131,19 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     public void endVisit(final ASTArchitecture node) {
         List<LayerVariableDeclarationSymbol> layerVariableDeclarations = new ArrayList<>();
-        List<SerialCompositeElementSymbol> streams = new ArrayList<>();
+        List<NetworkInstructionSymbol> networkInstructions = new ArrayList<>();
 
-        for (ASTInstruction astInstruction : node.getInstructionsList()){
+        for (ASTInstruction astInstruction : node.getInstructionsList()) {
             if (astInstruction.isPresentLayerVariableDeclaration()) {
                 layerVariableDeclarations.add((LayerVariableDeclarationSymbol) astInstruction.getLayerVariableDeclaration().getSymbolOpt().get());
             }
-            else if (astInstruction.isPresentStream()) {
-                streams.add((SerialCompositeElementSymbol) astInstruction.getStream().getSymbolOpt().get());
+            else if (astInstruction.isPresentNetworkInstruction()) {
+                networkInstructions.add((NetworkInstructionSymbol) astInstruction.getNetworkInstruction().getSymbolOpt().get());
             }
         }
 
         architecture.setLayerVariableDeclarations(layerVariableDeclarations);
-        architecture.setStreams(streams);
+        architecture.setNetworkInstructions(networkInstructions);
 
         removeCurrentScope();
     }
@@ -155,6 +155,9 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     private void createPredefinedLayers(){
         for (LayerDeclarationSymbol sym : AllPredefinedLayers.createList()){
+            addToScope(sym);
+        }
+        for (UnrollDeclarationSymbol sym : AllPredefinedLayers.createUnrollList()){
             addToScope(sym);
         }
     }
@@ -251,6 +254,26 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     @Override
+    public void visit(ASTTimeParameter ast) {
+        ParameterSymbol variable = new ParameterSymbol(ast.getName());
+        variable.setType(ParameterType.TIME_PARAMETER);
+        addToScopeAndLinkWithNode(variable, ast);
+    }
+
+    @Override
+    public void endVisit(ASTTimeParameter ast) {
+        ParameterSymbol variable = (ParameterSymbol) ast.getSymbolOpt().get();
+        if (ast.isPresentDefault()){
+            variable.setDefaultExpression((ArchSimpleExpressionSymbol) ast.getDefault().getSymbolOpt().get());
+        }
+        else {
+            ArchSimpleExpressionSymbol expression = new ArchSimpleExpressionSymbol();
+            expression.setValue(1);
+            variable.setDefaultExpression(expression);
+        }
+    }
+
+    @Override
     public void endVisit(ASTArchSimpleExpression ast) {
         ArchSimpleExpressionSymbol sym = new ArchSimpleExpressionSymbol();
         MathExpressionSymbol mathExp = null;
@@ -309,6 +332,43 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
             elements.add(serialElements);
         }
         sym.setElements(elements);
+    }
+
+    @Override
+    public void visit(ASTUnrollInstruction ast) {
+        UnrollInstructionSymbol unrollInstruction = new UnrollInstructionSymbol(ast.getName());
+        addToScopeAndLinkWithNode(unrollInstruction, ast);
+    }
+
+    @Override
+    public void endVisit(ASTUnrollInstruction ast) {
+        UnrollInstructionSymbol unrollInstruction = (UnrollInstructionSymbol) ast.getSymbolOpt().get();
+        unrollInstruction.setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
+        List<ArgumentSymbol> arguments = new ArrayList<>(6);
+        
+        for (ASTArchArgument astArgument : ast.getArgumentsList()){
+            Optional<ArgumentSymbol> optArgument = astArgument.getSymbolOpt().map(e -> (ArgumentSymbol)e);
+            optArgument.ifPresent(arguments::add);
+        }
+        unrollInstruction.setArguments(arguments);
+
+        unrollInstruction.setTimeParameter((ParameterSymbol) ast.getTimeParameter().getSymbolOpt().get());
+
+        removeCurrentScope();
+    }
+
+    @Override
+    public void visit(ASTStreamInstruction ast) {
+        StreamInstructionSymbol streamInstruction = new StreamInstructionSymbol();
+        addToScopeAndLinkWithNode(streamInstruction, ast);
+    }
+
+    @Override
+    public void endVisit(ASTStreamInstruction ast) {
+        StreamInstructionSymbol streamInstruction = (StreamInstructionSymbol) ast.getSymbolOpt().get();
+        streamInstruction.setBody((SerialCompositeElementSymbol) ast.getBody().getSymbolOpt().get());
+
+        removeCurrentScope();
     }
 
     @Override

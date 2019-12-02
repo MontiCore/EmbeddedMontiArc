@@ -37,7 +37,6 @@ public class CheckLayer implements CNNArchASTLayerCoCo{
                 nameSet.add(name);
             }
         }
-
         LayerDeclarationSymbol layerDeclaration = ((LayerSymbol) node.getSymbolOpt().get()).getDeclaration();
         if (layerDeclaration == null){
             ArchitectureSymbol architecture = node.getSymbolOpt().get().getEnclosingScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();

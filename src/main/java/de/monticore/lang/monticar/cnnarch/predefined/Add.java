@@ -25,11 +25,6 @@ public class Add extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isTrainable() {
-        return false;
-    }
-
-    @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         List<String> range = computeStartAndEndValue(layer.getInputTypes(), Rational::plus, Rational::plus);
 

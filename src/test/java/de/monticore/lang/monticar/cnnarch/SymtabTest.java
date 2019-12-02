@@ -56,15 +56,4 @@ public class SymtabTest extends AbstractSymtabTest {
         a.getArchitecture().getStreams().get(0).getOutputTypes();
     }
 
-    @Test
-    public void testMultipleOutputs(){
-        Scope symTab = createSymTab("src/test/resources/valid_tests");
-        CNNArchCompilationUnitSymbol a = symTab.<CNNArchCompilationUnitSymbol>resolve(
-                "MultipleOutputs",
-                CNNArchCompilationUnitSymbol.KIND).orElse(null);
-        assertNotNull(a);
-        a.resolve();
-        a.getArchitecture().getStreams().get(0).getOutputTypes();
-    }
-
 }

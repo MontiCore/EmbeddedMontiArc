@@ -9,9 +9,7 @@
 package de.monticore.lang.monticar.cnnarch._cocos;
 
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchArgument;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArgumentSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -30,7 +28,14 @@ public class CheckArgument implements CNNArchASTArchArgumentCoCo {
                                 "Possible arguments are: " + Joiners.COMMA.join(layerDeclaration.getParameters())
                         , node.get_SourcePositionStart());
             }
-
+        }else if(argument.getEnclosingScope().getSpanningSymbol().get() instanceof UnrollInstructionSymbol){
+            UnrollDeclarationSymbol layerDeclaration = argument.getUnroll().getDeclaration();
+            if (layerDeclaration != null && argument.getParameter() ==  null){
+                Log.error("0"+ ErrorCodes.UNKNOWN_ARGUMENT + " Unknown Argument. " +
+                                "Parameter with name '" + node.getName() + "' does not exist. " +
+                                "Possible arguments are: " + Joiners.COMMA.join(layerDeclaration.getParameters())
+                        , node.get_SourcePositionStart());
+            }
         }
     }
 

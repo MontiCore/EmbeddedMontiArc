@@ -17,8 +17,8 @@ import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
+import org.apache.commons.math3.ml.neuralnet.Network;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
@@ -26,9 +26,10 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     public static final ArchitectureKind KIND = new ArchitectureKind();
 
     private List<LayerVariableDeclarationSymbol> layerVariableDeclarations = new ArrayList<>();
-    private List<SerialCompositeElementSymbol> streams = new ArrayList<>();
+    private List<NetworkInstructionSymbol> networkInstructions = new ArrayList<>();
     private List<VariableSymbol> inputs = new ArrayList<>();
     private List<VariableSymbol> outputs = new ArrayList<>();
+    private List<ConstantSymbol> constants = new ArrayList<>();
     private String dataPath;
     private String componentName;
 
@@ -44,12 +45,24 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         this.layerVariableDeclarations = layerVariableDeclarations;
     }
 
-    public List<SerialCompositeElementSymbol> getStreams() {
-        return streams;
+    public List<NetworkInstructionSymbol> getNetworkInstructions() {
+        return networkInstructions;
     }
 
-    public void setStreams(List<SerialCompositeElementSymbol> streams) {
-        this.streams = streams;
+    public void setNetworkInstructions(List<NetworkInstructionSymbol> networkInstructions) {
+        this.networkInstructions = networkInstructions;
+    }
+
+    public List<SerialCompositeElementSymbol> getStreams() {
+        List<SerialCompositeElementSymbol> streams = new ArrayList<>();
+
+        for (NetworkInstructionSymbol networkInstruction : getNetworkInstructions()) {
+            if (networkInstruction.isStream()) {
+                streams.add(networkInstruction.getBody());
+            }
+        }
+
+        return streams;
     }
 
     public String getDataPath() {
@@ -72,8 +85,20 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return inputs;
     }
 
+    public void setInputs(List<VariableSymbol> inputs) {
+        this.inputs = inputs;
+    }
+
     public List<VariableSymbol> getOutputs() {
         return outputs;
+    }
+
+    public void setOutputs(List<VariableSymbol> outputs) {
+        this.outputs = outputs;
+    }
+
+    public List<ConstantSymbol> getConstants() {
+        return constants;
     }
 
     public Collection<IODeclarationSymbol> getIODeclarations(){
@@ -84,12 +109,16 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return getSpannedScope().resolveLocally(LayerDeclarationSymbol.KIND);
     }
 
+    public Collection<UnrollDeclarationSymbol> getUnrollDeclarations(){
+        return getSpannedScope().resolveLocally(UnrollDeclarationSymbol.KIND);
+    }
+
     public void resolve() {
-        for (CompositeElementSymbol stream : streams) {
-            stream.checkIfResolvable();
+        for (NetworkInstructionSymbol networkInstruction : getNetworkInstructions()) {
+            networkInstruction.checkIfResolvable();
 
             try {
-                stream.resolveOrError();
+                networkInstruction.resolveOrError();
             }
             catch (ArchResolveException e) {
                 // Do nothing; error is already logged
@@ -100,8 +129,8 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     public boolean isResolved(){
         boolean resolved = true;
 
-        for (CompositeElementSymbol stream : streams) {
-            resolved &= stream.isResolved();
+        for (NetworkInstructionSymbol networkInstruction : getNetworkInstructions()) {
+            resolved &= networkInstruction.isResolved();
         }
 
         return resolved;
@@ -110,8 +139,8 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     public boolean isResolvable(){
         boolean resolvable = true;
 
-        for (CompositeElementSymbol stream : streams) {
-            resolvable &= stream.isResolvable();
+        for (NetworkInstructionSymbol networkInstruction : getNetworkInstructions()) {
+            resolvable &= networkInstruction.isResolvable();
         }
 
         return resolvable;
@@ -145,6 +174,10 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             copy.getSpannedScope().getAsMutableScope().add(layerDeclaration);
         }
 
+        for (UnrollDeclarationSymbol unrollDeclaration : AllPredefinedLayers.createUnrollList()){
+            copy.getSpannedScope().getAsMutableScope().add(unrollDeclaration);
+        }
+
         for (LayerDeclarationSymbol layerDeclaration : getLayerDeclarations()){
             if (!layerDeclaration.isPredefined()) {
                 copy.getSpannedScope().getAsMutableScope().add(layerDeclaration.deepCopy());
@@ -160,15 +193,17 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         }
         copy.setLayerVariableDeclarations(copyLayerVariableDeclarations);
 
-        List<SerialCompositeElementSymbol> copyStreams = new ArrayList<>();
-        for (SerialCompositeElementSymbol stream : getStreams()) {
-            SerialCompositeElementSymbol copyStream = stream.preResolveDeepCopy();
-            copyStream.putInScope(copy.getSpannedScope());
-            copyStreams.add(copyStream);
+        List<NetworkInstructionSymbol> copyNetworkInstructions = new ArrayList<>();
+        for (NetworkInstructionSymbol networkInstruction : getNetworkInstructions()) {
+            NetworkInstructionSymbol copyNetworkInstruction = (NetworkInstructionSymbol) networkInstruction.preResolveDeepCopy();
+            copyNetworkInstruction.putInScope(copy.getSpannedScope());
+            copyNetworkInstructions.add(copyNetworkInstruction);
         }
-        copy.setStreams(copyStreams);
+        copy.setNetworkInstructions(copyNetworkInstructions);
 
         copy.putInScope(enclosingScopeOfCopy);
         return copy;
     }
+
+
 }

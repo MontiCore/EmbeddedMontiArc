@@ -23,11 +23,6 @@ public class OneHot extends PredefinedLayerDeclaration {
     }
 
     @Override
-    public boolean isTrainable() {
-        return false;
-    }
-
-    @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .channels(layer.getIntValue(AllPredefinedLayers.SIZE_NAME).get())

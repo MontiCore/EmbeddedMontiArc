@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 
 public class IODeclarationSymbol extends VariableDeclarationSymbol {
 
+    public static final Integer MAX_ARRAY_LENGTH = 10000;
+
     private ArchTypeSymbol type;
     private boolean input; //true->input, false->output
     private int arrayLength = 1;

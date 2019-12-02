@@ -8,9 +8,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch._cocos;
 
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -32,6 +30,10 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
             else {
                 checkIOArray(ioDeclaration);
             }
+
+            if (ioDeclaration.isOutput()) {
+                checkOutputWrittenToOnce(ioDeclaration);
+            }
         }
     }
 
@@ -51,7 +53,6 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
         }
     }
 
-
     private void checkIOArray(IODeclarationSymbol ioDeclaration){
         List<Integer> unusedIndices = IntStream.range(0, ioDeclaration.getArrayLength()).boxed().collect(Collectors.toList());
 
@@ -65,7 +66,7 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
                     Log.error("0" + ErrorCodes.INVALID_ARRAY_ACCESS + " The IO array access value of '" + ioElement.getName() +
                                     "' must be an integer between 0 and " + (ioDeclaration.getArrayLength()-1) + ". " +
                                     "The current value is: " + ioElement.getArrayAccess().get().getValue().get().toString()
-                            , ioElement.getSourcePosition());
+                                , ioElement.getSourcePosition());
                 }
             }
             else{
@@ -77,6 +78,65 @@ public class CheckIOAccessAndIOMissing extends CNNArchSymbolCoCo {
             Log.error("0" + ErrorCodes.MISSING_IO + " Input or output array with name '" + ioDeclaration.getName() + "' was declared but not used. " +
                             "The following indices are unused: " + Joiners.COMMA.join(unusedIndices) + "."
                     , ioDeclaration.getSourcePosition());
+        }
+    }
+
+    private void checkOutputWrittenToOnce(IODeclarationSymbol ioDeclaration) {
+        List<Integer> written = new ArrayList<>();
+
+        for (NetworkInstructionSymbol networkInstruction : ioDeclaration.getArchitecture().getNetworkInstructions()) {
+            if (networkInstruction.isStream()) {
+                SerialCompositeElementSymbol body = networkInstruction.getBody();
+                List<ArchitectureElementSymbol> outputs = body.getLastAtomicElements();
+
+                for (ArchitectureElementSymbol output : outputs) {
+                    if (output instanceof VariableSymbol) {
+                        VariableSymbol variable = (VariableSymbol) output;
+
+                        if (variable.getName().equals(ioDeclaration.getName())) {
+                            int arrayAccess = 0;
+
+                            if (variable.getArrayAccess().isPresent()) {
+                                arrayAccess = variable.getArrayAccess().get().getIntValue().orElse(0);
+                            }
+
+                            if (!written.contains(arrayAccess)) {
+                                written.add(arrayAccess);
+                            } else {
+                                Log.error("0" + ErrorCodes.OUTPUT_WRITTEN_TO_MULTIPLE_TIMES + " " + variable.getName() + "["
+                                                + arrayAccess + "] is written to multiple times, this is currently not allowed."
+                                        , networkInstruction.getSourcePosition());
+                            }
+                        }
+                    }
+                }
+            } else if (networkInstruction.isUnroll()) {
+                for (SerialCompositeElementSymbol body : networkInstruction.toUnrollInstruction().getResolvedBodies()) {
+                    List<ArchitectureElementSymbol> outputs = body.getLastAtomicElements();
+
+                    for (ArchitectureElementSymbol output : outputs) {
+                        if (output instanceof VariableSymbol) {
+                            VariableSymbol variable = (VariableSymbol) output;
+
+                            if (variable.getName().equals(ioDeclaration.getName())) {
+                                int arrayAccess = 0;
+
+                                if (variable.getArrayAccess().isPresent()) {
+                                    arrayAccess = variable.getArrayAccess().get().getIntValue().orElse(0);
+                                }
+
+                                if (!written.contains(arrayAccess)) {
+                                    written.add(arrayAccess);
+                                } else {
+                                    Log.error("0" + ErrorCodes.OUTPUT_WRITTEN_TO_MULTIPLE_TIMES + " " + variable.getName() + "["
+                                                    + arrayAccess + "] is written to multiple times, this is currently not allowed."
+                                            , networkInstruction.getSourcePosition());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

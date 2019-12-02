@@ -26,7 +26,6 @@ public class ParameterSymbol extends CommonSymbol {
     private ArchSimpleExpressionSymbol currentExpression = null; //Optional
     private Set<Constraints> constraints = new HashSet<>();
 
-
     protected ParameterSymbol(String name) {
         super(name, KIND);
     }
@@ -82,6 +81,9 @@ public class ParameterSymbol extends CommonSymbol {
         return type == ParameterType.LAYER_PARAMETER;
     }
 
+    public boolean isTimeParameter(){
+        return type == ParameterType.TIME_PARAMETER;
+    }
 
     public boolean hasExpression(){
         return getCurrentExpression().isPresent() || getDefaultExpression().isPresent();

@@ -19,7 +19,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnn-arch</artifactId>
-    <version>0.3.3-SNAPSHOT</version>
+    <version>0.3.4-SNAPSHOT</version>
 
 
 
@@ -348,6 +348,7 @@
                 <version>2.19.1</version>
                 <configuration>
                     <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+                    <trimStackTrace>false</trimStackTrace>
 		        </configuration>
             </plugin>
             <plugin>

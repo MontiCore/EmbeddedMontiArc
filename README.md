@@ -410,6 +410,70 @@ All predefined methods start with a capital letter and all constructed methods h
 
   * **size** (integer > 0, optional): The OneHot-vector's size. Can be omitted to automatically use the output size of the architecture.
   
+  
+* **ArgMax()**
+
+  Computes the index of the maximal value of its input vector. Useful for recurrent networks, when the output of a timestep should be used as integer input for the next timestep.
+  
+  
+  * **BeamSearch(max_length, width)**
+  
+    Must be used together with a recurrent network. Uses Beamsearch as search algorithm over the timesteps of the RNN.
+  
+    * **max_length** (integer > 0, required): The maximum number of timesteps to run the RNN, and thus the maximum length of the generated sequence.
+    * **width** (integer > 0, required): The number of candidates to consider each in timestep. Sometimes called k.
+    
+    
+* **BroadcastAdd()**
+
+  Takes multiple tensors as input, and broadcasts them to the same shape (Copies values along one axis until it has the size of the largest axis along all inputs). Then performs elementswise addition.
+
+
+* **BroadcastMultiply()**
+
+  Takes multiple tensors as input, and broadcasts them to the same shape (Copies values along one axis until it has the size of the largest axis along all inputs). Then performs elementswise multiplication.
+
+  
+* **Dot()**
+
+  Performs the dot product (matrix multiplication) for two input matrices.
+
+
+* **ExpandDims(axis)**
+
+  Creates a new, empty axis for a given input tensor.
+
+  * **axis** (0 <= integer <= 1, required): The axis to expand.
+
+
+* **GreedySearch(max_length)**
+
+  Must be used together with a recurrent network. Uses Greedysearch as search algorithm over the timesteps of the RNN, so that only the best output for each timestep is considered.
+    
+  * **max_length** (integer > 0, required): The maximum number of timesteps to run the RNN, and thus the maximum length of the generated sequence.
+
+
+* **ReduceSum(axis)**
+
+  Sums all values along a given axis, and reduces the dimension of the axis afterwards, making a scalar out of a one-entry vector etc.
+
+  * **axis** (0 <= integer <= 1, optional, default=-1): The axis to sum over. Uses the last axis (-1) by default.
+
+
+* **Repeat(n, axis)**
+
+  Copies the entries of an axis n times in the same axis.
+
+  * **n** (integer > 0, required): How often to copy the entries of the given axis
+  * **axis** (-1 <= integer <= 2, optional, default=-1): The axis to use for copying. Uses the last axis (-1) by default.
+
+* **Reshape(shape)**
+
+  Transforms the input tensor into a different shape, while keeping the number of total entries in the tensor. 
+
+  * **shape** (integer tuple, required): New shape of the tensor.
+
+
 * **UpConvolution(kernel, channels, stride=(1,1), no_bias=false, padding="same")**
 
   Creates a up convolutional layer (also known as transposed convolution ). Is currently only supported in the tesnsorflow backend.
@@ -420,3 +484,4 @@ All predefined methods start with a capital letter and all constructed methods h
   * **padding** ({"valid", "same", "no_loss"}, optional, default="same"): One of "valid", "same" or "no_loss". "valid" means no padding. "same"   results in padding the input such that the output has the same length as the original input divided by the stride (rounded up). "no_loss" results in minimal padding such that each input is used by at least one filter (identical to "valid" if *stride* equals 1).
   * **no_bias** (boolean, optional, default=false): Whether to disable the bias parameter.
     
+

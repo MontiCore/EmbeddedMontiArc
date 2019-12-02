@@ -154,6 +154,24 @@ public enum Constraints {
                     + AllPredefinedLayers.PADDING_NO_LOSS;
         }
     },
+    TRANSPADDING_TYPE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if (optString.get().equals(AllPredefinedLayers.PADDING_VALID)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.PADDING_VALID + "or "
+                    + AllPredefinedLayers.PADDING_SAME;
+        }
+    },
     POOL_TYPE {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {
@@ -171,6 +189,70 @@ public enum Constraints {
         protected String msgString() {
             return AllPredefinedLayers.POOL_MAX + " or "
                     + AllPredefinedLayers.POOL_AVG;
+        }
+    },
+    NULLABLE_AXIS {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            if (exp.getIntValue().isPresent()){
+                int intValue = exp.getIntValue().get();
+                return intValue >= -1 && intValue <= 2; // -1 is null
+            }
+
+            return false;
+        }
+
+        @Override
+        public String msgString() {
+            return "an axis between 0 and 2 or -1";
+        }
+    },
+    NULLABLE_AXIS_WITHOUT_2 {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            if (exp.getIntValue().isPresent()){
+                int intValue = exp.getIntValue().get();
+                return intValue >= -1 && intValue <= 2; // -1 is null
+            }
+
+            return false;
+        }
+
+        @Override
+        public String msgString() {
+            return "an axis between 0 and 1 or -1";
+        }
+    },
+    AXIS {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            if (exp.getIntValue().isPresent()){
+                int intValue = exp.getIntValue().get();
+                return intValue >= 0 && intValue <= 2;
+            }
+
+            return false;
+        }
+
+        @Override
+        public String msgString() {
+            return "an axis between 0 and 2";
+        }
+    },
+    AXIS_WITHOUT_2 {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            if (exp.getIntValue().isPresent()){
+                int intValue = exp.getIntValue().get();
+                return intValue >= 0 && intValue <= 1;
+            }
+
+            return false;
+        }
+
+        @Override
+        public String msgString() {
+            return "an axis between 0 and 1";
         }
     };
 
