@@ -21,8 +21,10 @@ import org.junit.Test;
 import com.vividsolutions.jts.util.Assert;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
-import simulation.EESimulator.DirectModelAsEEComponent;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.interfaces.SoftwareSimulatorManager;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.config.*;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.DirectSoftwareSimulatorManager;
+import simulation.EESimulator.ControllerAsEEComponent;
 import simulation.EESimulator.EEComponent;
 import simulation.EESimulator.EEDiscreteEvent;
 import simulation.EESimulator.EEDiscreteEventTypeEnum;
@@ -33,20 +35,19 @@ import simulation.bus.InstantBus;
 public class ControllerTest {
 
 	//hardcoded config
-	private final String AUTOPILOT_CONFIG = "autopilot=AutopilotAdapter\n"+
-												"os=windows\n" +
-												"no_time=true";
-
+	private final ControllerConfig AUTOPILOT_CONFIG = new ControllerConfig(ControllerConfig.EmulatorType.HARDWARE_EMULATOR, "AutopilotAdapter")
+		.set_os(ControllerConfig.OS.WINDOWS).set_timemodel_constant(Duration.ofMillis(60));
+	
 	@Test
 	public void testController() throws Exception {
-		HardwareEmulatorInterface modelServer = new HardwareEmulatorInterface("autopilots_folder=autopilots", "");
+		SoftwareSimulatorManager softwareSimulatorManager = new DirectSoftwareSimulatorManager(new SoftwareSimulatorConfig().set_softwares_folder("autopilots"));
 		PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
 		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
 		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
 		InstantBus bus = new InstantBus(eeSimulator);
 		eeVehicleBuilder.createControllerSensors(bus);
 		eeVehicleBuilder.createMassPointActuators(bus);
-		DirectModelAsEEComponent ecu = eeVehicleBuilder.createController(modelServer, AUTOPILOT_CONFIG, bus);
+		ControllerAsEEComponent ecu = eeVehicleBuilder.createController(softwareSimulatorManager, AUTOPILOT_CONFIG, bus);
 		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
 		EEVehicle eeVehicle = vehicle.getEEVehicle();
 

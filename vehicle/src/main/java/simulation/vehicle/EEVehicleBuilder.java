@@ -9,7 +9,8 @@ package simulation.vehicle;
 import com.google.gson.Gson;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.interfaces.FunctionBlockInterface;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.interfaces.SoftwareSimulatorManager;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.config.ControllerConfig;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import sensors.abstractsensors.AbstractSensor;
@@ -148,7 +149,7 @@ public class EEVehicleBuilder {
 
 			if (!busStructure.getController().isEmpty()) {
 				for (ParsableBusStructureProperties.Tupel controller : busStructure.getController()) {
-					DirectModelAsEEComponent newController = DirectModelAsEEComponent.createDirectModelAsEEComponent(busList.get(controller.busIds[0]));
+					ControllerAsEEComponent newController = ControllerAsEEComponent.createControllerAsEEComponent(busList.get(controller.busIds[0]));
 					newController.setCycleTime(Duration.parse(controller.parameter[0]));
 					components.add(newController);
 				}
@@ -172,15 +173,15 @@ public class EEVehicleBuilder {
 		return createNavigation(Collections.singletonList(bus));
 	}
 
-	public DirectModelAsEEComponent createController(HardwareEmulatorInterface modelServer, String autopilotConfig, List<Bus> buses) {
+	public ControllerAsEEComponent createController(SoftwareSimulatorManager softwareSimManager, ControllerConfig controllerConfig, List<Bus> buses) {
 		List<EEComponent> targets = new ArrayList<EEComponent>(buses);
 		HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
-		for(BusEntry busEntry : DirectModelAsEEComponent.MASSPOINT_OUTPUT_MESSAGES) {
+		for(BusEntry busEntry : ControllerAsEEComponent.MASSPOINT_OUTPUT_MESSAGES) {
         	targetsByMessageId.put(busEntry, targets);
         }
-		DirectModelAsEEComponent comp = new DirectModelAsEEComponent(eeSimulator, targetsByMessageId);
+		ControllerAsEEComponent comp = new ControllerAsEEComponent(eeSimulator, targetsByMessageId);
 		try {
-			comp.initializeController(modelServer, autopilotConfig, Duration.ofMillis(30));
+			comp.initializeController(softwareSimManager, controllerConfig, Duration.ofMillis(30));
 		} catch (Exception e) {
 			throw new IllegalStateException("Controller could not be created. " + e.getMessage() + "\r\n" + e.getStackTrace());
 		}
@@ -188,8 +189,8 @@ public class EEVehicleBuilder {
 		return comp;
 	}
 
-	public DirectModelAsEEComponent createController(HardwareEmulatorInterface modelServer, String autopilotConfig, Bus bus) {
-		return createController(modelServer, autopilotConfig, Collections.singletonList(bus));
+	public ControllerAsEEComponent createController(SoftwareSimulatorManager softwareSimManager, ControllerConfig controllerConfig, Bus bus) {
+		return createController(softwareSimManager, controllerConfig, Collections.singletonList(bus));
 	}
 	
 	public void createSensor(BusEntry sensorType, List<Bus> buses) {
@@ -243,6 +244,19 @@ public class EEVehicleBuilder {
 
 	public List<VehicleActuator> createMassPointActuators(Bus bus){
 		return createMassPointActuators(Collections.singletonList(bus));
+	}
+
+	public List<VehicleActuator> createModelicaActuators(List<Bus> buses){
+		List<VehicleActuator> comps = new ArrayList<VehicleActuator>();
+		comps.add(createActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE, buses));
+		comps.add(createActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_CLUTCH, buses));
+		comps.add(createActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR, buses));
+		comps.add(createActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE, buses));
+		return comps;
+	}
+
+	public List<VehicleActuator> createModelicaActuators(Bus bus){
+		return createModelicaActuators(Collections.singletonList(bus));
 	}
 
 	public void createControllerSensors(List<Bus> buses){
@@ -388,7 +402,7 @@ class ParsableBusStructureProperties {
 		List<Bridge> processedBridges = new LinkedList<>();
 		List<AbstractSensor> processedSensors = new LinkedList<>();
 		List<VehicleActuator> processedActuators = new LinkedList<>();
-		List<DirectModelAsEEComponent> processedController = new LinkedList<>();
+		List<ControllerAsEEComponent> processedController = new LinkedList<>();
 
 		//id to assign component to the busAndParameter and index of the busAndParameter in busList of the eeVehicle
 		int busId = 0;
@@ -420,7 +434,7 @@ class ParsableBusStructureProperties {
 						actuators.add(new Tupel(((VehicleActuator) component).getActuatorType().toString(), busIdArr, paramAct));
 						break;
 					case AUTOPILOT:
-						String[] paramController = {((DirectModelAsEEComponent) component).getCycleTime().toString()};
+						String[] paramController = {((ControllerAsEEComponent) component).getCycleTime().toString()};
 						controller.add(new Tupel("autopilot", busIdArr, paramController));
 						break;
 					case NAVIGATION:
