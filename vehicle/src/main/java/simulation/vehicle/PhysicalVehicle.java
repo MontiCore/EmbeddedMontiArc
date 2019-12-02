@@ -346,7 +346,9 @@ public abstract class PhysicalVehicle implements IPhysicalVehicle, SimulationLoo
 	        Optional<VehicleActuator> actuator = vehicle.getEEVehicle().getActuator(type);
 			if(actuator.isPresent()) {
 	        	actuators.add(actuator.get());
-	        }
+	        } else {
+                throw new IllegalStateException("EEVehicle does not contain actuator: " + type);
+            }
 		}
 		if(actuatorTypes.length > actuators.size()) {
 			throw new IllegalStateException("EEVehicle does not contain all necessary actuators");

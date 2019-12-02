@@ -7,7 +7,8 @@
 package simulation.EESimulator;
 
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons.BusEntry;
-import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorInterface;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.interfaces.*;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.config.ControllerConfig;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.bus.Bus;
 import simulation.bus.BusMessage;
@@ -24,7 +25,7 @@ import static com.vividsolutions.jts.util.Memory.free;
  * Controls the velocity and path of the vehicle.
  * Calculates actuator values for brakes, engine, steering.
  */
-public class DirectModelAsEEComponent extends ImmutableEEComponent {
+public class ControllerAsEEComponent extends ImmutableEEComponent {
     private static final int MAX_TRAJECTORY_LENGTH = 100;
 
     /**
@@ -73,7 +74,7 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     /**
      * Direct reference to the hardware emulator
      */
-    HardwareEmulatorInterface modelServer;
+    SoftwareSimulator softwareSimulator;
 
     int modelId;
 
@@ -90,20 +91,20 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
 
 
     /**
-     * Create a DirectModelAsEEComponent that is connected to bus.
-     * @param bus Bus that the DirectModelAsEEComponent is connected to
-     * @return DirectModelAsEEComponent with default configuration
+     * Create a ControllerAsEEComponent that is connected to bus.
+     * @param bus Bus that the ControllerAsEEComponent is connected to
+     * @return ControllerAsEEComponent with default configuration
      */
-    public static DirectModelAsEEComponent createDirectModelAsEEComponent(Bus bus) {
-        return createDirectModelAsEEComponent(Collections.singletonList(bus));
+    public static ControllerAsEEComponent createControllerAsEEComponent(Bus bus) {
+        return createControllerAsEEComponent(Collections.singletonList(bus));
     }
 
     /**
-     * Create a DirectModelAsEEComponent that is connected to bus.
-     * @param buses Buses that the DirectModelAsEEComponent is connected to
-     * @return DirectModelAsEEComponent with default configuration
+     * Create a ControllerAsEEComponent that is connected to bus.
+     * @param buses Buses that the ControllerAsEEComponent is connected to
+     * @return ControllerAsEEComponent with default configuration
      */
-    public static DirectModelAsEEComponent createDirectModelAsEEComponent(List<Bus> buses){
+    public static ControllerAsEEComponent createControllerAsEEComponent(List<Bus> buses){
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         targetsByMessageId.put(BusEntry.ACTUATOR_BRAKE, new LinkedList<>());
         targetsByMessageId.put(BusEntry.ACTUATOR_STEERING, new LinkedList<>());
@@ -119,11 +120,11 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
                 targetsByMessageId.get(BusEntry.ACTUATOR_BRAKE).add(bus);
             }
         }
-        return new DirectModelAsEEComponent(buses.get(0).getSimulator(), targetsByMessageId);
+        return new ControllerAsEEComponent(buses.get(0).getSimulator(), targetsByMessageId);
     }
 
 
-    public DirectModelAsEEComponent(EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
+    public ControllerAsEEComponent(EESimulator simulator, HashMap<BusEntry, List<EEComponent>> targetsByMessageId) {
         super(simulator, EEComponentType.AUTOPILOT, STANDARD_SUBSCRIBED_MESSAGES, targetsByMessageId);
     }
 
@@ -138,26 +139,22 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
     
     
     public void free(){
-        if (modelId >= 0){
-            modelServer.free_autopilot(modelId);
-            modelId = -1;
+        try {
+            softwareSimulator.free();
+        } catch(Exception e){
+            e.printStackTrace();
         }
     }
 
     /**
-     * Set the HardwareEmulatorInterface, create the autopilot and set the cycle time.
-     * @param model_server
-     * @param autopilot_config
+     * Set the SoftwareSimulator interface, create the autopilot and set the cycle time.
+     * @param softwareSimManager
+     * @param controllerConfig
      * @param cycleTime
      * @throws Exception
      */
-    public void initializeController(HardwareEmulatorInterface model_server, String autopilot_config, Duration cycleTime) throws Exception {
-        this.modelServer = model_server;
-        this.modelId = model_server.alloc_autopilot(autopilot_config);
-        if (this.modelId < 0){
-            String error_msg = model_server.query("get_error_msg");
-            throw new Exception("Error allocating autopilot. Config:\n"+autopilot_config+"\n"+error_msg);
-        }
+    public void initializeController(SoftwareSimulatorManager softwareSimManager, ControllerConfig controllerConfig, Duration cycleTime) throws Exception {
+        this.softwareSimulator = softwareSimManager.newSimulator(controllerConfig);
         this.cycleTime = cycleTime;
         //add controller execute event
         this.getSimulator().addEvent(new ControllerExecuteEvent(this.getSimulator().getSimulationTime().plus(cycleTime), this));
@@ -218,17 +215,25 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
             }
 
             if(wakeUpNeeded) {
-            	executeController(event);
+                try {
+                    executeController(event);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         } else if (event.getEventType() == EEDiscreteEventTypeEnum.CONTROLLER_EXECUTE_EVENT) {
             if(newInputs) {
-            	executeController(event);
+            	try {
+                    executeController(event);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
             } 
             else {
             	wakeUpNeeded = true;
             }
         } else {
-            throw new IllegalArgumentException("DirectModelAsEEComponent expect BusMessage or ControllerExecuteEvent as event. Event was: " + event.getEventType());
+            throw new IllegalArgumentException("ControllerAsEEComponent expect BusMessage or ControllerExecuteEvent as event. Event was: " + event.getEventType());
         }
     }
 
@@ -236,13 +241,12 @@ public class DirectModelAsEEComponent extends ImmutableEEComponent {
      * Execute the controller once. Add a ControllerExecuteEvent for the next cycle.
      * @param event
      */
-	private void executeController(EEDiscreteEvent event) {
+	private void executeController(EEDiscreteEvent event) throws Exception {
 		double timeIncrement = Duration.between(event.getEventTime(), lastFinishTime).toMillis();
-		this.inputs.put("timeIncrement", timeIncrement);
-        this.modelServer.set_inputs(modelId, inputs);
-
-		Duration delay = modelServer.time_execute(modelId, Duration.between(lastFinishTime, event.getEventTime()));
-		this.outputs = modelServer.get_outputs(modelId);
+        this.inputs.put("timeIncrement", timeIncrement);
+        this.softwareSimulator.setInputs(inputs);
+		Duration delay = this.softwareSimulator.runCycle();
+		this.outputs = this.softwareSimulator.getOutputs();
         lastFinishTime = event.getEventTime().plus(delay);
 		
 		Object engine = outputs.get("engine");
