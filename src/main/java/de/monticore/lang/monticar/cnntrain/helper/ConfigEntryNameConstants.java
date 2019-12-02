@@ -9,6 +9,7 @@ package de.monticore.lang.monticar.cnntrain.helper;
 
 public class ConfigEntryNameConstants {
     public static final String LEARNING_METHOD = "learning_method";
+    public static final String EVAL_METRIC = "eval_metric";
     public static final String NUM_EPISODES = "num_episodes";
     public static final String DISCOUNT_FACTOR = "discount_factor";
     public static final String NUM_MAX_STEPS = "num_max_steps";
@@ -44,4 +45,11 @@ public class ConfigEntryNameConstants {
     public static final String STRATEGY_EPSDECAY = "epsdecay";
 
     public static final String CRITIC = "critic";
+
+    public static final String DISCRIMINATOR_NAME = "discriminator_name";
+    public static final String PREPROCESSING_NAME = "preprocessing_name";
+    public static final String NOISE_DISTRIBUTION = "noise_distribution";
+    public static final String IMG_RESIZE = "img_resize";
+    public static final String IMG_RESIZE_WIDTH = "img_resize_width";
+    public static final String IMG_RESIZE_HEIGHT = "img_resize_height";
 }

@@ -22,6 +22,7 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     private RewardFunctionSymbol rlRewardFunctionSymbol;
     private NNArchitectureSymbol trainedArchitecture;
     private NNArchitectureSymbol criticNetwork;
+    private NNArchitectureSymbol discriminatorNetwork;
 
     public static final ConfigurationSymbolKind KIND = new ConfigurationSymbolKind();
 
@@ -75,8 +76,16 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         return Optional.ofNullable(criticNetwork);
     }
 
+    public Optional<NNArchitectureSymbol> getDiscriminatorNetwork() {
+        return Optional.ofNullable(discriminatorNetwork);
+    }
+
     public void setCriticNetwork(NNArchitectureSymbol criticNetwork) {
         this.criticNetwork = criticNetwork;
+    }
+
+    public void setDiscriminatorNetwork(NNArchitectureSymbol discriminatorNetwork) {
+        this.discriminatorNetwork = discriminatorNetwork;
     }
 
     public Map<String, EntrySymbol> getEntryMap() {
@@ -96,8 +105,20 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         return getLearningMethod().equals(LearningMethod.REINFORCEMENT);
     }
 
+    public boolean isGAN() {
+        return getLearningMethod().equals(LearningMethod.GAN);
+    }
+
+    public boolean hasPreprocessor() {
+        return getEntryMap().containsKey(PREPROCESSING_NAME);
+    }
+
     public boolean hasCritic() {
         return getEntryMap().containsKey(CRITIC);
+    }
+
+    public boolean hasDiscriminator() {
+        return getEntryMap().containsKey(DISCRIMINATOR_NAME);
     }
 
     public Optional<String> getCriticName() {
@@ -108,5 +129,25 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         final Object criticNameValue = getEntry(CRITIC).getValue().getValue();
         assert criticNameValue instanceof String;
         return Optional.of((String)criticNameValue);
+    }
+
+    public Optional<String> getPreprocessingName() {
+        if (!hasPreprocessor()) {
+            return Optional.empty();
+        }
+
+        final Object preprocessingNameValue = getEntry(PREPROCESSING_NAME).getValue().getValue();
+        assert preprocessingNameValue instanceof String;
+        return Optional.of((String)preprocessingNameValue);
+    }
+
+    public Optional<String> getDiscriminatorName() {
+        if (!hasDiscriminator()) {
+            return Optional.empty();
+        }
+
+        final Object discriminatorNameValue = getEntry(DISCRIMINATOR_NAME).getValue().getValue();
+        assert discriminatorNameValue instanceof String;
+        return Optional.of((String)discriminatorNameValue);
     }
 }

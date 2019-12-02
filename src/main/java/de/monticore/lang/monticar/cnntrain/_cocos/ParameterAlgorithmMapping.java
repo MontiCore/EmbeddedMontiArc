@@ -38,15 +38,20 @@ class ParameterAlgorithmMapping {
         ASTBatchSizeEntry.class,
         ASTLoadCheckpointEntry.class,
         ASTEvalMetricEntry.class,
+        ASTExcludeBleuEntry.class,
         ASTNormalizeEntry.class,
         ASTNumEpochEntry.class,
         ASTLossEntry.class,
 		ASTLossWeightsEntry.class,
         ASTSparseLabelEntry.class,
         ASTFromLogitsEntry.class,
+        ASTIgnoreIndicesEntry.class,
         ASTMarginEntry.class,
         ASTLabelFormatEntry.class,
-        ASTRhoEntry.class
+        ASTRhoEntry.class,
+        ASTPreprocessingEntry.class,
+        ASTUseTeacherForcing.class,
+        ASTSaveAttentionImage.class
     );
 
     private static final List<Class> GENERAL_REINFORCEMENT_PARAMETERS = Lists.newArrayList(
@@ -110,6 +115,12 @@ class ParameterAlgorithmMapping {
         ASTStrategyGaussianNoiseVarianceEntry.class
     );
 
+    private static final List<Class> GENERAL_GAN_PARAMETERS = Lists.newArrayList(
+            ASTDiscriminatorNetworkEntry.class,
+            ASTNoiseDistributionEntry.class,
+            ASTImgResizeEntry.class
+    );
+
     ParameterAlgorithmMapping() {
 
     }
@@ -133,7 +144,9 @@ class ParameterAlgorithmMapping {
 
     boolean isSupervisedLearningParameter(Class<? extends ASTEntry> entryClazz) {
         return GENERAL_PARAMETERS.contains(entryClazz)
-            || EXCLUSIVE_SUPERVISED_PARAMETERS.contains(entryClazz);
+            || EXCLUSIVE_SUPERVISED_PARAMETERS.contains(entryClazz)
+                || GENERAL_GAN_PARAMETERS.contains(entryClazz);
+
     }
 
     boolean isDqnParameter(Class<? extends ASTEntry> entryClazz) {
@@ -168,6 +181,7 @@ class ParameterAlgorithmMapping {
         return ImmutableList.<Class> builder()
             .addAll(GENERAL_PARAMETERS)
             .addAll(EXCLUSIVE_SUPERVISED_PARAMETERS)
+            .addAll(GENERAL_GAN_PARAMETERS)
             .build();
     }
 }

@@ -24,6 +24,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     BooleanValue implements ConfigValue = (TRUE:"true" | FALSE:"false");
     ComponentNameValue implements ConfigValue = Name ("."Name)*;
     DoubleVectorValue implements ConfigValue = "(" number:NumberWithUnit ("," number:NumberWithUnit)* ")";
+    IntegerTupelValue implements ConfigValue = "(" first:IntegerValue "," second:IntegerValue ")";
+    IntegerListValue implements ConfigValue = "[" number:NumberWithUnit ("," number:NumberWithUnit)* "]";
 
     NumEpochEntry implements ConfigEntry = name:"num_epoch" ":" value:IntegerValue;
     BatchSizeEntry implements ConfigEntry = name:"batch_size" ":" value:IntegerValue;
@@ -31,17 +33,24 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     NormalizeEntry implements ConfigEntry = name:"normalize" ":" value:BooleanValue;
     OptimizerEntry implements ConfigEntry = (name:"optimizer" | name:"actor_optimizer") ":" value:OptimizerValue;
     TrainContextEntry implements ConfigEntry = name:"context" ":" value:TrainContextValue;
-    EvalMetricEntry implements ConfigEntry = name:"eval_metric" ":" value:EvalMetricValue;
     LossEntry implements ConfigEntry = name:"loss" ":" value:LossValue;
     LossWeightsEntry implements ConfigEntry = name:"loss_weights" ":" value:DoubleVectorValue;
-    
-    EvalMetricValue implements ConfigValue =(accuracy:"accuracy"
-                                               | crossEntropy:"cross_entropy"
-                                               | f1:"f1"
-                                               | mae:"mae"
-                                               | mse:"mse"
-                                               | rmse:"rmse"
-                                               | topKAccuracy:"top_k_accuracy");
+
+    EvalMetricEntry implements MultiParamConfigEntry = name:"eval_metric" ":" value:EvalMetricValue;
+
+    interface EvalMetricValue extends MultiParamValue;
+    AccuracyEvalMetric implements EvalMetricValue = name:"accuracy";
+    BleuMetric implements EvalMetricValue = name:"bleu" ("{" params:BleuEntry* "}")?;
+    CrossEntropyEvalMetric implements EvalMetricValue = name:"cross_entropy";
+    F1EvalMetric implements EvalMetricValue = name:"f1";
+    MAEEvalMetric implements EvalMetricValue = name:"mae";
+    MSEEvalMetric implements EvalMetricValue = name:"mse";
+    PerplexityEvalMetric implements EvalMetricValue = name:"perplexity";
+    RMSEEvalMetric implements EvalMetricValue = name:"rmse";
+    TopKAccuracyEvalMetric implements EvalMetricValue = name:"top_k_accuracy";
+
+    interface BleuEntry extends Entry;
+    ExcludeBleuEntry implements BleuEntry = name:"exclude" ":" value:IntegerListValue;
 
     LRPolicyValue implements ConfigValue =(fixed:"fixed"
                                          | step:"step"
@@ -72,6 +81,9 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     interface SoftmaxCrossEntropyEntry extends Entry;
     SoftmaxCrossEntropyLoss implements LossValue = name:"softmax_cross_entropy" ("{" params:SoftmaxCrossEntropyEntry* "}")?;
 
+    interface SoftmaxCrossEntropyIgnoreIndicesEntry extends Entry;
+    SoftmaxCrossEntropyIgnoreIndicesLoss implements LossValue = name:"softmax_cross_entropy_ignore_indices" ("{" params:SoftmaxCrossEntropyIgnoreIndicesEntry* "}")?;
+
     SigmoidBinaryCrossEntropyLoss implements LossValue = name:"sigmoid_binary_cross_entropy" ("{" params:Entry* "}")?;
 
     interface HingeEntry extends Entry;
@@ -86,8 +98,9 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     interface KullbackLeiblerEntry extends Entry;
     KullbackLeiblerLoss implements LossValue = name:"kullback_leibler" ("{" params:KullbackLeiblerEntry* "}")?;
 
-    SparseLabelEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry = name:"sparse_label" ":" value:BooleanValue;
-    FromLogitsEntry implements SoftmaxCrossEntropyEntry, KullbackLeiblerEntry = name:"from_logits" ":" value:BooleanValue;
+    SparseLabelEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry = name:"sparse_label" ":" value:BooleanValue;
+    FromLogitsEntry implements SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, KullbackLeiblerEntry = name:"from_logits" ":" value:BooleanValue;
+    IgnoreIndicesEntry implements SoftmaxCrossEntropyIgnoreIndicesEntry = name:"ignore_indices" ":" value:IntegerValue;
     MarginEntry implements HingeEntry, SquaredHingeEntry = name:"margin" ":" value:NumberValue;
     LabelFormatEntry implements LogisticEntry = name:"label_format" ":" value:StringValue;
 
@@ -131,6 +144,11 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     ClipWeightsEntry implements RmsPropEntry = name:"clip_weights" ":" value:NumberValue;
     RhoEntry implements AdaDeltaEntry,RmsPropEntry,HuberEntry = name:"rho" ":" value:NumberValue;
 
+    UseTeacherForcing implements ConfigEntry = name:"use_teacher_forcing" ":" value:BooleanValue;
+
+    // Visual attention Extension
+    SaveAttentionImage implements ConfigEntry = name:"save_attention_image" ":" value:BooleanValue;
+
     // Reinforcement Extensions
     interface MultiParamValue extends ConfigValue;
 
@@ -147,7 +165,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     StartTrainingAtEntry implements ConfigEntry = name:"start_training_at" ":" value:IntegerValue;
     EvaluationSamplesEntry implements ConfigEntry = name:"evaluation_samples" ":" value:IntegerValue;
 
-    LearningMethodValue implements ConfigValue = (supervisedLearning:"supervised" | reinforcement:"reinforcement");
+    LearningMethodValue implements ConfigValue = (supervisedLearning:"supervised" | reinforcement:"reinforcement" | gan:"gan");
 
     RLAlgorithmValue implements ConfigValue = (dqn:"dqn-algorithm" | ddpg:"ddpg-algorithm" | tdThree:"td3-algorithm");
 
@@ -230,4 +248,20 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     PolicyNoiseEntry implements ConfigEntry = name:"policy_noise" ":" value:NumberValue;
     NoiseClipEntry implements ConfigEntry = name:"noise_clip" ":" value:NumberValue;
     PolicyDelayEntry implements ConfigEntry = name:"policy_delay" ":" value:IntegerValue;
+
+
+    // GANs Extensions
+    DiscriminatorNetworkEntry implements ConfigEntry = name:"discriminator_name" ":" value:ComponentNameValue;
+    PreprocessingEntry implements ConfigEntry = name:"preprocessing_name" ":" value:ComponentNameValue;
+    ImgResizeEntry implements ConfigEntry = name:"img_resize" ":" value:IntegerTupelValue;
+
+    // Noise Distribution Creator
+    NoiseDistributionEntry implements MultiParamConfigEntry = name:"noise_distribution" ":" value:NoiseDistributionValue;
+    interface NoiseDistributionValue extends MultiParamValue;
+
+    interface NoiseDistributionGaussianEntry extends Entry;
+    NoiseDistributionGaussianValue implements NoiseDistributionValue = name:"gaussian" ("{" params:NoiseDistributionGaussianEntry* "}")?;
+
+    MeanValueEntry implements NoiseDistributionGaussianEntry = name:"mean_value" ":" value:IntegerValue;
+    SpreadValueEntry implements NoiseDistributionGaussianEntry = name:"spread_value" ":" value:IntegerValue;
 }

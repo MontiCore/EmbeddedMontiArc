@@ -59,10 +59,9 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
 
         if (supervisedLearningParameter && !reinforcementLearningParameter) {
             setLearningMethodOrLogErrorIfActualLearningMethodIsNotSupervised(node);
-        } else if(!supervisedLearningParameter) {
+        } else if(!supervisedLearningParameter && reinforcementLearningParameter) {
             setLearningMethodOrLogErrorIfActualLearningMethodIsNotReinforcement(node);
         }
-
     }
 
     private void setLearningMethodOrLogErrorIfActualLearningMethodIsNotReinforcement(ASTEntry node) {
@@ -91,8 +90,12 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
 
     private void evaluateLearningMethodEntry(ASTEntry node) {
         ASTLearningMethodValue learningMethodValue = (ASTLearningMethodValue)node.getValue();
-        LearningMethod evaluatedLearningMethod = learningMethodValue.isPresentReinforcement()
-                ? LearningMethod.REINFORCEMENT : LearningMethod.SUPERVISED;
+        LearningMethod evaluatedLearningMethod;
+        if(learningMethodValue.isPresentReinforcement()) {
+            evaluatedLearningMethod = LearningMethod.REINFORCEMENT;
+        } else {
+            evaluatedLearningMethod = LearningMethod.SUPERVISED;
+        }
 
         if (isLearningMethodKnown()) {
             logErrorIfEvaluatedLearningMethoNotEqualToActual(node, evaluatedLearningMethod);
