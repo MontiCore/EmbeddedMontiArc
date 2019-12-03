@@ -20,7 +20,7 @@ clip_weights
 learning_method
 lr_algorithm
 agent_name
-enviroment
+environment
 conext
 num_episodes
 num_max_steps
