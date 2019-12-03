@@ -21,6 +21,15 @@ public class TestStreamTestGeneratorMojo {
         assertTrue("Generator-01: Generator is invalid.["+r+"]", r==0);
     }
 
+
+    @Test
+    public void Test_06_execution_valid() {
+        //valid
+        //ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/streamtest-generator/01");
+        int r = BaseTest.validGenerator("./src/test/resources/emadl/models", "./target/tmp/generator/06");
+        assertTrue("Generator-06: Generator is invalid.["+r+"]", r==0);
+    }
+
     @Test
     public void Test_02_execution_invalid() {
         int r = BaseTest.validGenerator("./src/test/resources/emam/execution/invalid", "./target/tmp/generator/02");

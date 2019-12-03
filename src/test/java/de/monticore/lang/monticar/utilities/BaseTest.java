@@ -47,10 +47,14 @@ public class BaseTest {
         //use this in test to see all output
         stmb.setShowBuildAndRunOutput(false);
 
-        stmb.setForceRun(false);
+        stmb.setForceRun(true);
 
         stmb.setShowDateAndTime(true);
+
         stmb.setBackend(Backend.GLUON);
+        stmb.setTrainingNeeded(true);
+        stmb.setPathToPython("/usr/bin/python");
+        stmb.setRootModel("cNNCalculator.Connector");
     }
 
     //</editor-fold>

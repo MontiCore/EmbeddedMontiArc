@@ -36,6 +36,14 @@ public class TestStreamTestBuildMojo {
     }
 
     @Test
+    public void Test_06_execution_valid_EMADL() {
+        //valid
+        //ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/streamtest-generator/01");
+        int r = BaseTest.validBuild("./src/test/resources/emadl/models", "./target/tmp/build/06");
+        assertTrue("Generator-06: Generator is invalid.["+r+"]", r==0);
+    }
+
+    @Test
     public void Test_10_reRun(){
         Test_01_execution_valid();
         Test_02_execution_invalid();

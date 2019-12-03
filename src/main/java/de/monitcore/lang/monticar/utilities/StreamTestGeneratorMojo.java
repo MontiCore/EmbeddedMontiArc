@@ -20,6 +20,7 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
+import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -168,7 +169,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                 }else {
                     boolean resolved = false;
                     String modelName;
-                    if(ending.equalsIgnoreCase("emam")||ending.equalsIgnoreCase("emadl")) {
+                    if(ending.equalsIgnoreCase("emam")) {
                         ASTEMACompilationUnit ast = (ASTEMACompilationUnit) node.get();
 
                         modelName = modelNameCalculator(f.getValue(),"emam", ast.getPackageList());
@@ -190,6 +191,12 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                         modelName = modelNameCalculator(f.getValue(), "enum", ast.getPackageList());
                         Optional<EnumDeclarationSymbol> enumSym = scope.resolve(modelName, EnumDeclarationSymbol.KIND);
                         resolved = enumSym.isPresent();
+                    }else if (ending.equalsIgnoreCase("emadl")){
+                        ASTEMACompilationUnit ast = (ASTEMACompilationUnit) node.get();
+
+                        modelName = modelNameCalculator(f.getValue(),"emadl", ast.getPackageList());
+                        Optional<EMAComponentSymbol> comp = scope.<EMAComponentSymbol>resolve(modelName, EMAComponentSymbol.KIND);
+                        resolved = comp.isPresent();
                     }else{
                         //TODO:
                         logWarn("   -> No resolving for "+ending+" implemented at the moment.");
@@ -260,6 +267,26 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                 logError("   -> IOException generating cpp files for "+cs.getFullName());
             }
             // Needed, as the C++ generator modifies the Symbol Table in destructive ways
+
+
+            if (this.trainingNeeded){
+                String outputPath = getPathTmpOut();
+                if (outputPath != null){
+                    emadlGenerator.setGenerationTargetPath(outputPath);
+                }
+                try{
+                    emadlGenerator.generate(this.getPathMain(), this.getRootModel(), this.getPathToPython(), "y", true);
+                }
+                catch (IOException e){
+                    Log.error("io error during generation", e);
+                    System.exit(1);
+                }
+                catch (TemplateException e){
+                    Log.error("template error during generation", e);
+                    System.exit(1);
+                }
+            }
+
             resetTaggingResolver();
         }
     }

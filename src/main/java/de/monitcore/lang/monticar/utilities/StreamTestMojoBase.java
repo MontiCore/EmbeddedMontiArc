@@ -111,6 +111,21 @@ public class StreamTestMojoBase extends AbstractMojo {
     public Backend getBackend(){ return backend;}
     public void setBackend(Backend backend){ this.backend = backend;}
 
+    @Parameter(defaultValue = "/usr/bin/python")
+    protected String pathToPython;
+    public String getPathToPython() {return pathToPython;}
+    public void setPathToPython(String pathToPython){this.pathToPython = pathToPython;}
+
+    @Parameter(defaultValue = "VGG16")
+    protected String rootModel;
+    public String getRootModel() { return rootModel;}
+    public void setRootModel(String rootModel){this.rootModel = rootModel;}
+
+    @Parameter(defaultValue = "false")
+    protected boolean trainingNeeded;
+    public boolean getTrainingNeeded(){ return trainingNeeded;}
+    public void setTrainingNeeded(boolean trainingNeeded){ this.trainingNeeded = trainingNeeded;}
+
     @Parameter(defaultValue = "false")
     protected boolean combinebuilds;
     public boolean getCombinebuilds() {
@@ -230,6 +245,10 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.forceRun = forceRun;
         stmb.showDateAndTime = showDateAndTime;
         stmb.enableExecutionLogging = enableExecutionLogging;
+        stmb.trainingNeeded = trainingNeeded;
+        stmb.pathToPython = pathToPython;
+        stmb.rootModel = rootModel;
+
         stmb.setLog(getLog());
 
         stmb.myLog = myLog;
@@ -393,8 +412,13 @@ public class StreamTestMojoBase extends AbstractMojo {
 
     protected List<EMAComponentSymbol> getToTestComponentSymbols(boolean output){
 
-        ComponentScanner componentScanner = new ComponentScanner(Paths.get(this.pathMain), this.getScope(), "emam");
-        Set<String> componentNames = componentScanner.scan();
+
+        ComponentScanner componentScannerEMADL = new ComponentScanner(Paths.get(this.pathMain), this.getScope(), "emadl");
+        Set<String> componentNames = componentScannerEMADL.scan();
+
+        ComponentScanner componentScannerEMAM = new ComponentScanner(Paths.get(this.pathMain), this.getScope(), "emam");
+        componentNames.addAll(componentScannerEMAM.scan());
+
 
         StreamScanner scanner = new StreamScanner(Paths.get(this.pathTest), this.getScope());
         Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> streamTests = scanner.scan();
