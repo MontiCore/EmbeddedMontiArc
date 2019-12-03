@@ -67,7 +67,7 @@ function generateGrammarFiles(langOptions) {
 }
 
 function getScopeName(arg){
-  return "keywords." + arg.languageName;   
+  return "keywords." + arg.languageName;
 }
 
 function substituteGrammarsArray(packageData, langOptions) {
@@ -83,7 +83,7 @@ function substituteGrammarsArray(packageData, langOptions) {
       "scopeName": scopeName,
       "path": "syntax/gen/" + grammarFileName
     };
-    
+
     injectTo.push(scopeName);
     grammars.push(gram);
   }
@@ -132,7 +132,7 @@ function generate(fileName, scopeName) {
     process.exit(1);
   }
   let fileContent = fs.readFileSync(fileName, "utf8");
-  let escapedFileContent = fileContent.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  let escapedFileContent = fileContent.replace(/[\/\\^$*+?.()|[\]{}]/g, '\\$&');
   let match = escapedFileContent
     .replace(/^/g, '\\\\b')
     .replace(/%/g, '\\\\b')

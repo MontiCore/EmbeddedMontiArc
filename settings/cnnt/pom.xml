@@ -11,8 +11,11 @@
   <properties>
     <!-- Dependency versions -->
     <emam.version>0.1.13-SNAPSHOT</emam.version>
-    <monticore-lsp-commons.version>1.3-SNAPSHOT</monticore-lsp-commons.version>
+    <monticore-lsp-commons.version>1.2-SNAPSHOT</monticore-lsp-commons.version>
+    <!--
     <ema-lsp.version>1.0-SNAPSHOT</ema-lsp.version>
+    -->
+    <ema-lsp.version>1.2-SNAPSHOT</ema-lsp.version>
     <embedded-montiarc-deeplearning.version>0.2.10-SNAPSHOT</embedded-montiarc-deeplearning.version>
     <cnn-train.version>0.3.8-SNAPSHOT</cnn-train.version>
     <cnn-arch.version>0.3.3-SNAPSHOT</cnn-arch.version>
@@ -34,6 +37,13 @@
       <artifactId>monticore-lsp-commons</artifactId>
       <version>${monticore-lsp-commons.version}</version>
     </dependency>
+    <!--
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+      <artifactId>ema-lsp</artifactId>
+      <version>${ema-lsp.version}</version>
+    </dependency>
+    -->
     <dependency>
       <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>ema-lsp</artifactId>
@@ -63,7 +73,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.2.1</version>
         <configuration>
-          <mainClass>de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.lsp.CnntLspServer</mainClass>
+          <mainClass>de.monticore.lang.embeddedmontiarc.embeddedmontiarccnntrainlang.lsp.CnntLspServer</mainClass>
           <arguments>
             <argument>-p</argument>
             <argument>0</argument>

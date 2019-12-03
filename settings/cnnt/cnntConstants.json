@@ -5,6 +5,6 @@
     "useRunningServer":false,
     "manualPort": 0,
     "bufferSize": 1000,
-    "keywordsFile": "settings/cnnt/keywords.txt",
+    "keywordsFile": "settings/cnnt/keywords_cnnt.txt",
     "fileExtension": ".cnnt"
 }
