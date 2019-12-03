@@ -4,9 +4,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.monticore.lang.monticar</groupId>
-  <artifactId>emam-lsp-exec</artifactId>
+  <artifactId>cnnt-lsp-exec</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>emam-lsp-exec</name>
+  <name>cnnt-lsp-exec</name>
 
   <properties>
     <!-- Dependency versions -->
@@ -45,9 +45,11 @@
     </dependency>
     -->
     <dependency>
+      <file>ema-lsp-1.3-SNAPSHOT.jar</file>
       <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>ema-lsp</artifactId>
-      <version>${ema-lsp.version}</version>
+      <version>1.3-SNAPSHOT</version>
+      <packaging>jar</packaging>
     </dependency>
     <dependency>
         <groupId>de.monticore.lang.monticar</groupId>
