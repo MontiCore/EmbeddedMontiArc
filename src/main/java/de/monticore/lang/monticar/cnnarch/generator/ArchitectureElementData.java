@@ -79,12 +79,6 @@ public class ArchitectureElementData {
 
     }
 
-    public int getConstValue() {
-        assert getElement() instanceof ConstantSymbol;
-
-        return ((ConstantSymbol) getElement()).getExpression().getIntValue().get();
-    }
-
     public List<Integer> getKernel(){
         return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get();
     }
@@ -141,6 +135,22 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntValue(AllPredefinedLayers.SIZE_NAME).get();
     }
 
+    public int getRepeats(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.REPEATS_NAME).get();
+    }
+
+    public int getAxis(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.AXIS_NAME).get();
+    }
+
+    public List<Integer> getAxes(){
+        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.AXES_NAME).get();
+    }
+
+    public List<Integer> getShape(){
+        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.SHAPE_NAME).get();
+    }
+
     public int getLayers(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.LAYERS_NAME).get();
     }
@@ -159,10 +169,6 @@ public class ArchitectureElementData {
 
     public boolean getFlatten() {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.FLATTEN_PARAMETER_NAME).get();
-    }
-
-    public List<Integer> getShape() {
-        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.SHAPE_NAME).get();
     }
 
     @Nullable

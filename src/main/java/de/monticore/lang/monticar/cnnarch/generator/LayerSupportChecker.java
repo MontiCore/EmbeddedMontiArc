@@ -1,12 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.generator;
 
-import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ConstantSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -19,11 +18,10 @@ public abstract class LayerSupportChecker {
     protected List<String> supportedLayerList = new ArrayList<>();
 
     private boolean isSupportedLayer(ArchitectureElementSymbol element){
-        ArchitectureElementSymbol resolvedElement = element.getResolvedThis().get();
-        List<ArchitectureElementSymbol> constructLayerElemList;
+        ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) element.getResolvedThis().get();
 
         if (resolvedElement instanceof CompositeElementSymbol) {
-            constructLayerElemList = ((CompositeElementSymbol) resolvedElement).getElements();
+            List<ArchitectureElementSymbol> constructLayerElemList = ((CompositeElementSymbol) resolvedElement).getElements();
             for (ArchitectureElementSymbol constructedLayerElement : constructLayerElemList) {
                 if (!isSupportedLayer(constructedLayerElement)) {
                     return false;
@@ -63,8 +61,8 @@ public abstract class LayerSupportChecker {
     }
 
     public boolean check(ArchitectureSymbol architecture) {
-        for (CompositeElementSymbol stream : architecture.getStreams()) {
-            for (ArchitectureElementSymbol element : stream.getElements()) {
+        for (NetworkInstructionSymbol networkInstructions : architecture.getNetworkInstructions()) {
+            for (ArchitectureElementSymbol element : networkInstructions.getBody().getElements()) {
                 if (!isSupportedLayer(element)) {
                     return false;
                 }

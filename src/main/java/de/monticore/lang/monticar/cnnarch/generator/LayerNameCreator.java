@@ -11,17 +11,21 @@ import java.util.*;
 public class LayerNameCreator {
 
     private Map<ArchitectureElementSymbol, String> elementToName = new HashMap<>();
-    private Map<String, ArchitectureElementSymbol> nameToElement = new HashMap<>();
+    private Set<String> names = new HashSet<>();
 
     public LayerNameCreator(ArchitectureSymbol architecture) {
         int stage = 1;
-        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
-            stage = name(stream, stage, new ArrayList<>());
-        }
-    }
+        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+            stage = name(networkInstruction.getBody(), stage, new ArrayList<>());
 
-    public ArchitectureElementSymbol getArchitectureElement(String name){
-        return nameToElement.get(name);
+            if (networkInstruction.isUnroll()) {
+                UnrollInstructionSymbol unroll = (UnrollInstructionSymbol) networkInstruction;
+
+                for (SerialCompositeElementSymbol body : unroll.getResolvedBodies()) {
+                    stage = name(body, stage, new ArrayList<>());
+                }
+            }
+        }
     }
 
     public String getName(ArchitectureElementSymbol architectureElement){
@@ -31,17 +35,17 @@ public class LayerNameCreator {
     protected int name(ArchitectureElementSymbol architectureElement, int stage, List<Integer> streamIndices){
         if (architectureElement instanceof SerialCompositeElementSymbol) {
             return nameSerialComposite((SerialCompositeElementSymbol) architectureElement, stage, streamIndices);
-        } else if (architectureElement instanceof ParallelCompositeElementSymbol){
+        } else if (architectureElement instanceof ParallelCompositeElementSymbol) {
             return nameParallelComposite((ParallelCompositeElementSymbol) architectureElement, stage, streamIndices);
-        } else{
-            if (architectureElement.isAtomic()){
+        } else {
+            if (architectureElement.isAtomic()) {
                 if (architectureElement.getMaxSerialLength().get() > 0){
                     return add(architectureElement, stage, streamIndices);
                 } else {
                     return stage;
                 }
             } else {
-                ArchitectureElementSymbol resolvedElement = architectureElement.getResolvedThis().get();
+                ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) architectureElement.getResolvedThis().get();
                 return name(resolvedElement, stage, streamIndices);
             }
         }
@@ -75,24 +79,15 @@ public class LayerNameCreator {
         if (!elementToName.containsKey(architectureElement)) {
             String name = createName(architectureElement, endStage, streamIndices);
 
-            while (nameToElement.containsKey(name)) {
-                endStage++;
-                name = createName(architectureElement, endStage, streamIndices);
+            if (!(architectureElement instanceof VariableSymbol)) {
+                while (names.contains(name)) {
+                    endStage++;
+                    name = createName(architectureElement, endStage, streamIndices);
+                }
             }
 
             elementToName.put(architectureElement, name);
-
-            boolean isLayerVariable = false;
-
-            if (architectureElement instanceof VariableSymbol) {
-                isLayerVariable = ((VariableSymbol) architectureElement).getType() == VariableSymbol.Type.LAYER;
-            }
-
-            // Do not map names of layer variables to their respective element since the names are not unique
-            // for now the name to element mapping is not used anywhere so it doesn't matter
-            if (!isLayerVariable) {
-                nameToElement.put(name, architectureElement);
-            }
+            names.add(name);
         }
         return endStage;
     }
@@ -101,21 +96,19 @@ public class LayerNameCreator {
         if (architectureElement instanceof VariableSymbol) {
             VariableSymbol element = (VariableSymbol) architectureElement;
 
-            String name = createBaseName(architectureElement);
+            String name = createBaseName(architectureElement) + "_";
 
-            if (element.getType() == VariableSymbol.Type.IO) {
-                if (element.getArrayAccess().isPresent()){
-                    int arrayAccess = element.getArrayAccess().get().getIntValue().get();
-                    name = name + "_" + arrayAccess + "_";
-                } else {
-                    name = name + "_";
-                }
-            } else if (element.getType() == VariableSymbol.Type.LAYER) {
+            if (element.getType() == VariableSymbol.Type.LAYER) {
                 if (element.getMember() == VariableSymbol.Member.STATE) {
-                    name = name + "_state_";
+                    name = name + "state_";
                 } else {
-                    name = name + "_output_";
+                    name = name + "output_";
                 }
+            }
+
+            if (element.getArrayAccess().isPresent()){
+                int arrayAccess = element.getArrayAccess().get().getIntValue().get();
+                name = name + arrayAccess + "_";
             }
 
             return name;
@@ -153,4 +146,3 @@ public class LayerNameCreator {
         return stringBuilder.toString();
     }
 }
-

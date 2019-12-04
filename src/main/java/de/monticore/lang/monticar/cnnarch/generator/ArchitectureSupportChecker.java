@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.generator;
 
+import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
@@ -16,7 +17,7 @@ public abstract class ArchitectureSupportChecker {
 
     // Overload functions returning always true to enable the features
     protected boolean checkMultipleStreams(ArchitectureSymbol architecture) {
-        if (architecture.getStreams().size() != 1) {
+        if (architecture.getNetworkInstructions().size() != 1) {
             Log.error("This cnn architecture has multiple instructions, " +
                       "which is currently not supported by the code generator. "
                       , architecture.getSourcePosition());
@@ -66,7 +67,7 @@ public abstract class ArchitectureSupportChecker {
     }
 
     private boolean hasConstant(ArchitectureElementSymbol element) {
-        ArchitectureElementSymbol resolvedElement = element.getResolvedThis().get();
+        ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) element.getResolvedThis().get();
 
         if (resolvedElement instanceof CompositeElementSymbol) {
             List<ArchitectureElementSymbol> constructedElements = ((CompositeElementSymbol) resolvedElement).getElements();
@@ -85,8 +86,8 @@ public abstract class ArchitectureSupportChecker {
     }
 
     protected boolean checkConstants(ArchitectureSymbol architecture) {
-        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
-            for (ArchitectureElementSymbol element : stream.getElements()) {
+        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+            for (ArchitectureElementSymbol element : networkInstruction.getBody().getElements()) {
                 if (hasConstant(element)) {
                     Log.error("This cnn architecture has a constant, which is currently not supported by the code generator."
                             , architecture.getSourcePosition());
@@ -109,13 +110,25 @@ public abstract class ArchitectureSupportChecker {
     }
 
     protected boolean checkOutputAsInput(ArchitectureSymbol architecture) {
-        for (SerialCompositeElementSymbol stream : architecture.getStreams()) {
-            for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
+        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+            for (ArchitectureElementSymbol element : networkInstruction.getBody().getFirstAtomicElements()) {
                 if (element.isOutput()) {
                     Log.error("This cnn architecture uses an output as an input, which is currently not supported by the code generator."
                             , architecture.getSourcePosition());
                     return false;
                 }
+            }
+        }
+
+        return true;
+    }
+
+    protected boolean checkUnroll(ArchitectureSymbol architecture) {
+        for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
+            if (networkInstruction.isUnroll()) {
+                Log.error("This cnn architecture uses unrolls, which are currently not supported by the code generator."
+                        , architecture.getSourcePosition());
+                return false;
             }
         }
 
@@ -129,6 +142,7 @@ public abstract class ArchitectureSupportChecker {
                 && checkMultiDimensionalOutput(architecture)
                 && checkConstants(architecture)
                 && checkLayerVariables(architecture)
-                && checkOutputAsInput(architecture);
+                && checkOutputAsInput(architecture)
+                && checkUnroll(architecture);
     }
 }
