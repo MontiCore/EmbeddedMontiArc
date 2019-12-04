@@ -35,7 +35,7 @@ function checkArgs() {
 function strictParse(fileName){
   if(!fs.existsSync(fileName)){
     console.log("Can not find " + fileName + ". Are you in the correct working directory?");
-    exit(1);
+    process.exit(1);
   }
 
   return JSON.parse(fs.readFileSync(fileName));
