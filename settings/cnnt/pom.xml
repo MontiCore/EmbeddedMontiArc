@@ -75,7 +75,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.2.1</version>
         <configuration>
-          <mainClass>de.monticore.lang.embeddedmontiarc.embeddedmontiarccnntrainlang.lsp.CnntLspServer</mainClass>
+          <mainClass>de.monticore.lang.embeddedmontiarc.cnntrainlang.lsp.CnntLspServer</mainClass>
           <arguments>
             <argument>-p</argument>
             <argument>0</argument>
