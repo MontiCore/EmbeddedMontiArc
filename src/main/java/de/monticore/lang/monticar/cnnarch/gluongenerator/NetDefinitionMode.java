@@ -6,9 +6,7 @@ package de.monticore.lang.monticar.cnnarch.gluongenerator;
  */
 public enum NetDefinitionMode {
     ARCHITECTURE_DEFINITION,
-    FORWARD_FUNCTION,
-    PYTHON_INLINE,
-    CPP_INLINE;
+    FORWARD_FUNCTION;
 
     public static NetDefinitionMode fromString(final String netDefinitionMode) {
         switch(netDefinitionMode) {
@@ -16,10 +14,6 @@ public enum NetDefinitionMode {
                 return ARCHITECTURE_DEFINITION;
             case "FORWARD_FUNCTION":
                 return FORWARD_FUNCTION;
-            case "PYTHON_INLINE":
-                return PYTHON_INLINE;
-            case "CPP_INLINE":
-                return CPP_INLINE;
             default:
                 throw new IllegalArgumentException("Unknown Net Definition Mode");
         }

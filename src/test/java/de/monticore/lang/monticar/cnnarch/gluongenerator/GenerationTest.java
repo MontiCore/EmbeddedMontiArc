@@ -127,7 +127,31 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testRNNtest() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/architectures", "-r", "RNNtest", "-o", "./target/generated-sources-cnnarch/"};
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "RNNtest", "-o", "./target/generated-sources-cnnarch/"};
+        CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testRNNencdec() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "RNNencdec", "-o", "./target/generated-sources-cnnarch/"};
+        CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testRNNsearch() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "RNNsearch", "-o", "./target/generated-sources-cnnarch/"};
+        CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testShow_attend_tell() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "Show_attend_tell", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2GluonCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }

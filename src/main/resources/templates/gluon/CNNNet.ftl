@@ -3,44 +3,6 @@ import mxnet as mx
 import numpy as np
 from mxnet import gluon
 
-class OneHot(gluon.HybridBlock):
-    def __init__(self, size, **kwargs):
-        super(OneHot, self).__init__(**kwargs)
-        with self.name_scope():
-            self.size = size
-
-    def hybrid_forward(self, F, x):
-        return F.one_hot(indices=F.argmax(data=x, axis=1), depth=self.size)
-
-
-class Softmax(gluon.HybridBlock):
-    def __init__(self, **kwargs):
-        super(Softmax, self).__init__(**kwargs)
-
-    def hybrid_forward(self, F, x):
-        return F.softmax(x)
-
-
-class Split(gluon.HybridBlock):
-    def __init__(self, num_outputs, axis=1, **kwargs):
-        super(Split, self).__init__(**kwargs)
-        with self.name_scope():
-            self.axis = axis
-            self.num_outputs = num_outputs
-
-    def hybrid_forward(self, F, x):
-        return F.split(data=x, axis=self.axis, num_outputs=self.num_outputs)
-
-
-class Concatenate(gluon.HybridBlock):
-    def __init__(self, dim=1, **kwargs):
-        super(Concatenate, self).__init__(**kwargs)
-        with self.name_scope():
-            self.dim = dim
-
-    def hybrid_forward(self, F, *x):
-        return F.concat(*x, dim=self.dim)
-
 
 class ZScoreNormalization(gluon.HybridBlock):
     def __init__(self, data_mean, data_std, **kwargs):
@@ -79,18 +41,66 @@ class NoNormalization(gluon.HybridBlock):
         return x
 
 
-<#list tc.architecture.streams as stream>
-<#if stream.isTrainable()>
-class Net_${stream?index}(gluon.HybridBlock):
-    def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net_${stream?index}, self).__init__(**kwargs)
-        self.last_layers = {}
+class Reshape(gluon.HybridBlock):
+    def __init__(self, shape, **kwargs):
+        super(Reshape, self).__init__(**kwargs)
         with self.name_scope():
-${tc.include(stream, "ARCHITECTURE_DEFINITION")}
+            self.shape = shape
 
-    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(stream), ", ")}):
-${tc.include(stream, "FORWARD_FUNCTION")}
-        return ${tc.join(tc.getStreamOutputNames(stream), ", ")}
+    def hybrid_forward(self, F, x):
+        return F.reshape(data=x, shape=self.shape)
 
+
+class CustomRNN(gluon.HybridBlock):
+    def __init__(self, hidden_size, num_layers, bidirectional, **kwargs):
+        super(CustomRNN, self).__init__(**kwargs)
+        with self.name_scope():
+            self.rnn = gluon.rnn.RNN(hidden_size=hidden_size, num_layers=num_layers,
+                                     bidirectional=bidirectional, activation='tanh', layout='NTC')
+
+    def hybrid_forward(self, F, data, state0):
+        output, [state0] = self.rnn(data, [F.swapaxes(state0, 0, 1)])
+        return output, F.swapaxes(state0, 0, 1)
+
+
+class CustomLSTM(gluon.HybridBlock):
+    def __init__(self, hidden_size, num_layers, bidirectional, **kwargs):
+        super(CustomLSTM, self).__init__(**kwargs)
+        with self.name_scope():
+            self.lstm = gluon.rnn.LSTM(hidden_size=hidden_size, num_layers=num_layers,
+                                       bidirectional=bidirectional, layout='NTC')
+
+    def hybrid_forward(self, F, data, state0, state1):
+        output, [state0, state1] = self.lstm(data, [F.swapaxes(state0, 0, 1), F.swapaxes(state1, 0, 1)])
+        return output, F.swapaxes(state0, 0, 1), F.swapaxes(state1, 0, 1)
+
+
+class CustomGRU(gluon.HybridBlock):
+    def __init__(self, hidden_size, num_layers, bidirectional, **kwargs):
+        super(CustomGRU, self).__init__(**kwargs)
+        with self.name_scope():
+            self.gru = gluon.rnn.GRU(hidden_size=hidden_size, num_layers=num_layers,
+                                     bidirectional=bidirectional, layout='NTC')
+
+    def hybrid_forward(self, F, data, state0):
+        output, [state0] = self.gru(data, [F.swapaxes(state0, 0, 1)])
+        return output, F.swapaxes(state0, 0, 1)
+
+
+<#list tc.architecture.networkInstructions as networkInstruction>
+class Net_${networkInstruction?index}(gluon.HybridBlock):
+    def __init__(self, data_mean=None, data_std=None, **kwargs):
+        super(Net_${networkInstruction?index}, self).__init__(**kwargs)
+        with self.name_scope():
+${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
+            pass
+
+    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
+${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
+<#if tc.isAttentionNetwork() && networkInstruction.isUnroll() >
+        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}, attention_output_
+<#else>
+        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}
 </#if>
+
 </#list>

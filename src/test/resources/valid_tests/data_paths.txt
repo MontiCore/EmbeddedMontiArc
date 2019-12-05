@@ -5,3 +5,7 @@ Alexnet data/Alexnet
 ResNeXt50 data/ResNeXt50
 MultipleStreams data/MultipleStreams
 Invariant data/Invariant
+RNNencdec data/RNNencdec
+RNNtest data/RNNtest
+RNNsearch data/RNNsearch
+Show_attend_tell data/Show_attend_tell

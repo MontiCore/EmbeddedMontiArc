@@ -37,8 +37,19 @@ if __name__ == "__main__":
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
 </#if>
+<#if (config.useTeacherForcing)??>
+        use_teacher_forcing='${config.useTeacherForcing?string("True","False")}',
+</#if>
+<#if (config.saveAttentionImage)??>
+        save_attention_image='${config.saveAttentionImage?string("True","False")}',
+</#if>
 <#if (config.evalMetric)??>
-        eval_metric='${config.evalMetric}',
+        eval_metric='${config.evalMetric.name}',
+        eval_metric_params={
+<#if (config.evalMetric.exclude)??>
+            'exclude': [<#list config.evalMetric.exclude as value>${value}<#sep>, </#list>],
+</#if>
+        },
 </#if>
 <#if (config.configuration.loss)??>
         loss='${config.lossName}',
