@@ -1,6 +1,6 @@
 {
   "name": "@monticore/monticore-vscode-commons",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Common modules used for MontiCore vscode plugings",
   "main": "out/index.js",
   "types": "out/index.d.ts",
