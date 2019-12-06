@@ -2,6 +2,7 @@
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
+import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,11 +62,8 @@ public class ConfigurationData {
         return getConfiguration().getEntry("context").getValue().toString();
     }
 
-    public String getEvalMetric() {
-        if (!getConfiguration().getEntryMap().containsKey("eval_metric")) {
-            return null;
-        }
-        return getConfiguration().getEntry("eval_metric").getValue().toString();
+    public Map<String, Object> getEvalMetric() {
+        return getMultiParamEntry(EVAL_METRIC, "name");
     }
 
     public String getLoss() {
@@ -103,5 +101,30 @@ public class ConfigurationData {
             mapToStrings.put(paramName, valueAsString);
         }
         return mapToStrings;
+    }
+
+    protected Map<String, Object> getMultiParamEntry(final String key, final String valueName) {
+        if (!configurationContainsKey(key)) {
+            return null;
+        }
+
+        Map<String, Object> resultView = new HashMap<>();
+
+        ValueSymbol value = this.getConfiguration().getEntryMap().get(key).getValue();
+
+        if (value instanceof MultiParamValueSymbol) {
+            MultiParamValueSymbol multiParamValue = (MultiParamValueSymbol) value;
+            resultView.put(valueName, multiParamValue.getValue());
+            resultView.putAll(multiParamValue.getParameters());
+        }
+        else {
+            resultView.put(valueName, value.getValue());
+        }
+
+        return resultView;
+    }
+
+    protected Boolean configurationContainsKey(final String key) {
+        return this.getConfiguration().getEntryMap().containsKey(key);
     }
 }
