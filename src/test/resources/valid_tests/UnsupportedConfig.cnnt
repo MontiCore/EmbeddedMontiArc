@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration UnsupportedConfig{
      num_epoch : 5
      batch_size : 100

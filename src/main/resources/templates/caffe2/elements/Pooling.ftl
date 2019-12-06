@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign input = element.inputs[0]>
 <#assign strideHeight = element.stride[0]>
 <#assign strideWidth = element.stride[1]>

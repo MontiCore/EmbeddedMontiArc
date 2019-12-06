@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign channelIndex = element.element.outputTypes[0].channelIndex + 1>
 <#assign heightIndex = element.element.outputTypes[0].heightIndex + 1>
 <#assign widthIndex = element.element.outputTypes[0].widthIndex + 1>

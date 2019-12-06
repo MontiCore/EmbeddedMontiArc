@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 configuration SimpleConfig{
      num_epoch : 50
      batch_size : 100
