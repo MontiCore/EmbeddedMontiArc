@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 from caffe2.python import workspace, core, model_helper, brew, optimizer
 from caffe2.python.predictor import mobile_exporter
 from caffe2.proto import caffe2_pb2
@@ -137,6 +136,7 @@ class CNNCreator_VGG16:
     		predictions_ = brew.softmax(model, fc15_, 'predictions_')
 
     		return predictions_
+
 
     # this adds the loss and optimizer
     def add_training_operators(self, model, output, label, device_opts, loss, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum) :
