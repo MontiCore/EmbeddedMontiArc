@@ -74,6 +74,8 @@ relationships between components.
 
 
 ## License
-Copyright (C) 2018 SE RWTH.
+
+[(c) https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore)
+
 
 A concrete license is to be discussed.
