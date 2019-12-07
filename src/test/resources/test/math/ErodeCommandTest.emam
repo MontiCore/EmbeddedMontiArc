@@ -2,7 +2,11 @@
 package test.math;
 
 component ErodeCommandTest{
+    port
+    in Q^{n,m} arrayIn,
+    out Q^{n,m} arrayOut;
+
     implementation Math{
-        Q a = erode(0,0,0,0,0);
+        arrayOut = erode(arrayIn);
     }
 }

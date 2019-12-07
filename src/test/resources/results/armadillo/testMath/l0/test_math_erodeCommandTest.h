@@ -9,12 +9,16 @@ using namespace arma;
 using namespace cv;
 class test_math_erodeCommandTest{
 public:
+mat arrayIn;
+mat arrayOut;
 void init()
 {
+arrayIn=mat(n,m);
+arrayOut=mat(n,m);
 }
 void execute()
 {
-double a = (erode(0, 0, 0, 0, 0));
+arrayOut = (erode(arrayIn));
 }
 
 };
