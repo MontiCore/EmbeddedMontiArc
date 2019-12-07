@@ -196,7 +196,20 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
     @Test
     public void testCeilCommand() throws IOException {
         testMathCommand("ceil");
+
     }
+
+    @Test
+    public void testMaxCommand() throws IOException {
+        testMathCommand("max");
+    }
+
+    @Test
+    public void testMinCommand() throws IOException {
+        testMathCommand("min");
+    }
+
+
 
     // Adding CV tests
 

@@ -59,21 +59,34 @@ public class MathMaxCommand extends MathCommand {
     
     public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
-
         mathMatrixNameExpressionSymbol.setNameToAccess("");
+        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
+        int parametersNumber = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size();
 
-
-        String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
-        valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
-        //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
+            MathFunctionFixer.fixMathFunctions(accessSymbol,bluePrintCPP);
+        if (parametersNumber == 1){
+            convertMaxAramadillo(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        }else if (parametersNumber == 2) {
+            convertMaxStd(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        } else {
+            Log.error(String.format("No implementation found for max operation: \"max(%s)\". Possible syntax is \"max( X )\", \"max(a,b)\"", mathExpressionSymbol.getTextualRepresentation()));
+        }
+    }
+
+    private void convertMaxAramadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrint){
+        String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
+        MathStringExpression stringExpression = new MathStringExpression("max(max" + valueListString + ")", mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
-        MathStringExpression stringExpression = new MathStringExpression("std::max"+valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
-
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-    
+    }
 
+    private void convertMaxStd(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrint){
+        String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
+        MathStringExpression stringExpression = new MathStringExpression("std::max" + valueListString, mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
+        List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
+        newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
+        mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
     }
 }

@@ -29,6 +29,10 @@ public class BluePrint {
         this.variables = variables;
     }
 
+    public List<Variable> getVariables() {
+        return variables;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -45,10 +49,6 @@ public class BluePrint {
         return packageName;
     }
 
-    public List<Variable> getVariables() {
-        return variables;
-    }
-
     public int howManyVariables() {
         return variables.size();
     }
@@ -59,7 +59,6 @@ public class BluePrint {
                 return Optional.of(v);
         return Optional.empty();
     }
-
 
     public void addVariable(Variable v) {
         variables.add(v);
