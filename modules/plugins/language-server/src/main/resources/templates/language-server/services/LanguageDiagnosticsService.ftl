@@ -9,6 +9,9 @@ ${tc.signature("template")}
 <#assign generatedPackage = configuration.getGrammarGeneratedPackage()>
 <#assign grammarName = configuration.getGrammarName()>
 <#assign generatedPackage = configuration.getGrammarGeneratedPackage()>
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 package ${generatedPackage}.services;
 
 import com.google.common.flogger.FluentLogger;
@@ -26,13 +29,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 <#if !hasHandwrittenPeer>@Singleton</#if>
-public class ${grammarName}DiagnosticsService<#if hasHandwrittenPeer>Top</#if> implements DiagnosticsService {
+public class ${grammarName}DiagnosticsService<#if hasHandwrittenPeer>TOP</#if> implements DiagnosticsService {
     protected final FluentLogger logger;
     protected final ${grammarName}Parser parser;
     protected final FindingToDiagnostic f2d;
 
     <#if !hasHandwrittenPeer>@Inject</#if>
-    protected ${grammarName}DiagnosticsService<#if hasHandwrittenPeer>Top</#if>(FindingToDiagnostic f2d) {
+    protected ${grammarName}DiagnosticsService<#if hasHandwrittenPeer>TOP</#if>(FindingToDiagnostic f2d) {
         this.logger = FluentLogger.forEnclosingClass();
         this.parser = new ${grammarName}Parser();
         this.f2d = f2d;

@@ -49,12 +49,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>de.monticore.lang.monticar.sol</groupId>
-            <artifactId>grammar-environment</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <!-- .. Libraries ................................................. -->
 
         <dependency>
@@ -68,6 +62,12 @@
         </dependency>
 
         <!-- .. Language .................................................. -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>grammar-environment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- .. Test Libraries ............................................ -->
 

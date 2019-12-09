@@ -42,6 +42,21 @@
 
         <!-- .. Modules ................................................... -->
 
+        <!-- .. Languages ................................................. -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>grammar-option</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>grammar-option</artifactId>
+            <version>${project.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+        </dependency>
+
         <dependency>
             <groupId>de.monticore.lang.monticar.sol</groupId>
             <artifactId>grammar-common</artifactId>
@@ -52,7 +67,7 @@
             <groupId>de.monticore.lang.monticar.sol</groupId>
             <artifactId>grammar-common</artifactId>
             <version>${project.version}</version>
-            <classifier>grammars</classifier>
+            <classifier>${grammars.classifier}</classifier>
         </dependency>
 
         <!-- .. Libraries ................................................. -->

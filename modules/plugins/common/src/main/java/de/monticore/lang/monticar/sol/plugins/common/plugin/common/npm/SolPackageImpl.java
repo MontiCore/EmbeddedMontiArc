@@ -3,15 +3,13 @@
  */
 package de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SolPackageImpl implements SolPackage {
@@ -32,23 +30,28 @@ public class SolPackageImpl implements SolPackage {
     }
 
     @Override
+    public Optional<String> getVersion() {
+        return this.core.getVersion();
+    }
+
+    @Override
     public List<NPMPackage> getDependencies() {
         return this.core.getDependencies();
     }
 
     @Override
-    public boolean hasAttribute(String key) {
-        return this.core.hasAttribute(key);
+    public Set<NPMPackage> getAllDependencies() {
+        return this.core.getAllDependencies();
     }
 
     @Override
-    public <T> T getAttribute(String key) {
-        return this.core.getAttribute(key);
+    public <T> Optional<T> query(String query) {
+        return this.core.query(query);
     }
 
     @Override
     public boolean isTheiaPackage() {
-        return this.core.hasAttribute("theiaExtensions");
+        return this.core.isTheiaPackage();
     }
 
     @Override
@@ -68,11 +71,7 @@ public class SolPackageImpl implements SolPackage {
 
     @Override
     public Optional<String> getDirectory(String identifier) {
-        try {
-            return Optional.of(this.<JSONObject>getAttribute("sol").getJSONObject("directories").getString(identifier));
-        } catch(JSONException exception) {
-            return Optional.empty();
-        }
+        return this.query(String.format("/sol/directories/%s", identifier));
     }
 
     @Override
@@ -92,12 +91,16 @@ public class SolPackageImpl implements SolPackage {
 
     @Override
     public List<SolPackage> getAllSolDependencies() {
-        List<SolPackage> directDependencies = this.getSolDependencies();
-        List<SolPackage> transitiveDependencies = new ArrayList<>(directDependencies);
+        return this.getAllDependencies().stream()
+                .filter(NPMPackage::isSolPackage)
+                .map(NPMPackage::getAsSolPackage)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
 
-        directDependencies.forEach(dependency -> transitiveDependencies.addAll(dependency.getAllSolDependencies()));
-
-        return Collections.unmodifiableList(transitiveDependencies);
+    @Override
+    public Optional<JSONArray> getExtensions() {
+        return this.query("/sol/extensions");
     }
 
     @Override

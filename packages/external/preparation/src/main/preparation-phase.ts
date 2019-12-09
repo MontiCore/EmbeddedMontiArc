@@ -29,6 +29,7 @@ export class PreparationPhase implements ApplicationPhase {
     public async prepare(): Promise<void> {
         const port = this.application.getPort() || 0;
         const window = this.windows.switch({
+            title: this.application.getName(),
             frame: false,
             show: false,
             webPreferences: { nodeIntegration: true },

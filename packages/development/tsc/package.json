@@ -23,12 +23,12 @@
     "strip-dirs": "^3.0.0"
   },
   "peerDependencies": {
-    "typescript": "^3.5.3"
+    "typescript": ">=3.5.3"
   },
   "devDependencies": {
     "@types/gulp": "^4.0.6",
     "@types/gulp-rename": "^0.0.33",
     "@types/minimist": "^1.2.0",
-    "@types/node": "12.0.10"
+    "@types/node": "^12.0.10"
   }
 }

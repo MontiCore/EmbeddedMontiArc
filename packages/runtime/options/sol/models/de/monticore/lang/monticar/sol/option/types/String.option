@@ -1,0 +1,8 @@
+package de.monticore.lang.monticar.sol.option.types
+
+typedef option String {
+    required prop label: string
+    prop required: boolean
+    prop defaultValue: string
+    returns string
+}

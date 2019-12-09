@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TheiaPackageImpl implements TheiaPackage {
     protected final NPMPackage core;
@@ -27,18 +29,23 @@ public class TheiaPackageImpl implements TheiaPackage {
     }
 
     @Override
+    public Optional<String> getVersion() {
+        return this.core.getVersion();
+    }
+
+    @Override
     public List<NPMPackage> getDependencies() {
         return this.core.getDependencies();
     }
 
     @Override
-    public boolean hasAttribute(String key) {
-        return this.core.hasAttribute(key);
+    public Set<NPMPackage> getAllDependencies() {
+        return this.core.getAllDependencies();
     }
 
     @Override
-    public <T> T getAttribute(String key) {
-        return this.core.getAttribute(key);
+    public <T> Optional<T> query(String query) {
+        return this.core.query(query);
     }
 
     @Override
@@ -48,7 +55,7 @@ public class TheiaPackageImpl implements TheiaPackage {
 
     @Override
     public boolean isSolPackage() {
-        return this.core.hasAttribute("sol");
+        return this.core.isSolPackage();
     }
 
     @Override
@@ -63,7 +70,25 @@ public class TheiaPackageImpl implements TheiaPackage {
 
     @Override
     public JSONArray getExtensions() {
-        return this.getAttribute("theiaExtensions");
+        return this.<JSONArray>query("/theiaExtensions").orElse(new JSONArray());
+    }
+
+    @Override
+    public Set<TheiaPackage> getTheiaDependencies() {
+        return this.getDependencies().stream()
+                .map(NPMPackage::getAsTheiaPackage)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<TheiaPackage> getAllTheiaDependencies() {
+        return this.getAllDependencies().stream()
+                .map(NPMPackage::getAsTheiaPackage)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
     }
 
     @Override

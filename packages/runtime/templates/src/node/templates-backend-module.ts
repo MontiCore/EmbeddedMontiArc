@@ -4,8 +4,8 @@
 import { bindContributionProvider, ConnectionHandler, JsonRpcConnectionHandler } from "@theia/core";
 import { BackendApplicationContribution } from "@theia/core/lib/node";
 import { ContainerModule } from "inversify";
-import { TemplatesPaths, TemplatesServer } from "../common/templates-protocol";
-import { TemplatesContribution, TemplatesRegistry, TemplatesRegistryImpl } from "./templates-contribution";
+import { TemplatesPaths, TemplatesServer } from "../common";
+import { TemplatesContribution, TemplatesRegistry, TemplatesRegistryImpl } from "./templates-registry";
 import { TemplatesServerImpl } from "./templates-server-impl";
 
 export default new ContainerModule(bind => {

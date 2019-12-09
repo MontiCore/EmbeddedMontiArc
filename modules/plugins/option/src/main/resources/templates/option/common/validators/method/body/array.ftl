@@ -1,0 +1,24 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="option" type="de.monticore.lang.monticar.sol.grammars.option._symboltable.OptionSymbol" -->
+<#-- @ftlvariable name="delegator" type="de.monticore.lang.monticar.sol.plugins.option.plugin.generator.OptionMethodDelegator" -->
+<#-- @ftlvariable name="printer" type="de.monticore.lang.monticar.sol.plugins.option.plugin.generator.printer.ValidatorPrinter" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="suffix" type="java.lang.String" -->
+${tc.signature("option", "suffix")}
+<#assign delegator = glex.getGlobalVar("option.delegator")>
+<#assign name = option.getName()>
+<#assign subOptions = delegator.getOptionSymbols(option)>
+<#assign variable = "i" + name?cap_first>
+${name} = ${name} || [];
+
+return Promise.all(${name}.map(async ${variable} => {
+    const errors = await Promise.all([
+        <#list subOptions as subOption>
+        <#assign subOptionName = subOption.getName()>
+        this.validate${suffix}${subOptionName?cap_first}(${variable}.${subOptionName}, options)<#if subOption?has_next>,</#if>
+        </#list>
+    ]);
+
+    return { <#list subOptions as option>${option.getName()}: errors[${option?index}]!<#if option?has_next>, </#if></#list> };
+}));

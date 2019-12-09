@@ -7,8 +7,8 @@ package de.monticore.lang.monticar.sol.grammars;
  * Language is the language description language which holds information on the language to be integrated into
  * the IDE.
  */
-grammar Language extends de.monticore.MCBasics, de.monticore.MCLiterals, de.monticore.types.Types,
-                         de.monticore.lang.monticar.sol.grammars.Options {
+grammar Language extends de.monticore.MCBasics, de.monticore.MCLiterals, de.monticore.lang.monticar.sol.grammars.Common,
+                         de.monticore.lang.monticar.sol.grammars.Option {
     // =========================================
     // INTERFACE DEFINITIONS
     // =========================================
@@ -31,7 +31,7 @@ grammar Language extends de.monticore.MCBasics, de.monticore.MCLiterals, de.mont
      * LanguageCompilationUnit is the root parser rule which acts as container for the language elements.
      */
     LanguageCompilationUnit =
-        "package" package:(Name || ".")+ ";"
+        package:PackageStatement
         import:ImportStatement*
         Language
     ;
@@ -46,17 +46,38 @@ grammar Language extends de.monticore.MCBasics, de.monticore.MCLiterals, de.mont
     ;
 
     /**
+     * Server represents the path to the language server artifact.
+     */
+    Server implements LanguageElement =
+        "server" path:ProjectPath
+    ;
+
+    /**
+     * Extension represents the extension of language artifacts.
+     */
+    Extension implements LanguageElement =
+        "extension" extension:StringLiteral
+    ;
+
+    /**
+     * Keywords represents the inclusion / exclusion / definition of keywords.
+     */
+    Keywords implements LanguageElement =
+        (inclusion:["include"] | exclusion:["exclude"]) "keywords" "[" keyword:(StringLiteral || ",")+ "]"
+    ;
+
+    /**
      * TemplateDeclaration represents the declaration of a template.
      */
     symbol scope TemplateDeclaration implements LanguageElement =
-        "declare" "template" Name "for" path:StringLiteral "{" element:TemplateElement* "}"
+        "template" Name "{" element:TemplateElement* "}"
     ;
 
     /**
      * TemplateAttribute represents an attribute of the template.
      */
-    symbol TemplateAttribute implements TemplateElement =
-        "attribute" Name "=" literal:SignedLiteral ";"
+    TemplateAttribute implements TemplateElement =
+        (["path"] | ["label"]) literal:StringLiteral
     ;
 
     /**
@@ -67,10 +88,10 @@ grammar Language extends de.monticore.MCBasics, de.monticore.MCLiterals, de.mont
     ;
 
     /**
-     * TemplateUndeclaration represents the undeclaration of a template.
+     * TemplateExclusion represents the exclusion of a template.
      */
-    symbol TemplateUndeclaration implements LanguageElement =
-        "undeclare" "template" Name@TemplateDeclaration ";"
+    symbol TemplateExclusion implements LanguageElement =
+        "exclude" "template" Name@TemplateDeclaration
     ;
 
     // =========================================
@@ -80,4 +101,32 @@ grammar Language extends de.monticore.MCBasics, de.monticore.MCLiterals, de.mont
     // =========================================
     // AST DEFINITIONS
     // =========================================
+
+    ast LanguageCompilationUnit =
+        method public java.util.List<String> getPackageList() {
+            return this.getPackage().getPackageList();
+        }
+    ;
+
+    ast TemplateAttribute =
+        method public String getValue() {
+            return this.getLiteral().getValue();
+        }
+    ;
+
+    ast Server =
+        method public de.monticore.lang.monticar.sol.grammars.common._ast.CommonLiterals getOrigin() {
+            return this.getPath().getOriginValue();
+        }
+
+        method public String getRelativePath() {
+            return this.getPath().getPathValue();
+        }
+    ;
+
+    ast Extension =
+        method public String getValue() {
+            return this.getExtension().getValue();
+        }
+    ;
 }

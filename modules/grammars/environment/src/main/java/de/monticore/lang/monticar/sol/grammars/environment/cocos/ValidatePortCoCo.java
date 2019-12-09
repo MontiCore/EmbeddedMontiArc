@@ -7,27 +7,13 @@ import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTExpose;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTExposeCoCo;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
 import de.monticore.mcliterals._ast.ASTNatLiteral;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * This context condition checks whether a given port lies within the valid range.
  */
-public class ValidatePortCoCo implements EnvironmentCoCo, EnvironmentASTExposeCoCo {
-    @Override
-    public String getErrorCode() {
-        return "ENV0005";
-    }
-
-    @Override
-    public String getErrorMessage(Object... parameters) {
-        List<Object> parameterList = new ArrayList<>(Arrays.asList(parameters));
-
-        parameterList.add(0, this.getErrorCode());
-        return String.format("%s Port '%d' should be between 1024 and 65535.", parameterList.toArray());
+public class ValidatePortCoCo extends CommonEnvironmentCoCo implements EnvironmentASTExposeCoCo {
+    public ValidatePortCoCo() {
+        super("ENV0005", "Port '%d' should be between 1024 and 65535.");
     }
 
     @Override
@@ -40,6 +26,6 @@ public class ValidatePortCoCo implements EnvironmentCoCo, EnvironmentASTExposeCo
         ASTNatLiteral portNode = node.getPort();
         int port = portNode.getValue();
 
-        if (port < 1024 || port > 65535) Log.warn(this.getErrorMessage(port), portNode.get_SourcePositionStart());
+        if (port < 1024 || port > 65535) this.error(node, port);
     }
 }

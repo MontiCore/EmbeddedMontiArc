@@ -10,7 +10,6 @@ import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentAST
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
 import de.monticore.lang.monticar.sol.grammars.environment._visitor.EnvironmentVisitor;
 import de.monticore.mcliterals._ast.ASTStringLiteral;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -18,15 +17,9 @@ import java.util.function.Predicate;
 /**
  * This command checks whether RUN instructions have been chained instead of going for readability.
  */
-public class NoCommandChainingCoCo implements EnvironmentCoCo, EnvironmentASTRunCoCo, EnvironmentVisitor {
-    @Override
-    public String getErrorCode() {
-        return "ENV0003";
-    }
-
-    @Override
-    public String getErrorMessage(Object ...parameters) {
-        return String.format("%s RUN should have at most one command.", this.getErrorCode());
+public class NoCommandChainingCoCo extends CommonEnvironmentCoCo implements EnvironmentASTRunCoCo, EnvironmentVisitor {
+    public NoCommandChainingCoCo() {
+        super("ENV0003", "RUN should have at most one command.");
     }
 
     @Override
@@ -42,7 +35,7 @@ public class NoCommandChainingCoCo implements EnvironmentCoCo, EnvironmentASTRun
     @Override
     public void visit(ASTCommandOrSplitCommand node) {
         node.getCommandOpt().ifPresent(command -> {
-            if (this.violatesCommand(command)) Log.warn(this.getErrorMessage(), node.get_SourcePositionStart());
+            if (this.violatesCommand(command)) this.warn(node);
         });
     }
 
@@ -50,7 +43,7 @@ public class NoCommandChainingCoCo implements EnvironmentCoCo, EnvironmentASTRun
     public void visit(ASTSplitCommand node) {
         boolean violation = this.violatesParameters(node.getParameterList());
 
-        if (violation) Log.warn(this.getErrorMessage(), node.get_SourcePositionStart());
+        if (violation) this.warn(node);
     }
 
     protected boolean violatesCommand(ASTStringLiteral command) {

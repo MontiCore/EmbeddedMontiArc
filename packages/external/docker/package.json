@@ -28,8 +28,15 @@
   "devDependencies": {
     "@types/execa": "0.9.0",
     "@types/get-port": "^4.2.0",
-    "@types/node": "12.0.10",
+    "@types/node": "^12.0.10",
     "electron": "^6.0.7"
   },
-  "theiaExtensions": []
+  "theiaExtensions": [],
+  "sol": {
+    "extensions": [
+      {
+        "main": "lib/main/docker-main-module"
+      }
+    ]
+  }
 }

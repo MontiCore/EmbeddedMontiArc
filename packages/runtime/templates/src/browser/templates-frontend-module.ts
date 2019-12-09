@@ -3,8 +3,9 @@
  */
 import { CommandContribution, MenuContribution } from "@theia/core";
 import { WebSocketConnectionProvider } from "@theia/core/lib/browser";
-import { ContainerModule } from "inversify";
-import { TemplatesPaths, TemplatesServer } from "../common/templates-protocol";
+import { Container, ContainerModule } from "inversify";
+import { TemplatesPaths, TemplatesServer } from "../common";
+import { TemplateDialog, TemplateDialogFactory, TemplateDialogProps } from "./template-dialog";
 import { TemplatesCommandContribution } from "./templates-command-contribution";
 import { TemplatesMenuContribution } from "./templates-menu-contribution";
 
@@ -14,6 +15,16 @@ export default new ContainerModule(bind => {
 
     bind(TemplatesMenuContribution).toSelf().inSingletonScope();
     bind(MenuContribution).to(TemplatesMenuContribution).inSingletonScope();
+
+    bind(TemplateDialogFactory).toFactory(ctx => (props: TemplateDialogProps) => {
+        const container = new Container();
+
+        container.parent = ctx.container;
+
+        container.bind(TemplateDialogProps).toConstantValue(props);
+        container.bind(TemplateDialog).toSelf();
+        return container.get(TemplateDialog);
+    });
 
     bind(TemplatesServer).toDynamicValue(ctx => {
         const provider = ctx.container.get(WebSocketConnectionProvider);

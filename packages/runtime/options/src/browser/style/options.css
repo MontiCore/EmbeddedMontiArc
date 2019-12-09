@@ -1,0 +1,38 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+@import "path-option.css";
+@import "string-option.css";
+@import "list-option.css";
+@import "group-option.css";
+
+.sol-runtime-options.content {
+    overflow-y:scroll;
+    max-height:500px;
+    height:100%;
+}
+
+.sol-runtime-options.component {
+    border:solid 1px transparent;
+    padding:2px;
+}
+
+.sol-runtime-options.component.invalid .label {
+    color:var(--theia-error-color1);
+}
+
+.sol-runtime-options.component .value {
+    display:flex;
+    align-items:center;
+    flex:1;
+}
+
+.sol-runtime-options.component .error {
+    margin-top:5px;
+    display:flex;
+    color:var(--theia-error-color1);
+}
+
+.sol-runtime-options .label {
+    margin-right:calc(var(--theia-ui-padding)*2);
+}

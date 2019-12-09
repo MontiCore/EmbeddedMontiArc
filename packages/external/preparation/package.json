@@ -21,13 +21,21 @@
     "helpful-decorators": "^2.0.5",
     "inversify": "^4.14.0",
     "inversify-inject-decorators": "^3.1.0",
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
+    "react": "^16.12.0",
+    "react-dom": "^16.4.1",
     "styled-components": "^4.3.2"
   },
   "devDependencies": {
     "@types/styled-components": "^4.1.19",
     "electron": "^6.0.7"
   },
-  "theiaExtensions": []
+  "theiaExtensions": [],
+  "sol": {
+    "extensions": [
+      {
+        "main": "lib/main/preparation-main-module",
+        "renderer": "lib/renderer/preparation-renderer-module"
+      }
+    ]
+  }
 }

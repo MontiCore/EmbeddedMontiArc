@@ -7,27 +7,13 @@ import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTWorkDir;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTWorkDirCoCo;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
 import de.monticore.mcliterals._ast.ASTStringLiteral;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * This context condition checks whether a relative path has been used to in the WORKDIR instruction.
  */
-public class NoRelativeWorkDirCoCo implements EnvironmentCoCo, EnvironmentASTWorkDirCoCo {
-    @Override
-    public String getErrorCode() {
-        return "ENV0006";
-    }
-
-    @Override
-    public String getErrorMessage(Object... parameters) {
-        List<Object> parameterList = new ArrayList<>(Arrays.asList(parameters));
-
-        parameterList.add(0, this.getErrorCode());
-        return String.format("%s Working Directory '%s' should be absolute.", parameterList.toArray());
+public class NoRelativeWorkDirCoCo extends CommonEnvironmentCoCo implements EnvironmentASTWorkDirCoCo {
+    public NoRelativeWorkDirCoCo() {
+        super("ENV0006", "Working Directory '%s' should be absolute.");
     }
 
     @Override
@@ -40,6 +26,6 @@ public class NoRelativeWorkDirCoCo implements EnvironmentCoCo, EnvironmentASTWor
         ASTStringLiteral workDirNode = node.getDirectory();
         String workDir = workDirNode.getValue();
 
-        if (!workDir.startsWith("/")) Log.warn(this.getErrorMessage(workDir), workDirNode.get_SourcePositionStart());
+        if (!workDir.startsWith("/")) this.error(node, workDir);
     }
 }

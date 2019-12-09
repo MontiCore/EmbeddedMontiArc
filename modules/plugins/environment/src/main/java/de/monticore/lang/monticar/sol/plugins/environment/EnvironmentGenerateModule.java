@@ -21,16 +21,16 @@ import de.monticore.lang.monticar.sol.plugins.environment.plugin.configuration.E
 import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.DockerfileGenerator;
 import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.EnvironmentGeneratorSetup;
 import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.EnvironmentGlex;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.collector.DDFCollector;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.collector.DDFCollectorImpl;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.partitioner.DDFPartitioner;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.partitioner.DDFPartitionerImpl;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.sanitizer.DDFSanitizer;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.sanitizer.DDFSanitizerImpl;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.sanitizer.DDFSanitizerPhase;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.sanitizer.NoDuplicatePackage;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.translator.DDFTranslator;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.translator.DDFTranslatorImpl;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.collector.ECCollector;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.collector.ECCollectorImpl;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.partitioner.ECPartitioner;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.partitioner.ECPartitionerImpl;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.sanitizer.ECSanitizer;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.sanitizer.ECSanitizerImpl;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.sanitizer.ECSanitizerPhase;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.sanitizer.NoDuplicatePackage;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.translator.ECTranslator;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.translator.ECTranslatorImpl;
 import de.monticore.lang.monticar.sol.plugins.environment.plugin.symboltable.EnvironmentSymbolTable;
 import de.monticore.lang.monticar.sol.plugins.environment.plugin.symboltable.EnvironmentSymbolTableImpl;
 import de.monticore.lang.monticar.sol.plugins.environment.plugin.validator.EnvironmentValidator;
@@ -54,11 +54,11 @@ public class EnvironmentGenerateModule extends AbstractModule {
         bind(EnvironmentGenerateConfiguration.class).to(EnvironmentGenerateConfigurationImpl.class);
         bind(GeneratePluginConfiguration.class).to(EnvironmentGenerateConfigurationImpl.class);
         bind(PluginConfiguration.class).to(EnvironmentGenerateConfigurationImpl.class);
-        bind(DDFTranslator.class).to(DDFTranslatorImpl.class);
+        bind(ECTranslator.class).to(ECTranslatorImpl.class);
         bind(EnvironmentGeneratePlugin.class).toInstance(this.plugin);
-        bind(DDFCollector.class).to(DDFCollectorImpl.class);
-        bind(DDFPartitioner.class).to(DDFPartitionerImpl.class);
-        bind(DDFSanitizer.class).to(DDFSanitizerImpl.class);
+        bind(ECCollector.class).to(ECCollectorImpl.class);
+        bind(ECPartitioner.class).to(ECPartitionerImpl.class);
+        bind(ECSanitizer.class).to(ECSanitizerImpl.class);
         bind(EnvironmentValidator.class).to(EnvironmentValidatorImpl.class);
         bind(EnvironmentSymbolTable.class).to(EnvironmentSymbolTableImpl.class);
     }
@@ -113,7 +113,7 @@ public class EnvironmentGenerateModule extends AbstractModule {
     }
 
     private void addSubSanitizers() {
-        Multibinder<DDFSanitizerPhase> contributions = Multibinder.newSetBinder(binder(), DDFSanitizerPhase.class);
+        Multibinder<ECSanitizerPhase> contributions = Multibinder.newSetBinder(binder(), ECSanitizerPhase.class);
 
         contributions.addBinding().to(NoDuplicatePackage.class);
     }

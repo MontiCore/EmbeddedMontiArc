@@ -6,6 +6,7 @@ package de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * An interface representing the a NPM package.
@@ -24,25 +25,30 @@ public interface NPMPackage {
     Optional<String> getName();
 
     /**
+     * Returns the version of the package.
+     * @return The version of the package if present, empty otherwise.
+     */
+    Optional<String> getVersion();
+
+    /**
      * Returns a list of NPMPackages representing the dependencies of this package.
      * @return A list of NPMPackages representing the dependencies of this package.
      */
     List<NPMPackage> getDependencies();
 
     /**
-     * Checks whether an attribute exists for a given key.
-     * @param key The given for which existence should be checked.
-     * @return True if an attribute for the given key exists, false otherwise.
+     * Returns all dependencies of this package, transitive dependencies included.
+     * @return All dependencies of this package, transitive dependencies included.
      */
-    boolean hasAttribute(String key);
+    Set<NPMPackage> getAllDependencies();
 
     /**
      * Returns the attribute for the given key.
-     * @param key The key of the attribute.
+     * @param query The query path to the attribute.
      * @param <T> The attribute to be fetched casted to T.
      * @return The fetched attribute casted to T.
      */
-    <T> T getAttribute(String key);
+    <T> Optional<T> query(String query);
 
     /**
      * Checks whether this package is a Theia package.

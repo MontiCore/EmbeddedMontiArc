@@ -7,6 +7,9 @@ ${tc.signature("template")}
 <#assign configuration = glex.getGlobalVar("configuration")>
 <#assign generatedPackage = configuration.getGrammarGeneratedPackage()>
 <#assign grammarName = configuration.getGrammarName()>
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 package ${generatedPackage};
 
 import com.google.inject.AbstractModule;
@@ -14,7 +17,7 @@ import ${generatedPackage}.services.${grammarName}DiagnosticsService;
 import de.monticore.lang.monticar.sol.runtime.ls.LanguageServerRuntimeModule;
 import de.monticore.lang.monticar.sol.runtime.ls.services.DiagnosticsService;
 
-public class ${grammarName}Module<#if template.hasHandwrittenPeer()>Top</#if> extends AbstractModule {
+public class ${grammarName}Module<#if template.hasHandwrittenPeer()>TOP</#if> extends AbstractModule {
     @Override
     public void configure() {
         bind(DiagnosticsService.class).to(${grammarName}DiagnosticsService.class);

@@ -14,6 +14,8 @@ import de.monticore.lang.monticar.sol.plugins.common.plugin.common.mp.ModelPathS
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationServiceImpl;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm.*;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.common.path.PathResolver;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.common.path.PathResolverImpl;
 
 import java.util.Comparator;
 import java.util.List;
@@ -39,6 +41,7 @@ public class PluginsCommonModule extends AbstractModule {
         bind(NodeModulesResolver.class).to(NodeModulesResolverImpl.class);
         bind(NPMPackageService.class).to(NPMPackageServiceImpl.class);
         bind(ModelPathService.class).to(ModelPathServiceImpl.class);
+        bind(PathResolver.class).to(PathResolverImpl.class);
         bind(AbstractPlugin.class).toInstance(this.plugin);
     }
 

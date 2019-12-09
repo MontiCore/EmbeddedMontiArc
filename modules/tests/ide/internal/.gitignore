@@ -1,0 +1,12 @@
+/lib/
+/src-gen/
+/node_modules/
+
+/webpack.config.js
+/webpack.config++.js
+
+/package.json
+
+/sol/
+
+/Dockerfile

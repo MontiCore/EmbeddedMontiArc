@@ -1,0 +1,12 @@
+option visitor: List {
+    label "A Label"
+
+    option subOption1: String {
+        label "An other Label"
+    }
+
+    option subOption2: String {
+        label "Also a Label"
+        required true
+    }
+}

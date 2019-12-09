@@ -39,9 +39,9 @@ public class TemplateRegistryImpl implements TemplateRegistry, PluginContributio
     }
 
     @Override
-    public void registerTemplate(String templatePath, String outputPath) {
+    public void registerTemplate(String templatePath, String outputPath, Object ...arguments) {
         String realTemplatePath = String.format("%s/%s", this.templateRoot, templatePath);
-        Template template = this.factory.create(realTemplatePath, outputPath, this.suffix);
+        Template template = this.factory.create(realTemplatePath, outputPath, this.suffix, arguments);
 
         this.templates.add(template);
         this.notifications.info("Registered Template: %s.", template);

@@ -9,6 +9,9 @@ ${tc.signature("template")}
 <#assign grammarNameLC = grammarName?lower_case>
 <#assign extension = configuration.getFileExtension()>
 <#assign hasHandwrittenPeer = template.hasHandwrittenPeer()>
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { LanguageGrammarDefinitionContribution, TextmateRegistry } from "@theia/monaco/lib/browser/textmate";
 import { injectable } from "inversify";
 import { ${grammarName}Language } from "../common";

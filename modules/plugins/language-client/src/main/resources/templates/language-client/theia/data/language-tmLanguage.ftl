@@ -1,4 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+<#-- @ftlvariable name="repository" type="java.lang.String" -->
+<#-- @ftlvariable name="patterns" type="java.lang.String" -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 <#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
 <#-- @ftlvariable name="configuration" type="de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration" -->

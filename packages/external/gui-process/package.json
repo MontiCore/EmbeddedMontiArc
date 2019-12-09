@@ -25,5 +25,12 @@
       "frontend": "lib/browser/gui-process-frontend-module",
       "backend": "lib/node/gui-process-backend-module"
     }
-  ]
+  ],
+  "sol": {
+    "extensions": [
+      {
+        "main": "lib/main/gui-process-main-module"
+      }
+    ]
+  }
 }

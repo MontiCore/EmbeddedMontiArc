@@ -10,6 +10,10 @@ import { app } from "electron";
 import * as Express from "express";
 import * as Path from "path";
 
+import * as debug from "electron-debug";
+
+if (process.argv.indexOf("--debug") > -1) debug({ showDevTools: true, devToolsMode: "detach" });
+
 async function execute() {
     const renderer = Path.resolve(app.getAppPath(), "lib", "renderer");
     const modules = await Promise.all([
@@ -25,8 +29,8 @@ async function execute() {
     const application = container.get<Application>(Application);
 
     application.use(Express.static(renderer));
-    application.setName("Sol");
-    application.setImage("embeddedmontiarc/sol-tests-ide:latest");
+    application.setName("EMAStudio");
+    application.setImage("embeddedmontiarc/sol-tests-ide-internal:latest");
     app.on("ready", () => application.start());
 }
 

@@ -1,7 +1,6 @@
 /*
  * (c) https://github.com/MontiCore/monticore
  */
-
 import * as gulp from "gulp";
 import * as ts from "gulp-typescript";
 import * as minimist from "minimist";
@@ -13,7 +12,9 @@ const tsProject = ts.createProject(argv.p || argv.project || "tsconfig.json");
 const shouldWatch = argv.w || argv.watch || false;
 const shouldFlatten = argv.flatten || false;
 
-const compilerOptions = tsProject.config.compilerOptions;
+tsProject.options.rootDir = ".";
+
+const compilerOptions = tsProject.options;
 const rootDirs = compilerOptions.rootDirs || [];
 const outDir = compilerOptions.outDir || "lib";
 

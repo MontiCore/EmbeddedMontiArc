@@ -10,13 +10,16 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class NPMPackageImpl implements NPMPackage {
     protected final File path;
     protected final NPMPackageService resolver;
     protected final JSONObject content;
     protected final String name;
+    protected final String version;
 
     protected List<NPMPackage> dependencies;
     protected SolPackage solPackage;
@@ -26,19 +29,18 @@ public class NPMPackageImpl implements NPMPackage {
     protected NPMPackageImpl(@Assisted File path, NPMPackageService resolver) throws IOException {
         this.path = path;
         this.resolver = resolver;
-        this.content = new JSONObject(FileUtils.readFileToString(path, "UTF-8"));
-        this.name = this.hasAttribute("name") ? this.getAttribute("name") : null;
+        this.content = new JSONObject(FileUtils.readFileToString(path, StandardCharsets.UTF_8));
+        this.name = this.<String>query("/name").orElse(null);
+        this.version = this.<String>query("/version").orElse(null);
     }
 
     protected List<NPMPackage> fetchDependencies() {
         List<NPMPackage> packages = new ArrayList<>();
+        Set<String> dependencies = this.<JSONObject>query("/dependencies")
+                .map(JSONObject::keySet)
+                .orElse(new HashSet<>());
 
-        if (this.hasAttribute("dependencies")) {
-            Set<String> dependencies = this.<JSONObject>getAttribute("dependencies").keySet();
-
-            dependencies.forEach(dependency -> this.resolver.resolve(dependency).ifPresent(packages::add));
-        }
-
+        dependencies.forEach(dependency -> this.resolver.resolve(dependency).ifPresent(packages::add));
         return packages;
     }
 
@@ -53,6 +55,11 @@ public class NPMPackageImpl implements NPMPackage {
     }
 
     @Override
+    public Optional<String> getVersion() {
+        return Optional.ofNullable(this.version);
+    }
+
+    @Override
     public List<NPMPackage> getDependencies() {
         if (this.dependencies == null) this.dependencies = fetchDependencies();
 
@@ -60,24 +67,30 @@ public class NPMPackageImpl implements NPMPackage {
     }
 
     @Override
-    public boolean hasAttribute(String key) {
-        return this.content.has(key);
+    public Set<NPMPackage> getAllDependencies() {
+       Set<NPMPackage> dependencies = this.getDependencies().stream()
+               .flatMap(dependency -> dependency.getAllDependencies().stream())
+               .collect(Collectors.toSet());
+
+        dependencies.addAll(this.getDependencies());
+
+        return dependencies;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getAttribute(String key) {
-        return (T)this.content.get(key);
+    public <T> Optional<T> query(String query) {
+        return Optional.ofNullable((T)this.content.optQuery(query));
     }
 
     @Override
     public boolean isTheiaPackage() {
-        return this.hasAttribute("theiaExtensions");
+        return this.query("/theiaExtensions").isPresent();
     }
 
     @Override
     public boolean isSolPackage() {
-        return this.hasAttribute("sol");
+        return this.query("/sol").isPresent();
     }
 
     @Override

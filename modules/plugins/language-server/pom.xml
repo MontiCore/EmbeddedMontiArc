@@ -61,8 +61,6 @@
             <artifactId>maven-plugin-annotations</artifactId>
         </dependency>
 
-        <!-- .. Language .................................................. -->
-
         <!-- .. Test Libraries ............................................ -->
 
         <dependency>

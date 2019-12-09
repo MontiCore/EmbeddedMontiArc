@@ -1,3 +1,0 @@
-package valid;
-
-resources ValidAttributeResources {}

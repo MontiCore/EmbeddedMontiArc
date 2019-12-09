@@ -1,0 +1,6 @@
+package invalid
+
+product RequiredAttributesProduct {
+    artifact SOME_RESOURCE {
+    }
+}

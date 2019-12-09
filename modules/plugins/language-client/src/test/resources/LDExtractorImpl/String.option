@@ -1,0 +1,7 @@
+package LDExtractorImpl
+
+typedef option String {
+    required prop label: string
+    required prop required: boolean
+    returns string
+}

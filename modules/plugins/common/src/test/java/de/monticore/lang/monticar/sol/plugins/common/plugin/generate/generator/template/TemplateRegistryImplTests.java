@@ -40,7 +40,7 @@ public class TemplateRegistryImplTests {
 
     @BeforeEach
     void before() {
-        template = new TemplateImpl(templatePath, outputPath, resolver, hcRegistry);
+        template = new TemplateImpl(templatePath, outputPath, new Object[0], resolver, hcRegistry);
 
         registry = new TemplateRegistryImpl(notifications, factory, contributions);
 

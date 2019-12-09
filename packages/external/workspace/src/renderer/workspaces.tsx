@@ -2,7 +2,7 @@
  * (c) https://github.com/MontiCore/monticore
  */
 import { lazyInject } from "@embeddedmontiarc/sol-external-core/lib/common";
-import { logo } from "@embeddedmontiarc/sol-external-core/lib/renderer";
+import { Application } from "@embeddedmontiarc/sol-external-core/lib/renderer/application";
 import { Divider } from "@material-ui/core";
 import { bind } from "helpful-decorators";
 import { Component, ReactNode } from "react";
@@ -30,6 +30,7 @@ export interface WorkspacesState {
 
 export class Workspaces extends Component<{}, WorkspacesState> {
     @lazyInject(WorkspaceServer) protected readonly workspaces: WorkspaceServer;
+    @lazyInject(Application) protected readonly application: Application;
 
     public constructor(props: {}) {
         super(props);
@@ -50,6 +51,8 @@ export class Workspaces extends Component<{}, WorkspacesState> {
     }
 
     public render(): ReactNode {
+        const logo = this.application.getLogo();
+
         return <Content>
             <TopRow>
                 <LeftColumn>

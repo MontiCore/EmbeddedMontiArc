@@ -15,6 +15,7 @@
     </parent>
 
     <artifactId>plugin-ide</artifactId>
+    <packaging>maven-plugin</packaging>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
 
@@ -42,9 +43,37 @@
 
         <!-- .. Modules ................................................... -->
 
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>plugin-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>plugin-option</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- .. Libraries ................................................. -->
 
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
         <!-- .. Language .................................................. -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>grammar-ide</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- .. Test Libraries ............................................ -->
 
@@ -54,6 +83,30 @@
 
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>${maven-plugin-plugin.version}</version>
+                <configuration>
+                    <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>mojo-descriptor</id>
+                        <goals>
+                            <goal>descriptor</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>help-goal</id>
+                        <goals>
+                            <goal>helpmojo</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

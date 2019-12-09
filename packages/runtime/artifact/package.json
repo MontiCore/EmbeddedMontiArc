@@ -1,0 +1,25 @@
+{
+  "name": "@embeddedmontiarc/sol-runtime-artifact",
+  "description": "",
+  "version": "2019.6.25-SNAPSHOT",
+  "files": ["src", "lib"],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-runtime-configurations": "2019.6.25-SNAPSHOT",
+    "@theia/core": "latest",
+    "@theia/process": "latest",
+    "string-argv": "^0.3.1",
+    "inversify": "^4.14.0"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "backend": "lib/node/artifact-backend-module"
+    }
+  ]
+}

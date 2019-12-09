@@ -1,0 +1,7 @@
+package valid
+
+typedef component configuration CircularDependencyConfigurationComponent {
+    label "Some Configuration"
+
+    frontend task main
+}

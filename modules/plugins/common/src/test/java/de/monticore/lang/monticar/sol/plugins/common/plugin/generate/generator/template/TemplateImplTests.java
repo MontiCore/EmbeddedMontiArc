@@ -33,7 +33,7 @@ public class TemplateImplTests {
 
     @BeforeEach
     void before() {
-        template = new TemplateImpl(templatePath, outputPath, suffix, resolver, registry);
+        template = new TemplateImpl(templatePath, outputPath, suffix, new Object[0], resolver, registry);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class TemplateImplTests {
 
     @Test
     void testEquals() {
-        TemplateImpl peer = new TemplateImpl(templatePath, outputPath, suffix, resolver, registry);
+        TemplateImpl peer = new TemplateImpl(templatePath, outputPath, suffix, new Object[0], resolver, registry);
 
         when(resolver.resolve(any(String.class), any(Template.class))).thenReturn(outputPath);
         when(registry.getHandCodes()).thenReturn(new HashSet<>());

@@ -3,6 +3,8 @@
  */
 package de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm;
 
+import org.json.JSONArray;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -36,4 +38,6 @@ public interface SolPackage extends NPMPackage {
      * @return All dependencies of this package which are SolPackages, transitive dependencies included.
      */
     List<SolPackage> getAllSolDependencies();
+
+    Optional<JSONArray> getExtensions();
 }

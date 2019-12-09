@@ -10,10 +10,10 @@ import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTInstruction;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.environment.plugin.configuration.EnvironmentGenerateConfiguration;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.collector.DDFCollector;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.partitioner.DDFPartitioner;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.sanitizer.DDFSanitizer;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.translator.DDFTranslator;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.collector.ECCollector;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.partitioner.ECPartitioner;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.sanitizer.ECSanitizer;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.translator.ECTranslator;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -24,14 +24,14 @@ import java.util.List;
 public class DockerfileGenerator implements GeneratorPhase {
     protected final NotificationService notifications;
     protected final EnvironmentGenerateConfiguration configuration;
-    protected final DDFCollector collector;
-    protected final DDFSanitizer sanitizer;
-    protected final DDFPartitioner partitioner;
-    protected final DDFTranslator translator;
+    protected final ECCollector collector;
+    protected final ECSanitizer sanitizer;
+    protected final ECPartitioner partitioner;
+    protected final ECTranslator translator;
 
     @Inject
-    protected DockerfileGenerator(NotificationService notifications, DDFCollector collector, DDFSanitizer sanitizer,
-                                  DDFPartitioner partitioner, DDFTranslator translator,
+    protected DockerfileGenerator(NotificationService notifications, ECCollector collector, ECSanitizer sanitizer,
+                                  ECPartitioner partitioner, ECTranslator translator,
                                   EnvironmentGenerateConfiguration configuration) {
         this.notifications = notifications;
         this.collector = collector;

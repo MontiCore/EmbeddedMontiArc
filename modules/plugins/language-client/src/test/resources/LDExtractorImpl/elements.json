@@ -1,43 +1,43 @@
 [
   {
-    "variable": "packageName",
-    "type": "string",
+    "name": "packageName",
+    "type": "LDExtractorImpl.String",
     "props": {
       "label": "Package",
       "required": true
     }
   },
   {
-    "variable": "componentName",
-    "type": "string",
+    "name": "componentName",
+    "type": "LDExtractorImpl.String",
     "props": {
       "label": "Component",
       "required": true
     }
   },
   {
-    "variable": "ports",
-    "type": "list",
+    "name": "ports",
+    "type": "LDExtractorImpl.List",
     "props": {
-      "elements": [{
-        "variable": "direction",
-        "type": "string",
+      "options": [{
+        "name": "direction",
+        "type": "LDExtractorImpl.String",
         "props": {
           "label": "Direction",
           "required": true
         }
       },
       {
-        "variable": "type",
-        "type": "string",
+        "name": "type",
+        "type": "LDExtractorImpl.String",
         "props": {
           "label": "Type",
           "required": true
         }
       },
       {
-        "variable": "name",
-        "type": "string",
+        "name": "name",
+        "type": "LDExtractorImpl.String",
         "props": {
           "label": "Name",
           "required": true

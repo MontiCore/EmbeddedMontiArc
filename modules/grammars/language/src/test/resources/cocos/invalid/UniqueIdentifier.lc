@@ -1,0 +1,15 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package invalid
+
+language UniqueIdentifier extends UniqueIdentifierParent {
+    template undeclareExisting {
+        path "SomePath"
+        label "Some Label"
+
+        option someOption: String {
+            label "Some Option"
+        }
+    }
+}

@@ -36,7 +36,6 @@ export class WorkspaceServerImpl extends EventEmitter implements WorkspaceServer
     }
 
     public async close(): Promise<void> {
-        await this.notifications.showMessage("Workspace will be closed...", MessageType.Warning);
         this.emit("close");
         return this.server.gotoPhase(this.workspacePhase.id);
     }

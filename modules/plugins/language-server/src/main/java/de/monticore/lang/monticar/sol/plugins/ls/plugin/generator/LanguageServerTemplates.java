@@ -10,7 +10,7 @@ public class LanguageServerTemplates implements TemplateContribution {
     @Override
     public void registerTemplates(TemplateRegistry registry) {
         registry.setTemplateRoot("templates/language-server");
-        registry.setTopPatternSuffix("Top");
+        registry.setTopPatternSuffix("TOP");
 
         registry.registerTemplate(
                 "ls/LanguageServerLauncher.ftl",

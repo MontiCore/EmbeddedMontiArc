@@ -51,6 +51,7 @@ public class AbstractTemplateGeneratorPhaseTests {
         String templatePath = "Template.ftl";
         Path outputPath = Paths.get("Out.java");
         Path outputPathTop = Paths.get("OutTop.java");
+        Object[] arguments = new Object[0];
 
         templates.add(template);
 
@@ -58,16 +59,17 @@ public class AbstractTemplateGeneratorPhaseTests {
         when(template.getTemplatePath()).thenReturn(templatePath);
         when(template.getOutputPath()).thenReturn(outputPath);
         when(template.hasHandwrittenPeer()).thenReturn(false);
+        when(template.getArguments()).thenReturn(arguments);
 
         phase.generate(engine);
 
-        verify(engine).generateNoA(templatePath, outputPath, template);
+        verify(engine).generateNoA(templatePath, outputPath, arguments);
 
         when(template.hasHandwrittenPeer()).thenReturn(true);
         when(template.getTopPatternOutputPath()).thenReturn(outputPathTop);
 
         phase.generate(engine);
 
-        verify(engine).generateNoA(templatePath, outputPathTop, template);
+        verify(engine).generateNoA(templatePath, outputPathTop, arguments);
     }
 }

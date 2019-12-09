@@ -10,7 +10,7 @@ import de.monticore.modelloader.ModelingLanguageModelLoader;
 @Singleton
 public class EnvironmentLanguage extends EnvironmentLanguageTOP {
     public EnvironmentLanguage() {
-        this("EnvironmentDescription", "ddf");
+        this("Environment Contribution", "ec");
     }
 
     protected EnvironmentLanguage(String langName, String fileEnding) {

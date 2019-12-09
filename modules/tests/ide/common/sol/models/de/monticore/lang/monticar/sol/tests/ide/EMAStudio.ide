@@ -1,0 +1,12 @@
+package de.monticore.lang.monticar.sol.tests.ide
+
+import de.monticore.lang.monticar.sol.tests.ide.modules.types.PacMan
+import de.monticore.lang.monticar.sol.tests.ide.configurations.PacMan
+
+ide EMAStudio extends OCLStudio {
+    registry "embeddedmontiarc/sol-tests-ide-internal:latest"
+    build "build" resolved from CWD
+
+    include module type PacMan
+    include configuration type PacMan
+}

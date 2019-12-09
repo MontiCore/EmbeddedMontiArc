@@ -10,6 +10,7 @@ import de.monticore.lang.monticar.sol.grammars.language.LanguageModule;
 import de.monticore.lang.monticar.sol.grammars.language._ast.ASTLanguageCompilationUnit;
 import de.monticore.lang.monticar.sol.grammars.language._cocos.LanguageCoCoChecker;
 import de.monticore.lang.monticar.sol.grammars.language._symboltable.LanguageModelLoader;
+import de.monticore.lang.monticar.sol.grammars.option.OptionModule;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,7 @@ public abstract class AbstractCoCoTests {
     protected final LanguageModelLoader loader;
 
     protected AbstractCoCoTests() {
-        Injector injector = Guice.createInjector(new LanguageModule());
+        Injector injector = Guice.createInjector(new LanguageModule(), new OptionModule());
 
         this.checker = new LanguageCoCoChecker();
         this.coCo = injector.getInstance(this.getContextCondition());

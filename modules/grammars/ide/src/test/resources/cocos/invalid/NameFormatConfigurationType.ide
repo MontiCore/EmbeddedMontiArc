@@ -1,0 +1,7 @@
+package invalid
+
+typedef configuration nameFormatConfigurationType {
+    label "Some nice Configuration Type"
+
+    frontend task main
+}

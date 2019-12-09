@@ -1,18 +1,18 @@
 /*
  * (c) https://github.com/MontiCore/monticore
  */
-import { DynamicDialogProps } from "@embeddedmontiarc/sol-runtime-components/lib/browser";
-import { ComponentManager } from "@embeddedmontiarc/sol-runtime-components/lib/browser/component-manager";
+import { OptionManager } from "@embeddedmontiarc/sol-runtime-options/lib/browser/option-manager";
+import { ValidatorServer } from "@embeddedmontiarc/sol-runtime-options/lib/common";
 import { open, SingleTextInputDialog } from "@theia/core/lib/browser";
 import { Command, CommandContribution, CommandRegistry } from "@theia/core/lib/common";
-import URI from "@theia/core/lib/common/uri";
 import { UriCommandHandler } from "@theia/core/lib/common/uri-command-handler";
 import { FileStat, FileSystemUtils } from "@theia/filesystem/lib/common";
 import { WorkspaceCommandContribution } from "@theia/workspace/lib/browser";
 import { inject, injectable } from "inversify";
-import { Template, TemplatesServer } from "../common/templates-protocol";
-import * as nunjucks from "nunjucks/browser/nunjucks";
-import { TemplateVariablesDialog } from "./template-variables-dialog";
+import { Template, TemplatesServer } from "../common";
+import { TemplateDialogFactory } from "./template-dialog";
+
+import URI from "@theia/core/lib/common/uri";
 
 export namespace TemplatesCommands {
     export const NEW_FILE_FROM_TEMPLATE = (id: string): Command => ({
@@ -22,8 +22,10 @@ export namespace TemplatesCommands {
 
 @injectable()
 export class TemplatesCommandContribution extends WorkspaceCommandContribution implements CommandContribution {
-    @inject(ComponentManager) protected readonly manager: ComponentManager;
+    @inject(OptionManager) protected readonly manager: OptionManager;
     @inject(TemplatesServer) protected readonly server: TemplatesServer;
+    @inject(ValidatorServer) protected readonly validator: ValidatorServer;
+    @inject(TemplateDialogFactory) protected readonly dialogFactory: TemplateDialogFactory;
 
     public async registerCommands(registry: CommandRegistry): Promise<void> {
         const templates = await this.server.getTemplates();
@@ -50,13 +52,12 @@ export class TemplatesCommandContribution extends WorkspaceCommandContribution i
             const name = await this.showNewFileDialog(template, parent);
 
             if (name) {
-                const context = await this.showTemplateVariablesDialog(template);
+                const options = await this.showTemplateDialog(template);
 
-                if (context) {
+                if (options) {
                     const childURI = parentURI.resolve(name);
-                    const content = await this.renderTemplate(template, context);
 
-                    await this.fileSystem.createFile(childURI.toString(), { content });
+                    await this.server.renderTo(template.id, childURI.toString(), options);
                     await open(this.openerService, childURI);
                 }
             }
@@ -77,26 +78,13 @@ export class TemplatesCommandContribution extends WorkspaceCommandContribution i
         return dialog.open();
     }
 
-    protected async showTemplateVariablesDialog(template: Template): Promise<object | undefined> {
-        const props = { title: `New ${template.label}`, elements: template.elements } as DynamicDialogProps;
-        const dialog = new TemplateVariablesDialog(this.manager, props);
+    protected async showTemplateDialog(template: Template): Promise<object | undefined> {
+        const dialog = this.dialogFactory({
+            id: template.id,
+            title: `New ${template.label}`,
+            options: template.options
+        });
 
         return dialog.open();
-    }
-
-    protected async renderTemplate(template: Template, context: object): Promise<string> {
-        const content = await this.server.resolveTemplateContent(template.id);
-
-        return this.renderString(content, context);
-    }
-
-    protected async renderString(content: string, context: object): Promise<string> {
-        return new Promise((resolve, reject) => {
-            nunjucks.configure({ autoescape: false, trimBlocks: true });
-            nunjucks.renderString(content, context, (error: Error | string | undefined, result: string) => {
-                if (error) reject(error);
-                else resolve(result);
-            });
-        });
     }
 }

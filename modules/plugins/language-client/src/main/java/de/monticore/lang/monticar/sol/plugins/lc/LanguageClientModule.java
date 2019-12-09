@@ -6,6 +6,7 @@ package de.monticore.lang.monticar.sol.plugins.lc;
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 import de.monticore.lang.monticar.sol.grammars.language.LanguageModule;
+import de.monticore.lang.monticar.sol.grammars.option.OptionModule;
 import de.monticore.lang.monticar.sol.plugins.common.PluginsGenerateModule;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.PluginContribution;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.configuration.PluginConfiguration;
@@ -20,9 +21,9 @@ import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageCl
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfigurationImpl;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.LanguageClientGeneratorSetup;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.LanguageClientGlex;
-import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.ld.LDExtractor;
-import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.ld.LDExtractorImpl;
-import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.ld.LDGeneratorPhase;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.lc.LCExtractor;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.lc.LCExtractorImpl;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.lc.LCGeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.server.ServerGeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.GrammarNameVariable;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.template.LanguageClientTemplates;
@@ -32,6 +33,7 @@ import de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable.LanguageSymb
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable.LanguageSymbolTableImpl;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.validator.LDValidator;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.validator.LDValidatorImpl;
+import de.monticore.lang.monticar.sol.plugins.option.OptionPluginModule;
 
 public class LanguageClientModule extends AbstractModule {
     private final LanguageClientPlugin plugin;
@@ -53,7 +55,7 @@ public class LanguageClientModule extends AbstractModule {
         bind(PluginConfiguration.class).to(LanguageClientConfigurationImpl.class);
         bind(GeneratePluginConfiguration.class).to(LanguageClientConfigurationImpl.class);
         bind(LDValidator.class).to(LDValidatorImpl.class);
-        bind(LDExtractor.class).to(LDExtractorImpl.class);
+        bind(LCExtractor.class).to(LCExtractorImpl.class);
         bind(LanguageSymbolTable.class).to(LanguageSymbolTableImpl.class);
     }
 
@@ -69,6 +71,8 @@ public class LanguageClientModule extends AbstractModule {
     private void installModules() {
         this.install(new PluginsGenerateModule(this.plugin));
         this.install(new LanguageModule());
+        this.install(new OptionModule());
+        this.install(new OptionPluginModule());
     }
 
     private void addGeneratorPhases() {
@@ -77,7 +81,7 @@ public class LanguageClientModule extends AbstractModule {
         contributions.addBinding().to(TemplateGeneratorPhase.class);
         contributions.addBinding().to(TextMateGeneratorPhase.class);
         contributions.addBinding().to(ServerGeneratorPhase.class);
-        contributions.addBinding().to(LDGeneratorPhase.class);
+        contributions.addBinding().to(LCGeneratorPhase.class);
     }
 
     private void addTemplateContributions() {

@@ -7,10 +7,10 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTInstruction;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import de.monticore.lang.monticar.sol.plugins.environment.plugin.configuration.EnvironmentGenerateConfiguration;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.collector.DDFCollector;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.partitioner.DDFPartitioner;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.sanitizer.DDFSanitizer;
-import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ddf.translator.DDFTranslator;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.collector.ECCollector;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.partitioner.ECPartitioner;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.sanitizer.ECSanitizer;
+import de.monticore.lang.monticar.sol.plugins.environment.plugin.generator.ec.translator.ECTranslator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,10 +35,14 @@ import static org.mockito.Mockito.when;
 public class DockerfileGeneratorTests {
     @Mock NotificationService notifications;
     @Mock EnvironmentGenerateConfiguration configuration;
-    @Mock DDFCollector collector;
-    @Mock DDFSanitizer sanitizer;
-    @Mock DDFPartitioner partitioner;
-    @Mock DDFTranslator translator;
+    @Mock
+    ECCollector collector;
+    @Mock
+    ECSanitizer sanitizer;
+    @Mock
+    ECPartitioner partitioner;
+    @Mock
+    ECTranslator translator;
 
     @InjectMocks DockerfileGenerator generator;
 

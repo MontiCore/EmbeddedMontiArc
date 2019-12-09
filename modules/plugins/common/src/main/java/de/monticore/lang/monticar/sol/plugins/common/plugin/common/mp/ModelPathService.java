@@ -6,6 +6,8 @@ package de.monticore.lang.monticar.sol.plugins.common.plugin.common.mp;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm.SolPackage;
 
+import java.util.Optional;
+
 /**
  * A service which can be used to query the ModelPath.
  */
@@ -16,4 +18,8 @@ public interface ModelPathService {
      * @return The resolved ModelPath.
      */
     ModelPath resolve(SolPackage root);
+
+    boolean isModelLocal(SolPackage root, String qualifiedName, String extension);
+
+    Optional<SolPackage> locateModel(SolPackage root, String qualifiedName, String extension);
 }

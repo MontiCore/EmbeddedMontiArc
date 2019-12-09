@@ -3,6 +3,9 @@
  */
 package de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator;
 
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import org.apache.maven.plugin.Mojo;
 import org.junit.jupiter.api.AfterEach;
@@ -28,19 +31,21 @@ public class GeneratorImplTests {
 
     @Mock NotificationService notifications;
     @Mock GeneratorPhase phase;
-    @Mock GlexContribution glex;
-    @Mock GeneratorSetupContribution setup;
+    @Mock GlexContribution glexContribution;
+    @Mock GeneratorSetupContribution setupContribution;
     @Mock Mojo plugin;
+    @Mock GeneratorSetup setup;
+    @Mock GeneratorEngine engine;
 
     GeneratorImpl generator;
 
     @BeforeEach
     void before() {
         phases.add(phase);
-        glexes.add(glex);
-        setups.add(setup);
+        glexes.add(glexContribution);
+        setups.add(setupContribution);
 
-        generator = new GeneratorImpl(notifications, phases, glexes, setups);
+        generator = new GeneratorImpl(notifications, engine, setup, phases, glexes, setups);
     }
 
     @AfterEach
@@ -57,10 +62,14 @@ public class GeneratorImplTests {
 
     @Test
     void testConfigure() throws Exception {
+        GlobalExtensionManagement glex = mock(GlobalExtensionManagement.class);
+
+        when(setup.getGlex()).thenReturn(glex);
+
         generator.configure();
 
-        verify(setup).setup(generator.setup);
-        verify(glex).defineGlobalVars(generator.setup.getGlex());
+        verify(setupContribution).setup(generator.setup);
+        verify(glexContribution).defineGlobalVars(generator.setup.getGlex());
         verify(phase).configure();
     }
 
@@ -90,10 +99,13 @@ public class GeneratorImplTests {
 
     @Test
     void testOnPluginConfigure() throws Exception {
+        GlobalExtensionManagement glex = mock(GlobalExtensionManagement.class);
+
+        when(setup.getGlex()).thenReturn(glex);
         generator.onPluginConfigure(plugin);
 
-        verify(setup).setup(generator.setup);
-        verify(glex).defineGlobalVars(generator.setup.getGlex());
+        verify(setupContribution).setup(generator.setup);
+        verify(glexContribution).defineGlobalVars(setup.getGlex());
         verify(phase).configure();
     }
 

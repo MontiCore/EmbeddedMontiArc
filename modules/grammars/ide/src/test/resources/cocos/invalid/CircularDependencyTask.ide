@@ -1,0 +1,9 @@
+package invalid
+
+typedef configuration CircularDependencyTask {
+    label "Some Configuration"
+
+    frontend task main depends peer1
+    backend task peer1 depends peer2
+    backend task peer2 depends main
+}

@@ -15,7 +15,10 @@ async function execute() {
 
     modules.forEach(module => container.load(module.default));
 
-    return container.get<Application>(Application).render();
+    const application = container.get<Application>(Application);
+
+    application.setLogo(require("../../build/logo.png"));
+    return application.render();
 }
 
 execute().catch(error => console.error(error));

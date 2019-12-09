@@ -8,6 +8,7 @@ import com.google.inject.assistedinject.AssistedInject;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.hc.HandCodeRegistry;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.variable.TemplateVariableService;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,15 +18,17 @@ public class TemplateImpl implements Template {
     protected final String templatePath;
     protected final String outputPath;
     protected final String suffix;
+    protected final Object[] arguments;
     protected final TemplateVariableService resolver;
     protected final HandCodeRegistry peerRegistry;
 
     @AssistedInject
     public TemplateImpl(@Assisted("templatePath") String templatePath, @Assisted("outputPath") String outputPath,
-                        @Assisted("suffix") String suffix, TemplateVariableService resolver,
-                        HandCodeRegistry peerRegistry) {
+                        @Assisted("suffix") String suffix, @Assisted("arguments") Object[] arguments,
+                        TemplateVariableService resolver, HandCodeRegistry peerRegistry) {
         this.templatePath = templatePath;
         this.outputPath = outputPath;
+        this.arguments = ArrayUtils.add(arguments, 0, this);
         this.resolver = resolver;
         this.peerRegistry = peerRegistry;
         this.suffix = suffix;
@@ -33,9 +36,11 @@ public class TemplateImpl implements Template {
 
     @AssistedInject
     public TemplateImpl(@Assisted("templatePath") String templatePath, @Assisted("outputPath") String outputPath,
-                        TemplateVariableService resolver, HandCodeRegistry peerRegistry) {
+                        @Assisted("arguments") Object[] arguments,TemplateVariableService resolver,
+                        HandCodeRegistry peerRegistry) {
         this.templatePath = templatePath;
         this.outputPath = outputPath;
+        this.arguments = ArrayUtils.add(arguments, 0, this);
         this.resolver = resolver;
         this.peerRegistry = peerRegistry;
         this.suffix = "";
@@ -65,6 +70,11 @@ public class TemplateImpl implements Template {
         Predicate<Path> predicate = path -> path.equals(this.getOutputPath());
 
         return this.peerRegistry.getHandCodes().stream().anyMatch(predicate);
+    }
+
+    @Override
+    public Object[] getArguments() {
+        return this.arguments;
     }
 
     @Override

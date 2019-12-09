@@ -11,7 +11,8 @@ public interface TemplateFactory {
      * @param outputPath The relative path to which the filled template should be generated to.
      * @return A configured template.
      */
-    Template create(@Assisted("templatePath") String templatePath, @Assisted("outputPath") String outputPath);
+    Template create(@Assisted("templatePath") String templatePath, @Assisted("outputPath") String outputPath,
+                    @Assisted("arguments") Object ...arguments);
 
     /**
      * @param templatePath The relative path to the template file.
@@ -20,5 +21,5 @@ public interface TemplateFactory {
      * @return A configured template.
      */
     Template create(@Assisted("templatePath") String templatePath, @Assisted("outputPath") String outputPath,
-                    @Assisted("suffix") String suffix);
+                    @Assisted("suffix") String suffix, @Assisted("arguments") Object ...arguments);
 }
