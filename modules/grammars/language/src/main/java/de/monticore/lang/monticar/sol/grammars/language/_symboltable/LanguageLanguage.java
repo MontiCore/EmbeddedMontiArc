@@ -5,14 +5,13 @@ package de.monticore.lang.monticar.sol.grammars.language._symboltable;
 
 import com.google.inject.Singleton;
 import de.monticore.ast.ASTNode;
-import de.monticore.lang.monticar.sol.grammars.options._symboltable.OptionPropResolvingFilter;
-import de.monticore.lang.monticar.sol.grammars.options._symboltable.OptionResolvingFilter;
+import de.monticore.lang.monticar.sol.grammars.option._symboltable.OptionResolvingFilter;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 
 @Singleton
 public class LanguageLanguage extends LanguageLanguageTOP {
     public LanguageLanguage() {
-        this("LanguageDescription", "ld");
+        this("Language Contribution", "lc");
     }
 
     protected LanguageLanguage(String langName, String fileEnding) {
@@ -28,7 +27,6 @@ public class LanguageLanguage extends LanguageLanguageTOP {
     protected void initResolvingFilters() {
         super.initResolvingFilters();
 
-        this.addResolvingFilter(new OptionPropResolvingFilter());
         this.addResolvingFilter(new OptionResolvingFilter());
     }
 }

@@ -6,27 +6,14 @@ package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTDockerfile;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTDockerfileCoCo;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import de.monticore.lang.monticar.sol.grammars.environment._symboltable.DockerfileSymbol;
 
 /**
  * This context condition checks whether a Non-Component Dockerfile is imported.
  */
-public class ImportComponentCoCo implements EnvironmentASTDockerfileCoCo, EnvironmentCoCo {
-    @Override
-    public String getErrorCode() {
-        return "ENV0008";
-    }
-
-    @Override
-    public String getErrorMessage(Object... parameters) {
-        List<Object> parameterList = new ArrayList<>(Arrays.asList(parameters));
-
-        parameterList.add(0, this.getErrorCode());
-        return String.format("%s '%s' is not a Component Dockerfile and should therefore not be imported.", parameterList.toArray());
+public class ImportComponentCoCo extends CommonEnvironmentCoCo implements EnvironmentASTDockerfileCoCo {
+    public ImportComponentCoCo() {
+        super("ENV0008", "'%s' is not a Component Dockerfile and should therefore not be imported.");
     }
 
     @Override
@@ -36,14 +23,12 @@ public class ImportComponentCoCo implements EnvironmentASTDockerfileCoCo, Enviro
 
     @Override
     public void check(ASTDockerfile node) {
-        node.getDockerfileSymbolOpt().ifPresent(symbol -> {
-            symbol.getComponentSymbols().forEach(component -> {
-                if (!component.isComponent()) {
-                    ASTDockerfile componentNode = component.getDockerfileNode().orElse(node);
+        node.getDockerfileSymbolOpt().ifPresent(this::check);
+    }
 
-                    Log.warn(this.getErrorMessage(component.getFullName()), componentNode.get_SourcePositionStart());
-                }
-            });
+    protected void check(DockerfileSymbol symbol) {
+        symbol.getComponentSymbols().forEach(component -> {
+            if (!component.isComponent()) this.error(symbol, symbol.getName());
         });
     }
 }

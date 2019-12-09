@@ -1,0 +1,6 @@
+package invalid
+
+tool RequiredAttributesTool {
+    artifact SOME_RESOURCE {
+    }
+}

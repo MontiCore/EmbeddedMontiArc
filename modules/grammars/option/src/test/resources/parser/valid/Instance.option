@@ -1,0 +1,21 @@
+/*
+ * Ports
+ */
+option ports: List {
+    label "Add Port"
+
+    option direction: String {
+        label "Direction"
+        required true
+    }
+
+    option type: String {
+        label "Type"
+        required true
+    }
+
+    option name: String {
+        label "Name"
+        required true
+    }
+}

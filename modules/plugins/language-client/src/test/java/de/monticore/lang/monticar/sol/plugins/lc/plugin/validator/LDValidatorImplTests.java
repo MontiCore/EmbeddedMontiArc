@@ -56,6 +56,7 @@ public class LDValidatorImplTests {
 
         solPackage = mock(SolPackage.class);
 
+        // Log.initDEBUG();
         Log.enableFailQuick(false);
         Log.getFindings().clear();
 

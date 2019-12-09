@@ -25,4 +25,9 @@ public interface Template {
      * @return True if the template has a handwritten peer, false otherwise.
      */
     boolean hasHandwrittenPeer();
+
+    /**
+     * @return Arguments to be passed to the GeneratorEngine.
+     */
+    Object[] getArguments();
 }

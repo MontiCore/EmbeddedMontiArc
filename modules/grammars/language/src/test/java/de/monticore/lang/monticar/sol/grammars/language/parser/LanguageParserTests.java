@@ -28,8 +28,8 @@ public class LanguageParserTests {
 
     @Test
     void testParseString() throws IOException {
-        File validFile = Paths.get("src/test/resources/parser/Valid.ld").toFile();
-        File invalidFile = Paths.get("src/test/resources/parser/Invalid.ld").toFile();
+        File validFile = Paths.get("src/test/resources/parser/Valid.lc").toFile();
+        File invalidFile = Paths.get("src/test/resources/parser/Invalid.lc").toFile();
         String validContent = FileUtils.readFileToString(validFile, StandardCharsets.UTF_8);
         String invalidContent = FileUtils.readFileToString(invalidFile, StandardCharsets.UTF_8);
 

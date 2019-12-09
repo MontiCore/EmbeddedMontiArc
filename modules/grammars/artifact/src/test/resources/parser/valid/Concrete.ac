@@ -1,0 +1,24 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package parser
+
+import parser.Invalid
+import parser.Imaginary
+
+tool Concrete {
+     prefix "java -jar"
+     alias CONCRETE in ENV
+     path "some/imaginary/path" resolved from CWD
+     environment Imaginary
+
+     artifact html {
+         alias HTMLFile in ENV
+         path "some/imaginary/path" resolved from ROOT
+     }
+
+     artifact css {
+         alias CSSFile in ENV
+         path "some/imaginary/path" resolved from PARENT
+     }
+}

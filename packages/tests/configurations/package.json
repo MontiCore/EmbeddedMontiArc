@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "name": "@embeddedmontiarc/sol-tests-configurations",
+  "version": "2019.6.25-SNAPSHOT",
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-runtime-configurations": "^2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-artifact": "^2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-tests-artifact": "^2019.6.25-SNAPSHOT",
+    "@theia/core": "latest",
+    "inversify": "^4.14.0"
+  },
+  "devDependencies": {
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/configurations-frontend-module",
+      "backend": "lib/node/configurations-backend-module"
+    }
+  ]
+}

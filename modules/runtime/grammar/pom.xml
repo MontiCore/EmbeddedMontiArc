@@ -49,6 +49,11 @@
             <artifactId>monticore-runtime</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>de.se_rwth.commons</groupId>
+            <artifactId>se-commons-logging</artifactId>
+        </dependency>
+
         <!-- .. Test Libraries ................................................ -->
 
         <dependency>

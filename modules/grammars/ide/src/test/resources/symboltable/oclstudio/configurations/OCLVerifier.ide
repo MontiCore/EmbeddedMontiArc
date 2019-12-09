@@ -1,0 +1,19 @@
+package oclstudio.configurations
+
+typedef configuration OCLVerifier {
+    label "OCL Verifier"
+    icon "some-imaginary-class"
+    category "OCL"
+
+    option model: String {
+        label "Model"
+        required true
+    }
+
+    option modelRoot: Path {
+        label "Model Path"
+        required true
+    }
+
+    backend task Main
+}

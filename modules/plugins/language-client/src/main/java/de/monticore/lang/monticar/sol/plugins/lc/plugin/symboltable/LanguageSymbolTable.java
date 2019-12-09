@@ -4,6 +4,7 @@
 package de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable;
 
 import de.monticore.lang.monticar.sol.grammars.language._ast.ASTLanguageCompilationUnit;
+import de.monticore.lang.monticar.sol.grammars.language._symboltable.LanguageSymbol;
 
 import java.util.Optional;
 
@@ -16,4 +17,6 @@ public interface LanguageSymbolTable {
      * @return The node of the root model's compilation unit.
      */
     Optional<ASTLanguageCompilationUnit> getRootNode();
+
+    Optional<LanguageSymbol> getRootSymbol();
 }

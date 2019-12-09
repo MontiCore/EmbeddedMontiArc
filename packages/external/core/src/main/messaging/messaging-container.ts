@@ -14,7 +14,7 @@ type ServiceIdentifier<T> = string | symbol | Newable<T> | Abstract<T>;
  * These functions have been inspired by Theia's ConnectionContainerModule.
  */
 
-export function bindFrontendService<T>(bind: Bind, path: string, serviceIdentifier: ServiceIdentifier<T>) {
+export function bindFrontendService<T extends object>(bind: Bind, path: string, serviceIdentifier: ServiceIdentifier<T>) {
     const factory = new RPCProxyFactory();
     const service = factory.createProxy();
 
@@ -26,7 +26,7 @@ export function bindFrontendService<T>(bind: Bind, path: string, serviceIdentifi
     bind(serviceIdentifier).toConstantValue(service);
 }
 
-export function bindBackendService<T>(bind: Bind, path: string, serviceIdentifier: ServiceIdentifier<T>) {
+export function bindBackendService<T extends object>(bind: Bind, path: string, serviceIdentifier: ServiceIdentifier<T>) {
     bind(ConnectionHandler).toDynamicValue(ctx =>
         new RPCConnectionHandler(
             path,

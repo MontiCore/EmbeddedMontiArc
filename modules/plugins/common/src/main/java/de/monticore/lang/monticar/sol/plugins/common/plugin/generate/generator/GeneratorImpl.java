@@ -24,13 +24,12 @@ public class GeneratorImpl implements Generator, PluginContribution {
     protected final GeneratorSetup setup;
 
     @Inject
-    protected GeneratorImpl(
-            NotificationService notifications, List<GeneratorPhase> phases, Set<GlexContribution> glexContributions,
-            Set<GeneratorSetupContribution> setupContributions
-    ) {
+    protected GeneratorImpl(NotificationService notifications, GeneratorEngine engine, GeneratorSetup setup,
+                            List<GeneratorPhase> phases, Set<GlexContribution> glexContributions,
+                            Set<GeneratorSetupContribution> setupContributions) {
         this.notifications = notifications;
-        this.setup = new GeneratorSetup();
-        this.engine = new GeneratorEngine(this.setup);
+        this.setup = setup;
+        this.engine = engine;
         this.phases = phases;
         this.glexContributions = glexContributions;
         this.setupContributions = setupContributions;

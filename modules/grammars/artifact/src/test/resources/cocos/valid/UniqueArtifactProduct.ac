@@ -1,0 +1,7 @@
+package valid
+
+product UniqueResourceProduct {
+    artifact SOME_RESOURCE {
+        path "some/other/awesome/path" resolved from CWD
+    }
+}

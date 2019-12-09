@@ -1,0 +1,9 @@
+package valid
+
+product RequiredAttributesProduct {
+    path "some/awesome/path" resolved from CWD
+
+    artifact SOME_RESOURCE {
+        path "some/awesome/path" resolved from CWD
+    }
+}

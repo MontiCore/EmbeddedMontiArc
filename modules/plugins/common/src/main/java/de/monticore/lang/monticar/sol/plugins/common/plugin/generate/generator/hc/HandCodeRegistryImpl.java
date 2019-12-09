@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -46,7 +47,7 @@ public class HandCodeRegistryImpl implements HandCodeRegistry, PluginContributio
         Predicate<File> predicate = handCodedPath -> handCodedPath.exists() && handCodedPath.isDirectory();
         Function<File, Collection<Path>> mapping = handCodedPath -> {
             Collection<File> handCodes = FileUtils.listFiles(handCodedPath, null, true);
-            Function<Path, Path> relativize = path -> handCodedPath.toPath().relativize(path);
+            UnaryOperator<Path> relativize = path -> handCodedPath.toPath().relativize(path);
 
             return handCodes.stream().map(File::toPath).map(relativize).collect(Collectors.toList());
         };

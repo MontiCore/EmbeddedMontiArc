@@ -16,7 +16,7 @@ const Content = styled.div`
 
 const ProgressContainer = styled.div`
     flex:1;
-    background-color:#FFF;
+    position:relative;
 `;
 
 export class Preparations extends PureComponent {

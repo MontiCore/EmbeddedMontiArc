@@ -1,0 +1,138 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package de.monticore.lang.monticar.sol.grammars;
+
+/**
+ * This grammar describes the artifact contribution language used to control the generation of artifacts which make
+ * artifacts known to the IDE.
+ */
+grammar Artifact extends de.monticore.MCBasics, de.monticore.MCLiterals, de.monticore.lang.monticar.sol.grammars.Common {
+    // =========================================
+    // INTERFACE DEFINITIONS
+    // =========================================
+
+    /**
+     * A common interface implemented by all elements which might appear in the body of a tool definition.
+     */
+    interface ToolElement;
+
+    /**
+     * A common interface implemented by all elements which might appear in the body of a product definition.
+     */
+    interface ProductElement;
+
+    /**
+     * A common interface implemented by all elements which might appear in the body of an artifact definition.
+     */
+    interface ArtifactElement;
+
+    // =========================================
+    // PARSER RULES
+    // =========================================
+
+    /**
+     * The start production for the system contribution language.
+     */
+    ArtifactCompilationUnit =
+        package:PackageStatement
+        import:ImportStatement*
+        (Tool | Product | Artifact)
+    ;
+
+    start ArtifactCompilationUnit;
+
+    /**
+     * This production represents the definition of a (virtual) tool.
+     */
+    symbol scope Tool =
+        ["virtual"]? "tool" Name "{" element:ToolElement* "}"
+    ;
+
+    /**
+     * This production represents the definition of product.
+     */
+    symbol scope Product =
+        "product" Name "{" element:ProductElement* "}"
+    ;
+
+    /**
+     * This production represents the definition of an artifact.
+     */
+    symbol scope Artifact implements ToolElement, ProductElement =
+        "artifact" Name "{" element:ArtifactElement* "}"
+    ;
+
+    /**
+     * This production represents the local path of a tool, product, or artifact.
+     */
+    Path implements ToolElement, ProductElement, ArtifactElement =
+        "path" path:ProjectPath
+    ;
+
+    /**
+     * This production represents a prefix to be appended to the artifact path in order to execute the tool.
+     */
+    Command implements ToolElement =
+        ("prefix" prefix:StringLiteral) | ("suffix" suffix:StringLiteral) | ("command" command:StringLiteral)
+    ;
+
+    /**
+     * This production represents the environment in which the tool / product should be operating.
+     */
+    Environment implements ToolElement, ProductElement =
+        "environment" identifier:Name
+    ;
+
+    /**
+     * This production represents an alias pointing to the effective path to be created in the environmental variables.
+     */
+    Alias implements ToolElement, ProductElement, ArtifactElement =
+        "alias" identifier:Name "in" "ENV"
+    ;
+
+    /**
+     * This production represents the languages with which the tool / product are working with.
+     */
+    Language implements ToolElement, ProductElement =
+        ("language" language:Name) | ("languages" "[" language:(Name || ",")+ "]")
+    ;
+
+    // =========================================
+    // LEXER RULES
+    // =========================================
+
+    // =========================================
+    // AST DEFINITIONS
+    // =========================================
+
+    ast ArtifactCompilationUnit =
+        method public java.util.List<String> getPackageList() {
+            return this.getPackage().getPackageList();
+        }
+    ;
+
+    ast Path =
+        method public de.monticore.lang.monticar.sol.grammars.common._ast.CommonLiterals getOrigin() {
+            return this.getPath().getOriginValue();
+        }
+
+        method public String getRelativePath() {
+            return this.getPath().getPathValue();
+        }
+    ;
+
+    ast Command =
+        method public String getCommandValue() {
+            return this.getCommand().getValue();
+        }
+
+        method public String getPrefixValue() {
+            return this.getPrefix().getValue();
+        }
+
+        method public String getSuffixValue() {
+            return this.getSuffix().getValue();
+        }
+    ;
+}

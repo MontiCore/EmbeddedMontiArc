@@ -15,8 +15,9 @@ public interface TemplateRegistry {
      * A method which can be used to register a template.
      * @param templatePath The relative path to the template to be registered.
      * @param outputPath The relative path where the output file should be generated to.
+     * @param arguments Arguments to be passed to the Generator Engine.
      */
-    void registerTemplate(String templatePath, String outputPath);
+    void registerTemplate(String templatePath, String outputPath, Object ...arguments);
 
     /**
      * Sets the root directory of the templates.

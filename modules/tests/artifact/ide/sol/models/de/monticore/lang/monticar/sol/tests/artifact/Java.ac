@@ -1,0 +1,5 @@
+package de.monticore.lang.monticar.sol.tests.artifact
+
+virtual tool Java {
+    command "java"
+}

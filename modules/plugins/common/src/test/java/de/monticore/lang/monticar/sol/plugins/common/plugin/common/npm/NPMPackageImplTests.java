@@ -55,13 +55,8 @@ public class NPMPackageImplTests {
     }
 
     @Test
-    void testHasAttribute() {
-        assertTrue(getPackage().hasAttribute("name"), "Package should have a name.");
-    }
-
-    @Test
-    void testGetAttribute() {
-        assertEquals("dummy", getPackage().getAttribute("name"), "Names do not match.");
+    void testQuery() {
+        assertEquals("dummy", getPackage().query("/name").orElse("unknown"), "Names do not match.");
     }
 
     @Test

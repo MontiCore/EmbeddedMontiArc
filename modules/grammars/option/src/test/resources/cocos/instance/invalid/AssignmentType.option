@@ -1,0 +1,3 @@
+option propTypeCoCo: String {
+    label true
+}

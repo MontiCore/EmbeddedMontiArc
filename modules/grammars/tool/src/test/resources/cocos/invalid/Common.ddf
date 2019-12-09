@@ -1,5 +1,0 @@
-PACKAGE invalid
-
-COMPONENT DOCKERFILE Common
-
-RUN "Something To Run"

@@ -42,6 +42,12 @@
 
         <!-- .. Modules ................................................... -->
 
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>grammar-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- .. Libraries ................................................. -->
 
         <dependency>

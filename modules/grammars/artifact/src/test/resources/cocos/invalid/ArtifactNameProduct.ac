@@ -1,0 +1,5 @@
+package invalid
+
+product artifactNameProduct {
+    path "some/awesome/path" resolved from CWD
+}

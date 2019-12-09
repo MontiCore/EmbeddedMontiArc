@@ -11,15 +11,15 @@
     "watch": "tsc -p compile.tsconfig.json -w"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-components": "2019.6.25-SNAPSHOT",
-    "@embeddedmontiarc/sol-runtime-modules": "2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-core": "2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-options": "2019.6.25-SNAPSHOT",
     "@theia/core": "latest",
     "@theia/filesystem": "latest",
     "@theia/navigator": "latest",
     "@theia/workspace": "latest",
     "inversify": "^4.14.0",
     "nunjucks": "^3.2.0",
-    "fs-extra": "^7.0.1"
+    "fs-extra": "^8.1.0"
   },
   "devDependencies": {
     "@types/nunjucks": "^3.1.1"

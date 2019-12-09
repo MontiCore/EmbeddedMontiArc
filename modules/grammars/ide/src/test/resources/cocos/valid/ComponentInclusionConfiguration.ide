@@ -1,0 +1,5 @@
+package invalid
+
+typedef configuration ComponentInclusionConfiguration {
+    backend task main
+}

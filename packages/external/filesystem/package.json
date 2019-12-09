@@ -13,5 +13,12 @@
     "inversify": "^4.14.0"
   },
   "devDependencies": {},
-  "theiaExtensions": []
+  "theiaExtensions": [],
+  "sol": {
+    "extensions": [
+      {
+        "main": "lib/main/filesystem-main-module"
+      }
+    ]
+  }
 }

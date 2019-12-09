@@ -26,9 +26,10 @@ public abstract class AbstractTemplateGeneratorPhase implements GeneratorPhase {
         for (Template template : this.registry.getTemplates()) {
             Path outputPath = template.hasHandwrittenPeer() ?
                     template.getTopPatternOutputPath() : template.getOutputPath();
+            Object[] arguments = template.getArguments();
 
-            this.notifications.info("Generating from Template %s to %s.", template, outputPath);
-            engine.generateNoA(template.getTemplatePath(), outputPath, template);
+            this.notifications.info("Generating from Template %s to %s.", template, outputPath, arguments);
+            engine.generateNoA(template.getTemplatePath(), outputPath, arguments);
         }
     }
 }

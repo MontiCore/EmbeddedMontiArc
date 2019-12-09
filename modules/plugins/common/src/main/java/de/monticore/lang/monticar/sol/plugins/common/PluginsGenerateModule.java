@@ -5,17 +5,22 @@ package de.monticore.lang.monticar.sol.plugins.common;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.PluginContribution;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.AbstractGeneratePlugin;
-import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.Generator;
-import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GeneratorImpl;
-import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GeneratorPhase;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.*;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.hc.HandCodeRegistry;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.hc.HandCodeRegistryImpl;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.printer.CommonPrinter;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.printer.CommonPrinterImpl;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.*;
-import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.variable.*;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.variable.TemplateVariableService;
+import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.variable.TemplateVariableServiceImpl;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,10 +48,13 @@ public class PluginsGenerateModule extends AbstractModule {
         bind(HandCodeRegistry.class).to(HandCodeRegistryImpl.class);
         bind(TemplateRegistry.class).to(TemplateRegistryImpl.class);
         bind(TemplateVariableService.class).to(TemplateVariableServiceImpl.class);
+        bind(CommonMethodDelegator.class).to(CommonMethodDelegatorImpl.class);
+        bind(CommonPrinter.class).to(CommonPrinterImpl.class);
     }
 
     private void addMultiBindings() {
         this.addPluginContributions();
+        this.addGlexContributions();
     }
 
     private void installModules() {
@@ -62,6 +70,12 @@ public class PluginsGenerateModule extends AbstractModule {
         contributions.addBinding().to(TemplateRegistryImpl.class);
     }
 
+    private void addGlexContributions() {
+        Multibinder<GlexContribution> contributions = Multibinder.newSetBinder(binder(), GlexContribution.class);
+
+        contributions.addBinding().to(CommonGlex.class);
+    }
+
     @Provides
     protected List<GeneratorPhase> provideSortedGeneratorPhases(Set<GeneratorPhase> phases) {
         Comparator<GeneratorPhase> comparator = Comparator.comparingInt(GeneratorPhase::getPriority);
@@ -70,5 +84,24 @@ public class PluginsGenerateModule extends AbstractModule {
         Collections.reverse(sortedPhases);
 
         return sortedPhases;
+    }
+
+    @Provides @Singleton
+    protected GlobalExtensionManagement provideGlobalExtensionManagement() {
+        return new GlobalExtensionManagement();
+    }
+
+    @Provides @Singleton
+    protected GeneratorSetup provideGeneratorSetup(GlobalExtensionManagement glex) {
+        GeneratorSetup setup = new GeneratorSetup();
+
+        setup.setGlex(glex);
+
+        return setup;
+    }
+
+    @Provides @Singleton
+    protected GeneratorEngine provideGeneratorEngine(GeneratorSetup setup) {
+        return new GeneratorEngine(setup);
     }
 }

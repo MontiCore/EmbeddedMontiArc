@@ -1,0 +1,4 @@
+option noDuplicatePropCoCo: String {
+    label "A Label"
+    required true
+}

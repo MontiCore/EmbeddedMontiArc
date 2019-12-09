@@ -4,22 +4,6 @@
 package de.monticore.lang.monticar.sol.grammars.environment.cocos;
 
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
+import de.monticore.lang.monticar.sol.runtime.grammar.cocos.CoCo;
 
-public interface EnvironmentCoCo {
-    /**
-     * @return The error code used by this context condition.
-     */
-    String getErrorCode();
-
-    /**
-     * @param parameters Additional parameters to be used in the construction of the error message.
-     * @return The message to be added to the Log.
-     */
-    String getErrorMessage(Object ...parameters);
-
-    /**
-     * This method will be called in order to register a context condition to a checker.
-     * @param checker The EnvironmentCoCoChecker to which the context condition will be registered.
-     */
-    void registerTo(EnvironmentCoCoChecker checker);
-}
+public interface EnvironmentCoCo extends CoCo<EnvironmentCoCoChecker> {}

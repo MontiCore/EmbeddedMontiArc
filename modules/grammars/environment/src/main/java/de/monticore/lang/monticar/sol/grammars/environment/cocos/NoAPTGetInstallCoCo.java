@@ -10,22 +10,15 @@ import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentAST
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
 import de.monticore.lang.monticar.sol.grammars.environment._visitor.EnvironmentVisitor;
 import de.monticore.mcliterals._ast.ASTStringLiteral;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
 
 /**
  *  This context condition checks whether RUN "apt-get install" is used instead of INSTALL.
  */
-public class NoAPTGetInstallCoCo implements EnvironmentCoCo, EnvironmentASTRunCoCo, EnvironmentVisitor {
-    @Override
-    public String getErrorCode() {
-        return "ENV0001";
-    }
-
-    @Override
-    public String getErrorMessage(Object ...parameters) {
-        return String.format("%s Please use 'INSTALL <package> [,<package>]' instead of 'RUN apt-get install'.", this.getErrorCode());
+public class NoAPTGetInstallCoCo extends CommonEnvironmentCoCo implements EnvironmentASTRunCoCo, EnvironmentVisitor {
+    public NoAPTGetInstallCoCo() {
+        super("ENV0001", "Please use 'INSTALL <package> [,<package>]' instead of 'RUN apt-get install'.");
     }
 
     @Override
@@ -41,7 +34,7 @@ public class NoAPTGetInstallCoCo implements EnvironmentCoCo, EnvironmentASTRunCo
     @Override
     public void visit(ASTCommandOrSplitCommand node) {
         node.getCommandOpt().ifPresent(command -> {
-            if (this.violatesCommand(command)) Log.warn(this.getErrorMessage(), node.get_SourcePositionStart());
+            if (this.violatesCommand(command)) this.error(node);
         });
     }
 
@@ -49,7 +42,7 @@ public class NoAPTGetInstallCoCo implements EnvironmentCoCo, EnvironmentASTRunCo
     public void visit(ASTSplitCommand node) {
         boolean violation = this.violatesExecutableParameters(node.getExecutable(), node.getParameterList());
 
-        if (violation) Log.warn(this.getErrorMessage(), node.get_SourcePositionStart());
+        if (violation) this.error(node);
     }
 
     protected boolean violatesCommand(ASTStringLiteral command) {

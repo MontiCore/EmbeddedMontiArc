@@ -15,22 +15,17 @@
     </parent>
 
     <artifactId>tests-ide</artifactId>
+    <packaging>pom</packaging>
+
+    <!-- == PROJECT MODULES =================================================== -->
+
+    <modules>
+        <module>common</module>
+        <module>internal</module>
+        <!--<module>external</module>-->
+    </modules>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
-
-    <properties>
-
-        <!-- .. Libraries ..................................................... -->
-
-        <!-- .. Plugins ....................................................... -->
-
-        <!-- .. Classifiers ................................................... -->
-
-        <!-- .. Misc .......................................................... -->
-
-        <!-- .. Resources ..................................................... -->
-
-    </properties>
 
     <!-- == PROJECT METAINFORMATION =========================================== -->
 
@@ -38,64 +33,10 @@
 
     <!-- == PROJECT DEPENDENCIES ============================================== -->
 
-    <dependencies>
-
-        <!-- .. Modules ................................................... -->
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar.sol</groupId>
-            <artifactId>tests-language-lc</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- .. Libraries ................................................. -->
-
-        <!-- .. Language .................................................. -->
-
-        <!-- .. Test Libraries ............................................ -->
-
-    </dependencies>
-
     <!-- == PROJECT BUILD SETTINGS ============================================ -->
 
-    <build>
-        <plugins>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec-maven-plugin.version}</version>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>yarn install</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>yarn</executable>
-                            <arguments>
-                                <argument>install</argument>
-                            </arguments>
-                            <workingDirectory>${rootDir}</workingDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
-
-
-    <!-- == PROJECT REPORTING ================================================= -->
-
-    <reporting>
-        <plugins>
-
-        </plugins>
-    </reporting>
-
     <!-- == PROJECT DISTRIBUTION ============================================== -->
+
+    <!-- == DEPENDENCY & PLUGIN REPOSITORIES ================================== -->
 
 </project>

@@ -2,7 +2,8 @@
   "private": true,
   "workspaces": [
     "packages/**/*",
-    "modules/tests/**/*"
+    "modules/tests/*/*",
+    "modules/tests/*/*/*"
   ],
   "scripts": {
     "prepare": "lerna run prepare",
@@ -11,7 +12,7 @@
     "coverage": "node scripts/coverage"
   },
   "devDependencies": {
-    "fs-extra": "^7.0.1",
+    "fs-extra": "^8.1.0",
     "lerna": "^3.15.0",
     "rimraf": "^2.6.3",
     "tslint": "^5.18.0",

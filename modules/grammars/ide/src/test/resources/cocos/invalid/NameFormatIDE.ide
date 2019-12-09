@@ -1,0 +1,6 @@
+package invalid
+
+ide nameFormatIDE {
+    registry "https://hub.docker.com/some/awesome/image:latest"
+    build "some/amazing/path" resolved from ROOT
+}

@@ -2,9 +2,10 @@
  * (c) https://github.com/MontiCore/monticore
  */
 import { lazyInject } from "@embeddedmontiarc/sol-external-core/lib/common";
-import { NotificationsClientImpl, logo } from "@embeddedmontiarc/sol-external-core/lib/renderer";
+import { NotificationsClientImpl } from "@embeddedmontiarc/sol-external-core/lib/renderer";
+import { Application } from "@embeddedmontiarc/sol-external-core/lib/renderer/application";
 import { MessageClient, ProgressUpdate } from "@theia/core/lib/common/message-service-protocol";
-import { Component, ReactNode } from "react";
+import { Component, ReactNode, Fragment } from "react";
 import { bind } from "helpful-decorators";
 
 import * as React from "react";
@@ -24,6 +25,7 @@ const ProgressLogoContainer = styled.div<{ percentage: number, src: string }>`
     top:50%;
     left:50%;
     transform:translate(-50%, -50%);
+    z-index:20;
 
     &:after {
         width:${props => props.percentage}%;
@@ -40,12 +42,35 @@ const ProgressLogoContainer = styled.div<{ percentage: number, src: string }>`
     }
 `;
 
+const ProgressBackground = styled.div<{ percentage: number }>`
+    width:100%;
+    height:100%;
+    position:absolute;
+    bottom:0;
+    right:0;
+    background-color:#FFF;
+    z-index:10;
+
+    &:after {
+        width:${props => 100 - props.percentage}%;
+        filter:grayscale(1) contrast(0.5);
+        transition:width 250ms ease-out;
+        right:0;
+        content:'';
+        background-color:#FFF;
+        height:100%;
+        position:absolute;
+        z-index:15;
+    }
+`;
+
 export interface PreparationProgressState {
     update: ProgressUpdate | undefined;
 }
 
 export class PreparationProgressBase extends Component<{}, PreparationProgressState> {
     @lazyInject(MessageClient) protected readonly client: NotificationsClientImpl;
+    @lazyInject(Application) protected readonly application: Application;
 
     public constructor(props: {}) {
         super(props);
@@ -72,9 +97,22 @@ export class PreparationProgressBase extends Component<{}, PreparationProgressSt
     }
 
     public render(): ReactNode {
+        return <Fragment>
+            {this.renderProgressLogo()}
+            {this.renderProgressBackground()}
+        </Fragment>;
+    }
+
+    protected renderProgressLogo(): ReactNode {
+        const logo = this.application.getLogo();
+
         return <ProgressLogoContainer percentage={this.percentage} src={logo}>
             <ProgressLogo src={logo}/>
         </ProgressLogoContainer>;
+    }
+
+    protected renderProgressBackground(): ReactNode {
+        return <ProgressBackground percentage={this.percentage}/>;
     }
 
     @bind

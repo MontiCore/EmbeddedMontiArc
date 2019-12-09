@@ -1,0 +1,4 @@
+option supportedPropCoCo: String {
+    label "A Label"
+    required true
+}

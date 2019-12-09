@@ -3,6 +3,7 @@ image: "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/sol/bui
 
 variables:
   MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+  NODE_OPTIONS: "--max-old-space-size=4096"
 
 before_script:
   - apt-get update && apt-get install -y build-essential

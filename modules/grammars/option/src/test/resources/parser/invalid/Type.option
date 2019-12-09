@@ -1,0 +1,9 @@
+package parser.invalid
+
+typedef option Select {
+    required prop label: string;
+    required prop selection string[];
+    prop defaultValue: string;
+    composite array
+    returns string
+}

@@ -9,7 +9,7 @@ import com.google.inject.Singleton;
 import de.monticore.lang.monticar.sol.runtime.ls.converters.mc2ls.FindingToDiagnostic;
 
 @Singleton
-public class EmbeddedMontiArcMathDiagnosticsService extends EmbeddedMontiArcMathDiagnosticsServiceTop {
+public class EmbeddedMontiArcMathDiagnosticsService extends EmbeddedMontiArcMathDiagnosticsServiceTOP {
     protected final FluentLogger logger;
 
     @Inject

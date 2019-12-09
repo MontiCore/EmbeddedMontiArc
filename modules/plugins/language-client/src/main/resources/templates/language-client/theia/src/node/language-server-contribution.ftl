@@ -10,6 +10,9 @@ ${tc.signature("template")}
 <#assign grammarName = configuration.getGrammarName()>
 <#assign hasHandwrittenPeer = template.hasHandwrittenPeer()>
 <#assign serverPath = rootPackage.getDirectory("server").get()!"server">
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 import { injectable } from "inversify";
 import { AddressInfo } from "net";
 import { ${grammarName}Language } from "../common";

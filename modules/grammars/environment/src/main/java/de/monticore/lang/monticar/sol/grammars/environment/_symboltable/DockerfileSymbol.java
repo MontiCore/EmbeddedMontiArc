@@ -3,9 +3,9 @@
  */
 package de.monticore.lang.monticar.sol.grammars.environment._symboltable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import de.monticore.lang.monticar.sol.grammars.environment._ast.ASTExpose;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DockerfileSymbol extends DockerfileSymbolTOP {
@@ -40,5 +40,23 @@ public class DockerfileSymbol extends DockerfileSymbolTOP {
                 .filter(DockerfileSymbolReference::existsReferencedSymbol)
                 .map(DockerfileSymbolReference::getReferencedSymbol)
                 .collect(Collectors.toList());
+    }
+
+    public Set<Integer> getLocalPorts() {
+        return this.getDockerfileNode()
+                .map(node -> node.getInstructionList().stream()
+                        .filter(instruction -> instruction instanceof ASTExpose)
+                        .map(instruction -> (ASTExpose)instruction)
+                        .map(expose -> expose.getPort().getValue())
+                        .collect(Collectors.toSet())
+                ).orElse(new HashSet<>());
+    }
+
+    public Set<Integer> getAllPorts() {
+        Set<Integer> localPorts = this.getLocalPorts();
+        Set<Integer> allPorts = new HashSet<>(localPorts);
+
+        this.getComponentSymbols().forEach(symbol -> allPorts.addAll(symbol.getAllPorts()));
+        return allPorts;
     }
 }

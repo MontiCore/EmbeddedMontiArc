@@ -7,27 +7,13 @@ import de.monticore.lang.monticar.sol.grammars.environment._ast.*;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentASTDockerfileCoCo;
 import de.monticore.lang.monticar.sol.grammars.environment._cocos.EnvironmentCoCoChecker;
 import de.monticore.lang.monticar.sol.grammars.environment._visitor.EnvironmentVisitor;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * This context condition checks whether a blocked instruction is used in a Component Dockerfile.
  */
-public class BlockedInstructionCoCo implements EnvironmentASTDockerfileCoCo, EnvironmentCoCo, EnvironmentVisitor {
-    @Override
-    public String getErrorCode() {
-        return "ENV0007";
-    }
-
-    @Override
-    public String getErrorMessage(Object... parameters) {
-        List<Object> parameterList = new ArrayList<>(Arrays.asList(parameters));
-
-        parameterList.add(0, this.getErrorCode());
-        return String.format("%s '%s' is not allowed in Component Dockerfile.", parameterList.toArray());
+public class BlockedInstructionCoCo extends CommonEnvironmentCoCo implements EnvironmentASTDockerfileCoCo, EnvironmentVisitor {
+    public BlockedInstructionCoCo() {
+        super("ENV0007", "'%s' is not allowed in a Component Dockerfile.");
     }
 
     @Override
@@ -47,6 +33,11 @@ public class BlockedInstructionCoCo implements EnvironmentASTDockerfileCoCo, Env
         if (node.isComponent()) getRealThis().traverse(node);
 
         getRealThis().endVisit(node);
+    }
+
+    @Override
+    public void handle(ASTImport node) {
+        this.error(node, "IMPORT");
     }
 
     @Override
@@ -95,6 +86,6 @@ public class BlockedInstructionCoCo implements EnvironmentASTDockerfileCoCo, Env
     }
 
     protected void fail(ASTInstruction node) {
-        Log.warn(this.getErrorMessage(node.getType()), node.get_SourcePositionStart());
+        this.error(node, node.getType());
     }
 }

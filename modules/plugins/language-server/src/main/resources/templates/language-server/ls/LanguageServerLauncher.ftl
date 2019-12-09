@@ -4,6 +4,9 @@
 <#assign configuration = glex.getGlobalVar("configuration")>
 <#assign generatedPackage = configuration.getGrammarGeneratedPackage()>
 <#assign grammarName = configuration.getGrammarName()>
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
 package ${generatedPackage}.ls;
 
 import com.google.inject.Guice;

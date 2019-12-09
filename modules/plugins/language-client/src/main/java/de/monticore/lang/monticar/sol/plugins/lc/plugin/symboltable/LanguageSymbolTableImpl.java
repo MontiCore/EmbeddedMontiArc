@@ -6,8 +6,10 @@ package de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.monticar.sol.grammars.language._ast.ASTLanguage;
 import de.monticore.lang.monticar.sol.grammars.language._ast.ASTLanguageCompilationUnit;
 import de.monticore.lang.monticar.sol.grammars.language._symboltable.LanguageModelLoader;
+import de.monticore.lang.monticar.sol.grammars.language._symboltable.LanguageSymbol;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.PluginContribution;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.mp.ModelPathService;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
@@ -42,6 +44,13 @@ public class LanguageSymbolTableImpl implements LanguageSymbolTable, PluginContr
     @Override
     public Optional<ASTLanguageCompilationUnit> getRootNode() {
         return Optional.ofNullable(this.root);
+    }
+
+    @Override
+    public Optional<LanguageSymbol> getRootSymbol() {
+        return this.getRootNode()
+                .map(ASTLanguageCompilationUnit::getLanguage)
+                .flatMap(ASTLanguage::getLanguageSymbolOpt);
     }
 
     @Override

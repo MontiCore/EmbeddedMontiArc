@@ -7,6 +7,7 @@
 
 # Modules
 **/pom.xml
+/modules/tests/ide/external/
 
 # Packages
 /packages/**/lib/

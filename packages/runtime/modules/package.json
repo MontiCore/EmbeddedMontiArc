@@ -10,17 +10,25 @@
     "watch": "tsc -p compile.tsconfig.json -w"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-components": "2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-options": "2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-configurations": "2019.6.25-SNAPSHOT",
+    "@material-ui/core": "^4.4.0",
+    "@material-ui/icons": "^4.2.1",
+    "@material-ui/lab": "^4.0.0-alpha.32",
     "@theia/core": "latest",
     "@theia/filesystem": "latest",
     "@theia/workspace": "latest",
-    "@theia/navigator": "latest",
-    "autobind-decorator": "^2.4.0",
-    "inversify": "^4.14.0"
+    "helpful-decorators": "^2.0.5",
+    "inversify": "^4.14.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/uuid": "^3.4.5"
   },
   "theiaExtensions": [
     {
-      "frontend": "lib/browser/modules-frontend-module"
+      "frontend": "lib/browser/modules-frontend-module",
+      "backend": "lib/node/modules-backend-module"
     }
   ]
 }

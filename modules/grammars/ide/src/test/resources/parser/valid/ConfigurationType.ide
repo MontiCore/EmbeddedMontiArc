@@ -1,0 +1,25 @@
+package parser.valid
+
+import parser.valid.CNCVisualization
+
+typedef configuration CNCVisualization {
+    label "CNC Visualization"
+    icon "fa-fa-fa"
+    category "EmbeddedMontiArc"
+    tools [VisualizationEMAM, SomeOtherTool]
+
+    option someOption: SomeType {
+        label "Some Label"
+    }
+
+    option someOption2: SomeType2 {
+        label "Some Label"
+    }
+
+    configuration someConfig: CNCVisualization<-1> {
+        fill someOption with ""
+    }
+
+    frontend task main depends otherMain
+    backend task otherMain
+}

@@ -1,3 +1,0 @@
-option supportedTypeCoCo:string {
-    prop label = "A Label";
-}

@@ -2,7 +2,9 @@
  * (c) https://github.com/MontiCore/monticore
  */
 
-// tslint:disable:no-any
+import { OptionType } from "@embeddedmontiarc/sol-runtime-options/lib/common";
+
+export const TEMPLATE_VALIDATOR_TYPE: string = "template";
 
 /**
  * Represents a registered template.
@@ -19,9 +21,9 @@ export interface Template {
     readonly label: string;
 
     /**
-     * The elements which will be passed to the dynamic dialog.
+     * The options which will be passed to the dynamic dialog.
      */
-    readonly elements: any;
+    readonly options: OptionType[];
 
     /**
      * The storage location of the template.
@@ -50,8 +52,10 @@ export interface TemplatesServer {
     getTemplates(): Promise<Template[]>;
 
     /**
-     * Resolves the content of the template registered under the given id.
+     * Renders an instance of the template registered under the given id to a given destination.
      * @param id The id of the template whose content should be resolved.
+     * @param destination The destination URI to which a instance of the template should be rendered to.
+     * @param options The options to be passed as context to the template engine.
      */
-    resolveTemplateContent(id: string): Promise<string>;
+    renderTo(id: string, destination: string, options: object): Promise<void>;
 }

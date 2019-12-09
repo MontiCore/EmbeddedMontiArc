@@ -13,7 +13,7 @@ import * as EventEmitter from "eventemitter3";
 /*
  * This class has been inspired by Theia's JsonRpcProxyFactory.
  */
-export class RPCProxyFactory<Server extends object, Client extends object> extends EventEmitter implements ProxyHandler<Client> {
+export class RPCProxyFactory<Server extends object, Client extends object = any> extends EventEmitter implements ProxyHandler<Client> {
     protected node: Deferred<RPCNode>;
     protected target: Server | undefined;
 

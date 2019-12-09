@@ -1,0 +1,11 @@
+package invalid
+
+typedef module WriteModule {
+    label "Some Label"
+
+    module someModule: CommonModule
+    module someOtherModule: CommonModule
+
+    write someModule to "someModule"
+    write someOtherModule to "someModule"
+}

@@ -4,7 +4,6 @@
 package de.monticore.lang.monticar.sol.plugins.ls.plugin.generator;
 
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.template.TemplateRegistry;
-import de.monticore.lang.monticar.sol.plugins.ls.plugin.generator.LanguageServerTemplates;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,7 +22,7 @@ public class LanguageServerTemplatesTests {
         templates.registerTemplates(registry);
 
         verify(registry).setTemplateRoot("templates/language-server");
-        verify(registry).setTopPatternSuffix("Top");
+        verify(registry).setTopPatternSuffix("TOP");
 
         verify(registry).registerTemplate(
                 "ls/LanguageServerLauncher.ftl",
