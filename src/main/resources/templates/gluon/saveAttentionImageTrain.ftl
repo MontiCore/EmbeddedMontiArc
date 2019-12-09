@@ -1,4 +1,6 @@
                     if save_attention_image == "True":
+                        import matplotlib
+                        matplotlib.use('Agg')
                         import matplotlib.pyplot as plt
                         logging.getLogger('matplotlib').setLevel(logging.ERROR)
 
