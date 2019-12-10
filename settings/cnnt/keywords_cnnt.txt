@@ -1,6 +1,7 @@
 configuration
 num_epoch
 normalize
+context
 batch_size
 load_checkpoint
 optimizer
