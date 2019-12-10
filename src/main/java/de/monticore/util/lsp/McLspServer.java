@@ -91,7 +91,7 @@ public abstract class McLspServer implements LanguageServer, LanguageClientAware
         System.exit(0);
     }
 
-    public abstract MontiCoreDocumentService getTextDocumentService();
+    public abstract ClientAwareTextDocumentService getTextDocumentService();
 
     public WorkspaceService getWorkspaceService() {
         return new WorkspaceService() {
