@@ -1,4 +1,4 @@
-package de.monticore.lang.embeddedmontiarc.embeddedmontiarccnntrainlang.lsp;
+package de.monticore.lang.embeddedmontiarc.cnntrainlang.lsp;
 import de.monticore.util.lsp.McLspServer;
 import de.monticore.util.lsp.MontiCoreDocumentService;
 

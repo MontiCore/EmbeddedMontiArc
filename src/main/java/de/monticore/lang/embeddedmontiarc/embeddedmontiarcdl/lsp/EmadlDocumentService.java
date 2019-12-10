@@ -4,15 +4,12 @@ import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
@@ -74,7 +71,6 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
         .stream().findFirst().get();
     }
 
-    // TODO correct input for EMADLCocos
     @Override
     protected void doCheckSymbolCoCos(Path sourcePath, EMAComponentSymbol sym) {
         EMADLCocos checker = new EMADLCocos();
@@ -117,11 +113,7 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
     protected ModelingLanguageFamily getModelingLanguageFamily() {
         if(modelFamily == null) {
             modelFamily = new ModelingLanguageFamily();
-
-            modelFamily.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
             modelFamily.addModelingLanguage(new EMADLLanguage());
-            modelFamily.addModelingLanguage(new CNNArchLanguage());
-
             modelFamily.addModelingLanguage(new StreamUnitsLanguage());
             modelFamily.addModelingLanguage(new StructLanguage());
             modelFamily.addModelingLanguage(new EnumLangLanguage());

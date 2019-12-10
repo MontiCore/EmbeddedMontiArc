@@ -1,20 +1,15 @@
-package de.monticore.lang.embeddedmontiarc.embeddedmontiarccnntrainlang.lsp;
+package de.monticore.lang.embeddedmontiarc.cnntrainlang.lsp;
 
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainCompilationUnit;
 
-import de.monticore.lang.embeddedmontiarc.cocos.EmbeddedMontiArcCoCos;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._parser.CNNTrainParser;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
@@ -37,7 +32,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEMACompilationUnit, EMAComponentSymbol> {
-    // private EmbeddedMontiArcDLParser parser = new EmbeddedMontiArcDLParser();
     private CNNTrainParser parser = new CNNTrainParser();
     private ModelingLanguageFamily modelFamily;
 
@@ -75,7 +69,6 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
 
     @Override
     protected void doCheckSymbolCoCos(Path sourcePath, EMAComponentSymbol sym) {
-        // TODO
         CNNTrainCocos checker = new CNNTrainCocos();
         checker.checkAll((CNNTrainCompilationUnitSymbol) sym.getAstNode().get());
         if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
@@ -113,9 +106,6 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
     protected ModelingLanguageFamily getModelingLanguageFamily() {
         if(modelFamily == null) {
             modelFamily = new ModelingLanguageFamily();
-            // TODO
-            // EmbeddedMontiArcMathLanguage montiArcMathLanguage = new EmbeddedMontiArcMathLanguage();
-            // modelFamily.addModelingLanguage(montiArcMathLanguage);
             CNNTrainLanguage montiArcCNNTrainLanguage = new CNNTrainLanguage();
             modelFamily.addModelingLanguage(montiArcCNNTrainLanguage);
             modelFamily.addModelingLanguage(new StreamUnitsLanguage());
