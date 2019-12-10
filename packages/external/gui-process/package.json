@@ -1,7 +1,8 @@
 {
   "name": "@embeddedmontiarc/sol-external-gui-process",
   "description": "",
-  "version": "2019.6.25-SNAPSHOT",
+  "version": "2019.12.10-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib"],
   "scripts": {
     "prepare": "yarn run clean && yarn run build",
@@ -9,9 +10,12 @@
     "build": "tsc -p compile.tsconfig.json",
     "watch": "tsc -p compile.tsconfig.json -w"
   },
+  "publishConfig": {
+    "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
+  },
   "dependencies": {
-    "@embeddedmontiarc/sol-external-docker": "2019.6.25-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-workspace": "2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-docker": "^2019.12.10-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-workspace": "^2019.12.10-SNAPSHOT",
     "@theia/core": "latest",
     "@theia/process": "latest",
     "helpful-decorators": "^2.0.5",

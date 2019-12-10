@@ -8,6 +8,7 @@
   "scripts": {
     "prepare": "lerna run prepare",
     "clean": "lerna run clean",
+    "publish": "lerna exec --ignore @embeddedmontiarc/sol-tests-* -- yarn publish",
     "docs": "typedoc --options configs/typedoc.json .",
     "coverage": "node scripts/coverage"
   },

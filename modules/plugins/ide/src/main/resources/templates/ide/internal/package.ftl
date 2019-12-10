@@ -19,7 +19,7 @@ ${tc.signature("ide", "package", "allPackages")}
     </#list>
   },
   "devDependencies": {
-    "@embeddedmontiarc/sol-development-cli": "^2019.6.25-SNAPSHOT"
+    "@embeddedmontiarc/sol-development-cli": "^2019.12.10-SNAPSHOT"
   },
   "theia": {
     "frontend": {

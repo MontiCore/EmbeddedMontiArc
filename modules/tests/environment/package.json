@@ -2,6 +2,7 @@
   "private": true,
   "name": "@embeddedmontiarc/sol-tests-environment",
   "version": "1.0.0",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "@embeddedmontiarc/sol-tests-environment-dependency-one": "^1.0.0",
     "@embeddedmontiarc/sol-tests-environment-dependency-two": "^1.0.0"
