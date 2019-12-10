@@ -30,7 +30,7 @@
 <hr/>
 
 ## Description
-**Sol** (from the Latin word for sun) is an infrastructure for the generation of IDEs for DSLs and their tools. The name
+**Sol** (from the Latin word for sun) is an infrastructure for the generation of IDEs for DSL ecosystems. The name
 of this project comes from an analogy: as much as the rays of the sun shine to every corner of a room, so does the
 distributed nature of this infrastructure cover every repository holding artifacts which augment the functionality of
 the resulting IDE.
