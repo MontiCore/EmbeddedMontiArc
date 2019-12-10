@@ -96,6 +96,9 @@
                             <arguments>
                                 <argument>install</argument>
                             </arguments>
+                            <environmentVariables>
+                                <cibuildb64>${env.cibuildb64}</cibuildb64>
+                            </environmentVariables>
                             <workingDirectory>${rootDir}</workingDirectory>
                         </configuration>
                     </execution>

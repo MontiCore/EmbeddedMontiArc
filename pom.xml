@@ -470,6 +470,7 @@
     <!-- == PROJECT PROFILES ================================================== -->
 
     <profiles>
+
         <profile>
             <id>SonarQube</id>
             <activation>
@@ -482,6 +483,18 @@
                 <sonar.password>${env.sonar}</sonar.password>
                 <sonar.exclusions>**/*Module.java,**/*.ts,**/*.js</sonar.exclusions>
                 <sonar.test.exclusions>**/*Module.java</sonar.test.exclusions>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>Default</id>
+           <activation>
+               <property>
+                   <name>!env.cibuildb64</name>
+               </property>
+           </activation>
+            <properties>
+                <env.cibuildb64>Default</env.cibuildb64>
             </properties>
         </profile>
     </profiles>
