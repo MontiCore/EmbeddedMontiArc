@@ -28,7 +28,7 @@ pages:
   stage: deploy
   script:
     - mvn -B clean install # We need to install first as the custom plugins need to be installed.
-    - mvn -B deploy sonar:sonar -DskipTests --settings settings.xml
+    - mvn -B deploy sonar:sonar -DskipTests --settings configs/settings.xml
   artifacts:
     paths:
       - "public"
