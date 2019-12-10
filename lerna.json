@@ -2,10 +2,13 @@
   "lerna": "3.15.0",
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "version": "2019.6.25-SNAPSHOT",
+  "version": "2019.12.10-SNAPSHOT",
   "command": {
     "run": {
       "stream": true
+    },
+    "publish": {
+      "verifyAccess": false
     }
   }
 }

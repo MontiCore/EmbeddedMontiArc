@@ -1,0 +1,7 @@
+# Build
+/node_modules/
+
+/.gitignore
+/.npmrc
+/.npmignore
+/compile.tsconfig.json

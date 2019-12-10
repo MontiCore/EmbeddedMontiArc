@@ -10,7 +10,7 @@
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>sol</artifactId>
-        <version>2019.06.25-SNAPSHOT</version>
+        <version>2019.12.10-SNAPSHOT</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
@@ -142,7 +142,7 @@
             </plugin>
 
             <!-- Maven Assembly -->
-            <!--<plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${maven-assembly-plugin.version}</version>
                 <dependencies>
@@ -170,7 +170,14 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
+
+            <!-- Deployment -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+            </plugin>
 
         </plugins>
     </build>

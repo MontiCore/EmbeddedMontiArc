@@ -10,7 +10,7 @@
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>tests-ide</artifactId>
-        <version>2019.06.25-SNAPSHOT</version>
+        <version>2019.12.10-SNAPSHOT</version>
     </parent>
 
     <artifactId>tests-ide-internal</artifactId>
@@ -95,6 +95,20 @@
                             <executable>yarn</executable>
                             <arguments>
                                 <argument>install</argument>
+                            </arguments>
+                            <workingDirectory>${rootDir}</workingDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn run publish</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>run publish</argument>
                             </arguments>
                             <workingDirectory>${rootDir}</workingDirectory>
                         </configuration>

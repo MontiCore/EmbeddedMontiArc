@@ -1,7 +1,8 @@
 {
   "name": "@embeddedmontiarc/sol-external-workspace",
   "description": "",
-  "version": "2019.6.25-SNAPSHOT",
+  "version": "2019.12.10-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
   "files": [
     "src",
     "lib"
@@ -12,10 +13,13 @@
     "build": "tsc -p compile.tsconfig.json",
     "watch": "tsc -p compile.tsconfig.json -w"
   },
+  "publishConfig": {
+    "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
+  },
   "dependencies": {
-    "@embeddedmontiarc/sol-external-core": "^2019.6.25-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-preparation": "^2019.6.25-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-docker": "^2019.6.25-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-core": "^2019.12.10-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-preparation": "^2019.12.10-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-docker": "^2019.12.10-SNAPSHOT",
     "@material-ui/core": "^4.4.0",
     "@material-ui/icons": "^4.2.1",
     "@theia/core": "latest",

@@ -9,7 +9,7 @@
 
     <groupId>de.monticore.lang.monticar.sol</groupId>
     <artifactId>sol</artifactId>
-    <version>2019.06.25-SNAPSHOT</version>
+    <version>2019.12.10-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <!-- == PROJECT MODULES =================================================== -->
@@ -454,7 +454,7 @@
             </plugin>
 
             <!-- Deployment -->
-            <plugin> <!-- TODO: Activate deployment once code base is stable. -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>${maven-deploy-plugin.version}</version>
