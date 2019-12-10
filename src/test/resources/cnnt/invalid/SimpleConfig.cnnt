@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
+
 configuration SimpleConfigInvalid{
-    num_epochs:1
-    batch_sizes:64
-    normalizes:true
+    num_epichs:1
+    batch_size:64
+    normalize:true
     load_checkpoint:false
     optimizer:adam{
         learning_rate:0.01

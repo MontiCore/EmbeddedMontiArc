@@ -50,7 +50,7 @@ class EmamDocumentServiceTest extends AbstractTextDocumentServiceTest {
     @Test
     public void testInvalidSyntax() throws InterruptedException, ExecutionException, IOException {
         EmamDocumentService documentService = getDocumentService(BASE_PATH);
-        documentService.doParse(new StringReader("package a; component Abc{}"));
+        documentService.doParse(new StringReader("package a; compoent Abc{}"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
 

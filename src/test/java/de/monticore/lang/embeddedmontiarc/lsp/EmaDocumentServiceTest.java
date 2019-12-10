@@ -44,7 +44,7 @@ class EmaDocumentServiceTest extends AbstractTextDocumentServiceTest {
     @Test
     public void testInvalidSyntax() throws IOException {
         EmaDocumentService documentService = getDocumentService(BASE_PATH);
-        documentService.doParse(new StringReader("package a; component Abc{}"));
+        documentService.doParse(new StringReader("package a; compoent Abc{}"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
 
