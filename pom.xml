@@ -471,7 +471,7 @@
 
     <profiles>
         <profile>
-            <id>sonar</id>
+            <id>SonarQube</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
