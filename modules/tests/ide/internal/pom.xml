@@ -108,7 +108,8 @@
                         <configuration>
                             <executable>yarn</executable>
                             <arguments>
-                                <argument>run publish</argument>
+                                <argument>run</argument>
+                                <argument>publish</argument>
                             </arguments>
                             <workingDirectory>${rootDir}</workingDirectory>
                         </configuration>
