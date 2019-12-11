@@ -3,7 +3,7 @@
   "description": "",
   "version": "2019.12.10-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
-  "files": ["src", "lib"],
+  "files": ["src", "lib", "sol"],
   "scripts": {
     "prepare": "yarn run clean && yarn run build",
     "clean": "rimraf lib",
