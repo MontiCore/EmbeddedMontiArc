@@ -49,7 +49,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.rename(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -99,7 +99,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.completion(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -109,7 +109,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.hover(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -119,7 +119,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.signatureHelp(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -129,7 +129,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.declaration(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -139,7 +139,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.definition(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -149,7 +149,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.typeDefinition(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -159,7 +159,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.implementation(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -169,7 +169,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.references(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -179,7 +179,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.documentHighlight(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -189,7 +189,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.documentSymbol(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -199,7 +199,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.codeAction(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -209,7 +209,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.codeLens(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -220,7 +220,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.formatting(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -230,7 +230,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.rangeFormatting(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -240,7 +240,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.onTypeFormatting(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -250,7 +250,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.willSaveWaitUntil(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -260,7 +260,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.documentLink(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -270,7 +270,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.documentColor(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -280,7 +280,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.colorPresentation(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -290,7 +290,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.foldingRange(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -300,7 +300,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.prepareRename(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -311,7 +311,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.typeHierarchy(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 
@@ -321,7 +321,7 @@ public class MutliLangDocumentService implements TextDocumentService {
         if(documentService != null){
             return documentService.callHierarchy(arg);
         }else{
-            return CompletableFuture.failedFuture(new DocumentServiceNotFoundException("Document service was not found for: " + arg.getTextDocument()));
+            return CompletableFuture.completedFuture(null);
         }
     }
 }
