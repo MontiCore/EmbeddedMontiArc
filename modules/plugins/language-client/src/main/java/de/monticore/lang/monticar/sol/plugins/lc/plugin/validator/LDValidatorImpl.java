@@ -13,11 +13,14 @@ import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm.NPMPackageService;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.npm.SolPackage;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable.LanguageSymbolTable;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class LDValidatorImpl implements LDValidator, PluginContribution {
@@ -61,7 +64,11 @@ public class LDValidatorImpl implements LDValidator, PluginContribution {
     protected void validateModels() throws Exception {
         this.symbolTable.getRootNode().ifPresent(node -> this.validateNode(node.getLanguage()));
 
-        if (Log.getFindings().size() > 0) throw new MojoExecutionException("There are erroneous models.");
+        List<Finding> errors = Log.getFindings().stream()
+                .filter(Finding::isError)
+                .collect(Collectors.toList());
+
+        if (!errors.isEmpty()) throw new MojoExecutionException("There are erroneous models.");
     }
 
     protected void validateNode(ASTLanguage node) {

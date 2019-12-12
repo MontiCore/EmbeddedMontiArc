@@ -2,26 +2,26 @@
   "private": true,
   "name": "@embeddedmontiarc/sol-tests-ide-common",
   "license": "SEE LICENSE IN LICENSE",
-  "version": "2019.12.10-SNAPSHOT",
+  "version": "2019.12.12-SNAPSHOT",
   "scripts": {
     "prepare": "yarn run build",
     "clean": "rimraf src-gen",
     "build": "tsc++ --flatten"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-templates": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-runtime-options": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-runtime-modules": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-runtime-configurations": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-runtime-artifact": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-tests-templates": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-tests-language-lc": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-tests-artifact-ide": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-core": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-workspace": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-monaco": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-gui-process": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-internal-se-logo": "^2019.12.10-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-templates": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-options": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-modules": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-configurations": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-artifact": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-tests-templates": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-tests-language-lc": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-tests-artifact-ide": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-core": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-workspace": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-monaco": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-gui-process": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-internal-se-logo": "2019.12.12-SNAPSHOT",
     "@theia/callhierarchy": "latest",
     "@theia/console": "latest",
     "@theia/core": "latest",
@@ -59,8 +59,8 @@
     "inversify": "^5.0.1"
   },
   "devDependencies": {
-    "@embeddedmontiarc/sol-development-cli": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-development-tsc": "^2019.12.10-SNAPSHOT"
+    "@embeddedmontiarc/sol-development-cli": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-development-tsc": "2019.12.12-SNAPSHOT"
   },
   "theiaExtensions": [
     {

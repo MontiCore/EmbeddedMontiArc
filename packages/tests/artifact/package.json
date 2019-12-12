@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@embeddedmontiarc/sol-tests-artifact",
-  "version": "2019.12.10-SNAPSHOT",
+  "version": "2019.12.12-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "prepare": "yarn run clean && yarn run build",
@@ -10,7 +10,7 @@
     "watch": "tsc -p compile.tsconfig.json -w"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-artifact": "^2019.12.10-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-artifact": "2019.12.12-SNAPSHOT",
     "inversify": "^4.14.0"
   },
   "devDependencies": {

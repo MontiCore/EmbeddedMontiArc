@@ -61,8 +61,8 @@ public class LanguageClientTemplatesTests {
         );
 
         verify(registry).registerTemplate(
-                "common/index.ftl",
-                "common/index.ts"
+                "common/language-protocol.ftl",
+                "common/${grammarName}-protocol.ts"
         );
 
         verify(registry).registerTemplate(

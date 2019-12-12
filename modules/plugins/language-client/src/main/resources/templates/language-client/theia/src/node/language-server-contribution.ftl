@@ -8,6 +8,7 @@ ${tc.signature("template")}
 <#assign configuration = glex.getGlobalVar("configuration")>
 <#assign rootPackage = glex.getGlobalVar("rootPackage")>
 <#assign grammarName = configuration.getGrammarName()>
+<#assign grammarNameLC = grammarName?lower_case>
 <#assign hasHandwrittenPeer = template.hasHandwrittenPeer()>
 <#assign serverPath = rootPackage.getDirectory("server").get()!"server">
 /*
@@ -15,7 +16,7 @@ ${tc.signature("template")}
  */
 import { injectable } from "inversify";
 import { AddressInfo } from "net";
-import { ${grammarName}Language } from "../common";
+import { ${grammarName}Language } from "../common/${grammarNameLC}-protocol";
 import { BaseLanguageServerContribution, IConnection } from "@theia/languages/lib/node";
 
 import * as FileSystem from "fs-extra";

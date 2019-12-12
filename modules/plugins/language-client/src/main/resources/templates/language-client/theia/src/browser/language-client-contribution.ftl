@@ -6,13 +6,14 @@
 ${tc.signature("template")}
 <#assign configuration = glex.getGlobalVar("configuration")>
 <#assign grammarName = configuration.getGrammarName()>
+<#assign grammarNameLC = grammarName?lower_case>
 <#assign hasHandwrittenPeer = template.hasHandwrittenPeer()>
 /*
  * (c) https://github.com/MontiCore/monticore
  */
 import { BaseLanguageClientContribution } from "@theia/languages/lib/browser";
 import { injectable } from "inversify";
-import { ${grammarName}Language } from "../common";
+import { ${grammarName}Language } from "../common/${grammarNameLC}-protocol";
 
 @injectable()
 export class ${grammarName}ClientContribution<#if hasHandwrittenPeer>Top</#if> extends BaseLanguageClientContribution {
