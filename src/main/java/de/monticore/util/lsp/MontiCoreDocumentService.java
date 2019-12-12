@@ -13,11 +13,16 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.*;
 
-public abstract class MontiCoreDocumentService<ASTType extends ASTNode> implements TextDocumentService {
+public abstract class MontiCoreDocumentService<ASTType extends ASTNode> implements ClientAwareTextDocumentService {
     protected Optional<DiagnosticsHelper> diagnosticsHelper = Optional.empty();
     protected Optional<LanguageClient> client = Optional.empty();
 
-    public void setClient(LanguageClient client) {
+    public void setClient(LanguageClient client){
+        connect(client);
+    }
+
+    @Override
+    public void connect(LanguageClient client) {
         Log.debug("setting client","DocumentService");
         this.client = Optional.ofNullable(client);
         setDiagnosticsHelper(new DiagnosticsHelper(client, getLanguageServerIdentifier()));
