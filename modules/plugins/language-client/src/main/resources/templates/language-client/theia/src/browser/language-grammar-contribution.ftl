@@ -14,7 +14,7 @@ ${tc.signature("template")}
  */
 import { LanguageGrammarDefinitionContribution, TextmateRegistry } from "@theia/monaco/lib/browser/textmate";
 import { injectable } from "inversify";
-import { ${grammarName}Language } from "../common";
+import { ${grammarName}Language } from "../common/${grammarNameLC}-protocol";
 
 @injectable()
 export class ${grammarName}GrammarContribution<#if hasHandwrittenPeer>Top</#if> implements LanguageGrammarDefinitionContribution {

@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-external-docker",
   "description": "",
-  "version": "2019.12.10-SNAPSHOT",
+  "version": "2019.12.12-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "files": [
     "src",
@@ -17,8 +17,8 @@
     "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-external-core": "^2019.12.10-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-preparation": "^2019.12.10-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-core": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-preparation": "2019.12.12-SNAPSHOT",
     "@theia/core": "latest",
     "eventemitter3": "^3.1.2",
     "execa": "1.0.0",

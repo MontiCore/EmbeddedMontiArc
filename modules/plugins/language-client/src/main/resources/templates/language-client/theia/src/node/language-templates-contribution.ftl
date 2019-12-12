@@ -13,6 +13,7 @@ ${tc.signature("extractor")}
 <#assign serializer = glex.getGlobalVar("option.serializer")>
 <#assign grammarName = configuration.getGrammarName()>
 <#assign templatesDirectory = rootPackage.getDirectory("templates").get()!"templates">
+<#assign declarations = extractor.getTemplateDeclarations(ast)>
 /*
  * (c) https://github.com/MontiCore/monticore
  */
@@ -23,12 +24,12 @@ import {
     TemplatesRegistry
 } from "@embeddedmontiarc/sol-runtime-templates/lib/node/templates-registry";
 
-import * as path from "path";
+<#if declarations?has_content>import * as path from "path";</#if>
 
 @injectable()
 export class ${grammarName}TemplatesContribution implements TemplatesContribution {
     public registerTemplates(registry: TemplatesRegistry): void {
-        <#list extractor.getTemplateDeclarations(ast) as declaration>
+        <#list declarations as declaration>
         registry.registerTemplate({
             id: "${extractor.getIdentifier(declaration)}",
             extension: ".${configuration.getFileExtension()}",

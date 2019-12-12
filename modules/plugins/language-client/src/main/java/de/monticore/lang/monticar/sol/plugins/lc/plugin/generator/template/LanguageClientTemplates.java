@@ -44,8 +44,8 @@ public class LanguageClientTemplates implements TemplateContribution {
             );
 
             registry.registerTemplate(
-                "common/index.ftl",
-                "common/index.ts"
+                "common/language-protocol.ftl",
+                "common/${grammarName}-protocol.ts"
             );
 
             registry.registerTemplate(

@@ -70,7 +70,7 @@ public class LanguageClientPlugin extends AbstractGeneratePlugin {
      * @return A list of keywords which should be excluded.
      */
     public List<String> getExcludedKeywords() {
-        return this.excludedKeywords;
+        return firstNonNull(this.excludedKeywords, ImmutableList.of());
     }
 
     @Parameter(defaultValue = ".")
