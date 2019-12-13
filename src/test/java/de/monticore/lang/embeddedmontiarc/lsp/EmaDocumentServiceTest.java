@@ -4,14 +4,11 @@ import de.monticore.util.lsp.ModelFileCache;
 import de.se_rwth.commons.logging.DiagnosticsLog;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

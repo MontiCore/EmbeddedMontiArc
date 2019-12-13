@@ -1,6 +1,6 @@
 package de.monticore.lang.embeddedmontiarc.lsp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.lsp.EmamDocumentService;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl.lsp.EmadlDocumentService;
 import de.monticore.util.lsp.ModelFileCache;
 import de.se_rwth.commons.logging.DiagnosticsLog;
 import org.junit.jupiter.api.AfterAll;
@@ -17,14 +17,14 @@ import java.util.concurrent.ExecutionException;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class EmamDocumentServiceTest extends AbstractTextDocumentServiceTest {
+class EmadlDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
-    public static final String BASE_PATH = "src/test/resources/emam";
+    public static final String BASE_PATH = "src/test/resources/emadl";
 
-    private EmamDocumentService getDocumentService(String basePath) throws IOException {
-        EmamDocumentService res = new EmamDocumentService();
+    private EmadlDocumentService getDocumentService(String basePath) throws IOException {
+        EmadlDocumentService res = new EmadlDocumentService();
         res.setClient(getMockClient());
-        res.setModelFileCache(new ModelFileCache(Paths.get(basePath).toAbsolutePath() , Collections.singleton(".emam")));
+        res.setModelFileCache(new ModelFileCache(Paths.get(basePath).toAbsolutePath() , Collections.singleton(".emadl")));
         return res;
     }
 
@@ -41,7 +41,7 @@ class EmamDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
     @Test
     public void testValidSyntax() throws InterruptedException, ExecutionException, IOException {
-        EmamDocumentService documentService = getDocumentService(BASE_PATH);
+        EmadlDocumentService documentService = getDocumentService(BASE_PATH);
         DiagnosticsLog.setLogToStdout(true);
         documentService.doParse(new StringReader("package a; component Abc{}"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());
@@ -49,25 +49,25 @@ class EmamDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
     @Test
     public void testInvalidSyntax() throws InterruptedException, ExecutionException, IOException {
-        EmamDocumentService documentService = getDocumentService(BASE_PATH);
+        EmadlDocumentService documentService = getDocumentService(BASE_PATH);
         documentService.doParse(new StringReader("package a; compoent Abc{}"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
 
     @Test
     public void testValidDidOpenEvent() throws IOException {
-        EmamDocumentService documentService = getDocumentService(BASE_PATH);
+        EmadlDocumentService documentService = getDocumentService(BASE_PATH);
 
-        File file = new File("src/test/resources/emam/valid/SimpleComponent.emam");
-        documentService.didOpen(createDidOpenEvent(file, "EmbeddedMontiArcMath"));
+        File file = new File("src/test/resources/emadl/valid/SimpleComponent.emadl");
+        documentService.didOpen(createDidOpenEvent(file, "EmbeddedMontiArcDL"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());
     }
 
     @Test
     public void testInvalidDidOpenEvent() throws IOException {
-        EmamDocumentService documentService = getDocumentService(BASE_PATH);
-        File file = new File("src/test/resources/emam/invalid/SimpleComponent.emam");
-        documentService.didOpen(createDidOpenEvent(file, "EmbeddedMontiArcMath"));
+        EmadlDocumentService documentService = getDocumentService(BASE_PATH);
+        File file = new File("src/test/resources/emadl/invalid/SimpleComponent.emadl");
+        documentService.didOpen(createDidOpenEvent(file, "EmbeddedMontiArcDL"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
 
