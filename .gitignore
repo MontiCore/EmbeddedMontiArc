@@ -1,0 +1,9 @@
+# Editor
+/.idea/
+*.iml
+
+# Build
+/internal/
+/external/
+
+node_modules/

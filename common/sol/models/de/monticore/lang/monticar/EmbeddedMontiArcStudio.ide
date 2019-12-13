@@ -1,0 +1,6 @@
+package de.monticore.lang.monticar
+
+ide EmbeddedMontiArcStudio {
+    registry "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/embeddedmontiarcstudio-3:0.0.1"
+    build "build" resolved from CWD
+}

@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "workspaces": ["common", "internal", "external"],
+  "scripts": {
+    "prepare": "lerna run prepare",
+    "clean": "lerna run clean"
+  },
+  "devDependencies": {
+    "lerna": "^3.15.0",
+    "rimraf": "^2.6.3"
+  }
+}
