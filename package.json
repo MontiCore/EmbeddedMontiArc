@@ -8,7 +8,7 @@
   "scripts": {
     "prepare": "lerna run prepare",
     "clean": "lerna run clean",
-    "publish": "lerna exec --ignore @embeddedmontiarc/sol-tests-* --concurrency 1 -- yarn publish --network-timeout=10000",
+    "publish": "lerna exec --ignore @embeddedmontiarc/sol-tests-* --concurrency 1 -- yarn publish --network-timeout=30000",
     "docs": "typedoc --options configs/typedoc.json .",
     "coverage": "node scripts/coverage"
   },
