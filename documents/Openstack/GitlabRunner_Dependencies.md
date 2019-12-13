@@ -27,7 +27,7 @@ Also see [Dependencies](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/ge
 - Add environment variables
     - Armadillo_HOME = "armadillo installation base"
     - JAVA_HOME = C:\Program Files\Java\jdk-version
-- Test with
+- Test with ([see also](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/INSTALL_DEPENDENCIES.md#windows))
     - Java + Maven: `mvn -v`
     - `where g++`  
       C:\mingw64\bin\g++.exe  
@@ -40,6 +40,12 @@ Also see [Dependencies](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/ge
       armadillo.h  
       ... 
     - ... 
+- Config:
+    - Powershell Admin: `git config --system core.longpaths true`
+    - Windows long paths:
+        - Hit the Windows key, type regedit.msc and press Enter.
+        - Navigate to HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem
+        - Double click the LongPathsEnabled entry and set it to 1.
 - Retrieve token for the runner and enter it in the `config.toml`
 - Restart
 - Run `start.bat`
