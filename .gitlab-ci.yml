@@ -1,0 +1,34 @@
+image: "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/sol/build:2019.09.26"
+
+variables:
+  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+  NODE_OPTIONS: "--max-old-space-size=4096"
+
+before_script:
+  - yarn install --ignore-scripts
+
+stages:
+  - install
+  - deploy
+
+install:
+  stage: install
+  script:
+    - mvn -B clean install
+    - yarn install
+  except:
+    - master
+
+deploy:
+  stage: deploy
+  script:
+    - mvn -B clean install
+    - yarn install
+    - cd internal
+    - echo "" >> .npmrc
+    - echo "email=cibuild@se-rwth.de" >> .npmrc
+    - echo "always-auth=true" >> .npmrc
+    - echo "_auth=\${cibuildb64}" >> .npmrc
+    - yarn publish
+  only:
+    - master
