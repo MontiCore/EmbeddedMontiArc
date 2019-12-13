@@ -13,7 +13,7 @@
         <version>0.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>embeddedmontiarcstudio-common</artifactId>
+    <artifactId>embeddedmontiarcstudio-internal</artifactId>
 
     <!-- == PROJECT PROPERTIES ================================================ -->
 
@@ -33,13 +33,19 @@
 
     <!-- == PROJECT METAINFORMATION =========================================== -->
 
-    <name>EmbeddedMontiArcStudio - Common</name>
+    <name>EmbeddedMontiArcStudio - Internal</name>
 
     <!-- == PROJECT DEPENDENCIES ============================================== -->
 
     <dependencies>
 
         <!-- .. Modules ................................................... -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embeddedmontiarcstudio-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- .. Libraries ................................................. -->
 
@@ -56,16 +62,55 @@
 
             <plugin>
                 <groupId>de.monticore.lang.monticar.sol</groupId>
-                <artifactId>plugin-ide</artifactId>
+                <artifactId>plugin-environment</artifactId>
                 <version>${sol-plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>Generation</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <rootModel>de.monticore.lang.monticar.EmbeddedMontiArcStudio</rootModel>
+                            <outputPath>${project.basedir}</outputPath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>yarn install</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
+                            <workingDirectory>${project.parent.basedir}</workingDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn run publish</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>publish</argument>
+                            </arguments>
+                            <workingDirectory>${project.parent.basedir}</workingDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -73,5 +118,16 @@
 
         </plugins>
     </build>
+
+
+    <!-- == PROJECT REPORTING ================================================= -->
+
+    <reporting>
+        <plugins>
+
+        </plugins>
+    </reporting>
+
+    <!-- == PROJECT DISTRIBUTION ============================================== -->
 
 </project>

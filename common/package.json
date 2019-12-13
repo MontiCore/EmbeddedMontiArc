@@ -3,22 +3,31 @@
   "license": "SEE LICENSE IN LICENSE",
   "version": "3.0.0",
   "scripts": {
-    "prepare": "mvn compile && yarn run build",
+    "prepare": "yarn run build",
     "clean": "rimraf src-gen && rimraf target",
     "build": "tsc++ --flatten"
   },
   "files": ["src", "src-gen", "lib", "sol"],
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-templates": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-runtime-options": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-runtime-modules": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-runtime-configurations": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-runtime-artifact": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-core": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-workspace": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-monaco": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-gui-process": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-internal-se-logo": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-templates": ">=2019.12.12",
+    "@embeddedmontiarc/sol-runtime-options": ">=2019.12.12",
+    "@embeddedmontiarc/sol-runtime-modules": ">=2019.12.12",
+    "@embeddedmontiarc/sol-runtime-configurations": ">=2019.12.12",
+    "@embeddedmontiarc/sol-runtime-artifact": ">=2019.12.12",
+    "@embeddedmontiarc/sol-external-core": ">=2019.12.12",
+    "@embeddedmontiarc/sol-external-workspace": ">=2019.12.12",
+    "@embeddedmontiarc/sol-external-monaco": ">=2019.12.12",
+    "@embeddedmontiarc/sol-external-gui-process": ">=2019.12.12",
+    "@embeddedmontiarc/sol-internal-se-logo": ">=2019.12.12",
+    "@embeddedmontiarcstudio/language-cnnarch": "0.3.4-SNAPSHOT",
+    "@embeddedmontiarcstudio/language-cnntrain": "0.3.9-SNAPSHOT",
+    "@embeddedmontiarcstudio/language-embeddedmontiarcmath": "0.1.13-SNAPSHOT",
+    "@embeddedmontiarcstudio/language-embeddedmontiarcdl": "0.2.11-SNAPSHOT",
+    "@embeddedmontiarcstudio/language-car": "1.0.3",
+    "@embeddedmontiarcstudio/language-sim": "1.1.0-SNAPSHOT",
+    "@embeddedmontiarcstudio/language-embeddedmontiarcdynamic": "0.0.4-SNAPSHOT",
+    "@embeddedmontiarcstudio/language-streamunits": "0.0.19-SNAPSHOT",
+    "@embeddedmontiarcstudio/language-tagging": "0.0.8-SNAPSHOT",
     "@theia/callhierarchy": "latest",
     "@theia/console": "latest",
     "@theia/core": "latest",
@@ -56,8 +65,8 @@
     "inversify": "^5.0.1"
   },
   "devDependencies": {
-    "@embeddedmontiarc/sol-development-cli": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-development-tsc": "2019.12.12-SNAPSHOT"
+    "@embeddedmontiarc/sol-development-cli": ">=2019.12.12",
+    "@embeddedmontiarc/sol-development-tsc": ">=2019.12.12"
   },
   "theiaExtensions": [
     {
