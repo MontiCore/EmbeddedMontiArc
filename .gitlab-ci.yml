@@ -15,7 +15,9 @@ install:
   stage: install
   script:
     - mvn -B clean install
-    - yarn install
+    - yarn install --ignore-scripts
+    - cd internal
+    - yarn prepare
   except:
     - master
 
@@ -23,7 +25,7 @@ deploy:
   stage: deploy
   script:
     - mvn -B clean install
-    - yarn install
+    - yarn install --ignore-scripts
     - cd internal
     - echo "" >> .npmrc
     - echo "email=cibuild@se-rwth.de" >> .npmrc
