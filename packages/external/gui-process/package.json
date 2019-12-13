@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-external-gui-process",
   "description": "",
-  "version": "2019.12.12-SNAPSHOT",
+  "version": "2019.12.12",
   "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib"],
   "scripts": {
@@ -14,8 +14,8 @@
     "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-external-docker": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-external-workspace": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-docker": "^2019.12.12",
+    "@embeddedmontiarc/sol-external-workspace": "^2019.12.12",
     "@theia/core": "latest",
     "@theia/process": "latest",
     "helpful-decorators": "^2.0.5",

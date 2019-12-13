@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-runtime-static",
   "description": "",
-  "version": "2019.12.12-SNAPSHOT",
+  "version": "2019.12.12",
   "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib"],
   "scripts": {
@@ -17,7 +17,7 @@
     "@theia/core": "latest",
     "@theia/workspace": "latest",
     "@theia/filesystem": "latest",
-    "inversify": "^4.14.0",
+    "inversify": "^5.0.1",
     "express": "4.17.1"
   },
   "devDependencies": {

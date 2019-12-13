@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-development-tsc",
   "description": "",
-  "version": "2019.12.12-SNAPSHOT",
+  "version": "2019.12.12",
   "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib", "bin"],
   "scripts": {

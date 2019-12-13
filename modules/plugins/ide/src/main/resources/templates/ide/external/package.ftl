@@ -24,7 +24,7 @@ ${tc.signature("package", "allPackages")}
     </#list>,
     "electron-debug": "^3.0.1",
     "express": "^4.17.1",
-    "inversify": "^4.14.0",
+    "inversify": "^5.0.1",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {

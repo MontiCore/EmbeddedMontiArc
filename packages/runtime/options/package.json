@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-runtime-options",
   "description": "",
-  "version": "2019.12.12-SNAPSHOT",
+  "version": "2019.12.12",
   "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib", "sol"],
   "scripts": {
@@ -14,12 +14,12 @@
     "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-core": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-core": "^2019.12.12",
     "@theia/core": "latest",
     "@theia/filesystem": "latest",
     "@theia/workspace": "latest",
     "helpful-decorators": "^2.0.5",
-    "inversify": "^4.14.0",
+    "inversify": "^5.0.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

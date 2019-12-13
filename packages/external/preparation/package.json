@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-external-preparation",
   "description": "",
-  "version": "2019.12.12-SNAPSHOT",
+  "version": "2019.12.12",
   "license": "SEE LICENSE IN LICENSE",
   "files": [
     "src",
@@ -17,13 +17,13 @@
     "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-external-core": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-core": "^2019.12.12",
     "@material-ui/core": "^4.4.0",
     "@material-ui/icons": "^4.2.1",
     "@theia/core": "latest",
     "eventemitter3": "^3.1.2",
     "helpful-decorators": "^2.0.5",
-    "inversify": "^4.14.0",
+    "inversify": "^5.0.1",
     "inversify-inject-decorators": "^3.1.0",
     "react": "^16.12.0",
     "react-dom": "^16.4.1",

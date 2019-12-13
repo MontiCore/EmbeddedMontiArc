@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-external-core",
   "description": "",
-  "version": "2019.12.12-SNAPSHOT",
+  "version": "2019.12.12",
   "license": "SEE LICENSE IN LICENSE",
   "files": [
     "src",
@@ -24,7 +24,7 @@
     "express": "^4.17.1",
     "fs-extra": "^8.1.0",
     "helpful-decorators": "^2.0.5",
-    "inversify": "^4.14.0",
+    "inversify": "^5.0.1",
     "inversify-inject-decorators": "^3.1.0",
     "modular-json-rpc": "^1.0.6",
     "react": "^16.12.0",

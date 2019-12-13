@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-runtime-configurations",
   "description": "",
-  "version": "2019.12.12-SNAPSHOT",
+  "version": "2019.12.12",
   "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib"],
   "scripts": {
@@ -14,7 +14,7 @@
     "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-options": "2019.12.12-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-options": "^2019.12.12",
     "@material-ui/core": "^4.4.0",
     "@material-ui/icons": "^4.2.1",
     "@material-ui/lab": "^4.0.0-alpha.32",
@@ -23,7 +23,7 @@
     "@theia/workspace": "latest",
     "@theia/process": "latest",
     "helpful-decorators": "^2.0.5",
-    "inversify": "^4.14.0",
+    "inversify": "^5.0.1",
     "uuid": "^3.3.2",
     "xterm": "3.13.0"
   },

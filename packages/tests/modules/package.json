@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@embeddedmontiarc/sol-tests-modules",
-  "version": "2019.12.12-SNAPSHOT",
+  "version": "2019.12.12",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "prepare": "yarn run clean && yarn run build",
@@ -10,9 +10,9 @@
     "watch": "tsc -p compile.tsconfig.json -w"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-configurations": "2019.12.12-SNAPSHOT",
-    "@embeddedmontiarc/sol-runtime-modules": "2019.12.12-SNAPSHOT",
-    "inversify": "^4.14.0",
+    "@embeddedmontiarc/sol-runtime-configurations": "^2019.12.12",
+    "@embeddedmontiarc/sol-runtime-modules": "^2019.12.12",
+    "inversify": "^5.0.1",
     "fs-extra": "^8.1.0"
   },
   "devDependencies": {},
