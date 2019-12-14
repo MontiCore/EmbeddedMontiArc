@@ -4,15 +4,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.monticore.lang.monticar</groupId>
-  <artifactId>stream-lsp-exec</artifactId>
+  <artifactId>emadl-lsp-exec</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>stream-lsp-exec</name>
+  <name>emadl-lsp-exec</name>
 
   <properties>
     <!-- Dependency versions -->
     <emam.version>0.1.13-SNAPSHOT</emam.version>
-    <monticore-lsp-commons.version>1.3-SNAPSHOT</monticore-lsp-commons.version>
+    <monticore-lsp-commons.version>1.2-SNAPSHOT</monticore-lsp-commons.version>
     <ema-lsp.version>1.3-SNAPSHOT</ema-lsp.version>
+    <embedded-montiarc-deeplearning.version>0.2.10-SNAPSHOT</embedded-montiarc-deeplearning.version>
+    <cnn-train.version>0.3.8-SNAPSHOT</cnn-train.version>
+    <cnn-arch.version>0.3.3-SNAPSHOT</cnn-arch.version>
 
     <!-- misc -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,6 +39,11 @@
       <artifactId>ema-lsp</artifactId>
       <version>${ema-lsp.version}</version>
     </dependency>
+    <dependency>
+        <groupId>de.monticore.lang.monticar</groupId>
+        <artifactId>embedded-montiarc-deeplearning</artifactId>
+        <version>${embedded-montiarc-deeplearning.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -45,7 +53,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.2.1</version>
         <configuration>
-          <mainClass>de.monticore.lang.embeddedmontiarc.stream.lsp.StreamLspServer</mainClass>
+          <mainClass>de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl.lsp.EmadlLspServer</mainClass>
           <arguments>
             <argument>-p</argument>
             <argument>0</argument>

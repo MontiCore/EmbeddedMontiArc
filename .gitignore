@@ -6,3 +6,7 @@ syntax/gen/*
 package.old.json
 *.vsix
 *.versionsBackup
+**/.classpath
+**/.project
+**/.settings
+test.txt

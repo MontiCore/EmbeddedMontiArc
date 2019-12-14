@@ -6,13 +6,13 @@
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>struct-lsp-exec</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>struct-lsp-exec</name>  
+  <name>struct-lsp-exec</name>
 
   <properties>
     <!-- Dependency versions -->
     <emam.version>0.1.13-SNAPSHOT</emam.version>
-    <monticore-lsp-commons.version>1.2-SNAPSHOT</monticore-lsp-commons.version>
-    <ema-lsp.version>1.0-SNAPSHOT</ema-lsp.version>
+    <monticore-lsp-commons.version>1.3-SNAPSHOT</monticore-lsp-commons.version>
+    <ema-lsp.version>1.3-SNAPSHOT</ema-lsp.version>
 
     <!-- misc -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,7 +23,7 @@
   <dependencies>
     <dependency>
       <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>embedded-montiarc-math</artifactId>    
+      <artifactId>embedded-montiarc-math</artifactId>
       <version>${emam.version}</version>
     </dependency>
     <dependency>

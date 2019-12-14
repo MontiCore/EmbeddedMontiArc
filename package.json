@@ -14,7 +14,9 @@
     "onLanguage:EmbeddedMontiArcMath",
     "onLanguage:Struct",
     "onLanguage:Stream",
-    "onLanguage:EmbeddedMontiArc"
+    "onLanguage:EmbeddedMontiArc",
+    "onLanguage:EmbeddedMontiArcDL",
+    "onLanguage:CNNTrainLang"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -54,11 +56,23 @@
         "path": "syntax/gen/EmbeddedMontiArc.gen.tmGrammar.json"
       },
       {
+        "language": "EmbeddedMontiArcDL",
+        "scopeName": "keywords.EmbeddedMontiArcDL",
+        "path": "syntax/gen/EmbeddedMontiArcDL.gen.tmGrammar.json"
+      },
+      {
+        "language": "CNNTrainLang",
+        "scopeName": "keywords.CNNTrainLang",
+        "path": "syntax/gen/CNNTrainLang.gen.tmGrammar.json"
+      },
+      {
         "injectTo": [
           "keywords.EmbeddedMontiArcMath",
           "keywords.Struct",
           "keywords.Stream",
-          "keywords.EmbeddedMontiArc"
+          "keywords.EmbeddedMontiArc",
+          "keywords.EmbeddedMontiArcDL",
+          "keywords.CNNTrainLang"
         ],
         "scopeName": "monticore.comment",
         "path": "./syntax/comment.tmGrammar.json"
@@ -87,6 +101,18 @@
         "id": "EmbeddedMontiArc",
         "extensions": [
           ".ema"
+        ]
+      },
+      {
+        "id": "EmbeddedMontiArcDL",
+        "extensions": [
+          ".emadl"
+        ]
+      },
+      {
+        "id": "CNNTrainLang",
+        "extensions": [
+          ".cnnt"
         ]
       }
     ]
