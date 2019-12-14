@@ -79,43 +79,6 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>yarn install</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>yarn</executable>
-                            <arguments>
-                                <argument>install</argument>
-                            </arguments>
-                            <workingDirectory>${project.parent.basedir}</workingDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>yarn run publish</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>yarn</executable>
-                            <arguments>
-                                <argument>run</argument>
-                                <argument>publish</argument>
-                            </arguments>
-                            <workingDirectory>${project.parent.basedir}</workingDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 

@@ -702,7 +702,7 @@
     minimist "^1.2.0"
     strip-dirs "^3.0.0"
 
-"@embeddedmontiarc/sol-external-core@>=2019.12.12", "@embeddedmontiarc/sol-external-core@^2019.12.12":
+"@embeddedmontiarc/sol-external-core@2019.12.12", "@embeddedmontiarc/sol-external-core@>=2019.12.12", "@embeddedmontiarc/sol-external-core@^2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-external-core/-/sol-external-core-2019.12.12.tgz#710f6e3f3ce47faef6ec427fcf467d32a799aee0"
   integrity sha512-M6ux5rt1eIkDrJMJUtHzN1beiOGPi3lPZOwl6tKpAR1x2zIWczqPcU33jk8EmXEvtX6tncJub/d6O9NjqfFBZg==
@@ -725,7 +725,7 @@
     typeface-roboto "^0.0.75"
     ws "^5.2.2"
 
-"@embeddedmontiarc/sol-external-docker@^2019.12.12":
+"@embeddedmontiarc/sol-external-docker@2019.12.12", "@embeddedmontiarc/sol-external-docker@^2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-external-docker/-/sol-external-docker-2019.12.12.tgz#b5c9de957f228ccd87815db5376a6f9f1fb69474"
   integrity sha512-Bph5AEzopHHNrQNwyFxjDf+di0AjhX0sTfrnkxsNeJchbepiPH0BDmgA44u8FPQZhbsWD4zO5AU/CHh1+vSqkA==
@@ -742,7 +742,7 @@
     string-argv "^0.3.1"
     ts-deferred "^1.0.4"
 
-"@embeddedmontiarc/sol-external-gui-process@>=2019.12.12", "@embeddedmontiarc/sol-external-gui-process@^2019.12.12":
+"@embeddedmontiarc/sol-external-gui-process@2019.12.12", "@embeddedmontiarc/sol-external-gui-process@>=2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-external-gui-process/-/sol-external-gui-process-2019.12.12.tgz#43af5623023d6011035501a6f4c5355d71d72d81"
   integrity sha512-RkGkmvBLUK/XrMZLSNHXEbW1LYy+31Le4ZSzKQmi2kJevzNc+y81ss1fl0vRs0Tnn7EVs2TnR1h63EN5Uq/MWg==
@@ -759,7 +759,7 @@
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-external-monaco/-/sol-external-monaco-2019.12.12.tgz#73c833c67cd91cdb4e28cdac7403bfbe1389d0e0"
   integrity sha512-0Pso+2h2SpDDnZiWJB+6ae+fi3fgHEozyDvXYnxdBZxvWEsVwCWsYpLSXpryuf9eiee3U4Q6DZuNQ6//OpD4oQ==
 
-"@embeddedmontiarc/sol-external-preparation@^2019.12.12":
+"@embeddedmontiarc/sol-external-preparation@2019.12.12", "@embeddedmontiarc/sol-external-preparation@^2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-external-preparation/-/sol-external-preparation-2019.12.12.tgz#256e8b441942bf95848bbd20178f9b5943335e1f"
   integrity sha512-xE8jqIm+NktDfTW9qtXDAEE+6Ta97VNl9rAFWyfdUiugsG16n4kdGdCQJo82dW416gyIsytvq5N1ghZise+9WA==
@@ -776,7 +776,7 @@
     react-dom "^16.4.1"
     styled-components "^4.3.2"
 
-"@embeddedmontiarc/sol-external-workspace@>=2019.12.12", "@embeddedmontiarc/sol-external-workspace@^2019.12.12":
+"@embeddedmontiarc/sol-external-workspace@2019.12.12", "@embeddedmontiarc/sol-external-workspace@>=2019.12.12", "@embeddedmontiarc/sol-external-workspace@^2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-external-workspace/-/sol-external-workspace-2019.12.12.tgz#85c849fb48f8705a053ef146491f2726b2d53058"
   integrity sha512-yJwJ7DkidDOx+hcZm1LNyrIYwkie+bBDMOyPEyyGIORs5aKxnySWkdBQOMenV4e5ivajlbEvKVZcrcwT30GR3A==
@@ -800,12 +800,12 @@
     react-dom "^16.4.1"
     styled-components "^4.3.2"
 
-"@embeddedmontiarc/sol-internal-se-logo@>=2019.12.12", "@embeddedmontiarc/sol-internal-se-logo@^2019.12.12":
+"@embeddedmontiarc/sol-internal-se-logo@2019.12.12", "@embeddedmontiarc/sol-internal-se-logo@>=2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-internal-se-logo/-/sol-internal-se-logo-2019.12.12.tgz#dbc9b2a5e8328d54495fff7ac2a6d9426a32bfd5"
   integrity sha512-EtM4H5UqD3s9OkmYD17N2y7WF5Cy1HeY+ctRElxf21Hl6FiugyOCWTxXVMQWLUNUkkXelw86HMnEdghm9QY7wQ==
 
-"@embeddedmontiarc/sol-runtime-artifact@>=2019.12.12", "@embeddedmontiarc/sol-runtime-artifact@^2019.12.12":
+"@embeddedmontiarc/sol-runtime-artifact@2019.12.12", "@embeddedmontiarc/sol-runtime-artifact@>=2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-runtime-artifact/-/sol-runtime-artifact-2019.12.12.tgz#72af0922bd34c1b72f495526b3cbc9fa099cd142"
   integrity sha512-P1FX7lFFoguLolTL8HBHlubVi4p33EOBJz9rNfWBqsaltpJTVoTa+go8gQNkCBzSxUHA6iV6lRQ3W6RxA9z77Q==
@@ -816,7 +816,7 @@
     inversify "^4.14.0"
     string-argv "^0.3.1"
 
-"@embeddedmontiarc/sol-runtime-configurations@>=2019.12.12", "@embeddedmontiarc/sol-runtime-configurations@^2019.12.12":
+"@embeddedmontiarc/sol-runtime-configurations@2019.12.12", "@embeddedmontiarc/sol-runtime-configurations@>=2019.12.12", "@embeddedmontiarc/sol-runtime-configurations@^2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-runtime-configurations/-/sol-runtime-configurations-2019.12.12.tgz#2eb16e69e0d57c6a3abe21a6ff66696b7e446bf1"
   integrity sha512-YsCwE2Q8rEobNh1mS72XN4YwzC2mQ5a63g9L08eJR9PU2lfTbRf3xYv8AgfSXOLJI50asfmKxEY9+I9mUNs8Ow==
@@ -834,7 +834,7 @@
     uuid "^3.3.2"
     xterm "3.13.0"
 
-"@embeddedmontiarc/sol-runtime-core@^2019.12.12":
+"@embeddedmontiarc/sol-runtime-core@2019.12.12", "@embeddedmontiarc/sol-runtime-core@^2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-runtime-core/-/sol-runtime-core-2019.12.12.tgz#0343eb7b3e7e84b6fb6d6ca7bd0f84f61b0427f1"
   integrity sha512-bGVqiVi/e3tXkCyea9pmR23hf82t20nCpiPh1sotjQhqV0WB3g2d7ESkcRx2/kkkrCI8BHfbfvshD4mqw8ozNw==
@@ -844,7 +844,7 @@
     "@theia/workspace" latest
     inversify "^4.14.0"
 
-"@embeddedmontiarc/sol-runtime-modules@>=2019.12.12", "@embeddedmontiarc/sol-runtime-modules@^2019.12.12":
+"@embeddedmontiarc/sol-runtime-modules@2019.12.12", "@embeddedmontiarc/sol-runtime-modules@>=2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-runtime-modules/-/sol-runtime-modules-2019.12.12.tgz#e63f0c853fb3009a7bc7bb7c89226aee7347c6d5"
   integrity sha512-thN4gsax4ildlKr/HrJzG6b9FkCPvkidcZJgQpWk3ZME3dPHJv8ITyxanSs2GwgKW/PyYYSH8GhvD2opVRD2WQ==
@@ -861,7 +861,7 @@
     inversify "^5.0.1"
     uuid "^3.3.2"
 
-"@embeddedmontiarc/sol-runtime-options@>=2019.12.12", "@embeddedmontiarc/sol-runtime-options@^2019.12.12":
+"@embeddedmontiarc/sol-runtime-options@2019.12.12", "@embeddedmontiarc/sol-runtime-options@>=2019.12.12", "@embeddedmontiarc/sol-runtime-options@^2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-runtime-options/-/sol-runtime-options-2019.12.12.tgz#575eab513589e279fc3f99e7f09646b9d7b2a59a"
   integrity sha512-QRlT6/q4OvanhNTs//RDe3JvVcFAQpHo2JmkG3NMuS7VIy1y9y4WZ94Nv8krHz2c5ldTqB25IJyGnEU5gl5TaA==
@@ -874,7 +874,7 @@
     inversify "^5.0.1"
     uuid "^3.3.2"
 
-"@embeddedmontiarc/sol-runtime-templates@>=2019.12.12", "@embeddedmontiarc/sol-runtime-templates@^2019.12.12":
+"@embeddedmontiarc/sol-runtime-templates@2019.12.12", "@embeddedmontiarc/sol-runtime-templates@>=2019.12.12":
   version "2019.12.12"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarc/sol-runtime-templates/-/sol-runtime-templates-2019.12.12.tgz#517617fb6da3916196ca047fb4394823b32cda32"
   integrity sha512-uqxnqP7l1CMPZ9vEb4G8FYmL76xHT1PCMfCcqRkvTY9wUuwggu9Z3Eesj8Xlmj8YYtqZgetAztG6afsMiC7+2A==
@@ -889,7 +889,7 @@
     inversify "^5.0.1"
     nunjucks "^3.2.0"
 
-"@embeddedmontiarcstudio/language-car@1.0.3", "@embeddedmontiarcstudio/language-car@^1.0.3":
+"@embeddedmontiarcstudio/language-car@1.0.3":
   version "1.0.3"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarcstudio/language-car/-/language-car-1.0.3.tgz#c7cc409b76ddfae8d0f727de83f87618744488d6"
   integrity sha512-TxJ4/iJCmQkWemA7rnJaLck13JJpaMewVBx0Dv1TFJzn9Mf7mChTq/P3VqIrUP1jIBzSKruED6HqQN3Dy2PSrQ==
@@ -901,7 +901,7 @@
     "@theia/process" latest
     inversify "^5.0.1"
 
-"@embeddedmontiarcstudio/language-cnnarch@0.3.4-SNAPSHOT", "@embeddedmontiarcstudio/language-cnnarch@^0.3.4-SNAPSHOT":
+"@embeddedmontiarcstudio/language-cnnarch@0.3.4-SNAPSHOT":
   version "0.3.4-SNAPSHOT"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarcstudio/language-cnnarch/-/language-cnnarch-0.3.4-SNAPSHOT.tgz#78bc170041b6c5b5316a62562a5e961d2501787e"
   integrity sha512-Wk7Kk56p0+OigyKot7YXwN/zMldZq/np1JGRX6zg9LM9iWkCiCcExGYe7DNQ+ToliHzx903Um0ByOLN7fGTDtQ==
@@ -913,7 +913,7 @@
     "@theia/process" latest
     inversify "^5.0.1"
 
-"@embeddedmontiarcstudio/language-cnntrain@0.3.9-SNAPSHOT", "@embeddedmontiarcstudio/language-cnntrain@^0.3.9-SNAPSHOT":
+"@embeddedmontiarcstudio/language-cnntrain@0.3.9-SNAPSHOT":
   version "0.3.9-SNAPSHOT"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarcstudio/language-cnntrain/-/language-cnntrain-0.3.9-SNAPSHOT.tgz#a533a89a36070fa4a9d72c5acec23b5be32c807d"
   integrity sha512-72wqhqAzVhjHzIcE2RkrYwsIl9MswaQH/jb98QfkJLdn6YoPytWxLD0tgFkRoxvy55Da4PLv5IN1AnY3dF9vJQ==
@@ -925,7 +925,7 @@
     "@theia/process" latest
     inversify "^5.0.1"
 
-"@embeddedmontiarcstudio/language-embeddedmontiarcdl@0.2.11-SNAPSHOT", "@embeddedmontiarcstudio/language-embeddedmontiarcdl@^0.2.11-SNAPSHOT":
+"@embeddedmontiarcstudio/language-embeddedmontiarcdl@0.2.11-SNAPSHOT":
   version "0.2.11-SNAPSHOT"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarcstudio/language-embeddedmontiarcdl/-/language-embeddedmontiarcdl-0.2.11-SNAPSHOT.tgz#8fb2835d78048b0bceb6b2b54067492469ad2781"
   integrity sha512-F9QioD9bdrfRaYCprOtIq7zlpTXlekpv9r1qr0n4WZi2TTojc1aXlFKMop2hqLUAbJ47XwPnvuIy69DUDf6ROA==
@@ -937,7 +937,7 @@
     "@theia/process" latest
     inversify "^5.0.1"
 
-"@embeddedmontiarcstudio/language-embeddedmontiarcdynamic@0.0.4-SNAPSHOT", "@embeddedmontiarcstudio/language-embeddedmontiarcdynamic@^0.0.4-SNAPSHOT":
+"@embeddedmontiarcstudio/language-embeddedmontiarcdynamic@0.0.4-SNAPSHOT":
   version "0.0.4-SNAPSHOT"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarcstudio/language-embeddedmontiarcdynamic/-/language-embeddedmontiarcdynamic-0.0.4-SNAPSHOT.tgz#9c6fdbd3574405e948dc2fe2770e303751fddaac"
   integrity sha512-NgjSFnRB+QGMG1xGpCrDGlKwY9rFr7doyhxh72F0NMrFWbwpujC8JbRmy4FvXCdWvyqJctt1iELkkBU6g8iiqw==
@@ -949,7 +949,7 @@
     "@theia/process" latest
     inversify "^5.0.1"
 
-"@embeddedmontiarcstudio/language-embeddedmontiarcmath@0.1.13-SNAPSHOT", "@embeddedmontiarcstudio/language-embeddedmontiarcmath@^0.1.13-SNAPSHOT":
+"@embeddedmontiarcstudio/language-embeddedmontiarcmath@0.1.13-SNAPSHOT":
   version "0.1.13-SNAPSHOT"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarcstudio/language-embeddedmontiarcmath/-/language-embeddedmontiarcmath-0.1.13-SNAPSHOT.tgz#e1f812af0c1f3aa1e20d23dce7764ddcb0ce3574"
   integrity sha512-tQOTlYwrQsWPsHrj+rGz3w0vdFTd7Sj1vFQGzwqjA41bXHqDt7MXlvjyIO1rX8D/PVXoayLvdUJCWAM9ocjmBg==
@@ -961,7 +961,7 @@
     "@theia/process" latest
     inversify "^5.0.1"
 
-"@embeddedmontiarcstudio/language-sim@1.1.0-SNAPSHOT", "@embeddedmontiarcstudio/language-sim@^1.1.0-SNAPSHOT":
+"@embeddedmontiarcstudio/language-sim@1.1.0-SNAPSHOT":
   version "1.1.0-SNAPSHOT"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarcstudio/language-sim/-/language-sim-1.1.0-SNAPSHOT.tgz#a2814ecc81d9b2f67292f3bdea024dd67ab7deec"
   integrity sha512-I4GVM4IsBbVZ7HYmNapd7qrYZjXe4tgAfPvZz7Tn8fD4zoWoRHlXhQCvhvcKV3+QHtmTmokWwrs1e+snCRU5Mg==
@@ -973,7 +973,7 @@
     "@theia/process" latest
     inversify "^5.0.1"
 
-"@embeddedmontiarcstudio/language-streamunits@0.0.19-SNAPSHOT", "@embeddedmontiarcstudio/language-streamunits@^0.0.19-SNAPSHOT":
+"@embeddedmontiarcstudio/language-streamunits@0.0.19-SNAPSHOT":
   version "0.0.19-SNAPSHOT"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarcstudio/language-streamunits/-/language-streamunits-0.0.19-SNAPSHOT.tgz#4a37b674f160b52080a1cac3de6108c1599e1aa9"
   integrity sha512-F8hFWtBkhs1v7YFjDIT8JQTmP5zdSGMRMQuXghsGmnnAQnNZ4kAio1Eo0Ji00XiXNGXA5WBuYwHNPlOPItkMzw==
@@ -985,7 +985,7 @@
     "@theia/process" latest
     inversify "^5.0.1"
 
-"@embeddedmontiarcstudio/language-tagging@0.0.8-SNAPSHOT", "@embeddedmontiarcstudio/language-tagging@^0.0.8-SNAPSHOT":
+"@embeddedmontiarcstudio/language-tagging@0.0.8-SNAPSHOT":
   version "0.0.8-SNAPSHOT"
   resolved "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/@embeddedmontiarcstudio/language-tagging/-/language-tagging-0.0.8-SNAPSHOT.tgz#d6cebaac12df9a66fc657431031207c4c632a8a1"
   integrity sha512-sMWaDGUiK0uE7kB0ON4y4OtqKgtvgOSdrdnfwyPAriT+kGsiD1nna7BtbPcW7GV6yTCFtH+dd+/o9ZW0CtnpWQ==
@@ -2100,7 +2100,7 @@
     semver "^5.4.1"
     write-json-file "^2.2.0"
 
-"@theia/callhierarchy@^0.13.0", "@theia/callhierarchy@latest":
+"@theia/callhierarchy@0.13.0", "@theia/callhierarchy@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/callhierarchy/-/callhierarchy-0.13.0.tgz#c06636ee41c2790c14aa6a4453931c43a04edbad"
   integrity sha512-3YqXqcXpDT2geS4+jUBMTWKATzCtay1TULmQ/rVpxDC86DwBgv8mr/vwTlLNilOstlIDQroLzF3t9fXcIQ5EaA==
@@ -2132,7 +2132,7 @@
     serialize-javascript "^1.4.0"
     webpack-sources "^1.0.1"
 
-"@theia/console@^0.13.0", "@theia/console@latest":
+"@theia/console@0.13.0", "@theia/console@^0.13.0", "@theia/console@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/console/-/console-0.13.0.tgz#fc80df7aa7ff6b4614b749f9c38c8aa52fcc65e6"
   integrity sha512-Rrbgpu4AZoB3onxeDlTyDA3DS6sBaMiTes5ObZc3UpgUiYWcmI0nldJy6IOOAg9M75NcAXaBxOrtz0UjxQ78rw==
@@ -2141,7 +2141,7 @@
     "@theia/monaco" "^0.13.0"
     anser "^1.4.7"
 
-"@theia/core@^0.13.0", "@theia/core@latest":
+"@theia/core@0.13.0", "@theia/core@^0.13.0", "@theia/core@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/core/-/core-0.13.0.tgz#f2d9053751da7a6d68e2394c9cc6271046dd032a"
   integrity sha512-s9cfGy1fmKdommgKhojh4HP5buqQb1RW37wZlv8HsbiXnVheZ7l6hZRHWarZR//9gRz0Plpa/zHYOADFysXBZA==
@@ -2187,7 +2187,7 @@
     ws "^7.1.2"
     yargs "^11.1.0"
 
-"@theia/debug@^0.13.0", "@theia/debug@latest":
+"@theia/debug@0.13.0", "@theia/debug@^0.13.0", "@theia/debug@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/debug/-/debug-0.13.0.tgz#177baca01c2db8808ec20ce9dd5312b4db4ce0ac"
   integrity sha512-Yxxer8BTDFs8fn7mJkh+8R6YIXeUwCJ5mL1Mg8Aml5Ak3yqS5W3WguZJ0oOCSf1mTCMVkIPtpzl0nV6o1Fn1lw==
@@ -2218,7 +2218,7 @@
     unzip-stream "^0.3.0"
     vscode-debugprotocol "^1.32.0"
 
-"@theia/editor-preview@^0.13.0", "@theia/editor-preview@latest":
+"@theia/editor-preview@0.13.0", "@theia/editor-preview@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/editor-preview/-/editor-preview-0.13.0.tgz#6730079478f6719f27bc61e0df5e0430d7552963"
   integrity sha512-r9l+SDmgP7D4v3e5Pdmy64RB/sTwjHEo9bUzBgOC4Xg0f0Y8fr9DSrWBpuBzZFrH3isAQwkoLxslzco21eBUfg==
@@ -2226,7 +2226,7 @@
     "@theia/core" "^0.13.0"
     "@theia/editor" "^0.13.0"
 
-"@theia/editor@^0.13.0", "@theia/editor@latest":
+"@theia/editor@0.13.0", "@theia/editor@^0.13.0", "@theia/editor@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/editor/-/editor-0.13.0.tgz#c594fdda46cffd336f1c01db915ec1630cae1bab"
   integrity sha512-YTEx8S4i+Li588a03kXxFCX3yklUP4QWNowXhWrR1DrDBLNrVlsbvtKaDX9/FJDt6peS1xBx15k4WxhxSfFfwg==
@@ -2237,7 +2237,7 @@
     "@types/base64-arraybuffer" "0.1.0"
     base64-arraybuffer "^0.1.5"
 
-"@theia/editorconfig@^0.13.0", "@theia/editorconfig@latest":
+"@theia/editorconfig@0.13.0", "@theia/editorconfig@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/editorconfig/-/editorconfig-0.13.0.tgz#34773767dbb11394ec4dbd0775f8a72805181cd0"
   integrity sha512-U3uiEM1lPpQZTRLxELzZpKn8Mwc3baNSy8j+u8zQJsbzTmZSKa+zqZaH9h1WsOo+N8/ELy2RLyT5jWo9XcIksw==
@@ -2248,7 +2248,7 @@
     "@theia/monaco" "^0.13.0"
     editorconfig "^0.15.0"
 
-"@theia/file-search@^0.13.0", "@theia/file-search@latest":
+"@theia/file-search@0.13.0", "@theia/file-search@^0.13.0", "@theia/file-search@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/file-search/-/file-search-0.13.0.tgz#d750e307b9f4a89ff5c2d46e63d51181fac4a610"
   integrity sha512-XZUWkNTgHRH9qJFvXs5x0j/ZbESUHz70xOTJg+i1ZSvivIjvYUQMeMa50rWzCvpX5AxaPYHJiq3MbaS2ZaJ5Og==
@@ -2261,7 +2261,7 @@
     fuzzy "^0.1.3"
     vscode-ripgrep "^1.2.4"
 
-"@theia/filesystem@^0.13.0", "@theia/filesystem@latest":
+"@theia/filesystem@0.13.0", "@theia/filesystem@^0.13.0", "@theia/filesystem@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/filesystem/-/filesystem-0.13.0.tgz#3555e322f069824016011ad480e0a4553360f874"
   integrity sha512-ExrIgc4P+Zjxx9XRrax6qiYRTvalvrJHDjbTznh63BYNFNsf7hgiXW3XNFW+992LBFgd3Vf6g6yaJtCdtJkCZg==
@@ -2287,7 +2287,7 @@
     uuid "^3.2.1"
     zip-dir "^1.0.2"
 
-"@theia/git@^0.13.0", "@theia/git@latest":
+"@theia/git@0.13.0", "@theia/git@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/git/-/git-0.13.0.tgz#7be23d72e6faf3a6cc80c97ba3a936460d636dfd"
   integrity sha512-WhH//gnS+TN/a1+H50XfzbWYrqZy8IGlWEGDmFC9uR0PeP6GrJa0nP0OigW6o3GCUJFOKI/GKjwrp3nc24+dmw==
@@ -2310,7 +2310,7 @@
     p-queue "^2.4.2"
     ts-md5 "^1.2.2"
 
-"@theia/json@^0.13.0", "@theia/json@latest":
+"@theia/json@0.13.0", "@theia/json@^0.13.0", "@theia/json@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/json/-/json-0.13.0.tgz#70fe83de58a80d8be21bbee7f83c861e75f381be"
   integrity sha512-IhjxPQosy/uQXwkstHtU7QmhxZVCe+KpkV+SJZLY9+OOsv68Rd9kaWXTO47fdxC3tae8PKwsvzKjJcDtxsQG6A==
@@ -2321,7 +2321,7 @@
     "@theia/monaco" "^0.13.0"
     vscode-json-languageserver "^1.2.1"
 
-"@theia/keymaps@^0.13.0", "@theia/keymaps@latest":
+"@theia/keymaps@0.13.0", "@theia/keymaps@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/keymaps/-/keymaps-0.13.0.tgz#aab8c28ce8e0b14c35f6a56f5b4a387b280f598d"
   integrity sha512-nx9h6wCL+tVkhpKVQNfGtjSr5HqCNHeZKJi9V23qbWd1V7cg1B7jnfaczYrB8Fgl+kLHjjOpqtJ+k+zONMohmg==
@@ -2336,7 +2336,7 @@
     jsonc-parser "^2.0.2"
     lodash.debounce "^4.0.8"
 
-"@theia/languages@^0.13.0", "@theia/languages@latest":
+"@theia/languages@0.13.0", "@theia/languages@^0.13.0", "@theia/languages@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/languages/-/languages-0.13.0.tgz#0d3c14a6ab1ff42d9947e4f062dc0538a814f2e2"
   integrity sha512-poQ8bZ+V7w5V88rJ0ld8mVd5BQkBig+iy81FxJme+G/JWwMWZRv7mj9qRRqzANpfH4/LwRU00rsvqsGhbrzOcg==
@@ -2350,7 +2350,7 @@
     monaco-languageclient "^0.10.2"
     uuid "^3.2.1"
 
-"@theia/markers@^0.13.0", "@theia/markers@latest":
+"@theia/markers@0.13.0", "@theia/markers@^0.13.0", "@theia/markers@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/markers/-/markers-0.13.0.tgz#849c0bfdb8de4a722c72c824b773731930ed5c78"
   integrity sha512-gk4UTZxrayYbBe0agYh2PP/tRVDD9vvPJQNLhgX3oUlZmK0LnWR5y54L/3VDCsKR7bRg8QD7UKL1suuICfXanQ==
@@ -2360,7 +2360,7 @@
     "@theia/navigator" "^0.13.0"
     "@theia/workspace" "^0.13.0"
 
-"@theia/merge-conflicts@^0.13.0", "@theia/merge-conflicts@latest":
+"@theia/merge-conflicts@0.13.0", "@theia/merge-conflicts@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/merge-conflicts/-/merge-conflicts-0.13.0.tgz#00ef0bbd270325d056ef7bbe51f61381c8376ab9"
   integrity sha512-kM1jv437xkWia6PpKBRQ33ik/eSgrRZ6i515REru6ewqVxGkJXjEtlo2B30DzV2+dN5jjY2o8jMhV6RSHJ4Ffg==
@@ -2369,7 +2369,7 @@
     "@theia/editor" "^0.13.0"
     "@theia/languages" "^0.13.0"
 
-"@theia/messages@^0.13.0", "@theia/messages@latest":
+"@theia/messages@0.13.0", "@theia/messages@^0.13.0", "@theia/messages@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/messages/-/messages-0.13.0.tgz#20dd2b751ac6918584da17ddc5353b1a6947037d"
   integrity sha512-cWEEwWyqij0ayRnIFtVmtgwjJIOMAg846c1tVkgsQfQmNGvMPbCKsAJ3adHjX+WdtVn36tMzR8+Qc2sUqrxWFA==
@@ -2380,7 +2380,7 @@
     react-perfect-scrollbar "^1.5.3"
     ts-md5 "^1.2.2"
 
-"@theia/metrics@^0.13.0", "@theia/metrics@latest":
+"@theia/metrics@0.13.0", "@theia/metrics@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/metrics/-/metrics-0.13.0.tgz#d48d44ede9346a05f09141da13da7167d3ae02f1"
   integrity sha512-hyIilRYI6zngSYYAh4bQx7x3tBzqrfEa46kKiLkrhYwUTETaaJ+deiy9wZ8lTx6CJPdNDwEfKn0FGRKHhipVlw==
@@ -2389,7 +2389,7 @@
     "@theia/core" "^0.13.0"
     prom-client "^10.2.0"
 
-"@theia/mini-browser@^0.13.0", "@theia/mini-browser@latest":
+"@theia/mini-browser@0.13.0", "@theia/mini-browser@^0.13.0", "@theia/mini-browser@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/mini-browser/-/mini-browser-0.13.0.tgz#0ce10b66921bf71c3a2d7fa62c8672056a859b10"
   integrity sha512-wG4sCMRasmKAo9ztAqAa7yl3D60593V9wIVUCSKvBXwrcM5oiwDJFzGLlF6U5FIYZI4sEbbCL2/8lADex/dTJQ==
@@ -2400,7 +2400,7 @@
     mime-types "^2.1.18"
     pdfobject "^2.0.201604172"
 
-"@theia/monaco@^0.13.0", "@theia/monaco@latest":
+"@theia/monaco@0.13.0", "@theia/monaco@^0.13.0", "@theia/monaco@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/monaco/-/monaco-0.13.0.tgz#c215e364b55b37928d8223a9ec2a884d289efa99"
   integrity sha512-KvCbWsz8mtyk1AA+vWdgCZZ1RfnnzLttQJ6CWa6wEJzPgjR/W/Ct4iUdb64/YwlxKMjkkVEk2Q9uYPpybKVZiQ==
@@ -2419,7 +2419,7 @@
     onigasm "2.2.1"
     vscode-textmate "^4.0.1"
 
-"@theia/navigator@^0.13.0", "@theia/navigator@latest":
+"@theia/navigator@0.13.0", "@theia/navigator@^0.13.0", "@theia/navigator@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/navigator/-/navigator-0.13.0.tgz#fcbcda0598a9db044702612929e6a1aa4b8b07e9"
   integrity sha512-qO2690uId/+fO6GAvFiiFbTs0rfDhln0tEVFwzyOO2/w3RYeXRUdVmvOGVzSMvFAMCXGO/nix1b8I0aU0ILw3Q==
@@ -2437,21 +2437,21 @@
   dependencies:
     nan "2.10.0"
 
-"@theia/outline-view@^0.13.0", "@theia/outline-view@latest":
+"@theia/outline-view@0.13.0", "@theia/outline-view@^0.13.0", "@theia/outline-view@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/outline-view/-/outline-view-0.13.0.tgz#d931e6418a6e8909074178788d79927badd91699"
   integrity sha512-dv+rhNAn9O8p510SfPgcaUsSuqzXnlLMnSnXzo2x0V4pl3b2tW06TAh5LjxOzNWx1MlxxXVNWiWYkddV9emQEQ==
   dependencies:
     "@theia/core" "^0.13.0"
 
-"@theia/output@^0.13.0", "@theia/output@latest":
+"@theia/output@0.13.0", "@theia/output@^0.13.0", "@theia/output@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/output/-/output-0.13.0.tgz#5c44a5edac042e12ec6c18c1b138b7d1109e6511"
   integrity sha512-4ndQG4s5BrN8WgaPyM7EuFIdZ9vVSR1dMs3+E5q2DIlNNVHnixvKvJkT5qcJa1g5iNPvsKLi/73ZYp+or5WENg==
   dependencies:
     "@theia/core" "^0.13.0"
 
-"@theia/plugin-ext-vscode@^0.13.0", "@theia/plugin-ext-vscode@latest":
+"@theia/plugin-ext-vscode@0.13.0", "@theia/plugin-ext-vscode@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/plugin-ext-vscode/-/plugin-ext-vscode-0.13.0.tgz#e9d4a758636ebf0bd6e34147bd88c968c1e13c9d"
   integrity sha512-7+ME8dKp7PUdpJLYEIANJlo92cMDA4jtJ+42tCDJkFpRP22KeXquV/K8008RmF2nFIvw4gPfUVs94Hhdg2LPdA==
@@ -2464,7 +2464,7 @@
     "@types/request" "^2.0.3"
     request "^2.82.0"
 
-"@theia/plugin-ext@^0.13.0", "@theia/plugin-ext@latest":
+"@theia/plugin-ext@0.13.0", "@theia/plugin-ext@^0.13.0", "@theia/plugin-ext@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/plugin-ext/-/plugin-ext-0.13.0.tgz#4538e164edc405162c4c884259b19ad42e6fcd7e"
   integrity sha512-To7XZgXXu063bL+k9ORrbfQcmKpyXZ9HTOtMtiGfgLyoMByNoNIrXx+I/qzpgze/yuixHiPpg+VtcpA/C6hsig==
@@ -2510,7 +2510,7 @@
   resolved "https://registry.yarnpkg.com/@theia/plugin/-/plugin-0.13.0.tgz#c09d70954b6331af2f54a598d13120c096c1171b"
   integrity sha512-FlNSMp/bTXCUGr4+AHuzAsCccajR7+cSOs6NVooQ1v+Gx4oxmrRnp4/QVjaBJd4iQWnTAMz8ur/3IWjCeRLHuw==
 
-"@theia/preferences@^0.13.0", "@theia/preferences@latest":
+"@theia/preferences@0.13.0", "@theia/preferences@^0.13.0", "@theia/preferences@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/preferences/-/preferences-0.13.0.tgz#8922ccb48b0e259c25589677aea93d60e9d8ed0d"
   integrity sha512-BIsGG/l9ZuAyRW9DAJK23V0fAyPJRTlH6xvdjn0L00Ag7/8UDQHVSWFKGDdbdgUy6FLZk9s8SUqAhWTCENT52A==
@@ -2524,7 +2524,7 @@
     "@theia/workspace" "^0.13.0"
     jsonc-parser "^2.0.2"
 
-"@theia/preview@^0.13.0", "@theia/preview@latest":
+"@theia/preview@0.13.0", "@theia/preview@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/preview/-/preview-0.13.0.tgz#bd97aa909da9913070e22eaee0f20e97e7b95c3d"
   integrity sha512-O5ml9xulY5KRwOczJEqRzxkeumbKyabJkbSRHAkfuhSI9e8KcH/bwlrgS5+/lX4YBDdHoNl5Cj1qXGmSvO+IOQ==
@@ -2540,7 +2540,7 @@
     markdown-it "^8.4.0"
     markdown-it-anchor "~5.0.0"
 
-"@theia/process@^0.13.0", "@theia/process@latest":
+"@theia/process@0.13.0", "@theia/process@^0.13.0", "@theia/process@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/process/-/process-0.13.0.tgz#aed86664389cd37584c0d060729e643c072f879d"
   integrity sha512-6eVmoqERslZ9tvXl1c1urA5ud0RGEuQ4/bilkB062eTOh5s1PPJ3c3WJkG00S8wG21WDRXHBDDQ6XR8QZi8Hqw==
@@ -2549,7 +2549,7 @@
     "@theia/node-pty" "0.7.8-theia004"
     string-argv "^0.1.1"
 
-"@theia/scm@^0.13.0":
+"@theia/scm@0.13.0", "@theia/scm@^0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/scm/-/scm-0.13.0.tgz#9017f4cb6ac917a786dbe6a7b39d68291196c60f"
   integrity sha512-WccHC8q4BO9734cbVIREvuciXzzoa9ISE4kYG9e4NGq+DQVnRTNuTKnh1ghb0pUpuyxCcqVI3F2hjD7Xuzpwow==
@@ -2565,7 +2565,7 @@
     react-autosize-textarea "^7.0.0"
     ts-md5 "^1.2.2"
 
-"@theia/search-in-workspace@^0.13.0", "@theia/search-in-workspace@latest":
+"@theia/search-in-workspace@0.13.0", "@theia/search-in-workspace@^0.13.0", "@theia/search-in-workspace@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/search-in-workspace/-/search-in-workspace-0.13.0.tgz#ab59502a8726b588948fa12a888153b2a499c61f"
   integrity sha512-T+BdIuOyWgdECC+gxKl+TzajQylAgi/2ZyjqWCfHsfZFgbuSKyMEfN+WhLUKbMwOYY9fEIWTLcaAulg0y5X3Dw==
@@ -2578,7 +2578,7 @@
     "@theia/workspace" "^0.13.0"
     vscode-ripgrep "^1.2.4"
 
-"@theia/task@^0.13.0", "@theia/task@latest":
+"@theia/task@0.13.0", "@theia/task@^0.13.0", "@theia/task@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/task/-/task-0.13.0.tgz#60f68580bebf6108b2afbe768b7c2991d4e16799"
   integrity sha512-UTYFw5G810m+AAXbpqfxyHbTsNDa77AaDSLlxEYPgIwKUcOrPaKdOuLLfW5R7VfVLnHyWYjfpF2dof1pziHBRA==
@@ -2598,7 +2598,7 @@
     p-debounce "^2.1.0"
     vscode-uri "^1.0.8"
 
-"@theia/terminal@^0.13.0", "@theia/terminal@latest":
+"@theia/terminal@0.13.0", "@theia/terminal@^0.13.0", "@theia/terminal@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/terminal/-/terminal-0.13.0.tgz#23391a361270bd7dda9e514c783e9dcb93eb30ef"
   integrity sha512-0kgWKmdg9xtCez0lENQIGkJxkf9beRiSyLIL/R6mWg2K8u2ENvYyKF8MiS4pWbHTz/67V8FQFVAmhThr//j4aA==
@@ -2610,7 +2610,7 @@
     "@theia/workspace" "^0.13.0"
     xterm "3.13.0"
 
-"@theia/textmate-grammars@^0.13.0", "@theia/textmate-grammars@latest":
+"@theia/textmate-grammars@0.13.0", "@theia/textmate-grammars@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/textmate-grammars/-/textmate-grammars-0.13.0.tgz#d294ea58684279f8667f9e655d119139baa2eba7"
   integrity sha512-O+CUYSC/JlhwhbX3Ewfcvh8IVIuHlfqtIDH0hSinydH0N0auGO7Z6J+6vjN0JUJpGkG3aQ/+lPid0NKkHUASMA==
@@ -2618,7 +2618,7 @@
     "@theia/monaco" "^0.13.0"
     vscode-textmate "^4.0.1"
 
-"@theia/typehierarchy@^0.13.0", "@theia/typehierarchy@latest":
+"@theia/typehierarchy@0.13.0", "@theia/typehierarchy@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/typehierarchy/-/typehierarchy-0.13.0.tgz#d252fe8642257206868370a44568096eea3775c7"
   integrity sha512-B6r/qnmb/9XXshIhiHUPXKNZz+STmTnGsKH70l4lGKhNsHAZfLrxwf/AxSdh1xdqX1CqgzEIXmBWRwHXTz1mYA==
@@ -2629,7 +2629,7 @@
     "@types/uuid" "^3.4.3"
     uuid "^3.2.1"
 
-"@theia/userstorage@^0.13.0", "@theia/userstorage@latest":
+"@theia/userstorage@0.13.0", "@theia/userstorage@^0.13.0", "@theia/userstorage@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/userstorage/-/userstorage-0.13.0.tgz#cbcc4cb9b8055eaa8545e227ae29c62c6c2ad1ad"
   integrity sha512-AKIYlfjJ/SkN7F66ucA+xOsXVvKlj7FFYUSpg8rCdYg4v4h/hT/j9ubU2bZIU6dQXNR5FTIM63h3sz2vYrBIKA==
@@ -2637,14 +2637,14 @@
     "@theia/core" "^0.13.0"
     "@theia/filesystem" "^0.13.0"
 
-"@theia/variable-resolver@^0.13.0", "@theia/variable-resolver@latest":
+"@theia/variable-resolver@0.13.0", "@theia/variable-resolver@^0.13.0", "@theia/variable-resolver@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/variable-resolver/-/variable-resolver-0.13.0.tgz#5ebc20f39648efa086101e7e643eb39268f97417"
   integrity sha512-Dcx2JQeCriHhEN1uFxee0xATtU1L5kFdDAPQ8yCc0cTg57alKKdf1UHT7C1ZQ9GXOhTZlSexaxs/S8BdrDHZmg==
   dependencies:
     "@theia/core" "^0.13.0"
 
-"@theia/workspace@^0.13.0", "@theia/workspace@latest":
+"@theia/workspace@0.13.0", "@theia/workspace@^0.13.0", "@theia/workspace@latest":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@theia/workspace/-/workspace-0.13.0.tgz#a3902bbd690ae5108fa28bf7fb42c26111a9e40b"
   integrity sha512-M2SHTz9LXINw88FzGL6Y5Yb8Zfx5qWM5WKbPhacf382qbWvdn6O4LrfNZUm+JjvpfCi4XQ4UVpD0fq3AJe2Snw==

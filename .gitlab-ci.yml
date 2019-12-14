@@ -16,7 +16,7 @@ install:
   script:
     - mvn -B clean install
     - yarn install --ignore-scripts
-    - cd internal
+    - cd common
     - yarn prepare
   except:
     - master
@@ -26,7 +26,7 @@ deploy:
   script:
     - mvn -B clean install
     - yarn install --ignore-scripts
-    - cd internal
+    - cd common
     - echo "" >> .npmrc
     - echo "email=cibuild@se-rwth.de" >> .npmrc
     - echo "always-auth=true" >> .npmrc
