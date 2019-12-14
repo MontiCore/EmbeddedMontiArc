@@ -26,6 +26,10 @@ strategy
 ornstein_uhlenbeck
 gaussian
 epsgreedy
+epsdecay
+mu
+theta
+sigma
 epsilon_decay_start
 critic
 critic_optimizer
@@ -69,9 +73,6 @@ epsilon_decay_start
 epsilon_decay
 min_epsilon
 epsilon_decay_per_step
-mu
-theta
-sigma
 reinforcement
 supervised
 ddpg-algorithm
