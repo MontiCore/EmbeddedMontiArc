@@ -34,11 +34,6 @@
       <artifactId>monticore-lsp-commons</artifactId>
       <version>${monticore-lsp-commons.version}</version>
     </dependency>
-    <!-- <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>ema-lsp</artifactId>
-      <version>${ema-lsp.version}</version>
-    </dependency> -->
     <dependency>
       <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>ema-lsp</artifactId>
@@ -48,16 +43,6 @@
         <groupId>de.monticore.lang.monticar</groupId>
         <artifactId>embedded-montiarc-deeplearning</artifactId>
         <version>${embedded-montiarc-deeplearning.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>de.monticore.lang.monticar</groupId>
-        <artifactId>cnn-train</artifactId>
-        <version>${cnn-train.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>de.monticore.lang.monticar</groupId>
-        <artifactId>cnn-arch</artifactId>
-        <version>${cnn-arch.version}</version>
     </dependency>
   </dependencies>
 
