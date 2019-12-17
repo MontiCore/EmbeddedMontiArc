@@ -28,6 +28,11 @@ masterJobLinux:
   script: 
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
   - mvn package sonar:sonar -s settings.xml
+  except:
+    changes:
+    - README.md
+    - .gitignore
+    - .gitlab-ci.yml
   only:
   - master
   
@@ -37,6 +42,10 @@ masterJobWindows:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
   tags:
   - Windows10
+  except:
+    changes:
+    - README.md
+    - .gitignore
 
 BranchJobLinux:
   stage: linux
@@ -45,3 +54,7 @@ BranchJobLinux:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
   except:
   - master
+  except:
+    changes:
+    - README.md
+    - .gitignore

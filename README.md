@@ -151,6 +151,13 @@ The following is a example of multiple layer declarations.
 The constructed layer `resLayer` in this example corresponds to a building block of a Residual Network. 
 The `?` argument is a special argument which is explained in the next section.
 
+## Introducing new Predefined Layers
+In order to introduce a new predefined layer, the following steps are necessary:
+*  A new class for the respective layer has to be introduced in the "predefined" folder of CNNArch.
+*  The name of the layer and its arguments (if they are new) have to be added to the AllPredefinedLayers class in the "predefined" folder. The "create()" method for the new layer must be called in AllPredefinedLayers.
+*  If the layer uses newly introduced arguments, a get() method for these arguments must be implemented in the CNNArch2X project, in the class "ArchitectureElementData".
+*  Finally, the class must be implemented for the respective backend, e.g. by adding a corresponding .ftl file to the "elements" folder in CNNArch2Gluon, or similarly for other backends.
+
 ## Structural Arguments
 Structural arguments are special arguments which can be set for each layer and which do not correspond to a layer parameter. 
 The three structural arguments are "?", "->" and "|". The conditional argument "?" is a boolean. 
