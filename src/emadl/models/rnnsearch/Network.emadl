@@ -40,7 +40,7 @@ component Network{
             ) ->
             Concatenate(axis=1) ->
             decoder ->
-            FullyConnected(units=50000) ->
+            FullyConnected(units=30000) ->
             Softmax() ->
             ArgMax() ->
             target[t]
