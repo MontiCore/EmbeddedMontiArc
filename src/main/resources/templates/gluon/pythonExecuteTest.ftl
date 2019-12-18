@@ -71,14 +71,19 @@
                         newSequences = []
                         for batch_entry in range(batch_size):
                             ordered.append([])
-                            batchCandidate = [([y[batch_entry] for y in x[0]], x[1][batch_entry], [y[batch_entry].expand_dims(axis=0) for y in x[2]]) for x in all_candidates]
+                            batchCandidate = [([seq[batch_entry] for seq in candidate[0]], candidate[1][batch_entry], [attention[batch_entry].expand_dims(axis=0) for attention in candidate[2]]) for candidate in all_candidates]
                             ordered[batch_entry] = sorted(batchCandidate, key=lambda tup: tup[1].asscalar())
                             if batch_entry == 0:
                                 newSequences = ordered[batch_entry]
                             else:
-                                newSequences = [([mx.nd.concat(newSequences[x][0][y], ordered[batch_entry][x][0][y], dim=0) for y in range(len(newSequences[x][0]))], mx.nd.concat(newSequences[x][1], ordered[batch_entry][x][1], dim=0), [mx.nd.concat(newSequences[x][2][y], ordered[batch_entry][x][2][y], dim=0) for y in range(len(newSequences[x][2]))]) for x in range(len(newSequences))]
+                                newSequences = [([mx.nd.concat(newSequences[sequenceIndex][0][seqIndex], ordered[batch_entry][sequenceIndex][0][seqIndex], dim=0) for seqIndex in range(len(newSequences[sequenceIndex][0]))],
+                                    mx.nd.concat(newSequences[sequenceIndex][1], ordered[batch_entry][sequenceIndex][1], dim=0),
+                                    [mx.nd.concat(newSequences[sequenceIndex][2][attentionIndex], ordered[batch_entry][sequenceIndex][2][attentionIndex], dim=0) for attentionIndex in range(len(newSequences[sequenceIndex][2]))])
+                                    for sequenceIndex in range(len(newSequences))]
 
-                        newSequences = [([newSequences[x][0][y].expand_dims(axis=1) for y in range(len(newSequences[x][0]))], newSequences[x][1].expand_dims(axis=1), [newSequences[x][2][y] for y in range(len(newSequences[x][2]))]) for x in range(len(newSequences))]
+                        newSequences = [([newSequences[sequenceIndex][0][seqIndex].expand_dims(axis=1) for seqIndex in range(len(newSequences[sequenceIndex][0]))],
+                            newSequences[sequenceIndex][1].expand_dims(axis=1), [newSequences[sequenceIndex][2][attentionIndex] for attentionIndex in range(len(newSequences[sequenceIndex][2]))])
+                            for sequenceIndex in range(len(newSequences))]
 
                         sequences = newSequences[:][:k]
 
