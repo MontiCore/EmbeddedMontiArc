@@ -5,6 +5,7 @@ import sys
 
 # Config
 MAX_LENGTH = 30
+VOCABULARY_SIZE = 30000
 
 PAD_TOKEN = '<pad>'
 UNK_TOKEN = '<unk>'
@@ -94,14 +95,15 @@ for key, filename in FILES.items():
 vocab_source = read_vocabulary(contents['vocab_source'])
 vocab_target = read_vocabulary(contents['vocab_target'])
 
-# Insert <pad>, remove last word so that our vocabulary size stays the same
+# Insert <pad>
 if PAD_TOKEN not in vocab_source:
     vocab_source.insert(0, PAD_TOKEN)
-    del vocab_source[-1]
 
 if PAD_TOKEN not in vocab_target:
     vocab_target.insert(0, PAD_TOKEN)
-    del vocab_target[-1]
+
+vocab_source = vocab_source[:VOCABULARY_SIZE]
+vocab_target = vocab_target[:VOCABULARY_SIZE]
 
 if not check_vocabulary(vocab_source):
     print('Source vocabulary is at least missing one of these words: <pad>, <unk>, <s> or </s>')
