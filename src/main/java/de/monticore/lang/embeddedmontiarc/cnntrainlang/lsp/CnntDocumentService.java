@@ -37,7 +37,7 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
 
     @Override
     public String getLanguageServerIdentifier() {
-        return "EMADL Parser";
+        return "CNNTrainLang Parser";
     }
 
     @Override
