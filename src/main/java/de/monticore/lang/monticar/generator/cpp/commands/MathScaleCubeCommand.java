@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.generator.cpp.commands;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueType;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 public class MathScaleCubeCommand extends MathCommand {
     //todo
-    private static final String SUM_SYNTAX_EXTENDED = "sum( EXPRESSION , SUM_VARIABLE , START_VALUE , END_VALUE )";
+    private static final String SCALER_SYNTAX_EXTENDED = "scaleCube( EXPRESSION , AXIS , NEW_X , NEW_Y )";
 
     private static final String SCALER_METHOD_NAME = "scaleCube";
 
@@ -48,7 +49,6 @@ public class MathScaleCubeCommand extends MathCommand {
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<>());
-        //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
         MathStringExpression stringExpression = new MathStringExpression(OctaveHelper.getCallBuiltInFunction(mathExpressionSymbol, "Fsum", "Double", valueListString, "FirstResult", false, 1), mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
@@ -65,6 +65,12 @@ public class MathScaleCubeCommand extends MathCommand {
     public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
+
+        String valueListString = "";
+        for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
+            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+        valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
+
         BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
@@ -73,38 +79,11 @@ public class MathScaleCubeCommand extends MathCommand {
             MathMatrixAccessSymbol axis = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(1);
             MathMatrixAccessSymbol new_x = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(2);
             MathMatrixAccessSymbol new_y = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(3);
-            convertExtendedScalerImplementationArmadillo(mathMatrixNameExpressionSymbol, cube, axis, new_x, new_y, bluePrintCPP);
+            convertExtendedScalerImplementationArmadillo(valueListString, mathMatrixNameExpressionSymbol, cube, axis, new_x, new_y, bluePrintCPP);
         } else {
             //todo
             Log.error(String.format("No implementation found for sum operation: \"sum(%s)\". Possible syntax is \"sum( X )\", \"sum(X,dim)\" or \"%s\"", mathExpressionSymbol.getTextualRepresentation(), SUM_SYNTAX_EXTENDED));
         }
-    }
-
-    private void convertSumImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP) {
-        String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
-        // correct index for armadillo
-        valueListString = valueListString.substring(0, valueListString.length() - 1) + "-1)";
-        MathStringExpression stringExpression = new MathStringExpression("sum" + valueListString, mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
-        List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
-        newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
-        mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-    }
-
-    /**
-     * Implements the sum command using Armadillos accu command
-     *
-     * @param mathMatrixNameExpressionSymbol MathMatrixNameExpressionSymbol passed to convert
-     * @param bluePrint                      BluePrint of current code generation
-     * @see <a href="http://arma.sourceforge.net/docs.html#accu">Armadillo Documentation</a>
-     */
-    private void convertAccuSumImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrint) {
-        String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
-        //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
-        MathStringExpression stringExpression = new MathStringExpression("accu" + valueListString, mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
-        List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
-        newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
-        mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrint.addAdditionalIncludeString("HelperA"); // question: why? (CR)
     }
 
     /**
@@ -117,43 +96,51 @@ public class MathScaleCubeCommand extends MathCommand {
      * @param new_x                          start value of the sum variable
      * @param new_y                          end value of the sum variable
      */
-    private void convertExtendedScalerImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, MathMatrixAccessSymbol cube, MathMatrixAccessSymbol axis, MathMatrixAccessSymbol new_x, MathMatrixAccessSymbol new_y, BluePrintCPP bluePrint) {
+    private void convertExtendedScalerImplementationArmadillo(String valueString, MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, MathMatrixAccessSymbol cube, MathMatrixAccessSymbol axis, MathMatrixAccessSymbol new_x, MathMatrixAccessSymbol new_y, BluePrintCPP bluePrint) {
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setAccessStartSymbol("");
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setAccessEndSymbol("");
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().clear();
         // create method
         Method calcSumMethod = getScalerCalculationMethod(cube, axis, new_x, new_y, bluePrint);
         // create code string
-        String code = calcSumMethod.getTargetLanguageMethodCall();
+        String code = calcSumMethod.getName() + valueString;
         MathStringExpression codeExpr = new MathStringExpression(code, mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().add(new MathMatrixAccessSymbol(codeExpr));
         // add method to bluePrint
         bluePrint.addMethod(calcSumMethod);
     }
 
-    private Method getScalerCalculationMethod(MathMatrixAccessSymbol cube, MathMatrixAccessSymbol axis, MathMatrixAccessSymbol new_x, MathMatrixAccessSymbol new_y, BluePrintCPP bluePrint) {
+    private Method getScalerCalculationMethod(MathMatrixAccessSymbol cube, MathMatrixAccessSymbol axis, MathMatrixAccessSymbol new_x2, MathMatrixAccessSymbol new_y2, BluePrint bluePrint) {
         // create new method
         Method method = getNewEmptyScalerCalculationMethod();
+
         // generate function code
         String c = ExecuteMethodGenerator.generateExecuteCode(cube, new ArrayList<>());
         String a = ExecuteMethodGenerator.generateExecuteCode(axis, new ArrayList<>());
-        String n_x = ExecuteMethodGenerator.generateExecuteCode(new_x, new ArrayList<>());
-        String n_y = ExecuteMethodGenerator.generateExecuteCode(new_y, new ArrayList<>());
+        String n_x = ExecuteMethodGenerator.generateExecuteCode(new_x2, new ArrayList<>());
+        String n_y = ExecuteMethodGenerator.generateExecuteCode(new_y2, new ArrayList<>());
         // add loop var
-        Variable loopVar = generateLoopVariable(c, bluePrint);
         // parameters
-        setParameters(method, bluePrint);
+        Variable img = new Variable();
+        img.setName("img");
+        img.setVariableType(new VariableType("Cube", "cube", ""));
+        Variable new_x = new Variable();
+        new_x.setName("new_x");
+        new_x.setVariableType(new VariableType("Integer", "int", ""));
+        Variable new_y = new Variable();
+        new_y.setName("new_y");
+        new_y.setVariableType(new VariableType("Integer", "int", ""));
+        Variable depth_axis = new Variable();
+        depth_axis.setName("depth_axis");
+        depth_axis.setVariableType(new VariableType("Integer", "int", ""));
+        method.addParameter(img);
+        method.addParameter(new_x);
+        method.addParameter(new_y);
+        method.addParameter(depth_axis);
         // add instructions
 
+
         method.addInstruction(ifClauses());
-        /*method.addInstruction(accumulatorInitialization());
-        method.addInstruction(forLoopHeader(varString, start, end));
-        method.addInstruction(forLoopBody(f));
-        method.addInstruction(returnAccumulator()); */
-        // add loopvar to children
-        addLoopVarParamToMethod(method, loopVar, bluePrint);
-        // delete loop var
-        bluePrint.getMathInformationRegister().getVariables().remove(loopVar);
         return method;
     }
 
@@ -165,25 +152,41 @@ public class MathScaleCubeCommand extends MathCommand {
         return method;
     }
 
-    private void setParameters(Method method, BluePrint bluePrint) {
-        List<Variable> vars = bluePrint.getMathInformationRegister().getVariables();
-        for (int i = 0; i < vars.size() - 2; i++) { // the last variable is the one we are assigning now
-            method.addParameterUnique(vars.get(i));
-        }
-    }
-
-    private Variable generateLoopVariable(String name, BluePrint bluePrint) {
-        Variable loopVar = new Variable(name, Variable.FORLOOPINFO);
-        loopVar.setVariableType(new VariableType("Integer", "int", ""));
-        bluePrint.getMathInformationRegister().addVariable(loopVar);
-        return loopVar;
-    }
-
     private Instruction ifClauses() {
         return new Instruction() {
             @Override
             public String getTargetLanguageInstruction() {
-                return "  cout << 'HelloWorld!' << endl; \n";
+                return  "    if (depth_axis == 0) { \n "+
+                        "       img = arma::reshape(img, img.n_cols, img.n_slices, img.n_rows);\n" +
+                        "    } else if(depth_axis == 1) {\n" +
+                        "        img = arma::reshape(img, img.n_rows, img.n_slices, img.n_cols);\n" +
+                        "    }\n" +
+                        "    \n" +
+                        "    arma::cube r_img = arma::cube(64,64, img.n_slices);\n" +
+                        "    for (int i = 0; i < img.n_slices; i++) \n" +
+                        "    {\n" +
+                        "        arma::mat cur_slice = img.slice(i);\n" +
+                        "        arma::vec X = arma::regspace(1, cur_slice.n_cols);\n" +
+                        "        arma::vec Y = arma::regspace(1, cur_slice.n_rows);\n" +
+                        "\n" +
+                        "        float scale_x = cur_slice.n_cols/new_x;\n" +
+                        "        float scale_y = cur_slice.n_rows/new_y;\n" +
+                        "        arma::vec XI = arma::regspace(1, new_x);\n" +
+                        "        arma::vec YI = arma::regspace(1, new_y);\n" +
+                        "\n" +
+                        "        arma::mat mat_out;\n" +
+                        "\n" +
+                        "        arma::interp2(X, Y, cur_slice, XI, YI, mat_out);\n" +
+                        "        r_img.slice(i) = mat_out;\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    if (depth_axis == 0) {\n" +
+                        "        r_img = arma::reshape(r_img, r_img.n_slices, r_img.n_rows, r_img.n_cols);\n" +
+                        "    } else if (depth_axis == 1) {\n" +
+                        "        r_img = arma::reshape(r_img, r_img.n_rows, r_img.n_slices, r_img.n_cols);\n" +
+                        "    }\n" +
+                        "    \n" +
+                        "    return r_img;";
             }
 
             @Override
@@ -191,78 +194,5 @@ public class MathScaleCubeCommand extends MathCommand {
                 return false;
             }
         };
-    }
-
-    private Instruction accumulatorInitialization() {
-        return new Instruction() {
-            @Override
-            public String getTargetLanguageInstruction() {
-                return "  double res = 0; \n";
-            }
-
-            @Override
-            public boolean isConnectInstruction() {
-                return false;
-            }
-        };
-    }
-
-    private Instruction forLoopHeader(String sumVar, String sumStart, String sumEnd) {
-        return new Instruction() {
-            @Override
-            public String getTargetLanguageInstruction() {
-                return String.format("  for (int %s = %s; %s <= %s; %s++)\n", sumVar, sumStart, sumVar, sumEnd, sumVar);
-            }
-
-            @Override
-            public boolean isConnectInstruction() {
-                return false;
-            }
-        };
-    }
-
-    private Instruction forLoopBody(String func) {
-        return new Instruction() {
-            @Override
-            public String getTargetLanguageInstruction() {
-                return String.format("    res += %s;\n", func);
-            }
-
-            @Override
-            public boolean isConnectInstruction() {
-                return false;
-            }
-        };
-    }
-
-    private Instruction returnAccumulator() {
-        return new Instruction() {
-            @Override
-            public String getTargetLanguageInstruction() {
-                return "  return res;\n";
-            }
-
-            @Override
-            public boolean isConnectInstruction() {
-                return false;
-            }
-        };
-    }
-
-    private void addLoopVarParamToMethod(Method method, Variable loopVar, BluePrintCPP bluePrint) {
-        String func = method.getInstructions().get(2).getTargetLanguageInstruction();
-        if (func.contains(SCALER_METHOD_NAME)) {
-            String[] split1 = func.split(SCALER_METHOD_NAME);
-            String[] split2 = split1[1].split("[)]");
-            func = SCALER_METHOD_NAME + split2[0] + ", " + loopVar.getNameTargetLanguageFormat() + ")";
-            // and change the method signiture of the calc sum function
-            String mName = SCALER_METHOD_NAME + split1[1].substring(0, split1[1].indexOf("("));
-            Optional<Method> affectedMethod = bluePrint.getMethod(mName);
-            if (affectedMethod.isPresent()) {
-                affectedMethod.get().addParameterUnique(loopVar);
-                addLoopVarParamToMethod(affectedMethod.get(), loopVar, bluePrint);
-            }
-            method.getInstructions().set(2, forLoopBody(func));
-        }
     }
 }
