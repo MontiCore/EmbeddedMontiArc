@@ -26,15 +26,15 @@ import java.util.Optional;
  */
 public class MathSumCommand extends MathCommand {
 
-    //todo
     private static final String SUM_SYNTAX_EXTENDED = "sum( EXPRESSION , SUM_VARIABLE , START_VALUE , END_VALUE )";
 
-    private static final String CALC_SUM_METHOD_NAME = "scaleCube";
+    private static final String CALC_SUM_METHOD_NAME = "calcSum";
 
     private static int sumCommandCounter = 0;
 
     public MathSumCommand() {
-        setMathCommandName("scaleCube");
+        setMathCommandName("sum");
+        //setTargetCommand("LALALA");
     }
 
     @Override
@@ -66,7 +66,6 @@ public class MathSumCommand extends MathCommand {
         ((BluePrintCPP) bluePrint).addAdditionalIncludeString("octave/builtin-defun-decls");
         // error if using extended syntax here
         if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 4) {
-            //todo
             Log.error(String.format("Syntax: \"%s\" is not supported when using deprecated backend Octave", SUM_SYNTAX_EXTENDED));
         }
     }
@@ -77,14 +76,17 @@ public class MathSumCommand extends MathCommand {
         BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
-        if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 4) {
-            MathMatrixAccessSymbol cube = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0);
-            MathMatrixAccessSymbol axis = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(1);
-            MathMatrixAccessSymbol new_x = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(2);
-            MathMatrixAccessSymbol new_y = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(3);
-            convertExtendedScalerImplementationArmadillo(mathMatrixNameExpressionSymbol, cube, axis, new_x, new_y, bluePrintCPP);
+        if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 1) {
+            convertAccuSumImplementationArmadillo(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        } else if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 2) {
+            convertSumImplementationArmadillo(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        } else if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 4) {
+            MathMatrixAccessSymbol func = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0);
+            MathMatrixAccessSymbol sumVar = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(1);
+            MathMatrixAccessSymbol sumStart = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(2);
+            MathMatrixAccessSymbol sumEnd = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(3);
+            convertExtendedSumImplementationArmadillo(mathMatrixNameExpressionSymbol, func, sumVar, sumStart, sumEnd, bluePrintCPP);
         } else {
-            //todo
             Log.error(String.format("No implementation found for sum operation: \"sum(%s)\". Possible syntax is \"sum( X )\", \"sum(X,dim)\" or \"%s\"", mathExpressionSymbol.getTextualRepresentation(), SUM_SYNTAX_EXTENDED));
         }
     }
@@ -121,17 +123,17 @@ public class MathSumCommand extends MathCommand {
      * This syntax makes sum expressions easier to model.
      *
      * @param mathMatrixNameExpressionSymbol symbol to convert
-     * @param cube                           expression from which the sum is calculates
-     * @param axis                           name of the sum variable
-     * @param new_x                        start value of the sum variable
+     * @param func                           expression from which the sum is calculates
+     * @param sumVar                         name of the sum variable
+     * @param sumStart                       start value of the sum variable
      * @param sumEnd                         end value of the sum variable
      */
-    private void convertExtendedScalerImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, MathMatrixAccessSymbol cube, MathMatrixAccessSymbol axis, MathMatrixAccessSymbol new_x, MathMatrixAccessSymbol new_y, BluePrintCPP bluePrint) {
+    private void convertExtendedSumImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, MathMatrixAccessSymbol func, MathMatrixAccessSymbol sumVar, MathMatrixAccessSymbol sumStart, MathMatrixAccessSymbol sumEnd, BluePrintCPP bluePrint) {
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setAccessStartSymbol("");
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setAccessEndSymbol("");
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().clear();
         // create method
-        Method calcSumMethod = getSumCalculationMethod(cube, axis, new_x, new_y, bluePrint);
+        Method calcSumMethod = getSumCalculationMethod(func, sumVar, sumStart, sumEnd, bluePrint);
         // create code string
         String code = calcSumMethod.getTargetLanguageMethodCall();
         MathStringExpression codeExpr = new MathStringExpression(code, mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
