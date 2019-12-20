@@ -34,6 +34,8 @@ BranchJobLinux:
   - cat target/site/jacoco/index.html
   except:
   - master
+  tags:
+  - ci
 
 BranchJobWindows:
   stage: windows
