@@ -34,8 +34,6 @@ BranchJobLinux:
   - cat target/site/jacoco/index.html
   except:
   - master
-  tags:
-  - docker
 
 BranchJobWindows:
   stage: windows
