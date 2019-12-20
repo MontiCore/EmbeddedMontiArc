@@ -30,6 +30,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     NumEpochEntry implements ConfigEntry = name:"num_epoch" ":" value:IntegerValue;
     BatchSizeEntry implements ConfigEntry = name:"batch_size" ":" value:IntegerValue;
     LoadCheckpointEntry implements ConfigEntry = name:"load_checkpoint" ":" value:BooleanValue;
+    CheckpointPeriodEntry implements ConfigEntry = name:"checkpoint_period" ":" value:IntegerValue;
+    LogPeriodEntry implements ConfigEntry = name:"log_period" ":" value:IntegerValue;
     NormalizeEntry implements ConfigEntry = name:"normalize" ":" value:BooleanValue;
     OptimizerEntry implements ConfigEntry = (name:"optimizer" | name:"actor_optimizer") ":" value:OptimizerValue;
     TrainContextEntry implements ConfigEntry = name:"context" ":" value:TrainContextValue;
@@ -51,6 +53,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     interface BleuEntry extends Entry;
     ExcludeBleuEntry implements BleuEntry = name:"exclude" ":" value:IntegerListValue;
+
+    EvalTrainEntry implements ConfigEntry = name:"eval_train" ":" value:BooleanValue;
 
     LRPolicyValue implements ConfigValue =(fixed:"fixed"
                                          | step:"step"
