@@ -16,7 +16,7 @@
 
     <properties>
 
-        <Embedded-MontiArc-Math.version>0.1.13-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <Embedded-MontiArc-Math.version>0.1.11-SNAPSHOT</Embedded-MontiArc-Math.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
