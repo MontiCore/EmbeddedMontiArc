@@ -1,11 +1,14 @@
 configuration Network{
-     num_epoch: 1
+     num_epoch: 10
      batch_size: 64
+     checkpoint_period: 1
+     log_period: 10
      context: cpu
      normalize: false
      eval_metric: bleu{
          exclude:[0, 2, 3]
      }
+     eval_train: false
      optimizer: adadelta{
          learning_rate: 0.0001
          learning_rate_decay: 0.99
