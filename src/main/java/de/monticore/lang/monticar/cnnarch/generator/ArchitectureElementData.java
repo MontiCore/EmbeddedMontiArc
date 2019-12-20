@@ -178,7 +178,7 @@ public class ArchitectureElementData {
 
     @Nullable
     public List<Integer> getPadding(){
-        
+
     	String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.PADDING_NAME).get();
 
         if(pad.equals("same")){
@@ -212,5 +212,13 @@ public class ArchitectureElementData {
         }
 
         return Arrays.asList(0,0,0,0,topPad,bottomPad,leftPad,rightPad);
+    }
+
+    public boolean getStart() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.START_NAME).get();
+    }
+
+    public boolean getEnd() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.END_NAME).get();
     }
 }
