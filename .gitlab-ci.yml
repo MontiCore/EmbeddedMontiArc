@@ -19,7 +19,8 @@ stages:
 masterJobWindows:
   stage: windows
   script:
-  - mvn dependency:purge-local-repository -Dinclude=de.monticore.lang.monticar -DreResolve=false -DactTransitively=false -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml -U
+  - mvn purge-local-repository -Dinclude=de.monticore.lang.monticar -DreResolve=false -DactTransitively=false
+  - mvn dependency: -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml -U
   only:
     - master
   tags:
