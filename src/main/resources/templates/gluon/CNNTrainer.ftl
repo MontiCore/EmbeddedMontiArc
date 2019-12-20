@@ -31,6 +31,12 @@ if __name__ == "__main__":
 <#if (config.loadCheckpoint)??>
         load_checkpoint=${config.loadCheckpoint?string("True","False")},
 </#if>
+<#if (config.checkpointPeriod)??>
+        checkpoint_period=${config.checkpointPeriod},
+</#if>
+<#if (config.logPeriod)??>
+        log_period=${config.logPeriod},
+</#if>
 <#if (config.context)??>
         context='${config.context}',
 </#if>
@@ -50,6 +56,9 @@ if __name__ == "__main__":
             'exclude': [<#list config.evalMetric.exclude as value>${value}<#sep>, </#list>],
 </#if>
         },
+</#if>
+<#if (config.evalTrain)??>
+        eval_train=${config.evalTrain?string("True","False")},
 </#if>
 <#if (config.configuration.loss)??>
         loss='${config.lossName}',

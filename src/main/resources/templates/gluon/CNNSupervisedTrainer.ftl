@@ -181,13 +181,15 @@ class ${tc.fileNameWithoutEnding}:
               num_epoch=10,
               eval_metric='acc',
               eval_metric_params={},
+              eval_train=False,
               loss ='softmax_cross_entropy',
               loss_params={},
               optimizer='adam',
               optimizer_params=(('learning_rate', 0.001),),
               load_checkpoint=True,
-              context='gpu',
               checkpoint_period=5,
+              log_period=50,
+              context='gpu',
               save_attention_image=False,
               use_teacher_forcing=False,
               normalize=True):
@@ -213,10 +215,7 @@ class ${tc.fileNameWithoutEnding}:
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
-        train_batch_size = batch_size
-        test_batch_size = batch_size
-
-        train_iter, train_test_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(train_batch_size, test_batch_size)
+        train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
 
         if normalize:
             self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
@@ -275,11 +274,11 @@ class ${tc.fileNameWithoutEnding}:
         else:
             logging.error("Invalid loss parameter.")
 
-        speed_period = 50
         tic = None
 
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
 
+            loss_total = 0
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 with autograd.record():
@@ -291,44 +290,51 @@ class ${tc.fileNameWithoutEnding}:
 
                 loss.backward()
 
+                loss_total += loss.sum().asscalar()
+
                 for trainer in trainers:
                     trainer.step(batch_size)
 
                 if tic is None:
                     tic = time.time()
                 else:
-                    if batch_i % speed_period == 0:
+                    if batch_i % log_period == 0:
                         try:
-                            speed = speed_period * batch_size / (time.time() - tic)
+                            speed = log_period * batch_size / (time.time() - tic)
                         except ZeroDivisionError:
                             speed = float("inf")
 
-                        logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec" % (epoch, batch_i, speed))
+                        loss_avg = loss_total / (batch_size * log_period)
+                        loss_total = 0
+
+                        logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
 
                         tic = time.time()
 
             tic = None
 
 
-            train_test_iter.reset()
-            metric = mx.metric.create(eval_metric, **eval_metric_params)
-            for batch_i, batch in enumerate(train_test_iter):
-                if True: <#-- Fix indentation -->
+            if eval_train:
+                train_iter.reset()
+                metric = mx.metric.create(eval_metric, **eval_metric_params)
+                for batch_i, batch in enumerate(train_iter):
 <#include "pythonExecuteTest.ftl">
 
 
 <#include "saveAttentionImageTrain.ftl">
 
 
-                predictions = []
-                for output_name in outputs:
-                    if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                        predictions.append(mx.nd.argmax(output_name, axis=1))
-                    else:
-                        predictions.append(output_name)
+                    predictions = []
+                    for output_name in outputs:
+                        if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                            predictions.append(mx.nd.argmax(output_name, axis=1))
+                        else:
+                            predictions.append(output_name)
 
-                metric.update(preds=predictions, labels=labels)
-            train_metric_score = metric.get()[1]
+                    metric.update(preds=predictions, labels=labels)
+                train_metric_score = metric.get()[1]
+            else:
+                train_metric_score = 0
 
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)

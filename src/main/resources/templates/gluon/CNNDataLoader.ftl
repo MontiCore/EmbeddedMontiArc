@@ -15,7 +15,7 @@ class ${tc.fileNameWithoutEnding}:
     def __init__(self):
         self._data_dir = "${tc.dataPath}/"
 
-    def load_data(self, train_batch_size, test_batch_size):
+    def load_data(self, batch_size):
         train_h5, test_h5 = self.load_h5_files()
 
         train_data = {}
@@ -39,11 +39,7 @@ class ${tc.fileNameWithoutEnding}:
 
         train_iter = mx.io.NDArrayIter(data=train_data,
                                        label=train_label,
-                                       batch_size=train_batch_size)
-
-        train_test_iter = mx.io.NDArrayIter(data=train_data,
-                                            label=train_label,
-                                            batch_size=test_batch_size)
+                                       batch_size=batch_size)
 
         test_iter = None
 
@@ -64,9 +60,9 @@ class ${tc.fileNameWithoutEnding}:
 
             test_iter = mx.io.NDArrayIter(data=test_data,
                                           label=test_label,
-                                          batch_size=test_batch_size)
+                                          batch_size=batch_size)
 
-        return train_iter, train_test_iter, test_iter, data_mean, data_std, train_images, test_images
+        return train_iter, test_iter, data_mean, data_std, train_images, test_images
 
     def load_data_img(self, batch_size, img_size):
         train_h5, test_h5 = self.load_h5_files()
