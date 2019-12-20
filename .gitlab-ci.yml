@@ -35,7 +35,7 @@ BranchJobLinux:
   except:
   - master
   tags:
-  - mvn
+  - docker
 
 BranchJobWindows:
   stage: windows
