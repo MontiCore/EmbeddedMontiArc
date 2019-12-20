@@ -48,6 +48,20 @@ public class ConfigurationData {
         return (Boolean) getConfiguration().getEntry("load_checkpoint").getValue().getValue();
     }
 
+    public String getCheckpointPeriod() {
+        if (!getConfiguration().getEntryMap().containsKey("checkpoint_period")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("checkpoint_period").getValue());
+    }
+
+    public String getLogPeriod() {
+        if (!getConfiguration().getEntryMap().containsKey("log_period")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("log_period").getValue());
+    }
+
     public Boolean getNormalize() {
         if (!getConfiguration().getEntryMap().containsKey("normalize")) {
             return null;
@@ -141,6 +155,13 @@ public class ConfigurationData {
             return null;
         }
         return (Boolean) getConfiguration().getEntry("use_teacher_forcing").getValue().getValue();
+    }
+
+    public Boolean getEvalTrain() {
+        if (!getConfiguration().getEntryMap().containsKey("eval_train")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("eval_train").getValue().getValue();
     }
 
     protected Map<String, Object> getMultiParamEntry(final String key, final String valueName) {
