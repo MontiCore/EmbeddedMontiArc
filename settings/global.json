@@ -6,6 +6,7 @@
         "settings/stream/streamConstants.json",
         "settings/ema/emaConstants.json",
         "settings/emadl/emadlConstants.json",
-        "settings/cnnt/cnntConstants.json"
+        "settings/cnnt/cnntConstants.json",
+        "settings/cnna/cnnaConstants.json"
     ]
 }
