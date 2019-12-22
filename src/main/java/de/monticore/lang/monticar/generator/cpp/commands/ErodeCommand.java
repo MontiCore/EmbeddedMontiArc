@@ -20,7 +20,7 @@ import java.util.List;
  * @author Ahmed Diab
  */
 
-public class ErodeCommand extends MathCommand{
+public class ErodeCommand extends ArgumentReturnMathCommand{
     public ErodeCommand() {
         setMathCommandName("erode");
     }

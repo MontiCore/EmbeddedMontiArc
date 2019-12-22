@@ -3,6 +3,9 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
@@ -73,6 +76,7 @@ public class LanguageUnitCPP extends LanguageUnit {
 
     public String getGeneratedHeader(TaggingResolver taggingResolver, BluePrintCPP bluePrint) {
         ExecutionOrderFixer.fixExecutionOrder(taggingResolver, bluePrint, (GeneratorCPP) bluePrint.getGenerator());
+        String nameOfFunction = ComponentConverter.nameOfFunction;
         String resultString = "";
         //guard defines
         resultString += "#ifndef " + bluePrint.getName().toUpperCase() + "\n";

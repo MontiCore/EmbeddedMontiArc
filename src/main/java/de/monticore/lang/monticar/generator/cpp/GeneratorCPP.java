@@ -123,7 +123,7 @@ public class GeneratorCPP implements Generator {
 
     public String generateString(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
         MathStatementsSymbol mathSymbol = Helper.getMathStatementsSymbolFor(componentInstanceSymbol, symtab);
-
+        /// FIXME: 20/12/2019 go inside getMathStatement to consider how to determinte the expression type
         return generateString(taggingResolver, componentInstanceSymbol, mathSymbol);
     }
 

@@ -63,4 +63,8 @@ public abstract class MathCommand {
         return false;
     }
 
+    public boolean isArgumentReturnMathCommand() {
+        return false;
+    }
+
 }
