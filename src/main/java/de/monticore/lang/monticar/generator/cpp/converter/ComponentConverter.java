@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
@@ -66,8 +65,12 @@ public class ComponentConverter {
         //ToDo: add bluePrintFixer.fixBluePrintCvVariableArrays;
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
         //save function name
-        if(mathStatementsSymbol.getMathExpressionSymbols().get(0) instanceof MathAssignmentExpressionSymbol ){
-            nameOfFunction = ((MathMatrixNameExpressionSymbol)((MathAssignmentExpressionSymbol)mathStatementsSymbol.getMathExpressionSymbols().get(0)).getExpressionSymbol()).getNameToAccess();
+        if(mathStatementsSymbol != null) {
+            if (mathStatementsSymbol.getMathExpressionSymbols().get(0) instanceof MathAssignmentExpressionSymbol) {
+                if (((MathAssignmentExpressionSymbol) mathStatementsSymbol.getMathExpressionSymbols().get(0)).getExpressionSymbol() instanceof MathMatrixNameExpressionSymbol) {
+                    nameOfFunction = ((MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathStatementsSymbol.getMathExpressionSymbols().get(0)).getExpressionSymbol()).getNameToAccess();
+                }
+            }
         }
         //ToDo: add a BluePrintFixer.fixerBluePrintCVfuncitons(bluePrint, nameOfFunction);
 

@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator;
 
-import com.sun.org.apache.xpath.internal.Arg;
 import de.monticore.lang.monticar.generator.cpp.commands.ArgumentReturnMathCommand;
 
 import java.util.ArrayList;
