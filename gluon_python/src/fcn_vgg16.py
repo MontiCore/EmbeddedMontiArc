@@ -8,10 +8,11 @@ from custom_layers import CroppingLayer2D, Add, Input, ConcatLayer, SequentialMu
 
 
 class FcnVGG16(nn.HybridBlock):
-    def __init__(self, input_shape=(3,500,500), **kwargs):
+    def __init__(self, input_shape=(3,500,500), num_of_classes=21, **kwargs):
         super(FcnVGG16, self).__init__(**kwargs)
         # Input
-        self.input_shape = input_shape[::-1]
+        self.input_shape = input_shape
+        self.num_of_classes=num_of_classes
 
         # VGG-16 convolution block 1
         self.block1 = nn.HybridSequential()
@@ -23,7 +24,7 @@ class FcnVGG16(nn.HybridBlock):
             if k%2 == 0:
                 pool = pool[:,:,1:,1:]
             '''
-            self.block1.add(nn.Conv2D(64, (3, 3), activation='relu', padding=(100,100)))
+            self.block1.add(nn.Conv2D(64, (3, 3), activation='relu', padding=(100, 100)))
             self.block1.add(nn.Conv2D(64, (3, 3), activation='relu', padding=(3//2, 3//2)))
             self.block1.add(MaxPool2DSamePadding((2, 2), strides=(2, 2)))
 
@@ -68,45 +69,52 @@ class FcnVGG16(nn.HybridBlock):
             self.fc_end.add(nn.Dropout(0.5))
             self.fc_end.add(nn.Conv2D(4096, (1, 1), activation='relu'))
             self.fc_end.add(nn.Dropout(0.5))
-            self.fc_end.add(nn.Conv2D(21, (1, 1)))
+            self.fc_end.add(nn.Conv2D(self.num_of_classes, (1, 1)))
 
         # Deconvolution
         self.deconv = nn.HybridSequential()
         with self.deconv.name_scope():
             self.deconv.add(self.fc_end)
-            self.deconv.add(nn.Conv2DTranspose(21, (4, 4), strides=2))
+            self.deconv.add(nn.Conv2DTranspose(self.num_of_classes, (4, 4), strides=2))
 
         # Skip connections from pool4
         self.skip_4 = nn.HybridSequential()
         with self.skip_4.name_scope():
-            self.skip_4.add(nn.Conv2D(21, (1, 1)))
+            self.skip_4.add(nn.Conv2D(self.num_of_classes, (1, 1)))
             self.skip_4.add(CroppingLayer2D((5),(-5)))
 
         self.conc1 = nn.HybridSequential()
         with self.conc1.name_scope():
-            self.conc1.add(nn.Conv2DTranspose(21, (4, 4), strides=2, use_bias=False))
+            self.conc1.add(nn.Conv2DTranspose(self.num_of_classes, (4, 4), strides=2, use_bias=False))
 
         # Skip connections from pool3
         self.skip_3 = nn.HybridSequential()
         with self.skip_3.name_scope():
-            self.skip_3.add(nn.Conv2D(21, (1, 1)))
+            self.skip_3.add(nn.Conv2D(self.num_of_classes, (1, 1)))
             self.skip_3.add(CroppingLayer2D((9),(-9)))
 
         # Final up-sampling and cropping
         self.out = nn.HybridSequential()
         with self.out.name_scope():
-            self.out.add(nn.Conv2DTranspose(21, (16, 16), strides=8, use_bias=False))
+            self.out.add(nn.Conv2DTranspose(self.num_of_classes, (16, 16), strides=8, use_bias=False))
             self.out.add(CroppingLayer2D((31, 31), (-37, -37)))
 
     def hybrid_forward(self, F, X):
+        print('input: ', X.shape)
         out_block3 = self.block3(X)
+        print('out_block3: ', out_block3.shape)
         out_block4 = self.block4(out_block3)
+        print('out_block4: ', out_block4.shape)
         out_block5_fc_deconv = self.deconv(out_block4)
-        print(out_block5_fc_deconv)
+        print('out_block5_fc_deconv: ', out_block5_fc_deconv)
         out_skip4 = self.skip_4(out_block4)
+        print('out_skip4: ', out_skip4.shape)
         out_skip3 = self.skip_3(out_block3)
+        print('out_skip3: ', out_skip3.shape)
         out_conc1 = self.conc1(out_block5_fc_deconv + out_skip4)
+        print('out_conc1: ', out_conc1.shape)
         out = self.out(out_skip3 + out_conc1)
+        print('out: ', out.shape)
 
         return out
 
