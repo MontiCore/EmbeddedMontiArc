@@ -1,15 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.*;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConstantConnectInstructionCPP;
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
 public class ComponentConverter {
 
     public static BluePrintCPP currentBluePrint = null;
+    public static String nameOfFunction = "";
 
     public static BluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         BluePrintCPP bluePrint = new BluePrintCPP(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
@@ -59,7 +63,14 @@ public class ComponentConverter {
 
         //create arrays from variables that only differ at the end by _number_
         BluePrintFixer.fixBluePrintVariableArrays(bluePrint);
+        //ToDo: add bluePrintFixer.fixBluePrintCvVariableArrays;
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
+        //save function name
+        if(mathStatementsSymbol.getMathExpressionSymbols().get(0) instanceof MathAssignmentExpressionSymbol ){
+            nameOfFunction = ((MathMatrixNameExpressionSymbol)((MathAssignmentExpressionSymbol)mathStatementsSymbol.getMathExpressionSymbols().get(0)).getExpressionSymbol()).getNameToAccess();
+        }
+        //ToDo: add a BluePrintFixer.fixerBluePrintCVfuncitons(bluePrint, nameOfFunction);
+
         generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
         //generate execute method
@@ -172,6 +183,7 @@ public class ComponentConverter {
                 generateInitStaticVariablePart(method, v, bluePrint);
             } else {
                 generateInitNonStaticVariable(method, v, bluePrint);
+                //TODO: Handle the case for type changes like cube to vector<vector<Point>>
             }
             if (v.isArray())
                 v.setName(oldName);

@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator;
 
+import com.sun.org.apache.xpath.internal.Arg;
+import de.monticore.lang.monticar.generator.cpp.commands.ArgumentReturnMathCommand;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +12,7 @@ import java.util.List;
  */
 public abstract class MathCommandRegister {
     public List<MathCommand> mathCommands = new ArrayList<>();
+    public List<ArgumentReturnMathCommand> argumentReturnMathCommands = new ArrayList<>();
 
     public MathCommandRegister() {
         init();
@@ -18,12 +22,25 @@ public abstract class MathCommandRegister {
         mathCommands.add(mathCommand);
     }
 
+    public void registerMathCommand(ArgumentReturnMathCommand argumentReturnMathCommand){
+        mathCommands.add(argumentReturnMathCommand);
+        argumentReturnMathCommands.add(argumentReturnMathCommand);
+    }
+
     public MathCommand getMathCommand(String functionName) {
         for (MathCommand mathCommand : mathCommands) {
-            if (mathCommand.getMathCommandName().equals(functionName))
-                return mathCommand;
+           if (mathCommand.getMathCommandName().equals(functionName))
+               if(mathCommand.isArgumentReturnMathCommand()){
+                   return getArgumentReturnMathCommand(mathCommand);
+               } else {
+                   return mathCommand;
+               }
         }
         return null;
+    }
+
+    public ArgumentReturnMathCommand getArgumentReturnMathCommand(MathCommand mathCommand){
+        return (ArgumentReturnMathCommand) mathCommand;
     }
 
     public boolean isMathCommand(String functionName) {
