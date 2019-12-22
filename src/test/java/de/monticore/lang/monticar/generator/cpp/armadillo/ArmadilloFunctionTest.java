@@ -139,6 +139,11 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void scaleCubeCommand() throws IOException {
+        testMathCommand("scaleCube");
+    }
+
+    @Test
     public void testDiagCommand() throws IOException {
         testMathCommand("diag");
     }
