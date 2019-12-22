@@ -7,9 +7,12 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilatio
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 
 import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchCompilationUnit;
+import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchCompilationUnit;
 import de.monticore.lang.monticar.cnnarch._parser.CNNArchParser;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCoCoChecker;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchSymbolCoCoChecker;
+import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._cocos.EmbeddedMontiArcMathCoCoChecker;
 
@@ -26,6 +29,7 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.util.lsp.MontiCoreDocumentServiceWithSymbol;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.Finding;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -35,7 +39,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEMACompilationUnit, EMAComponentSymbol> {
+public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEMACompilationUnit, CNNArchCompilationUnitSymbol> {
     private CNNArchParser parser = new CNNArchParser();
     private ModelingLanguageFamily modelFamily;
 
@@ -70,22 +74,44 @@ public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
     protected String getFullSymbolName(ASTEMACompilationUnit node) {
         return String.join(".",getPackageList(node)) + "." + getSymbolName(node);
     }
+/**
+    protected static CNNArchCompilationUnitSymbol getCompilationUnitSymbol(String modelPath) {
+        // /home/treiber/git/BA/EmbeddedMontiArc/languages/CNNArchLang/src/test/java/de/monticore/lang/monticar/cnnarch/AbstractSymtabTest.java
+        Scope symTab = createSymTab(modelPath);
+        CNNArchCompilationUnitSymbol comp = symTab.<CNNArchCompilationUnitSymbol> resolve(
+                model, CNNArchCompilationUnitSymbol.KIND).orElse(null);
+        assertNotNull("Could not resolve model " + model, comp);
+
+        return comp;
+    } */
 
     @Override
-    protected void doCheckSymbolCoCos(Path sourcePath, EMAComponentSymbol sym) {
-        // CNNArchCocos checker = new CNNArchCocos();
-        // TODO check if correct thing is checked
-        // getEnclosingScope().resolve
-        // astChecker.checkAll((ASTCNNArchCompilationUnit)compilationUnit.getAstNode().get());
-        // EmbeddedMontiArcMathCoCoChecker checker = EmbeddedMontiArcMathCoCos.createChecker();
+    protected void doCheckSymbolCoCos(Path sourcePath, CNNArchCompilationUnitSymbol sym) {
+        // write doCheckSymbolCoCos
+        // /home/treiber/ema/languages/CNNArchLang/src/test/java/de/monticore/lang/monticar/cnnarch/cocos/AbstractCoCoTest.java
 
         CNNArchCoCoChecker astChecker = CNNArchCocos.createASTChecker();
+        CNNArchSymbolCoCoChecker preResolveCocos = CNNArchCocos.createCNNArchPreResolveSymbolChecker();
+        CNNArchSymbolCoCoChecker postResolveCocos = CNNArchCocos.createCNNArchPostResolveSymbolChecker();
+
+        int findings = Log.getFindings().size();
 
         astChecker.checkAll((ASTCNNArchCompilationUnit) sym.getAstNode().get());
-        if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
-            Log.info("No CoCos invalid", "default");
-        } else {
-            Log.info("Findings: " + de.monticore.lang.math.LogConfig.getFindings(), "default");
+        if (findings == Log.getFindings().size()) {
+            preResolveCocos.checkAll(sym);
+            if (findings == Log.getFindings().size()) {
+                sym.getArchitecture().resolve();
+                if (findings == Log.getFindings().size()) {
+                    postResolveCocos.checkAll(sym);
+                }
+            }
+
+        // checker.checkAll((ASTComponent) sym.getAstNode().get());
+        // astChecker.checkAll((ASTCNNArchCompilationUnit) sym.getAstNode().get());
+        // if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
+        //     Log.info("No CoCos invalid", "default");
+        // } else {
+        //     Log.info("Findings: " + de.monticore.lang.math.LogConfig.getFindings(), "default");
         }
     }
 
@@ -96,7 +122,7 @@ public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
 
     @Override
     protected SymbolKind getSymbolKind() {
-        return EMAComponentSymbol.KIND;
+        return CNNArchCompilationUnitSymbol.KIND;
     }
 
     @Override
