@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 import mxnet as mx
 import numpy as np
+import math
 from mxnet import gluon
 
 
@@ -102,5 +103,30 @@ ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 <#else>
         return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}
 </#if>
-
 </#list>
+
+    def getInputs(self):
+        inputs = {}
+<#list tc.architecture.streams as stream>
+<#assign dimensions = (tc.getStreamInputs(stream, false))>
+<#assign domains = (tc.getStreamInputDomains(stream))>
+<#list tc.getStreamInputNames(stream, false) as name>
+        input_dimensions = (${tc.join(dimensions[name], ",")})
+        input_domains = (${tc.join(domains[name], ",")})
+        inputs["${name}"] = input_domains + (input_dimensions,)
+</#list>
+</#list>
+        return inputs
+
+    def getOutputs(self):
+        outputs = {}
+<#list tc.architecture.streams as stream>
+<#assign dimensions = (tc.getStreamOutputs(stream, false))>
+<#assign domains = (tc.getStreamOutputDomains(stream))>
+<#list tc.getStreamOutputNames(stream, false) as name>
+        output_dimensions = (${tc.join(dimensions[name], ",")})
+        output_domains = (${tc.join(domains[name], ",")})
+        outputs["${name}"] = output_domains + (output_dimensions,)
+</#list>
+</#list>
+        return outputs

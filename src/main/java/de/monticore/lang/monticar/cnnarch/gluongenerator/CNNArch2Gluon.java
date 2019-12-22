@@ -84,6 +84,8 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         CNNArch2GluonTemplateController archTc = new CNNArch2GluonTemplateController(
                 architecture, templateConfiguration);
 
+        archTc.getStreamOutputDomains(archTc.getArchitecture().getStreams().get(0));
+
         fileContentMap.putAll(compilePythonFiles(archTc, architecture));
         fileContentMap.putAll(compileCppFiles(archTc));
 

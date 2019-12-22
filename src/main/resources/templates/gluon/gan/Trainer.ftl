@@ -14,6 +14,9 @@ import CNNDataLoader_${config.instanceName}
 import CNNGanTrainer_${config.instanceName}
 
 from ${ganFrameworkModule}.CNNCreator_${discriminatorInstanceName} import CNNCreator_${discriminatorInstanceName}
+<#if (qNetworkInstanceName)??>
+from ${ganFrameworkModule}.CNNCreator_${qNetworkInstanceName} import CNNCreator_${qNetworkInstanceName}
+</#if>
 
 if __name__ == "__main__":
 
@@ -26,11 +29,17 @@ if __name__ == "__main__":
 
     gen_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
     dis_creator = CNNCreator_${discriminatorInstanceName}()
+    <#if (qNetworkInstanceName)??>
+    qnet_creator = CNNCreator_${qNetworkInstanceName}()
+    </#if>
 
     ${config.instanceName}_trainer = CNNGanTrainer_${config.instanceName}.CNNGanTrainer_${config.instanceName}(
         data_loader,
         gen_creator,
-        dis_creator
+        dis_creator,
+        <#if (qNetworkInstanceName)??>
+        qnet_creator
+        </#if>
     )
 
     ${config.instanceName}_trainer.train(
@@ -48,6 +57,9 @@ if __name__ == "__main__":
 </#if>
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
+</#if>
+<#if (config.preprocessingName)??>
+        preprocessing=${config.preprocessingName???string("True","False")},
 </#if>
 <#if (config.imgResizeWidth)??>
 <#if (config.imgResizeHeight)??>

@@ -7,7 +7,7 @@ import de.monticore.lang.monticar.cnnarch.generator.CNNArchTemplateController;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 
 import java.io.Writer;
 import java.util.*;
@@ -117,6 +117,10 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         return getStreamInputs(stream, outputAsArray).keySet();
     }
 
+    public List<String> get(Map<String, List<String>> map, String name) {
+        return map.get(name);
+    }
+
     public List<String> getUnrollInputNames(UnrollInstructionSymbol unroll, String variable) {
         List<String> inputNames = new LinkedList<>(getStreamInputNames(unroll.getBody(), true));
         Map<String, String> pairs = getUnrollPairs(unroll.getBody(), unroll.getResolvedBodies().get(0), variable);
@@ -133,6 +137,26 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     public Collection<List<String>> getStreamInputDimensions(SerialCompositeElementSymbol stream) {
         return getStreamInputs(stream, false).values();
     }
+
+    public Collection<List<String>> getStreamOutputDimensions(SerialCompositeElementSymbol stream) {
+        return getStreamOutputs(stream, false).values();
+    }
+
+    public Collection<List<String>> getStreamInputInformation(SerialCompositeElementSymbol stream) {
+        Map<String, List<String>> dimensions = getStreamInputs(stream, false);
+        Map<String, List<String>> domains = getStreamInputDomains(stream);
+        Collection<List<String>> information = new HashSet<List<String>>();
+        for (String name : dimensions.keySet()) {
+            List<String> newEntry = new ArrayList<String>();
+            newEntry.add(name);
+        }
+        return null;
+    }
+
+
+    /*public Collection<List<String>> getStreamOutputsWithTypes(SerialCompositeElementSymbol stream) {
+
+    }*/
 
     public String getOutputName() {
         return getNameWithoutIndex(getName(getArchitectureOutputSymbols().get(0)));
@@ -258,7 +282,75 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         return pairs;
     }
 
-    private Map<String, List<String>> getStreamInputs(SerialCompositeElementSymbol stream, boolean outputAsArray) {
+    public Map<String, List<String>> getStreamInputDomains(SerialCompositeElementSymbol stream) {
+
+        Map<String, List<String>> inputTypes = new LinkedHashMap<>();
+        for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
+            if (element.isInput() || element.isOutput()) {
+                ASTElementType type = element.getOutputTypes().get(0).getDomain();
+                HashMap<String,String> ranges = element.getOutputTypes().get(0).getElementRange();
+                if (ranges.get("min") == "-inf")
+                    ranges.put("min", "float('-inf')");
+                if (ranges.get("max") == "inf")
+                    ranges.put("max", "float('inf')");
+
+                String typeAsString = new String();
+
+                if(type.isBoolean())
+                    typeAsString = "bool";
+                else if (type.isComplex())
+                    typeAsString = "complex";
+                else if (type.isNaturalNumber() || type.isWholeNumber())
+                    typeAsString = "int";
+                else if (type.isRational())
+                    typeAsString = "float";
+
+                String name = getName(element);
+                ArrayList<String> domain = new ArrayList<String>();
+                domain.add(typeAsString);
+                domain.add(ranges.get("min"));
+                domain.add(ranges.get("max"));
+                inputTypes.put(name, domain);
+            }
+        }
+        return inputTypes;
+    }
+
+    public Map<String, List<String>> getStreamOutputDomains(SerialCompositeElementSymbol stream) {
+
+        Map<String, List<String>> outputTypes = new LinkedHashMap<>();
+        for (ArchitectureElementSymbol element : stream.getLastAtomicElements()) {
+            if (element.isInput() || element.isOutput()) {
+                ASTElementType type = element.getInputTypes().get(0).getDomain();
+                HashMap<String,String> ranges = element.getInputTypes().get(0).getElementRange();
+                if (ranges.get("min") == "-inf")
+                    ranges.put("min", "float('-inf')");
+                if (ranges.get("max") == "inf")
+                    ranges.put("max", "float('inf')");
+
+                String typeAsString = new String();
+
+                if(type.isBoolean())
+                    typeAsString = "bool";
+                else if (type.isComplex())
+                    typeAsString = "complex";
+                else if (type.isNaturalNumber() || type.isWholeNumber())
+                    typeAsString = "int";
+                else if (type.isRational())
+                    typeAsString = "float";
+
+                String name = getName(element);
+                ArrayList<String> domain = new ArrayList<String>();
+                domain.add(typeAsString);
+                domain.add(ranges.get("min"));
+                domain.add(ranges.get("max"));
+                outputTypes.put(name, domain);
+            }
+        }
+        return outputTypes;
+    }
+
+    public Map<String, List<String>> getStreamInputs(SerialCompositeElementSymbol stream, boolean outputAsArray) {
         Map<String, List<String>> inputs = new LinkedHashMap<>();
 
         for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
@@ -288,8 +380,40 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         }
 
         inputs.putAll(getStreamLayerVariableMembers(stream, false));
-
         return inputs;
+    }
+
+    public Map<String, List<String>> getStreamOutputs(SerialCompositeElementSymbol stream, boolean outputAsArray) {
+        Map<String, List<String>> outputs = new LinkedHashMap<>();
+
+        for (ArchitectureElementSymbol element : stream.getLastAtomicElements()) {
+            if (element.isInput() || element.isOutput()) {
+                List<Integer> intDimensions = element.getPrevious().get(0).getOutputTypes().get(0).getDimensions();
+
+                List<String> dimensions = new ArrayList<>();
+                for (Integer intDimension : intDimensions) {
+                    dimensions.add(intDimension.toString());
+                }
+
+                String name = getName(element);
+
+                if (outputAsArray && element.isOutput() && element instanceof VariableSymbol) {
+                    VariableSymbol variable = (VariableSymbol) element;
+
+                    if (variable.getType() == VariableSymbol.Type.IO) {
+                        name = getNameAsArray(name);
+                    }
+                }
+                outputs.put(name, dimensions);
+            }
+            else if (element instanceof ConstantSymbol) {
+                outputs.put(getName(element), Arrays.asList("1"));
+            }
+        }
+
+        outputs.putAll(getStreamLayerVariableMembers(stream, false));
+
+        return outputs;
     }
 
     private Map<String, List<String>> getStreamLayerVariableMembers(SerialCompositeElementSymbol stream, boolean includeOutput) {
