@@ -15,7 +15,7 @@ export class LanguageServerManager{
 
     activateClient(languageId: string) {
         for (let client of this.clients) {
-            if (client.getLanguageId() === languageId) {
+            if (client.getLanguageIds().includes(languageId)) {
                 // give clients time before retrying to connect
                 if(this.timeout !== null){
                     this.timeout.refresh();
@@ -37,15 +37,15 @@ export class LanguageServerManager{
         let reconnectFlag = false;
         for (let client of this.activeClients) {
             if (!client.isProcessActive()) {
-               this.logger.warn(client.getLanguageId() + ": has no active process!");
+               this.logger.warn(client.getLanguagesString() + ": has no active process!");
                 reconnectFlag = true;
                 if (this.reconnects < 3) {
-                   this.logger.info(client.getLanguageId() + ": trying to reconnect");
+                   this.logger.info(client.getLanguagesString() + ": trying to reconnect");
                     client.stop();
                    this.logger.debug("Reconnecting");
                     client.connect();
                 } else {
-                   this.logger.warn(client.getLanguageId() + ": max number of reconnects reached!");
+                   this.logger.warn(client.getLanguagesString() + ": max number of reconnects reached!");
                 }
             }
         }

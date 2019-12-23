@@ -1,6 +1,8 @@
 import { SpawnSyncReturns, spawnSync, SpawnSyncOptionsWithStringEncoding } from "child_process";
 import { getLogger } from "log4js";
 import { window } from "vscode"
+import { spawn, SpawnOptions} from 'child_process';
+
 
 export function spawnExecutableCheck(executable:string):SpawnSyncReturns<string> {
 	if (process.platform === "win32"){
@@ -31,4 +33,26 @@ export function allDependenciesAvailable(commands:string[]){
         res = dependencyAvailable(c) && res;
     }
     return res;
+}
+
+export function spawnMavenExecChildProcess(mavenPath:string, programArgs: string[], additionalMavenArgs?: string[]){
+    let args:string[] = ["exec:java", '-e', '-Dexec.args="' + programArgs.join(" ") + '"'];
+    
+    if(additionalMavenArgs){
+        args = args.concat(additionalMavenArgs);
+    }
+
+    return spawnMavenChildProcess(mavenPath, args);
+}
+
+export function spawnMavenChildProcess(mavenPath:string, args: string[]){
+    
+    let spawnOptions: SpawnOptions = {
+        cwd: mavenPath,
+        env: process.env,
+        stdio: "pipe",
+        shell: true
+    };
+
+    return spawn("mvn", args, spawnOptions);
 }

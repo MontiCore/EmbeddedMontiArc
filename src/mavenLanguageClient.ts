@@ -1,14 +1,15 @@
 import * as vscode from 'vscode';
-import { spawn, SpawnOptions, ChildProcess } from 'child_process';
+import { ChildProcess } from 'child_process';
 import { LanguageClient, ServerOptions, MessageTransports, LanguageClientOptions } from 'vscode-languageclient';
 import { join } from 'path';
 import { SocketMessageReader, SocketMessageWriter } from 'vscode-jsonrpc';
 import { Socket } from 'net';
 import { getLogger, Logger } from 'log4js';
 import { ChunkBuffer } from './chunkBuffer';
+import { spawnMavenExecChildProcess } from './utils';
 
 export interface MavenLanguageClientOptions {
-    languageName: string;
+    languages: string[];
     useRunningServer: boolean;
     manualPort: number;
     bufferSize: number;
@@ -32,7 +33,7 @@ export class MavenLanguageClient {
         this.connected = false;
         this.client = null;
         this.lspProcess = null;
-        this.logger = getLogger(this.constants.languageName);
+        this.logger = getLogger(this.getLanguagesString());
         this.context = context;
         this.processRunning = false;
     }
@@ -40,23 +41,17 @@ export class MavenLanguageClient {
     startServerAndConnect(clientOptions: LanguageClientOptions) {
         const mavenPath = join(this.context.extensionPath, this.constants.pomRoot);
         this.logger.trace("maven path: " + mavenPath);
-        let spawnOptions: SpawnOptions = {
-            cwd: mavenPath,
-            env: process.env,
-            stdio: "pipe",
-            shell: true
-        };
-        const args: string[] = ["exec:java", '-e', '-Dexec.args="-p ' + this.constants.manualPort + '"'];
-        if (this.constants.relativeMvnSettingsPath) {
-            args.push("-s", this.constants.relativeMvnSettingsPath);
-        }
 
-        this.logger.trace("spwan(mvn, [" + args + "] , " + spawnOptions.cwd + ")");
         let statusBarItem = vscode.window.createStatusBarItem();
-        statusBarItem.text = this.constants.languageName + ": starting Language Server";
+        statusBarItem.text = this.getLanguagesString() + ": starting Language Server";
         statusBarItem.show();
+  
+        this.lspProcess = spawnMavenExecChildProcess(
+            mavenPath,
+            ['-p ' + this.constants.manualPort],
+            this.constants.relativeMvnSettingsPath ? ["-s", this.constants.relativeMvnSettingsPath] : undefined
+        )
 
-        this.lspProcess = spawn("mvn", args, spawnOptions);
         this.processRunning = true;
 
         this.lspProcess.on("exit", (code, signal) => this.logger.error("code: " + code + ", signal: " + signal));
@@ -67,7 +62,7 @@ export class MavenLanguageClient {
                 let curText = this.serverBuffer.getText();
     
                 if(curText.includes("Downloading")){
-                    statusBarItem.text = this.constants.languageName + ": starting Language Server, Downloading dependencies";
+                    statusBarItem.text = this.getLanguagesString() + ": starting Language Server, Downloading dependencies";
                 }
     
                 if (!this.connected && (curText).includes("Listening on port ")) {
@@ -76,11 +71,11 @@ export class MavenLanguageClient {
                     if (portMatch) {
                         let portStr = portMatch[1];
                         let port = parseInt(portStr);
-                        getLogger(this.constants.languageName).debug("Connecting on port " + port);
+                        getLogger(this.getLanguagesString()).debug("Connecting on port " + port);
                         statusBarItem.hide();
     
                         this.connected = true;
-                        this.connectToServer(clientOptions, port, this.constants.languageName + "LangClient");
+                        this.connectToServer(clientOptions, port, this.getLanguagesString() + "LangClient");
                     } else {
                         this.logger.debug("Can not find port!");
                     }
@@ -120,14 +115,24 @@ export class MavenLanguageClient {
     }
 
     connect() {
+        let selectors = [];
+        for(let lang of this.constants.languages){
+            selectors.push(
+                {
+                    scheme: 'file',
+                    language: lang
+                }
+            );
+        }
+
         let clientOptions: LanguageClientOptions = {
-            documentSelector: [{ scheme: 'file', language: this.constants.languageName }],
+            documentSelector: selectors
         };
 
         if (!this.constants.useRunningServer) {
             this.startServerAndConnect(clientOptions);
         } else {
-            this.connectToServer(clientOptions, this.constants.manualPort, this.constants.languageName + "LangClient");
+            this.connectToServer(clientOptions, this.constants.manualPort, this.getLanguagesString() + "LangClient");
         }
     }
 
@@ -161,8 +166,12 @@ export class MavenLanguageClient {
         return this.processRunning;
     }
 
-    getLanguageId(): string {
-        return this.constants.languageName;
+    getLanguageIds(): string[] {
+        return this.constants.languages;
+    }
+
+    getLanguagesString(): string{
+        return this.constants.languages.join("|");
     }
 
 }
