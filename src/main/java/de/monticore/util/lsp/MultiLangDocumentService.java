@@ -1,9 +1,9 @@
 package de.monticore.util.lsp;
 
-import de.monticore.util.lsp.exceptions.DocumentServiceNotFoundException;
 import de.monticore.util.lsp.exceptions.FileExtensionAlreadyRegisteredException;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
+import org.eclipse.lsp4j.services.LanguageClient;
 import org.eclipse.lsp4j.services.TextDocumentService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class MutliLangDocumentService implements TextDocumentService {
-    private Map<String, TextDocumentService> fileExtensionToDocumentServices = new HashMap<>();
+public class MultiLangDocumentService implements ClientAwareTextDocumentService {
+    private Map<String, ClientAwareTextDocumentService> fileExtensionToDocumentServices = new HashMap<>();
 
-    public void addDocumentService(String fileExtension, TextDocumentService documentService) throws FileExtensionAlreadyRegisteredException {
+    public void addDocumentService(String fileExtension, ClientAwareTextDocumentService documentService) throws FileExtensionAlreadyRegisteredException {
         String fileExtensionCleaned = fileExtension.replace(".", "");
         if(fileExtensionToDocumentServices.containsKey(fileExtensionCleaned)){
             throw new FileExtensionAlreadyRegisteredException("This file extension is already registered: " + fileExtensionCleaned);
@@ -323,5 +323,15 @@ public class MutliLangDocumentService implements TextDocumentService {
         }else{
             return CompletableFuture.completedFuture(null);
         }
+    }
+
+    @Override
+    public void setClient(LanguageClient client) {
+        connect(client);
+    }
+
+    @Override
+    public void connect(LanguageClient languageClient) {
+        fileExtensionToDocumentServices.forEach((key, value) -> value.connect(languageClient));
     }
 }
