@@ -54,7 +54,7 @@ export class LspExtensionManager {
 
     public addClientFromOptions(clientOptions: MavenLanguageClientOptions): void {
         this.languageServerManager.addClient(new MavenLanguageClient(this.context, clientOptions));
-        this.updateManager.addUpdater(new MavenUpdater(clientOptions.languageName, join(this.context.extensionPath, clientOptions.pomRoot), clientOptions.relativeMvnSettingsPath));
+        this.updateManager.addUpdater(new MavenUpdater(clientOptions.languages, join(this.context.extensionPath, clientOptions.pomRoot), clientOptions.relativeMvnSettingsPath));
     }
 
     public activate(): void{

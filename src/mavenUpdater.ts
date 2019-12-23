@@ -6,13 +6,13 @@ export class MavenUpdater{
     private pomPath: string;
     private relativeMvnSettingsPath: string | null;
     private logger: Logger;
-    private id: string;
+    private ids: string[];
 
-    constructor(id :string ,pomPath: string, relativeMvnSettingsPath: string | null = null){
-        this.id = id;
+    constructor(ids: string[] ,pomPath: string, relativeMvnSettingsPath: string | null = null){
+        this.ids = ids;
         this.pomPath = pomPath;
         this.relativeMvnSettingsPath = relativeMvnSettingsPath;
-        this.logger = getLogger("Updater - " + id);
+        this.logger = getLogger("Updater - " + ids);
     }
 
 	doUpdate(): Promise<number> {
