@@ -42,7 +42,7 @@ relationships between components.
 ## Demonstration
 ![](doc/media/videos/VisualizationEMAM.mp4)
 
-[Try it out](https://embeddedmontiarc.github.io/VisualizationEMAM/)
+[Try it out](https://embeddedmontiarc.github.io/webspace/Models2018.EXE/htmlModels/)
 
 ## Command Line Interface
 | Short | Long         | Description                                     |
