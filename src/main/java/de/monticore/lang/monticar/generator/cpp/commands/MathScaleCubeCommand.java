@@ -136,13 +136,13 @@ public class MathScaleCubeCommand extends MathCommand {
                         "    for (int i = 0; i < img.n_slices; i++) \n" +
                         "    {\n" +
                         "        arma::mat cur_slice = img.slice(i);\n" +
-                        "        arma::vec X = arma::regspace(1, cur_slice.n_cols);\n" +
-                        "        arma::vec Y = arma::regspace(1, cur_slice.n_rows);\n" +
+                        "        arma::vec X = arma::regspace(0, cur_slice.n_cols-1);\n" +
+                        "        arma::vec Y = arma::regspace(0, cur_slice.n_rows-1);\n" +
                         "\n" +
-                        "        float scale_x = cur_slice.n_cols/float((new_x));\n" +
-                        "        float scale_y = cur_slice.n_rows/float((new_y));\n" +
-                        "        arma::vec XI = arma::regspace(1, new_x) * scale_x;\n" +
-                        "        arma::vec YI = arma::regspace(1, new_y) * scale_y;\n" +
+                        "        float scale_x = (cur_slice.n_cols-1)/float((new_x));\n" +
+                        "        float scale_y = (cur_slice.n_rows-1)/float((new_y));\n" +
+                        "        arma::vec XI = arma::regspace(0, new_x-1) * scale_x;\n" +
+                        "        arma::vec YI = arma::regspace(0, new_y-1) * scale_y;\n" +
                         "\n" +
                         "        arma::mat mat_out;\n" +
                         "\n" +
