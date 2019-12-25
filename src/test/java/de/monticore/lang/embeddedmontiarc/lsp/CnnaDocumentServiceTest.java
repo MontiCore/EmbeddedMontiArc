@@ -43,14 +43,14 @@ class CnnaDocumentServiceTest extends AbstractTextDocumentServiceTest {
     public void testValidSyntax() throws InterruptedException, ExecutionException, IOException {
         CnnaDocumentService documentService = getDocumentService(BASE_PATH);
         DiagnosticsLog.setLogToStdout(true);
-        documentService.doParse(new StringReader("package a; architecture Abc{}"));
+        documentService.doParse(new StringReader("architecture Abc{\ndef input Z(0:255)^{28, 28} image\ndef output Z(0:1)^{10} prediction\nimage -> prediction;\n}"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());
     }
 
     @Test
     public void testInvalidSyntax() throws InterruptedException, ExecutionException, IOException {
         CnnaDocumentService documentService = getDocumentService(BASE_PATH);
-        documentService.doParse(new StringReader("package a; architeture Abc{}"));
+        documentService.doParse(new StringReader("architeture Abc{}"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
 
@@ -59,6 +59,7 @@ class CnnaDocumentServiceTest extends AbstractTextDocumentServiceTest {
         CnnaDocumentService documentService = getDocumentService(BASE_PATH);
 
         File file = new File("src/test/resources/cnna/valid/SimpleArchitecture.cnna");
+        // File file = new File("src/test/resources/cnna/valid/Alexnet_alt.cnna");
         documentService.didOpen(createDidOpenEvent(file, "CNNArchLang"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());
     }
@@ -70,5 +71,4 @@ class CnnaDocumentServiceTest extends AbstractTextDocumentServiceTest {
         documentService.didOpen(createDidOpenEvent(file, "CNNArchLang"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
-
 }
