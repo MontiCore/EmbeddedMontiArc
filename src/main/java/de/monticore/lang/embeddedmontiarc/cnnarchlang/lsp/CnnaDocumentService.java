@@ -7,14 +7,11 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilatio
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 
 import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchCompilationUnit;
-import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchCompilationUnit;
 import de.monticore.lang.monticar.cnnarch._parser.CNNArchParser;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCoCoChecker;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchSymbolCoCoChecker;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
-
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._cocos.EmbeddedMontiArcMathCoCoChecker;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
@@ -29,7 +26,6 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.util.lsp.MontiCoreDocumentServiceWithSymbol;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Finding;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -105,13 +101,12 @@ public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
                     postResolveCocos.checkAll(sym);
                 }
             }
+        }
 
-        // checker.checkAll((ASTComponent) sym.getAstNode().get());
-        // astChecker.checkAll((ASTCNNArchCompilationUnit) sym.getAstNode().get());
-        // if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
-        //     Log.info("No CoCos invalid", "default");
-        // } else {
-        //     Log.info("Findings: " + de.monticore.lang.math.LogConfig.getFindings(), "default");
+        if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
+            Log.info("No CoCos invalid", "default");
+        } else {
+            Log.info("Findings: " + de.monticore.lang.math.LogConfig.getFindings(), "default");
         }
     }
 
