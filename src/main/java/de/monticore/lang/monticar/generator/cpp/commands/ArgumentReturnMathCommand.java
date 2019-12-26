@@ -21,7 +21,6 @@ import java.util.List;
  * @author Ahmed Diab.
  */
 public abstract class ArgumentReturnMathCommand extends MathCommand{
-    //TODO rename to argumentReturnMathCommand
     public ArgumentReturnMathCommand() {
 
     }
@@ -38,6 +37,7 @@ public abstract class ArgumentReturnMathCommand extends MathCommand{
         return false;
     }
 
+    @Override
     public boolean isArgumentReturnMathCommand() {
         return true;
     }

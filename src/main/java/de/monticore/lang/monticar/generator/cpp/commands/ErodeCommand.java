@@ -48,7 +48,7 @@ public class ErodeCommand extends ArgumentReturnMathCommand{
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        ((BluePrintCPP) bluePrint).addAdditionalIncludeString("octave/builtin-defun-decls");
+        ((BluePrintCPP) bluePrint).addCVIncludeString("opencv2/imgproc");
     }
 
     public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
@@ -65,6 +65,7 @@ public class ErodeCommand extends ArgumentReturnMathCommand{
 
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
+        ((BluePrintCPP) bluePrint).addCVIncludeString("opencv2/imgproc");
 
     }
 }
