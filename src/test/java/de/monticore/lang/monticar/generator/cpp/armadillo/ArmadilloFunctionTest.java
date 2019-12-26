@@ -218,8 +218,6 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
         testMathCommand("min");
     }
 
-
-
     // Adding CV tests
 
     @Test

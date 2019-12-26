@@ -9,6 +9,7 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
+import de.monticore.lang.monticar.generator.MathCommand;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.LoggingViewModel;
@@ -74,6 +75,7 @@ public class LanguageUnitCPP extends LanguageUnit {
     }
 
     public String getGeneratedHeader(TaggingResolver taggingResolver, BluePrintCPP bluePrint) {
+        MathCommand mathCommand = bluePrint.getMathCommandRegister().getMathCommand(ComponentConverter.nameOfFunction);
         ExecutionOrderFixer.fixExecutionOrder(taggingResolver, bluePrint, (GeneratorCPP) bluePrint.getGenerator());
         String nameOfFunction = ComponentConverter.nameOfFunction;
         String resultString = "";

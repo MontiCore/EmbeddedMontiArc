@@ -18,27 +18,17 @@ public abstract class MathCommandRegister {
 
     public void registerMathCommand(MathCommand mathCommand) {
         mathCommands.add(mathCommand);
-    }
-
-    public void registerMathCommand(ArgumentReturnMathCommand argumentReturnMathCommand){
-        mathCommands.add(argumentReturnMathCommand);
-        argumentReturnMathCommands.add(argumentReturnMathCommand);
+        if(mathCommand.isArgumentReturnMathCommand()){
+            argumentReturnMathCommands.add((ArgumentReturnMathCommand) mathCommand);
+        }
     }
 
     public MathCommand getMathCommand(String functionName) {
         for (MathCommand mathCommand : mathCommands) {
            if (mathCommand.getMathCommandName().equals(functionName))
-               if(mathCommand.isArgumentReturnMathCommand()){
-                   return getArgumentReturnMathCommand(mathCommand);
-               } else {
                    return mathCommand;
-               }
         }
         return null;
-    }
-
-    public ArgumentReturnMathCommand getArgumentReturnMathCommand(MathCommand mathCommand){
-        return (ArgumentReturnMathCommand) mathCommand;
     }
 
     public boolean isMathCommand(String functionName) {

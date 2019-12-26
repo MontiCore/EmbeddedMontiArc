@@ -9,6 +9,7 @@ import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symbol
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
@@ -31,6 +32,7 @@ public class ComponentConverter {
 
     public static BluePrintCPP currentBluePrint = null;
     public static String nameOfFunction = "";
+    public static MathCommand usedMathCommand = null;
 
     public static BluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         BluePrintCPP bluePrint = new BluePrintCPP(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
@@ -38,8 +40,9 @@ public class ComponentConverter {
         bluePrint.setGenerator(generatorCPP);
         bluePrint.setOriginalSymbol(componentSymbol);
         bluePrint.addDefineGenerics(componentSymbol);
-
+        // Hint: the variables will be added here to the BluePrint
         addVariables(componentSymbol, bluePrint);
+        // ToDo: you can fix the variables type here or later, so before it will be used
         BluePrintFixer.fixBluePrintDynamicVariableConnectRequestQueues(bluePrint);
 
 
@@ -65,11 +68,20 @@ public class ComponentConverter {
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
         //save function name
         if(mathStatementsSymbol != null) {
-            if (mathStatementsSymbol.getMathExpressionSymbols().get(0) instanceof MathAssignmentExpressionSymbol) {
+            if (mathStatementsSymbol.getMathExpressionSymbols().get(0).isAssignmentExpression()) {
                 if (((MathAssignmentExpressionSymbol) mathStatementsSymbol.getMathExpressionSymbols().get(0)).getExpressionSymbol() instanceof MathMatrixNameExpressionSymbol) {
                     nameOfFunction = ((MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathStatementsSymbol.getMathExpressionSymbols().get(0)).getExpressionSymbol()).getNameToAccess();
                 }
+            } else if(mathStatementsSymbol.getMathExpressionSymbols().get(0).isValueExpression()){
+                if(((MathValueSymbol) mathStatementsSymbol.getMathExpressionSymbols().get(0)).getValue() instanceof MathMatrixNameExpressionSymbol){
+                    nameOfFunction = ((MathMatrixNameExpressionSymbol)((MathValueSymbol) mathStatementsSymbol.getMathExpressionSymbols().get(0)).getValue()).getNameToAccess();
+                }
+
             }
+        }
+
+        if(nameOfFunction != "") {
+            usedMathCommand = bluePrint.getMathCommandRegister().getMathCommand(nameOfFunction);
         }
         //ToDo: add a BluePrintFixer.fixerBluePrintCVfuncitons(bluePrint, nameOfFunction);
 
@@ -286,7 +298,7 @@ public class ComponentConverter {
         if(v.isParameterVariable()){
             method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
             method.addParameter(v);
-        }else {
+        }else {//ToDo: inside getInitLine you can add your configuration for another represetation
             Optional<String> initLine = MathConverter.getInitLine(v, bluePrint);
             initLine.ifPresent(s -> method.addInstruction(new TargetCodeInstruction(s)));
         }
