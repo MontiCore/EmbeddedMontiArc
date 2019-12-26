@@ -100,26 +100,6 @@ public class LanguageUnitCPP extends LanguageUnit {
             alreadyGeneratedIncludes.add(MathConverter.curBackend.getIncludeHeaderName());
         }
 
-        List<String> cvImgprocCommands = Arrays.asList("dilate","erode", "cvtColor", "GaussianBlur", "threshold",
-                "findContours", "drawContours", "boundingRect", "putText", "circle");
-        List<String> cvCoreCommands = Arrays.asList("inRange");
-
-        // add iclude cv imgproc and cv core
-
-        String nameLowerCase = bluePrint.getName().toLowerCase();
-
-        boolean isUsedCV = false;
-        if (containsString(nameLowerCase, cvImgprocCommands)) {
-            resultString += "#include \"opencv2/imgproc.hpp\"\n";
-            alreadyGeneratedIncludes.add("opencv2/imgproc.hpp");
-            isUsedCV = true;
-        } else if(containsString(nameLowerCase, cvCoreCommands)){
-            resultString += "#include \"opencv2/core.hpp\"\n";
-            alreadyGeneratedIncludes.add("opencv2/core.hpp");
-            isUsedCV = true;
-        }
-
-
         for (Variable v : bluePrint.getVariables()) {
             //TODO remove multiple same includes
             if (v.hasInclude()) {
@@ -145,6 +125,8 @@ public class LanguageUnitCPP extends LanguageUnit {
         for (String string : bluePrint.getAdditionalIncludeStrings())
             resultString += "#include \"" + string + ".h\"\n";
 
+        for(String string: bluePrint.getCVIncludeStrings())
+            resultString += "#include \"" + string + ".hpp\"\n";
         if (generatorCPP.isExecutionLoggingActive)
             resultString += "#include <fstream>\n";
 
@@ -161,7 +143,7 @@ public class LanguageUnitCPP extends LanguageUnit {
             resultString += "using namespace arma;\n";
         }
 
-        if(isUsedCV){
+        if(!bluePrint.cvIncludeStrings.isEmpty()){
             resultString += "using namespace cv;\n";
         }
 

@@ -63,6 +63,7 @@ public class CvtColorCommand extends MathCommand{
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
+        ((BluePrintCPP) bluePrint).addCVIncludeString("opencv2/imgproc");
 
     }
 }
