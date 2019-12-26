@@ -18,7 +18,7 @@ arrayOut=mat(n,m);
 }
 void execute()
 {
-arrayOut = (erode(arrayIn));
+erode(arrayIn, arrayOut);
 }
 
 };
