@@ -29,14 +29,6 @@ public abstract class ArgumentReturnMathCommand extends MathCommand{
         super(argumentReturnMathCommandName);
     }
 
-    public boolean isTargetLanguageCommand(String command) {
-        if (!command.isEmpty())
-            for (String s : getTargetLanguageCommandNames())
-                if (s.contentEquals(command))
-                    return true;
-        return false;
-    }
-
     @Override
     public boolean isArgumentReturnMathCommand() {
         return true;
