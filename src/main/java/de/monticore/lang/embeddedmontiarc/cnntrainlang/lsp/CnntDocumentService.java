@@ -6,6 +6,7 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 
+import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainCompilationUnit;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._parser.CNNTrainParser;
@@ -31,7 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEMACompilationUnit, EMAComponentSymbol> {
+public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTCNNTrainCompilationUnit, EMAComponentSymbol> {
     private CNNTrainParser parser = new CNNTrainParser();
     private ModelingLanguageFamily modelFamily;
 
@@ -41,11 +42,11 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
     }
 
     @Override
-    public Optional<ASTEMACompilationUnit> doParse(StringReader fullText) {
+    public Optional<ASTCNNTrainCompilationUnit> doParse(StringReader fullText) {
         Log.info("Parsing!", "default");
         try {
             // of type ASTCNNTrainCompilationUnit
-            parser.parse(fullText);
+            return parser.parse(fullText);
         } catch (IOException e) {
             Log.error("Error parsing model: ", e);
         }
@@ -53,17 +54,17 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
     }
 
     @Override
-    protected List<String> getPackageList(ASTEMACompilationUnit node) {
+    protected List<String> getPackageList(ASTCNNTrainCompilationUnit node) {
         return node.getPackageList();
     }
 
     @Override
-    protected String getSymbolName(ASTEMACompilationUnit node) {
+    protected String getSymbolName(ASTCNNTrainCompilationUnit node) {
         return node.getComponent().getName();
     }
 
     @Override
-    protected String getFullSymbolName(ASTEMACompilationUnit node) {
+    protected String getFullSymbolName(ASTCNNTrainCompilationUnit node) {
         return String.join(".",getPackageList(node)) + "." + getSymbolName(node);
     }
 

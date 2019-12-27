@@ -35,7 +35,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEMACompilationUnit, CNNArchCompilationUnitSymbol> {
+public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTCNNArchCompilationUnit, CNNArchCompilationUnitSymbol> {
     private CNNArchParser parser = new CNNArchParser();
     private ModelingLanguageFamily modelFamily;
 
@@ -45,11 +45,11 @@ public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
     }
 
     @Override
-    public Optional<ASTEMACompilationUnit> doParse(StringReader fullText) {
+    public Optional<ASTCNNArchCompilationUnit> doParse(StringReader fullText) {
         Log.info("Parsing!", "default");
         try {
             // of type ASTCNNArchCompilationUnit
-            parser.parse(fullText);
+            return parser.parse(fullText);
         } catch (IOException e) {
             Log.error("Error parsing model: ", e);
         }
@@ -57,17 +57,17 @@ public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
     }
 
     @Override
-    protected List<String> getPackageList(ASTEMACompilationUnit node) {
+    protected List<String> getPackageList(ASTCNNArchCompilationUnit node) {
         return node.getPackageList();
     }
 
     @Override
-    protected String getSymbolName(ASTEMACompilationUnit node) {
+    protected String getSymbolName(ASTCNNArchCompilationUnit node) {
         return node.getComponent().getName();
     }
 
     @Override
-    protected String getFullSymbolName(ASTEMACompilationUnit node) {
+    protected String getFullSymbolName(ASTCNNArchCompilationUnit node) {
         return String.join(".",getPackageList(node)) + "." + getSymbolName(node);
     }
 /**
