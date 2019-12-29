@@ -55,6 +55,13 @@ public class ConfigurationData {
         return (Boolean) getConfiguration().getEntry("normalize").getValue().getValue();
     }
 
+    public String getPreprocessingName() {
+        if (!getConfiguration().getEntryMap().containsKey("preprocessing_name")) {
+            return null;
+        }
+        return (String) getConfiguration().getEntry("preprocessing_name").getValue().toString();
+    }
+
     public String getContext() {
         if (!getConfiguration().getEntryMap().containsKey("context")) {
             return null;
