@@ -3,10 +3,12 @@ package test.math;
 
 component ErodeCommandTest{
     port
-    in Q^{n,m} arrayIn,
-    out Q^{n,m} arrayOut;
+    in Q^{n,m} src,
+    in Z erosion_elem,
+    in Z iteration,
+    out Q^{n,m} dst;
 
     implementation Math{
-        arrayOut = erode(arrayIn);
+        dst = erode(src, erosion_elem, iteration);
     }
 }

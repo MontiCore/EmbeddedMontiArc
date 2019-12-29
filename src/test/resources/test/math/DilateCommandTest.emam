@@ -2,7 +2,13 @@
 package test.math;
 
 component DilateCommandTest{
+    port
+    in Q^{n,m} src,
+    in Z dilation_elem,
+    in Z iteration,
+    out Q^{n,m} dst;
+
     implementation Math{
-        Q a = dilate(0,0,0,0,0);
+        dst = dilate(src, dilation_elem, iteration);
     }
 }
