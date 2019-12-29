@@ -37,7 +37,10 @@ class ParameterAlgorithmMapping {
     private static final List<Class> EXCLUSIVE_SUPERVISED_PARAMETERS = Lists.newArrayList(
         ASTBatchSizeEntry.class,
         ASTLoadCheckpointEntry.class,
+        ASTCheckpointPeriodEntry.class,
+        ASTLogPeriodEntry.class,
         ASTEvalMetricEntry.class,
+        ASTEvalTrainEntry.class,
         ASTExcludeBleuEntry.class,
         ASTNormalizeEntry.class,
         ASTNumEpochEntry.class,
@@ -45,10 +48,12 @@ class ParameterAlgorithmMapping {
 		ASTLossWeightsEntry.class,
         ASTSparseLabelEntry.class,
         ASTFromLogitsEntry.class,
+        ASTIgnoreIndicesEntry.class,
         ASTMarginEntry.class,
         ASTLabelFormatEntry.class,
         ASTRhoEntry.class,
         ASTPreprocessingEntry.class,
+        ASTUseTeacherForcing.class,
         ASTSaveAttentionImage.class
     );
 
