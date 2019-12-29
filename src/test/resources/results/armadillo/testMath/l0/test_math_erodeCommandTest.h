@@ -1,3 +1,4 @@
+
 #ifndef TEST_MATH_ERODECOMMANDTEST
 #define TEST_MATH_ERODECOMMANDTEST
 #ifndef M_PI
@@ -9,16 +10,29 @@ using namespace arma;
 using namespace cv;
 class test_math_erodeCommandTest{
 public:
-mat arrayIn;
-mat arrayOut;
+mat src;
+int erosion_elem;
+int iteration;
+mat dst;
 void init()
 {
-arrayIn=mat(n,m);
-arrayOut=mat(n,m);
+src=mat(n,m);
+dst=mat(n,m);
 }
+void erodeHelper(mat src, mat dst, int erosion_elem, int iteration)
+{
+    int erosion_type = 0;
+    if( erosion_elem == 0 ){ erosion_type = MORPH_RECT; }
+    else if( erosion_elem == 1 ){ erosion_type = MORPH_CROSS; }
+    else if( erosion_elem == 2) { erosion_type = MORPH_ELLIPSE; }
+    erosion_size = erosion_elem;
+    mat element = getStructuringElement( erosion_type,
+                            Size( 2*erosion_size + 1, 2*erosion_size+1 ),
+                            Point( erosion_size, erosion_size ) );
+    erode( src, dst, element, Point(-1,-1), iteration );}
 void execute()
 {
-erode(arrayIn, arrayOut);
+erodeHelper(src, dst, erosion_elem, iteration);
 }
 
 };
