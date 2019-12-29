@@ -178,7 +178,7 @@ public class ArchitectureElementData {
 
     @Nullable
     public List<Integer> getPadding(){
-        
+
     	String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.PADDING_NAME).get();
 
         if(pad.equals("same")){
@@ -229,7 +229,7 @@ public class ArchitectureElementData {
     }
 
     @Nullable
-    public List<Integer> getTransPadding(LayerSymbol layer){
+    public List<Integer> getTransPadding(LayerSymbol layer) {
         List<Integer> kernel = layer.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get();
         List<Integer> stride = layer.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
         ArchTypeSymbol inputType = layer.getInputTypes().get(0);
@@ -238,15 +238,23 @@ public class ArchitectureElementData {
         int heightPad = kernel.get(0) - stride.get(0);
         int widthPad = kernel.get(1) - stride.get(1);
 
-        int topPad = (int)Math.ceil(heightPad / 2.0);
-        int bottomPad = (int)Math.floor(heightPad / 2.0);
-        int leftPad = (int)Math.ceil(widthPad / 2.0);
-        int rightPad = (int)Math.floor(widthPad / 2.0);
+        int topPad = (int) Math.ceil(heightPad / 2.0);
+        int bottomPad = (int) Math.floor(heightPad / 2.0);
+        int leftPad = (int) Math.ceil(widthPad / 2.0);
+        int rightPad = (int) Math.floor(widthPad / 2.0);
 
         /*if (topPad == 0 && bottomPad == 0 && leftPad == 0 && rightPad == 0){
             return null;
         }*/
 
         return Arrays.asList(bottomPad, rightPad);
+    }
+
+    public boolean getStart() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.START_NAME).get();
+    }
+
+    public boolean getEnd() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.END_NAME).get();
     }
 }
