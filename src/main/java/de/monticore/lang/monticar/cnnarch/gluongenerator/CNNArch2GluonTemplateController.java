@@ -117,6 +117,16 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         return getStreamInputs(stream, outputAsArray).keySet();
     }
 
+    public ArrayList<String> getStreamInputVariableNames(SerialCompositeElementSymbol stream, boolean outputAsArray) {
+        ArrayList<String> inputVariableNames = new ArrayList<String>();
+        for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
+            if (element.isInput()) {
+                inputVariableNames.add(getName(element));
+            }
+        }
+        return inputVariableNames;
+    }
+
     public List<String> get(Map<String, List<String>> map, String name) {
         return map.get(name);
     }
@@ -140,6 +150,16 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
 
     public Collection<List<String>> getStreamOutputDimensions(SerialCompositeElementSymbol stream) {
         return getStreamOutputs(stream, false).values();
+    }
+
+    public ArrayList<String> getStreamOutputVariableNames(SerialCompositeElementSymbol stream, boolean outputAsArray) {
+        ArrayList<String> outputVariableNames = new ArrayList<String>();
+        for (ArchitectureElementSymbol element : stream.getLastAtomicElements()) {
+            if (element.isOutput()) {
+                outputVariableNames.add(getName(element));
+            }
+        }
+        return outputVariableNames;
     }
 
     public Collection<List<String>> getStreamInputInformation(SerialCompositeElementSymbol stream) {

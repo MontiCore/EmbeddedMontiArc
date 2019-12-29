@@ -1,4 +1,3 @@
-<#-- (c) https://github.com/MontiCore/monticore -->
 import mxnet as mx
 import numpy as np
 import math
@@ -88,45 +87,53 @@ class CustomGRU(gluon.HybridBlock):
         return output, F.swapaxes(state0, 0, 1)
 
 
-<#list tc.architecture.networkInstructions as networkInstruction>
-class Net_${networkInstruction?index}(gluon.HybridBlock):
+class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net_${networkInstruction?index}, self).__init__(**kwargs)
+        super(Net_0, self).__init__(**kwargs)
         with self.name_scope():
-${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_source_ = ZScoreNormalization(data_mean=data_mean['source_'],
+                                                                               data_std=data_std['source_'])
+            else:
+                self.input_normalization_source_ = NoNormalization()
+
+
             pass
 
-    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
-${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
-<#if tc.isAttentionNetwork() && networkInstruction.isUnroll() >
-        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}, attention_output_
-<#else>
-        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}
-</#if>
-</#list>
+    def hybrid_forward(self, F, source_):
+        source_ = self.input_normalization_source_(source_)
+        softmax1_ = F.softmax(source_, axis=-1)
+        target_0_ = F.identity(softmax1_)
+
+        return target_0_
+class Net_1(gluon.HybridBlock):
+    def __init__(self, data_mean=None, data_std=None, **kwargs):
+        super(Net_1, self).__init__(**kwargs)
+        with self.name_scope():
+            self.fc1_ = gluon.nn.Dense(units=30000, use_bias=True, flatten=True)
+            # fc1_, output shape: {[30000,1,1]}
+
+
+            pass
+
+    def hybrid_forward(self, F, target_999999_):
+        fc1_ = self.fc1_(target_999999_)
+        softmax2_ = F.softmax(fc1_, axis=-1)
+        target_1000000_ = F.identity(softmax2_)
+
+        return target_1000000_
 
     def getInputs(self):
         inputs = {}
-<#list tc.architecture.streams as stream>
-<#assign dimensions = (tc.getStreamInputs(stream, false))>
-<#assign domains = (tc.getStreamInputDomains(stream))>
-<#list tc.getStreamInputVariableNames(stream, false) as name>
-        input_dimensions = (${tc.join(dimensions[name], ",")})
-        input_domains = (${tc.join(domains[name], ",")})
-        inputs["${name}"] = input_domains + (input_dimensions,)
-</#list>
-</#list>
+        input_dimensions = (30000)
+        input_domains = (float,0.0,1.0)
+        inputs["source_"] = input_domains + (input_dimensions,)
         return inputs
 
     def getOutputs(self):
         outputs = {}
-<#list tc.architecture.streams as stream>
-<#assign dimensions = (tc.getStreamOutputs(stream, false))>
-<#assign domains = (tc.getStreamOutputDomains(stream))>
-<#list tc.getStreamOutputVariableNames(stream, false) as name>
-        output_dimensions = (${tc.join(dimensions[name], ",")})
-        output_domains = (${tc.join(domains[name], ",")})
-        outputs["${name}"] = output_domains + (output_dimensions,)
-</#list>
-</#list>
+        output_dimensions = (30000,1,1)
+        output_domains = (float,0.0,1.0)
+        outputs["target_0_"] = output_domains + (output_dimensions,)
         return outputs

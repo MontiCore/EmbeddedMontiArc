@@ -8,12 +8,12 @@ import cv2
 import importlib
 from mxnet import nd
 
-class CNNDataLoader_VGG16:
-    _input_names_ = ['data']
-    _output_names_ = ['predictions_label']
+class CNNDataLoader_RNNtest:
+    _input_names_ = ['source']
+    _output_names_ = ['target_0_label','target_1_label','target_2_label','target_3_label','target_4_label']
 
     def __init__(self):
-        self._data_dir = "data/VGG16/"
+        self._data_dir = "data/RNNtest/"
 
     def load_data(self, train_batch_size, test_batch_size):
         train_h5, test_h5 = self.load_h5_files()

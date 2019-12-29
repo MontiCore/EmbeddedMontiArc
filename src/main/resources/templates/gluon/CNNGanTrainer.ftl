@@ -15,21 +15,21 @@ def visualize(img_arr):
     plt.axis('off')
 
 def getDataIter(ctx, batch_size=64, Z=100):
-    img_number = 70
+    img_number = 70000
     mnist_train = mx.gluon.data.vision.datasets.MNIST(train=True)
     mnist_test = mx.gluon.data.vision.datasets.MNIST(train=False)
 
-    X = np.zeros((img_number, 28, 28))
-    for i in range(img_number/2):
-        X[i] = mnist_train[i][0].asnumpy()[:,:,0]
-    for i in range(img_number/2):
-        X[img_number/2+i] = mnist_test[i][0].asnumpy()[:,:,0]
-
     #X = np.zeros((img_number, 28, 28))
-    #for i, (data, label) in enumerate(mnist_train):
+    #for i in range(img_number/2):
     #    X[i] = mnist_train[i][0].asnumpy()[:,:,0]
-    #for i, (data, label) in enumerate(mnist_test):
-    #    X[len(mnist_train)+i] = data.asnumpy()[:,:,0]
+    #for i in range(img_number/2):
+    #    X[img_number/2+i] = mnist_test[i][0].asnumpy()[:,:,0]
+
+    X = np.zeros((img_number, 28, 28))
+    for i, (data, label) in enumerate(mnist_train):
+        X[i] = mnist_train[i][0].asnumpy()[:,:,0]
+    for i, (data, label) in enumerate(mnist_test):
+        X[len(mnist_train)+i] = data.asnumpy()[:,:,0]
 
     np.random.seed(1)
     p = np.random.permutation(X.shape[0])
@@ -244,7 +244,7 @@ class ${tc.fileNameWithoutEnding}:
                 # ugly start
                 #if batch_i % 200 == 0:
                 #    fake_data[0].asnumpy()
-                if batch_i % 500 == 0:
+                if batch_i % 750 == 0:
                     #gen_net.save_parameters(self.parameter_path_gen() + '-' + str(num_epoch + begin_epoch).zfill(4) + '.params')
                     #gen_net.export(self.parameter_path_gen() + '_newest', epoch=0)
                     #dis_net.save_parameters(self.parameter_path_dis() + '-' + str(num_epoch + begin_epoch).zfill(4) + '.params')

@@ -1,4 +1,3 @@
-<#-- (c) https://github.com/MontiCore/monticore -->
 import mxnet as mx
 import numpy as np
 import math
@@ -88,45 +87,71 @@ class CustomGRU(gluon.HybridBlock):
         return output, F.swapaxes(state0, 0, 1)
 
 
-<#list tc.architecture.networkInstructions as networkInstruction>
-class Net_${networkInstruction?index}(gluon.HybridBlock):
+class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
-        super(Net_${networkInstruction?index}, self).__init__(**kwargs)
+        super(Net_0, self).__init__(**kwargs)
         with self.name_scope():
-${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_data_0_ = ZScoreNormalization(data_mean=data_mean['data_0_'],
+                                                                               data_std=data_std['data_0_'])
+            else:
+                self.input_normalization_data_0_ = NoNormalization()
+
+            self.fc1_ = gluon.nn.Dense(units=4, use_bias=False, flatten=True)
+            # fc1_, output shape: {[4,1,1]}
+
+
             pass
 
-    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
-${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
-<#if tc.isAttentionNetwork() && networkInstruction.isUnroll() >
-        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}, attention_output_
-<#else>
-        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}
-</#if>
-</#list>
+    def hybrid_forward(self, F, data_0_):
+        data_0_ = self.input_normalization_data_0_(data_0_)
+        fc1_ = self.fc1_(data_0_)
+        softmax1_ = F.softmax(fc1_, axis=-1)
+        pred_0_ = F.identity(softmax1_)
+
+        return pred_0_
+class Net_1(gluon.HybridBlock):
+    def __init__(self, data_mean=None, data_std=None, **kwargs):
+        super(Net_1, self).__init__(**kwargs)
+        with self.name_scope():
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_data_1_ = ZScoreNormalization(data_mean=data_mean['data_1_'],
+                                                                               data_std=data_std['data_1_'])
+            else:
+                self.input_normalization_data_1_ = NoNormalization()
+
+            self.fc2_ = gluon.nn.Dense(units=4, use_bias=False, flatten=True)
+            # fc2_, output shape: {[4,1,1]}
+
+
+            pass
+
+    def hybrid_forward(self, F, data_1_):
+        data_1_ = self.input_normalization_data_1_(data_1_)
+        fc2_ = self.fc2_(data_1_)
+        softmax2_ = F.softmax(fc2_, axis=-1)
+        pred_1_ = F.identity(softmax2_)
+
+        return pred_1_
 
     def getInputs(self):
         inputs = {}
-<#list tc.architecture.streams as stream>
-<#assign dimensions = (tc.getStreamInputs(stream, false))>
-<#assign domains = (tc.getStreamInputDomains(stream))>
-<#list tc.getStreamInputVariableNames(stream, false) as name>
-        input_dimensions = (${tc.join(dimensions[name], ",")})
-        input_domains = (${tc.join(domains[name], ",")})
-        inputs["${name}"] = input_domains + (input_dimensions,)
-</#list>
-</#list>
+        input_dimensions = (10)
+        input_domains = (float,float('-inf'),float('inf'))
+        inputs["data_0_"] = input_domains + (input_dimensions,)
+        input_dimensions = (10)
+        input_domains = (float,float('-inf'),float('inf'))
+        inputs["data_1_"] = input_domains + (input_dimensions,)
         return inputs
 
     def getOutputs(self):
         outputs = {}
-<#list tc.architecture.streams as stream>
-<#assign dimensions = (tc.getStreamOutputs(stream, false))>
-<#assign domains = (tc.getStreamOutputDomains(stream))>
-<#list tc.getStreamOutputVariableNames(stream, false) as name>
-        output_dimensions = (${tc.join(dimensions[name], ",")})
-        output_domains = (${tc.join(domains[name], ",")})
-        outputs["${name}"] = output_domains + (output_dimensions,)
-</#list>
-</#list>
+        output_dimensions = (4,1,1)
+        output_domains = (float,0.0,1.0)
+        outputs["pred_0_"] = output_domains + (output_dimensions,)
+        output_dimensions = (4,1,1)
+        output_domains = (float,0.0,1.0)
+        outputs["pred_1_"] = output_domains + (output_dimensions,)
         return outputs
