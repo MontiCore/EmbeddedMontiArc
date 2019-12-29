@@ -1,23 +1,11 @@
 /**
  *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
+ * (c) https://github.com/MontiCore/monticore
  *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * *******************************************************************************
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
  */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
@@ -32,6 +20,7 @@ public class AllPredefinedLayers {
     public static final String FULLY_CONNECTED_NAME = "FullyConnected";
     public static final String CONVOLUTION_NAME = "Convolution";
     public static final String TRANS_CONV_NAME = "TransConv";
+    public static final String UP_CONVOLUTION_NAME = "UpConvolution";
     public static final String SOFTMAX_NAME = "Softmax";
     public static final String SIGMOID_NAME = "Sigmoid";
     public static final String TANH_NAME = "Tanh";
@@ -94,6 +83,8 @@ public class AllPredefinedLayers {
     public static final String REPEATS_NAME = "n";
     public static final String AXIS_NAME = "axis";
     public static final String AXES_NAME = "axes";
+    public static final String BEAMSEARCH_MAX_LENGTH = "max_length";
+    public static final String BEAMSEARCH_WIDTH_NAME = "width";
     public static final String SHAPE_NAME = "shape";
 
     //possible String values
@@ -110,6 +101,7 @@ public class AllPredefinedLayers {
                 FullyConnected.create(),
                 Convolution.create(),
                 TransConv.create(),
+                UpConvolution.create(),
                 Softmax.create(),
                 Sigmoid.create(),
                 Tanh.create(),
@@ -147,5 +139,4 @@ public class AllPredefinedLayers {
                 GreedySearch.create(),
                 BeamSearch.create());
     }
-
 }

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar;
 
 grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, de.monticore.lang.monticar.Common2 {

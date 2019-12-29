@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture IllegalIOName{
     def input Q(-oo:+oo)^{10} data_
     def output Q(0:1)^{2} predictions_
