@@ -18,7 +18,7 @@ import java.util.List;
  * @author Ahmed Diab
  */
 
-public class DilateCommand extends MathCommand{
+public class DilateCommand extends ArgumentReturnMathCommand{
     public DilateCommand() {
         setMathCommandName("dilate");
     }
@@ -70,14 +70,14 @@ public class DilateCommand extends MathCommand{
         Variable dilation_elem = new Variable();
         dilation_elem.setName("erosion_elem");
         dilation_elem.setVariableType(new VariableType("Integer", "int",""));
-        Variable iteration = new Variable();
-        iteration.setName("iteration");
-        iteration.setVariableType(new VariableType("Integer", "int", ""));
+        Variable iterations = new Variable();
+        iterations.setName("iterations");
+        iterations.setVariableType(new VariableType("Integer", "int", ""));
         //add variable to method
         method.addParameter(src);
         method.addParameter(dst);
         method.addParameter(dilation_elem);
-        method.addParameter(iteration);
+        method.addParameter(iterations);
         //add an instruction to the method
         method.addInstruction(methodBody());
 
@@ -96,7 +96,7 @@ public class DilateCommand extends MathCommand{
                         "    mat element = getStructuringElement( dilation_type,\n" +
                         "                            Size( 2*dilation_size + 1, 2*dilation_size+1 ),\n" +
                         "                            Point( dilation_size, dilation_size ) );\n" +
-                        "    dilate( src, dst, element, Point(-1,-1), iteration );";
+                        "    dilate( src, dst, element, Point(-1,-1), iterations );";
             }
 
             @Override

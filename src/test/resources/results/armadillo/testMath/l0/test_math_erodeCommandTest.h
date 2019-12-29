@@ -12,14 +12,14 @@ class test_math_erodeCommandTest{
 public:
 mat src;
 int erosion_elem;
-int iteration;
+int iterations;
 mat dst;
 void init()
 {
 src=mat(n,m);
 dst=mat(n,m);
 }
-void erodeHelper(mat src, mat dst, int erosion_elem, int iteration)
+void erodeHelper(mat src, mat dst, int erosion_elem, int iterations)
 {
     int erosion_type = 0;
     if( erosion_elem == 0 ){ erosion_type = MORPH_RECT; }
@@ -29,10 +29,10 @@ void erodeHelper(mat src, mat dst, int erosion_elem, int iteration)
     mat element = getStructuringElement( erosion_type,
                             Size( 2*erosion_size + 1, 2*erosion_size+1 ),
                             Point( erosion_size, erosion_size ) );
-    erode( src, dst, element, Point(-1,-1), iteration );}
+    erode( src, dst, element, Point(-1,-1), iterations );}
 void execute()
 {
-erodeHelper(src, dst, erosion_elem, iteration);
+erodeHelper(src, dst, erosion_elem, iterations);
 }
 
 };

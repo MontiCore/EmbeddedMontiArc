@@ -71,14 +71,14 @@ public class ErodeCommand extends ArgumentReturnMathCommand{
         Variable erosion_elem = new Variable();
         erosion_elem.setName("erosion_elem");
         erosion_elem.setVariableType(new VariableType("Integer", "int",""));
-        Variable iteration = new Variable();
-        iteration.setName("iteration");
-        iteration.setVariableType(new VariableType("Integer", "int", ""));
+        Variable iterations = new Variable();
+        iterations.setName("iterations");
+        iterations.setVariableType(new VariableType("Integer", "int", ""));
         //add variable to method
         method.addParameter(src);
         method.addParameter(dst);
         method.addParameter(erosion_elem);
-        method.addParameter(iteration);
+        method.addParameter(iterations);
         //add an instruction to the method
         method.addInstruction(methodBody());
 
@@ -97,7 +97,7 @@ public class ErodeCommand extends ArgumentReturnMathCommand{
                         "    mat element = getStructuringElement( erosion_type,\n" +
                         "                            Size( 2*erosion_size + 1, 2*erosion_size+1 ),\n" +
                         "                            Point( erosion_size, erosion_size ) );\n" +
-                        "    erode( src, dst, element, Point(-1,-1), iteration );";
+                        "    erode( src, dst, element, Point(-1,-1), iterations );";
             }
 
             @Override
