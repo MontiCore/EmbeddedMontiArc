@@ -62,6 +62,26 @@ public class ArchTypeSymbol extends CommonSymbol {
         return heightIndex;
     }
 
+    public HashMap<String, String> getElementRange() {
+        String min="", max="";
+        ASTRange range = domain.getRange();
+        if(domain.isRational() || domain.isWholeNumber() || domain.isNaturalNumber() || domain.isComplex()) {
+            if(range.hasNoLowerLimit()) { min="-inf"; } else {
+                min = Double.toString(range.getStartValue().doubleValue());
+            }
+            if (range.hasNoUpperLimit()) { max="inf"; } else {
+                max = Double.toString(range.getEndValue().doubleValue());
+            }
+        } else { // domain.isBoolean()
+            min = "0";
+            max = "1";
+        }
+        HashMap result = new HashMap<String, String>();
+        result.put("min", min);
+        result.put("max", max);
+        return result;
+    }
+
     public void setHeightIndex(int heightIndex) {
         this.heightIndex = heightIndex;
     }
