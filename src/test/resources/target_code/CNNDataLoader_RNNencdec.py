@@ -1,4 +1,3 @@
-<#-- (c) https://github.com/MontiCore/monticore -->
 import os
 import h5py
 import mxnet as mx
@@ -9,12 +8,12 @@ import cv2
 import importlib
 from mxnet import nd
 
-class ${tc.fileNameWithoutEnding}:
-    _input_names_ = [<#list tc.architectureInputs as inputName>'${inputName?keep_before_last("_")}'<#sep>, </#list>]
-    _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "label'")}]
+class CNNDataLoader_RNNencdec:
+    _input_names_ = ['source']
+    _output_names_ = ['target_0_label','target_1_label','target_2_label','target_3_label','target_4_label','target_5_label','target_6_label','target_7_label','target_8_label','target_9_label','target_10_label','target_11_label','target_12_label','target_13_label','target_14_label','target_15_label','target_16_label','target_17_label','target_18_label','target_19_label','target_20_label','target_21_label','target_22_label','target_23_label','target_24_label','target_25_label','target_26_label','target_27_label','target_28_label','target_29_label']
 
     def __init__(self):
-        self._data_dir = "${tc.dataPath}/"
+        self._data_dir = "data/RNNencdec/"
 
     def load_data(self, batch_size):
         train_h5, test_h5 = self.load_h5_files()

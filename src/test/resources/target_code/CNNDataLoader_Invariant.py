@@ -1,4 +1,3 @@
-<#-- (c) https://github.com/MontiCore/monticore -->
 import os
 import h5py
 import mxnet as mx
@@ -9,12 +8,12 @@ import cv2
 import importlib
 from mxnet import nd
 
-class ${tc.fileNameWithoutEnding}:
-    _input_names_ = [<#list tc.architectureInputs as inputName>'${inputName?keep_before_last("_")}'<#sep>, </#list>]
-    _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "label'")}]
+class CNNDataLoader_Invariant:
+    _input_names_ = ['data_0', 'data_1']
+    _output_names_ = ['pred_0_label','pred_1_label','pred_2_label']
 
     def __init__(self):
-        self._data_dir = "${tc.dataPath}/"
+        self._data_dir = "data/Invariant/"
 
     def load_data(self, batch_size):
         train_h5, test_h5 = self.load_h5_files()

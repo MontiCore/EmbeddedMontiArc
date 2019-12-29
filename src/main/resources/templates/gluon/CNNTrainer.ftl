@@ -31,11 +31,20 @@ if __name__ == "__main__":
 <#if (config.loadCheckpoint)??>
         load_checkpoint=${config.loadCheckpoint?string("True","False")},
 </#if>
+<#if (config.checkpointPeriod)??>
+        checkpoint_period=${config.checkpointPeriod},
+</#if>
+<#if (config.logPeriod)??>
+        log_period=${config.logPeriod},
+</#if>
 <#if (config.context)??>
         context='${config.context}',
 </#if>
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
+</#if>
+<#if (config.useTeacherForcing)??>
+        use_teacher_forcing='${config.useTeacherForcing?string("True","False")}',
 </#if>
 <#if (config.saveAttentionImage)??>
         save_attention_image='${config.saveAttentionImage?string("True","False")}',
@@ -47,6 +56,9 @@ if __name__ == "__main__":
             'exclude': [<#list config.evalMetric.exclude as value>${value}<#sep>, </#list>],
 </#if>
         },
+</#if>
+<#if (config.evalTrain)??>
+        eval_train=${config.evalTrain?string("True","False")},
 </#if>
 <#if (config.configuration.loss)??>
         loss='${config.lossName}',

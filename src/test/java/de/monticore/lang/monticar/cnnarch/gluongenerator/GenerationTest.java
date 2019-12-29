@@ -149,6 +149,14 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testShow_attend_tell() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "Show_attend_tell", "-o", "./target/generated-sources-cnnarch/"};
+        CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
     public void testFullCfgGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String sourcePath = "src/test/resources/valid_tests";
