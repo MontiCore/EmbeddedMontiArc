@@ -246,7 +246,9 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     // GANs Extensions
     DiscriminatorNetworkEntry implements ConfigEntry = name:"discriminator_name" ":" value:ComponentNameValue;
+    QNetworkEntry implements ConfigEntry = name:"qnet_name" ":" value:ComponentNameValue;
     PreprocessingEntry implements ConfigEntry = name:"preprocessing_name" ":" value:ComponentNameValue;
+
     ImgResizeEntry implements ConfigEntry = name:"img_resize" ":" value:IntegerTupelValue;
 
     // Noise Distribution Creator

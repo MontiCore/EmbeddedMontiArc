@@ -52,6 +52,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         CNNTrainCompilationUnitSymbol compilationUnitSymbol = new CNNTrainCompilationUnitSymbol(compilationUnit.getName());
         addToScopeAndLinkWithNode(compilationUnitSymbol, compilationUnit);
     }
+    
 
     @Override
     public void endVisit(ASTCNNTrainCompilationUnit ast) {
@@ -457,6 +458,14 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void visit(ASTDiscriminatorNetworkEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForComponentNameAsString(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTQNetworkEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         entry.setValue(getValueSymbolForComponentNameAsString(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
