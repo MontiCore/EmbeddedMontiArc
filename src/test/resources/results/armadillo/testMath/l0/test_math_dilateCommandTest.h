@@ -11,14 +11,14 @@ class test_math_dilateCommandTest{
 public:
 mat src;
 int dilation_elem;
-int iteration;
+int iterations;
 mat dst;
 void init()
 {
 src=mat(n,m);
 dst=mat(n,m);
 }
-void dilateHelper(mat src, mat dst, int erosion_elem, int iteration)
+void dilateHelper(mat src, mat dst, int erosion_elem, int iterations)
 {
     int dilation_type = 0;
     if( dilation_elem == 0 ){ dilation_type = MORPH_RECT; }
@@ -28,10 +28,10 @@ void dilateHelper(mat src, mat dst, int erosion_elem, int iteration)
     mat element = getStructuringElement( dilation_type,
                             Size( 2*dilation_size + 1, 2*dilation_size+1 ),
                             Point( dilation_size, dilation_size ) );
-    dilate( src, dst, element, Point(-1,-1), iteration );}
+    dilate( src, dst, element, Point(-1,-1), iterations );}
 void execute()
 {
-dst = (dilateHelper(src, dilation_elem, iteration));
+dilateHelper(src, dst, dilation_elem, iterations);
 }
 
 };

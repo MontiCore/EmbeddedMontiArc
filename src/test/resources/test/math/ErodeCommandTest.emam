@@ -5,10 +5,10 @@ component ErodeCommandTest{
     port
     in Q^{n,m} src,
     in Z erosion_elem,
-    in Z iteration,
+    in Z iterations,
     out Q^{n,m} dst;
 
     implementation Math{
-        dst = erode(src, erosion_elem, iteration);
+        dst = erode(src, erosion_elem, iterations);
     }
 }

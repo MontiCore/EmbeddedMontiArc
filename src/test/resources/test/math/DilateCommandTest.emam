@@ -5,10 +5,10 @@ component DilateCommandTest{
     port
     in Q^{n,m} src,
     in Z dilation_elem,
-    in Z iteration,
+    in Z iterations,
     out Q^{n,m} dst;
 
     implementation Math{
-        dst = dilate(src, dilation_elem, iteration);
+        dst = dilate(src, dilation_elem, iterations);
     }
 }
