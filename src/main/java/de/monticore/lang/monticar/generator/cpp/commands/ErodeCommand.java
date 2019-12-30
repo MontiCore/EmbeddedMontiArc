@@ -61,7 +61,7 @@ public class ErodeCommand extends ArgumentReturnMathCommand{
     private Method getErodeHelperMethod(){
         Method method = new Method("erodeHelper", "void");
 
-        //parameter
+        //parameters
         Variable src = new Variable();
         src.setName("src");
         src.setVariableType(new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName()));
@@ -96,8 +96,8 @@ public class ErodeCommand extends ArgumentReturnMathCommand{
                         "    erosion_size = erosion_elem;\n" +
                         "    mat element = getStructuringElement( erosion_type,\n" +
                         "                            Size( 2*erosion_size + 1, 2*erosion_size+1 ),\n" +
-                        "                            Point( erosion_size, erosion_size ) );\n" +
-                        "    erode( src, dst, element, Point(-1,-1), iterations );";
+                        "                            Point( -1, -1 ) );\n" +
+                        "    erode( src, dst, element, Point(-1,-1), iterations );\n";
             }
 
             @Override

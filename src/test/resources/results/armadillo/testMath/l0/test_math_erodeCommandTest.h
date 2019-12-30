@@ -28,8 +28,9 @@ void erodeHelper(mat src, mat dst, int erosion_elem, int iterations)
     erosion_size = erosion_elem;
     mat element = getStructuringElement( erosion_type,
                             Size( 2*erosion_size + 1, 2*erosion_size+1 ),
-                            Point( erosion_size, erosion_size ) );
-    erode( src, dst, element, Point(-1,-1), iterations );}
+                            Point( -1, -1 ) );
+    erode( src, dst, element, Point(-1,-1), iterations );
+}
 void execute()
 {
 erodeHelper(src, dst, erosion_elem, iterations);

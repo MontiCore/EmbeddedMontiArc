@@ -95,8 +95,8 @@ public class DilateCommand extends ArgumentReturnMathCommand{
                         "    dilation_size = dilation_elem;\n" +
                         "    mat element = getStructuringElement( dilation_type,\n" +
                         "                            Size( 2*dilation_size + 1, 2*dilation_size+1 ),\n" +
-                        "                            Point( dilation_size, dilation_size ) );\n" +
-                        "    dilate( src, dst, element, Point(-1,-1), iterations );";
+                        "                            Point( -1, -1 ) );\n" +
+                        "    dilate( src, dst, element, Point(-1,-1), iterations );\n";
             }
 
             @Override

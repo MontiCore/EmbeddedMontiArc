@@ -1,8 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.math;
 
-component GaussianBlurCommandTest{
-    implementation Math{
-        Q a = gaussianBlur(0,0,0,0,0);
+component GaussianBlurCommandTest {
+    port
+        in Q^{n,m} src,
+        in Z sizeX,
+        in Z sizeY,
+        in Q sigmaX,
+        in Q sigmaY,
+        out Q^{n,m} dst;
+
+    implementation Math {
+        dst = gaussianBlur(src, sizeX, sizeY, sigmaX, sigmaY);
     }
 }
