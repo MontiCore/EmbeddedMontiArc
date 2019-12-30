@@ -52,12 +52,14 @@ public class ArchTypeSymbol extends CommonSymbol {
 
     public HashMap<String, String> getElementRange() {
         String min="", max="";
-        ASTRange range = domain.getRange();
+        ASTRange range = null;
+        if (domain.isPresentRange())
+            range = domain.getRange();
         if(domain.isRational() || domain.isWholeNumber() || domain.isNaturalNumber() || domain.isComplex()) {
-            if(range.hasNoLowerLimit()) { min="-inf"; } else {
+            if(range == null || range.hasNoLowerLimit()) { min="-inf"; } else {
                 min = Double.toString(range.getStartValue().doubleValue());
             }
-            if (range.hasNoUpperLimit()) { max="inf"; } else {
+            if (range == null || range.hasNoUpperLimit()) { max="inf"; } else {
                 max = Double.toString(range.getEndValue().doubleValue());
             }
         } else { // domain.isBoolean()
