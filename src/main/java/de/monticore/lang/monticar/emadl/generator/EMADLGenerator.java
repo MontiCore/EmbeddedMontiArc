@@ -28,12 +28,15 @@ import de.monticore.lang.monticar.generator.cpp.SimulatorIntegrationHelper;
 import de.monticore.lang.monticar.generator.cpp.TypesGeneratorCPP;
 import de.monticore.lang.monticar.generator.pythonwrapper.GeneratorPythonWrapper;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.generator.pythonwrapper.GeneratorPythonWrapperFactory;
+import de.monticore.lang.monticar.generator.pythonwrapper.GeneratorPythonWrapperStandaloneApi;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
+import org.antlr.v4.codegen.target.Python2Target;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
@@ -52,7 +55,7 @@ public class EMADLGenerator {
     private GeneratorEMAMOpt2CPP emamGen;
     private CNNArchGenerator cnnArchGenerator;
     private CNNTrainGenerator cnnTrainGenerator;
-    private GeneratorPythonWrapper pythonWrapper;
+    private GeneratorPythonWrapperStandaloneApi pythonWrapper;
     private Backend backend;
 
     private String modelsPath;
@@ -64,7 +67,8 @@ public class EMADLGenerator {
         emamGen = new GeneratorEMAMOpt2CPP();
         emamGen.useArmadilloBackend();
         emamGen.setGenerationTargetPath("./target/generated-sources-emadl/");
-        pythonWrapper.setGenerationTargetPath("./target/");
+        GeneratorPythonWrapperFactory pythonWrapperFactory = new GeneratorPythonWrapperFactory();
+        pythonWrapper = new GeneratorPythonWrapperStandaloneApi();
         cnnArchGenerator = backend.getCNNArchGenerator();
         cnnTrainGenerator = backend.getCNNTrainGenerator();
     }
@@ -620,18 +624,54 @@ public class EMADLGenerator {
                     //CNNTrainCocos.checkCriticCocos(configuration);
                 }
 
-                if (configuration.hasPreprocessor()) {
-                    String preprocessor_name = configuration.getPreprocessingName().get();
-                    TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
-                    EMAComponentInstanceSymbol instance = resolveComponentInstanceSymbol(preprocessor_name, symtab);
-                    generateComponent(fileContents, allInstances, symtab, instance, symtab);
+                // Resolve QNetwork if present
+                if (configuration.getQNetworkName().isPresent()) {
+                    String fullQNetworkName = configuration.getQNetworkName().get();
+                    int indexOfFirstNameCharacter = fullQNetworkName.lastIndexOf('.') + 1;
+                    fullQNetworkName = fullQNetworkName.substring(0, indexOfFirstNameCharacter)
+                            + fullQNetworkName.substring(indexOfFirstNameCharacter, indexOfFirstNameCharacter + 1).toUpperCase()
+                            + fullQNetworkName.substring(indexOfFirstNameCharacter + 1);
 
-                    try {
-                        pythonWrapper.generateFiles(instance);
-                    } catch (IOException e) {
-                        // todo: add fancy error message here
-                        e.printStackTrace();
+                    TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
+                    EMAComponentInstanceSymbol instanceSymbol = resolveComponentInstanceSymbol(fullQNetworkName, symtab);
+                    EMADLCocos.checkAll(instanceSymbol);
+                    Optional<ArchitectureSymbol> qnetwork = instanceSymbol.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
+                    if (!qnetwork.isPresent()) {
+                        Log.error("During the resolving of qnetwork component: qnetwork component "
+                                + fullQNetworkName + " does not have a CNN implementation but is required to have one");
+                        System.exit(-1);
                     }
+                    qnetwork.get().setComponentName(fullQNetworkName);
+                    configuration.setQNetwork(new ArchitectureAdapter(fullQNetworkName, qnetwork.get()));
+                    //CNNTrainCocos.checkCriticCocos(configuration);
+                }
+
+                if (configuration.hasPreprocessor()) {
+                    String fullPreprocessorName = configuration.getPreprocessingName().get();
+                    int indexOfFirstNameCharacter = fullPreprocessorName.lastIndexOf('.') + 1;
+                    fullPreprocessorName = fullPreprocessorName.substring(0, indexOfFirstNameCharacter)
+                            + fullPreprocessorName.substring(indexOfFirstNameCharacter, indexOfFirstNameCharacter + 1).toUpperCase()
+                            + fullPreprocessorName.substring(indexOfFirstNameCharacter + 1);
+                    String instanceName = componentInstance.getFullName().replaceAll("\\.", "_");
+
+                    TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
+                    EMAComponentInstanceSymbol processor_instance = resolveComponentInstanceSymbol(fullPreprocessorName, symtab);
+                    processor_instance.setFullName("CNNPreprocessor_" + instanceName);
+                    List<FileContent> processorContents = new ArrayList<>();
+                    generateComponent(processorContents, new HashSet<EMAComponentInstanceSymbol>(), symtab, processor_instance, symtab);
+                    fixArmadilloImports(processorContents);
+
+                    for (FileContent fileContent : processorContents) {
+                        try {
+                            emamGen.generateFile(fileContent);
+                        } catch (IOException e) {
+                            //todo: fancy error message
+                            e.printStackTrace();
+                        }
+                    }
+
+                    String targetPath = getGenerationTargetPath();
+                    pythonWrapper.generateAndTryBuilding(processor_instance, targetPath + "/pythonWrapper", targetPath);
                 }
 
                 cnnTrainGenerator.setInstanceName(componentInstance.getFullName().replaceAll("\\.", "_"));
