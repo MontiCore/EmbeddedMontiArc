@@ -27,8 +27,9 @@ void dilateHelper(mat src, mat dst, int erosion_elem, int iterations)
     dilation_size = dilation_elem;
     mat element = getStructuringElement( dilation_type,
                             Size( 2*dilation_size + 1, 2*dilation_size+1 ),
-                            Point( dilation_size, dilation_size ) );
-    dilate( src, dst, element, Point(-1,-1), iterations );}
+                            Point( -1, -1 ) );
+    dilate( src, dst, element, Point(-1,-1), iterations );
+}
 void execute()
 {
 dilateHelper(src, dst, dilation_elem, iterations);
