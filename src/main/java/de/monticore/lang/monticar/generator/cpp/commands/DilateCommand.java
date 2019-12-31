@@ -60,26 +60,18 @@ public class DilateCommand extends ArgumentReturnMathCommand{
     private Method getDilateHelperMethod(){
         Method method = new Method("dilateHelper", "void");
 
-        //parameter
+        //add parameters
         Variable src = new Variable();
-        src.setName("src");
-        src.setVariableType(new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName()));
+        method.addParameter(src, "src", "CommonMatrix",MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());;
         Variable dst = new Variable();
-        dst.setName("dst");
-        dst.setVariableType(new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName()));
-        Variable dilation_elem = new Variable();
-        dilation_elem.setName("erosion_elem");
-        dilation_elem.setVariableType(new VariableType("Integer", "int",""));
+        method.addParameter(dst, "dst", "CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+        Variable erosion_elem = new Variable();
+        method.addParameter(erosion_elem,"dilation_elem", "Integer", "int", "");
         Variable iterations = new Variable();
-        iterations.setName("iterations");
-        iterations.setVariableType(new VariableType("Integer", "int", ""));
-        //add variable to method
-        method.addParameter(src);
-        method.addParameter(dst);
-        method.addParameter(dilation_elem);
-        method.addParameter(iterations);
+        method.addParameter(iterations, "iterations", "Integer","int", "");
         //add an instruction to the method
         method.addInstruction(methodBody());
+
 
         return method;
     }

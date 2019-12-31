@@ -43,6 +43,13 @@ public class Method {
         parameters.add(v);
     }
 
+    public void addParameter(Variable var, String variableName, String typeNameMontiCar,
+                             String typeNameTargetLangauge, String includeName){
+        var.setName(variableName);
+        var.setVariableType(new VariableType(typeNameMontiCar, typeNameTargetLangauge, includeName));
+        parameters.add(var);
+    }
+
     public boolean addParameterUnique(Variable v) {
         boolean added = !containsParameter(v);
         if (added) {

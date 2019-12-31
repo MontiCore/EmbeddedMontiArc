@@ -299,7 +299,7 @@ public class ComponentConverter {
         if(v.isParameterVariable()){
             method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
             method.addParameter(v);
-        }else {//ToDo: inside getInitLine you can add your configuration for another represetation
+        }else {
             Optional<String> initLine = MathConverter.getInitLine(v, bluePrint);
             initLine.ifPresent(s -> method.addInstruction(new TargetCodeInstruction(s)));
         }
