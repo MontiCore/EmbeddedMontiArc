@@ -18,7 +18,7 @@ void init()
 src=mat(n,m);
 dst=mat(n,m);
 }
-void dilateHelper(mat src, mat dst, int erosion_elem, int iterations)
+void dilateHelper(mat src, mat dst, int dilation_elem, int iterations)
 {
     int dilation_type = 0;
     if( dilation_elem == 0 ){ dilation_type = MORPH_RECT; }

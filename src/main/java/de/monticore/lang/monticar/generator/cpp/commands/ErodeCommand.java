@@ -61,24 +61,15 @@ public class ErodeCommand extends ArgumentReturnMathCommand{
     private Method getErodeHelperMethod(){
         Method method = new Method("erodeHelper", "void");
 
-        //parameters
+        //add parameters
         Variable src = new Variable();
-        src.setName("src");
-        src.setVariableType(new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName()));
+        method.addParameter(src, "src", "CommonMatrix",MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());;
         Variable dst = new Variable();
-        dst.setName("dst");
-        dst.setVariableType(new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName()));
+        method.addParameter(dst, "dst", "CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
         Variable erosion_elem = new Variable();
-        erosion_elem.setName("erosion_elem");
-        erosion_elem.setVariableType(new VariableType("Integer", "int",""));
+        method.addParameter(erosion_elem,"erosion_elem", "Integer", "int", "");
         Variable iterations = new Variable();
-        iterations.setName("iterations");
-        iterations.setVariableType(new VariableType("Integer", "int", ""));
-        //add variable to method
-        method.addParameter(src);
-        method.addParameter(dst);
-        method.addParameter(erosion_elem);
-        method.addParameter(iterations);
+        method.addParameter(iterations, "iterations", "Integer","int", "");
         //add an instruction to the method
         method.addInstruction(methodBody());
 

@@ -61,32 +61,20 @@ public class GaussianBlurCommand extends ArgumentReturnMathCommand{
     private Method getGaussianBlurHelperMethod(){
         Method method = new Method("gaussianBlurHelper", "void");
 
-        //parameters
+        //add parameters
         Variable src = new Variable();
-        src.setName("src");
-        src.setVariableType(new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName()));
+        method.addParameter(src, "src", "CommonMatrix",MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());;
         Variable dst = new Variable();
-        dst.setName("dst");
-        dst.setVariableType(new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName()));
+        method.addParameter(dst, "dst", "CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
         Variable sizeX = new Variable();
-        sizeX.setName("sizeX");
-        sizeX.setVariableType(new VariableType("Integer", "int",""));
+        method.addParameter(sizeX, "sizeX", "Integer", "int", "");
         Variable sizeY = new Variable();
-        sizeY.setName("sizeY");
-        sizeY.setVariableType(new VariableType("Integer", "int",""));
+        method.addParameter(sizeY, "sizeY", "Integer", "int", "");
         Variable sigmaX = new Variable();
-        sigmaX.setName("sigmaX");
-        sigmaX.setVariableType(new VariableType("Double", "double",""));
+        method.addParameter(sigmaX, "sigmaX", "Double", "double", "");
         Variable sigmaY = new Variable();
-        sigmaY.setName("sigmaY");
-        sigmaY.setVariableType(new VariableType("Double", "double",""));
-        method.addParameter(src);
-        method.addParameter(dst);
-        method.addParameter(sizeX);
-        method.addParameter(sizeY);
-        method.addParameter(sigmaX);
-        method.addParameter(sigmaY);
-
+        method.addParameter(sigmaY, "sigmaY", "Double", "double", "");
+        //add an instruction to the method
         method.addInstruction(methodBody());
 
         return method;
