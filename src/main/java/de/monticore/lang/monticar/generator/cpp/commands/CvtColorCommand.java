@@ -19,7 +19,7 @@ import java.util.List;
  * @author Ahmed Diab
  */
 
-public class CvtColorCommand extends MathCommand{
+public class CvtColorCommand extends ArgumentReturnMathCommand{
     public CvtColorCommand() {
         setMathCommandName("cvtColor");
     }

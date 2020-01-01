@@ -2,7 +2,12 @@
 package test.math;
 
 component CvtColorCommandTest{
+port
+    in Q^{n,m} src,
+    in Z colorConversion,
+    out Q^{n,m} dst;
+
     implementation Math{
-        Q a = cvtColor(0,0,0,0,0);
+        dst = cvtColor(src, colorConversion);
     }
 }
