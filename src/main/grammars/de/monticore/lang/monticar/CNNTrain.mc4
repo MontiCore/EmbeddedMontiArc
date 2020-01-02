@@ -259,8 +259,6 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     QNetworkEntry implements ConfigEntry = name:"qnet_name" ":" value:ComponentNameValue;
     PreprocessingEntry implements ConfigEntry = name:"preprocessing_name" ":" value:ComponentNameValue;
 
-    ImgResizeEntry implements ConfigEntry = name:"img_resize" ":" value:IntegerTupelValue;
-
     // Noise Distribution Creator
     NoiseDistributionEntry implements MultiParamConfigEntry = name:"noise_distribution" ":" value:NoiseDistributionValue;
     interface NoiseDistributionValue extends MultiParamValue;

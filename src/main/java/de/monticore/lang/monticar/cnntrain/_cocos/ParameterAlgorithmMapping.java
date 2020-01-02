@@ -121,8 +121,7 @@ class ParameterAlgorithmMapping {
     private static final List<Class> GENERAL_GAN_PARAMETERS = Lists.newArrayList(
             ASTDiscriminatorNetworkEntry.class,
             ASTQNetworkEntry.class,
-            ASTNoiseDistributionEntry.class,
-            ASTImgResizeEntry.class
+            ASTNoiseDistributionEntry.class
     );
 
     ParameterAlgorithmMapping() {

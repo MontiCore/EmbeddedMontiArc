@@ -513,20 +513,6 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
-    public void visit(ASTImgResizeEntry node) {
-        EntrySymbol width_entry = new EntrySymbol(node.getName());
-        EntrySymbol height_entry = new EntrySymbol(node.getName());
-
-        width_entry.setValue(getValueSymbolForInteger(node.getValue().getFirst()));
-        height_entry.setValue(getValueSymbolForInteger(node.getValue().getSecond()));
-        addToScopeAndLinkWithNode(width_entry, node);
-        addToScopeAndLinkWithNode(height_entry, node);
-
-        configuration.getEntryMap().put(node.getName() + "_width", width_entry);
-        configuration.getEntryMap().put(node.getName() + "_height", height_entry);
-    }
-
-    @Override
     public void visit(ASTReplayMemoryEntry node) {
         processMultiParamConfigVisit(node, node.getValue().getName());
     }
