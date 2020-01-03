@@ -170,7 +170,7 @@ class BLEU(mx.metric.EvalMetric):
 
 
 
-class CNNSupervisedTrainer_CifarClassifierNetwork:
+class CNNSupervisedTrainer_RNNsearch:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -201,7 +201,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
 
         if preprocessing:
-            preproc_lib = "CNNPreprocessor_CifarClassifierNetwork_executor"
+            preproc_lib = "CNNPreprocessor_RNNsearch_executor"
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib)
         else:
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
@@ -286,20 +286,38 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 with autograd.record():
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(30)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    source_ = batch.data[0].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    target_ = [mx.nd.zeros((batch_size, 1,), ctx=mx_context) for i in range(30)]
 
+                    encoder_state_ = mx.nd.zeros((batch_size, 2, 1000,), ctx=mx_context)
+                    encoder_output_ = mx.nd.zeros((batch_size, 30, 2000,), ctx=mx_context)
+                    fc_output_ = mx.nd.zeros((batch_size, 30, 1000,), ctx=mx_context)
+                    decoder_state_ = mx.nd.zeros((batch_size, 1, 1000,), ctx=mx_context)
+                    decoder_output_ = mx.nd.zeros((batch_size, 1, 1000,), ctx=mx_context)
+
+                    const1_ = mx.nd.full((batch_size, 1,), 1, ctx=mx_context)
 
                     nd.waitall()
 
                     lossList = []
 
-                    softmax_ = self._networks[0](data_)
+                    fc_output_, encoder_state_, encoder_output_ = self._networks[0](source_, encoder_state_)
 
-                    lossList.append(loss_function(softmax_, labels[0]))
+                    target_[0] = self._networks[1](const1_)
+
+                    lossList.append(loss_function(target_[0], labels[0]))
+                    decoder_state_ = self._networks[2](encoder_state_)
+
+                    for i in range(1, 30):
+                        target_[i-1+1], decoder_state_, decoder_output_ = self._networks[3](decoder_state_, fc_output_, target_[i-1+0])
+
+                        lossList.append(loss_function(target_[i-1+1], labels[i-1+1]))
+                        target_[i-1+1] = mx.nd.argmax(target_[i-1+1], axis=1).expand_dims(1)
+                        if use_teacher_forcing == "True":
+                            target_[i-1+1] = mx.nd.expand_dims(labels[i-1+1], axis=1)
 
                     loss = 0
                     for element in lossList:
@@ -335,20 +353,74 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 train_iter.reset()
                 metric = mx.metric.create(eval_metric, **eval_metric_params)
                 for batch_i, batch in enumerate(train_iter):
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(30)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    source_ = batch.data[0].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    target_ = [mx.nd.zeros((batch_size, 1,), ctx=mx_context) for i in range(30)]
 
+                    encoder_state_ = mx.nd.zeros((batch_size, 2, 1000,), ctx=mx_context)
+                    encoder_output_ = mx.nd.zeros((batch_size, 30, 2000,), ctx=mx_context)
+                    fc_output_ = mx.nd.zeros((batch_size, 30, 1000,), ctx=mx_context)
+                    decoder_state_ = mx.nd.zeros((batch_size, 1, 1000,), ctx=mx_context)
+                    decoder_output_ = mx.nd.zeros((batch_size, 1, 1000,), ctx=mx_context)
+
+                    const1_ = mx.nd.full((batch_size, 1,), 1, ctx=mx_context)
 
                     nd.waitall()
 
                     outputs = []
                     attentionList=[]
-                    softmax_ = self._networks[0](data_)
+                    fc_output_, encoder_state_, encoder_output_ = self._networks[0](source_, encoder_state_)
 
-                    outputs.append(softmax_)
+                    target_[0] = self._networks[1](const1_)
+
+                    outputs.append(target_[0])
+                    decoder_state_ = self._networks[2](encoder_state_)
+
+                    k = 3
+                    sequences = [([target_[1-1+0]], mx.nd.full((batch_size, 1,), 1.0, ctx=mx_context), [mx.nd.full((batch_size, 64,), 0.0, ctx=mx_context)])]
+
+                    for i in range(1, 30):
+                        all_candidates = []
+
+                        for seq, score, attention in sequences:
+                            target_[i-1+0] = seq[-1]
+                            target_[i-1+1], decoder_state_, decoder_output_ = self._networks[3](decoder_state_, fc_output_, target_[i-1+0])
+                            out = target_[i-1+1]
+
+                            topk = out.topk(k=k)
+
+                            for top_index in range(len(topk[0])):
+                                j = mx.nd.slice_axis(topk, axis=1, begin=top_index, end=top_index+1)
+                                currentScore = mx.nd.slice_axis(out, axis=1, begin=top_index, end=top_index+1)
+                                newScore = mx.nd.expand_dims(score.squeeze() * currentScore.squeeze(), axis=1)
+                                candidate = (seq + [j],  newScore, attention + [])
+                                all_candidates.append(candidate)
+
+                        ordered = []
+                        newSequences = []
+                        for batch_entry in range(batch_size):
+                            ordered.append([])
+                            batchCandidate = [([seq[batch_entry] for seq in candidate[0]], candidate[1][batch_entry], [attention[batch_entry].expand_dims(axis=0) for attention in candidate[2]]) for candidate in all_candidates]
+                            ordered[batch_entry] = sorted(batchCandidate, key=lambda tup: tup[1].asscalar())
+                            if batch_entry == 0:
+                                newSequences = ordered[batch_entry]
+                            else:
+                                newSequences = [([mx.nd.concat(newSequences[sequenceIndex][0][seqIndex], ordered[batch_entry][sequenceIndex][0][seqIndex], dim=0) for seqIndex in range(len(newSequences[sequenceIndex][0]))],
+                                    mx.nd.concat(newSequences[sequenceIndex][1], ordered[batch_entry][sequenceIndex][1], dim=0),
+                                    [mx.nd.concat(newSequences[sequenceIndex][2][attentionIndex], ordered[batch_entry][sequenceIndex][2][attentionIndex], dim=0) for attentionIndex in range(len(newSequences[sequenceIndex][2]))])
+                                    for sequenceIndex in range(len(newSequences))]
+
+                        newSequences = [([newSequences[sequenceIndex][0][seqIndex].expand_dims(axis=1) for seqIndex in range(len(newSequences[sequenceIndex][0]))],
+                            newSequences[sequenceIndex][1].expand_dims(axis=1), [newSequences[sequenceIndex][2][attentionIndex] for attentionIndex in range(len(newSequences[sequenceIndex][2]))])
+                            for sequenceIndex in range(len(newSequences))]
+
+                        sequences = newSequences[:][:k]
+
+                    for i in range(1, 30):
+                        target_[i-1+1] = sequences[0][0][i]
+                        outputs.append(target_[i-1+1])
 
 
                     if save_attention_image == "True":
@@ -408,20 +480,74 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
                 if True: 
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(30)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    source_ = batch.data[0].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    target_ = [mx.nd.zeros((batch_size, 1,), ctx=mx_context) for i in range(30)]
 
+                    encoder_state_ = mx.nd.zeros((batch_size, 2, 1000,), ctx=mx_context)
+                    encoder_output_ = mx.nd.zeros((batch_size, 30, 2000,), ctx=mx_context)
+                    fc_output_ = mx.nd.zeros((batch_size, 30, 1000,), ctx=mx_context)
+                    decoder_state_ = mx.nd.zeros((batch_size, 1, 1000,), ctx=mx_context)
+                    decoder_output_ = mx.nd.zeros((batch_size, 1, 1000,), ctx=mx_context)
+
+                    const1_ = mx.nd.full((batch_size, 1,), 1, ctx=mx_context)
 
                     nd.waitall()
 
                     outputs = []
                     attentionList=[]
-                    softmax_ = self._networks[0](data_)
+                    fc_output_, encoder_state_, encoder_output_ = self._networks[0](source_, encoder_state_)
 
-                    outputs.append(softmax_)
+                    target_[0] = self._networks[1](const1_)
+
+                    outputs.append(target_[0])
+                    decoder_state_ = self._networks[2](encoder_state_)
+
+                    k = 3
+                    sequences = [([target_[1-1+0]], mx.nd.full((batch_size, 1,), 1.0, ctx=mx_context), [mx.nd.full((batch_size, 64,), 0.0, ctx=mx_context)])]
+
+                    for i in range(1, 30):
+                        all_candidates = []
+
+                        for seq, score, attention in sequences:
+                            target_[i-1+0] = seq[-1]
+                            target_[i-1+1], decoder_state_, decoder_output_ = self._networks[3](decoder_state_, fc_output_, target_[i-1+0])
+                            out = target_[i-1+1]
+
+                            topk = out.topk(k=k)
+
+                            for top_index in range(len(topk[0])):
+                                j = mx.nd.slice_axis(topk, axis=1, begin=top_index, end=top_index+1)
+                                currentScore = mx.nd.slice_axis(out, axis=1, begin=top_index, end=top_index+1)
+                                newScore = mx.nd.expand_dims(score.squeeze() * currentScore.squeeze(), axis=1)
+                                candidate = (seq + [j],  newScore, attention + [])
+                                all_candidates.append(candidate)
+
+                        ordered = []
+                        newSequences = []
+                        for batch_entry in range(batch_size):
+                            ordered.append([])
+                            batchCandidate = [([seq[batch_entry] for seq in candidate[0]], candidate[1][batch_entry], [attention[batch_entry].expand_dims(axis=0) for attention in candidate[2]]) for candidate in all_candidates]
+                            ordered[batch_entry] = sorted(batchCandidate, key=lambda tup: tup[1].asscalar())
+                            if batch_entry == 0:
+                                newSequences = ordered[batch_entry]
+                            else:
+                                newSequences = [([mx.nd.concat(newSequences[sequenceIndex][0][seqIndex], ordered[batch_entry][sequenceIndex][0][seqIndex], dim=0) for seqIndex in range(len(newSequences[sequenceIndex][0]))],
+                                    mx.nd.concat(newSequences[sequenceIndex][1], ordered[batch_entry][sequenceIndex][1], dim=0),
+                                    [mx.nd.concat(newSequences[sequenceIndex][2][attentionIndex], ordered[batch_entry][sequenceIndex][2][attentionIndex], dim=0) for attentionIndex in range(len(newSequences[sequenceIndex][2]))])
+                                    for sequenceIndex in range(len(newSequences))]
+
+                        newSequences = [([newSequences[sequenceIndex][0][seqIndex].expand_dims(axis=1) for seqIndex in range(len(newSequences[sequenceIndex][0]))],
+                            newSequences[sequenceIndex][1].expand_dims(axis=1), [newSequences[sequenceIndex][2][attentionIndex] for attentionIndex in range(len(newSequences[sequenceIndex][2]))])
+                            for sequenceIndex in range(len(newSequences))]
+
+                        sequences = newSequences[:][:k]
+
+                    for i in range(1, 30):
+                        target_[i-1+1] = sequences[0][0][i]
+                        outputs.append(target_[i-1+1])
 
 
                     if save_attention_image == "True":

@@ -170,7 +170,7 @@ class BLEU(mx.metric.EvalMetric):
 
 
 
-class CNNSupervisedTrainer_CifarClassifierNetwork:
+class CNNSupervisedTrainer_ThreeInputCNN_M14:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -201,7 +201,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
 
         if preprocessing:
-            preproc_lib = "CNNPreprocessor_CifarClassifierNetwork_executor"
+            preproc_lib = "CNNPreprocessor_ThreeInputCNN_M14_executor"
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib)
         else:
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
@@ -288,18 +288,20 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 with autograd.record():
                     labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    data_0_ = batch.data[0].as_in_context(mx_context)
+                    data_1_ = batch.data[1].as_in_context(mx_context)
+                    data_2_ = batch.data[2].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    predictions_ = mx.nd.zeros((batch_size, 3,), ctx=mx_context)
 
 
                     nd.waitall()
 
                     lossList = []
 
-                    softmax_ = self._networks[0](data_)
+                    predictions_ = self._networks[0](data_0_, data_1_, data_2_)
 
-                    lossList.append(loss_function(softmax_, labels[0]))
+                    lossList.append(loss_function(predictions_, labels[0]))
 
                     loss = 0
                     for element in lossList:
@@ -337,18 +339,20 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 for batch_i, batch in enumerate(train_iter):
                     labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    data_0_ = batch.data[0].as_in_context(mx_context)
+                    data_1_ = batch.data[1].as_in_context(mx_context)
+                    data_2_ = batch.data[2].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    predictions_ = mx.nd.zeros((batch_size, 3,), ctx=mx_context)
 
 
                     nd.waitall()
 
                     outputs = []
                     attentionList=[]
-                    softmax_ = self._networks[0](data_)
+                    predictions_ = self._networks[0](data_0_, data_1_, data_2_)
 
-                    outputs.append(softmax_)
+                    outputs.append(predictions_)
 
 
                     if save_attention_image == "True":
@@ -410,18 +414,20 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 if True: 
                     labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    data_0_ = batch.data[0].as_in_context(mx_context)
+                    data_1_ = batch.data[1].as_in_context(mx_context)
+                    data_2_ = batch.data[2].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    predictions_ = mx.nd.zeros((batch_size, 3,), ctx=mx_context)
 
 
                     nd.waitall()
 
                     outputs = []
                     attentionList=[]
-                    softmax_ = self._networks[0](data_)
+                    predictions_ = self._networks[0](data_0_, data_1_, data_2_)
 
-                    outputs.append(softmax_)
+                    outputs.append(predictions_)
 
 
                     if save_attention_image == "True":

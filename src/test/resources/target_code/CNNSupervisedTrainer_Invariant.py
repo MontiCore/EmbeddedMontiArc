@@ -170,7 +170,7 @@ class BLEU(mx.metric.EvalMetric):
 
 
 
-class CNNSupervisedTrainer_CifarClassifierNetwork:
+class CNNSupervisedTrainer_Invariant:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -201,7 +201,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
 
         if preprocessing:
-            preproc_lib = "CNNPreprocessor_CifarClassifierNetwork_executor"
+            preproc_lib = "CNNPreprocessor_Invariant_executor"
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib)
         else:
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
@@ -286,20 +286,29 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 with autograd.record():
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(3)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    data_0_ = batch.data[0].as_in_context(mx_context)
+                    data_1_ = batch.data[1].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    pred_ = [mx.nd.zeros((batch_size, 4,), ctx=mx_context) for i in range(3)]
 
+
+                    const1_ = mx.nd.full((batch_size, 1,), 1, ctx=mx_context)
 
                     nd.waitall()
 
                     lossList = []
 
-                    softmax_ = self._networks[0](data_)
+                    pred_[0] = self._networks[0](data_0_)
 
-                    lossList.append(loss_function(softmax_, labels[0]))
+                    lossList.append(loss_function(pred_[0], labels[0]))
+                    pred_[1] = self._networks[1](data_1_)
+
+                    lossList.append(loss_function(pred_[1], labels[1]))
+                    pred_[2] = self._networks[2](const1_)
+
+                    lossList.append(loss_function(pred_[2], labels[2]))
 
                     loss = 0
                     for element in lossList:
@@ -335,20 +344,29 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 train_iter.reset()
                 metric = mx.metric.create(eval_metric, **eval_metric_params)
                 for batch_i, batch in enumerate(train_iter):
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(3)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    data_0_ = batch.data[0].as_in_context(mx_context)
+                    data_1_ = batch.data[1].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    pred_ = [mx.nd.zeros((batch_size, 4,), ctx=mx_context) for i in range(3)]
 
+
+                    const1_ = mx.nd.full((batch_size, 1,), 1, ctx=mx_context)
 
                     nd.waitall()
 
                     outputs = []
                     attentionList=[]
-                    softmax_ = self._networks[0](data_)
+                    pred_[0] = self._networks[0](data_0_)
 
-                    outputs.append(softmax_)
+                    outputs.append(pred_[0])
+                    pred_[1] = self._networks[1](data_1_)
+
+                    outputs.append(pred_[1])
+                    pred_[2] = self._networks[2](const1_)
+
+                    outputs.append(pred_[2])
 
 
                     if save_attention_image == "True":
@@ -408,20 +426,29 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
                 if True: 
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(3)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    data_0_ = batch.data[0].as_in_context(mx_context)
+                    data_1_ = batch.data[1].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    pred_ = [mx.nd.zeros((batch_size, 4,), ctx=mx_context) for i in range(3)]
 
+
+                    const1_ = mx.nd.full((batch_size, 1,), 1, ctx=mx_context)
 
                     nd.waitall()
 
                     outputs = []
                     attentionList=[]
-                    softmax_ = self._networks[0](data_)
+                    pred_[0] = self._networks[0](data_0_)
 
-                    outputs.append(softmax_)
+                    outputs.append(pred_[0])
+                    pred_[1] = self._networks[1](data_1_)
+
+                    outputs.append(pred_[1])
+                    pred_[2] = self._networks[2](const1_)
+
+                    outputs.append(pred_[2])
 
 
                     if save_attention_image == "True":

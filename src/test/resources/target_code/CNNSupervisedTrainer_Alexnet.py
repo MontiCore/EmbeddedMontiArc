@@ -191,13 +191,20 @@ class CNNSupervisedTrainer_Alexnet:
               context='gpu',
               save_attention_image=False,
               use_teacher_forcing=False,
-              normalize=True):
+              normalize=True,
+              preprocessing = False):
         if context == 'gpu':
             mx_context = mx.gpu()
         elif context == 'cpu':
             mx_context = mx.cpu()
         else:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
+
+        if preprocessing:
+            preproc_lib = "CNNPreprocessor_Alexnet_executor"
+            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib)
+        else:
+            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -213,8 +220,6 @@ class CNNSupervisedTrainer_Alexnet:
                                                    stop_factor_lr=min_learning_rate)
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
-
-        train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
 
         if normalize:
             self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
@@ -402,7 +407,7 @@ class CNNSupervisedTrainer_Alexnet:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                if True:
+                if True: 
                     labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
 
                     data_ = batch.data[0].as_in_context(mx_context)

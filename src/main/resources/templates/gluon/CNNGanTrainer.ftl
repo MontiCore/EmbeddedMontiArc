@@ -114,7 +114,7 @@ class ${tc.fileNameWithoutEnding}:
 #        if preprocessing:
 #            train_iter, test_iter, data_mean, data_std = self._data_loader.load_preprocessed_data(batch_size, preproc_lib)
 #        else:
-#            train_iter, test_iter, data_mean, data_std = self._data_loader.load_data(batch_size, img_resize)
+#            train_iter, test_iter, data_mean, data_std = self._data_loader.load_data(batch_size)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -166,16 +166,6 @@ class ${tc.fileNameWithoutEnding}:
             loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
             activation_name = 'sigmoid'
 
-<<<<<<< HEAD
-=======
-<#list tc.architecture.streams as stream>
-        input_shape = <#list tc.getStreamInputDimensions(stream) as dimensions>${tc.join(dimensions, ",")}</#list>
-</#list>
-        shape_list = list(input_shape)
-        shape_list[0] = batch_size
-        input_shape = tuple(shape_list)
-
->>>>>>> cdd27689fde2eae0cb6e022d18400f7a696b2f58
         metric_dis = mx.metric.create(eval_metric)
         metric_gen = mx.metric.create(eval_metric)
         <#include "gan/InputGenerator.ftl">

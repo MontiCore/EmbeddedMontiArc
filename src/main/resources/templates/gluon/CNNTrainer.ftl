@@ -43,6 +43,9 @@ if __name__ == "__main__":
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
 </#if>
+<#if (config.preprocessingName)??>
+        preprocessing=${config.preprocessingName???string("True","False")},
+</#if>
 <#if (config.useTeacherForcing)??>
         use_teacher_forcing='${config.useTeacherForcing?string("True","False")}',
 </#if>
