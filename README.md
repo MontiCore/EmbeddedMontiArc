@@ -15,8 +15,20 @@
 * Example: `getCMakeConfig().addModuleDependency(new CMakeFindModule("LibName", "LibHeader.hpp", "libname", headerSearchPaths, bibrarySearchPaths, findHeaderEnabled, findLibEnabled, isRequiered));`
 * Additionally any CMake command can be inserted via `getCMakeConfig().addCMakeCommand("CMAKE_CXX_FLAGS  \"${CMAKE_CXX_FLAGS} -Wno-deprecated\"")`or at the end via `addCMakeCommandEnd("#some command at the end")`
 
+### How to add a new Command to EMAM
+* add your command java file in src /src/main/java/de/monticore/lang/generator/cpp/commands. You can
+  look at ceilMathCommand.java as an example for an command that already exists in Armadillo. For a
+  more complex command, you can look at scaleCube.
+* register your command in MathCommandRegisterCPP.java
+* add yourCommandTest.emam in EMAM2Cpp/src/test/resources/test/math
+* add a cpp file for your command in EMAM2Cpp/src/test/resources/results/armadillo/testMath/l0. This
+  file will be compared to the generated one from yourCommandTest.emam.
+* add your test in
+  EMAM2Cpp/src/test/java/de/monticore/lang/monticar/generator/cpp/armadillo/ArmadilloFunctionTest.java
+
 ### Note on find_package
 If no search directory is specified CMake will search on default locations. For linux this is _/usr/lib_ , _usr/local/lib_ , _usr/include_ etc. Windows systems does not have a default library path. The generated CMake files also are using environment variables as hint. If a package could not be found but it is installed somewhere on the system please create an environment variable **PackageName_HOME**.  
 
 Here an example for Armadillo:
 Create a environment variable called _Armadillo_Home_ with the path to the base directory of your Armadillo installation.
+
