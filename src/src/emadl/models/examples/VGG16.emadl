@@ -17,7 +17,7 @@ component VGG16{
             }
 
             image ->
-            conv(filter=2, chabnnels=64, ->=2) ->
+            conv(filter=2, channels=64, ->=2) ->
             Pooling(pool_type="max", kernel=(2,2), stride=(1,1)) ->
             fc() ->
             FullyConnected(units=10) ->

@@ -8,14 +8,12 @@ keras conv layer:
 
 */
 
-package imageSegmentation;
-
 component FCN{
     ports in Z(0:255)^{3, 500, 500} image,
-         in Z(0:255) num_classes,
-         out Q(0:1)^{21} predictions;
+          in Z(0:255) num_classes,
+          out Q(0:1)^{21} predictions;
 
-         implementation CNN {
+        implementation CNN {
 
             def conv(filter, channels, padding){
                 Convolution(kernel=(filter,filter), channels=channels, padding=padding) ->
@@ -33,44 +31,64 @@ component FCN{
                 Dropout(p=dropout)
             }
 
-                image ->
+            image ->
 
-                /* 5 vgg blocks*/
+            /* vgg block 1 */
+            vgg_block(num_conv=2, filter=(3,3), channels=64, padding=(0,0)) ->
 
-                vgg_block(num_conv=2, filter=(3,3), channels=64, padding=(0,0)) ->
-                vgg_block(num_conv=2, filter=(3,3), channels=128, padding=(0,0)) ->
-                /* connect to skip 3 */
-                /* use split to add skip connections to network*/
-                vgg_block(num_conv=3, filter=(3,3), channels=256, padding=(0,0), ?=true) ->
-                /* connect to skip 4 */
-                /* use split to add skip connections to network*/
+            /* vgg block 2 */
+            vgg_block(num_conv=2, filter=(3,3), channels=128, padding=(0,0)) ->
+
+            /* vgg block 3 */
+            vgg_block(num_conv=3, filter=(3,3), channels=256, padding=(0,0), ?=true) ->
+
+            /* split used for skip connection */
+            Split(n=2) ->
+            (
+                [0] ->
+                /* vgg block 4 */
                 vgg_block(num_conv=3, filter=(3,3), channels=512, padding=(0,0), ?=true) ->
-                vgg_block(num_conv=3, filter=(3,3), channels=512, padding=(0,0)) ->
+                /* split used for skip connection */
+                Split(n=2) ->
+                (
+                    [0] ->
+                    /* vgg block 5 */
+                    vgg_block(num_conv=3, filter=(3,3), channels=512, padding=(0,0)) ->
 
-                /* fully convolutional in place of fully connected layers */
-                fully_conv(filter=(7,7), channels=4096, padding=(0,0), dropout=0.5) ->
-                fully_conv(filter=(1,1), channels=4096, padding=(0,0), dropout=0.5) ->
-                Convolution(kernel=(1,1), channels=num_classes) ->
+                    /* fully convolutional layers, replacing fully connected layers */
+                    fully_conv(filter=(7,7), channels=4096, padding=(0,0), dropout=0.5) ->
+                    fully_conv(filter=(1,1), channels=4096, padding=(0,0), dropout=0.5) ->
+                    Convolution(kernel=(1,1), channels=num_classes)
+
+                    /* upsampling */
+                    TransConv(kernel=(4,4), channels=num_classes, stride=2)
+
+                |
+                    [1] ->
+
+                    /* skip 4 */
+                    Convolution(kernel=(4,4), channels=num_classes) ->
+                    Crop(begin=(5), endd=(-5))
+                ) ->
+
+                Concatenate() ->
 
                 /* deconvolution */
-                TransConv(kernel=(4,4), channels=num_classes, stride=2) ->
-
-                /* skip 4 */
-                Convolution(kernel=(4,4), channels=num_classes) ->
-                Crop(begin=(5), endd=(-5)) ->
-
-                /* conc 1 */
-                TransConv(kernel=(4,4), channels=num_classes, stride=2) ->
+                TransConv(kernel=(4,4), channels=num_classes, stride=2)
+            |
+                [1] ->
 
                 /* skip 3 */
                 Convolution(kernel=(1,1), channels=num_classes) ->
-                Crop(begin=(9), endd=(-9)) ->
+                Crop(begin=(9), endd=(-9))
+            ) ->
 
+            Concatenate() ->
 
-                /*  Final up-sampling and cropping */
-                TransConv(kernel=(16,16), channels=num_classes, stride=8) ->
-                Crop(begin=(31,31), endd=(-37,-37)) ->
-                Softmax() ->
-                predictions;
-         }
-  }
+            /*  Final up-sampling and cropping */
+            TransConv(kernel=(16,16), channels=num_classes, stride=8) ->
+            Crop(begin=(31,31), endd=(-37,-37)) ->
+            Softmax() ->
+            predictions;
+        }
+}
