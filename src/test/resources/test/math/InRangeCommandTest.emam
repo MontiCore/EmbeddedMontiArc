@@ -1,8 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.math;
 
-component InRangeCommandTest{
+component InRangeCommandTest {
+    port
+    in Q^{n,m} src,
+    in Q^{3} lowerBoundary,
+    in Q^{3} upperBoundary,
+    out Q^{n,m} dst;
+
     implementation Math{
-        Q a = inRange(0,0,0,0,0);
+        dst = inRange(src, lowerBoundary, upperBoundary);
     }
 }

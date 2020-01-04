@@ -196,7 +196,8 @@ public class ComponentConverterMethodGeneration {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
         String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
         if(ComponentConverter.usedMathCommand != null) {
-            if (ComponentConverter.usedMathCommand.isArgumentReturnMathCommand()) {
+            String argumentReturnFunctionName = ComponentConverter.usedMathCommand.getMathCommandName();
+            if (ComponentConverter.usedMathCommand.isArgumentReturnMathCommand() && result.contains(argumentReturnFunctionName)) {
                 result = fixArgumentReturnInstruction(result, method, mathExpressionSymbol, bluePrint);
             }
         }
