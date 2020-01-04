@@ -13,12 +13,12 @@ SOS_TOKEN = '<s>'
 EOS_TOKEN = '</s>'
 
 FILES = {
-    'vocab_source': 'vocabularies/vocab.50K.en',
-    'vocab_target': 'vocabularies/vocab.50K.de',
+    'vocab_source': 'vocabularies/vocab.en',
+    'vocab_target': 'vocabularies/vocab.vi',
     'train_source': 'train.en',
-    'train_target': 'train.de',
-    'test_source': 'newstest2014.en',
-    'test_target': 'newstest2014.de'
+    'train_target': 'train.vi',
+    'test_source': 'tst2013.en',
+    'test_target': 'tst2013.vi'
 }
 
 # Functions
