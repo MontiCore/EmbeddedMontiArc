@@ -22,8 +22,8 @@ dst=mat(n,m);
 }
 void inRangeHelper(Mat src, Mat dst, colvec lowerB, colvec upperB)
 {
-    inRange(src, dst, Scalar(lowerB(0), lowerB(1), lowerB(2)),
-            Scalar(upperB(0), upperB(1), upperB(2)));
+    inRange(src, Scalar(lowerB(0), lowerB(1), lowerB(2)),
+            Scalar(upperB(0), upperB(1), upperB(2)), dst);
 }
 void execute()
 {
