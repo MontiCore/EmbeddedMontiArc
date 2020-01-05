@@ -79,8 +79,8 @@ public class InRangeCommand extends ArgumentReturnMathCommand{
         return new Instruction() {
             @Override
             public String getTargetLanguageInstruction() {
-                return "    inRange(src, dst, Scalar(lowerB(0), lowerB(1), lowerB(2)),\n" +
-                        "            Scalar(upperB(0), upperB(1), upperB(2)));\n";
+                return "    inRange(src, Scalar(lowerB(0), lowerB(1), lowerB(2)),\n" +
+                        "            Scalar(upperB(0), upperB(1), upperB(2)), dst);\n";
             }
 
             @Override
