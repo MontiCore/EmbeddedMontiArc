@@ -2,7 +2,14 @@
 package test.math;
 
 component FindContoursCommandTest{
-    implementation Math{
-        Q a = findContours(0,0,0,0,0);
+    port
+        in Q^{n,m} image,
+        in Z mode,
+        in Z method,
+        out Q^{x,y} hierarchy,
+        out Q^{w,z} contours;
+
+    implementation Math {
+        contours = findContours(image, hierarchy, mode, method);
     }
 }

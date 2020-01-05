@@ -125,7 +125,11 @@ public class LanguageUnitCPP extends LanguageUnit {
             resultString += "#include \"" + string + ".h\"\n";
 
         for(String string: bluePrint.getCVIncludeStrings())
-            resultString += "#include \"" + string + ".hpp\"\n";
+            if(string.contains("vector")){
+                resultString += "#include <" + string +">\n";
+            }else {
+                resultString += "#include \"" + string + ".hpp\"\n";
+            }
         if (generatorCPP.isExecutionLoggingActive)
             resultString += "#include <fstream>\n";
 

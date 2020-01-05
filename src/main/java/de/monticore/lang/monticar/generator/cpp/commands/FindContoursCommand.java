@@ -19,7 +19,7 @@ import java.util.List;
  * @author Ahmed Diab
  */
 
-public class FindContoursCommand extends MathCommand{
+public class FindContoursCommand extends ArgumentReturnMathCommand{
     public FindContoursCommand() {
         setMathCommandName("findContours");
     }
@@ -52,6 +52,7 @@ public class FindContoursCommand extends MathCommand{
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
         ((BluePrintCPP) bluePrint).addCVIncludeString("opencv2/imgproc");
+        ((BluePrintCPP) bluePrint).addCVIncludeString("vector");
 
     }
 }
