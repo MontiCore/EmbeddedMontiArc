@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class MathScaleCubeCommand extends MathCommand {
-    //todo
     private static final String SCALER_SYNTAX_EXTENDED = "scaleCube( EXPRESSION , AXIS , NEW_X , NEW_Y )";
 
     private static final String SCALER_METHOD_NAME = "scaleCube";
@@ -63,7 +62,6 @@ public class MathScaleCubeCommand extends MathCommand {
             MathMatrixAccessSymbol new_y = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(3);
             convertExtendedScalerImplementationArmadillo(valueListString, mathMatrixNameExpressionSymbol, bluePrintCPP);
         } else {
-            //todo
             Log.error(String.format("No implementation found for scaleCube operation: \"scaleCube(%s)\".", mathExpressionSymbol.getTextualRepresentation(), SCALER_SYNTAX_EXTENDED));
         }
     }

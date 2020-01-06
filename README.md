@@ -17,8 +17,9 @@
 
 ### How to add a new Command to EMAM
 * add your command java file in src /src/main/java/de/monticore/lang/generator/cpp/commands. You can
-  look at ceilMathCommand.java as an example for an command that already exists in Armadillo. For a
-  more complex command, you can look at scaleCube.
+  look at CeilMathCommand.java as an example for an command that already exists in Armadillo. For a
+  more complex command, you can look at scaleCube. CeilMathCommand.java will be find in adi-dev branch, after merging this branch into master the
+  ceil command will be available also on the master.
 * register your command in MathCommandRegisterCPP.java
 * add yourCommandTest.emam in EMAM2Cpp/src/test/resources/test/math
 * add a cpp file for your command in EMAM2Cpp/src/test/resources/results/armadillo/testMath/l0. This
