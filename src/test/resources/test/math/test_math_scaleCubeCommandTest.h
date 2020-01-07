@@ -26,13 +26,13 @@ cube scaleCube1(cube img, int depth_axis, int new_x, int new_y)
     for (int i = 0; i < img.n_slices; i++) 
     {
         arma::mat cur_slice = img.slice(i);
-        arma::vec X = arma::regspace(0, cur_slice.n_cols-1);
-        arma::vec Y = arma::regspace(0, cur_slice.n_rows-1);
+        arma::vec X = arma::regspace(1, cur_slice.n_cols);
+        arma::vec Y = arma::regspace(1, cur_slice.n_rows);
 
-        float scale_x = (cur_slice.n_cols-1)/float((new_x));
-        float scale_y = (cur_slice.n_rows-1)/float((new_y));
-        arma::vec XI = arma::regspace(0, new_x-1) * scale_x;
-        arma::vec YI = arma::regspace(0, new_y-1) * scale_y;
+        float scale_x = cur_slice.n_cols/float((new_x));
+        float scale_y = cur_slice.n_rows/float((new_y));
+        arma::vec XI = arma::regspace(1, new_x) * scale_x;
+        arma::vec YI = arma::regspace(1, new_y) * scale_y;
 
         arma::mat mat_out;
 

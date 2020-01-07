@@ -16,6 +16,7 @@ public class MathCommandRegisterCPP extends MathCommandRegister {
 
         //registerMathCommand("size", "testo");
         registerMathCommand(new MathScaleCubeCommand());
+        registerMathCommand(new MathJoinCubeDimCommand());
         registerMathCommand(new MathAtan2Command());
         registerMathCommand(new MathLog2Command());
         registerMathCommand(new MathSizeCommand());
