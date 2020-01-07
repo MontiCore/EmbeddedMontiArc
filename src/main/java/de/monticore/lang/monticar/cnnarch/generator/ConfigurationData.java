@@ -69,6 +69,20 @@ public class ConfigurationData {
         return (Boolean) getConfiguration().getEntry("normalize").getValue().getValue();
     }
 
+    public Boolean getShuffleData() {
+        if (!getConfiguration().getEntryMap().containsKey("shuffle_data")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("shuffle_data").getValue().getValue();
+    }
+
+    public String getClipGlobalGradNorm() {
+        if (!getConfiguration().getEntryMap().containsKey("clip_global_grad_norm")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("clip_global_grad_norm").getValue());
+    }
+
     public String getPreprocessingName() {
         if (!getConfiguration().getEntryMap().containsKey("preprocessing_name")) {
             return null;
