@@ -41,7 +41,9 @@ Also see [Dependencies](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/ge
       ... 
     - ... 
 - Config:
-    - Powershell Admin: `git config --system core.longpaths true`
+    - Powershell Admin:  
+        `git config --system core.longpaths true`  
+        `git config --global http.sslVerify false`
     - Windows long paths:
         - Hit the Windows key, type regedit.msc and press Enter.
         - Navigate to HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem
