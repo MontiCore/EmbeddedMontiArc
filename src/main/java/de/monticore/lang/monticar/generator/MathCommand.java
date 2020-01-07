@@ -66,4 +66,7 @@ public abstract class MathCommand {
         return false;
     }
 
+    public boolean isCVMathCommand(){
+        return false;
+    }
 }
