@@ -33,6 +33,10 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     CheckpointPeriodEntry implements ConfigEntry = name:"checkpoint_period" ":" value:IntegerValue;
     LogPeriodEntry implements ConfigEntry = name:"log_period" ":" value:IntegerValue;
     NormalizeEntry implements ConfigEntry = name:"normalize" ":" value:BooleanValue;
+
+    ShuffleDataEntry implements ConfigEntry = name:"shuffle_data" ":" value:BooleanValue;
+    ClipGlobalGradNormEntry implements ConfigEntry = name:"clip_global_grad_norm" ":" value:NumberValue;
+
     OptimizerEntry implements ConfigEntry = (name:"optimizer" | name:"actor_optimizer") ":" value:OptimizerValue;
     TrainContextEntry implements ConfigEntry = name:"context" ":" value:TrainContextValue;
     LossEntry implements ConfigEntry = name:"loss" ":" value:LossValue;
