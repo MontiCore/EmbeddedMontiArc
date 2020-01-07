@@ -33,6 +33,11 @@ public class DilateCommand extends ArgumentReturnMathCommand{
         }
     }
 
+    @Override
+    public boolean isCVMathCommand(){
+        return true;
+    }
+
     public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
         Log.error("No implementation for Octave Backend");
     }
