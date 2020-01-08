@@ -9,16 +9,33 @@
                 domain = gen_inputs[name]
                 min = domain[1]
                 max = domain[2]
-                if domain[0] == float:
-                    generators[name] = lambda domain=domain, min=min, max=max: mx.nd.cast(mx.ndarray.random.uniform(min,max,
+                if name[:-1] in constraint_distributions:
+                    dist_dict = constraint_distributions[name[:-1]]
+                    dist_name = dist_dict['name']
+                    if dist_name is "gaussian":
+                        generators[name] = lambda domain=domain, min=min, max=max: mx.nd.cast(mx.ndarray.random.normal(dist_dict["mean_value"],
+                                                                    dist_dict["spread_value"],
+                                                                    shape=(batch_size,)+domain[3], dtype=domain[0],
+                                                                    ctx=mx_context), dtype="float32")
+                else:
+                    if domain[0] == float:
+                        generators[name] = lambda domain=domain, min=min, max=max: mx.nd.cast(mx.ndarray.random.uniform(min,max,
                                                     shape=(batch_size,)+domain[3],
                                                     dtype=domain[0], ctx=mx_context,), dtype="float32")
-                    qnet_losses += [mx.gluon.loss.L2Loss()]
-                elif domain[0] == int:
-                    generators[name] = lambda domain=domain, min=min, max=max: mx.nd.cast(mx.ndarray.random.randint(low=int(min),
+                    elif domain[0] == int:
+                        generators[name] = lambda domain=domain, min=min, max=max: mx.nd.cast(mx.ndarray.random.randint(low=int(min),
                                                     high=int(max)+1, shape=(batch_size,)+domain[3],
                                                     ctx=mx_context), dtype="float32")
-                    qnet_losses += [lambda pred, labels: mx.gluon.loss.SoftmaxCrossEntropyLoss()(pred, labels.reshape(batch_size))]
+
+                if namen[-1] in constraint_losses:
+                    wierd = 'doNothingYet'
+                else:
+                    if domain[0] == float:
+                        qnet_losses += [mx.gluon.loss.L2Loss()]
+                    elif domain[0] == int:
+                        qnet_losses += [lambda pred, labels: mx.gluon.loss.SoftmaxCrossEntropyLoss()(pred, labels.reshape(batch_size))]
+
+
 
         for name in gen_inputs:
             if not name in qnet_outputs:

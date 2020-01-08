@@ -169,19 +169,10 @@ public class GluonConfigurationData extends ConfigurationData {
         return getMultiParamEntry(NOISE_DISTRIBUTION, "name");
     }
 
-    public String getImgResizeWidth() {
-        if (!this.getConfiguration().getEntryMap().containsKey("img_resize_width")) {
-            return null;
-        }
-        return String.valueOf(getConfiguration().getEntry("img_resize_width").getValue());
+    public Map<String, Map<String, Object>> getConstraintDistributions() {
+        return getMultiParamMapEntry(CONSTRAINT_DISTRIBUTION, "name");
     }
 
-    public String getImgResizeHeight() {
-        if (!this.getConfiguration().getEntryMap().containsKey("img_resize_height")) {
-            return null;
-        }
-        return String.valueOf(getConfiguration().getEntry("img_resize_height").getValue());
-    }
     public Map<String, Object> getStrategy() {
         assert isReinforcementLearning(): "Strategy parameter only for reinforcement learning but called in a " +
          " non reinforcement learning context";

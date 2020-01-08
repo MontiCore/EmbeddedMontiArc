@@ -78,6 +78,8 @@ class ${tc.fileNameWithoutEnding}:
               img_resize=(64,64),
               noise_distribution='gaussian',
               noise_distribution_params=(('mean_value', 0),('spread_value', 1),),
+              constraint_distributions={},
+              constraint_losses={},
               preprocessing = False):
 
         if context == 'gpu':
@@ -164,7 +166,14 @@ class ${tc.fileNameWithoutEnding}:
 
         if loss == 'sigmoid_binary_cross_entropy':
             loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
-            activation_name = 'sigmoid'
+        elif loss == 'l2':
+            loss_function = mx.gluon.loss.L2Loss()
+        elif loss == 'l1':
+            loss_function = mx.gluon.loss.L2Loss()
+        elif loss == 'log_cosh':
+            loss_function = LogCoshLoss()
+        else:
+            logging.error("Invalid loss parameter.")
 
         metric_dis = mx.metric.create(eval_metric)
         metric_gen = mx.metric.create(eval_metric)
@@ -219,17 +228,15 @@ class ${tc.fileNameWithoutEnding}:
                 else:
                     if batch_i % speed_period == 0:
                         metric_dis = mx.metric.create(eval_metric)
-                        discriminated = mx.nd.Concat(discriminated_real_dis.reshape((-1,1)), discriminated_fake_dis.reshape((-1,1)), dim=0)
-                        labels = mx.nd.Concat(real_labels.reshape((-1,1)), fake_labels.reshape((-1,1)), dim=0)
-                        discriminated = mx.ndarray.Activation(discriminated, activation_name)
+                        discriminated = mx.nd.Concat(loss_resultD, loss_resultF, dim=0)
+                        labels = mx.nd.Concat(real_labels, fake_labels, dim=0)
                         discriminated = mx.ndarray.floor(discriminated + 0.5)
                         metric_dis.update(preds=discriminated, labels=labels)
                         print("DisAcc: ", metric_dis.get()[1])
 
                         metric_gen = mx.metric.create(eval_metric)
-                        discriminated = mx.ndarray.Activation(discriminated_fake_gen.reshape((-1,1)), activation_name)
-                        discriminated = mx.ndarray.floor(discriminated + 0.5)
-                        metric_gen.update(preds=discriminated, labels=real_labels.reshape((-1,1)))
+                        discriminated = mx.ndarray.floor(loss_resultG + 0.5)
+                        metric_gen.update(preds=discriminated, labels=real_labels)
                         print("GenAcc: ", metric_gen.get()[1])
 
                         try:

@@ -61,11 +61,6 @@ if __name__ == "__main__":
 <#if (config.preprocessingName)??>
         preprocessing=${config.preprocessingName???string("True","False")},
 </#if>
-<#if (config.imgResizeWidth)??>
-<#if (config.imgResizeHeight)??>
-        img_resize=(${config.imgResizeWidth}, ${config.imgResizeHeight}),
-</#if>
-</#if>
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric}',
 </#if>
@@ -84,6 +79,21 @@ if __name__ == "__main__":
         optimizer_params={
 <#list config.optimizerParams?keys as param>
             '${param}': ${config.optimizerParams[param]}<#sep>,
+</#list>
+        },
+</#if>
+<#if (config.constraintDistributions)??>
+<#assign map = (config.constraintDistributions)>
+        constraint_distributions = {
+<#list map?keys as nameKey>
+        '${nameKey}' : { 'name': '${map[nameKey].name}',
+<#if (map[nameKey].mean_value)??>
+            'mean_value': ${map[nameKey].mean_value},
+</#if>
+<#if (map[nameKey].spread_value)??>
+            'spread_value': ${map[nameKey].spread_value}
+</#if>
+        },
 </#list>
         },
 </#if>
