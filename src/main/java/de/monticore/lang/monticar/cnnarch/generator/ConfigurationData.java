@@ -2,6 +2,8 @@
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
+import jline.internal.Log;
+
 import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants.*;
 
 import java.util.ArrayList;
@@ -169,6 +171,27 @@ public class ConfigurationData {
             return null;
         }
         return (Boolean) getConfiguration().getEntry("eval_train").getValue().getValue();
+    }
+
+    protected Map<String, Map<String, Object>> getMultiParamMapEntry(final String key, final String valueName) {
+        if (!configurationContainsKey(key)) {
+            return null;
+        }
+
+        Map<String, Map<String,Object>> resultView = new HashMap<>();
+
+        ValueSymbol value = this.getConfiguration().getEntryMap().get(key).getValue();
+
+        if (value instanceof MultiParamValueMapSymbol) {
+            MultiParamValueMapSymbol multiParamValueMap = (MultiParamValueMapSymbol) value;
+            resultView.putAll(multiParamValueMap.getParameters());
+            Map<String,String> names = multiParamValueMap.getMultiParamValueNames();
+            for(String distrName : names.keySet()) {
+                resultView.get(distrName).put(valueName, names.get(distrName));
+            }
+        }
+
+        return resultView;
     }
 
     protected Map<String, Object> getMultiParamEntry(final String key, final String valueName) {

@@ -250,11 +250,11 @@ public class ArchitectureElementData {
         return Arrays.asList(bottomPad, rightPad);
     }
 
-    public boolean getStart() {
+    /*public boolean getStart() {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.START_NAME).get();
     }
 
     public boolean getEnd() {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.END_NAME).get();
-    }
+    }*/
 }
