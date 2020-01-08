@@ -9,7 +9,7 @@ include:
 
 masterJobLinux:
   tags:
-  - docker
+  - ema
   stage: testLinux
   image: maven:3-jdk-8
   script:
