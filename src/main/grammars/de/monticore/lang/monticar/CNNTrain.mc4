@@ -24,7 +24,6 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     BooleanValue implements ConfigValue = (TRUE:"true" | FALSE:"false");
     ComponentNameValue implements ConfigValue = Name ("."Name)*;
     DoubleVectorValue implements ConfigValue = "(" number:NumberWithUnit ("," number:NumberWithUnit)* ")";
-    IntegerTupelValue implements ConfigValue = "(" first:IntegerValue "," second:IntegerValue ")";
     IntegerListValue implements ConfigValue = "[" number:NumberWithUnit ("," number:NumberWithUnit)* "]";
 
     NumEpochEntry implements ConfigEntry = name:"num_epoch" ":" value:IntegerValue;
@@ -255,6 +254,10 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
 
     // GANs Extensions
+    interface MultiParamValueMapConfigEntry extends ConfigEntry;
+    interface MultiParamValueMapParamValue extends ConfigValue;
+    interface MultiParamValueMapTupleValue extends ConfigValue;
+
     DiscriminatorNetworkEntry implements ConfigEntry = name:"discriminator_name" ":" value:ComponentNameValue;
     QNetworkEntry implements ConfigEntry = name:"qnet_name" ":" value:ComponentNameValue;
     PreprocessingEntry implements ConfigEntry = name:"preprocessing_name" ":" value:ComponentNameValue;
@@ -263,9 +266,16 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     NoiseDistributionEntry implements MultiParamConfigEntry = name:"noise_distribution" ":" value:NoiseDistributionValue;
     interface NoiseDistributionValue extends MultiParamValue;
 
-    interface NoiseDistributionGaussianEntry extends Entry;
+    interface NoiseDistributionParamEntry extends Entry;
+    interface NoiseDistributionGaussianEntry extends NoiseDistributionParamEntry;
+
     NoiseDistributionGaussianValue implements NoiseDistributionValue = name:"gaussian" ("{" params:NoiseDistributionGaussianEntry* "}")?;
 
     MeanValueEntry implements NoiseDistributionGaussianEntry = name:"mean_value" ":" value:IntegerValue;
     SpreadValueEntry implements NoiseDistributionGaussianEntry = name:"spread_value" ":" value:IntegerValue;
+
+    // Constraint Distributions
+    ConstraintDistributionEntry implements MultiParamValueMapConfigEntry  = name:"constraint_distributions" ":" value:ConstraintDistributionValue;
+    ConstraintDistributionValue implements MultiParamValueMapParamValue = ("{" params:ConstraintDistributionParam* "}")?;
+    ConstraintDistributionParam implements MultiParamValueMapTupleValue = name:StringValue ":" distribution:NoiseDistributionValue;
 }

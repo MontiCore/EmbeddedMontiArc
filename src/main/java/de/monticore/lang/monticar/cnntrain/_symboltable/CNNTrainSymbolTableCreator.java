@@ -9,11 +9,13 @@ package de.monticore.lang.monticar.cnntrain._symboltable;
 
 import de.monticore.ast.ASTCNode;
 import de.monticore.lang.monticar.cnntrain._ast.*;
+import de.monticore.lang.monticar.cnntrain._parser.CNNTrainAntlrParser;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -512,6 +514,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         configuration.getEntryMap().put(node.getName(), entry);
     }
 
+
     @Override
     public void visit(ASTReplayMemoryEntry node) {
         processMultiParamConfigVisit(node, node.getValue().getName());
@@ -545,6 +548,16 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
+    public void visit(ASTConstraintDistributionEntry node) {
+        processMultiParamMapConfigVisit(node, node.getName());
+    }
+
+    @Override
+    public void endVisit(ASTConstraintDistributionEntry node) {
+        processMultiParamMapConfigEndVisit(node);
+    }
+
+    @Override
     public void visit(ASTNoiseDistributionEntry node) {
         NoiseDistribution noiseDistribution;
         if(node.getValue().getName().equals("gaussian")) {
@@ -559,6 +572,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     public void endVisit(ASTNoiseDistributionEntry node) {
         processMultiParamConfigEndVisit(node);
     }
+
 
     @Override
     public void visit(ASTRewardFunctionEntry node) {
@@ -642,7 +656,36 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
                     retrievePrimitiveValueByConfigValue(nodeParam.getValue()));
         }
     }
-	
+
+    private void processMultiParamMapConfigVisit(ASTMultiParamValueMapConfigEntry node, Object value) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        MultiParamValueMapSymbol valueSymbol = new MultiParamValueMapSymbol();
+        valueSymbol.setValue(value);
+        entry.setValue(valueSymbol);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    private void processMultiParamMapConfigEndVisit(ASTMultiParamValueMapConfigEntry node) {
+        ValueSymbol valueSymbol = configuration.getEntryMap().get(node.getName()).getValue();
+        assert valueSymbol instanceof MultiParamValueMapSymbol : "Value symbol is not a multi parameter symbol";
+        MultiParamValueMapSymbol multiParamValueMapSymbol = (MultiParamValueMapSymbol)valueSymbol;
+        for (ASTConfigValue nodeParam : ((ASTMultiParamValueMapParamValue)node.getValue()).getParamsList()) {
+            ASTMultiParamValueMapTupleValue tuple = ((ASTMultiParamValueMapTupleValue)nodeParam);
+            ASTStringValue name = tuple.getName();
+            ASTMultiParamValue distribution = tuple.getDistribution();
+            String distrName = distribution.getName();
+            multiParamValueMapSymbol.addMultiParamValueName(getStringFromStringValue(name), distrName);
+            HashMap<String, Object> mapEntry = new HashMap<>();
+            for (ASTEntry param : distribution.getParamsList()) {
+                String distrEntryName = param.getName();
+                Object res = retrievePrimitiveValueByConfigValue(param.getValue());
+                mapEntry.put(distrEntryName, res);
+            }
+            multiParamValueMapSymbol.addParameter(getStringFromStringValue(name), mapEntry);
+        }
+    }
+
     private Object retrievePrimitiveValueByConfigValue(final ASTConfigValue configValue) {
         if (configValue instanceof ASTIntegerValue) {
             return getIntegerFromNumber((ASTIntegerValue)configValue);
