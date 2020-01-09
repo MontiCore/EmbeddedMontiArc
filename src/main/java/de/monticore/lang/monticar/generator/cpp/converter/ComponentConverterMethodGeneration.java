@@ -194,9 +194,10 @@ public class ComponentConverterMethodGeneration {
             mathExpressionSymbol, BluePrintCPP bluePrint, List<String> includeStrings/*, int lastIndex*/) {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
         String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
-        if(ComponentConverter.usedMathCommand != null) {
-            String argumentReturnFunctionName = ComponentConverter.usedMathCommand.getMathCommandName();
-            if (ComponentConverter.usedMathCommand.isArgumentReturnMathCommand() && result.contains(argumentReturnFunctionName)) {
+        for (MathCommand mathCommand : ComponentConverter.usedMathCommand)
+        if(mathCommand != null) {
+            String argumentReturnFunctionName = mathCommand.getMathCommandName();
+            if (mathCommand.isArgumentReturnMathCommand() && result.contains(argumentReturnFunctionName)) {
                 result = fixArgumentReturnInstruction(result, method, mathExpressionSymbol, bluePrint);
             }
         }

@@ -75,9 +75,7 @@ public class LanguageUnitCPP extends LanguageUnit {
     }
 
     public String getGeneratedHeader(TaggingResolver taggingResolver, BluePrintCPP bluePrint) {
-        MathCommand mathCommand = bluePrint.getMathCommandRegister().getMathCommand(ComponentConverter.nameOfFunction);
         ExecutionOrderFixer.fixExecutionOrder(taggingResolver, bluePrint, (GeneratorCPP) bluePrint.getGenerator());
-        String nameOfFunction = ComponentConverter.nameOfFunction;
         String resultString = "";
         //guard defines
         resultString += "#ifndef " + bluePrint.getName().toUpperCase() + "\n";
