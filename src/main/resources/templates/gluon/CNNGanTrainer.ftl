@@ -6,6 +6,54 @@ import os
 import shutil
 from mxnet import gluon, autograd, nd
 
+class CrossEntropyLoss(gluon.loss.Loss):
+    def __init__(self, axis=-1, sparse_label=True, weight=None, batch_axis=0, **kwargs):
+        super(CrossEntropyLoss, self).__init__(weight, batch_axis, **kwargs)
+        self._axis = axis
+        self._sparse_label = sparse_label
+
+    def hybrid_forward(self, F, pred, label, sample_weight=None):
+        pred = F.log(pred)
+        if self._sparse_label:
+            loss = -F.pick(pred, label, axis=self._axis, keepdims=True)
+        else:
+            label = gluon.loss._reshape_like(F, label, pred)
+            loss = -F.sum(pred * label, axis=self._axis, keepdims=True)
+        loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
+        return F.mean(loss, axis=self._batch_axis, exclude=True)
+
+class LogCoshLoss(gluon.loss.Loss):
+    def __init__(self, weight=None, batch_axis=0, **kwargs):
+        super(LogCoshLoss, self).__init__(weight, batch_axis, **kwargs)
+
+    def hybrid_forward(self, F, pred, label, sample_weight=None):
+        loss = F.log(F.cosh(pred - label))
+        loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
+        return F.mean(loss, axis=self._batch_axis, exclude=True)
+
+class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
+    def __init__(self, axis=-1, ignore_indices=[], sparse_label=True, from_logits=False, weight=None, batch_axis=0, **kwargs):
+        super(SoftmaxCrossEntropyLossIgnoreIndices, self).__init__(weight, batch_axis, **kwargs)
+        self._axis = axis
+        self._ignore_indices = ignore_indices
+        self._sparse_label = sparse_label
+        self._from_logits = from_logits
+
+    def hybrid_forward(self, F, pred, label, sample_weight=None):
+        log_softmax = F.log_softmax
+        pick = F.pick
+        if not self._from_logits:
+            pred = log_softmax(pred, self._axis)
+        if self._sparse_label:
+            loss = -pick(pred, label, axis=self._axis, keepdims=True)
+        else:
+            label = _reshape_like(F, label, pred)
+            loss = -(pred * label).sum(axis=self._axis, keepdims=True)
+        # ignore some indices for loss, e.g. <pad> tokens in NLP applications
+        for i in self._ignore_indices:
+            loss = loss * mx.nd.logical_not(mx.nd.equal(mx.nd.argmax(pred, axis=1), mx.nd.ones_like(mx.nd.argmax(pred, axis=1))*i) * mx.nd.equal(mx.nd.argmax(pred, axis=1), label))
+        return loss.mean(axis=self._batch_axis, exclude=True)
+
 # ugly hardcoded
 import  matplotlib as mpl
 from matplotlib import pyplot as plt

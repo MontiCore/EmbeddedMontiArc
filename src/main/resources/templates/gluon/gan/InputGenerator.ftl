@@ -27,8 +27,30 @@
                                                     high=int(max)+1, shape=(batch_size,)+domain[3],
                                                     ctx=mx_context), dtype="float32")
 
-                if namen[-1] in constraint_losses:
-                    wierd = 'doNothingYet'
+                if name[-1] in constraint_losses:
+                    loss_dict = constraint_losses[name[:-1]]
+                    loss = loss_dict['name']
+                    margin = loss_dict['margin'] if 'margin' in loss_dict else 1.0
+                    sparseLabel = loss_dict['sparse_label'] if 'sparse_label' in loss_dict else True
+                    ignore_indices = [loss_dict['ignore_indices']] if 'ignore_indices' in loss_dict else []
+                    fromLogits = loss_dict['from_logits'] if 'from_logits' in loss_dict else False
+
+                    if loss == 'softmax_cross_entropy':
+                        qnet_losses += [mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)]
+                    elif loss == 'softmax_cross_entropy_ignore_indices':
+                        qnet_losses += [SoftmaxCrossEntropyLossIgnoreIndices(ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel)]
+                    elif loss == 'sigmoid_binary_cross_entropy':
+                        qnet_losses += [mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()]
+                    elif loss == 'cross_entropy':
+                        qnet_losses += [CrossEntropyLoss(sparse_label=sparseLabel)]
+                    elif loss == 'l2':
+                        qnet_losses += [mx.gluon.loss.L2Loss()]
+                    elif loss == 'l1':
+                        qnet_losses += [mx.gluon.loss.L2Loss()]
+                    elif loss == 'log_cosh':
+                        qnet_losses += [LogCoshLoss()]
+                    else:
+                        logging.error("Invalid loss parameter for constraint:" + name[:-1] + ".")
                 else:
                     if domain[0] == float:
                         qnet_losses += [mx.gluon.loss.L2Loss()]

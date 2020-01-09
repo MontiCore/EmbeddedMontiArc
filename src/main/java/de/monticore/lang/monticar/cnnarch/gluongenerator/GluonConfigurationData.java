@@ -173,6 +173,10 @@ public class GluonConfigurationData extends ConfigurationData {
         return getMultiParamMapEntry(CONSTRAINT_DISTRIBUTION, "name");
     }
 
+    public Map<String, Map<String, Object>> getConstraintLosses() {
+        return getMultiParamMapEntry(CONSTRAINT_LOSS, "name");
+    }
+
     public Map<String, Object> getStrategy() {
         assert isReinforcementLearning(): "Strategy parameter only for reinforcement learning but called in a " +
          " non reinforcement learning context";

@@ -97,6 +97,21 @@ if __name__ == "__main__":
 </#list>
         },
 </#if>
+<#if (config.constraintLosses)??>
+<#assign map = (config.constraintLosses)>
+        constraint_losses = {
+<#list map?keys as nameKey>
+        '${nameKey}' : {
+            'name': '${map[nameKey].name}',
+<#list map[nameKey]?keys as param>
+<#if (param != "name")>
+            '${param}': ${map[nameKey][param]}<#sep>,
+</#if>
+</#list>
+        },
+</#list>
+        },
+</#if>
 <#if (config.noiseDistribution)??>
         noise_distribution = '${config.noiseDistribution.name}',
         noise_distribution_params = {
