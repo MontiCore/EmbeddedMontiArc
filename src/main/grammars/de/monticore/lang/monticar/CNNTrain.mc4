@@ -69,7 +69,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     interface OptimizerParamEntry extends Entry;
 
-    interface LossValue extends ConfigValue;
+    interface LossValue extends MultiParamValue;
 
     L1Loss implements LossValue = name:"l1" ("{" params:Entry* "}")?;
 
@@ -281,5 +281,10 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     // Constraint Distributions
     ConstraintDistributionEntry implements MultiParamValueMapConfigEntry  = name:"constraint_distributions" ":" value:ConstraintDistributionValue;
     ConstraintDistributionValue implements MultiParamValueMapParamValue = ("{" params:ConstraintDistributionParam* "}")?;
-    ConstraintDistributionParam implements MultiParamValueMapTupleValue = name:StringValue ":" distribution:NoiseDistributionValue;
+    ConstraintDistributionParam implements MultiParamValueMapTupleValue = name:StringValue ":" multiParamValue:NoiseDistributionValue;
+
+    // Constraint losses
+    ConstraintLossEntry implements MultiParamValueMapConfigEntry  = name:"constraint_losses" ":" value:ConstraintLossValue;
+    ConstraintLossValue implements MultiParamValueMapParamValue = ("{" params:ConstraintLossParam* "}")?;
+    ConstraintLossParam implements MultiParamValueMapTupleValue = name:StringValue ":" multiParamValue:LossValue;
 }

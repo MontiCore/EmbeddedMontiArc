@@ -122,7 +122,8 @@ class ParameterAlgorithmMapping {
             ASTDiscriminatorNetworkEntry.class,
             ASTQNetworkEntry.class,
             ASTNoiseDistributionEntry.class,
-            ASTConstraintDistributionEntry.class
+            ASTConstraintDistributionEntry.class,
+            ASTConstraintLossEntry.class
     );
 
     ParameterAlgorithmMapping() {

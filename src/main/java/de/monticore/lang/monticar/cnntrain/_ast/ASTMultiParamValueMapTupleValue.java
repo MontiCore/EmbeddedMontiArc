@@ -16,7 +16,7 @@ import java.util.Map;
  *
  */
 public interface ASTMultiParamValueMapTupleValue extends ASTMultiParamValueMapTupleValueTOP {
-    default ASTNoiseDistributionValue getDistribution() {
+    default ASTMultiParamValue getMultiParamValue() {
         return null;
     }
     default ASTStringValue getName() {

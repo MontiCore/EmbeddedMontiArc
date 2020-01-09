@@ -51,4 +51,5 @@ public class ConfigEntryNameConstants {
     public static final String PREPROCESSING_NAME = "preprocessing_name";
     public static final String NOISE_DISTRIBUTION = "noise_distribution";
     public static final String CONSTRAINT_DISTRIBUTION = "constraint_distributions";
+    public static final String CONSTRAINT_LOSS = "constraint_losses";
 }

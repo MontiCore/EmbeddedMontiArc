@@ -574,6 +574,16 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
+    public void visit(ASTConstraintLossEntry node) {
+        processMultiParamMapConfigVisit(node, node.getName());
+    }
+
+    @Override
+    public void endVisit(ASTConstraintLossEntry node) {
+        processMultiParamMapConfigEndVisit(node);
+    }
+
+    @Override
     public void visit(ASTNoiseDistributionEntry node) {
         NoiseDistribution noiseDistribution;
         if(node.getValue().getName().equals("gaussian")) {
@@ -689,14 +699,14 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         for (ASTConfigValue nodeParam : ((ASTMultiParamValueMapParamValue)node.getValue()).getParamsList()) {
             ASTMultiParamValueMapTupleValue tuple = ((ASTMultiParamValueMapTupleValue)nodeParam);
             ASTStringValue name = tuple.getName();
-            ASTMultiParamValue distribution = tuple.getDistribution();
-            String distrName = distribution.getName();
-            multiParamValueMapSymbol.addMultiParamValueName(getStringFromStringValue(name), distrName);
+            ASTMultiParamValue multiValue = tuple.getMultiParamValue();
+            String valueName = multiValue.getName();
+            multiParamValueMapSymbol.addMultiParamValueName(getStringFromStringValue(name), valueName);
             HashMap<String, Object> mapEntry = new HashMap<>();
-            for (ASTEntry param : distribution.getParamsList()) {
-                String distrEntryName = param.getName();
+            for (ASTEntry param : multiValue.getParamsList()) {
+                String valueEntryName = param.getName();
                 Object res = retrievePrimitiveValueByConfigValue(param.getValue());
-                mapEntry.put(distrEntryName, res);
+                mapEntry.put(valueEntryName, res);
             }
             multiParamValueMapSymbol.addParameter(getStringFromStringValue(name), mapEntry);
         }
