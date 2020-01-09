@@ -11,7 +11,7 @@ component Network{
         Embedding(output_dim=620) ->
         encoder;
 
-        1 -> target[0];
+        2 -> target[0];
 
         layer GRU(units=1000) decoder;
 
