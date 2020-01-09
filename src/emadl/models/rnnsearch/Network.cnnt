@@ -1,20 +1,20 @@
 configuration Network{
-     num_epoch: 10
+     num_epoch: 8
      batch_size: 64
      checkpoint_period: 1
-     log_period: 10
-     context: cpu
+     log_period: 50
+     context: gpu
      normalize: false
+     loss: softmax_cross_entropy_ignore_indices{
+         ignore_indices: 0
+     }
      eval_metric: bleu{
-         exclude:[0, 2, 3]
+         exclude: [0, 2, 3]
      }
      eval_train: false
-     optimizer: adadelta{
-         learning_rate: 0.0001
+     optimizer: adam{
+         learning_rate: 0.001
          learning_rate_decay: 0.99
-         step_size: 100
-         learning_rate_minimum: 0.000000000001
-         epsilon: 0.000001
-         rho: 0.95
+         step_size: 719
      }
 }

@@ -3,8 +3,8 @@ import requests
 urls = [
     'https://nlp.stanford.edu/projects/nmt/data/iwslt15.en-vi/train.en',
     'https://nlp.stanford.edu/projects/nmt/data/iwslt15.en-vi/train.vi',
-    'https://nlp.stanford.edu/projects/nmt/data/iwslt15.en-vi/tst2013.en',
-    'https://nlp.stanford.edu/projects/nmt/data/iwslt15.en-vi/tst2013.vi'
+    'https://nlp.stanford.edu/projects/nmt/data/iwslt15.en-vi/tst2012.en',
+    'https://nlp.stanford.edu/projects/nmt/data/iwslt15.en-vi/tst2012.vi'
 ]
 
 for url in urls:

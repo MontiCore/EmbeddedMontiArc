@@ -5,7 +5,7 @@ import sys
 
 # Config
 MAX_LENGTH = 30
-VOCABULARY_SIZE = 30000
+VOCABULARY_SIZE = 20000
 
 PAD_TOKEN = '<pad>'
 UNK_TOKEN = '<unk>'
@@ -17,8 +17,8 @@ FILES = {
     'vocab_target': 'vocabularies/vocab.vi',
     'train_source': 'train.en',
     'train_target': 'train.vi',
-    'test_source': 'tst2013.en',
-    'test_target': 'tst2013.vi'
+    'test_source': 'tst2012.en',
+    'test_target': 'tst2012.vi'
 }
 
 # Functions
@@ -119,7 +119,7 @@ vocab_target_dict = create_vocabulary_dict(vocab_target)
 
 if 'train_source' in contents and 'train_target' in contents:
     # Read train corpora
-    train_source = read_corpus(contents['train_source'], vocab_source_dict, padding='front')
+    train_source = read_corpus(contents['train_source'], vocab_source_dict, padding='back')
     train_target = read_corpus(contents['train_target'], vocab_target_dict, padding='back')
 
     if len(train_source) != len(train_target):
@@ -135,6 +135,8 @@ if 'train_source' in contents and 'train_target' in contents:
         else:
             i += 1
 
+    print(len(train_source))
+
     # Create train.h5
     with h5py.File('train.h5', mode='w') as train_h5:
         train_h5.create_dataset("source", (len(train_source), MAX_LENGTH), data=np.array(train_source), dtype=np.int32)
@@ -145,7 +147,7 @@ if 'train_source' in contents and 'train_target' in contents:
 
 if 'test_source' in contents and 'test_target' in contents:
     # Read test corpora
-    test_source = read_corpus(contents['test_source'], vocab_source_dict, padding='front')
+    test_source = read_corpus(contents['test_source'], vocab_source_dict, padding='back')
     test_target = read_corpus(contents['test_target'], vocab_target_dict, padding='back')
 
     if len(test_source) != len(test_target):
@@ -160,6 +162,8 @@ if 'test_source' in contents and 'test_target' in contents:
             del test_target[i]
         else:
             i += 1
+
+    print(len(test_source))
 
     # Create test.h5
     with h5py.File('test.h5', mode='w') as test_h5:
