@@ -1,0 +1,115 @@
+Epoch[0] Batch[50] Speed: 50.36 samples/sec Loss: 107.08461
+Epoch[0] Batch[100] Speed: 50.27 samples/sec Loss: 95.10665
+Epoch[0] Batch[150] Speed: 50.27 samples/sec Loss: 92.09690
+Epoch[0] Batch[200] Speed: 50.44 samples/sec Loss: 92.86236
+Epoch[0] Batch[250] Speed: 50.44 samples/sec Loss: 93.43664
+Epoch[0] Batch[300] Speed: 50.39 samples/sec Loss: 91.66770
+Epoch[0] Batch[350] Speed: 50.45 samples/sec Loss: 89.81706
+Epoch[0] Batch[400] Speed: 50.17 samples/sec Loss: 90.62772
+Epoch[0] Batch[450] Speed: 50.32 samples/sec Loss: 90.27306
+Epoch[0] Batch[500] Speed: 48.36 samples/sec Loss: 89.42261
+Epoch[0] Batch[550] Speed: 51.23 samples/sec Loss: 89.23694
+Epoch[0] Batch[600] Speed: 51.34 samples/sec Loss: 91.62179
+Epoch[0] Batch[650] Speed: 51.21 samples/sec Loss: 88.33428
+Epoch[0] Batch[700] Speed: 51.27 samples/sec Loss: 87.19898
+Update[720]: Change learning rate to 9.90000e-04
+Epoch[0] Batch[750] Speed: 51.02 samples/sec Loss: 88.22108
+Epoch[0] Batch[800] Speed: 51.12 samples/sec Loss: 87.51499
+Epoch[0] Batch[850] Speed: 50.67 samples/sec Loss: 87.34546
+Epoch[0] Batch[900] Speed: 51.12 samples/sec Loss: 88.57177
+Epoch[0] Batch[950] Speed: 51.22 samples/sec Loss: 88.82177
+Epoch[0] Batch[1000] Speed: 51.32 samples/sec Loss: 87.83781
+Epoch[0] Batch[1050] Speed: 51.18 samples/sec Loss: 87.48561
+Epoch[0] Batch[1100] Speed: 51.29 samples/sec Loss: 84.16572
+Epoch[0] Batch[1150] Speed: 51.28 samples/sec Loss: 84.92876
+Epoch[0] Batch[1200] Speed: 51.35 samples/sec Loss: 85.65574
+Epoch[0] Batch[1250] Speed: 51.39 samples/sec Loss: 85.38734
+Epoch[0] Batch[1300] Speed: 51.37 samples/sec Loss: 84.92696
+Epoch[0] Batch[1350] Speed: 51.34 samples/sec Loss: 84.28711
+Epoch[0] Batch[1400] Speed: 51.39 samples/sec Loss: 84.42534
+Epoch[0] Train: 0.000000, Test: 0.000000
+Loss Epoch[0], Train Loss: 88.978233, Test Loss: 83.460008
+Update[1439]: Change learning rate to 9.80100e-04
+Epoch[1] Batch[50] Speed: 51.35 samples/sec Loss: 85.67692
+Epoch[1] Batch[100] Speed: 51.17 samples/sec Loss: 81.60602
+Epoch[1] Batch[150] Speed: 51.25 samples/sec Loss: 82.07696
+Epoch[1] Batch[200] Speed: 51.26 samples/sec Loss: 81.76938
+Epoch[1] Batch[250] Speed: 51.34 samples/sec Loss: 82.10542
+Epoch[1] Batch[300] Speed: 51.23 samples/sec Loss: 83.13721
+Epoch[1] Batch[350] Speed: 51.27 samples/sec Loss: 83.30655
+Epoch[1] Batch[400] Speed: 51.31 samples/sec Loss: 80.89616
+Epoch[1] Batch[450] Speed: 51.28 samples/sec Loss: 82.43525
+Epoch[1] Batch[500] Speed: 51.33 samples/sec Loss: 81.13640
+Epoch[1] Batch[550] Speed: 51.39 samples/sec Loss: 83.86394
+Epoch[1] Batch[600] Speed: 51.34 samples/sec Loss: 81.09789
+Epoch[1] Batch[650] Speed: 51.43 samples/sec Loss: 81.20929
+Epoch[1] Batch[700] Speed: 51.30 samples/sec Loss: 80.93484
+Update[2158]: Change learning rate to 9.70299e-04
+Epoch[1] Batch[750] Speed: 51.31 samples/sec Loss: 81.68900
+Epoch[1] Batch[800] Speed: 51.18 samples/sec Loss: 80.17061
+Epoch[1] Batch[850] Speed: 51.19 samples/sec Loss: 80.34991
+Epoch[1] Batch[900] Speed: 51.17 samples/sec Loss: 79.56801
+Epoch[1] Batch[950] Speed: 51.15 samples/sec Loss: 80.98339
+Epoch[1] Batch[1000] Speed: 51.20 samples/sec Loss: 81.68757
+Epoch[1] Batch[1050] Speed: 51.33 samples/sec Loss: 80.31034
+Epoch[1] Batch[1100] Speed: 51.41 samples/sec Loss: 80.80114
+Epoch[1] Batch[1150] Speed: 51.40 samples/sec Loss: 77.86119
+Epoch[1] Batch[1200] Speed: 51.32 samples/sec Loss: 80.26627
+Epoch[1] Batch[1250] Speed: 51.22 samples/sec Loss: 80.73226
+Epoch[1] Batch[1300] Speed: 51.29 samples/sec Loss: 78.85603
+Epoch[1] Batch[1350] Speed: 51.17 samples/sec Loss: 81.82872
+Epoch[1] Batch[1400] Speed: 51.33 samples/sec Loss: 79.18321
+Epoch[1] Train: 0.000000, Test: 0.000000
+Loss Epoch[1], Train Loss: 81.227838, Test Loss: 78.053938
+Update[2877]: Change learning rate to 9.60596e-04
+Epoch[2] Batch[50] Speed: 50.73 samples/sec Loss: 82.88297
+Epoch[2] Batch[100] Speed: 51.02 samples/sec Loss: 79.52378
+Epoch[2] Batch[150] Speed: 51.16 samples/sec Loss: 78.22728
+Epoch[2] Batch[200] Speed: 51.04 samples/sec Loss: 76.96782
+Epoch[2] Batch[250] Speed: 50.83 samples/sec Loss: 77.74723
+Epoch[2] Batch[300] Speed: 51.04 samples/sec Loss: 78.71560
+Epoch[2] Batch[350] Speed: 51.46 samples/sec Loss: 77.37158
+Epoch[2] Batch[400] Speed: 51.37 samples/sec Loss: 78.14830
+Epoch[2] Batch[450] Speed: 51.18 samples/sec Loss: 79.31132
+Epoch[2] Batch[500] Speed: 51.37 samples/sec Loss: 77.80714
+Epoch[2] Batch[550] Speed: 51.18 samples/sec Loss: 77.40055
+Epoch[2] Batch[600] Speed: 51.17 samples/sec Loss: 76.07518
+Epoch[2] Batch[650] Speed: 51.18 samples/sec Loss: 78.53988
+Epoch[2] Batch[700] Speed: 50.70 samples/sec Loss: 82.13311
+Update[3596]: Change learning rate to 9.50990e-04
+Epoch[2] Batch[750] Speed: 50.92 samples/sec Loss: 79.65691
+Epoch[2] Batch[800] Speed: 51.28 samples/sec Loss: 77.85420
+Epoch[2] Batch[850] Speed: 51.27 samples/sec Loss: 78.80281
+Epoch[2] Batch[900] Speed: 51.33 samples/sec Loss: 78.26833
+Epoch[2] Batch[950] Speed: 51.29 samples/sec Loss: 76.79708
+Epoch[2] Batch[1000] Speed: 51.35 samples/sec Loss: 78.48357
+Epoch[2] Batch[1050] Speed: 51.27 samples/sec Loss: 76.01887
+Epoch[2] Batch[1100] Speed: 51.33 samples/sec Loss: 77.13131
+Epoch[2] Batch[1150] Speed: 51.31 samples/sec Loss: 77.30770
+Epoch[2] Batch[1200] Speed: 51.25 samples/sec Loss: 78.62002
+Epoch[2] Batch[1250] Speed: 51.18 samples/sec Loss: 78.27121
+Epoch[2] Batch[1300] Speed: 51.16 samples/sec Loss: 81.55277
+Epoch[2] Batch[1350] Speed: 51.20 samples/sec Loss: 83.77492
+Epoch[2] Batch[1400] Speed: 51.20 samples/sec Loss: 78.40453
+Epoch[2] Train: 0.000000, Test: 0.000000
+Loss Epoch[2], Train Loss: 78.772618, Test Loss: 99.246096
+Update[4315]: Change learning rate to 9.41480e-04
+Epoch[3] Batch[50] Speed: 50.80 samples/sec Loss: 79.85322
+Epoch[3] Batch[100] Speed: 50.94 samples/sec Loss: 78.75986
+Epoch[3] Batch[150] Speed: 51.03 samples/sec Loss: 77.71577
+Epoch[3] Batch[200] Speed: 50.81 samples/sec Loss: 77.21595
+Epoch[3] Batch[250] Speed: 50.77 samples/sec Loss: 78.06208
+Epoch[3] Batch[300] Speed: 50.87 samples/sec Loss: 78.61366
+Epoch[3] Batch[350] Speed: 50.84 samples/sec Loss: 76.42916
+Epoch[3] Batch[400] Speed: 50.88 samples/sec Loss: 76.91296
+Epoch[3] Batch[450] Speed: 50.85 samples/sec Loss: 79.25679
+Epoch[3] Batch[500] Speed: 51.06 samples/sec Loss: 75.43125
+Epoch[3] Batch[550] Speed: 50.85 samples/sec Loss: 73.25246
+Epoch[3] Batch[600] Speed: 50.87 samples/sec Loss: 77.25769
+Epoch[3] Batch[650] Speed: 51.08 samples/sec Loss: 81.95415
+Epoch[3] Batch[700] Speed: 51.22 samples/sec Loss: 79.96667
+Update[5034]: Change learning rate to 9.32065e-04
+Epoch[3] Batch[750] Speed: 51.21 samples/sec Loss: 78.27011
+Epoch[3] Batch[800] Speed: 51.09 samples/sec Loss: 77.58647
+Epoch[3] Batch[850] Speed: 51.17 samples/sec Loss: 76.50442
+Epoch[3] Batch[900] Speed: 50.97 samples/sec Loss: 76.83464

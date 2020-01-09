@@ -414,7 +414,7 @@ class CNNSupervisedTrainer_rnnsearch_main_net:
                         ordered = sorted(all_candidates, key=lambda tup: tup[1])
                         sequences = ordered[:k]'''
 
-                    '''k = 3
+                    k = 3
                     sequences = [([target_[1-1+0]], mx.nd.full((batch_size, 1,), 1.0, ctx=mx_context), [mx.nd.full((batch_size, 64,), 0.0, ctx=mx_context)])]
 
                     for i in range(1, 30):
@@ -452,11 +452,11 @@ class CNNSupervisedTrainer_rnnsearch_main_net:
                             newSequences[sequenceIndex][1].expand_dims(axis=1), [newSequences[sequenceIndex][2][attentionIndex] for attentionIndex in range(len(newSequences[sequenceIndex][2]))])
                             for sequenceIndex in range(len(newSequences))]
 
-                        sequences = newSequences[:][:k]'''
+                        sequences = newSequences[:][:k]
 
                     for i in range(1, 30):
-                        target_[i-1+1], decoder_state_, decoder_output_ = self._networks[3](decoder_state_, fc_output_, target_[i-1+0])
-                        #target_[i-1+1] = sequences[0][0][i]
+                        #target_[i-1+1], decoder_state_, decoder_output_ = self._networks[3](decoder_state_, fc_output_, target_[i-1+0])
+                        target_[i-1+1] = sequences[0][0][i]
                         outputs.append(target_[i-1+1])
                         lossList.append(loss_function(target_[i-1+1], labels[i-1+1]))
                         target_[i-1+1] = mx.nd.argmax(target_[i-1+1], axis=1).expand_dims(1)

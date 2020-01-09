@@ -2,4 +2,4 @@ train.log
 target/
 model/
 build/
-
+*.pyc
