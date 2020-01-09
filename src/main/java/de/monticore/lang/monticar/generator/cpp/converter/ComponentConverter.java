@@ -76,7 +76,7 @@ public class ComponentConverter {
                     }
                 } else if(mathExpresionSymbol.isValueExpression()) {
                     if (((MathValueSymbol) mathExpresionSymbol).getValue() instanceof MathMatrixNameExpressionSymbol) {
-                        boolean bool = namesOfFunctions.add(((MathMatrixNameExpressionSymbol) ((MathValueSymbol) mathExpresionSymbol).getValue()).getNameToAccess());
+                        namesOfFunctions.add(((MathMatrixNameExpressionSymbol) ((MathValueSymbol) mathExpresionSymbol).getValue()).getNameToAccess());
                     }
                 }
             }
