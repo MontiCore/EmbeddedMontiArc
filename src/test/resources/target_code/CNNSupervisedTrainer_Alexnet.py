@@ -192,6 +192,8 @@ class CNNSupervisedTrainer_Alexnet:
               save_attention_image=False,
               use_teacher_forcing=False,
               normalize=True,
+              shuffle_data=False,
+              clip_global_grad_norm=None,
               preprocessing = False):
         if context == 'gpu':
             mx_context = mx.gpu()
@@ -202,9 +204,9 @@ class CNNSupervisedTrainer_Alexnet:
 
         if preprocessing:
             preproc_lib = "CNNPreprocessor_Alexnet_executor"
-            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib)
+            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
         else:
-            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
+            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -308,6 +310,14 @@ class CNNSupervisedTrainer_Alexnet:
                 loss.backward()
 
                 loss_total += loss.sum().asscalar()
+
+                if clip_global_grad_norm:
+                    grads = []
+
+                    for network in self._networks.values():
+                        grads.extend([param.grad(mx_context) for param in network.collect_params().values()])
+
+                    gluon.utils.clip_global_norm(grads, clip_global_grad_norm)
 
                 for trainer in trainers:
                     trainer.step(batch_size)

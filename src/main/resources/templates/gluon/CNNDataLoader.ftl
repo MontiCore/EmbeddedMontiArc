@@ -16,7 +16,7 @@ class ${tc.fileNameWithoutEnding}:
     def __init__(self):
         self._data_dir = "${tc.dataPath}/"
 
-    def load_data(self, batch_size):
+    def load_data(self, batch_size, shuffle=False):
         train_h5, test_h5 = self.load_h5_files()
 
         train_data = {}
@@ -40,7 +40,8 @@ class ${tc.fileNameWithoutEnding}:
 
         train_iter = mx.io.NDArrayIter(data=train_data,
                                        label=train_label,
-                                       batch_size=batch_size)
+                                       batch_size=batch_size,
+                                       shuffle=shuffle)
 
         test_iter = None
 
@@ -65,7 +66,7 @@ class ${tc.fileNameWithoutEnding}:
 
         return train_iter, test_iter, data_mean, data_std, train_images, test_images
 
-    def load_preprocessed_data(self, batch_size, preproc_lib):
+    def load_preprocessed_data(self, batch_size, preproc_lib, shuffle=False):
         train_h5, test_h5 = self.load_h5_files()
 
         wrapper = importlib.import_module(preproc_lib)
@@ -111,7 +112,8 @@ class ${tc.fileNameWithoutEnding}:
 
         train_iter = mx.io.NDArrayIter(data=train_data,
                                        label=train_label,
-                                       batch_size=batch_size)
+                                       batch_size=batch_size,
+                                       shuffle=shuffle)
 
         test_data = {}
         test_label = {}

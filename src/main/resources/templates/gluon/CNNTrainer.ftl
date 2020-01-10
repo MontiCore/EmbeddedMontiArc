@@ -43,6 +43,12 @@ if __name__ == "__main__":
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
 </#if>
+<#if (config.shuffleData)??>
+        shuffle_data=${config.shuffleData?string("True","False")},
+</#if>
+<#if (config.clipGlobalGradNorm)??>
+        clip_global_grad_norm=${config.clipGlobalGradNorm},
+</#if>
 <#if (config.preprocessingName)??>
         preprocessing=${config.preprocessingName???string("True","False")},
 </#if>
