@@ -230,7 +230,7 @@ class CNNSupervisedTrainer_Alexnet:
 
         begin_epoch = 0
         if load_checkpoint:
-            begin_epoch = self._net_creator.load(mx_context)
+            begin_epoch = self._net_creator.load(mx_context) + 1
         else:
             if os.path.isdir(self._net_creator._model_dir_):
                 shutil.rmtree(self._net_creator._model_dir_)
