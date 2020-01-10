@@ -399,7 +399,7 @@ class ${tc.fileNameWithoutEnding}:
             if test_batches > 0:
                 global_loss_test /= test_batches
 
-            logging.info("Epoch[%d] Train: %f, Test: %f, Train Loss: %f, Test Loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
+            logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
                 for i, network in self._networks.items():
