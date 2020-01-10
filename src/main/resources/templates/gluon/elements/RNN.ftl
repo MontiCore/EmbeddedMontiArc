@@ -3,6 +3,7 @@
 <#if mode == "ARCHITECTURE_DEFINITION">
             self.${element.name} = CustomRNN(hidden_size=${element.units?c},
                 num_layers=${element.layers?c},
+                dropout=${element.dropout?c},
                 bidirectional=${element.bidirectional?string("True", "False")})
             <#include "OutputShape.ftl">
 <#elseif mode == "FORWARD_FUNCTION">
