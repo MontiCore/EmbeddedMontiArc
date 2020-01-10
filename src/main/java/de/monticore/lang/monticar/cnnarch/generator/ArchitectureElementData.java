@@ -167,7 +167,7 @@ public class ArchitectureElementData {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.BIDIRECTIONAL_NAME).get();
     }
 
-    public boolean getDropout() {
+    public double getDropout() {
         return getLayerSymbol().getDoubleValue(AllPredefinedLayers.RNN_DROPOUT_NAME).get();
     }
 
