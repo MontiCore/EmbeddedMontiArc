@@ -1,20 +1,23 @@
 configuration Network{
-     num_epoch: 20
-     batch_size: 64
-     checkpoint_period: 1
-     log_period: 50
-     context: gpu
-     loss: softmax_cross_entropy_ignore_indices{
-         ignore_indices: 0
-     }
-     normalize: false
-     eval_metric: bleu{
-         exclude:[0, 2, 3]
-     }
-     eval_train: false
-     optimizer: adam{
-         learning_rate: 0.001
-         learning_rate_decay: 0.99
-         step_size: 1438
-     }
+    num_epoch: 8
+    batch_size: 64
+    checkpoint_period: 1
+    log_period: 50
+    context: gpu
+    normalize: false
+    shuffle_data: true
+    clip_global_grad_norm: 5
+    loss: softmax_cross_entropy_ignore_indices{
+        ignore_indices: 0
+    }
+    eval_metric: bleu{
+        exclude: [0, 2, 3]
+    }
+    eval_train: false
+    optimizer: adam{
+        learning_rate: 0.001
+        learning_rate_decay: 0.99
+        step_size: 500
+        weight_decay: 0.0001
+    }
 }
