@@ -135,8 +135,6 @@ if 'train_source' in contents and 'train_target' in contents:
         else:
             i += 1
 
-    print(len(train_source))
-
     # Create train.h5
     with h5py.File('train.h5', mode='w') as train_h5:
         train_h5.create_dataset("source", (len(train_source), MAX_LENGTH), data=np.array(train_source), dtype=np.int32)
@@ -162,8 +160,6 @@ if 'test_source' in contents and 'test_target' in contents:
             del test_target[i]
         else:
             i += 1
-
-    print(len(test_source))
 
     # Create test.h5
     with h5py.File('test.h5', mode='w') as test_h5:
