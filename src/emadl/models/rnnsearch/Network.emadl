@@ -8,7 +8,7 @@ component Network{
         layer GRU(units=1000, bidirectional=true) encoder;
         layer FullyConnected(units=1000, flatten=false) fc;
 
-        source -> Embedding(output_dim=600) -> encoder -> fc;
+        source -> Embedding(output_dim=500) -> encoder -> fc;
 
         2 -> target[0];
 
@@ -36,7 +36,7 @@ component Network{
                 Dot()
             |
                 target[t-1] ->
-                Embedding(output_dim=600)
+                Embedding(output_dim=500)
             ) ->
             Concatenate(axis=1) ->
             decoder ->
