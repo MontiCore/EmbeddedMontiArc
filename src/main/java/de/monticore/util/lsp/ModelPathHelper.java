@@ -119,4 +119,14 @@ public class ModelPathHelper {
         return fileResourcePrefix + res;
 
     }
+
+    public static Path fileNameToPath(String fileName){
+        if(fileName.startsWith("/")){
+            if(System.getProperty("os.name").toLowerCase().startsWith("windows")){
+                return Paths.get(fileName.substring(1));
+            }
+        }
+
+        return Paths.get(fileName);
+    }
 }

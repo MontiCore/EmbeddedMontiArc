@@ -18,77 +18,79 @@ public class MultiLangDocumentService implements ClientAwareTextDocumentService 
 
     public void addDocumentService(String fileExtension, ClientAwareTextDocumentService documentService) throws FileExtensionAlreadyRegisteredException {
         String fileExtensionCleaned = fileExtension.replace(".", "");
-        if(fileExtensionToDocumentServices.containsKey(fileExtensionCleaned)){
+        if (fileExtensionToDocumentServices.containsKey(fileExtensionCleaned)) {
             throw new FileExtensionAlreadyRegisteredException("This file extension is already registered: " + fileExtensionCleaned);
         }
         fileExtensionToDocumentServices.put(fileExtensionCleaned, documentService);
     }
 
-    private String fileExtensionFromUri(@NotNull String uri){
+    private String fileExtensionFromUri(@NotNull String uri) {
         String[] split = uri.split("[.]");
-        if(split.length > 0) {
+        if (split.length > 0) {
             return split[split.length - 1];
-        }else{
+        } else {
             return "";
         }
     }
 
-    private @Nullable TextDocumentService getMatchingDocumentService(@NotNull TextDocumentIdentifier id){
+    private @Nullable TextDocumentService getMatchingDocumentService(@NotNull TextDocumentIdentifier id) {
         String fileExtension = fileExtensionFromUri(id.getUri());
         return fileExtensionToDocumentServices.getOrDefault(fileExtension, null);
     }
 
-    private @Nullable TextDocumentService getMatchingDocumentService(@NotNull String uri){
+    private @Nullable TextDocumentService getMatchingDocumentService(@NotNull String uri) {
         String fileExtension = fileExtensionFromUri(uri);
         return fileExtensionToDocumentServices.getOrDefault(fileExtension, null);
     }
 
     @Override
-    public CompletableFuture<WorkspaceEdit> rename(RenameParams arg){
+    public CompletableFuture<WorkspaceEdit> rename(RenameParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.rename(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.rename(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public void didOpen(DidOpenTextDocumentParams arg){
+    public void didOpen(DidOpenTextDocumentParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument().getUri());
-        if(documentService != null){
+        if (documentService != null) {
             documentService.didOpen(arg);
         }
     }
 
     @Override
-    public void didChange(DidChangeTextDocumentParams arg){
+    public void didChange(DidChangeTextDocumentParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
+        if (documentService != null) {
             documentService.didChange(arg);
         }
     }
 
     @Override
-    public void didClose(DidCloseTextDocumentParams arg){
+    public void didClose(DidCloseTextDocumentParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
+        if (documentService != null) {
             documentService.didClose(arg);
         }
     }
 
     @Override
-    public void didSave(DidSaveTextDocumentParams arg){
+    public void didSave(DidSaveTextDocumentParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
+        if (documentService != null) {
             documentService.didSave(arg);
         }
     }
 
     @Override
-    public void willSave(WillSaveTextDocumentParams arg){
+    public void willSave(WillSaveTextDocumentParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
+        if (documentService != null) {
             documentService.willSave(arg);
         }
     }
@@ -96,233 +98,279 @@ public class MultiLangDocumentService implements ClientAwareTextDocumentService 
     @Override
     public CompletableFuture<Either<List<CompletionItem>, CompletionList>> completion(CompletionParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.completion(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.completion(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<Hover> hover(TextDocumentPositionParams arg){
+    public CompletableFuture<Hover> hover(TextDocumentPositionParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.hover(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.hover(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<SignatureHelp> signatureHelp(TextDocumentPositionParams arg){
+    public CompletableFuture<SignatureHelp> signatureHelp(TextDocumentPositionParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.signatureHelp(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.signatureHelp(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> declaration(TextDocumentPositionParams arg){
+    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> declaration(TextDocumentPositionParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.declaration(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.declaration(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> definition(TextDocumentPositionParams arg){
+    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> definition(TextDocumentPositionParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.definition(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.definition(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> typeDefinition(TextDocumentPositionParams arg){
+    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> typeDefinition(TextDocumentPositionParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.typeDefinition(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.typeDefinition(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> implementation(TextDocumentPositionParams arg){
+    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> implementation(TextDocumentPositionParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.implementation(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.implementation(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<? extends Location>> references(ReferenceParams arg){
+    public CompletableFuture<List<? extends Location>> references(ReferenceParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.references(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.references(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<? extends DocumentHighlight>> documentHighlight(TextDocumentPositionParams arg){
+    public CompletableFuture<List<? extends DocumentHighlight>> documentHighlight(TextDocumentPositionParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.documentHighlight(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.documentHighlight(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<Either<SymbolInformation, DocumentSymbol>>> documentSymbol(DocumentSymbolParams arg){
+    public CompletableFuture<List<Either<SymbolInformation, DocumentSymbol>>> documentSymbol(DocumentSymbolParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.documentSymbol(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.documentSymbol(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<Either<Command, CodeAction>>> codeAction(CodeActionParams arg){
+    public CompletableFuture<List<Either<Command, CodeAction>>> codeAction(CodeActionParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.codeAction(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.codeAction(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<? extends CodeLens>> codeLens(CodeLensParams arg){
+    public CompletableFuture<List<? extends CodeLens>> codeLens(CodeLensParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.codeLens(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.codeLens(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
 
     @Override
-    public CompletableFuture<List<? extends TextEdit>> formatting(DocumentFormattingParams arg){
+    public CompletableFuture<List<? extends TextEdit>> formatting(DocumentFormattingParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.formatting(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.formatting(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<? extends TextEdit>> rangeFormatting(DocumentRangeFormattingParams arg){
+    public CompletableFuture<List<? extends TextEdit>> rangeFormatting(DocumentRangeFormattingParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.rangeFormatting(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.rangeFormatting(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<? extends TextEdit>> onTypeFormatting(DocumentOnTypeFormattingParams arg){
+    public CompletableFuture<List<? extends TextEdit>> onTypeFormatting(DocumentOnTypeFormattingParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.onTypeFormatting(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.onTypeFormatting(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<TextEdit>> willSaveWaitUntil(WillSaveTextDocumentParams arg){
+    public CompletableFuture<List<TextEdit>> willSaveWaitUntil(WillSaveTextDocumentParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.willSaveWaitUntil(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.willSaveWaitUntil(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<DocumentLink>> documentLink(DocumentLinkParams arg){
+    public CompletableFuture<List<DocumentLink>> documentLink(DocumentLinkParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.documentLink(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.documentLink(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<ColorInformation>> documentColor(DocumentColorParams arg){
+    public CompletableFuture<List<ColorInformation>> documentColor(DocumentColorParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.documentColor(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.documentColor(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<ColorPresentation>> colorPresentation(ColorPresentationParams arg){
+    public CompletableFuture<List<ColorPresentation>> colorPresentation(ColorPresentationParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.colorPresentation(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.colorPresentation(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<List<FoldingRange>> foldingRange(FoldingRangeRequestParams arg){
+    public CompletableFuture<List<FoldingRange>> foldingRange(FoldingRangeRequestParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.foldingRange(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.foldingRange(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<Either<Range, PrepareRenameResult>> prepareRename(TextDocumentPositionParams arg){
+    public CompletableFuture<Either<Range, PrepareRenameResult>> prepareRename(TextDocumentPositionParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.prepareRename(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.prepareRename(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<TypeHierarchyItem> typeHierarchy(TypeHierarchyParams arg){
+    public CompletableFuture<TypeHierarchyItem> typeHierarchy(TypeHierarchyParams arg) {
 
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.typeHierarchy(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.typeHierarchy(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<CallHierarchyItem> callHierarchy(CallHierarchyParams arg){
+    public CompletableFuture<CallHierarchyItem> callHierarchy(CallHierarchyParams arg) {
         TextDocumentService documentService = getMatchingDocumentService(arg.getTextDocument());
-        if(documentService != null){
-            return documentService.callHierarchy(arg);
-        }else{
-            return CompletableFuture.completedFuture(null);
+        if (documentService != null) {
+            try {
+                return documentService.callHierarchy(arg);
+            } catch (UnsupportedOperationException e) {
+            }
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override

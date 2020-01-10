@@ -5,17 +5,26 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.util.lsp.features.definition.DefinitionHandler;
+import de.monticore.util.lsp.features.definition.ReflectionDefinitionHandler;
 import de.se_rwth.commons.logging.DiagnosticsLog;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
+import org.eclipse.lsp4j.Location;
+import org.eclipse.lsp4j.LocationLink;
+import org.eclipse.lsp4j.TextDocumentPositionParams;
+import org.eclipse.lsp4j.jsonrpc.messages.Either;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode, SymType extends Symbol> extends MontiCoreDocumentService<ASTType> {
-
+    protected DefinitionHandler definitionHandler = new ReflectionDefinitionHandler<ASTType, SymType>(this);
     protected Optional<Path> modelBasePath = Optional.empty();
     protected Optional<ModelFileCache> modelFileCache = Optional.empty();
 
@@ -33,6 +42,31 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
 
     public void setModelFileCache(ModelFileCache modelFileCache) {
         this.modelFileCache = Optional.of(modelFileCache);
+    }
+
+    public DefinitionHandler getDefinitionHandler() {
+        return definitionHandler;
+    }
+
+    public void setDefinitionHandler(DefinitionHandler definitionHandler) {
+        this.definitionHandler = definitionHandler;
+    }
+
+    public Optional<SymType> getSymbolFor(Path sourcePath) {
+        try {
+            Optional<ASTType> astOpt = parse(FileUtils.readFileToString(sourcePath.toFile(), StandardCharsets.UTF_8), sourcePath.toString());
+            if (astOpt.isPresent()) {
+                ASTType node = astOpt.get();
+                Scope symtab = this.createSymTab(((ModelFileCache) this.getModelFileCache().get()).getTmpModelPath());
+                Log.debug("Created symtab", "default");
+                DiagnosticsLog.clearAndUse();
+                String fullSymbolName = this.getFullSymbolName(node);
+                return symtab.resolve(fullSymbolName, this.getSymbolKind());
+            }
+        } catch (IOException e) {
+            Log.error("IOError", e);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -120,5 +154,12 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
 
     protected abstract List<String> getPackageList(ASTType node);
 
-
+    @Override
+    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> definition(TextDocumentPositionParams position) {
+        if(definitionHandler != null){
+            return definitionHandler.definition(position);
+        }else{
+            return CompletableFuture.completedFuture(null);
+        }
+    }
 }
