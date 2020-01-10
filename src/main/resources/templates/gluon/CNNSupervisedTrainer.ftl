@@ -291,6 +291,9 @@ class ${tc.fileNameWithoutEnding}:
                 else:
                     train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
 
+            global_loss_train = 0.0
+            train_batches = 0
+
             loss_total = 0
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
@@ -304,6 +307,9 @@ class ${tc.fileNameWithoutEnding}:
                 loss.backward()
 
                 loss_total += loss.sum().asscalar()
+
+                global_loss_train += float(loss.mean().asscalar())
+                train_batches += 1
 
                 if clip_global_grad_norm:
                     grads = []
@@ -332,6 +338,9 @@ class ${tc.fileNameWithoutEnding}:
 
                         tic = time.time()
 
+            if train_batches > 0:
+                global_loss_train /= train_batches
+
             tic = None
 
 
@@ -357,6 +366,9 @@ class ${tc.fileNameWithoutEnding}:
             else:
                 train_metric_score = 0
 
+            global_loss_test = 0.0
+            test_batches = 0
+
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
@@ -366,6 +378,12 @@ class ${tc.fileNameWithoutEnding}:
 
 <#include "saveAttentionImageTest.ftl">
 
+                loss = 0
+                for element in lossList:
+                    loss = loss + element
+
+                global_loss_test += float(loss.mean().asscalar())
+                test_batches += 1
 
                 predictions = []
                 for output_name in outputs:
@@ -378,8 +396,10 @@ class ${tc.fileNameWithoutEnding}:
                 metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]
 
-            logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))
+            if test_batches > 0:
+                global_loss_test /= test_batches
 
+            logging.info("Epoch[%d] Train: %f, Test: %f, Train Loss: %f, Test Loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
                 for i, network in self._networks.items():

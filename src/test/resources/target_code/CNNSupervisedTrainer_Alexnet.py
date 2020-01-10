@@ -283,6 +283,15 @@ class CNNSupervisedTrainer_Alexnet:
         tic = None
 
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
+            if shuffle_data:
+                if preprocessing:
+                    preproc_lib = "CNNPreprocessor_Alexnet_executor"
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
+                else:
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
+
+            global_loss_train = 0.0
+            train_batches = 0
 
             loss_total = 0
             train_iter.reset()
@@ -311,6 +320,9 @@ class CNNSupervisedTrainer_Alexnet:
 
                 loss_total += loss.sum().asscalar()
 
+                global_loss_train += float(loss.mean().asscalar())
+                train_batches += 1
+
                 if clip_global_grad_norm:
                     grads = []
 
@@ -338,6 +350,9 @@ class CNNSupervisedTrainer_Alexnet:
 
                         tic = time.time()
 
+            if train_batches > 0:
+                global_loss_train /= train_batches
+
             tic = None
 
 
@@ -355,10 +370,12 @@ class CNNSupervisedTrainer_Alexnet:
                     nd.waitall()
 
                     outputs = []
-                    attentionList=[]
+                    lossList = []
+                    attentionList = []
                     predictions_ = self._networks[0](data_)
 
                     outputs.append(predictions_)
+                    lossList.append(loss_function(predictions_, labels[0]))
 
 
                     if save_attention_image == "True":
@@ -414,10 +431,13 @@ class CNNSupervisedTrainer_Alexnet:
             else:
                 train_metric_score = 0
 
+            global_loss_test = 0.0
+            test_batches = 0
+
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                if True: 
+                if True:
                     labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
 
                     data_ = batch.data[0].as_in_context(mx_context)
@@ -428,10 +448,12 @@ class CNNSupervisedTrainer_Alexnet:
                     nd.waitall()
 
                     outputs = []
-                    attentionList=[]
+                    lossList = []
+                    attentionList = []
                     predictions_ = self._networks[0](data_)
 
                     outputs.append(predictions_)
+                    lossList.append(loss_function(predictions_, labels[0]))
 
 
                     if save_attention_image == "True":
@@ -475,6 +497,12 @@ class CNNSupervisedTrainer_Alexnet:
                             os.makedirs(target_dir)
                         plt.savefig(target_dir + '/attention_test.png')
                         plt.close()
+                loss = 0
+                for element in lossList:
+                    loss = loss + element
+
+                global_loss_test += float(loss.mean().asscalar())
+                test_batches += 1
 
                 predictions = []
                 for output_name in outputs:
@@ -487,8 +515,10 @@ class CNNSupervisedTrainer_Alexnet:
                 metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]
 
-            logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))
+            if test_batches > 0:
+                global_loss_test /= test_batches
 
+            logging.info("Epoch[%d] Train: %f, Test: %f, Train Loss: %f, Test Loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
                 for i, network in self._networks.items():

@@ -24,7 +24,8 @@
                     nd.waitall()
 
                     outputs = []
-                    attentionList=[]
+                    lossList = []
+                    attentionList = []
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.isUnroll()>
                     k = ${tc.getBeamSearchWidth(networkInstruction)}
@@ -92,6 +93,7 @@
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
                         ${outputName} = sequences[0][0][i]
                         outputs.append(${outputName})
+                        lossList.append(loss_function(${outputName}, labels[${tc.getIndex(outputName, true)}]))
 <#if tc.isAttentionNetwork()>
                         attentionList.append(sequences[0][2][i])
 </#if>
@@ -103,6 +105,7 @@
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
                     outputs.append(${outputName})
+                    lossList.append(loss_function(${outputName}, labels[${tc.getIndex(outputName, true)}]))
 <#if tc.endsWithArgmax(networkInstruction.body)>
                     ${outputName} = mx.nd.argmax(${outputName}, axis=1).expand_dims(1)
 </#if>
