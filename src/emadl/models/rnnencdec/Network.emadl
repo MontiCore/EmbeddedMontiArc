@@ -5,7 +5,7 @@ component Network{
          out Z(0:7709)^{1} target[30];
 
     implementation CNN{
-        layer GRU(units=1000) encoder;
+        layer GRU(units=1000, dropout=0.2) encoder;
 
         source ->
         Embedding(output_dim=620) ->
@@ -13,7 +13,7 @@ component Network{
 
         2 -> target[0];
 
-        layer GRU(units=1000) decoder;
+        layer GRU(units=1000, dropout=0.2) decoder;
 
         encoder.state -> decoder.state;
 

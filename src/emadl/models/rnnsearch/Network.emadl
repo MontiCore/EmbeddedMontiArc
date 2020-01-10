@@ -5,14 +5,14 @@ component Network{
          out Z(0:7709)^{1} target[30];
 
     implementation CNN{
-        layer GRU(units=1000, bidirectional=true) encoder;
+        layer GRU(units=1000, dropout=0.2, bidirectional=true) encoder;
         layer FullyConnected(units=1000, flatten=false) fc;
 
         source -> Embedding(output_dim=500) -> encoder -> fc;
 
         2 -> target[0];
 
-        layer GRU(units=1000) decoder;
+        layer GRU(units=1000, dropout=0.2) decoder;
         encoder.state -> Split(n=2) -> [1] -> decoder.state;
 
         timed<t> BeamSearch(max_length=30, width=3) {
