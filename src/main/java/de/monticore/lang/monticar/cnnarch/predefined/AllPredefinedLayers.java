@@ -86,6 +86,7 @@ public class AllPredefinedLayers {
     public static final String BEAMSEARCH_MAX_LENGTH = "max_length";
     public static final String BEAMSEARCH_WIDTH_NAME = "width";
     public static final String SHAPE_NAME = "shape";
+    public static final String RNN_DROPOUT_NAME = "dropout";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
