@@ -168,7 +168,7 @@ public class ArchitectureElementData {
     }
 
     public boolean getDropout() {
-        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.RNN_DROPOUT_NAME).get();
+        return getLayerSymbol().getDoubleValue(AllPredefinedLayers.RNN_DROPOUT_NAME).get();
     }
 
     public boolean getFlatten() {
