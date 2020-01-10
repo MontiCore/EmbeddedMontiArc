@@ -100,7 +100,7 @@ std::string indicesToSequence(const std::vector<int>& indices, const std::vector
 
 int main(int argc, char* argv[]) {
     if (argc != 4) {
-        std::cerr << "Usage: RNNsearch <source vocab filename> <target vocab filename> '<source sequence>'" << std::endl;
+        std::cerr << "Usage: Translator <source vocab filename> <target vocab filename> '<source sequence>'" << std::endl;
         return 1;
     }
 
