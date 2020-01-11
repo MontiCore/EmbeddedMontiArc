@@ -1,5 +1,5 @@
 #include "CNNTranslator.h"
-#include "rnnsearch_main.h"
+#include "translator_main.h"
 
 #include <fstream>
 #include <iostream>
@@ -112,17 +112,17 @@ int main(int argc, char* argv[]) {
         std::vector<float> source(sourceIndices.begin(), sourceIndices.end());
 
         // do stuff
-        rnnsearch_main rnnsearch;
-        rnnsearch.init();
+        translator_main translator;
+        translator.init();
 
-        rnnsearch.source = conv_to<ivec>::from(CNNTranslator::translateToCol(source, std::vector<std::size_t>{source.size()}));
+        translator.source = conv_to<ivec>::from(CNNTranslator::translateToCol(source, std::vector<std::size_t>{source.size()}));
 
-        rnnsearch.execute();
+        translator.execute();
 
         std::vector<int> targetIndices;
 
         for (std::size_t i = 0; i < MAX_LENGTH + 2; ++i) {
-            targetIndices.push_back(rnnsearch.target[i](0));
+            targetIndices.push_back(translator.target[i](0));
         }
 
         std::string targetSequence = indicesToSequence(targetIndices, targetVocab.second);
