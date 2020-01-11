@@ -8,7 +8,7 @@ component Network{
         layer GRU(units=1000, dropout=0.2) encoder;
 
         source ->
-        Embedding(output_dim=620) ->
+        Embedding(output_dim=500) ->
         encoder;
 
         2 -> target[0];
@@ -19,7 +19,7 @@ component Network{
 
         timed<t> BeamSearch(max_length=30, width=3) {
             target[t-1] ->
-            Embedding(output_dim=620) ->
+            Embedding(output_dim=500) ->
             decoder ->
             FullyConnected(units=7710) ->
             ArgMax() ->
