@@ -1,6 +1,6 @@
-package rnnsearch;
+package translator;
 
-component Network{
+component RNNsearch{
     ports in Z(0:17191)^{30} source,
          out Z(0:7709)^{1} target[30];
 
