@@ -6,7 +6,6 @@ configuration RNNsearch{
     context: gpu
     normalize: false
     shuffle_data: true
-    clip_global_grad_norm: 5
     loss: softmax_cross_entropy_ignore_indices{
         ignore_indices: 0
     }
@@ -17,7 +16,8 @@ configuration RNNsearch{
     optimizer: adam{
         learning_rate: 0.001
         learning_rate_decay: 0.99
-        step_size: 500
+        step_size: 719
         weight_decay: 0.0001
+        clip_gradient: 5
     }
 }
