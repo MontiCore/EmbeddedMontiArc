@@ -13,7 +13,7 @@ public:
 mat image;
 int mode;
 int method;
-mat hierarchy;
+mat hierarchy; //Try without hierarchy
 mat contours;
 void init()
 {

@@ -147,7 +147,7 @@ public class LanguageUnitCPP extends LanguageUnit {
 
         if(!bluePrint.cvIncludeStrings.isEmpty()){
             resultString += "using namespace cv;\n";
-        }
+        }//TODO add here using namespace std;
 
         //class definition start
         resultString += "class " + bluePrint.getName();
