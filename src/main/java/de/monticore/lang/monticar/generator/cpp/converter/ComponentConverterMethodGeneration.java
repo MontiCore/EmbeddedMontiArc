@@ -139,8 +139,6 @@ public class ComponentConverterMethodGeneration {
                 }
                 generateInstruction(method, mathExpressionSymbol, bluePrint, includeStrings);
                 //lastIndex = currentGenerationIndex;
-                //fix argumentReturnFunctionsInstructions
-
             }
             handleInstructionReOrdering(method, beginIndex);
         }
@@ -195,9 +193,10 @@ public class ComponentConverterMethodGeneration {
             mathExpressionSymbol, BluePrintCPP bluePrint, List<String> includeStrings/*, int lastIndex*/) {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
         String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
-        if(ComponentConverter.usedMathCommand != null) {
-            String argumentReturnFunctionName = ComponentConverter.usedMathCommand.getMathCommandName();
-            if (ComponentConverter.usedMathCommand.isArgumentReturnMathCommand() && result.contains(argumentReturnFunctionName)) {
+        for (MathCommand mathCommand : ComponentConverter.usedMathCommand)
+        if(mathCommand != null) {
+            String argumentReturnFunctionName = mathCommand.getMathCommandName();
+            if (mathCommand.isArgumentReturnMathCommand() && result.contains(argumentReturnFunctionName)) {
                 result = fixArgumentReturnInstruction(result, method, mathExpressionSymbol, bluePrint);
             }
         }
@@ -345,23 +344,33 @@ public class ComponentConverterMethodGeneration {
     }
 
     private static String fixArgumentReturnInstruction(String instruction, Method method, MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP){
-    String newInstruction = "";
+    String newInstruction1 = "";
+    String newInstruction2 = "";
     if(instruction.contains("=")){
         int indexOfEqualOperator = instruction.indexOf("=");
         String beforeEqualOperatorSubString = instruction.substring(0,indexOfEqualOperator-1);
         String afterEqualOperatorSubString = instruction.substring(indexOfEqualOperator+2);
 
+        if(beforeEqualOperatorSubString.contains(" ")){
+            //there is two words
+            int indexOfWhiteSpace = beforeEqualOperatorSubString.indexOf(" ");
+            String firstWord = beforeEqualOperatorSubString.substring(0,indexOfWhiteSpace);
+            String secondWord = beforeEqualOperatorSubString.substring(indexOfWhiteSpace+1);
+            newInstruction1 = beforeEqualOperatorSubString + ";\n";
+            beforeEqualOperatorSubString = secondWord;
+        }
+
         if(afterEqualOperatorSubString.contains(",")){
             int indexOfCommaOperator  = afterEqualOperatorSubString.indexOf(",");
-            newInstruction = afterEqualOperatorSubString.substring(0,indexOfCommaOperator) + ", " + beforeEqualOperatorSubString +
+            newInstruction2 = afterEqualOperatorSubString.substring(0,indexOfCommaOperator) + ", " + beforeEqualOperatorSubString +
                     afterEqualOperatorSubString.substring(indexOfCommaOperator);
         }else{
             int indexOfBracket = afterEqualOperatorSubString.indexOf(")");
-            newInstruction = afterEqualOperatorSubString.substring(0,indexOfBracket) + ", " + beforeEqualOperatorSubString +
+            newInstruction2 = afterEqualOperatorSubString.substring(0,indexOfBracket) + ", " + beforeEqualOperatorSubString +
                     afterEqualOperatorSubString.substring(indexOfBracket);
         }
-        newInstruction = removeBracket(newInstruction);
-        return newInstruction;
+        newInstruction2 = removeBracket(newInstruction2);
+        return newInstruction1 + newInstruction2;
     }
     return instruction;
     }

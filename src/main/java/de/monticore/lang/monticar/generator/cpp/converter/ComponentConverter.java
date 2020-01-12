@@ -17,9 +17,9 @@ import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.*;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConstantConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
-import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 public class ComponentConverter {
 
     public static BluePrintCPP currentBluePrint = null;
-    public static String nameOfFunction = "";
-    public static MathCommand usedMathCommand = null;
+    public static List<String> namesOfFunctions = new ArrayList<>();
+    public static List<MathCommand> usedMathCommand = new ArrayList<>();
 
     public static BluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         BluePrintCPP bluePrint = new BluePrintCPP(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
@@ -62,27 +62,32 @@ public class ComponentConverter {
             }
             bluePrint.addVariable(ComponentInstanceConverter.convertComponentInstanceSymbolToVariable(instanceSymbol, componentSymbol));
         }
-
         //create arrays from variables that only differ at the end by _number_
         BluePrintFixer.fixBluePrintVariableArrays(bluePrint);
         //ToDo: add bluePrintFixer.fixBluePrintCvVariableArrays;
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
         //save function name
         if(mathStatementsSymbol != null) {
-            if (mathStatementsSymbol.getMathExpressionSymbols().get(0).isAssignmentExpression()) {
-                if (((MathAssignmentExpressionSymbol) mathStatementsSymbol.getMathExpressionSymbols().get(0)).getExpressionSymbol() instanceof MathMatrixNameExpressionSymbol) {
-                    nameOfFunction = ((MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathStatementsSymbol.getMathExpressionSymbols().get(0)).getExpressionSymbol()).getNameToAccess();
-                }
-            } else if(mathStatementsSymbol.getMathExpressionSymbols().get(0).isValueExpression()){
-                if(((MathValueSymbol) mathStatementsSymbol.getMathExpressionSymbols().get(0)).getValue() instanceof MathMatrixNameExpressionSymbol){
-                    nameOfFunction = ((MathMatrixNameExpressionSymbol)((MathValueSymbol) mathStatementsSymbol.getMathExpressionSymbols().get(0)).getValue()).getNameToAccess();
-                }
+            List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
+            for(MathExpressionSymbol mathExpresionSymbol : mathExpressionSymbols){
+                if (mathExpresionSymbol.isAssignmentExpression()) {
+                    if (((MathAssignmentExpressionSymbol) mathExpresionSymbol).getExpressionSymbol() instanceof MathMatrixNameExpressionSymbol) {
+                        namesOfFunctions.add(((MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathExpresionSymbol).getExpressionSymbol()).getNameToAccess());
 
+                    }
+                } else if(mathExpresionSymbol.isValueExpression()) {
+                    if (((MathValueSymbol) mathExpresionSymbol).getValue() instanceof MathMatrixNameExpressionSymbol) {
+                        namesOfFunctions.add(((MathMatrixNameExpressionSymbol) ((MathValueSymbol) mathExpresionSymbol).getValue()).getNameToAccess());
+                    }
+                }
             }
         }
 
-        if(nameOfFunction != "") {
-            usedMathCommand = bluePrint.getMathCommandRegister().getMathCommand(nameOfFunction);
+        if(namesOfFunctions != null) {
+            for(String nameOfFunction : namesOfFunctions){
+                usedMathCommand.add(bluePrint.getMathCommandRegister().getMathCommand(nameOfFunction));
+            }
+
         }
         //ToDo: add a BluePrintFixer.fixerBluePrintCVfuncitons(bluePrint, nameOfFunction);
 

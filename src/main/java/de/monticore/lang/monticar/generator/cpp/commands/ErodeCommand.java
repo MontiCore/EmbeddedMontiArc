@@ -68,7 +68,7 @@ public class ErodeCommand extends ArgumentReturnMathCommand{
 
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrix",MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());;
+        method.addParameter(src, "src", "CommonMatrixType",MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());;
         Variable dst = new Variable();
         method.addParameter(dst, "dst", "CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
         Variable erosion_elem = new Variable();
