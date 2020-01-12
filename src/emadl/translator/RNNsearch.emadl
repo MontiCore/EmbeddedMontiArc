@@ -5,14 +5,13 @@ component RNNsearch{
          out Z(0:7709)^{1} target[30];
 
     implementation CNN{
-        layer GRU(units=1000, dropout=0.2, bidirectional=true) encoder;
-        layer FullyConnected(units=1000, flatten=false) fc;
+        layer GRU(units=800, dropout=0.2, bidirectional=true) encoder;
 
-        source -> Embedding(output_dim=500) -> encoder -> fc;
+        source -> Dropout(p=0.2) -> Embedding(output_dim=500) -> encoder;
 
         2 -> target[0];
 
-        layer GRU(units=1000, dropout=0.2) decoder;
+        layer GRU(units=800, dropout=0.2) decoder;
         encoder.state -> Split(n=2) -> [1] -> decoder.state;
 
         timed<t> BeamSearch(max_length=30, width=3) {
@@ -22,20 +21,21 @@ component RNNsearch{
                         decoder.state ->
                         Repeat(n=30, axis=0)
                     |
-                        fc.output
+                        encoder.output
                     ) ->
                     Concatenate(axis=1) ->
-                    FullyConnected(units=1000, flatten=false) ->
+                    FullyConnected(units=800, flatten=false) ->
                     Tanh() ->
                     FullyConnected(units=30) ->
                     Softmax() ->
                     ExpandDims(axis=0)
                 |
-                    fc.output
+                    encoder.output
                 ) ->
                 Dot()
             |
                 target[t-1] ->
+                Dropout(p=0.2) ->
                 Embedding(output_dim=500)
             ) ->
             Concatenate(axis=1) ->
