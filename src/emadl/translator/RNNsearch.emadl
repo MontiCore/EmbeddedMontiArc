@@ -7,7 +7,7 @@ component RNNsearch{
     implementation CNN{
         layer GRU(units=800, dropout=0.2, bidirectional=true) encoder;
 
-        source -> Dropout(p=0.2) -> Embedding(output_dim=500) -> encoder;
+        source -> Embedding(output_dim=500) -> encoder;
 
         2 -> target[0];
 
@@ -35,7 +35,6 @@ component RNNsearch{
                 Dot()
             |
                 target[t-1] ->
-                Dropout(p=0.2) ->
                 Embedding(output_dim=500)
             ) ->
             Concatenate(axis=1) ->
