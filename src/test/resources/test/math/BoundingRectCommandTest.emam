@@ -2,7 +2,11 @@
 package test.math;
 
 component BoundingRectCommandTest{
-    implementation Math{
-        Q a = boundingRect(0,0,0,0,0);
+    port
+        in Q contour,
+        out Q rect;
+
+    implementation Math {
+        rectAngle = boundingRect(contour);
     }
 }

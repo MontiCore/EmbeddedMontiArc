@@ -9,12 +9,14 @@ using namespace arma;
 using namespace cv;
 class test_math_boundingRectCommandTest{
 public:
+double contour;
+double rect;
 void init()
 {
 }
 void execute()
 {
-double a = (boundingRect(0, 0, 0, 0, 0));
+rectAngle = (boundingRect(contour));
 }
 
 };
