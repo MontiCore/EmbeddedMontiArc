@@ -1,10 +1,10 @@
 package translator;
 
-component RNNsearch{
+component RNNsearch {
     ports in Z(0:17191)^{30} source,
          out Z(0:7709)^{1} target[30];
 
-    implementation CNN{
+    implementation CNN {
         layer GRU(units=700, dropout=0.25, bidirectional=true) encoder;
 
         source -> Embedding(output_dim=250) -> Dropout(p=0.25) -> encoder;
@@ -44,5 +44,5 @@ component RNNsearch{
             ArgMax() ->
             target[t]
         };
-     }
- }
+    }
+}
