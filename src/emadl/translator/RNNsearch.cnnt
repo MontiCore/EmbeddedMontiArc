@@ -1,4 +1,4 @@
-configuration RNNsearch{
+configuration RNNsearch {
     num_epoch: 25
     batch_size: 64
     checkpoint_period: 1
