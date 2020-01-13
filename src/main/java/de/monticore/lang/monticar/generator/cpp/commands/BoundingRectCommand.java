@@ -34,7 +34,12 @@ public class BoundingRectCommand extends MathCommand{
         }
     }
 
-    public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    @Override
+    public boolean isCVMathCommand() {
+        return true;
+    }
+
+        public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
         Log.error("No implementation for Octave Backend");
     }
 
