@@ -69,6 +69,7 @@ public class MathCommandRegisterCPP extends MathCommandRegister {
         registerMathCommand(new PutTextCommand());
         registerMathCommand(new ThresholdCommand());
         registerMathCommand(new LargestContourCommand());
+        registerMathCommand(new RectangleCommand());
 
 
         //for fixing some errors

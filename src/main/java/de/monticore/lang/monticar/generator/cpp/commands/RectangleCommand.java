@@ -5,8 +5,8 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
-import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
+import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
@@ -18,9 +18,9 @@ import java.util.List;
  * @author Ahmed Diab
  */
 
-public class ErodeCommand extends ArgumentReturnMathCommand{
-    public ErodeCommand() {
-        setMathCommandName("erode");
+public class RectangleCommand extends MathCommand{
+    public RectangleCommand() {
+        setMathCommandName("rectangle");
     }
 
     @Override
@@ -50,31 +50,33 @@ public class ErodeCommand extends ArgumentReturnMathCommand{
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
 
-        Method erodeHelperMethod = getErodeHelperMethod();
+        Method rectangleHelperMethod = getRectangleHelperMethod();
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
-        MathStringExpression stringExpression = new MathStringExpression("erodeHelper" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
+        MathStringExpression stringExpression = new MathStringExpression("rectangleHelper" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
         ((BluePrintCPP) bluePrint).addCVIncludeString("opencv2/imgproc");
-        bluePrint.addMethod(erodeHelperMethod);
+        bluePrint.addMethod(rectangleHelperMethod);
 
     }
 
-    private Method getErodeHelperMethod(){
-        Method method = new Method("erodeHelper", "void");
+    private Method getRectangleHelperMethod(){
+        Method method = new Method("rectangleHelper", "Mat");
 
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrixType",MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
-        Variable dst = new Variable();
-        method.addParameter(dst, "dst", "CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
-        Variable erosion_elem = new Variable();
-        method.addParameter(erosion_elem,"erosion_elem", "Integer", "int", "");
-        Variable iterations = new Variable();
-        method.addParameter(iterations, "iterations", "Integer","int", "");
+        method.addParameter(src, "src", "CommonMatrixType","Mat", "");
+        Variable rect = new Variable();
+        method.addParameter(rect, "rect", "double", "Rect", "");
+        Variable color = new Variable();
+        method.addParameter(color,"color", "colvec", "colvec", "");
+        Variable thickness = new Variable();
+        method.addParameter(thickness, "thickness", "Integer","int", "");
+        Variable lineType = new Variable();
+        method.addParameter(lineType, "lineType", "Integer","int", "");
         //add an instruction to the method
         method.addInstruction(methodBody());
 
@@ -85,15 +87,8 @@ public class ErodeCommand extends ArgumentReturnMathCommand{
         return new Instruction() {
             @Override
             public String getTargetLanguageInstruction() {
-                return  "    int erosion_type = 0;\n" +
-                        "    if( erosion_elem == 0 ){ erosion_type = MORPH_RECT; }\n" +
-                        "    else if( erosion_elem == 1 ){ erosion_type = MORPH_CROSS; }\n" +
-                        "    else if( erosion_elem == 2) { erosion_type = MORPH_ELLIPSE; }\n" +
-                        "    erosion_size = erosion_elem;\n" +
-                        "    mat element = getStructuringElement( erosion_type,\n" +
-                        "                            Size( 2*erosion_size + 1, 2*erosion_size+1 ),\n" +
-                        "                            Point( -1, -1 ) );\n" +
-                        "    erode( src, dst, element, Point(-1,-1), iterations );\n";
+                return  "    cv::rectangle(src, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n" +
+                        "    return src;\n";
             }
 
             @Override

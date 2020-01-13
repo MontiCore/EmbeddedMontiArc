@@ -280,4 +280,9 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
     public void testLargestContourCommand() throws IOException{
         testMathCommand("largestContour");
     }
+
+    @Test
+    public void testRectangleCommand() throws  IOException{
+        testMathCommand("rectangle");
+    }
 }
