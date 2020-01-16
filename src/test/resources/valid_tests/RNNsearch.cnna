@@ -1,25 +1,27 @@
-architecture RNNsearch{
-    def input Z(0:49999)^{30} source
-    def output Z(0:49999)^{1} target[30]
+architecture RNNsearch {
+    def input Z(0:29999)^{30} source
+    def output Z(0:29999)^{1} target[30]
 
     layer GRU(units=1000, bidirectional=true) encoder;
-    layer FullyConnected(units=1000, flatten=false) fc;
 
-    source -> Embedding(output_dim=620) -> encoder -> fc;
+    source ->
+    Embedding(output_dim=500) ->
+    encoder;
 
     1 -> target[0];
 
     layer GRU(units=1000) decoder;
-    encoder.state -> Split(n=2) -> [1] -> decoder.state;
+
+    encoder.state -> Split(n=2) -> Get(index=1) -> decoder.state;
 
     timed<t> BeamSearch(max_length=30, width=3) {
-        (
+       (
             (
                 (
                     decoder.state ->
                     Repeat(n=30, axis=0)
                 |
-                    fc.output
+                    encoder.output
                 ) ->
                 Concatenate(axis=1) ->
                 FullyConnected(units=1000, flatten=false) ->
@@ -28,17 +30,16 @@ architecture RNNsearch{
                 Softmax() ->
                 ExpandDims(axis=0)
             |
-                fc.output
+                encoder.output
             ) ->
             Dot()
         |
             target[t-1] ->
-            Embedding(output_dim=620)
+            Embedding(output_dim=500)
         ) ->
         Concatenate(axis=1) ->
         decoder ->
-        FullyConnected(units=50000) ->
-        Softmax() ->
+        FullyConnected(units=30000) ->
         ArgMax() ->
         target[t]
     };

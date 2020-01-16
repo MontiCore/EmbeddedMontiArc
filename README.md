@@ -11,7 +11,7 @@ https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/cnnarch2x/issue
 !!**
 
 ## Introduction
-CNNArch is a descriptive language to model architectures of feedforward neural networks with a special focus on convolutional neural networks. 
+CNNArch is a descriptive language to model architectures of neural networks with support for convolutional and recurrent neural networks. 
 It is being developed for use in the MontiCar language family, along with CNNTrain, which configures the training of the network, and EmbeddedMontiArcDL, which integrates CNNArch into EmbeddedMontiArc.
 The inputs and outputs of a network are strongly typed and the validity of a network is checked at model creation.
 In the following, we will explain the syntax and all features of CNNArch in combination with code examples to show how these can be used.
@@ -23,8 +23,10 @@ However, the correctness of their values is checked at compile time.
 The header of the architecture declares architecture parameters that can be used in all following expressions. 
 In this way, different instances of the same architecture can be created.
 The top part of the architecture consists of input, output and layer declarations.
-The main part is the actual architecture definition in the form of a collection of architecture elements which are connected through the two operators "->" and "|". 
-An architecture element can either be a layer, an input or an output. 
+The main part is the actual architecture definition that contains subnetworks in the form of a collection of architecture elements which are connected through the two operators "->" and "|". 
+These subnetworks are delimited by semicolons. We allow multiple subnetworks so that they can be used for more complex architectures such as encoder-decoder architectures.
+The architecture definition also contains the layer instance definitions that can be used to implement a layer in one subnetwork and access its internals such as its output or its state for RNNs in another subnetwork.
+An architecture element can either be a layer, an input or output port, a constant node or a layer instance reference. 
 The following is a complete example of the original version of Alexnet by A. Krizhevsky. 
 There are more compact versions of the same architecture but we will get to that later. 
 All predefined methods are listed at the end of this document.
@@ -80,7 +82,7 @@ architecture Alexnet_alt(img_height=224, img_width=224, img_channels=3, classes=
     Dropout() ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    predictions
+    predictions;
 }
 ```
 *Note: The third convolutional and the first two fully connected layers are not divided into two streams like they are in the original Alexnet. 
@@ -211,8 +213,6 @@ And `m(a=[|5|3->4], b=[|1|2], c=2)` is equal to:
 ```
 However, `m(a=[5->3], b=[2|4->6], c=2)->` and `m(a=[5->3], b=[2->4->6], c=2)->` would fail because it is not possible to expand *a* such that it is the same size as *b*.
 
-
-
 ## Expressions
 This language supports the basic arithmetic operators "+", "-", "\*", "/", the logical operators "&&", "||", the comparison operators "==", "!=", "<", ">", "<=", ">=" 
 and the constants `true` and `false`. 
@@ -259,7 +259,7 @@ architecture Alexnet_alt2(img_height=224, img_width=224, img_channels=3, classes
     fc(-> = 2) ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    predictions
+    predictions;
 }
 ```
 
@@ -300,7 +300,58 @@ architecture ResNet152(img_height=224, img_width=224, img_channels=3, classes=10
     GlobalPooling(pool_type="avg") ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    predictions
+    predictions;
+}
+```
+
+## Assignments
+We do not require subnetworks to contain actual layers, so we also provide support for assignments, e.g. `input -> output[0];` is a valid subnetwork.
+
+## Constant Nodes
+CNNArch supports integer constant nodes that can be used to initialize output ports with integers, e.g. `1 -> output[0];`.
+
+## Layer Instances
+We allow the definition of layer instances that can be used to refer to the same layer and its internals from two different subnetworks which is useful for architectures that consist of more than one subnetwork such as encoder-decoder architectures.
+A layer instance is defined by using the keyword `layer` followed by a layer type and a name, e.g. `layer FullyConnected(units=10) fc;`. 
+We can use a layer instance in a subnetwork as `input -> fc -> output[0]` and access its internals by using the dot operator.
+For all layers we support the `output` internal which refers to the generated output of the layer and can be used as `fc.output -> Softmax() -> output[1];`.
+The RNN layers `RNN`, `LSTM` and `GRU` also support the `state` internal which can be used e.g. in a encoder-decoder architecture to initialize the decoder state to the encoder state as `encoder.state -> decoder.state`.
+
+## Unrolling Recurrent Neural Networks
+CNNArch supports the unrolling of RNNs with its `timed` block which introduces a time parameter that allows us to define each step of the unrolling. 
+We show such a `timed` block in the following encoder-decoder machine translation architecture. 
+First, we put the source sequence into an `Embedding` layer, then into the encoder `GRU`. 
+Then, we initialize `target[0]` with 1 which is the index of our start of sequence symbol. 
+We need to do it because later in the `timed` block we depend on the previously generated target word. 
+After that, we initialize `decoder.state` with `encoder.state`. 
+Finally, we arrive at the `timed` block which unrolls from 1 to 30 and uses the previously generated target word `target[t-1]` as input for the subnetwork within the `timed` block. The output is then written to `target[t]`. 
+The next step, `t` is incremented and the subnetwork is evaluated with our new time parameter. The unrolling stops after it reaches `max_length`.
+
+```
+architecture RNNencdec {
+    def input Z(0:29999)^{30} source
+    def output Z(0:29999)^{1} target[30]
+
+    layer GRU(units=1000) encoder;
+
+    source ->
+    Embedding(output_dim=500) ->
+    encoder;
+
+    1 -> target[0];
+
+    layer GRU(units=1000) decoder;
+
+    encoder.state -> decoder.state;
+
+    timed<t> GreedySearch(max_length=30) {
+        target[t-1] ->
+        Embedding(output_dim=500) ->
+        decoder ->
+        FullyConnected(units=30000) ->
+        ArgMax() ->
+        target[t]
+    };
 }
 ```
 
@@ -308,12 +359,13 @@ architecture ResNet152(img_height=224, img_width=224, img_channels=3, classes=10
 All methods with the exception of *Concatenate*, *Add*, *Get* and *Split* can only handle 1 input stream and have 1 output stream. 
 All predefined methods start with a capital letter and all constructed methods have to start with a lowercase letter.
 
-* **FullyConnected(units, no_bias=false)**
+* **FullyConnected(units, no_bias=false, flatten=true)**
 
-  Creates a fully connected layer and applies flatten to the input if necessary.
+  Creates a fully connected layer.
     
   * **units** (integer > 0, required): number of neural units in the output.
   * **no_bias** (boolean, optional, default=false): Whether to disable the bias parameter.
+  * **flatten** (boolean, default=true): If true, applies Flatten layer to the input if necessary.
   
 * **Convolution(kernel, channels, stride=(1,1), padding="same", no_bias=false)**
 
@@ -344,7 +396,7 @@ All predefined methods start with a capital letter and all constructed methods h
 * **Flatten()**
 
   Reshapes the input such that height and width are 1. 
-  Usually not necessary because the FullyConnected layer applies *Flatten* automatically.
+  Usually not necessary because the FullyConnected layer applies *Flatten* by default.
     
 * **Dropout()**
 
@@ -383,11 +435,13 @@ All predefined methods start with a capital letter and all constructed methods h
     
   * **fix_gamma** (boolean, optional, default=true): Fix gamma while training.
 
-* **Concatenate()**
+* **Concatenate(axis=0)**
     
   Merges multiple input streams into one output stream by concatenation of channels. 
-  The height and width of all inputs must be identical. 
-  The number of channels in the output shape is the sum of the number of channels in the shape of the input streams.
+  The axes which are not `axis` must be the same size for all inputs.
+  The size of `axis` in the output shape is the sum of the size of `axis` in the shape of the input streams.
+  
+  * **axis** (2 >= integer >= 0): Concatenates on the `axis`-th axis.
     
 * **Add()**
     
@@ -408,28 +462,91 @@ All predefined methods start with a capital letter and all constructed methods h
   The output streams have the same height and width as the input stream and a number channels which is in general `input_channels / n`. 
   The last output stream will have a higher number of channels than the other if `input_channels` is not divisible by `n`.
 
-  
   * **n** (integer > 0, required): The number of output streams. Cannot be higher than the number of input channels.
+
+
+* **Embedding(input_dim, output_dim)**
+
+  Creates an embedding layer that maps non-negative integers to dense vectors of fixed size. Input: `Z(0:input_dim - 1)^{N}`, output: `Q^{N, output_dim}`.
+  
+  * **input_dim** (integer > 0, optional): Size of the vocabulary; optional if it can be inferred from previous layers.
+  
+  * **output_dim** (integer > 0, required): Dimension of the embedding.
+  
+  
+* **RNN(units, layers=1, dropout=0, bidirectional=false)**
+
+  Creates an RNN layer with tanh as activation function. 
+  
+  * **units** (integer > 0, required): The number of neural units in the hidden state.
+  
+  * **layers** (integer > 0): The number of recurrent layers.
+  
+  * **dropout** (1 >= float >= 0): If set, introduces a dropout layer on the outputs of each layer except the last layer. The dropout layer has the specified value as the probability.
+  
+  * **bidirectional** (boolean): If true, becomes a bidirectional RNN and output changes to `Q^{N, 2 * layers * units}`.
+  
+  
+* **LSTM(units, layers=1, dropout=0, bidirectional=false)**
+
+  Creates an LSTM layer. 
+  
+  * **units** (integer > 0, required): The number of neural units in the hidden state.
+  
+  * **layers** (integer > 0): The number of recurrent layers.
+  
+  * **dropout** (1 >= float >= 0): If set, introduces a dropout layer on the outputs of each layer except the last layer. The dropout layer has the specified value as the probability.
+  
+  * **bidirectional** (boolean): If true, becomes a bidirectional RNN and output changes to `Q^{N, 2 * layers * units}`.
+  
+  
+* **GRU(units, layers=1, dropout=0, bidirectional=false)**
+
+  Creates a GRU layer. 
+  
+  * **units** (integer > 0, required): The number of neural units in the hidden state.
+  
+  * **layers** (integer > 0): The number of recurrent layers.
+  
+  * **dropout** (1 >= float >= 0): If set, introduces a dropout layer on the outputs of each layer except the last layer. The dropout layer has the specified value as the probability.
+  
+  * **bidirectional** (boolean): If true, becomes a bidirectional RNN and output changes to `Q^{N, 2 * layers * units}`.
+  
+  
+* **ExpandDims(axis)**
+
+  Inserts a new dimension of size 1 into the input.
+  
+  * **axis** (1 >= integer >= 0, required): Position in which the new dimension is inserted.
+
+
+* **Squeeze(axis)**
+
+  Removes dimensions of size 1 from the input.
+  
+  * **axis** (2 >= integer >= 0, optional): When specified, only removes the `axis`-th dimension instead of all.
+
+
+* **Repeat(n, axis)**
+
+  Inserts a new dimension in the front of the input and repeats it.
+  
+  * **n** (integer > 0, required): The number of repetitions.
+  
+  * **axis** (2 >= integer >= 0, optional): When specified, repeats on the `axis`-th axis instead of inserting a new dimension.
+
 
 * **OneHot(size)**
 
   Creates a OneHot vector of a given size, given a scalar in the previous layer that determines the OneHot-Index (the index at which the *1* in the vector will be placed).
 
   * **size** (integer > 0, optional): The OneHot-vector's size. Can be omitted to automatically use the output size of the architecture.
-  
+ 
   
 * **ArgMax()**
 
-  Computes the index of the maximal value of its input vector. Useful for recurrent networks, when the output of a timestep should be used as integer input for the next timestep.
-  Notice that the Argmax Layer is applied after calculating the loss in the respective backend. This means that loss can still be computed correctly (e.g. from a Softmax layer before the ArgMax), but recurrent networks get only the element with the highest probability as input for their next timestep.
-  
-  
-  * **BeamSearch(max_length, width)**
-  
-    Must be used together with a recurrent network. Uses Beamsearch as search algorithm over the timesteps of the RNN.
-  
-    * **max_length** (integer > 0, required): The maximum number of timesteps to run the RNN, and thus the maximum length of the generated sequence.
-    * **width** (integer > 0, required): The number of candidates to consider each in timestep. Sometimes called k.
+  Computes the index of the maximal value of its input vector. Useful for recurrent networks, when the output of a timestep should be used as integer input for the next timestep. Is only allowed as last layer of a subnetwork.
+  Notice that the Argmax Layer is applied after calculating the loss in the respective backend. This means that loss can still be computed correctly (e.g. from a Softmax layer before the ArgMax), but recurrent networks get only the element with the highest probability as input for their next timestep. Input: `Q^{N}`, output: `Z(0:N - 1)^{1}`.
     
     
 * **BroadcastAdd()**
@@ -444,7 +561,7 @@ All predefined methods start with a capital letter and all constructed methods h
   
 * **Dot()**
 
-  Performs the dot product (matrix multiplication) for two input matrices.
+  Calculates the dot product of the two inputs. Inputs: `Q^{A, B}` and `Q^{B, C}`, output: `Q^{A, C}`.
 
 
 * **ExpandDims(axis)**
@@ -452,13 +569,6 @@ All predefined methods start with a capital letter and all constructed methods h
   Creates a new, empty axis for a given input tensor.
 
   * **axis** (0 <= integer <= 1, required): The axis to expand.
-
-
-* **GreedySearch(max_length)**
-
-  Must be used together with a recurrent network. Uses Greedysearch as search algorithm over the timesteps of the RNN, so that only the best output for each timestep is considered.
-    
-  * **max_length** (integer > 0, required): The maximum number of timesteps to run the RNN, and thus the maximum length of the generated sequence.
 
 
 * **ReduceSum(axis)**
@@ -493,3 +603,17 @@ All predefined methods start with a capital letter and all constructed methods h
   * **no_bias** (boolean, optional, default=false): Whether to disable the bias parameter.
     
 
+## Predefined Unroll Types
+* **GreedySearch(max_length)**
+
+  Uses Greedysearch as search algorithm over the timesteps of the RNN, so that only the best output for each timestep is considered.
+
+  * **max_length** (integer > 0, required): The maximum number of timesteps to run the RNN, and thus the maximum length of the generated sequence.
+
+  
+* **BeamSearch(max_length, width)**
+
+  Must be used together with a recurrent network. Uses Beamsearch as search algorithm over the timesteps of the RNN.
+
+  * **max_length** (integer > 0, required): The maximum number of timesteps to run the RNN, and thus the maximum length of the generated sequence.
+  * **width** (integer > 0, required): The number of candidates to consider each in timestep. Sometimes called k.
