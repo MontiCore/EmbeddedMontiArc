@@ -20,6 +20,7 @@ public class CheckEntryRepetition implements CNNTrainASTEntryCoCo {
     private final static Set<Class<? extends ASTEntry>> REPEATABLE_ENTRIES = ImmutableSet
         .<Class<? extends ASTEntry>>builder()
             .add(ASTOptimizerParamEntry.class)
+            .add(ASTNoiseDistributionParamEntry.class)
             .build();
 
 

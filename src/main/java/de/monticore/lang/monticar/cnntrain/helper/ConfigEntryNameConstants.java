@@ -47,9 +47,9 @@ public class ConfigEntryNameConstants {
     public static final String CRITIC = "critic";
 
     public static final String DISCRIMINATOR_NAME = "discriminator_name";
+    public static final String QNETWORK_NAME = "qnet_name";
     public static final String PREPROCESSING_NAME = "preprocessing_name";
     public static final String NOISE_DISTRIBUTION = "noise_distribution";
-    public static final String IMG_RESIZE = "img_resize";
-    public static final String IMG_RESIZE_WIDTH = "img_resize_width";
-    public static final String IMG_RESIZE_HEIGHT = "img_resize_height";
+    public static final String CONSTRAINT_DISTRIBUTION = "constraint_distributions";
+    public static final String CONSTRAINT_LOSS = "constraint_losses";
 }

@@ -9,11 +9,13 @@ package de.monticore.lang.monticar.cnntrain._symboltable;
 
 import de.monticore.ast.ASTCNode;
 import de.monticore.lang.monticar.cnntrain._ast.*;
+import de.monticore.lang.monticar.cnntrain._parser.CNNTrainAntlrParser;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,6 +54,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         CNNTrainCompilationUnitSymbol compilationUnitSymbol = new CNNTrainCompilationUnitSymbol(compilationUnit.getName());
         addToScopeAndLinkWithNode(compilationUnitSymbol, compilationUnit);
     }
+    
 
     @Override
     public void endVisit(ASTCNNTrainCompilationUnit ast) {
@@ -132,9 +135,41 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
+    public void endVisit(ASTCheckpointPeriodEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void endVisit(ASTLogPeriodEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
     public void endVisit(ASTNormalizeEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         entry.setValue(getValueSymbolForBoolean(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void endVisit(ASTShuffleDataEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForBoolean(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void endVisit(ASTClipGlobalGradNormEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForDouble(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
         configuration.getEntryMap().put(node.getName(), entry);
     }
@@ -162,6 +197,14 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     @Override
     public void endVisit(ASTEvalMetricEntry node) {
         processMultiParamConfigEndVisit(node);
+    }
+
+    @Override
+    public void endVisit(ASTEvalTrainEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForBoolean(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
     }
 
     @Override
@@ -472,7 +515,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
-    public void visit(ASTPreprocessingEntry node) {
+    public void visit(ASTQNetworkEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         entry.setValue(getValueSymbolForComponentNameAsString(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
@@ -480,18 +523,13 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
-    public void visit(ASTImgResizeEntry node) {
-        EntrySymbol width_entry = new EntrySymbol(node.getName());
-        EntrySymbol height_entry = new EntrySymbol(node.getName());
-
-        width_entry.setValue(getValueSymbolForInteger(node.getValue().getFirst()));
-        height_entry.setValue(getValueSymbolForInteger(node.getValue().getSecond()));
-        addToScopeAndLinkWithNode(width_entry, node);
-        addToScopeAndLinkWithNode(height_entry, node);
-
-        configuration.getEntryMap().put(node.getName() + "_width", width_entry);
-        configuration.getEntryMap().put(node.getName() + "_height", height_entry);
+    public void visit(ASTPreprocessingEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForComponentNameAsString(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
     }
+
 
     @Override
     public void visit(ASTReplayMemoryEntry node) {
@@ -526,6 +564,26 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
+    public void visit(ASTConstraintDistributionEntry node) {
+        processMultiParamMapConfigVisit(node, node.getName());
+    }
+
+    @Override
+    public void endVisit(ASTConstraintDistributionEntry node) {
+        processMultiParamMapConfigEndVisit(node);
+    }
+
+    @Override
+    public void visit(ASTConstraintLossEntry node) {
+        processMultiParamMapConfigVisit(node, node.getName());
+    }
+
+    @Override
+    public void endVisit(ASTConstraintLossEntry node) {
+        processMultiParamMapConfigEndVisit(node);
+    }
+
+    @Override
     public void visit(ASTNoiseDistributionEntry node) {
         NoiseDistribution noiseDistribution;
         if(node.getValue().getName().equals("gaussian")) {
@@ -540,6 +598,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     public void endVisit(ASTNoiseDistributionEntry node) {
         processMultiParamConfigEndVisit(node);
     }
+
 
     @Override
     public void visit(ASTRewardFunctionEntry node) {
@@ -623,7 +682,36 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
                     retrievePrimitiveValueByConfigValue(nodeParam.getValue()));
         }
     }
-	
+
+    private void processMultiParamMapConfigVisit(ASTMultiParamValueMapConfigEntry node, Object value) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        MultiParamValueMapSymbol valueSymbol = new MultiParamValueMapSymbol();
+        valueSymbol.setValue(value);
+        entry.setValue(valueSymbol);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    private void processMultiParamMapConfigEndVisit(ASTMultiParamValueMapConfigEntry node) {
+        ValueSymbol valueSymbol = configuration.getEntryMap().get(node.getName()).getValue();
+        assert valueSymbol instanceof MultiParamValueMapSymbol : "Value symbol is not a multi parameter symbol";
+        MultiParamValueMapSymbol multiParamValueMapSymbol = (MultiParamValueMapSymbol)valueSymbol;
+        for (ASTConfigValue nodeParam : ((ASTMultiParamValueMapParamValue)node.getValue()).getParamsList()) {
+            ASTMultiParamValueMapTupleValue tuple = ((ASTMultiParamValueMapTupleValue)nodeParam);
+            ASTStringValue name = tuple.getName();
+            ASTMultiParamValue multiValue = tuple.getMultiParamValue();
+            String valueName = multiValue.getName();
+            multiParamValueMapSymbol.addMultiParamValueName(getStringFromStringValue(name), valueName);
+            HashMap<String, Object> mapEntry = new HashMap<>();
+            for (ASTEntry param : multiValue.getParamsList()) {
+                String valueEntryName = param.getName();
+                Object res = retrievePrimitiveValueByConfigValue(param.getValue());
+                mapEntry.put(valueEntryName, res);
+            }
+            multiParamValueMapSymbol.addParameter(getStringFromStringValue(name), mapEntry);
+        }
+    }
+
     private Object retrievePrimitiveValueByConfigValue(final ASTConfigValue configValue) {
         if (configValue instanceof ASTIntegerValue) {
             return getIntegerFromNumber((ASTIntegerValue)configValue);

@@ -24,13 +24,18 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     BooleanValue implements ConfigValue = (TRUE:"true" | FALSE:"false");
     ComponentNameValue implements ConfigValue = Name ("."Name)*;
     DoubleVectorValue implements ConfigValue = "(" number:NumberWithUnit ("," number:NumberWithUnit)* ")";
-    IntegerTupelValue implements ConfigValue = "(" first:IntegerValue "," second:IntegerValue ")";
     IntegerListValue implements ConfigValue = "[" number:NumberWithUnit ("," number:NumberWithUnit)* "]";
 
     NumEpochEntry implements ConfigEntry = name:"num_epoch" ":" value:IntegerValue;
     BatchSizeEntry implements ConfigEntry = name:"batch_size" ":" value:IntegerValue;
     LoadCheckpointEntry implements ConfigEntry = name:"load_checkpoint" ":" value:BooleanValue;
+    CheckpointPeriodEntry implements ConfigEntry = name:"checkpoint_period" ":" value:IntegerValue;
+    LogPeriodEntry implements ConfigEntry = name:"log_period" ":" value:IntegerValue;
     NormalizeEntry implements ConfigEntry = name:"normalize" ":" value:BooleanValue;
+
+    ShuffleDataEntry implements ConfigEntry = name:"shuffle_data" ":" value:BooleanValue;
+    ClipGlobalGradNormEntry implements ConfigEntry = name:"clip_global_grad_norm" ":" value:NumberValue;
+
     OptimizerEntry implements ConfigEntry = (name:"optimizer" | name:"actor_optimizer") ":" value:OptimizerValue;
     TrainContextEntry implements ConfigEntry = name:"context" ":" value:TrainContextValue;
     LossEntry implements ConfigEntry = name:"loss" ":" value:LossValue;
@@ -52,6 +57,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     interface BleuEntry extends Entry;
     ExcludeBleuEntry implements BleuEntry = name:"exclude" ":" value:IntegerListValue;
 
+    EvalTrainEntry implements ConfigEntry = name:"eval_train" ":" value:BooleanValue;
+
     LRPolicyValue implements ConfigValue =(fixed:"fixed"
                                          | step:"step"
                                          | exp:"exp"
@@ -62,7 +69,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     interface OptimizerParamEntry extends Entry;
 
-    interface LossValue extends ConfigValue;
+    interface LossValue extends MultiParamValue;
 
     L1Loss implements LossValue = name:"l1" ("{" params:Entry* "}")?;
 
@@ -251,17 +258,33 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
 
     // GANs Extensions
+    interface MultiParamValueMapConfigEntry extends ConfigEntry;
+    interface MultiParamValueMapParamValue extends ConfigValue;
+    interface MultiParamValueMapTupleValue extends ConfigValue;
+
     DiscriminatorNetworkEntry implements ConfigEntry = name:"discriminator_name" ":" value:ComponentNameValue;
+    QNetworkEntry implements ConfigEntry = name:"qnet_name" ":" value:ComponentNameValue;
     PreprocessingEntry implements ConfigEntry = name:"preprocessing_name" ":" value:ComponentNameValue;
-    ImgResizeEntry implements ConfigEntry = name:"img_resize" ":" value:IntegerTupelValue;
 
     // Noise Distribution Creator
     NoiseDistributionEntry implements MultiParamConfigEntry = name:"noise_distribution" ":" value:NoiseDistributionValue;
     interface NoiseDistributionValue extends MultiParamValue;
 
-    interface NoiseDistributionGaussianEntry extends Entry;
+    interface NoiseDistributionParamEntry extends Entry;
+    interface NoiseDistributionGaussianEntry extends NoiseDistributionParamEntry;
+
     NoiseDistributionGaussianValue implements NoiseDistributionValue = name:"gaussian" ("{" params:NoiseDistributionGaussianEntry* "}")?;
 
     MeanValueEntry implements NoiseDistributionGaussianEntry = name:"mean_value" ":" value:IntegerValue;
     SpreadValueEntry implements NoiseDistributionGaussianEntry = name:"spread_value" ":" value:IntegerValue;
+
+    // Constraint Distributions
+    ConstraintDistributionEntry implements MultiParamValueMapConfigEntry  = name:"constraint_distributions" ":" value:ConstraintDistributionValue;
+    ConstraintDistributionValue implements MultiParamValueMapParamValue = ("{" params:ConstraintDistributionParam* "}")?;
+    ConstraintDistributionParam implements MultiParamValueMapTupleValue = name:StringValue ":" multiParamValue:NoiseDistributionValue;
+
+    // Constraint losses
+    ConstraintLossEntry implements MultiParamValueMapConfigEntry  = name:"constraint_losses" ":" value:ConstraintLossValue;
+    ConstraintLossValue implements MultiParamValueMapParamValue = ("{" params:ConstraintLossParam* "}")?;
+    ConstraintLossParam implements MultiParamValueMapTupleValue = name:StringValue ":" multiParamValue:LossValue;
 }

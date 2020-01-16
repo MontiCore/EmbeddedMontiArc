@@ -37,7 +37,10 @@ class ParameterAlgorithmMapping {
     private static final List<Class> EXCLUSIVE_SUPERVISED_PARAMETERS = Lists.newArrayList(
         ASTBatchSizeEntry.class,
         ASTLoadCheckpointEntry.class,
+        ASTCheckpointPeriodEntry.class,
+        ASTLogPeriodEntry.class,
         ASTEvalMetricEntry.class,
+        ASTEvalTrainEntry.class,
         ASTExcludeBleuEntry.class,
         ASTNormalizeEntry.class,
         ASTNumEpochEntry.class,
@@ -117,8 +120,10 @@ class ParameterAlgorithmMapping {
 
     private static final List<Class> GENERAL_GAN_PARAMETERS = Lists.newArrayList(
             ASTDiscriminatorNetworkEntry.class,
+            ASTQNetworkEntry.class,
             ASTNoiseDistributionEntry.class,
-            ASTImgResizeEntry.class
+            ASTConstraintDistributionEntry.class,
+            ASTConstraintLossEntry.class
     );
 
     ParameterAlgorithmMapping() {

@@ -23,6 +23,7 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     private NNArchitectureSymbol trainedArchitecture;
     private NNArchitectureSymbol criticNetwork;
     private NNArchitectureSymbol discriminatorNetwork;
+    private NNArchitectureSymbol qNetwork;
 
     public static final ConfigurationSymbolKind KIND = new ConfigurationSymbolKind();
 
@@ -80,12 +81,20 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         return Optional.ofNullable(discriminatorNetwork);
     }
 
+    public Optional<NNArchitectureSymbol> getQNetwork() {
+        return Optional.ofNullable(qNetwork);
+    }
+
     public void setCriticNetwork(NNArchitectureSymbol criticNetwork) {
         this.criticNetwork = criticNetwork;
     }
 
     public void setDiscriminatorNetwork(NNArchitectureSymbol discriminatorNetwork) {
         this.discriminatorNetwork = discriminatorNetwork;
+    }
+
+    public void setQNetwork(NNArchitectureSymbol qNetwork) {
+        this.qNetwork = qNetwork;
     }
 
     public Map<String, EntrySymbol> getEntryMap() {
@@ -121,6 +130,10 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         return getEntryMap().containsKey(DISCRIMINATOR_NAME);
     }
 
+    public boolean hasQNetwork() {
+        return getEntryMap().containsKey(QNETWORK_NAME);
+    }
+
     public Optional<String> getCriticName() {
         if (!hasCritic()) {
             return Optional.empty();
@@ -149,5 +162,15 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         final Object discriminatorNameValue = getEntry(DISCRIMINATOR_NAME).getValue().getValue();
         assert discriminatorNameValue instanceof String;
         return Optional.of((String)discriminatorNameValue);
+    }
+
+    public Optional<String> getQNetworkName() {
+        if (!hasQNetwork()) {
+            return Optional.empty();
+        }
+
+        final Object qnetNameValue = getEntry(QNETWORK_NAME).getValue().getValue();
+        assert qnetNameValue instanceof String;
+        return Optional.of((String)qnetNameValue);
     }
 }
