@@ -476,7 +476,7 @@ All predefined methods start with a capital letter and all constructed methods h
   
 * **RNN(units, layers=1, dropout=0, bidirectional=false)**
 
-  Creates an RNN layer with tanh as activation function. 
+  Creates an RNN layer with tanh as activation function. Input: `Q^{N, S}`, output: `Q^{N, layers * units}`.
   
   * **units** (integer > 0, required): The number of neural units in the hidden state.
   
@@ -489,7 +489,7 @@ All predefined methods start with a capital letter and all constructed methods h
   
 * **LSTM(units, layers=1, dropout=0, bidirectional=false)**
 
-  Creates an LSTM layer. 
+  Creates an LSTM layer. Input: `Q^{N, S}`, output: `Q^{N, layers * units}`.
   
   * **units** (integer > 0, required): The number of neural units in the hidden state.
   
@@ -502,7 +502,7 @@ All predefined methods start with a capital letter and all constructed methods h
   
 * **GRU(units, layers=1, dropout=0, bidirectional=false)**
 
-  Creates a GRU layer. 
+  Creates a GRU layer. Input: `Q^{N, S}`, output: `Q^{N, layers * units}`.
   
   * **units** (integer > 0, required): The number of neural units in the hidden state.
   
