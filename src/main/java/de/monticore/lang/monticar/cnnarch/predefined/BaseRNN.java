@@ -102,6 +102,11 @@ abstract public class BaseRNN extends PredefinedLayerDeclaration {
                         .defaultValue(1)
                         .build(),
                 new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.RNN_DROPOUT_NAME)
+                        .constraints(Constraints.NUMBER, Constraints.BETWEEN_ZERO_AND_ONE)
+                        .defaultValue(0)
+                        .build(),
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.BIDIRECTIONAL_NAME)
                         .constraints(Constraints.BOOLEAN)
                         .defaultValue(false)

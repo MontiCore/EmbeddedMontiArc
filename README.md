@@ -421,6 +421,7 @@ All predefined methods start with a capital letter and all constructed methods h
 * **ArgMax()**
 
   Computes the index of the maximal value of its input vector. Useful for recurrent networks, when the output of a timestep should be used as integer input for the next timestep.
+  Notice that the Argmax Layer is applied after calculating the loss in the respective backend. This means that loss can still be computed correctly (e.g. from a Softmax layer before the ArgMax), but recurrent networks get only the element with the highest probability as input for their next timestep.
   
   
   * **BeamSearch(max_length, width)**
