@@ -275,7 +275,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                     emadlGenerator.setGenerationTargetPath(outputPath);
                 }
                 try{
-                    emadlGenerator.generate(this.getPathMain(), this.getRootModel(), this.getPathToPython(), "y", true);
+                    emadlGenerator.generate(this.getPathMain(), this.getRootModel(), this.getPathToPython(), "x", true);
                 }
                 catch (IOException e){
                     Log.error("io error during generation", e);

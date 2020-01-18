@@ -359,7 +359,9 @@ public class StreamTestMojoBase extends AbstractMojo {
     protected Scope getScope(){
         if(myScope == null) {
             ModelingLanguageFamily fam = new ModelingLanguageFamily();
+            /*TODO: To delete*/
             fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
+
             fam.addModelingLanguage(new StreamUnitsLanguage());
             fam.addModelingLanguage(new StructLanguage());
             fam.addModelingLanguage(new EnumLangLanguage());

@@ -2,6 +2,7 @@
 package de.monticore.lang.monticar.utilities;
 
 
+import de.monticore.lang.monticar.struct._parser.StructAntlrParser;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -26,7 +27,7 @@ public class TestStreamTestGeneratorMojo {
     public void Test_06_execution_valid() {
         //valid
         //ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/streamtest-generator/01");
-        int r = BaseTest.validGenerator("./src/test/resources/emadl/models", "./target/tmp/generator/06");
+        int r = BaseTest.validGenerator("./src/test/resources/emadl/models", "./target/tmp/generator/06", true);
         assertTrue("Generator-06: Generator is invalid.["+r+"]", r==0);
     }
 

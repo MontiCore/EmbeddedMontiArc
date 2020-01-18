@@ -18,6 +18,13 @@ public class BaseTest {
         return stmb;
     }
 
+    //Test Generate for EMADL models
+    public static StreamTestGeneratorMojo getGeneratorMojo(String path, String pathOut, Boolean trainingNeeded){
+        StreamTestGeneratorMojo stmb = new StreamTestGeneratorMojo();
+        setup(stmb, path, pathOut, trainingNeeded);
+        return stmb;
+    }
+
 
     public static StreamTestBuildMojo getBuildMojo(String path, String pathOut){
         StreamTestBuildMojo stmb = new StreamTestBuildMojo();
@@ -25,13 +32,18 @@ public class BaseTest {
         return stmb;
     }
 
+    //Test Build for EMADL models
+    public static StreamTestGeneratorMojo getBuildMojo(String path, String pathOut, Boolean trainingNeeded){
+        StreamTestGeneratorMojo stmb = new StreamTestGeneratorMojo();
+        setup(stmb, path, pathOut, trainingNeeded);
+        return stmb;
+    }
 
     public static StreamTestExecuteMojo getExecutionMojo(String path, String pathOut){
         StreamTestExecuteMojo stmb = new StreamTestExecuteMojo();
         setup(stmb, path, pathOut);
         return stmb;
     }
-
 
     public static void setup(StreamTestMojoBase stmb, String path, String pathOut){
         stmb.setPathMain(path+"/main");
@@ -51,10 +63,36 @@ public class BaseTest {
 
         stmb.setShowDateAndTime(true);
 
+        stmb.setTrainingNeeded(false);
         stmb.setBackend(Backend.GLUON);
-        stmb.setTrainingNeeded(true);
         stmb.setPathToPython("/usr/bin/python");
         stmb.setRootModel("cNNCalculator.Connector");
+    }
+
+    public static void setup(StreamTestMojoBase stmb, String path, String pathOut, boolean trainingNeeded){
+        stmb.setPathMain(path+"/main");
+        stmb.setPathTest(path+"/test");
+
+        stmb.setPathTmpOut(pathOut);
+
+        stmb.setWrapperTestExtension("_TestWrapper");
+
+        stmb.setGenerator(GeneratorEnum.MinGW);
+        //stmb.setGenerator(GeneratorEnum.VS2017);
+
+        //use this in test to see all output
+        stmb.setShowBuildAndRunOutput(false);
+
+        stmb.setForceRun(true);
+
+        stmb.setShowDateAndTime(true);
+
+        if (trainingNeeded) {
+            stmb.setBackend(Backend.GLUON);
+            stmb.setTrainingNeeded(true);
+            stmb.setPathToPython("/usr/bin/python");
+            stmb.setRootModel("cNNCalculator.Connector");
+        }
     }
 
     //</editor-fold>
@@ -78,9 +116,19 @@ public class BaseTest {
         return valid(getGeneratorMojo(path,tmp));
     }
 
+    protected static int validGenerator(String path, String tmp, boolean trainingNeeded){
+        //valid
+        return valid(getGeneratorMojo(path,tmp, trainingNeeded));
+    }
+
     protected static int validBuild(String path, String tmp){
         //valid
         return valid(getBuildMojo(path,tmp));
+    }
+
+    protected static int validBuild(String path, String tmp, boolean trainingNeeded){
+        //valid
+        return valid(getBuildMojo(path,tmp,trainingNeeded));
     }
 
     protected static int validExecution(String path, String tmp){
