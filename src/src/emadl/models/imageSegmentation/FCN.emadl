@@ -1,23 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
-/*
-gluon conv layer:
-nn.Conv2D(channels, kernel_size, strides=(1, 1), padding=(0, 0), ...)
-
-keras conv layer:
- nn.Conv2D(filters, kernel_size, strides=(1, 1), padding='valid', ...)
-
-*/
 
 component FCN{
     ports in Z(0:255)^{3, 500, 500} image,
           in Z(0:255) num_classes,
           out Q(0:1)^{21} predictions;
 
-        implementation CNN {
+        implementation CNN{
 
             def conv(filter, channels, padding){
                 Convolution(kernel=(filter,filter), channels=channels, padding=padding) ->
                 Relu()
+            }
+            /*TODO add crop */
+            def MaxPool2dSamePadding(kernel, stride){
+                Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
+                Crop(begin=(1,1), endd=(0,0))
             }
 
             def vgg_block(num_conv, filter, channels, padding){
@@ -34,31 +31,34 @@ component FCN{
             image ->
 
             /* vgg block 1 */
-            vgg_block(num_conv=2, filter=(3,3), channels=64, padding=(0,0)) ->
+            conv(filter=filter, channels=channels, padding=(120,120)) ->
+            conv(filter=filter, channels=channels, padding=(1,1)) ->
+            Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
+
 
             /* vgg block 2 */
-            vgg_block(num_conv=2, filter=(3,3), channels=128, padding=(0,0)) ->
+            vgg_block(num_conv=2, filter=(3,3), channels=128, padding=(1,1)) ->
 
             /* vgg block 3 */
-            vgg_block(num_conv=3, filter=(3,3), channels=256, padding=(0,0), ?=true) ->
+            vgg_block(num_conv=3, filter=(3,3), channels=256, padding=(1,1)) ->
 
             /* split used for skip connection */
             Split(n=2) ->
             (
                 [0] ->
                 /* vgg block 4 */
-                vgg_block(num_conv=3, filter=(3,3), channels=512, padding=(0,0), ?=true) ->
+                vgg_block(num_conv=3, filter=(3,3), channels=512, padding=(1,1)) ->
                 /* split used for skip connection */
                 Split(n=2) ->
                 (
                     [0] ->
                     /* vgg block 5 */
-                    vgg_block(num_conv=3, filter=(3,3), channels=512, padding=(0,0)) ->
+                    vgg_block(num_conv=3, filter=(3,3), channels=512, padding=(1,1)) ->
 
                     /* fully convolutional layers, replacing fully connected layers */
                     fully_conv(filter=(7,7), channels=4096, padding=(0,0), dropout=0.5) ->
                     fully_conv(filter=(1,1), channels=4096, padding=(0,0), dropout=0.5) ->
-                    Convolution(kernel=(1,1), channels=num_classes)
+                    Convolution(kernel=(1,1), channels=num_classes) ->
 
                     /* upsampling */
                     TransConv(kernel=(4,4), channels=num_classes, stride=2)
@@ -68,7 +68,7 @@ component FCN{
 
                     /* skip 4 */
                     Convolution(kernel=(4,4), channels=num_classes) ->
-                    Crop(begin=(5), endd=(-5))
+                    Crop(begin=(6,6), endd=(-7,-7))
                 ) ->
 
                 Concatenate() ->
@@ -80,15 +80,15 @@ component FCN{
 
                 /* skip 3 */
                 Convolution(kernel=(1,1), channels=num_classes) ->
-                Crop(begin=(9), endd=(-9))
+                Crop(begin=(13,13), endd=(-13,-13))
             ) ->
 
             Concatenate() ->
 
             /*  Final up-sampling and cropping */
             TransConv(kernel=(16,16), channels=num_classes, stride=8) ->
-            Crop(begin=(31,31), endd=(-37,-37)) ->
+            Crop(begin=(12,12), endd=(-12,-12)) ->
             Softmax() ->
-            predictions;
+            predictions
         }
 }
