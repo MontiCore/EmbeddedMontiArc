@@ -1,1 +1,1 @@
-cNNCalculator.Network resources/training_data
+imageSegmentation.FCN resources/training_data
