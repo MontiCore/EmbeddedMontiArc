@@ -1,5 +1,5 @@
 MXNET_PATH=$(python -c "import mxnet; print(mxnet.__file__)")
-# (c) https://github.com/MontiCore/monticore  
+# (c) https://github.com/MontiCore/monticore
 MXNET_FOLDER=$(dirname $MXNET_PATH)
 echo $MXNET_FOLDER
 
@@ -11,11 +11,11 @@ if [ ! -f $MXNET_FOLDER/libmxnet.so ]; then
 fi
 
 rm -rf target
-java -jar ../embedded-montiarc-emadl-generator-0.3.0-jar-with-dependencies.jar -m src/emadl/models/ -r cNNCalculator.Connector -o target -b GLUON
+java -jar ../embedded-montiarc-emadl-generator-0.3.0-jar-with-dependencies.jar -m src/emadl/models/ -r imageSegmentation.FCN -o target -b GLUON
 
 rm -rf build
 mkdir build && cd build
 
-echo "Building DigitClassifier.."
+echo "Building FCN.."
 cmake -D MXNET_PATH=$MXNET_FOLDER/libmxnet.so ..
 make
