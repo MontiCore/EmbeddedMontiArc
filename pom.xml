@@ -32,7 +32,7 @@
         <se-commons.version>1.7.8</se-commons.version>
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
         <SIUnit.version>0.0.11</SIUnit.version>
-        <Common-MontiCar.version>0.0.14-20180704.113055-2</Common-MontiCar.version>
+        <Common-MontiCar.version>0.0.19-SNAPSHOT</Common-MontiCar.version>
         <Math.version>0.0.20-SNAPSHOT</Math.version>
 
         <!-- .. Libraries .................................................. -->
