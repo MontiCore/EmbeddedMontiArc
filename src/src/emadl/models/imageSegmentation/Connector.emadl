@@ -5,11 +5,10 @@ component Connector {
     ports in Z(0:255)^{3, 480, 480} image,
           out Z(0:255)^{480,480} res;
 
-    instance FCN semSeg;
-    instance Calculator cal;
+    instance FCN<21> semSeg;
 
-    connect image1 -> cal.in1_1;
+    connect image1 -> semSeg.image;
 
-    connect cal.out1 -> res;
+    connect semSeg.predictions -> res;
 
 }
