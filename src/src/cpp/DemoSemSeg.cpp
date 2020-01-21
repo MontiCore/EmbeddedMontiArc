@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 #include "CNNTranslator.h"
-#include "imageSegmentation_connector.h"
+#include "imageSegmentation_segmentation.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -17,8 +17,8 @@ int main(int argc, char* argv[]) {
     }
 
 
-    cNNCalculator_connector connector;
-    connector.init();
+    imageSegmentation_segmentation segmentator;
+    segmentator.init();
 
     // dar
     std::string filePath = argv[n+1];
@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
     cv::resize(img, img, scale);
     std::cout << "== simply resize: " << img.size() << " ==" << std::endl;
 
-    size_t channels = 1;
+    size_t channels = 3;
     size_t height = img.rows;
     size_t width = img.cols;
     vector<float> data(channels*height*width);
@@ -50,12 +50,12 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    connector.image = conv_to< icube >::from( CNNTranslator::translateToCube(data, vector<size_t> {channels,height,width}) );
+    segmentator.image = conv_to< icube >::from( CNNTranslator::translateToCube(data, vector<size_t> {channels,height,width}) );
 
 
-    connector.execute();
+    segmentator.execute();
 
-    int classIndex = (int)connector.res;
+    int classIndex = (int)segmentator.res;
     std::cout << "== SUM: " << classIndex << std::endl;
 
     return 0;
