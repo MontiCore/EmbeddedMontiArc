@@ -12,6 +12,7 @@ import java.util.HashMap;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.LibraryService;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.commons.utils.LibraryService.LibraryException;
 import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.config.SoftwareSimulatorConfig;
+import de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.HardwareEmulatorVersion;
 
 /// Contains the STATIC functions to interact with the native C++ library.
 public class CppBridge {
@@ -41,10 +42,16 @@ public class CppBridge {
         //System.out.println("LibPath: " + lib_path);
     }
 
-    static public void init(SoftwareSimulatorConfig manager_config){
+    static public void init(SoftwareSimulatorConfig manager_config) throws Exception{
+        String version = getVersion();
+        if (!HardwareEmulatorVersion.version.equals(version)) 
+            throw new Exception("Wrong native HardwareEmulator library version: "+version+", expected: "+HardwareEmulatorVersion.version);
         initManager(manager_config.get_config_string());
         loaded = true;
     }
+
+    static public native String getVersion();
+
     static private native void initManager(String config);
 
     static public native int allocSimulator(String config) throws Exception;

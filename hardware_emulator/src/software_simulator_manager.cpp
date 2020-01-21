@@ -122,6 +122,16 @@ std::string SoftwareSimulatorManager::query( const char *msg ) {
     if new data types must be converted from C types to Java types.
 */
 
+/*
+ * Class:     de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_CppBridge
+ * Method:    getVersion
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_CppBridge_getVersion
+(JNIEnv *jni, jclass){
+    return jni->NewStringUTF(VERSION);
+}
+
 
 /*
  * Class:     de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_CppBridge

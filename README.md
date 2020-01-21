@@ -9,7 +9,8 @@
 ## Overview
 This project allows to run **EmbeddedMontiArc** models that have a **DynamicInterface** and let them communicate with the MontiSim simulation. It allows the time evaluation of the model execution using a parametric computer model.
 
-
+## Resource for processor modelling
+[https://www.agner.org/optimize/](https://www.agner.org/optimize/)
 
 ## Building
 The project contains a **C++ CMake project** and a **Maven project**. 
@@ -25,7 +26,7 @@ To compile the C++ project (under the [hardware_emulator](hardware_emulator) fol
 
 The `build_emulator` script will directly install the compiled library inside the [resources](src/main/resources) folder of the Maven project.
 
-_**NOTE:** Any changes to the C++ project **MUST** be compiled and installed under both **Linux and Windows** before being merged into the Master branch so that both updated versions are included in the maven artifact._
+_**NOTE:** When changing the version of the maven project, be sure to set the version accordingly in [software_simulator_manager.h](hardware_emulator/src/software_simulator_manager.h). This ensures that the library included in the artifact is up-to-date with the Java code._
 
 ### Maven Project
 

@@ -6,9 +6,12 @@
  */
 package de.rwth.monticore.EmbeddedMontiArc.simulators.hardware_emulator.config;
 
+import java.io.Serializable;
 import java.time.Duration;
 
-public class ControllerConfig {
+public class ControllerConfig implements Serializable {
+    private static final long serialVersionUID = 646999434800913765L;
+
     static public enum EmulatorType {
         DIRECT("direct"), //No Emulator at all: the Autopilot library (DLL/SO/...) is loaded directly by the OS.
         HARDWARE_EMULATOR("emu"); //The Autopilot is loaded in a Virtual Computer (can load autopilots cross-platform).
@@ -66,8 +69,9 @@ public class ControllerConfig {
         }
     }
     
-    public static class CacheOption {
-        private long size; //Cache Size in bytes
+    public static class CacheOption implements Serializable {
+        private static final long serialVersionUID = 3500766901354278880L;
+        private long size; // Cache Size in bytes
         private long read_ticks; // Number of CPU cycles for a read action
         private long write_ticks; //Number of CPU cycles for a write action
 

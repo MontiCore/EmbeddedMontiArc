@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_CppBridge
+ * Method:    getVersion
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_1emulator_CppBridge_getVersion
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     de_rwth_monticore_EmbeddedMontiArc_simulators_hardware_emulator_CppBridge
  * Method:    initManager
  * Signature: (Ljava/lang/String;)V
  */

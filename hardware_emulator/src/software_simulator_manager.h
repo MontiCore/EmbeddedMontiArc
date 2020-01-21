@@ -8,6 +8,9 @@
 #include "software_simulator.h"
 #include <list>
 #include "utility/utility.h"
+
+static constexpr auto VERSION = "1.0.5";
+
 /*
     The EmulatorManager is used to allocate and interact with autopilot emualtors.
     The allocated autopilots are addressed through the id received when allocating.

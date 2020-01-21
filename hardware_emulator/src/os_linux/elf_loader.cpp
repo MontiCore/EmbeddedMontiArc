@@ -20,8 +20,8 @@ void OS::ElfLoader::init(const FS::File& fn, SystemCalls &sys_calls, Memory &mem
     module_name = "SYSTEM";
     
     FileReader fr;
-    if ( !fr.open( file_name ) )
-        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not find software program: " + fn.to_string()));
+    if ( !fr.open( fn ) )
+        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not find software program: " + fn.as_system_path()));
     
     
     fr.read( elf.data );
