@@ -12,7 +12,7 @@
 
 int main(int argc, char* argv[]) {
     if(argc < 2){ //Note: argc=1 if no arguments are provided
-        std::cout << "Missing argument: Path to 6 test image " << std::endl;
+        std::cout << "Missing argument: Path to test image " << std::endl;
         exit(1);
     }
 
