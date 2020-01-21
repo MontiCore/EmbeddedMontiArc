@@ -12,13 +12,13 @@ component FCN<Z(2:oo) num_classes = 21>{
             }
             /*TODO add crop */
             def MaxPool2dSamePadding(kernel, stride){
-                Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
+                Pooling(pool_type="max", kernel=kernel, stride=stride) ->
                 Crop(begin=(1,1), endd=(0,0))
             }
 
             def vgg_block(num_conv, filter, channels, padding){
                 conv(filter=filter, channels=channels, padding=padding, ->=num_conv) ->
-                Pooling(pool_type="max", kernel=(2,2), stride=(2,2))
+                MaxPool2dSamePadding(kernel=(2,2), stride=(2,2))
             }
 
             def fully_conv(filter, channels, padding, dropout) {
@@ -30,9 +30,9 @@ component FCN<Z(2:oo) num_classes = 21>{
             image ->
 
             /* vgg block 1 */
-            conv(filter=filter, channels=channels, padding=(120,120)) ->
-            conv(filter=filter, channels=channels, padding=(1,1)) ->
-            Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
+            conv(filter=64, channels=(3,3), padding=(120,120)) ->
+            conv(filter=64, channels=(3,3), padding=(1,1)) ->
+            MaxPool2dSamePadding(kernel=(2,2), stride=(2,2)) ->
 
 
             /* vgg block 2 */
@@ -88,6 +88,6 @@ component FCN<Z(2:oo) num_classes = 21>{
             TransConv(kernel=(16,16), channels=num_classes, stride=8) ->
             Crop(begin=(12,12), endd=(-12,-12)) ->
             Softmax() ->
-            predictions
+            predictions;
         }
 }
