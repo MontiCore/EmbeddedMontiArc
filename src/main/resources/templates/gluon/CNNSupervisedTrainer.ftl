@@ -181,22 +181,33 @@ class ${tc.fileNameWithoutEnding}:
               num_epoch=10,
               eval_metric='acc',
               eval_metric_params={},
+              eval_train=False,
               loss ='softmax_cross_entropy',
               loss_params={},
               optimizer='adam',
               optimizer_params=(('learning_rate', 0.001),),
               load_checkpoint=True,
-              context='gpu',
               checkpoint_period=5,
+              log_period=50,
+              context='gpu',
               save_attention_image=False,
               use_teacher_forcing=False,
-              normalize=True):
+              normalize=True,
+              shuffle_data=False,
+              clip_global_grad_norm=None,
+              preprocessing = False):
         if context == 'gpu':
             mx_context = mx.gpu()
         elif context == 'cpu':
             mx_context = mx.cpu()
         else:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
+
+        if preprocessing:
+            preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
+            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
+        else:
+            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -212,11 +223,6 @@ class ${tc.fileNameWithoutEnding}:
                                                    stop_factor_lr=min_learning_rate)
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
-
-        train_batch_size = batch_size
-        test_batch_size = batch_size
-
-        train_iter, train_test_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(train_batch_size, test_batch_size)
 
         if normalize:
             self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
@@ -275,11 +281,20 @@ class ${tc.fileNameWithoutEnding}:
         else:
             logging.error("Invalid loss parameter.")
 
-        speed_period = 50
         tic = None
 
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
+            if shuffle_data:
+                if preprocessing:
+                    preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
+                else:
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
 
+            global_loss_train = 0.0
+            train_batches = 0
+
+            loss_total = 0
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 with autograd.record():
@@ -291,44 +306,67 @@ class ${tc.fileNameWithoutEnding}:
 
                 loss.backward()
 
+                loss_total += loss.sum().asscalar()
+
+                global_loss_train += loss.sum().asscalar()
+                train_batches += 1
+
+                if clip_global_grad_norm:
+                    grads = []
+
+                    for network in self._networks.values():
+                        grads.extend([param.grad(mx_context) for param in network.collect_params().values()])
+
+                    gluon.utils.clip_global_norm(grads, clip_global_grad_norm)
+
                 for trainer in trainers:
                     trainer.step(batch_size)
 
                 if tic is None:
                     tic = time.time()
                 else:
-                    if batch_i % speed_period == 0:
+                    if batch_i % log_period == 0:
                         try:
-                            speed = speed_period * batch_size / (time.time() - tic)
+                            speed = log_period * batch_size / (time.time() - tic)
                         except ZeroDivisionError:
                             speed = float("inf")
 
-                        logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec" % (epoch, batch_i, speed))
+                        loss_avg = loss_total / (batch_size * log_period)
+                        loss_total = 0
+
+                        logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
 
                         tic = time.time()
+
+            global_loss_train /= (train_batches * batch_size)
 
             tic = None
 
 
-            train_test_iter.reset()
-            metric = mx.metric.create(eval_metric, **eval_metric_params)
-            for batch_i, batch in enumerate(train_test_iter):
-                if True: <#-- Fix indentation -->
+            if eval_train:
+                train_iter.reset()
+                metric = mx.metric.create(eval_metric, **eval_metric_params)
+                for batch_i, batch in enumerate(train_iter):
 <#include "pythonExecuteTest.ftl">
 
 
 <#include "saveAttentionImageTrain.ftl">
 
 
-                predictions = []
-                for output_name in outputs:
-                    if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                        predictions.append(mx.nd.argmax(output_name, axis=1))
-                    else:
-                        predictions.append(output_name)
+                    predictions = []
+                    for output_name in outputs:
+                        if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                            predictions.append(mx.nd.argmax(output_name, axis=1))
+                        else:
+                            predictions.append(output_name)
 
-                metric.update(preds=predictions, labels=labels)
-            train_metric_score = metric.get()[1]
+                    metric.update(preds=predictions, labels=labels)
+                train_metric_score = metric.get()[1]
+            else:
+                train_metric_score = 0
+
+            global_loss_test = 0.0
+            test_batches = 0
 
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
@@ -339,6 +377,12 @@ class ${tc.fileNameWithoutEnding}:
 
 <#include "saveAttentionImageTest.ftl">
 
+                loss = 0
+                for element in lossList:
+                    loss = loss + element
+
+                global_loss_test += loss.sum().asscalar()
+                test_batches += 1
 
                 predictions = []
                 for output_name in outputs:
@@ -351,15 +395,16 @@ class ${tc.fileNameWithoutEnding}:
                 metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]
 
-            logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))
+            global_loss_test /= (test_batches * batch_size)
 
+            logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
                 for i, network in self._networks.items():
                     network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
 
         for i, network in self._networks.items():
-            network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch).zfill(4) + '.params')
+            network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch + 1).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
 
     def parameter_path(self, index):

@@ -170,7 +170,7 @@ class BLEU(mx.metric.EvalMetric):
 
 
 
-class CNNSupervisedTrainer_CifarClassifierNetwork:
+class CNNSupervisedTrainer_Invariant:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -192,8 +192,6 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
               save_attention_image=False,
               use_teacher_forcing=False,
               normalize=True,
-              shuffle_data=False,
-              clip_global_grad_norm=None,
               preprocessing = False):
         if context == 'gpu':
             mx_context = mx.gpu()
@@ -203,10 +201,10 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
 
         if preprocessing:
-            preproc_lib = "CNNPreprocessor_CifarClassifierNetwork_executor"
-            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
+            preproc_lib = "CNNPreprocessor_Invariant_executor"
+            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib)
         else:
-            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
+            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -283,34 +281,34 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
         tic = None
 
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
-            if shuffle_data:
-                if preprocessing:
-                    preproc_lib = "CNNPreprocessor_CifarClassifierNetwork_executor"
-                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
-                else:
-                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
-
-            global_loss_train = 0.0
-            train_batches = 0
 
             loss_total = 0
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 with autograd.record():
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(3)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    data_0_ = batch.data[0].as_in_context(mx_context)
+                    data_1_ = batch.data[1].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    pred_ = [mx.nd.zeros((batch_size, 4,), ctx=mx_context) for i in range(3)]
 
+
+                    const1_ = mx.nd.full((batch_size, 1,), 1, ctx=mx_context)
 
                     nd.waitall()
 
                     lossList = []
 
-                    softmax_ = self._networks[0](data_)
+                    pred_[0] = self._networks[0](data_0_)
 
-                    lossList.append(loss_function(softmax_, labels[0]))
+                    lossList.append(loss_function(pred_[0], labels[0]))
+                    pred_[1] = self._networks[1](data_1_)
+
+                    lossList.append(loss_function(pred_[1], labels[1]))
+                    pred_[2] = self._networks[2](const1_)
+
+                    lossList.append(loss_function(pred_[2], labels[2]))
 
                     loss = 0
                     for element in lossList:
@@ -319,17 +317,6 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 loss.backward()
 
                 loss_total += loss.sum().asscalar()
-
-                global_loss_train += loss.sum().asscalar()
-                train_batches += 1
-
-                if clip_global_grad_norm:
-                    grads = []
-
-                    for network in self._networks.values():
-                        grads.extend([param.grad(mx_context) for param in network.collect_params().values()])
-
-                    gluon.utils.clip_global_norm(grads, clip_global_grad_norm)
 
                 for trainer in trainers:
                     trainer.step(batch_size)
@@ -350,8 +337,6 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
 
                         tic = time.time()
 
-            global_loss_train /= (train_batches * batch_size)
-
             tic = None
 
 
@@ -359,22 +344,29 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 train_iter.reset()
                 metric = mx.metric.create(eval_metric, **eval_metric_params)
                 for batch_i, batch in enumerate(train_iter):
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(3)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    data_0_ = batch.data[0].as_in_context(mx_context)
+                    data_1_ = batch.data[1].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    pred_ = [mx.nd.zeros((batch_size, 4,), ctx=mx_context) for i in range(3)]
 
+
+                    const1_ = mx.nd.full((batch_size, 1,), 1, ctx=mx_context)
 
                     nd.waitall()
 
                     outputs = []
-                    lossList = []
-                    attentionList = []
-                    softmax_ = self._networks[0](data_)
+                    attentionList=[]
+                    pred_[0] = self._networks[0](data_0_)
 
-                    outputs.append(softmax_)
-                    lossList.append(loss_function(softmax_, labels[0]))
+                    outputs.append(pred_[0])
+                    pred_[1] = self._networks[1](data_1_)
+
+                    outputs.append(pred_[1])
+                    pred_[2] = self._networks[2](const1_)
+
+                    outputs.append(pred_[2])
 
 
                     if save_attention_image == "True":
@@ -430,29 +422,33 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             else:
                 train_metric_score = 0
 
-            global_loss_test = 0.0
-            test_batches = 0
-
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                if True:
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                if True: 
+                    labels = [batch.label[i].as_in_context(mx_context) for i in range(3)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    data_0_ = batch.data[0].as_in_context(mx_context)
+                    data_1_ = batch.data[1].as_in_context(mx_context)
 
-                    softmax_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    pred_ = [mx.nd.zeros((batch_size, 4,), ctx=mx_context) for i in range(3)]
 
+
+                    const1_ = mx.nd.full((batch_size, 1,), 1, ctx=mx_context)
 
                     nd.waitall()
 
                     outputs = []
-                    lossList = []
-                    attentionList = []
-                    softmax_ = self._networks[0](data_)
+                    attentionList=[]
+                    pred_[0] = self._networks[0](data_0_)
 
-                    outputs.append(softmax_)
-                    lossList.append(loss_function(softmax_, labels[0]))
+                    outputs.append(pred_[0])
+                    pred_[1] = self._networks[1](data_1_)
+
+                    outputs.append(pred_[1])
+                    pred_[2] = self._networks[2](const1_)
+
+                    outputs.append(pred_[2])
 
 
                     if save_attention_image == "True":
@@ -496,12 +492,6 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                             os.makedirs(target_dir)
                         plt.savefig(target_dir + '/attention_test.png')
                         plt.close()
-                loss = 0
-                for element in lossList:
-                    loss = loss + element
-
-                global_loss_test += loss.sum().asscalar()
-                test_batches += 1
 
                 predictions = []
                 for output_name in outputs:
@@ -514,16 +504,15 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]
 
-            global_loss_test /= (test_batches * batch_size)
+            logging.info("Epoch[%d] Train: %f, Test: %f" % (epoch, train_metric_score, test_metric_score))
 
-            logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
                 for i, network in self._networks.items():
                     network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
 
         for i, network in self._networks.items():
-            network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch + 1).zfill(4) + '.params')
+            network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
 
     def parameter_path(self, index):

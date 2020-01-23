@@ -52,10 +52,10 @@ class Reshape(gluon.HybridBlock):
 
 
 class CustomRNN(gluon.HybridBlock):
-    def __init__(self, hidden_size, num_layers, dropout, bidirectional, **kwargs):
+    def __init__(self, hidden_size, num_layers, bidirectional, **kwargs):
         super(CustomRNN, self).__init__(**kwargs)
         with self.name_scope():
-            self.rnn = gluon.rnn.RNN(hidden_size=hidden_size, num_layers=num_layers, dropout=dropout,
+            self.rnn = gluon.rnn.RNN(hidden_size=hidden_size, num_layers=num_layers,
                                      bidirectional=bidirectional, activation='tanh', layout='NTC')
 
     def hybrid_forward(self, F, data, state0):
@@ -64,10 +64,10 @@ class CustomRNN(gluon.HybridBlock):
 
 
 class CustomLSTM(gluon.HybridBlock):
-    def __init__(self, hidden_size, num_layers, dropout, bidirectional, **kwargs):
+    def __init__(self, hidden_size, num_layers, bidirectional, **kwargs):
         super(CustomLSTM, self).__init__(**kwargs)
         with self.name_scope():
-            self.lstm = gluon.rnn.LSTM(hidden_size=hidden_size, num_layers=num_layers, dropout=dropout,
+            self.lstm = gluon.rnn.LSTM(hidden_size=hidden_size, num_layers=num_layers,
                                        bidirectional=bidirectional, layout='NTC')
 
     def hybrid_forward(self, F, data, state0, state1):
@@ -76,10 +76,10 @@ class CustomLSTM(gluon.HybridBlock):
 
 
 class CustomGRU(gluon.HybridBlock):
-    def __init__(self, hidden_size, num_layers, dropout, bidirectional, **kwargs):
+    def __init__(self, hidden_size, num_layers, bidirectional, **kwargs):
         super(CustomGRU, self).__init__(**kwargs)
         with self.name_scope():
-            self.gru = gluon.rnn.GRU(hidden_size=hidden_size, num_layers=num_layers, dropout=dropout,
+            self.gru = gluon.rnn.GRU(hidden_size=hidden_size, num_layers=num_layers,
                                      bidirectional=bidirectional, layout='NTC')
 
     def hybrid_forward(self, F, data, state0):
@@ -93,66 +93,47 @@ class Net_0(gluon.HybridBlock):
         with self.name_scope():
             if data_mean:
                 assert(data_std)
-                self.input_normalization_state_ = ZScoreNormalization(data_mean=data_mean['state_'],
-                                                                               data_std=data_std['state_'])
+                self.input_normalization_source_ = ZScoreNormalization(data_mean=data_mean['source_'],
+                                                                               data_std=data_std['source_'])
             else:
-                self.input_normalization_state_ = NoNormalization()
-
-            self.fc2_1_ = gluon.nn.Dense(units=300, use_bias=True, flatten=True)
-            # fc2_1_, output shape: {[300,1,1]}
-
-            self.relu2_1_ = gluon.nn.Activation(activation='relu')
-            self.fc3_1_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
-            # fc3_1_, output shape: {[600,1,1]}
-
-            if data_mean:
-                assert(data_std)
-                self.input_normalization_action_ = ZScoreNormalization(data_mean=data_mean['action_'],
-                                                                               data_std=data_std['action_'])
-            else:
-                self.input_normalization_action_ = NoNormalization()
-
-            self.fc2_2_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
-            # fc2_2_, output shape: {[600,1,1]}
-
-            self.fc4_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
-            # fc4_, output shape: {[600,1,1]}
-
-            self.relu4_ = gluon.nn.Activation(activation='relu')
-            self.fc5_ = gluon.nn.Dense(units=1, use_bias=True, flatten=True)
-            # fc5_, output shape: {[1,1,1]}
+                self.input_normalization_source_ = NoNormalization()
 
 
             pass
 
-    def hybrid_forward(self, F, state_, action_):
-        state_ = self.input_normalization_state_(state_)
-        fc2_1_ = self.fc2_1_(state_)
-        relu2_1_ = self.relu2_1_(fc2_1_)
-        fc3_1_ = self.fc3_1_(relu2_1_)
-        action_ = self.input_normalization_action_(action_)
-        fc2_2_ = self.fc2_2_(action_)
-        add4_ = fc3_1_ + fc2_2_
-        fc4_ = self.fc4_(add4_)
-        relu4_ = self.relu4_(fc4_)
-        fc5_ = self.fc5_(relu4_)
-        qvalues_ = F.identity(fc5_)
+    def hybrid_forward(self, F, source_):
+        source_ = self.input_normalization_source_(source_)
+        softmax1_ = F.softmax(source_, axis=-1)
+        target_0_ = F.identity(softmax1_)
 
-        return qvalues_
+        return target_0_
+class Net_1(gluon.HybridBlock):
+    def __init__(self, data_mean=None, data_std=None, **kwargs):
+        super(Net_1, self).__init__(**kwargs)
+        with self.name_scope():
+            self.fc1_ = gluon.nn.Dense(units=30000, use_bias=True, flatten=True)
+            # fc1_, output shape: {[30000,1,1]}
+
+
+            pass
+
+    def hybrid_forward(self, F, target_999999_):
+        fc1_ = self.fc1_(target_999999_)
+        softmax2_ = F.softmax(fc1_, axis=-1)
+        target_1000000_ = F.identity(softmax2_)
+
+        return target_1000000_
 
     def getInputs(self):
         inputs = {}
-        input_dimensions = (8)
-        input_domains = (float,float('-inf'),float('inf'))
-        inputs["state_"] = input_domains + (input_dimensions,)
-        input_dimensions = (3)
-        input_domains = (float,-1.0,1.0)
-        inputs["action_"] = input_domains + (input_dimensions,)
+        input_dimensions = (30000)
+        input_domains = (float,0.0,1.0)
+        inputs["source_"] = input_domains + (input_dimensions,)
         return inputs
 
     def getOutputs(self):
         outputs = {}
-        output_dimensions = (1,1,1)
-        output_domains = (float,float('-inf'),float('inf'))
-        outputs["qvalues_"] = output_domains + (output_dimensions,)
+        output_dimensions = (30000,1,1)
+        output_domains = (float,0.0,1.0)
+        outputs["target_0_"] = output_domains + (output_dimensions,)
         return outputs

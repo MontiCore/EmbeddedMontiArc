@@ -8,14 +8,14 @@ import cv2
 import importlib
 from mxnet import nd
 
-class CNNDataLoader_Alexnet:
-    _input_names_ = ['data']
-    _output_names_ = ['predictions_label']
+class CNNDataLoader_MultipleStreams:
+    _input_names_ = ['data_0', 'data_1']
+    _output_names_ = ['pred_0_label','pred_1_label']
 
     def __init__(self):
-        self._data_dir = "data/Alexnet/"
+        self._data_dir = "data/MultipleStreams/"
 
-    def load_data(self, batch_size, shuffle=False):
+    def load_data(self, batch_size):
         train_h5, test_h5 = self.load_h5_files()
 
         train_data = {}
@@ -39,8 +39,7 @@ class CNNDataLoader_Alexnet:
 
         train_iter = mx.io.NDArrayIter(data=train_data,
                                        label=train_label,
-                                       batch_size=batch_size,
-                                       shuffle=shuffle)
+                                       batch_size=batch_size)
 
         test_iter = None
 
@@ -65,7 +64,7 @@ class CNNDataLoader_Alexnet:
 
         return train_iter, test_iter, data_mean, data_std, train_images, test_images
 
-    def load_preprocessed_data(self, batch_size, preproc_lib, shuffle=False):
+    def load_preprocessed_data(self, batch_size, preproc_lib):
         train_h5, test_h5 = self.load_h5_files()
 
         wrapper = importlib.import_module(preproc_lib)
@@ -111,8 +110,7 @@ class CNNDataLoader_Alexnet:
 
         train_iter = mx.io.NDArrayIter(data=train_data,
                                        label=train_label,
-                                       batch_size=batch_size,
-                                       shuffle=shuffle)
+                                       batch_size=batch_size)
 
         test_data = {}
         test_label = {}

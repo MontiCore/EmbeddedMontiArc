@@ -15,6 +15,7 @@ import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.cpp.GeneratorEMAMOpt2CPP;
 import de.monticore.lang.monticar.generator.pythonwrapper.GeneratorPythonWrapperStandaloneApi;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.ComponentPortInformation;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -123,25 +124,45 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                         "GAN");
             }
 
-            NNArchitectureSymbol genericArchitectureSymbol = configuration.getDiscriminatorNetwork().get();
-            ArchitectureSymbol architectureSymbol
-                    = ((ArchitectureAdapter)genericArchitectureSymbol).getArchitectureSymbol();
+            NNArchitectureSymbol genericDisArchitectureSymbol = configuration.getDiscriminatorNetwork().get();
+            ArchitectureSymbol disArchitectureSymbol
+                    = ((ArchitectureAdapter)genericDisArchitectureSymbol).getArchitectureSymbol();
 
             CNNArch2Gluon gluonGenerator = new CNNArch2Gluon();
             gluonGenerator.setGenerationTargetPath(
                     Paths.get(getGenerationTargetPath(), GAN_LEARNING_FRAMEWORK_MODULE).toString());
-            Map<String, String> architectureFileContentMap
-                    = gluonGenerator.generateStringsAllowMultipleIO(architectureSymbol, true);
 
-            final String creatorName = architectureFileContentMap.keySet().iterator().next();
-            final String discriminatorInstanceName = creatorName.substring(
-                    creatorName.indexOf('_') + 1, creatorName.lastIndexOf(".py"));
+            Map<String, String> disArchitectureFileContentMap
+                    = gluonGenerator.generateStringsAllowMultipleIO(disArchitectureSymbol, true);
 
+            final String disCreatorName = disArchitectureFileContentMap.keySet().iterator().next();
+            final String discriminatorInstanceName = disCreatorName.substring(
+                    disCreatorName.indexOf('_') + 1, disCreatorName.lastIndexOf(".py"));
 
-            fileContentMap.putAll(architectureFileContentMap.entrySet().stream().collect(Collectors.toMap(
+            fileContentMap.putAll(disArchitectureFileContentMap.entrySet().stream().collect(Collectors.toMap(
                     k -> GAN_LEARNING_FRAMEWORK_MODULE + "/" + k.getKey(),
                     Map.Entry::getValue))
             );
+
+            if (configuration.hasQNetwork()) {
+                NNArchitectureSymbol genericQArchitectureSymbol = configuration.getQNetwork().get();
+                ArchitectureSymbol qArchitectureSymbol
+                        = ((ArchitectureAdapter)genericQArchitectureSymbol).getArchitectureSymbol();
+
+                Map<String, String> qArchitectureFileContentMap
+                        = gluonGenerator.generateStringsAllowMultipleIO(qArchitectureSymbol, true);
+
+                final String qCreatorName = qArchitectureFileContentMap.keySet().iterator().next();
+                final String qNetworkInstanceName = qCreatorName.substring(
+                        qCreatorName.indexOf('_') + 1, qCreatorName.lastIndexOf(".py"));
+
+                fileContentMap.putAll(qArchitectureFileContentMap.entrySet().stream().collect(Collectors.toMap(
+                        k -> GAN_LEARNING_FRAMEWORK_MODULE + "/" + k.getKey(),
+                        Map.Entry::getValue))
+                );
+
+                ftlContext.put("qNetworkInstanceName", qNetworkInstanceName);
+            }
 
             ftlContext.put("ganFrameworkModule", GAN_LEARNING_FRAMEWORK_MODULE);
             ftlContext.put("discriminatorInstanceName", discriminatorInstanceName);
@@ -152,9 +173,6 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
 
             final String ganTrainerContent = templateConfiguration.processTemplate(ftlContext, "gan/Trainer.ftl");
             fileContentMap.put(trainerName + ".py", ganTrainerContent);
-
-            //final String startTrainerScriptContent = templateConfiguration.processTemplate(ftlContext, "gan/StartTrainer.ftl");
-            //fileContentMap.put("start_training.sh", startTrainerScriptContent);
 
         } else if (configData.isReinforcementLearning()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();

@@ -6,19 +6,19 @@
 
 <#if tc.architectureOutputSymbols?size gt 1>
 <#assign outputName = tc.getNameWithoutIndex(tc.getName(tc.architectureOutputSymbols[0]))>
-                    ${outputName} = [mx.nd.zeros((train_batch_size, ${tc.join(tc.architectureOutputSymbols[0].ioDeclaration.type.dimensions, ", ")},), ctx=mx_context) for i in range(${tc.architectureOutputs?size?c})]
+                    ${outputName} = [mx.nd.zeros((batch_size, ${tc.join(tc.architectureOutputSymbols[0].ioDeclaration.type.dimensions, ", ")},), ctx=mx_context) for i in range(${tc.architectureOutputs?size?c})]
 <#else>
 <#list tc.architectureOutputSymbols as output>
-                    ${tc.getName(output)} = mx.nd.zeros((train_batch_size, ${tc.join(output.ioDeclaration.type.dimensions, ", ")},), ctx=mx_context)<#sep>,
+                    ${tc.getName(output)} = mx.nd.zeros((batch_size, ${tc.join(output.ioDeclaration.type.dimensions, ", ")},), ctx=mx_context)<#sep>,
 </#list>
 </#if>
 
 <#list tc.getLayerVariableMembers()?keys as member>
-                    ${member} = mx.nd.zeros((train_batch_size, ${tc.join(tc.cutDimensions(tc.getLayerVariableMembers()[member]), ", ")},), ctx=mx_context)
+                    ${member} = mx.nd.zeros((batch_size, ${tc.join(tc.cutDimensions(tc.getLayerVariableMembers()[member]), ", ")},), ctx=mx_context)
 </#list>
 
 <#list tc.architecture.constants as constant>
-                    ${tc.getName(constant)} = mx.nd.full((train_batch_size, 1,), ${constant.intValue?c}, ctx=mx_context)
+                    ${tc.getName(constant)} = mx.nd.full((batch_size, 1,), ${constant.intValue?c}, ctx=mx_context)
 </#list>
 
                     nd.waitall()

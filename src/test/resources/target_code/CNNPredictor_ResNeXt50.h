@@ -1,5 +1,5 @@
-#ifndef CNNPREDICTOR_CIFARCLASSIFIERNETWORK
-#define CNNPREDICTOR_CIFARCLASSIFIERNETWORK
+#ifndef CNNPREDICTOR_RESNEXT50
+#define CNNPREDICTOR_RESNEXT50
 
 #include <mxnet/c_predict_api.h>
 
@@ -9,28 +9,28 @@
 
 #include <CNNBufferFile.h>
 
-class CNNPredictor_CifarClassifierNetwork_0{
+class CNNPredictor_ResNeXt50_0{
 public:
-    const std::string json_file = "model/CifarClassifierNetwork/model_0_newest-symbol.json";
-    const std::string param_file = "model/CifarClassifierNetwork/model_0_newest-0000.params";
+    const std::string json_file = "model/ResNeXt50/model_0_newest-symbol.json";
+    const std::string param_file = "model/ResNeXt50/model_0_newest-0000.params";
     const std::vector<std::string> input_keys = {
         "data"
     };
-    const std::vector<std::vector<mx_uint>> input_shapes = {{1, 3, 32, 32}};
+    const std::vector<std::vector<mx_uint>> input_shapes = {{1, 3, 224, 224}};
     const bool use_gpu = false;
 
     PredictorHandle handle;
 
-    explicit CNNPredictor_CifarClassifierNetwork_0(){
+    explicit CNNPredictor_ResNeXt50_0(){
         init(json_file, param_file, input_keys, input_shapes, use_gpu);
     }
 
-    ~CNNPredictor_CifarClassifierNetwork_0(){
+    ~CNNPredictor_ResNeXt50_0(){
         if(handle) MXPredFree(handle);
     }
 
     void predict(const std::vector<float> &in_data_,
-                 std::vector<float> &out_softmax_){
+                 std::vector<float> &out_predictions_){
         MXPredSetInput(handle, input_keys[0].c_str(), in_data_.data(), static_cast<mx_uint>(in_data_.size()));
 
         MXPredForward(handle);
@@ -44,8 +44,8 @@ public:
         MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
         size = 1;
         for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
-        assert(size == out_softmax_.size());
-        MXPredGetOutput(handle, output_index, &(out_softmax_[0]), out_softmax_.size());
+        assert(size == out_predictions_.size());
+        MXPredGetOutput(handle, 0, &(out_predictions_[0]), out_predictions_.size());
 
     }
 
@@ -104,4 +104,4 @@ public:
     }
 };
 
-#endif // CNNPREDICTOR_CIFARCLASSIFIERNETWORK
+#endif // CNNPREDICTOR_RESNEXT50

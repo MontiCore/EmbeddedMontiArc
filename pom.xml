@@ -20,7 +20,7 @@
       <CNNArch.version>0.3.4-SNAPSHOT</CNNArch.version>
       <CNNTrain.version>0.3.9-SNAPSHOT</CNNTrain.version>
       <CNNArch2X.version>0.0.5-SNAPSHOT</CNNArch2X.version>
-      <embedded-montiarc-math-opt-generator>0.1.4</embedded-montiarc-math-opt-generator>
+      <embedded-montiarc-math-opt-generator>0.1.6</embedded-montiarc-math-opt-generator>
       <EMADL2PythonWrapper.version>0.0.2-SNAPSHOT</EMADL2PythonWrapper.version>
     
         <!-- .. Libraries .................................................. -->

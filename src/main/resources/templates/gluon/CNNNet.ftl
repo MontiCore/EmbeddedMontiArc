@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 import mxnet as mx
 import numpy as np
+import math
 from mxnet import gluon
 
 
@@ -52,10 +53,10 @@ class Reshape(gluon.HybridBlock):
 
 
 class CustomRNN(gluon.HybridBlock):
-    def __init__(self, hidden_size, num_layers, bidirectional, **kwargs):
+    def __init__(self, hidden_size, num_layers, dropout, bidirectional, **kwargs):
         super(CustomRNN, self).__init__(**kwargs)
         with self.name_scope():
-            self.rnn = gluon.rnn.RNN(hidden_size=hidden_size, num_layers=num_layers,
+            self.rnn = gluon.rnn.RNN(hidden_size=hidden_size, num_layers=num_layers, dropout=dropout,
                                      bidirectional=bidirectional, activation='tanh', layout='NTC')
 
     def hybrid_forward(self, F, data, state0):
@@ -64,10 +65,10 @@ class CustomRNN(gluon.HybridBlock):
 
 
 class CustomLSTM(gluon.HybridBlock):
-    def __init__(self, hidden_size, num_layers, bidirectional, **kwargs):
+    def __init__(self, hidden_size, num_layers, dropout, bidirectional, **kwargs):
         super(CustomLSTM, self).__init__(**kwargs)
         with self.name_scope():
-            self.lstm = gluon.rnn.LSTM(hidden_size=hidden_size, num_layers=num_layers,
+            self.lstm = gluon.rnn.LSTM(hidden_size=hidden_size, num_layers=num_layers, dropout=dropout,
                                        bidirectional=bidirectional, layout='NTC')
 
     def hybrid_forward(self, F, data, state0, state1):
@@ -76,10 +77,10 @@ class CustomLSTM(gluon.HybridBlock):
 
 
 class CustomGRU(gluon.HybridBlock):
-    def __init__(self, hidden_size, num_layers, bidirectional, **kwargs):
+    def __init__(self, hidden_size, num_layers, dropout, bidirectional, **kwargs):
         super(CustomGRU, self).__init__(**kwargs)
         with self.name_scope():
-            self.gru = gluon.rnn.GRU(hidden_size=hidden_size, num_layers=num_layers,
+            self.gru = gluon.rnn.GRU(hidden_size=hidden_size, num_layers=num_layers, dropout=dropout,
                                      bidirectional=bidirectional, layout='NTC')
 
     def hybrid_forward(self, F, data, state0):
@@ -102,5 +103,30 @@ ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 <#else>
         return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}
 </#if>
-
 </#list>
+
+    def getInputs(self):
+        inputs = {}
+<#list tc.architecture.streams as stream>
+<#assign dimensions = (tc.getStreamInputs(stream, false))>
+<#assign domains = (tc.getStreamInputDomains(stream))>
+<#list tc.getStreamInputVariableNames(stream, false) as name>
+        input_dimensions = (${tc.join(dimensions[name], ",")})
+        input_domains = (${tc.join(domains[name], ",")})
+        inputs["${name}"] = input_domains + (input_dimensions,)
+</#list>
+</#list>
+        return inputs
+
+    def getOutputs(self):
+        outputs = {}
+<#list tc.architecture.streams as stream>
+<#assign dimensions = (tc.getStreamOutputs(stream, false))>
+<#assign domains = (tc.getStreamOutputDomains(stream))>
+<#list tc.getStreamOutputVariableNames(stream, false) as name>
+        output_dimensions = (${tc.join(dimensions[name], ",")})
+        output_domains = (${tc.join(domains[name], ",")})
+        outputs["${name}"] = output_domains + (output_dimensions,)
+</#list>
+</#list>
+        return outputs
