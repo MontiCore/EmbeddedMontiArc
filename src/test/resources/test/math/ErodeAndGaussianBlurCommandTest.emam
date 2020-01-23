@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component ErodeAndGaussianBlurCommandTest{
+    port
+    in Q^{n,m} src,
+    in Z erosion_elemIn,
+    in Z iterationsIn1,
+    in Z sizeX,
+    in Z sizeY,
+    in Q sigmaX,
+    in Q sigmaY,
+    out Q^{n,m} dstB;
+
+    instance ErodeCommandTest erode;
+    connect erosion_elemIn -> erode.erosion_elem;
+    connect iterationsIn1 -> erode.iterations;
+    //connect erode.dst -> dilate.dst;
+    //implementation Math{
+        //Q^{n,m} dst;
+        //dst = erode(src, erosion_elem, iterations);
+        //Q^{2,3} deterMat = det(dst);
+        //Q^{n,m} dstB = gaussianBlur(dst, sizeX, sizeY, sigmaX, sigmaY);
+    //}
+}
