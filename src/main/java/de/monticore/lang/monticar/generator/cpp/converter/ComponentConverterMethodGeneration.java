@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter.getNameOfOutput;
+
 /**
  */
 public class ComponentConverterMethodGeneration {
@@ -192,11 +194,13 @@ public class ComponentConverterMethodGeneration {
             mathExpressionSymbol, BluePrintCPP bluePrint, List<String> includeStrings/*, int lastIndex*/) {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
         String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
+        String outputName = "";
         for (MathCommand mathCommand : ComponentConverter.usedMathCommand)
         if(mathCommand != null) {
             String argumentReturnFunctionName = mathCommand.getMathCommandName();
             if (mathCommand.isArgumentReturnMathCommand() && result.contains(argumentReturnFunctionName)) {
-                result = fixArgumentReturnInstruction(result, method, mathExpressionSymbol, bluePrint);
+                outputName = getNameOfOutput(mathExpressionSymbol);
+                result = fixArgumentReturnInstruction(result, outputName);
             }
         }
         TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
@@ -342,34 +346,23 @@ public class ComponentConverterMethodGeneration {
         if (beginIndex != currentGenerationIndex) swapNextInstructions = true;
     }
 
-    private static String fixArgumentReturnInstruction(String instruction, Method method, MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP){
-    String newInstruction1 = "";
-    String newInstruction2 = "";
+    private static String fixArgumentReturnInstruction(String instruction, String outputName){
+    String newInstruction = "";
     if(instruction.contains("=")){
         int indexOfEqualOperator = instruction.indexOf("=");
-        String beforeEqualOperatorSubString = instruction.substring(0,indexOfEqualOperator-1);
         String afterEqualOperatorSubString = instruction.substring(indexOfEqualOperator+2);
-
-        if(beforeEqualOperatorSubString.contains(" ")){
-            //there is two words
-            int indexOfWhiteSpace = beforeEqualOperatorSubString.indexOf(" ");
-            String firstWord = beforeEqualOperatorSubString.substring(0,indexOfWhiteSpace);
-            String secondWord = beforeEqualOperatorSubString.substring(indexOfWhiteSpace+1);
-            newInstruction1 = beforeEqualOperatorSubString + ";\n";
-            beforeEqualOperatorSubString = secondWord;
-        }
 
         if(afterEqualOperatorSubString.contains(",")){
             int indexOfCommaOperator  = afterEqualOperatorSubString.indexOf(",");
-            newInstruction2 = afterEqualOperatorSubString.substring(0,indexOfCommaOperator) + ", " + beforeEqualOperatorSubString +
+            newInstruction = afterEqualOperatorSubString.substring(0,indexOfCommaOperator) + ", " + outputName +
                     afterEqualOperatorSubString.substring(indexOfCommaOperator);
         }else{
             int indexOfBracket = afterEqualOperatorSubString.indexOf(")");
-            newInstruction2 = afterEqualOperatorSubString.substring(0,indexOfBracket) + ", " + beforeEqualOperatorSubString +
+            newInstruction = afterEqualOperatorSubString.substring(0,indexOfBracket) + ", " + outputName +
                     afterEqualOperatorSubString.substring(indexOfBracket);
         }
-        newInstruction2 = removeBracket(newInstruction2);
-        return newInstruction1 + newInstruction2;
+        newInstruction = removeBracket(newInstruction);
+        return newInstruction;
     }
     return instruction;
     }
@@ -383,4 +376,6 @@ public class ComponentConverterMethodGeneration {
         }
         return instruction;
     }
+
+
 }

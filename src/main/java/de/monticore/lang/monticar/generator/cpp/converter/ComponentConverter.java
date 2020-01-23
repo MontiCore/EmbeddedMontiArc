@@ -3,13 +3,16 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstanceInformation;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
@@ -19,10 +22,7 @@ import de.monticore.lang.monticar.generator.cpp.instruction.ConstantConnectInstr
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -68,25 +68,20 @@ public class ComponentConverter {
         //save function name
         if(mathStatementsSymbol != null) {
             List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
-            for(MathExpressionSymbol mathExpresionSymbol : mathExpressionSymbols){
-                if (mathExpresionSymbol.isAssignmentExpression()) {
-                    if (((MathAssignmentExpressionSymbol) mathExpresionSymbol).getExpressionSymbol() instanceof MathMatrixNameExpressionSymbol) {
-                        namesOfFunctions.add(((MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathExpresionSymbol).getExpressionSymbol()).getNameToAccess());
-
-                    }
-                } else if(mathExpresionSymbol.isValueExpression()) {
-                    if (((MathValueSymbol) mathExpresionSymbol).getValue() instanceof MathMatrixNameExpressionSymbol) {
-                        namesOfFunctions.add(((MathMatrixNameExpressionSymbol) ((MathValueSymbol) mathExpresionSymbol).getValue()).getNameToAccess());
-                    }
-                }
+            for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
+                namesOfFunctions.add(getNameOfMathCommand(mathExpressionSymbol));
             }
         }
-
         if(namesOfFunctions != null) {
             for(String nameOfFunction : namesOfFunctions){
                 usedMathCommand.add(bluePrint.getMathCommandRegister().getMathCommand(nameOfFunction));
             }
 
+        }
+
+
+        if(mathStatementsSymbol != null){
+            //handleDependenceOfCVCommands(mathStatementsSymbol, BluePrintCPP bluePrint);
         }
         //ToDo: add a BluePrintFixer.fixerBluePrintCVfuncitons(bluePrint, nameOfFunction);
 
@@ -129,8 +124,19 @@ public class ComponentConverter {
             bluePrint.getMathInformationRegister().addVariable(var);
             var.setIsParameterVariable(true);
         }
-
+        Collection<EMAComponentInstanceSymbol> subcomponents = componentSymbol.getSubComponents();
+        Collection<EMAPortInstanceSymbol> incomingPorts = componentSymbol.getIncomingPortInstances();
+        Collection<EMAPortInstanceSymbol> outcomingPorts = componentSymbol.getOutgoingPortInstances();
+        Collection<EMAComponentInstanceSymbol> intdependents = componentSymbol.getIndependentSubComponents();
+        Optional<InstanceInformation> infos = componentSymbol.getInstanceInformation();
+        Collection<EMAConnectorInstanceSymbol> connectors = componentSymbol.getConnectorInstances();
+        List<EMAVariable> parameters = componentSymbol.getParameters();
+        Optional<EMAComponentInstanceSymbol> parent = componentSymbol.getParent();
+        Collection<EMAPortInstanceSymbol> ports = componentSymbol.getPortInstanceList();
+        List<ASTExpression> expressions = componentSymbol.getArguments();
         //add ports as variables to blueprint
+
+
         for (EMAPortInstanceSymbol port : componentSymbol.getPortInstanceList()) {
             //Config ports might already be added from adaptable Parameters
             if(!port.isConfig()) {
@@ -309,6 +315,58 @@ public class ComponentConverter {
         }
     }
 
+    public static void handleDependenceOfCVCommands(MathStatementsSymbol mathStatementsSymbol, BluePrintCPP bluePrint) {
+        List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
+        int mathExpressionSymbolsSize = mathExpressionSymbols.size();
+        if (mathExpressionSymbolsSize > 1) {
+            for (int i = 0; i < mathExpressionSymbols.size(); i++) {
+                String nameOfMathCommand = getNameOfMathCommand(mathExpressionSymbols.get(i));
+                MathCommand mathCommand = bluePrint.getMathCommandRegister().getMathCommand(nameOfMathCommand);
+                if(mathCommand != null && mathCommand.isCVMathCommand()){
+
+                    for (int j = i + 1; j < mathExpressionSymbols.size(); j++) {
+                    String nameOfSucMathCommand = getNameOfMathCommand(mathExpressionSymbols.get(j));
+                    MathCommand sucMathCommand = bluePrint.getMathCommandRegister().getMathCommand(nameOfSucMathCommand);
+                    if(mathCommand != null && mathCommand.isCVMathCommand()){
+
+                    }
+                    }
+                }
+
+
+
+            }
+        }
+    }
+
+    public static String getNameOfMathCommand(MathExpressionSymbol mathExpressionSymbol){
+        String nameOfFunction = "";
+        if (mathExpressionSymbol.isAssignmentExpression()) {
+            if (((MathAssignmentExpressionSymbol) mathExpressionSymbol).getExpressionSymbol() instanceof MathMatrixNameExpressionSymbol) {
+                nameOfFunction = ((MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathExpressionSymbol).getExpressionSymbol()).getNameToAccess();
+            }
+        } else if(mathExpressionSymbol.isValueExpression()) {
+            if (((MathValueSymbol) mathExpressionSymbol).getValue() instanceof MathMatrixNameExpressionSymbol) {
+                nameOfFunction = ((MathMatrixNameExpressionSymbol) ((MathValueSymbol) mathExpressionSymbol).getValue()).getNameToAccess();
+            }
+        }
+        return nameOfFunction;
+    }
+
+    public static String getNameOfOutput(MathExpressionSymbol mathExpressionSymbol){
+        String outputName = "";
+        if (mathExpressionSymbol.isAssignmentExpression()) {
+            if (((MathAssignmentExpressionSymbol) mathExpressionSymbol).getExpressionSymbol() instanceof MathMatrixNameExpressionSymbol) {
+                outputName = ((MathAssignmentExpressionSymbol)mathExpressionSymbol).getNameOfMathValue();
+
+            }
+        }else if(mathExpressionSymbol.isValueExpression()) {
+            if (((MathValueSymbol) mathExpressionSymbol).getValue() instanceof MathMatrixNameExpressionSymbol) {
+                outputName = ((MathValueSymbol)mathExpressionSymbol).getName();
+            }
+        }
+        return outputName;
+    }
     public static String getExpressionParameterConversion(ASTExpression var) {
         String parameterString = "";
         if (var.getSymbolOpt().isPresent()) {
