@@ -2,6 +2,8 @@
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
+import jline.internal.Log;
+
 import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants.*;
 
 import java.util.ArrayList;
@@ -48,11 +50,46 @@ public class ConfigurationData {
         return (Boolean) getConfiguration().getEntry("load_checkpoint").getValue().getValue();
     }
 
+    public String getCheckpointPeriod() {
+        if (!getConfiguration().getEntryMap().containsKey("checkpoint_period")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("checkpoint_period").getValue());
+    }
+
+    public String getLogPeriod() {
+        if (!getConfiguration().getEntryMap().containsKey("log_period")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("log_period").getValue());
+    }
+
     public Boolean getNormalize() {
         if (!getConfiguration().getEntryMap().containsKey("normalize")) {
             return null;
         }
         return (Boolean) getConfiguration().getEntry("normalize").getValue().getValue();
+    }
+
+    public Boolean getShuffleData() {
+        if (!getConfiguration().getEntryMap().containsKey("shuffle_data")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("shuffle_data").getValue().getValue();
+    }
+
+    public String getClipGlobalGradNorm() {
+        if (!getConfiguration().getEntryMap().containsKey("clip_global_grad_norm")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("clip_global_grad_norm").getValue());
+    }
+
+    public String getPreprocessingName() {
+        if (!getConfiguration().getEntryMap().containsKey("preprocessing_name")) {
+            return null;
+        }
+        return (String) getConfiguration().getEntry("preprocessing_name").getValue().toString();
     }
 
     public String getContext() {
@@ -141,6 +178,34 @@ public class ConfigurationData {
             return null;
         }
         return (Boolean) getConfiguration().getEntry("use_teacher_forcing").getValue().getValue();
+    }
+
+    public Boolean getEvalTrain() {
+        if (!getConfiguration().getEntryMap().containsKey("eval_train")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("eval_train").getValue().getValue();
+    }
+
+    protected Map<String, Map<String, Object>> getMultiParamMapEntry(final String key, final String valueName) {
+        if (!configurationContainsKey(key)) {
+            return null;
+        }
+
+        Map<String, Map<String,Object>> resultView = new HashMap<>();
+
+        ValueSymbol value = this.getConfiguration().getEntryMap().get(key).getValue();
+
+        if (value instanceof MultiParamValueMapSymbol) {
+            MultiParamValueMapSymbol multiParamValueMap = (MultiParamValueMapSymbol) value;
+            resultView.putAll(multiParamValueMap.getParameters());
+            Map<String,String> names = multiParamValueMap.getMultiParamValueNames();
+            for(String distrName : names.keySet()) {
+                resultView.get(distrName).put(valueName, names.get(distrName));
+            }
+        }
+
+        return resultView;
     }
 
     protected Map<String, Object> getMultiParamEntry(final String key, final String valueName) {

@@ -167,6 +167,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.BIDIRECTIONAL_NAME).get();
     }
 
+    public double getDropout() {
+        return getLayerSymbol().getDoubleValue(AllPredefinedLayers.RNN_DROPOUT_NAME).get();
+    }
+
     public boolean getFlatten() {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.FLATTEN_PARAMETER_NAME).get();
     }
@@ -178,7 +182,7 @@ public class ArchitectureElementData {
 
     @Nullable
     public List<Integer> getPadding(){
-        
+
     	String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.PADDING_NAME).get();
 
         if(pad.equals("same")){
@@ -213,4 +217,48 @@ public class ArchitectureElementData {
 
         return Arrays.asList(0,0,0,0,topPad,bottomPad,leftPad,rightPad);
     }
+
+    @Nullable
+    public List<Integer> getTransPadding(){
+
+        String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.TRANSPADDING_NAME).get();
+
+        if(pad.equals("same")){
+            return getTransPadding(getLayerSymbol()); //The padding calculated here is only used in the gluon/ mxnet backend, in the tensorlflow one it is interpreted as "same"
+        }else if(pad.equals("valid")){
+            return Arrays.asList(0,0);
+        }else{ //"no loss"
+            return Arrays.asList(0,0,-1,0,0,0,0,0);
+        }
+    }
+
+    @Nullable
+    public List<Integer> getTransPadding(LayerSymbol layer) {
+        List<Integer> kernel = layer.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get();
+        List<Integer> stride = layer.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
+        ArchTypeSymbol inputType = layer.getInputTypes().get(0);
+        ArchTypeSymbol outputType = layer.getOutputTypes().get(0);
+
+        int heightPad = kernel.get(0) - stride.get(0);
+        int widthPad = kernel.get(1) - stride.get(1);
+
+        int topPad = (int) Math.ceil(heightPad / 2.0);
+        int bottomPad = (int) Math.floor(heightPad / 2.0);
+        int leftPad = (int) Math.ceil(widthPad / 2.0);
+        int rightPad = (int) Math.floor(widthPad / 2.0);
+
+        /*if (topPad == 0 && bottomPad == 0 && leftPad == 0 && rightPad == 0){
+            return null;
+        }*/
+
+        return Arrays.asList(bottomPad, rightPad);
+    }
+
+    /*public boolean getStart() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.START_NAME).get();
+    }
+
+    public boolean getEnd() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.END_NAME).get();
+    }*/
 }
