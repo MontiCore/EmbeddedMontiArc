@@ -1,4 +1,4 @@
-package de.rwth.ba;
+package ba;
 
 component CVErode<N n,N m> {
     port

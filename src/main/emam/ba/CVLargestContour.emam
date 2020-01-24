@@ -1,4 +1,4 @@
-package de.rwth.ba;
+package ba;
 
 component CVLargestContour{
     port

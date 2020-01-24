@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.rwth.ba;
+package ba;
 
 component BallTracking{
     port
