@@ -1,0 +1,13 @@
+package de.rwth.ba;
+
+component CVDilate<N n,N m> {
+    port
+    in Q^{n,m} src,
+    in Z dilation_elem,
+    in Z iterations,
+    out Q^{n,m} dst;
+
+    implementation Math{
+        dst = dilate(src, dilation_elem, iterations);
+    }
+}

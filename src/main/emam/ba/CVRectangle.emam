@@ -1,0 +1,15 @@
+package de.rwth.ba;
+
+component CVRectangle<N n,N m> {
+    port
+		in Q^{3,n,m} src,
+        in Q rect,
+		in Q^{3} color,
+		in Z thickness,
+		in Z lineType,
+        out Q^{3,n,m} outputImg;
+
+    implementation Math {
+        outputImg = rectangle(src, rect, color, thickness, lineType);
+    }
+}

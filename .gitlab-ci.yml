@@ -1,0 +1,22 @@
+# (c) https://github.com/MontiCore/monticore  
+
+stages:
+- windows
+
+masterJobWindows:
+  stage: windows
+  script:
+  - java -jar embedded-montiarc-math-generator-0.1.15-SNAPSHOT-jar-with-dependencies.jar -m src/main/emam -r ba.BallTracking -o target
+  only:
+    - master
+  tags:
+  - Windows10
+
+BranchJobWindows:
+  stage: windows
+  script:
+  - java -jar embedded-montiarc-math-generator-0.1.15-SNAPSHOT-jar-with-dependencies.jar -m src/main/emam -r ba.BallTracking -o target
+  except:
+  - master
+  tags:
+  - Windows10

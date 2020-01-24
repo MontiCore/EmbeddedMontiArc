@@ -1,0 +1,13 @@
+package de.rwth.ba;
+
+component CVErode<N n,N m> {
+    port
+    in Q^{n,m} src,
+    in Z erosion_elem,
+    in Z iterations,
+    out Q^{n,m} dst;
+
+    implementation Math{
+        dst = erode(src, erosion_elem, iterations);
+    }
+}

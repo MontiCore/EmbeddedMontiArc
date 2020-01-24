@@ -1,0 +1,12 @@
+package de.rwth.ba;
+
+component CVCvtColor<N n,N m> {
+    port
+    in Q^{3,n,m} src,
+    in Z colorConversion,
+    out Q^{3,n,m} dst;
+
+    implementation Math{
+        dst = cvtColor(src, colorConversion);
+    }
+}

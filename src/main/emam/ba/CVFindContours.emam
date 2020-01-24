@@ -1,0 +1,13 @@
+package de.rwth.ba;
+
+component CVFindContours<N n,N m> {
+    port
+        in Q^{n,m} image,
+        in Z mode,
+        in Z method,
+        out Q contours;
+
+    implementation Math {
+        contours = findContours(image, mode, method);
+    }
+}
