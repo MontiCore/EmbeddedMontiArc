@@ -271,7 +271,7 @@ class CNNCreator_Alexnet:
             data_ = mx.symbol.broadcast_div(data_, _data_std_)
         conv1_ = mx.symbol.pad(data=data_,
             mode='constant',
-            pad_width=(0,0,0,0,2,1,2,1),
+            pad_width=(0,0,-1,0,0,0,0,0),
             constant_value=0)
         conv1_ = mx.symbol.Convolution(data=conv1_,
             kernel=(11,11),
@@ -287,7 +287,11 @@ class CNNCreator_Alexnet:
             knorm=2,
             nsize=5,
             name="lrn1_")
-        pool1_ = mx.symbol.Pooling(data=lrn1_,
+        pool1_ = mx.symbol.pad(data=lrn1_,
+            mode='constant',
+            pad_width=(0,0,-1,0,0,0,0,0),
+            constant_value=0)
+        pool1_ = mx.symbol.Pooling(data=pool1_,
             kernel=(3,3),
             pool_type="max",
             stride=(2,2),
@@ -323,7 +327,11 @@ class CNNCreator_Alexnet:
             knorm=2,
             nsize=5,
             name="lrn2_1_")
-        pool2_1_ = mx.symbol.Pooling(data=lrn2_1_,
+        pool2_1_ = mx.symbol.pad(data=lrn2_1_,
+            mode='constant',
+            pad_width=(0,0,-1,0,0,0,0,0),
+            constant_value=0)
+        pool2_1_ = mx.symbol.Pooling(data=pool2_1_,
             kernel=(3,3),
             pool_type="max",
             stride=(2,2),
@@ -353,7 +361,11 @@ class CNNCreator_Alexnet:
             knorm=2,
             nsize=5,
             name="lrn2_2_")
-        pool2_2_ = mx.symbol.Pooling(data=lrn2_2_,
+        pool2_2_ = mx.symbol.pad(data=lrn2_2_,
+            mode='constant',
+            pad_width=(0,0,-1,0,0,0,0,0),
+            constant_value=0)
+        pool2_2_ = mx.symbol.Pooling(data=pool2_2_,
             kernel=(3,3),
             pool_type="max",
             stride=(2,2),
@@ -420,7 +432,11 @@ class CNNCreator_Alexnet:
             name="conv5_1_")
         # conv5_1_, output shape: {[128,13,13]}
 
-        pool5_1_ = mx.symbol.Pooling(data=conv5_1_,
+        pool5_1_ = mx.symbol.pad(data=conv5_1_,
+            mode='constant',
+            pad_width=(0,0,-1,0,0,0,0,0),
+            constant_value=0)
+        pool5_1_ = mx.symbol.Pooling(data=pool5_1_,
             kernel=(3,3),
             pool_type="max",
             stride=(2,2),
@@ -460,7 +476,11 @@ class CNNCreator_Alexnet:
             name="conv5_2_")
         # conv5_2_, output shape: {[128,13,13]}
 
-        pool5_2_ = mx.symbol.Pooling(data=conv5_2_,
+        pool5_2_ = mx.symbol.pad(data=conv5_2_,
+            mode='constant',
+            pad_width=(0,0,-1,0,0,0,0,0),
+            constant_value=0)
+        pool5_2_ = mx.symbol.Pooling(data=pool5_2_,
             kernel=(3,3),
             pool_type="max",
             stride=(2,2),

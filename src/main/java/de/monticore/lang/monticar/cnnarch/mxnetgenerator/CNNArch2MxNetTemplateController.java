@@ -23,7 +23,7 @@ public class CNNArch2MxNetTemplateController extends CNNArchTemplateController {
                 include(TEMPLATE_ELEMENTS_DIR_PATH, "Output", writer);
             }
         } else {
-            include(element.getResolvedThis().get(), writer);
+            include((ArchitectureElementSymbol) element.getResolvedThis().get(), writer);
         }
 
         setCurrentElement(previousElement);
@@ -38,7 +38,7 @@ public class CNNArch2MxNetTemplateController extends CNNArchTemplateController {
                 String templateName = layer.getDeclaration().getName();
                 include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer);
         } else {
-            include(layer.getResolvedThis().get(), writer);
+            include((ArchitectureElementSymbol) layer.getResolvedThis().get(), writer);
         }
 
         setCurrentElement(previousElement);
