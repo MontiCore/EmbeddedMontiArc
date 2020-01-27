@@ -30,7 +30,7 @@ if __name__ == "__main__":
         normalize=${config.normalize?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
-        eval_metric='${config.evalMetric}',
+        eval_metric='${config.evalMetric.name}',
 </#if>
 <#if (config.configuration.loss)??>
         loss='${config.lossName}',
