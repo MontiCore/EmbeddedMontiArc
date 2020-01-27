@@ -19,7 +19,7 @@ import java.util.List;
  * @author Ahmed Diab
  */
 
-public class GaussianBlurCommand extends ArgumentReturnMathCommand{
+public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
     public GaussianBlurCommand() {
         setMathCommandName("gaussianBlur");
     }

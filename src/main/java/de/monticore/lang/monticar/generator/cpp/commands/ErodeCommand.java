@@ -18,7 +18,7 @@ import java.util.List;
  * @author Ahmed Diab
  */
 
-public class ErodeCommand extends ArgumentReturnMathCommand{
+public class ErodeCommand extends ArgumentNoReturnMathCommand{
     public ErodeCommand() {
         setMathCommandName("erode");
     }

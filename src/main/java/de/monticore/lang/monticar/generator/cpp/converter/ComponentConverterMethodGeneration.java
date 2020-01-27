@@ -197,10 +197,10 @@ public class ComponentConverterMethodGeneration {
         String outputName = "";
         for (MathCommand mathCommand : ComponentConverter.usedMathCommand)
         if(mathCommand != null) {
-            String argumentReturnFunctionName = mathCommand.getMathCommandName();
-            if (mathCommand.isArgumentReturnMathCommand() && result.contains(argumentReturnFunctionName)) {
+            String argumentNoReturnFunctionName = mathCommand.getMathCommandName();
+            if (mathCommand.isArgumentNoReturnMathCommand() && result.contains(argumentNoReturnFunctionName)) {
                 outputName = getNameOfOutput(mathExpressionSymbol);
-                result = fixArgumentReturnInstruction(result, outputName);
+                result = fixArgumentNoReturnInstruction(result, outputName);
             }
         }
         TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
@@ -346,7 +346,7 @@ public class ComponentConverterMethodGeneration {
         if (beginIndex != currentGenerationIndex) swapNextInstructions = true;
     }
 
-    private static String fixArgumentReturnInstruction(String instruction, String outputName){
+    private static String fixArgumentNoReturnInstruction(String instruction, String outputName){
     String newInstruction = "";
     if(instruction.contains("=")){
         int indexOfEqualOperator = instruction.indexOf("=");

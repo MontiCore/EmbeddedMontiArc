@@ -18,7 +18,7 @@ import java.util.List;
  * @author Ahmed Diab
  */
 
-public class DilateCommand extends ArgumentReturnMathCommand{
+public class DilateCommand extends ArgumentNoReturnMathCommand{
     public DilateCommand() {
         setMathCommandName("dilate");
     }
