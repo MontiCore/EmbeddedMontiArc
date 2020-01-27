@@ -49,6 +49,11 @@ public class ArmadilloBackend implements MathBackend {
     }
 
     @Override
+    public String getTubeAccessCommandName() {
+        return "tube";
+    }
+
+    @Override
     public String getBackendName() {
         return "ArmadilloBackend";
     }

@@ -95,6 +95,11 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
             } else if (mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(1).isDoubleDot()) {
                 result += "." + MathConverter.curBackend.getRowAccessCommandName();
             }
+        } else if(mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().size() == 3){
+            if(mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(0).isDoubleDot() ||
+                    mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(2).isDoubleDot()){
+                result += "." + MathConverter.curBackend.getTubeAccessCommandName();
+            }
         }
         return result;
     }
@@ -107,29 +112,45 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
         return matrixExtractionPart.equals(".row");
     }
 
-    public static int getIgnoreCounterAt(String matrixExtractionPart) {
+    public static boolean isTubeString(String matrixExtractionPart) {
+        return matrixExtractionPart.equals(".tube");
+    }
+
+    public static int getIgnoreCounterAt(String matrixExtractionPart, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
         int ignoreCounterAt = -1;
         if (isColumnString(matrixExtractionPart)) {
             ignoreCounterAt = 0;
         } else if (isRowString(matrixExtractionPart)) {
             ignoreCounterAt = 1;
+        } else if(isTubeString(matrixExtractionPart)){
+            if(mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(0).isDoubleDot()){
+                ignoreCounterAt = 0;
+            }else if(mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(2).isDoubleDot()){
+                ignoreCounterAt = 2;
+            }
         }
         return ignoreCounterAt;
     }
 
-    public static int getCounterSetMinusOne(String matrixExtractionPart) {
+    public static int getCounterSetMinusOne(String matrixExtractionPart, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
         int counterSetMinusOne = -1;
         if (isColumnString(matrixExtractionPart)) {
             counterSetMinusOne = 1;
         } else if (isRowString(matrixExtractionPart)) {
             counterSetMinusOne = 0;
+        }else if(isTubeString(matrixExtractionPart)) {
+            if (mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(0).isDoubleDot()) {
+                counterSetMinusOne = 2;
+            } else if (mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(2).isDoubleDot()) {
+                counterSetMinusOne = 0;
+            }
         }
         return counterSetMinusOne;
     }
 
     public static String updateMatrixAccessString(MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol, int counter, String matrixExtractionPart, boolean setMinusOne, List<String> includeStrings) {
-        int ignoreCounterAt = getIgnoreCounterAt(matrixExtractionPart);
-        int counterSetMinusOne = getCounterSetMinusOne(matrixExtractionPart);
+        int ignoreCounterAt = getIgnoreCounterAt(matrixExtractionPart, mathMatrixAccessOperatorSymbol);
+        int counterSetMinusOne = getCounterSetMinusOne(matrixExtractionPart, mathMatrixAccessOperatorSymbol);
         String result = "";
         for (MathMatrixAccessSymbol mathMatrixAccessSymbol : mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols()) {
             if (counter == ignoreCounterAt) {
@@ -187,7 +208,7 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
     }
 
     public static String updateMatrixAccessStringFixForLoop(MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol, int counter, String matrixExtractionPart, List<String> includeStrings) {
-        int ignoreCounterAt = getIgnoreCounterAt(matrixExtractionPart);
+        int ignoreCounterAt = getIgnoreCounterAt(matrixExtractionPart, mathMatrixAccessOperatorSymbol);
         String result = "";
         for (MathMatrixAccessSymbol mathMatrixAccessSymbol : mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols()) {
             if (counter == ignoreCounterAt) {

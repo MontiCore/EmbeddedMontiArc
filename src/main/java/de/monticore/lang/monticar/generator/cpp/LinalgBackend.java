@@ -31,6 +31,11 @@ public class LinalgBackend implements MathBackend {
     }
 
     @Override
+    public String getTubeAccessCommandName(){
+        return null;
+    }
+
+    @Override
     public String getColumnVectorTypeName() {
         return null;
     }
