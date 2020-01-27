@@ -18,7 +18,7 @@ import java.util.List;
  * @author Ahmed Diab
  */
 
-public class InRangeCommand extends ArgumentReturnMathCommand{
+public class InRangeCommand extends ArgumentNoReturnMathCommand{
     public InRangeCommand() {
         setMathCommandName("inRange");
     }

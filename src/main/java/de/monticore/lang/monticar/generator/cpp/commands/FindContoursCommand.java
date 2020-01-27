@@ -19,7 +19,7 @@ import java.util.List;
  * @author Ahmed Diab
  */
 
-public class FindContoursCommand extends ArgumentReturnMathCommand{
+public class FindContoursCommand extends ArgumentNoReturnMathCommand{
     public FindContoursCommand() {
         setMathCommandName("findContours");
     }

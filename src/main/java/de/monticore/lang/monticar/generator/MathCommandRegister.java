@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.monticar.generator.cpp.commands.ArgumentReturnMathCommand;
+import de.monticore.lang.monticar.generator.cpp.commands.ArgumentNoReturnMathCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  */
 public abstract class MathCommandRegister {
     public List<MathCommand> mathCommands = new ArrayList<>();
-    public List<ArgumentReturnMathCommand> argumentReturnMathCommands = new ArrayList<>();
+    public List<ArgumentNoReturnMathCommand> argumentNoReturnMathCommands = new ArrayList<>();
 
     public MathCommandRegister() {
         init();
@@ -19,8 +19,8 @@ public abstract class MathCommandRegister {
 
     public void registerMathCommand(MathCommand mathCommand) {
         mathCommands.add(mathCommand);
-        if(mathCommand.isArgumentReturnMathCommand()){
-            argumentReturnMathCommands.add((ArgumentReturnMathCommand) mathCommand);
+        if(mathCommand.isArgumentNoReturnMathCommand()){
+            argumentNoReturnMathCommands.add((ArgumentNoReturnMathCommand) mathCommand);
         }
     }
 
