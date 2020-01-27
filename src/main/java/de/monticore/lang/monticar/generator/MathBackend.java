@@ -23,6 +23,8 @@ public interface MathBackend {
 
     String getRowAccessCommandName();
 
+    String getTubeAccessCommandName();
+
     String getBackendName();
 
     String getTransposeCommand();
