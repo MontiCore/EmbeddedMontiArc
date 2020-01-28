@@ -17,8 +17,8 @@ FILES = {
     'vocab_target': 'vocabularies/vocab.vi',
     'train_source': 'train.en',
     'train_target': 'train.vi',
-    'test_source': 'tst2012.en',
-    'test_target': 'tst2012.vi'
+    'test_source': 'tst2013.en',
+    'test_target': 'tst2013.vi'
 }
 
 # Functions
