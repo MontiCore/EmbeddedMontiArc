@@ -50,7 +50,7 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
 
-        Method erodeHelperMethod = getErodeHelperMethod();
+        Method erodeHelperMethod = getErodeHelperMethod(mathMatrixNameExpressionSymbol, (BluePrintCPP) bluePrint);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
         MathStringExpression stringExpression = new MathStringExpression("erodeHelper" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
@@ -63,14 +63,19 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
 
     }
 
-    private Method getErodeHelperMethod(){
+    private Method getErodeHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP){
         Method method = new Method("erodeHelper", "void");
+
+        String typeName = getTypeOfFirstInput(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        if(typeName.equals("")){
+            typeName = "mat";
+        }
 
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrixType",MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(src, "src", "CommonMatrixType", typeName, MathConverter.curBackend.getIncludeHeaderName());
         Variable dst = new Variable();
-        method.addParameter(dst, "dst", "CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(dst, "dst", "CommonMatrixType", typeName, MathConverter.curBackend.getIncludeHeaderName());
         Variable erosion_elem = new Variable();
         method.addParameter(erosion_elem,"erosion_elem", "Integer", "int", "");
         Variable iterations = new Variable();

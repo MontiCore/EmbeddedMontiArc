@@ -51,7 +51,7 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
 
-        Method gaussianBlurHelperMethod = getGaussianBlurHelperMethod();
+        Method gaussianBlurHelperMethod = getGaussianBlurHelperMethod(mathMatrixNameExpressionSymbol,(BluePrintCPP) bluePrint);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
         MathStringExpression stringExpression = new MathStringExpression("gaussianBlurHelper" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
@@ -63,14 +63,20 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
 
     }
 
-    private Method getGaussianBlurHelperMethod(){
+    private Method getGaussianBlurHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP){
         Method method = new Method("gaussianBlurHelper", "void");
+
+        String typeName = getTypeOfFirstInput(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        if(typeName.equals("")){
+            typeName = "mat";
+        }
 
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrix",MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());;
+
+        method.addParameter(src, "src", "CommonMatrix",typeName, MathConverter.curBackend.getIncludeHeaderName());;
         Variable dst = new Variable();
-        method.addParameter(dst, "dst", "CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(dst, "dst", "CommonMatrixType", typeName, MathConverter.curBackend.getIncludeHeaderName());
         Variable sizeX = new Variable();
         method.addParameter(sizeX, "sizeX", "Integer", "int", "");
         Variable sizeY = new Variable();

@@ -4,6 +4,7 @@ package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 
 import java.util.HashSet;
 
@@ -60,6 +61,20 @@ public abstract class MathCommand {
                 if (s.contentEquals(command))
                     return true;
         return false;
+    }
+
+    public String getTypeOfFirstInput(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP){
+        String nameOfFirstParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0).getTextualRepresentation();
+        for(Variable var: bluePrintCPP.getVariables()){
+            String varName = var.getName();
+            if(varName.equals(nameOfFirstParameter)){
+                VariableType varType = var.getVariableType();
+                String typeName = varType.getTypeNameTargetLanguage();
+                return typeName;
+            }
+
+        }
+        return "";
     }
 
     public boolean isArgumentNoReturnMathCommand() {

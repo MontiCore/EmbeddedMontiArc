@@ -50,7 +50,7 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
 
-        Method dilateHelperMethod = getDilateHelperMethod();
+        Method dilateHelperMethod = getDilateHelperMethod(mathMatrixNameExpressionSymbol, (BluePrintCPP) bluePrint);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
         MathStringExpression stringExpression = new MathStringExpression("dilateHelper" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
@@ -62,14 +62,19 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
 
     }
 
-    private Method getDilateHelperMethod(){
+    private Method getDilateHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol,BluePrintCPP bluePrintCPP){
         Method method = new Method("dilateHelper", "void");
+
+        String typeName = getTypeOfFirstInput(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        if(typeName.equals("")){
+            typeName = "mat";
+        }
 
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrix",MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());;
+        method.addParameter(src, "src", "CommonMatrix", typeName, MathConverter.curBackend.getIncludeHeaderName());;
         Variable dst = new Variable();
-        method.addParameter(dst, "dst", "CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(dst, "dst", "CommonMatrixType", typeName, MathConverter.curBackend.getIncludeHeaderName());
         Variable erosion_elem = new Variable();
         method.addParameter(erosion_elem,"dilation_elem", "Integer", "int", "");
         Variable iterations = new Variable();
