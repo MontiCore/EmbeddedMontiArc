@@ -20,7 +20,7 @@ lowerBoundary=colvec(3);
 upperBoundary=colvec(3);
 dst=mat(n,m);
 }
-void inRangeHelper(Mat src, Mat dst, colvec lowerB, colvec upperB)
+void inRangeHelper(cube src, mat dst, colvec lowerB, colvec upperB)
 {
     inRange(src, Scalar(lowerB(0), lowerB(1), lowerB(2)),
             Scalar(upperB(0), upperB(1), upperB(2)), dst);

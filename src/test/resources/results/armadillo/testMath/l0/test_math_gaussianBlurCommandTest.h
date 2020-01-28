@@ -9,18 +9,18 @@ using namespace arma;
 using namespace cv;
 class test_math_gaussianBlurCommandTest{
 public:
-mat src;
+cube src;
 int sizeX;
 int sizeY;
 double sigmaX;
 double sigmaY;
-mat dst;
+cube dst;
 void init()
 {
-src=mat(n,m);
-dst=mat(n,m);
+src = cube(3, n, m);
+dst = cube(3, n, m);
 }
-void gaussianBlurHelper(mat src, mat dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
+void gaussianBlurHelper(cube src, cube dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
 {
     gaussianBlur(src, dst, Size(sizeX, sizeY), sigmaX, sigmaY);
 }

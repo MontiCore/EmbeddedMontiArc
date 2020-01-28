@@ -67,9 +67,9 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
 
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrix","Mat", "");;
+        method.addParameter(src, "src", "CommonMatrix", "cube", "");;
         Variable dst = new Variable();
-        method.addParameter(dst, "dst", "CommonMatrixType", "Mat", "");
+        method.addParameter(dst, "dst", "CommonMatrixType", "mat", "");
         Variable lowerBoundary = new Variable();
         method.addParameter(lowerBoundary, "lowerB", "colvec", "colvec", "" );
         Variable upperBoundary = new Variable();
