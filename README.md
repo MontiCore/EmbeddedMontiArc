@@ -1,5 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# RNNsearch translator
+# RNNsearch Translator
 This project uses the RNNsearch architecture by [Bahdanau et al.](https://arxiv.org/abs/1409.0473) to translate a sentence from English to Vietnamese using the IWSLT'15 dataset for training and the tst2013 dataset for testing preprocessed by [The Stanford Natural Language Processing Group](https://nlp.stanford.edu/projects/nmt/).
 
 ## Prerequisites
@@ -11,4 +11,4 @@ This project uses the RNNsearch architecture by [Bahdanau et al.](https://arxiv.
 1. Run `./create_dataset.sh` to download the complete dataset and prepare it for usage. The HDF5 files within the repository only contain a small subset of the dataset used for testing the application.
 2. Update the settings in `src/emadl/translator/RNNsearch.cnnt` if wanted.
 3. Run `./build.sh` to generate, train and compile the model.
-4. Run `./build/src/cpp/Translator resources/vocabularies/vocab.en resources/vocabularies/vocab.en '<source sequence>'` to translate a sentence from English to Vietnamese.
+4. Run `build/src/cpp/Translator resources/vocabularies/vocab.en resources/vocabularies/vocab.en '<source sequence>'` to translate a sentence from English to Vietnamese.
