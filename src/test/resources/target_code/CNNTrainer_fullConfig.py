@@ -30,6 +30,7 @@ if __name__ == "__main__":
         loss='softmax_cross_entropy',
         loss_params={
             'sparse_label': True,
+            'loss_axis': -1,
             'from_logits': False},
         optimizer='rmsprop',
         optimizer_params={
