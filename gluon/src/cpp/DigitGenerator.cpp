@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 			vec_label[i] = 0;
 	}
 
-	connector.noise = conv_to< arma::dcube >::from( CNNTranslator::translateToCube(data, vector<size_t> {100, 1, 1}) );
+	connector.noise = conv_to< arma::Cube<double> >::from( CNNTranslator::translateToCube(data, vector<size_t> {100, 1, 1}) );
 	//connector.c1 = conv_to< icube >::from( CNNTranslator::translateToCube(vec_label, vector<size_t> {10, 1, 1}) );
 	//connector.c2 = conv_to< dcube >::from( CNNTranslator::translateToCube(vec_continuous, vector<size_t> {1, 1, 1}) );
 
