@@ -9,6 +9,7 @@ configuration FullConfig{
         from_logits: true
         loss_axis : -1
         batch_axis: 0
+        dice_weight: (0.2, 0.8)
      }
      context : gpu
      normalize : true

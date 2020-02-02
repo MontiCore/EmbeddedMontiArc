@@ -115,7 +115,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     IgnoreIndicesEntry implements SoftmaxCrossEntropyIgnoreIndicesEntry = name:"ignore_indices" ":" value:IntegerValue;
     MarginEntry implements HingeEntry, SquaredHingeEntry = name:"margin" ":" value:NumberValue;
     LabelFormatEntry implements LogisticEntry = name:"label_format" ":" value:StringValue;
-    //DiceWeight implements DiceEntry = name: "dice_weight" ":" value:DoubleVectorValue;
+    DiceWeightEntry implements DiceEntry = name: "dice_weight" ":" value:DoubleVectorValue;
 
     interface OptimizerValue extends ConfigValue;
     interface SGDEntry extends OptimizerParamEntry;
