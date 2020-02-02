@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cNNCalculator;
+
+component QNetwork{
+    ports in Q(-oo:oo)^{1024} features,
+         out Q(-oo:oo)^{10} c1;
+
+    implementation CNN {
+
+        features ->
+		FullyConnected(units=128, no_bias=true) ->
+		BatchNorm() ->
+		Relu() ->
+		FullyConnected(units=10, no_bias=true) ->
+		c1;
+    }
+}

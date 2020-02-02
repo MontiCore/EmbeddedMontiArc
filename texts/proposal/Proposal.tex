@@ -1,0 +1,77 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{dsfont}
+\usepackage{cite}
+
+\begin{document}
+
+\pagestyle{empty}
+
+\section*{Proposal for Bachelorthesis}
+\subsubsection*{Julian Dierkes}
+
+Goal of this Bachelorthesis is to extend EmbeddedMontiArcDL (EMADL) with the special neural net
+architecture of generative adversiarial networks (GANs). In this proposal we will shortly introduce
+the already existing tools MontiCore, EmbeddedMontiArch and EmbeddedMontiArcDL. Finally we will
+talk about GANs and their challenges when integrating them to EMADL.
+
+\bigskip
+
+MontiCore is a language workbench which is capable of generating generators for domain specific
+languages (DSL). When fed with a context free grammar of a DSL and additional parameters MontiCore 
+generates tools like a language parser and components for an abstract syntax tree. These tools
+can then be used to build a generator which is able to translate code of a DSL to a corresponding
+implementation in an existing coding language leaving the user with an executable application.
+
+\bigskip
+
+EmbeddedMontiArch is a DSL for easily creating component and connector (C\&C) architectures.
+C\&C Architectures consist of many componets responsible for different tasks and calculations. The
+single components have clearly defined inputs of other components and clearly defined outputs to
+other components via the given connectors. These architecture is designed for the purpose of being
+easily testable and allowing reusability of components making it
+expecially attractive to security-relevant cyber-physical systems. A possible application of C\&C
+architectures is software for selfdriving cars.
+
+\bigskip
+
+Deep Learning has recently seen ever growing influence in many different applications and research
+fields. Thus it is an important challenge being able to build deep learning systems that are easy to understand, 
+easy to test and easy to reuse for effective software engineering. EMADL tries to face this challenge by extending
+EmbeddedMontiArch with tools to implement deep learning algorithms. Hereby the focus is on being
+independent of an actual deep learning library thus offering many different backends for the actual
+implementation of the algorithms. In the currenty version of EMADL feed forward networks,
+convolutional neural nets, recurrent neural nets and reinforcement learning algorithms are already
+available.
+
+\bigskip
+
+GANs have a special architecture for generating artifical data similar to a given data-distribution.
+The architecture consists of one neural net for generating the artificial data and one neural net
+trying to discriminate the generated data and the data of the real data-distribution. The two
+networks play a minmax game both being trained to fool the other neural net. The idea is that
+eventually the generator learns to generate data similar to the data-distribution making it
+impossible for the discriminator to tell apart the faked data and the real data. The challenge of
+implementing GANs to EmbeddedMontiArchDL is that two independent networks need to be trained
+together. To face this challenge we will try to make use of the concepts already established in the
+reinforcement learning part of EMADL.
+
+\smallskip
+
+After EMADL has been extended by GANs succesfully, we want to evaluate our result by implementing
+some toy-examples like a mnist generator for handwritten digits. Ultimatly we want to
+implement the given GAN in [1] for improved road marking recognition in unconstrained datasets and
+for data augmentation with GANs.
+
+\bigskip
+
+The following papers will be usefull on our great quest of achieving a bachelor-degree
+
+\bibliographystyle{plain}
+\bibliography{research}{}
+
+\end{document}
+
