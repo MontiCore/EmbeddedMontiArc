@@ -3,7 +3,7 @@
 stages:
 - linux
 
-TestGLUON:
+TestGAN:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
   script: 
