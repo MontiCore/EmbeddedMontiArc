@@ -24,6 +24,11 @@ int main(int argc, char* argv[]) {
 	std::default_random_engine generator;
 	generator.seed(genSeed);
 	std::normal_distribution<double> distribution(0.0,1.0);
+	int label = std::stoi(argv[2]);
+	vector<float> vec_label(10);
+	float continuous = std::stof(argv[3]);
+	vector<float> vec_continuous(1);
+	vec_continuous[0] = continuous;
 
     vector<float> data(100);
 
@@ -31,7 +36,16 @@ int main(int argc, char* argv[]) {
 		data[i] = distribution(generator);
 	}
 
+	for(size_t i=0; i < 10; i++){
+		if(i == label)
+			vec_label[i] = 1;
+		else
+			vec_label[i] = 0;
+	}
+
 	connector.noise = conv_to< dcube >::from( CNNTranslator::translateToCube(data, vector<size_t> {100, 1, 1}) );
+	//connector.c1 = conv_to< icube >::from( CNNTranslator::translateToCube(vec_label, vector<size_t> {10, 1, 1}) );
+	//connector.c2 = conv_to< dcube >::from( CNNTranslator::translateToCube(vec_continuous, vector<size_t> {1, 1, 1}) );
 
     connector.execute();
 
@@ -40,8 +54,8 @@ int main(int argc, char* argv[]) {
 	vector<float> img_vec = CNNTranslator::translate(img_result_cube);
 
 	cv::Mat result_img_cv = cv::Mat(img_vec, false);
-	result_img_cv = result_img_cv.reshape(3, 64);
-	cv::resize(result_img_cv, result_img_cv, cv::Size(), 8, 8, cv::INTER_LINEAR);
+	result_img_cv = result_img_cv.reshape(1, 28);
+	cv::resize(result_img_cv, result_img_cv, cv::Size(), 16, 16, cv::INTER_LINEAR);
 	result_img_cv.convertTo(result_img_cv, CV_8UC3);
 
 	cv::namedWindow("MNIST"); 
