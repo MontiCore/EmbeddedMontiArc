@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cNNSegment;
+
+component DeOneHotImage<Z(1:oo) channels = 2, Z(1:oo) rows = 2, Z(1:oo) cols = 2>{
+    ports in Q(0:1)^{channels, rows, cols} inputVector,
+          out Q(0:1)^{1, rows, cols} maxValues;
+
+    implementation Math{
+
+        for row = 1:rows
+            for col = 1:cols
+                maxValues(1,row,col) = inputVector(1,row,col);
+
+                for i = 2:channels
+                    if inputVector(i,row,col) > maxValues(1,row,col)
+                        maxValues(1,row,col) = inputVector(i,row,col);
+                    end
+                end
+            end
+        end
+    }
+}
