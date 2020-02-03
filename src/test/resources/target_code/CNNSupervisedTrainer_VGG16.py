@@ -297,7 +297,7 @@ class CNNSupervisedTrainer_VGG16:
         elif loss == 'dice_loss':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
             dice_weight = loss_params['dice_weight'] if 'dice_weight' in loss_params else None
-            loss_function = DiceLoss(axis=loss_axis, ignore_indices=ignore_indices, from_logits=fromLogits, weight=dice_weight, sparse_label=sparseLabel, batch_axis=batch_axis)
+            loss_function = DiceLoss(axis=loss_axis, from_logits=fromLogits, weight=dice_weight, sparse_label=sparseLabel, batch_axis=batch_axis)
         elif loss == 'l2':
             loss_function = mx.gluon.loss.L2Loss()
         elif loss == 'l1':
