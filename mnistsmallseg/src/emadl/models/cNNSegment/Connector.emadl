@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cNNSegment;
+
+component Connector {
+    ports in Z(0:255)^{1, 28, 28} image,
+          out Q(0:1)^{1, 28, 28} segmented;
+
+    instance SmallSeg<10> predictor;
+    instance DeOneHotImage<10,28,28> deonehot;
+
+    connect image -> predictor.data;
+
+    connect predictor.softmax -> deonehot.inputVector;
+
+    connect deonehot.maxValues -> segmented;
+
+}

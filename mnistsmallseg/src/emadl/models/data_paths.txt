@@ -1,0 +1,1 @@
+cNNSegment.SmallSeg ../resources/training_data_fashionmnist_seg
