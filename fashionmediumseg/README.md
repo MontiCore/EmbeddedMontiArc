@@ -18,7 +18,7 @@ bash build.sh
 
 Finally, run the segmentation as follows:
 ```
-./build/src/cpp/FashionSegment ../resources/images/1.png
+./build/src/cpp/FashionSegment ../resources/images_fashion2x2/1.png
 ```
 
 You can try different images from the provided `/resources/images` directory or even create your own images for testing. Note that the application program FashionSegment will automatically rescale the given input image to the size 56x56.

@@ -37,18 +37,19 @@ def main(argv):
     input_file = '../resources/images_fashion2x2/3.png'
     output_file = 'mnist_sample_images/0_pred.png'
     ctx = mx.gpu(0)
+    size = 28
 
     ### parse_args
     try:
-        opts, _ = getopt.getopt(argv, 'i:o:c:p:', ["ifile=","ofile=","ctx=","params="])
+        opts, _ = getopt.getopt(argv, 'i:o:c:m:p:s:', ["ifile=","ofile=","ctx=","model=","params=","size="])
     except getopt.GetoptError:
-        print("demo.py -i <input_file> -o <output_file> -c <context> -p <params>")
+        print("demo.py -i <input_file> -o <output_file> -c <context> -m <model> -p <params> -s <size>")
         sys.exit(2)
 
 
     for opt, arg in opts:
         if opt == '-h':
-            print("demo.py -i <input_file> -o <output_file> -c <context> -p <params>")
+            print("demo.py -i <input_file> -o <output_file> -c <context> -m <model> -p <params> -s <size>")
             sys.exit()
         elif opt in ("-i", "ifile"):
             input_file = arg
@@ -61,6 +62,10 @@ def main(argv):
                 ctx = mx.cpu(0)
         elif opt in ("-o", "ofile"):
             params_path = arg
+        elif opt in ("-m", "model"):
+            model_path = arg
+        elif opt in ("-s", "size"):
+            size = arg
 
     """
     https://discuss.mxnet.io/t/collect-params-load-model-params-file-does-not-work/1754
@@ -77,7 +82,7 @@ def main(argv):
     ### load model and parameters
     net = gluon.nn.SymbolBlock.imports(model_path, ['data'], params_path, ctx=ctx)
 
-    target_res = (58, 58)
+    target_res = (size, size)
     ### load preprocess image
     img_processed, org_h, org_w = get_preprocessed_image_mnist(input_file, res=target_res)
 
