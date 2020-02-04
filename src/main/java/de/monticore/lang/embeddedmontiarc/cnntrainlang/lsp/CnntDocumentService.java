@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTCNNTrainCompilationUnit, EMAComponentSymbol> {
     private CNNTrainParser parser = new CNNTrainParser();
@@ -46,6 +47,7 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
         Log.info("Parsing!", "default");
         try {
             // of type ASTCNNTrainCompilationUnit
+            // TODO
             return parser.parse(fullText);
         } catch (IOException e) {
             Log.error("Error parsing model: ", e);
@@ -55,12 +57,15 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
 
     @Override
     protected List<String> getPackageList(ASTCNNTrainCompilationUnit node) {
-        return node.getPackageList();
+        // return node.getPackageList();
+        List<String> packageList = new ArrayList<>();
+        packageList.add(node.getName());
+        return packageList;
     }
 
     @Override
     protected String getSymbolName(ASTCNNTrainCompilationUnit node) {
-        return node.getComponent().getName();
+        return node.getName();
     }
 
     @Override
