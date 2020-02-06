@@ -7,20 +7,43 @@ component SmallSeg<Z(2:oo) classes = 10>{
 
         implementation CNN {
 
-            def conv(filter, channels){
-                Convolution(kernel=(filter,filter), channels=channels) ->
+            def conv(filter, channels, stride=(1,1)){
+                Convolution(kernel=(filter,filter), channels=channels, stride=stride) ->
                 Relu()
             }
 
             data ->
             conv(filter=3, channels=32) ->
+            conv(filter=3, channels=32) ->
+            Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
+
+            conv(filter=3, channels=64) ->
             conv(filter=3, channels=64) ->
             Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
 
-            conv(filter=1, channels=128) ->
-            Dropout(p=0.25) ->
-            Convolution(kernel=(1,1), channels=classes) ->
-            TransConv(kernel=(6,6), channels=classes, stride=(2,2)) ->
+            (
+
+                conv(filter=3, channels=128) ->
+                conv(filter=3, channels=128) ->
+                Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
+
+                conv(filter=1, channels=1024) ->
+                Dropout(p=0.5) ->
+                conv(filter=1, channels=1024) ->
+                Dropout(p=0.5) ->
+                Convolution(kernel=(1,1), channels=classes) ->
+                TransConv(kernel=(2,2), channels=classes, stride=(2,2))
+                // TransConv(kernel=(2,2), channels=classes, stride=(2,2)) ->
+
+                |
+
+                Convolution(kernel=(1,1), channels=classes)
+                //TransConv(kernel=(2,2), channels=classes, stride=(2,2))
+
+            ) ->
+            Concatenate() ->
+
+            TransConv(kernel=(4,4), channels=classes, stride=(2,2)) ->
 
             Softmax() ->
             softmax;
