@@ -11,15 +11,8 @@ from mxnet.gluon import nn
 from mxnet.test_utils import get_mnist_iterator
 import logging
 
-from models.small_seg import SmallSeg
-from models.fcn_vgg16 import FcnVGG16
 
-
-
-def make_graph(filename, title):
-    model = FcnVGG16()
-    model.hybridize()
-
+def make_graph(model, filename, title='network'):
     symbol_data = mx.sym.var('data')
 
     tmp = model(symbol_data)
@@ -30,34 +23,55 @@ def make_graph(filename, title):
     digraph.view(filename=filename)
 
 
+def test_input(model, shape=(32,3,480,480), ctx=mx.gpu(0)):
+    x = mx.nd.random.uniform(shape=shape, ctx=ctx)
+    print('Input shape: ', x.shape)
+    outputs = model(x)
+    print('Output shape: ', outputs.shape)
+
 def main(argv):
-    """ Main entry point to the program. """
+    filename= 'graph'
+    model_path = './model/cNNSegment.MediumSeg/model_0_newest-symbol.json'
+    params_path = './model/cNNSegment.MediumSeg/model_0_newest-0000.params'
+    ctx = mx.gpu(0)
+    size = 28
 
-    modelname = 'FcnVGG16'
-
-    output_file = 'documentation/' + modelname
-    title = modelname
-
+    ### parse_args
     try:
-        opts, args = getopt.getopt(argv, 'o:t:', ["ofile=", "title="])
+        opts, _ = getopt.getopt(argv, 'f:c:m:p:', ["filename=","ctx=","model=","params="])
     except getopt.GetoptError:
-        print("make_graph.py -o <output_file> -t <title>")
+        print("demo.py -f <filename> -c <context> -m <model> -p <params>")
         sys.exit(2)
+
 
     for opt, arg in opts:
         if opt == '-h':
-            print("crfasrnn_demo.py -i <inputfile> -o <outputfile> -g <gpu_device>")
+            print("demo.py -f <filename> -c <context> -m <model> -p <params>")
             sys.exit()
-        elif opt in ("-o", "ofile"):
-            output_file = arg
-        elif opt in ("-t", "title"):
-            title = arg
+        elif opt in ("-f", "filename"):
+            filename = arg
+        elif opt in ("-c", "ctx"):
+            if arg == 'gpu':
+                ctx = mx.gpu(0)
+            elif arg == 'cpu':
+                ctx = mx.cpu(0)
+        elif opt in ("-p", "parms"):
+            params_path = arg
+        elif opt in ("-m", "model"):
+            model_path = arg
 
-    print("Output file: {}".format(output_file))
-    print("Title: {}".format(title))
-    print("Model: {}".format(modelname))
-    make_graph(output_file, title)
+    """
+    https://discuss.mxnet.io/t/collect-params-load-model-params-file-does-not-work/1754
+
+    https://discuss.mxnet.io/t/save-and-load-params-gluon/4050/3
+    """
+
+    ### load model and parameters
+    model = gluon.nn.SymbolBlock.imports(model_path, ['data'], params_path, ctx=ctx)
+
+    make_graph(model, filename=filename)
 
 
+    ### el final
 if __name__ == "__main__":
     main(sys.argv[1:])

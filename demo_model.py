@@ -31,6 +31,15 @@ def plot(img, labels, class_names=None):
 
     plt.show()
 
+
+def test_input(model, shape=(32,3,480,480)):
+    ctx = mx.gpu(0)
+
+    x = mx.nd.random.uniform(shape=shape, ctx=ctx)
+    print('Input shape: ', x.shape)
+    outputs = model(x)
+    print('Output shape: ', outputs.shape)
+
 def main(argv):
     model_path = './model/cNNSegment.MediumSeg/model_0_newest-symbol.json'
     params_path = './model/cNNSegment.MediumSeg/model_0_newest-0000.params'
