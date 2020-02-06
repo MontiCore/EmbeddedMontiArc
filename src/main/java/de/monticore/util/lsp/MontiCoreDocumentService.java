@@ -4,14 +4,21 @@ package de.monticore.util.lsp;
 import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.logging.DiagnosticsLog;
 import de.se_rwth.commons.logging.Log;
-import org.eclipse.lsp4j.*;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.lsp4j.DidChangeTextDocumentParams;
+import org.eclipse.lsp4j.DidCloseTextDocumentParams;
+import org.eclipse.lsp4j.DidOpenTextDocumentParams;
+import org.eclipse.lsp4j.DidSaveTextDocumentParams;
 import org.eclipse.lsp4j.services.LanguageClient;
-import org.eclipse.lsp4j.services.TextDocumentService;
 
+import java.io.IOException;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
 
 public abstract class MontiCoreDocumentService<ASTType extends ASTNode> implements ClientAwareTextDocumentService {
     protected Optional<DiagnosticsHelper> diagnosticsHelper = Optional.empty();
@@ -116,6 +123,10 @@ public abstract class MontiCoreDocumentService<ASTType extends ASTNode> implemen
         } else {
             return Optional.empty();
         }
+    }
+
+    public Optional<ASTType> doParse(String uri) throws IOException {
+        return doParse(new StringReader(IOUtils.toString(URI.create(uri), StandardCharsets.UTF_8)));
     }
 
     @Override
