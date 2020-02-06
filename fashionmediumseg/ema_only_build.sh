@@ -18,6 +18,7 @@ else
     echo "EMADL Generator Path: " $EMADL_GEN_PATH
 fi
 
+rm -rf target
 java -jar $EMADL_GEN_PATH -m src/emadl/models/ -r cNNSegment.Connector -o target -b GLUON
 
 

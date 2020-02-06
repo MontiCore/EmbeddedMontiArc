@@ -26,4 +26,4 @@ You can try different images from the provided `/resources/images` directory or 
 
 Run provided python script to test network seperately:
 
-python /home/treiber/emapps/mnistsmallseg/python/DigitSegment.py -i ../resources/images_fashionmnist/1.png
+python ./python/DigitSegment.py -i ../resources/images/1.png

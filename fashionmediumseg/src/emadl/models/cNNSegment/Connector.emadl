@@ -5,7 +5,7 @@ component Connector {
     ports in Z(0:255)^{1, 56, 56} image,
           out Q(0:1)^{1, 56, 56} segmented;
 
-    instance MediumSeg<10> predictor;
+    instance FCN_FASHION<10> predictor;
     instance DeOneHotImage<10,56,56> deonehot;
 
     connect image -> predictor.data;
