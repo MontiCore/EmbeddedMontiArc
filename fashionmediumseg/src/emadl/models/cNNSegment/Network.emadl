@@ -5,89 +5,65 @@ component Network<Z(2:oo) num_classes = 10>{
     ports in Z(0:255)^{1, 56, 56} data,
          out Q(0:1)^{num_classes, 56, 56} softmax;
 
-        implementation CNN{
+    implementation CNN{
 
-            def conv(filter, channels){
-                Convolution(kernel=(filter,filter), channels=channels) ->
-                Relu()
-            }
-            def maxPool2dSamePadding(kernel, stride){
-                Pooling(pool_type="max", kernel=kernel, stride=stride)
-                //Crop(start=1, until=0)
-            }
+        def conv(filter, channels){
+            Convolution(kernel=(filter,filter), channels=channels) ->
+            Relu()
+        }
 
-            def vgg_block(num_conv, filter, channels){
-                conv(filter=filter, channels=channels, ->=num_conv) ->
-                maxPool2dSamePadding(kernel=(2,2), stride=(2,2))
-            }
+        def maxPool2dSamePadding(kernel, stride){
+            Pooling(pool_type="max", kernel=kernel, stride=stride)
+            //Crop(start=1, until=0)
+        }
 
-            def fully_conv(filter, channels, dropout) {
-                conv(filter=filter, channels=channels) ->
-                Relu() ->
-                Dropout(p=dropout)
-            }
+        def vgg_block(num_conv, filter, channels){
+            conv(filter=filter, channels=channels, ->=num_conv) ->
+            maxPool2dSamePadding(kernel=(2,2), stride=(2,2))
+        }
 
-            data ->
+        def fully_conv(filter, channels, dropout) {
+            conv(filter=filter, channels=channels) ->
+            Relu() ->
+            Dropout(p=dropout)
+        }
 
-            /* vgg block 1 */
-            conv(filter=3, channels=64) ->
-            conv(filter=3, channels=64) ->
-            maxPool2dSamePadding(kernel=(2,2), stride=(2,2)) ->
+        data ->
 
+        /* vgg block 1 */
+        vgg_block(num_conv=2, filter=3, channels=64) ->
 
-            /* vgg block 2 */
-            vgg_block(num_conv=2, filter=3, channels=128) ->
+        /* vgg block 2 */
+        vgg_block(num_conv=2, filter=3, channels=128) ->
 
-            /* vgg block 3 */
+        /* vgg block 4 */
+        vgg_block(num_conv=3, filter=3, channels=256) ->
+        (
+
+            /* vgg block 5 */
             vgg_block(num_conv=3, filter=3, channels=256) ->
 
-            /* split used for skip connection */
-            // Split(n=2) ->
-            (
-                [0] ->
-                /* vgg block 4 */
-                vgg_block(num_conv=3, filter=3, channels=512) ->
-                /* split used for skip connection */
-                // Split(n=2) ->
-                (
-                    [0] ->
-                    /* vgg block 5 */
-                    vgg_block(num_conv=3, filter=3, channels=512) ->
+            /* fully convolutional layers, replacing fully connected layers */
+            fully_conv(filter=7, channels=1028, dropout=0.5) ->
+            fully_conv(filter=7, channels=1028, dropout=0.5) ->
+            Convolution(kernel=(1,1), channels=num_classes) ->
 
-                    /* fully convolutional layers, replacing fully connected layers */
-                    fully_conv(filter=7, channels=4096, dropout=0.5) ->
-                    fully_conv(filter=7, channels=4096, dropout=0.5) ->
-                    Convolution(kernel=(1,1), channels=num_classes) ->
+            /* upsampling */
+            TransConv(kernel=(4,4), channels=num_classes, stride=(2,2))
 
-                    /* upsampling */
-                    TransConv(kernel=(4,4), channels=num_classes, stride=(2,2))
+        |
 
-                |
-                    [1] ->
+            /* skip 4 */
+            Convolution(kernel=(4,4), channels=num_classes)
+            // Crop(start=6, until=-7)
+        ) ->
 
-                    /* skip 4 */
-                    Convolution(kernel=(4,4), channels=num_classes)
-                    // Crop(start=6, until=-7)
-                ) ->
+        Concatenate() ->
 
-                Concatenate() ->
-
-                /* deconvolution */
-                TransConv(kernel=(4,4), channels=num_classes, stride=(2,2))
-            |
-                [1] ->
-
-                /* skip 3 */
-                Convolution(kernel=(1,1), channels=num_classes)
-                // Crop(start=13, until=-13)
-            ) ->
-
-            Concatenate() ->
-
-            /*  Final up-sampling and cropping */
-            TransConv(kernel=(16,16), channels=num_classes, stride=(2,2)) ->
-            // Crop(start=12, until=-12) ->
-            Softmax() ->
-            softmax;
-        }
+        /*  Final up-sampling and cropping */
+        TransConv(kernel=(14,14), channels=num_classes, stride=(2,2)) ->
+        // Crop(start=12, until=-12) ->
+        Softmax() ->
+        softmax;
+    }
 }
