@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-configuration FCN_FASHION{
+configuration Network{
      num_epoch:1
      batch_size:32
      normalize:false

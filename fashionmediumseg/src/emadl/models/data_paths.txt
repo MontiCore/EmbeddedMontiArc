@@ -1,2 +1,2 @@
 cNNSegment.MediumSeg ../resources/fashionmnist_2x2
-cNNSegment.FCN_FASHION ../resources/fashionmnist_2x2
+cNNSegment.Network ../resources/fashionmnist_2x2

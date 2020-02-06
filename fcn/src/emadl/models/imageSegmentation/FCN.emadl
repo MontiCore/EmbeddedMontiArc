@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package cNNSegment;
 
-component FCN_FASHION<Z(2:oo) num_classes = 10>{
+component Network<Z(2:oo) num_classes = 10>{
     ports in Z(0:255)^{1, 56, 56} data,
          out Q(0:1)^{num_classes, 56, 56} softmax;
 
