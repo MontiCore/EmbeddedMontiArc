@@ -3,7 +3,7 @@ package cNNSegment;
 
 component Connector {
     ports in Z(0:255)^{1, 28, 28} image,
-          out Q(0:1)^{1, 28, 28} segmented;
+          out Z(0:255)^{28, 28, 1} segmented;
 
     instance SmallSeg<10> predictor;
     instance DeOneHotImage<10,28,28> deonehot;
@@ -12,6 +12,6 @@ component Connector {
 
     connect predictor.softmax -> deonehot.inputVector;
 
-    connect deonehot.maxValues -> segmented;
+    connect deonehot.res -> segmented;
 
 }

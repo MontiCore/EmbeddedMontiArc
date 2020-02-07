@@ -49,23 +49,27 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    std::cout << "Pass1";
+    std::cout << "Pass1" << std::endl;
 
     connector.image = conv_to< icube >::from( CNNTranslator::translateToCube(data, vector<size_t> {channels,height,width}) );
 
-    std::cout << "Pass2";
+    std::cout << "Pass2" << std::endl;
 
     connector.execute();
 
-    // cv::Mat out = cont_to< mat >::from( CNNTranslator::translateToMat( connector.segmented, vector<size_t> {1,height,width}) ) );
+    std::cout << "Pass3" << std::endl;
 
-    std::cout << "Pass3";
+    std::cout << "Size segmented: " << connector.segmented.size() << std::endl;
 
-    cv::Mat out;
-    cv::Mat opencv_mat( height, width, CV_64FC1, connector.segmented.memptr() );
+    cv::Mat out = conv_to< mat >::from( CNNTranslator::translateToMat( connector.segmented, vector<size_t> {channels,height,width}) );
+
+    std::cout << "Pass4" << std::endl;
+
+    // cv::Mat out;
+    // cv::Mat opencv_mat( height, width, CV_8U, connector.segmented.memptr() );
 
 
-    std::cout << "== Size Segmented: " << out.size() << std::endl;
+    std::cout << "== Size Segmented: " << out.size() << " ==" << std::endl;
     cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
     cv::imshow("image", out);
     cv::waitKey(30);
