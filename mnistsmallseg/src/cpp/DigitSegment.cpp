@@ -11,7 +11,7 @@
 #include <map>
 
 int main(int argc, char* argv[]) {
-    if(argc < 1){ //Note: argc=1 if no arguments are provided
+    if(argc < 2){ //Note: argc=1 if no arguments are provided
         std::cout << "Missing argument: Path to test image must be provided " << std::endl;
         exit(1);
     }
