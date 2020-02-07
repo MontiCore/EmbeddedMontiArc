@@ -11,7 +11,7 @@
 #include <map>
 
 int main(int argc, char* argv[]) {
-    if(argc < 1){ //Note: argc=1 if no arguments are provided
+    if(argc < 2){ //Note: argc=1 if no arguments are provided
         std::cout << "Missing argument: Path to test image must be provided " << std::endl;
         exit(1);
     }
@@ -49,28 +49,18 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    std::cout << "Pass1";
-
     connector.image = conv_to< icube >::from( CNNTranslator::translateToCube(data, vector<size_t> {channels,height,width}) );
-
-    std::cout << "Pass2";
 
     connector.execute();
 
-    // cv::Mat out = cont_to< mat >::from( CNNTranslator::translateToMat( connector.segmented, vector<size_t> {1,height,width}) ) );
+    cv::Mat out( height, width, CV_8U, connector.segmented.memptr() );
 
-    std::cout << "Pass3";
-
-    cv::Mat out;
-    cv::Mat opencv_mat( height, width, CV_64FC1, connector.segmented.memptr() );
-
-
-    std::cout << "== Size Segmented: " << out.size() << std::endl;
+    std::cout << "== Size Segmented: " << out.size() << " ==" << std::endl;
     cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
-    cv::imshow("image", out);
-    cv::waitKey(30);
+    cv::imshow("image", 20*out);
+    cv::waitKey(0);
 
-    cv::imwrite("test_img_segmented.png", out);
+    cv::imwrite("test_img_segmented.png", 20*out);
 
     return 0;
 }

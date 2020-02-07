@@ -1,2 +1,3 @@
 src/src/cpp/DigitCalculator.cpp
 *.pyc
+mnistsmallseg/test_img_segmented.png
