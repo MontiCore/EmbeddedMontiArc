@@ -2,7 +2,7 @@
 package cNNSegment;
 
 component DeOneHotImage<Z(1:oo) channels = 2, Z(1:oo) rows = 2, Z(1:oo) cols = 2>{
-    ports in Q(0:1)^{channels, rows, cols} inputVector,
+    ports in Q(0:1)^{rows, cols, channels} inputVector,
           in Q(0:1)^{1, rows, cols} maxValues,
           out Z(0:255)^{1, rows, cols} res;
 
