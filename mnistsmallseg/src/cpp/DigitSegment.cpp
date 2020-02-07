@@ -49,32 +49,18 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    std::cout << "Pass1" << std::endl;
-
     connector.image = conv_to< icube >::from( CNNTranslator::translateToCube(data, vector<size_t> {channels,height,width}) );
-
-    std::cout << "Pass2" << std::endl;
 
     connector.execute();
 
-    std::cout << "Pass3" << std::endl;
-
-    std::cout << "Size segmented: " << connector.segmented.size() << std::endl;
-
-    cv::Mat out = conv_to< mat >::from( CNNTranslator::translateToMat( connector.segmented, vector<size_t> {channels,height,width}) );
-
-    std::cout << "Pass4" << std::endl;
-
-    // cv::Mat out;
-    // cv::Mat opencv_mat( height, width, CV_8U, connector.segmented.memptr() );
-
+    cv::Mat out( height, width, CV_8U, connector.segmented.memptr() );
 
     std::cout << "== Size Segmented: " << out.size() << " ==" << std::endl;
     cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
-    cv::imshow("image", out);
-    cv::waitKey(30);
+    cv::imshow("image", 20*out);
+    cv::waitKey(0);
 
-    cv::imwrite("test_img_segmented.png", out);
+    cv::imwrite("test_img_segmented.png", 20*out);
 
     return 0;
 }
