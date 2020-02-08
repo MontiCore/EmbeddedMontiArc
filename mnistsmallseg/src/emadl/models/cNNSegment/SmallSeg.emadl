@@ -13,10 +13,6 @@ component SmallSeg<Z(2:oo) classes = 10>{
             }
 
             data ->
-            conv(filter=3, channels=32) ->
-            conv(filter=3, channels=32) ->
-            Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
-
             conv(filter=3, channels=64) ->
             conv(filter=3, channels=64) ->
             Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
@@ -33,17 +29,15 @@ component SmallSeg<Z(2:oo) classes = 10>{
                 Dropout(p=0.5) ->
                 Convolution(kernel=(1,1), channels=classes) ->
                 TransConv(kernel=(2,2), channels=classes, stride=(2,2))
-                // TransConv(kernel=(2,2), channels=classes, stride=(2,2)) ->
 
                 |
 
                 Convolution(kernel=(1,1), channels=classes)
-                // TransConv(kernel=(2,2), channels=classes, stride=(2,2))
 
             ) ->
             Concatenate() ->
 
-            TransConv(kernel=(2,2), channels=classes, stride=(2,2)) ->
+            TransConv(kernel=(4,4), channels=classes, stride=(2,2)) ->
 
             Softmax() ->
             softmax;
