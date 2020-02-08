@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(1, './src')
 
+import os
 import getopt
 
 import numpy as np
@@ -33,20 +34,21 @@ def main(argv):
     filename= 'graph'
     model_path = './model/cNNSegment.MediumSeg/model_0_newest-symbol.json'
     params_path = './model/cNNSegment.MediumSeg/model_0_newest-0000.params'
+    director_path = '.model/cNNSegment.SmallSeg/'
     ctx = mx.gpu(0)
     size = 28
 
     ### parse_args
     try:
-        opts, _ = getopt.getopt(argv, 'f:c:m:p:', ["filename=","ctx=","model=","params="])
+        opts, _ = getopt.getopt(argv, 'f:c:m:p:d:', ["filename=","ctx=","model=","params=","dir="])
     except getopt.GetoptError:
-        print("demo.py -f <filename> -c <context> -m <model> -p <params>")
+        print("demo.py -f <filename> -c <context> -m <model> -p <params> -d <dir>")
         sys.exit(2)
 
 
     for opt, arg in opts:
         if opt == '-h':
-            print("demo.py -f <filename> -c <context> -m <model> -p <params>")
+            print("demo.py -f <filename> -c <context> -m <model> -p <params> -d <dir>")
             sys.exit()
         elif opt in ("-f", "filename"):
             filename = arg
@@ -55,7 +57,10 @@ def main(argv):
                 ctx = mx.gpu(0)
             elif arg == 'cpu':
                 ctx = mx.cpu(0)
-        elif opt in ("-p", "parms"):
+        elif opt in ("-d", "dir"):
+            model_path = os.path.join(arg, 'model_0_newest-symbol.json')
+            params_path = os.path.join(arg, 'model_0_newest-0000.params')
+        elif opt in ("-p", "params"):
             params_path = arg
         elif opt in ("-m", "model"):
             model_path = arg

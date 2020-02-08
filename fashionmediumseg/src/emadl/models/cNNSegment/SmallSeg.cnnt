@@ -4,7 +4,7 @@ configuration SmallSeg{
      batch_size:32
      normalize:false
      context:gpu
-     load_checkpoint:true
+     load_checkpoint:false
      loss:softmax_cross_entropy{
         loss_axis:1
      }
