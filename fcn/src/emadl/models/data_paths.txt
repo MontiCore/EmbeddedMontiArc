@@ -1,1 +1,1 @@
-cNNSegment.FCN  ../resources/voc
+cNNSegment.FCN  /home/treiber/.mxnet/datasets/voc

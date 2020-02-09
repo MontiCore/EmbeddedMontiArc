@@ -15,11 +15,14 @@ import xml.etree.ElementTree as ElementTree
 
 import h5py
 import numpy as np
+import cv2
 
 sets_from_2007 = [('2007', 'train'), ('2007', 'val')]
 train_set = [('2012', 'train')]
 val_set = [('2012', 'val')]
 test_set = [('2007', 'test')]
+
+res = (480, 480)
 
 classes = [
     "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat",
@@ -53,10 +56,7 @@ def get_image_for_id(voc_path, year, image_id):
     """
     fname = os.path.join(voc_path, 'VOC{}/JPEGImages/{}.jpg'.format(year,
                                                                     image_id))
-    with open(fname, 'rb') as in_file:
-        data = in_file.read()
-    # Use of encoding based on: https://github.com/h5py/h5py/issues/745
-    return np.fromstring(data, dtype='uint8')
+    return np.transpose(cv2.resize(cv2.imread(fname, cv2.IMREAD_COLOR), res), (2, 0, 1))
 
 def get_segmentation_for_id(voc_path, year, image_id):
     """Get image data as uint8 array for given image.
@@ -75,10 +75,7 @@ def get_segmentation_for_id(voc_path, year, image_id):
     """
     fname = os.path.join(voc_path, 'VOC{}/SegmentationClass/{}.png'.format(year,
                                                                     image_id))
-    with open(fname, 'rb') as in_file:
-        data = in_file.read()
-    # Use of encoding based on: https://github.com/h5py/h5py/issues/745
-    return np.fromstring(data, dtype='uint8')
+    return np.transpose(np.reshape(cv2.resize(cv2.imread(fname, cv2.IMREAD_GRAYSCALE), res), (480, 480, 1)), (2, 0, 1))
 
 
 def get_ids(voc_path, datasets):
@@ -123,15 +120,13 @@ def _main(args):
 
     # Create HDF5 dataset structure
     print('Creating HDF5 dataset structure.')
-    fname_train = os.path.join(voc_path, 'pascal_voc_07_12_train.hdf5')
-    fname_val = os.path.join(voc_path, 'pascal_voc_07_12_val.hdf5')
-    fname_test = os.path.join(voc_path, 'pascal_voc_07_12_test.hdf5')
+    fname_train = os.path.join(voc_path, 'train.h5')
+    fname_val = os.path.join(voc_path, 'val.h5')
+    fname_test = os.path.join(voc_path, 'test.h5')
 
     voc_h5file_train = h5py.File(fname_train, 'w')
     voc_h5file_val = h5py.File(fname_val, 'w')
     voc_h5file_test = h5py.File(fname_test, 'w')
-    uint8_dt = h5py.special_dtype(
-        vlen=np.dtype('uint8'))  # variable length uint8
 
     # store class list for reference class ids as csv fixed-length numpy string
     voc_h5file_train.attrs['classes'] = np.string_(str.join(',', classes))
@@ -140,19 +135,19 @@ def _main(args):
 
     # store images as variable length uint8 arrays
     train_images = voc_h5file_train.create_dataset(
-        'data', shape=(total_train_ids, ), dtype=uint8_dt)
+        'data', shape=(total_train_ids,3,480,480), dtype=np.uint8)
     val_images = voc_h5file_val.create_dataset(
-        'data', shape=(len(val_ids), ), dtype=uint8_dt)
+        'data', shape=(len(val_ids),3,480,480), dtype=np.uint8)
     test_images = voc_h5file_test.create_dataset(
-        'data', shape=(len(test_ids), ), dtype=uint8_dt)
+        'data', shape=(len(test_ids),3,480,480), dtype=np.uint8)
 
     # store boxes as class_id, xmin, ymin, xmax, ymax
     train_segmentations = voc_h5file_train.create_dataset(
-        'softmax_label', shape=(total_train_ids, ), dtype=uint8_dt)
+        'softmax_label', shape=(total_train_ids,1,480,480), dtype=np.uint8)
     val_segmentations = voc_h5file_val.create_dataset(
-        'softmax_label', shape=(len(val_ids), ), dtype=uint8_dt)
+        'softmax_label', shape=(len(val_ids),1,480,480), dtype=np.uint8)
     test_segmentations = voc_h5file_test.create_dataset(
-        'softmax_label', shape=(len(test_ids), ), dtype=uint8_dt)
+        'softmax_label', shape=(len(test_ids),1,480,480), dtype=np.uint8)
 
     # process all ids and add to datasets
     print('Processing Pascal VOC 2007 datasets for training set.')
@@ -166,7 +161,7 @@ def _main(args):
         train_images,
         train_segmentations,
         start=last_2007 + 1)
-    # print('Processing Pascal VOC 2012 val set.')
+    print('Processing Pascal VOC 2012 val set.')
     add_to_dataset(voc_path, '2012', val_ids, val_images, val_segmentations)
     print('Processing Pascal VOC 2007 test set.')
     add_to_dataset(voc_path, '2007', test_ids, test_images, test_segmentations)
@@ -177,6 +172,21 @@ def _main(args):
     voc_h5file_test.close()
     print('Done.')
 
+def test_result():
+    # with h5py.File("/home/treiber/.mxnet/datasets/voc/train.h5", 'r') as train:
+    with h5py.File(os.path.expanduser("~/.mxnet/datasets/voc/train.h5"), 'r') as train:
+        # print(train.keys())
+        train_img = np.array(train["data"][0])
+        print(train_img.shape)
+        train_img = np.transpose(train_img, (1, 2, 0))
+        print(train_img.shape)
+        cv2.imshow('train_img', train_img)
+        cv2.waitKey(0)
+        label = np.reshape(train["softmax_label"][0][0], (480, 480))
+        cv2.imshow('label', label)
+        cv2.waitKey(0)
+
 
 if __name__ == '__main__':
     _main(parser.parse_args())
+    test_result()
