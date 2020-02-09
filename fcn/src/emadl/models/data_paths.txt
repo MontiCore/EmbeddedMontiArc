@@ -1,1 +1,1 @@
-imageSegmentation.FCN resources/training_data
+cNNSegment.FCN  ../resources/voc

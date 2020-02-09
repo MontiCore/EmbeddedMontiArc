@@ -32,8 +32,8 @@ def plot(img, labels, class_names=None):
     plt.show()
 
 def main(argv):
-    model_path = './cNNSegment.SmallSeg_working/model_0_newest-symbol.json'
-    params_path = './cNNSegment.SmallSeg_working/model_0_newest-0000.params'
+    model_path = './model/cNNSegment.SmallSeg/model_0_newest-symbol.json'
+    params_path = './model/cNNSegment.SmallSeg/model_0_newest-0000.params'
     input_file = '../resources/images_fashion2x2/3.png'
     output_file = 'mnist_sample_images/0_pred.png'
     ctx = mx.gpu(0)
