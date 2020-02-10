@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 #include "CNNTranslator.h"
-#include "imageSegmentation_segmentation.h"
+#include "cNNSegment_connector.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-    imageSegmentation_segmentation segmentator;
+    cNNSegment segmentator;
     segmentator.init();
 
     std::string filePath = argv[1];
@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
     std::cout << "== original image size: " << img.size() << " ==" << std::endl;
 
     // scale image to fit
-    cv::Size scale(28,28);
+    cv::Size scale(480,480);
     cv::resize(img, img, scale);
     std::cout << "== simply resize: " << img.size() << " ==" << std::endl;
 
@@ -49,11 +49,11 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    segmentator.image = conv_to< icube >::from( CNNTranslator::translateToCube(data, vector<size_t> {channels,height,width}) );
+    connector.image = conv_to< icube >::from( CNNTranslator::translateToCube(data, vector<size_t> {channels,height,width}) );
 
-    segmentator.execute();
+    connector.execute();
 
-    cv::Mat out( height, width, CV_8U, segmentator.segmented.memptr() );
+    cv::Mat out( height, width, CV_8U, connector.segmented.memptr() );
 
     std::cout << "== Size Segmented: " << out.size() << " ==" << std::endl;
     cv::namedWindow("image", cv::WINDOW_AUTOSIZE);

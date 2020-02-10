@@ -218,7 +218,17 @@ def test_normalize():
     cv2.imshow('test normalize', img)
     cv2.waitKey(0)
 
+def test_mean():
+    import mxnet as mx
+    from mxnet import nd
+
+    input_name = 'data'
+    with h5py.File('/home/treiber/.mxnet/datasets/voc/train.h5', 'r') as train_h5:
+        mean = nd.array(train_h5[input_name][:].mean(axis=0))
+
+
 if __name__ == '__main__':
-    _main(parser.parse_args())
-    test_result()
+    # _main(parser.parse_args())
+    # test_result()
     # test_normalize()
+    test_mean()
