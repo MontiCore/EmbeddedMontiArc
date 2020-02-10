@@ -23,6 +23,8 @@ val_set = [('2012', 'val')]
 test_set = [('2007', 'test')]
 
 res = (480, 480)
+voc_mean = [.485, .456, .406]
+voc_std = [.229, .224, .225]
 
 classes = [
     "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat",
@@ -38,6 +40,14 @@ parser.add_argument(
     help='path to VOCdevkit directory',
     default='~/VOCdevkit')
 
+def normalize_img(img, mean, std):
+    img = img / 255.
+    img = (img - mean) / std
+    return img
+
+def denormalize_img(img, mean, std):
+    img = np.array(((img * std) + mean)*255, dtype=np.uint8)
+    return img
 
 def get_image_for_id(voc_path, year, image_id):
     """Get image data as uint8 array for given image.
@@ -56,7 +66,12 @@ def get_image_for_id(voc_path, year, image_id):
     """
     fname = os.path.join(voc_path, 'VOC{}/JPEGImages/{}.jpg'.format(year,
                                                                     image_id))
-    return np.transpose(cv2.resize(cv2.imread(fname, cv2.IMREAD_COLOR), res), (2, 0, 1))
+    img = cv2.imread(fname, cv2.IMREAD_COLOR)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = normalize_img(img, voc_mean, voc_std)
+    img = cv2.resize(img, res)
+    img = np.transpose(img, (2, 0, 1))
+    return img
 
 def get_segmentation_for_id(voc_path, year, image_id):
     """Get image data as uint8 array for given image.
@@ -75,7 +90,11 @@ def get_segmentation_for_id(voc_path, year, image_id):
     """
     fname = os.path.join(voc_path, 'VOC{}/SegmentationClass/{}.png'.format(year,
                                                                     image_id))
-    return np.transpose(np.reshape(cv2.resize(cv2.imread(fname, cv2.IMREAD_GRAYSCALE), res), (480, 480, 1)), (2, 0, 1))
+    img = cv2.imread(fname, cv2.IMREAD_GRAYSCALE)
+    img = cv2.resize(img, res)
+    img = np.reshape(img, (1,480,480))
+
+    return img
 
 
 def get_ids(voc_path, datasets):
@@ -135,11 +154,11 @@ def _main(args):
 
     # store images as variable length uint8 arrays
     train_images = voc_h5file_train.create_dataset(
-        'data', shape=(total_train_ids,3,480,480), dtype=np.uint8)
+        'data', shape=(total_train_ids,3,480,480))
     val_images = voc_h5file_val.create_dataset(
-        'data', shape=(len(val_ids),3,480,480), dtype=np.uint8)
+        'data', shape=(len(val_ids),3,480,480))
     test_images = voc_h5file_test.create_dataset(
-        'data', shape=(len(test_ids),3,480,480), dtype=np.uint8)
+        'data', shape=(len(test_ids),3,480,480))
 
     # store boxes as class_id, xmin, ymin, xmax, ymax
     train_segmentations = voc_h5file_train.create_dataset(
@@ -177,16 +196,29 @@ def test_result():
     with h5py.File(os.path.expanduser("~/.mxnet/datasets/voc/train.h5"), 'r') as train:
         # print(train.keys())
         train_img = np.array(train["data"][0])
-        print(train_img.shape)
         train_img = np.transpose(train_img, (1, 2, 0))
+        train_img = denormalize_img(train_img, voc_mean, voc_std)
         print(train_img.shape)
+        train_img = cv2.cvtColor(train_img, cv2.COLOR_RGB2BGR)
         cv2.imshow('train_img', train_img)
         cv2.waitKey(0)
         label = np.reshape(train["softmax_label"][0][0], (480, 480))
         cv2.imshow('label', label)
         cv2.waitKey(0)
 
+def test_normalize():
+    path = 'python-scripts/image.jpg'
+    img = cv2.imread(path, cv2.IMREAD_COLOR)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = normalize_img(img, voc_mean, voc_std)
+    img = cv2.resize(img, res)
+
+    img = denormalize_img(img, voc_mean, voc_std)
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    cv2.imshow('test normalize', img)
+    cv2.waitKey(0)
 
 if __name__ == '__main__':
     _main(parser.parse_args())
     test_result()
+    # test_normalize()
