@@ -9,7 +9,7 @@ using namespace arma;
 using namespace cv;
 class test_math_boundingRectCommandTest{
 public:
-double contour;
+vector<cv::Point> contour;
 double rect;
 void init()
 {

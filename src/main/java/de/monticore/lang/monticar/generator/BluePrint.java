@@ -5,6 +5,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,6 +69,9 @@ public class BluePrint {
         variables.remove(v);
     }
 
+    public void replaceVariable(Variable varOld, Variable varNew){
+        Collections.replaceAll(variables,varOld, varNew);
+    }
     public void addMethod(Method method) {
         methods.add(method);
     }

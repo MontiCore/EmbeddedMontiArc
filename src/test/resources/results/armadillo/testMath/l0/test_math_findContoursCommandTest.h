@@ -13,17 +13,14 @@ public:
 mat image;
 int mode;
 int method;
-mat hierarchy;
-mat contours;
+vector<vector<cv::Point>> contours;
 void init()
 {
 image=mat(n,m);
-hierarchy=mat(x,y);
-contours=mat(w,z);
 }
 void execute()
 {
-findContours(image, contours, hierarchy, mode, method);
+findContours(image, contours, mode, method);
 }
 
 };

@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter.getNameOfOutput;
+import static de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter.getNameOfMathCommand;
 
 /**
  * @author Sascha Schneiders
@@ -196,13 +197,16 @@ public class ComponentConverterMethodGeneration {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
         String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
         String outputName = "";
-        for (MathCommand mathCommand : ComponentConverter.usedMathCommand)
-        if(mathCommand != null) {
-            String argumentNoReturnFunctionName = mathCommand.getMathCommandName();
-            if (mathCommand.isArgumentNoReturnMathCommand() && result.contains(argumentNoReturnFunctionName)) {
-                outputName = getNameOfOutput(mathExpressionSymbol);
-                result = fixArgumentNoReturnInstruction(result, outputName);
+        for (MathCommand mathCommand : ComponentConverter.usedMathCommand) {
+            if (mathCommand != null) {
+                String argumentNoReturnFunctionName = mathCommand.getMathCommandName();
+                if (mathCommand.isArgumentNoReturnMathCommand() && result.contains(argumentNoReturnFunctionName)) {
+                    outputName = getNameOfOutput(mathExpressionSymbol);
+                    result = fixArgumentNoReturnInstruction(result, outputName);
+                    //TODO Add fixType Here ---> think about put the function here or down
+                }
             }
+            //fixVariableTypes(mathCommand, result,mathExpressionSymbol, bluePrint);
         }
         TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
         Log.info(mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(), "GenerateSymbol:");
@@ -377,6 +381,8 @@ public class ComponentConverterMethodGeneration {
         }
         return instruction;
     }
+
+
 
 
 }

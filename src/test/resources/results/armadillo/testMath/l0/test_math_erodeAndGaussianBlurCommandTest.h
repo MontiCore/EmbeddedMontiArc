@@ -5,25 +5,27 @@
 #endif
 #include "armadillo"
 #include "opencv2/imgproc.hpp"
+#include <vector>
 #include "opencv2/imgproc.hpp"
 using namespace arma;
 using namespace cv;
 class test_math_erodeAndGaussianBlurCommandTest{
 public:
-mat src;
-int erosion_elem;
-int iterations;
-int sizeX;
-int sizeY;
-double sigmaX;
-double sigmaY;
-mat dstB;
+cube src;
+int erosion_elemIn;
+colvec sizeY;
+colvec two;
+cube outMatrix;
+mat out2Matrix;
 void init()
 {
-src=mat(n,m);
-dstB=mat(n,m);
+src = cube(3, n, m);
+sizeY=colvec(3);
+two=colvec(2);
+outMatrix = cube(3, n, m);
+out2Matrix=mat(2,m);
 }
-void erodeHelper(mat src, mat dst, int erosion_elem, int iterations)
+void erodeHelper(cube src, cube dst, int erosion_elem, int iterations)
 {
     int erosion_type = 0;
     if( erosion_elem == 0 ){ erosion_type = MORPH_RECT; }
@@ -35,17 +37,10 @@ void erodeHelper(mat src, mat dst, int erosion_elem, int iterations)
                             Point( -1, -1 ) );
     erode( src, dst, element, Point(-1,-1), iterations );
 }
-void gaussianBlurHelper(mat src, mat dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
-{
-    gaussianBlur(src, dst, Size(sizeX, sizeY), sigmaX, sigmaY);
-}
 void execute()
 {
-mat dst=mat(n,m);
+findContours(image, contours, mode, method);
 erodeHelper(src, dst, erosion_elem, iterations);
-mat deterMat = (det(dst));
-mat dstB;
-gaussianBlurHelper(dst, dstB, sizeX, sizeY, sigmaX, sigmaY);
 }
 
 };

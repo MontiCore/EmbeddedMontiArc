@@ -10,7 +10,7 @@ using namespace cv;
 class test_math_rectangleCommandTest{
 public:
 cube src;
-double rect;
+Rect rect;
 colvec color;
 int thickness;
 int lineType;
