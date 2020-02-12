@@ -9,8 +9,8 @@ using namespace arma;
 using namespace cv;
 class test_math_largestContourCommandTest{
 public:
-double contours;
-double lContour;
+vector<vector<cv::Point>> contours;
+vector<cv::Point> lContour;
 void init()
 {
 }

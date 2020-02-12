@@ -6,6 +6,7 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
+import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
@@ -45,10 +46,14 @@ public class RectangleCommand extends MathCommand{
     public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
+        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
 
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
+
+        String nameOfSecondParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(1).getTextualRepresentation();
+        ComponentConverter.fixVariableType(nameOfSecondParameter, bluePrintCPP, "Q", "Rect", "");
 
         Method rectangleHelperMethod = getRectangleHelperMethod();
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());

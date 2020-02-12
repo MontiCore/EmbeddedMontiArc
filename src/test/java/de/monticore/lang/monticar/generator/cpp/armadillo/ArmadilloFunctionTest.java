@@ -284,9 +284,9 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
     public void testRectangleCommand() throws  IOException {
         testMathCommand("rectangle");
     }
-/*
+
     @Test //only for testing
     public void testErodeAndGaussianBlur() throws IOException{
         testMathCommand("erodeAndGaussianBlur");
-    }*/
+    }
 }

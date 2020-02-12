@@ -10,6 +10,7 @@ import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
+import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +46,13 @@ public class LargestContourCommand extends MathCommand {
     public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
-
+        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
 
+        String nameOfFirstParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0).getTextualRepresentation();
+        ComponentConverter.fixVariableType(nameOfFirstParameter, bluePrintCPP, "Q", "vector<vector<cv::Point>>", "");
         Method largestContourMethod = getLargestContourMethod();
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();

@@ -69,16 +69,16 @@ public class ComponentConverter {
         if(mathStatementsSymbol != null) {
             List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
             for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
-                namesOfFunctions.add(getNameOfMathCommand(mathExpressionSymbol));
+                String nameOfFunction = getNameOfMathCommand(mathExpressionSymbol);
+                namesOfFunctions.add(nameOfFunction);
+                fixFunctionTypes(nameOfFunction, mathExpressionSymbol, bluePrint);
             }
         }
         if(namesOfFunctions != null) {
             for(String nameOfFunction : namesOfFunctions){
                 usedMathCommand.add(bluePrint.getMathCommandRegister().getMathCommand(nameOfFunction));
             }
-
         }
-
 
         if(mathStatementsSymbol != null){
             //handleDependenceOfCVCommands(mathStatementsSymbol, BluePrintCPP bluePrint);
@@ -314,7 +314,7 @@ public class ComponentConverter {
             initLine.ifPresent(s -> method.addInstruction(new TargetCodeInstruction(s)));
         }
     }
-
+    //TODO: Try to modify this Method
     public static void handleDependenceOfCVCommands(MathStatementsSymbol mathStatementsSymbol, BluePrintCPP bluePrint) {
         List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
         int mathExpressionSymbolsSize = mathExpressionSymbols.size();
@@ -332,9 +332,6 @@ public class ComponentConverter {
                     }
                     }
                 }
-
-
-
             }
         }
     }
@@ -394,5 +391,35 @@ public class ComponentConverter {
     }
     public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrintCPP);
+    }
+
+    private static void fixFunctionTypes(String nameOfFunction, MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+        String outputName = getNameOfOutput(mathExpressionSymbol);
+        switch (nameOfFunction) {
+            case "findContours":
+                fixVariableType(outputName, bluePrintCPP, "Q", "vector<vector<cv::Point>>", "");
+                break;
+            case "largestContour":
+                fixVariableType(outputName, bluePrintCPP, "Q", "vector<cv::Point>", "");
+                break;
+            case "boundingRect":
+                fixVariableType(outputName, bluePrintCPP, "Q", "Rect", "");
+                break;
+        }
+    }
+
+
+   public static void fixVariableType(String variableName, BluePrintCPP bluePrint, String typeNameMontiCar, String typeNameTargetLanguage, String includeName){
+        List<Variable> variables = bluePrint.getVariables();
+        for(Variable var: variables){
+            if(var.getName().equals(variableName)){
+                fixType(var,typeNameMontiCar, typeNameTargetLanguage, includeName);
+            }
+        }
+    }
+
+    private static void fixType(Variable variable, String typeNameMontiCar, String typeNameTargetLanguage, String includeName){
+        VariableType varTypeNew = new VariableType(typeNameMontiCar, typeNameTargetLanguage, includeName);
+        variable.setVariableType(varTypeNew);
     }
 }

@@ -6,10 +6,9 @@ component FindContoursCommandTest{
         in Q^{n,m} image,
         in Z mode,
         in Z method,
-        out Q^{x,y} hierarchy,
-        out Q^{w,z} contours;
+        out Q contours;
 
     implementation Math {
-        contours = findContours(image, hierarchy, mode, method);
+        contours = findContours(image, mode, method);
     }
 }
