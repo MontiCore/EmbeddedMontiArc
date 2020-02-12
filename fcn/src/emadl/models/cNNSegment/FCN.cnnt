@@ -3,7 +3,7 @@ configuration FCN{
      num_epoch:2
      batch_size:32
      normalize:false
-     context:gpu
+     context:cpu
      load_checkpoint:false
      loss:softmax_cross_entropy{
         loss_axis:1

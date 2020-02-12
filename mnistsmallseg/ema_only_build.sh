@@ -1,4 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
+which python
 MXNET_PATH=$(python -c "import mxnet; print(mxnet.__file__)")
 MXNET_FOLDER=$(dirname $MXNET_PATH)
 echo $MXNET_FOLDER
