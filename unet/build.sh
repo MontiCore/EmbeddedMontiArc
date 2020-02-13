@@ -25,6 +25,6 @@ java -jar $EMADL_GEN_PATH -m src/emadl/models/ -r encoderDecoder.Connector -o ta
 rm -rf build
 mkdir build && cd build
 
-echo "Building unet.."
+echo "Building Unet.."
 cmake -D MXNET_PATH=$MXNET_FOLDER/libmxnet.so ..
 make

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package encoderDecoder;
 
-component unet<Z(2:oo)first_channels=64, classes = 21>{
+component Unet<Z(2:oo) first_channels = 64, Z(1:oo) classes = 21>{
     ports in Q(0:1)^{1, 544, 544} data,
          out Q(0:1)^{classes, 544, 544} softmax;
 
@@ -13,7 +13,7 @@ component unet<Z(2:oo)first_channels=64, classes = 21>{
             }
 
             def encode_block(filter, channels, num_conv=2){
-                conv(filter=filter, channels=channels, ->=num_conv) ->
+                conv(filter=filter, channels=channels, ->=num_conv)
             }
 
             def decode_block(filter, channels, num_conv=2){
@@ -45,34 +45,34 @@ component unet<Z(2:oo)first_channels=64, classes = 21>{
                         encode_block(filter=3, channels=first_channels*(2^3), num_conv=2) ->
                         (
                             Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
-                            /* encode block 4 */
+                            /* encode block 5 */
                             encode_block(filter=3, channels=first_channels*(2^4), num_conv=2) ->
                             TransConv(kernel=(4,4), channels=first_channels*(2^3), stride=(2,2))
 
                         |
-                            /* crop block 3 */
-                            Crop()
+                            /* crop block 4 */
+                            Crop(begin=0,until=0)
                         ) ->
                         Concatenate() ->
                         /* decode block 3 */
                         decode_block(filter=3, channels=first_channels*(2^3), num_conv=2)
                     |
                         /* crop block 3 */
-                        Crop()
+                        Crop(begin=0,until=0)
                     ) ->
                     Concatenate() ->
                     /* decode block 3 */
                     decode_block(filter=3, channels=first_channels*(2^2), num_conv=2)
                 |
                     /* crop block 2 */
-                    Crop()
+                    Crop(begin=0,until=0)
                 ) ->
                 Concatenate() ->
                 /* decode block 2 */
                 decode_block(filter=3, channels=first_channels*(2^1), num_conv=2)
             |
                 /* crop block 1 */
-                Crop()
+                Crop(begin=0,until=0)
             ) ->
             Concatenate() ->
             /* decode block 1 */
