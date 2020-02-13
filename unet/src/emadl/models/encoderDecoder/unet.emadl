@@ -1,0 +1,87 @@
+/* (c) https://github.com/MontiCore/monticore */
+package encoderDecoder;
+
+component unet<Z(2:oo)first_channels=64, classes = 21>{
+    ports in Q(0:1)^{1, 544, 544} data,
+         out Q(0:1)^{classes, 544, 544} softmax;
+
+        implementation CNN{
+
+            def conv(filter, channels){
+                Convolution(kernel=(filter,filter), channels=channels) ->
+                Relu()
+            }
+
+            def encode_block(filter, channels, num_conv=2){
+                conv(filter=filter, channels=channels, ->=num_conv) ->
+            }
+
+            def decode_block(filter, channels, num_conv=2){
+                conv(filter=filter, channels=channels, ->=num_conv) ->
+                TransConv(kernel=(4,4), channels=classes/2, stride=(2,2))
+            }
+
+            def fully_conv(filter, channels, dropout){
+                conv(filter=filter, channels=channels) ->
+                Relu() ->
+                Dropout(p=dropout)
+            }
+
+            data ->
+
+            /* encode block 1 */
+            encode_block(filter=3, channels=first_channels, num_conv=2) ->
+            (
+                Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
+                /* encode block 2 */
+                encode_block(filter=3, channels=first_channels*(2^1), num_conv=2) ->
+                (
+                    Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
+                    /* encode block 3 */
+                    encode_block(filter=3, channels=first_channels*(2^2), num_conv=2) ->
+                    (
+                        Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
+                        /* encode block 4 */
+                        encode_block(filter=3, channels=first_channels*(2^3), num_conv=2) ->
+                        (
+                            Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
+                            /* encode block 4 */
+                            encode_block(filter=3, channels=first_channels*(2^4), num_conv=2) ->
+                            TransConv(kernel=(4,4), channels=first_channels*(2^3), stride=(2,2))
+
+                        |
+                            /* crop block 3 */
+                            Crop()
+                        ) ->
+                        Concatenate() ->
+                        /* decode block 3 */
+                        decode_block(filter=3, channels=first_channels*(2^3), num_conv=2)
+                    |
+                        /* crop block 3 */
+                        Crop()
+                    ) ->
+                    Concatenate() ->
+                    /* decode block 3 */
+                    decode_block(filter=3, channels=first_channels*(2^2), num_conv=2)
+                |
+                    /* crop block 2 */
+                    Crop()
+                ) ->
+                Concatenate() ->
+                /* decode block 2 */
+                decode_block(filter=3, channels=first_channels*(2^1), num_conv=2)
+            |
+                /* crop block 1 */
+                Crop()
+            ) ->
+            Concatenate() ->
+            /* decode block 1 */
+            decode_block(filter=3, channels=first_channels, num_conv=2) ->
+
+            /* end */
+            conv(filter=3, channels=2) ->
+
+            Softmax() ->
+            softmax;
+        }
+}
