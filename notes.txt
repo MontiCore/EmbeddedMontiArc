@@ -1,35 +1,13 @@
 bauen eines Projekts: mvn clean install –s settings.xml
 
-generators/EMADL2CPP
-
-generators/CNNArch2Gluon
-
-generators/CNNArch2X
-
-
-
 languages/CNNArchLang (Netzwerk-Sprache)
-
 languages/CNNTrainLang (Trainingssprache)
-
 languages/EmbeddedMontiArcDL
-
-
-Reihenfolge bei Änderungen:
-
-languages/CNNArchLang
-generators/EMADL2CPP
-generators/CNNArch2x
 generators/CNNArch2Gluon
-
-
-build order:
-generators/EMADL2CPP
-languages/CNNArchLang
-languages/EmbeddedMontiArcDL
 generators/CNNArch2X
-generators/CNNArch2Gluon
+generators/EMADL2CPP
 
+Reihenfolge bei Änderungen beachten.
 
 ### some problem with armadillo build: hdf5.h not found
 fix:
@@ -44,6 +22,8 @@ mvn install:install-file \
    -Dpackaging=<packaging> \
    -DgeneratePom=true \
 
+
+Add predefined layer to CNNArchLang
 1) CNNArchLang: add new predefined layer in symboltable
 2) CNNArchLang: layer in allpredefinedlayer hinzufügen
 3) CNN2Gluon: new .ftl template
