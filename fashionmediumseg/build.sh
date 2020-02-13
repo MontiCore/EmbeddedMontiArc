@@ -14,7 +14,7 @@ EMADL_GEN_PATH=/home/treiber/.m2/repository/de/monticore/lang/monticar/embedded-
 if test -f "$EMADL_GEN_PATH"; then
     echo "EMADL Generator Path: " $EMADL_GEN_PATH
 else
-    EMADL_GEN_PATH=../embedded-montiarc-emadl-generator-0.3.0-jar-with-dependencies.jar
+    EMADL_GEN_PATH=../embedded-montiarc-emadl-generator-0.3.8-SNAPSHOT-jar-with-dependencies.jar
     echo "EMADL Generator Path: " $EMADL_GEN_PATH
 fi
 
