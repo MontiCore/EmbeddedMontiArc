@@ -13,6 +13,8 @@ fi
 rm -rf target
 java -jar ../embedded-montiarc-emadl-generator-0.3.8-jar-with-dependencies.jar -m src/emadl/models/ -r cNNCalculator.Connector -o target -b GLUON
 
+exit 1
+
 rm -rf build
 mkdir build && cd build
 
