@@ -10,12 +10,11 @@ import de.monticore.util.lsp.features.definition.ReflectionDefinitionHandler;
 import de.se_rwth.commons.logging.DiagnosticsLog;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
-import org.eclipse.lsp4j.Location;
-import org.eclipse.lsp4j.LocationLink;
-import org.eclipse.lsp4j.TextDocumentPositionParams;
+import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -50,6 +49,20 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
 
     public void setDefinitionHandler(DefinitionHandler definitionHandler) {
         this.definitionHandler = definitionHandler;
+    }
+
+    public Optional<ASTType> parseCached(String uriString) {
+        return getModelFileCache()
+                .flatMap(m -> m.getCachedContentFor(uriString))
+                .flatMap(c -> doParse(new StringReader(c)));
+    }
+
+    public Optional<ASTType> parseCached(TextDocumentItem textDocumentItem) {
+        return parseCached(textDocumentItem.getUri());
+    }
+
+    public Optional<ASTType> parseCached(TextDocumentIdentifier textDocumentIdentifier) {
+        return parseCached(textDocumentIdentifier.getUri());
     }
 
     public Optional<SymType> getSymbolFor(Path sourcePath) {

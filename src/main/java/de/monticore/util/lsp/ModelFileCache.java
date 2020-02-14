@@ -4,10 +4,15 @@ package de.monticore.util.lsp;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.lsp4j.TextDocumentIdentifier;
+import org.eclipse.lsp4j.TextDocumentItem;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -46,6 +51,33 @@ public class ModelFileCache {
     public Optional<Path> fromTmpPath(Path path){
         Optional<Path> rest = ModelPathHelper.getPathRelativeTo(tmpModelPath, path);
         return rest.map(modelBasePath::resolve);
+    }
+
+    public Optional<String> getCachedContentFor(String uriString){
+        try {
+            Path originalPath = ModelPathHelper.pathFromUriString(uriString);
+            return convertToTmpPath(originalPath)
+                    .flatMap(p -> {
+                        try {
+                            return Optional.of(IOUtils.toString(p.toUri(), StandardCharsets.UTF_8));
+                        } catch (IOException e) {
+                            Log.error("Error loading file " + p.toUri(), e);
+                        }
+                        return Optional.empty();
+                    });
+        } catch (URISyntaxException e) {
+            Log.error("Error in getCachedContentFor(" +  uriString + ")", e);
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<String> getCachedContentFor(TextDocumentIdentifier textDocumentIdentifier){
+        return getCachedContentFor(textDocumentIdentifier.getUri());
+    }
+
+    public Optional<String> getCachedContentFor(TextDocumentItem textDocumentItem){
+        return getCachedContentFor(textDocumentItem.getUri());
     }
 
     public Path getTmpModelPath(){
