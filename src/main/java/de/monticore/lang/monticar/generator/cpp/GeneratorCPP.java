@@ -16,6 +16,7 @@ import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.OptimizationSymbolHandler;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.generator.cpp.BluePrintCPP.*;
 import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterDataModel;
@@ -59,6 +60,8 @@ public class GeneratorCPP implements Generator {
     // CMake
     private boolean generateCMake = false;
     private CMakeConfig cMakeConfig;
+
+
 
     //MathOpt
     private MathOptSolverConfig mathOptSolverConfig = new MathOptSolverConfig();
@@ -207,7 +210,8 @@ public class GeneratorCPP implements Generator {
                 fileContents.add(OctaveHelper.getOctaveHelperFileContent());
             if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
                 fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent(isGenerateTests));
-
+            if(BluePrintCPP.usedCV)
+                fileContents.add(ConversionHelper.getConversionHelperFileContent(isGenerateTests));
             if (shouldGenerateMainClass()) {
                 //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
             } else if (shouldGenerateSimulatorInterface()) {
@@ -218,6 +222,8 @@ public class GeneratorCPP implements Generator {
             fileContents.add(OctaveHelper.getOctaveHelperFileContent());
         if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
             fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent(isGenerateTests));
+        if(BluePrintCPP.usedCV)
+            fileContents.add(ConversionHelper.getConversionHelperFileContent(isGenerateTests));
 
         if(componentInstanceSymbol instanceof EMADynamicComponentInstanceSymbol){
             //TODO: add Events Value Helper

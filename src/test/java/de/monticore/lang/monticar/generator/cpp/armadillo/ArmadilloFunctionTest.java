@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Sascha Schneiders
+ * @author Ahmed Diab
  */
 public class ArmadilloFunctionTest extends AbstractSymtabTest {
 
