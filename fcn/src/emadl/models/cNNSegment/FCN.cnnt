@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 configuration FCN{
      num_epoch:2
-     batch_size:32
+     batch_size:8
      normalize:false
-     context:cpu
-     load_checkpoint:false
+     context:gpu
+     load_checkpoint:true
      loss:softmax_cross_entropy{
         loss_axis:1
      }
