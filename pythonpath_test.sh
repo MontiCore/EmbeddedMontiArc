@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
+source ./setup_itc.sh
 
-which python
-python --version
-python3 --version
-alias python=python3
-python -c "import sys; print(sys.version)"
-export PYTHONPATH=$PYTHONPATH:/usr/bin/python3
-which python
+MY_PATH=$(which python3)
+echo $MY_PATH
 
-python3 -c "import mxnet as mx
+
+$PYTHONPATH -c "import mxnet as mx
 def gpu_device(gpu_number=0):
     try:
         _ = mx.nd.array([1, 2, 3], ctx=mx.gpu(gpu_number))
@@ -18,4 +15,6 @@ def gpu_device(gpu_number=0):
 
 if not gpu_device:
     print(\"gpu not supported\")
+else:
+    print(\"gpu available\")
 "

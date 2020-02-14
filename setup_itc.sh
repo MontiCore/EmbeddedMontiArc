@@ -1,4 +1,15 @@
-# (c) https://github.com/MontiCore/monticore
+#!/bin/bash
+
+if nvcc --version; then
+    echo command returned true
+else
+    module load cuda/100
+fi
+module load python/3.6.8
+
+
+PYTHONPATH=$(which python3)
+
 MXNET_PATH=$(python3 -c "import mxnet; print(mxnet.__file__)")
 MXNET_FOLDER=$(dirname $MXNET_PATH)
 echo $MXNET_FOLDER
@@ -18,12 +29,5 @@ else
     echo "EMADL Generator Path: " $EMADL_GEN_PATH
 fi
 
-rm -rf target
-java -jar $EMADL_GEN_PATH -m src/emadl/models/ -r cNNSegment.Connector -o target -b GLUON
-
-rm -rf build
-mkdir build && cd build
-
-echo "Building DigitSegment.."
-cmake -D MXNET_PATH=$MXNET_FOLDER/libmxnet.so ..
-make
+# rm -rf target
+# java -jar $EMADL_GEN_PATH -m src/emadl/models/ -r encoderDecoder.Connector -o target -b GLUON -p $PYTHONPATH
