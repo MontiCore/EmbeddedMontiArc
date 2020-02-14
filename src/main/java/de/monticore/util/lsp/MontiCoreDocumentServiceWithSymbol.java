@@ -5,7 +5,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
-import de.monticore.util.lsp.features.definition.DefinitionHandler;
 import de.monticore.util.lsp.features.definition.ReflectionDefinitionHandler;
 import de.se_rwth.commons.logging.DiagnosticsLog;
 import de.se_rwth.commons.logging.Log;
@@ -23,9 +22,12 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode, SymType extends Symbol> extends MontiCoreDocumentService<ASTType> {
-    protected DefinitionHandler definitionHandler = new ReflectionDefinitionHandler<ASTType, SymType>(this);
     protected Optional<Path> modelBasePath = Optional.empty();
     protected Optional<ModelFileCache> modelFileCache = Optional.empty();
+
+    public MontiCoreDocumentServiceWithSymbol() {
+        addDefinitionHandler( new ReflectionDefinitionHandler<ASTType, SymType>(this));
+    }
 
     public Optional<Path> getModelBasePath() {
         return modelBasePath;
@@ -41,14 +43,6 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
 
     public void setModelFileCache(ModelFileCache modelFileCache) {
         this.modelFileCache = Optional.of(modelFileCache);
-    }
-
-    public DefinitionHandler getDefinitionHandler() {
-        return definitionHandler;
-    }
-
-    public void setDefinitionHandler(DefinitionHandler definitionHandler) {
-        this.definitionHandler = definitionHandler;
     }
 
     public Optional<ASTType> parseCached(String uriString) {

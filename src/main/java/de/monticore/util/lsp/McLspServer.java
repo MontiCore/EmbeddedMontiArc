@@ -1,11 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.util.lsp;
+
 import de.se_rwth.commons.logging.DiagnosticsLog;
 import de.se_rwth.commons.logging.Log;
 import org.eclipse.lsp4j.*;
-import org.eclipse.lsp4j.launch.LSPLauncher;
-import org.eclipse.lsp4j.services.*;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
+import org.eclipse.lsp4j.launch.LSPLauncher;
+import org.eclipse.lsp4j.services.LanguageClient;
+import org.eclipse.lsp4j.services.LanguageClientAware;
+import org.eclipse.lsp4j.services.LanguageServer;
+import org.eclipse.lsp4j.services.WorkspaceService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,11 +17,9 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 public abstract class McLspServer implements LanguageServer, LanguageClientAware {
 
@@ -71,8 +73,24 @@ public abstract class McLspServer implements LanguageServer, LanguageClientAware
         InitializeResult res = new InitializeResult();
         ServerCapabilities capabilities = new ServerCapabilities();
         capabilities.setTextDocumentSync(TextDocumentSyncKind.Full);
+        addCapabilitiesByHandlers(capabilities);
         res.setCapabilities(capabilities);
         return CompletableFuture.completedFuture(res);
+    }
+
+    protected void addCapabilitiesByHandlers(ServerCapabilities capabilities) {
+        ClientAwareTextDocumentService documentService = getTextDocumentService();
+        //TODO: make compile-time type-save
+        if(documentService instanceof MontiCoreDocumentService){
+            MontiCoreDocumentService mc = (MontiCoreDocumentService) documentService;
+            if(!mc.getCompletionHandler().getDelegates().isEmpty()){
+                capabilities.setCompletionProvider(new CompletionOptions());
+            }
+
+            if(!mc.getDefinitionHandler().getDelegates().isEmpty()){
+                capabilities.setDefinitionProvider(true);
+            }
+        }
     }
 
     public CompletableFuture<Object> shutdown() {

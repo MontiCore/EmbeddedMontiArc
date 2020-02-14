@@ -23,6 +23,10 @@ public class MultiDefinitionHandler implements DefinitionHandler {
         this.delegates.addAll(Arrays.asList(delegates));
     }
 
+    public List<DefinitionHandler> getDelegates() {
+        return delegates;
+    }
+
     public boolean add(DefinitionHandler definitionHandler) {
         return delegates.add(definitionHandler);
     }

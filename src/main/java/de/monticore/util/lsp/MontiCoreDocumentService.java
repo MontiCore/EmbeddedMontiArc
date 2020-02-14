@@ -2,13 +2,15 @@
 package de.monticore.util.lsp;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.util.lsp.features.completion.CompletionHandler;
+import de.monticore.util.lsp.features.completion.MultiCompletionHandler;
+import de.monticore.util.lsp.features.definition.DefinitionHandler;
+import de.monticore.util.lsp.features.definition.MultiDefinitionHandler;
 import de.se_rwth.commons.logging.DiagnosticsLog;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.lsp4j.DidChangeTextDocumentParams;
-import org.eclipse.lsp4j.DidCloseTextDocumentParams;
-import org.eclipse.lsp4j.DidOpenTextDocumentParams;
-import org.eclipse.lsp4j.DidSaveTextDocumentParams;
+import org.eclipse.lsp4j.*;
+import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.LanguageClient;
 
 import java.io.IOException;
@@ -17,12 +19,33 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class MontiCoreDocumentService<ASTType extends ASTNode> implements ClientAwareTextDocumentService {
     protected Optional<DiagnosticsHelper> diagnosticsHelper = Optional.empty();
     protected Optional<LanguageClient> client = Optional.empty();
+    protected MultiCompletionHandler completionHandler = new MultiCompletionHandler();
+    protected MultiDefinitionHandler definitionHandler = new MultiDefinitionHandler();
+
+    public MultiCompletionHandler getCompletionHandler() {
+        return completionHandler;
+    }
+
+    public boolean addCompletionHandler(CompletionHandler completionHandler) {
+        return this.completionHandler.add(completionHandler);
+    }
+
+    public MultiDefinitionHandler getDefinitionHandler() {
+        return definitionHandler;
+    }
+
+    public boolean addDefinitionHandler(DefinitionHandler definitionHandler) {
+        return this.definitionHandler.add(definitionHandler);
+    }
 
     public void setClient(LanguageClient client){
         connect(client);
@@ -137,5 +160,10 @@ public abstract class MontiCoreDocumentService<ASTType extends ASTNode> implemen
     @Override
     public void didSave(DidSaveTextDocumentParams didSaveTextDocumentParams) {
         //IGNORE
+    }
+
+    @Override
+    public CompletableFuture<Either<List<CompletionItem>, CompletionList>> completion(CompletionParams position) {
+        return completionHandler != null ? completionHandler.completion(position) : CompletableFuture.completedFuture(Either.forLeft(new ArrayList<>()));
     }
 }
