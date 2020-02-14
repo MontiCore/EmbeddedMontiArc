@@ -69,17 +69,42 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
         try {
             Optional<ASTType> astOpt = parse(FileUtils.readFileToString(sourcePath.toFile(), StandardCharsets.UTF_8), sourcePath.toString());
             if (astOpt.isPresent()) {
-                ASTType node = astOpt.get();
-                Scope symtab = this.createSymTab(((ModelFileCache) this.getModelFileCache().get()).getTmpModelPath());
-                Log.debug("Created symtab", "default");
-                DiagnosticsLog.clearAndUse();
-                String fullSymbolName = this.getFullSymbolName(node);
-                return symtab.resolve(fullSymbolName, this.getSymbolKind());
+                return getSymbol(astOpt.get());
             }
         } catch (IOException e) {
             Log.error("IOError", e);
         }
         return Optional.empty();
+    }
+
+    public Optional<SymType> getSymbolForCached(String uriString){
+        Optional<ASTType> astOpt = parseCached(uriString);
+        if(astOpt.isPresent()){
+            return getSymbol(astOpt.get());
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<SymType> getSymbolForCached(TextDocumentIdentifier textDocumentIdentifier){
+        return getSymbolForCached(textDocumentIdentifier.getUri());
+    }
+
+    public Optional<SymType> getSymbolForCached(TextDocumentItem textDocumentItem){
+        return getSymbolForCached(textDocumentItem.getUri());
+    }
+
+    private Optional<SymType> getSymbol(ASTType ast) {
+        if(!getModelFileCache().isPresent()){
+            Log.error("Model file cache not found!", new Throwable());
+            return Optional.empty();
+        }
+
+        Scope symtab = this.createSymTab((this.getModelFileCache().get()).getTmpModelPath());
+        Log.debug("Created symtab", "default");
+        DiagnosticsLog.clearAndUse();
+        String fullSymbolName = this.getFullSymbolName(ast);
+        return symtab.resolve(fullSymbolName, this.getSymbolKind());
     }
 
     @Override
