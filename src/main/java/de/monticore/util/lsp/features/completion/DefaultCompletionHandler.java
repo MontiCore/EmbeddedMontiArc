@@ -1,6 +1,6 @@
 package de.monticore.util.lsp.features.completion;
 
-import de.monticore.util.lsp.ModelFileCache;
+import de.monticore.util.lsp.util.ModelFileCacheProvider;
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionList;
 import org.eclipse.lsp4j.CompletionParams;
@@ -13,16 +13,16 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class DefaultCompletionHandler implements CompletionHandler{
-    private ModelFileCache cache;
+    private ModelFileCacheProvider cacheProvider;
     private LookaheadProvider lookaheadProvider;
 
-    public DefaultCompletionHandler(ModelFileCache cache, LookaheadProvider lookaheadProvider) {
-        this.cache = cache;
+    public DefaultCompletionHandler(ModelFileCacheProvider cacheProvider, LookaheadProvider lookaheadProvider) {
+        this.cacheProvider = cacheProvider;
         this.lookaheadProvider = lookaheadProvider;
     }
 
     public CompletableFuture<Either<List<CompletionItem>, CompletionList>> completion(CompletionParams position) {
-        Optional<String> contentOpt = cache.getCachedContentFor(position.getTextDocument().getUri());
+        Optional<String> contentOpt = cacheProvider.getModelFileCache().getCachedContentFor(position.getTextDocument().getUri());
         if(contentOpt.isPresent()){
             Position p = position.getPosition();
             Optional<LookaheadContext> lookahead = lookaheadProvider.getLookaheadFor(contentOpt.get(), p.getLine(), p.getCharacter());

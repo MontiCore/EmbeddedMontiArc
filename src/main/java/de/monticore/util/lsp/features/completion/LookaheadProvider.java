@@ -1,19 +1,25 @@
 package de.monticore.util.lsp.features.completion;
 
+import de.monticore.antlr4.MCConcreteParser;
 import de.se_rwth.commons.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface LookaheadProvider {
-    LookaheadListener getListener();
+    @NotNull LookaheadListener getListener();
+    @NotNull MCConcreteParser getParser();
 
-    void parseForLookahead(String c) throws IOException;
+    default void parseForLookahead(@NotNull String c) throws IOException{
+        getParser().parse(new StringReader(c));
+    }
 
-    default Optional<LookaheadContext> getLookaheadFor(String content, int line, int col) {
+    @NotNull
+    default Optional<LookaheadContext> getLookaheadFor(@NotNull String content, int line, int col) {
         getListener().setExpectedTokenContext(null);
 
         String c = prepareContent(content, line, col);
@@ -30,8 +36,8 @@ public interface LookaheadProvider {
     default Optional<LookaheadContext> getLookaheadContextIfMatching(int line, int col) {
         LookaheadContext value = getListener().expectedTokenContext();
         if (value != null) {
-            int lineParser = value.getLine() - 1;
-            int colParser = col - 1;
+            int lineParser = Math.max(0, value.getLine() - 1);
+            int colParser = Math.max(0, col - 1);
             if (lineParser == line && value.getCharPositionInLine() == colParser) {
                 return Optional.of(value);
             }else{
@@ -44,7 +50,7 @@ public interface LookaheadProvider {
     }
 
     @NotNull
-    default String prepareContent(String content, int line, int col) {
+    default String prepareContent(@NotNull String content, int line, int col) {
         String[] lines = content.split("\r?\n");
         if (line < lines.length) {
             int curCol = Math.max(0, col - 1);

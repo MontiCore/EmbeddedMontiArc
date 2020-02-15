@@ -48,7 +48,7 @@ public class ReflectionDefinitionHandler<ASTType extends ASTNode, SymbolType ext
                             String fileName = start.getFileName().get();
 
                             String originalPath = symbolCreator.getModelFileCache()
-                                    .flatMap(c -> c.fromTmpPath(ModelPathHelper.fileNameToPath(fileName)))
+                                    .fromTmpPath(ModelPathHelper.fileNameToPath(fileName))
                                     .map(Path::toString)
                                     .orElse(fileName);
 

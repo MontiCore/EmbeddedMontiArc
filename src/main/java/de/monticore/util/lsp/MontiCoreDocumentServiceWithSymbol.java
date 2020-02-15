@@ -5,12 +5,16 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.util.lsp.features.completion.DefaultCompletionHandler;
+import de.monticore.util.lsp.features.completion.LookaheadProvider;
 import de.monticore.util.lsp.features.definition.ReflectionDefinitionHandler;
+import de.monticore.util.lsp.util.ModelFileCacheProvider;
 import de.se_rwth.commons.logging.DiagnosticsLog;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -21,33 +25,37 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode, SymType extends Symbol> extends MontiCoreDocumentService<ASTType> {
-    protected Optional<Path> modelBasePath = Optional.empty();
-    protected Optional<ModelFileCache> modelFileCache = Optional.empty();
+public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode, SymType extends Symbol>
+        extends MontiCoreDocumentService<ASTType>
+        implements ModelFileCacheProvider
+{
+    protected ModelFileCache modelFileCache;
 
-    public MontiCoreDocumentServiceWithSymbol() {
-        addDefinitionHandler( new ReflectionDefinitionHandler<ASTType, SymType>(this));
+    public MontiCoreDocumentServiceWithSymbol(@NotNull ModelFileCache modelFileCache) {
+        this.modelFileCache = modelFileCache;
     }
 
-    public Optional<Path> getModelBasePath() {
-        return modelBasePath;
+    public void addDefaultHandlers() {
+        addDefinitionHandler(new ReflectionDefinitionHandler<ASTType, SymType>(this));
+        addCompletionHandler(new DefaultCompletionHandler(this, getLookaheadProvider()));
     }
 
     public void setModelBasePath(Path modelBasePath) {
-        this.modelBasePath = Optional.ofNullable(modelBasePath);
+        getModelFileCache().setModelBasePath(modelBasePath);
     }
 
-    public Optional<ModelFileCache> getModelFileCache() {
+    @NotNull
+    public ModelFileCache getModelFileCache() {
         return modelFileCache;
     }
 
-    public void setModelFileCache(ModelFileCache modelFileCache) {
-        this.modelFileCache = Optional.of(modelFileCache);
+    public void setModelFileCache(@NotNull ModelFileCache modelFileCache) {
+        this.modelFileCache = modelFileCache;
     }
 
     public Optional<ASTType> parseCached(String uriString) {
         return getModelFileCache()
-                .flatMap(m -> m.getCachedContentFor(uriString))
+                .getCachedContentFor(uriString)
                 .flatMap(c -> doParse(new StringReader(c)));
     }
 
@@ -71,30 +79,25 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
         return Optional.empty();
     }
 
-    public Optional<SymType> getSymbolForCached(String uriString){
+    public Optional<SymType> getSymbolForCached(String uriString) {
         Optional<ASTType> astOpt = parseCached(uriString);
-        if(astOpt.isPresent()){
+        if (astOpt.isPresent()) {
             return getSymbol(astOpt.get());
         }
 
         return Optional.empty();
     }
 
-    public Optional<SymType> getSymbolForCached(TextDocumentIdentifier textDocumentIdentifier){
+    public Optional<SymType> getSymbolForCached(TextDocumentIdentifier textDocumentIdentifier) {
         return getSymbolForCached(textDocumentIdentifier.getUri());
     }
 
-    public Optional<SymType> getSymbolForCached(TextDocumentItem textDocumentItem){
+    public Optional<SymType> getSymbolForCached(TextDocumentItem textDocumentItem) {
         return getSymbolForCached(textDocumentItem.getUri());
     }
 
     private Optional<SymType> getSymbol(ASTType ast) {
-        if(!getModelFileCache().isPresent()){
-            Log.error("Model file cache not found!", new Throwable());
-            return Optional.empty();
-        }
-
-        Scope symtab = this.createSymTab((this.getModelFileCache().get()).getTmpModelPath());
+        Scope symtab = this.createSymTab((this.getModelFileCache()).getTmpModelPath());
         Log.debug("Created symtab", "default");
         DiagnosticsLog.clearAndUse();
         String fullSymbolName = this.getFullSymbolName(ast);
@@ -105,8 +108,7 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
     protected void checkCoCos(Path sourcePath, ASTType node) {
         super.checkCoCos(sourcePath, node);
         updateModelBasePath(sourcePath, getPackageList(node));
-        if (getModelFileCache().isPresent()) {
-            Scope symtab = createSymTab(getModelFileCache().get().getTmpModelPath());
+            Scope symtab = createSymTab(getModelFileCache().getTmpModelPath());
             Log.debug("Created symtab", "default");
             DiagnosticsLog.clearAndUse();
             String fullSymbolName = getFullSymbolName(node);
@@ -118,7 +120,6 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
             } else {
                 Log.error("Can not resolve symbol " + fullSymbolName);
             }
-        }
     }
 
     protected void updateModelBasePath(Path sourcePath, List<String> packageList) {
@@ -139,12 +140,8 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
     }
 
     protected void copyModelOnce() throws IOException {
-        if (!getModelFileCache().isPresent()) {
-            if (getModelBasePath().isPresent()) {
-                setModelFileCache(new ModelFileCache(getModelBasePath().get(), getModelFileExtensions()));
-            } else {
-                Log.error("ModelBasePath is not set => can not initialze model file cache!");
-            }
+        if(!modelFileCache.isInitialized()) {
+            modelFileCache.initialize();
         }
     }
 
@@ -158,12 +155,10 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
             return;
         }
 
-        if (getModelFileCache().isPresent()) {
-            try {
-                getModelFileCache().get().updateTmpContentFor(sourcePath, fullText);
-            } catch (IOException e) {
-                Log.error("Error updating file", e);
-            }
+        try {
+            getModelFileCache().updateTmpContentFor(sourcePath, fullText);
+        } catch (IOException e) {
+            Log.error("Error updating file", e);
         }
         checkForErrors(fullText, sourcePath);
     }
@@ -186,11 +181,13 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
 
     protected abstract List<String> getPackageList(ASTType node);
 
+    protected abstract LookaheadProvider getLookaheadProvider();
+
     @Override
     public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> definition(TextDocumentPositionParams position) {
-        if(definitionHandler != null){
+        if (definitionHandler != null) {
             return definitionHandler.definition(position);
-        }else{
+        } else {
             return CompletableFuture.completedFuture(null);
         }
     }
