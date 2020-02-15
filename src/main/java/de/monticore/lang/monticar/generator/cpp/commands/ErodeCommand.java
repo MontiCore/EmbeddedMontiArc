@@ -46,11 +46,12 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
 
+        BluePrintCPP bluePrintCPP  = (BluePrintCPP) bluePrint;
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
 
-        Method erodeHelperMethod = getErodeHelperMethod(mathMatrixNameExpressionSymbol, (BluePrintCPP) bluePrint);
+        Method erodeHelperMethod = getErodeHelperMethod(mathMatrixNameExpressionSymbol, bluePrintCPP);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
         MathStringExpression stringExpression = new MathStringExpression("erodeHelper" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
@@ -58,7 +59,8 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
 
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        ((BluePrintCPP) bluePrint).addCVIncludeString("opencv2/imgproc");
+        bluePrintCPP.addCVIncludeString("opencv2/imgproc");
+        bluePrintCPP.addAdditionalIncludeString("ConvHelper");
         bluePrint.addMethod(erodeHelperMethod);
 
     }
