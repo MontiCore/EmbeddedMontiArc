@@ -1,8 +1,13 @@
-#!/usr/bin/env python3
-source ./setup_itc.sh
+#!/usr/local_rwth/bin/zsh
 
-MY_PATH=$(which python3)
-echo $MY_PATH
+### #SBATCH directives need to be in the first part of the jobscript
+#SBATCH --time=1
+#SBATCH --gres=gpu:1
+#SBATCH --output=output_test.txt
+
+### your code goes here, the second part of the jobscript
+
+source ./setup_itc.sh
 
 
 $PYTHONPATH -c "import mxnet as mx
