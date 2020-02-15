@@ -80,3 +80,6 @@ dqn-algorithm
 td3-algorithm
 cpu
 gpu
+dice_loss
+loss_axis
+dice_weight
