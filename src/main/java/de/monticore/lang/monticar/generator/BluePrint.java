@@ -72,6 +72,11 @@ public class BluePrint {
         Collections.replaceAll(variables,varOld, varNew);
     }
     public void addMethod(Method method) {
+        for(Method meth: methods){
+            if(meth.getName().equals(method.getName())){
+                return;
+            }
+        }
         methods.add(method);
     }
 

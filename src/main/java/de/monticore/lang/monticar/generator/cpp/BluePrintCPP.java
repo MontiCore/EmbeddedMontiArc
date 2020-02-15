@@ -51,7 +51,7 @@ public class BluePrintCPP extends BluePrint {
     }
 
     public boolean hasCVIncludeString(String includeString) {
-        return additionalIncludeStrings.contains(includeString);
+        return cvIncludeStrings.contains(includeString);
     }
 
 
