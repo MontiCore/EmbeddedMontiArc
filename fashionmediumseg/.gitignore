@@ -2,3 +2,4 @@ train.log
 target/
 model/
 build/
+logs/
