@@ -208,10 +208,13 @@ public class GeneratorCPP implements Generator {
             }
             if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
                 fileContents.add(OctaveHelper.getOctaveHelperFileContent());
-            if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
+            if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
                 fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent(isGenerateTests));
-            if(BluePrintCPP.usedCV)
-                fileContents.add(ConversionHelper.getConversionHelperFileContent(isGenerateTests));
+                if (BluePrintCPP.usedCV) {
+                    fileContents.add(ConversionHelper.getConversionHelperFileContent(isGenerateTests));
+                    BluePrintCPP.usedCV = false;
+                }
+            }
             if (shouldGenerateMainClass()) {
                 //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
             } else if (shouldGenerateSimulatorInterface()) {
@@ -222,8 +225,6 @@ public class GeneratorCPP implements Generator {
             fileContents.add(OctaveHelper.getOctaveHelperFileContent());
         if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
             fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent(isGenerateTests));
-        if(BluePrintCPP.usedCV)
-            fileContents.add(ConversionHelper.getConversionHelperFileContent(isGenerateTests));
 
         if(componentInstanceSymbol instanceof EMADynamicComponentInstanceSymbol){
             //TODO: add Events Value Helper
