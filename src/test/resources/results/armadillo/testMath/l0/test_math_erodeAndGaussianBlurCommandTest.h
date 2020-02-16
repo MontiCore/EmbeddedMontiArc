@@ -4,11 +4,11 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "armadillo"
-#include "ConvHelper.h"
 #include "opencv2/imgproc.hpp"
+#include "ConvHelper.h"
 #include <vector>
 using namespace arma;
-using namespace cv;
+using namespace std;
 class test_math_erodeAndGaussianBlurCommandTest{
 public:
 cube src;
@@ -34,10 +34,10 @@ void erodeHelper(cube src, cube dst, int erosion_elem, int iterations)
     else if( erosion_elem == 1 ){ erosion_type = MORPH_CROSS; }
     else if( erosion_elem == 2) { erosion_type = MORPH_ELLIPSE; }
     erosion_size = erosion_elem;
-    mat element = getStructuringElement( erosion_type,
+    mat element = cv::getStructuringElement( erosion_type,
                             Size( 2*erosion_size + 1, 2*erosion_size+1 ),
                             Point( -1, -1 ) );
-    erode( src, dst, element, Point(-1,-1), iterations );
+    cv::erode( src, dst, element, Point(-1,-1), iterations );
 }
 void dilateHelper(cube src, cube dst, int dilation_elem, int iterations)
 {
@@ -46,23 +46,23 @@ void dilateHelper(cube src, cube dst, int dilation_elem, int iterations)
     else if( dilation_elem == 1 ){ dilation_type = MORPH_CROSS; }
     else if( dilation_elem == 2) { dilation_type = MORPH_ELLIPSE; }
     dilation_size = dilation_elem;
-    mat element = getStructuringElement( dilation_type,
+    mat element = cv::getStructuringElement( dilation_type,
                             Size( 2*dilation_size + 1, 2*dilation_size+1 ),
                             Point( -1, -1 ) );
-    dilate( src, dst, element, Point(-1,-1), iterations );
+    cv::dilate( src, dst, element, Point(-1,-1), iterations );
 }
 void execute()
 {
 erodeHelper(src, dst, erosion_elem, iterations);
 cube dst2=cube(270,340,3);
-erodeHelper(src, dst, erosion_elem, iterations);
+erodeHelper(src, dst2, erosion_elem, iterations);
 erodeHelper(src, dst, erosion_elem, iterations);
 dilateHelper(dst, dst3, dilation_elem, iterations);
 cube src4 = (det(src));
 erodeHelper(src4, dst, erosion_elem, iterations);
 erodeHelper(src, dst, erosion_elem, iterations);
 dilateHelper(dst, dst3, dilation_elem, iterations);
-findContours(dst3, contours, method, mode);
+cv::findContours(dst3, contours, method, mode);
 }
 
 };
