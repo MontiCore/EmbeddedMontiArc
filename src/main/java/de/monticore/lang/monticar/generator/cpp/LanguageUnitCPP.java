@@ -125,7 +125,9 @@ public class LanguageUnitCPP extends LanguageUnit {
         for(String string: bluePrint.getCVIncludeStrings())
             if(string.contains("vector")){
                 resultString += "#include <" + string +">\n";
-            }else {
+            }else if(string.contains("ConvHelper")){
+                resultString += "#include \"" + "ConvHelper" + ".h\"\n";
+            } else {
                 resultString += "#include \"" + string + ".hpp\"\n";
             }
         if (generatorCPP.isExecutionLoggingActive)
@@ -145,8 +147,8 @@ public class LanguageUnitCPP extends LanguageUnit {
         }
 
         if(!bluePrint.cvIncludeStrings.isEmpty()){
-            resultString += "using namespace cv;\n";
-        }//TODO add here using namespace std;
+            resultString += "using namespace std;\n";
+        }
 
         //class definition start
         resultString += "class " + bluePrint.getName();
