@@ -87,6 +87,7 @@ public class LanguageUnitCPP extends LanguageUnit {
                     "#endif\n";
 
         List<String> alreadyGeneratedIncludes = new ArrayList<>();
+        List<String> alreadyGeneratedCVIncludes = new ArrayList<>();
         //includes
         //add default include
         String backendName = MathConverter.curBackend.getBackendName();
@@ -123,13 +124,16 @@ public class LanguageUnitCPP extends LanguageUnit {
         for (String string : bluePrint.getAdditionalIncludeStrings())
             resultString += "#include \"" + string + ".h\"\n";
 
-        for(String string: bluePrint.getCVIncludeStrings())
-            if(string.contains("vector")){
-                resultString += "#include <" + string +">\n";
-            }else if(string.contains("ConvHelper")){
-                resultString += "#include \"" + "ConvHelper" + ".h\"\n";
-            } else {
-                resultString += "#include \"" + string + ".hpp\"\n";
+        for(String includeName: bluePrint.getCVIncludeStrings())
+            if(!alreadyGeneratedCVIncludes.contains(includeName)) {
+                alreadyGeneratedCVIncludes.add(includeName);
+                if (includeName.contains("vector")) {
+                    resultString += "#include <" + includeName + ">\n";
+                } else if (includeName.contains("ConvHelper")) {
+                    resultString += "#include \"" + "ConvHelper" + ".h\"\n";
+                } else {
+                    resultString += "#include \"" + includeName + ".hpp\"\n";
+                }
             }
         if (generatorCPP.isExecutionLoggingActive)
             resultString += "#include <fstream>\n";

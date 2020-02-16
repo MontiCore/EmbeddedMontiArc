@@ -41,7 +41,6 @@ public class ComponentConverter {
         bluePrint.setGenerator(generatorCPP);
         bluePrint.setOriginalSymbol(componentSymbol);
         bluePrint.addDefineGenerics(componentSymbol);
-        // Hint: the variables will be added here to the BluePrint
         addVariables(componentSymbol, bluePrint);
         // ToDo: you can fix the variables type here or later, so before it will be used
         BluePrintFixer.fixBluePrintDynamicVariableConnectRequestQueues(bluePrint);
@@ -68,11 +67,18 @@ public class ComponentConverter {
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
         //save function name
         if(mathStatementsSymbol != null) {
+            HashMap<MathExpressionSymbol, MathExpressionProperties> tuples = new HashMap<MathExpressionSymbol, MathExpressionProperties>();
             List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
             for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
                 String nameOfFunction = getNameOfMathCommand(mathExpressionSymbol);
                 namesOfFunctions.add(nameOfFunction);
                 fixFunctionTypes(nameOfFunction, mathExpressionSymbol, bluePrint);
+            }
+
+            for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
+                //MathExpressionProperties properties = new MathExpressionProperties();
+                //setPropertiesForMathExpression(mathExpressionSymbol, properties);
+                //tuples.put(mathExpressionSymbol, );
             }
         }
         if(namesOfFunctions != null) {
