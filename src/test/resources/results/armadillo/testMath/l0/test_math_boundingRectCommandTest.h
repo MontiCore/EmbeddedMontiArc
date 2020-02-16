@@ -6,7 +6,7 @@
 #include "armadillo"
 #include "opencv2/imgproc.hpp"
 using namespace arma;
-using namespace cv;
+using namespace std;
 class test_math_boundingRectCommandTest{
 public:
 vector<cv::Point> contour;
@@ -16,7 +16,7 @@ void init()
 }
 void execute()
 {
-rectAngle = (boundingRect(contour));
+rectAngle = (cv::boundingRect(contour));
 }
 
 };

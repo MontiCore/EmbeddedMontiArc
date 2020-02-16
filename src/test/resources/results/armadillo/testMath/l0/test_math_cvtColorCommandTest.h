@@ -5,8 +5,9 @@
 #endif
 #include "armadillo"
 #include "opencv2/imgproc.hpp"
+#include "ConvHelper.h"
 using namespace arma;
-using namespace cv;
+using namespace std;
 class test_math_cvtColorCommandTest{
 public:
 mat src;
@@ -19,7 +20,7 @@ dst=mat(n,m);
 }
 void execute()
 {
-cvtColor(src, dst, colorConversion);
+cv::cvtColor(src, dst, colorConversion);
 }
 
 };

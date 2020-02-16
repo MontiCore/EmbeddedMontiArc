@@ -5,8 +5,9 @@
 #endif
 #include "armadillo"
 #include "opencv2/imgproc.hpp"
+#include "ConvHelper.h"
 using namespace arma;
-using namespace cv;
+using namespace std;
 class test_math_gaussianBlurCommandTest{
 public:
 cube src;
@@ -22,7 +23,7 @@ dst = cube(3, n, m);
 }
 void gaussianBlurHelper(cube src, cube dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
 {
-    gaussianBlur(src, dst, Size(sizeX, sizeY), sigmaX, sigmaY);
+    cv::gaussianBlur(src, dst, Size(sizeX, sizeY), sigmaX, sigmaY);
 }
 void execute()
 {

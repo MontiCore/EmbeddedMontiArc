@@ -6,7 +6,7 @@
 #include "armadillo"
 #include "opencv2/imgproc.hpp"
 using namespace arma;
-using namespace cv;
+using namespace std;
 class test_math_largestContourCommandTest{
 public:
 vector<vector<cv::Point>> contours;
@@ -19,7 +19,7 @@ vector<Point> largestContour(vector <vector<Point>> contours)
 double maxArea = 0;
 int maxAreaContourId = -1;
    for (int j = 0; j < contours.size(); j++) {
-       double newArea = contourArea(contours.at(j));
+       double newArea = cv::contourArea(contours.at(j));
        if (newArea > maxArea) {
            maxArea = newArea;
            maxAreaContourId = j;
