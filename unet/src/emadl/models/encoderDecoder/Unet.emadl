@@ -18,7 +18,7 @@ component Unet<Z(2:oo) first_channels = 64, Z(1:oo) classes = 21>{
 
             def decode_block(filter, channels, num_conv=2){
                 conv(filter=filter, channels=channels, ->=num_conv) ->
-                TransConv(kernel=(4,4), channels=classes/2, stride=(2,2))
+                TransConv(kernel=(4,4), channels=channels, stride=(2,2))
             }
 
             def fully_conv(filter, channels, dropout){
@@ -34,54 +34,53 @@ component Unet<Z(2:oo) first_channels = 64, Z(1:oo) classes = 21>{
             (
                 Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
                 /* encode block 2 */
-                encode_block(filter=3, channels=first_channels*(2^1), num_conv=2) ->
+                encode_block(filter=3, channels=first_channels*2, num_conv=2) ->
                 (
                     Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
                     /* encode block 3 */
-                    encode_block(filter=3, channels=first_channels*(2^2), num_conv=2) ->
+                    encode_block(filter=3, channels=first_channels*4, num_conv=2) ->
                     (
                         Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
                         /* encode block 4 */
-                        encode_block(filter=3, channels=first_channels*(2^3), num_conv=2) ->
+                        encode_block(filter=3, channels=first_channels*8, num_conv=2) ->
                         (
                             Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
-                            /* encode block 5 */
-                            encode_block(filter=3, channels=first_channels*(2^4), num_conv=2) ->
-                            TransConv(kernel=(4,4), channels=first_channels*(2^3), stride=(2,2))
+                            /* deepest block */
+                            decode_block(filter=3, channels=first_channels*16, num_conv=2)
 
                         |
                             /* crop block 4 */
-                            Crop(begin=0,until=0)
+                            [0]
                         ) ->
                         Concatenate() ->
                         /* decode block 3 */
-                        decode_block(filter=3, channels=first_channels*(2^3), num_conv=2)
+                        decode_block(filter=3, channels=first_channels*8, num_conv=2)
                     |
                         /* crop block 3 */
-                        Crop(begin=0,until=0)
+                        [0]
                     ) ->
                     Concatenate() ->
                     /* decode block 3 */
-                    decode_block(filter=3, channels=first_channels*(2^2), num_conv=2)
+                    decode_block(filter=3, channels=first_channels*4, num_conv=2)
                 |
                     /* crop block 2 */
-                    Crop(begin=0,until=0)
+                    [0]
                 ) ->
                 Concatenate() ->
                 /* decode block 2 */
-                decode_block(filter=3, channels=first_channels*(2^1), num_conv=2)
+                decode_block(filter=3, channels=first_channels*2, num_conv=2)
             |
                 /* crop block 1 */
-                Crop(begin=0,until=0)
+                [0]
             ) ->
             Concatenate() ->
             /* decode block 1 */
-            decode_block(filter=3, channels=first_channels, num_conv=2) ->
+            conv(filter=3, channels=first_channels) ->
 
             /* end */
-            conv(filter=3, channels=2) ->
+            Convolution(kernel=(1,1), channels=2) ->
 
-            Softmax() ->
+            //Softmax() ->
             softmax;
         }
 }
