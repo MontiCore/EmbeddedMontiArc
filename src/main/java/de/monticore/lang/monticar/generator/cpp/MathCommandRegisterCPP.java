@@ -60,14 +60,10 @@ public class MathCommandRegisterCPP extends MathCommandRegister {
         registerMathCommand(new ErodeCommand());
         registerMathCommand(new DilateCommand());
         registerMathCommand(new BoundingRectCommand());
-        registerMathCommand(new CircleCommand());
         registerMathCommand(new CvtColorCommand());
-        registerMathCommand(new DrawContoursCommand());
         registerMathCommand(new FindContoursCommand());
         registerMathCommand(new GaussianBlurCommand());
         registerMathCommand(new InRangeCommand());
-        registerMathCommand(new PutTextCommand());
-        registerMathCommand(new ThresholdCommand());
         registerMathCommand(new LargestContourCommand());
         registerMathCommand(new RectangleCommand());
 

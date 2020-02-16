@@ -238,18 +238,8 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testCircleCommand() throws  IOException{
-        testMathCommand("circle");
-    }
-
-    @Test
     public void testCvtColorCommand() throws  IOException{
         testMathCommand("cvtColor");
-    }
-
-    @Test
-    public void testDrawContoursCommand() throws  IOException{
-        testMathCommand("drawContours");
     }
 
     @Test
@@ -265,16 +255,6 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
     @Test
     public void testInRangeCommand() throws  IOException{
         testMathCommand("inRange");
-    }
-
-    @Test
-    public void testPutTextCommand() throws  IOException{
-        testMathCommand("putText");
-    }
-
-    @Test
-    public void testThresholdCommand() throws  IOException{
-        testMathCommand("threshold");
     }
 
     @Test

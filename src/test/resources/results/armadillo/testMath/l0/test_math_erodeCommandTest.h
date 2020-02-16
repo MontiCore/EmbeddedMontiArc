@@ -7,7 +7,7 @@
 #include "ConvHelper.h"
 #include "opencv2/imgproc.hpp"
 using namespace arma;
-using namespace cv;
+using namespace std;
 class test_math_erodeCommandTest{
 public:
 mat src;
@@ -26,10 +26,10 @@ void erodeHelper(mat src, mat dst, int erosion_elem, int iterations)
     else if( erosion_elem == 1 ){ erosion_type = MORPH_CROSS; }
     else if( erosion_elem == 2) { erosion_type = MORPH_ELLIPSE; }
     erosion_size = erosion_elem;
-    mat element = getStructuringElement( erosion_type,
+    mat element = cv::getStructuringElement( erosion_type,
                             Size( 2*erosion_size + 1, 2*erosion_size+1 ),
                             Point( -1, -1 ) );
-    erode( src, dst, element, Point(-1,-1), iterations );
+    cv::erode( src, dst, element, Point(-1,-1), iterations );
 }
 void execute()
 {

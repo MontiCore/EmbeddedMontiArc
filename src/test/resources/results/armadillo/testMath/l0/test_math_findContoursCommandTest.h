@@ -5,9 +5,10 @@
 #endif
 #include "armadillo"
 #include "opencv2/imgproc.hpp"
+#include "ConvHelper.h"
 #include <vector>
 using namespace arma;
-using namespace cv;
+using namespace std;
 class test_math_findContoursCommandTest{
 public:
 mat image;
@@ -20,7 +21,7 @@ image=mat(n,m);
 }
 void execute()
 {
-findContours(image, contours, mode, method);
+cv::findContours(image, contours, mode, method);
 }
 
 };
