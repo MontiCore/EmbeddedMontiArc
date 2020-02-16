@@ -18,7 +18,7 @@ component ErodeAndGaussianBlurCommandTest{
 
         //Fall2
         Q^{270,340,3} dst2;
-        dst = erode(src, erosion_elem, iterations);
+        dst2 = erode(src, erosion_elem, iterations);
 
         //Fall3 a pre-cv and suc-cv
         dst = erode(src, erosion_elem, iterations);

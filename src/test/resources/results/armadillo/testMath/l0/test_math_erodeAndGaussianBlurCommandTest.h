@@ -4,7 +4,6 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "armadillo"
-#include "ConvHelper.h"
 #include "opencv2/imgproc.hpp"
 #include "ConvHelper.h"
 #include <vector>
@@ -56,7 +55,7 @@ void execute()
 {
 erodeHelper(src, dst, erosion_elem, iterations);
 cube dst2=cube(270,340,3);
-erodeHelper(src, dst, erosion_elem, iterations);
+erodeHelper(src, dst2, erosion_elem, iterations);
 erodeHelper(src, dst, erosion_elem, iterations);
 dilateHelper(dst, dst3, dilation_elem, iterations);
 cube src4 = (det(src));
