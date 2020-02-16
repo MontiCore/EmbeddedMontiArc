@@ -2,8 +2,8 @@
 package encoderDecoder;
 
 component Unet<Z(2:oo) first_channels = 64, Z(1:oo) classes = 21>{
-    ports in Q(0:1)^{1, 544, 544} data,
-         out Q(0:1)^{classes, 544, 544} softmax;
+    ports in Q(0:1)^{1, 480, 480} data,
+         out Q(0:1)^{classes, 480, 480} softmax;
 
         implementation CNN{
 

@@ -1,1 +1,1 @@
-encoderDecoder.Unet  /home/treiber/.mxnet/datasets/Unet
+encoderDecoder.Unet  /home/treiber/.mxnet/datasets/voc
