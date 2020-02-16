@@ -61,7 +61,7 @@ public class LargestContourCommand extends MathCommand {
 
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        ((BluePrintCPP) bluePrint).addCVIncludeString("opencv2/imgproc");
+        bluePrintCPP.addCVIncludeString("opencv2/imgproc");
         bluePrint.addMethod(largestContourMethod);
 
     }
@@ -85,7 +85,7 @@ public class LargestContourCommand extends MathCommand {
                 return  "double maxArea = 0;\n" +
                         "int maxAreaContourId = -1;\n" +
                         "   for (int j = 0; j < contours.size(); j++) {\n" +
-                        "       double newArea = contourArea(contours.at(j));\n" +
+                        "       double newArea = cv::contourArea(contours.at(j));\n" +
                         "       if (newArea > maxArea) {\n" +
                         "           maxArea = newArea;\n" +
                         "           maxAreaContourId = j;\n" +

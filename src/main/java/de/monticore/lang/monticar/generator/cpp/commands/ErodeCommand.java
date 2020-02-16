@@ -97,10 +97,10 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
                         "    else if( erosion_elem == 1 ){ erosion_type = MORPH_CROSS; }\n" +
                         "    else if( erosion_elem == 2) { erosion_type = MORPH_ELLIPSE; }\n" +
                         "    erosion_size = erosion_elem;\n" +
-                        "    mat element = getStructuringElement( erosion_type,\n" +
+                        "    mat element = cv::getStructuringElement( erosion_type,\n" +
                         "                            Size( 2*erosion_size + 1, 2*erosion_size+1 ),\n" +
                         "                            Point( -1, -1 ) );\n" +
-                        "    erode( src, dst, element, Point(-1,-1), iterations );\n";
+                        "    cv::erode( src, dst, element, Point(-1,-1), iterations );\n";
             }
 
             @Override

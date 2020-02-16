@@ -47,18 +47,20 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
 
+        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
 
-        Method gaussianBlurHelperMethod = getGaussianBlurHelperMethod(mathMatrixNameExpressionSymbol,(BluePrintCPP) bluePrint);
+        Method gaussianBlurHelperMethod = getGaussianBlurHelperMethod(mathMatrixNameExpressionSymbol,bluePrintCPP);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
         MathStringExpression stringExpression = new MathStringExpression("gaussianBlurHelper" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        ((BluePrintCPP) bluePrint).addCVIncludeString("opencv2/imgproc");
+        bluePrintCPP.addCVIncludeString("opencv2/imgproc");
+        bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(gaussianBlurHelperMethod);
 
     }
@@ -96,7 +98,7 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
         return new Instruction() {
             @Override
             public String getTargetLanguageInstruction() {
-                return "    gaussianBlur(src, dst, Size(sizeX, sizeY), sigmaX, sigmaY);\n";
+                return "    cv::gaussianBlur(src, dst, Size(sizeX, sizeY), sigmaX, sigmaY);\n";
             }
 
             @Override

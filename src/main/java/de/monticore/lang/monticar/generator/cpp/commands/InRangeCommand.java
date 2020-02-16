@@ -46,9 +46,10 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
 
+        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
 
         Method inRangeHelperMethod = getInRangeHelperMethod();
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
@@ -57,7 +58,8 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        ((BluePrintCPP) bluePrint).addCVIncludeString("opencv2/core");
+        bluePrintCPP.addCVIncludeString("opencv2/core");
+        bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(inRangeHelperMethod);
 
     }
@@ -84,7 +86,7 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         return new Instruction() {
             @Override
             public String getTargetLanguageInstruction() {
-                return "    inRange(src, Scalar(lowerB(0), lowerB(1), lowerB(2)),\n" +
+                return "    cv::inRange(src, Scalar(lowerB(0), lowerB(1), lowerB(2)),\n" +
                         "            Scalar(upperB(0), upperB(1), upperB(2)), dst);\n";
             }
 

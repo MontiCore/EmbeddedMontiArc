@@ -46,18 +46,20 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
 
+        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
 
-        Method dilateHelperMethod = getDilateHelperMethod(mathMatrixNameExpressionSymbol, (BluePrintCPP) bluePrint);
+        Method dilateHelperMethod = getDilateHelperMethod(mathMatrixNameExpressionSymbol, bluePrintCPP);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
         MathStringExpression stringExpression = new MathStringExpression("dilateHelper" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        ((BluePrintCPP) bluePrint).addCVIncludeString("opencv2/imgproc");
+        bluePrintCPP.addCVIncludeString("opencv2/imgproc");
+        bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(dilateHelperMethod);
 
     }
@@ -95,10 +97,10 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
                         "    else if( dilation_elem == 1 ){ dilation_type = MORPH_CROSS; }\n" +
                         "    else if( dilation_elem == 2) { dilation_type = MORPH_ELLIPSE; }\n" +
                         "    dilation_size = dilation_elem;\n" +
-                        "    mat element = getStructuringElement( dilation_type,\n" +
+                        "    mat element = cv::getStructuringElement( dilation_type,\n" +
                         "                            Size( 2*dilation_size + 1, 2*dilation_size+1 ),\n" +
                         "                            Point( -1, -1 ) );\n" +
-                        "    dilate( src, dst, element, Point(-1,-1), iterations );\n";
+                        "    cv::dilate( src, dst, element, Point(-1,-1), iterations );\n";
             }
 
             @Override
