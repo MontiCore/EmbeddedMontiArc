@@ -34,6 +34,7 @@ public class ComponentConverter {
     public static BluePrintCPP currentBluePrint = null;
     public static List<String> namesOfFunctions = new ArrayList<>();
     public static List<MathCommand> usedMathCommand = new ArrayList<>();
+    public static HashMap<MathExpressionSymbol, MathExpressionProperties> tuples = new HashMap<MathExpressionSymbol, MathExpressionProperties>();
 
     public static BluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         BluePrintCPP bluePrint = new BluePrintCPP(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
@@ -67,18 +68,20 @@ public class ComponentConverter {
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
         //save function name
         if(mathStatementsSymbol != null) {
-            HashMap<MathExpressionSymbol, MathExpressionProperties> tuples = new HashMap<MathExpressionSymbol, MathExpressionProperties>();
             List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
             for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
                 String nameOfFunction = getNameOfMathCommand(mathExpressionSymbol);
                 namesOfFunctions.add(nameOfFunction);
                 fixFunctionTypes(nameOfFunction, mathExpressionSymbol, bluePrint);
+
             }
 
-            for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
-                //MathExpressionProperties properties = new MathExpressionProperties();
-                //setPropertiesForMathExpression(mathExpressionSymbol, properties);
-                //tuples.put(mathExpressionSymbol, );
+            if(mathExpressionSymbols.size() > 1) {
+                for (MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols) {
+                    MathExpressionProperties properties = new MathExpressionProperties();
+                    MathConverter.setPropertiesForMathExpression(mathExpressionSymbols, mathExpressionSymbol, bluePrint, properties);
+                    ComponentConverter.tuples.put(mathExpressionSymbol, properties);
+                }
             }
         }
         if(namesOfFunctions != null) {
@@ -86,11 +89,6 @@ public class ComponentConverter {
                 usedMathCommand.add(bluePrint.getMathCommandRegister().getMathCommand(nameOfFunction));
             }
         }
-
-        if(mathStatementsSymbol != null){
-            //handleDependenceOfCVCommands(mathStatementsSymbol, BluePrintCPP bluePrint);
-        }
-        //ToDo: add a BluePrintFixer.fixerBluePrintCVfuncitons(bluePrint, nameOfFunction);
 
         generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
@@ -319,27 +317,6 @@ public class ComponentConverter {
         }else {
             Optional<String> initLine = MathConverter.getInitLine(v, bluePrint);
             initLine.ifPresent(s -> method.addInstruction(new TargetCodeInstruction(s)));
-        }
-    }
-    //TODO: Try to modify this Method
-    public static void handleDependenceOfCVCommands(MathStatementsSymbol mathStatementsSymbol, BluePrintCPP bluePrint) {
-        List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
-        int mathExpressionSymbolsSize = mathExpressionSymbols.size();
-        if (mathExpressionSymbolsSize > 1) {
-            for (int i = 0; i < mathExpressionSymbols.size(); i++) {
-                String nameOfMathCommand = getNameOfMathCommand(mathExpressionSymbols.get(i));
-                MathCommand mathCommand = bluePrint.getMathCommandRegister().getMathCommand(nameOfMathCommand);
-                if(mathCommand != null && mathCommand.isCVMathCommand()){
-
-                    for (int j = i + 1; j < mathExpressionSymbols.size(); j++) {
-                    String nameOfSucMathCommand = getNameOfMathCommand(mathExpressionSymbols.get(j));
-                    MathCommand sucMathCommand = bluePrint.getMathCommandRegister().getMathCommand(nameOfSucMathCommand);
-                    if(mathCommand != null && mathCommand.isCVMathCommand()){
-
-                    }
-                    }
-                }
-            }
         }
     }
 

@@ -3,18 +3,19 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.*;
-import de.monticore.lang.monticar.generator.MathBackend;
-import de.monticore.lang.monticar.generator.TargetCodeInstruction;
-import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.MathExpressionProperties;
 import de.monticore.lang.monticar.generator.cpp.OctaveBackend;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -180,5 +181,55 @@ public class MathConverter {
         }
 
         return Optional.ofNullable(initLine);
+    }
+
+    public static void setPropertiesForMathExpression(List<MathExpressionSymbol> mathExpressionSymbols, MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrint, MathExpressionProperties properties){
+        String nameOfFunction = ComponentConverter.getNameOfMathCommand(mathExpressionSymbol);
+        MathCommand currentCommand = bluePrint.getMathCommandRegister().getMathCommand(nameOfFunction);
+        int indexOfCurrentMathExpression = mathExpressionSymbols.indexOf(mathExpressionSymbol);
+        if(currentCommand != null && currentCommand.isCVMathCommand()) {
+            setPrePropertyForMathExpression(mathExpressionSymbols,mathExpressionSymbol, bluePrint, indexOfCurrentMathExpression, properties);
+            setSucPropertyForMathExpression(mathExpressionSymbols, mathExpressionSymbol, bluePrint, indexOfCurrentMathExpression, properties);
+        }
+
+    }
+
+    public static void setPrePropertyForMathExpression(List<MathExpressionSymbol> mathExpressionSymbols, MathExpressionSymbol currentMathExpressionSymbol, BluePrintCPP bluePrint, int currentMathExpressionIndex, MathExpressionProperties properties){
+        for (int i = 0; i < currentMathExpressionIndex; i++) {
+            MathExpressionSymbol preMathExpressionSymbol = mathExpressionSymbols.get(i);
+            String nameOfMathCommand = ComponentConverter.getNameOfMathCommand(preMathExpressionSymbol);
+            MathCommand mathCommand = bluePrint.getMathCommandRegister().getMathCommand(nameOfMathCommand);
+            if(mathCommand != null && mathCommand.isCVMathCommand()){
+                if(dependenceExists(preMathExpressionSymbol, currentMathExpressionSymbol)){
+                    properties.setPreToCV();
+                }
+            }
+        }
+    }
+
+    public static void setSucPropertyForMathExpression(List<MathExpressionSymbol> mathExpressionSymbols, MathExpressionSymbol currentMathExpressionSymbol, BluePrintCPP bluePrint, int currentMathExpressionIndex,  MathExpressionProperties properties){
+        int endIndex = mathExpressionSymbols.size();
+        for (int i = currentMathExpressionIndex + 1; i < endIndex; i++) {
+            MathExpressionSymbol sucMathExpressionSymbol = mathExpressionSymbols.get(i);
+            String nameOfMathCommand = ComponentConverter.getNameOfMathCommand(sucMathExpressionSymbol);
+            MathCommand mathCommand = bluePrint.getMathCommandRegister().getMathCommand(nameOfMathCommand);
+            if(mathCommand != null && mathCommand.isCVMathCommand()){
+                if(dependenceExists(currentMathExpressionSymbol, sucMathExpressionSymbol)){
+                    properties.setSucToCV();
+                }
+            }
+        }
+    }
+
+    public static boolean dependenceExists(MathExpressionSymbol preMathExpressionSymbol, MathExpressionSymbol sucMathExpressionSymbol){
+        String outputOfPre = ComponentConverter.getNameOfOutput(preMathExpressionSymbol);
+        MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) sucMathExpressionSymbol).getExpressionSymbol();
+        for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols()){
+            String parameterName = accessSymbol.getTextualRepresentation();
+            if(outputOfPre.equals(parameterName)){
+                return true;
+            }
+        }
+        return false;
     }
 }
