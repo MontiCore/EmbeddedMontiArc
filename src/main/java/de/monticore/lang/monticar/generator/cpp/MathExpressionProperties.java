@@ -19,11 +19,19 @@ import java.util.List;
  */
 public class MathExpressionProperties {
     public Level pre = Level.ARMA;
-    public Level succ = Level.ARMA;
+    public Level suc = Level.ARMA;
 
     enum Level {
         CV,
         ARMA
+    }
+
+    public void setPreToCV(){
+        this.pre = Level.CV;
+    }
+
+    public void setSucToCV(){
+        this.suc = Level.CV;
     }
 
     /*public MathExpressionProperties(String name) {
