@@ -6,7 +6,7 @@ component Connector {
           out Z(0:255)^{1, 56, 56} segmented;
 
     // instance Network<10> predictor;
-    instance SmallSeg<10> predictor;
+    instance Network<10> predictor;
     instance DeOneHotImage<10,56,56> deonehot;
 
     connect image -> predictor.data;

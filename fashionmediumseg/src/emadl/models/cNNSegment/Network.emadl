@@ -17,7 +17,7 @@ component Network<Z(2:oo) num_classes = 10>{
             //Crop(start=1, until=0)
         }
 
-        def vgg_block(num_conv, filter, channels){
+        def encode_block(num_conv, filter, channels){
             conv(filter=filter, channels=channels, ->=num_conv) ->
             maxPool2dSamePadding(kernel=(2,2), stride=(2,2))
         }
@@ -30,18 +30,17 @@ component Network<Z(2:oo) num_classes = 10>{
 
         data ->
 
-        /* vgg block 1 */
-        vgg_block(num_conv=2, filter=3, channels=64) ->
+        /* encode block 1 */
+        //encode_block(num_conv=2, filter=3, channels=64) ->
 
-        /* vgg block 2 */
-        vgg_block(num_conv=2, filter=3, channels=128) ->
+        /* encode block 2 */
+        encode_block(num_conv=2, filter=3, channels=128) ->
 
-        /* vgg block 4 */
-        vgg_block(num_conv=3, filter=3, channels=256) ->
+        /* encode block 4 */
+        encode_block(num_conv=3, filter=3, channels=256) ->
         (
-
-            /* vgg block 5 */
-            vgg_block(num_conv=3, filter=3, channels=256) ->
+            /* encode block 5 */
+            encode_block(num_conv=3, filter=3, channels=256) ->
 
             /* fully convolutional layers, replacing fully connected layers */
             fully_conv(filter=7, channels=1028, dropout=0.5) ->
@@ -50,18 +49,15 @@ component Network<Z(2:oo) num_classes = 10>{
 
             /* upsampling */
             TransConv(kernel=(4,4), channels=num_classes, stride=(2,2))
-
         |
-
             /* skip 4 */
             Convolution(kernel=(4,4), channels=num_classes)
-            // Crop(start=6, until=-7)
         ) ->
 
         Concatenate() ->
 
         /*  Final up-sampling and cropping */
-        TransConv(kernel=(14,14), channels=num_classes, stride=(2,2)) ->
+        TransConv(kernel=(8,8), channels=num_classes, stride=(4,4)) ->
         // Crop(start=12, until=-12) ->
         Softmax() ->
         softmax;

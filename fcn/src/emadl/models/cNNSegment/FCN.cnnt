@@ -9,9 +9,9 @@ configuration FCN{
         loss_axis:1
      }
      optimizer:sgd{
-         learning_rate:0.5
-         learning_rate_decay:0.85
-         step_size:750
-         weight_decay:0.0
+         learning_rate:0.01
+         learning_rate_decay:0.99
+         step_size:500
+         weight_decay:0.0001
      }
 }
