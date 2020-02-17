@@ -3,7 +3,7 @@
 ### #SBATCH directives need to be in the first part of the jobscript
 #SBATCH --time=60
 #SBATCH --gres=gpu:1
-#SBATCH --output=logs/log_itc.log
+#SBATCH --output=log_itc.log
 
 ### your code goes here, the second part of the jobscript
 
