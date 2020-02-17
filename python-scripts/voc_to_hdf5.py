@@ -228,7 +228,7 @@ def test_mean():
 
 
 if __name__ == '__main__':
-    # _main(parser.parse_args())
+    _main(parser.parse_args())
     # test_result()
     # test_normalize()
-    test_mean()
+    # test_mean()
