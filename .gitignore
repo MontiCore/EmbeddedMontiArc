@@ -2,5 +2,5 @@ src/src/cpp/DigitCalculator.cpp
 *.pyc
 mnistsmallseg/test_img_segmented.png
 python-scripts/fashion_mnist_smallseg
-fashionmediumseg/pred.png
+*pred.png
 *.log

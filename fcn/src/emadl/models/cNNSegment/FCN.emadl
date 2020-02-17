@@ -64,7 +64,6 @@ component FCN<Z(2:oo) classes = 21>{
             Concatenate() ->
             TransConv(kernel=(16,16), channels=classes, stride=(8,8)) ->
 
-            Softmax() ->
             softmax;
         }
 }

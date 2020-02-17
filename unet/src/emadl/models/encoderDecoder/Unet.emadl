@@ -80,7 +80,6 @@ component Unet<Z(2:oo) first_channels = 64, Z(1:oo) classes = 21>{
             /* end */
             Convolution(kernel=(1,1), channels=classes) ->
 
-            Softmax() ->
             softmax;
         }
 }

@@ -21,7 +21,6 @@ component VGG16{
             Pooling(pool_type="max", kernel=(2,2), stride=(1,1)) ->
             fc() ->
             FullyConnected(units=10) ->
-            Softmax() ->
             predictions;
         }
 }
