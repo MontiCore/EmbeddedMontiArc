@@ -76,7 +76,7 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
         String typeNameOut = "";
 
         if(typeName.equals("") || typeName.equals("mat")){
-            typeName = "mat";
+            typeName = "arma::mat";
         }
 
         if(properties.isPreCV()){
@@ -123,7 +123,7 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
                     finalInstruction += "    cv::erode( src, dst, element, Point(-1,-1), iterations );\n";
                 }else if(properties.isPreCV()){
                     finalInstruction += "    cv::Mat dstCV;\n" +
-                            "    cv::erode( src, dstCV, element, Point(-1,-1), iterations );\n";
+                                        "    cv::erode( src, dstCV, element, Point(-1,-1), iterations );\n";
                     if(typeNameOut == "cube"){
                         finalInstruction += "    dst = ConvHelper::to_armaCube(dstCV);\n";
                     }   else {
@@ -131,13 +131,13 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
                     }
                 } else if(properties.isSucCV()){
                     finalInstruction += "    cv::Mat srcCV;\n" +
-                            "    srcCV = ConvHelper::to_cvmat(src);\n" +
-                            "    cv::erode( srcCV, dst, element, Point(-1,-1), iterations );\n";
+                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
+                                        "    cv::erode( srcCV, dst, element, Point(-1,-1), iterations );\n";
                 } else {
                     finalInstruction += "    cv::Mat srcCV;\n" +
-                            "    cv::Mat dstCV;\n" +
-                            "    srcCV = ConvHelper::to_cvmat(src);\n" +
-                            "    cv::erode( srcCV, dstCV, element, Point(-1,-1), iterations );\n";
+                                        "    cv::Mat dstCV;\n" +
+                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
+                                        "    cv::erode( srcCV, dstCV, element, Point(-1,-1), iterations );\n";
                     if(typeNameOut == "cube"){
                         finalInstruction += "    dst = ConvHelper::to_armaCube(dstCV);\n";
                     }   else {
