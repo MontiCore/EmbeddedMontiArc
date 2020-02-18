@@ -34,6 +34,14 @@ public class MathExpressionProperties {
         this.suc = Level.CV;
     }
 
+    public boolean isPreCV(){
+        return this.pre == Level.CV;
+    }
+
+    public boolean isSucCV(){
+        return this.suc == Level.CV;
+    }
+
     /*public MathExpressionProperties(String name) {
         (name);
     }*/
