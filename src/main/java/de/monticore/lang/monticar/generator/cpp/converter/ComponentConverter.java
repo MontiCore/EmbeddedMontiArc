@@ -80,6 +80,21 @@ public class ComponentConverter {
                 for (MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols) {
                     MathExpressionProperties properties = new MathExpressionProperties();
                     MathConverter.setPropertiesForMathExpression(mathExpressionSymbols, mathExpressionSymbol, bluePrint, properties);
+                    if(mathExpressionSymbol.isAssignmentExpression()){
+                        MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol)mathExpressionSymbol).getExpressionSymbol();
+                        ComponentConverter.tuples.put(mathMatrixNameExpressionSymbol, properties);
+                    } else{
+                        ComponentConverter.tuples.put(mathExpressionSymbol, properties);
+                    }
+
+                }
+            } else if(mathExpressionSymbols.size() == 1){
+                MathExpressionProperties properties = new MathExpressionProperties();
+                MathExpressionSymbol mathExpressionSymbol = mathExpressionSymbols.get(0);
+                if(mathExpressionSymbol.isAssignmentExpression()){
+                    MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol)mathExpressionSymbol).getExpressionSymbol();
+                    ComponentConverter.tuples.put(mathMatrixNameExpressionSymbol, properties);
+                } else{
                     ComponentConverter.tuples.put(mathExpressionSymbol, properties);
                 }
             }
