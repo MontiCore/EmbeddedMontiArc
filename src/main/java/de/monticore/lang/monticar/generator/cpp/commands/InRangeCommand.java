@@ -104,7 +104,7 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         return new Instruction() {
             @Override
             public String getTargetLanguageInstruction() {
-                
+
                 String finalInstruction ="";
 
                 if (properties.isPreCV() && properties.isSucCV()) {
