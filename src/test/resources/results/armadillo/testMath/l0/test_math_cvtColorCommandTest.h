@@ -20,7 +20,7 @@ dst=mat(n,m);
 }
 void execute()
 {
-cv::cvtColor(src, dst, colorConversion);
+    cv::cvtColor(src, dst, colorConversion);
 }
 
 };
