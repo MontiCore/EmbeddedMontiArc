@@ -21,12 +21,6 @@ component Unet<Z(2:oo) first_channels = 64, Z(1:oo) classes = 21>{
                 TransConv(kernel=(4,4), channels=channels, stride=(2,2))
             }
 
-            def fully_conv(filter, channels, dropout){
-                conv(filter=filter, channels=channels) ->
-                Relu() ->
-                Dropout(p=dropout)
-            }
-
             data ->
 
             /* encode block 1 */

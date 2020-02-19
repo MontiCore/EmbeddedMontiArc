@@ -58,7 +58,6 @@ component Network<Z(2:oo) num_classes = 10>{
 
         /*  Final up-sampling and cropping */
         TransConv(kernel=(8,8), channels=num_classes, stride=(4,4)) ->
-        // Crop(start=12, until=-12) ->
         softmax;
     }
 }

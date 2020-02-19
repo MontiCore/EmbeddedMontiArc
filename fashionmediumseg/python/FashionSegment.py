@@ -8,7 +8,7 @@ import numpy as np
 
 from util import get_preprocessed_image_mnist, get_label_image, _PALETTE
 
-def plot(img, labels, class_names=None):
+def plot(img, labels, class_names=None, title='pred.png'):
     import matplotlib.pyplot as plt
     from matplotlib import patches
 
@@ -29,6 +29,7 @@ def plot(img, labels, class_names=None):
         ax3.axis('off')
         plt.legend(handles=handles)
 
+    plt.savefig(title)
     plt.show()
 
 def main(argv):
@@ -57,15 +58,20 @@ def main(argv):
             output_file = arg
         elif opt in ("-c", "ctx"):
             if arg == 'gpu':
-                ctx = mx.gpu(0)
+                ctx = mx.gpu(1)
             elif arg == 'cpu':
                 ctx = mx.cpu(0)
-        elif opt in ("-o", "ofile"):
+        elif opt in ("-p", "params"):
             params_path = arg
         elif opt in ("-m", "model"):
             model_path = arg
         elif opt in ("-s", "size"):
             size = arg
+
+    print("Input file: {}".format(input_file))
+    print("Model: {}".format(model_path))
+    print("Parameters: {}".format(params_path))
+    print("Output file: {}".format(output_file))
 
     """
     https://discuss.mxnet.io/t/collect-params-load-model-params-file-does-not-work/1754
@@ -90,18 +96,23 @@ def main(argv):
 
     ### get labels
     output = net(mx.nd.array(img_processed,ctx=ctx))
+    print(np.array(output.shape))
 
-    # print(output)
+    # output = mx.nd.softmax(output, axis=1)
 
     ### get label image (apply a color palette for labels)
     labels = get_label_image(output, org_h, org_w)
+    print("Output shape", np.array(labels.shape))
 
-    print(np.array(labels.shape))
+
+    (unique, counts) = np.unique(labels, return_counts=True)
+    frequencies = np.asarray((unique, counts)).T
+    print(frequencies)
 
     ### save image
     cv2.imwrite(output_file, labels)
     class_names = ['background', 'trousers', 'pullover', 'dress', 'coat', 'sandal', 'shirt', 'sneaker', 'bag', 'ankle_boot', 't-shirt']
-    plot(img_processed[0][0], labels, class_names=class_names)
+    plot(img_processed[0][0], labels, class_names=class_names, title=output_file)
 
 
     ### el final

@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 configuration SmallSeg{
-     num_epoch:2
+     num_epoch:10
      batch_size:32
      normalize:false
      context:gpu
      load_checkpoint:true
-     loss:softmax_cross_entropy{
+     loss:dice_loss{
         loss_axis:1
      }
      optimizer:sgd{
-         learning_rate:0.001
+         learning_rate:0.01
          learning_rate_decay:0.85
          step_size:750
          weight_decay:0.0

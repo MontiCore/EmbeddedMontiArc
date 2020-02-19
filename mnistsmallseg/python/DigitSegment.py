@@ -8,7 +8,7 @@ import numpy as np
 
 from util import get_preprocessed_image_mnist, get_label_image, _PALETTE
 
-def plot(img, labels, class_names=None):
+def plot(img, labels, class_names=None, title='pred.png'):
     import matplotlib.pyplot as plt
     from matplotlib import patches
 
@@ -29,12 +29,13 @@ def plot(img, labels, class_names=None):
         ax3.axis('off')
         plt.legend(handles=handles)
 
+    plt.savefig(title)
     plt.show()
 
 def main(argv):
     model_path = './model/cNNSegment.SmallSeg/model_0_newest-symbol.json'
     params_path = './model/cNNSegment.SmallSeg/model_0_newest-0000.params'
-    input_file = '../resources/images/3.png'
+    input_file = '../resources/images_fashionmnist/3.png'
     output_file = 'pred.png'
     ctx = mx.gpu(0)
 
@@ -93,7 +94,7 @@ def main(argv):
     # ### save image
     cv2.imwrite(output_file, labels)
     class_names = ['background', 'trousers', 'pullover', 'dress', 'coat', 'sandal', 'shirt', 'sneaker', 'bag', 'ankle_boot', 't-shirt']
-    # plot(img_processed[0][0], labels, class_names=class_names)
+    plot(img_processed[0][0], labels, class_names=class_names, title=output_file)
 
 
     ### el final

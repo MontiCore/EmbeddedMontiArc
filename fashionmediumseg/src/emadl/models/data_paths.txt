@@ -1,3 +1,4 @@
 cNNSegment.MediumSeg ../resources/fashionmnist_2x2
 cNNSegment.Network ../resources/fashionmnist_2x2
 cNNSegment.SmallSeg ../resources/fashionmnist_2x2
+cNNSegment.SmallSeg2 ../resources/fashionmnist_2x2

@@ -86,7 +86,7 @@ def get_preprocessed_image_mnist(file_name, res=(28,28)):
     ### normalize
     img_h, img_w = img.shape
 
-    if (img_h, img_w) != (28, 28):
+    if (img_h, img_w) != res:
         img = cv2.resize(img, res)
 
     img = np.expand_dims(np.expand_dims(img.astype(np.float32), 0), 0)

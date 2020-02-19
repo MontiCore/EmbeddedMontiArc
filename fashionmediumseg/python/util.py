@@ -59,7 +59,7 @@ _PALETTE = [0, 0, 0,
 
 _IMAGENET_MEANS = np.array([123.68, 116.779, 103.939], dtype=np.float32)  # RGB mean values
 
-def get_preprocessed_image(file_name, res=(480,480)):
+def get_preprocessed_image_old(file_name, res=(480,480)):
     """ Reads an image from the disk, pre-processes it by subtracting mean etc. and
     returns resized RGB image.
     """
@@ -76,7 +76,22 @@ def get_preprocessed_image(file_name, res=(480,480)):
 
     img = cv2.resize(img, res)
 
-    return np.expand_dims(img.astype(np.float32), 0), img_h, img_w
+    return np.expand_dims(img.astype(np.uint8), 0), img_h, img_w
+
+def get_preprocessed_image(file_name, res=(28,28)):
+
+    ### load image gray
+    img = np.array(cv2.imread(file_name, cv2.IMREAD_GRAYSCALE))
+
+    ### normalize
+    img_h, img_w = img.shape
+
+    if (img_h, img_w) != res:
+        img = cv2.resize(img, res)
+
+    img = np.expand_dims(np.expand_dims(img.astype(np.float32), 0), 0)
+
+    return img, img_h, img_w
 
 def show_img(img):
     import matplotlib.pyplot as plt
@@ -104,7 +119,16 @@ def get_label_image(probs, img_h, img_w):
     Note: This method assumes 'channels_last' data format.
     """
 
+    # print(np.array(probs).shape)
+    # print(np.array(probs).argmax(axis=1).shape)
+
     labels = probs.argmax(axis=1).astype('uint8').asnumpy()[0]
+
+    print("shape in get label_image: ", labels.shape)
+    (unique, counts) = np.unique(labels, return_counts=True)
+    frequencies = np.asarray((unique, counts)).T
+    print(frequencies)
+
     h, w = labels.shape[:2]
     palette = [_PALETTE[n:n+3] for n in range(0, len(_PALETTE), 3)]
     out = np.zeros((h, w, 3))

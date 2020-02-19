@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 configuration Network{
-     num_epoch:10
+     num_epoch:1
      batch_size:32
      normalize:false
      context:gpu
@@ -9,7 +9,7 @@ configuration Network{
         loss_axis:1
      }
      optimizer:sgd{
-         learning_rate:0.05
+         learning_rate:0.002
          learning_rate_decay:0.95
          step_size:450
          weight_decay:0.0
