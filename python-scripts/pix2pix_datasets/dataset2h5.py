@@ -85,21 +85,21 @@ def get_images(path, channels_in, channels_out):
     image_target : array of uint8
         Image byte string represented as array of uint8.
     """
-    image = cv2.imread(fname, cv2.IMREAD_COLOR)
-    image = cv2.resize(img, (res[0]*2,res[1]))
+    image = cv2.imread(path, cv2.IMREAD_COLOR)
+    image = cv2.resize(image, (res[0]*2,res[1]))
 
     image_data, image_target = image[:, :res[1]], image[:, res[1]:]
     image_data = convert_images(image_data, channels_in)
     image_target = convert_images(image_target, channels_out)
     # convert image (h,w,c) to vector (c,h,w)
-    # img = np.transpose(img, (2, 0, 1))
+    # image= np.transpose(image, (2, 0, 1))
     return image_data, image_target
 
 
 def add_to_dataset(paths, images, targets, channels_in, channels_out, start=0):
     """Process all given ids and adds them to given datasets."""
-    for path in enumerate(ids):
-        image_data, image_target = get_images(path, )
+    for i, path in enumerate(paths):
+        image_data, image_target = get_images(path, channels_in, channels_out)
         images[start + i] = image_data
         targets[start + i] = image_target
     return i
@@ -142,7 +142,7 @@ def _main(args):
         'target', shape=(len(paths_test),channels_out,res[0],res[1]), dtype=np.uint8)
 
     # process all ids and add to datasets
-    print('Processing Pascal VOC 2007 datasets for training set.')
+    print('Processing...')
     add_to_dataset(paths_train, train_images, train_target, channels_in, channels_in)
     add_to_dataset(paths_test, test_images, test_target, channels_in, channels_out)
 
@@ -186,11 +186,28 @@ def test_mean():
     with h5py.File('/home/treiber/.mxnet/datasets/voc/train.h5', 'r') as train_h5:
         mean = nd.array(train_h5[input_name][:].mean(axis=0))
 
+def test_h5files(args):
+    path_directory = os.path.expanduser(args.path_directory)
+    path_h5 = os.path.join(path_directory, 'train.h5')
+    with h5py.File(path_h5, 'r') as fh5:
+        print('Successfully opened.')
+        print('Datasets: ')
+        for key in fh5.keys():
+            print(key)
+        test_data = fh5['data'][10]
+        test_data = np.transpose(test_data, (1, 2, 0))
+        cv2.imwrite('test_data.png', test_data)
+        test_target = fh5['target'][10]
+        test_target = np.transpose(test_target, (1, 2, 0))
+        cv2.imwrite('test_target.png', test_target)
+
+
 if __name__ == '__main__':
-    _main(parser.parse_args())
+    # _main(parser.parse_args())
     # test_result()
     # test_normalize()
     # test_mean()
-    paths = get_paths('/home/jt529748/git/crfrnn/python-scripts/pix2pix_datasets/datasets/facades/train')
-    cmap = get_cmap(paths)
-    print(cmap)
+    # paths = get_paths('/home/jt529748/git/crfrnn/python-scripts/pix2pix_datasets/datasets/facades/train')
+    # cmap = get_cmap(paths)
+    # print(cmap)
+    test_h5files(parser.parse_args())
