@@ -1,0 +1,106 @@
+
+package tbd;
+
+//encoder C64-C128-C256-C512-C512-C512-C512-C512
+//decoder:CD512-CD512-CD512-C512-C256-C128-C64
+//Let Ck denote  a  Convolution-BatchNorm-ReLU  layer with  k  filters.
+//CDk denotes  a  Convolution-BatchNorm-Dropout-ReLU layer with a dropout rate of 50%.
+//All convolutions are 4×4 spatial filters applied with stride 2.
+//Convolutions in the encoder, and in the discriminator, downsample by a factor of 2, whereas in the decoder they upsample by a factor of 2.
+
+component Pix2PixGen<Z(1:oo) in_channels = 3, Z(1:oo) out_channels = 3Z(2:oo) first_channels = 64>{
+    ports in Q(0:1)^{in_channels, 256, 256} data,
+         out Q(0:1)^{out_channels, 256, 256} target;
+
+    implementation CNN{
+
+        def encode(channels, filter=4, num_conv=1){
+            Convolution(kernel=(filter,filter), channels=channels, stride(2,2)) ->
+            BatchNorm() ->
+            Relu()
+        }
+
+        def decode(channels, filter=4, num_conv=1){
+            TransConv(kernel=(filter, filter), channels=channels, stride=(2,2)) ->
+            BatchNorm() ->
+            Dropout(0.5) ->
+            Relu()
+        }
+
+        data ->
+
+        /* encoder 1 without BatchNorm */
+        Convolution(kernel=(4,4), channels=first_channels, stride(2,2)) ->
+        BatchNorm() ->
+        Relu() ->
+        (
+            /* encoder 2 */
+            encode(channels=first_channels*2) ->
+                (
+                    /* encoder 3 */
+                    encode(channels=first_channels*4) ->
+                    (
+                        /* encoder 4 */
+                        encode(channels=first_channels*8) ->
+                        (
+                            /* encoder 5 */
+                            encode(channels=first_channels*8) ->
+                            (
+                                /* encoder 6 */
+                                encode(channels=first_channels*8) ->
+                                    (
+                                        /* encoder 7 */
+                                        encode(channels=first_channels*8) ->
+                                        (
+                                            /* encoder 8 */
+                                            encode(channels=first_channels*8) ->
+
+                                            /* decoder 8 */
+                                            decode(channels=first_channels*8)
+                                        |
+                                            [0]
+                                        ) ->
+                                    Concatenate() ->
+                                    /* decoder 7 */
+                                    decode(channels=first_channels*8)
+                                    |
+                                        [0]
+                                    ) ->
+                                Concatenate() ->
+                                /* decoder 6 */
+                                decode(channels=first_channels*8)
+                            |
+                                [0]
+                            ) ->
+                        Concatenate() ->
+                        /* decoder 5 */
+                        decode(channels=first_channels*8)
+                        |
+                            [0]
+                        ) ->
+                    Concatenate() ->
+                    /* decoder 4 */
+                    decode(channels=first_channels*8)
+                    |
+                        [0]
+                    ) ->
+                Concatenate() ->
+                /* decoder 3 */
+                decode(channels=first_channels*4)
+                |
+                    [0]
+                ) ->
+            Concatenate() ->
+            /* decoder 2 */
+            decode(channels=first_channels*2)
+        |
+            [0]
+        ) ->
+        Concatenate() ->
+        /* decoder 1 */
+        /* channels = output channels and Tanh as activation */
+        Convolution(kernel=(4,4), channels=out_channels) ->
+        Tanh()
+        target;
+    }
+}
