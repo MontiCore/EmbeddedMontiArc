@@ -5,6 +5,7 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.MathExpressionProperties;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
@@ -46,8 +47,9 @@ public class RectangleCommand extends MathCommand{
     public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
-        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
+        MathExpressionProperties properties = ComponentConverter.tuples.get(mathExpressionSymbol);
 
+        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
@@ -55,7 +57,7 @@ public class RectangleCommand extends MathCommand{
         String nameOfSecondParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(1).getTextualRepresentation();
         ComponentConverter.fixVariableType(nameOfSecondParameter, bluePrintCPP, "Q", "Rect", "");
 
-        Method rectangleHelperMethod = getRectangleHelperMethod();
+        Method rectangleHelperMethod = getRectangleHelperMethod(mathMatrixNameExpressionSymbol, bluePrintCPP, properties);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
         MathStringExpression stringExpression = new MathStringExpression("rectangleHelper" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
@@ -69,14 +71,36 @@ public class RectangleCommand extends MathCommand{
 
     }
 
-    private Method getRectangleHelperMethod(){
-        Method method = new Method("rectangleHelper", "Mat");
+    private Method getRectangleHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP, MathExpressionProperties properties){
+        Method method = new Method("rectangleHelper", "arma::mat");
+        String typeName = getTypeOfFirstInput(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        String typeNameIn = "";
+        String typeNameOut = "";
+
+        if(typeName.equals("") || typeName.equals("mat")){
+            typeName = "arma::mat";
+        }
+
+        if(properties.isPreCV()){
+            typeNameIn = "cv::Mat";
+        } else {
+            typeNameIn = typeName;
+        }
+
+        if(properties.isSucCV()){
+            typeNameOut = "cv::Mat";
+            method.setReturnTypeName(typeNameOut);
+
+        }else {
+            typeNameOut = typeName;
+            method.setReturnTypeName(typeNameOut);
+        }
 
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrixType","Mat", "");
+        method.addParameter(src, "src", "CommonMatrixType",typeNameIn, "");
         Variable rect = new Variable();
-        method.addParameter(rect, "rect", "double", "Rect", "");
+        method.addParameter(rect, "rect", "double", "cv::Rect", "");
         Variable color = new Variable();
         method.addParameter(color,"color", "colvec", "colvec", "");
         Variable thickness = new Variable();
@@ -84,17 +108,51 @@ public class RectangleCommand extends MathCommand{
         Variable lineType = new Variable();
         method.addParameter(lineType, "lineType", "Integer","int", "");
         //add an instruction to the method
-        method.addInstruction(methodBody());
+        method.addInstruction(methodBody(properties, typeNameIn, typeNameOut));
 
         return method;
     }
 
-    private Instruction methodBody() {
+    private Instruction methodBody(MathExpressionProperties properties, String typeNameIn, String typeNameOut) {
         return new Instruction() {
             @Override
             public String getTargetLanguageInstruction() {
-                return  "    cv::rectangle(src, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n" +
-                        "    return src;\n";
+                String finalInstruction = "";
+
+                if(properties.isPreCV() && properties.isSucCV()){
+                    finalInstruction =  "    cv::rectangle(src, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n" +
+                                        "    return src;\n";
+                } else if(properties.isPreCV()){
+                    finalInstruction =  "    cv::rectangle(src, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n";
+                    if(typeNameOut == "cube"){
+                        finalInstruction += "    arma::cube srcCube;\n" +
+                                            "    srcCube = ConvHelper::to_armaCube(src);\n" +
+                                            "    return srcCube;\n";
+                    } else {
+                        finalInstruction += "    arma::mat srcArma;\n" +
+                                            "    srcArma = ConvHelper::to_arma(src);\n" +
+                                            "    return srcArma;\n";
+                    }
+                } else if(properties.isSucCV()){
+                    finalInstruction =  "    cv::Mat srcCV;\n" +
+                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
+                                        "    cv::rectangle(srcCV, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n" +
+                                        "    return srcCV;\n";
+                } else {
+                    finalInstruction =  "    cv::Mat srcCV;\n" +
+                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
+                                        "    cv::rectangle(srcCV, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n";
+                    if(typeNameOut == "cube"){
+                        finalInstruction += "    arma::cube srcCube;\n" +
+                                            "    srcCube = to_armaCube(srcCV);\n" +
+                                            "    return srcCube;\n";
+                    }   else {
+                        finalInstruction += "    arma::mat srcArma;\n" +
+                                            "    srcArma = to_arma(srcCV);\n" +
+                                            "    return srcArma;\n";
+                    }
+                }
+                return  finalInstruction;
             }
 
             @Override
