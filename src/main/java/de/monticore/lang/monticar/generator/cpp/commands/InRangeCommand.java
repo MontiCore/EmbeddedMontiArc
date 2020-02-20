@@ -76,7 +76,7 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         if(properties.isPreCV()){
             typeNameIn = "cv::Mat";
         } else {
-            typeNameIn = "arma::cube";
+            typeNameIn = "cube";
         }
 
         if(properties.isSucCV()){
