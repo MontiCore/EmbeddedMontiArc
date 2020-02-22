@@ -24,7 +24,7 @@ component Generator<Z(1:oo) in_channels = 3, Z(1:oo) out_channels = 3, Z(2:oo) f
             TransConv(kernel=(filter, filter), channels=channels, stride=(2,2)) ->
             BatchNorm() ->
             Dropout(p=0.5) ->
-            Relu()
+            LeakyRelu(alpha=0.2)
         }
 
         data ->
