@@ -97,7 +97,11 @@ public class ComponentConverter {
                     ComponentConverter.tuples.put(mathExpressionSymbol, properties);
                 }
             }
+            redefineVariables(mathExpressionSymbols, bluePrint);
         }
+
+        //ToDo Redefine Function
+
         if(namesOfFunctions != null) {
             for(String nameOfFunction : namesOfFunctions){
                 usedMathCommand.add(bluePrint.getMathCommandRegister().getMathCommand(nameOfFunction));
@@ -227,7 +231,6 @@ public class ComponentConverter {
                 generateInitStaticVariablePart(method, v, bluePrint);
             } else {
                 generateInitNonStaticVariable(method, v, bluePrint);
-                //TODO: Handle the case for type changes like cube to vector<vector<Point>>
             }
             if (v.isArray())
                 v.setName(oldName);
@@ -403,6 +406,24 @@ public class ComponentConverter {
             case "boundingRect":
                 fixVariableType(outputName, bluePrintCPP, "Q", "Rect", "");
                 break;
+        }
+    }
+
+    public static void redefineVariables(List<MathExpressionSymbol> mathExpressionSymbols, BluePrintCPP bluePrintCPP){
+        for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
+            if(mathExpressionSymbol.isAssignmentExpression()) {
+                MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathExpressionSymbol).getExpressionSymbol();
+                String nameOfFirstParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0).getTextualRepresentation();
+                String nameOfOutput = getNameOfOutput(mathExpressionSymbol);
+
+                MathExpressionProperties properties = tuples.get(mathExpressionSymbol);
+                if (properties.isPreCV()) {
+                    fixVariableType(nameOfFirstParameter, bluePrintCPP, "CommonMatrixType", "cv::Mat", "");
+                }
+                if(properties.isSucCV()){
+                    fixVariableType(nameOfOutput, bluePrintCPP, "CommonMatrixType", "cv::Mat", "");
+                }
+            }
         }
     }
 
