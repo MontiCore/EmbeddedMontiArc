@@ -99,7 +99,9 @@ component Generator<Z(1:oo) in_channels = 3, Z(1:oo) out_channels = 3, Z(2:oo) f
         Concatenate() ->
         /* decoder 1 */
         /* channels = output channels and Tanh as activation */
-        TransConv(kernel=(4,4), channels=out_channels, stride=(2,2)) ->
+        decode(channels=first_channels) ->
+
+        Convolution(kernel=(4,4), channels=out_channels) ->
         Tanh() ->
         target;
     }
