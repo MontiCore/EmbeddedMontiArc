@@ -1,63 +1,60 @@
 /* (c) https://github.com/MontiCore/monticore */
 package cNNSegment;
 
-component Network<Z(2:oo) num_classes = 10>{
+component Network<Z(2:oo) classes = 10>{
     ports in Z(0:255)^{1, 56, 56} data,
-         out Q(0:1)^{num_classes, 56, 56} softmax;
+         out Q(0:1)^{classes, 56, 56} softmax;
 
-    implementation CNN{
+        implementation CNN {
 
-        def conv(filter, channels){
-            Convolution(kernel=(filter,filter), channels=channels) ->
-            Relu()
+            def conv(filter, channels, stride=(1,1)){
+                Convolution(kernel=(filter,filter), channels=channels, stride=stride) ->
+                Relu()
+            }
+
+            def vgg_block(num_conv, filter, channels){
+                conv(filter=filter, channels=channels, ->=num_conv) ->
+                Pooling(pool_type="max", kernel=(2,2), stride=(2,2))
+            }
+
+            data ->
+            /* vgg block 1 */
+            vgg_block(num_conv=2, filter=3, channels=64) ->
+            (
+                /* vgg block 2 */
+                vgg_block(num_conv=2, filter=3, channels=128) ->
+
+                (
+
+                    /* vgg block 3 */
+                    vgg_block(num_conv=2, filter=3, channels=256) ->
+
+                    /* fully convolutional block */
+                    conv(filter=1, channels=2048) ->
+                    Dropout(p=0.5) ->
+                    conv(filter=1, channels=2048) ->
+                    Dropout(p=0.5) ->
+                    Convolution(kernel=(1,1), channels=classes) ->
+                    TransConv(kernel=(2,2), channels=classes, stride=(2,2))
+
+                    |
+
+                    Convolution(kernel=(1,1), channels=classes)
+
+                ) ->
+
+                Concatenate() ->
+                TransConv(kernel=(4,4), channels=classes, stride=(2,2))
+
+                |
+
+                Convolution(kernel=(1,1), channels=classes)
+
+            ) ->
+
+            Concatenate() ->
+            TransConv(kernel=(4,4), channels=classes, stride=(2,2)) ->
+
+            softmax;
         }
-
-        def maxPool2dSamePadding(kernel, stride){
-            Pooling(pool_type="max", kernel=kernel, stride=stride)
-            //Crop(start=1, until=0)
-        }
-
-        def encode_block(num_conv, filter, channels){
-            conv(filter=filter, channels=channels, ->=num_conv) ->
-            maxPool2dSamePadding(kernel=(2,2), stride=(2,2))
-        }
-
-        def fully_conv(filter, channels, dropout) {
-            conv(filter=filter, channels=channels) ->
-            Relu() ->
-            Dropout(p=dropout)
-        }
-
-        data ->
-
-        /* encode block 1 */
-        //encode_block(num_conv=2, filter=3, channels=64) ->
-
-        /* encode block 2 */
-        encode_block(num_conv=2, filter=3, channels=128) ->
-
-        /* encode block 4 */
-        encode_block(num_conv=3, filter=3, channels=256) ->
-        (
-            /* encode block 5 */
-            encode_block(num_conv=3, filter=3, channels=256) ->
-
-            /* fully convolutional layers, replacing fully connected layers */
-            fully_conv(filter=7, channels=1028, dropout=0.5) ->
-            fully_conv(filter=7, channels=1028, dropout=0.5) ->
-            Convolution(kernel=(1,1), channels=num_classes) ->
-
-            /* upsampling */
-            TransConv(kernel=(4,4), channels=num_classes, stride=(2,2))
-        |
-            /* skip 4 */
-            Convolution(kernel=(4,4), channels=num_classes)
-        ) ->
-
-        Concatenate() ->
-
-        /*  Final up-sampling and cropping */
-        TransConv(kernel=(8,8), channels=num_classes, stride=(4,4)) ->
-        softmax;
-    }
-}
+  }

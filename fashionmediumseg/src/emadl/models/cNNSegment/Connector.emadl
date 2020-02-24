@@ -5,7 +5,6 @@ component Connector {
     ports in Z(0:255)^{1, 56, 56} image,
           out Z(0:255)^{1, 56, 56} segmented;
 
-    // instance Network<10> predictor;
     instance Network<10> predictor;
     instance DeOneHotImage<10,56,56> deonehot;
 
@@ -13,6 +12,6 @@ component Connector {
 
     connect predictor.softmax -> deonehot.inputVector;
 
-    connect deonehot.maxValues -> segmented;
+    connect deonehot.res -> segmented;
 
 }

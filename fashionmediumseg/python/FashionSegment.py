@@ -58,7 +58,7 @@ def main(argv):
             output_file = arg
         elif opt in ("-c", "ctx"):
             if arg == 'gpu':
-                ctx = mx.gpu(1)
+                ctx = mx.gpu(0)
             elif arg == 'cpu':
                 ctx = mx.cpu(0)
         elif opt in ("-p", "params"):
