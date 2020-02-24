@@ -58,9 +58,6 @@ _PALETTE = [0, 0, 0,
             192, 192, 0]
 
 _IMAGENET_MEANS = np.array([123.68, 116.779, 103.939], dtype=np.float32)  # RGB mean values
-voc_mean = [.485, .456, .406]
-voc_std = [.229, .224, .225]
-
 
 def get_preprocessed_image(file_name, res=(480,480)):
     """ Reads an image from the disk, pre-processes it by subtracting mean etc. and
@@ -69,23 +66,40 @@ def get_preprocessed_image(file_name, res=(480,480)):
 
     ### load image bgr
     img = np.array(cv2.imread(file_name, cv2.IMREAD_COLOR))
+    img = img / 255.
 
     ### normalize
+    img = img - _IMAGENET_MEANS[::-1]
     img = img[:, :, ::-1]  # Convert to RGB
-    img = (img - voc_mean) / voc_std
 
     img_h, img_w, img_c = img.shape
-    print(img.shape)
     assert img_c == 3, 'Only RGB images are supported.'
 
     img = cv2.resize(img, res)
-    print(img.shape)
-    return np.expand_dims(img.astype(np.float32), 0), img_h, img_w
+    img = np.transpose(img, (2,0,1))
+    print('nonsense')
+
+    return np.expand_dims(img, 0), img_h, img_w
 
 def show_img(img):
     import matplotlib.pyplot as plt
     plt.imshow(img)
     plt.show()
+
+def get_preprocessed_image_mnist(file_name, res=(56,56)):
+
+    ### load image gray
+    img = np.array(cv2.imread(file_name, cv2.IMREAD_GRAYSCALE))
+    img = img/255.
+    ### normalize
+    img_h, img_w = img.shape
+
+    if (img_h, img_w) != res:
+        img = cv2.resize(img, res)
+
+    img = np.expand_dims(np.expand_dims(img.astype(np.float32), 0), 0)
+
+    return img, img_h, img_w
 
 def get_label_image(probs, img_h, img_w):
     """ Returns the label image (PNG with Pascal VOC colormap) given the probabilities.
@@ -93,7 +107,16 @@ def get_label_image(probs, img_h, img_w):
     Note: This method assumes 'channels_last' data format.
     """
 
+    # print(np.array(probs).shape)
+    # print(np.array(probs).argmax(axis=1).shape)
+
     labels = probs.argmax(axis=1).astype('uint8').asnumpy()[0]
+
+    print("shape in get label_image: ", labels.shape)
+    (unique, counts) = np.unique(labels, return_counts=True)
+    frequencies = np.asarray((unique, counts)).T
+    print(frequencies)
+
     h, w = labels.shape[:2]
     palette = [_PALETTE[n:n+3] for n in range(0, len(_PALETTE), 3)]
     out = np.zeros((h, w, 3))
