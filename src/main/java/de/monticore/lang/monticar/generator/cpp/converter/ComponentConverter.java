@@ -81,8 +81,11 @@ public class ComponentConverter {
                     MathExpressionProperties properties = new MathExpressionProperties();
                     MathConverter.setPropertiesForMathExpression(mathExpressionSymbols, mathExpressionSymbol, bluePrint, properties);
                     if(mathExpressionSymbol.isAssignmentExpression()){
-                        MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol)mathExpressionSymbol).getExpressionSymbol();
-                        ComponentConverter.tuples.put(mathMatrixNameExpressionSymbol, properties);
+                        MathExpressionSymbol mathExpressionSymbolTemp = ((MathAssignmentExpressionSymbol)mathExpressionSymbol).getExpressionSymbol();
+                        if(mathExpressionSymbolTemp.isMatrixExpression()) {
+                            MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathExpressionSymbol).getExpressionSymbol();
+                            ComponentConverter.tuples.put(mathMatrixNameExpressionSymbol, properties);
+                        }
                     } else{
                         ComponentConverter.tuples.put(mathExpressionSymbol, properties);
                     }
@@ -412,7 +415,7 @@ public class ComponentConverter {
 
     public static void redefineVariables(List<MathExpressionSymbol> mathExpressionSymbols, BluePrintCPP bluePrintCPP){
         for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
-            if(mathExpressionSymbol.isAssignmentExpression()) {
+            if(mathExpressionSymbol.isAssignmentExpression() && ((MathAssignmentExpressionSymbol)mathExpressionSymbol).getExpressionSymbol().isMatrixExpression()) {
                 MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathExpressionSymbol).getExpressionSymbol();
                 String nameOfFirstParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0).getTextualRepresentation();
                 String nameOfOutput = getNameOfOutput(mathExpressionSymbol);
