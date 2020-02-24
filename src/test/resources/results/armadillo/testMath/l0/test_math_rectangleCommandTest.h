@@ -22,10 +22,14 @@ src = cube(3, n, m);
 color=colvec(3);
 outputImg = cube(3, n, m);
 }
-Mat rectangleHelper(Mat src, Rect rect, colvec color, int thickness, int lineType)
+cube rectangleHelper(cube src, cv::Rect rect, colvec color, int thickness, int lineType)
 {
-    cv::rectangle(src, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);
-    return src;
+    cv::Mat srcCV;
+    srcCV = ConvHelper::to_cvmat(src);
+    cv::rectangle(srcCV, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);
+    arma::cube srcCube;
+    srcCube = to_armaCube(srcCV);
+    return srcCube;
 }
 void execute()
 {
@@ -34,3 +38,4 @@ outputImg = (rectangleHelper(src, rect, color, thickness, lineType));
 
 };
 #endif
+

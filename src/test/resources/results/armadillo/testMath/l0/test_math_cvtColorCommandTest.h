@@ -10,17 +10,25 @@ using namespace arma;
 using namespace std;
 class test_math_cvtColorCommandTest{
 public:
-mat src;
+arma::mat src;
 int colorConversion;
-mat dst;
+arma::mat dst;
 void init()
 {
 src=mat(n,m);
 dst=mat(n,m);
 }
+void cvtColorHelper(arma::mat src, arma::mat dst, int colorConversion)
+{
+    cv::Mat srcCV;
+    cv::Mat dstCV;
+    srcCV = ConvHelper::to_cvmat(src);
+    cv::cvtColor(srcCV, dstCV, colorConversion);
+    dst = ConvHelper::to_arma(dstCV);
+}
 void execute()
 {
-    cv::cvtColor(src, dst, colorConversion);
+cvtColorHelper(src, dst, colorConversion);
 }
 
 };
