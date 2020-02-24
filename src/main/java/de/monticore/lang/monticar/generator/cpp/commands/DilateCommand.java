@@ -64,6 +64,7 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.addCVIncludeString("opencv2/imgproc");
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(dilateHelperMethod);
+        redefineArmaMat(bluePrintCPP);
 
     }
 

@@ -64,6 +64,7 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.addCVIncludeString("opencv2/core");
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(inRangeHelperMethod);
+        redefineArmaMat(bluePrintCPP);
 
     }
 

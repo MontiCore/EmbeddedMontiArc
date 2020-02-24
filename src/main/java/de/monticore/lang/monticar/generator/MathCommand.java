@@ -7,6 +7,7 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 
 import java.util.HashSet;
+import java.util.List;
 
 import static de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP.removeBrackets;
 
@@ -76,6 +77,19 @@ public abstract class MathCommand {
 
         }
         return "";
+    }
+
+    public void redefineArmaMat(BluePrintCPP bluePrint){
+        List<Variable> vars= bluePrint.getVariables();
+        for(Variable var : vars){
+        VariableType varType = var.getVariableType();
+        String targetName = varType.getTypeNameTargetLanguage();
+        if(targetName.equals("mat")){
+            Variable newVar = var;
+            newVar.setTypeNameTargetLanguage("arma::mat");
+            bluePrint.replaceVariable(var, newVar);
+        }
+        }
     }
 
     public boolean isArgumentNoReturnMathCommand() {

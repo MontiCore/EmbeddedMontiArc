@@ -418,11 +418,13 @@ public class ComponentConverter {
                 String nameOfOutput = getNameOfOutput(mathExpressionSymbol);
 
                 MathExpressionProperties properties = tuples.get(mathExpressionSymbol);
-                if (properties.isPreCV()) {
-                    fixVariableType(nameOfFirstParameter, bluePrintCPP, "CommonMatrixType", "cv::Mat", "");
-                }
-                if(properties.isSucCV()){
-                    fixVariableType(nameOfOutput, bluePrintCPP, "CommonMatrixType", "cv::Mat", "");
+                if(properties != null) {
+                    if (properties.isPreCV()) {
+                        fixVariableType(nameOfFirstParameter, bluePrintCPP, "CommonMatrixType", "cv::Mat", "");
+                    }
+                    if (properties.isSucCV()) {
+                        fixVariableType(nameOfOutput, bluePrintCPP, "CommonMatrixType", "cv::Mat", "");
+                    }
                 }
             }
         }

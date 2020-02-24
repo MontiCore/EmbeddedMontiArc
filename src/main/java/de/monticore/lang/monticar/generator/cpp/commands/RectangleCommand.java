@@ -68,6 +68,7 @@ public class RectangleCommand extends MathCommand{
         bluePrintCPP.addCVIncludeString("opencv2/imgproc");
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(rectangleHelperMethod);
+        redefineArmaMat(bluePrintCPP);
 
     }
 

@@ -64,6 +64,7 @@ public class CvtColorCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.addCVIncludeString("opencv2/imgproc");
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(cvtColorHelperMethod);
+        redefineArmaMat(bluePrintCPP);
 
     }
 
