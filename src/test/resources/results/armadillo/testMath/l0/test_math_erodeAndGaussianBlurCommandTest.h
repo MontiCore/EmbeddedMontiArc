@@ -17,7 +17,7 @@ colvec sizeY;
 colvec two;
 cube dst;
 cube outMatrix;
-mat out2Matrix;
+arma::mat out2Matrix;
 void init()
 {
 src = cube(n, m, 3);
@@ -27,29 +27,35 @@ dst = cube(n, m, 3);
 outMatrix = cube(3, n, m);
 out2Matrix=mat(2,m);
 }
-void erodeHelper(cube src, cube dst, int erosion_elem, int iterations)
+void erodeHelper(cube src, cv::Mat dst, int erosion_elem, int iterations)
 {
     int erosion_type = 0;
     if( erosion_elem == 0 ){ erosion_type = MORPH_RECT; }
     else if( erosion_elem == 1 ){ erosion_type = MORPH_CROSS; }
     else if( erosion_elem == 2) { erosion_type = MORPH_ELLIPSE; }
     erosion_size = erosion_elem;
-    mat element = cv::getStructuringElement( erosion_type,
+    cv::Mat element = cv::getStructuringElement( erosion_type,
                             Size( 2*erosion_size + 1, 2*erosion_size+1 ),
                             Point( -1, -1 ) );
-    cv::erode( src, dst, element, Point(-1,-1), iterations );
+    cv::Mat srcCV;
+    srcCV = ConvHelper::to_cvmat(src);
+    cv::erode( srcCV, dst, element, Point(-1,-1), iterations );
 }
-void dilateHelper(cube src, cube dst, int dilation_elem, int iterations)
+void dilateHelper(cv::Mat src, cv::Mat dst, int dilation_elem, int iterations)
 {
     int dilation_type = 0;
     if( dilation_elem == 0 ){ dilation_type = MORPH_RECT; }
     else if( dilation_elem == 1 ){ dilation_type = MORPH_CROSS; }
     else if( dilation_elem == 2) { dilation_type = MORPH_ELLIPSE; }
     dilation_size = dilation_elem;
-    mat element = cv::getStructuringElement( dilation_type,
+    cv::mat element = cv::getStructuringElement( dilation_type,
                             Size( 2*dilation_size + 1, 2*dilation_size+1 ),
                             Point( -1, -1 ) );
     cv::dilate( src, dst, element, Point(-1,-1), iterations );
+}
+void findContoursHelper(cv::Mat image, vector<vector<cv::Point>> contours, int mode, int method)
+{
+    cv::findContours( image, contours, mode, method );
 }
 void execute()
 {

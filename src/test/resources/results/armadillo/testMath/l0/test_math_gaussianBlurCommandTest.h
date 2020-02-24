@@ -23,7 +23,11 @@ dst = cube(3, n, m);
 }
 void gaussianBlurHelper(cube src, cube dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
 {
-    cv::gaussianBlur(src, dst, Size(sizeX, sizeY), sigmaX, sigmaY);
+    cv::Mat srcCV;
+    cv::Mat dstCV;
+    srcCV = ConvHelper::to_cvmat(src);
+    cv::gaussianBlur(srcCV, dstCV, Size(sizeX, sizeY), sigmaX, sigmaY);
+    dst = ConvHelper::to_armaCube(dstCV);
 }
 void execute()
 {
