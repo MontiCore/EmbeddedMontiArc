@@ -65,6 +65,7 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.addCVIncludeString("opencv2/imgproc");
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(erodeHelperMethod);
+        redefineArmaMat(bluePrintCPP);
 
     }
 

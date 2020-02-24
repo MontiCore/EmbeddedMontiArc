@@ -65,6 +65,7 @@ public class FindContoursCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrintCPP.addCVIncludeString("vector");
         bluePrint.addMethod(findContoursHelperMethod);
+        redefineArmaMat(bluePrintCPP);
 
     }
 
