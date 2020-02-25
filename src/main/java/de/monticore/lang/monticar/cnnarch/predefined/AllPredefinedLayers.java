@@ -53,6 +53,7 @@ public class AllPredefinedLayers {
     public static final String SWAPAXES_NAME = "SwapAxes";
     public static final String BROADCAST_ADD_NAME = "BroadcastAdd";
     public static final String RESHAPE_NAME = "Reshape";
+    public static final String LARGE_MEMORY_NAME = "LargeMemory";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -87,6 +88,10 @@ public class AllPredefinedLayers {
     public static final String BEAMSEARCH_WIDTH_NAME = "width";
     public static final String SHAPE_NAME = "shape";
     public static final String RNN_DROPOUT_NAME = "dropout";
+	//parameters for memory layers
+    public static final String NUM_SUB_KEYS_NAME = "numSubKeys";
+    public static final String QUERRY_SIZE_NAME = "querrySize";
+    public static final String K_NAME = "k";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
@@ -131,7 +136,8 @@ public class AllPredefinedLayers {
                 BroadcastMultiply.create(),
                 SwapAxes.create(),
                 BroadcastAdd.create(),
-                Reshape.create());
+                Reshape.create(),
+                LargeMemory.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){
