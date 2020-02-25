@@ -80,6 +80,7 @@ public class Vec2 {
         return this.x * p.x + this.y * p.y;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
@@ -87,11 +88,11 @@ public class Vec2 {
             return true;
         if (!(obj instanceof Vec2))
             return false;
-        return equals((Vec2) obj);
+        return equals((Vec2) obj, 0.000001);
     }
 
-    public boolean equals(Vec2 p) {
-        return p.x == x && p.y == y;
+    public boolean equals(Vec2 p, double threshold) {
+        return Geometry.equalsThreshold(p.x, x, threshold) && Geometry.equalsThreshold(p.y, y, threshold);
     }
 
     public int hashCode() {

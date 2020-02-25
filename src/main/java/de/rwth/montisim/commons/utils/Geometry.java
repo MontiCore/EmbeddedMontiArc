@@ -102,4 +102,8 @@ public final class Geometry {
                 new Vec3(0, 0, 1));
     }
 
+    public static boolean equalsThreshold(double a, double b, double threshold){
+        return a < b + threshold && a > b - threshold;
+    }
+
 }

@@ -91,6 +91,7 @@ public class Vec3 {
         return this.x * p.x + this.y * p.y + this.z * p.z;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
@@ -98,11 +99,13 @@ public class Vec3 {
             return true;
         if (!(obj instanceof Vec3))
             return false;
-        return equals((Vec3) obj);
+        return equals((Vec3) obj, 0.000001);
     }
 
-    public boolean equals(Vec3 p) {
-        return p.x == x && p.y == y && p.z == z;
+    public boolean equals(Vec3 p, double threshold) {
+        return Geometry.equalsThreshold(p.x, x, threshold) 
+        && Geometry.equalsThreshold(p.y, y, threshold)
+        && Geometry.equalsThreshold(p.z, z, threshold);
     }
 
     public int hashCode() {

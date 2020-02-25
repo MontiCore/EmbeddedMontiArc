@@ -85,6 +85,7 @@ public class Vec4 {
         return this.x * p.x + this.y * p.y + this.z * p.z + this.w * p.w;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
@@ -92,11 +93,14 @@ public class Vec4 {
             return true;
         if (!(obj instanceof Vec4))
             return false;
-        return equals((Vec4) obj);
+        return equals((Vec4) obj, 0.000001);
     }
 
-    public boolean equals(Vec4 p) {
-        return p.x == x && p.y == y && p.z == z && p.w == w;
+    public boolean equals(Vec4 p, double threshold) {
+        return Geometry.equalsThreshold(p.x, x, threshold) 
+        && Geometry.equalsThreshold(p.y, y, threshold)
+        && Geometry.equalsThreshold(p.z, z, threshold)
+        && Geometry.equalsThreshold(p.w, w, threshold);
     }
 
     public int hashCode() {
