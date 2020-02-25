@@ -184,6 +184,18 @@ public class ArchitectureElementData {
         return getLayerSymbol().getStringValue(AllPredefinedLayers.POOL_TYPE_NAME).get();
     }
 
+    public int getNumSubKeys(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.NUM_SUB_KEYS_NAME).get();
+    }
+    
+    public int getQuerrySize(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.QUERRY_SIZE_NAME).get();
+    }
+    
+    public int getK(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.K_NAME).get();
+    }
+    
     @Nullable
     public List<Integer> getPadding(){
 
