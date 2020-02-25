@@ -46,7 +46,7 @@ learning_rate_policy
 learning_rate_decay
 step_size
 rescale_gradient
-clip_gradients
+clip_gradient
 gamma1
 gamma2
 epsilon
@@ -80,6 +80,11 @@ dqn-algorithm
 td3-algorithm
 cpu
 gpu
-dice_loss
-loss_axis
+eval_metric
+learning_rate_minimum
+rescale_grad
+sparse_label
+from_logits
+batch_axis
 dice_weight
+loss_axis
