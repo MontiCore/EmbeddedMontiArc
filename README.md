@@ -5,9 +5,9 @@ This repository includes the interfaces and general functionality for the other 
 
 It should be noted that this repository should not have any dependencies on the other repositories - instead all other repositories are allowed to have this repository as dependency.
 
-## JavaFX replacement
+## Geometric Types
 
-[Point2D](src/main/java/de/rwth/monticore/EmbeddedMontiArc/simulators/commons/utils/Point2D.java), [Point3D](src/main/java/de/rwth/monticore/EmbeddedMontiArc/simulators/commons/utils/Point3D.java) and [Pair](src/main/java/de/rwth/monticore/EmbeddedMontiArc/simulators/commons/utils/Pair.java) replace the classes of the same name from the JavaFX library.
+TODO
 
 ## LibraryService
 
