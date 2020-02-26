@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP.removeBrackets;
 
@@ -86,9 +87,29 @@ public abstract class MathCommand {
         String targetName = varType.getTypeNameTargetLanguage();
         if(targetName.equals("mat")){
             Variable newVar = var;
-            newVar.setTypeNameTargetLanguage("arma::mat");
+            newVar.setTypeNameTargetLanguage("arma::Mat<unsigned char>");
             bluePrint.replaceVariable(var, newVar);
+        }else if(targetName.equals("cube")){
+            Variable newVarCube = var;
+            newVarCube.setTypeNameTargetLanguage("Cube<unsigned char>");
+            bluePrint.replaceVariable(var, newVarCube);
         }
+        }
+    }
+
+    public void redefineInit(BluePrintCPP bluePrint){
+        Optional<Method> methodOpt = bluePrint.getMethod("init");
+        Method initMethod = methodOpt.get();
+        List<Instruction> instructs = initMethod.getInstructions();
+
+        for(Instruction instruct : instructs){
+            String code = instruct.getTargetLanguageInstruction();
+            if(code.contains("mat(")){
+                code =code.replace("mat(", "Mat<unsigned char>(");
+            } else if(code.contains("cube(")){
+                code = code.replace("mat(", "Cube<unsigned char>(");
+            }
+            ((TargetCodeInstruction)instruct).setInstruction(code);
         }
     }
 
