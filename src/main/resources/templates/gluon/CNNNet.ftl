@@ -116,8 +116,8 @@ class LargeMemory(gluon.HybridBlock):
         k1 = F.take(subKeys1, I1)
         k2 = F.take(subKeys2, I2)
         cCross = F.concat(k1[0], k2[0])
-        for i in range(k):
-            for j in range(k2):
+        for i in range(self.k):
+            for j in range(self.k):
                 if i == j and i == 0:
                     break
                 cCross = F.concat(cCross, F.Concat(k1[i], k2[j]))
