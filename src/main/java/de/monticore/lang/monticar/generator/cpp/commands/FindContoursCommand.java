@@ -94,7 +94,7 @@ public class FindContoursCommand extends ArgumentNoReturnMathCommand{
         Variable image = new Variable();
         method.addParameter(image, "image", "CommonMatrixType", typeNameInConst, MathConverter.curBackend.getIncludeHeaderName());
         Variable contours = new Variable();
-        method.addParameter(contours, "contours", "CommonMatrixType", "vector<vector<cv::Point>>&", MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(contours, "contours", "CommonMatrixType", "std::vector<std::vector<cv::Point>>&", MathConverter.curBackend.getIncludeHeaderName());
         Variable mode = new Variable();
         method.addParameter(mode,"mode", "Integer", "int", "");
         Variable meth = new Variable();

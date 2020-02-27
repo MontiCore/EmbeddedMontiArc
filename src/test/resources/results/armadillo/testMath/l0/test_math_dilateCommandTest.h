@@ -10,30 +10,30 @@ using namespace arma;
 using namespace std;
 class test_math_dilateCommandTest{
 public:
-arma::mat src;
+arma::Mat<unsigned char> src;
 int dilation_elem;
 int iterations;
-arma::mat dst;
+arma::Mat<unsigned char> dst;
 void init()
 {
-src=mat(n,m);
-dst=mat(n,m);
+src=Mat<unsigned char>(n,m);
+dst=Mat<unsigned char>(n,m);
 }
-void dilateHelper(arma::mat src, arma::mat dst, int dilation_elem, int iterations)
+void dilateHelper(const arma::Mat<unsigned char>& src, arma::Mat<unsigned char>& dst, int dilation_elem, int iterations)
 {
     int dilation_type = 0;
-    if( dilation_elem == 0 ){ dilation_type = MORPH_RECT; }
-    else if( dilation_elem == 1 ){ dilation_type = MORPH_CROSS; }
-    else if( dilation_elem == 2) { dilation_type = MORPH_ELLIPSE; }
-    dilation_size = dilation_elem;
-    cv::mat element = cv::getStructuringElement( dilation_type,
-                            Size( 2*dilation_size + 1, 2*dilation_size+1 ),
-                            Point( -1, -1 ) );
+    if( dilation_elem == 0 ){ dilation_type = cv::MORPH_RECT; }
+    else if( dilation_elem == 1 ){ dilation_type = cv::MORPH_CROSS; }
+    else if( dilation_elem == 2) { dilation_type = cv::MORPH_ELLIPSE; }
+    int dilation_size = dilation_elem;
+    cv::Mat element = cv::getStructuringElement( dilation_type,
+                            cv::Size( 2*dilation_size + 1, 2*dilation_size+1 ),
+                            cv::Point( -1, -1 ) );
     cv::Mat srcCV;
     cv::Mat dstCV;
-    srcCV = ConvHelper::to_cvmat(src);
-    cv::dilate( srcCV, dstCV, element, Point(-1,-1), iterations );
-    dst = ConvHelper::to_arma(dstCV);
+    srcCV = to_cvmat<unsigned char>(src);
+    cv::dilate( srcCV, dstCV, element, cv::Point(-1,-1), iterations );
+    dst = to_arma<unsigned char>(dstCV);
 }
 void execute()
 {

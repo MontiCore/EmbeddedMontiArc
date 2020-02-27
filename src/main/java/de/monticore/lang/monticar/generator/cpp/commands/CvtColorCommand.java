@@ -121,7 +121,7 @@ public class CvtColorCommand extends ArgumentNoReturnMathCommand{
                 }else if(properties.isPreCV()){
                     finalInstruction += "    cv::Mat dstCV;\n" +
                                         "    cv::cvtColor(src, dstCV, colorConversion);\n";
-                    if(typeNameOut == "cube"){
+                    if(typeNameOut == "Cube<unsigned char>"){
                         finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
                         finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";
@@ -135,7 +135,7 @@ public class CvtColorCommand extends ArgumentNoReturnMathCommand{
                                         "    cv::Mat dstCV;\n" +
                                         "    srcCV = to_cvmat<unsigned char>(src);\n" +
                                         "    cv::cvtColor(srcCV, dstCV, colorConversion);\n";
-                    if(typeNameOut == "cube"){
+                    if(typeNameOut == "Cube<unsigned char>"){
                         finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
                         finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";

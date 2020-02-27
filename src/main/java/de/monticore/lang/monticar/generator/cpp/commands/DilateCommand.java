@@ -133,7 +133,7 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
                 }else if(properties.isPreCV()){
                     finalInstruction += "    cv::Mat dstCV;\n" +
                                         "    cv::dilate( src, dstCV, cv::element, cv::Point(-1,-1), iterations );\n";
-                    if(typeNameOut == "cube"){
+                    if(typeNameOut == "Cube<unsigned char>"){
                         finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
                         finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";
@@ -147,7 +147,7 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
                                         "    cv::Mat dstCV;\n" +
                                         "    srcCV = to_cvmat<unsigned char>(src);\n" +
                                         "    cv::dilate( srcCV, dstCV, element, cv::Point(-1,-1), iterations );\n";
-                    if(typeNameOut == "cube"){
+                    if(typeNameOut == "Cube<unsigned char>"){
                         finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
                         finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";

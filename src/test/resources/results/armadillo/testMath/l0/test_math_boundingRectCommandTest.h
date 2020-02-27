@@ -9,14 +9,14 @@ using namespace arma;
 using namespace std;
 class test_math_boundingRectCommandTest{
 public:
-vector<cv::Point> contour;
-double rect;
+std::vector<cv::Point> contour;
+cv::Rect rect;
 void init()
 {
 }
 void execute()
 {
-rectAngle = (cv::boundingRect(contour));
+rect = (cv::boundingRect(contour));
 }
 
 };

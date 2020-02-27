@@ -10,24 +10,25 @@ using namespace arma;
 using namespace std;
 class test_math_gaussianBlurCommandTest{
 public:
-cube src;
+Cube<unsigned char> src;
 int sizeX;
 int sizeY;
 double sigmaX;
 double sigmaY;
-cube dst;
+Cube<unsigned char> dst;
 void init()
 {
-src = cube(3, n, m);
-dst = cube(3, n, m);
+src = cube(n, m, 3);
+dst = cube(n, m, 3);
 }
-void gaussianBlurHelper(cube src, cube dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
+void gaussianBlurHelper(const Cube<unsigned char>& src, Cube<unsigned char>& dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
 {
     cv::Mat srcCV;
     cv::Mat dstCV;
-    srcCV = ConvHelper::to_cvmat(src);
-    cv::gaussianBlur(srcCV, dstCV, Size(sizeX, sizeY), sigmaX, sigmaY);
-    dst = ConvHelper::to_armaCube(dstCV);
+    srcCV = to_cvmat<unsigned char>(src);
+    cv::Size sizeO = cv::Size(sizeX, sizeY);
+    cv::GaussianBlur(srcCV, dstCV, sizeO, sigmaX, sigmaY);
+    dst = to_armaCube<unsigned char, 3>(dstCV);
 }
 void execute()
 {

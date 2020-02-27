@@ -10,25 +10,25 @@ using namespace arma;
 using namespace std;
 class test_math_rectangleCommandTest{
 public:
-cube src;
+Cube<unsigned char> src;
 Rect rect;
 colvec color;
 int thickness;
 int lineType;
-cube outputImg;
+Cube<unsigned char> outputImg;
 void init()
 {
 src = cube(3, n, m);
 color=colvec(3);
 outputImg = cube(3, n, m);
 }
-cube rectangleHelper(cube src, cv::Rect rect, colvec color, int thickness, int lineType)
+Cube<unsigned char> rectangleHelper(const Cube<unsigned char>& src, cv::Rect& rect, colvec color, int thickness, int lineType)
 {
     cv::Mat srcCV;
-    srcCV = ConvHelper::to_cvmat(src);
-    cv::rectangle(srcCV, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);
+    srcCV = to_cvmat<unsigned char>(src);
+    cv::rectangle(srcCV, rect.tl(), rect.br(), cv::Scalar(color(0), color(1), color(2)), thickness, lineType);
     arma::cube srcCube;
-    srcCube = to_armaCube(srcCV);
+    srcCube = to_armaCube<unsigned char, 3>(srcCV);
     return srcCube;
 }
 void execute()
@@ -38,4 +38,3 @@ outputImg = (rectangleHelper(src, rect, color, thickness, lineType));
 
 };
 #endif
-

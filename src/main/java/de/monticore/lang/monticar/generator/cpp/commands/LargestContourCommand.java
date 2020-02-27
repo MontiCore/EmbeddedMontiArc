@@ -52,7 +52,7 @@ public class LargestContourCommand extends MathCommand {
             MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
 
         String nameOfFirstParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0).getTextualRepresentation();
-        ComponentConverter.fixVariableType(nameOfFirstParameter, bluePrintCPP, "Q", "vector<vector<cv::Point>>", "");
+        ComponentConverter.fixVariableType(nameOfFirstParameter, bluePrintCPP, "Q", "std::vector<std::vector<cv::Point>>", "");
         Method largestContourMethod = getLargestContourMethod();
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
@@ -73,7 +73,7 @@ public class LargestContourCommand extends MathCommand {
 
         //add parameters
         Variable contours = new Variable();
-        method.addParameter(contours, "contours", "double","const std::vector <std::vector<cv::Point>>&", "");
+        method.addParameter(contours, "contours", "double","const std::vector<std::vector<cv::Point>>&", "");
         //add an instruction to the method
         method.addInstruction(methodBody());
 
@@ -93,7 +93,7 @@ public class LargestContourCommand extends MathCommand {
                         "           maxAreaContourId = j;\n" +
                         "       }\n" +
                         "   }\n" +
-                        "   return contours.at(maxAreaContourId);";
+                        "   return contours.at(maxAreaContourId);\n";
             }
 
             @Override

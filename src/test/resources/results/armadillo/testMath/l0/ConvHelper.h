@@ -1,7 +1,17 @@
+#ifndef CONVHELPER_H
+#define CONVHELPER_H
+#include <iostream>
+#include "armadillo"
+#include <stdarg.h>
+#include <initializer_list>
+#include <fstream>
+using namespace arma;
+
+
 // convert an OpenCV matrix to Armadillo matrix. NOTE: a copy is made
 template <typename T>
 arma::Mat<T> to_arma(const cv::Mat_<T>& src) {
-    arma::Mat<T> dst(reinterpret_cast<double*>(src.data), src.cols, src.rows);
+    arma::Mat<T> dst(reinterpret_cast<T*>(src.data), src.cols, src.rows);
     //src.copyTo({ src.rows, src.cols, dst.memptr() });
     return dst;
 }
@@ -26,7 +36,7 @@ Cube<T> to_armaCube(const cv::Mat_<cv::Vec<T, NC>>& src)
 
 // convert an Armadillo cube to OpenCV matrix. NOTE: a copy is made
 template <typename T>
-cv::Mat to_cvmat(Cube<T>& src) {
+cv::Mat to_cvmat(const Cube<T>& src) {
     std::vector<cv::Mat_<T>> channels;
     for (size_t c = 0; c < src.n_slices; ++c) {
         auto* data = const_cast<T*>(src.slice(c).memptr());
@@ -36,3 +46,6 @@ cv::Mat to_cvmat(Cube<T>& src) {
     cv::merge(channels, dst);
     return dst;
 }
+
+
+#endif
