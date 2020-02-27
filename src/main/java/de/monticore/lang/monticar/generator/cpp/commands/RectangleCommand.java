@@ -69,6 +69,7 @@ public class RectangleCommand extends MathCommand{
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(rectangleHelperMethod);
         redefineArmaMat(bluePrintCPP);
+        redefineInit(bluePrintCPP);
 
     }
 
@@ -79,7 +80,9 @@ public class RectangleCommand extends MathCommand{
         String typeNameOut = "";
 
         if(typeName.equals("") || typeName.equals("mat")){
-            typeName = "arma::mat";
+            typeName = "arma::Mat<unsigned char>";
+        }else if(typeName.equals("cube")){
+            typeName = "Cube<unsigned char>";
         }
 
         if(properties.isPreCV()){
@@ -97,11 +100,13 @@ public class RectangleCommand extends MathCommand{
             method.setReturnTypeName(typeNameOut);
         }
 
+        String typeNameInConst = "const " + typeNameIn +"&";
+
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrixType",typeNameIn, "");
+        method.addParameter(src, "src", "CommonMatrixType",typeNameInConst, "");
         Variable rect = new Variable();
-        method.addParameter(rect, "rect", "double", "cv::Rect", "");
+        method.addParameter(rect, "rect", "double", "cv::Rect&", "");
         Variable color = new Variable();
         method.addParameter(color,"color", "colvec", "colvec", "");
         Variable thickness = new Variable();
@@ -121,10 +126,10 @@ public class RectangleCommand extends MathCommand{
                 String finalInstruction = "";
 
                 if(properties.isPreCV() && properties.isSucCV()){
-                    finalInstruction =  "    cv::rectangle(src, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n" +
+                    finalInstruction =  "    cv::rectangle(src, rect.tl(), rect.br(), cv::Scalar(color(0), color(1), color(2)), thickness, lineType);\n" +
                                         "    return src;\n";
                 } else if(properties.isPreCV()){
-                    finalInstruction =  "    cv::rectangle(src, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n";
+                    finalInstruction =  "    cv::rectangle(src, rect.tl(), rect.br(), cv::Scalar(color(0), color(1), color(2)), thickness, lineType);\n";
                     if(typeNameOut == "cube"){
                         finalInstruction += "    arma::cube srcCube;\n" +
                                             "    srcCube = to_armaCube<unsigned char, 3>(src);\n" +
@@ -137,12 +142,12 @@ public class RectangleCommand extends MathCommand{
                 } else if(properties.isSucCV()){
                     finalInstruction =  "    cv::Mat srcCV;\n" +
                                         "    srcCV = to_cvmat<unsigned char>(src);\n" +
-                                        "    cv::rectangle(srcCV, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n" +
+                                        "    cv::rectangle(srcCV, rect.tl(), rect.br(), cv::Scalar(color(0), color(1), color(2)), thickness, lineType);\n" +
                                         "    return srcCV;\n";
                 } else {
                     finalInstruction =  "    cv::Mat srcCV;\n" +
                                         "    srcCV = to_cvmat<unsigned char>(src);\n" +
-                                        "    cv::rectangle(srcCV, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n";
+                                        "    cv::rectangle(srcCV, rect.tl(), rect.br(), cv::Scalar(color(0), color(1), color(2)), thickness, lineType);\n";
                     if(typeNameOut == "cube"){
                         finalInstruction += "    arma::cube srcCube;\n" +
                                             "    srcCube = to_armaCube<unsigned char, 3>(srcCV);\n" +
