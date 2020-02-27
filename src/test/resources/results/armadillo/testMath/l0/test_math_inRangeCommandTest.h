@@ -10,25 +10,25 @@ using namespace arma;
 using namespace std;
 class test_math_inRangeCommandTest{
 public:
-arma::mat src;
+arma::Mat<unsigned char> src;
 colvec lowerBoundary;
 colvec upperBoundary;
-arma::mat dst;
+arma::Mat<unsigned char> dst;
 void init()
 {
-src=mat(n,m);
+src=Mat<unsigned char>(n,m);
 lowerBoundary=colvec(3);
 upperBoundary=colvec(3);
-dst=mat(n,m);
+dst=Mat<unsigned char>(n,m);
 }
-void inRangeHelper(cube src, arma::mat dst, colvec lowerB, colvec upperB)
+void inRangeHelper(const Cube<unsigned char>& src, arma::Mat<unsigned char>& dst, colvec lowerB, colvec upperB)
 {
     cv::Mat srcCV;
     cv::Mat dstCV;
-    srcCV = ConvHelper::to_cvmat(src);
+    srcCV = to_cvmat<unsigned char>(src);
     cv::inRange(srcCV, cv::Scalar(lowerB(0), lowerB(1), lowerB(2)),
             cv::Scalar(upperB(0), upperB(1), upperB(2)), dstCV);
-    dst = ConvHelper::to_arma(dstCV);
+    dst = to_arma<unsigned char>(dstCV);
 }
 void execute()
 {

@@ -55,7 +55,7 @@ public class BoundingRectCommand extends MathCommand{
             MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
 
         String nameOfFirstParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0).getTextualRepresentation();
-        ComponentConverter.fixVariableType(nameOfFirstParameter, bluePrintCPP, "Q", "vector<cv::Point>", "");
+        ComponentConverter.fixVariableType(nameOfFirstParameter, bluePrintCPP, "Q", "std::vector<cv::Point>", "");
 
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();

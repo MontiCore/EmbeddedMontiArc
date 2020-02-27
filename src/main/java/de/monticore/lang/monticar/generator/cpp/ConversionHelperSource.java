@@ -6,8 +6,7 @@ package de.monticore.lang.monticar.generator.cpp;
  */
 public class ConversionHelperSource {
 
-    public static String conversionHelperSourceCode = "// convert an OpenCV matrix to Armadillo matrix. NOTE: a copy is made\n" +
-            "#ifndef CONVHELPER_H\n" +
+    public static String conversionHelperSourceCode = "#ifndef CONVHELPER_H\n" +
             "#define CONVHELPER_H\n" +
             "#include <iostream>\n" +
             "#include \"armadillo\"\n" +

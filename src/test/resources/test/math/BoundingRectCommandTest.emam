@@ -7,6 +7,6 @@ component BoundingRectCommandTest{
         out Q rect;
 
     implementation Math {
-        rectAngle = boundingRect(contour);
+        rect = boundingRect(contour);
     }
 }

@@ -11,23 +11,23 @@ using namespace arma;
 using namespace std;
 class test_math_findContoursCommandTest{
 public:
-arma::mat image;
+arma::Mat<unsigned char> image;
 int mode;
 int method;
-vector<vector<cv::Point>> contours;
+std::vector<std::vector<cv::Point>> contours;
 void init()
 {
-image=mat(n,m);
+image=Mat<unsigned char>(n,m);
 }
-void findContoursHelper(arma::mat image, vector<vector<cv::Point>> contours, int mode, int method)
+void findContoursHelper(const arma::Mat<unsigned char>& image, std::vector<std::vector<cv::Point>>& contours, int mode, int method)
 {
     cv::Mat srcCV;
-    srcCV = ConvHelper::to_cvmat(src);
-    cv::findContours( image, contours, mode, method );
+    srcCV = to_cvmat<unsigned char>(image);
+    cv::findContours( srcCV, contours, mode, method );
 }
 void execute()
 {
-cv::findContours(image, contours, mode, method);
+findContoursHelper(image, contours, mode, method);
 }
 
 };

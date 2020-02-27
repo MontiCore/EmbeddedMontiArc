@@ -9,12 +9,12 @@ using namespace arma;
 using namespace std;
 class test_math_largestContourCommandTest{
 public:
-vector<vector<cv::Point>> contours;
-vector<cv::Point> lContour;
+std::vector<std::vector<cv::Point>> contours;
+std::vector<cv::Point> lContour;
 void init()
 {
 }
-vector<Point> largestContour(vector <vector<Point>> contours)
+std::vector<cv::Point> largestContour(const std::vector<std::vector<cv::Point>>& contours)
 {
 double maxArea = 0;
 int maxAreaContourId = -1;
@@ -25,8 +25,7 @@ int maxAreaContourId = -1;
            maxAreaContourId = j;
        }
    }
-   return contours.at(getMaxAreaContourId(contours));
-}
+   return contours.at(maxAreaContourId);
 }
 void execute()
 {

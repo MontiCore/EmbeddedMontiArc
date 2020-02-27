@@ -129,7 +129,7 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
                     finalInstruction =  "    cv::Mat dstCV;\n" +
                                         "    cv::Size sizeO = cv::Size(sizeX, sizeY);\n" +
                                         "    cv::GaussianBlur(src, dstCV, sizeO, sigmaX, sigmaY);\n";
-                    if(typeNameOut == "cube"){
+                    if(typeNameOut == "Cube<unsigned char>"){
                        finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
                         finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";
@@ -145,7 +145,7 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
                                         "    srcCV = to_cvmat<unsigned char>(src);\n" +
                                         "    cv::Size sizeO = cv::Size(sizeX, sizeY);\n" +
                                         "    cv::GaussianBlur(srcCV, dstCV, sizeO, sigmaX, sigmaY);\n";
-                    if(typeNameOut == "cube"){
+                    if(typeNameOut == "Cube<unsigned char>"){
                         finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
                         finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";
