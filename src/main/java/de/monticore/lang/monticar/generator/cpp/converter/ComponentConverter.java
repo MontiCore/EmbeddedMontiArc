@@ -405,13 +405,13 @@ public class ComponentConverter {
         String outputName = getNameOfOutput(mathExpressionSymbol);
         switch (nameOfFunction) {
             case "findContours":
-                fixVariableType(outputName, bluePrintCPP, "Q", "vector<vector<cv::Point>>", "");
+                fixVariableType(outputName, bluePrintCPP, "Q", "std::vector<std::vector<cv::Point>>", "");
                 break;
             case "largestContour":
-                fixVariableType(outputName, bluePrintCPP, "Q", "vector<cv::Point>", "");
+                fixVariableType(outputName, bluePrintCPP, "Q", "std::vector<cv::Point>", "");
                 break;
             case "boundingRect":
-                fixVariableType(outputName, bluePrintCPP, "Q", "Rect", "");
+                fixVariableType(outputName, bluePrintCPP, "Q", "cv::Rect", "");
                 break;
         }
     }
