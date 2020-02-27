@@ -30,6 +30,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     BatchSizeEntry implements ConfigEntry = name:"batch_size" ":" value:IntegerValue;
     LoadCheckpointEntry implements ConfigEntry = name:"load_checkpoint" ":" value:BooleanValue;
     CheckpointPeriodEntry implements ConfigEntry = name:"checkpoint_period" ":" value:IntegerValue;
+    LoadPretrainedEntry implements ConfigEntry = name:"load_pretrained" ":" value:BooleanValue;
     LogPeriodEntry implements ConfigEntry = name:"log_period" ":" value:IntegerValue;
     NormalizeEntry implements ConfigEntry = name:"normalize" ":" value:BooleanValue;
 
@@ -115,7 +116,6 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     IgnoreIndicesEntry implements SoftmaxCrossEntropyIgnoreIndicesEntry = name:"ignore_indices" ":" value:IntegerValue;
     MarginEntry implements HingeEntry, SquaredHingeEntry = name:"margin" ":" value:NumberValue;
     LabelFormatEntry implements LogisticEntry = name:"label_format" ":" value:StringValue;
-    DiceWeightEntry implements DiceEntry = name: "dice_weight" ":" value:DoubleVectorValue;
 
     interface OptimizerValue extends ConfigValue;
     interface SGDEntry extends OptimizerParamEntry;
