@@ -63,15 +63,17 @@ public class LargestContourCommand extends MathCommand {
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
         bluePrintCPP.addCVIncludeString("opencv2/imgproc");
         bluePrint.addMethod(largestContourMethod);
+        redefineArmaMat(bluePrintCPP);
+        redefineInit(bluePrintCPP);
 
     }
 
     private Method getLargestContourMethod(){
-        Method method = new Method("largestContour", "vector<Point>");
+        Method method = new Method("largestContour", "std::vector<cv::Point>");
 
         //add parameters
         Variable contours = new Variable();
-        method.addParameter(contours, "contours", "double","vector <vector<Point>>", "");
+        method.addParameter(contours, "contours", "double","const std::vector <std::vector<cv::Point>>&", "");
         //add an instruction to the method
         method.addInstruction(methodBody());
 
@@ -91,8 +93,7 @@ public class LargestContourCommand extends MathCommand {
                         "           maxAreaContourId = j;\n" +
                         "       }\n" +
                         "   }\n" +
-                        "   return contours.at(getMaxAreaContourId(contours));\n" +
-                        "}\n";
+                        "   return contours.at(maxAreaContourId);";
             }
 
             @Override

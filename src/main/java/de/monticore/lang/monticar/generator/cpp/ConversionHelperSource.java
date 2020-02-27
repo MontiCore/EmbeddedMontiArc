@@ -7,9 +7,20 @@ package de.monticore.lang.monticar.generator.cpp;
 public class ConversionHelperSource {
 
     public static String conversionHelperSourceCode = "// convert an OpenCV matrix to Armadillo matrix. NOTE: a copy is made\n" +
+            "#ifndef CONVHELPER_H\n" +
+            "#define CONVHELPER_H\n" +
+            "#include <iostream>\n" +
+            "#include \"armadillo\"\n" +
+            "#include <stdarg.h>\n" +
+            "#include <initializer_list>\n" +
+            "#include <fstream>\n" +
+            "using namespace arma;\n" +
+            "\n" +
+            "\n" +
+            "// convert an OpenCV matrix to Armadillo matrix. NOTE: a copy is made\n" +
             "template <typename T>\n" +
             "arma::Mat<T> to_arma(const cv::Mat_<T>& src) {\n" +
-            "    arma::Mat<T> dst(reinterpret_cast<double*>(src.data), src.cols, src.rows);\n" +
+            "    arma::Mat<T> dst(reinterpret_cast<T*>(src.data), src.cols, src.rows);\n" +
             "    //src.copyTo({ src.rows, src.cols, dst.memptr() });\n" +
             "    return dst;\n" +
             "}\n" +
@@ -34,7 +45,7 @@ public class ConversionHelperSource {
             "\n" +
             "// convert an Armadillo cube to OpenCV matrix. NOTE: a copy is made\n" +
             "template <typename T>\n" +
-            "cv::Mat to_cvmat(Cube<T>& src) {\n" +
+            "cv::Mat to_cvmat(const Cube<T>& src) {\n" +
             "    std::vector<cv::Mat_<T>> channels;\n" +
             "    for (size_t c = 0; c < src.n_slices; ++c) {\n" +
             "        auto* data = const_cast<T*>(src.slice(c).memptr());\n" +
@@ -43,5 +54,8 @@ public class ConversionHelperSource {
             "    cv::Mat dst;\n" +
             "    cv::merge(channels, dst);\n" +
             "    return dst;\n" +
-            "}\n";
+            "}\n" +
+            "\n" +
+            "\n" +
+            "#endif";
 }

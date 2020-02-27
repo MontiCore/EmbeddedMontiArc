@@ -65,6 +65,7 @@ public class CvtColorCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(cvtColorHelperMethod);
         redefineArmaMat(bluePrintCPP);
+        redefineInit(bluePrintCPP);
 
     }
 
@@ -76,7 +77,9 @@ public class CvtColorCommand extends ArgumentNoReturnMathCommand{
         String typeNameOut = "";
 
         if(typeName.equals("") || typeName.equals("mat")){
-            typeName = "arma::mat";
+            typeName = "arma::Mat<unsigned char>";
+        }else if(typeName.equals("cube")){
+            typeName = "Cube<unsigned char>";
         }
 
         if(properties.isPreCV()){
@@ -91,11 +94,14 @@ public class CvtColorCommand extends ArgumentNoReturnMathCommand{
             typeNameOut = typeName;
         }
 
+        String typeNameInConst = "const " + typeNameIn +"&";
+        String typeNameOutRef = typeNameOut + "&";
+
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrixType", typeNameIn, MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(src, "src", "CommonMatrixType", typeNameInConst, MathConverter.curBackend.getIncludeHeaderName());
         Variable dst = new Variable();
-        method.addParameter(dst, "dst", "CommonMatrixType", typeNameOut, MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(dst, "dst", "CommonMatrixType", typeNameOutRef, MathConverter.curBackend.getIncludeHeaderName());
         Variable coloerConversion = new Variable();
         method.addParameter(coloerConversion,"colorConversion", "Integer", "int", "");
         //add an instruction to the method
@@ -116,23 +122,23 @@ public class CvtColorCommand extends ArgumentNoReturnMathCommand{
                     finalInstruction += "    cv::Mat dstCV;\n" +
                                         "    cv::cvtColor(src, dstCV, colorConversion);\n";
                     if(typeNameOut == "cube"){
-                        finalInstruction += "    dst = ConvHelper::to_armaCube(dstCV);\n";
+                        finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
-                        finalInstruction += "    dst = ConvHelper::to_arma(dstCV);\n";
+                        finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";
                     }
                 } else if(properties.isSucCV()){
                     finalInstruction += "    cv::Mat srcCV;\n" +
-                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
+                                        "    srcCV = to_cvmat<unsigned char>(src);\n" +
                                         "    cv::cvtColor(srcCV, dst, colorConversion);\n";
                 } else {
                     finalInstruction += "    cv::Mat srcCV;\n" +
                                         "    cv::Mat dstCV;\n" +
-                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
+                                        "    srcCV = to_cvmat<unsigned char>(src);\n" +
                                         "    cv::cvtColor(srcCV, dstCV, colorConversion);\n";
                     if(typeNameOut == "cube"){
-                        finalInstruction += "    dst = ConvHelper::to_armaCube(dstCV);\n";
+                        finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
-                        finalInstruction += "    dst = ConvHelper::to_arma(dstCV);\n";
+                        finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";
                     }
                 }
                 return  finalInstruction;
