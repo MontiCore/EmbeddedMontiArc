@@ -37,6 +37,9 @@ if __name__ == "__main__":
 <#if (config.logPeriod)??>
         log_period=${config.logPeriod},
 </#if>
+<#if (config.loadPretrained)??>
+        load_pretrained="${config.loadPretrained?string("True","False")}",
+</#if>
 <#if (config.context)??>
         context='${config.context}',
 </#if>

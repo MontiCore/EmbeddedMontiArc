@@ -15,7 +15,7 @@ class ${tc.fileNameWithoutEnding}:
         self.weight_initializer = mx.init.Normal()
         self.networks = {}
 
-    def load(self, context):
+    def load(self, context, load_pretrained=False, pretrained_files=None):
         earliestLastEpoch = None
 
         for i, network in self.networks.items():
