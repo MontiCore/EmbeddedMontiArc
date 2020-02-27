@@ -127,29 +127,29 @@ public class RectangleCommand extends MathCommand{
                     finalInstruction =  "    cv::rectangle(src, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n";
                     if(typeNameOut == "cube"){
                         finalInstruction += "    arma::cube srcCube;\n" +
-                                            "    srcCube = ConvHelper::to_armaCube(src);\n" +
+                                            "    srcCube = to_armaCube<unsigned char, 3>(src);\n" +
                                             "    return srcCube;\n";
                     } else {
                         finalInstruction += "    arma::mat srcArma;\n" +
-                                            "    srcArma = ConvHelper::to_arma(src);\n" +
+                                            "    srcArma = to_arma<unsigned char>(src);\n" +
                                             "    return srcArma;\n";
                     }
                 } else if(properties.isSucCV()){
                     finalInstruction =  "    cv::Mat srcCV;\n" +
-                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
+                                        "    srcCV = to_cvmat<unsigned char>(src);\n" +
                                         "    cv::rectangle(srcCV, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n" +
                                         "    return srcCV;\n";
                 } else {
                     finalInstruction =  "    cv::Mat srcCV;\n" +
-                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
+                                        "    srcCV = to_cvmat<unsigned char>(src);\n" +
                                         "    cv::rectangle(srcCV, rect.tl(), rect.br(), Scalar(color(0), color(1), color(2)), thickness, lineType);\n";
                     if(typeNameOut == "cube"){
                         finalInstruction += "    arma::cube srcCube;\n" +
-                                            "    srcCube = to_armaCube(srcCV);\n" +
+                                            "    srcCube = to_armaCube<unsigned char, 3>(srcCV);\n" +
                                             "    return srcCube;\n";
                     }   else {
                         finalInstruction += "    arma::mat srcArma;\n" +
-                                            "    srcArma = to_arma(srcCV);\n" +
+                                            "    srcArma = to_arma<unsigned char>(srcCV);\n" +
                                             "    return srcArma;\n";
                     }
                 }

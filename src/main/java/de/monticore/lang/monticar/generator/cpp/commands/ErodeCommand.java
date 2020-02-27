@@ -117,14 +117,14 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
         return new Instruction() {
             @Override
             public String getTargetLanguageInstruction() {
-                String finalInstruction ="    int erosion_type = 0;\n" +
-                        "    if( erosion_elem == 0 ){ erosion_type = cv::MORPH_RECT; }\n" +
-                        "    else if( erosion_elem == 1 ){ erosion_type = cv::MORPH_CROSS; }\n" +
-                        "    else if( erosion_elem == 2) { erosion_type = cv::MORPH_ELLIPSE; }\n" +
-                        "    int erosion_size = erosion_elem;\n" +
-                        "    cv::Mat element = cv::getStructuringElement( erosion_type,\n" +
-                        "                            cv::Size( 2*erosion_size + 1, 2*erosion_size+1 ),\n" +
-                        "                            cv::Point( -1, -1 ) );\n";
+                String finalInstruction =   "    int erosion_type = 0;\n" +
+                                            "    if( erosion_elem == 0 ){ erosion_type = cv::MORPH_RECT; }\n" +
+                                            "    else if( erosion_elem == 1 ){ erosion_type = cv::MORPH_CROSS; }\n" +
+                                            "    else if( erosion_elem == 2) { erosion_type = cv::MORPH_ELLIPSE; }\n" +
+                                            "    int erosion_size = erosion_elem;\n" +
+                                            "    cv::Mat element = cv::getStructuringElement( erosion_type,\n" +
+                                            "                            cv::Size( 2*erosion_size + 1, 2*erosion_size+1 ),\n" +
+                                            "                            cv::Point( -1, -1 ) );\n";
 
                 if(properties.isPreCV() && properties.isSucCV()){
                     finalInstruction += "    cv::erode( src, dst, element, cv::Point(-1,-1), iterations );\n";

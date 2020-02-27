@@ -66,7 +66,8 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.addCVIncludeString("opencv2/imgproc");
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(gaussianBlurHelperMethod);
-
+        redefineArmaMat(bluePrintCPP);
+        redefineInit(bluePrintCPP);
     }
 
     private Method getGaussianBlurHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP, MathExpressionProperties properties){
@@ -76,8 +77,11 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
         String typeNameOut = "";
 
         if(typeName.equals("") || typeName.equals("mat")){
-            typeName = "arma::mat";
+            typeName = "arma::Mat<unsigned char>";
+        }else if(typeName.equals("cube")){
+            typeName = "Cube<unsigned char>";
         }
+
         if(properties.isPreCV()){
             typeNameIn = "cv::Mat";
         } else {
@@ -90,11 +94,14 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
             typeNameOut = typeName;
         }
 
+        String typeNameInConst = "const " + typeNameIn +"&";
+        String typeNameOutRef = typeNameOut + "&";
+
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrix",typeNameIn, MathConverter.curBackend.getIncludeHeaderName());;
+        method.addParameter(src, "src", "CommonMatrix",typeNameInConst, MathConverter.curBackend.getIncludeHeaderName());;
         Variable dst = new Variable();
-        method.addParameter(dst, "dst", "CommonMatrixType", typeNameOut, MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(dst, "dst", "CommonMatrixType", typeNameOutRef, MathConverter.curBackend.getIncludeHeaderName());
         Variable sizeX = new Variable();
         method.addParameter(sizeX, "sizeX", "Integer", "int", "");
         Variable sizeY = new Variable();
@@ -116,28 +123,32 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
             public String getTargetLanguageInstruction() {
                 String finalInstruction = "";
                 if(properties.isPreCV() && properties.isSucCV()){
-                    finalInstruction = "    cv::gaussianBlur(src, dst, Size(sizeX, sizeY), sigmaX, sigmaY);\n";
+                    finalInstruction =  "    cv::Size sizeO = cv::Size(sizeX, sizeY);\n" +
+                                        "    cv::GaussianBlur(src, dst, sizeO, sigmaX, sigmaY);\n";
                 }else if(properties.isPreCV()){
-                    finalInstruction = "    cv::Mat dstCV;\n" +
-                            "    cv::gaussianBlur(src, dstCV, Size(sizeX, sizeY), sigmaX, sigmaY);\n";
+                    finalInstruction =  "    cv::Mat dstCV;\n" +
+                                        "    cv::Size sizeO = cv::Size(sizeX, sizeY);\n" +
+                                        "    cv::GaussianBlur(src, dstCV, sizeO, sigmaX, sigmaY);\n";
                     if(typeNameOut == "cube"){
-                       finalInstruction += "    dst = ConvHelper::to_armaCube(dstCV);\n";
+                       finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
-                        finalInstruction += "    dst = ConvHelper::to_arma(dstCV);\n";
+                        finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";
                     }
                 } else if(properties.isSucCV()){
-                    finalInstruction = "    cv::Mat srcCV;\n" +
-                            "    srcCV = ConvHelper::to_cvmat(src);\n" +
-                            "    cv::gaussianBlur(srcCV, dst, Size(sizeX, sizeY), sigmaX, sigmaY);\n";
+                    finalInstruction =  "    cv::Mat srcCV;\n" +
+                                        "    srcCV = to_cvmat<unsigned char>(src);\n" +
+                                        "    cv::Size sizeO = cv::Size(sizeX, sizeY);\n" +
+                                        "    cv::GaussianBlur(srcCV, dst, sizeO, sigmaX, sigmaY);\n";
                 } else {
-                    finalInstruction = "    cv::Mat srcCV;\n" +
-                            "    cv::Mat dstCV;\n" +
-                            "    srcCV = ConvHelper::to_cvmat(src);\n" +
-                            "    cv::gaussianBlur(srcCV, dstCV, Size(sizeX, sizeY), sigmaX, sigmaY);\n";
+                    finalInstruction =  "    cv::Mat srcCV;\n" +
+                                        "    cv::Mat dstCV;\n" +
+                                        "    srcCV = to_cvmat<unsigned char>(src);\n" +
+                                        "    cv::Size sizeO = cv::Size(sizeX, sizeY);\n" +
+                                        "    cv::GaussianBlur(srcCV, dstCV, sizeO, sigmaX, sigmaY);\n";
                     if(typeNameOut == "cube"){
-                        finalInstruction += "    dst = ConvHelper::to_armaCube(dstCV);\n";
+                        finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
-                        finalInstruction += "    dst = ConvHelper::to_arma(dstCV);\n";
+                        finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";
                     }
                 }
                 return finalInstruction;

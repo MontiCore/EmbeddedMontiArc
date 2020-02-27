@@ -65,6 +65,7 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(inRangeHelperMethod);
         redefineArmaMat(bluePrintCPP);
+        redefineInit(bluePrintCPP);
 
     }
 
@@ -74,23 +75,27 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         String typeNameIn = "";
         String typeNameOut = "";
 
+
         if(properties.isPreCV()){
             typeNameIn = "cv::Mat";
         } else {
-            typeNameIn = "cube";
+            typeNameIn = "Cube<unsigned char>";
         }
 
         if(properties.isSucCV()){
             typeNameOut = "cv::Mat";
         }else {
-            typeNameOut = "arma::mat";
+            typeNameOut = "arma::Mat<unsigned char>";
         }
+
+        String typeNameInConst = "const " + typeNameIn +"&";
+        String typeNameOutRef = typeNameOut + "&";
 
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrix", typeNameIn, "");;
+        method.addParameter(src, "src", "CommonMatrix", typeNameInConst, "");;
         Variable dst = new Variable();
-        method.addParameter(dst, "dst", "CommonMatrixType", typeNameOut, "");
+        method.addParameter(dst, "dst", "CommonMatrixType", typeNameOutRef, "");
         Variable lowerBoundary = new Variable();
         method.addParameter(lowerBoundary, "lowerB", "colvec", "colvec", "" );
         Variable upperBoundary = new Variable();
@@ -115,19 +120,19 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
                     finalInstruction += "    cv::Mat dstCV;\n" +
                                         "    cv::inRange(src, cv::Scalar(lowerB(0), lowerB(1), lowerB(2)),\n" +
                                         "            cv::Scalar(upperB(0), upperB(1), upperB(2)), dstCV);\n" +
-                                        "    dst = ConvHelper::to_arma(dstCV);\n";
+                                        "    dst = to_arma<unsigned char>(dstCV);\n";
                 } else if (properties.isSucCV()) {
                     finalInstruction += "    cv::Mat srcCV;\n" +
-                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
+                                        "    srcCV = to_cvmat<unsigned char>(src);\n" +
                                         "    cv::inRange(srcCV, cv::Scalar(lowerB(0), lowerB(1), lowerB(2)),\n" +
                                         "            cv::Scalar(upperB(0), upperB(1), upperB(2)), dst);\n";
                 } else {
                     finalInstruction += "    cv::Mat srcCV;\n" +
                                         "    cv::Mat dstCV;\n" +
-                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
+                                        "    srcCV = to_cvmat<unsigned char>(src);\n" +
                                         "    cv::inRange(srcCV, cv::Scalar(lowerB(0), lowerB(1), lowerB(2)),\n" +
                                         "            cv::Scalar(upperB(0), upperB(1), upperB(2)), dstCV);\n" +
-                                        "    dst = ConvHelper::to_arma(dstCV);\n";
+                                        "    dst = to_arma<unsigned char>(dstCV);\n";
                 }
                 return  finalInstruction;
             }

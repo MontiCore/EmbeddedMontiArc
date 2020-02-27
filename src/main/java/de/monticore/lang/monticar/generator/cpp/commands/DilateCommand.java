@@ -65,6 +65,7 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(dilateHelperMethod);
         redefineArmaMat(bluePrintCPP);
+        redefineInit(bluePrintCPP);
 
     }
 
@@ -74,9 +75,13 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
         String typeName = getTypeOfFirstInput(mathMatrixNameExpressionSymbol, bluePrintCPP);
         String typeNameIn = "";
         String typeNameOut = "";
+
         if(typeName.equals("") || typeName.equals("mat")){
-            typeName = "arma::mat";
+            typeName = "arma::Mat<unsigned char>";
+        }else if(typeName.equals("cube")){
+            typeName = "Cube<unsigned char>";
         }
+
 
         if(properties.isPreCV()){
             typeNameIn = "cv::Mat";
@@ -90,11 +95,14 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
             typeNameOut = typeName;
         }
 
+        String typeNameInConst = "const " + typeNameIn +"&";
+        String typeNameOutRef = typeNameOut + "&";
+
         //add parameters
         Variable src = new Variable();
-        method.addParameter(src, "src", "CommonMatrix", typeNameIn, MathConverter.curBackend.getIncludeHeaderName());;
+        method.addParameter(src, "src", "CommonMatrix", typeNameInConst, MathConverter.curBackend.getIncludeHeaderName());;
         Variable dst = new Variable();
-        method.addParameter(dst, "dst", "CommonMatrixType", typeNameOut, MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(dst, "dst", "CommonMatrixType", typeNameOutRef, MathConverter.curBackend.getIncludeHeaderName());
         Variable erosion_elem = new Variable();
         method.addParameter(erosion_elem,"dilation_elem", "Integer", "int", "");
         Variable iterations = new Variable();
@@ -111,38 +119,38 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
             @Override
             public String getTargetLanguageInstruction() {
 
-                String finalInstruction =  "    int dilation_type = 0;\n" +
-                        "    if( dilation_elem == 0 ){ dilation_type = MORPH_RECT; }\n" +
-                        "    else if( dilation_elem == 1 ){ dilation_type = MORPH_CROSS; }\n" +
-                        "    else if( dilation_elem == 2) { dilation_type = MORPH_ELLIPSE; }\n" +
-                        "    dilation_size = dilation_elem;\n" +
-                        "    cv::mat element = cv::getStructuringElement( dilation_type,\n" +
-                        "                            Size( 2*dilation_size + 1, 2*dilation_size+1 ),\n" +
-                        "                            Point( -1, -1 ) );\n";
+                String finalInstruction =   "    int dilation_type = 0;\n" +
+                                            "    if( dilation_elem == 0 ){ dilation_type = cv::MORPH_RECT; }\n" +
+                                            "    else if( dilation_elem == 1 ){ dilation_type = cv::MORPH_CROSS; }\n" +
+                                            "    else if( dilation_elem == 2) { dilation_type = cv::MORPH_ELLIPSE; }\n" +
+                                            "    int dilation_size = dilation_elem;\n" +
+                                            "    cv::Mat element = cv::getStructuringElement( dilation_type,\n" +
+                                            "                            cv::Size( 2*dilation_size + 1, 2*dilation_size+1 ),\n" +
+                                            "                            cv::Point( -1, -1 ) );\n";
 
                 if(properties.isPreCV() && properties.isSucCV()){
-                    finalInstruction += "    cv::dilate( src, dst, element, Point(-1,-1), iterations );\n";
+                    finalInstruction += "    cv::dilate( src, dst, element, cv::Point(-1,-1), iterations );\n";
                 }else if(properties.isPreCV()){
                     finalInstruction += "    cv::Mat dstCV;\n" +
-                            "    cv::dilate( src, dstCV, element, Point(-1,-1), iterations );\n";
+                                        "    cv::dilate( src, dstCV, cv::element, cv::Point(-1,-1), iterations );\n";
                     if(typeNameOut == "cube"){
-                        finalInstruction += "    dst = ConvHelper::to_armaCube(dstCV);\n";
+                        finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
-                        finalInstruction += "    dst = ConvHelper::to_arma(dstCV);\n";
+                        finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";
                     }
                 } else if(properties.isSucCV()){
                     finalInstruction += "    cv::Mat srcCV;\n" +
-                            "    srcCV = ConvHelper::to_cvmat(src);\n" +
-                            "    cv::dilate( srcCV, dst, element, Point(-1,-1), iterations );\n";
+                                        "    srcCV = to_cvmat<unsigned char>(src);\n" +
+                                        "    cv::dilate( srcCV, dst, element, cv::Point(-1,-1), iterations );\n";
                 } else {
                     finalInstruction += "    cv::Mat srcCV;\n" +
-                            "    cv::Mat dstCV;\n" +
-                            "    srcCV = ConvHelper::to_cvmat(src);\n" +
-                            "    cv::dilate( srcCV, dstCV, element, Point(-1,-1), iterations );\n";
+                                        "    cv::Mat dstCV;\n" +
+                                        "    srcCV = to_cvmat<unsigned char>(src);\n" +
+                                        "    cv::dilate( srcCV, dstCV, element, cv::Point(-1,-1), iterations );\n";
                     if(typeNameOut == "cube"){
-                        finalInstruction += "    dst = ConvHelper::to_armaCube(dstCV);\n";
+                        finalInstruction += "    dst = to_armaCube<unsigned char, 3>(dstCV);\n";
                     }   else {
-                        finalInstruction += "    dst = ConvHelper::to_arma(dstCV);\n";
+                        finalInstruction += "    dst = to_arma<unsigned char>(dstCV);\n";
                     }
                 }
                 return  finalInstruction;

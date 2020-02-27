@@ -57,7 +57,7 @@ public class FindContoursCommand extends ArgumentNoReturnMathCommand{
         Method findContoursHelperMethod = getFindContoursHelperMethod(mathMatrixNameExpressionSymbol, bluePrintCPP, properties);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
-        MathStringExpression stringExpression = new MathStringExpression("cv::findContours" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
+        MathStringExpression stringExpression = new MathStringExpression("findContoursHelper" + valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
@@ -66,6 +66,7 @@ public class FindContoursCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.addCVIncludeString("vector");
         bluePrint.addMethod(findContoursHelperMethod);
         redefineArmaMat(bluePrintCPP);
+        redefineInit(bluePrintCPP);
 
     }
 
@@ -76,7 +77,9 @@ public class FindContoursCommand extends ArgumentNoReturnMathCommand{
         String typeNameIn = "";
 
         if(typeName.equals("") || typeName.equals("mat")){
-            typeName = "arma::mat";
+            typeName = "arma::Mat<unsigned char>";
+        }else if(typeName.equals("cube")){
+            typeName = "Cube<unsigned char>";
         }
 
         if(properties.isPreCV()){
@@ -84,12 +87,14 @@ public class FindContoursCommand extends ArgumentNoReturnMathCommand{
         } else {
             typeNameIn = typeName;
         }
+        String typeNameInConst = "const " + typeNameIn +"&";
+
 
         //add parameters
         Variable image = new Variable();
-        method.addParameter(image, "image", "CommonMatrixType", typeNameIn, MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(image, "image", "CommonMatrixType", typeNameInConst, MathConverter.curBackend.getIncludeHeaderName());
         Variable contours = new Variable();
-        method.addParameter(contours, "contours", "CommonMatrixType", "vector<vector<cv::Point>>", MathConverter.curBackend.getIncludeHeaderName());
+        method.addParameter(contours, "contours", "CommonMatrixType", "vector<vector<cv::Point>>&", MathConverter.curBackend.getIncludeHeaderName());
         Variable mode = new Variable();
         method.addParameter(mode,"mode", "Integer", "int", "");
         Variable meth = new Variable();
@@ -110,8 +115,8 @@ public class FindContoursCommand extends ArgumentNoReturnMathCommand{
                     finalInstruction += "    cv::findContours( image, contours, mode, method );\n";
                 } else {
                     finalInstruction += "    cv::Mat srcCV;\n" +
-                                        "    srcCV = ConvHelper::to_cvmat(src);\n" +
-                                        "    cv::findContours( image, contours, mode, method );\n";
+                                        "    srcCV = to_cvmat<unsigned char>(image);\n" +
+                                        "    cv::findContours( srcCV, contours, mode, method );\n";
                 }
                 return  finalInstruction;
             }
