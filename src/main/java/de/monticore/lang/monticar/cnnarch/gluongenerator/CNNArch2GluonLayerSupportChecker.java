@@ -40,7 +40,7 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.REDUCE_SUM_NAME);
         supportedLayerList.add(AllPredefinedLayers.BROADCAST_ADD_NAME);
         supportedLayerList.add(AllPredefinedLayers.RESHAPE_NAME);
-        supportedLayerList.add(AllPredefinedLayers.CROP_NAME);
+        // supportedLayerList.add(AllPredefinedLayers.CROP_NAME);
     }
 
 }

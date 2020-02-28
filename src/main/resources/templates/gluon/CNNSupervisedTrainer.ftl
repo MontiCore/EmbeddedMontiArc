@@ -266,7 +266,9 @@ class ${tc.fileNameWithoutEnding}:
 
         begin_epoch = 0
         if load_checkpoint:
-            begin_epoch = self._net_creator.load(mx_context, load_pretrained=load_pretrained)
+            begin_epoch = self._net_creator.load(mx_context)
+        elif load_pretrained:
+            self._net_creator.load_pretrained_weights(mx_context)
         else:
             if os.path.isdir(self._net_creator._model_dir_):
                 shutil.rmtree(self._net_creator._model_dir_)
