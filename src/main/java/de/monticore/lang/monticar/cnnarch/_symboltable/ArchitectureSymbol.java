@@ -31,6 +31,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private List<VariableSymbol> outputs = new ArrayList<>();
     private List<ConstantSymbol> constants = new ArrayList<>();
     private String dataPath;
+    private String weightsPath;
     private String componentName;
 
     public ArchitectureSymbol() {
@@ -71,6 +72,14 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public void setDataPath(String dataPath) {
         this.dataPath = dataPath;
+    }
+
+    public String getWeightsPath() {
+        return this.weightsPath;
+    }
+
+    public void setWeightsPath(String weightsPath) {
+        this.weightsPath = weightsPath;
     }
 
     public void setComponentName(String componentName){
