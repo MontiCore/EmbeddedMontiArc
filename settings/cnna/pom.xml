@@ -10,12 +10,10 @@
 
   <properties>
     <!-- Dependency versions -->
-    <emam.version>0.1.13-SNAPSHOT</emam.version>
+    <cnn-arch.version>0.3.4-SNAPSHOT</cnn-arch.version>
+    <embedded-montiarc-deeplearning.version>0.2.11-SNAPSHOT</embedded-montiarc-deeplearning.version>
     <monticore-lsp-commons.version>1.2-SNAPSHOT</monticore-lsp-commons.version>
     <ema-lsp.version>1.4-SNAPSHOT</ema-lsp.version>
-    <embedded-montiarc-deeplearning.version>0.2.10-SNAPSHOT</embedded-montiarc-deeplearning.version>
-    <cnn-train.version>0.3.8-SNAPSHOT</cnn-train.version>
-    <cnn-arch.version>0.3.3-SNAPSHOT</cnn-arch.version>
 
     <!-- misc -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,11 +22,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>embedded-montiarc-math</artifactId>
-      <version>${emam.version}</version>
-    </dependency>
     <dependency>
       <groupId>de.monticore.util</groupId>
       <artifactId>monticore-lsp-commons</artifactId>
@@ -44,6 +37,11 @@
         <artifactId>embedded-montiarc-deeplearning</artifactId>
         <version>${embedded-montiarc-deeplearning.version}</version>
     </dependency>
+    <dependency>
+        <groupId>de.monticore.lang.monticar</groupId>
+        <artifactId>cnn-arch</artifactId>
+        <version>${cnn-arch.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -53,7 +51,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.2.1</version>
         <configuration>
-          <mainClass>de.monticore.lang.embeddedmontiarc.embeddedmontiarcdl.lsp.CnnaLspServer</mainClass>
+          <mainClass>de.monticore.lang.embeddedmontiarc.cnnarchlang.lsp.CnnaLspServer</mainClass>
           <arguments>
             <argument>-p</argument>
             <argument>0</argument>
