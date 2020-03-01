@@ -10,8 +10,8 @@
 
   <properties>
     <!-- Dependency versions -->
-    <cnn-arch.version>0.3.4-SNAPSHOT</cnn-arch.version>
-    <embedded-montiarc-deeplearning.version>0.2.11-SNAPSHOT</embedded-montiarc-deeplearning.version>
+    <cnn-arch.version>0.3.3-SNAPSHOT</cnn-arch.version>
+    <embedded-montiarc-deeplearning.version>0.2.10-SNAPSHOT</embedded-montiarc-deeplearning.version>
     <monticore-lsp-commons.version>1.2-SNAPSHOT</monticore-lsp-commons.version>
     <ema-lsp.version>1.4-SNAPSHOT</ema-lsp.version>
 

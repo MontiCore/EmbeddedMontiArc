@@ -10,7 +10,7 @@
 
   <properties>
     <!-- Dependency versions -->
-    <cnn-train.version>0.3.9-SNAPSHOT</cnn-train.version>
+    <cnn-train.version>0.3.8-SNAPSHOT</cnn-train.version>
     <monticore-lsp-commons.version>1.2-SNAPSHOT</monticore-lsp-commons.version>
     <ema-lsp.version>1.4-SNAPSHOT</ema-lsp.version>
 
