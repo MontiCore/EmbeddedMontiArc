@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-configuration SimpleConfigInvalid{
+configuration SimpleComponent{
     num_epichs:1
     batch_size:64
     normalize:true

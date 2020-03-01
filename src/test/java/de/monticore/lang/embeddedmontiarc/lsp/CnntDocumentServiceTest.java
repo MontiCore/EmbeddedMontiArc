@@ -57,7 +57,7 @@ class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
     public void testValidDidOpenEvent() throws IOException {
         CnntDocumentService documentService = getDocumentService(BASE_PATH);
 
-        File file = new File("src/test/resources/cnnt/valid/SimpleConfig.cnnt");
+        File file = new File("src/test/resources/emadl/valid/SimpleComponent.cnnt");
         documentService.didOpen(createDidOpenEvent(file, "CNNTrainLang"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());
     }
@@ -65,7 +65,7 @@ class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
     @Test
     public void testInvalidDidOpenEvent() throws IOException {
         CnntDocumentService documentService = getDocumentService(BASE_PATH);
-        File file = new File("src/test/resources/cnnt/invalid/SimpleConfig.cnnt");
+        File file = new File("src/test/resources/emadl/invalid/SimpleComponent.cnnt");
         documentService.didOpen(createDidOpenEvent(file, "CNNTrainLang"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
