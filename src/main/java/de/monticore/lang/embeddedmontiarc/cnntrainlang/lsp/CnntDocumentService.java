@@ -46,8 +46,6 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
     public Optional<ASTCNNTrainCompilationUnit> doParse(StringReader fullText) {
         Log.info("Parsing!", "default");
         try {
-            // of type ASTCNNTrainCompilationUnit
-            // TODO
             return parser.parse(fullText);
         } catch (IOException e) {
             Log.error("Error parsing model: ", e);
