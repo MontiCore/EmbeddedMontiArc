@@ -10,10 +10,9 @@
 
   <properties>
     <!-- Dependency versions -->
-    <emam.version>0.1.13-SNAPSHOT</emam.version>
+    <cnn-train.version>0.3.9-SNAPSHOT</cnn-train.version>
     <monticore-lsp-commons.version>1.2-SNAPSHOT</monticore-lsp-commons.version>
     <ema-lsp.version>1.4-SNAPSHOT</ema-lsp.version>
-    <cnn-train.version>0.3.8-SNAPSHOT</cnn-train.version>
 
     <!-- misc -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,11 +21,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>embedded-montiarc-math</artifactId>
-      <version>${emam.version}</version>
-    </dependency>
     <dependency>
       <groupId>de.monticore.util</groupId>
       <artifactId>monticore-lsp-commons</artifactId>
