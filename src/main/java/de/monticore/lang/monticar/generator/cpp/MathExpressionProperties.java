@@ -41,8 +41,4 @@ public class MathExpressionProperties {
     public boolean isSucCV(){
         return this.suc == Level.CV;
     }
-
-    /*public MathExpressionProperties(String name) {
-        (name);
-    }*/
 }
