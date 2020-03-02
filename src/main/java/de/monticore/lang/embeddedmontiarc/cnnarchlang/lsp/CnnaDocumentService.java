@@ -4,6 +4,7 @@ import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchCompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 
 import de.monticore.lang.monticar.cnnarch._parser.CNNArchParser;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
@@ -65,8 +66,7 @@ public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
 
     @Override
     protected String getFullSymbolName(ASTCNNArchCompilationUnit node) {
-        // return getSymbolName(node);
-        return String.join(".",getPackageList(node)) + "." + getSymbolName(node);
+        return getSymbolName(node);
     }
 
     @Override

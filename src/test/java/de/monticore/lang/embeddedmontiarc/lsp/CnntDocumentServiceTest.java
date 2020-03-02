@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
-    public static final String BASE_PATH = "src/test/resources/cnnt";
+    public static final String BASE_PATH = "src/test/resources/emadl";
 
     private CnntDocumentService getDocumentService(String basePath) throws IOException {
         CnntDocumentService res = new CnntDocumentService();

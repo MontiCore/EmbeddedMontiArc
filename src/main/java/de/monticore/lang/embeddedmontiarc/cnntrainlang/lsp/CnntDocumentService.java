@@ -55,10 +55,7 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
 
     @Override
     protected List<String> getPackageList(ASTCNNTrainCompilationUnit node) {
-        // return node.getPackageList();
-        List<String> packageList = new ArrayList<>();
-        packageList.add(node.getName());
-        return packageList;
+        return new ArrayList<>();
     }
 
     @Override
@@ -68,7 +65,7 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
 
     @Override
     protected String getFullSymbolName(ASTCNNTrainCompilationUnit node) {
-        return String.join(".",getPackageList(node)) + "." + getSymbolName(node);
+        return getSymbolName(node);
     }
 
     @Override
@@ -112,10 +109,6 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
             modelFamily = new ModelingLanguageFamily();
             CNNTrainLanguage montiArcCNNTrainLanguage = new CNNTrainLanguage();
             modelFamily.addModelingLanguage(montiArcCNNTrainLanguage);
-            modelFamily.addModelingLanguage(new StreamUnitsLanguage());
-            modelFamily.addModelingLanguage(new StructLanguage());
-            modelFamily.addModelingLanguage(new EnumLangLanguage());
-            modelFamily.addModelingLanguage(new EventLanguage());
         }
 
         return modelFamily;
