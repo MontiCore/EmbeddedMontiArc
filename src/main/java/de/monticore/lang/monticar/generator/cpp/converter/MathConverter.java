@@ -190,7 +190,6 @@ public class MathConverter {
             setPrePropertyForMathExpression(mathExpressionSymbols,mathExpressionSymbol, bluePrint, indexOfCurrentMathExpression, properties);
             setSucPropertyForMathExpression(mathExpressionSymbols, mathExpressionSymbol, bluePrint, indexOfCurrentMathExpression, properties);
         }
-
     }
 
     public static void setPrePropertyForMathExpression(List<MathExpressionSymbol> mathExpressionSymbols, MathExpressionSymbol currentMathExpressionSymbol, BluePrintCPP bluePrint, int currentMathExpressionIndex, MathExpressionProperties properties){

@@ -26,6 +26,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+<<<<<<< master
+=======
+ * @author Sascha Schneiders
+ * @author Ahmed Diab
+>>>>>>> fix some bugs
  * Handles code generation for a component and its "subsymbols"
  */
 public class ComponentConverter {
@@ -33,7 +38,7 @@ public class ComponentConverter {
     public static BluePrintCPP currentBluePrint = null;
     public static List<String> namesOfFunctions = new ArrayList<>();
     public static List<MathCommand> usedMathCommand = new ArrayList<>();
-    public static HashMap<MathExpressionSymbol, MathExpressionProperties> tuples = new HashMap<MathExpressionSymbol, MathExpressionProperties>();
+    public static HashMap<MathExpressionSymbol, MathExpressionProperties> tuples = new HashMap<>();
 
     public static BluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         BluePrintCPP bluePrint = new BluePrintCPP(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
@@ -63,19 +68,17 @@ public class ComponentConverter {
         }
         //create arrays from variables that only differ at the end by _number_
         BluePrintFixer.fixBluePrintVariableArrays(bluePrint);
-        //ToDo: add bluePrintFixer.fixBluePrintCvVariableArrays;
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
-        //save function name
+        //save functions names
         if(mathStatementsSymbol != null) {
             List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
             for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
                 String nameOfFunction = getNameOfMathCommand(mathExpressionSymbol);
                 namesOfFunctions.add(nameOfFunction);
                 fixFunctionTypes(nameOfFunction, mathExpressionSymbol, bluePrint);
-
             }
 
-            if(mathExpressionSymbols.size() > 1) {
+            if(mathExpressionSymbols.size() >= 1) {
                 for (MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols) {
                     MathExpressionProperties properties = new MathExpressionProperties();
                     MathConverter.setPropertiesForMathExpression(mathExpressionSymbols, mathExpressionSymbol, bluePrint, properties);
@@ -88,25 +91,10 @@ public class ComponentConverter {
                     } else{
                         ComponentConverter.tuples.put(mathExpressionSymbol, properties);
                     }
-
-                }
-            } else if(mathExpressionSymbols.size() == 1){
-                MathExpressionProperties properties = new MathExpressionProperties();
-                MathExpressionSymbol mathExpressionSymbol = mathExpressionSymbols.get(0);
-                if(mathExpressionSymbol.isAssignmentExpression() && ((MathAssignmentExpressionSymbol)mathExpressionSymbol).getExpressionSymbol().isMatrixExpression()){
-                    MathMatrixExpressionSymbol mathMatrixExpressionSymbol = (MathMatrixExpressionSymbol) ((MathAssignmentExpressionSymbol)mathExpressionSymbol).getExpressionSymbol();
-                    if(mathMatrixExpressionSymbol.isMatrixNameExpression()) {
-                        MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathExpressionSymbol).getExpressionSymbol();
-                        ComponentConverter.tuples.put(mathMatrixNameExpressionSymbol, properties);
-                    }
-                } else{
-                    ComponentConverter.tuples.put(mathExpressionSymbol, properties);
                 }
             }
             redefineVariables(mathExpressionSymbols, bluePrint);
         }
-
-        //ToDo Redefine Function
 
         if(namesOfFunctions != null) {
             for(String nameOfFunction : namesOfFunctions){
@@ -153,19 +141,8 @@ public class ComponentConverter {
             bluePrint.getMathInformationRegister().addVariable(var);
             var.setIsParameterVariable(true);
         }
-        Collection<EMAComponentInstanceSymbol> subcomponents = componentSymbol.getSubComponents();
-        Collection<EMAPortInstanceSymbol> incomingPorts = componentSymbol.getIncomingPortInstances();
-        Collection<EMAPortInstanceSymbol> outcomingPorts = componentSymbol.getOutgoingPortInstances();
-        Collection<EMAComponentInstanceSymbol> intdependents = componentSymbol.getIndependentSubComponents();
-        Optional<InstanceInformation> infos = componentSymbol.getInstanceInformation();
-        Collection<EMAConnectorInstanceSymbol> connectors = componentSymbol.getConnectorInstances();
-        List<EMAVariable> parameters = componentSymbol.getParameters();
-        Optional<EMAComponentInstanceSymbol> parent = componentSymbol.getParent();
-        Collection<EMAPortInstanceSymbol> ports = componentSymbol.getPortInstanceList();
-        List<ASTExpression> expressions = componentSymbol.getArguments();
+
         //add ports as variables to blueprint
-
-
         for (EMAPortInstanceSymbol port : componentSymbol.getPortInstanceList()) {
             //Config ports might already be added from adaptable Parameters
             if(!port.isConfig()) {
@@ -423,8 +400,7 @@ public class ComponentConverter {
                     MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) ((MathAssignmentExpressionSymbol) mathExpressionSymbol).getExpressionSymbol();
                     String nameOfFirstParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0).getTextualRepresentation();
                     String nameOfOutput = getNameOfOutput(mathExpressionSymbol);
-
-                    MathExpressionProperties properties = tuples.get(mathExpressionSymbol);
+                    MathExpressionProperties properties = tuples.get(mathMatrixNameExpressionSymbol);
                     if (properties != null) {
                         if (properties.isPreCV()) {
                             fixVariableType(nameOfFirstParameter, bluePrintCPP, "CommonMatrixType", "cv::Mat", "");

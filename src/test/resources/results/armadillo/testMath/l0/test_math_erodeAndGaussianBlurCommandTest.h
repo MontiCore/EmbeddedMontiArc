@@ -15,7 +15,8 @@ Cube<unsigned char> src;
 int erosion_elemIn;
 colvec sizeY;
 colvec two;
-Cube<unsigned char> dst;
+cv::Mat dst;
+cv::Mat dst3;
 Cube<unsigned char> outMatrix;
 arma::Mat<unsigned char> out2Matrix;
 void init()
@@ -23,7 +24,6 @@ void init()
 src = cube(n, m, 3);
 sizeY=colvec(3);
 two=colvec(2);
-dst = cube(n, m, 3);
 outMatrix = cube(3, n, m);
 out2Matrix=Mat<unsigned char>(2,m);
 }
@@ -60,16 +60,10 @@ void findContoursHelper(const cv::Mat& image, std::vector<std::vector<cv::Point>
 void execute()
 {
 erodeHelper(src, dst, erosion_elem, iterations);
-cube dst2=cube(270,340,3);
-erodeHelper(src, dst2, erosion_elem, iterations);
-erodeHelper(src, dst, erosion_elem, iterations);
 dilateHelper(dst, dst3, dilation_elem, iterations);
-cube src4 = (det(src));
-erodeHelper(src4, dst, erosion_elem, iterations);
-erodeHelper(src, dst, erosion_elem, iterations);
-dilateHelper(dst, dst3, dilation_elem, iterations);
-findContoursHelper(dst3, contours, method, mode);
+findContoursHelper(dst3, contours);
 }
 
 };
 #endif
+
