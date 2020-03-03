@@ -17,6 +17,8 @@ import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
+import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
+import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
@@ -130,6 +132,8 @@ public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
             modelFamily = new ModelingLanguageFamily();
             CNNArchLanguage montiArcCNNArchLanguage = new CNNArchLanguage();
             modelFamily.addModelingLanguage(montiArcCNNArchLanguage);
+            modelFamily.addModelingLanguage(new StreamUnitsLanguage());
+            modelFamily.addModelingLanguage(new StructLanguage());
             modelFamily.addModelingLanguage(new EnumLangLanguage());
             modelFamily.addModelingLanguage(new EventLanguage());
         }

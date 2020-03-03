@@ -41,22 +41,22 @@ class CnnaDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
     @Test
     public void testValidSyntax() throws InterruptedException, ExecutionException, IOException {
-        CnnaDocumentService documentService = getDocumentService(BASE_PATH);
+        CnnaDocumentService documentService = getDocumentService(BASE_PATH + "/valid");
         DiagnosticsLog.setLogToStdout(true);
-        documentService.doParse(new StringReader("architecture Abc{\ndef input Z(0:255)^{28, 28} image\ndef output Z(0:1)^{10} prediction\nimage -> prediction;\n}"));
+        documentService.doParse(new StringReader("architecture SimplerArchitecture{def input Q(0:1)^{1,28,28} image    def output Q(0:1)^{10} image2    image ->   FullyConnected(units=10) -> Softmax() ->     image2;}"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());
     }
 
     @Test
     public void testInvalidSyntax() throws InterruptedException, ExecutionException, IOException {
-        CnnaDocumentService documentService = getDocumentService(BASE_PATH);
-        documentService.doParse(new StringReader("architeture Abc{}"));
+        CnnaDocumentService documentService = getDocumentService(BASE_PATH + "/valid");
+        documentService.doParse(new StringReader("architeture valid{}"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
 
     @Test
     public void testValidDidOpenEvent() throws IOException {
-        CnnaDocumentService documentService = getDocumentService(BASE_PATH);
+        CnnaDocumentService documentService = getDocumentService(BASE_PATH + "/valid");
 
         File file = new File("src/test/resources/cnna/valid/SimpleArchitecture.cnna");
         // File file = new File("src/test/resources/cnna/valid/Alexnet_alt.cnna");
@@ -66,7 +66,7 @@ class CnnaDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
     @Test
     public void testInvalidDidOpenEvent() throws IOException {
-        CnnaDocumentService documentService = getDocumentService(BASE_PATH);
+        CnnaDocumentService documentService = getDocumentService(BASE_PATH + "/valid");
         File file = new File("src/test/resources/cnna/invalid/SimpleArchitecture.cnna");
         documentService.didOpen(createDidOpenEvent(file, "CNNArchLang"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
