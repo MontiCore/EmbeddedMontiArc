@@ -24,6 +24,10 @@ import de.monticore.symboltable.SymbolKind;
 import de.monticore.util.lsp.MontiCoreDocumentServiceWithSymbol;
 import de.se_rwth.commons.logging.Log;
 
+import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCoCoChecker;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Path;
@@ -32,8 +36,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.nio.file.Paths;
 
-public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTCNNTrainCompilationUnit, EMAComponentSymbol> {
+public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTCNNTrainCompilationUnit, CNNTrainCompilationUnitSymbol> {
     private CNNTrainParser parser = new CNNTrainParser();
     private ModelingLanguageFamily modelFamily;
 
@@ -55,7 +60,9 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
 
     @Override
     protected List<String> getPackageList(ASTCNNTrainCompilationUnit node) {
-        return new ArrayList<>();
+        List<String> packageList = new ArrayList<>();
+        packageList.add(node.getName());
+        return packageList;
     }
 
     @Override
@@ -69,9 +76,12 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
     }
 
     @Override
-    protected void doCheckSymbolCoCos(Path sourcePath, EMAComponentSymbol sym) {
-        CNNTrainCocos checker = new CNNTrainCocos();
-        checker.checkAll((CNNTrainCompilationUnitSymbol) sym.getAstNode().get());
+    protected void doCheckSymbolCoCos(Path sourcePath, CNNTrainCompilationUnitSymbol sym) {
+        // CNNTrainCocos checker = new CNNTrainCocos();
+        // checker.checkAll((CNNTrainCompilationUnitSymbol) sym.getAstNode().get());
+        // CNNTrainCompilationUnitSymbol comp = (CNNTrainCompilationUnitSymbol) sym.getAstNode().get();
+        ASTCNNTrainCompilationUnit astComp = (ASTCNNTrainCompilationUnit) sym.getAstNode().get();
+        CNNTrainCocos.createChecker().checkAll(astComp);
         if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
             Log.info("No CoCos invalid", "default");
         } else {
@@ -86,7 +96,7 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
 
     @Override
     protected SymbolKind getSymbolKind() {
-        return EMAComponentSymbol.KIND;
+        return CNNTrainCompilationUnitSymbol.KIND;
     }
 
     @Override
@@ -109,6 +119,10 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
             modelFamily = new ModelingLanguageFamily();
             CNNTrainLanguage montiArcCNNTrainLanguage = new CNNTrainLanguage();
             modelFamily.addModelingLanguage(montiArcCNNTrainLanguage);
+            modelFamily.addModelingLanguage(new StreamUnitsLanguage());
+            modelFamily.addModelingLanguage(new StructLanguage());
+            modelFamily.addModelingLanguage(new EnumLangLanguage());
+            modelFamily.addModelingLanguage(new EventLanguage());
         }
 
         return modelFamily;
