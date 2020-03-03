@@ -40,7 +40,7 @@ class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
     }
     @Test
     public void testValidSyntax() throws InterruptedException, ExecutionException, IOException {
-        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+        CnntDocumentService documentService = getDocumentService(BASE_PATH + "/valid");
         DiagnosticsLog.setLogToStdout(true);
         documentService.doParse(new StringReader("configuration SimpleConfigValid{}"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());
@@ -48,14 +48,14 @@ class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
     @Test
     public void testInvalidSyntax() throws InterruptedException, ExecutionException, IOException {
-        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+        CnntDocumentService documentService = getDocumentService(BASE_PATH + "/invalid");
         documentService.doParse(new StringReader("confiuration SimpleConfigInvalid{}"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
 
     @Test
     public void testValidDidOpenEvent() throws IOException {
-        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+        CnntDocumentService documentService = getDocumentService(BASE_PATH + "/valid");
 
         File file = new File("src/test/resources/emadl/valid/SimpleComponent.cnnt");
         documentService.didOpen(createDidOpenEvent(file, "CNNTrainLang"));
@@ -64,7 +64,7 @@ class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
     @Test
     public void testInvalidDidOpenEvent() throws IOException {
-        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+        CnntDocumentService documentService = getDocumentService(BASE_PATH + "/invalid");
         File file = new File("src/test/resources/emadl/invalid/SimpleComponent.cnnt");
         documentService.didOpen(createDidOpenEvent(file, "CNNTrainLang"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());

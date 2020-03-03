@@ -49,7 +49,7 @@ class CnnaDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
     @Test
     public void testInvalidSyntax() throws InterruptedException, ExecutionException, IOException {
-        CnnaDocumentService documentService = getDocumentService(BASE_PATH + "/valid");
+        CnnaDocumentService documentService = getDocumentService(BASE_PATH + "/invalid");
         documentService.doParse(new StringReader("architeture valid{}"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
@@ -66,7 +66,7 @@ class CnnaDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
     @Test
     public void testInvalidDidOpenEvent() throws IOException {
-        CnnaDocumentService documentService = getDocumentService(BASE_PATH + "/valid");
+        CnnaDocumentService documentService = getDocumentService(BASE_PATH + "/invalid");
         File file = new File("src/test/resources/cnna/invalid/SimpleArchitecture.cnna");
         documentService.didOpen(createDidOpenEvent(file, "CNNArchLang"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
