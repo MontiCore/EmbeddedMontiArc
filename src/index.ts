@@ -4,3 +4,4 @@ export { MavenUpdateManager } from './mavenUpdateManager';
 export { MavenUpdater } from './mavenUpdater';
 export * from './utils';
 export { LspExtensionManager } from './lspExtensionManager';
+export * from './logAppender';
