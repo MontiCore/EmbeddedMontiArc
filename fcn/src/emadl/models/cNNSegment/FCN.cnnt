@@ -5,7 +5,7 @@ configuration FCN{
      normalize:false
      context:gpu
      load_checkpoint:true
-     loss:dice_loss{
+     loss:softmax_cross_entropy{
         loss_axis:1
      }
      optimizer:sgd{

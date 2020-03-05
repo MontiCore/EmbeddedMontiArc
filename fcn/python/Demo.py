@@ -20,8 +20,10 @@ def plot(img, labels, class_names=None, title='pred.png'):
     if class_names is not None:
         ax = plt.subplot(131)
         ax.imshow(img[:,:,::-1])
+        plt.axis("off")
         ax2 = plt.subplot(132)
         ax2.imshow(labels)
+        plt.axis("off")
         _palette = [x/255.0 for x in _PALETTE]
         palette = [tuple(_palette[n:n+3]) for n in range(0, len(_palette), 3)]
         handles = [patches.Patch(color=color, label=label) for color, label in zip(palette, class_names)]

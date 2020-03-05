@@ -7,11 +7,11 @@ component Connector {
 
     instance FCN<21> predictor;
     instance DeOneHotImage <21,480,480> deonehot;
-    //instance Normalize <sth, sth> normalize;
+    //instance Preprocess <sth, sth> preprocess;
 
     connect image -> predictor.data;
 
     connect predictor.softmax -> deonehot.inputVector;
 
-    connect deonehot.maxValues -> segmented;
+    connect deonehot.res -> segmented;
 }
