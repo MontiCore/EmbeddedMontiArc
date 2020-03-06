@@ -67,6 +67,12 @@ if __name__ == "__main__":
 <#if (config.evalMetric.exclude)??>
             'exclude': [<#list config.evalMetric.exclude as value>${value}<#sep>, </#list>],
 </#if>
+<#if (config.evalMetric.exclude)??>
+            'axis': ${config.evalMetric.axis},
+</#if>
+<#if (config.evalMetric.exclude)??>
+            'ignore_label': ${config.evalMetric.ignore_label},
+</#if>
         },
 </#if>
 <#if (config.evalTrain)??>

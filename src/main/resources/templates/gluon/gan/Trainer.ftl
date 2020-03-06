@@ -65,7 +65,10 @@ if __name__ == "__main__":
         preprocessing=${config.preprocessor?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
-        eval_metric='${config.evalMetric}',
+        eval_metric='${config.evalMetric.name}',
+        eval_metric_params={
+<#if (config.evalMetric.exclude)??>
+            'exclude': [<#list config.evalMetric.exclude as value>${value}<#sep>, </#list>],
 </#if>
 <#if (config.configuration.optimizer)??>
         optimizer='${config.optimizerName}',
