@@ -43,6 +43,8 @@ class ParameterAlgorithmMapping {
         ASTEvalMetricEntry.class,
         ASTEvalTrainEntry.class,
         ASTExcludeBleuEntry.class,
+        ASTAxisAccIgnoreLabelEntry.class,
+        ASTIgnoreLabelAccIgnoreLabelEntry.class,
         ASTNormalizeEntry.class,
         ASTNumEpochEntry.class,
         ASTLossEntry.class,

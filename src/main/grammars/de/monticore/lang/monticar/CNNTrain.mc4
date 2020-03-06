@@ -47,6 +47,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     interface EvalMetricValue extends MultiParamValue;
     AccuracyEvalMetric implements EvalMetricValue = name:"accuracy";
     BleuMetric implements EvalMetricValue = name:"bleu" ("{" params:BleuEntry* "}")?;
+    AccIgnoreLabelMetric implements EvalMetricValue = name:"accuracy_ignore_label" ("{" params:AccIgnoreLabelEntry* "}")?;
     CrossEntropyEvalMetric implements EvalMetricValue = name:"cross_entropy";
     F1EvalMetric implements EvalMetricValue = name:"f1";
     MAEEvalMetric implements EvalMetricValue = name:"mae";
@@ -57,6 +58,10 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     interface BleuEntry extends Entry;
     ExcludeBleuEntry implements BleuEntry = name:"exclude" ":" value:IntegerListValue;
+
+    interface AccIgnoreLabelEntry extends Entry;
+    AxisAccIgnoreLabelEntry implements AccIgnoreLabelEntry = name:"axis" ":" value:IntegerValue;
+    IgnoreLabelAccIgnoreLabelEntry implements AccIgnoreLabelEntry = name:"ignore_label" ":" value:IntegerValue;
 
     EvalTrainEntry implements ConfigEntry = name:"eval_train" ":" value:BooleanValue;
 
