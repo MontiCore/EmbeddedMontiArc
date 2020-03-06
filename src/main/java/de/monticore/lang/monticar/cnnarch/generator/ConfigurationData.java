@@ -43,6 +43,34 @@ public class ConfigurationData {
         return String.valueOf(getConfiguration().getEntry("batch_size") .getValue());
     }
 
+    public String getKValue() {
+        if (!getConfiguration().getEntryMap().containsKey("k_value")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("k_value") .getValue());
+    }
+
+    public String getGeneratorLoss() {
+        if (!getConfiguration().getEntryMap().containsKey("generator_loss")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("generator_loss") .getValue());
+    }
+
+    public String getConditionalInput() {
+        if (!getConfiguration().getEntryMap().containsKey("conditional_input")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("conditional_input") .getValue());
+    }
+
+    public String getNoiseInput() {
+        if (!getConfiguration().getEntryMap().containsKey("noise_input")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("noise_input") .getValue());
+    }
+
     public Boolean getLoadCheckpoint() {
         if (!getConfiguration().getEntryMap().containsKey("load_checkpoint")) {
             return null;
