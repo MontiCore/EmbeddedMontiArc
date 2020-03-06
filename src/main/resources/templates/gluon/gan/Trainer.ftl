@@ -82,6 +82,13 @@ if __name__ == "__main__":
 </#list>
         },
 </#if>
+<#if (config.configuration.criticOptimizer)??>
+        discriminator_optimizer= '${config.criticOptimizerName}',
+        discriminator_optimizer_params= {
+<#list config.criticOptimizerParams?keys as param>
+            '${param}': ${config.criticOptimizerParams[param]}<#sep>,
+</#list>},
+</#if>
 <#if (config.constraintDistributions)??>
 <#assign map = (config.constraintDistributions)>
         constraint_distributions = {
@@ -121,7 +128,19 @@ if __name__ == "__main__":
 <#if (config.noiseDistribution.spread_value)??>
             'spread_value': ${config.noiseDistribution.spread_value}
 </#if>
-        })
+     },
+<#if (config.KValue)??>
+        k_value=${config.KValue},
+</#if>
+<#if (config.generatorLoss)??>
+        generator_loss="${config.generatorLoss}",
+</#if>
+<#if (config.conditionalInput)??>
+        conditional_input="${config.conditionalInput}",
+</#if>
+<#if (config.noiseInput)??>
+        noise_input="${config.noiseInput}"
+</#if>)
 </#if>
 
 

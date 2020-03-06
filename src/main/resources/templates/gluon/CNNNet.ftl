@@ -105,28 +105,3 @@ ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 </#if>
 </#list>
 
-    def getInputs(self):
-        inputs = {}
-<#list tc.architecture.streams as stream>
-<#assign dimensions = (tc.getStreamInputs(stream, false))>
-<#assign domains = (tc.getStreamInputDomains(stream))>
-<#list tc.getStreamInputVariableNames(stream, false) as name>
-        input_dimensions = (${tc.join(dimensions[name], ",")})
-        input_domains = (${tc.join(domains[name], ",")})
-        inputs["${name}"] = input_domains + (input_dimensions,)
-</#list>
-</#list>
-        return inputs
-
-    def getOutputs(self):
-        outputs = {}
-<#list tc.architecture.streams as stream>
-<#assign dimensions = (tc.getStreamOutputs(stream, false))>
-<#assign domains = (tc.getStreamOutputDomains(stream))>
-<#list tc.getStreamOutputVariableNames(stream, false) as name>
-        output_dimensions = (${tc.join(dimensions[name], ",")})
-        output_domains = (${tc.join(domains[name], ",")})
-        outputs["${name}"] = output_domains + (output_dimensions,)
-</#list>
-</#list>
-        return outputs

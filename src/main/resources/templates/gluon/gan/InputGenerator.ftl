@@ -1,7 +1,9 @@
-        gen_inputs = gen_net.getInputs()
+        gen_inputs = self._net_creator_gen.getInputs()
+        dis_inputs = self._net_creator_dis.getInputs()
+
         qnet_outputs = []
         if self.use_qnet:
-            qnet_outputs = q_net.getOutputs()
+            qnet_outputs = self._net_creator_qnet.getOutputs()
             qnet_losses = []
         generators = {}
         if self.use_qnet:
@@ -68,14 +70,24 @@
                                                                 shape=(batch_size,)+domain[3], dtype=domain[0],
                                                                 ctx=mx_context), dtype="float32")
 
-        def create_generator_input():
-            expected_output_qnet = []
-            input_to_gen = []
+        def create_generator_input(cur_batch):
+            expected_qnet_output = []
+            gen_input = []
+
             for name in gen_inputs:
-                if not name in qnet_outputs:
-                    input_to_gen += [generators[name]()]
-            for name in qnet_outputs:
-                value = generators[name]()
-                expected_output_qnet += [value]
-                input_to_gen += [value]
-            return input_to_gen, expected_output_qnet
+                if name in traindata_to_index.keys():
+                    gen_input += [batch.data[traindata_to_index[name]].as_in_context(mx_context)]
+                elif name in qnet_outputs:
+                    value = generators[name]()
+                    expected_qnet_output += [value]
+                    gen_input += [value]
+                else:
+                    gen_input += [generators[name]()]
+            return gen_input, expected_qnet_output
+
+        def create_discriminator_input(cur_batch):
+            conditional_input = []
+            for name in gen_inputs:
+                if name in traindata_to_index.keys():
+                    conditional_input += [batch.data[traindata_to_index[name]].as_in_context(mx_context)]
+            return conditional_input
