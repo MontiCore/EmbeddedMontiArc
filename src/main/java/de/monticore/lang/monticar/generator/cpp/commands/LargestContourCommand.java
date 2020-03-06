@@ -84,8 +84,9 @@ public class LargestContourCommand extends MathCommand {
         return new Instruction() {
             @Override
             public String getTargetLanguageInstruction() {
-                return  "double maxArea = 0;\n" +
-                        "int maxAreaContourId = -1;\n" +
+                return  "    std::vector<cv::Point> singleContour;\n" +
+                        "    double maxArea = 0;\n" +
+                        "    int maxAreaContourId = 0;\n" +
                         "   for (int j = 0; j < contours.size(); j++) {\n" +
                         "       double newArea = cv::contourArea(contours.at(j));\n" +
                         "       if (newArea > maxArea) {\n" +
@@ -93,7 +94,7 @@ public class LargestContourCommand extends MathCommand {
                         "           maxAreaContourId = j;\n" +
                         "       }\n" +
                         "   }\n" +
-                        "   return contours.at(maxAreaContourId);\n";
+                        "   return contours.empty()? singleContour: contours.at(maxAreaContourId);\n";
             }
 
             @Override
