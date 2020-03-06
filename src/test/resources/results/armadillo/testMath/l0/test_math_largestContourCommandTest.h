@@ -16,8 +16,9 @@ void init()
 }
 std::vector<cv::Point> largestContour(const std::vector<std::vector<cv::Point>>& contours)
 {
-double maxArea = 0;
-int maxAreaContourId = -1;
+    std::vector<cv::Point> singleContour;
+    double maxArea = 0;
+    int maxAreaContourId = 0;
    for (int j = 0; j < contours.size(); j++) {
        double newArea = cv::contourArea(contours.at(j));
        if (newArea > maxArea) {
@@ -25,7 +26,7 @@ int maxAreaContourId = -1;
            maxAreaContourId = j;
        }
    }
-   return contours.at(maxAreaContourId);
+   return contours.empty()? singleContour: contours.at(maxAreaContourId);
 }
 void execute()
 {
