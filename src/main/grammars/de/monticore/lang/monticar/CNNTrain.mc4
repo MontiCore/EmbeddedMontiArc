@@ -256,13 +256,18 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     NoiseClipEntry implements ConfigEntry = name:"noise_clip" ":" value:NumberValue;
     PolicyDelayEntry implements ConfigEntry = name:"policy_delay" ":" value:IntegerValue;
 
-
     // GANs Extensions
+    KValueEntry implements ConfigEntry = name:"k_value" ":" value:IntegerValue;
+    GeneratorLossEntry implements ConfigEntry = name:"generator_loss" ":" value:StringValue;
+    ConditionalInputEntry implements ConfigEntry = name:"conditional_input" ":" value:StringValue;
+    NoiseInputEntry implements ConfigEntry = name:"noise_input" ":" value:StringValue;
+
     interface MultiParamValueMapConfigEntry extends ConfigEntry;
     interface MultiParamValueMapParamValue extends ConfigValue;
     interface MultiParamValueMapTupleValue extends ConfigValue;
 
     DiscriminatorNetworkEntry implements ConfigEntry = name:"discriminator_name" ":" value:ComponentNameValue;
+    DiscriminatorOptimizerEntry implements ConfigEntry = name:"discriminator_optimizer" ":" value:OptimizerValue;
     QNetworkEntry implements ConfigEntry = name:"qnet_name" ":" value:ComponentNameValue;
     PreprocessingEntry implements ConfigEntry = name:"preprocessing_name" ":" value:ComponentNameValue;
 

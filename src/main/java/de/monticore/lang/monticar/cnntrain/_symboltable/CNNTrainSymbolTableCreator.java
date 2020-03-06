@@ -111,9 +111,51 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
+    public void visit(ASTDiscriminatorOptimizerEntry node) {
+        OptimizerSymbol optimizerSymbol = new OptimizerSymbol(node.getValue().getName());
+        configuration.setCriticOptimizer(optimizerSymbol);
+        addToScopeAndLinkWithNode(optimizerSymbol, node);
+    }
+
+    @Override
+    public void endVisit(ASTDiscriminatorOptimizerEntry node) {
+        assert configuration.getCriticOptimizer().isPresent(): "Critic optimizer not present";
+        for (ASTEntry paramNode : node.getValue().getParamsList()) {
+            OptimizerParamSymbol param = new OptimizerParamSymbol();
+            OptimizerParamValueSymbol valueSymbol = (OptimizerParamValueSymbol)paramNode.getValue().getSymbolOpt().get();
+            param.setValue(valueSymbol);
+            configuration.getCriticOptimizer().get().getOptimizerParamMap().put(paramNode.getName(), param);
+        }
+    }
+
+    @Override
     public void endVisit(ASTNumEpochEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void endVisit(ASTKValueEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void endVisit(ASTGeneratorLossEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForString(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void endVisit(ASTConditionalInputEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForString(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
         configuration.getEntryMap().put(node.getName(), entry);
     }

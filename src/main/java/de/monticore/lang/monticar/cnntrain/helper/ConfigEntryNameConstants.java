@@ -52,4 +52,10 @@ public class ConfigEntryNameConstants {
     public static final String NOISE_DISTRIBUTION = "noise_distribution";
     public static final String CONSTRAINT_DISTRIBUTION = "constraint_distributions";
     public static final String CONSTRAINT_LOSS = "constraint_losses";
+    public static final String DISCRIMINATOR_OPTIMIZER = "discriminator_optimizer";
+    public static final String K_VALUE = "k_value";
+    public static final String GENERATOR_LOSS = "generator_loss";
+    public static final String CONDITIONAL_INPUT = "conditional_input";
+    public static final String NOISE_INPUT = "noise_input";
 }
+

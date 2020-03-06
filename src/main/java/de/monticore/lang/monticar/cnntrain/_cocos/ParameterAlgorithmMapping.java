@@ -123,7 +123,13 @@ class ParameterAlgorithmMapping {
             ASTQNetworkEntry.class,
             ASTNoiseDistributionEntry.class,
             ASTConstraintDistributionEntry.class,
-            ASTConstraintLossEntry.class
+            ASTConstraintLossEntry.class,
+            ASTDiscriminatorOptimizerEntry.class,
+            ASTKValueEntry.class,
+            ASTGeneratorLossEntry.class,
+            ASTConditionalInputEntry.class,
+            ASTNoiseInputEntry.class
+
     );
 
     ParameterAlgorithmMapping() {
