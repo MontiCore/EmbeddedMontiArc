@@ -47,6 +47,8 @@ class ParameterAlgorithmMapping {
         ASTLossEntry.class,
 		ASTLossWeightsEntry.class,
         ASTSparseLabelEntry.class,
+        ASTLossAxisEntry.class,
+        ASTBatchAxisEntry.class,
         ASTFromLogitsEntry.class,
         ASTIgnoreIndicesEntry.class,
         ASTMarginEntry.class,

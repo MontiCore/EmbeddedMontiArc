@@ -107,6 +107,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     SparseLabelEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry = name:"sparse_label" ":" value:BooleanValue;
     FromLogitsEntry implements SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, KullbackLeiblerEntry = name:"from_logits" ":" value:BooleanValue;
+    LossAxisEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry = name:"loss_axis" ":" value:IntegerValue;
+    BatchAxisEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry = name:"batch_axis" ":" value:IntegerValue;
     IgnoreIndicesEntry implements SoftmaxCrossEntropyIgnoreIndicesEntry = name:"ignore_indices" ":" value:IntegerValue;
     MarginEntry implements HingeEntry, SquaredHingeEntry = name:"margin" ":" value:NumberValue;
     LabelFormatEntry implements LogisticEntry = name:"label_format" ":" value:StringValue;
