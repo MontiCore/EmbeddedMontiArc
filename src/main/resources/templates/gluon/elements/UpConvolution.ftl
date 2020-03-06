@@ -8,6 +8,7 @@
                 kernel_size=(${tc.join(element.kernel, ",")}),
                 strides=(${tc.join(element.stride, ",")}),
                 padding=self.${element.name}padding,
+                groups=${element.groups?c},
                 use_bias=${element.noBias?string("False", "True")})
 <#include "OutputShape.ftl">
 <#elseif mode == "FORWARD_FUNCTION">
