@@ -31,6 +31,7 @@ public class SymtabTest extends AbstractSymtabTest {
         CNNTrainCompilationUnitSymbol a = symTab.<CNNTrainCompilationUnitSymbol>resolve(
                 "SimpleConfig2",
                 CNNTrainCompilationUnitSymbol.KIND).orElse(null);
+
         assertNotNull(a);
 
     }
