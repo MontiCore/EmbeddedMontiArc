@@ -92,6 +92,13 @@ public class ConfigurationData {
         return String.valueOf(getConfiguration().getEntry("log_period").getValue());
     }
 
+    public Boolean getLoadPretrained() {
+        if (!getConfiguration().getEntryMap().containsKey("load_pretrained")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("load_pretrained").getValue().getValue();
+    }
+
     public Boolean getNormalize() {
         if (!getConfiguration().getEntryMap().containsKey("normalize")) {
             return null;
@@ -156,7 +163,7 @@ public class ConfigurationData {
         } else{
             return mapToStrings;}
     }
-    
+
     public String getLossWeights() {
         if (!getConfiguration().getEntryMap().containsKey("loss_weights")) {
             return null;

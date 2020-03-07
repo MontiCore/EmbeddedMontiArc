@@ -40,12 +40,14 @@ public abstract class TrainParamSupportChecker implements CNNTrainVisitor {
 
     public void visit(ASTLoadCheckpointEntry node){}
 
+    public void visit(ASTLoadPretrainedEntry node){}
+
     public void visit(ASTNormalizeEntry node){}
 
     public void visit(ASTTrainContextEntry node){}
 
     public void visit(ASTEvalMetricEntry node){}
-	
+
     public void visit(ASTSGDOptimizer node){}
 
     public void visit(ASTAdamOptimizer node){}
