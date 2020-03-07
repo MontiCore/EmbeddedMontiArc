@@ -61,7 +61,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     interface AccIgnoreLabelEntry extends Entry;
     AxisAccIgnoreLabelEntry implements AccIgnoreLabelEntry = name:"axis" ":" value:IntegerValue;
-    IgnoreLabelAccIgnoreLabelEntry implements AccIgnoreLabelEntry = name:"ignore_label" ":" value:IntegerValue;
+    IgnoreLabelAccIgnoreLabelEntry implements AccIgnoreLabelEntry = name:"metric_ignore_label" ":" value:IntegerValue;
 
     EvalTrainEntry implements ConfigEntry = name:"eval_train" ":" value:BooleanValue;
 
@@ -100,6 +100,9 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     interface DiceEntry extends Entry;
     DiceLoss implements LossValue = name:"dice_loss" ("{" params:DiceEntry* "}")?;
 
+    interface SoftmaxCrossEntropyIgnoreLabelEntry extends Entry;
+    SoftmaxCrossEntropyIgnoreLabelLoss implements LossValue = name:"softmax_cross_entropy_ignore_label" ("{" params:SoftmaxCrossEntropyIgnoreLabelEntry* "}")?;
+
     SigmoidBinaryCrossEntropyLoss implements LossValue = name:"sigmoid_binary_cross_entropy" ("{" params:Entry* "}")?;
 
     interface HingeEntry extends Entry;
@@ -114,11 +117,12 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     interface KullbackLeiblerEntry extends Entry;
     KullbackLeiblerLoss implements LossValue = name:"kullback_leibler" ("{" params:KullbackLeiblerEntry* "}")?;
 
-    SparseLabelEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, DiceEntry = name:"sparse_label" ":" value:BooleanValue;
-    FromLogitsEntry implements SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, KullbackLeiblerEntry, DiceEntry = name:"from_logits" ":" value:BooleanValue;
-    LossAxisEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, DiceEntry = name:"loss_axis" ":" value:IntegerValue;
-    BatchAxisEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, DiceEntry = name:"batch_axis" ":" value:IntegerValue;
+    SparseLabelEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, DiceEntry, SoftmaxCrossEntropyIgnoreLabelEntry = name:"sparse_label" ":" value:BooleanValue;
+    FromLogitsEntry implements SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, KullbackLeiblerEntry, DiceEntry, SoftmaxCrossEntropyIgnoreLabelEntry = name:"from_logits" ":" value:BooleanValue;
+    LossAxisEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, DiceEntry,SoftmaxCrossEntropyIgnoreLabelEntry = name:"loss_axis" ":" value:IntegerValue;
+    BatchAxisEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, DiceEntry, SoftmaxCrossEntropyIgnoreLabelEntry = name:"batch_axis" ":" value:IntegerValue;
     IgnoreIndicesEntry implements SoftmaxCrossEntropyIgnoreIndicesEntry = name:"ignore_indices" ":" value:IntegerValue;
+    IgnoreLabelEntry implements SoftmaxCrossEntropyIgnoreLabelEntry = name:"loss_ignore_label" ":" value:IntegerValue;
     MarginEntry implements HingeEntry, SquaredHingeEntry = name:"margin" ":" value:NumberValue;
     LabelFormatEntry implements LogisticEntry = name:"label_format" ":" value:StringValue;
 

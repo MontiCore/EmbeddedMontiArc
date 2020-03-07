@@ -54,6 +54,7 @@ class ParameterAlgorithmMapping {
         ASTBatchAxisEntry.class,
         ASTFromLogitsEntry.class,
         ASTIgnoreIndicesEntry.class,
+        ASTIgnoreLabelEntry.class,
         ASTMarginEntry.class,
         ASTLabelFormatEntry.class,
         ASTRhoEntry.class,
