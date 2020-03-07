@@ -17,6 +17,7 @@ component SmallSeg<Z(2:oo) classes = 10>{
                 Pooling(pool_type="max", kernel=(2,2), stride=(2,2))
             }
 
+            // try filter sizes 4 for consistency
             data ->
             vgg_block(num_conv=2, filter=3, channels=64) ->
 

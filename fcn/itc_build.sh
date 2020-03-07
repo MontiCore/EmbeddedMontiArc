@@ -4,6 +4,7 @@
 #SBATCH --time=30
 #SBATCH --gres=gpu:1
 #SBATCH --output=log_itc.log
+#SBATCH --mem-per-cpu=10G
 
 ### your code goes here, the second part of the jobscript
 
