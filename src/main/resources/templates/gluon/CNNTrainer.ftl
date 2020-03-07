@@ -71,7 +71,7 @@ if __name__ == "__main__":
             'axis': ${config.evalMetric.axis},
 </#if>
 <#if (config.evalMetric.exclude)??>
-            'ignore_label': ${config.evalMetric.ignore_label},
+            'metric_ignore_label': ${config.evalMetric.metric_ignore_label},
 </#if>
         },
 </#if>
