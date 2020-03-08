@@ -1,12 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.util.lsp;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.lsp4j.TextDocumentIdentifier;
 import org.eclipse.lsp4j.TextDocumentItem;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -14,62 +17,64 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class ModelFileCache {
-    private Path modelBasePath;
-    private Path tmpModelPath;
+    private BiMap<Path, Path> modelBaseToTmpPath;
     private Set<String> fileExtensions;
-    private boolean initialized = false;
 
-    public ModelFileCache(Path modelBasePath, Set<String> fileExtensions) throws IOException {
-        this.modelBasePath = modelBasePath;
-        this.tmpModelPath = Files.createTempDirectory("model");
+    public ModelFileCache(@Nullable Path modelBasePath, Set<String> fileExtensions){
+        this.modelBaseToTmpPath = HashBiMap.create();
         this.fileExtensions = fileExtensions;
+        addModelBasePath(modelBasePath);
     }
 
-    public ModelFileCache(Set<String> fileExtensions) throws IOException {
+    public ModelFileCache(Set<String> fileExtensions){
         this(null, fileExtensions);
     }
 
-    public void setModelBasePath(@Nullable Path modelBasePath) {
-        if(!Objects.equals(modelBasePath, this.modelBasePath)) {
-            this.modelBasePath = modelBasePath;
-            try {
-                initialize();
-            } catch (IOException e) {
-                Log.error("Error initializing", e);
+    public void addModelBasePath(@Nullable Path modelBasePath) {
+        if (modelBasePath != null) {
+            Path normalized = modelBasePath.normalize();
+            if (!modelBaseToTmpPath.containsKey(normalized)) {
+                try {
+                    Path tempDir = Files.createTempDirectory("model");
+                    modelBaseToTmpPath.put(normalized, tempDir);
+                    initialize(normalized, tempDir);
+                } catch (IOException e) {
+                    Log.error("Error creating temp dir", e);
+                }
             }
         }
     }
 
-    public boolean isInitialized() {
-        return initialized;
-    }
-
-    public void setInitialized(boolean initialized) {
-        this.initialized = initialized;
-    }
-
     public Optional<Path> convertToTmpPath(Path path){
-        if(modelBasePath == null){
-            return Optional.ofNullable(path);
-        }
-
-        Optional<Path> rest = ModelPathHelper.getPathRelativeTo(modelBasePath, path);
-        return rest.map(tmpModelPath::resolve);
+        return convertPaths(path, modelBaseToTmpPath);
     }
 
     public Optional<Path> fromTmpPath(Path path){
-        if(modelBasePath == null){
-            return Optional.ofNullable(path);
+        return convertPaths(path, modelBaseToTmpPath.inverse());
+    }
+
+    private Optional<Path> convertPaths(Path path, Map<Path, Path> pathMap){
+        Path normalize = path.normalize();
+        Optional<Path> bestBasePath = getMostSpecificPathContaining(normalize, pathMap.keySet());
+
+        if(bestBasePath.isPresent()) {
+            Path tmpModelPath = pathMap.get(bestBasePath.get());
+            Optional<Path> rest = bestBasePath.flatMap(p -> ModelPathHelper.getPathRelativeTo(p, path));
+            return rest.map(tmpModelPath::resolve);
         }
 
-        Optional<Path> rest = ModelPathHelper.getPathRelativeTo(tmpModelPath, path);
-        return rest.map(modelBasePath::resolve);
+        return Optional.empty();
+    }
+
+    @NotNull
+    private Optional<Path> getMostSpecificPathContaining(@NotNull Path path, @NotNull Collection<Path> candidatePaths) {
+        return candidatePaths
+                    .stream()
+                    .filter(path::startsWith)
+                    .max(Comparator.comparing(Path::getNameCount));
     }
 
 
@@ -82,7 +87,6 @@ public class ModelFileCache {
         }else{
             Log.debug("Can not find tmp path for " + path, "files");
         }
-
     }
 
     public Optional<String> getCachedContentFor(String uriString){
@@ -112,25 +116,21 @@ public class ModelFileCache {
         return getCachedContentFor(textDocumentItem.getUri());
     }
 
-    public Path getTmpModelPath(){
-        return tmpModelPath;
-    }
-
-    public void initialize() throws IOException {
-        if(modelBasePath != null) {
-            FileUtils.copyDirectory(modelBasePath.toFile(), tmpModelPath.toFile(), file -> {
-                if (file.isDirectory()) {
-                    return true;
-                }
-                String extension = FilenameUtils.getExtension(file.getName());
-                return fileExtensions.contains(extension);
-            });
-
-            initialized = true;
-        }else{
-            initialized = false;
+    public Path getTmpModelPath(Path basePath){
+        Optional<Path> mostSpecificPathContaining = getMostSpecificPathContaining(basePath, modelBaseToTmpPath.keySet());
+        if(mostSpecificPathContaining.isPresent()){
+            return modelBaseToTmpPath.get(mostSpecificPathContaining.get());
         }
+        return basePath;
     }
 
-
+    public void initialize(@NotNull Path modelBasePath, Path tmpModelPath) throws IOException {
+        FileUtils.copyDirectory(modelBasePath.toFile(), tmpModelPath.toFile(), file -> {
+            if (file.isDirectory()) {
+                return true;
+            }
+            String extension = FilenameUtils.getExtension(file.getName());
+            return fileExtensions.contains(extension);
+        });
+    }
 }

@@ -16,6 +16,8 @@ public class DiagnosticsLog extends Log {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
     private PrintWriter printWriter;
     static private boolean logToStdout = false;
+    private static boolean debugEnabled = false;
+    private static boolean traceEnabled = false;
 
     static public void setLogToStdout(boolean logToStdout) {
         DiagnosticsLog.logToStdout = logToStdout;
@@ -24,10 +26,12 @@ public class DiagnosticsLog extends Log {
 
     public static void setDebug(boolean debug){
         log.isDEBUG = debug;
+        debugEnabled = debug;
     }
 
     public static void setTrace(boolean trace){
         log.isTRACE = trace;
+        traceEnabled = trace;
     }
 
     public static void setInfo(boolean info){
@@ -42,8 +46,8 @@ public class DiagnosticsLog extends Log {
     public static void init() {
         DiagnosticsLog l = new DiagnosticsLog();
         l.quickFail = false;
-        l.isDEBUG = false;
-        l.isTRACE = false;
+        l.isDEBUG = debugEnabled;
+        l.isTRACE = traceEnabled;
         try {
             Path path = Files.createTempFile("DiagnosticsLog", ".txt");
             l.printWriter = new PrintWriter(new FileWriter(path.toFile(), true));

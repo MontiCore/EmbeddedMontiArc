@@ -40,10 +40,6 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
         addCompletionHandler(new DefaultCompletionHandler(this, getLookaheadProvider()));
     }
 
-    public void setModelBasePath(Path modelBasePath) {
-        getModelFileCache().setModelBasePath(modelBasePath);
-    }
-
     @NotNull
     public ModelFileCache getModelFileCache() {
         return modelFileCache;
@@ -71,7 +67,7 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
         try {
             Optional<ASTType> astOpt = parse(FileUtils.readFileToString(sourcePath.toFile(), StandardCharsets.UTF_8), sourcePath.toString());
             if (astOpt.isPresent()) {
-                return getSymbol(astOpt.get());
+                return getSymbol(astOpt.get(), sourcePath);
             }
         } catch (IOException e) {
             Log.error("IOError", e);
@@ -82,7 +78,11 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
     public Optional<SymType> getSymbolForCached(String uriString) {
         Optional<ASTType> astOpt = parseCached(uriString);
         if (astOpt.isPresent()) {
-            return getSymbol(astOpt.get());
+            try {
+                return getSymbol(astOpt.get(), ModelPathHelper.pathFromUriString(uriString));
+            } catch (URISyntaxException e) {
+                Log.error("Error parsing Uri", e);
+            }
         }
 
         return Optional.empty();
@@ -96,8 +96,8 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
         return getSymbolForCached(textDocumentItem.getUri());
     }
 
-    private Optional<SymType> getSymbol(ASTType ast) {
-        Scope symtab = this.createSymTab((this.getModelFileCache()).getTmpModelPath());
+    private Optional<SymType> getSymbol(ASTType ast, Path basePath) {
+        Scope symtab = this.createSymTab((this.getModelFileCache()).getTmpModelPath(basePath));
         Log.debug("Created symtab", "default");
         DiagnosticsLog.clearAndUse();
         String fullSymbolName = this.getFullSymbolName(ast);
@@ -107,41 +107,22 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
     @Override
     protected void checkCoCos(Path sourcePath, ASTType node) {
         super.checkCoCos(sourcePath, node);
-        updateModelBasePath(sourcePath, getPackageList(node));
-            Scope symtab = createSymTab(getModelFileCache().getTmpModelPath());
-            Log.debug("Created symtab", "default");
-            DiagnosticsLog.clearAndUse();
-            String fullSymbolName = getFullSymbolName(node);
-            Optional<SymType> symOpt = symtab.resolve(fullSymbolName, getSymbolKind());
-            if (symOpt.isPresent()) {
-                Log.debug("Resolved symbol", "default");
-                SymType sym = symOpt.get();
-                doCheckSymbolCoCos(sourcePath, sym);
-            } else {
-                Log.error("Can not resolve symbol " + fullSymbolName);
-            }
-    }
-
-    protected void updateModelBasePath(Path sourcePath, List<String> packageList) {
-        Optional<Path> basePathOpt = ModelPathHelper.getBasePath(sourcePath, packageList);
-        if (basePathOpt.isPresent()) {
-            setModelBasePath(basePathOpt.get());
-            Log.info("modelBasePath: " + basePathOpt.get().toString(), "debug");
-            try {
-                copyModelOnce();
-            } catch (IOException e) {
-                setModelBasePath(null);
-                Log.error("Error copying the model to tmp dir", e);
-            }
-
+        addModelBasePath(sourcePath, getPackageList(node));
+        Optional<SymType> symOpt = getSymbol(node, sourcePath);
+        if (symOpt.isPresent()) {
+            Log.debug("Resolved symbol", "default");
+            SymType sym = symOpt.get();
+            doCheckSymbolCoCos(sourcePath, sym);
         } else {
-            setModelBasePath(null);
+            Log.error("Can not resolve symbol " + getFullSymbolName(node));
         }
     }
 
-    protected void copyModelOnce() throws IOException {
-        if(!modelFileCache.isInitialized()) {
-            modelFileCache.initialize();
+    protected void addModelBasePath(Path sourcePath, List<String> packageList) {
+        Optional<Path> basePathOpt = ModelPathHelper.getBasePath(sourcePath, packageList);
+        if (basePathOpt.isPresent()) {
+            getModelFileCache().addModelBasePath(basePathOpt.get());
+            Log.info("modelBasePath: " + basePathOpt.get().toString(), "debug");
         }
     }
 
