@@ -22,9 +22,9 @@ class EmamDocumentServiceTest extends AbstractTextDocumentServiceTest {
     public static final String BASE_PATH = "src/test/resources/emam";
 
     private EmamDocumentService getDocumentService(String basePath) throws IOException {
-        EmamDocumentService res = new EmamDocumentService();
+        ModelFileCache modelFileCache = new ModelFileCache(Paths.get(basePath).toAbsolutePath(), Collections.singleton("emam"));
+        EmamDocumentService res = new EmamDocumentService(modelFileCache);
         res.setClient(getMockClient());
-        res.setModelFileCache(new ModelFileCache(Paths.get(basePath).toAbsolutePath() , Collections.singleton(".emam")));
         return res;
     }
 

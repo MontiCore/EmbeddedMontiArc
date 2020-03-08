@@ -15,8 +15,11 @@ import de.monticore.lang.monticar.struct.coco.DefaultStructCoCoChecker;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.util.lsp.ModelFileCache;
 import de.monticore.util.lsp.MontiCoreDocumentServiceWithSymbol;
+import de.monticore.util.lsp.features.completion.LookaheadProvider;
 import de.se_rwth.commons.logging.Log;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -29,6 +32,10 @@ import java.util.stream.Collectors;
 public class StructDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTStructCompilationUnit, StructSymbol> {
     private StructParser parser = new StructParser();
     private ModelingLanguageFamily modelFamily;
+
+    public StructDocumentService(@NotNull ModelFileCache modelFileCache) {
+        super(modelFileCache);
+    }
 
     @Override
     protected void doCheckSymbolCoCos(Path path, StructSymbol structSymbol) {
@@ -72,6 +79,11 @@ public class StructDocumentService extends MontiCoreDocumentServiceWithSymbol<AS
     @Override
     protected List<String> getPackageList(ASTStructCompilationUnit astStructCompilationUnit) {
         return astStructCompilationUnit.getPackageList();
+    }
+
+    @Override
+    protected LookaheadProvider getLookaheadProvider() {
+        return null;
     }
 
     @Override

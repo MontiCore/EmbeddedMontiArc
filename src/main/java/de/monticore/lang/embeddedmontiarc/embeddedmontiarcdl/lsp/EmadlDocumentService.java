@@ -6,21 +6,22 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-
-import de.monticore.lang.monticar.emadl._parser.EMADLParser;
-import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
-import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
-
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
+import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
+import de.monticore.lang.monticar.emadl._parser.EMADLParser;
+import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.util.lsp.ModelFileCache;
 import de.monticore.util.lsp.MontiCoreDocumentServiceWithSymbol;
+import de.monticore.util.lsp.features.completion.LookaheadProvider;
 import de.se_rwth.commons.logging.Log;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -33,6 +34,10 @@ import java.util.stream.Collectors;
 public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEMACompilationUnit, EMAComponentSymbol> {
     private EMADLParser parser = new EMADLParser();
     private ModelingLanguageFamily modelFamily;
+
+    public EmadlDocumentService(@NotNull ModelFileCache modelFileCache) {
+        super(modelFileCache);
+    }
 
     @Override
     public String getLanguageServerIdentifier() {
@@ -53,6 +58,11 @@ public class EmadlDocumentService extends MontiCoreDocumentServiceWithSymbol<AST
     @Override
     protected List<String> getPackageList(ASTEMACompilationUnit node) {
         return node.getPackageList();
+    }
+
+    @Override
+    protected LookaheadProvider getLookaheadProvider() {
+        return null;
     }
 
     @Override

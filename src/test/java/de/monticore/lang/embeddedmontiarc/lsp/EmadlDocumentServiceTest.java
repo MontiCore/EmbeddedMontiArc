@@ -22,9 +22,9 @@ class EmadlDocumentServiceTest extends AbstractTextDocumentServiceTest {
     public static final String BASE_PATH = "src/test/resources/emadl";
 
     private EmadlDocumentService getDocumentService(String basePath) throws IOException {
-        EmadlDocumentService res = new EmadlDocumentService();
+        ModelFileCache modelFileCache = new ModelFileCache(Paths.get(basePath).toAbsolutePath(), Collections.singleton("emadl"));
+        EmadlDocumentService res = new EmadlDocumentService(modelFileCache);
         res.setClient(getMockClient());
-        res.setModelFileCache(new ModelFileCache(Paths.get(basePath).toAbsolutePath() , Collections.singleton(".emadl")));
         return res;
     }
 
@@ -57,7 +57,9 @@ class EmadlDocumentServiceTest extends AbstractTextDocumentServiceTest {
     @Test
     public void testValidDidOpenEvent() throws IOException {
         EmadlDocumentService documentService = getDocumentService(BASE_PATH);
-
+        DiagnosticsLog.init();
+        DiagnosticsLog.setDebug(true);
+        DiagnosticsLog.setTrace(true);
         File file = new File("src/test/resources/emadl/valid/SimpleComponent.emadl");
         documentService.didOpen(createDidOpenEvent(file, "EmbeddedMontiArcDL"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());

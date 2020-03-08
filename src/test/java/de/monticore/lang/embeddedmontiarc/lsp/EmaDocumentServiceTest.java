@@ -6,7 +6,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.nio.file.Paths;
 import java.util.Collections;
 
@@ -17,10 +19,10 @@ class EmaDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
     public static final String BASE_PATH = "src/test/resources/ema";
 
-    private EmaDocumentService getDocumentService(String basePath) throws IOException {
-        EmaDocumentService res = new EmaDocumentService();
+    private EmaDocumentService getDocumentService(String basePath){
+        ModelFileCache modelFileCache = new ModelFileCache(Paths.get(basePath).toAbsolutePath(), Collections.singleton("ema"));
+        EmaDocumentService res = new EmaDocumentService(modelFileCache);
         res.setClient(getMockClient());
-        res.setModelFileCache(new ModelFileCache(Paths.get(basePath).toAbsolutePath() , Collections.singleton(".ema")));
         return res;
     }
 

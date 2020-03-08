@@ -22,7 +22,7 @@ class CnnaDocumentServiceTest extends AbstractTextDocumentServiceTest {
     public static final String BASE_PATH = "src/test/resources/cnna";
 
     private CnnaDocumentService getDocumentService(String basePath) throws IOException {
-        CnnaDocumentService res = new CnnaDocumentService();
+        CnnaDocumentService res = new CnnaDocumentService(new ModelFileCache(Collections.singleton("cnna")));
         res.setClient(getMockClient());
         res.setModelFileCache(new ModelFileCache(Paths.get(basePath).toAbsolutePath() , Collections.singleton(".cnna")));
         return res;

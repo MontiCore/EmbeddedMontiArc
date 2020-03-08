@@ -22,9 +22,9 @@ class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
     public static final String BASE_PATH = "src/test/resources/emadl";
 
     private CnntDocumentService getDocumentService(String basePath) throws IOException {
-        CnntDocumentService res = new CnntDocumentService();
+        ModelFileCache modelFileCache = new ModelFileCache(Paths.get(basePath).toAbsolutePath(), Collections.singleton("cnnt"));
+        CnntDocumentService res = new CnntDocumentService(modelFileCache);
         res.setClient(getMockClient());
-        res.setModelFileCache(new ModelFileCache(Paths.get(basePath).toAbsolutePath() , Collections.singleton(".cnnt")));
         return res;
     }
 

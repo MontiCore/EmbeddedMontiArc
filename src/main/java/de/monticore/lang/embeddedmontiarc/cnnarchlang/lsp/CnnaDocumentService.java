@@ -3,41 +3,43 @@ package de.monticore.lang.embeddedmontiarc.cnnarchlang.lsp;
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchCompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-
-import de.monticore.lang.monticar.cnnarch._parser.CNNArchParser;
-import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
-import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCoCoChecker;
-import de.monticore.lang.monticar.cnnarch._cocos.CNNArchSymbolCoCoChecker;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
-
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
-
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
+import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchCompilationUnit;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCoCoChecker;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchSymbolCoCoChecker;
+import de.monticore.lang.monticar.cnnarch._parser.CNNArchParser;
+import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
-
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.util.lsp.ModelFileCache;
 import de.monticore.util.lsp.MontiCoreDocumentServiceWithSymbol;
+import de.monticore.util.lsp.features.completion.LookaheadProvider;
 import de.se_rwth.commons.logging.Log;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
 
 public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTCNNArchCompilationUnit, CNNArchCompilationUnitSymbol> {
     private CNNArchParser parser = new CNNArchParser();
     private ModelingLanguageFamily modelFamily;
+
+    public CnnaDocumentService(@NotNull ModelFileCache modelFileCache) {
+        super(modelFileCache);
+    }
 
     @Override
     public String getLanguageServerIdentifier() {
@@ -59,6 +61,11 @@ public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
     @Override
     protected List<String> getPackageList(ASTCNNArchCompilationUnit node) {
         return new ArrayList<>();
+    }
+
+    @Override
+    protected LookaheadProvider getLookaheadProvider() {
+        return null;
     }
 
     @Override
