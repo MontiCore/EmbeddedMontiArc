@@ -4,8 +4,14 @@ configuration SmallSeg{
      batch_size:32
      normalize:false
      context:gpu
-     load_checkpoint:true
-     loss:dice_loss{
+     eval_metric:accuracy_ignore_label{
+        axis:1
+        metric_ignore_label:255
+     }
+     load_checkpoint:false
+     load_pretrained:true
+     loss:softmax_cross_entropy_ignore_label{
+        loss_ignore_label:255
         loss_axis:1
      }
      optimizer:sgd{
