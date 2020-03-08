@@ -12,7 +12,6 @@
     <!-- Dependency versions -->
     <cnn-arch.version>0.3.3-SNAPSHOT</cnn-arch.version>
     <embedded-montiarc-deeplearning.version>0.2.10-SNAPSHOT</embedded-montiarc-deeplearning.version>
-    <monticore-lsp-commons.version>1.2-SNAPSHOT</monticore-lsp-commons.version>
     <ema-lsp.version>1.4-SNAPSHOT</ema-lsp.version>
 
     <!-- misc -->
@@ -22,11 +21,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>de.monticore.util</groupId>
-      <artifactId>monticore-lsp-commons</artifactId>
-      <version>${monticore-lsp-commons.version}</version>
-    </dependency>
     <dependency>
       <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>ema-lsp</artifactId>
