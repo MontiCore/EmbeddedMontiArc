@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-configuration SimpleConfigValid{
+configuration SimpleComponent{
     num_epoch:1
     batch_size:64
     normalize:true

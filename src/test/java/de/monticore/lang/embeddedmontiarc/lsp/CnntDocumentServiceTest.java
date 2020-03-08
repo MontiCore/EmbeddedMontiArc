@@ -19,12 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
-    public static final String BASE_PATH = "src/test/resources/cnnt";
+    public static final String BASE_PATH = "src/test/resources/emadl";
 
     private CnntDocumentService getDocumentService(String basePath) throws IOException {
-        CnntDocumentService res = new CnntDocumentService();
+        ModelFileCache modelFileCache = new ModelFileCache(Paths.get(basePath).toAbsolutePath(), Collections.singleton("cnnt"));
+        CnntDocumentService res = new CnntDocumentService(modelFileCache);
         res.setClient(getMockClient());
-        res.setModelFileCache(new ModelFileCache(Paths.get(basePath).toAbsolutePath() , Collections.singleton(".cnnt")));
         return res;
     }
 
@@ -40,7 +40,7 @@ class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
     }
     @Test
     public void testValidSyntax() throws InterruptedException, ExecutionException, IOException {
-        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+        CnntDocumentService documentService = getDocumentService(BASE_PATH + "/valid");
         DiagnosticsLog.setLogToStdout(true);
         documentService.doParse(new StringReader("configuration SimpleConfigValid{}"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());
@@ -48,24 +48,24 @@ class CnntDocumentServiceTest extends AbstractTextDocumentServiceTest {
 
     @Test
     public void testInvalidSyntax() throws InterruptedException, ExecutionException, IOException {
-        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+        CnntDocumentService documentService = getDocumentService(BASE_PATH + "/invalid");
         documentService.doParse(new StringReader("confiuration SimpleConfigInvalid{}"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }
 
     @Test
     public void testValidDidOpenEvent() throws IOException {
-        CnntDocumentService documentService = getDocumentService(BASE_PATH);
+        CnntDocumentService documentService = getDocumentService(BASE_PATH + "/valid");
 
-        File file = new File("src/test/resources/cnnt/valid/SimpleConfig.cnnt");
+        File file = new File("src/test/resources/emadl/valid/SimpleComponent.cnnt");
         documentService.didOpen(createDidOpenEvent(file, "CNNTrainLang"));
         assertTrue(DiagnosticsLog.getFindings().isEmpty());
     }
 
     @Test
     public void testInvalidDidOpenEvent() throws IOException {
-        CnntDocumentService documentService = getDocumentService(BASE_PATH);
-        File file = new File("src/test/resources/cnnt/invalid/SimpleConfig.cnnt");
+        CnntDocumentService documentService = getDocumentService(BASE_PATH + "/invalid");
+        File file = new File("src/test/resources/emadl/invalid/SimpleComponent.cnnt");
         documentService.didOpen(createDidOpenEvent(file, "CNNTrainLang"));
         assertFalse(DiagnosticsLog.getFindings().isEmpty());
     }

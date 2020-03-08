@@ -18,8 +18,11 @@ import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.util.lsp.ModelFileCache;
 import de.monticore.util.lsp.MontiCoreDocumentServiceWithSymbol;
+import de.monticore.util.lsp.features.completion.LookaheadProvider;
 import de.se_rwth.commons.logging.Log;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -32,6 +35,10 @@ import java.util.stream.Collectors;
 public class EmamDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTEMACompilationUnit, EMAComponentSymbol> {
     private EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
     private ModelingLanguageFamily modelFamily;
+
+    public EmamDocumentService(@NotNull ModelFileCache modelFileCache) {
+        super(modelFileCache);
+    }
 
     @Override
     public String getLanguageServerIdentifier() {
@@ -52,6 +59,11 @@ public class EmamDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTE
     @Override
     protected List<String> getPackageList(ASTEMACompilationUnit node) {
         return node.getPackageList();
+    }
+
+    @Override
+    protected LookaheadProvider getLookaheadProvider() {
+        return null;
     }
 
     @Override

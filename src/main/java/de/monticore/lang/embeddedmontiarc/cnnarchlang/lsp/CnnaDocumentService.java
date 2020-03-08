@@ -1,15 +1,17 @@
-package de.monticore.lang.embeddedmontiarc.cnntrainlang.lsp;
+package de.monticore.lang.embeddedmontiarc.cnnarchlang.lsp;
 
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
-import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainCompilationUnit;
-import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
-import de.monticore.lang.monticar.cnntrain._parser.CNNTrainParser;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
+import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchCompilationUnit;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCoCoChecker;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchSymbolCoCoChecker;
+import de.monticore.lang.monticar.cnnarch._parser.CNNArchParser;
+import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
@@ -31,23 +33,24 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTCNNTrainCompilationUnit, CNNTrainCompilationUnitSymbol> {
-    private CNNTrainParser parser = new CNNTrainParser();
+public class CnnaDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTCNNArchCompilationUnit, CNNArchCompilationUnitSymbol> {
+    private CNNArchParser parser = new CNNArchParser();
     private ModelingLanguageFamily modelFamily;
 
-    public CnntDocumentService(@NotNull ModelFileCache modelFileCache) {
+    public CnnaDocumentService(@NotNull ModelFileCache modelFileCache) {
         super(modelFileCache);
     }
 
     @Override
     public String getLanguageServerIdentifier() {
-        return "CNNTrainLang Parser";
+        return "CNNArchLang Parser";
     }
 
     @Override
-    public Optional<ASTCNNTrainCompilationUnit> doParse(StringReader fullText) {
+    public Optional<ASTCNNArchCompilationUnit> doParse(StringReader fullText) {
         Log.info("Parsing!", "default");
         try {
+            // of type ASTCNNArchCompilationUnit
             return parser.parse(fullText);
         } catch (IOException e) {
             Log.error("Error parsing model: ", e);
@@ -56,7 +59,7 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
     }
 
     @Override
-    protected List<String> getPackageList(ASTCNNTrainCompilationUnit node) {
+    protected List<String> getPackageList(ASTCNNArchCompilationUnit node) {
         return new ArrayList<>();
     }
 
@@ -66,22 +69,39 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
     }
 
     @Override
-    protected String getSymbolName(ASTCNNTrainCompilationUnit node) {
+    protected String getSymbolName(ASTCNNArchCompilationUnit node) {
         return node.getName();
     }
 
     @Override
-    protected String getFullSymbolName(ASTCNNTrainCompilationUnit node) {
+    protected String getFullSymbolName(ASTCNNArchCompilationUnit node) {
         return getSymbolName(node);
     }
 
     @Override
-    protected void doCheckSymbolCoCos(Path sourcePath, CNNTrainCompilationUnitSymbol sym) {
-        // CNNTrainCocos checker = new CNNTrainCocos();
-        // checker.checkAll((CNNTrainCompilationUnitSymbol) sym.getAstNode().get());
-        // CNNTrainCompilationUnitSymbol comp = (CNNTrainCompilationUnitSymbol) sym.getAstNode().get();
-        ASTCNNTrainCompilationUnit astComp = (ASTCNNTrainCompilationUnit) sym.getAstNode().get();
-        CNNTrainCocos.createChecker().checkAll(astComp);
+    protected void doCheckSymbolCoCos(Path sourcePath, CNNArchCompilationUnitSymbol sym) {
+        // write doCheckSymbolCoCos
+        // /home/treiber/ema/languages/CNNArchLang/src/test/java/de/monticore/lang/monticar/cnnarch/cocos/AbstractCoCoTest.java
+
+        CNNArchCoCoChecker astChecker = CNNArchCocos.createASTChecker();
+        CNNArchSymbolCoCoChecker preResolveCocos = CNNArchCocos.createCNNArchPreResolveSymbolChecker();
+        CNNArchSymbolCoCoChecker postResolveCocos = CNNArchCocos.createCNNArchPostResolveSymbolChecker();
+
+        int findings = Log.getFindings().size();
+
+        astChecker.checkAll((ASTCNNArchCompilationUnit) sym.getAstNode().get());
+        System.out.print((ASTCNNArchCompilationUnit) sym.getAstNode().get());
+
+        if (findings == Log.getFindings().size()) {
+            preResolveCocos.checkAll(sym);
+            if (findings == Log.getFindings().size()) {
+                sym.getArchitecture().resolve();
+                if (findings == Log.getFindings().size()) {
+                    postResolveCocos.checkAll(sym);
+                }
+            }
+        }
+
         if (de.monticore.lang.math.LogConfig.getFindings().isEmpty()) {
             Log.info("No CoCos invalid", "default");
         } else {
@@ -96,7 +116,7 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
 
     @Override
     protected SymbolKind getSymbolKind() {
-        return CNNTrainCompilationUnitSymbol.KIND;
+        return CNNArchCompilationUnitSymbol.KIND;
     }
 
     @Override
@@ -117,8 +137,8 @@ public class CnntDocumentService extends MontiCoreDocumentServiceWithSymbol<ASTC
     protected ModelingLanguageFamily getModelingLanguageFamily() {
         if(modelFamily == null) {
             modelFamily = new ModelingLanguageFamily();
-            CNNTrainLanguage montiArcCNNTrainLanguage = new CNNTrainLanguage();
-            modelFamily.addModelingLanguage(montiArcCNNTrainLanguage);
+            CNNArchLanguage montiArcCNNArchLanguage = new CNNArchLanguage();
+            modelFamily.addModelingLanguage(montiArcCNNArchLanguage);
             modelFamily.addModelingLanguage(new StreamUnitsLanguage());
             modelFamily.addModelingLanguage(new StructLanguage());
             modelFamily.addModelingLanguage(new EnumLangLanguage());
