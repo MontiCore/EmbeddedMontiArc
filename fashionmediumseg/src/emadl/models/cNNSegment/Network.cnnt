@@ -4,7 +4,8 @@ configuration Network{
      batch_size:32
      normalize:false
      context:gpu
-     load_checkpoint:true
+     load_checkpoint:false
+     load_pretrained:true
      loss:softmax_cross_entropy{
         loss_axis:1
      }

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 configuration Unet{
      num_epoch:1
-     batch_size:8
+     batch_size:4
      normalize:false
      context:gpu
      load_checkpoint:true

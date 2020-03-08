@@ -5,8 +5,8 @@ component Connector {
     ports in Z(0:255)^{1, 28, 28} image,
           out Z(0:255)^{1, 28, 28} segmented;
 
-    instance SmallSeg<10> predictor;
-    instance DeOneHotImage<10,28,28> deonehot;
+    instance SmallSeg<11> predictor;
+    instance DeOneHotImage<11,28,28> deonehot;
 
     connect image -> predictor.data;
 

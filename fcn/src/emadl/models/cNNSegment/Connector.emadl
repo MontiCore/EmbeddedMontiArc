@@ -5,7 +5,8 @@ component Connector {
     ports in Q(0:1)^{3, 480, 480} image,
           out Z(0:255)^{480,480} segmented;
 
-    instance FCN<21> predictor;
+    //instance FCN<21> predictor;
+    instance ResNet50<21> predictor;
     instance DeOneHotImage <21,480,480> deonehot;
     //instance Preprocess <sth, sth> preprocess;
 
