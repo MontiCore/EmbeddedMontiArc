@@ -16,7 +16,8 @@
     "onLanguage:Stream",
     "onLanguage:EmbeddedMontiArc",
     "onLanguage:EmbeddedMontiArcDL",
-    "onLanguage:CNNTrainLang"
+    "onLanguage:CNNTrainLang",
+    "onLanguage:CNNArchLang"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -66,13 +67,19 @@
         "path": "syntax/gen/CNNTrainLang.gen.tmGrammar.json"
       },
       {
+        "language": "CNNArchLang",
+        "scopeName": "keywords.CNNArchLang",
+        "path": "syntax/gen/CNNArchLang.gen.tmGrammar.json"
+      },
+      {
         "injectTo": [
           "keywords.EmbeddedMontiArcMath",
           "keywords.Struct",
           "keywords.Stream",
           "keywords.EmbeddedMontiArc",
           "keywords.EmbeddedMontiArcDL",
-          "keywords.CNNTrainLang"
+          "keywords.CNNTrainLang",
+          "keywords.CNNArchLang"
         ],
         "scopeName": "monticore.comment",
         "path": "./syntax/comment.tmGrammar.json"
@@ -113,6 +120,12 @@
         "id": "CNNTrainLang",
         "extensions": [
           ".cnnt"
+        ]
+      },
+      {
+        "id": "CNNArchLang",
+        "extensions": [
+          ".cnna"
         ]
       }
     ]
