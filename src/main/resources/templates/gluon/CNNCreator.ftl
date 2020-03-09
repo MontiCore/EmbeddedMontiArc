@@ -74,7 +74,7 @@ class ${tc.fileNameWithoutEnding}:
                                 lastEpoch = epoch
                                 param_file = file
                     logging.info("Loading pretrained weights: " + self._weights_dir_ + param_file)
-                    network.load_parameters(self._weights_dir_ + param_file)
+                    network.load_parameters(self._weights_dir_ + param_file, allow_missing=True, ignore_extra=True)
                 else:
                     logging.info("No pretrained weights available at: " + self._weights_dir_ + param_file)
 
