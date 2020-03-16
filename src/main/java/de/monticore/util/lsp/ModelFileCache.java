@@ -26,7 +26,9 @@ public class ModelFileCache {
     public ModelFileCache(@Nullable Path modelBasePath, Set<String> fileExtensions){
         this.modelBaseToTmpPath = HashBiMap.create();
         this.fileExtensions = fileExtensions;
-        addModelBasePath(modelBasePath);
+        if(modelBasePath != null){
+            addModelBasePath(modelBasePath);
+        }
     }
 
     public ModelFileCache(Set<String> fileExtensions){
