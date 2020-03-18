@@ -87,53 +87,116 @@ class CustomGRU(gluon.HybridBlock):
         output, [state0] = self.gru(data, [F.swapaxes(state0, 0, 1)])
         return output, F.swapaxes(state0, 0, 1)
 
-#Large memory layer
-class LargeMemory(gluon.HybridBlock):
-    def __init__(self, numSubKeys, querrySize, k, **kwargs):
-        super(LargeMemory, self).__init__(**kwargs)
+#Memory layer
+class Memory(gluon.HybridBlock):
+    def __init__(self, sub_key_size, query_size, act_query, k, num_heads, **kwargs):
+        super(Memory, self).__init__(**kwargs)
         with self.name_scope():
-            self.batchNorm = gluon.nn.BatchNorm()
-            self.querryNet = gluon.nn.Dense(units=querrySize)  #TODO: (Maybe) maybe make an (nonlinear) multilayer optional
-            
-            subKeySize = (numSubKeys, querrySize/2)
-            numValues = numSubKeys * numSubKeys
-            self.subKeys1 = self.params.get("subKeys1", shape=subKeySize)
-            self.subKeys2 = self.params.get("subKeys2", shape=subKeySize)
-            self.values = self.params.get("values", shape = (numValues, querrySize))
+
+            assert sub_key_size >= k
+
+            if isinstance(query_size, int):
+                sub_key_shape = (sub_key_size, query_size / 2)
+                values_shape = (sub_key_size * sub_key_size, query_size)
+            else:
+                sub_key_shape = (sub_key_size, query_size[-1] / 2)
+                values_shape = (sub_key_size * sub_key_size, query_size[-1])
+
+            self.sub_keys1 = self.params.get("sub_keys1", shape=sub_key_shape)
+            self.sub_keys2 = self.params.get("sub_keys2", shape=sub_key_shape)
+            self.values = self.params.get("values", shape=values_shape)
 
             self.k = k
 
-    def hybrid_forward(self, F, x, subKeys1, subKeys2, values):
-        x = self.batchNorm(x)
-        q = self.querryNet(x)
-        qSplit = F.split(q, num_outputs=2) #TODO: (Maybe) make num outputs a parameter (number of sub keys)
-        q1Dot = F.dot(qSplit[0], subKeys1, transpose_a=True)
-        q2Dot = F.dot(qSplit[1], subKeys2, transpose_a=True)	    
-        I1 = F.topk(q1Dot, k=self.k, ret_typ="indices")
-        I2 = F.topk(q2Dot, k=self.k, ret_typ="indices")
+            self.num_heads = num_heads
 
-        #Calculate cross product for keys at indices I1 and I2
-        k1 = F.take(subKeys1, I1)
-        k2 = F.take(subKeys2, I2)
-        cCross = F.concat(k1[0], k2[0])
-        for i in range(self.k):
-            for j in range(self.k):
-                if i == j and i == 0:
-                    break
-                cCross = F.concat(cCross, F.Concat(k1[i], k2[j]))
+            self.batch_norm = gluon.nn.BatchNorm()
 
-        kDot = F.dot(q, cCross, transpose_a=True)
-        I = F.topk(kDot, k=self.k, ret_typ="both")
-        w = F.softmax(I[0])
+            if isinstance(query_size, int):
+                if isinstance(act_query, str):
+                    self.query_net = []
+                    for head_ind in range(num_heads):
+                        if act_query == "linear":
+                            self.query_net.append([gluon.nn.Dense(units=query_size)])
+                        else:
+                            self.query_net.append([gluon.nn.Dense(units=query_size, activation=act_query)])
+                        self.register_child(self.query_net[head_ind][0])
+                else:
+                    self.query_net = []
+                    for head_ind in range(num_heads):
+                        head_net = []
+                        for act in act_query:
+                            if act == "linear":
+                                head_net.append(gluon.nn.Dense(units=query_size))
+                            else:
+                                head_net.append(gluon.nn.Dense(units=query_size, activation=act))
+                            self.register_child(head_net[-1])
+                        self.query_net.append(head_net)
+            else:
+                self.query_net = []
+                if isinstance(act_query, str):
+                    for head_ind in range(num_heads):
+                        head_net = []
+                        for size in query_size:
+                            if act_query == "linear":
+                                head_net.append(gluon.nn.Dense(units=size))
+                            else:
+                                head_net.append(gluon.nn.Dense(units=size, activation=act_query))
+                            self.register_child(head_net[-1])
+                        self.query_net.append(head_net)
+                else:
+                    assert len(query_size) == len(act_query)
+                    for head_ind in range(num_heads):
+                        head_net = []
+                        for size, act in zip(query_size, act_query):
+                            if act == "linear":
+                                head_net.append(gluon.nn.Dense(units=size))
+                            else:
+                                head_net.append(gluon.nn.Dense(units=size, activation=act))
+                            self.register_child(head_net[-1])
+                        self.query_net.append(head_net)
+                        
+    def hybrid_forward(self, F, x, sub_keys1, sub_keys2, values):
+        x = self.batch_norm(x)
 
-        # TODO: Might be implemented more efficent with add_n
-        indices = I[1][:][0] * 255 + I[1][:][1] #working?
-        v = F.take(values, indices)
-        temp = F.multiply(w[0], v[0])
-        m = temp
-        for i, vi in enumerate(v[1:]):
-            temp = F.multiply(w[i], vi)
-            m = F.add(m, temp)
+        for head_ind in range(self.num_heads):
+            q = self.query_net[head_ind][0](x)
+            if len(self.query_net[head_ind]) > 1:
+                for layer in self.query_net[head_ind][1:]:
+                    q = layer(q)
+
+            q_split = F.split(q, num_outputs=2)
+            q1_dot = F.dot(q_split[0], sub_keys1, transpose_b=True)
+            q2_dot = F.dot(q_split[1], sub_keys2, transpose_b=True)
+            i1 = F.topk(q1_dot, k=self.k, ret_typ="indices")
+            i2 = F.topk(q2_dot, k=self.k, ret_typ="indices")
+
+            # Calculate cross product for keys at indices I1 and I2
+            k1 = F.take(sub_keys1, i1)
+            k2 = F.take(sub_keys2, i2)
+
+            k1 = F.tile(k1, (1, self.k, 1))
+            k2 = F.repeat(k2, self.k, 1)
+            c_cart = F.concat(k1, k2, dim=2)
+
+            def loop_batch_dot(data, state):
+                return F.dot(data[0], data[1], transpose_b=trans_b), state
+
+            trans_b = True
+            state_batch_dot = F.zeros(1)  # state is not used, but needed for function call
+            (k_dot, _) = F.contrib.foreach(loop_batch_dot, [q, c_cart], init_states=state_batch_dot)
+
+            i = F.topk(k_dot, k=self.k, ret_typ="both")
+            w = F.softmax(i[0])
+
+            vi = F.take(values, i[1])
+            trans_b = False
+            (aggr_value, _) = F.contrib.foreach(loop_batch_dot, [w, vi], init_states=state_batch_dot)
+
+            if "m" in locals():
+                m = F.broadcast_add(m, aggr_value)
+            else:
+                m = aggr_value
 
         return m
 
