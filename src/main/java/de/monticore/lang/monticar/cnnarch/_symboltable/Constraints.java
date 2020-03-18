@@ -191,6 +191,33 @@ public enum Constraints {
                     + AllPredefinedLayers.POOL_AVG;
         }
     },
+    ACTIVATION_TYPE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if (optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_LINEAR)
+                        || optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_RELU)
+                        || optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_TANH)
+                        || optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_SIGMOID)
+                        || optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_SOFTRELU)
+                        || optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_SOFTSIGN)){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.MEMORY_ACTIVATION_LINEAR + " or "
+                    + AllPredefinedLayers.MEMORY_ACTIVATION_RELU + " or "
+                    + AllPredefinedLayers.MEMORY_ACTIVATION_TANH + " or "
+                    + AllPredefinedLayers.MEMORY_ACTIVATION_SIGMOID + " or "
+                    + AllPredefinedLayers.MEMORY_ACTIVATION_SOFTRELU + " or "
+                    + AllPredefinedLayers.MEMORY_ACTIVATION_SOFTSIGN;
+        }
+    },
     NULLABLE_AXIS {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {

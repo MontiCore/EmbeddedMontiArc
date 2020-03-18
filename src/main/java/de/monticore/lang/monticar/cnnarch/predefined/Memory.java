@@ -15,20 +15,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class LargeMemory extends PredefinedLayerDeclaration {
+public class Memory extends PredefinedLayerDeclaration {
 
-    private LargeMemory() {
-        super(AllPredefinedLayers.LARGE_MEMORY_NAME);
+    private Memory() {
+        super(AllPredefinedLayers.MEMORY_NAME);
     }
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
 
-        int querrySize = layer.getIntValue(AllPredefinedLayers.QUERRY_SIZE_NAME).get();
+        int querySize = layer.getIntValue(AllPredefinedLayers.QUERY_SIZE_NAME).get();
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
             .channels(1)
-            .height(querrySize)
+            .height(querySize)
             .width(1)
             .elementType("-oo", "oo")
             .build());
@@ -39,20 +39,29 @@ public class LargeMemory extends PredefinedLayerDeclaration {
         errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
-    public static LargeMemory create(){
-        LargeMemory declaration = new LargeMemory();
+    public static Memory create(){
+        Memory declaration = new Memory();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.NUM_SUB_KEYS_NAME)
+                        .name(AllPredefinedLayers.SUB_KEY_SIZE_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.QUERRY_SIZE_NAME)
+                        .name(AllPredefinedLayers.QUERY_SIZE_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .defaultValue(512)
                         .build(),
                 new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.ACT_QUERY_NAME)
+                        .constraints(Constraints.ACTIVATION_TYPE)
+                        .defaultValue("linear")
+                        .build(),
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.K_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.NUM_HEADS_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build()));
         declaration.setParameters(parameters);

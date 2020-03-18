@@ -53,7 +53,7 @@ public class AllPredefinedLayers {
     public static final String SWAPAXES_NAME = "SwapAxes";
     public static final String BROADCAST_ADD_NAME = "BroadcastAdd";
     public static final String RESHAPE_NAME = "Reshape";
-    public static final String LARGE_MEMORY_NAME = "LargeMemory";
+    public static final String MEMORY_NAME = "Memory";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -89,9 +89,11 @@ public class AllPredefinedLayers {
     public static final String SHAPE_NAME = "shape";
     public static final String RNN_DROPOUT_NAME = "dropout";
 	//parameters for memory layers
-    public static final String NUM_SUB_KEYS_NAME = "numSubKeys";
-    public static final String QUERRY_SIZE_NAME = "querrySize";
+    public static final String SUB_KEY_SIZE_NAME = "subKeySize";
+    public static final String QUERY_SIZE_NAME = "querySize";
+	public static final String ACT_QUERY_NAME = "actQuery";
     public static final String K_NAME = "k";
+	public static final String NUM_HEADS_NAME = "numHeads";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
@@ -99,7 +101,14 @@ public class AllPredefinedLayers {
     public static final String PADDING_NO_LOSS = "no_loss";
     public static final String POOL_MAX = "max";
     public static final String POOL_AVG = "avg";
-
+	
+	//possible activation values for the querry network in the memory layer
+	public static final String MEMORY_ACTIVATION_LINEAR = "linear";
+	public static final String MEMORY_ACTIVATION_RELU = "relu";
+    public static final String MEMORY_ACTIVATION_TANH = "tanh";
+	public static final String MEMORY_ACTIVATION_SIGMOID = "sigmoid";
+	public static final String MEMORY_ACTIVATION_SOFTRELU = "softrelu";
+    public static final String MEMORY_ACTIVATION_SOFTSIGN = "softsign";
 
     //list with all predefined layers
     public static List<LayerDeclarationSymbol> createList(){
@@ -137,7 +146,7 @@ public class AllPredefinedLayers {
                 SwapAxes.create(),
                 BroadcastAdd.create(),
                 Reshape.create(),
-                LargeMemory.create());
+                Memory.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){
