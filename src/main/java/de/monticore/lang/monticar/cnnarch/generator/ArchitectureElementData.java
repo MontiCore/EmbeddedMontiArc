@@ -184,16 +184,24 @@ public class ArchitectureElementData {
         return getLayerSymbol().getStringValue(AllPredefinedLayers.POOL_TYPE_NAME).get();
     }
 
-    public int getNumSubKeys(){
-        return getLayerSymbol().getIntValue(AllPredefinedLayers.NUM_SUB_KEYS_NAME).get();
+    public int getSubKeySize(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.SUB_KEY_SIZE_NAME).get();
     }
     
-    public int getQuerrySize(){
-        return getLayerSymbol().getIntValue(AllPredefinedLayers.QUERRY_SIZE_NAME).get();
+    public int getQuerySize(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.QUERY_SIZE_NAME).get();
+    }
+	
+	public String getActQuery(){
+        return getLayerSymbol().getStringValue(AllPredefinedLayers.ACT_QUERY_NAME).get();
     }
     
     public int getK(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.K_NAME).get();
+    }
+	
+	public int getNumHeads(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.NUM_HEADS_NAME).get();
     }
     
     @Nullable
