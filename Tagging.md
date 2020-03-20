@@ -13,11 +13,11 @@ The grammar file is [`de.monticore.lang.Tagging`](https://git.rwth-aachen.de/mon
 
 ## Handwritten Extensions
 ## SymbolTable
-- An additional [`de.monticore.lang._symboltable.TaggingResolver`](/_symboltable/TaggingResolver.java) is provided to be able to connect the symbol tables of the tagging language and the respective other language
+- An additional [`de.monticore.lang._symboltable.TaggingResolver`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/java/de/monticore/lang/tagging/_symboltable/TaggingResolver.java) is provided to be able to connect the symbol tables of the tagging language and the respective other language
 
 ## Functionality
 ### Generator
-A generator infrastructure is provided in [`de.monticore.lang.tagging.generator`](/tagging/transformation) and can be used with the provided [`de.monticore.lang.tagging.groovy`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/resources/de/monticore/lang/tagging.groovy) script
+A generator infrastructure is provided in [`de.monticore.lang.tagging.generator`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/tree/master/src%2Fmain%2Fjava%2Fde%2Fmonticore%2Flang%2Ftagging%2Fgenerator) and can be used with the provided [`de.monticore.lang.tagging.groovy`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/resources/de/monticore/lang/tagging.groovy) script
 
 
 # TagSchema
