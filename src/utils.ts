@@ -45,9 +45,8 @@ export function spawnMavenExecChildProcess(mavenPath:string, programArgs: string
     return spawnMavenChildProcess(mavenPath, args);
 }
 
-function convertProgramArgs(programArgs: string[], escape?:boolean): string[] {
-    const escChar = escape && process.platform === "win32" ? "`" : "";
-    return ["exec:java", '-e', escChar + '-Dexec.args="' + programArgs.join(" ") + '"'];
+function convertProgramArgs(programArgs: string[]): string[] {
+    return ["exec:java", '-e', '-Dexec.args="' + programArgs.join(" ") + '"'];
 }
 
 export function spawnMavenChildProcess(mavenPath:string, args: string[]){
@@ -93,7 +92,7 @@ export function spawnDockerMavenProcess(image: string ,mavenPath:string, args: s
 }
 
 export function spawnDockerMavenExecChildProcess(image: string, mavenPath:string, programArgs: string[], additionalDockerArgs?:string[], additionalMavenArgs?: string[]){
-    let args:string[] = convertProgramArgs(programArgs, true);
+    let args:string[] = convertProgramArgs(programArgs);
     
     if(additionalMavenArgs){
         args = args.concat(additionalMavenArgs);
