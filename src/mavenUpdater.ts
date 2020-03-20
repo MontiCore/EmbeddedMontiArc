@@ -1,18 +1,22 @@
 import { Logger, getLogger } from 'log4js';
 import { ChunkBuffer } from './chunkBuffer';
-import { spawnMavenChildProcess } from './utils';
+import { spawnMavenChildProcess, spawnDockerMavenProcess, spawnDockerMavenExecChildProcess } from './utils';
 
 export class MavenUpdater{
     private pomPath: string;
     private relativeMvnSettingsPath: string | null;
     private logger: Logger;
     private ids: string[];
+    private useDocker?:boolean;
+    private dockerImage?:string
 
-    constructor(ids: string[] ,pomPath: string, relativeMvnSettingsPath: string | null = null){
+    constructor(ids: string[] ,pomPath: string, relativeMvnSettingsPath: string | null = null, useDocker?:boolean, dockerImage?:string){
         this.ids = ids;
         this.pomPath = pomPath;
         this.relativeMvnSettingsPath = relativeMvnSettingsPath;
         this.logger = getLogger("Updater - " + ids);
+        this.useDocker = useDocker;
+        this.dockerImage = dockerImage;
     }
 
 	doUpdate(): Promise<number> {
@@ -31,7 +35,12 @@ export class MavenUpdater{
             }
     
             this.logger.debug("Starting update");
-            let p = spawnMavenChildProcess(this.pomPath, args);
+            let p;
+            if(this.useDocker && this.dockerImage){
+                p = spawnDockerMavenProcess(this.dockerImage, this.pomPath, args);
+            }else{
+                p = spawnMavenChildProcess(this.pomPath, args);
+            }
 
             p.on("error", (err) =>{
                 this.logger.error("Error while updating: " + err);
@@ -70,7 +79,14 @@ export class MavenUpdater{
         return new Promise((resolve, reject) => {
             let circularBuffer = new ChunkBuffer(1000);
             this.logger.debug("spawning maven process!");
-            let updateProcess = spawnMavenChildProcess(this.pomPath, args);
+            let updateProcess;
+            
+            if(this.useDocker && this.dockerImage){
+                updateProcess = spawnDockerMavenExecChildProcess(this.dockerImage, this.pomPath, args);
+            }else{
+                updateProcess = spawnMavenChildProcess(this.pomPath, args);
+            }
+
             updateProcess.on("error", (err) => {
                 this.logger.error("Maven error: " + err);
                 reject(null);

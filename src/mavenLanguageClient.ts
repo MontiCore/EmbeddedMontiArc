@@ -6,7 +6,7 @@ import { SocketMessageReader, SocketMessageWriter } from 'vscode-jsonrpc';
 import { Socket } from 'net';
 import { getLogger, Logger } from 'log4js';
 import { ChunkBuffer } from './chunkBuffer';
-import { spawnMavenExecChildProcess } from './utils';
+import { spawnMavenExecChildProcess, spawnDockerMavenExecChildProcess } from './utils';
 
 export interface MavenLanguageClientOptions {
     languages: string[];
@@ -15,6 +15,8 @@ export interface MavenLanguageClientOptions {
     bufferSize: number;
     pomRoot: string;
     relativeMvnSettingsPath: string | null;
+    useDocker?: boolean;
+    dockerImage? :string;
 }
 
 export class MavenLanguageClient {
@@ -46,11 +48,45 @@ export class MavenLanguageClient {
         statusBarItem.text = this.getLanguagesString() + ": starting Language Server";
         statusBarItem.show();
   
-        this.lspProcess = spawnMavenExecChildProcess(
-            mavenPath,
-            ['-p ' + this.constants.manualPort],
-            this.constants.relativeMvnSettingsPath ? ["-s", this.constants.relativeMvnSettingsPath] : undefined
-        )
+        let docker = this.constants.useDocker;
+        if(this.constants.useDocker){
+            if(!this.constants.dockerImage){
+                this.logger.error("useDocker is true but dockerImage is not set!")
+                docker = false;
+            }
+
+            if(this.constants.manualPort == 0){
+                this.logger.error("useDocker is true but manualPort is set to 0. Please specify a port to use!");
+                docker = false;
+            }
+        }
+        
+        if(docker){
+            const baseDir = vscode.workspace.rootPath;
+            this.lspProcess = spawnDockerMavenExecChildProcess(
+                this.constants.dockerImage!,
+                mavenPath,
+                [
+                    '-p ' + this.constants.manualPort,
+                    "--host", process.platform,
+                    "-d",
+                    "--from", baseDir!,
+                    "--to", "/home/isabelle/lsp/"
+                ],
+                [
+                    "-p", this.constants.manualPort + ":" + this.constants.manualPort,
+                    "-v", baseDir + ":/home/isabelle/lsp/",
+                    "-v", "C:\\Users\\ahell\\.m2:/home/isabelle/.m2"
+                ],
+                this.constants.relativeMvnSettingsPath ? ["-s", this.constants.relativeMvnSettingsPath] : undefined
+            )
+        }else{
+            this.lspProcess = spawnMavenExecChildProcess(
+                mavenPath,
+                ['-p ' + this.constants.manualPort],
+                this.constants.relativeMvnSettingsPath ? ["-s", this.constants.relativeMvnSettingsPath] : undefined
+            )
+    }
 
         this.processRunning = true;
 

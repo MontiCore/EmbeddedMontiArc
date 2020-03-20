@@ -36,13 +36,18 @@ export function allDependenciesAvailable(commands:string[]){
 }
 
 export function spawnMavenExecChildProcess(mavenPath:string, programArgs: string[], additionalMavenArgs?: string[]){
-    let args:string[] = ["exec:java", '-e', '-Dexec.args="' + programArgs.join(" ") + '"'];
+    let args:string[] = convertProgramArgs(programArgs);
     
     if(additionalMavenArgs){
         args = args.concat(additionalMavenArgs);
     }
 
     return spawnMavenChildProcess(mavenPath, args);
+}
+
+function convertProgramArgs(programArgs: string[], escape?:boolean): string[] {
+    const escChar = escape && process.platform === "win32" ? "`" : "";
+    return ["exec:java", '-e', escChar + '-Dexec.args="' + programArgs.join(" ") + '"'];
 }
 
 export function spawnMavenChildProcess(mavenPath:string, args: string[]){
@@ -55,4 +60,44 @@ export function spawnMavenChildProcess(mavenPath:string, args: string[]){
     };
 
     return spawn("mvn", args, spawnOptions);
+}
+
+export function spawnDockerMavenProcess(image: string ,mavenPath:string, args: string[], additionalDockerArgs?:string[]){
+    let spawnOptions: SpawnOptions = {
+        cwd: mavenPath,
+        env: process.env,
+        stdio: "pipe",
+        shell: true
+    };
+
+    let allArgs = [];
+    allArgs.push("run");
+    allArgs.push("-v");
+    allArgs.push(mavenPath + ":/mvn");
+    if(additionalDockerArgs){
+        for(let ad of additionalDockerArgs){
+            allArgs.push(ad);
+        }
+    }
+    allArgs.push(image);
+    allArgs.push("mvn");
+    for(let a of args){
+        allArgs.push(a);
+    }
+    allArgs.push("-f")
+    allArgs.push("/mvn/pom.xml")    
+
+    getLogger().trace("docker " + allArgs.join(" "));
+
+    return spawn("docker", allArgs, spawnOptions);
+}
+
+export function spawnDockerMavenExecChildProcess(image: string, mavenPath:string, programArgs: string[], additionalDockerArgs?:string[], additionalMavenArgs?: string[]){
+    let args:string[] = convertProgramArgs(programArgs, true);
+    
+    if(additionalMavenArgs){
+        args = args.concat(additionalMavenArgs);
+    }
+
+    return spawnDockerMavenProcess(image, mavenPath, args, additionalDockerArgs);
 }
