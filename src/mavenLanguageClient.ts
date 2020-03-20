@@ -75,8 +75,7 @@ export class MavenLanguageClient {
                 ],
                 [
                     "-p", this.constants.manualPort + ":" + this.constants.manualPort,
-                    "-v", baseDir + ":/home/isabelle/lsp/",
-                    "-v", "C:\\Users\\ahell\\.m2:/home/isabelle/.m2"
+                    "-v", baseDir + ":/home/isabelle/lsp/"
                 ],
                 this.constants.relativeMvnSettingsPath ? ["-s", this.constants.relativeMvnSettingsPath] : undefined
             )
