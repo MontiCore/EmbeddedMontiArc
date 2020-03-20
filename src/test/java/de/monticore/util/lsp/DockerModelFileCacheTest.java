@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 public class DockerModelFileCacheTest {
 
@@ -31,12 +32,16 @@ public class DockerModelFileCacheTest {
 
     @Test
     public void translatePathSimpleWindows() throws URISyntaxException {
+        assumeTrue(System.getProperty("os.name").toLowerCase().startsWith("windows"));
+
         VSCodeUri res = WIN_TO_LIN_CACHE.translateUri(new VSCodeUri(new File("C:\\path\\to\\external\\dir\\file.txt").toPath()));
         assertEquals(new VSCodeUri("file:///path/to/internal/dir/file.txt"), res);
     }
 
     @Test
     public void translatePathNestedWindows() throws URISyntaxException {
+        assumeTrue(System.getProperty("os.name").toLowerCase().startsWith("windows"));
+
         VSCodeUri res = WIN_TO_LIN_CACHE.translateUri(new VSCodeUri(new File("C:\\path\\to\\external\\dir\\nested\\file.txt").toPath()));
         assertEquals(new VSCodeUri("file:///path/to/internal/dir/nested/file.txt"), res);
     }

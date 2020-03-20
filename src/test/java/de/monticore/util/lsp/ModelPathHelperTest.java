@@ -33,7 +33,7 @@ public class ModelPathHelperTest {
     public void pathFromUriStringUnix() throws URISyntaxException {
         assumeFalse(System.getProperty("os.name").toLowerCase().startsWith("windows"));
 
-        Path expected = Paths.get("home", "Test", "Desktop", "workspace");
+        Path expected = Paths.get("/","home", "Test", "Desktop", "workspace");
         Path actual = ModelPathHelper.pathFromUriString("file:///home/Test/Desktop/workspace");
         assertEquals(expected, actual);
     }
