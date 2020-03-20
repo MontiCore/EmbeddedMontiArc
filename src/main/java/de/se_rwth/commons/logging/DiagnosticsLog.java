@@ -18,6 +18,7 @@ public class DiagnosticsLog extends Log {
     static private boolean logToStdout = false;
     private static boolean debugEnabled = false;
     private static boolean traceEnabled = false;
+    private static boolean infoEnabled = true;
 
     static public void setLogToStdout(boolean logToStdout) {
         DiagnosticsLog.logToStdout = logToStdout;
@@ -25,17 +26,24 @@ public class DiagnosticsLog extends Log {
     }
 
     public static void setDebug(boolean debug){
-        log.isDEBUG = debug;
+        if(log != null) {
+            log.isDEBUG = debug;
+        }
         debugEnabled = debug;
     }
 
     public static void setTrace(boolean trace){
-        log.isTRACE = trace;
+        if(log != null) {
+            log.isTRACE = trace;
+        }
         traceEnabled = trace;
     }
 
     public static void setInfo(boolean info){
-        log.isINFO = info;
+        if(log != null) {
+            log.isINFO = info;
+        }
+        infoEnabled = true;
     }
 
     public static void clearAndUse(){
@@ -45,9 +53,14 @@ public class DiagnosticsLog extends Log {
 
     public static void init() {
         DiagnosticsLog l = new DiagnosticsLog();
+
+        setDebug(debugEnabled || "true".equalsIgnoreCase(System.getenv("LSP_LOG_DEBUG")));
+        setTrace(traceEnabled || "true".equalsIgnoreCase(System.getenv("LSP_LOG_TRACE")));
+
         l.quickFail = false;
         l.isDEBUG = debugEnabled;
         l.isTRACE = traceEnabled;
+        l.isINFO = infoEnabled;
         try {
             Path path = Files.createTempFile("DiagnosticsLog", ".txt");
             l.printWriter = new PrintWriter(new FileWriter(path.toFile(), true));

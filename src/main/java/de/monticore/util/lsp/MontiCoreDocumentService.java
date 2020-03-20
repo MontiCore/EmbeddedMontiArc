@@ -18,7 +18,6 @@ import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -86,11 +85,16 @@ public abstract class MontiCoreDocumentService<ASTType extends ASTNode> implemen
     @Override
     public void didOpen(DidOpenTextDocumentParams didOpenTextDocumentParams) {
         Log.debug("call didOpen: " + didOpenTextDocumentParams.toString(), "default");
-        if (getClient().isPresent()) {
-            Path sourcePath;
-            String fullText = didOpenTextDocumentParams.getTextDocument().getText();
-            String uri = didOpenTextDocumentParams.getTextDocument().getUri();
-            processDocument(fullText, uri);
+        TextDocumentItem textDocument = didOpenTextDocumentParams.getTextDocument();
+        try {
+            if (getClient().isPresent()) {
+                processDocument(
+                        textDocument.getText(),
+                        new VSCodeUri(textDocument)
+                );
+            }
+        } catch (URISyntaxException e) {
+            Log.error("Error in didOpen for textDocument " + textDocument, e);
         }
     }
 
@@ -99,40 +103,37 @@ public abstract class MontiCoreDocumentService<ASTType extends ASTNode> implemen
         Log.debug("call didChange: " + didChangeTextDocumentParams.toString(), "default");
         if (getClient().isPresent()) {
             String fullText = didChangeTextDocumentParams.getContentChanges().get(0).getText();
-            String uri = didChangeTextDocumentParams.getTextDocument().getUri();
-            processDocument(fullText, uri);
+            TextDocumentIdentifier textDocument = didChangeTextDocumentParams.getTextDocument();
+            try {
+                processDocument(fullText, new VSCodeUri(textDocument));
+            } catch (URISyntaxException e) {
+                Log.error("Error in didChange for textDocument " + textDocument , e);
+            }
         }
     }
 
-    protected void processDocument(String fullText, String uri) {
-        Path sourcePath = null;
-        try {
-            sourcePath = ModelPathHelper.pathFromUriString(uri);
-        } catch (URISyntaxException e) {
-            Log.error("Error parsing uri to path", e);
-            return;
-        }
-        checkForErrors(fullText, sourcePath);
+    protected void processDocument(String fullText, VSCodeUri originalUri) {
+        checkForErrors(fullText, originalUri);
     }
 
-    public void checkForErrors(String fullText, Path sourcePath) {
+    public void checkForErrors(String fullText, VSCodeUri originalUri) {
         DiagnosticsLog.clearAndUse();
-        Optional<ASTType> tmp = parse(fullText, sourcePath.toString());
+        Optional<ASTType> tmp = parse(fullText, originalUri);
         if (tmp.isPresent()) {
-            checkCoCos(sourcePath, tmp.get());
+            checkCoCos(originalUri, tmp.get());
         }
         if (diagnosticsHelper.isPresent()) {
-            diagnosticsHelper.get().publishFindingsFromLog(sourcePath);
+            diagnosticsHelper.get().publishFindingsFromLog(originalUri);
         } else {
             Log.error("diagnosticsHelper not initialized!");
         }
     }
 
-    protected void checkCoCos(Path sourcePath, ASTType node) {
+    protected void checkCoCos(VSCodeUri originalUri, ASTType node) {
         doCheckASTCocos(node);
     }
 
-    public Optional<ASTType> parse(String fullText, String sourcePath) {
+    public Optional<ASTType> parse(String fullText, VSCodeUri originalUri) {
         Optional<ASTType> parseRes = Optional.empty();
         try {
             parseRes = doParse(new StringReader(fullText));

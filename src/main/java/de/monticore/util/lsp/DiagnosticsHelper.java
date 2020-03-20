@@ -8,7 +8,6 @@ import de.se_rwth.commons.logging.Log;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.services.LanguageClient;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,15 +20,15 @@ public class DiagnosticsHelper{
         this.languageServerIdentifier = languageServerIdentifier;
     }
 
-    protected void publishFindingsFromLog(Path sourcePath) {
+    protected void publishFindingsFromLog(VSCodeUri originalUri) {
         List<Finding> findings = DiagnosticsLog.getFindings();
         List<Diagnostic> diagnostics = new ArrayList<>(findingsToDiagnostics(findings));
-        publishDiagnostics(sourcePath.toString(), diagnostics);
+        publishDiagnostics(originalUri, diagnostics);
     }
 
-    protected void publishDiagnostics(String sourcePath, List<Diagnostic> diagnostics) {
+    protected void publishDiagnostics(VSCodeUri originalUri, List<Diagnostic> diagnostics) {
         PublishDiagnosticsParams publishDiagnosticsParams = new PublishDiagnosticsParams();
-        publishDiagnosticsParams.setUri(ModelPathHelper.encodePathStringToUri(sourcePath));
+        publishDiagnosticsParams.setUri(originalUri.getEncodedString());
         publishDiagnosticsParams.setDiagnostics(diagnostics);
         Log.debug("Publishing diagnostics!:" + publishDiagnosticsParams, "default");
         client.publishDiagnostics(publishDiagnosticsParams);

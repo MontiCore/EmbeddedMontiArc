@@ -49,25 +49,35 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
         this.modelFileCache = modelFileCache;
     }
 
-    public Optional<ASTType> parseCached(String uriString) {
+    public Optional<ASTType> parseCached(VSCodeUri originalUri) {
         return getModelFileCache()
-                .getCachedContentFor(uriString)
+                .getCachedContentFor(originalUri)
                 .flatMap(c -> doParse(new StringReader(c)));
     }
 
     public Optional<ASTType> parseCached(TextDocumentItem textDocumentItem) {
-        return parseCached(textDocumentItem.getUri());
+        try {
+            return parseCached(new VSCodeUri(textDocumentItem));
+        } catch (URISyntaxException e) {
+            Log.error("Error in parseCached for textDocumentItem " + textDocumentItem, e);
+        }
+        return Optional.empty();
     }
 
     public Optional<ASTType> parseCached(TextDocumentIdentifier textDocumentIdentifier) {
-        return parseCached(textDocumentIdentifier.getUri());
+        try {
+            return parseCached(new VSCodeUri(textDocumentIdentifier));
+        } catch (URISyntaxException e) {
+            Log.error("Error in parseCached for textDocumentIdentifier " + textDocumentIdentifier, e);
+        }
+        return Optional.empty();
     }
 
-    public Optional<SymType> getSymbolFor(Path sourcePath) {
+    public Optional<SymType> getSymbolFor(VSCodeUri originalUri) {
         try {
-            Optional<ASTType> astOpt = parse(FileUtils.readFileToString(sourcePath.toFile(), StandardCharsets.UTF_8), sourcePath.toString());
+            Optional<ASTType> astOpt = parse(FileUtils.readFileToString(originalUri.getFsPath().toFile(), StandardCharsets.UTF_8), originalUri);
             if (astOpt.isPresent()) {
-                return getSymbol(astOpt.get(), sourcePath);
+                return getSymbol(astOpt.get(), originalUri);
             }
         } catch (IOException e) {
             Log.error("IOError", e);
@@ -75,29 +85,31 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
         return Optional.empty();
     }
 
-    public Optional<SymType> getSymbolForCached(String uriString) {
-        Optional<ASTType> astOpt = parseCached(uriString);
-        if (astOpt.isPresent()) {
-            try {
-                return getSymbol(astOpt.get(), ModelPathHelper.pathFromUriString(uriString));
-            } catch (URISyntaxException e) {
-                Log.error("Error parsing Uri", e);
-            }
+    public Optional<SymType> getSymbolForCached(VSCodeUri originalUri) {
+        return parseCached(originalUri).flatMap(astType -> getSymbol(astType, originalUri));
+    }
+
+    public Optional<SymType> getSymbolForCached(TextDocumentIdentifier textDocumentIdentifier) {
+        try {
+            return getSymbolForCached(new VSCodeUri(textDocumentIdentifier));
+        } catch (URISyntaxException e) {
+            Log.error("Error in getSymbolForCached for textDocumentIdentifier " + textDocumentIdentifier, e);
         }
 
         return Optional.empty();
     }
 
-    public Optional<SymType> getSymbolForCached(TextDocumentIdentifier textDocumentIdentifier) {
-        return getSymbolForCached(textDocumentIdentifier.getUri());
-    }
-
     public Optional<SymType> getSymbolForCached(TextDocumentItem textDocumentItem) {
-        return getSymbolForCached(textDocumentItem.getUri());
+        try {
+            return getSymbolForCached(new VSCodeUri(textDocumentItem));
+        } catch (URISyntaxException e) {
+            Log.error("Error in getSymbolForCached for textDocumentItem " + textDocumentItem, e);
+        }
+        return Optional.empty();
     }
 
-    private Optional<SymType> getSymbol(ASTType ast, Path basePath) {
-        Scope symtab = this.createSymTab((this.getModelFileCache()).getTmpModelPath(basePath));
+    private Optional<SymType> getSymbol(ASTType ast, VSCodeUri originalUri) {
+        Scope symtab = this.createSymTab((this.getModelFileCache()).getTmpModelPath(originalUri));
         Log.debug("Created symtab", "default");
         DiagnosticsLog.clearAndUse();
         String fullSymbolName = this.getFullSymbolName(ast);
@@ -105,43 +117,27 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
     }
 
     @Override
-    protected void checkCoCos(Path sourcePath, ASTType node) {
-        super.checkCoCos(sourcePath, node);
-        addModelBasePath(sourcePath, getPackageList(node));
-        Optional<SymType> symOpt = getSymbol(node, sourcePath);
+    protected void checkCoCos(VSCodeUri originalUri, ASTType node) {
+        super.checkCoCos(originalUri, node);
+        getModelFileCache().addModelBasePath(originalUri, getPackageList(node));
+        Optional<SymType> symOpt = getSymbol(node, originalUri);
         if (symOpt.isPresent()) {
             Log.debug("Resolved symbol", "default");
             SymType sym = symOpt.get();
-            doCheckSymbolCoCos(sourcePath, sym);
+            doCheckSymbolCoCos(originalUri, sym);
         } else {
             Log.error("Can not resolve symbol " + getFullSymbolName(node));
         }
     }
 
-    protected void addModelBasePath(Path sourcePath, List<String> packageList) {
-        Optional<Path> basePathOpt = ModelPathHelper.getBasePath(sourcePath, packageList);
-        if (basePathOpt.isPresent()) {
-            getModelFileCache().addModelBasePath(basePathOpt.get());
-            Log.info("modelBasePath: " + basePathOpt.get().toString(), "debug");
-        }
-    }
-
     @Override
-    protected void processDocument(String fullText, String uri) {
-        Path sourcePath = null;
+    protected void processDocument(String fullText, VSCodeUri originalUri) {
         try {
-            sourcePath = ModelPathHelper.pathFromUriString(uri);
-        } catch (URISyntaxException e) {
-            Log.error("Error parsing uri to path", e);
-            return;
-        }
-
-        try {
-            getModelFileCache().updateTmpContentFor(sourcePath, fullText);
+            getModelFileCache().updateTmpContentFor(originalUri, fullText);
         } catch (IOException e) {
             Log.error("Error updating file", e);
         }
-        checkForErrors(fullText, sourcePath);
+        checkForErrors(fullText, originalUri);
     }
 
 
@@ -150,7 +146,7 @@ public abstract class MontiCoreDocumentServiceWithSymbol<ASTType extends ASTNode
         // All cocos should be checked at doCheckSymbolCoCos
     }
 
-    protected abstract void doCheckSymbolCoCos(Path sourcePath, SymType sym);
+    protected abstract void doCheckSymbolCoCos(VSCodeUri originalUri, SymType sym);
 
     protected abstract String getSymbolName(ASTType node);
 

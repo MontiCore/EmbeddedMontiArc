@@ -5,10 +5,13 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 public class ModelPathHelperTest {
 
@@ -19,15 +22,19 @@ public class ModelPathHelperTest {
 
     @Test
     public void pathFromUriStringWin() throws URISyntaxException {
-        String expected = String.join(File.separator, "C:", "Users", "Test", "Desktop", "workspace");
-        String actual = ModelPathHelper.pathFromUriString("file:///c%3a/Users/Test/Desktop/workspace").toString();
+        assumeTrue(System.getProperty("os.name").toLowerCase().startsWith("windows"));
+
+        Path expected = Paths.get("C:", "Users", "Test", "Desktop", "workspace");
+        Path actual = ModelPathHelper.pathFromUriString("file:///c%3a/Users/Test/Desktop/workspace");
         assertEquals(expected, actual);
     }
 
     @Test
     public void pathFromUriStringUnix() throws URISyntaxException {
-        String expected = File.separator + String.join(File.separator, "home", "Test", "Desktop", "workspace");
-        String actual = ModelPathHelper.pathFromUriString("file:///home/Test/Desktop/workspace").toString();
+        assumeFalse(System.getProperty("os.name").toLowerCase().startsWith("windows"));
+
+        Path expected = Paths.get("home", "Test", "Desktop", "workspace");
+        Path actual = ModelPathHelper.pathFromUriString("file:///home/Test/Desktop/workspace");
         assertEquals(expected, actual);
     }
 

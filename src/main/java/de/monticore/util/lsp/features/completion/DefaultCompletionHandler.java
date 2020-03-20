@@ -22,7 +22,7 @@ public class DefaultCompletionHandler implements CompletionHandler{
     }
 
     public CompletableFuture<Either<List<CompletionItem>, CompletionList>> completion(CompletionParams position) {
-        Optional<String> contentOpt = cacheProvider.getModelFileCache().getCachedContentFor(position.getTextDocument().getUri());
+        Optional<String> contentOpt = cacheProvider.getModelFileCache().getCachedContentFor(position.getTextDocument());
         if(contentOpt.isPresent()){
             Position p = position.getPosition();
             Optional<LookaheadContext> lookahead = lookaheadProvider.getLookaheadFor(contentOpt.get(), p.getLine(), p.getCharacter());

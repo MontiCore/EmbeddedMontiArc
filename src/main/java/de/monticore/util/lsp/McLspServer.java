@@ -27,7 +27,7 @@ public abstract class McLspServer implements LanguageServer, LanguageClientAware
         String[] args = Arrays.stream(rawArgs).flatMap(arg -> Arrays.stream(arg.split(" "))).toArray(String[]::new);
         boolean failed = false;
         Exception err = new Exception("Invalid Arguments");
-        DiagnosticsLog.init();
+        DiagnosticsLog.reuse();
         Log.info("Starting server!", "default");
 
         if(args.length == 0){

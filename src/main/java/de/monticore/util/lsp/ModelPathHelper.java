@@ -2,13 +2,12 @@
 package de.monticore.util.lsp;
 
 import de.se_rwth.commons.logging.Log;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ModelPathHelper {
 
@@ -58,8 +57,13 @@ public class ModelPathHelper {
             }
         }
         if(isValid) {
+            Log.trace("fullPath: " + fullPath, "getBasePath");
+            Log.trace("packageParts: " + packageParts, "getBasePath");
             Path modelPath = fullPath.subpath(0, fullPath.getNameCount() - packageParts.size() - 1);
+            Log.trace("modelPath: " + modelPath, "getBasePath");
+            Log.trace("fullPath.getRoot(): " + fullPath.getRoot(), "getBasePath");
             modelPath = Paths.get(fullPath.getRoot().toString(), modelPath.toString());
+            Log.trace("modelPath: " + modelPath, "getBasePath");
             return Optional.of(modelPath);
         }else{
             return Optional.empty();
@@ -68,16 +72,20 @@ public class ModelPathHelper {
 
 
     public static Path pathFromUriString(String uri) throws URISyntaxException {
+        VSCodeUri vsCodeUri = new VSCodeUri(cleanVSCodeUriString(uri));
+        if (vsCodeUri == null) return null;
+        return vsCodeUri.getFsPath();
+    }
+
+    @Nullable
+    public static String cleanVSCodeUriString(String uri) {
         Log.debug("URI: " + uri, "URIs");
         String prefix = "file://";
         String cleanUri = uri.startsWith(prefix) ? uri.substring(prefix.length()) : uri;
-        if(uri.contains("%3a") || uri.contains("%3A")) {
+        if(cleanUri.contains("%3a") || cleanUri.contains("%3A") || cleanUri.contains(":")) {
             cleanUri = cleanUri.replace("%3A", ":").replace("%3a", ":");
             if(cleanUri.startsWith("\\\\")){
                 cleanUri = cleanUri.substring(2);
-            }
-            if(cleanUri.startsWith("/")){
-                cleanUri = cleanUri.substring(1);
             }
             String [] parts = cleanUri.split(":");
             if(parts.length != 2){
@@ -87,8 +95,16 @@ public class ModelPathHelper {
 
             cleanUri = parts[0].toUpperCase() + ":" + parts[1];
         }
+
+        if(!cleanUri.startsWith("/")){
+            cleanUri = "/" + cleanUri;
+        }
+
+        cleanUri = cleanUri.replace("\\", "/");
+        cleanUri = "file://" + cleanUri;
+
         Log.debug("Cleaned URI: " + cleanUri, "URIs");
-        return Paths.get(cleanUri);
+        return cleanUri;
     }
 
     public static String encodePathStringToUri(String sourcePath) {
@@ -98,8 +114,6 @@ public class ModelPathHelper {
         if(res.startsWith(fileResourcePrefix)){
             res = res.substring(fileResourcePrefix.length());
         }
-
-
 
         //Convert drive letter identifier to lower case
         if(res.contains(":")){

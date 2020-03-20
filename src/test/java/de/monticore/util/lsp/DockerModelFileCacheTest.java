@@ -1,44 +1,55 @@
 package de.monticore.util.lsp;
 
+import de.se_rwth.commons.logging.DiagnosticsLog;
+import de.se_rwth.commons.logging.Log;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.nio.file.Path;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeTrue;
 
 public class DockerModelFileCacheTest {
 
-    @Test
-    public void translatePathSimpleWindows() {
-        assumeTrue(System.getProperty("os.name").toLowerCase().contains("windows"));
+    public static final List<String> EXTERNAL_PATH_WIN = Arrays.asList("C:\\path\\to\\external\\dir".split("[\\\\]"));
+    public static final List<String> EXTERNAL_PATH_LINUX = Arrays.asList("path/to/external/dir".split("/"));
+    public static final List<String> INTERNAL_PATH_LINUX = Arrays.asList("path/to/internal/dir".split("/"));
+    public static final DockerModelFileCache WIN_TO_LIN_CACHE = new DockerModelFileCache(null, new DockerModelFileCache.Options(EXTERNAL_PATH_WIN, INTERNAL_PATH_LINUX));
+    public static final DockerModelFileCache LIN_TO_LIN_CACHE = new DockerModelFileCache(null, new DockerModelFileCache.Options(EXTERNAL_PATH_LINUX, INTERNAL_PATH_LINUX));
 
-        DockerModelFileCache cache = new DockerModelFileCache(null, null, new File("C:\\path\\to\\external\\dir").toPath(), new File("/path/to/internal/dir").toPath());
-        Path res = cache.translatePath(new File("C:\\path\\to\\external\\dir\\file.txt").toPath());
-        assertEquals(new File("/path/to/internal/dir/file.txt").toPath(), res);
+    @Before
+    public void initLog(){
+        DiagnosticsLog.init();
+        DiagnosticsLog.setLogToStdout(true);
+        DiagnosticsLog.setTrace(true);
+        DiagnosticsLog.setDebug(true);
+        Log.getFindings().clear();
     }
 
     @Test
-    public void translatePathNestedWindows() {
-        assumeTrue(System.getProperty("os.name").toLowerCase().contains("windows"));
-
-        DockerModelFileCache cache = new DockerModelFileCache(null, null, new File("C:\\path\\to\\external\\dir").toPath(), new File("/path/to/internal/dir").toPath());
-        Path res = cache.translatePath(new File("C:\\path\\to\\external\\dir\\nested\\file.txt").toPath());
-        assertEquals(new File("/path/to/internal/dir/nested/file.txt").toPath(), res);
+    public void translatePathSimpleWindows() throws URISyntaxException {
+        VSCodeUri res = WIN_TO_LIN_CACHE.translateUri(new VSCodeUri(new File("C:\\path\\to\\external\\dir\\file.txt").toPath()));
+        assertEquals(new VSCodeUri("file:///path/to/internal/dir/file.txt"), res);
     }
 
     @Test
-    public void translatePathSimpleLinux() {
-        DockerModelFileCache cache = new DockerModelFileCache(null, null, new File("/path/to/external/dir").toPath(), new File("/path/to/internal/dir").toPath());
-        Path res = cache.translatePath(new File("/path/to/external/dir/file.txt").toPath());
-        assertEquals(new File("/path/to/internal/dir/file.txt").toPath(), res);
+    public void translatePathNestedWindows() throws URISyntaxException {
+        VSCodeUri res = WIN_TO_LIN_CACHE.translateUri(new VSCodeUri(new File("C:\\path\\to\\external\\dir\\nested\\file.txt").toPath()));
+        assertEquals(new VSCodeUri("file:///path/to/internal/dir/nested/file.txt"), res);
     }
 
     @Test
-    public void translatePathNestedLinux() {
-        DockerModelFileCache cache = new DockerModelFileCache(null, null, new File("/path/to/external/dir").toPath(), new File("/path/to/internal/dir").toPath());
-        Path res = cache.translatePath(new File("/path/to/external/dir/nested/file.txt").toPath());
-        assertEquals(new File("/path/to/internal/dir/nested/file.txt").toPath(), res);
+    public void translatePathSimpleLinux() throws URISyntaxException {
+        VSCodeUri res = LIN_TO_LIN_CACHE.translateUri(new VSCodeUri("file:///path/to/external/dir/file.txt"));
+        assertEquals(new VSCodeUri("file:///path/to/internal/dir/file.txt"), res);
+    }
+
+    @Test
+    public void translatePathNestedLinux() throws URISyntaxException {
+        VSCodeUri res = LIN_TO_LIN_CACHE.translateUri(new VSCodeUri("file:///path/to/external/dir/nested/file.txt"));
+        assertEquals(new VSCodeUri("file:///path/to/internal/dir/nested/file.txt"), res);
     }
 }
