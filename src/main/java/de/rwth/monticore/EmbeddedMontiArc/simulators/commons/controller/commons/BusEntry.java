@@ -10,7 +10,6 @@ package de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons
  * This enum is used to administrate the entries of the Bus.
  *
  * Created by Christoph Grüne on 13.01.2017.
- * @author Christoph Grüne
  */
 public enum BusEntry {
 

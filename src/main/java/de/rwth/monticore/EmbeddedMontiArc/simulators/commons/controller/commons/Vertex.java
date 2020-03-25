@@ -13,7 +13,6 @@ import org.apache.commons.math3.linear.RealVector;
  * It is widely used in this function block setting.
  *
  * Created by Christoph Grüne on 22.12.2016.
- * @author Christoph Grüne.
  */
 public class Vertex {
 

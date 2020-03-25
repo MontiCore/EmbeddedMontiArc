@@ -12,7 +12,6 @@ import java.util.Map;
  * This is an interface for the DataBus.
  *
  * Created by Christoph Grüne on 30.12.2016.
- * @author Christoph Grüne
  */
 public interface Bus {
 

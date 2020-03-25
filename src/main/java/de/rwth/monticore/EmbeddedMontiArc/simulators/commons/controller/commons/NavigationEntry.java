@@ -10,7 +10,6 @@ package de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons
  * This enum is used to administrate the entries of the NavgationBlock.
  *
  * Created by Christoph on 04.03.2017.
- * @author Christoph Grüne
  */
 public enum NavigationEntry {
     //***************************************************************************

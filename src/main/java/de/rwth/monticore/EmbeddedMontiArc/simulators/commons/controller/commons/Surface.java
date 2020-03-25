@@ -10,7 +10,6 @@ package de.rwth.monticore.EmbeddedMontiArc.simulators.commons.controller.commons
  * This enum administrates all surfaces
  *
  * Created by Christoph Grüne on 14.01.2017.
- * @author Christoph Grüne
  */
 public enum Surface {
     //Asphalt(15.0, -10.0, 2.0);

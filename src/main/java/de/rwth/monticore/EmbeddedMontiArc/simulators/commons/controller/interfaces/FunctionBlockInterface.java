@@ -12,7 +12,6 @@ import java.util.Map;
  * This interface provides the basic structures of a function block
  *
  * Created by Christoph Grüne on 09.12.2016.
- * @author Christoph Grüne
  */
 public interface FunctionBlockInterface {
 
