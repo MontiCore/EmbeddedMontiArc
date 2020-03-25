@@ -15,8 +15,6 @@ import java.util.Optional;
 /**
  * Charging Station Class
  *
- * @version 1.0
- * @since 2019-05-22
  */
 public class ChargingProcess {
 	private Chargeable vehicle;

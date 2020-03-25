@@ -24,8 +24,6 @@ import java.util.*;
  * Charging Station Class
  * <p>
  *
- * @version 1.0
- * @since 2019-05-22
  */
 public class ChargingStation implements SimulationLoopExecutable, EnvObject {
 

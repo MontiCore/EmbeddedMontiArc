@@ -20,8 +20,6 @@ import java.time.Instant;
 /**
  * Charging Station Test Class
  *
- * @version 1.0
- * @since 2019-09-17
  */
 public class ChargingStationTest {
 
