@@ -26,7 +26,6 @@ import static org.junit.Assert.*;
 /**
  * Created by Michael von Wenckstern on 30.05.2016.
  *
- * @author Michael von Wenckstern
  */
 public class TagTest {
 
