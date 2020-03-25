@@ -9,7 +9,6 @@ import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import java.util.Optional;
 
 /**
- * @author Christoph Richter
  */
 public class ASTElementType extends ASTElementTypeTOP {
 

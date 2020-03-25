@@ -15,7 +15,6 @@ import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.*;
 
 /**
- * @author Pedram Mir Seyed Nazari
  */
 public class CommonMCTypeScope extends CommonScope {
 

@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class MCASTTypeSymbolReference extends MCASTTypeSymbol implements MCTypeReference<MCASTTypeSymbol> {
     public MCASTTypeSymbolReference(String name) {

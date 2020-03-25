@@ -2,7 +2,6 @@
 package de.monticore.lang.monticar.types2._symboltable;
 
 /**
- * @author Sascha
  */
 public class UnitNumberResolutionKind implements de.monticore.symboltable.SymbolKind {
     public static final UnitNumberResolutionKind INSTANCE = new UnitNumberResolutionKind();

@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * @author Pedram Mir Seyed Nazari
  */
 public abstract class CommonMCTypeSymbol<T extends MCTypeSymbol, V extends MCTypeReference<T>>
         extends CommonScopeSpanningSymbol implements MCTypeSymbol {

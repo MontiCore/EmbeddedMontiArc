@@ -5,7 +5,6 @@ import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.CommonSymbol;
 
 /**
- * @author Pedram Mir Seyed Nazari
  */
 public abstract class CommonMCFieldSymbol<T extends MCTypeReference<? extends MCTypeSymbol>> extends CommonSymbol implements MCFieldSymbol {
 

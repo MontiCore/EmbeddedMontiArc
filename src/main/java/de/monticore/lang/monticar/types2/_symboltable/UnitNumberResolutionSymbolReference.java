@@ -9,7 +9,6 @@ import de.monticore.symboltable.types.references.ActualTypeArgument;
 import java.util.List;
 
 /**
- * @author Sascha
  */
 public class UnitNumberResolutionSymbolReference extends UnitNumberResolutionSymbol implements MCTypeReference<UnitNumberResolutionSymbol> {
     protected int dimension = 0;

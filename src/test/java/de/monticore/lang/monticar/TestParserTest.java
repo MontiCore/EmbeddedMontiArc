@@ -16,7 +16,6 @@ import java.io.IOException;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * @author Sascha
  */
 public class TestParserTest {
 

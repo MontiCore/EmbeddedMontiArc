@@ -5,7 +5,6 @@ import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.Symbol;
 
 /**
- * @author Pedram Mir Seyed Nazari
  *
  */
 public interface MCFieldSymbol extends Symbol {

@@ -16,7 +16,6 @@ import java.util.Optional;
 import static de.monticore.numberunit.Rationals.doubleToRational;
 
 /**
- * @author Sascha Schneiders
  */
 public class SIUnitSymbol extends CommonSymbol implements MCTypeSymbol {
     public static final SIUnitKind KIND = SIUnitKind.INSTANCE;

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  *         This class stores the rows of a stream value matrix/array
  */
 public class StreamValues {

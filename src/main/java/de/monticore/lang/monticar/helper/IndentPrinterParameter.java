@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * @author Sascha Schneiders
  */
 public class IndentPrinterParameter {
     protected ArrayList<Object> params = new ArrayList<>();

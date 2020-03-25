@@ -6,7 +6,6 @@ import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import org.jscience.mathematics.number.Rational;
 
 /**
- * @author Sascha Schneiders
  */
 public class StreamValuePrecision implements IStreamValue {
     protected Object value;

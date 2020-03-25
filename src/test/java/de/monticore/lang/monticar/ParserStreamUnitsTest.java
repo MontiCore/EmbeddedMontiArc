@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Robert Heim / Michael von Wenckstern
  *         is copied from MontiArc4/ParserTaggingTest.java
  */
 public class ParserStreamUnitsTest {
@@ -63,7 +62,6 @@ public class ParserStreamUnitsTest {
     /**
      * Visits files of the given file ending and checks whether they are parsable.
      *
-     * @author Robert Heim
      * @see Files#walkFileTree(Path, java.nio.file.FileVisitor)
      */
     private static class ParseTest extends SimpleFileVisitor<Path> {

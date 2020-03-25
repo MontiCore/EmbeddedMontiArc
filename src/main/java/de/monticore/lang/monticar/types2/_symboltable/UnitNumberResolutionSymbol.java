@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Sascha
  */
 public class UnitNumberResolutionSymbol extends CommonSymbol implements MCTypeSymbol {
     public static final UnitNumberResolutionKind KIND = UnitNumberResolutionKind.INSTANCE;

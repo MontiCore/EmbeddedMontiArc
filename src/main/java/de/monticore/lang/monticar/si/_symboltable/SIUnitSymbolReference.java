@@ -9,7 +9,6 @@ import de.monticore.symboltable.types.references.ActualTypeArgument;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class SIUnitSymbolReference extends SIUnitSymbol implements MCTypeReference<SIUnitSymbol> {
     protected int dimension = 0;

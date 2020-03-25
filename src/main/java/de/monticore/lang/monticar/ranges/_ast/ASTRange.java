@@ -14,7 +14,6 @@ import java.util.Optional;
 import static de.monticore.numberunit.Rationals.doubleToRational;
 
 /**
- * @author Michael von Wenckstern, Sascha Schneiders
  */
 public class ASTRange extends ASTRangeTOP {
 

@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Tests for symbol table of MontiArc.
  *
- * @author Robert Heim
  */
 public class SymtabTest extends AbstractSymtabTest {
     @BeforeClass

@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author Sascha Schneiders
  */
 public class IndentPrinterHandler {
     // \{(\d)(?:\s*:\s*'([^']+)')?(?:\s*:\s*'([^']+)')?(?:\s*:\s*'([^']+)')?\}

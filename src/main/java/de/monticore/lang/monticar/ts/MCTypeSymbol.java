@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Pedram Mir Seyed Nazari
  */
 public interface MCTypeSymbol extends TypeSymbol, ScopeSpanningSymbol {
 

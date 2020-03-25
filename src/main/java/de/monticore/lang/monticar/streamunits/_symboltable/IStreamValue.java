@@ -2,7 +2,6 @@
 package de.monticore.lang.monticar.streamunits._symboltable;
 
 /**
- * @author Sascha Schneiders
  */
 public interface IStreamValue {
     default boolean isStreamValuePrecision() {

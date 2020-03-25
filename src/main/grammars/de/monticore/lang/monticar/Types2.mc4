@@ -9,7 +9,6 @@ package de.monticore.lang.monticar;
  * The grammar contains types from Java, e.g., primitives, void, types with
  * dimensions, reference types, generics, and type parameters.
  *
- * @author Martin Schindler
 */
 grammar Types2 extends de.monticore.types.Types, de.monticore.NumberUnit, de.monticore.lang.monticar.Resolution, de.monticore.lang.monticar.PrintType, de.monticore.lang.monticar.Ranges {
 

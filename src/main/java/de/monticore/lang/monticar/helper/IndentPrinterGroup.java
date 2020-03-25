@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 /**
- * @author Sascha Schneiders
  */
 public class IndentPrinterGroup {
     protected ArrayList<String> groups = new ArrayList<>();

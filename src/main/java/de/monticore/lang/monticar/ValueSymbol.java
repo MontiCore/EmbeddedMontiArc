@@ -6,7 +6,6 @@ import de.monticore.symboltable.types.references.TypeReference;
 /**
  * Symbol table representation of {@link ASTValue} nodes.
  *
- * @author Arne Haber, Robert Heim
  * @param <T> type entry to use
  */
 public class ValueSymbol<T extends TypeReference<?>> {

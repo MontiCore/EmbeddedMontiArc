@@ -4,7 +4,6 @@ package de.monticore.lang.monticar.ts;
 import de.monticore.symboltable.SymbolKind;
 
 /**
- * @author Pedram Mir Seyed Nazari
  */
 public class MCAttributeSymbolKind implements SymbolKind {
 

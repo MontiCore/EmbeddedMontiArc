@@ -6,7 +6,6 @@ import de.monticore.literals.literals._ast.ASTSignedLiteral;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class ASTStreamValue extends ASTStreamValueTOP {
     protected ASTStreamValue(

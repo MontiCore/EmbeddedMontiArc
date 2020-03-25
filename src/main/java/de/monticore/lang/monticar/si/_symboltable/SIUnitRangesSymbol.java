@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class SIUnitRangesSymbol extends CommonSymbol implements MCTypeSymbol {
     public static final SIUnitRangesSymbolKind KIND = SIUnitRangesSymbolKind.INSTANCE;

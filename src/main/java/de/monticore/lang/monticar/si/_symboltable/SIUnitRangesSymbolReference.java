@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class SIUnitRangesSymbolReference extends SIUnitRangesSymbol implements MCTypeReference<SIUnitRangesSymbol> {
 

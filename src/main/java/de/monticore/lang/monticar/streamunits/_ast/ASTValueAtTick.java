@@ -6,7 +6,6 @@ import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class ASTValueAtTick extends ASTValueAtTickTOP {
     public ASTValueAtTick() {

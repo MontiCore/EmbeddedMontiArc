@@ -9,7 +9,6 @@ import de.monticore.symboltable.types.references.CommonTypeReference;
 /**
  * Default implementation of {@link MCTypeReference}.
  *
- * @author Pedram Mir Seyed Nazari
  */
 public class CommonMCTypeReference<T extends MCTypeSymbol> extends CommonTypeReference<T> implements MCTypeReference<T> {
 

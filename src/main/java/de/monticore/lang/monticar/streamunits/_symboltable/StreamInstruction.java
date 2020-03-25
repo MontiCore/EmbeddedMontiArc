@@ -4,7 +4,6 @@ package de.monticore.lang.monticar.streamunits._symboltable;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class StreamInstruction {
     protected Optional<StreamValuePrecision> streamValue = Optional.empty();

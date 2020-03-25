@@ -9,7 +9,6 @@ package de.monticore.lang.monticar;
  * Example:
  *   ast MyNT = method public String printType(){return "MyNT";};
  *
- * @author Christoph Richter
 */
 component grammar PrintType extends de.monticore.types.Types {
 

@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 /**
  * Common methods for symboltable tests
  *
- * @author Robert Heim
  */
 public class AbstractSymtabTest {
     protected static Scope createSymTab(String... modelPath) {

@@ -15,7 +15,6 @@ import java.io.IOException;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * @author Michael von Wenckstern, Sascha Schneiders
  */
 public class SIParserTest {
 

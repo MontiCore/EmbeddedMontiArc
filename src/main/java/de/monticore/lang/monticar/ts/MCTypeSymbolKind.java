@@ -5,7 +5,6 @@ import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.types.TypeSymbolKind;
 
 /**
- * @author Pedram Mir Seyed Nazari
  */
 public class MCTypeSymbolKind extends TypeSymbolKind {
 

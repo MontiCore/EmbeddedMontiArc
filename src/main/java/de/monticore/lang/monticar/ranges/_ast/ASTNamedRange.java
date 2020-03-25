@@ -2,7 +2,6 @@
 package de.monticore.lang.monticar.ranges._ast;
 
 /**
- * @author Christoph Richter
  */
 public class ASTNamedRange extends ASTNamedRangeTOP {
 

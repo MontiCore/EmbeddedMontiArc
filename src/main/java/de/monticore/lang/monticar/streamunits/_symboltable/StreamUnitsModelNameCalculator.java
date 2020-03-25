@@ -20,7 +20,6 @@ import java.util.Set;
  * full-qualified name, e.g.:<br/>
  * a.b.C.D.E -> a.b.C
  *
- * @author Robert Heim, Michael von Wenckstern
  */
 public class StreamUnitsModelNameCalculator
         extends de.monticore.CommonModelNameCalculator {
