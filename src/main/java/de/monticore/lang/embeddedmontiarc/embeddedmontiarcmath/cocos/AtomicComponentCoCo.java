@@ -9,7 +9,6 @@ import de.monticore.lang.math._ast.ASTMathStatements;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class AtomicComponentCoCo implements EmbeddedMontiArcASTComponentCoCo {
     /**

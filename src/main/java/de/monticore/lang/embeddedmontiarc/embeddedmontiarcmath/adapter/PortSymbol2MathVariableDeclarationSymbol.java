@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * @author Sascha Schneiders
  */
 public class PortSymbol2MathVariableDeclarationSymbol extends MathVariableDeclarationSymbol
         implements SymbolAdapter<EMAPortSymbol> {

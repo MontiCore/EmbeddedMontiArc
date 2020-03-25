@@ -14,7 +14,6 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Sascha Schneiders
  */
 public class AllCoCoTest extends AbstractCoCoTest {
     String baseDir="src/test/resources/emam";

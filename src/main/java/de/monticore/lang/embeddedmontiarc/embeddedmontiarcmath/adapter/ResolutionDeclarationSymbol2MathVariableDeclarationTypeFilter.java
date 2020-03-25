@@ -9,7 +9,6 @@ import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 import de.se_rwth.commons.logging.Log;
 
 /**
- *  @author Sascha Schneiders
  */
 public class ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter extends TransitiveAdaptedResolvingFilter<MathVariableDeclarationSymbol> {
 

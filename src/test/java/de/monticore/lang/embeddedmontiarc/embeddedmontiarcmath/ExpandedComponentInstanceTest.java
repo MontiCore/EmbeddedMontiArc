@@ -19,7 +19,6 @@ import static org.junit.Assert.*;
 /**
  * Tests for toString methods of EmbeddedMontiArc symbols.
  *
- * @author Michael von Wenckstern
  */
 public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Ignore

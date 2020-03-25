@@ -13,7 +13,6 @@ import java.util.Collections;
 import static de.monticore.numberunit.Rationals.doubleToRational;
 
 /**
- * @author Sascha Schneiders
  */
 public class ResolutionDeclarationSymbol2MathVariableDeclarationSymbol extends MathVariableDeclarationSymbol
         implements SymbolAdapter<ResolutionDeclarationSymbol> {

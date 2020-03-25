@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * @author Christoph Richter
  */
 public class ASTEmbeddedMontiArcMathOptNodesTest {
 

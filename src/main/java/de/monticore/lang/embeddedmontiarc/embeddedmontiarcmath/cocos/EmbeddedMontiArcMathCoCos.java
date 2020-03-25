@@ -9,7 +9,6 @@ import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._cocos.
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._cocos.NoDynamicNewConnectsOutsideEventHandler;
 
 /**
- * @author Sascha Schneiders
  */
 public class EmbeddedMontiArcMathCoCos {
     public static EmbeddedMontiArcMathCoCoChecker createChecker() {

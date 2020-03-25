@@ -9,7 +9,6 @@ import de.monticore.types.types._ast.ASTTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class TypeHelper {
 
