@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 /*
  * Custom CoCos for Gravity
- * @author Deniz Schmidt 
  * SE RWTH Aachen
  */
 package de.monticore.lang.montisim.simlang.cocos;

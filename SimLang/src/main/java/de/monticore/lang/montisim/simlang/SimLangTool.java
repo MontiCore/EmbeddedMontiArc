@@ -34,8 +34,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Main class for the SimLang DSL tool.
  *
- * @author Schmidt, Deniz
- * @version 1.0.1
  */
 public class SimLangTool {
     public static SimLangLang SIMLANG_LANGUAGE = new SimLangLang();
