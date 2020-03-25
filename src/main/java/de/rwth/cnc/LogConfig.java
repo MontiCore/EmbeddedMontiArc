@@ -4,7 +4,6 @@ package de.rwth.cnc;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class LogConfig extends Log {
     static Log log;

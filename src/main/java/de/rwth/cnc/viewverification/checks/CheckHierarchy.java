@@ -15,7 +15,6 @@ import de.rwth.cnc.viewverification.inconsistency.InconsistencyHierarchyMismatch
  * in the architecture
  * does not check transitive children in the view to give a more succinct answer
  *
- * @author ringert
  */
 public class CheckHierarchy extends Checker {
 
