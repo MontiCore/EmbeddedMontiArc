@@ -5,7 +5,6 @@ package de.monticore.lang.monticar;
 /**
  * Grammar for Struct.
  *
- * @author Alex Ryndin
  */
 grammar Struct extends de.monticore.lang.monticar.Types2 {
   StructCompilationUnit =
