@@ -12,7 +12,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Checks type compatibility of connected ports.
  *
- * @author ahaber, Robert Heim
  */
 public class PortCompatibilityChecker {
   /**

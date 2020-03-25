@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Crispin Kirchner
  */
 public class ParameterNamesUnique
     implements EmbeddedMontiViewASTComponentHeadCoCo {

@@ -7,7 +7,6 @@ import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewCo
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Crispin Kirchner
  */
 public class TopLevelComponentHasNoInstanceName
     implements EmbeddedMontiViewASTComponentCoCo {

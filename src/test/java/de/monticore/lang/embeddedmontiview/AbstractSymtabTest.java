@@ -18,7 +18,6 @@ import java.util.Optional;
 /**
  * Common methods for symboltable tests
  *
- * @author Robert Heim
  */
 public class AbstractSymtabTest {
   protected static Scope createSymTab(String viewCmpName, String... modelPath) {

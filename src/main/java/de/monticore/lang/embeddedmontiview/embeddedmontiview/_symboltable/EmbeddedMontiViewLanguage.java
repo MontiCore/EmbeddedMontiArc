@@ -18,7 +18,6 @@ import java.util.LinkedHashSet;
 /**
  * The MontiArc Language
  *
- * @author Robert Heim, Michael von Wenckstern
  */
 public class EmbeddedMontiViewLanguage extends EmbeddedMontiViewLanguageTOP {
 

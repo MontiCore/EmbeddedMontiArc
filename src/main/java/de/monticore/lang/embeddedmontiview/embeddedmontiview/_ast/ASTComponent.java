@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 /**
  * TODO: Write me!
  *
- * @author Robert Heim, Michael von Wenckstern
  */
 public class ASTComponent extends ASTComponentTOP {
   /**

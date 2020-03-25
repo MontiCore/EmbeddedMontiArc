@@ -5,7 +5,6 @@ package de.monticore.lang.embeddedmontiview;
 /**
  * Grammar for EmbeddedMontiView.
  *
- * @author Sascha Schneiders, Sining Wang, Yu Qiao, Fabian Kahlert
  */
 grammar EmbeddedMontiView extends de.monticore.lang.monticar.Common2, de.monticore.lang.monticar.Ranges, de.monticore.lang.monticar.MCExpressions {
 

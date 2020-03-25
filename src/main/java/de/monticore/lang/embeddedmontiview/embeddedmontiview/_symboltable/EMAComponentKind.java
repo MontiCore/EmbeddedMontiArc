@@ -4,7 +4,6 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 /**
  * Symbol kind of component instances.
  *
- * @author Robert Heim
  */
 public class EMAComponentKind
     implements de.monticore.symboltable.SymbolKind {

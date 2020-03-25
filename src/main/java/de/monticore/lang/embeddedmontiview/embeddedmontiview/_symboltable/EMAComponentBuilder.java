@@ -14,7 +14,6 @@ import java.util.Collection;
 /**
  * Created by Michael von Wenckstern on 13.06.2016.
  *
- * @author Michael von Wenckstern
  *         This class allows to modify {@see ViewComponentSymbol},
  *         if you do so the symbol table may not be consistent.
  *         Especially you need to call {@see EmbeddedMontiArcExpandedComponentInstanceSymbolCreator#createInstances}

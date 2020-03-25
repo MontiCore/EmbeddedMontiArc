@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Represents an instance of a component.
  *
- * @author Robert Heim
  */
 public class ViewComponentInstanceSymbol extends CommonScopeSpanningSymbol {
 

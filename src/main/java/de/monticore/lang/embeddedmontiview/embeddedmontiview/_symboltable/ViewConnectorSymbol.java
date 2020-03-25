@@ -16,7 +16,6 @@ import java.util.Optional;
 /**
  * Symboltable entry for connectors.
  *
- * @author Arne Haber, Michael von Wenckstern
  */
 public class ViewConnectorSymbol extends CommonSymbol {
 

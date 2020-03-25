@@ -12,7 +12,6 @@ import java.util.Set;
 /**
  * Created by Michael von Wenckstern on 23.05.2016.
  *
- * @author Michael von Wenckstern
  */
 public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
 

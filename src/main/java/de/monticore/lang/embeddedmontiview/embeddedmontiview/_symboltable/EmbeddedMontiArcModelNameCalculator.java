@@ -17,7 +17,6 @@ import java.util.*;
  * full-qualified name, e.g.:<br/>
  * a.b.C.D.E -> a.b.C
  *
- * @author Robert Heim, Michael von Wenckstern
  */
 public class EmbeddedMontiArcModelNameCalculator
     extends de.monticore.CommonModelNameCalculator {

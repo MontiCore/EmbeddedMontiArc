@@ -23,7 +23,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * Created by Michael von Wenckstern on 30.05.2016.
  *
- * @author Michael von Wenckstern
  */
 public class EmbeddedMontiViewModelLoader
     extends EmbeddedMontiViewModelLoaderTOP {

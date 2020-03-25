@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 /**
  * TODO This class should be removed by putting its methods in JavaDSL (or even MC/Types) project.
  *
- * @author Robert Heim
  */
 public class EMAJavaHelper {
   private final static MontiCarSymbolFactory jSymbolFactory = new MontiCarSymbolFactory();

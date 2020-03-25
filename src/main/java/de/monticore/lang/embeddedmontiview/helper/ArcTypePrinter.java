@@ -11,7 +11,6 @@ import de.monticore.lang.monticar.types2._ast.ASTType;
 /**
  * TODO: Implement
  *
- * @author Robert Heim
  */
 public class ArcTypePrinter {
 

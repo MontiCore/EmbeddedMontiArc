@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @author (last commit) Crispin Kirchner
  */
 public class ComponentWithTypeParametersHasInstance
     implements EmbeddedMontiViewASTComponentCoCo {

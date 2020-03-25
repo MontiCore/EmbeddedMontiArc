@@ -6,7 +6,6 @@ import de.monticore.symboltable.CommonSymbol;
 /**
  * TODO Do we really need this?
  *
- * @author Robert Heim
  */
 public abstract class EMAAComponentImplementationSymbol extends CommonSymbol {
 

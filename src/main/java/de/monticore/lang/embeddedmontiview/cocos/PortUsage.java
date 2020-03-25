@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
  * (non-atomic) component itself while CV6 checks that a subcomponent is connected in its
  * <em>outer context</em> (i.e. the outer component).
  *
- * @author ahaber, Robert Heim
  */
 public class PortUsage implements EmbeddedMontiViewASTComponentCoCo {
 

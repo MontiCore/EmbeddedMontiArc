@@ -14,8 +14,6 @@ import java.util.List;
  * E.g.: Wrong: A[int x = 5, int y]
  * Right: B[int x, int y = 5]
  *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class DefaultParametersHaveCorrectOrder
     implements EmbeddedMontiViewASTComponentHeadCoCo {

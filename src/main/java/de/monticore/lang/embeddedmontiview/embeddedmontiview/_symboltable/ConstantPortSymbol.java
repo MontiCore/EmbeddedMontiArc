@@ -18,7 +18,6 @@
 // * The ConstantPortSymbol is a port which has a constant value assigned and is used
 // * by a ConstantConnector to connect this value to other ports.
 // *
-// * @author Sascha Schneiders
 // */
 //public class ConstantPortSymbol extends ViewPortSymbol {
 //    EMAConstantValue constantValue;

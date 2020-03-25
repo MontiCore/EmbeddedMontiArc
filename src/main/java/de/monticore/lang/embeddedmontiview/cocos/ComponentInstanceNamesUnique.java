@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * TODO: Write me!
  *
- * @author Robert Heim
  */
 public class ComponentInstanceNamesUnique
     implements EmbeddedMontiViewASTComponentCoCo {

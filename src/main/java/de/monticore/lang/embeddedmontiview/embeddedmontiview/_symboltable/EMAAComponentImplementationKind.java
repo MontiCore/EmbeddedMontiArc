@@ -4,7 +4,6 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 /**
  * TODO Do we really need this?
  *
- * @author Robert Heim
  */
 public class EMAAComponentImplementationKind
     implements de.monticore.symboltable.SymbolKind {

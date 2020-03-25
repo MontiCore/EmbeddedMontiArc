@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author (last commit) Crispin Kirchner
  */
 public class TypeParameterNamesUnique
     implements EmbeddedMontiViewASTComponentHeadCoCo {

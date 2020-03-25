@@ -64,7 +64,6 @@ import static de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable
 /**
  * Visitor that creats the symboltable of an EmbeddedMontiArc AST.
  *
- * @author Sascha Schneiders, Sining Wang, Yu Qiao
  */
 public class EmbeddedMontiViewSymbolTableCreator
     extends EmbeddedMontiViewSymbolTableCreatorTOP {
