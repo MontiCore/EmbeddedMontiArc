@@ -4,7 +4,6 @@ package de.monticore.lang.math._symboltable;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 /**
- * @author math-group
  */
 public class MathVariableDeclarationResolvingFilter extends CommonResolvingFilter<MathVariableDeclarationSymbol> {
     public MathVariableDeclarationResolvingFilter() {

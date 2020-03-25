@@ -4,7 +4,6 @@ package de.monticore.lang.math._symboltable.expression;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathParenthesisExpressionSymbol extends MathExpressionSymbol {
     protected MathExpressionSymbol mathExpressionSymbol;

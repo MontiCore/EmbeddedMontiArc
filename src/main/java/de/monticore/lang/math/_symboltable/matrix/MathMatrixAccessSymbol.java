@@ -6,7 +6,6 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathMatrixAccessSymbol extends MathMatrixExpressionSymbol {
 

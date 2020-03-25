@@ -7,7 +7,6 @@ import javax.measure.unit.Unit;
 import java.util.ArrayList;
 
 /**
- * @author math-group
  *
  * JScience Math expression type
  */

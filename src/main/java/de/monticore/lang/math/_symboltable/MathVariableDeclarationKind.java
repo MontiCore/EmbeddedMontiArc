@@ -4,7 +4,6 @@ package de.monticore.lang.math._symboltable;
 import de.monticore.symboltable.SymbolKind;
 
 /**
- * @author math-group
  */
 public class MathVariableDeclarationKind implements SymbolKind {
 

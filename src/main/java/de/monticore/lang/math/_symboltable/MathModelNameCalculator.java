@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author math-group
  */
 public class MathModelNameCalculator extends de.monticore.CommonModelNameCalculator {
 

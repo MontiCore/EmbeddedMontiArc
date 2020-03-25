@@ -2,7 +2,6 @@
 package de.monticore.lang.math._symboltable.expression;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathCompareExpressionSymbol extends MathExpressionSymbol implements IArithmeticExpression {
     protected String compareOperator;

@@ -5,7 +5,6 @@ import de.monticore.lang.math._symboltable.JSValue;
 import org.jscience.mathematics.number.Rational;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathNumberExpressionSymbol extends MathValueExpressionSymbol {
     JSValue value;

@@ -7,7 +7,6 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol
 /**
  * Symbol for setting/changing a MathValue
  *
- * @author Sascha Schneiders
  */
 public class MathAssignmentExpressionSymbol extends MathExpressionSymbol {
     protected String nameOfMathValue;

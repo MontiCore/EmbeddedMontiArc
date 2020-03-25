@@ -4,7 +4,6 @@ package de.monticore.lang.math._symboltable;
 import de.monticore.lang.math._ast.ASTMathAssignmentOperator;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathAssignmentOperator {
     protected String operator;

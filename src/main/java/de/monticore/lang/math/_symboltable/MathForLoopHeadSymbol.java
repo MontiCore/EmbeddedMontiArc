@@ -6,7 +6,6 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 /**
  * In AST: Name& = MathExpression
  *
- * @author Sascha Schneiders
  */
 public class MathForLoopHeadSymbol extends MathExpressionSymbol {
     protected String nameLoopVariable;

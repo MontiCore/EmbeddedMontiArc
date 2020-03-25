@@ -7,7 +7,6 @@ import de.monticore.lang.math._symboltable.expression.IMathNamedExpression;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol implements IMathNamedExpression {
 

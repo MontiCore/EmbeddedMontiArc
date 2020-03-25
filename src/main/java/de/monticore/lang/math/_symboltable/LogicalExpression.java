@@ -6,7 +6,6 @@ import javax.measure.unit.Unit;
 import java.util.ArrayList;
 
 /**
- * @author math-group
  *
  * Type for logical expressions
  */

@@ -5,7 +5,6 @@ import de.monticore.lang.math._symboltable.expression.IArithmeticExpression;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathMatrixArithmeticExpressionSymbol extends MathMatrixExpressionSymbol implements IArithmeticExpression {
 

@@ -6,7 +6,6 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 /**
- * @author math-group
  */
 
 public class MathLanguage extends MathLanguageTOP{

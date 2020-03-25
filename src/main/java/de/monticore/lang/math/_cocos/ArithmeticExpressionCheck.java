@@ -8,7 +8,6 @@ package de.monticore.lang.math._cocos;
 //
 //
 ///**
-// * @author math-group
 // *          <p>
 // *          arithmetic expression checker
 // */

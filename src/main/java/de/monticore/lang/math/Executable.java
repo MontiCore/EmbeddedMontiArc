@@ -2,7 +2,6 @@
 package de.monticore.lang.math;
 
 /**
- * @author Sascha Schneiders
  */
 public interface Executable {
     void execute();

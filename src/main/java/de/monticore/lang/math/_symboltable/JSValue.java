@@ -7,7 +7,6 @@ import javax.measure.unit.Unit;
 import java.util.Optional;
 
 /**
- * @author math-group
  *         <p>
  *         JScience Value Type
  */

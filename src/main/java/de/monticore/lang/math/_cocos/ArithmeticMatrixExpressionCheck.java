@@ -10,7 +10,6 @@
 //
 //
 ///**
-// * @author math-group
 // *
 // * arithmetic expression checker for matrices
 // */

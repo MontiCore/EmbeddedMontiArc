@@ -40,7 +40,6 @@ import static de.monticore.numberunit.Rationals.doubleToRational;
 
 
 /**
- * @author math-group
  * <p>
  * creates the symbol table
  */

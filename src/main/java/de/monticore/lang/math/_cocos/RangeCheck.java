@@ -13,7 +13,6 @@
 //import javax.measure.unit.Unit;
 //import de.monticore.lang.numberunit._ast.*;
 ///**
-// * @author math-group
 // *          Range check Cocos
 // */
 //public class RangeCheck extends AbstChecker /*implements MathASTAssignmentCoCo*/ {

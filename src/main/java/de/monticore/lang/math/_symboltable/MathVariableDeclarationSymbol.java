@@ -8,7 +8,6 @@ import de.monticore.symboltable.CommonSymbol;
 import java.util.List;
 
 /**
- * @author math-group
  */
 public class MathVariableDeclarationSymbol extends CommonSymbol {
 

@@ -9,7 +9,6 @@ import java.io.*;
 import java.util.*;
 
 /**
- * @author math-group
  *         generator class that generade the appropriate code
  */
 public class Generator extends AbstCocoCheck {

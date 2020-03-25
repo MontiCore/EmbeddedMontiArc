@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Robert Heim / Michael von Wenckstern
  * is copied from MontiArc4/ParserMathTest.java
  */
 public class ParserMathTest {
@@ -73,7 +72,6 @@ public class ParserMathTest {
     /**
      * Visits files of the given file ending and checks whether they are parsable.
      *
-     * @author Robert Heim
      * // PrimaryUnitExpression = PrimaryExpression2 (unit:EMAUnit)?;
      * @see Files#walkFileTree(Path, java.nio.file.FileVisitor)
      */

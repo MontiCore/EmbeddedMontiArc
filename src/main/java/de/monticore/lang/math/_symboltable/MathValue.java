@@ -4,7 +4,6 @@ package de.monticore.lang.math._symboltable;
 import javax.measure.unit.Unit;
 
 /**
- * @author math-group
  *
  * An abstract type for a math value
  */

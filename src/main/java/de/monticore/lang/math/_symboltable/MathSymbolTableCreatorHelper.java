@@ -6,7 +6,6 @@ import de.monticore.lang.math._symboltable.expression.IArithmeticExpression;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathSymbolTableCreatorHelper {
     public static void setOperatorLeftRightExpression(IArithmeticExpression symbol, ASTNode leftExpressionSymbol, ASTNode rightExpressionSymbol, String operator) {

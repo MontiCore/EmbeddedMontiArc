@@ -8,7 +8,6 @@ import java.util.ArrayList;
 /**
  * Symbol represents a MathValueSymbol which consists of a type and a mathexpression that determines its value.
  *
- * @author Sascha Schneiders
  */
 public class MathValueSymbol extends MathValueExpressionSymbol {
 

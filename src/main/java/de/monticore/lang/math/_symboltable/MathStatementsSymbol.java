@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathStatementsSymbol extends CommonSymbol {
     public static MathStatementsSymbolKind KIND = new MathStatementsSymbolKind();

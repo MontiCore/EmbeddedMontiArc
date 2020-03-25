@@ -2,7 +2,6 @@
 package de.monticore.lang.math._symboltable;
 
 /**
- * @author math-group
  *
  * Operator type that stores als different operators that are used in math expression (see matlab)
  */

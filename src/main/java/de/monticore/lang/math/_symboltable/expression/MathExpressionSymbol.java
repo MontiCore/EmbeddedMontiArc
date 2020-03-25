@@ -7,7 +7,6 @@ import de.monticore.symboltable.CommonSymbol;
 /**
  * All valid MathExpressions
  *
- * @author Sascha Schneiders
  */
 public abstract class MathExpressionSymbol extends CommonSymbol implements TextualExpression {
     public static MathExpressionSymbolKind KIND = new MathExpressionSymbolKind();

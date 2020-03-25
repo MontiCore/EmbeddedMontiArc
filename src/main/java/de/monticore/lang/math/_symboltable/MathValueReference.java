@@ -7,7 +7,6 @@ import javax.measure.unit.Unit;
 import java.util.Optional;
 
 /**
- * @author math-group
  */
 public class MathValueReference extends MathVariableDeclarationSymbolReference implements MathValue {
     /** every math value has a unit */

@@ -8,7 +8,6 @@ import de.monticore.symboltable.references.CommonSymbolReference;
 import de.monticore.symboltable.references.SymbolReference;
 
 /**
- * @author math-group
  */
 public class MathVariableDeclarationSymbolReference extends MathVariableDeclarationSymbol implements SymbolReference<MathVariableDeclarationSymbol> {
     protected final SymbolReference<MathVariableDeclarationSymbol> reference;
