@@ -1,6 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 // acceleration and steering angle to actuators steering, engine, break
-// @author Christoph Richter
 
 package de.rwth.monticar.mpc;
 

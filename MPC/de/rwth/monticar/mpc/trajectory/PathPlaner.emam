@@ -2,7 +2,6 @@
 // PathPlaner:
 // - First trims path to current progress
 // - Then creates low level reference state vector for mpc controller
-// @author Christoph Richter
 
 package de.rwth.monticar.mpc.trajectory;
 
