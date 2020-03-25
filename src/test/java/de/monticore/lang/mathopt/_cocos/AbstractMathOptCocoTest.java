@@ -13,7 +13,6 @@ import java.util.Optional;
 /**
  * Abstract base class to create coco tests. Provides methods to generate an AST node from string and assign symbols to it
  *
- * @author Christoph Richter
  */
 public abstract class AbstractMathOptCocoTest {
 

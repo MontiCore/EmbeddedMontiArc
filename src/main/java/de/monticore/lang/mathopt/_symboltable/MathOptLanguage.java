@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * @author Christoph Richter
  */
 public class MathOptLanguage extends MathOptLanguageTOP {
 

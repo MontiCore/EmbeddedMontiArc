@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Tests if OptimizationStatementCheck works correctly
  *
- * @author Christoph Richter
  */
 public class OptimizationStatementCheckTestMathOpt extends AbstractMathOptCocoTest {
 

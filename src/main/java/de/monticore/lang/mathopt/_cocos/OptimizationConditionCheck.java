@@ -13,7 +13,6 @@ import java.util.Set;
 /**
  * Context Conditions for optimization statement
  *
- * @author Christoph Richter
  */
 public class OptimizationConditionCheck implements MathOptASTOptimizationConditionCoCo {
 

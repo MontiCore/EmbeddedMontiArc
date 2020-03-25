@@ -3,7 +3,6 @@ package de.monticore.lang.mathopt._cocos;
 
 /**
  * Collection of context conditions (cocos) for MontiMathOpt
- * @author Christoph Richter
  */
 public class MathOptCocos {
 

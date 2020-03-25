@@ -29,7 +29,6 @@ import static org.junit.Assert.assertEquals;
 /**
  * Abstract checker class to check MontiMathOpt models
  *
- * @author Christoph Richter
  */
 public abstract class AbstractMathOptChecker {
 

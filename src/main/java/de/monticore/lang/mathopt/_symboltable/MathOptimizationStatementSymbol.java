@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Christoph Richter
  */
 
 public class MathOptimizationStatementSymbol extends MathExpressionSymbol {

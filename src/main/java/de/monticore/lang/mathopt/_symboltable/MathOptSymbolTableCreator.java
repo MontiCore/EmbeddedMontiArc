@@ -17,7 +17,6 @@ import java.util.Deque;
  * Creates a hand written symbol table for MontiMathOpt
  * Assigns symbols to corresponding AST nodes.
  *
- * @author Christoph Richter
  */
 public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements MathOptVisitor {
 

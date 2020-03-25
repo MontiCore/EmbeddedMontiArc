@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * Helper class which provides access to multiple OptimizationSymbols in different models.
  *
- * @author Christoph Richter
  */
 public class OptimizationModelHelper extends AbstractMathOptChecker {
 

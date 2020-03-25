@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Christoph Richter
  */
 public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
 

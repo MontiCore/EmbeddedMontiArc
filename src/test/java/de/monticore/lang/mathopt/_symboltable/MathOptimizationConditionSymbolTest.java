@@ -12,7 +12,6 @@ import static org.junit.Assert.*;
 /**
  * Unit Tests for MathOptimizationConditionSymbol
  *
- * @author Christoph Richter
  */
 public class MathOptimizationConditionSymbolTest {
 

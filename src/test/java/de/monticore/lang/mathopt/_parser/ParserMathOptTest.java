@@ -7,7 +7,6 @@ import de.monticore.lang.math.ParserMathTest;
 /**
  * Tests for MontiMathOpt's parser
  *
- * @author Christoph Richter
  */
 public class ParserMathOptTest extends ParserMathTest {
 

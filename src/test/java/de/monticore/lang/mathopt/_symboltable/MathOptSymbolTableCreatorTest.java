@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 
 /**
  * Tests all Math Symbols with the new SymbolTableCreator.
- * @author Christoph Richter
  */
 public class MathOptSymbolTableCreatorTest extends MathSymbolTableCreatorTest {
 
