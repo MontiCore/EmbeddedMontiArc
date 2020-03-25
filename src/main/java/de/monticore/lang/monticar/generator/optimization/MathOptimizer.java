@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathOptimizer {
     public static BluePrintCPP currentBluePrint;

@@ -6,7 +6,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 
 /**
- * @author Sascha Schneiders
  */
 public class FileContent {
     String fileContent;

@@ -30,7 +30,6 @@ import java.util.Arrays;
 /**
  * Common methods for symboltable tests
  *
- * @author Robert Heim
  */
 public class AbstractSymtab {
     public static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {

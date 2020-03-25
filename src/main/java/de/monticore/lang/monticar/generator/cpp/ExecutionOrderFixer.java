@@ -18,7 +18,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.*;
 
 /**
- * @author Sascha Schneiders
  */
 public class ExecutionOrderFixer {
     public static void fixExecutionOrder(TaggingResolver taggingResolver, BluePrintCPP bluePrintCPP, GeneratorCPP generatorCPP) {

@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 /*
  *
- *  @author ernst
  *
  */
 
@@ -551,7 +550,6 @@ public class ImplementExecutionOrder {
 //
 ///*
 // *
-// *  @author ernst
 // *
 // */
 //public class ImplementExecutionOrder {

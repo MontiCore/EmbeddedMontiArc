@@ -19,7 +19,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class PortConverter {
     public static int counterConstantPortsIn = 0;

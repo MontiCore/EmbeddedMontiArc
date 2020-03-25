@@ -8,7 +8,6 @@ import org.apache.commons.lang3.SystemUtils;
 import java.io.*;
 
 /**
- * @author Sascha Schneiders
  */
 public class StreamTestExecution {
 

@@ -34,7 +34,6 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * @author Sascha Schneiders
  */
 public class GeneratorCPP implements Generator {
     public static GeneratorCPP currentInstance;

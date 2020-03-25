@@ -2,7 +2,6 @@
 package de.monticore.lang.monticar.generator.cpp;
 
 /**
- * @author Sascha Schneiders
  */
 public class ArmadilloHelperSource {
 

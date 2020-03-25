@@ -12,7 +12,6 @@ package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.prob
  * m number of constraints
  * A. Wächter and L. T. Biegler, ​On the Implementation of a Primal-Dual Interior Point Filter Line Search Algorithm for Large-Scale Nonlinear Programming, Mathematical Programming 106(1), pp. 25-57, 2006
  *
- * @author Christoph Richter
  */
 public class NLPProblem extends ConvexProblem {
 

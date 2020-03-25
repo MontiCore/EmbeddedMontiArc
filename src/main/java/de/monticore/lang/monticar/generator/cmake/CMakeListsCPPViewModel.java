@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * View model which is used by the freemarker template
  *
- * @author Christoph Richter
  */
 public class CMakeListsCPPViewModel extends ViewModelBase {
 

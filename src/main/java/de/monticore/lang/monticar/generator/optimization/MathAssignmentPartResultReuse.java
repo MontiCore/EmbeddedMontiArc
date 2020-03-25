@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathAssignmentPartResultReuse implements MathOptimizationRule {
     MathStatementsSymbol currentMathStatementsSymbol = null;

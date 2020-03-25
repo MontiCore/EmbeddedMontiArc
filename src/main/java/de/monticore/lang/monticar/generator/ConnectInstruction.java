@@ -2,7 +2,6 @@
 package de.monticore.lang.monticar.generator;
 
 /**
- * @author Sascha Schneiders
  */
 public abstract class ConnectInstruction implements Instruction {
     Variable variable1, variable2;

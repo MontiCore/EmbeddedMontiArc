@@ -12,7 +12,6 @@ import de.monticore.lang.monticar.streamunits._ast.ASTStreamInstruction;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 
 /**
- * @author Sascha Schneiders
  */
 public class TestConverter {
 

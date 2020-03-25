@@ -10,7 +10,6 @@ import java.util.HashSet;
 import static de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP.removeBrackets;
 
 /**
- * @author Sascha Schneiders.
  */
 public abstract class MathCommand {
     protected String mathCommandName;

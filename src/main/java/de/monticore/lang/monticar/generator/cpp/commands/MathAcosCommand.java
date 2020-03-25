@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathAcosCommand extends MathCommand {
     public MathAcosCommand() {

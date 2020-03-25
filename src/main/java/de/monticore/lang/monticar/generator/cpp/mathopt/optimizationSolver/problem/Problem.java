@@ -8,7 +8,6 @@ import java.util.Vector;
 /**
  * Represents an abstract optimization problem of the general form
  *
- * @author Christoph Richter
  */
 public class Problem {
 

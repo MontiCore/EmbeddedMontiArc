@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
- * @author Christoph Richter
  * Overloaded syntax to more math convinient way:
  * sum(function, sum_variable, start_value, end_value)
  */

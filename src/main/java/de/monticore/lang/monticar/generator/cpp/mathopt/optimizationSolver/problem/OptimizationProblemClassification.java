@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Analyses a MathOptimizationStatementSymbol for its problem class.
  *
- * @author Christoph Richter
  */
 public class OptimizationProblemClassification {
 

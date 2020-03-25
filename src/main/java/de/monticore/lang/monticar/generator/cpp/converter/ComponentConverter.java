@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @author Sascha Schneiders
  * Handles code generation for a component and its "subsymbols"
  */
 public class ComponentConverter {

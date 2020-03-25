@@ -10,7 +10,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Factory to produce solver generators together with their implementation
  *
- * @author Christoph Richter
  */
 public class SolverGeneratorFactory {
     private static SolverGeneratorFactory ourInstance = new SolverGeneratorFactory();

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class BluePrintCPP extends BluePrint {
     public List<String> additionalIncludeStrings = new ArrayList<>();

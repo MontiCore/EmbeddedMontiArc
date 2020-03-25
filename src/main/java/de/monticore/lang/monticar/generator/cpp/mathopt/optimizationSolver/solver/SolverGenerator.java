@@ -11,7 +11,6 @@ import java.util.List;
  * Abstract generator for executable code of optimization solvers.
  * Implements the bridge pattern to exchange the concrete solver generator at runtime.
  *
- * @author Christoph Richter
  */
 public abstract class SolverGenerator {
 

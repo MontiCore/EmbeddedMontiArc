@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Test class for Cplex solver
  *
- * @author Christoph Richter
  */
 public class GeneratorCplexSolverTest extends AbstractSymtabTest {
 

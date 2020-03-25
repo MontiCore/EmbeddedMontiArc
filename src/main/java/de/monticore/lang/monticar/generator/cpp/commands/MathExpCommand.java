@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathExpCommand extends MathCommand {
     public MathExpCommand() {

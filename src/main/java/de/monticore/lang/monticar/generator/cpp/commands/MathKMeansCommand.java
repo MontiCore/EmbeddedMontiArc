@@ -22,7 +22,6 @@ import java.util.List;
  * Not working on Windows 10 Octave version 4.2.1. Tested on two different Windows 10 machines.
  * Issue seems to be that Windows 10 is not yet fully supported by Octave.
  *
- * @author Sascha Schneiders
  */
 public class MathKMeansCommand extends MathCommand {
     public MathKMeansCommand() {

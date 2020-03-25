@@ -2,7 +2,6 @@
 package de.monticore.lang.monticar.generator.cpp.commands;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathOnesCommand extends MathInitCommand {
     public MathOnesCommand() {

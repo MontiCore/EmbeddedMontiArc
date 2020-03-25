@@ -2,8 +2,6 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 /**
- * @author Sascha Schneiders
- * @author Christoph Richter
  */
 public class StringIndexHelper {
 

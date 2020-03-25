@@ -5,7 +5,6 @@ import de.monticore.lang.monticar.generator.ConnectInstruction;
 import de.monticore.lang.monticar.generator.Variable;
 
 /**
- * @author Sascha Schneiders
  */
 public class ConstantConnectInstructionCPP extends ConnectInstruction {
 

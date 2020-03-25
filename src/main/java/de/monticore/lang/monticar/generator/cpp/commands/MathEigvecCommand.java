@@ -20,7 +20,6 @@ import java.util.List;
 /**
  * Currently works with symmetric matrices in ArmadilloBackend
  *
- * @author Sascha Schneiders
  */
 public class MathEigvecCommand extends MathCommand {
 

@@ -16,7 +16,6 @@ import java.util.Map;
 /**
  * Rule that transforms ABC to A(BC) if this reduces the amount of operations required
  *
- * @author Sascha Schneiders
  */
 public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
 

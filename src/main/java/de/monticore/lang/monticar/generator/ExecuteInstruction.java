@@ -5,7 +5,6 @@ import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 
 /**
- * @author Sascha Schneiders
  */
 public class ExecuteInstruction implements Instruction {
     String componentName;

@@ -9,7 +9,6 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class Helper {
     public static MathStatementsSymbol getMathStatementsSymbolFor(EMAComponentInstanceSymbol instanceSymbol, Scope symtab) {

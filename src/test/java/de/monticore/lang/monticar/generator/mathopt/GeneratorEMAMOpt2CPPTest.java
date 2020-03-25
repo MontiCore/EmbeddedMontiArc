@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Some unit test for generating code for a optimization problem.
  *
- * @author Christoph Richter
  */
 public class GeneratorEMAMOpt2CPPTest extends AbstractSymtabTest {
 

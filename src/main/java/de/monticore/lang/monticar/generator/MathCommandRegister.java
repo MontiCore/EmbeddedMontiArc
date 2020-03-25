@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public abstract class MathCommandRegister {
     public List<MathCommand> mathCommands = new ArrayList<>();

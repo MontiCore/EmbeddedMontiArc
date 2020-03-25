@@ -6,7 +6,6 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpression
 import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
 
 /**
- * @author Sascha Schneiders
  */
 public interface MathBackend {
     String getMatrixTypeName();

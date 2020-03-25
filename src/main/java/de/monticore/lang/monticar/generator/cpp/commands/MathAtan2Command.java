@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathAtan2Command extends MathCommand {
     public MathAtan2Command() {

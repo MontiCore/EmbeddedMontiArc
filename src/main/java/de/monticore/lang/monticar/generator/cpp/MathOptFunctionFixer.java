@@ -9,7 +9,6 @@ import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 /**
  * fixes math optimization functions
  *
- * @author Christoph Richter
  */
 public class MathOptFunctionFixer extends BaseMathFunctionFixerHandler {
 

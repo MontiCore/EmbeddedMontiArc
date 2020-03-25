@@ -15,7 +15,6 @@ import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
 

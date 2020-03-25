@@ -23,7 +23,6 @@ import java.util.Map;
  * CMake dependencies to other modules can be added as Find Package file.
  * See also https://cmake.org/cmake/help/v3.8/command/find_package.html?highlight=i
  *
- * @author Christoph Richter
  */
 public class CMakeConfig {
 

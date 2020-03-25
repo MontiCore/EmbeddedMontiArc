@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * Handles code generation for optimization symbols
  *
- * @author Christoph Richter
  */
 public class OptimizationSymbolHandler extends BaseExecuteMethodGeneratorHandler {
 

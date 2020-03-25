@@ -12,7 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author Sascha Schneiders
  */
 public class BluePrintFixer {
     public static void fixBluePrintVariableArrays(BluePrint bluePrint) {

@@ -4,7 +4,6 @@ package de.monticore.lang.monticar.pattern;
 /**
  * Implements the chain-of-responsibility pattern
  *
- * @author Christoph Richter
  */
 public abstract class BaseChainOfResponsibility<T> {
 

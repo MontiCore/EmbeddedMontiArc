@@ -7,7 +7,6 @@ import de.monticore.lang.monticar.generator.Variable;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class VariableStatic extends Variable {
 

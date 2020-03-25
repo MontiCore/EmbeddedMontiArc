@@ -8,7 +8,6 @@ import de.monticore.lang.monticar.generator.MathBackend;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class LinalgBackend implements MathBackend {
     @Override

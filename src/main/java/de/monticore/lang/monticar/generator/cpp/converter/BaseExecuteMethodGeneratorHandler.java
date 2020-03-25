@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * Implements the chain-of-responsibility pattern
  *
- * @author Christoph Richter
  */
 public abstract class BaseExecuteMethodGeneratorHandler extends BaseChainOfResponsibility<BaseExecuteMethodGeneratorHandler> {
 
