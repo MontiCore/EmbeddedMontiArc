@@ -24,7 +24,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @author Robert Heim / Michael von Wenckstern
  *         is copied from MontiArc4/ParserTaggingTest.java
  */
 public class ParserTagSchemaTest {
@@ -67,7 +66,6 @@ public class ParserTagSchemaTest {
   /**
    * Visits files of the given file ending and checks whether they are parsable.
    *
-   * @author Robert Heim
    * @see Files#walkFileTree(Path, java.nio.file.FileVisitor)
    */
   private static class ParseTest extends SimpleFileVisitor<Path> {

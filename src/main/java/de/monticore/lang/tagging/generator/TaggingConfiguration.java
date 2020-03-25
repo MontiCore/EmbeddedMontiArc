@@ -19,7 +19,6 @@ import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
 /**
  * Configuration of MontiArc generator.
  *
- * @author Robert Heim
  */
 public class TaggingConfiguration implements Configuration {
 

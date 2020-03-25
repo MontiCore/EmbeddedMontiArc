@@ -15,7 +15,6 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer;
 /**
  * TODO: Write me!
  *
- * @author Robert Heim, Michael von Wenckstern
  */
 public class TaggingScript extends Script implements GroovyRunner {
   

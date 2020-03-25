@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
  * This is the base class for tags, if you define a new tag
  * this class must be extended
  *
- * @author Michael von Wenckstern
  */
 public class TagSymbol extends de.monticore.symboltable.CommonSymbol {
 

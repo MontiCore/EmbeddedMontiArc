@@ -5,7 +5,6 @@ package de.monticore.lang;
  * Basic grammar to tag non-functional properties
  * grammar to create only parsers for tag values
  *
- * @author Michael von Wenckstern
  */
 grammar TagValue extends de.monticore.common.Common {
 

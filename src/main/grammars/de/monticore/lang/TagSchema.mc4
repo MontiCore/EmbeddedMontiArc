@@ -4,7 +4,6 @@ package de.monticore.lang;
 /**
  * Basic grammar to tag non-functional properties
  *
- * @author Michael von Wenckstern
  */
 grammar TagSchema extends de.monticore.common.Common {
 
