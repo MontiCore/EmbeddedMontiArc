@@ -13,7 +13,6 @@ import java.util.stream.Collectors;*/
 /**
  * Checks that names of invariants within a component are unique.
  *
- * @author Arne Haber, Robert Heim
  */
 /*public class UniqueConstraint implements EmbeddedMontiArcASTComponentCoCo {
 

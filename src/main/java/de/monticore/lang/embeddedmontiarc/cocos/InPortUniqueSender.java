@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * Implements R1 and R2
  * 
- * @author Crispin Kirchner
  */
 public class InPortUniqueSender implements EmbeddedMontiArcASTComponentCoCo {
   

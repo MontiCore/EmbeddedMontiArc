@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Created by Michael von Wenckstern on 30.05.2016.
  *
- * @author Michael von Wenckstern
  */
 public class EmbeddedMontiArcModelLoader extends EmbeddedMontiArcModelLoaderTOP {
 

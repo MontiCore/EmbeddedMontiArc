@@ -4,7 +4,6 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanc
 /**
  * Symbol kind of component instances.
  *
- * @author Robert Heim
  */
 public class EMAComponentInstantiationKind
     implements de.monticore.symboltable.SymbolKind {

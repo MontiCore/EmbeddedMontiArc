@@ -21,7 +21,6 @@ import static de.monticore.numberunit.Rationals.doubleToRational;
  * The ConstantPortHelper manages constant Port names and sets the constantValue from the AST elements. Constant Ports are used
  * by constant Connectors to connect their value to other ports.
  *
- * @author Sascha Schneiders, Alexander Hellwig
  */
 public class ConstantPortHelper {
     private static int lastID = 1;

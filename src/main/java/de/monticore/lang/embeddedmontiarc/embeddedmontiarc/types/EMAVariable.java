@@ -4,7 +4,6 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types;
 import de.monticore.types.types._ast.ASTType;
 
 /**
- * @author Sascha Schneiders
  */
 public class EMAVariable {
     protected ASTType type;

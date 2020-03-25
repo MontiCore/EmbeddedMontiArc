@@ -17,7 +17,6 @@ import de.monticore.symboltable.types.references.TypeReference;
 /**
  * Represents an instance of a component.
  *
- * @author Robert Heim
  */
 public class EMAComponentInstantiationSymbol extends CommonScopeSpanningSymbol implements EMAElementInstanceSymbol {
 

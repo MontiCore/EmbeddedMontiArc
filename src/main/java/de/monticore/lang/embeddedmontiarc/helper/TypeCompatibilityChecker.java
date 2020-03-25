@@ -14,7 +14,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Checks type compatibility of {@link ArcTypeReference}s.
  *
- * @author ahaber, Robert Heim
  */
 public class TypeCompatibilityChecker {
   private static int getPositionInFormalTypeParameters(List<MCTypeSymbol> formalTypeParameters,

@@ -31,7 +31,6 @@ import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
 /**
  * Symbol for component definitions.
  *
- * @author Robert Heim
  */
 public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMAElementSymbol{
 

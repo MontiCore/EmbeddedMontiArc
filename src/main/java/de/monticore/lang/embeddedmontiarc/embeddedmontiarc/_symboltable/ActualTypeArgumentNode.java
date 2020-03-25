@@ -7,7 +7,6 @@ import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.symboltable.types.references.TypeReference;
 
 /**
- * @author Sascha Schneiders
  */
 public class ActualTypeArgumentNode extends ActualTypeArgument {
     ASTNode node;

@@ -7,7 +7,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.*;
 /**
  * Bundle of CoCos for the MontiArc language.
  *
- * @author Robert Heim
  */
 public class EmbeddedMontiArcCoCos {
   public static EmbeddedMontiArcCoCoChecker createChecker() {

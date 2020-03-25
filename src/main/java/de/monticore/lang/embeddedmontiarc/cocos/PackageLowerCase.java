@@ -11,7 +11,6 @@ import de.se_rwth.commons.logging.Log;
  * Ensures, that packages of components are lower-case. This is required for inner components, see
  * {@link EmbeddedMontiArcModelNameCalculator}.
  *
- * @author Robert Heim
  */
 public class PackageLowerCase implements EmbeddedMontiArcASTEMACompilationUnitCoCo {
 

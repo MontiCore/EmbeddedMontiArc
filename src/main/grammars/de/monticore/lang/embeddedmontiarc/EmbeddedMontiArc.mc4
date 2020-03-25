@@ -5,7 +5,6 @@ package de.monticore.lang.embeddedmontiarc;
 /**
  * Grammar for EmbeddedMontiArc.
  *
- * @author Michael von Wenckstern, Nina Pichler, Sascha Schneiders, Sining Wang, Yu Qiao
  */
 grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
 

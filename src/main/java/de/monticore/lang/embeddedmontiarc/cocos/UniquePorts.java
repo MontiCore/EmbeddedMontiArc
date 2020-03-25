@@ -15,7 +15,6 @@ import java.util.List;
  * Checks that port names are unique (including implicit port names derived from ports without a
  * name).
  *
- * @author Arne Haber, Robert Heim
  */
 public class UniquePorts implements EmbeddedMontiArcASTInterfaceCoCo {
 

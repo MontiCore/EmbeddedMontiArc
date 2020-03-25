@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class InstancingRegister {
     public static List<InstanceInformation> instanceInformation = new ArrayList();

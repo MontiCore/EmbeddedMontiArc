@@ -4,7 +4,6 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncMode
 /**
  * TODO Do we really need this?
  *
- * @author Robert Heim
  */
 public class EMAComponentImplementationKind
     implements de.monticore.symboltable.SymbolKind {

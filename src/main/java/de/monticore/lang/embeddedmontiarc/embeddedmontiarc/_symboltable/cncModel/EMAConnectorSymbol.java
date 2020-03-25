@@ -16,7 +16,6 @@ import java.util.*;
 /**
  * Symboltable entry for connectors.
  *
- * @author Arne Haber, Michael von Wenckstern
  */
 public class EMAConnectorSymbol extends CommonSymbol implements EMAElementSymbol {
 

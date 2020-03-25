@@ -6,7 +6,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiA
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Crispin Kirchner
  */
 public class TopLevelComponentHasNoInstanceName
     implements EmbeddedMontiArcASTComponentCoCo {

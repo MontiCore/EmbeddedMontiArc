@@ -30,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 /**
  * This is a symbol table test.
  *
- * @author Sascha Schneiders, Sining Wang, Yu Qiao
  */
 public class SymtabTest extends AbstractSymtabTest {
     @BeforeClass

@@ -12,7 +12,6 @@ import java.text.DecimalFormat;
 /**
  * Only used for getting expression value
  *
- * @author Sascha Schneiders
  */
 public class UnitNumberExpressionSymbol extends CommonSymbol implements TextualExpression {
     protected ASTUnitNumberExpression unitNumberExpression;

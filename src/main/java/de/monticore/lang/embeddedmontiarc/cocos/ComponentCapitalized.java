@@ -10,7 +10,6 @@ import de.se_rwth.commons.logging.Log;
  * Ensures, that component names startVal in upper-case. This is required for inner components, see
  * {@link EmbeddedMontiArcModelNameCalculator}.
  *
- * @author Robert Heim
  */
 public class ComponentCapitalized implements EmbeddedMontiArcASTComponentCoCo {
 

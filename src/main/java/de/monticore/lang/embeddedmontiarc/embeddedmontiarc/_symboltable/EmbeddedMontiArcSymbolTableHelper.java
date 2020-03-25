@@ -38,7 +38,6 @@ import static de.monticore.numberunit.Rationals.doubleToRational;
 
 
 /**
- * @author Sascha Schneiders
  */
 public class EmbeddedMontiArcSymbolTableHelper {
 

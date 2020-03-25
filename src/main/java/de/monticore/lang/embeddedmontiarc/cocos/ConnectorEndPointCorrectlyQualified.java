@@ -10,7 +10,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.function.Predicate;
 
 /**
- * @author Crispin Kirchner
  *
  * Implementation of CO1 and CO2
  */

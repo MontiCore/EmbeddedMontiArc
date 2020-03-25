@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Arne Haber
- * @date 08.02.2010
  */
 public class ConventionsTest extends AbstractCoCoTest {
 

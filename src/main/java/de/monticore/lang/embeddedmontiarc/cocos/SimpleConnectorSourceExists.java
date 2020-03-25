@@ -15,7 +15,6 @@ import java.util.Optional;
 /**
  * Implementation of R7
  *
- * @author Crispin Kirchner
  */
 public class SimpleConnectorSourceExists implements EmbeddedMontiArcASTComponentCoCo {
   

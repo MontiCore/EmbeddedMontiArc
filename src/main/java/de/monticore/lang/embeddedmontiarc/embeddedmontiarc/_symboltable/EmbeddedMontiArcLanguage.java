@@ -25,7 +25,6 @@ import de.monticore.lang.monticar.ts.MCTypeSymbol;
 /**
  * The MontiArc Language
  *
- * @author Robert Heim, Michael von Wenckstern
  */
 public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
 

@@ -15,7 +15,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 /**
- * @author Sascha Schneiders
  */
 public class ComponentScanner {
     protected String FILE_ENDING = "ema";

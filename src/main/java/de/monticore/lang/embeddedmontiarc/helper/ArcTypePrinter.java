@@ -13,7 +13,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * TODO: Implement
  *
- * @author Robert Heim
  */
 public class ArcTypePrinter {
 

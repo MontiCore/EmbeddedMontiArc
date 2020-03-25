@@ -42,7 +42,6 @@ import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.E
 /**
  * Visitor that creats the symboltable of an EmbeddedMontiArc AST.
  *
- * @author Sascha Schneiders, Sining Wang, Yu Qiao
  */
 public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTableCreatorTOP {
 

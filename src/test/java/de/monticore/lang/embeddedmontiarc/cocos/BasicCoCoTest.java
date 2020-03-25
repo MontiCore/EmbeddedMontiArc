@@ -4,7 +4,6 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 import org.junit.Test;
 
 /**
- * @author Sascha Schneiders
  */
 public class BasicCoCoTest extends AbstractCoCoTest {
 

@@ -15,7 +15,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author Michael von Wenckstern
  *         Created by Michael von Wenckstern on 23.05.2016.
  *         The aim of this class is to have real component instances<br>
  *         component A {

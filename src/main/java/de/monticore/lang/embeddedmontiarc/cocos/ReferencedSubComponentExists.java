@@ -13,7 +13,6 @@ import java.util.Optional;
 /**
  * Implements R3 and R4 from AHs PhD thesis
  * 
- * @author Crispin Kirchner
  */
 public class ReferencedSubComponentExists implements EmbeddedMontiArcASTSubComponentCoCo {
   
