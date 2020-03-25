@@ -5,7 +5,6 @@ package de.monticore.lang.monticar;
 /**
  * Grammar for Enum.
  *
- * @author Alex Ryndin
  */
 grammar EnumLang extends de.monticore.lang.monticar.Types2 {
   EnumLangCompilationUnit =
