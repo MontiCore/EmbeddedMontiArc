@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.*;
 
 /**
- * @author (last commit) Crispin Kirchner
  */
 public class AbstractCoCoTest extends AbstractSymtabTest {
   

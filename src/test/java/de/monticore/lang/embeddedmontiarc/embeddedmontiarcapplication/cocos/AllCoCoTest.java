@@ -9,7 +9,6 @@ import java.io.IOException;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Sascha Schneiders
  */
 public class AllCoCoTest extends AbstractCoCoTest {
     String baseDir="src/test/resources";

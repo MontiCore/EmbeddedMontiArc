@@ -7,7 +7,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * @author Sascha Schneiders
  */
 public class AtomicComponentImplementationTest extends AbstractCoCoTest {
     @BeforeClass

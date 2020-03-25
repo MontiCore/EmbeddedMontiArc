@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class EmbeddedMontiArcApplicationLanguage extends EmbeddingModelingLanguage{
     public static final String FILE_ENDING = "emaapl";

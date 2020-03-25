@@ -9,7 +9,6 @@ import de.monticore.symboltable.types.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class TypeHelper {
 

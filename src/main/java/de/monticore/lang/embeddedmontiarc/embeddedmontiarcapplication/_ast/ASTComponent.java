@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
  */
 public class ASTComponent extends ASTComponentTOP {
     public ASTComponent() {

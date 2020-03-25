@@ -6,7 +6,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiA
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcapplication._cocos.EmbeddedMontiArcApplicationCoCoChecker;
 
 /**
- * @author Sascha Schneiders
  */
 public class EmbeddedMontiArcApplicationCoCos {
     public static EmbeddedMontiArcApplicationCoCoChecker createChecker() {
