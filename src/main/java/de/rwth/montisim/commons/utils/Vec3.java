@@ -97,17 +97,18 @@ public class Vec3 {
             return false;
         if (obj == this)
             return true;
-        if (!(obj instanceof Vec3))
+        if (this.getClass() != obj.getClass())
             return false;
         return equals((Vec3) obj, 0.000001);
     }
 
     public boolean equals(Vec3 p, double threshold) {
-        return Geometry.equalsThreshold(p.x, x, threshold) 
-        && Geometry.equalsThreshold(p.y, y, threshold)
-        && Geometry.equalsThreshold(p.z, z, threshold);
+        return UMath.equalsThreshold(p.x, x, threshold) 
+        && UMath.equalsThreshold(p.y, y, threshold)
+        && UMath.equalsThreshold(p.z, z, threshold);
     }
 
+    @Override
     public int hashCode() {
         return Double.valueOf(x).hashCode() ^ Double.valueOf(y).hashCode() ^ Double.valueOf(z).hashCode();
     }

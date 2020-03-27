@@ -44,4 +44,22 @@ public class Mat4 {
                 col1.z * b.x + col2.z * b.y + col3.z * b.z + col4.z * b.w,
                 col1.w * b.x + col2.w * b.y + col3.w * b.z + col4.w * b.w);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (obj == this)
+            return true;
+        if (this.getClass() != obj.getClass())
+            return false;
+        return equals((Mat4) obj, 0.000001);
+    }
+
+    public boolean equals(Mat4 m, double threshold) {
+        return this.col1.equals(m.col1, threshold) 
+        && this.col2.equals(m.col2, threshold)
+        && this.col3.equals(m.col3, threshold)
+        && this.col4.equals(m.col4, threshold);
+    }
 }

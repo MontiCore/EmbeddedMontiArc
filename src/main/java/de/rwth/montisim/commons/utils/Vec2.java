@@ -86,15 +86,16 @@ public class Vec2 {
             return false;
         if (obj == this)
             return true;
-        if (!(obj instanceof Vec2))
+        if (this.getClass() != obj.getClass())
             return false;
         return equals((Vec2) obj, 0.000001);
     }
 
     public boolean equals(Vec2 p, double threshold) {
-        return Geometry.equalsThreshold(p.x, x, threshold) && Geometry.equalsThreshold(p.y, y, threshold);
+        return UMath.equalsThreshold(p.x, x, threshold) && UMath.equalsThreshold(p.y, y, threshold);
     }
 
+    @Override
     public int hashCode() {
         return Double.valueOf(x).hashCode() ^ Double.valueOf(y).hashCode();
     }

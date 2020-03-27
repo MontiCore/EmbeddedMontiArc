@@ -6,8 +6,6 @@
  */
 package de.rwth.montisim.commons.simulation;
 
-import java.time.Duration;
-
 /**
  * Interface for updatable objects in the simulation. Gets called for every tick
  * update. If the object has child Updatable Objects, it must propagate the
@@ -20,5 +18,5 @@ public interface Updatable {
      * 
      * @param deltaT Time difference between last and current state.
      */
-    void update(Duration deltaT);
+    void update(TimeUpdate newTime);
 }

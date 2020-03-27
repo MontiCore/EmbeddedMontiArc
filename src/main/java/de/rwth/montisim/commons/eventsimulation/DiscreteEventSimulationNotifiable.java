@@ -4,7 +4,7 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-package de.rwth.montisim.commons.simulation;
+package de.rwth.montisim.commons.eventsimulation;
 
 import java.time.Duration;
 
@@ -12,7 +12,7 @@ import java.time.Duration;
  * Interface for objects that want to get notified by a discrete event
  * simulation about specified actions
  */
-public interface DiscreteEventSimulationNotifiable<T extends DiscreteEvent> {
+public interface DiscreteEventSimulationNotifiable<T extends DiscreteEvent<?>> {
     /**
      * Function that is called when a discrete event is scheduled
      *

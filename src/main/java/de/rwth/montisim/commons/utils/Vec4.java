@@ -91,18 +91,19 @@ public class Vec4 {
             return false;
         if (obj == this)
             return true;
-        if (!(obj instanceof Vec4))
+        if (this.getClass() != obj.getClass())
             return false;
         return equals((Vec4) obj, 0.000001);
     }
 
     public boolean equals(Vec4 p, double threshold) {
-        return Geometry.equalsThreshold(p.x, x, threshold) 
-        && Geometry.equalsThreshold(p.y, y, threshold)
-        && Geometry.equalsThreshold(p.z, z, threshold)
-        && Geometry.equalsThreshold(p.w, w, threshold);
+        return UMath.equalsThreshold(p.x, x, threshold) 
+        && UMath.equalsThreshold(p.y, y, threshold)
+        && UMath.equalsThreshold(p.z, z, threshold)
+        && UMath.equalsThreshold(p.w, w, threshold);
     }
 
+    @Override
     public int hashCode() {
         return Double.valueOf(x).hashCode() ^ Double.valueOf(y).hashCode() ^ Double.valueOf(z).hashCode()
                 ^ Double.valueOf(w).hashCode();

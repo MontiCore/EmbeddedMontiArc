@@ -7,7 +7,7 @@
 package de.rwth.montisim.commons.composite;
 
 /**
- * BusValue objects should only content basic data types (double, int, ...).
+ * BusValue objects should only contain basic data types (double, int, ...).
  * Complex data types should be represented by BusComposite or BusArray.
  */
 public class BusValue implements BusComponent {

@@ -8,6 +8,9 @@ package de.rwth.montisim.commons.simulation;
 
 import de.rwth.montisim.commons.utils.Vec3;
 
+/**
+ * Represents a dynamic object in the simulation, does have positional and rotation velocities and a mass.
+*/
 public class DynamicObject extends StaticObject {
     public Vec3 velocity;
     public Vec3 angularMomentum;
