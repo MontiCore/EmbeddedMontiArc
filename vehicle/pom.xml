@@ -20,47 +20,24 @@
     </parent>
 
     <!-- OUR OWN PROJECT -->
+    <groupId>montisim</groupId>
     <artifactId>vehicle</artifactId>
-    <groupId>montisim-simulation</groupId>
     <version>${revision}</version>
+
+    <properties>
+        <!-- Specify Java 8 as version to avoid compile warnings -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+    </properties>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
 
-        <!-- All modules have dependency to util -->
-        <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>util</artifactId>
-            <version>${revision}</version>
-        </dependency>
-		
-
-		<!-- Vehicle has dependency to sensors -->
-        <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>sensors</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <!-- Vehicle has dependency to environment -->
-        <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>environment</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <!-- Vehicle has dependency to bus -->
-        <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>bus</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <!-- Vehicle has dependency to commons -->
         <dependency>
             <groupId>montisim</groupId>
-            <artifactId>commons</artifactId>
-            <version>${commons.version}</version>
+            <artifactId>eesimulator</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <!-- Vehicle has dependency to fmu-wrapper-->
@@ -70,21 +47,14 @@
             <version>LATEST</version>
         </dependency>
 
-        <!-- Vehicle has dependency to controller -->
-        <dependency>
-            <groupId>montisim-controller</groupId>
-            <artifactId>navigation</artifactId>
-            <version>${controller.version}</version>
-        </dependency>
-
-        <dependency>
+        <!-- <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>1.6</version>
-        </dependency>
+        </dependency> -->
 
         <!-- Testing -->
-        <dependency>
+        <!-- <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
             <version>2.0.2</version>
@@ -96,37 +66,7 @@
             <artifactId>powermock-api-mockito2</artifactId>
             <version>2.0.2</version>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
     </dependencies>
 
-
-    <!-- PROJECT PLUGINS AND PROPERTIES -->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.1</version>
-                <configuration>
-                    <useSystemClassLoader>false</useSystemClassLoader>
-                    <!-- Run the tests where the resources are located -->
-                    <workingDirectory>${project.basedir}/target/classes</workingDirectory>
-                    <forkCount>1</forkCount>
-                    <reuseForks>true</reuseForks>
-                    <argLine>-Xmx2048m -XX:MaxPermSize=1024m</argLine>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <properties>
-
-        <!-- Set root directory to ensure same execution context in subprojects (e.g. for Log in test mode) -->
-        <main.basedir>${project.parent.basedir}</main.basedir>
-
-        <!-- Specify Java 8 as version to avoid compile warnings -->
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-
-    </properties>
 </project>

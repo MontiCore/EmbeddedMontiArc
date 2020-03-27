@@ -7,75 +7,78 @@
     can be found under https://github.com/MontiCore/monticore.
 
 -->
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-  <pluginGroups>
-	<pluginGroup>org.mortbay.jetty</pluginGroup>
-	<pluginGroup>de.topobyte</pluginGroup>
-  </pluginGroups>
+    <pluginGroups>
+        <pluginGroup>org.mortbay.jetty</pluginGroup>
+        <pluginGroup>de.topobyte</pluginGroup>
+    </pluginGroups>
 
-  <proxies>
-  </proxies>
+    <proxies>
+    </proxies>
 
-  <servers>
-    <server>
-      <id>se-nexus</id>
-      <username>cibuild</username>
-      <password>${env.cibuild}</password>
-    </server> 
+    <servers>
+        <server>
+            <id>se-nexus</id>
+            <username>cibuild</username>
+            <password>${env.cibuild}</password>
+        </server>
 
-     <server>
-      <id>github</id>
-      <username>travisbuilduser</username>
-      <password>${env.travisbuilduserpassword}</password>
-    </server>
-  </servers>
+        <server>
+            <id>github</id>
+            <username>travisbuilduser</username>
+            <password>${env.travisbuilduserpassword}</password>
+        </server>
+    </servers>
 
-  <mirrors>
-    <mirror>
-      <id>se-nexus</id>
-      <mirrorOf>external:*</mirrorOf>
-      <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
-    </mirror>	 
-    <mirror>
-      <id>topobyte-repository</id>
-      <mirrorOf>topobyte</mirrorOf>
-      <url>http://mvn.topobyte.de/</url>
-    </mirror>	 
-  </mirrors>
+    <mirrors>
+        <mirror>
+            <id>se-nexus</id>
+            <mirrorOf>external:*</mirrorOf>
+            <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
+        </mirror>
+        <mirror>
+            <id>topobyte-repository</id>
+            <mirrorOf>topobyte</mirrorOf>
+            <url>http://mvn.topobyte.de/</url>
+        </mirror>
+    </mirrors>
 
-  <profiles>
-    <profile>
-        <id>sonar</id>
-        <activation>
-            <activeByDefault>true</activeByDefault>
-        </activation>
-        <properties>
-            <!-- Optional URL to server. Default value is http://localhost:9000 -->
-            <sonar.host.url>
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Optional URL to server. Default value is http://localhost:9000 -->
+                <sonar.host.url>
                 https://metric.se.rwth-aachen.de
-            </sonar.host.url>
-            <sonar.login>
+                </sonar.host.url>
+                <sonar.login>
                 jenkins
-            </sonar.login>
-            <sonar.password>
+                </sonar.login>
+                <sonar.password>
                 ${env.sonar}
-            </sonar.password>
-        </properties>
-    </profile>
+                </sonar.password>
+            </properties>
+        </profile>
 
-    <profile>
-      <id>se-nexus</id>
-      <repositories>
-        <repository>
-          <id>central</id>
-          <url>http://central</url>
-          <releases><enabled /></releases>
-          <snapshots><enabled /></snapshots>
-        </repository>
-        <!--<repository>
+        <profile>
+            <id>se-nexus</id>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>http://central</url>
+                    <releases>
+                        <enabled />
+                    </releases>
+                    <snapshots>
+                        <enabled />
+                    </snapshots>
+                </repository>
+                <!--<repository>
                     <id>central</id>
                     <url>https://repo1.maven.org/maven2</url>
                     <releases>
@@ -106,7 +109,7 @@
                     </snapshots>
                 </repository>
 
-        <repository>
+                <repository>
                     <id>topobyte</id>
                     <url>http://mvn.topobyte.de/</url>
                     <releases>
@@ -117,15 +120,20 @@
                     </snapshots>
                 </repository>
 
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>central</id>
-          <url>http://central</url>
-          <releases><enabled /></releases>
-          <snapshots><enabled /></snapshots>
-        </pluginRepository>
-        <pluginRepository>
+            </repositories>
+            
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>central</id>
+                    <url>http://central</url>
+                    <releases>
+                        <enabled />
+                    </releases>
+                    <snapshots>
+                        <enabled />
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
                     <id>central</id>
                     <url>https://repo1.maven.org/maven2</url>
                     <releases>
@@ -156,7 +164,7 @@
                     </snapshots>
                 </pluginRepository>
 
-      <pluginRepository>
+                <pluginRepository>
                     <id>topobyte</id>
                     <url>http://mvn.topobyte.de/</url>
                     <releases>
@@ -167,12 +175,12 @@
                     </snapshots>
                 </pluginRepository>
 
-      </pluginRepositories>
-      
-    </profile>
-  </profiles>
+            </pluginRepositories>
 
-  <activeProfiles>
-    <activeProfile>se-nexus</activeProfile>
-  </activeProfiles>  
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>se-nexus</activeProfile>
+    </activeProfiles>
 </settings>

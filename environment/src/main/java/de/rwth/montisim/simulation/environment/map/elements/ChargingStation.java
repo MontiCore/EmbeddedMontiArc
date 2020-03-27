@@ -1,0 +1,17 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
+package de.rwth.montisim.simulation.environment.map.elements;
+
+public class ChargingStation {
+    public static final String TAG_KEY = "amenity";
+    public static final String TAG_VALUE = "charging_station";
+    public static final String CAPACITY_TAG = "charging_station:capacity";
+    // Tag appears on: NODES
+
+    int capacity;
+    
+}

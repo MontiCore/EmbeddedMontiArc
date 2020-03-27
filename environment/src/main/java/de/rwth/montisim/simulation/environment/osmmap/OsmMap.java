@@ -1,0 +1,385 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
+package de.rwth.montisim.simulation.environment.osmmap;
+
+import de.rwth.montisim.commons.utils.XmlTraverser;
+import de.rwth.montisim.commons.utils.Coordinates;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
+
+
+public class OsmMap {
+    public class Tagged {
+        // TODO only allocate tags if used
+        public HashMap<Integer, Integer> tags = new HashMap<>();
+        public String getTag(String tagKey){
+            Integer i = stringId.get(tagKey);
+            if (i == null) return null;
+            Integer v = tags.get(i);
+            if (v == null) return null;
+            return getString(v);
+        }
+
+        public String getTag(StringId str){
+            Integer v = tags.get(str.id);
+            if (v == null) return null;
+            return getString(v);
+        }
+
+        public int getTagId(String tagKey){
+            Integer i = stringId.get(tagKey);
+            if (i == null) return -1;
+            Integer v = tags.get(i);
+            if (v == null) return -1;
+            return v;
+        }
+
+        public int getTagId(StringId str){
+            Integer v = tags.get(str.id);
+            if (v == null) return -1;
+            return v;
+        }
+    }
+
+    public class Way extends Tagged {
+        public List<Long> nodes = new LinkedList<>();
+    }
+
+    public class Node extends Tagged {
+        public Coordinates coords;
+
+        Node(Coordinates coords) {
+            this.coords = coords;
+        }
+    }
+
+    /*
+        String table system:
+        All strings are stored inside the stringTable,
+        all are referenced by ids.
+    */
+    Vector<String> stringTable = new Vector<>();
+    HashMap<String, Integer> stringId = new HashMap<>();
+
+    int getStringId(String str){
+        Integer i = stringId.get(str);
+        if (i != null) return i;
+        int id = stringTable.size();
+        stringTable.add(str);
+        stringId.put(str, id);
+        return id;
+    }
+
+    String getString(int strId){
+        return stringTable.elementAt(strId);
+    }
+
+    public class StringId {
+        public final String str;
+        public final int id;
+        public StringId(String str){
+            this.str = str;
+            this.id = getStringId(str);
+        }
+    }
+
+    /*
+        The different tags and values that are relevant for creating the Map.
+    */
+
+    public class Tag {
+        public final StringId NAME = new StringId("name");
+        public final StringId ONEWAY = new StringId("oneway");
+        public final StringId LANES = new StringId("lanes");
+        public final StringId AREA = new StringId("area");
+        public final StringId HIGHWAY = new StringId("highway");
+        public final StringId BUILDING = new StringId("building");
+        public final StringId HEIGHT = new StringId("height");
+        public final StringId BUILDING_LEVELS = new StringId("building:levels");
+        
+        private Tag(){}
+    }
+
+    public class Highway {
+        // https://wiki.openstreetmap.org/wiki/Key:highway
+        // Principal roads
+        public final StringId MOTORWAY = new StringId("motorway");
+        public final StringId TRUNK = new StringId("trunk");
+        public final StringId PRIMARY = new StringId("primary");
+        public final StringId SECONDARY = new StringId("secondary");
+        public final StringId TERTIARY = new StringId("tertiary");
+        public final StringId UNCLASSIFIED = new StringId("unclassified");
+        public final StringId RESIDENTIAL = new StringId("residential");
+        // Link roads
+        public final StringId MOTORWAY_LINK = new StringId("motorway_link");
+        public final StringId TRUNK_LINK = new StringId("trunk_link");
+        public final StringId PRIMARY_LINK = new StringId("primary_link");
+        public final StringId SECONDARY_LINK = new StringId("secondary_link");
+        public final StringId TERTIARY_LINK = new StringId("tertiary_link");
+        // Special road types
+        public final StringId LIVING_STREET = new StringId("living_street");
+        public final StringId SERVICE = new StringId("service");
+        public final StringId PEDESTRIAN = new StringId("pedestrian");
+        public final StringId TRACK = new StringId("track");
+        public final StringId RACEWAY = new StringId("raceway");
+        public final StringId ROAD = new StringId("road"); // For roads of unknown type
+
+        private Highway(){}
+    }
+
+    public final StringId VALUE_YES = new StringId("yes");
+    public final StringId VALUE_NO = new StringId("no");
+
+    public final Tag TAG = new Tag();
+    public final Highway HIGHWAY = new Highway();
+    HashSet<Integer> roadTags = new HashSet<>();
+
+    /*
+        OsmMap data.
+    */
+    public final String name;
+
+    public HashMap<Long, Node> nodes;
+    public HashMap<Long, Way> ways;
+
+    public Coordinates min_corner = new Coordinates(0,0);
+    public Coordinates mid_point = new Coordinates(0,0);
+    public Coordinates max_corner = new Coordinates(0,0);
+    public Coordinates size = new Coordinates(0,0);
+
+    public OsmMap(String name, File file) throws Exception {
+        this.name = name;
+        getRoadTagsById();
+        parseMap(new XmlTraverser().from_file(file));
+    }
+
+    private void parseMap(XmlTraverser p) throws Exception {
+        long start = System.nanoTime();
+
+        //tag_id_counter = 0;
+        //tag_ids = new HashMap<>();
+        nodes = new HashMap<>();
+        ways = new HashMap<>();
+
+        //Find osm tag
+        String tag;
+        do {
+            tag = p.next_tag();
+        }
+        while (tag.length() > 0 && !tag.equalsIgnoreCase("osm"));
+
+        if (tag.length() == 0) throw new Exception("Could not find <osm> tag");
+
+        //Ex: <osm version="0.6" generator="CGImap 0.7.5 (14605 thorn-01.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+        
+        //Search the "version" attribute from the <osm> tag.
+        String attrib;
+        do {
+            attrib = p.next_attribute();
+        }
+        while (attrib.length() > 0 && !attrib.equalsIgnoreCase("version"));
+
+        //Validate version
+        if (attrib.length() == 0) throw new Exception("Could not find osm version attribute");
+        String version = p.get_attribute_value();
+        if (!version.equalsIgnoreCase("0.6")) throw new Exception("Unsupported osm version: " + version);
+
+        //Enter <osm> tag
+        p.enter_tag();
+        //Check all tags from the <osm> tag.
+        do {
+            tag = p.next_tag();
+            if (tag.equalsIgnoreCase("node")){
+                //Ex: <node id="6152869602" visible="true" version="1" changeset="65685715" timestamp="2018-12-22T05:39:15Z" user="adjuva" uid="92274" lat="50.7802316" lon="6.0716610"/>
+                long id = 0;
+                boolean got_id = false;
+                double lat = 0;
+                double lon = 0;
+                do {
+                    attrib = p.next_attribute();
+                    if (attrib.equalsIgnoreCase("id")){
+                        got_id = true;
+                        id = Long.parseLong(p.get_attribute_value());
+                    } else if (attrib.equalsIgnoreCase("lat")){
+                        lat = Double.parseDouble(p.get_attribute_value());
+                    } else if (attrib.equalsIgnoreCase("lon")){
+                        lon = Double.parseDouble(p.get_attribute_value());
+                    }
+                } while (attrib.length() > 0);
+                if (!got_id) continue;
+                Node node = new Node(new Coordinates(lon, lat));
+
+                //Check node tags
+                if (p.enter_tag()){
+                    String tag2;
+                    do {
+                        tag2 = p.next_tag();
+                        if (tag2.equalsIgnoreCase("tag")){
+                            //Ex: <tag k="railway" v="signal"/>
+                            String att;
+                            String key = null;
+                            String value = null;
+                            do {
+                                att = p.next_attribute();
+                                if (att.equalsIgnoreCase("k")){
+                                    key = p.get_attribute_value();
+                                } else if (att.equalsIgnoreCase("v")){
+                                    value = p.get_attribute_value();
+                                }  
+                            } while (att.length() > 0);
+                            if (key != null && value != null){
+                                //node.tags.put(get_tag_id(key), value);
+                                node.tags.put(getStringId(key), getStringId(value));
+                            }
+                        } 
+                    }
+                    while (tag2.length() > 0);
+                }
+                p.exit_tag();
+                
+
+
+                nodes.put(id, node);
+            } else if (tag.equalsIgnoreCase("way")){
+                //Ex: <way id="5168924" visible="true" version="23" changeset="48959749" timestamp="2017-05-24T23:00:23Z" user="Steffen van Bergerem" uid="61868">
+                long id = 0;
+                boolean got_id = false;
+                do {
+                    attrib = p.next_attribute();
+                    if (attrib.equalsIgnoreCase("id")){
+                        id = Long.parseLong(p.get_attribute_value());
+                        got_id = true;
+                    }
+                } while (attrib.length() > 0);
+                if (!got_id) continue;
+                Way way = new Way();
+
+                //Go through list of <nd> (node references) and <tag>
+                if (p.enter_tag()){
+                    String tag2;
+                    do {
+                        tag2 = p.next_tag();
+                        if (tag2.equalsIgnoreCase("nd")){
+                            //Ex: <nd ref="335923980"/>
+                            String att;
+                            do {
+                                att = p.next_attribute();
+                            }
+                            while (att.length() > 0 && !att.equalsIgnoreCase("ref"));
+                            if (att.length() == 0) return;
+                            Long ref_id = Long.parseLong(p.get_attribute_value());
+                            way.nodes.add(ref_id);
+                        } else if (tag2.equalsIgnoreCase("tag")){
+                            //Ex: <tag k="highway" v="service"/>
+                            String att;
+                            String key = null;
+                            String value = null;
+                            do {
+                                att = p.next_attribute();
+                                if (att.equalsIgnoreCase("k")){
+                                    key = p.get_attribute_value();
+                                } else if (att.equalsIgnoreCase("v")){
+                                    value = p.get_attribute_value();
+                                }  
+                            } while (att.length() > 0);
+                            if (key != null && value != null){
+                                //way.tags.put(get_tag_id(key), value);
+                                way.tags.put(getStringId(key), getStringId(value));
+                            }
+                        } 
+                    }
+                    while (tag2.length() > 0);
+    
+                }
+                p.exit_tag();
+                
+                ways.put(id, way);
+            } else if (tag.equalsIgnoreCase("bounds")){
+                //TODO Optional check uniqueness of bounds tag
+                //Ex: <bounds minlat="50.7784900" minlon="6.0621200" maxlat="50.7815800" maxlon="6.0705400"/>
+                
+                //Check attributes from the <bounds> tag
+                do {
+                    attrib = p.next_attribute();
+                    if (attrib.equalsIgnoreCase("minlat")){
+                        min_corner.lat = Double.parseDouble(p.get_attribute_value());
+                    } else if (attrib.equalsIgnoreCase("minlon")){
+                        min_corner.lon = Double.parseDouble(p.get_attribute_value());
+                    } else if (attrib.equalsIgnoreCase("maxlat")){
+                        max_corner.lat = Double.parseDouble(p.get_attribute_value());
+                    } else if (attrib.equalsIgnoreCase("maxlon")){
+                        max_corner.lon = Double.parseDouble(p.get_attribute_value());
+                    }
+                } while (attrib.length() > 0);
+
+            } 
+        }
+        while (tag.length() > 0);
+
+
+        //Sample code for tag and attribute iteration
+        /* String tag2;
+        do {
+            tag2 = p.next_tag();
+            if (tag2.equalsIgnoreCase("node")){
+            } else if (tag2.equalsIgnoreCase("way")){
+            } 
+        }
+        while (tag2.length() > 0); */
+
+        /* String att;
+        do {
+            att = p.next_attribute();
+            if (att.equalsIgnoreCase("minlat")){
+                minlat = Double.parseDouble(p.get_attribute_value());
+            } else if (attrib.equalsIgnoreCase("minlon")){
+                minlon = Double.parseDouble(p.get_attribute_value());
+            }  
+        } while (att.length() > 0); */
+
+        mid_point = min_corner.midpoint(max_corner);
+        size = max_corner.subtract(min_corner);
+
+        long end = System.nanoTime();
+        System.out.println("Parsed OsmMap " + name + " in " + ((end-start)/1000000.0) + " ms.");
+    }
+
+
+    public boolean isRoad(Way way){
+        int tagId = way.getTagId(TAG.HIGHWAY);
+        return tagId >= 0 && roadTags.contains(tagId);
+    }
+
+    public boolean isBuilding(Way way){
+        return way.getTagId(TAG.BUILDING) >= 0;
+    }
+
+    private void getRoadTagsById(){
+        roadTags.add(HIGHWAY.MOTORWAY.id);
+        roadTags.add(HIGHWAY.TRUNK.id);
+        roadTags.add(HIGHWAY.PRIMARY.id);
+        roadTags.add(HIGHWAY.SECONDARY.id);
+        roadTags.add(HIGHWAY.TERTIARY.id);
+        roadTags.add(HIGHWAY.UNCLASSIFIED.id);
+        roadTags.add(HIGHWAY.RESIDENTIAL.id);
+        roadTags.add(HIGHWAY.MOTORWAY_LINK.id);
+        roadTags.add(HIGHWAY.TRUNK_LINK.id);
+        roadTags.add(HIGHWAY.PRIMARY_LINK.id);
+        roadTags.add(HIGHWAY.SECONDARY_LINK.id);
+        roadTags.add(HIGHWAY.TERTIARY_LINK.id);
+        roadTags.add(HIGHWAY.LIVING_STREET.id);
+        roadTags.add(HIGHWAY.SERVICE.id);
+        roadTags.add(HIGHWAY.PEDESTRIAN.id);
+        roadTags.add(HIGHWAY.TRACK.id);
+        roadTags.add(HIGHWAY.RACEWAY.id);
+    }
+}
