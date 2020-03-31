@@ -13,6 +13,12 @@ masterJobLinux:
   - mvn package sonar:sonar -s settings.xml
   only:
   - master
+  except:
+    changes:
+    - README.md
+    - .gitignore
+    - .gitlab-ci.yml
+
   
 masterJobWindows:
   stage: windows
@@ -20,6 +26,12 @@ masterJobWindows:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
   tags:
   - Windows10
+  except:
+    changes:
+    - README.md
+    - .gitignore
+    - .gitlab-ci.yml
+
 
 BranchJobLinux:
   stage: linux
@@ -29,3 +41,9 @@ BranchJobLinux:
   - cat target/site/jacoco/index.html
   except:
   - master
+  except:
+    changes:
+    - README.md
+    - .gitignore
+    - .gitlab-ci.yml
+
