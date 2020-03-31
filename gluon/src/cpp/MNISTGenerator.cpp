@@ -31,13 +31,6 @@ int main(int argc, char* argv[]) {
 		data[i] = distribution(generator);
 	}
 
-	for(size_t i=0; i < 10; i++){
-		if(i == label)
-			vec_label[i] = 1;
-		else
-			vec_label[i] = 0;
-	}
-
 	connector.noise = conv_to< arma::Cube<double> >::from( CNNTranslator::translateToCube(data, 
 				vector<size_t> {100, 1, 1}) );
 
