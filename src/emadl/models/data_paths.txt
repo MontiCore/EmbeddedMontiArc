@@ -1,1 +1,1 @@
-cNNCalculator.Generator resources/training_data
+mnistGenerator.Generator resources/training_data
