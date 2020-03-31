@@ -11,13 +11,11 @@ if [ ! -f $MXNET_FOLDER/libmxnet.so ]; then
 fi
 
 rm -rf target
-java -jar ../embedded-montiarc-emadl-generator-0.3.8-jar-with-dependencies.jar -m src/emadl/models/ -r cNNCalculator.Connector -o target -b GLUON
-
-exit 1
+java -jar ../embedded-montiarc-emadl-generator-0.3.8-jar-with-dependencies.jar -m src/emadl/models/ -r mnistGenerator.Connector -o target -b GLUON
 
 rm -rf build
 mkdir build && cd build
 
-echo "Building DigitClassifier.."
+echo "Building MNIST Generator.."
 cmake -D MXNET_PATH=$MXNET_FOLDER/libmxnet.so ..
 make
