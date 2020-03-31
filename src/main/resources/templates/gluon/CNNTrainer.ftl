@@ -40,6 +40,9 @@ if __name__ == "__main__":
 <#if (config.context)??>
         context='${config.context}',
 </#if>
+<#if (config.preprocessingName)??>
+        preprocessing=${config.preprocessingName???string("True","False")},
+</#if>
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
 </#if>

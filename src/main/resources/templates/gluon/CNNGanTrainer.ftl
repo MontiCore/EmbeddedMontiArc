@@ -12,7 +12,6 @@ class CrossEntropyLoss(gluon.loss.Loss):
         self._axis = axis
         self._sparse_label = sparse_label
 
-    def hybrid_forward(self, F, pred, label, sample_weight=None):
         pred = F.log(pred)
         if self._sparse_label:
             loss = -F.pick(pred, label, axis=self._axis, keepdims=True)
@@ -54,16 +53,22 @@ class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
             loss = loss * mx.nd.logical_not(mx.nd.equal(mx.nd.argmax(pred, axis=1), mx.nd.ones_like(mx.nd.argmax(pred, axis=1))*i) * mx.nd.equal(mx.nd.argmax(pred, axis=1), label))
         return loss.mean(axis=self._batch_axis, exclude=True)
 
-"""
-# ugly hardcoded
-#import  matplotlib as mpl
-from matplotlib import pyplot as plt
+from matplotlib import pyplot
 
 def visualize(img_arr):
-    plt.imshow((img_arr.asnumpy().transpose(1, 2, 0) * 255).astype(np.uint8).reshape(28,28))
-    plt.axis('off')
-"""
+    img_np = img_arr.asnumpy().transpose(1, 2, 0)
+    img_np = ((img_np+1) * 127.5).astype(np.uint8)
 
+    if not img_np.shape[2] == 1:
+        pyplot.axis('off')
+        pyplot.imshow(img_np)
+    else:
+        pyplot.axis('off')
+        s = img_np.shape
+        img_np = img_np.reshape((s[0], s[1]))
+        pyplot.imshow(img_np, cmap = 'Greys')
+
+# ugly hardcoded
 def getDataIter(ctx, batch_size=64, Z=100):
     img_number = 500
     mnist_train = mx.gluon.data.vision.datasets.MNIST(train=True)
@@ -92,12 +97,6 @@ def getDataIter(ctx, batch_size=64, Z=100):
     X = np.tile(X, (1, 1, 1, 1))
     data = mx.nd.array(X)
 
-    """
-    for i in range(4):
-        plt.subplot(1,4,i+1)
-        visualize(data[i])
-    plt.show()
-    """
 
     image_iter = mx.io.NDArrayIter(data, batch_size=batch_size)
     return image_iter
@@ -119,8 +118,6 @@ class ${tc.fileNameWithoutEnding}:
     def train(self, batch_size=64,
               num_epoch=10,
               eval_metric='acc',
-              loss ='softmax_cross_entropy',
-              loss_params={},
               optimizer='adam',
               optimizer_params=(('learning_rate', 0.001),),
               load_checkpoint=True,
@@ -136,8 +133,12 @@ class ${tc.fileNameWithoutEnding}:
               preprocessing = False,
               k_value = 1,
               generator_loss = None,
-              conditional_input = None,
-              noise_input = None):
+              generator_target_name = "",
+              noise_input = "",
+              gen_loss_weight = 1,
+              dis_loss_weight = 1,
+              log_period = 50,
+              print_images = False):
 
         if context == 'gpu':
             mx_context = mx.gpu()
@@ -151,20 +152,29 @@ class ${tc.fileNameWithoutEnding}:
         dis_input_names = list(self._net_creator_dis.getInputs().keys())
         dis_input_names = [name[:-1] for name in dis_input_names]
         if self.use_qnet:
-            qnet_input_names = list(self._net_creator_qnet.getInputs().keys())
+            qnet_input_names = list(self._net_creator_qnet.getOutputs().keys())
             qnet_input_names = [name[:-1] for name in qnet_input_names]
+        dis_real_input = list(self._net_creator_gen.getOutputs().keys())[0][:-1]
+
+        gen_output_name = list(self._net_creator_gen.getOutputs().keys())[0][:-1]
+        if self.use_qnet:
+            cGAN_input_names = set(gen_input_names).difference(qnet_input_names)
+            cGAN_input_names.discard(noise_input)
+            cGAN_input_names = list(cGAN_input_names)
+        else:
+            cGAN_input_names = set(gen_input_names)
+            cGAN_input_names.discard(noise_input)
+            cGAN_input_names = list(cGAN_input_names)
 
         if preprocessing:
             preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNGanTrainer_")}_executor"
 
         self._data_loader._output_names_ = []
-        if self.use_qnet:
-            dataloader_inputs = set(gen_input_names + dis_input_names).difference(qnet_input_names)
-            dataloader_inputs.discard(noise_input)
+
+        if not generator_target_name == "":
+            self._data_loader._input_names_ = cGAN_input_names + [gen_output_name] + [generator_target_name]
         else:
-            dataloader_inputs = set(gen_input_names + dis_input_names)
-            dataloader_inputs.discard(noise_input)
-        self._data_loader._input_names_ = list(dataloader_inputs)
+            self._data_loader._input_names_ = cGAN_input_names + [gen_output_name]
 
 #        train_iter = getDataIter(mx_context, batch_size, 100)
         if preprocessing:
@@ -255,21 +265,12 @@ class ${tc.fileNameWithoutEnding}:
         if self.use_qnet:
             qnet_trainer = mx.gluon.Trainer(q_net.collect_params(), discriminator_optimizer, discriminator_optimizer_params)
 
-        if loss == 'sigmoid_binary_cross_entropy':
-            loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
-        elif loss == 'l2':
-            loss_function = mx.gluon.loss.L2Loss()
-        elif loss == 'l1':
-            loss_function = mx.gluon.loss.L2Loss()
-        elif loss == 'log_cosh':
-            loss_function = LogCoshLoss()
-        else:
-            logging.error("Invalid loss parameter.")
+        dis_loss = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
 
         if not generator_loss == None:
-            if generator_loss == "L2":
+            if generator_loss == "l2":
                 generator_loss_func = mx.gluon.loss.L2Loss()
-            elif generator_loss == "L1":
+            elif generator_loss == "l1":
                 generator_loss_func = mx.gluon.loss.L1Loss()
             else:
                 logging.error("Invalid generator loss parameter")
@@ -278,19 +279,15 @@ class ${tc.fileNameWithoutEnding}:
         metric_gen = mx.metric.create(eval_metric)
         <#include "gan/InputGenerator.ftl">
 
-        speed_period = 100
         tic = None
 
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
-                real_data = batch.data[traindata_to_index[dis_input_names[0]]].as_in_context(mx_context)
+                real_data = batch.data[traindata_to_index[dis_real_input + "_"]].as_in_context(mx_context)
 
                 dis_conditional_input = create_discriminator_input(batch)
                 gen_input, exp_qnet_output = create_generator_input(batch)
-
-                fake_labels = mx.nd.zeros((batch_size), ctx=mx_context)
-                real_labels = mx.nd.ones((batch_size), ctx=mx_context)
 
                 with autograd.record():
                     fake_data = gen_net(*gen_input)
@@ -298,14 +295,18 @@ class ${tc.fileNameWithoutEnding}:
                     discriminated_fake_dis = dis_net(fake_data, *dis_conditional_input)
                     if self.use_qnet:
                         discriminated_fake_dis, _ = discriminated_fake_dis
-                    loss_resultF = loss_function(discriminated_fake_dis, fake_labels)
+
+                    fake_labels = mx.nd.zeros(discriminated_fake_dis.shape, ctx=mx_context)
+                    real_labels = mx.nd.ones(discriminated_fake_dis.shape, ctx=mx_context)
+
+                    loss_resultF = dis_loss(discriminated_fake_dis, fake_labels)
                     discriminated_real_dis = dis_net(real_data, *dis_conditional_input)
                     if self.use_qnet:
                         discriminated_real_dis, _ = discriminated_real_dis
-                    loss_resultR = loss_function(discriminated_real_dis, real_labels)
+                    loss_resultR = dis_loss(discriminated_real_dis, real_labels)
 
-                    loss_resultD = loss_resultR + loss_resultF
-                loss_resultD.backward()
+                    loss_resultD = dis_loss_weight * (loss_resultR + loss_resultF)
+                    loss_resultD.backward()
                 dis_trainer.step(batch_size)
 
                 if batch_i % k_value == 0:
@@ -314,15 +315,15 @@ class ${tc.fileNameWithoutEnding}:
                         discriminated_fake_gen = dis_net(fake_data, *dis_conditional_input)
                         if self.use_qnet:
                             discriminated_fake_gen, features = discriminated_fake_gen
-                        loss_resultG = loss_function(discriminated_fake_gen, real_labels)
+                        loss_resultG = dis_loss(discriminated_fake_gen, real_labels)
                         if not generator_loss == None:
-                            condition = batch.data[traindata_to_index[conditional_input + "_"]]
-                            loss_resultG = loss_resultG + generator_loss_func(fake_data, condition)
+                            condition = batch.data[traindata_to_index[generator_target_name + "_"]]
+                            loss_resultG = loss_resultG + gen_loss_weight * generator_loss_func(fake_data, condition)
                         if self.use_qnet:
                             qnet_discriminated = [q_net(features)]
                             for i, qnet_out in enumerate(qnet_discriminated):
                                 loss_resultG = loss_resultG + qnet_losses[i](qnet_out, exp_qnet_output[i])
-                    loss_resultG.backward()
+                        loss_resultG.backward()
                     gen_trainer.step(batch_size)
                     if self.use_qnet:
                         qnet_trainer.step(batch_size)
@@ -330,45 +331,26 @@ class ${tc.fileNameWithoutEnding}:
                 if tic is None:
                     tic = time.time()
                 else:
-                    if batch_i % speed_period == 0:
-                        metric_dis = mx.metric.create(eval_metric)
-                        discriminated = mx.nd.Concat(loss_resultD, loss_resultF, dim=0)
-                        labels = mx.nd.Concat(real_labels, fake_labels, dim=0)
-                        discriminated = mx.ndarray.floor(discriminated + 0.5)
-                        metric_dis.update(preds=discriminated, labels=labels)
-                        print("DisAcc: ", metric_dis.get()[1])
-
-                        metric_gen = mx.metric.create(eval_metric)
-                        discriminated = mx.ndarray.floor(loss_resultG + 0.5)
-                        metric_gen.update(preds=discriminated, labels=real_labels)
-                        print("GenAcc: ", metric_gen.get()[1])
-
+                    if batch_i % log_period == 0:
                         try:
-                            speed = speed_period * batch_size / (time.time() - tic)
+                            speed = log_period * batch_size / (time.time() - tic)
                         except ZeroDivisionError:
                             speed = float("inf")
 
-                        logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec" % (epoch, batch_i, speed))
+                        logging.info(" Discriminator loss on real data: " + str(loss_resultR[0].asnumpy().item()))
+                        logging.info(" Discriminator loss on fake data: " + str(loss_resultF[0].asnumpy().item()))
+                        logging.info(" Generator loss: " + str(loss_resultG[0].asnumpy().item()))
+                        logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec \n" % (epoch, batch_i, speed))
 
                         tic = time.time()
 
-                """
-                # ugly start
-                if batch_i % 200 == 0:
-                    fake_data[0].asnumpy()
-                if batch_i  < 500000:
-                    #gen_net.save_parameters(self.parameter_path_gen() + '-' + str(num_epoch + begin_epoch).zfill(4) + '.params')
-                    #gen_net.export(self.parameter_path_gen() + '_newest', epoch=0)
-                    #dis_net.save_parameters(self.parameter_path_dis() + '-' + str(num_epoch + begin_epoch).zfill(4) + '.params')
-                    #dis_net.export(self.parameter_path_dis() + '_newest', epoch=0)
-                    for j in range(10):
-                        plt.subplot(1, 10, j+1)
-                        fake_img = fake_data[j]
-                        visualize(fake_img)
-                    plt.show()
-                # ugly end
-                """
-
+                        if print_images:
+                            pyplot.subplot(1, 2, 1)
+                            fake_img = fake_data[0]
+                            visualize(fake_img)
+                            filename = 'plot_%06d%06d.png' % (epoch, batch_i)
+                            pyplot.savefig(filename)
+                            pyplot.close()
 
             if (epoch - begin_epoch) % checkpoint_period == 0:
                     gen_net.save_parameters(self.parameter_path_gen() + '-' + str(epoch).zfill(4) + '.params')

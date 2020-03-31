@@ -52,6 +52,9 @@ if __name__ == "__main__":
 <#if (config.loadCheckpoint)??>
         load_checkpoint=${config.loadCheckpoint?string("True","False")},
 </#if>
+<#if (config.checkpointPeriod)??>
+        checkpoint_period=${config.checkpointPeriod},
+</#if>
 <#if (config.context)??>
         context='${config.context}',
 </#if>
@@ -63,16 +66,6 @@ if __name__ == "__main__":
 </#if>
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric}',
-</#if>
-<#if (config.configuration.loss)??>
-        loss ='${config.lossName}',
-<#if (config.lossParams)??>
-        loss_params={
-<#list config.lossParams?keys as param>
-            '${param}': ${config.lossParams[param]}<#sep>,
-</#list>
-        },
-</#if>
 </#if>
 <#if (config.configuration.optimizer)??>
         optimizer='${config.optimizerName}',
@@ -135,11 +128,23 @@ if __name__ == "__main__":
 <#if (config.generatorLoss)??>
         generator_loss="${config.generatorLoss}",
 </#if>
-<#if (config.conditionalInput)??>
-        conditional_input="${config.conditionalInput}",
+<#if (config.generatorTargetName)??>
+        generator_target_name="${config.generatorTargetName}",
 </#if>
 <#if (config.noiseInput)??>
-        noise_input="${config.noiseInput}"
+        noise_input="${config.noiseInput}",
+</#if>
+<#if (config.generatorLossWeight)??>
+        gen_loss_weight=${config.generatorLossWeight},
+</#if>
+<#if (config.discriminatorLossWeight)??>
+        dis_loss_weight=${config.discriminatorLossWeight},
+</#if>
+<#if (config.logPeriod)??>
+        log_period=${config.logPeriod},
+</#if>
+<#if (config.printImages)??>
+        print_images=${config.printImages?string("True","False")},
 </#if>)
 </#if>
 
