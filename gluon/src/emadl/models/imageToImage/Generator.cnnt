@@ -2,7 +2,7 @@
 configuration Generator{
 	 learning_method: gan
 	 discriminator_name: imageToImage.Discriminator
-     num_epoch:0
+     num_epoch:100
      batch_size:1
 	 generator_loss: l1
 	 generator_target_name: "target_label"
