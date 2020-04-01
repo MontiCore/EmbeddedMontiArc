@@ -1,2 +1,6 @@
 .vscode/*
 gluon/resources/datasets/
+gluon/build/
+gluon/train.log
+gluon/target/
+gluon/model
