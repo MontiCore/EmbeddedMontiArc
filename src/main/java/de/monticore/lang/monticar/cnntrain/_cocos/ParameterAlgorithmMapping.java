@@ -129,9 +129,12 @@ class ParameterAlgorithmMapping {
             ASTDiscriminatorOptimizerEntry.class,
             ASTKValueEntry.class,
             ASTGeneratorLossEntry.class,
-            ASTConditionalInputEntry.class,
-            ASTNoiseInputEntry.class
-
+            ASTGeneratorTargetNameEntry.class,
+            ASTNoiseInputEntry.class,
+            ASTGeneratorLossWeightEntry.class,
+            ASTDiscriminatorLossWeightEntry.class,
+            ASTSpeedPeriodEntry.class,
+            ASTPrintImagesEntry.class
     );
 
     ParameterAlgorithmMapping() {
@@ -157,7 +160,13 @@ class ParameterAlgorithmMapping {
 
     boolean isSupervisedLearningParameter(Class<? extends ASTEntry> entryClazz) {
         return GENERAL_PARAMETERS.contains(entryClazz)
-            || EXCLUSIVE_SUPERVISED_PARAMETERS.contains(entryClazz)
+            || EXCLUSIVE_SUPERVISED_PARAMETERS.contains(entryClazz);
+
+    }
+
+    boolean isGANLearningParameter(Class<? extends ASTEntry> entryClazz) {
+        return GENERAL_PARAMETERS.contains(entryClazz)
+                || EXCLUSIVE_SUPERVISED_PARAMETERS.contains(entryClazz)
                 || GENERAL_GAN_PARAMETERS.contains(entryClazz);
 
     }
@@ -178,6 +187,14 @@ class ParameterAlgorithmMapping {
         return GENERAL_PARAMETERS.contains(entryClazz)
             || GENERAL_REINFORCEMENT_PARAMETERS.contains(entryClazz)
             || EXCLUSIVE_TD3_PARAMETERS.contains(entryClazz);
+    }
+
+    List<Class> getAllGANParameters() {
+        return ImmutableList.<Class> builder()
+                .addAll(GENERAL_PARAMETERS)
+                .addAll(EXCLUSIVE_SUPERVISED_PARAMETERS)
+                .addAll(GENERAL_GAN_PARAMETERS)
+                .build();
     }
 
     List<Class> getAllReinforcementParameters() {

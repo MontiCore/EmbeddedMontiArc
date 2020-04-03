@@ -53,16 +53,18 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
             = parameterAlgorithmMapping.isSupervisedLearningParameter(node.getClass());
         final boolean reinforcementLearningParameter
             = parameterAlgorithmMapping.isReinforcementLearningParameter(node.getClass());
+        final boolean ganLearningParameter
+                = parameterAlgorithmMapping.isGANLearningParameter(node.getClass());
 
-        assert (supervisedLearningParameter  || reinforcementLearningParameter) :
+        assert (supervisedLearningParameter  || reinforcementLearningParameter || ganLearningParameter) :
                 "Parameter " + node.getName() + " is not checkable, because it is unknown to Condition";
 
         if (supervisedLearningParameter && !reinforcementLearningParameter) {
             setLearningMethodOrLogErrorIfActualLearningMethodIsNotSupervised(node);
         } else if(!supervisedLearningParameter && reinforcementLearningParameter) {
             setLearningMethodOrLogErrorIfActualLearningMethodIsNotReinforcement(node);
-        }
     }
+}
 
     private void setLearningMethodOrLogErrorIfActualLearningMethodIsNotReinforcement(ASTEntry node) {
         if (isLearningMethodKnown()) {
@@ -91,11 +93,10 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
     private void evaluateLearningMethodEntry(ASTEntry node) {
         ASTLearningMethodValue learningMethodValue = (ASTLearningMethodValue)node.getValue();
         LearningMethod evaluatedLearningMethod;
-        if(learningMethodValue.isPresentReinforcement()) {
+        if(learningMethodValue.isPresentReinforcement())
             evaluatedLearningMethod = LearningMethod.REINFORCEMENT;
-        } else {
+        else
             evaluatedLearningMethod = LearningMethod.SUPERVISED;
-        }
 
         if (isLearningMethodKnown()) {
             logErrorIfEvaluatedLearningMethoNotEqualToActual(node, evaluatedLearningMethod);
@@ -127,16 +128,16 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
         if (learningMethod.equals(LearningMethod.REINFORCEMENT)) {
             return parameterAlgorithmMapping.getAllReinforcementParameters();
         }
+
         return parameterAlgorithmMapping.getAllSupervisedParameters();
     }
 
 
     private void setLearningMethod(final LearningMethod learningMethod) {
-        if (learningMethod.equals(LearningMethod.REINFORCEMENT)) {
+        if (learningMethod.equals(LearningMethod.REINFORCEMENT))
             setLearningMethodToReinforcement();
-        } else {
+        else
             setLearningMethodToSupervised();
-        }
     }
 
     private void setLearningMethodToSupervised() {

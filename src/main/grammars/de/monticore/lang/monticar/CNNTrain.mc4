@@ -259,10 +259,17 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     PolicyDelayEntry implements ConfigEntry = name:"policy_delay" ":" value:IntegerValue;
 
     // GANs Extensions
+
     KValueEntry implements ConfigEntry = name:"k_value" ":" value:IntegerValue;
-    GeneratorLossEntry implements ConfigEntry = name:"generator_loss" ":" value:StringValue;
-    ConditionalInputEntry implements ConfigEntry = name:"conditional_input" ":" value:StringValue;
+    GeneratorTargetNameEntry implements ConfigEntry = name:"generator_target_name" ":" value:StringValue;
+    GeneratorLossEntry implements ConfigEntry = name:"generator_loss" ":" value:GeneratorLossValue;
+    GeneratorLossValue implements ConfigValue = (l1: "l1" | l2: "l2");
     NoiseInputEntry implements ConfigEntry = name:"noise_input" ":" value:StringValue;
+    GeneratorLossWeightEntry implements ConfigEntry = name:"generator_loss_weight" ":" value:NumberValue;
+    DiscriminatorLossWeightEntry implements ConfigEntry = name:"discriminator_loss_weight" ":" value:NumberValue;
+
+    SpeedPeriodEntry implements ConfigEntry = name:"speed_period" ":" value:IntegerValue;
+    PrintImagesEntry implements ConfigEntry = name:"print_images" ":" value:BooleanValue;
 
     interface MultiParamValueMapConfigEntry extends ConfigEntry;
     interface MultiParamValueMapParamValue extends ConfigValue;
@@ -284,6 +291,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     MeanValueEntry implements NoiseDistributionGaussianEntry = name:"mean_value" ":" value:IntegerValue;
     SpreadValueEntry implements NoiseDistributionGaussianEntry = name:"spread_value" ":" value:IntegerValue;
+
+    NoiseDistributionUniformValue implements NoiseDistributionValue = name:"uniform" ("{"  "}")?;
 
     // Constraint Distributions
     ConstraintDistributionEntry implements MultiParamValueMapConfigEntry  = name:"constraint_distributions" ":" value:ConstraintDistributionValue;

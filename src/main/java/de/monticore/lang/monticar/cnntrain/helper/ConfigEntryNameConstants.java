@@ -55,7 +55,11 @@ public class ConfigEntryNameConstants {
     public static final String DISCRIMINATOR_OPTIMIZER = "discriminator_optimizer";
     public static final String K_VALUE = "k_value";
     public static final String GENERATOR_LOSS = "generator_loss";
-    public static final String CONDITIONAL_INPUT = "conditional_input";
+    public static final String GENERATOR_TARGET_NAME = "generator_target_name";
     public static final String NOISE_INPUT = "noise_input";
+    public static final String GENERATOR_LOSS_WEIGHT = "generator_loss_weight";
+    public static final String DISCRIMINATOR_LOSS_WEIGHT = "discriminator_loss_weight";
+    public static final String SPEED_PERIOD_ENTRY = "speed_period";
+    public static final String PRINT_IMAGES = "print_images";
 }
 

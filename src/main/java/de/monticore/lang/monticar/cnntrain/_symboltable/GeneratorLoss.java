@@ -6,17 +6,17 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-public enum NoiseDistribution {
-    GAUSSIAN{
+public enum GeneratorLoss {
+    L1{
         @Override
         public String toString() {
-            return "gaussian";
+            return "l1";
         }
     },
-    UNIFORM{
+    L2{
         @Override
         public String toString() {
-            return "uniform";
+            return "l2";
         }
     }
 }

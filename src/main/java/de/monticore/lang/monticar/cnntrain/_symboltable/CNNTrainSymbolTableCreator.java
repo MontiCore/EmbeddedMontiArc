@@ -145,7 +145,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
-    public void endVisit(ASTGeneratorLossEntry node) {
+    public void endVisit(ASTNoiseInputEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         entry.setValue(getValueSymbolForString(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
@@ -153,7 +153,39 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
-    public void endVisit(ASTConditionalInputEntry node) {
+    public void endVisit(ASTGeneratorLossWeightEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForDouble(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void endVisit(ASTDiscriminatorLossWeightEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForDouble(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void endVisit(ASTSpeedPeriodEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void endVisit(ASTPrintImagesEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForBoolean(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void endVisit(ASTGeneratorTargetNameEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         entry.setValue(getValueSymbolForString(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
@@ -443,6 +475,22 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
+    public void visit(ASTGeneratorLossEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        ValueSymbol value = new ValueSymbol();
+
+        if (node.getValue().isPresentL1()) {
+            value.setValue(GeneratorLoss.L1);
+        } else if (node.getValue().isPresentL2()) {
+            value.setValue(GeneratorLoss.L2);
+        }
+
+        entry.setValue(value);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
     public void visit(ASTRLAlgorithmEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         ValueSymbol value = new ValueSymbol();
@@ -564,14 +612,6 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         configuration.getEntryMap().put(node.getName(), entry);
     }
 
-    @Override
-    public void visit(ASTPreprocessingEntry node) {
-        EntrySymbol entry = new EntrySymbol(node.getName());
-        entry.setValue(getValueSymbolForComponentNameAsString(node.getValue()));
-        addToScopeAndLinkWithNode(entry, node);
-        configuration.getEntryMap().put(node.getName(), entry);
-    }
-
 
     @Override
     public void visit(ASTReplayMemoryEntry node) {
@@ -628,11 +668,13 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     @Override
     public void visit(ASTNoiseDistributionEntry node) {
         NoiseDistribution noiseDistribution;
-        if(node.getValue().getName().equals("gaussian")) {
+        if(node.getValue().getName().equals("gaussian"))
             noiseDistribution = NoiseDistribution.GAUSSIAN;
-        } else {
+        else if (node.getValue().getName().equals("uniform"))
+            noiseDistribution = NoiseDistribution.UNIFORM;
+        else
             noiseDistribution = NoiseDistribution.GAUSSIAN;
-        }
+
         processMultiParamConfigVisit(node, noiseDistribution);
     }
 
@@ -647,6 +689,14 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         RewardFunctionSymbol symbol = new RewardFunctionSymbol(node.getName());
         symbol.setRewardFunctionComponentName(node.getValue().getNameList());
         configuration.setRlRewardFunction(symbol);
+        addToScopeAndLinkWithNode(symbol, node);
+    }
+
+    @Override
+    public void visit(ASTPreprocessingEntry node) {
+        PreprocessingComponentSymbol symbol = new PreprocessingComponentSymbol(node.getName());
+        symbol.setPreprocessingComponentName(node.getValue().getNameList());
+        configuration.setPreprocessingComponent(symbol);
         addToScopeAndLinkWithNode(symbol, node);
     }
 
