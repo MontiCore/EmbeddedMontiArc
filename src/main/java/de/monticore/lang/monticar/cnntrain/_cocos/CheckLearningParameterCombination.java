@@ -53,10 +53,8 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
             = parameterAlgorithmMapping.isSupervisedLearningParameter(node.getClass());
         final boolean reinforcementLearningParameter
             = parameterAlgorithmMapping.isReinforcementLearningParameter(node.getClass());
-        final boolean ganLearningParameter
-                = parameterAlgorithmMapping.isGANLearningParameter(node.getClass());
 
-        assert (supervisedLearningParameter  || reinforcementLearningParameter || ganLearningParameter) :
+        assert (supervisedLearningParameter  || reinforcementLearningParameter) :
                 "Parameter " + node.getName() + " is not checkable, because it is unknown to Condition";
 
         if (supervisedLearningParameter && !reinforcementLearningParameter) {

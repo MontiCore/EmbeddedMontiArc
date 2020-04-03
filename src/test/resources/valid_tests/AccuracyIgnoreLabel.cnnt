@@ -5,7 +5,7 @@ configuration FullConfig{
     load_pretrained : true
     eval_metric : accuracy_ignore_label{
         axis : 1
-        ignore_label : 255
+        metric_ignore_label : 255
     }
     loss: dice_loss{
     sparse_label: true
