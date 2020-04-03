@@ -91,6 +91,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
     }
 
+    public int getGroups(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.GROUPS_NAME).get();
+    }
+
     public int getUnits(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.UNITS_NAME).get();
     }
