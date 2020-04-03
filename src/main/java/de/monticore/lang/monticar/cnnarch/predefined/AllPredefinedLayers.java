@@ -59,6 +59,7 @@ public class AllPredefinedLayers {
     public static final String KERNEL_NAME = "kernel";
     public static final String CHANNELS_NAME = "channels";
     public static final String STRIDE_NAME = "stride";
+    public static final String GROUPS_NAME= "groups";
     public static final String UNITS_NAME = "units";
     public static final String NOBIAS_NAME = "no_bias";
     public static final String P_NAME = "p";
