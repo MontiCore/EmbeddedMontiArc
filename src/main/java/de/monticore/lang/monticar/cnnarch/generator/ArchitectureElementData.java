@@ -227,7 +227,7 @@ public class ArchitectureElementData {
             return getTransPadding(getLayerSymbol()); //The padding calculated here is only used in the gluon/ mxnet backend, in the tensorlflow one it is interpreted as "same"
         }else if(pad.equals("valid")){
             return Arrays.asList(0,0);
-        }else{ //"no loss"
+        }else{ //"no loss" //todo remove
             return Arrays.asList(0,0,-1,0,0,0,0,0);
         }
     }

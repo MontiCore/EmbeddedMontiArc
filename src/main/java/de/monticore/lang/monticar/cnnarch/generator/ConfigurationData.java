@@ -50,6 +50,34 @@ public class ConfigurationData {
         return String.valueOf(getConfiguration().getEntry("k_value") .getValue());
     }
 
+    public String getGeneratorLossWeight() {
+        if (!getConfiguration().getEntryMap().containsKey("generator_loss_weight")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("generator_loss_weight") .getValue());
+    }
+
+    public String getDiscriminatorLossWeight() {
+        if (!getConfiguration().getEntryMap().containsKey("discriminator_loss_weight")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("discriminator_loss_weight") .getValue());
+    }
+
+    public String getSpeedPeriod() {
+        if (!getConfiguration().getEntryMap().containsKey("speed_period")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("speed_period") .getValue());
+    }
+
+    public Boolean getPrintImages() {
+        if (!getConfiguration().getEntryMap().containsKey("print_images")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("print_images").getValue().getValue();
+    }
+
     public String getGeneratorLoss() {
         if (!getConfiguration().getEntryMap().containsKey("generator_loss")) {
             return null;
@@ -57,11 +85,11 @@ public class ConfigurationData {
         return String.valueOf(getConfiguration().getEntry("generator_loss") .getValue());
     }
 
-    public String getConditionalInput() {
-        if (!getConfiguration().getEntryMap().containsKey("conditional_input")) {
+    public String getGeneratorTargetName() {
+        if (!getConfiguration().getEntryMap().containsKey("generator_target_name")) {
             return null;
         }
-        return String.valueOf(getConfiguration().getEntry("conditional_input") .getValue());
+        return String.valueOf(getConfiguration().getEntry("generator_target_name") .getValue());
     }
 
     public String getNoiseInput() {
@@ -118,6 +146,10 @@ public class ConfigurationData {
             return null;
         }
         return (String) getConfiguration().getEntry("preprocessing_name").getValue().toString();
+    }
+
+    public Boolean getPreprocessor() {
+        return (Boolean) configuration.hasPreprocessor();
     }
 
     public String getContext() {
