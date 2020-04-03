@@ -22,6 +22,7 @@ public class Convolution extends PredefinedLayerDeclaration {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
+        //     TODO check here
         return computeConvAndPoolOutputShape(layer.getInputTypes().get(0),
                 layer,
                 layer.getIntValue(AllPredefinedLayers.CHANNELS_NAME).get());
@@ -58,6 +59,11 @@ public class Convolution extends PredefinedLayerDeclaration {
                         .name(AllPredefinedLayers.PADDING_NAME)
                         .constraints(Constraints.PADDING_TYPE)
                         .defaultValue(AllPredefinedLayers.PADDING_SAME)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.GROUPS_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;
