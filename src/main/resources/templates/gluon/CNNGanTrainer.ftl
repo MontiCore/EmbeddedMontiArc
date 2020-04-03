@@ -68,40 +68,6 @@ def visualize(img_arr):
         img_np = img_np.reshape((s[0], s[1]))
         pyplot.imshow(img_np, cmap = 'Greys')
 
-# ugly hardcoded
-def getDataIter(ctx, batch_size=64, Z=100):
-    img_number = 500
-    mnist_train = mx.gluon.data.vision.datasets.MNIST(train=True)
-    mnist_test = mx.gluon.data.vision.datasets.MNIST(train=False)
-
-    X = np.zeros((img_number, 28, 28))
-    for i in range(img_number/2):
-        X[i] = mnist_train[i][0].asnumpy()[:,:,0]
-    for i in range(img_number/2):
-        X[img_number/2+i] = mnist_test[i][0].asnumpy()[:,:,0]
-
-    #X = np.zeros((img_number, 28, 28))
-    #for i, (data, label) in enumerate(mnist_train):
-    #    X[i] = mnist_train[i][0].asnumpy()[:,:,0]
-    #for i, (data, label) in enumerate(mnist_test):
-    #    X[len(mnist_train)+i] = data.asnumpy()[:,:,0]
-
-    np.random.seed(1)
-    p = np.random.permutation(X.shape[0])
-    X = X[p]
-
-    import cv2
-    #X = np.asarray([cv2.resize(x, (64,64)) for x in X])
-    X = X.astype(np.float32, copy=False)/(255.0/2) - 1.0
-    X = X.reshape((img_number, 1, 28, 28))
-    X = np.tile(X, (1, 1, 1, 1))
-    data = mx.nd.array(X)
-
-
-    image_iter = mx.io.NDArrayIter(data, batch_size=batch_size)
-    return image_iter
-# ugly hardcoded end
-
 class ${tc.fileNameWithoutEnding}:
 
     def __init__(self, data_loader, net_constructor_gen, net_constructor_dis, net_constructor_qnet = None):
@@ -176,7 +142,6 @@ class ${tc.fileNameWithoutEnding}:
         else:
             self._data_loader._input_names_ = cGAN_input_names + [gen_output_name]
 
-#        train_iter = getDataIter(mx_context, batch_size, 100)
         if preprocessing:
             train_iter, test_iter, data_mean, data_std, _, _ = self._data_loader.load_preprocessed_data(batch_size, preproc_lib)
         else:
@@ -265,7 +230,7 @@ class ${tc.fileNameWithoutEnding}:
         if self.use_qnet:
             qnet_trainer = mx.gluon.Trainer(q_net.collect_params(), discriminator_optimizer, discriminator_optimizer_params)
 
-        dis_loss = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
+        dis_loss = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss(from_sigmoid=True)
 
         if not generator_loss == None:
             if generator_loss == "l2":

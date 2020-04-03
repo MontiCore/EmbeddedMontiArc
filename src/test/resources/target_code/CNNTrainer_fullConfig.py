@@ -22,6 +22,7 @@ if __name__ == "__main__":
         num_epoch=5,
         load_checkpoint=True,
         context='gpu',
+        preprocessing=False,
         normalize=True,
         eval_metric='mse',
         eval_metric_params={

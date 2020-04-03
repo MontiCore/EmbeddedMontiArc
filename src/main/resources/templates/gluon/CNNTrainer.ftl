@@ -40,8 +40,8 @@ if __name__ == "__main__":
 <#if (config.context)??>
         context='${config.context}',
 </#if>
-<#if (config.preprocessingName)??>
-        preprocessing=${config.preprocessingName???string("True","False")},
+<#if (config.preprocessor)??>
+        preprocessing=${config.preprocessor?string("True","False")},
 </#if>
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
@@ -51,9 +51,6 @@ if __name__ == "__main__":
 </#if>
 <#if (config.clipGlobalGradNorm)??>
         clip_global_grad_norm=${config.clipGlobalGradNorm},
-</#if>
-<#if (config.preprocessingName)??>
-        preprocessing=${config.preprocessingName???string("True","False")},
 </#if>
 <#if (config.useTeacherForcing)??>
         use_teacher_forcing='${config.useTeacherForcing?string("True","False")}',

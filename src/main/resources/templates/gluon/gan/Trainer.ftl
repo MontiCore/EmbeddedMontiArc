@@ -61,8 +61,8 @@ if __name__ == "__main__":
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
 </#if>
-<#if (config.preprocessingName)??>
-        preprocessing=${config.preprocessingName???string("True","False")},
+<#if (config.preprocessor)??>
+        preprocessing=${config.preprocessor?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric}',
@@ -122,6 +122,7 @@ if __name__ == "__main__":
             'spread_value': ${config.noiseDistribution.spread_value}
 </#if>
      },
+</#if>
 <#if (config.KValue)??>
         k_value=${config.KValue},
 </#if>
@@ -146,6 +147,5 @@ if __name__ == "__main__":
 <#if (config.printImages)??>
         print_images=${config.printImages?string("True","False")},
 </#if>)
-</#if>
 
 

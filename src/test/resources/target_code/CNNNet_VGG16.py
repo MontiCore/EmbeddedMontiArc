@@ -301,16 +301,3 @@ class Net_0(gluon.HybridBlock):
 
         return predictions_
 
-    def getInputs(self):
-        inputs = {}
-        input_dimensions = (3,224,224)
-        input_domains = (int,0.0,255.0)
-        inputs["data_"] = input_domains + (input_dimensions,)
-        return inputs
-
-    def getOutputs(self):
-        outputs = {}
-        output_dimensions = (1000,1,1)
-        output_domains = (float,0.0,1.0)
-        outputs["predictions_"] = output_domains + (output_dimensions,)
-        return outputs

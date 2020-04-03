@@ -58,3 +58,17 @@ class CNNCreator_CifarClassifierNetwork:
 
         for i, network in self.networks.items():
             network.export(self._model_dir_ + self._model_prefix_ + "_" + str(i), epoch=0)
+
+    def getInputs(self):
+        inputs = {}
+        input_dimensions = (3,32,32,)
+        input_domains = (int,0.0,255.0,)
+        inputs["data_"] = input_domains + (input_dimensions,)
+        return inputs
+
+    def getOutputs(self):
+        outputs = {}
+        output_dimensions = (10,1,1,)
+        output_domains = (float,0.0,1.0,)
+        outputs["softmax_"] = output_domains + (output_dimensions,)
+        return outputs
