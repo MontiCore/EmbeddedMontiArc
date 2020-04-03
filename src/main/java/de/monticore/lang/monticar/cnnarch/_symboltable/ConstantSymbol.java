@@ -100,7 +100,7 @@ public class ConstantSymbol extends ArchitectureElementSymbol {
             ASTRange range = new ASTRange();
             range.setStartValue(String.valueOf(value));
             range.setEndValue(String.valueOf(value));
-            ASTElementType domain = new ASTElementType("Z", Optional.of(range));
+            ASTElementType domain = new ASTElementType(Optional.of("Z"), Optional.of(range));
             outputShape.setDomain(domain);
 
             outputShapes = Collections.singletonList(outputShape);
