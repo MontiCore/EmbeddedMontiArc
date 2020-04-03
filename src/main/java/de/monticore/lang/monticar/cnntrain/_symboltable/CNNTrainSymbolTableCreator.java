@@ -54,7 +54,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         CNNTrainCompilationUnitSymbol compilationUnitSymbol = new CNNTrainCompilationUnitSymbol(compilationUnit.getName());
         addToScopeAndLinkWithNode(compilationUnitSymbol, compilationUnit);
     }
-    
+
 
     @Override
     public void endVisit(ASTCNNTrainCompilationUnit ast) {
@@ -217,6 +217,14 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
+    public void endVisit(ASTLoadPretrainedEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        entry.setValue(getValueSymbolForBoolean(node.getValue()));
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
     public void endVisit(ASTLogPeriodEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         entry.setValue(getValueSymbolForInteger(node.getValue()));
@@ -305,7 +313,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         EntrySymbol entry = new EntrySymbol(node.getName());
         entry.setValue(getValueSymbolForDoubleVector(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
-        configuration.getEntryMap().put(node.getName(), entry); 
+        configuration.getEntryMap().put(node.getName(), entry);
     }
 
     @Override
@@ -359,8 +367,8 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         }
         addToScopeAndLinkWithNode(value, node);
     }
-	
-	
+
+
     private ValueSymbol getValueSymbolForInteger(ASTIntegerValue astIntegerValue) {
         ValueSymbol value = new ValueSymbol();
         Integer value_as_int = getIntegerFromNumber(astIntegerValue);
@@ -395,7 +403,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         value.setValue(value_as_double_list);
         return value;
     }
-    
+
     private ValueSymbol getValueSymbolForComponentName(ASTComponentNameValue astComponentNameValue) {
         ValueSymbol value = new ValueSymbol();
         List<String> valueAsList = astComponentNameValue.getNameList();
@@ -455,7 +463,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(entry, node);
         configuration.getEntryMap().put(node.getName(), entry);
     }
-    
+
     @Override
     public void visit(ASTLearningMethodEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
