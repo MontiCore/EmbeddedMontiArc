@@ -21,6 +21,12 @@ class ASTConfigurationUtils {
                         && ((ASTLearningMethodEntry)e).getValue().isPresentReinforcement());
     }
 
+    static boolean isGANLearning(final ASTConfiguration configuration) {
+        return configuration.getEntriesList().stream().anyMatch(e ->
+                (e instanceof ASTLearningMethodEntry)
+                        && ((ASTLearningMethodEntry)e).getValue().isPresentGan());
+    }
+
     static boolean hasEnvironment(final ASTConfiguration configuration) {
         return configuration.getEntriesList().stream().anyMatch(e -> e instanceof ASTEnvironmentEntry);
     }
@@ -107,5 +113,33 @@ class ASTConfigurationUtils {
             }
         }
         return false;
+    }
+
+    static boolean hasGeneratorLoss(final ASTConfiguration node) {
+        return node.getEntriesList().stream().anyMatch(e -> e instanceof ASTGeneratorLossEntry);
+    }
+
+    static boolean hasGeneratorTargetName(final ASTConfiguration node) {
+        return node.getEntriesList().stream().anyMatch(e -> e instanceof ASTGeneratorTargetNameEntry);
+    }
+
+    static boolean hasNoiseName(final ASTConfiguration node) {
+        return node.getEntriesList().stream().anyMatch(e -> e instanceof ASTNoiseInputEntry);
+    }
+
+    static boolean hasNoiseDistribution(final ASTConfiguration node) {
+        return node.getEntriesList().stream().anyMatch(e -> e instanceof ASTNoiseDistributionEntry);
+    }
+
+    static boolean hasConstraintDistribution(final ASTConfiguration node) {
+        return node.getEntriesList().stream().anyMatch(e -> e instanceof ASTConstraintDistributionEntry);
+    }
+
+    static boolean hasConstraintLosses(final ASTConfiguration node) {
+        return node.getEntriesList().stream().anyMatch(e -> e instanceof ASTConstraintLossEntry);
+    }
+
+    static boolean hasQNetwork(final ASTConfiguration node) {
+        return node.getEntriesList().stream().anyMatch(e -> e instanceof ASTQNetworkEntry);
     }
 }

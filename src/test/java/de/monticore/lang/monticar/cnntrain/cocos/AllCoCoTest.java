@@ -71,6 +71,15 @@ public class AllCoCoTest extends AbstractCoCoTest{
     }
 
     @Test
+    public void testValidDefaultGANConfig() { checkValid("valid_tests", "DefaultGANConfig"); }
+
+    @Test
+    public void testValidInfoGANDefaultGANConfig() { checkValid("valid_tests", "InfoGANConfig"); }
+
+    @Test
+    public void testValidImageGANConfig() { checkValid("valid_tests", "ImageGANConfig"); }
+
+    @Test
     public void testInvalidEntryRepetition() {
         checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckEntryRepetition()),
                 "invalid_cocos_tests", "EntryRepetition",
@@ -194,5 +203,40 @@ public class AllCoCoTest extends AbstractCoCoTest{
         checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckRLParameterOnlyWithLearningMethodSet()),
                 "invalid_cocos_tests", "CheckRLParameterOnlyWithLearningMethodSet",
                 new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
+    }
+
+    @Test
+    public void testInvalidGeneratorLossTargetNameDependency () {
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckGeneratorLossTargetNameDependency()),
+                "invalid_cocos_tests", "CheckGeneratorLossTargetNameDependency",
+                new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
+    }
+
+    @Test
+    public void testInvalidConstraintDistributionQNetworkDependency () {
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckConstraintDistributionQNetworkDependency()),
+                "invalid_cocos_tests", "CheckConstraintDistributionQNetworkDependency",
+                new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
+    }
+
+    @Test
+    public void testInvalidConstraintLossQNetworkDependency () {
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckConstraintLossesQNetworkDependency()),
+                "invalid_cocos_tests", "CheckConstraintLossQNetworkDependency",
+                new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
+    }
+
+    @Test
+    public void testInvalidInputDistributionDependency () {
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckNoiseInputDistributionDependency()),
+                "invalid_cocos_tests", "CheckInputDistributionDependency",
+                new ExpectedErrorInfo(1, ErrorCodes.REQUIRED_PARAMETER_MISSING));
+    }
+
+    @Test
+    public void testInvalidNoiseInputMissing () {
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckNoiseInputMissing()),
+                "invalid_cocos_tests", "CheckInputMissing",
+                new ExpectedErrorInfo(1, ErrorCodes.MISSING_PARAMETER_VALUE_CODE));
     }
 }

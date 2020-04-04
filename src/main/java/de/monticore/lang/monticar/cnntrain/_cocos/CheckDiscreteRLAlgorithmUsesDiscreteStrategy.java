@@ -32,4 +32,5 @@ public class CheckDiscreteRLAlgorithmUsesDiscreteStrategy implements CNNTrainAST
             }
         }
     }
+
 }

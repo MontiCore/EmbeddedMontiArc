@@ -12,6 +12,8 @@ import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainCompilationUnit;
 import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCoCoChecker;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainConfigurationSymbolChecker;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainConfigurationSymbolCoCo;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.symboltable.Scope;

@@ -281,7 +281,6 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     GeneratorLossWeightEntry implements ConfigEntry = name:"generator_loss_weight" ":" value:NumberValue;
     DiscriminatorLossWeightEntry implements ConfigEntry = name:"discriminator_loss_weight" ":" value:NumberValue;
 
-    SpeedPeriodEntry implements ConfigEntry = name:"speed_period" ":" value:IntegerValue;
     PrintImagesEntry implements ConfigEntry = name:"print_images" ":" value:BooleanValue;
 
     interface MultiParamValueMapConfigEntry extends ConfigEntry;

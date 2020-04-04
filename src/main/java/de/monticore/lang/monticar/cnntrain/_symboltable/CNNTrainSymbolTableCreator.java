@@ -169,14 +169,6 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
-    public void endVisit(ASTSpeedPeriodEntry node) {
-        EntrySymbol entry = new EntrySymbol(node.getName());
-        entry.setValue(getValueSymbolForInteger(node.getValue()));
-        addToScopeAndLinkWithNode(entry, node);
-        configuration.getEntryMap().put(node.getName(), entry);
-    }
-
-    @Override
     public void endVisit(ASTPrintImagesEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         entry.setValue(getValueSymbolForBoolean(node.getValue()));

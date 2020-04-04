@@ -27,7 +27,12 @@ public class CNNTrainCocos {
                 .addCoCo(new CheckRlAlgorithmParameter())
                 .addCoCo(new CheckDiscreteRLAlgorithmUsesDiscreteStrategy())
                 .addCoCo(new CheckContinuousRLAlgorithmUsesContinuousStrategy())
-                .addCoCo(new CheckRosEnvironmentHasOnlyOneRewardSpecification());
+                .addCoCo(new CheckRosEnvironmentHasOnlyOneRewardSpecification())
+                .addCoCo(new CheckConstraintDistributionQNetworkDependency())
+                .addCoCo(new CheckConstraintLossesQNetworkDependency())
+                .addCoCo(new CheckGeneratorLossTargetNameDependency())
+                .addCoCo(new CheckNoiseInputDistributionDependency())
+                .addCoCo(new CheckNoiseInputMissing());
     }
 
     public static void checkAll(CNNTrainCompilationUnitSymbol compilationUnit){
@@ -54,8 +59,7 @@ public class CNNTrainCocos {
 
     public static void checkGANCocos(final ConfigurationSymbol configurationSymbol) {
         CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
-                .addCoCo(new CheckGANNetworkPorts())
-                .addCoCo(new CheckGANConfigurationDependencies());
+                .addCoCo(new CheckGANNetworkPorts());
         checker.checkAll(configurationSymbol);
     }
 }

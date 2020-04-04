@@ -59,7 +59,6 @@ public class ConfigEntryNameConstants {
     public static final String NOISE_INPUT = "noise_input";
     public static final String GENERATOR_LOSS_WEIGHT = "generator_loss_weight";
     public static final String DISCRIMINATOR_LOSS_WEIGHT = "discriminator_loss_weight";
-    public static final String SPEED_PERIOD_ENTRY = "speed_period";
     public static final String PRINT_IMAGES = "print_images";
 }
 
