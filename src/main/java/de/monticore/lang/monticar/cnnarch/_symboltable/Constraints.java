@@ -239,7 +239,6 @@ public enum Constraints {
             }
             return false;
         }
-
         @Override
         protected String msgString() {
             return AllPredefinedLayers.MEMORY_ACTIVATION_LINEAR + " or "
