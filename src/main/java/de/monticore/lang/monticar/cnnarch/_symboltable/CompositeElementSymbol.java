@@ -17,16 +17,17 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
 
     protected List<ArchitectureElementSymbol> elements = new ArrayList<>();
 
+
     public CompositeElementSymbol() {
         super("");
         setResolvedThis(this);
     }
 
+    abstract protected void setElements(List<ArchitectureElementSymbol> elements);
+
     public List<ArchitectureElementSymbol> getElements() {
         return elements;
     }
-
-    abstract protected void setElements(List<ArchitectureElementSymbol> elements);
 
     @Override
     public boolean isAtomic() {

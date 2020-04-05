@@ -68,6 +68,16 @@ public enum Constraints {
             return "a tuple of integers";
         }
     },
+    INTEGER_OR_INTEGER_TUPLE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            return exp.isInt().get() || exp.isIntTuple().get();
+        }
+        @Override
+        public String msgString() {
+            return "an integer or tuple of integers";
+        }
+    },
     POSITIVE {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {
@@ -78,6 +88,28 @@ public enum Constraints {
                 boolean isPositive = true;
                 for (double value : exp.getDoubleTupleValues().get()){
                     if (value <= 0){
+                        isPositive = false;
+                    }
+                }
+                return isPositive;
+            }
+            return false;
+        }
+        @Override
+        public String msgString() {
+            return "a positive number";
+        }
+    },
+    POSITIVE_OR_MINUS_ONE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            if (exp.getDoubleValue().isPresent()){
+                return exp.getDoubleValue().get() > 0 || exp.getDoubleValue().get() == -1;
+            }
+            else if (exp.getDoubleTupleValues().isPresent()){
+                boolean isPositive = true;
+                for (double value : exp.getDoubleTupleValues().get()){
+                    if (value < -1 || value == 0){
                         isPositive = false;
                     }
                 }
@@ -207,7 +239,6 @@ public enum Constraints {
             }
             return false;
         }
-
         @Override
         protected String msgString() {
             return AllPredefinedLayers.MEMORY_ACTIVATION_LINEAR + " or "

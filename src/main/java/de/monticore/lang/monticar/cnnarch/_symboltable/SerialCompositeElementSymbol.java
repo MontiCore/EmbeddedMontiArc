@@ -12,6 +12,8 @@ import java.util.*;
 
 public class SerialCompositeElementSymbol extends CompositeElementSymbol {
 
+    protected List<List<ArchitectureElementSymbol>> replaySubNetworks = new ArrayList<>(new ArrayList<>());
+
     protected void setElements(List<ArchitectureElementSymbol> elements) {
         ArchitectureElementSymbol previous = null;
         for (ArchitectureElementSymbol current : elements){
@@ -30,6 +32,32 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
             previous = current;
         }
         this.elements = elements;
+    }
+
+    protected void setReplaySubNetworks(List<List<ArchitectureElementSymbol>> replaySubNetworks){
+        for (List<ArchitectureElementSymbol> subElements: replaySubNetworks){
+            ArchitectureElementSymbol previous = null;
+            for (ArchitectureElementSymbol current : subElements){
+                if (previous != null){
+                    current.setInputElement(previous);
+                    previous.setOutputElement(current);
+                }
+                else {
+                    if (getInputElement().isPresent()){
+                        current.setInputElement(getInputElement().get());
+                    }
+                    if (getOutputElement().isPresent()){
+                        current.setOutputElement(getOutputElement().get());
+                    }
+                }
+                previous = current;
+            }
+        }
+        this.replaySubNetworks = replaySubNetworks;
+    }
+
+    public List<List<ArchitectureElementSymbol>> getReplaySubNetworks() {
+        return replaySubNetworks;
     }
 
     @Override

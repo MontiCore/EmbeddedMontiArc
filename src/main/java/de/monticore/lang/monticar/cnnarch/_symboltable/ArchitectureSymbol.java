@@ -214,5 +214,26 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return copy;
     }
 
+    public void processForReplayMemory(){
+        for(NetworkInstructionSymbol networkInstruction : networkInstructions){
+            List<ArchitectureElementSymbol> elements = networkInstruction.getBody().getElements();
+            List<ArchitectureElementSymbol> elementsNew = new ArrayList<>();
+            List<List<ArchitectureElementSymbol>> replaySubNetworks = new ArrayList<>(new ArrayList<>());
+            List<ArchitectureElementSymbol> currentReplaySubNetworkElements = new ArrayList<>();
 
+            for (ArchitectureElementSymbol element : elements){
+                if (element.getName().equals("ReplayMemory")) {
+                    if (!currentReplaySubNetworkElements.isEmpty()){
+                        replaySubNetworks.add(currentReplaySubNetworkElements);
+                    }
+                    currentReplaySubNetworkElements = new ArrayList<>();
+                }
+                currentReplaySubNetworkElements.add(element);
+            }
+            if (!currentReplaySubNetworkElements.isEmpty() && !replaySubNetworks.isEmpty()){
+                replaySubNetworks.add(currentReplaySubNetworkElements);
+            }
+                networkInstruction.getBody().setReplaySubNetworks(replaySubNetworks);
+        }
+    }
 }
