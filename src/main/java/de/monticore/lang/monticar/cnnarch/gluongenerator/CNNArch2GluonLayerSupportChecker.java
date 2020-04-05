@@ -9,7 +9,7 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
     public CNNArch2GluonLayerSupportChecker() {
         supportedLayerList.add(AllPredefinedLayers.FULLY_CONNECTED_NAME);
         supportedLayerList.add(AllPredefinedLayers.CONVOLUTION_NAME);
-        supportedLayerList.add(AllPredefinedLayers.TRANS_CONV_NAME);
+        supportedLayerList.add(AllPredefinedLayers.UP_CONVOLUTION_NAME);
         supportedLayerList.add(AllPredefinedLayers.SOFTMAX_NAME);
         supportedLayerList.add(AllPredefinedLayers.SIGMOID_NAME);
         supportedLayerList.add(AllPredefinedLayers.TANH_NAME);
