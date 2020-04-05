@@ -373,6 +373,21 @@ class ${tc.fileNameWithoutEnding}:
             loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
+            
+        #Memory Replay
+        replay_layers = {}
+        replay_store_buffer = {}
+<#list tc.architecture.networkInstructions as networkInstruction>
+        replay_layers[${networkInstruction?index}] = []
+        replay_store_buffer[${networkInstruction?index}] = []
+<#list networkInstruction.body.replaySubNetworks as elements>
+<#if elements?index != 0>
+        sub_net = self._networks[${networkInstruction?index}].replay_sub_nets[${elements?index - 1}]
+        replay_layers[${networkInstruction?index}].append(sub_net.replaymemory${elements?index}_)
+        replay_store_buffer[${networkInstruction?index}].append([])
+</#if>
+</#list>
+</#list>
 
         tic = None
 
@@ -390,6 +405,10 @@ class ${tc.fileNameWithoutEnding}:
             loss_total = 0
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
+                
+                 #replay memory computations
+<#include "pythonReplayExecuteTrain.ftl">
+                                 
                 with autograd.record():
 <#include "pythonExecuteTrain.ftl">
 
@@ -414,6 +433,11 @@ class ${tc.fileNameWithoutEnding}:
 
                 for trainer in trainers:
                     trainer.step(batch_size)
+                                                      
+                #storing samples for replay
+                for net_i in range(len(self._networks)):
+                    for layer_i, layer in enumerate(replay_layers[net_i]):
+                        layer.store_samples(replay_store_buffer[net_i][layer_i], labels, mx_context)
 
                 if tic is None:
                     tic = time.time()

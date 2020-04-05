@@ -87,6 +87,17 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         setCurrentElement(previousElement);
     }
 
+    public void include(SerialCompositeElementSymbol compositeElement, Integer replaySubNetIndex, Writer writer, NetDefinitionMode netDefinitionMode){
+        ArchitectureElementData previousElement = getCurrentElement();
+        setCurrentElement(compositeElement);
+
+        for (ArchitectureElementSymbol element : compositeElement.getReplaySubNetworks().get(replaySubNetIndex)){
+            include(element, writer, netDefinitionMode);
+        }
+
+        setCurrentElement(previousElement);
+    }
+
     public void include(ArchitectureElementSymbol architectureElement, Writer writer, NetDefinitionMode netDefinitionMode){
         if (architectureElement instanceof CompositeElementSymbol){
             include((CompositeElementSymbol) architectureElement, writer, netDefinitionMode);
@@ -106,6 +117,10 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         include(architectureElementSymbol, NetDefinitionMode.fromString(netDefinitionMode));
     }
 
+    public void include(ArchitectureElementSymbol architectureElementSymbol, Integer replaySubNetIndex, String netDefinitionMode) {
+        include(architectureElementSymbol, replaySubNetIndex, NetDefinitionMode.fromString(netDefinitionMode));
+    }
+
     public void include(ArchitectureElementSymbol architectureElement, NetDefinitionMode netDefinitionMode){
         if (getWriter() == null){
             throw new IllegalStateException("missing writer");
@@ -113,8 +128,19 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         include(architectureElement, getWriter(), netDefinitionMode);
     }
 
+    public void include(ArchitectureElementSymbol architectureElement, Integer replaySubNetIndex, NetDefinitionMode netDefinitionMode){
+        if (getWriter() == null){
+            throw new IllegalStateException("missing writer");
+        }
+        include((SerialCompositeElementSymbol) architectureElement, replaySubNetIndex, getWriter(), netDefinitionMode);
+    }
+
     public Set<String> getStreamInputNames(SerialCompositeElementSymbol stream, boolean outputAsArray) {
         return getStreamInputs(stream, outputAsArray).keySet();
+    }
+
+    public Set<String> getSubnetInputNames(List<ArchitectureElementSymbol> subNet) {
+        return getSubnetInputs(subNet).keySet();
     }
 
     public ArrayList<String> getStreamInputVariableNames(SerialCompositeElementSymbol stream, boolean outputAsArray) {
@@ -222,6 +248,18 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
 
         outputNames.addAll(getStreamLayerVariableMembers(stream, true).keySet());
 
+
+        return outputNames;
+    }
+
+    public Set<String> getSubnetOutputNames(List<ArchitectureElementSymbol> subNet){
+        Set<String> outputNames = new LinkedHashSet<>();
+
+        for (ArchitectureElementSymbol element : subNet.get(subNet.size()-1).getLastAtomicElements()) {
+            String name = getName(element);
+
+            outputNames.add(name);
+        }
 
         return outputNames;
     }
@@ -400,6 +438,31 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         }
 
         inputs.putAll(getStreamLayerVariableMembers(stream, false));
+        return inputs;
+    }
+
+    public Map<String, List<String>> getSubnetInputs(List<ArchitectureElementSymbol> subNet) {
+        Map<String, List<String>> inputs = new LinkedHashMap<>();
+
+        for (ArchitectureElementSymbol element : subNet.get(0).getFirstAtomicElements()) {
+
+            if (element instanceof ConstantSymbol) {
+                inputs.put(getName(element), Arrays.asList("1"));
+            }
+            else {
+                List<Integer> intDimensions = element.getOutputTypes().get(0).getDimensions();
+
+                List<String> dimensions = new ArrayList<>();
+                for (Integer intDimension : intDimensions) {
+                    dimensions.add(intDimension.toString());
+                }
+
+                String name = getName(element);
+
+                inputs.put(name, dimensions);
+            }
+        }
+
         return inputs;
     }
 

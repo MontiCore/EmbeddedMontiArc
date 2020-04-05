@@ -45,9 +45,12 @@
 </#if>
 </#list>
 <#else>
-                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body, true), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, true), ", ")})
+                    net_ret = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, true), ", ")})
+                    for i in range(len(replay_store_buffer[${networkInstruction?index}])):
+                        replay_store_buffer[${networkInstruction?index}][i] = net_ret[1][i]
 
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
+                    ${outputName} = net_ret[0][${outputName?index}]
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
                     lossList.append(loss_function(${outputName}, labels[${tc.getIndex(outputName, true)}]))
 <#if tc.endsWithArgmax(networkInstruction.body)>

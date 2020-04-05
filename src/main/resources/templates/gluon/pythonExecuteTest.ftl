@@ -104,9 +104,10 @@
 </#if>
 </#list>
 <#else>
-                    ${tc.join(tc.getStreamOutputNames(networkInstruction.body, true), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, true), ", ")})
+                    net_ret = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, true), ", ")})
 
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
+                    ${outputName} = net_ret[0][${outputName?index}]
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
                     outputs.append(${outputName})
                     lossList.append(loss_function(${outputName}, labels[${tc.getIndex(outputName, true)}]))

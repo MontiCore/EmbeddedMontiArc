@@ -77,8 +77,11 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         return fileContentMap;
     }
 
+
     private Map<String, String> compileFileContentMap(ArchitectureSymbol architecture) {
         TemplateConfiguration templateConfiguration = new GluonTemplateConfiguration();
+
+        architecture.processForReplayMemory();
 
         Map<String, String> fileContentMap = new HashMap<>();
         CNNArch2GluonTemplateController archTc = new CNNArch2GluonTemplateController(

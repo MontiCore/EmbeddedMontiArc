@@ -43,6 +43,7 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
         // supportedLayerList.add(AllPredefinedLayers.CROP_NAME);
         supportedLayerList.add(AllPredefinedLayers.LARGE_MEMORY_NAME);
         supportedLayerList.add(AllPredefinedLayers.MEMORY_NAME);
+		supportedLayerList.add(AllPredefinedLayers.REPLAY_MEMORY_NAME);
     }
 
 }
