@@ -59,7 +59,11 @@ public class CNNTrainCocos {
 
     public static void checkGANCocos(final ConfigurationSymbol configurationSymbol) {
         CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
-                .addCoCo(new CheckGANNetworkPorts());
+                .addCoCo(new CheckGANDiscriminatorQNetworkDependency())
+                .addCoCo(new CheckGANGeneratorDiscriminatorDependency())
+                .addCoCo(new CheckGANGeneratorHasOneOutput())
+                .addCoCo(new CheckGANGeneratorQNetworkDependency())
+                .addCoCo(new CheckGANQNetworkhasOneInput());
         checker.checkAll(configurationSymbol);
     }
 }
