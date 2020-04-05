@@ -56,6 +56,11 @@ public class LayerNameCreator {
         for (ArchitectureElementSymbol subElement : compositeElement.getElements()){
             endStage = name(subElement, endStage, streamIndices);
         }
+        for (List<ArchitectureElementSymbol> subNetwork : compositeElement.getReplaySubNetworks()){
+            for (ArchitectureElementSymbol subElement : subNetwork){
+                endStage = name(subElement, endStage, streamIndices);
+            }
+        }
         return endStage;
     }
 
