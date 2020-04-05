@@ -54,6 +54,7 @@ public class AllPredefinedLayers {
     public static final String BROADCAST_ADD_NAME = "BroadcastAdd";
     public static final String RESHAPE_NAME = "Reshape";
     public static final String MEMORY_NAME = "Memory";
+    public static final String REPLAY_MEMORY_NAME = "ReplayMemory";
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -88,13 +89,21 @@ public class AllPredefinedLayers {
     public static final String BEAMSEARCH_WIDTH_NAME = "width";
     public static final String SHAPE_NAME = "shape";
     public static final String RNN_DROPOUT_NAME = "dropout";
-	//parameters for memory layers
+	//parameters for memory layer
     public static final String SUB_KEY_SIZE_NAME = "subKeySize";
     public static final String QUERY_SIZE_NAME = "querySize";
-	public static final String ACT_QUERY_NAME = "actQuery";
+	public static final String QUERY_ACT_NAME = "queryAct";
     public static final String K_NAME = "k";
 	public static final String NUM_HEADS_NAME = "numHeads";
-
+	public static final String VALUE_SHAPE_NAME = "valueShape";
+    //parameters for replay memory layer
+    public static final String REPLAY_INTERVAL_NAME = "replayInterval";
+    public static final String REPLAY_BATCH_SIZE_NAME = "replayBatchSize";
+	public static final String REPLAY_STEPS_NAME = "replaySteps";
+    public static final String REPLAY_GRADIENT_STEPS_NAME = "replayGradientSteps";
+	public static final String STORE_PROB_NAME = "storeProb";
+	public static final String MAX_STORED_SAMPLES_NAME = "maxStoredSamples";
+    
     //possible String values
     public static final String PADDING_VALID = "valid";
     public static final String PADDING_SAME = "same";
@@ -146,7 +155,8 @@ public class AllPredefinedLayers {
                 SwapAxes.create(),
                 BroadcastAdd.create(),
                 Reshape.create(),
-                Memory.create());
+                Memory.create(),
+                ReplayMemory.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class Memory extends PredefinedLayerDeclaration {
 
@@ -24,14 +25,31 @@ public class Memory extends PredefinedLayerDeclaration {
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
 
-        int querySize = layer.getIntValue(AllPredefinedLayers.QUERY_SIZE_NAME).get();
-
-        return Collections.singletonList(new ArchTypeSymbol.Builder()
-            .channels(1)
-            .height(querySize)
-            .width(1)
-            .elementType("-oo", "oo")
-            .build());
+        Optional<Integer> optValue = layer.getIntValue(AllPredefinedLayers.QUERY_SIZE_NAME);
+            
+        if (optValue.isPresent()){        
+            int querySize = optValue.get();
+            return Collections.singletonList(new ArchTypeSymbol.Builder()
+                .channels(1)
+                .height(querySize)
+                .width(1)
+                .elementType("-oo", "oo")
+                .build());
+        }else{
+            Optional<List<Integer>> optTupleValue = layer.getIntTupleValue(AllPredefinedLayers.QUERY_SIZE_NAME);
+            List<Integer> list = new ArrayList<>();
+            for (Object value : optTupleValue.get()) {
+                list.add((Integer) value);
+            }
+            int listLen = list.size();
+            int lastEntry = list.get(listLen-1);
+            return Collections.singletonList(new ArchTypeSymbol.Builder()
+                .channels(1)
+                .height(lastEntry)
+                .width(1)
+                .elementType("-oo", "oo")
+                .build());
+        }
     }
     
     @Override
@@ -48,11 +66,11 @@ public class Memory extends PredefinedLayerDeclaration {
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.QUERY_SIZE_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .constraints(Constraints.INTEGER_OR_INTEGER_TUPLE, Constraints.POSITIVE)
                         .defaultValue(512)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.ACT_QUERY_NAME)
+                        .name(AllPredefinedLayers.QUERY_ACT_NAME)
                         .constraints(Constraints.ACTIVATION_TYPE)
                         .defaultValue("linear")
                         .build(),
@@ -63,6 +81,12 @@ public class Memory extends PredefinedLayerDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NUM_HEADS_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.VALUE_SHAPE_NAME)
+                        .constraints(Constraints.INTEGER_OR_INTEGER_TUPLE, Constraints.POSITIVE_OR_MINUS_ONE)
+                        .defaultValue(-1)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;

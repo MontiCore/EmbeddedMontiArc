@@ -9,6 +9,8 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
+import java.util.*;
+
 public abstract class NetworkInstructionSymbol extends ResolvableSymbol {
 
     private SerialCompositeElementSymbol body;
@@ -16,7 +18,7 @@ public abstract class NetworkInstructionSymbol extends ResolvableSymbol {
     protected NetworkInstructionSymbol(String name, SymbolKind kind) {
         super(name, kind);
     }
-
+    
     public SerialCompositeElementSymbol getBody() {
         return body;
     }
