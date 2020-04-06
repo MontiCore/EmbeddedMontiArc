@@ -101,6 +101,19 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         generateFilesFromConfigurationSymbol(configurationSymbol);
     }
 
+    public void generate(Path modelsDirPath,
+                         String rootModelName,
+                         NNArchitectureSymbol trainedArchitecture,
+                         NNArchitectureSymbol discriminatorNetwork,
+                         NNArchitectureSymbol qNetwork) {
+        ConfigurationSymbol configurationSymbol = this.getConfigurationSymbol(modelsDirPath, rootModelName);
+        configurationSymbol.setTrainedArchitecture(trainedArchitecture);
+        configurationSymbol.setDiscriminatorNetwork(discriminatorNetwork);
+        configurationSymbol.setQNetwork(qNetwork);
+        this.setRootProjectModelsDir(modelsDirPath.toString());
+        generateFilesFromConfigurationSymbol(configurationSymbol);
+    }
+
     public void generate(Path modelsDirPath, String rootModelName, NNArchitectureSymbol trainedArchitecture) {
         generate(modelsDirPath, rootModelName, trainedArchitecture, null);
     }
