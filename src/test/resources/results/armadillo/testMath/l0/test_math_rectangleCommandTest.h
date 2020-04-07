@@ -11,16 +11,16 @@ using namespace std;
 class test_math_rectangleCommandTest{
 public:
 Cube<unsigned char> src;
-Rect rect;
+cv::Rect rect;
 colvec color;
 int thickness;
 int lineType;
 Cube<unsigned char> outputImg;
 void init()
 {
-src = cube(3, n, m);
+src = Cube<unsigned char>(3, n, m);
 color=colvec(3);
-outputImg = cube(3, n, m);
+outputImg = Cube<unsigned char>(3, n, m);
 }
 Cube<unsigned char> rectangleHelper(const Cube<unsigned char>& src, cv::Rect& rect, colvec color, int thickness, int lineType)
 {

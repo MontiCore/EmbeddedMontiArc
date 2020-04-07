@@ -107,7 +107,7 @@ public abstract class MathCommand {
             if(code.contains("mat(")){
                 code =code.replace("mat(", "Mat<unsigned char>(");
             } else if(code.contains("cube(")){
-                code = code.replace("mat(", "Cube<unsigned char>(");
+                code = code.replace("cube(", "Cube<unsigned char>(");
             }
             ((TargetCodeInstruction)instruct).setInstruction(code);
         }

@@ -21,10 +21,10 @@ Cube<unsigned char> outMatrix;
 arma::Mat<unsigned char> out2Matrix;
 void init()
 {
-src = cube(n, m, 3);
+src = Cube<unsigned char>(n, m, 3);
 sizeY=colvec(3);
 two=colvec(2);
-outMatrix = cube(3, n, m);
+outMatrix = Cube<unsigned char>(3, n, m);
 out2Matrix=Mat<unsigned char>(2,m);
 }
 void erodeHelper(const Cube<unsigned char>& src, cv::Mat& dst, int erosion_elem, int iterations)
@@ -66,4 +66,3 @@ findContoursHelper(dst3, contours);
 
 };
 #endif
-
