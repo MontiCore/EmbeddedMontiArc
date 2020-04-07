@@ -55,7 +55,7 @@ public class RectangleCommand extends MathCommand{
             MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
 
         String nameOfSecondParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(1).getTextualRepresentation();
-        ComponentConverter.fixVariableType(nameOfSecondParameter, bluePrintCPP, "Q", "Rect", "");
+        ComponentConverter.fixVariableType(nameOfSecondParameter, bluePrintCPP, "Q", "cv::Rect", "");
 
         Method rectangleHelperMethod = getRectangleHelperMethod(mathMatrixNameExpressionSymbol, bluePrintCPP, properties);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());

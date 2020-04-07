@@ -18,8 +18,8 @@ double sigmaY;
 Cube<unsigned char> dst;
 void init()
 {
-src = cube(n, m, 3);
-dst = cube(n, m, 3);
+src = Cube<unsigned char>(n, m, 3);
+dst = Cube<unsigned char>(n, m, 3);
 }
 void gaussianBlurHelper(const Cube<unsigned char>& src, Cube<unsigned char>& dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
 {

@@ -12,11 +12,14 @@ component ErodeAndGaussianBlurCommandTest{
     out Q^{3,n,m} outMatrix,
     out Q^{2,m} out2Matrix;
 
-    implementation Math{
+    instance GaussianBlurCommandTest gaussBlur;
+    instance CvtColorCommandTest cvtColor;
 
-        dst = erode(src, erosion_elem, iterations);
-        dst3 = dilate(dst, dilation_elem, iterations);
-        contours = findContours(dst3);
+    //implementation Math{
 
-    }
+    //    dst = erode(src, erosion_elem, iterations);
+    //    dst3 = dilate(dst, dilation_elem, iterations);
+    //    contours = findContours(dst3);
+
+    //}
 }
