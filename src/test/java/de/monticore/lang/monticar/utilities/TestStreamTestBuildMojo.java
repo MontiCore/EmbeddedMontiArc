@@ -35,13 +35,13 @@ public class TestStreamTestBuildMojo {
         assertTrue("Build-05: Build is invalid.["+r+"]", r==0);
     }
 
-    @Test
-    public void Test_06_execution_valid_EMADL() {
-        //valid
-        //ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/streamtest-generator/01");
-        int r = BaseTest.validBuild("./src/test/resources/emadl/models", "./target/tmp/build/06", true);
-        assertTrue("Generator-06: Generator is invalid.["+r+"]", r==0);
-    }
+//    @Test
+//    public void Test_06_execution_valid_EMADL() {
+//        //valid
+//        //ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/streamtest-generator/01");
+//        int r = BaseTest.validBuild("./src/test/resources/emadl/models", "./target/tmp/build/06", true);
+//        assertTrue("Generator-06: Generator is invalid.["+r+"]", r==0);
+//    }
 
     @Test
     public void Test_10_reRun(){
