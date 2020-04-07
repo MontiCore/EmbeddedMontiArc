@@ -11,7 +11,6 @@ import java.util.Optional;
 /**
  * Contains all information that is relevant for the target language to generate the source code.
  *
- * @author Sascha Schneiders
  */
 public abstract class LanguageUnit {
 

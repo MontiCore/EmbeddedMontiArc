@@ -11,7 +11,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 
 /**
- * @author Sascha Schneiders
  */
 public class ArmadilloBackend implements MathBackend {
     @Override

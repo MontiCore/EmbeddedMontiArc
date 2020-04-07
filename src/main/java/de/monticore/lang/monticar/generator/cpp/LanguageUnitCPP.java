@@ -20,7 +20,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author Sascha Schneiders
  */
 public class LanguageUnitCPP extends LanguageUnit {
 

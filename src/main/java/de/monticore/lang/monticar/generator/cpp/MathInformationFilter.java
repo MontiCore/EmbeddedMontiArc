@@ -12,7 +12,6 @@ import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathInformationFilter {
     public static void filterStaticInformation(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {

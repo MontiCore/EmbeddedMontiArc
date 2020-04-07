@@ -4,7 +4,6 @@ package de.monticore.lang.monticar.generator.cpp.symbols;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathChainedExpression extends MathExpressionSymbol {
     public static int ID = 10002;

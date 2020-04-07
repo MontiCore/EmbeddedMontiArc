@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * Implementation of the bridge pattern. Allows dynamic interchangeable implementations of solver generators
  *
- * @author Christoph Richter
  */
 public interface SolverGeneratorImplementation {
 

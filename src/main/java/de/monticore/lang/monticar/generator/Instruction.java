@@ -6,7 +6,6 @@ package de.monticore.lang.monticar.generator;
  * Language. They can also be used to add different Instructions to methods which are not related to
  * the Math language, like port connecting for setting inputs.
  *
- * @author Sascha Schneiders
  */
 public interface Instruction {
     String getTargetLanguageInstruction();

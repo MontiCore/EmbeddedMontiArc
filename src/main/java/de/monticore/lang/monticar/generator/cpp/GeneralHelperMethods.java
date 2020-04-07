@@ -6,7 +6,6 @@ import de.monticore.lang.monticar.generator.BluePrint;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class GeneralHelperMethods {
 

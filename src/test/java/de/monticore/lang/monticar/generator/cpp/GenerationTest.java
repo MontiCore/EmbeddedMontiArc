@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * @author Sascha Schneiders
  */
 public class GenerationTest extends AbstractSymtabTest {
 

@@ -8,7 +8,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathDimensionCalculatorHelper {
     public static int calculateMatrixColumns(IArithmeticExpression mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {

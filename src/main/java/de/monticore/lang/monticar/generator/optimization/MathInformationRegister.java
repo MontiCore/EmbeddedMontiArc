@@ -18,8 +18,6 @@ import java.util.Optional;
 /**
  * This class stores information of already encountered math information
  *
- * @author Sascha Schneiders
- * @author Christoph Richter
  */
 public class MathInformationRegister {
     protected List<Variable> variables = new ArrayList<>();//contains in implementation Math section declared Variables

@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 
 /**
  * Test class for GeneratorEMAMOpt2CMake
- * @author Christoph Richter
  */
 public class GeneratorEMAMOpt2CMakeTest extends AbstractSymtabTest {
 

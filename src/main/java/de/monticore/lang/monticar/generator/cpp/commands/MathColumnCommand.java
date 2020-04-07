@@ -6,7 +6,6 @@ import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.MathCommand;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathColumnCommand extends MathCommand {
     public MathColumnCommand() {

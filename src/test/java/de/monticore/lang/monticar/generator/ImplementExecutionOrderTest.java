@@ -17,9 +17,6 @@ import de.monticore.symboltable.Scope;
 /**
  * TODO
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
  */
 public class ImplementExecutionOrderTest extends AbstractSymtabTest {
 

@@ -6,7 +6,6 @@ import de.monticore.lang.monticar.generator.Variable;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class ConnectInstructionCPP extends ConnectInstruction {
     public ConnectInstructionCPP(Variable variable1, Variable variable2) {

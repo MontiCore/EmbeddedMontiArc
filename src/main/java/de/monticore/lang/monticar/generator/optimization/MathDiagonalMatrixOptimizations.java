@@ -13,7 +13,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathDiagonalMatrixOptimizations implements MathOptimizationRule {
     MathStatementsSymbol currentMathStatementsSymbol = null;

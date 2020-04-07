@@ -6,7 +6,6 @@ import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
 
 /**
- * @author Sascha Schneiders
  */
 public class VariableType {
     protected String typeNameMontiCar;

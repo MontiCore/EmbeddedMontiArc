@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * Manages the conversion from a MathOptimizationSymbol to executable C++ code.
  *
- * @author Christoph Richter
- * @since 09th March 2018
  */
 public class OptimizationSolverConverter {
 

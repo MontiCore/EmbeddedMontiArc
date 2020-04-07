@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Sascha Schneiders
- * @author Christoph Richter
  */
 public class ForLoopHeadConverter {
     public static String getForLoopHeadCode(MathForLoopHeadSymbol mathForLoopHeadSymbol, List<String> includeStrings) {

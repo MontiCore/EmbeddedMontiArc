@@ -5,7 +5,6 @@ import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverterMeth
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class StringValueListExtractorUtil {
 

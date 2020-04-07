@@ -7,7 +7,6 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class ExecuteMethodGeneratorHelper {
     public static String generateIfConditionCode(MathConditionalExpressionSymbol mathConditionalExpressionSymbol, List<String> includeStrings) {

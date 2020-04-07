@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class ComponentConverterMethodGeneration {
     public static int currentGenerationIndex = 0;

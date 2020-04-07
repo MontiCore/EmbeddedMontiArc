@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Tests the generation of cmake files
  *
- * @author Christoph Richter
  */
 public class GenerateCMakeTest extends AbstractSymtabTest {
 

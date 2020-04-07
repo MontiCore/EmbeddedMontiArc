@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Rule that transforms AC+BC to (A+B)*C and CA+CB to C*(A+B)
  *
- * @author Sascha Schneiders
  */
 public class MathMultiplicationAddition implements MathOptimizationRule {
 

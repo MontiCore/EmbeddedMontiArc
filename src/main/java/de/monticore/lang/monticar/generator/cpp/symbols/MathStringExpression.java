@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathStringExpression extends MathExpressionSymbol {
     public static int ID = 10001;

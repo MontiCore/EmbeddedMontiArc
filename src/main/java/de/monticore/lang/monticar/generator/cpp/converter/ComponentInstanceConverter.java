@@ -10,7 +10,6 @@ import de.monticore.symboltable.ImportStatement;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class ComponentInstanceConverter {
 

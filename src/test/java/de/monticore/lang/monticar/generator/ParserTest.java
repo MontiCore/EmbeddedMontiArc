@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Robert Heim, Michael von Wenckstern
  */
 public class ParserTest {
   public static final boolean ENABLE_FAIL_QUICK = false;
@@ -85,7 +84,6 @@ public class ParserTest {
   /**
    * Visits files of the given file ending and checks whether they are parsable.
    *
-   * @author Robert Heim
    * @see Files#walkFileTree(Path, java.nio.file.FileVisitor)
    */
   protected static class ParseTest extends SimpleFileVisitor<Path> {

@@ -17,7 +17,6 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathOptimizerTest extends AbstractSymtabTest {
 

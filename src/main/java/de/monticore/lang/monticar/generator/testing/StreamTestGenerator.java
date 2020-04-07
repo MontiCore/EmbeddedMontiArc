@@ -15,7 +15,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Collection;
 
 /**
- * @author Sascha Schneiders
  */
 public class StreamTestGenerator {
     protected StreamTest currentGeneratedStreamTest;

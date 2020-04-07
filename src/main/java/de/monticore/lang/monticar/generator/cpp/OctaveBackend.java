@@ -9,7 +9,6 @@ import de.monticore.lang.monticar.generator.MathBackend;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class OctaveBackend implements MathBackend {
     public static final String NAME = "OctaveBackend";

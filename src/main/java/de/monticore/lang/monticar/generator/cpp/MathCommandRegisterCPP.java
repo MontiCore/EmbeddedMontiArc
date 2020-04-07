@@ -7,7 +7,6 @@ import de.monticore.lang.monticar.generator.cpp.commands.*;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Sascha Schneiders
  */
 public class MathCommandRegisterCPP extends MathCommandRegister {
 

@@ -10,7 +10,6 @@ import java.util.List;
  * Representation of CMake Find files as Java class.
  * Additionally acts as view model for the corresponding freemarker template.
  *
- * @author Christoph Richter
  */
 public class CMakeFindModule extends ViewModelBase {
 

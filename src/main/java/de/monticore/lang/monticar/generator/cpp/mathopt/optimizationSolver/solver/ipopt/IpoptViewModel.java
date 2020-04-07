@@ -8,7 +8,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Contains all necessary information needed to generate a freemarker template of IPOPT C++ code.
  *
- * @author Christoph Richter
  */
 public class IpoptViewModel extends SolverViewModel {
 

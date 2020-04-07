@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * The Generator interface which defines what functionality has to be supported by a Generator independent from the target language
  *
- * @author Sascha Schneiders
  */
 public interface Generator {
 

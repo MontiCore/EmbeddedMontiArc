@@ -4,7 +4,6 @@ package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.prob
 /**
  * Represents a linear optimization problem
  *
- * @author Christoph Richter
  */
 public class LPProblem extends Problem {
 }

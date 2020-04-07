@@ -5,7 +5,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel
 
 /**
  * Stores an object and its corresponding execution order.
- * @author Sascha
  */
 public class ObjectExecutionOrder<T> {
     protected T object;

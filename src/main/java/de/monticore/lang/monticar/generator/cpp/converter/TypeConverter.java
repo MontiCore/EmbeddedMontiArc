@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 /**
  * This is used to convert port types to their cpp equivalent
  *
- * @author Sascha Schneiders
  */
 public class TypeConverter {
     private static List<VariableType> nonPrimitiveVariableTypes = new ArrayList<>();

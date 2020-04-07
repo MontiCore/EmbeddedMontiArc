@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * @author Sascha Schneiders
  */
 public class AutomaticStreamTestGenerator extends AbstractSymtab {
 
