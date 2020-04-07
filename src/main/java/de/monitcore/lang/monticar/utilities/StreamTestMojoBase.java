@@ -170,6 +170,11 @@ public class StreamTestMojoBase extends AbstractMojo {
         this.enableExecutionLogging = enableExecutionLogging;
     }
 
+    @Parameter(defaultValue = "x")
+    protected char forcedTraining;
+    public char getForcedTraining(){return forcedTraining;}
+    public void setForcedTraining(char forcedTraining){this.forcedTraining = forcedTraining;}
+
     //</editor-fold>
 
     //<editor-fold desc="Properties">

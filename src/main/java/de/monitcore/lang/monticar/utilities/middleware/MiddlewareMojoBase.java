@@ -66,6 +66,11 @@ public class MiddlewareMojoBase extends StreamTestMojoBase {
     }
     //</editor-fold>
 
+    @Parameter(defaultValue = "GLUON")
+    protected String emadlBackend;
+    public String getEmadlBackend() { return emadlBackend;}
+    public void setEmadlBackend() {this.emadlBackend = emadlBackend;}
+
 
     protected void copyPropertiesAndParametersTo(MiddlewareMojoBase mmb) {
         super.copyPropertiesAndParametersTo((StreamTestMojoBase)mmb);

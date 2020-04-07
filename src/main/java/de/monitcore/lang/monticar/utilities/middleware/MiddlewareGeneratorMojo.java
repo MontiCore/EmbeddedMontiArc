@@ -10,6 +10,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.EMADLGeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
@@ -123,6 +124,10 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
             if (this.middlewareGenerator.contains(MiddlewareGenerator.odv)) {
                 logInfo("   -> Adding odv generator");
                 generator.add(new ODVGenImpl(), "odv");
+            }
+            if (this.middlewareGenerator.contains(MiddlewareGenerator.emadlcpp)){
+                logInfo("   ->Adding emadlcpp generator");
+                generator.add(new EMADLGeneratorImpl(this.getPathMain(),this.getEmadlBackend()), "emadlcpp");
             }
 
 
