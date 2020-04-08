@@ -7,7 +7,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnntrain._cocos;
 
-import com.google.common.collect.Lists;
 import de.monticore.lang.monticar.cnntrain._ast.*;
 import de.monticore.lang.monticar.cnntrain._symboltable.LearningMethod;
 import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
@@ -53,16 +52,26 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
             = parameterAlgorithmMapping.isSupervisedLearningParameter(node.getClass());
         final boolean reinforcementLearningParameter
             = parameterAlgorithmMapping.isReinforcementLearningParameter(node.getClass());
+        final boolean ganLearningParameter
+                = parameterAlgorithmMapping.isGANLearningParameter(node.getClass());
 
-        assert (supervisedLearningParameter  || reinforcementLearningParameter) :
+        assert (supervisedLearningParameter  || reinforcementLearningParameter || ganLearningParameter) :
                 "Parameter " + node.getName() + " is not checkable, because it is unknown to Condition";
 
-        if (supervisedLearningParameter && !reinforcementLearningParameter) {
+        if (supervisedLearningParameter && !reinforcementLearningParameter && !ganLearningParameter) {
             setLearningMethodOrLogErrorIfActualLearningMethodIsNotSupervised(node);
-        } else if(!supervisedLearningParameter && reinforcementLearningParameter) {
+        } else if(!supervisedLearningParameter && reinforcementLearningParameter && !ganLearningParameter) {
             setLearningMethodOrLogErrorIfActualLearningMethodIsNotReinforcement(node);
-        }
+        } else if(!supervisedLearningParameter && !reinforcementLearningParameter && ganLearningParameter) {
+            setLearningMethodOrLogErrorIfActualLearningMethodIsNotGAN(node);
+        } else if(learningMethodKnown && learningMethod.equals(LearningMethod.REINFORCEMENT)
+                && supervisedLearningParameter && !reinforcementLearningParameter) {
+            setLearningMethodOrLogErrorIfActualLearningMethodIsNotSupervised(node);
+        } else if(learningMethodKnown && learningMethod.equals(LearningMethod.REINFORCEMENT)
+                && ganLearningParameter && !reinforcementLearningParameter) {
+            setLearningMethodOrLogErrorIfActualLearningMethodIsNotGAN(node);
     }
+}
 
     private void setLearningMethodOrLogErrorIfActualLearningMethodIsNotReinforcement(ASTEntry node) {
         if (isLearningMethodKnown()) {
@@ -88,14 +97,27 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
         }
     }
 
+    private void setLearningMethodOrLogErrorIfActualLearningMethodIsNotGAN(ASTEntry node) {
+        if (isLearningMethodKnown()) {
+            if (!learningMethod.equals(LearningMethod.GAN)) {
+                Log.error("0" + ErrorCodes.UNSUPPORTED_PARAMETER + " Parameter "
+                                + node.getName() + " is not supported for " + this.learningMethod + " learning.",
+                        node.get_SourcePositionStart());
+            }
+        } else {
+            setLearningMethodToGAN();
+        }
+    }
+
     private void evaluateLearningMethodEntry(ASTEntry node) {
         ASTLearningMethodValue learningMethodValue = (ASTLearningMethodValue)node.getValue();
         LearningMethod evaluatedLearningMethod;
-        if(learningMethodValue.isPresentReinforcement()) {
+        if(learningMethodValue.isPresentReinforcement())
             evaluatedLearningMethod = LearningMethod.REINFORCEMENT;
-        } else {
+        else if(learningMethodValue.isPresentGan())
+            evaluatedLearningMethod = LearningMethod.GAN;
+        else
             evaluatedLearningMethod = LearningMethod.SUPERVISED;
-        }
 
         if (isLearningMethodKnown()) {
             logErrorIfEvaluatedLearningMethoNotEqualToActual(node, evaluatedLearningMethod);
@@ -127,16 +149,21 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
         if (learningMethod.equals(LearningMethod.REINFORCEMENT)) {
             return parameterAlgorithmMapping.getAllReinforcementParameters();
         }
+        if (learningMethod.equals(LearningMethod.GAN)) {
+            return parameterAlgorithmMapping.getAllGANParameters();
+        }
+
         return parameterAlgorithmMapping.getAllSupervisedParameters();
     }
 
 
     private void setLearningMethod(final LearningMethod learningMethod) {
-        if (learningMethod.equals(LearningMethod.REINFORCEMENT)) {
+        if (learningMethod.equals(LearningMethod.REINFORCEMENT))
             setLearningMethodToReinforcement();
-        } else {
+        else if (learningMethod.equals(LearningMethod.GAN))
+            setLearningMethodToGAN();
+        else
             setLearningMethodToSupervised();
-        }
     }
 
     private void setLearningMethodToSupervised() {
@@ -146,6 +173,11 @@ public class CheckLearningParameterCombination implements CNNTrainASTEntryCoCo {
 
     private void setLearningMethodToReinforcement() {
         this.learningMethod = LearningMethod.REINFORCEMENT;
+        this.learningMethodKnown = true;
+    }
+
+    private void setLearningMethodToGAN() {
+        this.learningMethod = LearningMethod.GAN;
         this.learningMethodKnown = true;
     }
 }

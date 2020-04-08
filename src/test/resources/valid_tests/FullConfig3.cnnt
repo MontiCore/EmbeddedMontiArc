@@ -7,8 +7,6 @@ configuration FullConfig{
      loss: softmax_cross_entropy{
         sparse_label: true
         from_logits: true
-        loss_axis : -1
-        batch_axis: 0
      }
      context : gpu
      normalize : true

@@ -2,13 +2,13 @@
 configuration FullConfig{
      num_epoch : 5
      batch_size : 100
-     load_checkpoint : true
+     load_pretrained : true
      eval_metric : mse
-     loss: softmax_cross_entropy{
+     loss: dice_loss{
         sparse_label: true
         from_logits: true
         loss_axis : -1
-        batch_axis: 0
+        batch_axis : 0
      }
      context : gpu
      normalize : true

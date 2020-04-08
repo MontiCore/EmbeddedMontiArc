@@ -27,7 +27,12 @@ public class CNNTrainCocos {
                 .addCoCo(new CheckRlAlgorithmParameter())
                 .addCoCo(new CheckDiscreteRLAlgorithmUsesDiscreteStrategy())
                 .addCoCo(new CheckContinuousRLAlgorithmUsesContinuousStrategy())
-                .addCoCo(new CheckRosEnvironmentHasOnlyOneRewardSpecification());
+                .addCoCo(new CheckRosEnvironmentHasOnlyOneRewardSpecification())
+                .addCoCo(new CheckConstraintDistributionQNetworkDependency())
+                .addCoCo(new CheckConstraintLossesQNetworkDependency())
+                .addCoCo(new CheckGeneratorLossTargetNameDependency())
+                .addCoCo(new CheckNoiseInputDistributionDependency())
+                .addCoCo(new CheckNoiseInputMissing());
     }
 
     public static void checkAll(CNNTrainCompilationUnitSymbol compilationUnit){
@@ -49,6 +54,16 @@ public class CNNTrainCocos {
         CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
                 .addCoCo(new CheckCriticNetworkHasExactlyAOneDimensionalOutput())
                 .addCoCo(new CheckCriticNetworkInputs());
+        checker.checkAll(configurationSymbol);
+    }
+
+    public static void checkGANCocos(final ConfigurationSymbol configurationSymbol) {
+        CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker()
+                .addCoCo(new CheckGANDiscriminatorQNetworkDependency())
+                .addCoCo(new CheckGANGeneratorDiscriminatorDependency())
+                .addCoCo(new CheckGANGeneratorHasOneOutput())
+                .addCoCo(new CheckGANGeneratorQNetworkDependency())
+                .addCoCo(new CheckGANQNetworkhasOneInput());
         checker.checkAll(configurationSymbol);
     }
 }

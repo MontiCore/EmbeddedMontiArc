@@ -13,6 +13,8 @@ import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -227,5 +229,169 @@ public class NNArchitecturerBuilder {
         return getNNArchitectureSymbolFrom(CRITIC_NN_NAME, getValidCriticInputs(), getValidCriticOutputs(),
             dimensions, getValidCriticTypes(), getValidCriticRanges());
 
+    }
+
+    public NNArchitectureSymbol getValidGenerator() {
+        ArrayList input = Lists.newArrayList("noise");
+        ArrayList output = Lists.newArrayList("data");
+        HashMap dims = Maps.newHashMap(ImmutableMap.<String, List<Integer>>builder()
+                .put("noise", Lists.newArrayList(100))
+                .put("data", Lists.newArrayList(3,28,28))
+                .build());
+        HashMap types = Maps.newHashMap(ImmutableMap.<String, String>builder()
+                .put("noise", "Q")
+                .put("data", "Q")
+                .build());
+        HashMap ranges = Maps.newHashMap(ImmutableMap.<String, Range>builder()
+                .put("noise", Range.withInfinityLimits() )
+                .put("data", Range.withLimits(-1,1))
+                .build());
+        return getNNArchitectureSymbolFrom("GeneratorValid", input, output,
+                dims, types, ranges);
+    }
+
+    public NNArchitectureSymbol getValidInfoGANGenerator() {
+        ArrayList input = Lists.newArrayList("noise", "c1");
+        ArrayList output = Lists.newArrayList("data");
+        HashMap dims = Maps.newHashMap(ImmutableMap.<String, List<Integer>>builder()
+                .put("noise", Lists.newArrayList(100))
+                .put("data", Lists.newArrayList(3,28,28))
+                .put("c1", Lists.newArrayList(10))
+                .build());
+        HashMap types = Maps.newHashMap(ImmutableMap.<String, String>builder()
+                .put("noise", "Q")
+                .put("data", "Q")
+                .put("c1", "Q")
+                .build());
+        HashMap ranges = Maps.newHashMap(ImmutableMap.<String, Range>builder()
+                .put("noise", Range.withInfinityLimits() )
+                .put("data", Range.withLimits(-1,1))
+                .put("c1", Range.withLimits(0,1))
+                .build());
+        return getNNArchitectureSymbolFrom("GeneratorValid", input, output,
+                dims, types, ranges);
+    }
+
+    public NNArchitectureSymbol getInvalidGeneratorMultipleOutputs() {
+        ArrayList input = Lists.newArrayList("noise");
+        ArrayList output = Lists.newArrayList("data1", "data2");
+        HashMap dims = Maps.newHashMap(ImmutableMap.<String, List<Integer>>builder()
+                .put("noise", Lists.newArrayList(100))
+                .put("data1", Lists.newArrayList(3,28,28))
+                .put("data2", Lists.newArrayList(10))
+                .build());
+        HashMap types = Maps.newHashMap(ImmutableMap.<String, String>builder()
+                .put("noise", "Q")
+                .put("data1", "Q")
+                .put("data2", "Q")
+                .build());
+        HashMap ranges = Maps.newHashMap(ImmutableMap.<String, Range>builder()
+                .put("noise", Range.withInfinityLimits() )
+                .put("data1", Range.withLimits(-1,1))
+                .put("data2", Range.withLimits(0,1))
+                .build());
+        return getNNArchitectureSymbolFrom("GeneratorInvalidGeneratorMultipleOutputs", input, output,
+                dims, types, ranges);
+    }
+
+    public NNArchitectureSymbol getValidDiscriminator() {
+        ArrayList input = Lists.newArrayList("data");
+        ArrayList output = Lists.newArrayList("dis");
+        HashMap dims = Maps.newHashMap(ImmutableMap.<String, List<Integer>>builder()
+                .put("data", Lists.newArrayList(3,28,28))
+                .put("dis", Lists.newArrayList(1))
+                .build());
+        HashMap types = Maps.newHashMap(ImmutableMap.<String, String>builder()
+                .put("data", "Q")
+                .put("dis", "Q")
+                .build());
+        HashMap ranges = Maps.newHashMap(ImmutableMap.<String, Range>builder()
+                .put("data", Range.withInfinityLimits() )
+                .put("dis", Range.withLimits(0,1))
+                .build());
+        return getNNArchitectureSymbolFrom("DiscriminatorValid", input, output,
+                dims, types, ranges);
+    }
+
+    public NNArchitectureSymbol getValidDiscriminatorWithQNet() {
+        ArrayList input = Lists.newArrayList("data");
+        ArrayList output = Lists.newArrayList("dis", "features");
+        HashMap dims = Maps.newHashMap(ImmutableMap.<String, List<Integer>>builder()
+                .put("data", Lists.newArrayList(3,28,28))
+                .put("dis", Lists.newArrayList(1))
+                .put("features", Lists.newArrayList(1024))
+                .build());
+        HashMap types = Maps.newHashMap(ImmutableMap.<String, String>builder()
+                .put("data", "Q")
+                .put("dis", "Q")
+                .put("features", "Q")
+                .build());
+        HashMap ranges = Maps.newHashMap(ImmutableMap.<String, Range>builder()
+                .put("data", Range.withInfinityLimits() )
+                .put("dis", Range.withLimits(0,1))
+                .put("features", Range.withInfinityLimits())
+                .build());
+        return getNNArchitectureSymbolFrom("DiscriminatorValidQNet", input, output,
+                dims, types, ranges);
+    }
+
+    public NNArchitectureSymbol getValidDiscriminatorDifferentInput() {
+        ArrayList input = Lists.newArrayList("data2");
+        ArrayList output = Lists.newArrayList("dis");
+        HashMap dims = Maps.newHashMap(ImmutableMap.<String, List<Integer>>builder()
+                .put("dis", Lists.newArrayList(1))
+                .put("data2", Lists.newArrayList(1024))
+                .build());
+        HashMap types = Maps.newHashMap(ImmutableMap.<String, String>builder()
+                .put("dis", "Q")
+                .put("data2", "Q")
+                .build());
+        HashMap ranges = Maps.newHashMap(ImmutableMap.<String, Range>builder()
+                .put("dis", Range.withLimits(0,1))
+                .put("data2", Range.withInfinityLimits())
+                .build());
+        return getNNArchitectureSymbolFrom("DiscriminatorValidDifferentInputs", input, output,
+                dims, types, ranges);
+    }
+
+    public NNArchitectureSymbol getValidQNetwork() {
+        ArrayList input = Lists.newArrayList("features");
+        ArrayList output = Lists.newArrayList("c1");
+        HashMap dims = Maps.newHashMap(ImmutableMap.<String, List<Integer>>builder()
+                .put("features", Lists.newArrayList(1024))
+                .put("c1", Lists.newArrayList(10))
+                .build());
+        HashMap types = Maps.newHashMap(ImmutableMap.<String, String>builder()
+                .put("features", "Q")
+                .put("c1", "Q")
+                .build());
+        HashMap ranges = Maps.newHashMap(ImmutableMap.<String, Range>builder()
+                .put("features", Range.withInfinityLimits() )
+                .put("1", Range.withLimits(0,1))
+                .build());
+        return getNNArchitectureSymbolFrom("QNetworkValid", input, output,
+                dims, types, ranges);
+    }
+
+    public NNArchitectureSymbol getInvalidQNetworkMultipleInputs() {
+        ArrayList input = Lists.newArrayList("features1", "features2");
+        ArrayList output = Lists.newArrayList("c1");
+        HashMap dims = Maps.newHashMap(ImmutableMap.<String, List<Integer>>builder()
+                .put("features1", Lists.newArrayList(1024))
+                .put("features2", Lists.newArrayList(1024))
+                .put("c1", Lists.newArrayList(10))
+                .build());
+        HashMap types = Maps.newHashMap(ImmutableMap.<String, String>builder()
+                .put("features1", "Q")
+                .put("features2", "Q")
+                .put("c1", "Q")
+                .build());
+        HashMap ranges = Maps.newHashMap(ImmutableMap.<String, Range>builder()
+                .put("features1", Range.withInfinityLimits() )
+                .put("features2", Range.withInfinityLimits() )
+                .put("1", Range.withLimits(0,1))
+                .build());
+        return getNNArchitectureSymbolFrom("QNetworkInvalidMultipleInputs", input, output,
+                dims, types, ranges);
     }
 }

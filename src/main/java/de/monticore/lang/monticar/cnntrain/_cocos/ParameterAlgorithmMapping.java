@@ -38,17 +38,23 @@ class ParameterAlgorithmMapping {
         ASTBatchSizeEntry.class,
         ASTLoadCheckpointEntry.class,
         ASTCheckpointPeriodEntry.class,
+        ASTLoadPretrainedEntry.class,
         ASTLogPeriodEntry.class,
         ASTEvalMetricEntry.class,
         ASTEvalTrainEntry.class,
         ASTExcludeBleuEntry.class,
+        ASTAxisAccIgnoreLabelEntry.class,
+        ASTIgnoreLabelAccIgnoreLabelEntry.class,
         ASTNormalizeEntry.class,
         ASTNumEpochEntry.class,
         ASTLossEntry.class,
 		ASTLossWeightsEntry.class,
         ASTSparseLabelEntry.class,
+        ASTLossAxisEntry.class,
+        ASTBatchAxisEntry.class,
         ASTFromLogitsEntry.class,
         ASTIgnoreIndicesEntry.class,
+        ASTIgnoreLabelEntry.class,
         ASTMarginEntry.class,
         ASTLabelFormatEntry.class,
         ASTRhoEntry.class,
@@ -120,10 +126,38 @@ class ParameterAlgorithmMapping {
 
     private static final List<Class> GENERAL_GAN_PARAMETERS = Lists.newArrayList(
             ASTDiscriminatorNetworkEntry.class,
+            ASTPreprocessingEntry.class,
             ASTQNetworkEntry.class,
             ASTNoiseDistributionEntry.class,
             ASTConstraintDistributionEntry.class,
-            ASTConstraintLossEntry.class
+            ASTConstraintLossEntry.class,
+            ASTDiscriminatorOptimizerEntry.class,
+            ASTKValueEntry.class,
+            ASTGeneratorLossEntry.class,
+            ASTGeneratorTargetNameEntry.class,
+            ASTNoiseInputEntry.class,
+            ASTGeneratorLossWeightEntry.class,
+            ASTDiscriminatorLossWeightEntry.class,
+            ASTPrintImagesEntry.class,
+            ASTMeanValueEntry.class,
+            ASTSpreadValueEntry.class,
+            ASTBatchSizeEntry.class,
+            ASTLoadCheckpointEntry.class,
+            ASTCheckpointPeriodEntry.class,
+            ASTLoadPretrainedEntry.class,
+            ASTLogPeriodEntry.class,
+            ASTNormalizeEntry.class,
+            ASTNumEpochEntry.class,
+            ASTLossWeightsEntry.class,
+            ASTSparseLabelEntry.class,
+            ASTLossAxisEntry.class,
+            ASTBatchAxisEntry.class,
+            ASTFromLogitsEntry.class,
+            ASTIgnoreIndicesEntry.class,
+            ASTIgnoreLabelEntry.class,
+            ASTMarginEntry.class,
+            ASTLabelFormatEntry.class,
+            ASTRhoEntry.class
     );
 
     ParameterAlgorithmMapping() {
@@ -149,7 +183,11 @@ class ParameterAlgorithmMapping {
 
     boolean isSupervisedLearningParameter(Class<? extends ASTEntry> entryClazz) {
         return GENERAL_PARAMETERS.contains(entryClazz)
-            || EXCLUSIVE_SUPERVISED_PARAMETERS.contains(entryClazz)
+                || EXCLUSIVE_SUPERVISED_PARAMETERS.contains(entryClazz);
+    }
+
+    boolean isGANLearningParameter(Class<? extends ASTEntry> entryClazz) {
+        return GENERAL_PARAMETERS.contains(entryClazz)
                 || GENERAL_GAN_PARAMETERS.contains(entryClazz);
 
     }
@@ -172,6 +210,13 @@ class ParameterAlgorithmMapping {
             || EXCLUSIVE_TD3_PARAMETERS.contains(entryClazz);
     }
 
+    List<Class> getAllGANParameters() {
+        return ImmutableList.<Class> builder()
+                .addAll(GENERAL_PARAMETERS)
+                .addAll(GENERAL_GAN_PARAMETERS)
+                .build();
+    }
+
     List<Class> getAllReinforcementParameters() {
         return ImmutableList.<Class> builder()
             .addAll(GENERAL_PARAMETERS)
@@ -186,7 +231,6 @@ class ParameterAlgorithmMapping {
         return ImmutableList.<Class> builder()
             .addAll(GENERAL_PARAMETERS)
             .addAll(EXCLUSIVE_SUPERVISED_PARAMETERS)
-            .addAll(GENERAL_GAN_PARAMETERS)
             .build();
     }
 }

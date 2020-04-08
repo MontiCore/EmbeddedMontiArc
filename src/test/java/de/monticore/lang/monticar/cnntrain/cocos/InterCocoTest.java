@@ -44,6 +44,31 @@ public class InterCocoTest extends AbstractCoCoTest {
     }
 
     @Test
+    public void testValidDefaultGAN() {
+        // given
+        final NNArchitectureSymbol validGenerator = NNBuilder.getValidGenerator();
+        final NNArchitectureSymbol validDiscriminator = NNBuilder.getValidDiscriminator();
+        ConfigurationSymbol configurationSymbol = getDefaultGANConfigurationSymbolFrom("valid_tests", "DefaultGANConfig",
+                validGenerator, validDiscriminator);
+
+        // when
+        checkValidGANArchitecture(configurationSymbol);
+    }
+
+    @Test
+    public void testValidInfoGAN() {
+        // given
+        final NNArchitectureSymbol validGenerator = NNBuilder.getValidInfoGANGenerator();
+        final NNArchitectureSymbol validDiscriminator = NNBuilder.getValidDiscriminatorWithQNet();
+        final NNArchitectureSymbol validQNetwork = NNBuilder.getValidQNetwork();
+        ConfigurationSymbol configurationSymbol = getInfoGANConfigurationSymbolFrom("valid_tests", "InfoGANConfig",
+                validGenerator, validDiscriminator, validQNetwork);
+
+        // when
+        checkValidGANArchitecture(configurationSymbol);
+    }
+
+    @Test
     public void testInvalidTrainingArchitectureWithTwoInputs() {
         // given
         CNNTrainConfigurationSymbolCoCo cocoUUT = new CheckTrainedRlNetworkHasExactlyOneInput();
@@ -223,11 +248,103 @@ public class InterCocoTest extends AbstractCoCoTest {
             new ExpectedErrorInfo(1, ErrorCodes.TRAINED_ARCHITECTURE_ERROR));
     }
 
+    @Test
+    public void testInvalidDiscriminatorQNetworkDependency() {
+        //given
+        CNNTrainConfigurationSymbolCoCo cocoUUT = new CheckGANDiscriminatorQNetworkDependency();
+        NNArchitectureSymbol gen = NNBuilder.getValidGenerator();
+        NNArchitectureSymbol dis = NNBuilder.getValidDiscriminator();
+        NNArchitectureSymbol qnet = NNBuilder.getValidQNetwork();
+        ConfigurationSymbol configurationSymbol = getInfoGANConfigurationSymbolFrom("valid_tests", "InfoGANConfig",
+                gen, dis, qnet);
+
+        // when
+        checkInvalidGANArchitecture(configurationSymbol, cocoUUT,
+                new ExpectedErrorInfo(1, ErrorCodes.GAN_ARCHITECTURE_ERROR));
+    }
+
+    @Test
+    public void testInvalidGeneratorQNetworkDependency() {
+        //given
+        CNNTrainConfigurationSymbolCoCo cocoUUT = new CheckGANGeneratorQNetworkDependency();
+        NNArchitectureSymbol gen = NNBuilder.getValidGenerator();
+        NNArchitectureSymbol dis = NNBuilder.getValidDiscriminatorWithQNet();
+        NNArchitectureSymbol qnet = NNBuilder.getValidQNetwork();
+        ConfigurationSymbol configurationSymbol = getInfoGANConfigurationSymbolFrom("valid_tests", "InfoGANConfig",
+                gen, dis, qnet);
+
+        // when
+        checkInvalidGANArchitecture(configurationSymbol, cocoUUT,
+                new ExpectedErrorInfo(1, ErrorCodes.GAN_ARCHITECTURE_ERROR));
+    }
+
+    @Test
+    public void testInvalidGeneratorHasMultipleOutputs() {
+        //given
+        CNNTrainConfigurationSymbolCoCo cocoUUT = new CheckGANGeneratorHasOneOutput();
+        NNArchitectureSymbol gen = NNBuilder.getInvalidGeneratorMultipleOutputs();
+        NNArchitectureSymbol dis = NNBuilder.getValidDiscriminator();
+        ConfigurationSymbol configurationSymbol = getDefaultGANConfigurationSymbolFrom("valid_tests", "DefaultGANConfig",
+                gen, dis);
+
+        // when
+        checkInvalidGANArchitecture(configurationSymbol, cocoUUT,
+                new ExpectedErrorInfo(1, ErrorCodes.GAN_ARCHITECTURE_ERROR));
+    }
+
+    @Test
+    public void testInvalidGeneratorDiscriminatorDependency() {
+        //given
+        CNNTrainConfigurationSymbolCoCo cocoUUT = new CheckGANGeneratorDiscriminatorDependency();
+        NNArchitectureSymbol gen = NNBuilder.getValidGenerator();
+        NNArchitectureSymbol dis = NNBuilder.getValidDiscriminatorDifferentInput();
+        ConfigurationSymbol configurationSymbol = getDefaultGANConfigurationSymbolFrom("valid_tests", "DefaultGANConfig",
+                gen, dis);
+
+        // when
+        checkInvalidGANArchitecture(configurationSymbol, cocoUUT,
+                new ExpectedErrorInfo(1, ErrorCodes.GAN_ARCHITECTURE_ERROR));
+    }
+
+    @Test
+    public void testInvalidQNetworkMultipleInputs() {
+        //given
+        CNNTrainConfigurationSymbolCoCo cocoUUT = new CheckGANQNetworkhasOneInput();
+        NNArchitectureSymbol gen = NNBuilder.getValidGenerator();
+        NNArchitectureSymbol dis = NNBuilder.getValidDiscriminatorWithQNet();
+        NNArchitectureSymbol qnet = NNBuilder.getInvalidQNetworkMultipleInputs();
+        ConfigurationSymbol configurationSymbol = getInfoGANConfigurationSymbolFrom("valid_tests", "InfoGANConfig",
+                gen, dis, qnet);
+
+        // when
+        checkInvalidGANArchitecture(configurationSymbol, cocoUUT,
+                new ExpectedErrorInfo(1, ErrorCodes.GAN_ARCHITECTURE_ERROR));
+    }
+
     private ConfigurationSymbol getConfigurationSymbolFrom(final String modelPath, final String model,
                                                            final NNArchitectureSymbol actorArchitecture, final NNArchitectureSymbol criticArchitecture) {
         final ConfigurationSymbol configurationSymbol = getConfigurationSymbolByPath( modelPath, model);
         configurationSymbol.setTrainedArchitecture(actorArchitecture);
         configurationSymbol.setCriticNetwork(criticArchitecture);
+        return configurationSymbol;
+    }
+
+    private ConfigurationSymbol getDefaultGANConfigurationSymbolFrom(final String modelPath, final String model,
+                                                           final NNArchitectureSymbol genArchitecture, final NNArchitectureSymbol disArchitecture) {
+        final ConfigurationSymbol configurationSymbol = getConfigurationSymbolByPath( modelPath, model);
+        configurationSymbol.setTrainedArchitecture(genArchitecture);
+        configurationSymbol.setDiscriminatorNetwork(disArchitecture);
+        return configurationSymbol;
+    }
+
+    private ConfigurationSymbol getInfoGANConfigurationSymbolFrom(final String modelPath, final String model,
+                                                              final NNArchitectureSymbol genArchitecture,
+                                                              final NNArchitectureSymbol disArchitecture,
+                                                              final NNArchitectureSymbol qnetArchitecture) {
+            final ConfigurationSymbol configurationSymbol = getConfigurationSymbolByPath( modelPath, model);
+        configurationSymbol.setTrainedArchitecture(genArchitecture);
+        configurationSymbol.setDiscriminatorNetwork(disArchitecture);
+        configurationSymbol.setQNetwork(qnetArchitecture);
         return configurationSymbol;
     }
 
@@ -238,6 +355,7 @@ public class InterCocoTest extends AbstractCoCoTest {
     private enum CheckOption {
         TRAINED_ARCHITECTURE_COCOS,
         CRITIC_ARCHITECTURE_COCOS,
+        GAN_ARCHITECTURE_COCOS,
     }
 
     private void checkInvalidArchitecture(
@@ -249,12 +367,28 @@ public class InterCocoTest extends AbstractCoCoTest {
 
         if (checkOption.equals(CheckOption.TRAINED_ARCHITECTURE_COCOS)) {
             CNNTrainCocos.checkTrainedArchitectureCoCos(configurationSymbol);
-        } else {
+        } else if(checkOption.equals(CheckOption.CRITIC_ARCHITECTURE_COCOS)) {
             CNNTrainCocos.checkCriticCocos(configurationSymbol);
+        } else if(checkOption.equals(CheckOption.GAN_ARCHITECTURE_COCOS)) {
+            CNNTrainCocos.checkGANCocos(configurationSymbol);
         }
+
 
         expectedErrors.checkExpectedPresent(Log.getFindings(), "Got no findings when checking all "
                 + "cocos. Did you forget to add the new coco to MontiArcCocos?");
+        Log.getFindings().clear();
+        CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker().addCoCo(cocoUUT);
+        checker.checkAll(configurationSymbol);
+        expectedErrors.checkOnlyExpectedPresent(Log.getFindings(), "Got no findings when checking only "
+                + "the given coco. Did you pass an empty coco checker?");
+    }
+
+    private void checkInvalidArchitectureOnlyCoCo(
+            final ConfigurationSymbol configurationSymbol,
+            final CNNTrainConfigurationSymbolCoCo cocoUUT,
+            final ExpectedErrorInfo expectedErrors) {
+        Log.getFindings().clear();
+
         Log.getFindings().clear();
         CNNTrainConfigurationSymbolChecker checker = new CNNTrainConfigurationSymbolChecker().addCoCo(cocoUUT);
         checker.checkAll(configurationSymbol);
@@ -286,5 +420,18 @@ public class InterCocoTest extends AbstractCoCoTest {
         Log.getFindings().clear();
         CNNTrainCocos.checkCriticCocos(configurationSymbol);
         new ExpectedErrorInfo().checkOnlyExpectedPresent(Log.getFindings());
+    }
+
+    private void checkValidGANArchitecture(final ConfigurationSymbol configurationSymbol) {
+        Log.getFindings().clear();
+        CNNTrainCocos.checkGANCocos(configurationSymbol);
+        new ExpectedErrorInfo().checkOnlyExpectedPresent(Log.getFindings());
+    }
+
+    private void checkInvalidGANArchitecture(
+            final ConfigurationSymbol configurationSymbol,
+            final CNNTrainConfigurationSymbolCoCo cocoUUT,
+            ExpectedErrorInfo expectedErrors) {
+        checkInvalidArchitectureOnlyCoCo(configurationSymbol, cocoUUT, expectedErrors);
     }
 }
