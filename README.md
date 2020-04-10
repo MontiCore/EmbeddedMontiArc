@@ -47,6 +47,8 @@ The test of a component can be divided into 3 steps:
     - ```<pathTest>./src/test/emam</pathTest>```
 - pathTmpOut: temporary output path where the mojo works on
     - ```<pathTmpOut>./target/tmp</pathTmpOut>```
+- pathToPython: path of python in environment
+    - ```<pathToPython>/usr/bin/python</pathToPython>```
 - wrapperTestExtension: (Default: _TestWrapper) filename extension. 
     If a component cannot tested directly with a unitstream, a component with the name plus this file extension will be tested.
     - ```<wrapperTestExtension>_TestWrapper</wrapperTestExtension>```
@@ -61,12 +63,13 @@ The test of a component can be divided into 3 steps:
 
 ### Middleware
 - middlewareGenerator: identifiers for the generators that should be used. 
-    - Currently supported: cpp, roscpp
+    - Currently supported: cpp, roscpp, odv, emadlcpp
     - ```
         <middlewareGenerator>
             <param>cpp</param>
             <param>roscpp</param>
-            <param>odv</param>        
+            <param>odv</param> 
+            <param>emadlcpp</param>        
         </middlewareGenerator>
         ```
 - middlewareRootModels: fully qualified name of the root model(s)
@@ -79,8 +82,9 @@ The test of a component can be divided into 3 steps:
 - pathMiddlewareOut: path of the generated middleware output 
     - ```<pathMiddlewareOut>./target/middleware</pathMiddlewareOut>```
 - runStreamTestBefore: (Default: true) indicates if the streamtests should be executed before the middleware generation
-    - ```<runStreamTestBefore>true</runStreamTestBefore>```
-    
+    - ```<runStreamTestBefore>true</runStreamTestBefore>```  
+- emadlBackend: (Default: GLUON) deep learning backend to be used in middleware plugin
+    -```<emadlBackend>GLUON</emadlBackend>```
 ## Goals / Mojos
 
 ### Streamtest
@@ -91,5 +95,5 @@ The test of a component can be divided into 3 steps:
 
 ### Middleware
 
-1. **streamtest-middleare-generate** : generates cpp / roscpp / odv code for the given emam models 
+1. **streamtest-middleare-generate** : generates cpp / roscpp / odv (and so on) code for the given emam models 
 1. **streamtest-middleare-build** : runs cmake and make for generated c++ code

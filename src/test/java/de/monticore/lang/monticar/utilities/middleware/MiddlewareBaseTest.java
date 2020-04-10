@@ -38,7 +38,8 @@ public class MiddlewareBaseTest extends BaseTest {
         mmb.setPathMiddlewareOut(middlewareOut);
         mmb.addMiddlewareGenerator(MiddlewareGenerator.cpp);
         mmb.addMiddlewareGenerator(MiddlewareGenerator.roscpp);
-
+        mmb.addMiddlewareGenerator(MiddlewareGenerator.emadlcpp);
+        mmb.setEmadlBackend("GLUON");
         mmb.setRunStreamTestBefore(false);
 
 

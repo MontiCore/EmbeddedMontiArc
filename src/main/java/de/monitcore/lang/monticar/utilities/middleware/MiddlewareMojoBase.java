@@ -69,7 +69,7 @@ public class MiddlewareMojoBase extends StreamTestMojoBase {
     @Parameter(defaultValue = "GLUON")
     protected String emadlBackend;
     public String getEmadlBackend() { return emadlBackend;}
-    public void setEmadlBackend() {this.emadlBackend = emadlBackend;}
+    public void setEmadlBackend(String emadlBackend) {this.emadlBackend = emadlBackend;}
 
 
     protected void copyPropertiesAndParametersTo(MiddlewareMojoBase mmb) {
@@ -80,6 +80,7 @@ public class MiddlewareMojoBase extends StreamTestMojoBase {
         mmb.pathMiddlewareOut = this.pathMiddlewareOut;
         mmb.runStreamTestBefore = this.runStreamTestBefore;
         mmb.enableExecutionLogging = this.enableExecutionLogging;
+        mmb.emadlBackend = this.emadlBackend;
     }
 
 }
