@@ -1,6 +1,6 @@
 stages:
   - linux
-  - windows
+  #- windows
 
 masterJobLinux:
   stage: linux
@@ -14,30 +14,31 @@ masterJobLinux:
   only:
     - master
 
-masterJobWindows:
-  stage: windows
-  script:
-    - mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -U
-  only:
-    - master
-  tags:
-    - Windows10
+#masterJobWindows:
+#  stage: windows
+#  script:
+#  - mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -U
+#  only:
+#    - master
+#  tags:
+#  - Windows10
 
 BranchJobLinux:
   stage: linux
   image: maven:3-jdk-8
   script:
     - apt-get update -q && apt-get install -y -q g++ libhdf5-serial-dev libhdf5-dev libopenblas-dev
-    - mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml - cat target/site/jacoco/index.html
-  except:
-    - master
-
-BranchJobWindows:
-  stage: windows
-  script:
-    - mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -U
+    - mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
     - cat target/site/jacoco/index.html
   except:
     - master
-  tags:
-    - Windows10
+
+#BranchJobWindows:
+#  stage: windows
+#  script:
+#  - mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -U
+#  - cat target/site/jacoco/index.html
+#  except:
+#  - master
+#  tags:
+#  - Windows10
