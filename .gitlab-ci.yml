@@ -10,6 +10,7 @@ TestGAN:
   - apt-get install python-dev -y
   - apt-get install swig -y
   - apt-get install python-numpy
+  - apt-get install python-tk
   - cd armadillo-9.860.2/
   - cmake .
   - make
