@@ -8,7 +8,7 @@ TestGAN:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
   script: 
   - apt-get install python-dev -y
-  - apt-get install swig
+  - apt-get install swig -y
   - python -m pip install -U matplotlib
   - cd gluon
   - chmod +x build.sh
