@@ -65,10 +65,7 @@ if __name__ == "__main__":
         preprocessing=${config.preprocessor?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
-        eval_metric='${config.evalMetric.name}',
-        eval_metric_params={
-<#if (config.evalMetric.exclude)??>
-            'exclude': [<#list config.evalMetric.exclude as value>${value}<#sep>, </#list>],
+        eval_metric='${config.evalMetric}',
 </#if>
 <#if (config.configuration.optimizer)??>
         optimizer='${config.optimizerName}',
@@ -150,5 +147,3 @@ if __name__ == "__main__":
 <#if (config.printImages)??>
         print_images=${config.printImages?string("True","False")},
 </#if>)
-
-
