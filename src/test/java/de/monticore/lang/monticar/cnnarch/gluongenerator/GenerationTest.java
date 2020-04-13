@@ -39,7 +39,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "CifarClassifierNetwork", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
 
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
@@ -59,7 +59,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "Alexnet", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
 
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
@@ -78,7 +78,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "VGG16", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
 
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
@@ -97,7 +97,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -105,7 +105,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "Invariant"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ResNeXt50"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleStreams"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "RNNtest", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -137,7 +137,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "RNNencdec", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -145,7 +145,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "RNNsearch", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -153,7 +153,7 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "Show_attend_tell", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2GluonCli.main(args);
-        assertTrue(Log.getFindings().isEmpty()); //todo
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
