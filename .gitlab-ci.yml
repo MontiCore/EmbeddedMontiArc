@@ -9,7 +9,7 @@ TestGAN:
   script: 
   - apt-get install python-dev -y
   - apt-get install swig -y
-  - apt-get install libarmadillo-dev -y 
+  - apt-get install libarmadillo9 -y
   - python -m pip install -U matplotlib
   - cd gluon
   - chmod +x build.sh
