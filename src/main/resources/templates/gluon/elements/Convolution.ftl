@@ -7,7 +7,6 @@
             self.${element.name} = gluon.nn.Conv2D(channels=${element.channels?c},
                 kernel_size=(${tc.join(element.kernel, ",")}),
                 strides=(${tc.join(element.stride, ",")}),
-                groups=${element.groups?c},
                 use_bias=${element.noBias?string("False", "True")})
 <#include "OutputShape.ftl">
 <#elseif mode == "FORWARD_FUNCTION">

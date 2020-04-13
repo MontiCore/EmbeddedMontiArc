@@ -36,6 +36,7 @@ class ${tc.fileNameWithoutEnding}:
                 os.remove(self._model_dir_ + self._model_prefix_ + "_" + str(i) + "_newest-symbol.json")
             except OSError:
                 pass
+
             if os.path.isdir(self._model_dir_):
                 for file in os.listdir(self._model_dir_):
                     if ".params" in file and self._model_prefix_ + "_" + str(i) in file:

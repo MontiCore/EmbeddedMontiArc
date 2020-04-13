@@ -18,11 +18,11 @@
     <!-- .. SE-Libraries .................................................. -->
 
       <CNNArch.version>0.3.4-SNAPSHOT</CNNArch.version>
-      <CNNTrain.version>0.3.9-SNAPSHOT</CNNTrain.version>
-      <CNNArch2X.version>0.0.5-SNAPSHOT</CNNArch2X.version>
+      <CNNTrain.version>0.3.10-SNAPSHOT</CNNTrain.version>
+      <CNNArch2X.version>0.0.6-SNAPSHOT</CNNArch2X.version>
       <embedded-montiarc-math-opt-generator>0.1.6</embedded-montiarc-math-opt-generator>
       <EMADL2PythonWrapper.version>0.0.2-SNAPSHOT</EMADL2PythonWrapper.version>
-    
+
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
         <junit.version>4.12</junit.version>
@@ -144,7 +144,7 @@
         </dependency>
 
     </dependencies>
-  
+
 
   <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
