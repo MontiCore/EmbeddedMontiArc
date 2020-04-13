@@ -30,15 +30,6 @@ public class WeightsPathConfigParserTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testWeightsPathConfigParserInvalidComponent() {
-        WeightsPathConfigParser parser = new WeightsPathConfigParser("src/test/resources/architectures/weights_paths.txt");
-
-        String weights_path = parser.getWeightsPath("NotExistingComponent");
-        assertTrue("For not listed components, null should be returned", weights_path == null);
-        assertTrue(Log.getFindings().size() == 1);
-    }
-
-    @Test
     public void testWeightsPathConfigParserInvalidPath() {
         WeightsPathConfigParser parser = new WeightsPathConfigParser("invalid/path/weights_paths.txt");
 
