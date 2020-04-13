@@ -7,7 +7,7 @@ TestGAN:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
   script: 
-  - apt-get install python-dev
+  - apt-get install python-dev -y
   - python -m pip install -U matplotlib
   - cd gluon
   - chmod +x build.sh
