@@ -4,7 +4,7 @@ configuration Generator{
 	 learning_method:gan
 	 discriminator_name: mnistGenerator.Discriminator
 	 qnet_name: mnistGenerator.QNetwork
-     num_epoch: 10
+     num_epoch: 5
      batch_size: 64
      normalize: false
 	 noise_input: "noise"

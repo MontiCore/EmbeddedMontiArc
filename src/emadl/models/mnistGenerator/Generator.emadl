@@ -15,19 +15,19 @@ component Generator{
 		) ->
 		Concatenate() ->
 		Reshape(shape=(72,1,1)) ->
-		TransConv(kernel=(4,4), channels=512, stride=(1,1), padding="valid", no_bias=true) ->
+		UpConvolution(kernel=(4,4), channels=512, stride=(1,1), padding="valid", no_bias=true) ->
 		BatchNorm() ->
 		Relu() ->
-		TransConv(kernel=(4,4), channels=256, stride=(2,2), no_bias=true) ->
+		UpConvolution(kernel=(4,4), channels=256, stride=(2,2), no_bias=true) ->
 		BatchNorm() ->
 		Relu() ->
-		TransConv(kernel=(4,4), channels=128, stride=(2,2), no_bias=true) ->
+		UpConvolution(kernel=(4,4), channels=128, stride=(2,2), no_bias=true) ->
 		BatchNorm() ->
 		Relu() ->
-		TransConv(kernel=(4,4), channels=64, stride=(2,2), no_bias=true) ->
+		UpConvolution(kernel=(4,4), channels=64, stride=(2,2), no_bias=true) ->
 		BatchNorm() ->
 		Relu() ->
-		TransConv(kernel=(4,4), channels=1, stride=(2,2), no_bias=true) ->
+		UpConvolution(kernel=(4,4), channels=1, stride=(2,2), no_bias=true) ->
 		Tanh() ->
         data;
     }
