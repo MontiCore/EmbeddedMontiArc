@@ -70,10 +70,14 @@ public abstract class CNNArchGenerator {
         ArchitectureSymbol architectureSymbol = symbolCompiler.compileArchitectureSymbol(scope, rootModelName);
 
         try{
-            String confPath = getModelsDirPath() + "/data_paths.txt";
-            DataPathConfigParser newParserConfig = new DataPathConfigParser(confPath);
-            String dataPath = newParserConfig.getDataPath(rootModelName);
+            String dataConfPath = getModelsDirPath() + "/data_paths.txt";
+            DataPathConfigParser dataParserConfig = new DataPathConfigParser(dataConfPath);
+            String dataPath = dataParserConfig.getDataPath(rootModelName);
             architectureSymbol.setDataPath(dataPath);
+            String weightsConfPath = getModelsDirPath() + "/weights_paths.txt";
+            WeightsPathConfigParser weightsParserConfig = new WeightsPathConfigParser(weightsConfPath);
+            String weightsPath = weightsParserConfig.getWeightsPath(rootModelName);
+            architectureSymbol.setWeightsPath(weightsPath);
             architectureSymbol.setComponentName(rootModelName);
             generateFiles(architectureSymbol);
         } catch (IOException e){

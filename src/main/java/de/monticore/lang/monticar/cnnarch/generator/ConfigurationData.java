@@ -43,6 +43,62 @@ public class ConfigurationData {
         return String.valueOf(getConfiguration().getEntry("batch_size") .getValue());
     }
 
+    public String getKValue() {
+        if (!getConfiguration().getEntryMap().containsKey("k_value")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("k_value") .getValue());
+    }
+
+    public String getGeneratorLossWeight() {
+        if (!getConfiguration().getEntryMap().containsKey("generator_loss_weight")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("generator_loss_weight") .getValue());
+    }
+
+    public String getDiscriminatorLossWeight() {
+        if (!getConfiguration().getEntryMap().containsKey("discriminator_loss_weight")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("discriminator_loss_weight") .getValue());
+    }
+
+    public String getSpeedPeriod() {
+        if (!getConfiguration().getEntryMap().containsKey("speed_period")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("speed_period") .getValue());
+    }
+
+    public Boolean getPrintImages() {
+        if (!getConfiguration().getEntryMap().containsKey("print_images")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("print_images").getValue().getValue();
+    }
+
+    public String getGeneratorLoss() {
+        if (!getConfiguration().getEntryMap().containsKey("generator_loss")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("generator_loss") .getValue());
+    }
+
+    public String getGeneratorTargetName() {
+        if (!getConfiguration().getEntryMap().containsKey("generator_target_name")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("generator_target_name") .getValue());
+    }
+
+    public String getNoiseInput() {
+        if (!getConfiguration().getEntryMap().containsKey("noise_input")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("noise_input") .getValue());
+    }
+
     public Boolean getLoadCheckpoint() {
         if (!getConfiguration().getEntryMap().containsKey("load_checkpoint")) {
             return null;
@@ -62,6 +118,13 @@ public class ConfigurationData {
             return null;
         }
         return String.valueOf(getConfiguration().getEntry("log_period").getValue());
+    }
+
+    public Boolean getLoadPretrained() {
+        if (!getConfiguration().getEntryMap().containsKey("load_pretrained")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("load_pretrained").getValue().getValue();
     }
 
     public Boolean getNormalize() {
@@ -90,6 +153,10 @@ public class ConfigurationData {
             return null;
         }
         return (String) getConfiguration().getEntry("preprocessing_name").getValue().toString();
+    }
+
+    public Boolean getPreprocessor() {
+        return (Boolean) configuration.hasPreprocessor();
     }
 
     public String getContext() {
@@ -128,7 +195,7 @@ public class ConfigurationData {
         } else{
             return mapToStrings;}
     }
-    
+
     public String getLossWeights() {
         if (!getConfiguration().getEntryMap().containsKey("loss_weights")) {
             return null;

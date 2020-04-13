@@ -91,6 +91,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
     }
 
+    public int getGroups(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.GROUPS_NAME).get();
+    }
+
     public int getUnits(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.UNITS_NAME).get();
     }
@@ -225,10 +229,8 @@ public class ArchitectureElementData {
 
         if(pad.equals("same")){
             return getTransPadding(getLayerSymbol()); //The padding calculated here is only used in the gluon/ mxnet backend, in the tensorlflow one it is interpreted as "same"
-        }else if(pad.equals("valid")){
+        } else {  // padding valid
             return Arrays.asList(0,0);
-        }else{ //"no loss"
-            return Arrays.asList(0,0,-1,0,0,0,0,0);
         }
     }
 

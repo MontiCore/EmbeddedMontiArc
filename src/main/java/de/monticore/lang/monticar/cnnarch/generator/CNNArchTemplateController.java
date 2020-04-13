@@ -10,7 +10,7 @@ import java.io.Writer;
 import java.util.*;
 
 public abstract class CNNArchTemplateController {
-    
+
     public static final String FTL_FILE_ENDING = ".ftl";
     public static final String TEMPLATE_ELEMENTS_DIR_PATH = "elements/";
     public static final String TEMPLATE_CONTROLLER_KEY = "tc";
@@ -116,7 +116,11 @@ public abstract class CNNArchTemplateController {
     public String getDataPath(){
         return getArchitecture().getDataPath();
     }
-    
+
+    public String getWeightsPath(){
+        return getArchitecture().getWeightsPath();
+    }
+
     public List<String> getLayerInputs(ArchitectureElementSymbol layer){
         List<String> inputNames = new ArrayList<>();
 
