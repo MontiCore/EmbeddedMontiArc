@@ -9,7 +9,7 @@ configuration Generator{
 	 preprocessing_name: mnistGenerator.Processing
      context:cpu
 	 noise_input: "noise"
-	 print_images: true
+	 print_images: false
 	 log_period: 10
      load_checkpoint:false
      optimizer:adam{
