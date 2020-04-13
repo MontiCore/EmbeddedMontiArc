@@ -5,8 +5,9 @@ stages:
 
 TestGAN:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnist-generator/mxnet:v0.0.1
   script: 
+  - pip install matplotlib
   - cd gluon
   - chmod +x build.sh
   - ./build.sh
