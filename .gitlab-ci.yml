@@ -9,6 +9,7 @@ TestGAN:
   script: 
   - apt-get install python-dev -y
   - apt-get install swig -y
+  - apt-get install numpy
   - cd armadillo-9.860.2/
   - cmake .
   - make
