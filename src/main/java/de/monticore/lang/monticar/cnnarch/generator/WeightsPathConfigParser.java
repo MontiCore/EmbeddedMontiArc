@@ -37,7 +37,7 @@ public class WeightsPathConfigParser{
 	public String getWeightsPath(String modelName) {
 		String path = properties.getProperty(modelName);
 		if(path == null) {
-			Log.warn("Weights path config file did not specify a path for component '" + modelName + "'");
+			Log.info("Weights path config file did not specify a path for component '" + modelName + "'", "WeightsPathConfigParser");
 			return path;
 		}
 		return path;

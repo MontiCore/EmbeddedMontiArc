@@ -14,6 +14,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,9 +75,15 @@ public abstract class CNNArchGenerator {
             DataPathConfigParser dataParserConfig = new DataPathConfigParser(dataConfPath);
             String dataPath = dataParserConfig.getDataPath(rootModelName);
             architectureSymbol.setDataPath(dataPath);
-            String weightsConfPath = getModelsDirPath() + "/weights_paths.txt";
-            WeightsPathConfigParser weightsParserConfig = new WeightsPathConfigParser(weightsConfPath);
-            String weightsPath = weightsParserConfig.getWeightsPath(rootModelName);
+            Path weightsConfPath = Paths.get(getModelsDirPath() + "/weights_paths.txt");
+            String weightsPath = null;
+            if (weightsConfPath.toFile().exists()) {
+                WeightsPathConfigParser weightsParserConfig = new WeightsPathConfigParser(getModelsDirPath() + "/weights_paths.txt");
+                weightsPath = weightsParserConfig.getWeightsPath(rootModelName);
+            } else {
+                Log.info("No weights path definition found in " + weightsConfPath + " found: "
+                        + "No pretrained weights will be loaded.", "CNNArchGenerator");
+            }
             architectureSymbol.setWeightsPath(weightsPath);
             architectureSymbol.setComponentName(rootModelName);
             generateFiles(architectureSymbol);
