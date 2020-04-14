@@ -3,3 +3,4 @@ FROM registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp
 RUN pip install opencv-python
 RUN apt-get update
 RUN apt-get install python-numpy -y
+RUN apt-get install swig -y
