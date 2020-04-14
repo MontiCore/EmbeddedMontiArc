@@ -1,8 +1,11 @@
-FROM registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/mxnet:v0.0.3
+FROM ros:kinetic
+
+RUN apt-get update
+RUN apt-get install -y unzip g++
+RUN apt-get install -y libopenblas-dev libhdf5-serial-dev
 
 # Essential
-RUN apt-get install -y openjdk-8-jdk openjdk-8-jre gcc make cmake git python2.7 python-dev
-python-numpy swig libboost-all-dev curl wget python-tk
+RUN apt-get install -y openjdk-8-jdk openjdk-8-jre gcc make cmake git python2.7 python-dev python-numpy swig libboost-all-dev curl wget python-tk
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 RUN python get-pip.py
 RUN pip install h5py numpy pyprind matplotlib
