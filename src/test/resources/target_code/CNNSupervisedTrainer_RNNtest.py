@@ -50,12 +50,41 @@ class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
         if self._sparse_label:
             loss = -pick(pred, label, axis=self._axis, keepdims=True)
         else:
-            label = _reshape_like(F, label, pred)
+            label = gluon.loss._reshape_like(F, label, pred)
             loss = -(pred * label).sum(axis=self._axis, keepdims=True)
         # ignore some indices for loss, e.g. <pad> tokens in NLP applications
         for i in self._ignore_indices:
             loss = loss * mx.nd.logical_not(mx.nd.equal(mx.nd.argmax(pred, axis=1), mx.nd.ones_like(mx.nd.argmax(pred, axis=1))*i) * mx.nd.equal(mx.nd.argmax(pred, axis=1), label))
         return loss.mean(axis=self._batch_axis, exclude=True)
+
+class DiceLoss(gluon.loss.Loss):
+    def __init__(self, axis=-1, sparse_label=True, from_logits=False, weight=None,
+                 batch_axis=0, **kwargs):
+        super(DiceLoss, self).__init__(weight, batch_axis, **kwargs)
+        self._axis = axis
+        self._sparse_label = sparse_label
+        self._from_logits = from_logits
+
+    def dice_loss(self, F, pred, label):
+        smooth = 1.
+        pred_y = F.argmax(pred, axis = self._axis)
+        intersection = pred_y * label
+        score = (2 * F.mean(intersection, axis=self._batch_axis, exclude=True) + smooth) \
+            / (F.mean(label, axis=self._batch_axis, exclude=True) + F.mean(pred_y, axis=self._batch_axis, exclude=True) + smooth)
+
+        return - F.log(score)
+
+    def hybrid_forward(self, F, pred, label, sample_weight=None):
+        if not self._from_logits:
+            pred = F.log_softmax(pred, self._axis)
+        if self._sparse_label:
+            loss = -F.pick(pred, label, axis=self._axis, keepdims=True)
+        else:
+            label = gluon.loss._reshape_like(F, label, pred)
+            loss = -F.sum(pred*label, axis=self._axis, keepdims=True)
+        loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
+        diceloss = self.dice_loss(F, pred, label)
+        return F.mean(loss, axis=self._batch_axis, exclude=True) + diceloss
 
 @mx.metric.register
 class BLEU(mx.metric.EvalMetric):
@@ -246,16 +275,21 @@ class CNNSupervisedTrainer_RNNtest:
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
         ignore_indices = [loss_params['ignore_indices']] if 'ignore_indices' in loss_params else []
+        loss_axis = loss_params['loss_axis'] if 'loss_axis' in loss_params else -1
+        batch_axis = loss_params['batch_axis'] if 'batch_axis' in loss_params else 0
         if loss == 'softmax_cross_entropy':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
-            loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)
+            loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(axis=loss_axis, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
         elif loss == 'softmax_cross_entropy_ignore_indices':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
-            loss_function = SoftmaxCrossEntropyLossIgnoreIndices(ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel)
+            loss_function = SoftmaxCrossEntropyLossIgnoreIndices(axis=loss_axis, ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
         elif loss == 'sigmoid_binary_cross_entropy':
             loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
         elif loss == 'cross_entropy':
-            loss_function = CrossEntropyLoss(sparse_label=sparseLabel)
+            loss_function = CrossEntropyLoss(axis=loss_axis, sparse_label=sparseLabel, batch_axis=batch_axis)
+        elif loss == 'dice_loss':
+            loss_weight = loss_params['loss_weight'] if 'loss_weight' in loss_params else None
+            loss_function = DiceLoss(axis=loss_axis, weight=loss_weight, sparse_label=sparseLabel, batch_axis=batch_axis)
         elif loss == 'l2':
             loss_function = mx.gluon.loss.L2Loss()
         elif loss == 'l1':
@@ -458,7 +492,7 @@ class CNNSupervisedTrainer_RNNtest:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                if True: 
+                if True:
                     labels = [batch.label[i].as_in_context(mx_context) for i in range(5)]
 
                     source_ = batch.data[0].as_in_context(mx_context)
@@ -563,11 +597,7 @@ class CNNSupervisedTrainer_RNNtest:
 
                 predictions = []
                 for output_name in outputs:
-                    if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                        predictions.append(mx.nd.argmax(output_name, axis=1))
-                    #ArgMax already applied
-                    else:
-                        predictions.append(output_name)
+                    predictions.append(output_name)
 
                 metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]

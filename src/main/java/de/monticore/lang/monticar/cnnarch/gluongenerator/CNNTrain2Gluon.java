@@ -2,9 +2,12 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
 import com.google.common.collect.Maps;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.annotations.ArchitectureAdapter;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.preprocessing.PreprocessingComponentParameterAdapter;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.preprocessing.PreprocessingPortChecker;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.FunctionParameterChecker;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionParameterAdapter;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionSourceGenerator;
@@ -78,9 +81,9 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         try {
             Iterator var6 = fileContents.keySet().iterator();
 
-            while(var6.hasNext()) {
-                String fileName = (String)var6.next();
-                genCPP.generateFile(new FileContent((String)fileContents.get(fileName), fileName));
+            while (var6.hasNext()) {
+                String fileName = (String) var6.next();
+                genCPP.generateFile(new FileContent((String) fileContents.get(fileName), fileName));
             }
         } catch (IOException var8) {
             Log.error("CNNTrainer file could not be generated" + var8.getMessage());
@@ -94,6 +97,19 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         ConfigurationSymbol configurationSymbol = this.getConfigurationSymbol(modelsDirPath, rootModelName);
         configurationSymbol.setTrainedArchitecture(trainedArchitecture);
         configurationSymbol.setCriticNetwork(criticNetwork);
+        this.setRootProjectModelsDir(modelsDirPath.toString());
+        generateFilesFromConfigurationSymbol(configurationSymbol);
+    }
+
+    public void generate(Path modelsDirPath,
+                         String rootModelName,
+                         NNArchitectureSymbol trainedArchitecture,
+                         NNArchitectureSymbol discriminatorNetwork,
+                         NNArchitectureSymbol qNetwork) {
+        ConfigurationSymbol configurationSymbol = this.getConfigurationSymbol(modelsDirPath, rootModelName);
+        configurationSymbol.setTrainedArchitecture(trainedArchitecture);
+        configurationSymbol.setDiscriminatorNetwork(discriminatorNetwork);
+        configurationSymbol.setQNetwork(qNetwork);
         this.setRootProjectModelsDir(modelsDirPath.toString());
         generateFilesFromConfigurationSymbol(configurationSymbol);
     }
@@ -117,16 +133,16 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         if (configData.isSupervisedLearning()) {
             String cnnTrainTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
             fileContentMap.put("CNNTrainer_" + getInstanceName() + ".py", cnnTrainTemplateContent);
-        } else if(configData.isGan()) {
+        } else if (configData.isGan()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();
-            if(!configuration.getDiscriminatorNetwork().isPresent()) {
+            if (!configuration.getDiscriminatorNetwork().isPresent()) {
                 Log.error("No architecture model for discriminator available but is required for chosen " +
                         "GAN");
             }
 
             NNArchitectureSymbol genericDisArchitectureSymbol = configuration.getDiscriminatorNetwork().get();
             ArchitectureSymbol disArchitectureSymbol
-                    = ((ArchitectureAdapter)genericDisArchitectureSymbol).getArchitectureSymbol();
+                    = ((ArchitectureAdapter) genericDisArchitectureSymbol).getArchitectureSymbol();
 
             CNNArch2Gluon gluonGenerator = new CNNArch2Gluon();
             gluonGenerator.setGenerationTargetPath(
@@ -147,7 +163,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             if (configuration.hasQNetwork()) {
                 NNArchitectureSymbol genericQArchitectureSymbol = configuration.getQNetwork().get();
                 ArchitectureSymbol qArchitectureSymbol
-                        = ((ArchitectureAdapter)genericQArchitectureSymbol).getArchitectureSymbol();
+                        = ((ArchitectureAdapter) genericQArchitectureSymbol).getArchitectureSymbol();
 
                 Map<String, String> qArchitectureFileContentMap
                         = gluonGenerator.generateStringsAllowMultipleIO(qArchitectureSymbol, true);
@@ -179,7 +195,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             final RLAlgorithm rlAlgorithm = configData.getRlAlgorithm();
 
             if (rlAlgorithm.equals(RLAlgorithm.DDPG)
-                || rlAlgorithm.equals(RLAlgorithm.TD3)) {
+                    || rlAlgorithm.equals(RLAlgorithm.TD3)) {
 
                 if (!configuration.getCriticNetwork().isPresent()) {
                     Log.error("No architecture model for critic available but is required for chosen " +
@@ -187,7 +203,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                 }
                 NNArchitectureSymbol genericArchitectureSymbol = configuration.getCriticNetwork().get();
                 ArchitectureSymbol architectureSymbol
-                        = ((ArchitectureAdapter)genericArchitectureSymbol).getArchitectureSymbol();
+                        = ((ArchitectureAdapter) genericArchitectureSymbol).getArchitectureSymbol();
 
                 CNNArch2Gluon gluonGenerator = new CNNArch2Gluon();
                 gluonGenerator.setGenerationTargetPath(
@@ -201,8 +217,8 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                         creatorName.indexOf('_') + 1, creatorName.lastIndexOf(".py"));
 
                 fileContentMap.putAll(architectureFileContentMap.entrySet().stream().collect(Collectors.toMap(
-                            k -> REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/" + k.getKey(),
-                            Map.Entry::getValue))
+                        k -> REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/" + k.getKey(),
+                        Map.Entry::getValue))
                 );
 
                 ftlContext.put("criticInstanceName", criticInstanceName);
@@ -215,7 +231,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                             configuration.getRlRewardFunction().get(), Paths.get(rootProjectModelsDir));
                 } else {
                     Log.error("No architecture model for the trained neural network but is required for " +
-                     "reinforcement learning configuration.");
+                            "reinforcement learning configuration.");
                 }
 
             }
@@ -234,7 +250,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
     }
 
     private void generateRewardFunction(NNArchitectureSymbol trainedArchitecture,
-        RewardFunctionSymbol rewardFunctionSymbol, Path modelsDirPath) {
+                                        RewardFunctionSymbol rewardFunctionSymbol, Path modelsDirPath) {
         GeneratorPythonWrapperStandaloneApi pythonWrapperApi = new GeneratorPythonWrapperStandaloneApi();
 
         List<String> fullNameOfComponent = rewardFunctionSymbol.getRewardFunctionComponentName();
@@ -271,7 +287,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         rewardFunctionSymbol.setRewardFunctionParameter(functionParameter);
     }
 
-    private void fixArmadilloEmamGenerationOfFile(Path pathToBrokenFile){
+    private void fixArmadilloEmamGenerationOfFile(Path pathToBrokenFile) {
         final File brokenFile = pathToBrokenFile.toFile();
         if (brokenFile.exists()) {
             try {
@@ -301,19 +317,19 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         fileContentMap.put(REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/agent.py", reinforcementAgentContent);
 
         final String reinforcementStrategyContent = templateConfiguration.processTemplate(
-            ftlContext, "reinforcement/agent/Strategy.ftl");
+                ftlContext, "reinforcement/agent/Strategy.ftl");
         fileContentMap.put(REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/strategy.py", reinforcementStrategyContent);
 
         final String replayMemoryContent = templateConfiguration.processTemplate(
-            ftlContext, "reinforcement/agent/ReplayMemory.ftl");
+                ftlContext, "reinforcement/agent/ReplayMemory.ftl");
         fileContentMap.put(REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/replay_memory.py", replayMemoryContent);
 
         final String environmentContent = templateConfiguration.processTemplate(
-            ftlContext, "reinforcement/environment/Environment.ftl");
+                ftlContext, "reinforcement/environment/Environment.ftl");
         fileContentMap.put(REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/environment.py", environmentContent);
 
         final String utilContent = templateConfiguration.processTemplate(
-            ftlContext, "reinforcement/util/Util.ftl");
+                ftlContext, "reinforcement/util/Util.ftl");
         fileContentMap.put(REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/util.py", utilContent);
 
         final String initContent = "";
@@ -322,3 +338,4 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         return fileContentMap;
     }
 }
+

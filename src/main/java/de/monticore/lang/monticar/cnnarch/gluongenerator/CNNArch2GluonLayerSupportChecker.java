@@ -9,7 +9,7 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
     public CNNArch2GluonLayerSupportChecker() {
         supportedLayerList.add(AllPredefinedLayers.FULLY_CONNECTED_NAME);
         supportedLayerList.add(AllPredefinedLayers.CONVOLUTION_NAME);
-        supportedLayerList.add(AllPredefinedLayers.TRANS_CONV_NAME);
+        supportedLayerList.add(AllPredefinedLayers.UP_CONVOLUTION_NAME);
         supportedLayerList.add(AllPredefinedLayers.SOFTMAX_NAME);
         supportedLayerList.add(AllPredefinedLayers.SIGMOID_NAME);
         supportedLayerList.add(AllPredefinedLayers.TANH_NAME);
@@ -40,6 +40,7 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.REDUCE_SUM_NAME);
         supportedLayerList.add(AllPredefinedLayers.BROADCAST_ADD_NAME);
         supportedLayerList.add(AllPredefinedLayers.RESHAPE_NAME);
+        // supportedLayerList.add(AllPredefinedLayers.CROP_NAME);
     }
 
 }

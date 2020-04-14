@@ -5,7 +5,6 @@ import mxnet as mx
 import logging
 import sys
 import numpy as np
-import cv2
 import importlib
 from mxnet import nd
 
@@ -79,6 +78,7 @@ class ${tc.fileNameWithoutEnding}:
         train_label = {}
         data_mean = {}
         data_std = {}
+        train_images = {}
 
         shape_output = self.preprocess_data(instance, inp, 0, train_h5)
         train_len = len(train_h5[self._input_names_[0]])
@@ -141,6 +141,7 @@ class ${tc.fileNameWithoutEnding}:
             for output_name in self._output_names_:
                 test_label[output_name][i] = getattr(shape_output, output_name + "_out")
 
+        test_images = {}
         if 'images' in test_h5:
             test_images = test_h5['images']
 
@@ -152,7 +153,7 @@ class ${tc.fileNameWithoutEnding}:
 
     def preprocess_data(self, instance_wrapper, input_wrapper, index, data_h5):
         for input_name in self._input_names_:
-            data = data_h5[input_name][0]
+            data = data_h5[input_name][index]
             attr = getattr(input_wrapper, input_name)
             if (type(data)) == np.ndarray:
                 data = np.asfortranarray(data).astype(attr.dtype)
@@ -160,7 +161,7 @@ class ${tc.fileNameWithoutEnding}:
                 data = type(attr)(data)
             setattr(input_wrapper, input_name, data)
         for output_name in self._output_names_:
-            data = data_h5[output_name][0]
+            data = data_h5[output_name][index]
             attr = getattr(input_wrapper, output_name)
             if (type(data)) == np.ndarray:
                 data = np.asfortranarray(data).astype(attr.dtype)

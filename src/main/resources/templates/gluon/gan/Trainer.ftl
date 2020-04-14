@@ -52,27 +52,20 @@ if __name__ == "__main__":
 <#if (config.loadCheckpoint)??>
         load_checkpoint=${config.loadCheckpoint?string("True","False")},
 </#if>
+<#if (config.checkpointPeriod)??>
+        checkpoint_period=${config.checkpointPeriod},
+</#if>
 <#if (config.context)??>
         context='${config.context}',
 </#if>
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
 </#if>
-<#if (config.preprocessingName)??>
-        preprocessing=${config.preprocessingName???string("True","False")},
+<#if (config.preprocessor)??>
+        preprocessing=${config.preprocessor?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric}',
-</#if>
-<#if (config.configuration.loss)??>
-        loss ='${config.lossName}',
-<#if (config.lossParams)??>
-        loss_params={
-<#list config.lossParams?keys as param>
-            '${param}': ${config.lossParams[param]}<#sep>,
-</#list>
-        },
-</#if>
 </#if>
 <#if (config.configuration.optimizer)??>
         optimizer='${config.optimizerName}',
@@ -81,6 +74,13 @@ if __name__ == "__main__":
             '${param}': ${config.optimizerParams[param]}<#sep>,
 </#list>
         },
+</#if>
+<#if (config.configuration.criticOptimizer)??>
+        discriminator_optimizer= '${config.criticOptimizerName}',
+        discriminator_optimizer_params= {
+<#list config.criticOptimizerParams?keys as param>
+            '${param}': ${config.criticOptimizerParams[param]}<#sep>,
+</#list>},
 </#if>
 <#if (config.constraintDistributions)??>
 <#assign map = (config.constraintDistributions)>
@@ -121,7 +121,29 @@ if __name__ == "__main__":
 <#if (config.noiseDistribution.spread_value)??>
             'spread_value': ${config.noiseDistribution.spread_value}
 </#if>
-        })
+     },
 </#if>
-
-
+<#if (config.KValue)??>
+        k_value=${config.KValue},
+</#if>
+<#if (config.generatorLoss)??>
+        generator_loss="${config.generatorLoss}",
+</#if>
+<#if (config.generatorTargetName)??>
+        generator_target_name="${config.generatorTargetName}",
+</#if>
+<#if (config.noiseInput)??>
+        noise_input="${config.noiseInput}",
+</#if>
+<#if (config.generatorLossWeight)??>
+        gen_loss_weight=${config.generatorLossWeight},
+</#if>
+<#if (config.discriminatorLossWeight)??>
+        dis_loss_weight=${config.discriminatorLossWeight},
+</#if>
+<#if (config.logPeriod)??>
+        log_period=${config.logPeriod},
+</#if>
+<#if (config.printImages)??>
+        print_images=${config.printImages?string("True","False")},
+</#if>)

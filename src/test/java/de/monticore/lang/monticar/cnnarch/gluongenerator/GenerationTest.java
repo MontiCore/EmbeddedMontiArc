@@ -7,18 +7,18 @@ import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
+
+import static java.sql.DriverManager.println;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
+import static sun.misc.Version.print;
 
 public class GenerationTest extends AbstractSymtabTest {
     private RewardFunctionSourceGenerator rewardFunctionSourceGenerator;
@@ -368,4 +368,55 @@ public class GenerationTest extends AbstractSymtabTest {
         );
     }
 
+    @Test
+    public void testDefaultGANConfig() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests/default-gan");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        NNArchitectureSymbol genArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/default-gan/arc"), "DefaultGAN");
+        NNArchitectureSymbol disArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/default-gan/arc"), "Discriminator");
+
+        trainGenerator.generate(modelPath, "DefaultGAN", genArchitecture, disArchitecture, null);
+
+        assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code/default-gan"),
+                Arrays.asList(
+                        "gan/CNNCreator_Discriminator.py",
+                        "gan/CNNNet_Discriminator.py",
+                        "CNNTrainer_defaultGAN.py"
+                )
+        );
+    }
+
+    @Test
+    public void testInfoGANConfig() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests/info-gan");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        NNArchitectureSymbol genArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/info-gan/arc"), "InfoGAN");
+        NNArchitectureSymbol disArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/info-gan/arc"), "InfoDiscriminator");
+        NNArchitectureSymbol qnetArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/info-gan/arc"), "InfoQNetwork");
+
+        trainGenerator.generate(modelPath, "InfoGAN", genArchitecture, disArchitecture, qnetArchitecture);
+
+        assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code/info-gan"),
+                Arrays.asList(
+                        "gan/CNNCreator_InfoDiscriminator.py",
+                        "gan/CNNNet_InfoDiscriminator.py",
+                        "gan/CNNCreator_InfoQNetwork.py",
+                        "gan/CNNNet_InfoQNetwork.py",
+                        "CNNTrainer_infoGAN.py"
+                )
+        );
+    }
 }

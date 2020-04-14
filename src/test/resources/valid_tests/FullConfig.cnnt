@@ -5,6 +5,7 @@ configuration FullConfig{
      load_checkpoint : true
      eval_metric : mse
      loss: softmax_cross_entropy{
+        loss_axis: -1
         sparse_label: true
         from_logits: false
      }

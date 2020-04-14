@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture CropTest(){
+    def input Z(0:255)^{3, 50, 50} image
+    def output Z(0:255)^{3, 48, 48} cropped
+
+    image ->
+    Crop(start=(1), until=(-1)) ->
+    cropped;
+}

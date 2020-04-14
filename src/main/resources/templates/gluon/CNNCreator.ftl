@@ -2,6 +2,7 @@
 import mxnet as mx
 import logging
 import os
+import shutil
 
 <#list tc.architecture.networkInstructions as networkInstruction>
 from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
@@ -14,6 +15,11 @@ class ${tc.fileNameWithoutEnding}:
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.networks = {}
+<#if (tc.weightsPath)??>
+        self._weights_dir_ = "${tc.weightsPath}/"
+<#else>
+        self._weights_dir_ = None
+</#if>
 
     def load(self, context):
         earliestLastEpoch = None
@@ -50,6 +56,29 @@ class ${tc.fileNameWithoutEnding}:
 
         return earliestLastEpoch
 
+    def load_pretrained_weights(self, context):
+        if os.path.isdir(self._model_dir_):
+            shutil.rmtree(self._model_dir_)
+        if self._weights_dir_ is not None:
+            for i, network in self.networks.items():
+                # param_file = self._model_prefix_ + "_" + str(i) + "_newest-0000.params"
+                param_file = None
+                if os.path.isdir(self._weights_dir_):
+                    lastEpoch = 0
+
+                    for file in os.listdir(self._weights_dir_):
+
+                        if ".params" in file and self._model_prefix_ + "_" + str(i) in file:
+                            epochStr = file.replace(".params","").replace(self._model_prefix_ + "_" + str(i) + "-","")
+                            epoch = int(epochStr)
+                            if epoch > lastEpoch:
+                                lastEpoch = epoch
+                                param_file = file
+                    logging.info("Loading pretrained weights: " + self._weights_dir_ + param_file)
+                    network.load_parameters(self._weights_dir_ + param_file, allow_missing=True, ignore_extra=True)
+                else:
+                    logging.info("No pretrained weights available at: " + self._weights_dir_ + param_file)
+
     def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std)
@@ -63,3 +92,29 @@ class ${tc.fileNameWithoutEnding}:
 
         for i, network in self.networks.items():
             network.export(self._model_dir_ + self._model_prefix_ + "_" + str(i), epoch=0)
+
+    def getInputs(self):
+        inputs = {}
+<#list tc.architecture.streams as stream>
+<#assign dimensions = (tc.getStreamInputs(stream, false))>
+<#assign domains = (tc.getStreamInputDomains(stream))>
+<#list tc.getStreamInputVariableNames(stream, false) as name>
+        input_dimensions = (${tc.join(dimensions[name], ",")},)
+        input_domains = (${tc.join(domains[name], ",")},)
+        inputs["${name}"] = input_domains + (input_dimensions,)
+</#list>
+</#list>
+        return inputs
+
+    def getOutputs(self):
+        outputs = {}
+<#list tc.architecture.streams as stream>
+<#assign dimensions = (tc.getStreamOutputs(stream, false))>
+<#assign domains = (tc.getStreamOutputDomains(stream))>
+<#list tc.getStreamOutputVariableNames(stream, false) as name>
+        output_dimensions = (${tc.join(dimensions[name], ",")},)
+        output_domains = (${tc.join(domains[name], ",")},)
+        outputs["${name}"] = output_domains + (output_dimensions,)
+</#list>
+</#list>
+        return outputs

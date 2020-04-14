@@ -20,6 +20,7 @@ if __name__ == "__main__":
     simpleConfig_trainer.train(
         batch_size=100,
         num_epoch=50,
+        preprocessing=False,
         loss='cross_entropy',
         optimizer='adam',
         optimizer_params={

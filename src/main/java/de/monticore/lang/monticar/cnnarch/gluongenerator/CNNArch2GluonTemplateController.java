@@ -415,6 +415,9 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                     dimensions.add(intDimension.toString());
                 }
 
+                if (dimensions.isEmpty())
+                    dimensions.add("unknown");
+
                 String name = getName(element);
 
                 if (outputAsArray && element.isOutput() && element instanceof VariableSymbol) {
