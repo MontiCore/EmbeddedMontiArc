@@ -5,7 +5,7 @@ stages:
 
 TestGAN:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/GANs/mnist-generator/mxnet:v0.0.3
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-generator/mxnet:v0.0.3
   script: 
   - apt-get install python-dev -y
   - apt-get install swig -y
@@ -16,7 +16,6 @@ TestGAN:
   - make
   - make install 
   - cd ..
-  - python -m pip install -U matplotlib
   - cd gluon
   - chmod +x build.sh
   - ./build.sh
