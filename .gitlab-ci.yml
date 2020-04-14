@@ -7,6 +7,6 @@ TestGAN:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-infogan/gans_mxnet:latest
   script: 
-  - cd gluon/.test
+  - cd gluon/.test/
   - chmod +x build.sh
   - ./build.sh
