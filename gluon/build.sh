@@ -1,6 +1,6 @@
 MXNET_PATH=$(python -c "import mxnet; print(mxnet.__file__)")
 # (c) https://github.com/MontiCore/monticore  
-MXNET_FOLDER="/usr/lib"
+MXNET_FOLDER=$(dirname $MXNET_PATH)
 echo $MXNET_FOLDER
 
 if [ ! -f $MXNET_FOLDER/libmxnet.so ]; then

@@ -29,4 +29,4 @@ RUN cd OpenCV/build && make install
 RUN cd OpenCV/build && ldconfig
 
 RUN apt-get install -y libopenblas-dev
-RUN python -m pip install -U matplotlib
+RUN apt-get install python-numpy
