@@ -3,13 +3,13 @@ configuration Generator{
 
 	 learning_method:gan
 	 discriminator_name: mnistGenerator.Discriminator
-     num_epoch:1
+     num_epoch:10
      batch_size:64
      normalize:false
 	 preprocessing_name: mnistGenerator.Processing
      context:cpu
 	 noise_input: "noise"
-	 print_images: false
+	 print_images: true
 	 log_period: 10
      load_checkpoint:false
      optimizer:adam{
