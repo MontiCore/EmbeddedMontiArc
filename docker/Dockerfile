@@ -6,6 +6,7 @@ python-numpy swig libboost-all-dev curl wget python-tk
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 RUN python get-pip.py
 RUN pip install h5py numpy pyprind matplotlib
+RUN apt-get install -y python-matplotlib
 
 ADD armadillo-9.600.6.zip /root/armadillo.zip
 RUN unzip /root/armadillo.zip -d /root/armadillo
@@ -21,9 +22,6 @@ RUN apt-get install -y libblas-dev liblapack-dev
 RUN apt-get install -y build-essential
 RUN apt-get install -y libopenblas-dev
 RUN apt-get install -y libopencv-dev
-RUN git clone --recursive https://github.com/apache/incubator-mxnet.git mxnet_source && \
-    cd mxnet_source && git checkout tags/1.5.0 && cd .. && \
-    cp -r mxnet_source/include/mxnet /usr/include/mxnet
 RUN pip install mxnet
 
 # Set Display for TKInter
