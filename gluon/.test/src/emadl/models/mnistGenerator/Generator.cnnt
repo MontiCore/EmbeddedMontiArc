@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration Generator{
+
+	 learning_method:gan
+	 discriminator_name: mnistGenerator.Discriminator
+     num_epoch:1
+     batch_size:1
+     normalize:false
+	 preprocessing_name: mnistGenerator.Processing
+     context:cpu
+	 noise_input: "noise"
+	 print_images: false
+	 log_period: 1
+     load_checkpoint:false
+     optimizer:adam{
+         learning_rate:0.0002
+         beta1:0.5
+     }
+	 discriminator_optimizer:adam{
+		 learning_rate:0.0002
+		 beta1:0.5
+	 }
+	 noise_distribution:gaussian{
+		 mean_value:0
+		 spread_value:1
+	 }
+}
