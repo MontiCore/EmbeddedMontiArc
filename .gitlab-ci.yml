@@ -5,7 +5,7 @@ stages:
 
 TestGAN:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-generator/mxnet:v0.0.3
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/emadl-rl-mxnet:latest
   script: 
   - cd gluon
   - chmod +x build.sh
