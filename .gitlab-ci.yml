@@ -5,17 +5,8 @@ stages:
 
 TestGAN:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/emadl-rl-mxnet:latest
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-generator/mxnet:v0.0.3
   script: 
-  - apt-get install python-dev -y
-  - apt-get install swig -y
-  - apt-get install python-numpy
-  - apt-get install python-tk -y
-  - cd armadillo-9.860.2/
-  - cmake .
-  - make
-  - make install 
-  - cd ..
   - cd gluon
   - chmod +x build.sh
   - ./build.sh
