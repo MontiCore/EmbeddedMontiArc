@@ -26,14 +26,14 @@ component Generator<Z(1:oo) in_channels = 3, Z(1:oo) out_channels = 3, Z(2:oo) f
 
         def decode(channels, filter=4, num_conv=1){
             Relu() ->
-            TransConv(kernel=(filter, filter), channels=channels, stride=(2,2)) ->
+            UpConvolution(kernel=(filter, filter), channels=channels, stride=(2,2)) ->
             BatchNorm() ->
             Dropout(p=0.5) 
         }
 
         def decode_nodrop(channels, filter=4, num_conv=1){
             Relu() ->
-            TransConv(kernel=(filter, filter), channels=channels, stride=(2,2)) ->
+            UpConvolution(kernel=(filter, filter), channels=channels, stride=(2,2)) ->
             BatchNorm() 
         }
 
@@ -108,7 +108,7 @@ component Generator<Z(1:oo) in_channels = 3, Z(1:oo) out_channels = 3, Z(2:oo) f
         /* decoder 1 */
         /* channels = output channels and Tanh as activation */
 		Relu() ->
-        TransConv(kernel=(4, 4), channels=3, stride=(2,2)) ->
+        UpConvolution(kernel=(4, 4), channels=3, stride=(2,2)) ->
         Tanh() ->
         target_label;
     }
