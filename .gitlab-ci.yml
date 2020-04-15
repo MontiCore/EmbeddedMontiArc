@@ -7,6 +7,6 @@ TestGLUON:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
   script: 
-  - cd gluon
+  - cd gluon/.test
   - chmod +x build.sh
   - ./build.sh
