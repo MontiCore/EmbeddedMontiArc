@@ -4,8 +4,8 @@ gluon/build/
 gluon/train.log
 gluon/target/
 gluon/model
-gluon/.test/resources/datasets/
 gluon/.test/build/
+gluon/.test/resources/datasets/
 gluon/.test/train.log
 gluon/.test/target/
 gluon/.test/model
