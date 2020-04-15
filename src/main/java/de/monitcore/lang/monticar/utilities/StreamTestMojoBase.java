@@ -40,6 +40,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -221,7 +222,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         // tada
     }
 
-    protected void postExecution()throws MojoExecutionException{
+    protected void postExecution() throws MojoExecutionException {
         // hier koennte ihre werbung stehen
     }
 

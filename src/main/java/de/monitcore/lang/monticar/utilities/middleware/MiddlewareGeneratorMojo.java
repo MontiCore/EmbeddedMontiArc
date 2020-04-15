@@ -8,14 +8,17 @@ import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
 //import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
+import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
+import de.monticore.lang.monticar.emadl.generator.Backend;
 import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
-import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.EMADLGeneratorImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
+
+
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.logging.Log;
+import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -129,7 +132,22 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
                 logInfo("   ->Adding emadlcpp generator");
                 generator.add(new EMADLGeneratorImpl(this.getPathMain(),this.getEmadlBackend()), "emadlcpp");
             }
-
+            if (this.middlewareGenerator.contains(MiddlewareGenerator.mqtt)){
+                logInfo("   ->Adding mqtt generator");
+                generator.add(new MqttGenImpl(), "mqtt");
+            }
+            if (this.middlewareGenerator.contains(MiddlewareGenerator.rclcpp)){
+                logInfo("   ->Adding rclcpp generator");
+                generator.add(new RclCppGenImpl(), "rclcpp");
+            }
+            if (this.middlewareGenerator.contains(MiddlewareGenerator.ros2cpp)){
+                logInfo("   ->Adding ros2cpp generator: ros2 is an alias");
+                generator.add(new RclCppGenImpl(), "someip");
+            }
+            if (this.middlewareGenerator.contains(MiddlewareGenerator.someip)){
+                logInfo("   ->Adding someip generator");
+                generator.add(new SomeIPGenImpl(), "someip");
+            }
 
 
             try {
@@ -145,6 +163,28 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
         if(modelsInError.size() > 0){
             throw new MojoExecutionException("Models "+String.join(", ", modelsInError)+" could not resolved to ExpandedComponentInstanceSymbol!");
         }
+
+//        if (trainingNeeded){
+//            if (this.middlewareGenerator.contains(MiddlewareGenerator.emadlcpp)){
+//                EMADLGenerator emadlGenerator = new EMADLGenerator(Backend.valueOf(this.emadlBackend));
+//                String outputPath = getPathMiddlewareOut();
+//                if (outputPath != null){
+//                    emadlGenerator.setGenerationTargetPath(getPathMiddlewareOut());
+//                }
+//                try{
+//                    emadlGenerator.generate(this.getPathMain(), this.getRootModel(), this.getPathToPython(), "x", true);
+//                }
+//                catch (IOException e){
+//                    Log.error("io error during generation", e);
+//                    System.exit(1);
+//                }
+//                catch (TemplateException e){
+//                    Log.error("template error during generation", e);
+//                    System.exit(1);
+//                }
+//            }
+//        }
+
 
     }
 

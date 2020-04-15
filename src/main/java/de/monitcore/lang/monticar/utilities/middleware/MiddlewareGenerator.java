@@ -5,5 +5,9 @@ public enum MiddlewareGenerator {
     cpp,
     roscpp,
     odv,
-    emadlcpp
+    emadlcpp,
+    mqtt,
+    rclcpp,
+    ros2cpp,
+    someip
 }
