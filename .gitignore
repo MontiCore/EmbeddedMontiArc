@@ -6,6 +6,7 @@ gluon/target/
 gluon/model
 gluon/.test/build/
 gluon/.test/resources/datasets/
+gluon/.test/resources/training_data/
 gluon/.test/train.log
 gluon/.test/target/
 gluon/.test/model
