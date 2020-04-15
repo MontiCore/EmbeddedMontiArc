@@ -12,9 +12,3 @@ fi
 rm -rf target
 java -jar resources/embedded-montiarc-emadl-generator-0.3.8-jar-with-dependencies.jar -m src/emadl/models/ -r imageToImage.Connector -o target -b GLUON
 
-rm -rf build
-mkdir build && cd build
-
-echo "Building ImageToImage translator.."
-cmake -D MXNET_PATH=$MXNET_FOLDER/libmxnet.so ..
-make
