@@ -1,5 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# Dummy Segmentation for MNIST with MXNET
+# Dummy Segmentation for MNIST with MXNET Gluon
 
 
 ## Prerequisites
@@ -24,8 +24,10 @@ Finally, run the segmentation as follows:
 
 You can try different images from the provided `/resources/images` directory or even create your own images for testing. Note that the application program DigitSegment will automatically rescale the given input image to the size 28x28.
 
+Alternatively run provided python script to test network seperately:
 
-Run provided python script to test network seperately:
-
+```
 python ./python/DigitSegment.py -i ../resources/images/1.png
 python ./python/DigitSegment.py -i ../resources/images_fashionmnist/1.png
+
+```

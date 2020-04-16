@@ -46,7 +46,7 @@ component FCN<Z(2:oo) classes = 21>{
                     Convolution(kernel=(1,1), channels=classes) ->
 
                     /* upsampling */
-                    TransConv(kernel=(4,4), channels=classes, stride=(2,2))
+                    UpConvolution(kernel=(4,4), channels=classes, stride=(2,2))
 
                 |
 
@@ -55,14 +55,14 @@ component FCN<Z(2:oo) classes = 21>{
                 ) ->
                 /* skip4 */
                 Concatenate() ->
-                TransConv(kernel=(4,4), channels=classes, stride=(2,2))
+                UpConvolution(kernel=(4,4), channels=classes, stride=(2,2))
             |
                 /* skip 3 */
                 Convolution(kernel=(1,1), channels=classes)
             ) ->
 
             Concatenate() ->
-            TransConv(kernel=(16,16), channels=classes, stride=(8,8)) ->
+            UpConvolution(kernel=(16,16), channels=classes, stride=(8,8)) ->
 
             softmax;
         }

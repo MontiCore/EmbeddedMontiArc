@@ -1,5 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# Calculator MXNET
+# UNET for Semantic Segmentation
 
 
 ## Prerequisites
@@ -9,9 +9,23 @@
 4. OpenCV
 
 
-## How to Run
+## How to Train
 Generate and build the code for the EMADL model by executing:
 
 ```
 bash build.sh
+
+```
+
+## How to Run
+Finally, run the segmentation as follows:
+
+```
+./build/src/cpp/DemoUnet ../resources/images_voc/1.png
+```
+
+Alternatively run provided python script to test network seperately:
+
+```
+python ./python/Demo.py -i ../resources/images_voc/1.png
 ```
