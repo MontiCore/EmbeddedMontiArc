@@ -46,7 +46,7 @@ TestTENSORFLOW:
 
 TestMnistCalculator-II:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mnist-calculator 
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3 
   script:
   - cd mnist-calculator
   - mvn streamtest:streamtest-build -s settings.xml
