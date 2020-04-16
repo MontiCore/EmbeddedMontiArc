@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcNNCalculator_connector.a  CMakeFiles/cNNCalculator_connector.dir/cNNCalculator_connector.cpp.o
-/usr/bin/ranlib libcNNCalculator_connector.a

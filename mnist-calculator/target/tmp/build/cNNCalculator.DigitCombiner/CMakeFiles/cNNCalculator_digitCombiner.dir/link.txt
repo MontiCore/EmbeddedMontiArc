@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcNNCalculator_digitCombiner.a  CMakeFiles/cNNCalculator_digitCombiner.dir/cNNCalculator_digitCombiner.cpp.o
-/usr/bin/ranlib libcNNCalculator_digitCombiner.a

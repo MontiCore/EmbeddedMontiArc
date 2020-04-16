@@ -1,2 +1,0 @@
-Streams for component cNNCalculator.DigitCombiner:
-    cNNCalculator.DigitCombinerTest

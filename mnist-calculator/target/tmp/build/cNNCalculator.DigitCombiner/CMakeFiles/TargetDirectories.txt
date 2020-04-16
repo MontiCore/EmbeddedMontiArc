@@ -1,5 +1,0 @@
-/home/yuyuan/Documents/temp/mnist-calculator/target/tmp/build/cNNCalculator.DigitCombiner/CMakeFiles/edit_cache.dir
-/home/yuyuan/Documents/temp/mnist-calculator/target/tmp/build/cNNCalculator.DigitCombiner/CMakeFiles/cNNCalculator_digitCombiner.dir
-/home/yuyuan/Documents/temp/mnist-calculator/target/tmp/build/cNNCalculator.DigitCombiner/CMakeFiles/rebuild_cache.dir
-/home/yuyuan/Documents/temp/mnist-calculator/target/tmp/build/cNNCalculator.DigitCombiner/CMakeFiles/run_cNNCalculator_digitCombiner_StreamTests.dir
-/home/yuyuan/Documents/temp/mnist-calculator/target/tmp/build/cNNCalculator.DigitCombiner/CMakeFiles/cNNCalculator_digitCombiner_StreamTests.dir
