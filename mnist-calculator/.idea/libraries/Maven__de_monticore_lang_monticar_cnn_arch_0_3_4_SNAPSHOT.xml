@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: de.monticore.lang.monticar:cnn-arch:0.3.4-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/cnn-arch/0.3.4-SNAPSHOT/cnn-arch-0.3.4-20200121.181646-2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/cnn-arch/0.3.4-SNAPSHOT/cnn-arch-0.3.4-20200121.181646-2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/cnn-arch/0.3.4-SNAPSHOT/cnn-arch-0.3.4-20200121.181646-2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

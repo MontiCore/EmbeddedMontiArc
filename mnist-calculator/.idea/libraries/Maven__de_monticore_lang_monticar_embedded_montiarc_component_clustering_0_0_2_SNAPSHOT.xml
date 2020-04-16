@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: de.monticore.lang.monticar:embedded-montiarc-component-clustering:0.0.2-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/embedded-montiarc-component-clustering/0.0.2-SNAPSHOT/embedded-montiarc-component-clustering-0.0.2-20191020.162331-3.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/embedded-montiarc-component-clustering/0.0.2-SNAPSHOT/embedded-montiarc-component-clustering-0.0.2-20191020.162331-3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/embedded-montiarc-component-clustering/0.0.2-SNAPSHOT/embedded-montiarc-component-clustering-0.0.2-20191020.162331-3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

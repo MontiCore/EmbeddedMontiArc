@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/cNNCalculator_digitCombiner_StreamTests.dir/test/tests_main.cpp.o  -o cNNCalculator_digitCombiner_StreamTests libcNNCalculator_digitCombiner.a /usr/lib/x86_64-linux-gnu/libarmadillo.so 

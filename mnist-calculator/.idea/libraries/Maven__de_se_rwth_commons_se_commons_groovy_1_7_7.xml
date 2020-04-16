@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: de.se_rwth.commons:se-commons-groovy:1.7.7">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/se_rwth/commons/se-commons-groovy/1.7.7/se-commons-groovy-1.7.7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/de/se_rwth/commons/se-commons-groovy/1.7.7/se-commons-groovy-1.7.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/se_rwth/commons/se-commons-groovy/1.7.7/se-commons-groovy-1.7.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

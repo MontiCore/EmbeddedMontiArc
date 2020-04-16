@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: de.monticore.lang.monticar:common-monticar:0.0.19-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/common-monticar/0.0.19-SNAPSHOT/common-monticar-0.0.19-20200325.230509-2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/common-monticar/0.0.19-SNAPSHOT/common-monticar-0.0.19-20200325.230509-2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/common-monticar/0.0.19-SNAPSHOT/common-monticar-0.0.19-20200325.230509-2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

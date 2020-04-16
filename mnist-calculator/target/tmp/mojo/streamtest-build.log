@@ -1,0 +1,170 @@
+[info] streamtest-generator : [2020-04-15 16:11:29.445] Execution of STREAMTEST-GENERATOR not necessary. No input files changed.
+[info] StreamTestBuildMojo : StreamTestBuildMojo
+[info] streamtest-build : [2020-04-15 16:11:29.460] Building with cmake for: make
+[debug] de.se_rwth.commons.logging.Log : Switching logging component from de.monitcore.lang.monticar.utilities.tools.LogToFile to de.monticore.lang.math.LogConfig
+[trace]  : START resolveDownMany("cNNCalculator.DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("cNNCalculator.DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/yuyuan/Documents/temp/mnist-calculator/src/main/ema/emadl/models/cNNCalculator/DigitCombinerTest.stream Package: cNNCalculator/DigitCombinerTest.stream.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/yuyuan/Documents/temp/mnist-calculator/src/main/ema/emadl/models/cNNCalculator/DigitCombinerTest.stream Package: cNNCalculator/DigitCombinerTest.stream successfully.
+[debug] StreamUnitsModelLoader : Start creation of symbol table for model "cNNCalculator.DigitCombinerTest".
+[debug] StreamUnitsSymbolTableCreator : Building Symboltable for Stream: DigitCombinerTest
+[debug] StreamUnitsModelLoader : Created symbol table for model "cNNCalculator.DigitCombinerTest".
+[trace]  : START resolveDownMany("cNNCalculator.DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[DigitCombinerTest]". Found #1 (local)
+[trace]  : END resolveDownMany("DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[DigitCombinerTest]". Found #1
+[trace]  : END resolveDownMany("cNNCalculator.DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "DigitCombiner": [DigitCombiner, cNNCalculator.DigitCombiner]
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("cNNCalculator.DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombinerTest]". Found #0 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombinerTest]". Found #0
+[trace]  : END resolveDownMany("cNNCalculator.DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/yuyuan/Documents/temp/mnist-calculator/src/main/ema/emadl/models/cNNCalculator/DigitCombiner.emadl Package: cNNCalculator/DigitCombiner.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/yuyuan/Documents/temp/mnist-calculator/src/main/ema/emadl/models/cNNCalculator/DigitCombiner.emadl Package: cNNCalculator/DigitCombiner.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "cNNCalculator.DigitCombiner".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: DigitCombiner
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] ComponentPreGeneric : package cNNCalculator;
+component DigitCombiner {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] ComponentPostGeneric : package cNNCalculator;
+component DigitCombiner {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] ComponentPreParam : package cNNCalculator;
+component DigitCombiner {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[DigitCombiner]"
+[debug] ComponentPostParam : package cNNCalculator;
+component DigitCombiner {
+}
+
+[trace]  : START resolveDownMany("cNNCalculator.DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombinerTest]". Found #0 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombinerTest]". Found #0
+[debug] CommonScope : The symbol DigitCombiner has already been resolved.
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombiner]". Found #1 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombiner]". Found #1
+[trace]  : END resolveDownMany("cNNCalculator.DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : hundreds de.monticore.lang.monticar.types2._ast.ASTElementType@269222ae
+[debug] info : tens de.monticore.lang.monticar.types2._ast.ASTElementType@18dcb8a7
+[debug] info : ones de.monticore.lang.monticar.types2._ast.ASTElementType@6dcab9d9
+[debug] info : number de.monticore.lang.monticar.types2._ast.ASTElementType@5a14e60d
+[debug] SymbolTableCreator: : endVisit of cNNCalculator.DigitCombiner
+[trace]  : START resolveDownMany("cNNCalculator.digitCombiner", "de.monticore.symboltable.SymbolKind") in scope "Optional[DigitCombiner]". Found #0 (local)
+[trace]  : END resolveDownMany("cNNCalculator.digitCombiner", "de.monticore.symboltable.SymbolKind") in scope "Optional[DigitCombiner]". Found #0
+[debug] SymbolReference : Load full information of 'DigitCombiner' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol DigitCombiner has already been resolved.
+[debug] SymbolReference : Loaded full information of 'DigitCombiner' successfully.
+[debug] SymbolReference : Load full information of 'DigitCombiner' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol DigitCombiner has already been resolved.
+[debug] SymbolReference : Loaded full information of 'DigitCombiner' successfully.
+[debug] CommonSymbolReference : Full information of 'DigitCombiner' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package cNNCalculator;
+component /*instance*/ digitCombiner {
+  ports
+    in Z hundreds,
+    in Z tens,
+    in Z ones,
+    out Z number;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'DigitCombiner' already loaded. Use cached version.
+[debug] build end sym : package cNNCalculator;
+component /*instance*/ digitCombiner {
+  ports
+    in Z hundreds,
+    in Z tens,
+    in Z ones,
+    out Z number;
+}
+
+[debug] CommonSymbolReference : Full information of 'DigitCombiner' already loaded. Use cached version.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "": [, cNNCalculator.]
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("cNNCalculator.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[DigitCombinerTest]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[DigitCombinerTest]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[DigitCombiner]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[DigitCombiner]". Found #0
+[trace]  : END resolveDownMany("cNNCalculator.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("cNNCalculator.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[DigitCombinerTest]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[DigitCombinerTest]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[DigitCombiner]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[DigitCombiner]". Found #0
+[trace]  : END resolveDownMany("cNNCalculator.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[debug] EMADLModelLoader : Created symbol table for model "cNNCalculator.DigitCombiner".
+[trace]  : START resolveDownMany("cNNCalculator.DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombinerTest]". Found #0 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombinerTest]". Found #0
+[debug] CommonScope : The symbol DigitCombiner has already been resolved.
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombiner]". Found #1 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombiner]". Found #1
+[trace]  : END resolveDownMany("cNNCalculator.DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-build : [2020-04-15 16:11:32.210] Build StreamTest executables:
+[info] streamtest-build : [2020-04-15 16:11:32.210]  - cNNCalculator.DigitCombiner
+[info] streamtest-build : [2020-04-15 16:11:32.224]    -> Files are up to date
+[trace]  : START resolveDownMany("cNNCalculator.DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[DigitCombinerTest]". Found #1 (local)
+[trace]  : END resolveDownMany("DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[DigitCombinerTest]". Found #1
+[trace]  : START resolveDownMany("DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[DigitCombiner]". Found #0 (local)
+[trace]  : END resolveDownMany("DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[DigitCombiner]". Found #0
+[trace]  : END resolveDownMany("cNNCalculator.DigitCombinerTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "DigitCombiner": [DigitCombiner, cNNCalculator.DigitCombiner]
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] GlobalScope : Already tried to load model for 'DigitCombiner'. If model exists, continue with cached version.
+[debug] GlobalScope : Already tried to load model for 'DigitCombiner'. If model exists, continue with cached version.
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("cNNCalculator.DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombinerTest]". Found #0 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombinerTest]". Found #0
+[debug] CommonScope : The symbol DigitCombiner has already been resolved.
+[trace]  : START resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombiner]". Found #1 (local)
+[trace]  : END resolveDownMany("DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[DigitCombiner]". Found #1
+[trace]  : END resolveDownMany("cNNCalculator.DigitCombiner", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1

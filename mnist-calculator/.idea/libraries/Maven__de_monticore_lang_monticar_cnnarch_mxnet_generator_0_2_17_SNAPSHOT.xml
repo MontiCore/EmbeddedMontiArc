@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: de.monticore.lang.monticar:cnnarch-mxnet-generator:0.2.17-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/cnnarch-mxnet-generator/0.2.17-SNAPSHOT/cnnarch-mxnet-generator-0.2.17-20200127.091559-4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/cnnarch-mxnet-generator/0.2.17-SNAPSHOT/cnnarch-mxnet-generator-0.2.17-20200127.091559-4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/cnnarch-mxnet-generator/0.2.17-SNAPSHOT/cnnarch-mxnet-generator-0.2.17-20200127.091559-4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

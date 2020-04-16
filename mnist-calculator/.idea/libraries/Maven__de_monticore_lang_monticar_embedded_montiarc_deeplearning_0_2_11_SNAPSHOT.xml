@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: de.monticore.lang.monticar:embedded-montiarc-deeplearning:0.2.11-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/embedded-montiarc-deeplearning/0.2.11-SNAPSHOT/embedded-montiarc-deeplearning-0.2.11-20200127.112118-2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/embedded-montiarc-deeplearning/0.2.11-SNAPSHOT/embedded-montiarc-deeplearning-0.2.11-20200127.112118-2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/monticore/lang/monticar/embedded-montiarc-deeplearning/0.2.11-SNAPSHOT/embedded-montiarc-deeplearning-0.2.11-20200127.112118-2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
