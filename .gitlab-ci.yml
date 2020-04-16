@@ -10,3 +10,7 @@ TestGAN:
   - cd .test/
   - chmod +x build.sh
   - ./build.sh
+  except:
+    changes:
+    - README.md
+    - .gitignore
