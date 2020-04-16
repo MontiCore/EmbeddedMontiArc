@@ -10,3 +10,6 @@ TestGAN:
   - cd gluon/.test
   - chmod +x build.sh
   - ./build.sh
+  except:
+    changes:
+    - README.md
