@@ -1,5 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# Dummy Segmentation for MNIST with MXNET
+# Dummy Segmentation for MNIST with MXNET Gluon
 
 
 ## Prerequisites

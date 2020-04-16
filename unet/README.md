@@ -1,5 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# Calculator MXNET
+# UNET for Semantic Segmentation
 
 
 ## Prerequisites
@@ -14,4 +14,11 @@ Generate and build the code for the EMADL model by executing:
 
 ```
 bash build.sh
+
+```
+
+Finally, run the segmentation as follows:
+
+```
+./build/src/cpp/DigitSegment ../resources/images_voc/1.png
 ```
