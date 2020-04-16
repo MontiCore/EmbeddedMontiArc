@@ -12,6 +12,10 @@ TestMNIST:
   - cd mnistsmallseg
   - chmod +x build.sh
   - ./build.sh
+  except:
+    changes:
+    - README.md
+    - .gitignore
 
 # TestUNET:
 #   stage: unet
