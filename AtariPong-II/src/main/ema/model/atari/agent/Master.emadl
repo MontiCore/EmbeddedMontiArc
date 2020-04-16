@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package atari.agent;
+
+import atari.agent.network.AtariQNet;
+import atari.agent.strategy.GreedyDiscreteStrategy;
+
+component Master {
+    ports
+        in Q(0:1)^{4,105,80} observation,
+        out Z(0:5) action;
+
+    instance AtariQNet dqn;
+    instance GreedyDiscreteStrategy<6> strategy;
+
+    connect observation -> dqn.observation;
+    connect dqn.qvalues -> strategy.values;
+    connect strategy.action -> action;
+}
