@@ -18,7 +18,7 @@ component Unet<Z(2:oo) first_channels = 64, Z(1:oo) classes = 21>{
 
             def decode_block(filter, channels, num_conv=2){
                 conv(filter=filter, channels=channels, ->=num_conv) ->
-                TransConv(kernel=(4,4), channels=channels, stride=(2,2))
+                UpConvolution(kernel=(4,4), channels=channels, stride=(2,2))
             }
 
             data ->

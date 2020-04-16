@@ -35,7 +35,7 @@ component Network<Z(2:oo) classes = 10>{
                     conv(filter=1, channels=2048) ->
                     Dropout(p=0.5) ->
                     Convolution(kernel=(1,1), channels=classes) ->
-                    TransConv(kernel=(2,2), channels=classes, stride=(2,2))
+                    UpConvolution(kernel=(2,2), channels=classes, stride=(2,2))
 
                     |
 
@@ -44,7 +44,7 @@ component Network<Z(2:oo) classes = 10>{
                 ) ->
 
                 Concatenate() ->
-                TransConv(kernel=(4,4), channels=classes, stride=(2,2))
+                UpConvolution(kernel=(4,4), channels=classes, stride=(2,2))
 
                 |
 
@@ -53,7 +53,7 @@ component Network<Z(2:oo) classes = 10>{
             ) ->
 
             Concatenate() ->
-            TransConv(kernel=(4,4), channels=classes, stride=(2,2)) ->
+            UpConvolution(kernel=(4,4), channels=classes, stride=(2,2)) ->
 
             softmax;
         }
