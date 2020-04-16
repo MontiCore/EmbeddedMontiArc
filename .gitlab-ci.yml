@@ -5,7 +5,7 @@ stages:
 - unet
 - fcn
 
-TestGLUON:
+TestMNIST:
   stage: mnistsmallseg
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
   script:
@@ -13,18 +13,18 @@ TestGLUON:
   - chmod +x build.sh
   - ./build.sh
 
-TestGLUON:
-  stage: unet
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
-  script:
-  - cd unet
-  - chmod +x build.sh
-  - ./build.sh
+# TestUNET:
+#   stage: unet
+#   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
+#   script:
+#   - cd unet
+#   - chmod +x build.sh
+#   - ./build.sh
 
-TestGLUON:
-  stage: fcn
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
-  script:
-  - cd fcn
-  - chmod +x build.sh
-  - ./build.sh
+# TestFCN:
+#   stage: fcn
+#   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
+#   script:
+#   - cd fcn
+#   - chmod +x build.sh
+#   - ./build.sh
