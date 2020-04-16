@@ -52,17 +52,18 @@ Note that this application requires the [Atari](https://github.com/openai/gym/bl
     ./install.sh
     ```
     ~~The install script will generate the Python Reinforcement Learning trainer and the C++ files for the executable model into the `target` folder. The preprocessor is also generated. Furthermore, the install script will automatically build the executable models. The binaries can be found in `target/bin/agent` and `target/bin/preprocessor`.~~  
-    Start the generation by using maven:
+    Start the generation, environment and training by using maven:
    ```shell script
        mvn clean install -s settings.xml
    ```
    It can thus be correlated with other projects.
-2) Run the environment with the following command. The command will start the ROS master node, the ros-gym environment, and the preprocessor.
+   
+2) ~~Run the environment with the following command. The command will start the ROS master node, the ros-gym environment, and the preprocessor~~.
     ```bash
     ./run_environment
     ```
 
-3) Start the training by running
+3) ~~Start the training by running~~
     ```bash
     ./run_training
     ```
