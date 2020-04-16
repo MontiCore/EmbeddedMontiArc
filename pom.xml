@@ -14,7 +14,7 @@
     <properties>
         <EMAM2CPP.version>0.1.15-SNAPSHOT</EMAM2CPP.version>
         <EMAM2Middleware.version>0.0.33-SNAPSHOT</EMAM2Middleware.version>
-        <EMADL2CPP.version>0.3.8-SNAPSHOT</EMADL2CPP.version>
+        <EMADL2CPP.version>0.4.0</EMADL2CPP.version>
         <!--misc-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-emadl-generator</artifactId>
-            <version>0.3.8-SNAPSHOT</version>
+            <version>${EMADL2CPP.version}</version>
         </dependency>
 
         <dependency>
