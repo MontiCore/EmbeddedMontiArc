@@ -9,3 +9,9 @@ TestBuild:
   script:
     - chmod +x install.sh
     - ./install.sh
+
+#TestBuildByStreamtest:
+#  stage: linux
+#  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/emadl-rl-mxnet:latest
+#  script:
+#    - mvn clean install -s setting.xml

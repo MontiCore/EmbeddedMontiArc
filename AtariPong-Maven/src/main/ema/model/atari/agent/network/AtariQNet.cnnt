@@ -17,7 +17,7 @@ configuration AtariQNet {
 
     discount_factor: 0.99
 
-    num_episodes: 5000
+    num_episodes: 1
     start_training_at: 0
     
     num_max_steps: 99999
