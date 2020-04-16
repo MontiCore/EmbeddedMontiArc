@@ -67,10 +67,10 @@ if __name__ == "__main__":
 <#if (config.evalMetric.exclude)??>
             'exclude': [<#list config.evalMetric.exclude as value>${value}<#sep>, </#list>],
 </#if>
-<#if (config.evalMetric.exclude)??>
+<#if (config.evalMetric.axis)??>
             'axis': ${config.evalMetric.axis},
 </#if>
-<#if (config.evalMetric.exclude)??>
+<#if (config.evalMetric.metric_ignore_label)??>
             'metric_ignore_label': ${config.evalMetric.metric_ignore_label},
 </#if>
         },
