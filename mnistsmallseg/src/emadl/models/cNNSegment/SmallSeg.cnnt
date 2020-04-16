@@ -3,7 +3,7 @@ configuration SmallSeg{
      num_epoch:10
      batch_size:32
      normalize:false
-     context:gpu
+     context:cpu
      eval_metric:accuracy_ignore_label{
         axis:1
         metric_ignore_label:255
