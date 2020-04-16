@@ -7,7 +7,7 @@
 4. Armadillo (at least armadillo version 9. must be used) [Official instructions at Armadillo Website](http://arma.sourceforge.net/download.html).
 4. OpenCV 
 
-## Generating Numbers
+## Training the Network
 Train with calling ./build.sh inside the gluon folder.
 
 ## Generating Numbers
