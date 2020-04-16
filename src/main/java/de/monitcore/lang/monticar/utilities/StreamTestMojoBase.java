@@ -11,6 +11,9 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.monticar.emadl._parser.EMADLParser;
+import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
+import de.monticore.lang.monticar.emadl.generator.Backend;
 import de.monticore.lang.monticar.enumlang._parser.EnumLangParser;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
@@ -37,6 +40,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -78,6 +82,9 @@ public class StreamTestMojoBase extends AbstractMojo {
     public String getPathTmpOutEMAM(){
         return Paths.get(this.pathTmpOut, "emam/").toString();
     }
+    public String getPathTmpOutEMADL(){
+        return Paths.get(this.pathTmpOut,"emadl/").toString();
+    }
     public String getPathTmpOutBUILD() {
         return Paths.get(this.getPathTmpOut(), "build/").toString();
     }
@@ -99,6 +106,26 @@ public class StreamTestMojoBase extends AbstractMojo {
     public void setGenerator(GeneratorEnum generator) {
         this.generator = generator;
     }
+
+    @Parameter(defaultValue = "GLUON")
+    protected Backend backend;
+    public Backend getBackend(){ return backend;}
+    public void setBackend(Backend backend){ this.backend = backend;}
+
+    @Parameter(defaultValue = "/usr/bin/python")
+    protected String pathToPython;
+    public String getPathToPython() {return pathToPython;}
+    public void setPathToPython(String pathToPython){this.pathToPython = pathToPython;}
+
+    @Parameter(defaultValue = "VGG16")
+    protected String rootModel;
+    public String getRootModel() { return rootModel;}
+    public void setRootModel(String rootModel){this.rootModel = rootModel;}
+
+    @Parameter(defaultValue = "false")
+    protected boolean trainingNeeded;
+    public boolean getTrainingNeeded(){ return trainingNeeded;}
+    public void setTrainingNeeded(boolean trainingNeeded){ this.trainingNeeded = trainingNeeded;}
 
     @Parameter(defaultValue = "false")
     protected boolean combinebuilds;
@@ -144,6 +171,11 @@ public class StreamTestMojoBase extends AbstractMojo {
         this.enableExecutionLogging = enableExecutionLogging;
     }
 
+    @Parameter(defaultValue = "x")
+    protected char forcedTraining;
+    public char getForcedTraining(){return forcedTraining;}
+    public void setForcedTraining(char forcedTraining){this.forcedTraining = forcedTraining;}
+
     //</editor-fold>
 
     //<editor-fold desc="Properties">
@@ -172,6 +204,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         this.mkdir(this.getPathTmpOut());
         this.mkdir(this.getPathTmpOutCPP());
         this.mkdir(this.getPathTmpOutEMAM());
+        this.mkdir(this.getPathTmpOutEMADL());
         this.mkdir(this.getPathTmpOutBUILD());
         this.mkdir(Paths.get(this.getPathTmpOut(), mojoDirectory).toString());
         this.mkdir(Paths.get(this.getPathTmpOut(), mojoDirectory, this.MojoName()).toString());
@@ -189,7 +222,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         // tada
     }
 
-    protected void postExecution()throws MojoExecutionException{
+    protected void postExecution() throws MojoExecutionException {
         // hier koennte ihre werbung stehen
     }
 
@@ -212,11 +245,16 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.pathTmpOut = pathTmpOut;
         stmb.wrapperTestExtension = wrapperTestExtension;
         stmb.generator = generator;
+        stmb.backend = backend;
         stmb.combinebuilds = combinebuilds;
         stmb.showBuildAndRunOutput = showBuildAndRunOutput;
         stmb.forceRun = forceRun;
         stmb.showDateAndTime = showDateAndTime;
         stmb.enableExecutionLogging = enableExecutionLogging;
+        stmb.trainingNeeded = trainingNeeded;
+        stmb.pathToPython = pathToPython;
+        stmb.rootModel = rootModel;
+
         stmb.setLog(getLog());
 
         stmb.myLog = myLog;
@@ -316,6 +354,7 @@ public class StreamTestMojoBase extends AbstractMojo {
             myParser.put("stream", new StreamUnitsParser());
             myParser.put("struct", new StructParser());
             myParser.put("enum", new EnumLangParser());
+            myParser.put("emadl",new EMADLParser());
             resetToMyLog();
         }
         return myParser;
@@ -326,10 +365,13 @@ public class StreamTestMojoBase extends AbstractMojo {
     protected Scope getScope(){
         if(myScope == null) {
             ModelingLanguageFamily fam = new ModelingLanguageFamily();
+            /*TODO: To delete*/
             fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
+
             fam.addModelingLanguage(new StreamUnitsLanguage());
             fam.addModelingLanguage(new StructLanguage());
             fam.addModelingLanguage(new EnumLangLanguage());
+            fam.addModelingLanguage(new EMADLLanguage());
             final ModelPath mp_main = new ModelPath();
 
             mp_main.addEntry(Paths.get(this.pathMain));
@@ -378,8 +420,13 @@ public class StreamTestMojoBase extends AbstractMojo {
 
     protected List<EMAComponentSymbol> getToTestComponentSymbols(boolean output){
 
-        ComponentScanner componentScanner = new ComponentScanner(Paths.get(this.pathMain), this.getScope(), "emam");
-        Set<String> componentNames = componentScanner.scan();
+
+        ComponentScanner componentScannerEMADL = new ComponentScanner(Paths.get(this.pathMain), this.getScope(), "emadl");
+        Set<String> componentNames = componentScannerEMADL.scan();
+
+        ComponentScanner componentScannerEMAM = new ComponentScanner(Paths.get(this.pathMain), this.getScope(), "emam");
+        componentNames.addAll(componentScannerEMAM.scan());
+
 
         StreamScanner scanner = new StreamScanner(Paths.get(this.pathTest), this.getScope());
         Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> streamTests = scanner.scan();

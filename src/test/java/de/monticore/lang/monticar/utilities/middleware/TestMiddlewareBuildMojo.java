@@ -30,4 +30,8 @@ public class TestMiddlewareBuildMojo extends MiddlewareBaseTest {
     }
 
 
+
+
+
+
 }

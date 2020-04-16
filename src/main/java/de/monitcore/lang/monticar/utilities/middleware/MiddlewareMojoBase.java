@@ -66,6 +66,34 @@ public class MiddlewareMojoBase extends StreamTestMojoBase {
     }
     //</editor-fold>
 
+    @Parameter(defaultValue = "GLUON")
+    protected String emadlBackend;
+    public String getEmadlBackend() { return emadlBackend;}
+    public void setEmadlBackend(String emadlBackend) {this.emadlBackend = emadlBackend;}
+
+    @Parameter(defaultValue = "false")
+    protected  boolean needExternalScript;
+    public boolean getNeedExternalScript(){ return  needExternalScript;}
+    public void setNeedExternalScript(boolean needExternalScript){ this.needExternalScript = needExternalScript;}
+
+    @Parameter
+    protected List<String> consoleScript;
+    public List<String> getConsoleScript() {
+        return consoleScript;
+    }
+    public void setConsoleScript(List<String> consoleScript) {
+        this.consoleScript = consoleScript;
+    }
+    public void addConsoleScript(String script){
+        if(script == null){
+            consoleScript = new ArrayList<>();
+        }
+
+        if(!consoleScript.contains(script)){
+            consoleScript.add(script);
+        }
+    }
+
 
     protected void copyPropertiesAndParametersTo(MiddlewareMojoBase mmb) {
         super.copyPropertiesAndParametersTo((StreamTestMojoBase)mmb);
@@ -75,6 +103,9 @@ public class MiddlewareMojoBase extends StreamTestMojoBase {
         mmb.pathMiddlewareOut = this.pathMiddlewareOut;
         mmb.runStreamTestBefore = this.runStreamTestBefore;
         mmb.enableExecutionLogging = this.enableExecutionLogging;
+        mmb.emadlBackend = this.emadlBackend;
+        mmb.needExternalScript = this.needExternalScript;
+        mmb.consoleScript = this.consoleScript;
     }
 
 }

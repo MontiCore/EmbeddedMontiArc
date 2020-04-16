@@ -31,7 +31,13 @@ For more information see Wiki:
         ...
     </plugins>
 ```
+## Plugin Description
+The test of a component can be divided into 3 steps:
+1. **Generating**: In this step, the components and unitstreams in language EMAM and EMADL are read. Their correctness are checked with the help of CoCos (Context Conditions). If a component, including its tests received no error, its corresponding C++ code will be generated in the end of this step.
+2. **Building**: After generated in the first step, the C++ code is compiled in this step. Also, a neural network will be trained here if it is needed.
+3. **Execution**: In this step, the streamtests of the components will be executed. The result will be verified after the execution.
 
+![diagram](Diagram.svg) 
 ## Configuration
 
 ### Streamtests
@@ -41,6 +47,8 @@ For more information see Wiki:
     - ```<pathTest>./src/test/emam</pathTest>```
 - pathTmpOut: temporary output path where the mojo works on
     - ```<pathTmpOut>./target/tmp</pathTmpOut>```
+- pathToPython: path of python in environment
+    - ```<pathToPython>/usr/bin/python</pathToPython>```
 - wrapperTestExtension: (Default: _TestWrapper) filename extension. 
     If a component cannot tested directly with a unitstream, a component with the name plus this file extension will be tested.
     - ```<wrapperTestExtension>_TestWrapper</wrapperTestExtension>```
@@ -55,12 +63,13 @@ For more information see Wiki:
 
 ### Middleware
 - middlewareGenerator: identifiers for the generators that should be used. 
-    - Currently supported: cpp, roscpp
+    - Currently supported: cpp, roscpp, odv, emadlcpp
     - ```
         <middlewareGenerator>
             <param>cpp</param>
             <param>roscpp</param>
-            <param>odv</param>        
+            <param>odv</param> 
+            <param>emadlcpp</param>        
         </middlewareGenerator>
         ```
 - middlewareRootModels: fully qualified name of the root model(s)
@@ -73,8 +82,9 @@ For more information see Wiki:
 - pathMiddlewareOut: path of the generated middleware output 
     - ```<pathMiddlewareOut>./target/middleware</pathMiddlewareOut>```
 - runStreamTestBefore: (Default: true) indicates if the streamtests should be executed before the middleware generation
-    - ```<runStreamTestBefore>true</runStreamTestBefore>```
-    
+    - ```<runStreamTestBefore>true</runStreamTestBefore>```  
+- emadlBackend: (Default: GLUON) deep learning backend to be used in middleware plugin
+    -```<emadlBackend>GLUON</emadlBackend>```
 ## Goals / Mojos
 
 ### Streamtest
@@ -85,5 +95,5 @@ For more information see Wiki:
 
 ### Middleware
 
-1. **streamtest-middleare-generate** : generates cpp / roscpp / odv code for the given emam models 
+1. **streamtest-middleare-generate** : generates cpp / roscpp / odv (and so on) code for the given emam models 
 1. **streamtest-middleare-build** : runs cmake and make for generated c++ code

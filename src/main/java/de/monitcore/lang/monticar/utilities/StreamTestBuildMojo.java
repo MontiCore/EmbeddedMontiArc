@@ -1,10 +1,14 @@
-/* (c) https://github.com/MontiCore/monticore */
 package de.monitcore.lang.monticar.utilities;
 
 import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
 //import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.monticar.emadl.generator.Backend;
+import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
+import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
 import de.se_rwth.commons.logging.Log;
+import freemarker.template.TemplateException;
+import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -15,12 +19,15 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * builds the executable stream test out of the generated c++ code for testable components
  */
 @Mojo(name = "streamtest-build")
 public class StreamTestBuildMojo extends StreamTestMojoBase {
+
+
 
 
     @Override
@@ -109,13 +116,13 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
                 cmd.add("-G");
                 cmd.add("\"MinGW Makefiles\"");
                 break;
-                //return "-G \"MinGW Makefiles\"";
+            //return "-G \"MinGW Makefiles\"";
             case VS2017:
             case VisualStudio2017:
                 cmd.add("-G");
                 cmd.add("\"Visual Studio 15 2017 Win64\"");
                 break;
-                //return "-G "Visual Studio 15 2017 Win64";
+            //return "-G "Visual Studio 15 2017 Win64";
         }
     }
 
@@ -126,7 +133,7 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
                 cmd.add("--config");
                 cmd.add("Debug");
                 break;
-                //return "--config Debug";
+            //return "--config Debug";
         }
     }
     //</editor-fold>
@@ -301,6 +308,22 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         }
     }
 
+    private void runTraining(){
+        Optional<Backend> backend;
+        backend = Backend.getBackendFromString("Gluon");
+        EMADLGenerator emadlGenerator = new EMADLGenerator(backend.get());
+        try{
+            emadlGenerator.generate(getPathMain(), "VGG16", "pythonPath", "y", true);
+        }
+        catch (IOException | TemplateException e){
+            Log.error("io error during generation", e);
+            System.exit(1);
+        }
+
+
+
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Hashfiles">
@@ -359,3 +382,4 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
 
 
 }
+

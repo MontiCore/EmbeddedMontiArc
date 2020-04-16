@@ -10,12 +10,15 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * runs cmake and make for generated c++ code of given middlewarerootmodels
@@ -52,7 +55,7 @@ public class MiddlewareBuildMojo extends MiddlewareMojoBase {
     }
 
     @Override
-    protected void mainExecution() throws MojoExecutionException, MojoFailureException {
+    protected void mainExecution() throws MojoExecutionException, MojoFailureException{
 
         List<String> modelsInError = new ArrayList<>();
         logInfo("Build generated Middleware:");
@@ -72,7 +75,7 @@ public class MiddlewareBuildMojo extends MiddlewareMojoBase {
     }
 
     @Override
-    protected void postExecution() throws MojoExecutionException {
+    protected void postExecution() throws MojoExecutionException{
         super.postExecution();
 
 
@@ -99,6 +102,107 @@ public class MiddlewareBuildMojo extends MiddlewareMojoBase {
                 throw new MojoExecutionException("Failed to create hash files for "+MojoName());
             }
         }
+
+        if (this.needExternalScript){
+            List<String> scriptsInError = new ArrayList<>();
+            if (!this.consoleScript.isEmpty()){
+                logInfo("Present Working Directory = " + System.getProperty("user.dir"));
+                for (String script: this.consoleScript){
+                    File scriptToRun = new File("./"+script);
+                    if (scriptToRun.exists()){
+                        logInfo("File exists");
+                        String bashCommand = "bash"+" "+"./"+script;
+                        Runtime runtime = Runtime.getRuntime();
+                        Process pro = null;
+                        try {
+                            pro = runtime.exec(bashCommand);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            throw new MojoExecutionException("Failed to run console script" + script);
+                        }
+                        int status = 0;
+                        try {
+                            status = pro.waitFor();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            throw new MojoExecutionException("Failed to run console script" + script);
+                        }
+                        if (status != 0){
+                            logError("Error in running the script");
+                            return;
+                        }
+                        logInfo("Script " + script + " running succeeded");
+                    }
+                }
+            }else{
+                logWarn("No script to run!");
+            }
+        }
+
+//        logInfo("Any console script to run?");
+//        Scanner input = new Scanner (System.in);
+//        Boolean flag=false;
+//        logInfo("y/n");
+//        char x = input.next().charAt(0);
+//        if(x=='y'){
+//            flag=true;
+//        }else if(x=='n'){
+//            flag=false;
+//        }else{
+//            logInfo("Input unrecognizable! Set to n");
+//        }
+//        do{
+//            if (flag){
+//                logInfo("Present Working Directory = " + System.getProperty("user.dir"));
+//                logInfo("Shell script name:");
+//                String scriptName = input.next();
+////                logInfo("Argument:");
+////                String arg = input.next();
+////                logInfo("Workspace:");
+////                String wks = input.next();
+//                File script = new File("./"+scriptName);
+//                if (script.exists()){
+//                    logInfo("File exists");
+//                    String bashCommand = "bash"+" "+"./"+scriptName;
+//                    Runtime runtime = Runtime.getRuntime();
+//                    Process pro = null;
+//                    try {
+//                        pro = runtime.exec(bashCommand);
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    int status = 0;
+//                    try {
+//                        status = pro.waitFor();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    if (status != 0){
+//                        logError("Error in running the script");
+//                        return;
+//                    }
+//                    logInfo("Script running succeeded");
+//                }else{
+//                    logWarn("Script file does not exist!");
+//                }
+//                logInfo("Any console script to run?");
+//                logInfo("y/n");
+//                char m = input.next().charAt(0);
+//                if(m =='y'){
+//                    flag=true;
+//                }else if(m =='n'){
+//                    flag=false;
+//                }else{
+//                    logInfo("Input unrecognizable! Set to n");
+//                }
+//            }
+//
+//
+//        }while(flag);
+
+
     }
 
     @Override
@@ -188,5 +292,32 @@ public class MiddlewareBuildMojo extends MiddlewareMojoBase {
 
     protected String processTmpDir(){
         return Paths.get(this.pathMiddlewareOut, mojoDirectory, this.MojoName(), "runbuild").toString();
+    }
+
+
+    private void callScript(String script, String args, String... workspace){
+        try {
+            String cmd = "sh " + script + " " + args;
+            File dir = null;
+            if(workspace[0] != null){
+                dir = new File(workspace[0]);
+                System.out.println(workspace[0]);
+            }
+            String[] evnp = {"val=2", "call=Bash Shell"};
+            Process process = Runtime.getRuntime().exec(cmd, evnp, dir);
+            int status = process.waitFor();
+            if(status != 0){
+                System.err.println("Failed to call shell's command and the return status's is: " + status);
+            }
+            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = "";
+            while ((line = input.readLine()) != null) {
+                System.out.println(line);
+            }
+            input.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
