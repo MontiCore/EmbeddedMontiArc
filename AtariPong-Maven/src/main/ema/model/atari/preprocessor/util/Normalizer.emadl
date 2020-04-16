@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package atari.preprocessor.util;
+
+component Normalizer<Z height=105, Z width=80> {
+    ports
+        in Q^{height, width} image,
+        out Q^{height, width} normalizedImage;
+
+    implementation Math {
+        for h=1:height
+            for w=1:width
+                normalizedImage(h, w) = image(h, w) / 255;
+            end
+        end
+    }
+}
