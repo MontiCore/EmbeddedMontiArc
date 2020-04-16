@@ -3,7 +3,7 @@ configuration Network{
      num_epoch:1
      batch_size:32
      normalize:false
-     context:gpu
+     context:cpu
      load_checkpoint:false
      optimizer:sgd{
          learning_rate:0.1
