@@ -1,0 +1,6 @@
+train.log
+target/
+model/
+model_backup/
+build/
+logs/

@@ -1,0 +1,2 @@
+encoderDecoder.Unet  /home/jt529748/.mxnet/datasets/voc
+encoderDecoder.Unet_crop  /home/jt529748/.mxnet/datasets/voc

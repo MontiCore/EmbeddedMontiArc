@@ -1,0 +1,3 @@
+mxnet
+h5py
+Pillow

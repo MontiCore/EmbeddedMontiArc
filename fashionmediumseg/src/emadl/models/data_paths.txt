@@ -1,0 +1,1 @@
+cNNSegment.Network ../resources/fashionmnist_2x2
