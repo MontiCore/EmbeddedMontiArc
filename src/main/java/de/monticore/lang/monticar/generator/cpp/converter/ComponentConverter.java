@@ -26,12 +26,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
-<<<<<<< master
-=======
- * @author Sascha Schneiders
- * @author Ahmed Diab
->>>>>>> fix some bugs
- * Handles code generation for a component and its "subsymbols"
  */
 public class ComponentConverter {
 
