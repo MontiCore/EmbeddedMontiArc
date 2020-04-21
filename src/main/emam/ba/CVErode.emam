@@ -1,6 +1,6 @@
 package ba;
 
-component CVErode<N n,N m> {
+component CVErode<N n=960,N m=720> {
     port
     in Q^{n,m} src,
     in Z erosion_elem,

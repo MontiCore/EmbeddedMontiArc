@@ -1,6 +1,6 @@
 package ba;
 
-component CVDilate<N n,N m> {
+component CVDilate<N n=960,N m=720> {
     port
     in Q^{n,m} src,
     in Z dilation_elem,

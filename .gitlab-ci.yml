@@ -1,22 +1,15 @@
 # (c) https://github.com/MontiCore/monticore  
 
 stages:
-- windows
+- linux
 
-masterJobWindows:
-  stage: windows
+TestJobLinux:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-infogan/gans_mxnet:latest
   script:
-  - java -jar embedded-montiarc-math-generator-0.1.15-SNAPSHOT-jar-with-dependencies.jar -m src/main/emam -r ba.BallTracking -o target
-  only:
-    - master
-  tags:
-  - Windows10
-
-BranchJobWindows:
-  stage: windows
-  script:
-  - java -jar embedded-montiarc-math-generator-0.1.15-SNAPSHOT-jar-with-dependencies.jar -m src/main/emam -r ba.BallTracking -o target
+  - chmod +x build.sh
+  - ./build.sh
   except:
-  - master
-  tags:
-  - Windows10
+    changes:
+      - README.md
+      - .gitignore

@@ -1,6 +1,6 @@
 package ba;
 
-component CVFindContours<N n,N m> {
+component CVFindContours<N n=960,N m=720> {
     port
         in Q^{n,m} image,
         in Z mode,
