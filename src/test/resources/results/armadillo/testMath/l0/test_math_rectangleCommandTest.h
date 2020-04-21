@@ -27,7 +27,7 @@ Cube<unsigned char> rectangleHelper(const Cube<unsigned char>& src, cv::Rect& re
     cv::Mat srcCV;
     srcCV = to_cvmat<unsigned char>(src);
     cv::rectangle(srcCV, rect.tl(), rect.br(), cv::Scalar(color(0), color(1), color(2)), thickness, lineType);
-    arma::cube srcCube;
+    arma::Cube<unsigned char> srcCube;
     srcCube = to_armaCube<unsigned char, 3>(srcCV);
     return srcCube;
 }

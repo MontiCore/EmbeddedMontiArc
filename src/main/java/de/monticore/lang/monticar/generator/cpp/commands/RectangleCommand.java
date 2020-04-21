@@ -131,7 +131,7 @@ public class RectangleCommand extends MathCommand{
                 } else if(properties.isPreCV()){
                     finalInstruction =  "    cv::rectangle(src, rect.tl(), rect.br(), cv::Scalar(color(0), color(1), color(2)), thickness, lineType);\n";
                     if(typeNameOut == "Cube<unsigned char>"){
-                        finalInstruction += "    arma::cube srcCube;\n" +
+                        finalInstruction += "    arma::Cube<unsigned char> srcCube;\n" +
                                             "    srcCube = to_armaCube<unsigned char, 3>(src);\n" +
                                             "    return srcCube;\n";
                     } else {
@@ -149,7 +149,7 @@ public class RectangleCommand extends MathCommand{
                                         "    srcCV = to_cvmat<unsigned char>(src);\n" +
                                         "    cv::rectangle(srcCV, rect.tl(), rect.br(), cv::Scalar(color(0), color(1), color(2)), thickness, lineType);\n";
                     if(typeNameOut == "Cube<unsigned char>"){
-                        finalInstruction += "    arma::cube srcCube;\n" +
+                        finalInstruction += "    arma::Cube<unsigned char> srcCube;\n" +
                                             "    srcCube = to_armaCube<unsigned char, 3>(srcCV);\n" +
                                             "    return srcCube;\n";
                     }   else {
