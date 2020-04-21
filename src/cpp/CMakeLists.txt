@@ -10,6 +10,7 @@ find_package(OpenCV REQUIRED)
 
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${OpenCV_LIBS})
-target_link_libraries(BallTracking ba_balltracking ${LIBS} -lblas -lopenblas)
+
 target_include_directories(BallTracking PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(BallTracking ba_ballTracking ${LIBS} -lblas -lopenblas)
 export(TARGETS BallTracking FILE BallTracking.cmake)

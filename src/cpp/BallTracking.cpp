@@ -3,8 +3,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <armadillo>
 
-
-
 using namespace arma;
 using std::string;
 
@@ -46,7 +44,7 @@ int main(int argc, const char** argv) {
     ballT_Object.lineTypeIn = 4;
     
 
-    //cv::namedWindow("w", 1);
+    cv::namedWindow("w", 1);
 
     for ( ; ; ) {
         capture >> frame;
@@ -56,10 +54,10 @@ int main(int argc, const char** argv) {
         ballT_Object.execute();
         cv::Mat output_frame = to_cvmat<unsigned char>(ballT_Object.modImageOut);
 
-        cv::flip(output_frame, output_frame, 0);
+    //    cv::flip(output_frame, output_frame, 0);
         //video.write(output_frame);
         cv::imshow("w", output_frame);
-        cv::waitKey(1);
+        cv::waitKey(30);
     }
     cv::waitKey(0);
 }
