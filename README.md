@@ -33,3 +33,15 @@ If no search directory is specified CMake will search on default locations. For 
 Here an example for Armadillo:
 Create a environment variable called _Armadillo_Home_ with the path to the base directory of your Armadillo installation.
 
+### Note to use CV-Commands:
+* Available since version 0.1.16-SNAPSHOT. 
+* In case you use CV-Commands on input- or output ports in your Project, it is necessary to run the following command-call on the generated general file:
+
+        _sed -i 's/cube/Cube<unsigned char>/g' your_project_general_file.h_
+        
+* This adaptation should be integrated into _EMAM2CPP_ in the future.
+* For conversion between _Armadillo_-matrix/cube and _OpenCV_-matrix/cube it exists a helper-header _ConvHelper.h_. This is generated automatically if at least one CV-command is used.
+* For more information about how to use CV-Command, see the _BallTracking_-project in the application repository.
+
+
+
