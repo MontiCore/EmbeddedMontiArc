@@ -49,6 +49,10 @@ public class OctaveBackend implements MathBackend {
         return "row";
     }
 
+    @Override public String getTubeAccessCommandName(){
+        return "";
+    }
+
     @Override
     public String getBackendName() {
         return NAME;

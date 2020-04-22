@@ -56,24 +56,37 @@ public class MathMinCommand extends MathCommand {
 
 
     }
-    
+
     public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
-
         mathMatrixNameExpressionSymbol.setNameToAccess("");
+        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
+        int parametersNumber = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size();
 
-
-        String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
-        valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
-        //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
+            MathFunctionFixer.fixMathFunctions(accessSymbol,bluePrintCPP);
+        if (parametersNumber == 1){
+            convertMinAramadillo(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        }else if (parametersNumber == 2) {
+            convertMinStd(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        } else {
+            Log.error(String.format("No implementation found for min operation: \"min(%s)\". Possible syntax is \"min( X )\", \"min(a,b)\"", mathExpressionSymbol.getTextualRepresentation()));
+        }
+    }
+
+    private void convertMinAramadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrint){
+        String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
+        MathStringExpression stringExpression = new MathStringExpression("min(min" + valueListString + ")", mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
-        MathStringExpression stringExpression = new MathStringExpression("std::min"+valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
-
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
+    }
 
-
+    private void convertMinStd(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrint) {
+        String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
+        MathStringExpression stringExpression = new MathStringExpression("std::min" + valueListString, mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
+        List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
+        newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
+        mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
     }
 }

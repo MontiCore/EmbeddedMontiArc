@@ -3,9 +3,13 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
+import de.monticore.lang.monticar.generator.MathCommand;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.LoggingViewModel;
@@ -32,6 +36,15 @@ public class LanguageUnitCPP extends LanguageUnit {
         this.generatorCPP = generatorCPP;
     }
 
+    // add a function for seareching a string form list<String> in string
+    private boolean containsString(String str, List<String> listOfStrings){
+        boolean isContained = false;
+        for(String foo: listOfStrings){
+            if(str.toLowerCase().contains(foo.toLowerCase()))
+                isContained = true;
+        }
+        return isContained;
+    }
     public void generateBluePrints() {
         for (int i = 0; i < symbolsToConvert.size(); ++i) {
             Symbol symbol = symbolsToConvert.get(i);
@@ -73,16 +86,18 @@ public class LanguageUnitCPP extends LanguageUnit {
                     "#endif\n";
 
         List<String> alreadyGeneratedIncludes = new ArrayList<>();
+        List<String> alreadyGeneratedCVIncludes = new ArrayList<>();
         //includes
         //add default include
         String backendName = MathConverter.curBackend.getBackendName();
-        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend")) {
+        if (backendName.equals("OctaveBackend")) {
             resultString += "#include \"octave/oct.h\"\n";
             alreadyGeneratedIncludes.add("octave/oct");
-        } else if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
+        } else if (backendName.equals("ArmadilloBackend")) {
             resultString += "#include \"" + MathConverter.curBackend.getIncludeHeaderName() + "\"\n";
             alreadyGeneratedIncludes.add(MathConverter.curBackend.getIncludeHeaderName());
         }
+
         for (Variable v : bluePrint.getVariables()) {
             //TODO remove multiple same includes
             if (v.hasInclude()) {
@@ -108,6 +123,17 @@ public class LanguageUnitCPP extends LanguageUnit {
         for (String string : bluePrint.getAdditionalIncludeStrings())
             resultString += "#include \"" + string + ".h\"\n";
 
+        for(String includeName: bluePrint.getCVIncludeStrings())
+            if(!alreadyGeneratedCVIncludes.contains(includeName)) {
+                alreadyGeneratedCVIncludes.add(includeName);
+                if (includeName.contains("vector")) {
+                    resultString += "#include <" + includeName + ">\n";
+                } else if (includeName.contains("ConvHelper")) {
+                    resultString += "#include \"" + "ConvHelper" + ".h\"\n";
+                } else {
+                    resultString += "#include <" + includeName + ".hpp>\n";
+                }
+            }
         if (generatorCPP.isExecutionLoggingActive)
             resultString += "#include <fstream>\n";
 
@@ -124,8 +150,12 @@ public class LanguageUnitCPP extends LanguageUnit {
             resultString += "using namespace arma;\n";
         }
 
+        if(!bluePrint.cvIncludeStrings.isEmpty()){
+            resultString += "using namespace std;\n";
+        }
+
         //class definition start
-        resultString += "class " + bluePrint.getName() ;
+        resultString += "class " + bluePrint.getName();
         resultString += "{\n";
 
         //const variables

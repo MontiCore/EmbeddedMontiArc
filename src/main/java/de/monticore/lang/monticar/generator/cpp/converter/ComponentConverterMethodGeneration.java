@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter.getNameOfOutput;
+import static de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter.getNameOfMathCommand;
+
 /**
  */
 public class ComponentConverterMethodGeneration {
@@ -192,6 +195,18 @@ public class ComponentConverterMethodGeneration {
             mathExpressionSymbol, BluePrintCPP bluePrint, List<String> includeStrings/*, int lastIndex*/) {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
         String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
+        String outputName = "";
+        for (MathCommand mathCommand : ComponentConverter.usedMathCommand) {
+            if (mathCommand != null) {
+                String argumentNoReturnFunctionName = mathCommand.getMathCommandName();
+                if (mathCommand.isArgumentNoReturnMathCommand() && result.contains(argumentNoReturnFunctionName)) {
+                    outputName = getNameOfOutput(mathExpressionSymbol);
+                    result = fixArgumentNoReturnInstruction(result, outputName);
+                    //TODO Add fixType Here ---> think about put the function here or down
+                }
+            }
+            //fixVariableTypes(mathCommand, result,mathExpressionSymbol, bluePrint);
+        }
         TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
         Log.info(mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(), "GenerateSymbol:");
         if (mathExpressionSymbol instanceof MathValueSymbol) {
@@ -334,4 +349,39 @@ public class ComponentConverterMethodGeneration {
         }
         if (beginIndex != currentGenerationIndex) swapNextInstructions = true;
     }
+
+    private static String fixArgumentNoReturnInstruction(String instruction, String outputName){
+    String newInstruction = "";
+    if(instruction.contains("=")){
+        int indexOfEqualOperator = instruction.indexOf("=");
+        String afterEqualOperatorSubString = instruction.substring(indexOfEqualOperator+2);
+
+        if(afterEqualOperatorSubString.contains(",")){
+            int indexOfCommaOperator  = afterEqualOperatorSubString.indexOf(",");
+            newInstruction = afterEqualOperatorSubString.substring(0,indexOfCommaOperator) + ", " + outputName +
+                    afterEqualOperatorSubString.substring(indexOfCommaOperator);
+        }else{
+            int indexOfBracket = afterEqualOperatorSubString.indexOf(")");
+            newInstruction = afterEqualOperatorSubString.substring(0,indexOfBracket) + ", " + outputName +
+                    afterEqualOperatorSubString.substring(indexOfBracket);
+        }
+        newInstruction = removeBracket(newInstruction);
+        return newInstruction;
+    }
+    return instruction;
+    }
+
+    private static String removeBracket(String instruction){
+        String newInstruction = "";
+        if(instruction.indexOf("(") == 0){
+            int indexOfLastBracket = instruction.lastIndexOf(")");
+            newInstruction = instruction.substring(1,indexOfLastBracket) + instruction.substring(indexOfLastBracket+1);
+            return newInstruction;
+        }
+        return instruction;
+    }
+
+
+
+
 }

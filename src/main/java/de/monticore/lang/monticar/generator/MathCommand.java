@@ -4,8 +4,11 @@ package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP.removeBrackets;
 
@@ -62,4 +65,58 @@ public abstract class MathCommand {
         return false;
     }
 
+    public String getTypeOfFirstInput(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP){
+        String nameOfFirstParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0).getTextualRepresentation();
+        for(Variable var: bluePrintCPP.getVariables()){
+            String varName = var.getName();
+            if(varName.equals(nameOfFirstParameter)){
+                VariableType varType = var.getVariableType();
+                String typeName = varType.getTypeNameTargetLanguage();
+                return typeName;
+            }
+
+        }
+        return "";
+    }
+
+    public void redefineArmaMat(BluePrintCPP bluePrint){
+        List<Variable> vars= bluePrint.getVariables();
+        for(Variable var : vars){
+        VariableType varType = var.getVariableType();
+        String targetName = varType.getTypeNameTargetLanguage();
+        if(targetName.equals("mat")){
+            Variable newVar = var;
+            newVar.setTypeNameTargetLanguage("arma::Mat<unsigned char>");
+            bluePrint.replaceVariable(var, newVar);
+        }else if(targetName.equals("cube")){
+            Variable newVarCube = var;
+            newVarCube.setTypeNameTargetLanguage("Cube<unsigned char>");
+            bluePrint.replaceVariable(var, newVarCube);
+        }
+        }
+    }
+
+    public void redefineInit(BluePrintCPP bluePrint){
+        Optional<Method> methodOpt = bluePrint.getMethod("init");
+        Method initMethod = methodOpt.get();
+        List<Instruction> instructs = initMethod.getInstructions();
+
+        for(Instruction instruct : instructs){
+            String code = instruct.getTargetLanguageInstruction();
+            if(code.contains("mat(")){
+                code =code.replace("mat(", "Mat<unsigned char>(");
+            } else if(code.contains("cube(")){
+                code = code.replace("cube(", "Cube<unsigned char>(");
+            }
+            ((TargetCodeInstruction)instruct).setInstruction(code);
+        }
+    }
+
+    public boolean isArgumentNoReturnMathCommand() {
+        return false;
+    }
+
+    public boolean isCVMathCommand(){
+        return false;
+    }
 }

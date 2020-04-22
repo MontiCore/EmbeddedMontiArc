@@ -18,6 +18,8 @@ import java.util.List;
  */
 public class BluePrintCPP extends BluePrint {
     public List<String> additionalIncludeStrings = new ArrayList<>();
+    public List<String> cvIncludeStrings = new ArrayList<>();
+    public static boolean usedCV = false;
 
     public BluePrintCPP(String name) {
         super(name);
@@ -35,6 +37,21 @@ public class BluePrintCPP extends BluePrint {
 
     public boolean hasAdditionalIncludeString(String includeString) {
         return additionalIncludeStrings.contains(includeString);
+    }
+
+    public List<String> getCVIncludeStrings() {
+        return cvIncludeStrings;
+    }
+
+    public void addCVIncludeString(String includeString) {
+        if (!hasCVIncludeString(includeString)) {
+            cvIncludeStrings.add(includeString);
+            usedCV = true;
+        }
+    }
+
+    public boolean hasCVIncludeString(String includeString) {
+        return cvIncludeStrings.contains(includeString);
     }
 
 

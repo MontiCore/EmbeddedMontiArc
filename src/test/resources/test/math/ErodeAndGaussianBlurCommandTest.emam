@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component ErodeAndGaussianBlurCommandTest{
+    port
+    in Q^{n,m,3} src,
+    in Z erosion_elemIn,
+    in Q^{3} sizeY,
+    in Q^{2} two,
+    out Q^{n,m,3} dst,
+    out Q^{n,m,3} dst3,
+    out Q^{3,n,m} outMatrix,
+    out Q^{2,m} out2Matrix;
+
+    instance GaussianBlurCommandTest gaussBlur;
+    instance CvtColorCommandTest cvtColor;
+
+    //implementation Math{
+
+    //    dst = erode(src, erosion_elem, iterations);
+    //    dst3 = dilate(dst, dilation_elem, iterations);
+    //    contours = findContours(dst3);
+
+    //}
+}

@@ -30,6 +30,7 @@ public class MathAbsCommand extends MathCommand {
             convertUsingOctaveBackend(mathExpressionSymbol, bluePrint);
         } else if (backendName.equals("ArmadilloBackend")) {
             convertUsingArmadilloBackend(mathExpressionSymbol, bluePrint);
+
         }
     }
 
@@ -70,6 +71,8 @@ public class MathAbsCommand extends MathCommand {
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
         //((BluePrintCPP) bluePrint).addAdditionalIncludeString("octave/builtin-defun-decls");
+
+        //String name = bluePrint.getVariables().get(0).getNameTargetLanguageFormat();
 
     }
 }
