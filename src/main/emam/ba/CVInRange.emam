@@ -1,0 +1,13 @@
+package ba;
+
+component CVInRange<N n=960,N m=720> {
+     port
+     in Q^{n,m,3} src,
+     in Q^{3} lowerBoundary,
+     in Q^{3} upperBoundary,
+     out Q^{n,m} dst;
+
+     implementation Math{
+         dst = inRange(src, lowerBoundary, upperBoundary);
+     }
+ }
