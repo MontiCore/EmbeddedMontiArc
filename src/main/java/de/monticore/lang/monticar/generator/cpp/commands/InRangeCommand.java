@@ -61,8 +61,8 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrintCPP.addCVIncludeString("opencv2/core");
         bluePrintCPP.addCVIncludeString("ConvHelper");
+        bluePrintCPP.addCVIncludeString("opencv2/core/core");
         bluePrint.addMethod(inRangeHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);

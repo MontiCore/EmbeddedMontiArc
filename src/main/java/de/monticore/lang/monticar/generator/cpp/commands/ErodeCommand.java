@@ -63,8 +63,8 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
 
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrintCPP.addCVIncludeString("opencv2/imgproc");
         bluePrintCPP.addCVIncludeString("ConvHelper");
+        bluePrintCPP.addCVIncludeString("opencv2/imgproc/imgproc");
         bluePrint.addMethod(erodeHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);

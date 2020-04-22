@@ -61,7 +61,7 @@ public class LargestContourCommand extends MathCommand {
 
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrintCPP.addCVIncludeString("opencv2/imgproc");
+        bluePrintCPP.addCVIncludeString("opencv2/imgproc/imgproc");
         bluePrint.addMethod(largestContourMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);

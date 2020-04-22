@@ -63,7 +63,7 @@ public class BoundingRectCommand extends MathCommand{
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrintCPP.addCVIncludeString("opencv2/imgproc");
+        bluePrintCPP.addCVIncludeString("opencv2/imgproc/imgproc");
 
     }
 }

@@ -131,7 +131,7 @@ public class LanguageUnitCPP extends LanguageUnit {
                 } else if (includeName.contains("ConvHelper")) {
                     resultString += "#include \"" + "ConvHelper" + ".h\"\n";
                 } else {
-                    resultString += "#include \"" + includeName + ".hpp\"\n";
+                    resultString += "#include <" + includeName + ".hpp>\n";
                 }
             }
         if (generatorCPP.isExecutionLoggingActive)

@@ -63,8 +63,8 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrintCPP.addCVIncludeString("opencv2/imgproc");
         bluePrintCPP.addCVIncludeString("ConvHelper");
+        bluePrintCPP.addCVIncludeString("opencv2/imgproc/imgproc");
         bluePrint.addMethod(gaussianBlurHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);
