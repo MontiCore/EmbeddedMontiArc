@@ -61,8 +61,8 @@ public class CvtColorCommand extends ArgumentNoReturnMathCommand{
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrintCPP.addCVIncludeString("opencv2/imgproc/imgproc");
+        bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(cvtColorHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);

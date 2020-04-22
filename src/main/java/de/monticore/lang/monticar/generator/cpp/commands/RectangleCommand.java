@@ -65,8 +65,8 @@ public class RectangleCommand extends MathCommand{
 
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrintCPP.addCVIncludeString("opencv2/imgproc/imgproc");
+        bluePrintCPP.addCVIncludeString("ConvHelper");
         bluePrint.addMethod(rectangleHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);
