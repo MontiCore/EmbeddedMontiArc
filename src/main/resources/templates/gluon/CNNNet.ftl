@@ -316,9 +316,9 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 <#else>
 ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 <#if tc.isAttentionNetwork() && networkInstruction.isUnroll() >
-        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}, attention_output_
+        return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}, attention_output_]]
 <#else>
-        return ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}
+        return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}]]
 </#if>
 </#if>
 </#list>

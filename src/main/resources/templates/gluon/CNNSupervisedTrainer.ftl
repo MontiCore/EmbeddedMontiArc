@@ -373,7 +373,9 @@ class ${tc.fileNameWithoutEnding}:
             loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
-            
+        
+        loss_function.hybridize()
+        
         #Memory Replay
         replay_layers = {}
         replay_store_buffer = {}
@@ -519,6 +521,13 @@ class ${tc.fileNameWithoutEnding}:
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch + 1).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
+            
+            if hasattr(network, 'replay_sub_nets'):
+                network.replaysubnet0_.export(self.parameter_path(i) + '_newest_sub_net_' + str(0), epoch=0)
+                for j, net in enumerate(network.replay_sub_nets):
+                    net.export(self.parameter_path(i) + '_newest_sub_net_' + str(j+1), epoch=0)
+
+            loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 
     def parameter_path(self, index):
         return self._net_creator._model_dir_ + self._net_creator._model_prefix_ + '_' + str(index)

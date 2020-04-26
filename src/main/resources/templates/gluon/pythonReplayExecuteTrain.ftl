@@ -28,6 +28,26 @@
 </#if>
 </#if>
 </#list>
+                                        loss = 0
+                                        for element in lossList:
+                                            loss = loss + element
+                                
+                                    loss.backward()
+                        
+                                    loss_total += loss.sum().asscalar()
+                                    global_loss_train += loss.sum().asscalar()
+
+                                    if clip_global_grad_norm:
+                                        grads = []
+
+                                        for network in self._networks.values():
+                                            grads.extend(
+                                                [param.grad(mx_context) for param in network.collect_params().values()])
+
+                                        gluon.utils.clip_global_norm(grads, clip_global_grad_norm)
+
+                                    for trainer in trainers:
+                	                trainer.step(batch_size, ignore_stale_grad=True)
 </#if>
 </#list>
-                pass
+                    pass

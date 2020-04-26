@@ -71,8 +71,8 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         temp = controller.process("execute", Target.CPP);
         fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());
 
-        temp = controller.process("CNNBufferFile", Target.CPP);
-        fileContentMap.put("CNNBufferFile.h", temp.getValue());
+        temp = controller.process("CNNModelLoader", Target.CPP);
+        fileContentMap.put("CNNModelLoader.h", temp.getValue());
 
         return fileContentMap;
     }
