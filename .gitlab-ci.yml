@@ -13,6 +13,12 @@ masterJobLinux:
     - mvn package sonar:sonar -s settings.xml
   only:
     - master
+  except:
+    changes:
+    - README.md
+    - .gitignore
+    - .gitlab-ci.yml
+
 
 #masterJobWindows:
 #  stage: windows
@@ -32,6 +38,7 @@ BranchJobLinux:
     - cat target/site/jacoco/index.html
   except:
     - master
+
 
 #BranchJobWindows:
 #  stage: windows
