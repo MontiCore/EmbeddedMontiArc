@@ -7,15 +7,13 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.DynamicHelper;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.EventPortValueCheck;
-import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
-import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
-import de.monticore.lang.monticar.generator.cpp.converter.OptimizationSymbolHandler;
-import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.generator.cpp.converter.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP.*;
 import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
@@ -55,6 +53,7 @@ public class GeneratorCPP implements Generator {
     protected boolean generateSimulatorInterface = false;
     protected boolean checkModelDir = false;
     protected boolean streamTestGenerationMode = false;
+    public boolean isGenerateCV = false;
 
     // CMake
     private boolean generateCMake = false;
@@ -179,8 +178,6 @@ public class GeneratorCPP implements Generator {
             //setGenerateMainClass(true);
         }
 
-
-
         currentFileContentList = fileContents;
         if (!streamTestGenerationMode)
             fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol, symtab), componentInstanceSymbol));
@@ -200,7 +197,6 @@ public class GeneratorCPP implements Generator {
                     Log.info(generateComponentInstance + "", "Bool:");
                 }
                 if (generateComponentInstance) {
-
                     fileContents.addAll(generateStrings(taggingResolver, instanceSymbol, symtab));
                 }
             }
@@ -234,8 +230,6 @@ public class GeneratorCPP implements Generator {
             }
         }
 
-
-
         if (shouldGenerateMainClass()) {
             //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
         } else if (shouldGenerateSimulatorInterface()) {
@@ -261,8 +255,10 @@ public class GeneratorCPP implements Generator {
                     fileContents.addAll(generateStrings(taggingResolver, componentInstanceSymbol, symtab));
                 }
             }
-        } else
+        } else {
+            searchForCVEverywhere(componentSymbol, symtab);
             fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
+        }
         fileContents.addAll(generateTypes(TypeConverter.getTypeSymbols()));
         fileContents.addAll(handleTestAndCheckDir(symtab, componentSymbol));
         if (isGenerateAutopilotAdapter()) {
@@ -563,4 +559,26 @@ public class GeneratorCPP implements Generator {
     public OptimizationSymbolHandler getMathOptExecuteMethodGenerator() {
         return mathOptExecuteMethodGenerator;
     }
+
+    public void searchForCVEverywhere(EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
+        MathStatementsSymbol mathStatementsSymbol = Helper.getMathStatementsSymbolFor(componentInstanceSymbol, symtab);
+        if(mathStatementsSymbol != null) {
+            List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
+            for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
+                String nameOfFunction = ComponentConverter.getNameOfMathCommand(mathExpressionSymbol);
+                MathCommand mathCommand = this.mathCommandRegister.getMathCommand(nameOfFunction);
+                if(mathCommand != null){
+                    if(mathCommand.isCVMathCommand()){
+                        this.isGenerateCV = true;
+                    }
+                }
+
+            }
+        }
+        for (EMAComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
+            searchForCVEverywhere(instanceSymbol, symtab);
+            }
+    }
+
+
 }

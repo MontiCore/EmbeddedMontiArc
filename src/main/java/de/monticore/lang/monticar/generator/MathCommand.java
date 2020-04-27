@@ -79,7 +79,7 @@ public abstract class MathCommand {
         return "";
     }
 
-    public void redefineArmaMat(BluePrintCPP bluePrint){
+    public static void redefineArmaMat(BluePrintCPP bluePrint){
         List<Variable> vars= bluePrint.getVariables();
         for(Variable var : vars){
         VariableType varType = var.getVariableType();
@@ -96,7 +96,7 @@ public abstract class MathCommand {
         }
     }
 
-    public void redefineInit(BluePrintCPP bluePrint){
+    public static void redefineInit(BluePrintCPP bluePrint){
         Optional<Method> methodOpt = bluePrint.getMethod("init");
         Method initMethod = methodOpt.get();
         List<Instruction> instructs = initMethod.getInstructions();

@@ -41,7 +41,7 @@ public class ComponentConverter {
         bluePrint.setOriginalSymbol(componentSymbol);
         bluePrint.addDefineGenerics(componentSymbol);
         addVariables(componentSymbol, bluePrint);
-        // ToDo: you can fix the variables type here or later, so before it will be used
+
         BluePrintFixer.fixBluePrintDynamicVariableConnectRequestQueues(bluePrint);
 
 
@@ -120,7 +120,10 @@ public class ComponentConverter {
                 bluePrint.addAdditionalIncludeString("DynamicHelper");
             }
         }
-
+        if(generatorCPP.isGenerateCV){
+            MathCommand.redefineArmaMat(bluePrint);
+            MathCommand.redefineInit(bluePrint);
+        }
         return bluePrint;
     }
 

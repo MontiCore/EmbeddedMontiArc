@@ -3,17 +3,29 @@ package test.math;
 
 component ErodeAndGaussianBlurCommandTest{
     port
-    in Q^{n,m,3} src,
-    in Z erosion_elemIn,
-    in Q^{3} sizeY,
-    in Q^{2} two,
-    out Q^{n,m,3} dst,
-    out Q^{n,m,3} dst3,
-    out Q^{3,n,m} outMatrix,
-    out Q^{2,m} out2Matrix;
+    in Q^{960,720,3} imageIn,
+    in Z sizeXIn,
+    in Z sizeYIn,
+    in Q sigmaXIn,
+    in Q sigmaYIn,
+    //CvtColor ports
+    in Z colorConversionIn,
+    out Q^{960,720,3} modImageOut;
 
     instance GaussianBlurCommandTest gaussBlur;
+    instance Arma arm;
     instance CvtColorCommandTest cvtColor;
+
+
+    connect imageIn -> gaussBlur.src;
+    connect sizeXIn -> gaussBlur.sizeX;
+    connect sizeYIn -> gaussBlur.sizeY;
+    connect sigmaXIn -> gaussBlur.sigmaX;
+    connect sigmaYIn -> gaussBlur.sigmaY;
+    connect gaussBlur.dst -> arm.src;
+    connect arm.dst -> cvtColor.src;
+    connect colorConversionIn -> cvtColor.colorConversion;
+    connect cvtColor.dst -> modImageOut;
 
     //implementation Math{
 
