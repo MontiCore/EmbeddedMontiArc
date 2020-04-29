@@ -4,8 +4,10 @@
 package de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.textmate;
 
 import de.monticore.generating.GeneratorEngine;
+import de.monticore.lang.monticar.sol.grammars.language._symboltable.LanguageSymbol;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable.LanguageSymbolTable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -13,20 +15,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class TextMateGeneratorPhaseTests {
     @Mock NotificationService notifications;
     @Mock LanguageClientConfiguration configuration;
+    @Mock LanguageSymbolTable symbolTable;
 
     @InjectMocks TextMateGeneratorPhase phase;
 
@@ -43,29 +48,16 @@ public class TextMateGeneratorPhaseTests {
     @Test
     void testGenerate() throws Exception { // TODO: Write better test.
         GeneratorEngine engine = mock(GeneratorEngine.class);
-        List<String> excludes = Arrays.asList("null", "true", "false", "void");
-        File tokensFile = Paths.get("src/test/resources/TextMateGeneratorPhase/EmbeddedMontiArcMathAntlr.tokens").toFile();
+        LanguageSymbol rootSymbol = mock(LanguageSymbol.class);
 
-        when(configuration.getTokensArtifact()).thenReturn(tokensFile);
-        when(configuration.getFileExtension()).thenReturn("emam");
-        when(configuration.getExcludedKeywords()).thenReturn(excludes);
-        when(configuration.getGrammarName()).thenReturn("EmbeddedMontiArcMath");
+        when(symbolTable.getRootSymbol()).thenReturn(Optional.of(rootSymbol));
+        when(rootSymbol.getEffectiveKeywords()).thenReturn(Arrays.asList("A", "B", "C", "D"));
+        when(rootSymbol.getExtension()).thenReturn(Optional.of(".test"));
+        when(configuration.getGrammarName()).thenReturn("Test");
 
         phase.generate(engine);
 
         verify(engine).generateNoA(anyString(), any(Path.class), anyString(), anyString());
-    }
-
-    @Test
-    void testComputeKeywords() throws Exception {
-        List<String> expectedKeywords = Arrays.asList("null", "true", "false", "void", "boolean");
-        File tokensFile = Paths.get("src/test/resources/TextMateGeneratorPhase/EmbeddedMontiArcMathAntlr.tokens").toFile();
-
-        when(configuration.getTokensArtifact()).thenReturn(tokensFile);
-
-        List<String> actualKeywords = phase.computeKeywords();
-
-        assertEquals(expectedKeywords, actualKeywords, "Keywords do not match.");
     }
 
     @Test
@@ -88,7 +80,8 @@ public class TextMateGeneratorPhaseTests {
     }
 
     @Test
-    void testComputeRepository() {
+    void testComputeRepository() throws Exception {
+        LanguageSymbol rootSymbol = mock(LanguageSymbol.class);
         List<String> keywords = Arrays.asList("null", "true");
         JSONObject repository = new JSONObject();
         JSONObject nullMatch = new JSONObject();
@@ -98,9 +91,9 @@ public class TextMateGeneratorPhaseTests {
         trueMatch.put("match", "\\btrue\\b").put("name", "keyword.other.true.emam");
         repository.put("null", nullMatch).put("true", trueMatch);
 
-        when(configuration.getFileExtension()).thenReturn("emam");
+        when(rootSymbol.getExtension()).thenReturn(Optional.of(".emam"));
 
-        String actualRepository = phase.computeRepository(keywords);
+        String actualRepository = phase.computeRepository(rootSymbol, keywords);
         String expectedValue = repository.toString(2);
         int expectedLength = expectedValue.length();
         String expectedRepository = expectedValue.substring(1, expectedLength - 1);

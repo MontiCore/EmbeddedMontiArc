@@ -5,6 +5,7 @@
 <#-- @ftlvariable name="configuration" type="de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration" -->
 ${tc.signature("template")}
 <#assign configuration = glex.getGlobalVar("configuration")>
+<#assign rootSymbol = glex.getGlobalVar("rootSymbol")>
 <#assign grammarName = configuration.getGrammarName()>
 <#assign grammarNameLC = grammarName?lower_case>
 <#assign hasHandwrittenPeer = template.hasHandwrittenPeer()>
@@ -21,6 +22,6 @@ export class ${grammarName}ClientContribution<#if hasHandwrittenPeer>Top</#if> e
     public readonly name: string = ${grammarName}Language.NAME;
 
     protected get globPatterns(): string[] {
-        return ["**/*.${configuration.getFileExtension()}"];
+        return ["**/*.${rootSymbol.getExtension().orElse(".")}"];
     }
 }

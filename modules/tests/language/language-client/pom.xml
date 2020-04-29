@@ -10,7 +10,7 @@
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>tests-language</artifactId>
-        <version>2019.12.12</version>
+        <version>2020.4.28-SNAPSHOT</version>
     </parent>
 
     <artifactId>tests-language-lc</artifactId>
@@ -79,14 +79,6 @@
                         <configuration>
                             <rootModel>de.monticore.lang.monticar.sol.tests.lc.EmbeddedMontiArcMath</rootModel>
                             <grammar>de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcMath</grammar>
-                            <extension>emam</extension>
-                            <grammarModule>tests-language-l</grammarModule>
-                            <serverArtifact>tests-language-ls:tests-language-ls-${project.version}.jar</serverArtifact>
-                            <excludedKeywords>
-                                <excludedKeyword>script</excludedKeyword>
-                                <excludedKeyword>Port</excludedKeyword>
-                                <excludedKeyword>oo</excludedKeyword>
-                            </excludedKeywords>
                         </configuration>
                     </execution>
                 </executions>

@@ -9,27 +9,36 @@ export const StaticService = Symbol("StaticService");
 export interface StaticService {
     addStaticPath(path: string): number;
     removeStaticPath(id: number): void;
+    getStaticPath(id: number): string | undefined;
 }
 
 @injectable()
 export class StaticServiceImpl implements StaticService, BackendApplicationContribution {
     protected idNext: number;
     protected handlers: Map<number, RequestHandler>;
+    protected paths: Map<number, string>;
 
     public constructor() {
         this.idNext = 0;
         this.handlers = new Map();
+        this.paths = new Map();
     }
 
     public addStaticPath(path: string): number {
         const id = this.idNext++;
 
         this.handlers.set(id, serve(path));
+        this.paths.set(id, path);
         return id;
     }
 
     public removeStaticPath(id: number): void {
         this.handlers.delete(id);
+        this.paths.delete(id);
+    }
+
+    public getStaticPath(id: number): string | undefined {
+        return this.paths.get(id);
     }
 
     protected getRequestHandler(id: number, next: Function): RequestHandler {

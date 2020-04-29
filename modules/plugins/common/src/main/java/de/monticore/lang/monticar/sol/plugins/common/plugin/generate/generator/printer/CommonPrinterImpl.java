@@ -41,7 +41,7 @@ public class CommonPrinterImpl implements CommonPrinter {
     public String print(SymbolWithValue symbol) {
         String value = symbol.getValue().map(Object::toString).orElse(ERROR);
 
-        if (symbol.isString()) return String.format("\"%s\"", value);
+        if (symbol.isString()) return String.format("`%s`", value);
         else return value;
     }
 
@@ -58,7 +58,7 @@ public class CommonPrinterImpl implements CommonPrinter {
 
     protected List<String> quoteStrings(List<String> strings) {
         return strings.stream()
-                .map(string -> String.format("\"%s\"", string))
+                .map(string -> String.format("`%s`", string))
                 .collect(Collectors.toList());
     }
 }

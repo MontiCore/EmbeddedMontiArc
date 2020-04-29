@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-external-workspace",
   "description": "",
-  "version": "2019.12.12",
+  "version": "2020.4.28-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "files": [
     "src",
@@ -17,9 +17,9 @@
     "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-external-core": "^2019.12.12",
-    "@embeddedmontiarc/sol-external-preparation": "^2019.12.12",
-    "@embeddedmontiarc/sol-external-docker": "^2019.12.12",
+    "@embeddedmontiarc/sol-external-core": "^2020.4.28-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-preparation": "^2020.4.28-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-docker": "^2020.4.28-SNAPSHOT",
     "@material-ui/core": "^4.4.0",
     "@material-ui/icons": "^4.2.1",
     "@theia/core": "latest",

@@ -3,5 +3,5 @@
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 ${tc.signature("partition")}
 <@compress single_line=true>
-ENTRYPOINT <#list partition as instruction><#assign argument = instruction.getArgument()><#if argument.isPresentCommand()>${argument.getCommand().getValue()}<#elseif argument.isPresentSplit()><#assign split = argument.getSplit()>${split.getExecutable().getValue()}<#list split.getParameterList() as parameter> ${parameter.getValue()}</#list></#if><#if instruction?has_next> && </#if></#list>
+ENTRYPOINT <#list partition as instruction><#assign argument = instruction.getArgument()><#if argument.isPresentCommand()>${argument.getCommand().getValue()}<#elseif argument.isPresentSplit()><#assign split = argument.getSplit()>["${split.getExecutable().getValue()}"<#list split.getParameterList() as parameter>, "${parameter.getValue()}"</#list></#if></#list>]
 </@compress>

@@ -5,9 +5,10 @@
 <#-- @ftlvariable name="configuration" type="de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration" -->
 ${tc.signature("template")}
 <#assign configuration = glex.getGlobalVar("configuration")>
+<#assign rootSymbol = glex.getGlobalVar("rootSymbol")>
 <#assign grammarName = configuration.getGrammarName()>
 <#assign grammarNameLC = grammarName?lower_case>
-<#assign extension = configuration.getFileExtension()>
+<#assign extension = rootSymbol.getExtension().orElse(".")>
 <#assign hasHandwrittenPeer = template.hasHandwrittenPeer()>
 /*
  * (c) https://github.com/MontiCore/monticore
@@ -51,7 +52,7 @@ export class ${grammarName}GrammarContribution<#if hasHandwrittenPeer>Top</#if> 
         monaco.languages.register({
             id: ${grammarName}Language.ID,
             aliases: [${grammarName}Language.NAME],
-            extensions: [".${extension}"]
+            extensions: ["${extension}"]
         });
 
         monaco.languages.setLanguageConfiguration(${grammarName}Language.ID, this.config);

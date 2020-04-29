@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-runtime-templates",
   "description": "",
-  "version": "2019.12.12",
+  "version": "2020.4.28-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib"],
   "types": "lib/typings",
@@ -15,8 +15,8 @@
     "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-core": "^2019.12.12",
-    "@embeddedmontiarc/sol-runtime-options": "^2019.12.12",
+    "@embeddedmontiarc/sol-runtime-core": "^2020.4.28-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-options": "^2020.4.28-SNAPSHOT",
     "@theia/core": "latest",
     "@theia/filesystem": "latest",
     "@theia/navigator": "latest",

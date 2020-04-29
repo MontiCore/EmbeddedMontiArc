@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-external-filesystem",
   "description": "",
-  "version": "2019.12.12",
+  "version": "2020.4.28-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib"],
   "scripts": {
@@ -14,7 +14,7 @@
     "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
   },
   "dependencies": {
-    "inversify": "^4.14.0"
+    "inversify": "^5.0.1"
   },
   "devDependencies": {},
   "theiaExtensions": [],

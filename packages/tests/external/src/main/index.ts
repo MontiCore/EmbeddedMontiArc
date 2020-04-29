@@ -30,7 +30,7 @@ async function execute() {
 
     application.use(Express.static(renderer));
     application.setName("EMAStudio");
-    application.setImage("embeddedmontiarc/sol-tests-ide-internal:latest");
+    application.setImage("registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/embeddedmontiarcstudio-3:0.0.1");
     app.on("ready", () => application.start());
 }
 

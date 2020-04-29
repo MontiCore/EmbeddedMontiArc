@@ -20,7 +20,7 @@ ${tc.signature("package", "allPackages")}
     <#list allPackages as allPackage>
     <#assign dependencyName = allPackage.getName().get()>
     <#assign dependencyVersion = allPackage.getVersion().get()>
-    "${dependencyName}": "^${dependencyVersion}"<#if allPackage?has_next>,</#if>
+    "${dependencyName}": "${dependencyVersion}"<#if allPackage?has_next>,</#if>
     </#list>,
     "electron-debug": "^3.0.1",
     "express": "^4.17.1",

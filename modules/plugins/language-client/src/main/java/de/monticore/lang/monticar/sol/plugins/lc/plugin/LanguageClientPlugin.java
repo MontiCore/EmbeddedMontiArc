@@ -43,7 +43,7 @@ public class LanguageClientPlugin extends AbstractGeneratePlugin {
         return this.rootModel;
     }
 
-    @Parameter(required = true)
+    @Parameter()
     protected String grammar;
 
     /**
@@ -51,26 +51,6 @@ public class LanguageClientPlugin extends AbstractGeneratePlugin {
      */
     public String getGrammar() {
         return this.grammar;
-    }
-
-    @Parameter(required = true)
-    protected String extension;
-
-    /**
-     * @return The file extension that the models will have.
-     */
-    public String getExtension() {
-        return this.extension;
-    }
-
-    @Parameter()
-    public List<String> excludedKeywords;
-
-    /**
-     * @return A list of keywords which should be excluded.
-     */
-    public List<String> getExcludedKeywords() {
-        return firstNonNull(this.excludedKeywords, ImmutableList.of());
     }
 
     @Parameter(defaultValue = ".")
@@ -81,25 +61,5 @@ public class LanguageClientPlugin extends AbstractGeneratePlugin {
      */
     public File getOutputPath() {
         return this.outputDirectory;
-    }
-
-    @Parameter(required = true)
-    protected String grammarModule;
-
-    /**
-     * @return The artifactId of the module where the grammar is located.
-     */
-    public String getGrammarModule() {
-        return this.grammarModule;
-    }
-
-    @Parameter(required = true)
-    protected String serverArtifact;
-
-    /**
-     * @return The artifactId and name of the executable JAR of the language server. Format: (artifactId:artifactName)
-     */
-    public String getServerArtifact() {
-        return this.serverArtifact;
     }
 }

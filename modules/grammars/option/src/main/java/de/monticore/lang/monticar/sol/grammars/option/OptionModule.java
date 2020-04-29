@@ -11,6 +11,7 @@ import de.monticore.lang.monticar.sol.grammars.option._cocos.OptionCoCoChecker;
 import de.monticore.lang.monticar.sol.grammars.option.cocos.NameFormatCoCo;
 import de.monticore.lang.monticar.sol.grammars.option.cocos.OptionCoCo;
 import de.monticore.lang.monticar.sol.grammars.option.cocos.instance.*;
+import de.monticore.lang.monticar.sol.grammars.option.cocos.type.CompositeOrReturnsCoCo;
 import de.monticore.lang.monticar.sol.grammars.option.cocos.type.UniqueDeclarationCoCo;
 import de.monticore.lang.monticar.sol.runtime.grammar.cocos.CoCo;
 import de.monticore.lang.monticar.sol.runtime.grammar.cocos.DuplicateCoCoErrorCode;
@@ -51,6 +52,7 @@ public class OptionModule extends AbstractModule {
         coCos.addBinding().to(ExistingTypeCoCo.class);
 
         coCos.addBinding().to(UniqueDeclarationCoCo.class);
+        coCos.addBinding().to(CompositeOrReturnsCoCo.class);
     }
 
     @Provides

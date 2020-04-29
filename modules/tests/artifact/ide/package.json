@@ -1,20 +1,20 @@
 {
   "private": true,
   "name": "@embeddedmontiarc/sol-tests-artifact-ide",
-  "version": "2019.12.12",
+  "version": "2020.4.28-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "prepare": "yarn run build",
     "clean": "rimraf lib && rimraf src-gen && rimraf sol/artifacts",
-    "build": "tsc++ --flatten",
-    "watch": "tsc++ -w --flatten"
+    "build": "tscx --flatten",
+    "watch": "tscx -w --flatten"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-artifact": "^2019.12.12",
+    "@embeddedmontiarc/sol-runtime-artifact": "^2020.4.28-SNAPSHOT",
     "@theia/process": "latest"
   },
   "devDependencies": {
-    "@embeddedmontiarc/sol-development-tsc": "^2019.12.12"
+    "@embeddedmontiarc/sol-development-tsc": "^2020.4.28-SNAPSHOT"
   },
   "theiaExtensions": [
     {

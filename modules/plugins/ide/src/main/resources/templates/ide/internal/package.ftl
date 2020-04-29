@@ -1,4 +1,4 @@
-${tc.signature("ide", "package", "allPackages")}
+${tc.signature("ide", "package", "allPackages", "resolutions")}
 <#assign packageName = package.getName().get()?replace("-common", "")>
 <#assign packageVersion = package.getVersion().get()>
 <#assign ideName = ide.getName()>
@@ -6,20 +6,29 @@ ${tc.signature("ide", "package", "allPackages")}
   "private": true,
   "name": "${packageName}-internal",
   "version": "${packageVersion}",
+  "files": ["src", "src-gen", "lib", "sol"],
   "scripts": {
     "prepare": "sol theia build",
     "clean": "theia clean && rimraf webpack.config++.js",
     "start": "sol theia start"
   },
   "dependencies": {
+    "@embeddedmontiarc/sol-external-monaco": ">=2020.4.28-SNAPSHOT",
     <#list allPackages as allPackage>
     <#assign dependencyName = allPackage.getName().get()>
     <#assign dependencyVersion = allPackage.getVersion().orElse("latest")>
-    "${dependencyName}": "^${dependencyVersion}"<#if allPackage?has_next>,</#if>
+    "${dependencyName}": "${dependencyVersion}"<#if allPackage?has_next>,</#if>
+    </#list>
+  },
+  "resolutions": {
+    <#list resolutions.keySet() as resolutionPackage>
+    <#assign resolutionVersion = resolutions.getString(resolutionPackage)>
+    "${resolutionPackage}": "${resolutionVersion}"<#if resolutionPackage?has_next>,</#if>
     </#list>
   },
   "devDependencies": {
-    "@embeddedmontiarc/sol-development-cli": ">=2019.12.12"
+    "@theia/cli": "latest",
+    "@embeddedmontiarc/sol-development-cli": ">=2020.4.28-SNAPSHOT"
   },
   "theia": {
     "frontend": {

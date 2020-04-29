@@ -6,8 +6,9 @@
 <#-- @ftlvariable name="configuration" type="de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration" -->
 ${tc.signature("patterns", "repository")}
 <#assign configuration = glex.getGlobalVar("configuration")>
+<#assign rootSymbol = glex.getGlobalVar("rootSymbol")>
 <#assign grammarName = configuration.getGrammarName()>
-<#assign extension = configuration.getFileExtension()>
+<#assign extension = rootSymbol.getExtension().orElse(".")>
 {
   "information_for_contributors": [],
   "name": "${grammarName}",
@@ -28,17 +29,17 @@ ${tc.signature("patterns", "repository")}
           "begin": "/\\*",
           "captures": {
             "0": {
-              "name": "punctuation.definition.comment.${extension}"
+              "name": "punctuation.definition.comment${extension}"
             }
           },
           "end": "\\*/",
-          "name": "comment.block.${extension}"
+          "name": "comment.block${extension}"
         },
         {
           "begin": "(^[ \\t]+)?(?=//)",
           "beginCaptures": {
             "1": {
-              "name": "punctuation.whitespace.comment.leading.${extension}"
+              "name": "punctuation.whitespace.comment.leading${extension}"
             }
           },
           "end": "(?!\\G)",
@@ -47,11 +48,11 @@ ${tc.signature("patterns", "repository")}
               "begin": "//",
               "beginCaptures": {
                 "0": {
-                  "name": "punctuation.definition.comment.${extension}"
+                  "name": "punctuation.definition.comment${extension}"
                 }
               },
               "end": "\\n",
-              "name": "comment.line.double-slash.${extension}"
+              "name": "comment.line.double-slash${extension}"
             }
           ]
         }
@@ -62,11 +63,11 @@ ${tc.signature("patterns", "repository")}
         {
           "captures": {
             "0": {
-              "name": "punctuation.definition.comment.${extension}"
+              "name": "punctuation.definition.comment${extension}"
             }
           },
           "match": "/\\*\\*/",
-          "name": "comment.block.empty.${extension}"
+          "name": "comment.block.empty${extension}"
         },
         {
           "include": "#comments-inline"
@@ -79,20 +80,20 @@ ${tc.signature("patterns", "repository")}
           "begin": "\"",
           "beginCaptures": {
             "0": {
-              "name": "punctuation.definition.string.begin.${extension}"
+              "name": "punctuation.definition.string.begin${extension}"
             }
           },
           "end": "\"",
           "endCaptures": {
             "0": {
-              "name": "punctuation.definition.string.end.${extension}"
+              "name": "punctuation.definition.string.end${extension}"
             }
           },
-          "name": "string.quoted.double.${extension}",
+          "name": "string.quoted.double${extension}",
           "patterns": [
             {
               "match": "\\\\.",
-              "name": "constant.character.escape.${extension}"
+              "name": "constant.character.escape${extension}"
             }
           ]
         },
@@ -100,20 +101,20 @@ ${tc.signature("patterns", "repository")}
           "begin": "'",
           "beginCaptures": {
             "0": {
-              "name": "punctuation.definition.string.begin.${extension}"
+              "name": "punctuation.definition.string.begin${extension}"
             }
           },
           "end": "'",
           "endCaptures": {
             "0": {
-              "name": "punctuation.definition.string.end.${extension}"
+              "name": "punctuation.definition.string.end${extension}"
             }
           },
-          "name": "string.quoted.single.${extension}",
+          "name": "string.quoted.single${extension}",
           "patterns": [
             {
               "match": "\\\\.",
-              "name": "constant.character.escape.${extension}"
+              "name": "constant.character.escape${extension}"
             }
           ]
         }
@@ -123,13 +124,13 @@ ${tc.signature("patterns", "repository")}
       "patterns": [
         {
           "match": "[0-9]+",
-          "name": "constant.numeric.decimal.${extension}"
+          "name": "constant.numeric.decimal${extension}"
         }
       ]
     },
     "constants": {
       "match": "\\b(true|false)\\b",
-      "name": "constant.language.${extension}"
+      "name": "constant.language${extension}"
     },
     ${repository}
   }

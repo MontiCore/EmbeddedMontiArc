@@ -3,13 +3,13 @@
   "name": "@embeddedmontiarc/sol-tests-language-lc",
   "license": "SEE LICENSE IN LICENSE",
   "description": "",
-  "version": "2019.12.12",
+  "version": "2020.4.28-SNAPSHOT",
   "files": ["src", "lib"],
   "scripts": {
     "prepare": "yarn run build",
     "clean": "rimraf lib && rimraf src-gen && rimraf data-gen && rimraf server",
-    "build": "tsc++ --flatten",
-    "watch": "tsc++ -w --flatten"
+    "build": "tscx --flatten",
+    "watch": "tscx -w --flatten"
   },
   "dependencies": {
     "inversify": "^5.0.1",
@@ -17,11 +17,11 @@
     "@theia/languages": "latest",
     "@theia/monaco": "latest",
     "@theia/process": "latest",
-    "@embeddedmontiarc/sol-runtime-templates": "^2019.12.12"
+    "@embeddedmontiarc/sol-runtime-templates": "^2020.4.28-SNAPSHOT"
   },
   "devDependencies": {
     "@theia/cli": "latest",
-    "@embeddedmontiarc/sol-development-tsc": "^2019.12.12"
+    "@embeddedmontiarc/sol-development-tsc": "^2020.4.28-SNAPSHOT"
   },
   "theiaExtensions": [
     {

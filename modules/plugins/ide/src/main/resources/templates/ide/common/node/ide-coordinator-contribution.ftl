@@ -43,7 +43,7 @@ export class ${name}CoordinatorContribution<#if hasHandwrittenPeer>TOP</#if> imp
         <#list exclusions as exclusion>
         <#if !exclusion.isComponent()>
         <#assign fullname = exclusion.getFullName()>
-        registry.unregisterCoordinator(${fullname});
+        registry.unregisterCoordinator("${fullname}");
         </#if>
         </#list>
     }

@@ -74,6 +74,8 @@ export class DockerRunServiceImpl extends EventEmitter implements DockerRunServi
         console.debug(command);
 
         process.on("exit", this.onProcessExit);
+        process.stdout!.on("data", data => console.debug(data.toString()));
+        process.stderr!.on("data", data => console.debug(data.toString()));
 
         if (process && process.stdout) await this.doRun(process.stdout);
         else await Promise.reject(`Could not run IDE.`);

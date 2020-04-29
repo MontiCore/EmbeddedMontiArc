@@ -63,7 +63,7 @@ grammar Language extends de.monticore.MCBasics, de.monticore.MCLiterals, de.mont
      * Keywords represents the inclusion / exclusion / definition of keywords.
      */
     Keywords implements LanguageElement =
-        (inclusion:["include"] | exclusion:["exclude"]) "keywords" "[" keyword:(StringLiteral || ",")+ "]"
+        (inclusion:["include"] | exclusion:["exclude"])? "keywords" "[" keyword:(StringLiteral || ",")+ "]"
     ;
 
     /**
