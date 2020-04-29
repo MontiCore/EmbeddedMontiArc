@@ -10,7 +10,9 @@
 ${tc.signature("extractor")}
 <#assign configuration = glex.getGlobalVar("configuration")>
 <#assign rootPackage = glex.getGlobalVar("rootPackage")>
+<#assign rootSymbol = glex.getGlobalVar("rootSymbol")>
 <#assign serializer = glex.getGlobalVar("option.serializer")>
+<#assign extension = rootSymbol.getExtension().orElse(".")>
 <#assign grammarName = configuration.getGrammarName()>
 <#assign templatesDirectory = rootPackage.getDirectory("templates").get()!"templates">
 <#assign declarations = extractor.getTemplateDeclarations(ast)>
@@ -32,7 +34,7 @@ export class ${grammarName}TemplatesContribution implements TemplatesContributio
         <#list declarations as declaration>
         registry.registerTemplate({
             id: "${extractor.getIdentifier(declaration)}",
-            extension: ".${configuration.getFileExtension()}",
+            extension: "${extension}",
             path: path.resolve(__dirname, "..", "..", "${templatesDirectory}", "${extractor.getPath(declaration)}"),
             label: "${extractor.getLabel(declaration)}",
             options: ${serializer.serialize(declaration)}

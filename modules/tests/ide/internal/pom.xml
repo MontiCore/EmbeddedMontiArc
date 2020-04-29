@@ -10,7 +10,7 @@
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>tests-ide</artifactId>
-        <version>2019.12.12</version>
+        <version>2020.4.28-SNAPSHOT</version>
     </parent>
 
     <artifactId>tests-ide-internal</artifactId>
@@ -95,6 +95,7 @@
                             <executable>yarn</executable>
                             <arguments>
                                 <argument>install</argument>
+                                <argument>--frozen-lockfile</argument>
                             </arguments>
                             <environmentVariables>
                                 <cibuildb64>${env.cibuildb64}</cibuildb64>

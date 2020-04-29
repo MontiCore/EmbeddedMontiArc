@@ -3,37 +3,33 @@
  */
 package de.monticore.lang.monticar.sol.plugins.lc.plugin.generator.textmate;
 
-import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.monticore.generating.GeneratorEngine;
+import de.monticore.lang.monticar.sol.grammars.language._symboltable.LanguageSymbol;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.common.notification.NotificationService;
 import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.GeneratorPhase;
 import de.monticore.lang.monticar.sol.plugins.lc.plugin.configuration.LanguageClientConfiguration;
-import org.apache.commons.io.FileUtils;
+import de.monticore.lang.monticar.sol.plugins.lc.plugin.symboltable.LanguageSymbolTable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Singleton
 public class TextMateGeneratorPhase implements GeneratorPhase {
     protected final NotificationService notifications;
     protected final LanguageClientConfiguration configuration;
+    protected final LanguageSymbolTable symbolTable;
 
     @Inject
-    protected TextMateGeneratorPhase(NotificationService notifications, LanguageClientConfiguration configuration) {
+    protected TextMateGeneratorPhase(NotificationService notifications, LanguageClientConfiguration configuration,
+                                     LanguageSymbolTable symbolTable) {
         this.notifications = notifications;
         this.configuration = configuration;
+        this.symbolTable = symbolTable;
     }
 
     @Override
@@ -48,25 +44,17 @@ public class TextMateGeneratorPhase implements GeneratorPhase {
 
     @Override
     public void generate(GeneratorEngine engine) throws Exception {
-        Predicate<String> predicate = keyword -> !this.configuration.getExcludedKeywords().contains(keyword);
-        List<String> keywords = this.computeKeywords().stream().filter(predicate).collect(Collectors.toList());
+        LanguageSymbol rootSymbol = this.symbolTable.getRootSymbol()
+                .orElseThrow(() -> new Exception("Could not resolve root symbol."));
+        List<String> keywords = rootSymbol.getEffectiveKeywords();
         String patterns = this.computePatterns(keywords);
-        String repository = this.computeRepository(keywords);
+        String repository = this.computeRepository(rootSymbol, keywords);
         String grammarName = this.configuration.getGrammarName().toLowerCase();
         Path outputPath = Paths.get(String.format("../data-gen/%s.tmLanguage.json", grammarName));
         String templateFile = "templates/language-client/theia/data/language-tmLanguage.ftl";
 
         this.notifications.info("Generating TextMate Grammar.");
         engine.generateNoA(templateFile, outputPath, patterns, repository);
-    }
-
-    protected List<String> computeKeywords() throws IOException {
-        File tokensFile = this.configuration.getTokensArtifact();
-        List<String> lines = FileUtils.readLines(tokensFile, Charsets.UTF_8);
-        Pattern pattern = Pattern.compile("'(\\w+[_-]?\\w*)'=\\d+");
-        Stream<Matcher> filteredLines = lines.stream().map(pattern::matcher).filter(Matcher::matches);
-
-        return filteredLines.map(matcher -> matcher.group(1)).collect(Collectors.toList());
     }
 
     protected String computePatterns(List<String> keywords) {
@@ -85,13 +73,15 @@ public class TextMateGeneratorPhase implements GeneratorPhase {
         return value.substring(1, length - 1);
     }
 
-    protected String computeRepository(List<String> keywords) {
+    protected String computeRepository(LanguageSymbol rootSymbol, List<String> keywords) throws Exception {
         JSONObject repository = new JSONObject();
+        String extension = rootSymbol.getExtension()
+                .orElseThrow(() -> new Exception("No extension specified in the model."));
 
         for (String keyword : keywords) {
             JSONObject match = new JSONObject();
             String regex = String.format("\\b%s\\b", this.escapeKeyword(keyword));
-            String name = String.format("keyword.other.%s.%s", keyword, this.configuration.getFileExtension());
+            String name = String.format("keyword.other.%s%s", keyword, extension);
 
             match.put("match", regex);
             match.put("name", name);

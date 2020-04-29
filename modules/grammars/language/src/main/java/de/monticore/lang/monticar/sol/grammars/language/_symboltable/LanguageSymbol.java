@@ -129,7 +129,8 @@ public class LanguageSymbol extends LanguageSymbolTOP implements SymbolWithProje
     }
 
     public Optional<String> getExtension() {
-        return Optional.ofNullable(this.extension);
+        return Optional.ofNullable(this.extension)
+                .map(extension -> extension.startsWith(".") ? extension : ("." + extension));
     }
 
     public void includeKeywords(List<String> keywords) {

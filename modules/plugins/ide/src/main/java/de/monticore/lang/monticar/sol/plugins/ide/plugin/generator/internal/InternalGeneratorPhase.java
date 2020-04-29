@@ -16,6 +16,7 @@ import de.monticore.lang.monticar.sol.plugins.common.plugin.generate.generator.G
 import de.monticore.lang.monticar.sol.plugins.ide.plugin.configuration.IDEConfiguration;
 import de.monticore.lang.monticar.sol.plugins.ide.plugin.symboltable.IDESymbolTable;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.json.JSONObject;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,10 +68,12 @@ public class InternalGeneratorPhase implements GeneratorPhase {
                 .orElseThrow(() -> new MojoExecutionException("Root Package should be a Theia extension."));
         Set<TheiaPackage> allPackages = new HashSet<>(rootPackage.getAllTheiaDependencies());
         Path outputPath = Paths.get("package.json");
+        JSONObject resolutions = rootPackage.<JSONObject>query("/resolutions").orElse(new JSONObject());
 
         allPackages.add(rootPackage);
         this.notifications.info("Generating 'package.json' to '%s'.", outputPath);
-        engine.generateNoA("templates/ide/internal/package.ftl", outputPath, rootSymbol, rootPackage, allPackages);
+        engine.generateNoA("templates/ide/internal/package.ftl",
+                outputPath, rootSymbol, rootPackage, allPackages, resolutions);
     }
 
     protected void generateEnvironment(GeneratorEngine engine, IDESymbol rootSymbol) {

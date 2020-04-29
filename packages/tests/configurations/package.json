@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@embeddedmontiarc/sol-tests-configurations",
-  "version": "2019.12.12",
+  "version": "2020.4.28-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "prepare": "yarn run clean && yarn run build",
@@ -10,11 +10,11 @@
     "watch": "tsc -p compile.tsconfig.json -w"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-configurations": "^2019.12.12",
-    "@embeddedmontiarc/sol-runtime-artifact": "^2019.12.12",
-    "@embeddedmontiarc/sol-tests-artifact": "^2019.12.12",
+    "@embeddedmontiarc/sol-runtime-configurations": "^2020.4.28-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-artifact": "^2020.4.28-SNAPSHOT",
+    "@embeddedmontiarc/sol-tests-artifact": "^2020.4.28-SNAPSHOT",
     "@theia/core": "latest",
-    "inversify": "^4.14.0"
+    "inversify": "^5.0.1"
   },
   "devDependencies": {
   },

@@ -17,10 +17,8 @@ import org.mockito.quality.Strictness;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -30,9 +28,7 @@ public class LanguageClientConfigurationImplTests {
     @Mock LanguageClientPlugin plugin;
 
     LanguageClientConfigurationImpl configuration;
-    File expectedFile = Paths.get("src/test/resources/LanguageClientConfigurationImpl/EmbeddedMontiArcMathAntlr.tokens").toFile();
     File resourcesPath = Paths.get("src/test/resources/LanguageClientConfigurationImpl").toFile();
-    List<String> excludedKeywords = Arrays.asList("oo", "script");
 
     @BeforeEach
     void before() {
@@ -43,8 +39,6 @@ public class LanguageClientConfigurationImplTests {
         Build build = mock(Build.class);
 
         when(plugin.getGrammar()).thenReturn("de.monticore.lang.monticar.embeddedmontiarc.EmbeddedMontiArcMath");
-        when(plugin.getGrammarModule()).thenReturn("language");
-        when(plugin.getServerArtifact()).thenReturn("server:EmbeddedMontiArcMathAntlr.tokens");
         when(plugin.getMavenProject()).thenReturn(client);
         when(plugin.getOutputPath()).thenReturn(resourcesPath);
         when(plugin.getRootModel()).thenReturn("de.monticore.lang.monticar.sol.tests.ld.Root");
@@ -63,39 +57,7 @@ public class LanguageClientConfigurationImplTests {
     }
 
     @Test
-    void testGetTokensArtifact() throws Exception {
-        File calculatedFile = configuration.getTokensArtifact();
-
-        assertEquals(expectedFile, calculatedFile, ".tokens files do not match.");
-    }
-
-    @Test
-    void testGetServerArtifact() throws Exception {
-        File calculatedFile = configuration.getServerArtifact();
-
-        assertEquals(expectedFile, calculatedFile, "Server Artifacts do not match.");
-    }
-
-    @Test
     void testGetRootModel() {
         assertEquals("de.monticore.lang.monticar.sol.tests.ld.Root", configuration.getRootModel(), "Root Models do not match.");
-    }
-
-    @Test
-    void testGetFileExtension() {
-        when(plugin.getExtension()).thenReturn("emam");
-
-        assertEquals("emam", configuration.getFileExtension(), "File Extensions do not match.");
-
-        when(plugin.getExtension()).thenReturn(".emam");
-
-        assertEquals("emam", configuration.getFileExtension(), "File Extensions do not match.");
-    }
-
-    @Test
-    void testGetExcludedKeywords() {
-        when(plugin.getExcludedKeywords()).thenReturn(excludedKeywords);
-
-        assertIterableEquals(excludedKeywords, configuration.getExcludedKeywords(), "Excluded Keywords do not match.");
     }
 }

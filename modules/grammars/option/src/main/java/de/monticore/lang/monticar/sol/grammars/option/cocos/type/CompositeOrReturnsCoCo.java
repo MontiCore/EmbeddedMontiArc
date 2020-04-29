@@ -32,6 +32,6 @@ public class CompositeOrReturnsCoCo extends CommonOptionCoCo implements OptionAS
         boolean condition = (type.isComposite() && returnType.isPresent()) ||
                 (!type.isComposite() && !returnType.isPresent());
 
-        if (condition) this.warn(type, name);
+        if (condition) this.error(type, name);
     }
 }
