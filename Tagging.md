@@ -1,3 +1,5 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
 # Tagging
 The *Tagging* language consist of 3 grammars:
 - **Tagging**: basic infrastructure and classes to provide tagging
