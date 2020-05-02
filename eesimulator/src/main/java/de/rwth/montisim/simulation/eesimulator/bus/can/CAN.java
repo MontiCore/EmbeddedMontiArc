@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Random;
 
+import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.simulation.eesimulator.EESimulator;
 import de.rwth.montisim.simulation.eesimulator.bus.Bus;
 import de.rwth.montisim.simulation.eesimulator.bus.BusType;
@@ -29,7 +30,6 @@ public class CAN extends Bus {
     // https://en.wikipedia.org/wiki/CAN_bus
     // NOTE: Not accounted right now: Bit stuffing, Errors, Error frames
 
-    public static final long NANOSECS_IN_SEC = 1000000000;
     /**
      * Number of bits at the start of a frame, before the data payload. Header =
      * Start-of-frame + Identifier A + SRR + IDE + Identifier B + RTR + Reserved
@@ -167,11 +167,10 @@ public class CAN extends Bus {
     }
 
     private Instant instantFromBitTime(long time){
-        return startTime.plus(Duration.ofNanos((time*NANOSECS_IN_SEC)/bitRate));
+        return startTime.plus(Duration.ofNanos((time*Time.SECOND_TO_NANOSEC)/bitRate));
     }
     private long bitTimeFromInstant(Instant time){
-        Duration delta = Duration.between(startTime, time);
-        long nanos = (delta.getNano() + delta.getSeconds()*NANOSECS_IN_SEC);
-        return (nanos*bitRate)/NANOSECS_IN_SEC;
+        long nanos = Time.nanosecondsFromDuration(Duration.between(startTime, time));
+        return (nanos*bitRate)/Time.SECOND_TO_NANOSEC;
     }
 }

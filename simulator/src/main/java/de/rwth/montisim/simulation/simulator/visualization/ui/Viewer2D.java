@@ -4,77 +4,78 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-package de.rwth.montisim.simulation.environment.map.visualization;
+package de.rwth.montisim.simulation.simulator.visualization.ui;
 
-import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-
-import java.awt.datatransfer.StringSelection;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.MouseInputListener;
 
-import de.rwth.montisim.commons.utils.Coordinates;
 import de.rwth.montisim.commons.utils.Mat3;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
 
 /**
- * This class allows to see and navigate a [Map]. Use the scroll wheel to zoom
- * in and out. Hold the middle mouse button to move the map around.
+ * This class is a JPanel that allows navigating a 2D view.
+ * Multiple 2D views can be overlaid. They share a common coordinate system.
+ * Use the scroll wheel to zoom in and out. 
+ * Hold the middle mouse button to move the map around.
+ * 
+ * Possible 2D views:
+ * - Map
+ * - CarVis
  */
-public class MapViewer extends JPanel implements MouseInputListener, MouseWheelListener {
+public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelListener {
     private static final long serialVersionUID = 4687042051904715366L;
-    private static final double SCROLL_FACTOR = 1.2;
-    public static final Color TEXT_COLOR = new Color(50, 50, 50);
+
     private static final DecimalFormat format = new DecimalFormat("##0.00",
             DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-    private static final DecimalFormat geoFormat = new DecimalFormat("##0.0000000",
-            DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
-    private boolean antialiasing = false;
     private Vec2 center = new Vec2();
     // Scale of 1: 1 Meter = 1 Pixel
     // Scale of 2: 1 Meter = 2 Pixels
-    private double scale = 1;
+    public double scale = 1;
     private int scrollCount = 0;
     private Vec2 screenCenter = new Vec2();
     private boolean dirty = true;
-    private Mat3 viewMatrix = new Mat3();
+    public Vec2 screen_size = new Vec2();
+    public Mat3 viewMatrix = new Mat3();
     private Mat3 invViewMatrix = new Mat3();
     private boolean trackingMouse = false;
     private final Vec2 mousePos = new Vec2();
     private boolean hover = false;
+    public boolean copyPos = true;
 
-    private Optional<MapRenderer> map = Optional.empty();
 
-    public MapViewer() {
+    private List<Renderer> renderers = new ArrayList<>();
+    //private Optional<MapRenderer> map = Optional.empty();
+
+    public Viewer2D() {
         this.addMouseListener(this);
         this.addMouseWheelListener(this);
         this.addMouseMotionListener(this);
+        addRenderer(new GridRenderer(this));
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        if (antialiasing) {
+        if (UIInfo.antialiasing) {
             RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
                     RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -83,54 +84,83 @@ public class MapViewer extends JPanel implements MouseInputListener, MouseWheelL
 
         // Check panel size
         Dimension d = this.getSize();
-        Vec2 size = new Vec2(d.getWidth(), d.getHeight());
-        Vec2 zoneCenter = size.multiply(0.5);
+        screen_size.x = d.getWidth();
+        screen_size.y = d.getHeight();
+        Vec2 zoneCenter = screen_size.multiply(0.5);
         if (!zoneCenter.equals(screenCenter)) {
             dirty = true;
             screenCenter = zoneCenter;
         }
 
-        if (map.isPresent()) {
-            MapRenderer mr = map.get();
-            if (dirty) {
-                viewMatrix = computeViewMatrix();
-                invViewMatrix = computeInvViewMatrix();
-                mr.computeGeometry(viewMatrix);
-                dirty = false;
-            }
-            mr.draw(g);
+        if (dirty){
+            viewMatrix = computeViewMatrix();
+            invViewMatrix = computeInvViewMatrix();
         }
+
+        for (Renderer r : renderers){
+            if (dirty || r.dirty){
+                r.computeGeometry(viewMatrix);
+                r.dirty = false;
+            }
+            r.draw(g2);
+        }
+
+        if (dirty) dirty = false;
 
         renderInfoText(g);
     }
 
-    public void renderInfoText(Graphics g){
-        int offset = g.getFont().getSize() + 3;
-        g.setColor(TEXT_COLOR);
-        if (map.isPresent()){
-            MapRenderer mr = map.get();
+    private void renderInfoText(Graphics g) {
+        // Get Info content
+        List<String> lines = new ArrayList<>();
 
-            g.drawString("Mouse wheel to zoom.", 5, offset);
-            g.drawString("Hold middle mouse button to move.", 5, offset * 2);
-            g.drawString("Right clic to copy coordinates.", 5, offset * 3);
-    
-            if (hover) {
-                Vec2 wp = getWorldPos(mousePos);
-                String info = "x: " + format.format(wp.x) + " y: " + format.format(wp.y);
-                if (mr.map.converter.isPresent()) {
-                    Coordinates coords = mr.map.converter.get().metersToCoords(wp);
-                    info += " (lon: " + geoFormat.format(coords.lon) + " lat: " + geoFormat.format(coords.lat) + ")";
-                }
-                g.drawString(info, 5, offset * 4);
+        lines.add("Mouse wheel to zoom.");
+        lines.add("Hold middle mouse button to move.");
+        lines.add("Right clic to copy coordinates.");
+        lines.add(" ");
+
+        for (Renderer r : renderers)
+            lines.add(r.getInfo());
+
+        lines.add(" ");
+        if (hover) {
+            Vec2 wp = getWorldPos(mousePos);
+            lines.add("x: " + format.format(wp.x) + " y: " + format.format(wp.y));
+            for (Renderer r : renderers)
+                lines.add(r.getHoverInfo(wp));
+        }
+
+        // Measure size
+
+        FontMetrics metrics = g.getFontMetrics(g.getFont());
+        int lineCount = 0;
+        int maxWidth = 0;
+        for (String s : lines){
+            if (s.length() > 0){
+                lineCount++;
+                int width = metrics.stringWidth(s);
+                if (width > maxWidth) maxWidth = width;
             }
-        } else {
-            g.drawString("No Map", 5, offset);
+        }
+
+        // Render
+        final int offset = g.getFont().getSize() + UIInfo.LINE_SPACE;
+        g.setColor(UIInfo.PANEL_COLOR);
+        g.fillRect(0, 0, maxWidth+(2*UIInfo.MARGIN), lineCount*offset+UIInfo.MARGIN);
+        g.setColor(UIInfo.TEXT_COLOR);
+
+        int index = 1;
+        for (String s : lines){
+            if (s.length() == 0) continue;
+            g.drawString(s, UIInfo.MARGIN, offset*index);
+            index++;
         }
     }
 
-    public void setMap(MapRenderer mr) {
-        this.map = Optional.of(mr);
-        this.dirty = true;
+
+    public void addRenderer(Renderer r){
+        this.renderers.add(r);
+        r.dirty = true;
     }
 
     public void translate(Vec2 mouseMotion) {
@@ -142,7 +172,7 @@ public class MapViewer extends JPanel implements MouseInputListener, MouseWheelL
 
     public void zoom(int steps, Vec2 mousePos) {
         scrollCount -= steps;
-        double newScale = Math.pow(SCROLL_FACTOR, scrollCount);
+        double newScale = Math.pow(UIInfo.SCROLL_FACTOR, scrollCount);
         /*
          * Correct the "center" so that the zoom happens around the mouse => Comes from
          * solving: V*p=V'*p a.k.a.
@@ -158,10 +188,6 @@ public class MapViewer extends JPanel implements MouseInputListener, MouseWheelL
         center = new Vec2(-(scaleRatio * relPos.x - worldPos.x), -(scaleRatio * relPos.y - worldPos.y));
         scale = newScale;
         dirty = true;
-    }
-
-    public void setAntialiasing(boolean aa) {
-        this.antialiasing = aa;
     }
 
     public Vec2 getWorldPos(Vec2 screenPos) {
@@ -203,15 +229,34 @@ public class MapViewer extends JPanel implements MouseInputListener, MouseWheelL
     @Override
     public void mouseReleased(MouseEvent e) {
         if (e.isPopupTrigger()) {
-            if (map.isPresent() && map.get().map.converter.isPresent()){
-                Coordinates coords = map.get().map.converter.get().metersToCoords(getWorldPos(new Vec2(e.getX(), e.getY())));
-                String info = geoFormat.format(coords.lon) + ", " + geoFormat.format(coords.lat);
-                new CopyMenu(info).show(e.getComponent(), e.getX(), e.getY());
+            Vec2 wp = getWorldPos(new Vec2(e.getX(), e.getY()));
+            List<JMenuItem> items = new ArrayList<>();
+            
+            if (copyPos){
+                String pos = format.format(wp.x) + ", " + format.format(wp.y);
+                items.add(new CopyMenuItem("Copy position ", pos, true));
+            }
+            for (Renderer r : renderers){
+                JMenuItem i = r.getClicMenuItem(wp);
+                if (i != null) items.add(i);
+            }
+            
+            if (items.size() > 0){
+                JPopupMenu menu = new JPopupMenu();
+                for (JMenuItem i : items){
+                    menu.add(i);
+                }
+                menu.show(e.getComponent(), e.getX(), e.getY());
             }
         }
         if (e.getButton() == MouseEvent.BUTTON2) {
             trackingMouse = false;
         }
+    }
+
+    public void update(){
+        repaint();
+        revalidate();
     }
 
     @Override
@@ -249,22 +294,4 @@ public class MapViewer extends JPanel implements MouseInputListener, MouseWheelL
         repaint();
     }
 
-    class CopyMenu extends JPopupMenu implements ActionListener {
-        private static final long serialVersionUID = -8970507839473030743L;
-        JMenuItem copyItem;
-        String coords;
-        public CopyMenu(String coords) {
-            this.coords = coords;
-            copyItem = new JMenuItem("Copy Coordinates");
-            add(copyItem);
-            copyItem.addActionListener(this);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            StringSelection stringSelection = new StringSelection(coords);
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(stringSelection, null);
-        }
-    }
 }

@@ -6,21 +6,21 @@
  */
 package de.rwth.montisim.simulation.util;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Euclidean2D;
-import org.apache.commons.math3.geometry.euclidean.twod.PolygonsSet;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.apache.commons.math3.geometry.partitioning.Region;
-import org.apache.commons.math3.geometry.partitioning.RegionFactory;
+// import org.apache.commons.math3.geometry.euclidean.twod.Euclidean2D;
+// import org.apache.commons.math3.geometry.euclidean.twod.PolygonsSet;
+// import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+// import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+// import org.apache.commons.math3.geometry.partitioning.Region;
+// import org.apache.commons.math3.geometry.partitioning.RegionFactory;
+// import org.apache.commons.math3.random.RandomDataGenerator;
+// import java.util.LinkedList;
+// import java.util.List;
+// import java.util.Map;
 import org.apache.commons.math3.linear.*;
-import org.apache.commons.math3.random.RandomDataGenerator;
 
 import de.rwth.montisim.commons.utils.Mat3;
 import de.rwth.montisim.commons.utils.Mat4;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Class that provides static access to common math operations

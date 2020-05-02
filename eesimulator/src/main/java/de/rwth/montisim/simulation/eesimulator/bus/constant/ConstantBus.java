@@ -8,6 +8,7 @@ package de.rwth.montisim.simulation.eesimulator.bus.constant;
 
 import java.time.Duration;
 
+import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.simulation.eesimulator.*;
 import de.rwth.montisim.simulation.eesimulator.bus.*;
 import de.rwth.montisim.simulation.eesimulator.events.*;
@@ -85,7 +86,7 @@ public class ConstantBus extends Bus {
 		break;
 		case CONSTANT_RATE:
 			double time = event.getMessage().msgLen / rate;
-			Duration d = Duration.ofNanos((long)(time*1000000000L));
+			Duration d = Time.durationFromSeconds(time);
 			simulator.addEvent(new MessageReceiveEvent(event.getEventTime().plus(d), this, event.getMessage()));
 		break;
 		case CONSTANT_TIME:

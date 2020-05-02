@@ -6,22 +6,15 @@
  */
 package de.rwth.montisim.simulation.vehicle;
 
-import de.rwth.montisim.commons.simulation.DynamicObject;
+import de.rwth.montisim.commons.simulation.Updater;
 import de.rwth.montisim.simulation.eesimulator.EESimulator;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
-import de.rwth.montisim.simulation.vehicle.physicsmodel.masspoint.MasspointPhysics;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
-import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPowerTrain;
+import de.rwth.montisim.simulation.vehicle.vehicleproperties.VehicleProperties;
 
-public abstract class VehicleSetup {
-    public VehicleProperties getProperties() {
-        return new VehicleProperties();
-    }
-    public PowerTrain getPowerTrain(EESimulator ee_vehicle){
-        return new ElectricalPowerTrain(ee_vehicle);
-    }
-    public PhysicsModel getPhysicsModel(DynamicObject physical_data, PowerTrain power_train){
-        return new MasspointPhysics(physical_data, power_train);
-    }
-
+public interface VehicleSetup {
+    public VehicleProperties getProperties();
+    public PowerTrain getPowerTrain(EESimulator eesimulator);
+    public PhysicsModel getPhysicsModel(EESimulator eesimulator, Updater vehicle);
+    public void addComponents(EESimulator eesimulator, Updater vehicle);
 }

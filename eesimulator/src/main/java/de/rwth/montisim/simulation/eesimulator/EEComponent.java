@@ -48,33 +48,29 @@ public abstract class EEComponent extends BusComponent {
 		return outputPorts;
 	}
 
-	public MessageInformation addInput(String name, DataType type, boolean optional) {
+	public MessageInformation addInput(String name, DataType type, boolean multipleInputsAllowed, boolean optional) {
 		MessageInformation m = new MessageInformation(name, type, simulator.messageTypeManager, this);
-		inputPorts.add(new PortInformation(m, PortDirection.INPUT, optional));
+		inputPorts.add(new PortInformation(m, PortDirection.INPUT, multipleInputsAllowed, optional));
 		return m;
 	}
 
+	public MessageInformation addInput(String name, DataType type, boolean multipleInputsAllowed) {
+		return addInput(name, type, multipleInputsAllowed, false);
+	}
 	public MessageInformation addInput(String name, DataType type) {
-		return addInput(name, type, false);
+		return addInput(name, type, false, false);
 	}
 
-	public MessageInformation addOptionalInput(String name, DataType type) {
-		return addInput(name, type, true);
-	}
-
-	public MessageInformation addOutput(String name, DataType type, boolean optional) {
-		MessageInformation m = new MessageInformation(name, type, simulator.messageTypeManager, this);
-		outputPorts.add(new PortInformation(m, PortDirection.OUTPUT, optional));
-		return m;
+	public MessageInformation addOptionalInput(String name, DataType type, boolean multipleInputsAllowed) {
+		return addInput(name, type, multipleInputsAllowed, true);
 	}
 
 	public MessageInformation addOutput(String name, DataType type) {
-		return addOutput(name, type, false);
+		MessageInformation m = new MessageInformation(name, type, simulator.messageTypeManager, this);
+		outputPorts.add(new PortInformation(m, PortDirection.OUTPUT, false, true));
+		return m;
 	}
 
-	public MessageInformation addOptionalOutput(String name, DataType type) {
-		return addOutput(name, type, true);
-	}
 
 	@Override
     public void process(EEDiscreteEvent event) {
@@ -90,7 +86,7 @@ public abstract class EEComponent extends BusComponent {
 		}
 	}
 	
-	protected void send(Instant time, Message msg) {
+	public void send(Instant time, Message msg) {
 		this.simulator.addEvent(new MessageSendEvent(time, this, msg));
 	}
 

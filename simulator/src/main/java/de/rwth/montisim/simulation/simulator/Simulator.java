@@ -4,10 +4,8 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-package de.rwth.montisim.simulation.vehicle;
+package de.rwth.montisim.simulation.simulator;
 
-public class VehicleProperties {
-    double wheel_dist;
-    // ...
-    //TODO
+public class Simulator {
+
 }

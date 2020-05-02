@@ -66,7 +66,7 @@ public class SetupErrorsTest {
         try {
             simulator.finalizeSetup();
         } catch (EESetupException e){
-            foundError = e.errors.outputOverlapExceptions.size() == 1;
+            foundError = e.errors.multipleInputsExceptions.size() == 1;
             //e.printStackTrace();
         }
         Assert.assertTrue("Expected an EEOutputOverlapException to be thrown.", foundError);

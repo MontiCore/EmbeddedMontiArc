@@ -6,5 +6,14 @@
  */
 package de.rwth.montisim.simulation.vehicle.powertrain;
 
-public class PowerTrain {
+
+public abstract class PowerTrain {
+    public final String type;
+    public Motor motor;
+
+    public PowerTrain(String type) {
+        this.type = type;
+    }
+
+    public abstract double getFuelPercentage();
 }

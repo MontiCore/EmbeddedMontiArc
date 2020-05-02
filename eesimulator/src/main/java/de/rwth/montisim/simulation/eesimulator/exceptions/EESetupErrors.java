@@ -24,7 +24,7 @@ public class EESetupErrors {
     public List<EEMissingComponentException> missingComponentExceptions = new ArrayList<>();
     public List<EEComponentTypeException> componentTypeExceptions = new ArrayList<>();
     public List<EEInvalidComponentIdException> invalidIdExceptions = new ArrayList<>();
-    public HashMap<String, HashSet<EEOutputOverlapException>> outputOverlapExceptions = new HashMap<>();
+    public List<EEMultipleInputsException> multipleInputsExceptions = new ArrayList<>();
     public List<EEMissingOutputException> missingOutputExceptions = new ArrayList<>();
 
     public void throwExceptions() throws EESetupException {
@@ -35,7 +35,7 @@ public class EESetupErrors {
             !missingComponentExceptions.isEmpty() ||
             !componentTypeExceptions.isEmpty() ||
             !invalidIdExceptions.isEmpty() ||
-            !outputOverlapExceptions.isEmpty() ||
+            !multipleInputsExceptions.isEmpty() ||
             !missingOutputExceptions.isEmpty()
         )
             throw new EESetupException(this);
@@ -48,11 +48,11 @@ public class EESetupErrors {
             res += "## EECyclicSetupException: " +cyclicError.get().getMessage() + '\n';
         }
         res += printExceptions("EEComponentNameException", namesErrors);
-        res += printExceptions("EEMessageTypeException","is sent by multiple components", messageTypeErrors);
+        res += printExceptions("EEMessageTypeException","sent with different types", messageTypeErrors);
         res += printExceptions("EEMissingComponentException", missingComponentExceptions);
         res += printExceptions("EEComponentTypeException", componentTypeExceptions);
         res += printExceptions("EEInvalidComponentIdException", invalidIdExceptions);
-        res += printExceptions("EEOutputOverlapException","is sent by multiple components", outputOverlapExceptions);
+        res += printExceptions("EEMultipleInputsException", multipleInputsExceptions);
         res += printExceptions("EEMissingOutputException", missingOutputExceptions);
         return res;
     }
@@ -80,15 +80,6 @@ public class EESetupErrors {
             }
         }
         return res;
-    }
-
-    public void addOutputOverlap(String msgName, EEOutputOverlapException e){
-        HashSet<EEOutputOverlapException> comps = outputOverlapExceptions.get(msgName);
-        if (comps == null) {
-            comps = new HashSet<>();
-            outputOverlapExceptions.put(msgName, comps);
-        }
-        comps.add(e);
     }
 
     public void addMessageTypeError(String msgName, EEMessageTypeException e1, EEMessageTypeException e2){

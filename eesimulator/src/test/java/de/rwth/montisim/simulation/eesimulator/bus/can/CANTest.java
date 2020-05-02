@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
 import de.rwth.montisim.commons.utils.Pair;
+import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.simulation.eesimulator.EESimulator;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
@@ -92,7 +93,7 @@ public class CANTest {
         simulator.addEvent(m1send);
 
         // Perform computation through EESimulator
-        simulator.update(TimeUpdate.fromOldTime(startTime, Duration.ofSeconds(1)));
+        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(1)));
 
         // Verify (Test all components once)
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent c1.", 1, c1.events.size());
@@ -110,7 +111,7 @@ public class CANTest {
         simulator.addEvent(m2send);
 
         // Perform computation through EESimulator
-        simulator.update(TimeUpdate.fromOldTime(startTime, Duration.ofSeconds(2)));
+        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent c1.", 1, c1.events.size());
@@ -124,7 +125,7 @@ public class CANTest {
         simulator.addEvent(m3send);
 
         // Perform computation through EESimulator
-        simulator.update(TimeUpdate.fromOldTime(startTime, Duration.ofSeconds(2)));
+        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent c1.", 1, c1.events.size());
@@ -138,7 +139,7 @@ public class CANTest {
         simulator.addEvent(m4send);
 
         // Perform computation through EESimulator
-        simulator.update(TimeUpdate.fromOldTime(startTime, Duration.ofSeconds(2)));
+        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent c1.", 1, c1.events.size());
@@ -159,7 +160,7 @@ public class CANTest {
         simulator.addEvent(m4send);
 
         // Perform computation through EESimulator
-        simulator.update(TimeUpdate.fromOldTime(startTime, Duration.ofSeconds(2)));
+        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent.", 4, c1.events.size());
@@ -183,7 +184,7 @@ public class CANTest {
         can.process(m3send);
 
         // Perform computation through EESimulator
-        simulator.update(TimeUpdate.fromOldTime(startTime, Duration.ofSeconds(2)));
+        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify (Priorities should make the message arrive in order)
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent.", 4, c1.events.size());
@@ -213,7 +214,7 @@ public class CANTest {
         simulator.addEvent(m5send);
 
         // Perform computation through EESimulator
-        simulator.update(TimeUpdate.fromOldTime(startTime, Duration.ofSeconds(2)));
+        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify (Priorities should make the message arrive in order)
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent.", 5, c1.events.size());
@@ -233,6 +234,6 @@ public class CANTest {
     }
 
     public long bitsToNanos(long bits){
-        return (CAN.NANOSECS_IN_SEC*bits)/CAN.HIGH_SPEED_CAN_BITRATE;
+        return (Time.SECOND_TO_NANOSEC*bits)/CAN.HIGH_SPEED_CAN_BITRATE;
     }
 }

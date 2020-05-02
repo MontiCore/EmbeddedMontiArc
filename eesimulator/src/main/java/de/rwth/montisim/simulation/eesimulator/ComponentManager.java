@@ -31,9 +31,9 @@ public class ComponentManager {
     private final Vector<Integer> componentPriority = new Vector<>();
     private final HashMap<String, EEEventProcessor> componentsByName = new HashMap<>();
     // Non-Bridge and Non-Bus components
-    private final List<EEComponent> components = new ArrayList<>();
-    private final List<Bridge> bridges = new ArrayList<>();
-    private final List<Bus> buses = new ArrayList<>();
+    public final List<EEComponent> components = new ArrayList<>();
+    public final List<Bridge> bridges = new ArrayList<>();
+    public final List<Bus> buses = new ArrayList<>();
     private final EESetupErrors errors;
 
     public ComponentManager(EESetupErrors errors){
@@ -108,7 +108,7 @@ public class ComponentManager {
         }
     }
 
-    // Currently: minimizes traffic
+    // Currently: minimizes traffic -> Assumes the components & bridges are configured to send/transmit only messages where they are required
     public void finalizeSetup() {
         if (componentTable.size() == 0) return;
 		// Create EE system graph.
@@ -154,27 +154,37 @@ public class ComponentManager {
             }
         }
 
-		// Propagate outputs:
+        final class InputInfo {
+            boolean covered = false;
+            boolean multiple = false;
+            List<String> senders = null;
+        }
+
+        // Propagate outputs:
         
 		// - For all INPUTS: boolean tables: flag if message is sent by someone
-        Vector<HashMap<String, Boolean>> inputsCovered = graph.<HashMap<String, Boolean>>newColor(null);
+        Vector<HashMap<String, InputInfo>> inputsCovered = graph.<HashMap<String, InputInfo>>newColor(null);
         for (EEComponent ec : components){
             List<PortInformation> ports = ec.getInputPorts();
             if (ports.size() > 0){
-                HashMap<String, Boolean> map = new HashMap<>();
+                HashMap<String, InputInfo> map = new HashMap<>();
                 inputsCovered.set(ec.id, map);
                 for (PortInformation p : ports){
-                    map.put(p.msg.name, false);
+                    map.put(p.msg.name, new InputInfo());
                 }
             }
         }
-        
+        // 2nd usage of inputsCovered: for buses & bridges: mark messages that are already routed
+        // Used when an output is already sent and routed by another component -> When the routing encounters
+        // a bus or bridge which already transmits the message -> stop the search there and mark as "using"
 
         Vector<Boolean> usesOutput = graph.newColor(false);
         // - Per output port:
         for (EEComponent ec : components){
             List<PortInformation> ports = ec.getOutputPorts();
             for (PortInformation p : ports){
+                boolean multiple = false;
+                List<String> senders = null;
                 //	 - Propagate reachable:
                 //     - Error if same output
                 //	   - Mark input table
@@ -198,17 +208,31 @@ public class ComponentManager {
                             parent.set(a, next);
 
                             if (type.get(a) == 2){
-                                List<PortInformation> outputs = ((EEComponent) componentTable.get(a)).getOutputPorts();
+                                EEComponent ec2 = ((EEComponent) componentTable.get(a));
+                                List<PortInformation> outputs = ec2.getOutputPorts();
                                 for (PortInformation o : outputs) 
-                                    if (o.msg.name.equals(p.msg.name))
-                                        errors.addOutputOverlap(p.msg.name, new EEOutputOverlapException(ec.name));
-                                HashMap<String, Boolean> map = inputsCovered.get(a);
+                                    if (o.msg.name.equals(p.msg.name)){
+                                        if (senders == null){
+                                            senders = new ArrayList<>();
+                                            senders.add(ec.name);
+                                        }
+                                        senders.add(ec2.name);
+                                        multiple = true; // Detect if multiple components send the same message
+                                    }
+
+                                // Check if the component has the message as input
+                                HashMap<String, InputInfo> map = inputsCovered.get(a);
                                 if (map != null && map.containsKey(p.msg.name)){
-                                    map.put(p.msg.name, true);
+                                    map.get(p.msg.name).covered = true;
                                     usesOutput.set(a, true);
                                 }
                             } else {
-                                stack.push(a); // Only propagate through Buses and Bridges
+                                HashMap<String, InputInfo> map = inputsCovered.get(a);
+                                if (map != null && map.containsKey(p.msg.name)){
+                                    usesOutput.set(a, true); // Routing for this message is already covered from here on
+                                } else {
+                                    stack.push(a); // Simply propagate through Buses and Bridges
+                                }
                             }
                         }
                     }
@@ -221,6 +245,16 @@ public class ComponentManager {
                     if (usesOutput.get(j)){
                         stack.push(j);
                         visited.set(j, true);
+
+                        // Set "multiple" flag
+                        if (multiple && type.get(j) == 2){
+                            HashMap<String, InputInfo> map = inputsCovered.get(j);
+                            if (map != null && map.containsKey(p.msg.name)){
+                                InputInfo info = map.get(p.msg.name);
+                                info.multiple = true;
+                                info.senders = senders;
+                            }
+                        }
                     }
                 }
                 //   - Warning if not used
@@ -246,6 +280,18 @@ public class ComponentManager {
                 for (int j = 0; j < componentTable.size(); ++j){
                     if (usesOutput.get(j)){
                         int t = type.get(j);
+                        if (t == 0 || t == 1){
+                            HashMap<String, InputInfo> map = inputsCovered.get(j);
+                            if (map != null && map.containsKey(p.msg.name)){
+                                continue; // Routing for this message is already covered
+                            }
+                            // Mark the bus or bridge as routing the message
+                            if (map == null){
+                                map = new HashMap<>();
+                                inputsCovered.set(j, map);
+                            }
+                            map.put(p.msg.name, null);
+                        }
                         if (ec.id == j || t == 1){
                             List<Bus> targets = new ArrayList<>();
                             for (int n : graph.adjacencies.get(j)){
@@ -276,15 +322,21 @@ public class ComponentManager {
         }
         
         // Check input tables: error if non-optional not covered.
-        int i = -1;
-        for (HashMap<String,Boolean> map : inputsCovered){
-            ++i;
+        for (EEComponent c : components){
+            HashMap<String,InputInfo> map = inputsCovered.get(c.id);
             if (map == null) continue;
-            EEComponent c = ((EEComponent) componentTable.get(i));
             for (PortInformation p : c.getInputPorts()){
-                if (!map.get(p.msg.name) && !p.optional){
-                    errors.missingOutputExceptions.add(new EEMissingOutputException(p.msg.name, c.name));
+                InputInfo info = map.get(p.msg.name);
+                if (info == null){
+                    // Check optional
+                    if (!p.optional)
+                        errors.missingOutputExceptions.add(new EEMissingOutputException(p.msg.name, c.name));
+                } else {
+                    // Check if the "multipleInputs" flag is respected
+                    if (!p.multipleInputsAllowed && info.multiple)
+                        errors.multipleInputsExceptions.add(new EEMultipleInputsException(c.name, p.msg.name, info.senders));
                 }
+                
             }
         }
     }

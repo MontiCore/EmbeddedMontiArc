@@ -6,17 +6,17 @@
  */
 package de.rwth.montisim.simulation.eesimulator.bus.flexray;
 
-import de.rwth.montisim.commons.utils.Pair;
-import de.rwth.montisim.simulation.eesimulator.bus.*;
-import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
-import de.rwth.montisim.simulation.eesimulator.message.*;
+// import de.rwth.montisim.commons.utils.Pair;
+// import de.rwth.montisim.simulation.eesimulator.bus.*;
+// import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
+// import de.rwth.montisim.simulation.eesimulator.message.*;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.UUID;
+// import java.time.Duration;
+// import java.time.Instant;
+// import java.util.LinkedHashMap;
+// import java.util.Map;
+// import java.util.PriorityQueue;
+// import java.util.UUID;
 
 /**
  * Models the transmission of BusMessageEvent over a FlexRay. Calculates delay
@@ -113,8 +113,8 @@ import java.util.UUID;
 //      * @return The duration of a slot
 //      */
 //     Duration getSlotDuration() {
-//         long mikroBits = ((long) (HEADER_SIZE + TRAILER_SIZE + MAX_SLOT_PAYLOAD)) * 8l * 1000000l;
-//         double nanoseconds = mikroBits / ((double) mode.getDataRate());
+//         long microBits = ((long) (HEADER_SIZE + TRAILER_SIZE + MAX_SLOT_PAYLOAD)) * 8l * 1000000l;
+//         double nanoseconds = microBits / ((double) mode.getDataRate());
 //         return Duration.ofNanos((long) Math.ceil(nanoseconds));
 //     }
 
@@ -248,10 +248,10 @@ import java.util.UUID;
 //         }
 
 //         // determine highest priority message
-//         BusMessageEvent highestPrio = null;
+//         BusMessageEvent highestPriority = null;
 //         for (BusMessageEvent msg : firstMsgByControllerId.values()) {
-//             if (msg != null && (highestPrio == null || COMP_ID_DESC.compare(highestPrio, msg) > 0)) {
-//                 highestPrio = msg;
+//             if (msg != null && (highestPriority == null || COMP_ID_DESC.compare(highestPriority, msg) > 0)) {
+//                 highestPriority = msg;
 //             }
 //         }
 
@@ -268,19 +268,19 @@ import java.util.UUID;
 //                         + " transmittedBytes");
 //             } else {
 //                 int transmittedBytes = pair.getKey();
-//                 int fullSlots = highestPrio.getRemainingBytes() / FlexRay.MAX_SLOT_PAYLOAD;
-//                 int remainingBytes = highestPrio.getRemainingBytes() % FlexRay.MAX_SLOT_PAYLOAD;
+//                 int fullSlots = highestPriority.getRemainingBytes() / FlexRay.MAX_SLOT_PAYLOAD;
+//                 int remainingBytes = highestPriority.getRemainingBytes() % FlexRay.MAX_SLOT_PAYLOAD;
 //                 if (fullSlots < FlexRay.DYNAMIC_SLOTS) {
 //                     transmittedBytes += (fullSlots * FlexRay.MAX_SLOT_SIZE);
 //                     if (remainingBytes > 0) {
 //                         transmittedBytes += FlexRay.HEADER_SIZE + remainingBytes;
 //                     }
 //                     earliestFinishTime = time.plusNanos(calculateTransmissionTime(transmittedBytes));
-//                     Log.info("New earliest finished msg + " + highestPrio
+//                     Log.info("New earliest finished msg + " + highestPriority
 //                             + " finished in dynamic segment of incomplete cycle with: " + pair.getKey()
 //                             + " transmittedBytes");
 //                 } else {
-//                     highestPrio.transmitBytes(FlexRay.TOTAL_DYNAMIC_PAYLOAD, 0);
+//                     highestPriority.transmitBytes(FlexRay.TOTAL_DYNAMIC_PAYLOAD, 0);
 //                     transmittedBytes += FlexRay.DYNAMIC_SEGMENT_SIZE;
 //                     Log.info("Transmitted bytes in incomplete segment: " + transmittedBytes);
 //                     time = time.plusNanos(calculateTransmissionTime(transmittedBytes));
@@ -289,10 +289,10 @@ import java.util.UUID;
 //         } else if (lastPartialStaticSegmentBytes > 0 && lastPartialDynamicSegmentBytes < FlexRay.DYNAMIC_SEGMENT_SIZE
 //                 && lastPartialDynamicSegmentBytes >= 0) {
 //             Log.info("Start from incomplete dynamic segment with " + lastPartialDynamicSegmentBytes + " bytes");
-//             Pair<Integer, Instant> pair = mockFillIncompleteDynamicSegment(highestPrio);
+//             Pair<Integer, Instant> pair = mockFillIncompleteDynamicSegment(highestPriority);
 //             if (pair.getValue().isBefore(earliestFinishTime)) {
 //                 earliestFinishTime = pair.getValue();
-//                 Log.info("New earliest finished msg: " + highestPrio + " finished in incomplete dynamic segment with: "
+//                 Log.info("New earliest finished msg: " + highestPriority + " finished in incomplete dynamic segment with: "
 //                         + pair.getKey() + " transmittedBytes");
 //             } else {
 //                 Log.info("Transmitted bytes in incomplete segment: " + pair.getKey());
@@ -308,7 +308,7 @@ import java.util.UUID;
 //                     int completeCycles = 0;
 //                     int completeSlots = 0;
 //                     long partialSlotNs = 0;
-//                     if (msg.getId() == highestPrio.getId()) {
+//                     if (msg.getId() == highestPriority.getId()) {
 //                         // transmitted during static and dynamic segments
 //                         completeCycles = remainingBytes
 //                                 / (FlexRay.CONTROLLER_STATIC_PAYLOAD + FlexRay.TOTAL_DYNAMIC_PAYLOAD);
@@ -323,7 +323,7 @@ import java.util.UUID;
 //                     // controller
 //                     if (remainingBytes == 0) {
 //                         completeCycles = Math.max(completeCycles - 1, 0);
-//                         if (msg.getMessageID() != highestPrio.getMessageID()) {
+//                         if (msg.getMessageID() != highestPriority.getMessageID()) {
 //                             completeSlots = FlexRay.STATIC_SLOTS;
 //                         } else {
 //                             completeSlots = FlexRay.STATIC_SLOTS + FlexRay.DYNAMIC_SLOTS;

@@ -6,8 +6,6 @@
  */
 package de.rwth.montisim.simulation.vehicle.physicsmodel.masspoint;
 
-import de.rwth.montisim.commons.utils.Vec3;
-
 /**
  * Class that represents a mass point of a rigid body
  */

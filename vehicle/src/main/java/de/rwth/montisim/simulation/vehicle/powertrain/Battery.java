@@ -6,7 +6,7 @@
  */
 package de.rwth.montisim.simulation.vehicle.powertrain;
 
-import de.rwth.montisim.commons.controller.commons.BusEntry;
+//import de.rwth.montisim.commons.controller.commons.BusEntry;
 
 // public class Battery implements BatteryInterface {
 	

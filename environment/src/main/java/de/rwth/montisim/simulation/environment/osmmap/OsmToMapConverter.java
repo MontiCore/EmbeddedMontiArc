@@ -22,20 +22,20 @@ public class OsmToMapConverter {
 
     private OsmMap osmMap;
     private Map map;
-    private SimpleCoordinateConverter conv;
+    private SimpleCoordinateConverter converter;
 
     public OsmToMapConverter(OsmMap osmMap){
         this.osmMap = osmMap;
         this.map = new Map(osmMap.name);
-        this.conv = new SimpleCoordinateConverter(osmMap.mid_point);
+        this.converter = new SimpleCoordinateConverter(osmMap.mid_point);
     }
 
     public Map getMap(){
         long start = System.nanoTime();
         
-        map.converter = Optional.of(conv);
-        map.minCorner = conv.coordsToMeters(osmMap.min_corner);
-        map.maxCorner = conv.coordsToMeters(osmMap.max_corner);
+        map.converter = Optional.of(converter);
+        map.minCorner = converter.coordsToMeters(osmMap.min_corner);
+        map.maxCorner = converter.coordsToMeters(osmMap.max_corner);
 
         for (HashMap.Entry<Long, OsmMap.Way> c : osmMap.ways.entrySet()){
             OsmMap.Way way = c.getValue();
@@ -69,7 +69,7 @@ public class OsmToMapConverter {
         for (Long nid : way.nodes){
             OsmMap.Node node = osmMap.nodes.get(nid);
             if (node != null){
-                Vec2 pos = conv.coordsToMeters(node.coords);
+                Vec2 pos = converter.coordsToMeters(node.coords);
                 r.points.add(new Vec3(pos.x, pos.y, 0));
             }
         }
@@ -94,7 +94,7 @@ public class OsmToMapConverter {
         for (Long nid : way.nodes){
             OsmMap.Node node = osmMap.nodes.get(nid);
             if (node != null){
-                b.boundary.add(conv.coordsToMeters(node.coords));
+                b.boundary.add(converter.coordsToMeters(node.coords));
             }
         }
         map.buildings.add(b);

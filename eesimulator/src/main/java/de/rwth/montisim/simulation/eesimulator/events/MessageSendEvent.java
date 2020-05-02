@@ -16,6 +16,8 @@ import de.rwth.montisim.simulation.eesimulator.message.Message;
  */
 public class MessageSendEvent extends EEDiscreteEvent {
 
+	private Message msg;
+
     public MessageSendEvent(Instant eventTime, EEEventProcessor target, Message msg) {
 		super(eventTime, target);
 		this.msg = msg;
@@ -25,8 +27,6 @@ public class MessageSendEvent extends EEDiscreteEvent {
 	public EEEventType getEventType(){
 		return EEEventType.MESSAGE_SEND;
 	}
-
-	private Message msg;
 
 	public Message getMessage(){
 		return msg;

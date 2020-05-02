@@ -24,6 +24,7 @@
         <module>eesimulator</module>
         <module>environment</module>
         <module>vehicle</module>
+        <module>simulator</module>
     </modules>
     <properties>
 
@@ -231,6 +232,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+            
         </plugins>
     </build>
 
