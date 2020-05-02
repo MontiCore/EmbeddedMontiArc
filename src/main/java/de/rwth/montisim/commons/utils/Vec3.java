@@ -21,7 +21,25 @@ public class Vec3 {
         this.z = z;
     }
 
+    public void set(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public void set(Vec3 v){
+        x = v.x;
+        y = v.y;
+        z = v.z;
+    }
+
     public Vec3(Vec2 vec, double z) {
+        this.x = vec.x;
+        this.y = vec.y;
+        this.z = z;
+    }
+
+    public void set(Vec2 vec, double z) {
         this.x = vec.x;
         this.y = vec.y;
         this.z = z;
@@ -29,6 +47,12 @@ public class Vec3 {
 
     /// Creates a vector where all entries are 'a'
     public Vec3(double a) {
+        this.x = a;
+        this.y = a;
+        this.z = a;
+    }
+
+    public void set(double a) {
         this.x = a;
         this.y = a;
         this.z = a;
@@ -47,6 +71,16 @@ public class Vec3 {
     /// Returns a NEW Vec3 with the result
     public Vec3 add(double x, double y, double z) {
         return new Vec3(x + this.x, y + this.y, z + this.z);
+    }
+
+    /// Returns a NEW Vec3 with the result
+    public Vec3 subtract(Vec3 p) {
+        return new Vec3(x - p.x, y - p.y, z - p.z);
+    }
+
+    /// Returns a NEW Vec3 with the result
+    public Vec3 subtract(double x, double y, double z) {
+        return new Vec3(this.x - x, this.y - y, this.z - z);
     }
 
     public double angle(double x, double y, double z) {
@@ -137,18 +171,13 @@ public class Vec3 {
         return new Vec3(0, 0, 0);
     }
 
-    /// Returns a NEW Vec3 with the result
-    public Vec3 subtract(Vec3 p) {
-        return new Vec3(x - p.x, y - p.y, z - p.z);
-    }
-
-    /// Returns a NEW Vec3 with the result
-    public Vec3 subtract(double x, double y, double z) {
-        return new Vec3(this.x - x, this.y - y, this.z - z);
-    }
-
     public Vec2 asVec2() {
         return new Vec2(this.x, this.y);
+    }
+
+    public void toVec2(Vec2 target) {
+        target.x = x;
+        target.y = y;
     }
 
     public Vec3 clone() {

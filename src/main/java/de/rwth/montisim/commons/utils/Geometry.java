@@ -14,6 +14,7 @@ import org.apache.commons.math3.linear.RealVector;
 public final class Geometry {
     public static final double DEG_TO_RAD = 2.0 * Math.PI / 360.0;
     public static final double RAD_TO_DEG = 1 / DEG_TO_RAD;
+    public static final float INCH = 0.0254f;
 
     public static Mat3 rotationAroundX(double angle) {
         return new Mat3(new Vec3(1, 0, 0), new Vec3(0, Math.cos(angle), Math.sin(angle)),

@@ -122,4 +122,9 @@ public class UMath {
     public static boolean equalsThreshold(double a, double b, double threshold){
         return a < b + threshold && a > b - threshold;
     }
+
+    /// Checks if two floats are equal within a threshold (tests if a is in [b-threshold; b+threshold])
+    public static boolean equalsThreshold(float a, float b, float threshold){
+        return a < b + threshold && a > b - threshold;
+    }
 }

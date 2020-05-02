@@ -18,6 +18,88 @@ public class Mat3 {
         this.col3 = col3.clone();
     }
 
+    public Mat3(
+        double m11, double m12, double m13,
+        double m21, double m22, double m23,
+        double m31, double m32, double m33
+        ) 
+    {
+        this.col1 = new Vec3(m11, m21, m31);
+        this.col2 = new Vec3(m12, m22, m32);
+        this.col3 = new Vec3(m13, m23, m33);
+    }
+
+    public void set(Vec3 col1, Vec3 col2, Vec3 col3) {
+        this.col1.set(col1);
+        this.col2.set(col2);
+        this.col3.set(col3);
+    }
+
+    public void set(
+        double m11, double m12, double m13,
+        double m21, double m22, double m23,
+        double m31, double m32, double m33
+        ) 
+    {
+        this.col1.x = m11;
+        this.col1.y = m21;
+        this.col1.z = m31;
+        this.col2.x = m12;
+        this.col2.y = m22;
+        this.col2.z = m32;
+        this.col3.x = m13;
+        this.col3.y = m23;
+        this.col3.z = m33;
+    }
+
+    public void setZero() {
+        this.col1.x = 0;
+        this.col1.y = 0;
+        this.col1.z = 0;
+        this.col2.x = 0;
+        this.col2.y = 0;
+        this.col2.z = 0;
+        this.col3.x = 0;
+        this.col3.y = 0;
+        this.col3.z = 0;
+    }
+
+    public void setUnit(){
+        this.col1.x = 1;
+        this.col1.y = 0;
+        this.col1.z = 0;
+        this.col2.x = 0;
+        this.col2.y = 1;
+        this.col2.z = 0;
+        this.col3.x = 0;
+        this.col3.y = 0;
+        this.col3.z = 1;
+    }
+
+    public void setDiagonal(double a, double b, double c){
+        this.col1.x = a;
+        this.col1.y = 0;
+        this.col1.z = 0;
+        this.col2.x = 0;
+        this.col2.y = b;
+        this.col2.z = 0;
+        this.col3.x = 0;
+        this.col3.y = 0;
+        this.col3.z = c;
+    }
+
+    public void setDiagonal(Vec3 v){
+        this.col1.x = v.x;
+        this.col1.y = 0;
+        this.col1.z = 0;
+        this.col2.x = 0;
+        this.col2.y = v.y;
+        this.col2.z = 0;
+        this.col3.x = 0;
+        this.col3.y = 0;
+        this.col3.z = v.z;
+    }
+
     /// Creates a 3x3 Matrix with all entries set to 0
     public Mat3() {
         this.col1 = new Vec3();
@@ -43,6 +125,7 @@ public class Mat3 {
         );
     }
 
+
     public Mat3 multiply(Mat3 m){
         return new Mat3(
             multiply(m.col1),
@@ -50,6 +133,25 @@ public class Mat3 {
             multiply(m.col3)
         );
     }
+
+
+    public Mat3 multiply(double a){
+        return new Mat3(
+            this.col1.multiply(a),
+            this.col2.multiply(a),
+            this.col3.multiply(a)
+        );
+    }
+
+    public Mat3 add(Mat3 m){
+        return new Mat3(
+            this.col1.add(m.col1),
+            this.col2.add(m.col2),
+            this.col3.add(m.col3)
+        );
+    }
+
+
 
     @Override
     public boolean equals(Object obj) {
@@ -80,6 +182,13 @@ public class Mat3 {
         );
     }
 
+    public static Mat3 crossMatrix(Vec3 v) {
+        return new Mat3(
+            new Vec3(0,   v.z,  -v.y), 
+            new Vec3(-v.z,  0,   v.x), 
+            new Vec3(v.y,  -v.x,  0)
+        );
+    }
     public static Mat3 scaleMatrix(double scale) {
         return new Mat3(new Vec3(scale,0,0), new Vec3(0,scale,0), new Vec3(0, 0, 1));
     }

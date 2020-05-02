@@ -13,13 +13,13 @@ import de.rwth.montisim.commons.utils.Vec3;
 */
 public class DynamicObject extends StaticObject {
     public Vec3 velocity;
-    public Vec3 angularMomentum;
+    public Vec3 angularVelocity;
     public double mass;
 
     public DynamicObject(String type) {
         super(type);
         this.velocity = new Vec3();
-        this.angularMomentum = new Vec3();
+        this.angularVelocity = new Vec3();
         this.mass = 0;
     }
 
