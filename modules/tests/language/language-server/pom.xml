@@ -10,7 +10,7 @@
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>tests-language</artifactId>
-        <version>2020.4.28-SNAPSHOT</version>
+        <version>2020.4.29-SNAPSHOT</version>
     </parent>
 
     <artifactId>tests-language-ls</artifactId>

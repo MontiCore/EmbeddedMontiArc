@@ -25,7 +25,7 @@ public class ArtifactNameCoCo extends CommonArtifactCoCo implements ArtifactASTA
     public ArtifactNameCoCo() {
         super("SYS0002", "Artifact '%s' should start with a Capital letter.");
 
-        this.pattern = Pattern.compile("[A-Z][A-Za-z_]*");
+        this.pattern = Pattern.compile("[A-Z][[A-Z][a-z][0-9]_]*");
     }
 
     @Override
