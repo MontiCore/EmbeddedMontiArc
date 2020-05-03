@@ -46,6 +46,8 @@ export class StaticServiceImpl implements StaticService, BackendApplicationContr
     }
 
     public configure(application: Application): void {
-        application.use("/workspace/:id", (request, response, next) => this.getRequestHandler(+request.params.id, next));
+        application.use("/workspace/:id", (request, response, next) =>
+            this.getRequestHandler(+request.params.id, next)(request, response, next)
+        );
     }
 }

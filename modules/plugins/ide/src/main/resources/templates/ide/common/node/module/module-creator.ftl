@@ -27,7 +27,7 @@ import { Configuration } from "@embeddedmontiarc/sol-runtime-configurations/lib/
 
 <#if configurations?has_content>import { v4 } from "uuid";</#if>
 
-<#if artifactWrites?has_content || moduleWrites?has_content>import * as path from "path";</#if>
+import * as path from "path";
 <#if artifactWrites?has_content>import * as fs from "fs-extra";</#if>
 
 <#list subModuleTypes as subModuleType>
@@ -67,6 +67,8 @@ export class ${name}ModuleCreator<#if hasHandwrittenPeer>TOP</#if> extends Commo
     }
 
     public async createModules(destination: string): Promise<Configuration[]> {
+        path.resolve("."); // Hack to circumvent TypeScript compiler error in case path is not used.
+
         const configurations = [
             <#list configurations as configuration>
             <#assign cname = configuration.getDisplayName().get()>

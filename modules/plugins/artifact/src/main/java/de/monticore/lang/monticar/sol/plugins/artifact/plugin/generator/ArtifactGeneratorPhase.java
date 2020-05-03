@@ -94,5 +94,6 @@ public class ArtifactGeneratorPhase implements GeneratorPhase {
 
         if (source.isFile()) FileUtils.copyFileToDirectory(source, destination);
         else if (source.isDirectory()) FileUtils.copyDirectoryToDirectory(source, destination);
+        else throw new MojoExecutionException("Artifact could not be located.");
     }
 }

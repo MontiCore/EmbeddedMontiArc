@@ -27,14 +27,17 @@ export abstract class CommonTool implements Tool {
         this.suffix = suffix || '';
     }
 
-    public run(argstring: string, uuid: string): Process {
+    public run(argstring: string, uuid: string, options: { [key: string]: any } = {}): Process { // tslint:disable-line:no-any
         const prefixv = vector(this.prefix);
         const suffixv = vector(this.suffix);
         const argv = vector(argstring);
         const command = prefixv[0];
         const args = [...prefixv.slice(1), this.path, ...suffixv, ...argv];
-        const rawProcess = this.factory({ command, args, options: { env: process.env } });
+        const processOptions = { env: process.env, stdio: "inherit", ...options };
+        const rawProcess = this.factory({ command, args, options: processOptions });
 
+        console.log(`command = ${command}`);
+        console.log(`command = ${args}`);
         this.processor.registerProcess(uuid, rawProcess);
         return rawProcess;
     }
@@ -51,10 +54,12 @@ export abstract class CommonVirtualTool implements Tool {
         this.command = command;
     }
 
-    public run(argstring: string, uuid: string): Process {
+    public run(argstring: string, uuid: string, options: { [key: string]: any } = {}): Process { // tslint:disable-line:no-any
         const args = vector(argstring);
-        const rawProcess = this.factory({ command: this.command, args, options: { env: process.env } });
+        const processOptions = { env: process.env, stdio: "inherit", ...options };
+        const rawProcess = this.factory({ command: this.command, args, options: processOptions });
 
+        console.log(`command = ${args}`);
         this.processor.registerProcess(uuid, rawProcess);
         return rawProcess;
     }

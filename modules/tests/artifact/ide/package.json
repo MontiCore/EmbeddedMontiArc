@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@embeddedmontiarc/sol-tests-artifact-ide",
-  "version": "2020.4.28-SNAPSHOT",
+  "version": "2020.4.29-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "prepare": "yarn run build",
@@ -10,11 +10,11 @@
     "watch": "tscx -w --flatten"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-artifact": "^2020.4.28-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-artifact": "^2020.4.29-SNAPSHOT",
     "@theia/process": "latest"
   },
   "devDependencies": {
-    "@embeddedmontiarc/sol-development-tsc": "^2020.4.28-SNAPSHOT"
+    "@embeddedmontiarc/sol-development-tsc": "^2020.4.29-SNAPSHOT"
   },
   "theiaExtensions": [
     {
