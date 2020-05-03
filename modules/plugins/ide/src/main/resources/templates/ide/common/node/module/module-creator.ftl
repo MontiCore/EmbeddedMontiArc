@@ -24,6 +24,7 @@ ${tc.signature("template", "module")}// tslint:disable
 import { injectable<#if artifactWrites?has_content || moduleWrites?has_content>, inject</#if> } from "inversify";
 import { CommonModuleCreator } from "@embeddedmontiarc/sol-runtime-modules/lib/node";
 import { Configuration } from "@embeddedmontiarc/sol-runtime-configurations/lib/common";
+import { ModuleContext } from "@embeddedmontiarc/sol-runtime-modules/lib/common";
 
 <#if configurations?has_content>import { v4 } from "uuid";</#if>
 
@@ -66,7 +67,7 @@ export class ${name}ModuleCreator<#if hasHandwrittenPeer>TOP</#if> extends Commo
         super("${fullname}");
     }
 
-    public async createModules(destination: string): Promise<Configuration[]> {
+    public async createModules(destination: string, context: ModuleContext): Promise<Configuration[]> {
         path.resolve("."); // Hack to circumvent TypeScript compiler error in case path is not used.
 
         const configurations = [
