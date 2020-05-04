@@ -33,12 +33,14 @@ export abstract class CommonTool implements Tool {
         const argv = vector(argstring);
         const command = prefixv[0];
         const args = [...prefixv.slice(1), this.path, ...suffixv, ...argv];
-        const processOptions = { env: process.env, stdio: "inherit", ...options };
+        const processOptions = { env: process.env, ...options };
         const rawProcess = this.factory({ command, args, options: processOptions });
 
         console.log(`command = ${command}`);
         console.log(`command = ${args}`);
         this.processor.registerProcess(uuid, rawProcess);
+        rawProcess.outputStream.on("data", data => console.log(data.toString()));
+        rawProcess.errorStream.on("data", data => console.error(data.toString()));
         return rawProcess;
     }
 }
@@ -56,11 +58,13 @@ export abstract class CommonVirtualTool implements Tool {
 
     public run(argstring: string, uuid: string, options: { [key: string]: any } = {}): Process { // tslint:disable-line:no-any
         const args = vector(argstring);
-        const processOptions = { env: process.env, stdio: "inherit", ...options };
+        const processOptions = { env: process.env, ...options };
         const rawProcess = this.factory({ command: this.command, args, options: processOptions });
 
         console.log(`command = ${args}`);
         this.processor.registerProcess(uuid, rawProcess);
+        rawProcess.outputStream.on("data", data => console.log(data.toString()));
+        rawProcess.errorStream.on("data", data => console.error(data.toString()));
         return rawProcess;
     }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-runtime-static",
   "description": "",
-  "version": "2020.4.29-SNAPSHOT",
+  "version": "2020.5.3-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib"],
   "scripts": {
@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@theia/core": "latest",
+    "@theia/mini-browser": "latest",
     "@theia/workspace": "latest",
-    "@theia/filesystem": "latest",
     "inversify": "^5.0.1",
     "express": "4.17.1"
   },

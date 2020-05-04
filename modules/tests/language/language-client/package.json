@@ -3,7 +3,7 @@
   "name": "@embeddedmontiarc/sol-tests-language-lc",
   "license": "SEE LICENSE IN LICENSE",
   "description": "",
-  "version": "2020.4.29-SNAPSHOT",
+  "version": "2020.5.3-SNAPSHOT",
   "files": ["src", "lib"],
   "scripts": {
     "prepare": "yarn run build",
@@ -17,11 +17,11 @@
     "@theia/languages": "latest",
     "@theia/monaco": "latest",
     "@theia/process": "latest",
-    "@embeddedmontiarc/sol-runtime-templates": "^2020.4.29-SNAPSHOT"
+    "@embeddedmontiarc/sol-runtime-templates": "^2020.5.3-SNAPSHOT"
   },
   "devDependencies": {
     "@theia/cli": "latest",
-    "@embeddedmontiarc/sol-development-tsc": "^2020.4.29-SNAPSHOT"
+    "@embeddedmontiarc/sol-development-tsc": "^2020.5.3-SNAPSHOT"
   },
   "theiaExtensions": [
     {

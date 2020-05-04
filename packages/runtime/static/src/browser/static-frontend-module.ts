@@ -1,12 +1,10 @@
 /*
  * (c) https://github.com/MontiCore/monticore
  */
-import { WebSocketConnectionProvider } from "@theia/core/lib/browser";
 import { ContainerModule } from "inversify";
-import { StaticPaths, StaticServer } from "../common";
+import { StaticService, StaticServiceImpl } from "./static-service";
 
 export default new ContainerModule(bind => {
-    bind(StaticServer).toDynamicValue(
-        ctx => ctx.container.get(WebSocketConnectionProvider).createProxy(StaticPaths.PATH)
-    ).inSingletonScope();
+    bind(StaticServiceImpl).toSelf().inSingletonScope();
+    bind(StaticService).toService(StaticServiceImpl);
 });
