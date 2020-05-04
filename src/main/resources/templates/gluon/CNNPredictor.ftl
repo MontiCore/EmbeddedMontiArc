@@ -15,7 +15,15 @@ using namespace mxnet::cpp;
 <#list tc.architecture.networkInstructions as networkInstruction>
 class ${tc.fileNameWithoutEnding}_${networkInstruction?index}{
 public:
-    const std::string file_prefix = "model/memoryLayerTest.Network/model_0_newest";
+    const std::string file_prefix = "model/${tc.componentName}/model_${networkInstruction?index}_newest";
+    
+    const std::vector<std::string> replay_querry_prefixes;
+    /*
+    const std::vector<std::string> replay_querry_prefixes = {"resources/pretrained/bert/bert."
+                                                             "resources/pretrained/bert/bert."
+                                                             "resources/pretrained/bert/bert."};
+    */
+    
     //network
     const std::vector<std::string> network_input_keys = {
 <#if tc.getStreamInputNames(networkInstruction.body, true)?size == 1>
@@ -37,19 +45,25 @@ public:
         "data0",
         "data1"
     };
-    const std::vector<std::vector<mx_uint>> loss_input_shapes = {{1, 10}, {1}}; //<--------------------------------------------
+    const std::vector<std::vector<mx_uint>> loss_input_shapes = {{1, ${tc.getStreamOutputDimensions(networkInstruction.body)[0][0]}}, {1}}; //<-----Somhow strange dimns returned by tc---------------------------------------
     Executor *loss_handle;
     
     //labels
     mx_uint num_outputs = ${tc.getStreamOutputNames(networkInstruction.body, false)?size};
-    const std::vector<std::vector<mx_uint>> label_shapes = {{1}}; //<--------------------------------------------
-    std::vector<mx_uint> label_sizes;                                                                                                                      
+    std::vector<mx_uint> label_sizes;
+    
+    //replay querry nets
+    std::vector<Executor *> replay_querry_handles;
     
     //misc
     const bool use_gpu = false;
     Context ctx = Context::cpu(); //Will be updated later in init according to use_gpu
     //const bool perform_replay_adaption = true; //<-????????????????????????????????????????????????????
-    mx_uint num_replay_layers = 4; //<-----------------------------------------------------------------------------------------------                                                                                                            
+<#if networkInstruction.body.replaySubNetworks?has_content>                                                                                                  
+    mx_uint num_subnets = ${networkInstruction.body.replaySubNetworks?size};
+<#else>
+    mx_uint num_subnets = 0;
+</#if>
     int dtype = 0; //use data type (float32=0 float64=1 ...)
     
                                                                                                                 
@@ -72,13 +86,13 @@ public:
     void predict(${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ", "const std::vector<float> &in_", "")},
                  ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ", "std::vector<float> &out_", "")}){
 
-        if(num_replay_layers){ 
+        if(num_subnets){ 
             //adapt to gven opimizer and optimizer params and potentially put into an init method
             Optimizer *optimizerHandle = OptimizerRegistry::Find("sgd"); //<---------------------------------
             //optimizerHandle->SetParam("rescale_grad", 1.0/batch_size); //<---------------------------------
 
             std::vector<std::vector<float>> replay_input_list;
-            //for(mx_uint i=1; i < num_replay_layers+1; i++){
+            //for(mx_uint i=1; i < num_subnets+1; i++){
             //    replay_input_list = {in_data_};
             //    local_adapt(i, optimizerHandle, replay_input_list, network_input_keys, network_input_shapes, network_input_sizes, label, 1);
             //}
@@ -178,7 +192,7 @@ public:
                 std::vector<NDArray> network_output = network_handles.back()->outputs;
                 network_output[j].CopyTo(&(loss_handle->arg_dict()[loss_input_keys[0]]));
 
-                NDArray label_temp(label_shapes[j], ctx, false, dtype);
+                NDArray label_temp(loss_input_shapes[1], ctx, false, dtype);
                 label_temp.SyncCopyFromCPU(labels[j].data(), label_sizes[j]);
                 label_temp.CopyTo(&(loss_handle->arg_dict()[loss_input_keys[1]]));
 
@@ -264,9 +278,9 @@ public:
         }
             
         network_input_sizes = getSizesOfShapes(network_input_shapes);
-        label_sizes = getSizesOfShapes(label_shapes);
+        label_sizes = getSizesOfShapes({loss_input_shapes[1]});
     
-        ModelLoader model_loader(file_prefix, num_replay_layers, ctx);
+        ModelLoader model_loader(file_prefix, replay_querry_prefixes, num_subnets, ctx);
     
         std::vector<Symbol> network_symbols = model_loader.GetNetworkSymbols();
         std::vector<std::map<std::string, NDArray>> network_param_maps;
@@ -274,6 +288,13 @@ public:
 
         Symbol loss = MakeLoss(model_loader.GetLoss());
         std::map<std::string, NDArray> loss_param_map = model_loader.GetLossParamMap();
+        
+        std::vector<Symbol> querry_symbols;
+        std::vector<std::map<std::string, NDArray>> querry_param_maps;
+        if(num_subnets){
+            querry_symbols = model_loader.GetQuerrySymbols();
+            querry_param_maps = model_loader.GetQuerryParamMaps();
+        }
 
         std::map<std::string, std::vector<mx_uint>> in_shape_map;
         std::vector<std::vector<mx_uint>> prev_out_shapes = network_input_shapes;
@@ -298,6 +319,16 @@ public:
 
             network_handles.push_back(initExecutor(network_symbols[i], network_param_maps[i], curr_input_keys, prev_out_shapes));
             prev_out_shapes = {out_shapes[0]};
+        }
+    
+        for(mx_uint i=0; i < querry_symbols.size(); i++){
+            std::vector<std::vector<mx_uint>> in_shapes;
+            std::vector<std::vector<mx_uint>> aux_shapes;
+            std::vector<std::vector<mx_uint>> out_shapes;
+            //network_symbols[i].InferShape(in_shape_map, &in_shapes, &aux_shapes, &out_shapes);
+            //curr_input_keys
+            //prev_out_shapes
+            //replay_querry_handles.push_back(initExecutor(querry_symbols[i], querry_param_maps[i], curr_input_keys, prev_out_shapes));                                           
         }
         loss_handle = initExecutor(loss, loss_param_map, loss_input_keys, loss_input_shapes);
     }

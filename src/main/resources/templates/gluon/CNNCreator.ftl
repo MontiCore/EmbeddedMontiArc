@@ -85,6 +85,8 @@ class ${tc.fileNameWithoutEnding}:
         self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, ctx=context)
         self.networks[${networkInstruction?index}].hybridize()
         self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#sep>, </#list>)
+        if hasattr(self.networks[${networkInstruction?index}], "replaysubnet0_"):
+            self.networks[0].replaysubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#sep>, </#list>)
 </#list>
 
         if not os.path.exists(self._model_dir_):

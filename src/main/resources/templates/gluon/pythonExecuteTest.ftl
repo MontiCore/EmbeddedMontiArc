@@ -44,10 +44,11 @@
                             ${inputName} = seq[-1]
 </#if>
 </#list>
+                            net_ret = self._networks[${networkInstruction?index}](${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), ", ")})
+
+                            ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), ", ")} = net_ret[0]
 <#if tc.isAttentionNetwork()>
-                            ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), ", ")}, attention_ = self._networks[${networkInstruction?index}](${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), ", ")})
-<#else>
-                            ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), ", ")})
+                            attention_ = net_ret[-1][0]
 </#if>
 <#list tc.getUnrollOutputNames(networkInstruction, "i") as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>

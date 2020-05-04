@@ -28,11 +28,8 @@
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.isUnroll()>
                     for i in range(1, ${tc.getBeamSearchMaxLength(networkInstruction)}):
-<#if tc.isAttentionNetwork()>
-                        ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), ", ")}, _ = self._networks[${networkInstruction?index}](${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), ", ")})
-<#else>
-                        ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), ", ")} = self._networks[${networkInstruction?index}](${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), ", ")})
-</#if>
+                        net_ret = self._networks[${networkInstruction?index}](${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), ", ")})                                                        
+                        ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), ", ")} = net_ret[0]
 
 <#list tc.getUnrollOutputNames(networkInstruction, "i") as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
