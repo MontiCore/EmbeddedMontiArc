@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-development-cli",
   "description": "",
-  "version": "2020.4.29-SNAPSHOT",
+  "version": "2020.5.3-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib", "bin"],
   "scripts": {

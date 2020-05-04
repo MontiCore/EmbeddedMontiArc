@@ -7,7 +7,7 @@ import { CircularProgress } from "@material-ui/core";
 import { ConfirmDialog, DialogMode, DialogProps } from "@theia/core/lib/browser";
 import { TreeItem, TreeView } from "@material-ui/lab";
 import { ExpandMore, ChevronRight } from "@material-ui/icons";
-import { bind, memo } from "helpful-decorators";
+import { bind } from "helpful-decorators";
 import { inject, injectable, postConstruct } from "inversify";
 import { ReactNode } from "react";
 import { v4 } from "uuid";
@@ -92,7 +92,6 @@ export class ConfigurationDialog extends OptionDialog<ConfigurationDialogResult 
         return this.update();
     }
 
-    @memo()
     protected getConfigurationType(id: string): ConfigurationType | undefined {
         if (this.types === undefined) return undefined;
 
@@ -101,7 +100,6 @@ export class ConfigurationDialog extends OptionDialog<ConfigurationDialogResult 
         if (index > -1) return this.types[index];
     }
 
-    @memo()
     protected getConfigurationTypeCategories(): { [category: string]: ConfigurationType[] } {
         const result = {} as { [category: string]: ConfigurationType[] };
 
