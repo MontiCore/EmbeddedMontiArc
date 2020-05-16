@@ -21,11 +21,16 @@ install:
   except:
     - master
 
+#
+# TODO: Build Docker image.
+# TODO: Upload external application.
+# TODO: Build for different operating systems.
+#
 deploy:
   stage: deploy
   script:
     - mvn -B clean install
-    - yarn install --ignore-scripts
+    - yarn install --ignore-scripts --frozen-lockfile
     - cd common
     - echo "" >> .npmrc
     - echo "email=cibuild@se-rwth.de" >> .npmrc
