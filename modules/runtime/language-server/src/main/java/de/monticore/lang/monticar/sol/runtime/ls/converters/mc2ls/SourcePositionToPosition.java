@@ -15,6 +15,6 @@ public class SourcePositionToPosition implements Function<SourcePosition, Positi
 
     @Override
     public Position apply(SourcePosition sourcePosition) {
-        return new Position(sourcePosition.getLine(), sourcePosition.getColumn());
+        return new Position(sourcePosition.getLine() - 1, sourcePosition.getColumn());
     }
 }

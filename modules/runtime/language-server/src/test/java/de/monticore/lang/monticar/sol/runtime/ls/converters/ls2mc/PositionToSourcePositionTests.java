@@ -14,7 +14,7 @@ public class PositionToSourcePositionTests {
 
     @Test
     void testApply() {
-        Position position = new Position(20, 30); // Input
+        Position position = new Position(19, 30); // Input
         SourcePosition sourcePosition = new SourcePosition(20, 30); // Output
 
         // Assertions

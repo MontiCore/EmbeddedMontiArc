@@ -15,7 +15,7 @@ public class SourcePositionToPositionTests {
     @Test
     void testApply() {
         SourcePosition sourcePosition = new SourcePosition(20, 30); // Input
-        Position position = new Position(20, 30); // Output
+        Position position = new Position(19, 30); // Output
 
         // Assertions
         assertEquals(sp2p.apply(sourcePosition), position, "SourcePosition has not correctly been converted.");

@@ -15,6 +15,6 @@ public class PositionToSourcePosition implements Function<Position, SourcePositi
 
     @Override
     public SourcePosition apply(Position position) {
-        return new SourcePosition(position.getLine(), position.getCharacter());
+        return new SourcePosition(position.getLine() + 1, position.getCharacter());
     }
 }

@@ -13,7 +13,9 @@ ${tc.signature("ide", "package", "allPackages", "resolutions")}
     "start": "sol theia start"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-external-monaco": ">=2020.5.3-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-monaco": ">=2020.5.5-SNAPSHOT",
+    "react-virtualized": "^9.20.0",
+    "@primer/octicons-react": "^9.3.1",
     <#list allPackages as allPackage>
     <#assign dependencyName = allPackage.getName().get()>
     <#assign dependencyVersion = allPackage.getVersion().orElse("latest")>
@@ -28,7 +30,7 @@ ${tc.signature("ide", "package", "allPackages", "resolutions")}
   },
   "devDependencies": {
     "@theia/cli": "latest",
-    "@embeddedmontiarc/sol-development-cli": ">=2020.5.3-SNAPSHOT"
+    "@embeddedmontiarc/sol-development-cli": ">=2020.5.5-SNAPSHOT"
   },
   "theia": {
     "frontend": {

@@ -4,7 +4,13 @@
 import { OptionsContext } from "@embeddedmontiarc/sol-runtime-options/lib/common";
 import { CancellationTokenSource, Event, Emitter } from "@theia/core/lib/common";
 import { inject, injectable } from "inversify";
-import { Configuration, ConfigurationExitEvent, ConfigurationOutputEvent, ConfigurationStartEvent } from "../../common";
+import {
+    Configuration,
+    ConfigurationExitEvent,
+    ConfigurationOutputEvent,
+    ConfigurationRunnerClient,
+    ConfigurationStartEvent
+} from "../../common";
 import { ConfigurationCoordinatorDelegator } from "../coordinator";
 import { Process } from "@theia/process/lib/node";
 
@@ -24,6 +30,7 @@ export interface ConfigurationProcessor {
 @injectable()
 export class ConfigurationProcessorImpl implements ConfigurationProcessor {
     @inject(ConfigurationCoordinatorDelegator) protected readonly coordinator: ConfigurationCoordinatorDelegator;
+    @inject(ConfigurationRunnerClient) protected readonly client: ConfigurationRunnerClient;
 
     protected readonly tokens: Map<string, CancellationTokenSource>;
     protected readonly processes: Map<string, Process[]>;
@@ -63,9 +70,13 @@ export class ConfigurationProcessorImpl implements ConfigurationProcessor {
             await this.waitForProcessesTermination(configuration.uuid);
         } catch (error) {
             source.cancel();
+            await this.client.kill(configuration.uuid);
             this.fireConfigurationOutput(configuration.uuid, error.message);
+            this.fireConfigurationExit(configuration);
         }
 
+        source.dispose();
+        await this.client.dispose(configuration.uuid);
         this.tokens.delete(configuration.uuid);
         this.fireConfigurationExit(configuration);
     }
@@ -99,13 +110,16 @@ export class ConfigurationProcessorImpl implements ConfigurationProcessor {
         const processes = this.processes.get(uuid);
 
         if (processes) return this.doWaitForProcessesTermination(processes);
-        else return Promise.resolve();
     }
 
     protected async doWaitForProcessesTermination(processes: Process[]): Promise<void> {
         const mapping = (process: Process) => new Promise(resolve => {
-            if (process.killed) resolve();
-            else process.onExit(resolve);
+            if (process.killed) {
+                resolve();
+            } else {
+                process.onExit(resolve);
+                process.onError(resolve);
+            }
         });
 
         await Promise.all(processes.map(mapping));
@@ -129,6 +143,7 @@ export class ConfigurationProcessorImpl implements ConfigurationProcessor {
 
         process.errorStream.on("data", handler);
         process.outputStream.on("data", handler);
+        process.onError(() => this.unregisterProcess(uuid, process));
         process.onExit(() => this.unregisterProcess(uuid, process));
 
         if (source) source.token.onCancellationRequested(() => process.kill());

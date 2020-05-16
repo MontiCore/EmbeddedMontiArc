@@ -49,4 +49,5 @@ export const ConfigurationRunnerClient = Symbol("ConfigurationRunnerClient");
 export interface ConfigurationRunnerClient {
     run<V>(uuid: string, typeId: string, taskName: string, options: V, context: OptionsContext): Promise<void>;
     kill(uuid: string): Promise<void>;
+    dispose(uuid: string): Promise<void>;
 }

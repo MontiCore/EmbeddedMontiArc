@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@embeddedmontiarc/sol-tests-templates",
-  "version": "2020.5.3-SNAPSHOT",
+  "version": "2020.5.5-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "prepare": "yarn run clean && yarn run build",
@@ -10,7 +10,7 @@
     "watch": "tsc -p compile.tsconfig.json -w"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-templates": "^2020.5.3-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-templates": "^2020.5.5-SNAPSHOT",
     "inversify": "^5.0.1"
   },
   "devDependencies": {
