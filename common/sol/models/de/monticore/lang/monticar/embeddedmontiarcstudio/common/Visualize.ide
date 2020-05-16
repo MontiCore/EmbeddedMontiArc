@@ -1,0 +1,29 @@
+package de.monticore.lang.monticar.embeddedmontiarcstudio.common
+
+import de.monticore.lang.monticar.sol.option.types.String
+import de.monticore.lang.monticar.sol.option.types.Path
+import de.monticore.lang.monticar.generators.VisualizationEMAM
+
+typedef configuration Visualize {
+    label "Visualize EmbeddedMontiArcMath Model"
+    category "EmbeddedMontiArcStudio"
+    tools [VisualizationEMAM]
+
+    option model: String {
+        label "Model"
+        required true
+    }
+
+    option modelPath: Path {
+        label "Model Path"
+        required true
+    }
+
+    option outputPath: Path {
+        label "Output Path"
+        required true
+    }
+
+    backend task Generate
+    frontend task Open depends Generate
+}

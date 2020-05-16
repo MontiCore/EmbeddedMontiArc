@@ -22,7 +22,7 @@
     <!-- == PROJECT PROPERTIES ================================================ -->
 
     <properties>
-        <sol-plugin.version>2019.12.12</sol-plugin.version>
+        <sol-plugin.version>2020.5.5-SNAPSHOT</sol-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
     </properties>
 
