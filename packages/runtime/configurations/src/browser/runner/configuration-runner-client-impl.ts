@@ -28,7 +28,19 @@ export class ConfigurationRunnerClientImpl implements ConfigurationRunnerClient,
     public async kill(uuid: string): Promise<void> {
         const token = this.tokens.get(uuid);
 
-        if (token) token.cancel();
+        if (token) {
+            token.cancel();
+            this.tokens.delete(uuid);
+        }
+    }
+
+    public async dispose(uuid: string): Promise<void> {
+        const token = this.tokens.get(uuid);
+
+        if (token) {
+            token.dispose();
+            this.tokens.delete(uuid);
+        }
     }
 
     public onStart() { /* noop */ }

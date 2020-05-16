@@ -87,6 +87,7 @@ public class DefaultTextDocumentService implements ValidatorTextDocumentService 
             List<Diagnostic> diagnostics = validation.get();
             LanguageClient client = this.server.getRemoteProxy();
 
+            this.logger.atInfo().log(diagnostics.toString());
             client.publishDiagnostics(new PublishDiagnosticsParams(uri, diagnostics));
         } catch(Exception ignored) {}
     }

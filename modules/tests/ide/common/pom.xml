@@ -10,7 +10,7 @@
     <parent>
         <groupId>de.monticore.lang.monticar.sol</groupId>
         <artifactId>tests-ide</artifactId>
-        <version>2020.5.3-SNAPSHOT</version>
+        <version>2020.5.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>tests-ide-common</artifactId>

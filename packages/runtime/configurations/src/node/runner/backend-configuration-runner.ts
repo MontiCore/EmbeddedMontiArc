@@ -27,10 +27,18 @@ export abstract class CommonBackendConfigurationRunner<V> extends CommonConfigur
         });
     }
 
-    protected waitForTermination(process: Process, token: CancellationToken): Promise<IProcessExitEvent> {
-        return new Promise<IProcessExitEvent>(resolve => {
-            process.onExit(resolve);
+    protected waitForTermination(process: Process, token: CancellationToken, exitCode: number = 0): Promise<IProcessExitEvent> {
+        return new Promise<IProcessExitEvent>((resolve, reject) => {
+            if (process.killed) resolve();
+
             token.onCancellationRequested(() => resolve({ code: 1, signal: "SIGTERM" }));
+            process.onExit(event => {
+                if (event.code === exitCode) resolve(event);
+                else reject(`Process with PID ${process.pid} returned unexpected exit code ${event.code}.`);
+            });
+            process.onError(event => {
+                reject(`Process with PID ${process.pid} could not be started: ${event.name} ${event.code} ${event.message}`);
+            });
         });
     }
 }

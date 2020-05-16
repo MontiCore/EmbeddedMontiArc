@@ -3,7 +3,7 @@
  */
 import { IconButton } from "@material-ui/core";
 import { PureComponent, ReactNode } from "react";
-import { Settings as CogIconBase } from "mdi-material-ui";
+import { Cogs as CogIconBase } from "mdi-material-ui";
 
 import * as React from "react";
 

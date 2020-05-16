@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-runtime-artifact",
   "description": "",
-  "version": "2020.5.3-SNAPSHOT",
+  "version": "2020.5.5-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "files": ["src", "lib"],
   "scripts": {
@@ -14,7 +14,7 @@
     "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
   },
   "dependencies": {
-    "@embeddedmontiarc/sol-runtime-configurations": "^2020.5.3-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-configurations": "^2020.5.5-SNAPSHOT",
     "@theia/core": "latest",
     "@theia/process": "latest",
     "string-argv": "^0.3.1",

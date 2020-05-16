@@ -1,7 +1,7 @@
 {
   "name": "@embeddedmontiarc/sol-external-core",
   "description": "",
-  "version": "2020.5.3-SNAPSHOT",
+  "version": "2020.5.5-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE",
   "files": [
     "src",

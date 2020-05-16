@@ -9,7 +9,7 @@
 
     <groupId>de.monticore.lang.monticar.sol</groupId>
     <artifactId>sol</artifactId>
-    <version>2020.5.3-SNAPSHOT</version>
+    <version>2020.5.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <!-- == PROJECT MODULES =================================================== -->
