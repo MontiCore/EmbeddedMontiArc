@@ -221,8 +221,8 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_STEPS_NAME).get();
     }
     
-    public int getReplayGradientSteps(){
-        return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_NAME).get();
+    public int getReplayGradientStepsTraining(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_TRAINING_NAME).get();
     }
     
     public double getStoreProb(){
@@ -231,6 +231,22 @@ public class ArchitectureElementData {
     
     public int getMaxStoredSamples(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.MAX_STORED_SAMPLES_NAME).get();
+    }
+
+    public int getReplayK(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_K_NAME).get();
+    }
+
+    public int getReplayGradientStepsPrediction(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_PREDICTION_NAME).get();
+    }
+
+    public String getQueryNetDir(){
+        return getLayerSymbol().getStringValue(AllPredefinedLayers.QUERY_NET_DIR_NAME).get();
+    }
+    
+    public String getQueryNetPrefix(){
+        return getLayerSymbol().getStringValue(AllPredefinedLayers.QUERY_NET_PREFIX_NAME).get();
     }
     
     public List<Integer> getValueShape(){   
