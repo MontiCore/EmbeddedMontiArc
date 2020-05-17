@@ -47,7 +47,7 @@
                                         gluon.utils.clip_global_norm(grads, clip_global_grad_norm)
 
                                     for trainer in trainers:
-                	                trainer.step(batch_size, ignore_stale_grad=True)
+                                        trainer.step(batch_size, ignore_stale_grad=True)
 </#if>
 </#list>
                     pass

@@ -187,6 +187,8 @@ class ReplayMemory(gluon.HybridBlock):
                  replay_gradient_steps,
                  store_prob,
                  max_stored_samples,
+                 query_net_dir,
+                 query_net_prefix,
                  **kwargs):
         super(ReplayMemory, self).__init__(**kwargs)
         with self.name_scope():
@@ -200,20 +202,28 @@ class ReplayMemory(gluon.HybridBlock):
             self.store_prob = int(store_prob*100)
             self.max_stored_samples = max_stored_samples
 
+            self.query_net_dir = query_net_dir
+            self.query_net_prefix = query_net_prefix
+    
             #Memory
+            self.key_memory = nd.array([])
             self.value_memory = nd.array([])
-            self.label_memory = [nd.array([])]
+            self.label_memory = nd.array([])
 
     def hybrid_forward(self, F, x):
             #propagate the input as the rest is only used for replay
             return x
 
-    def store_samples(self, x, y, mx_context):
+    def store_samples(self, x, y, query_network, mx_context):
         x_values = x
         x_labels = y
         batch_size = x_values.shape[0]
         num_outputs = len(x_labels)
 
+        if len(self.key_memory) == 0:
+            self.key_memory = nd.empty(0, ctx=mx_context)
+            self.value_memory = nd.empty(0, ctx=mx_context)
+            self.label_memory = nd.empty((num_outputs, 0), ctx=mx_context)
 
         zeros = nd.zeros(batch_size, ctx=mx_context)
         ones = nd.ones(batch_size, ctx=mx_context)
@@ -221,19 +231,27 @@ class ReplayMemory(gluon.HybridBlock):
         ind = nd.where(rand < self.store_prob, ones, zeros, ctx=mx_context)
 
         to_store_values = nd.contrib.boolean_mask(x_values, ind)
-        to_store_labels = [nd.contrib.boolean_mask(x_labels[i], ind) for i in range(num_outputs)]
-        
+
         if len(to_store_values) != 0:
+            to_store_labels = nd.empty((num_outputs, len(to_store_values)), ctx=mx_context)
+            for i in range(num_outputs):
+                to_store_labels[i] = nd.contrib.boolean_mask(x_labels[i], ind)
+            to_store_keys = query_network(to_store_values)
+
             if self.value_memory.shape[0] == 0:
+                self.key_memory = to_store_keys
                 self.value_memory = to_store_values
                 self.label_memory = to_store_labels
             elif self.max_stored_samples != -1 and self.value_memory.shape[0] >= self.max_stored_samples:
                 num_to_store = to_store_values.shape[0]
+                self.key_memory = nd.concat(self.key_memory[num_to_store:], to_store_keys, dim=0)
                 self.value_memory = nd.concat(self.value_memory[num_to_store:], to_store_values, dim=0)
-                self.label_memory = [nd.concat(self.label_memory[i][num_to_store:], to_store_labels[i], dim=0) for i in range(num_outputs)]
+                self.label_memory = nd.slice_axis(self.label_memory, axis=1, begin=num_to_store, end=-1)
+                self.label_memory = nd.concat(self.label_memory, to_store_labels, dim=1)
             else:
+                self.key_memory = nd.concat(self.key_memory, to_store_keys, dim=0)
                 self.value_memory = nd.concat(self.value_memory, to_store_values, dim=0)
-                self.label_memory = [nd.concat(self.label_memory[i], to_store_labels[i], dim=0) for i in range(num_outputs)]
+                self.label_memory = nd.concat(self.label_memory, to_store_labels, dim=1)
 
     def sample_memory(self, batch_size, mx_context):
 
@@ -251,10 +269,8 @@ class ReplayMemory(gluon.HybridBlock):
         return sample_batches
 
 <#list tc.architecture.networkInstructions as networkInstruction>
-
 #Stream ${networkInstruction?index}
 <#list networkInstruction.body.replaySubNetworks as elements>
-
 class ReplaySubNet_${elements?index}(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, **kwargs):
 <#if elements?index == 0 >

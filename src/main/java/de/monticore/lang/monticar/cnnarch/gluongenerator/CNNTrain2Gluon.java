@@ -131,8 +131,11 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         Map<String, String> fileContentMap = new HashMap<>();
 
         if (configData.isSupervisedLearning()) {
-            String cnnTrainTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
-            fileContentMap.put("CNNTrainer_" + getInstanceName() + ".py", cnnTrainTemplateContent);
+            String cnnTrainTrainerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
+            fileContentMap.put("CNNTrainer_" + getInstanceName() + ".py", cnnTrainTrainerTemplateContent);
+            //Optimizer for local adaption during prediction for replay memory layer
+            String cnnTrainLAOptimizerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNLAOptimizer.ftl");
+            fileContentMap.put("CNNLAOptimizer_" + getInstanceName() + ".h", cnnTrainLAOptimizerTemplateContent);
         } else if (configData.isGan()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();
             if (!configuration.getDiscriminatorNetwork().isPresent()) {

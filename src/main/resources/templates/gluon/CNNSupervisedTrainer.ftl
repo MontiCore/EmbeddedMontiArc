@@ -379,14 +379,17 @@ class ${tc.fileNameWithoutEnding}:
         #Memory Replay
         replay_layers = {}
         replay_store_buffer = {}
+        replay_query_networks = {}
 <#list tc.architecture.networkInstructions as networkInstruction>
         replay_layers[${networkInstruction?index}] = []
         replay_store_buffer[${networkInstruction?index}] = []
+        replay_query_networks[${networkInstruction?index}] = []
 <#list networkInstruction.body.replaySubNetworks as elements>
 <#if elements?index != 0>
         sub_net = self._networks[${networkInstruction?index}].replay_sub_nets[${elements?index - 1}]
         replay_layers[${networkInstruction?index}].append(sub_net.replaymemory${elements?index}_)
         replay_store_buffer[${networkInstruction?index}].append([])
+        replay_query_networks[${networkInstruction?index}].append(self._net_creator.load_network(replay_layers[${networkInstruction?index}][-1].query_net_dir, replay_layers[${networkInstruction?index}][-1].query_net_prefix, mx_context))
 </#if>
 </#list>
 </#list>
@@ -408,7 +411,7 @@ class ${tc.fileNameWithoutEnding}:
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 
-                 #replay memory computations
+                #replay memory computations
 <#include "pythonReplayExecuteTrain.ftl">
                                  
                 with autograd.record():
@@ -439,7 +442,7 @@ class ${tc.fileNameWithoutEnding}:
                 #storing samples for replay
                 for net_i in range(len(self._networks)):
                     for layer_i, layer in enumerate(replay_layers[net_i]):
-                        layer.store_samples(replay_store_buffer[net_i][layer_i], labels, mx_context)
+                        layer.store_samples(replay_store_buffer[net_i][layer_i], labels, replay_query_networks[net_i][layer_i], mx_context)
 
                 if tic is None:
                     tic = time.time()
@@ -460,7 +463,6 @@ class ${tc.fileNameWithoutEnding}:
             global_loss_train /= (train_batches * batch_size)
 
             tic = None
-
 
             if eval_train:
                 train_iter.reset()
@@ -523,9 +525,14 @@ class ${tc.fileNameWithoutEnding}:
             network.export(self.parameter_path(i) + '_newest', epoch=0)
             
             if hasattr(network, 'replay_sub_nets'):
-                network.replaysubnet0_.export(self.parameter_path(i) + '_newest_sub_net_' + str(0), epoch=0)
+                network.replaysubnet0_.export(self.parameter_path(i) + '_newest_replay_sub_net_' + str(0), epoch=0)
                 for j, net in enumerate(network.replay_sub_nets):
-                    net.export(self.parameter_path(i) + '_newest_sub_net_' + str(j+1), epoch=0)
+                    net.export(self.parameter_path(i) + '_newest_replay_sub_net_' + str(j+1), epoch=0)
+                    replay_query_networks[i][j].export(self.parameter_path(i) + '_newest_replay_query_net_' + str(j+1), epoch=0)
+                    nd.save(self.parameter_path(i) + "_newest_replay_memory_" + str(j+1),
+                            {"keys": replay_layers[i][j].key_memory,
+                             "values": replay_layers[i][j].value_memory,
+                             "labels": replay_layers[i][j].label_memory})
 
             loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 

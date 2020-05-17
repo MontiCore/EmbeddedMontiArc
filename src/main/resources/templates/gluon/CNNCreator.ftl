@@ -79,6 +79,24 @@ class ${tc.fileNameWithoutEnding}:
                 else:
                     logging.info("No pretrained weights available at: " + self._weights_dir_ + param_file)
 
+    def load_network(self, modelDir, filePrefix, context):
+        lastEpoch = 0
+        for file in os.listdir(modelDir):
+            if filePrefix in file and ".json" in file:
+                symbolFile = file
+
+            if filePrefix in file and ".param" in file:
+                epochStr = file.replace(".params", "").replace(filePrefix + "-", "")
+                epoch = int(epochStr)
+                if epoch >= lastEpoch:
+                    lastEpoch = epoch
+                    weightFile = file
+
+        net = mx.gluon.nn.SymbolBlock.imports(modelDir + symbolFile, ["data"], modelDir + weightFile, ctx=context)
+        net.hybridize()
+        return net
+    
+    
     def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std)

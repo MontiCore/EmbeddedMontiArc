@@ -1,5 +1,5 @@
-#ifndef CNNBUFFERFILE_H
-#define CNNBUFFERFILE_H
+#ifndef CNNMODELLOADER
+#define CNNMODELLOADER
 
 #include <mxnet-cpp/MxNetCpp.h>
 
@@ -11,16 +11,18 @@ using namespace mxnet::cpp;
 
 // Read files to load moddel symbol and parameters
 class ModelLoader {
- private :
+private:
     Context ctx = Context::cpu();
     std::vector<Symbol> network_symbol_list;
     std::vector<std::map<std::string, NDArray>> network_param_map_list;
-    
+
+    std::vector<Symbol> query_symbol_list;
+    std::vector<std::map<std::string, NDArray>> query_param_map_list;
+
+    std::vector<std::map<std::string, NDArray>> replay_memory;
+
     std::vector<Symbol> loss_symbol;
     std::vector<std::map<std::string, NDArray>> loss_param_map;
-    
-    std::vector<Symbol> querry_symbol_list;
-    std::vector<std::map<std::string, NDArray>> querry_param_map_list;
 
 
     void checkFile(std::string file_path){
@@ -38,9 +40,9 @@ class ModelLoader {
         ifs.close();
     }
 
-    void loadComponent(std::string json_path, 
+    void loadComponent(std::string json_path,
                        std::string param_path,
-                       std::vector<Symbol> &symbols_list, 
+                       std::vector<Symbol> &symbols_list,
                        std::vector<std::map<std::string, NDArray>> &param_map_list){
         checkFile(json_path);
         symbols_list.push_back(Symbol::Load(json_path));
@@ -61,19 +63,18 @@ class ModelLoader {
         return processed_param_map;
     }
 
- public :
-    explicit ModelLoader(std::string file_prefix, std::vector<std::string> replay_querry_prefixes, mx_uint num_subnets, Context ctx_param){
+public:
+    explicit ModelLoader(std::string file_prefix, mx_uint num_subnets, Context ctx_param){
 
         ctx = ctx_param;
         std::string network_json_path;
         std::string network_param_path;
+        std::string query_json_path;
+        std::string query_param_path;
+        std::string memory_path;
         std::string loss_json_path;
         std::string loss_param_path;
-        std::string querry_json_path;
-        std::string querry_param_path;
-        
-        //assert(num_subnets-1 == replay_querry_prefixes.size());
-        
+
         //Load network
         if(!num_subnets){
             network_json_path = file_prefix + "-symbol.json";
@@ -81,14 +82,22 @@ class ModelLoader {
             loadComponent(network_json_path, network_param_path, network_symbol_list, network_param_map_list);
         }else{
             for(int i=0; i < num_subnets; i++){
-                network_json_path = file_prefix + "_sub_net_" + std::to_string(i) + "-symbol.json";
-                network_param_path = file_prefix + "_sub_net_" + std::to_string(i) + "-0000.params";
+                network_json_path = file_prefix + "_replay_sub_net_" + std::to_string(i) + "-symbol.json";
+                network_param_path = file_prefix + "_replay_sub_net_" + std::to_string(i) + "-0000.params";
                 loadComponent(network_json_path, network_param_path, network_symbol_list, network_param_map_list);
-                
-                if(i >= 1 && !replay_querry_prefixes.empty()){
-                    querry_json_path = replay_querry_prefixes[i] + "json";
-                    querry_param_path = replay_querry_prefixes[i] + "params";
-                    loadComponent(querry_json_path, querry_param_path, querry_symbol_list, querry_param_map_list);
+                if(i >= 1){
+                    query_json_path = file_prefix + "_replay_query_net_" + std::to_string(i) + "-symbol.json";
+                    query_param_path = file_prefix + "_replay_query_net_" + std::to_string(i) + "-0000.params";
+                    loadComponent(query_json_path, query_param_path, query_symbol_list, query_param_map_list);
+
+                    memory_path = file_prefix + "_replay_memory_" + std::to_string(i);
+                    checkFile(memory_path);
+
+                    std::map<std::string, NDArray> mem_map = NDArray::LoadToMap(memory_path);
+                    for(auto &mem : mem_map){
+                        mem.second = mem.second.Copy(ctx);
+                    }
+                    replay_memory.push_back(mem_map);
                 }
             }
         }
@@ -116,14 +125,17 @@ class ModelLoader {
     std::map<std::string, NDArray> GetLossParamMap() {
         return loss_param_map[0];
     }
-    
-   std::vector<Symbol> GetQuerrySymbols() {
-        return querry_symbol_list;
+
+   std::vector<Symbol> GetQuerySymbols() {
+        return query_symbol_list;
     }
 
-    std::vector<std::map<std::string, NDArray>> GetQuerryParamMaps() {
-        return querry_param_map_list;
+    std::vector<std::map<std::string, NDArray>> GetQueryParamMaps() {
+        return query_param_map_list;
+    }
+
+    std::vector<std::map<std::string, NDArray>> GetReplayMemory(){
+        return replay_memory;
     }
 };
-
-#endif // CNNBUFFERFILE_H
+#endif // CNNMODELLOADER
