@@ -102,9 +102,13 @@ public class AllPredefinedLayers {
     public static final String REPLAY_INTERVAL_NAME = "replayInterval";
     public static final String REPLAY_BATCH_SIZE_NAME = "replayBatchSize";
 	public static final String REPLAY_STEPS_NAME = "replaySteps";
-    public static final String REPLAY_GRADIENT_STEPS_NAME = "replayGradientSteps";
+    public static final String REPLAY_GRADIENT_STEPS_TRAINING_NAME = "replayGradientStepsTraining";
 	public static final String STORE_PROB_NAME = "storeProb";
 	public static final String MAX_STORED_SAMPLES_NAME = "maxStoredSamples";
+    public static final String REPLAY_K_NAME = "replayK";
+    public static final String REPLAY_GRADIENT_STEPS_PREDICTION_NAME = "replayGradientStepsPrediction";
+	public static final String QUERY_NET_DIR_NAME = "queryNetDir";
+	public static final String QUERY_NET_PREFIX_NAME = "queryNetPrefix";
 
     //possible String values
     public static final String PADDING_VALID = "valid";

@@ -57,7 +57,7 @@ public class ReplayMemory extends PredefinedLayerDeclaration {
                         .defaultValue("linear")
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_NAME)
+                        .name(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_TRAINING_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .defaultValue(1)
                         .build(),
@@ -69,6 +69,26 @@ public class ReplayMemory extends PredefinedLayerDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.MAX_STORED_SAMPLES_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE_OR_MINUS_ONE)
+                        .defaultValue(-1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.REPLAY_K_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_PREDICTION_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.QUERY_NET_DIR_NAME)
+                        .constraints(Constraints.STRING)
+                        .defaultValue(-1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.QUERY_NET_PREFIX_NAME)
+                        .constraints(Constraints.STRING)
                         .defaultValue(-1)
                         .build()));
         declaration.setParameters(parameters);
