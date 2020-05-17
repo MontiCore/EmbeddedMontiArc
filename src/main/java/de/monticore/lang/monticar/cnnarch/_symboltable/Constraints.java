@@ -48,6 +48,16 @@ public enum Constraints {
             return "a boolean";
         }
     },
+    STRING {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            return exp.isString();
+        }
+        @Override
+        public String msgString() {
+            return "a string";
+        }
+    },
     TUPLE {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {

@@ -61,6 +61,7 @@ public class CNNArchCocos {
                 .addCoCo(new CheckLayerVariableDeclarationIsUsed())
                 .addCoCo(new CheckConstants())
                 .addCoCo(new CheckMemoryLayer())
+                .addCoCo(new CheckReplayMemoryLayer())
                 .addCoCo(new CheckUnrollInputsOutputsTooMany());
     }
 
@@ -70,7 +71,6 @@ public class CNNArchCocos {
                 .addCoCo(new CheckVariableDeclarationName())
                 .addCoCo(new CheckVariableName())
                 .addCoCo(new CheckArgmaxLayer())
-                .addCoCo(new CheckReplayMemoryLayer())
                 .addCoCo(new CheckExpressions());
     }
 
