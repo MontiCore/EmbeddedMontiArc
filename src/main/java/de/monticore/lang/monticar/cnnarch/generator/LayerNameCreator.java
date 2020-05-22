@@ -5,6 +5,8 @@ import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.predefined.Convolution;
 import de.monticore.lang.monticar.cnnarch.predefined.FullyConnected;
 import de.monticore.lang.monticar.cnnarch.predefined.Pooling;
+import de.monticore.lang.monticar.cnnarch.predefined.Memory;
+import de.monticore.lang.monticar.cnnarch.predefined.ReplayMemory;
 
 import java.util.*;
 
@@ -132,6 +134,8 @@ public class LayerNameCreator {
                 return "fc";
             } else if (layerDeclaration instanceof Pooling) {
                 return "pool";
+            } else if (layerDeclaration instanceof Memory || layerDeclaration instanceof ReplayMemory) {
+                return "memory";
             } else {
                 return layerDeclaration.getName().toLowerCase();
             }

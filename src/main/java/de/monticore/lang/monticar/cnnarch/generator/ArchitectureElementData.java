@@ -221,24 +221,40 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_STEPS_NAME).get();
     }
     
-    public int getReplayGradientStepsTraining(){
-        return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_TRAINING_NAME).get();
+    public int getReplayGradientSteps(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_NAME).get();
     }
     
-    public double getStoreProb(){
-        return getLayerSymbol().getDoubleValue(AllPredefinedLayers.STORE_PROB_NAME).get();
+    public double getReplayMemoryStoreProb(){
+        return getLayerSymbol().getDoubleValue(AllPredefinedLayers.REPLAY_MEMORY_STORE_PROB_NAME).get();
     }
     
     public int getMaxStoredSamples(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.MAX_STORED_SAMPLES_NAME).get();
     }
 
-    public int getReplayK(){
-        return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_K_NAME).get();
+    public boolean getUseReplay(){
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.USE_REPLAY_NAME).get();
     }
 
-    public int getReplayGradientStepsPrediction(){
-        return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_PREDICTION_NAME).get();
+    public boolean getUseLocalAdaption(){
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME).get();
+    }
+
+    public String getReplayMemoryStoreDistMeasure(){
+        return getLayerSymbol().getStringValue(AllPredefinedLayers.REPLAY_MEMORY_STORE_DIST_MEASURE_NAME).get();
+    }
+
+    public String getLocalAdaptionMemoryStoreDistMeasure(){
+        return getLayerSymbol().getStringValue(AllPredefinedLayers.LOCAL_ADAPTION_MEMORY_STORE_DIST_MEASURE_NAME).get();
+    }
+
+    public int getLocalAdaptionK(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.LOCAL_ADAPTION_K_NAME).get();
+    }
+
+    public int getlocalAdaptionGradientSteps(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.LOCAL_ADAPTION_GRADIENT_STEPS_NAME).get();
     }
 
     public String getQueryNetDir(){
