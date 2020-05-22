@@ -5,7 +5,7 @@
  * can be found under https://github.com/MontiCore/monticore.
  */
 package de.rwth.montisim.commons.utils;
-
+// TODO add all missing variants & Vec2 variants & Vec4
 /**
  * "In Place Math": in-memory vector and matrix operations. (Does not create new Vec/Mat objects)
  */
@@ -21,11 +21,21 @@ public class IPM {
         target.y = a.y + b.y;
         target.z = a.z + b.z;
     }
+    /** target = a + b */
+    public static void addToVec(Vec2 a, Vec2 b, Vec2 target){
+        target.x = a.x + b.x;
+        target.y = a.y + b.y;
+    }
     /** a += b */
     public static void add(Vec3 a, Vec3 b) {
         a.x += b.x;
         a.y += b.y;
         a.z += b.z;
+    }
+    /** a += b */
+    public static void add(Vec2 a, Vec2 b) {
+        a.x += b.x;
+        a.y += b.y;
     }
 
 
@@ -35,11 +45,21 @@ public class IPM {
         target.y = a.y - b.y;
         target.z = a.z - b.z;
     }
+    /** target = a - b */
+    public static void subtractToVec(Vec2 a, Vec2 b, Vec2 target){
+        target.x = a.x - b.x;
+        target.y = a.y - b.y;
+    }
     /** a -= b */
     public static void subtract(Vec3 a, Vec3 b) {
         a.x -= b.x;
         a.y -= b.y;
         a.z -= b.z;
+    }
+    /** a -= b */
+    public static void subtract(Vec2 a, Vec2 b) {
+        a.x -= b.x;
+        a.y -= b.y;
     }
 
 
@@ -49,11 +69,21 @@ public class IPM {
         target.y = a.y * s;
         target.z = a.z * s;
     }
+    /** target = a * s */
+    public static void multiplyToVec(Vec2 a, double s, Vec2 target) {
+        target.x = a.x * s;
+        target.y = a.y * s;
+    }
     /** a *= s */
     public static void multiply(Vec3 a, double s) {
         a.x *= s;
         a.y *= s;
         a.z *= s;
+    }
+    /** a *= s */
+    public static void multiply(Vec2 a, double s) {
+        a.x *= s;
+        a.y *= s;
     }
 
     /** a = a/|a| */
@@ -66,6 +96,16 @@ public class IPM {
             a.x = 0; a.y = 0; a.z = 0;
         }
     }
+    /** a = a/|a| */
+    public static void normalize(Vec2 a) {
+        double length = a.magnitude();
+        double i = 1 / length;
+        if (length > 0.000001){
+            a.x *= i; a.y *= i;
+        } else {
+            a.x = 0; a.y = 0;
+        }
+    }
     /** target = a/|a| */
     public static void normalizeToVec(Vec3 a, Vec3 target) {
         double length = a.magnitude();
@@ -76,6 +116,17 @@ public class IPM {
             target.z = a.z * i;
         } else {
             target.x = 0; target.y = 0; target.z = 0;
+        }
+    }
+    /** target = a/|a| */
+    public static void normalizeToVec(Vec2 a, Vec2 target) {
+        double length = a.magnitude();
+        double i = 1 / length;
+        if (length > 0.000001){
+            target.x = a.x * i;
+            target.y = a.y * i;
+        } else {
+            target.x = 0; target.y = 0;
         }
     }
 
@@ -102,6 +153,10 @@ public class IPM {
     public static double dot(Vec3 a, Vec3 b) {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
+    /** Dot product */
+    public static double dot(Vec2 a, Vec2 b) {
+        return a.x * b.x + a.y * b.y;
+    }
 
 
     /** a = midpoint(a, b) */
@@ -110,11 +165,21 @@ public class IPM {
         a.y = (b.y + a.y) * 0.5;
         a.z = (b.z + a.z) * 0.5;
     }
+    /** a = midpoint(a, b) */
+    public static void midpoint(Vec2 a, Vec2 b) {
+        a.x = (b.x + a.x) * 0.5;
+        a.y = (b.y + a.y) * 0.5;
+    }
     /** target = midpoint(a, b) */
     public static void midpointToVec(Vec3 a, Vec3 b, Vec3 target) {
         target.x = (b.x + a.x) * 0.5;
         target.y = (b.y + a.y) * 0.5;
         target.z = (b.z + a.z) * 0.5;
+    }
+    /** target = midpoint(a, b) */
+    public static void midpointToVec(Vec2 a, Vec2 b, Vec2 target) {
+        target.x = (b.x + a.x) * 0.5;
+        target.y = (b.y + a.y) * 0.5;
     }
 
     /*

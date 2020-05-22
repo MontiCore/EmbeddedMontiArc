@@ -34,11 +34,23 @@ public class SimpleCoordinateConverter {
         inv_lon_factor = 1 / lon_factor;
     }
 
-    public Vec2 coordsToMeters(Coordinates coords){
-        return new Vec2( (coords.lon-ref.lon) *lon_factor, (coords.lat-ref.lat) * DEG_TO_METERS);
+    public void coordsToMeters(Coordinates coords, Vec2 target){
+        target.x = (coords.lon-ref.lon) *lon_factor;
+        target.y = (coords.lat-ref.lat) * DEG_TO_METERS;
     }
 
-    public Coordinates metersToCoords(Vec2 meters){
-        return new Coordinates(meters.x*inv_lon_factor + ref.lon, meters.y*METERS_TO_DEG + ref.lat);
+    public void coordsToMeters(Coordinates coords, Vec3 target){
+        target.x = (coords.lon-ref.lon) *lon_factor;
+        target.y = (coords.lat-ref.lat) * DEG_TO_METERS;
+    }
+
+    public void metersToCoords(Vec2 meters, Coordinates target){
+        target.lon = meters.x*inv_lon_factor + ref.lon;
+        target.lat = meters.y*METERS_TO_DEG + ref.lat;
+    }
+
+    public void metersToCoords(Vec3 meters, Coordinates target){
+        target.lon = meters.x*inv_lon_factor + ref.lon;
+        target.lat = meters.y*METERS_TO_DEG + ref.lat;
     }
 }

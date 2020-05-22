@@ -7,10 +7,26 @@
 package de.rwth.montisim.commons.dynamicinterface;
 
 public class DataType {
+    public static final DataType DOUBLE     = new DataType(Type.DOUBLE);
+    public static final DataType FLOAT      = new DataType(Type.FLOAT);
+    public static final DataType INT        = new DataType(Type.INT);
+    public static final DataType BOOLEAN    = new DataType(Type.BOOLEAN);
+    public static final DataType BYTE       = new DataType(Type.BYTE);
+    public static final DataType EMPTY      = new DataType(Type.EMPTY);
+    
+    public static final DataType VEC2      = new DataType(Type.VEC2);
+    public static final DataType VEC3      = new DataType(Type.VEC3);
+
+
     public static enum Type {
         DOUBLE,
         FLOAT,
         INT,
+        BYTE,
+        BOOLEAN,
+        EMPTY,
+        VEC2,
+        VEC3,
         STRUCT,
         ARRAY
     }
@@ -21,6 +37,11 @@ public class DataType {
             case DOUBLE: return "double";
             case FLOAT: return "float";
             case INT: return "int";
+            case BYTE: return "byte";
+            case BOOLEAN: return "bool";
+            case EMPTY: return "void";
+            case VEC2: return "Vec2";
+            case VEC3: return "Vec3";
             case STRUCT: return "struct";
             case ARRAY: return "array";
             default: return "UNKNOWN_TYPE";
@@ -32,6 +53,11 @@ public class DataType {
             case DOUBLE: return 8;
             case FLOAT: return 4;
             case INT: return 4;
+            case BYTE: return 1;
+            case BOOLEAN: return 1;
+            case EMPTY: return 0;
+            case VEC2: return 16;
+            case VEC3: return 24;
             default:
                 return -1; //Should not occur
         }
@@ -52,19 +78,6 @@ public class DataType {
         this.type = type;
         this.dataSize = dataSize;
     }
-
-    public static DataType newDoubleType(){
-        return new DataType(Type.DOUBLE);
-    }
-
-    public static DataType newFloatType(){
-        return new DataType(Type.FLOAT);
-    }
-
-    public static DataType newIntType(){
-        return new DataType(Type.INT);
-    }
-
     
 
 

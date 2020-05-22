@@ -19,6 +19,11 @@ public class Vec2 {
         this.y = y;
     }
 
+    public Vec2(Vec3 v) {
+        this.x = v.x;
+        this.y = v.y;
+    }
+
     /// Creates a vector where all entries are 'a'
     public Vec2(double a) {
         this.x = a;
@@ -28,6 +33,20 @@ public class Vec2 {
     /// Creates a vector with all entries set to 0
     public Vec2() {
         this(0);
+    }
+
+    public void set(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void set(Vec2 v){
+        this.x = v.x;
+        this.y = v.y;
+    }
+    public void set(Vec3 v){
+        this.x = v.x;
+        this.y = v.y;
     }
 
     /// Returns a NEW Vec2 with the result
