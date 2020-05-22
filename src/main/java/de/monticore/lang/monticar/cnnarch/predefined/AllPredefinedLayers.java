@@ -13,6 +13,7 @@ import de.monticore.lang.monticar.cnnarch._symboltable.UnrollDeclarationSymbol;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 public class AllPredefinedLayers {
 
@@ -53,8 +54,13 @@ public class AllPredefinedLayers {
     public static final String SWAPAXES_NAME = "SwapAxes";
     public static final String BROADCAST_ADD_NAME = "BroadcastAdd";
     public static final String RESHAPE_NAME = "Reshape";
+
+    //replay layers
     public static final String MEMORY_NAME = "Memory";
     public static final String REPLAY_MEMORY_NAME = "ReplayMemory";
+    public static final List<String> REPLAY_LAYER_NAMES = new ArrayList<String>(Arrays.asList(MEMORY_NAME,
+                                                                                              REPLAY_MEMORY_NAME));
+
 
     //predefined argument names
     public static final String KERNEL_NAME = "kernel";
@@ -90,6 +96,19 @@ public class AllPredefinedLayers {
     public static final String SHAPE_NAME = "shape";
     public static final String RNN_DROPOUT_NAME = "dropout";
 
+    //shared parameters replay layers
+    public static final String USE_REPLAY_NAME = "useReplay";
+    public static final String REPLAY_INTERVAL_NAME = "replayInterval";
+    public static final String REPLAY_BATCH_SIZE_NAME = "replayBatchSize";
+    public static final String REPLAY_STEPS_NAME = "replaySteps";
+    public static final String REPLAY_GRADIENT_STEPS_NAME = "replayGradientSteps";
+    public static final String REPLAY_MEMORY_STORE_PROB_NAME = "replayMemoryStoreProb";
+    public static final String REPLAY_MEMORY_STORE_DIST_MEASURE_NAME = "replayMemoryStoreDistMeasure";
+    public static final String USE_LOCAL_ADAPTION_NAME = "useLocalAdaption";
+    public static final String LOCAL_ADAPTION_K_NAME = "localAdaptionK";
+    public static final String LOCAL_ADAPTION_GRADIENT_STEPS_NAME = "localAdaptionGradientSteps";
+    public static final String LOCAL_ADAPTION_MEMORY_STORE_DIST_MEASURE_NAME = "localAdaptionMemoryStoreDistMeasure";
+
 	//parameters for memory layer
     public static final String SUB_KEY_SIZE_NAME = "subKeySize";
     public static final String QUERY_SIZE_NAME = "querySize";
@@ -98,15 +117,9 @@ public class AllPredefinedLayers {
 	public static final String NUM_HEADS_NAME = "numHeads";
 	public static final String VALUE_SHAPE_NAME = "valueShape";
 
+
     //parameters for replay memory layer
-    public static final String REPLAY_INTERVAL_NAME = "replayInterval";
-    public static final String REPLAY_BATCH_SIZE_NAME = "replayBatchSize";
-	public static final String REPLAY_STEPS_NAME = "replaySteps";
-    public static final String REPLAY_GRADIENT_STEPS_TRAINING_NAME = "replayGradientStepsTraining";
-	public static final String STORE_PROB_NAME = "storeProb";
 	public static final String MAX_STORED_SAMPLES_NAME = "maxStoredSamples";
-    public static final String REPLAY_K_NAME = "replayK";
-    public static final String REPLAY_GRADIENT_STEPS_PREDICTION_NAME = "replayGradientStepsPrediction";
 	public static final String QUERY_NET_DIR_NAME = "queryNetDir";
 	public static final String QUERY_NET_PREFIX_NAME = "queryNetPrefix";
 
@@ -116,6 +129,9 @@ public class AllPredefinedLayers {
     public static final String PADDING_NO_LOSS = "no_loss";
     public static final String POOL_MAX = "max";
     public static final String POOL_AVG = "avg";
+    public static final String L2 = "l2";
+    public static final String INNER_PROD = "inner_prod";
+    public static final String RANDOM = "random";
 	
 	//possible activation values for the querry network in the memory layer
 	public static final String MEMORY_ACTIVATION_LINEAR = "linear";

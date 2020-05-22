@@ -61,6 +61,59 @@ public class Memory extends PredefinedLayerDeclaration {
         Memory declaration = new Memory();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.USE_REPLAY_NAME)
+                        .constraints(Constraints.BOOLEAN)
+                        .defaultValue(false)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.REPLAY_INTERVAL_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.REPLAY_BATCH_SIZE_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE_OR_MINUS_ONE)
+                        .defaultValue(-1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.REPLAY_STEPS_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.REPLAY_MEMORY_STORE_PROB_NAME)
+                        .constraints(Constraints.NUMBER, Constraints.BETWEEN_ZERO_AND_ONE)
+                        .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME)
+                        .constraints(Constraints.BOOLEAN, Constraints.POSITIVE)
+                        .defaultValue(false)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.LOCAL_ADAPTION_K_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.LOCAL_ADAPTION_GRADIENT_STEPS_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.REPLAY_MEMORY_STORE_DIST_MEASURE_NAME)
+                        .constraints(Constraints.DIST_MEASURE_TYPE)
+                        .defaultValue(AllPredefinedLayers.INNER_PROD)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.LOCAL_ADAPTION_MEMORY_STORE_DIST_MEASURE_NAME)
+                        .constraints(Constraints.DIST_MEASURE_TYPE)
+                        .defaultValue(AllPredefinedLayers.INNER_PROD)
+                        .build(),
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.SUB_KEY_SIZE_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
