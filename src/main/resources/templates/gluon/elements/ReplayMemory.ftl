@@ -3,22 +3,33 @@
 <#assign replayInterval = element.replayInterval?c>
 <#assign replayBatchSize = element.replayBatchSize?c>
 <#assign replaySteps = element.replaySteps?c>
-<#assign replayGradientStepsTraining = element.replayGradientStepsTraining?c>
-<#assign storeProb = element.storeProb?c>
+<#assign replayGradientSteps = element.replayGradientSteps?c>
+<#assign replayMemoryStoreProb = element.replayMemoryStoreProb?c>
 <#assign maxStoredSamples = element.maxStoredSamples?c>
-<#assign replayK = element.replayK?c>
-<#assign replayGradientStepsPrediction = element.replayGradientStepsPrediction?c>
+<#assign useReplay = element.useReplay?string("True", "False")>
+<#assign useLocalAdaption = element.useLocalAdaption?string("true", "false")>
+<#assign replayMemoryStoreDistMeasure = element.replayMemoryStoreDistMeasure>
+<#assign localAdaptionK = element.localAdaptionK?c>
+<#assign localAdaptionGradientSteps = element.localAdaptionGradientSteps?c>
 <#assign queryNetDir = element.queryNetDir>
 <#assign queryNetPrefix = element.queryNetPrefix>
 <#if mode == "ARCHITECTURE_DEFINITION">
             self.${element.name} = ReplayMemory(replay_interval=${replayInterval}, replay_batch_size=${replayBatchSize}, replay_steps=${replaySteps},
-                                                replay_gradient_steps=${replayGradientStepsTraining}, store_prob =${storeProb}, max_stored_samples=${maxStoredSamples},
+                                                replay_gradient_steps=${replayGradientSteps}, store_prob=${replayMemoryStoreProb},
+                                                max_stored_samples=${maxStoredSamples}, use_replay=${useReplay},
                                                 query_net_dir="${queryNetDir}", 
                                                 query_net_prefix="${queryNetPrefix}")
 <#elseif mode == "FORWARD_FUNCTION">
-        ${element.name} = self.${element.name}(x)
+<#if useReplay == "True" || useLocalAdaption == "true">
+        ${element.name}, ind_${element.name} = self.${element.name}(x)
+<#else>
+        ${element.name}, ind_${element.name} = self.${element.name}(${input})
+</#if>
 <#elseif mode == "PREDICTION_PARAMETER">
-	    replay_k.push_back(${replayK});
-        gradient_steps.push_back(${replayGradientStepsPrediction});
+		use_local_adaption.push_back(${useLocalAdaption});
+        dist_measure.push_back("${replayMemoryStoreDistMeasure}");
+	    replay_k.push_back(${localAdaptionK});
+        gradient_steps.push_back(${localAdaptionGradientSteps});
+        num_heads.push_back(1);
 </#if>
 	

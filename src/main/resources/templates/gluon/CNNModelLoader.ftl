@@ -16,8 +16,8 @@ private:
     std::vector<Symbol> network_symbol_list;
     std::vector<std::map<std::string, NDArray>> network_param_map_list;
 
-    std::vector<Symbol> query_symbol_list;
-    std::vector<std::map<std::string, NDArray>> query_param_map_list;
+    std::vector<std::vector<Symbol>> query_symbol_list;
+    std::vector<std::vector<std::map<std::string, NDArray>>> query_param_map_list;
 
     std::vector<std::map<std::string, NDArray>> replay_memory;
 
@@ -64,7 +64,7 @@ private:
     }
 
 public:
-    explicit ModelLoader(std::string file_prefix, mx_uint num_subnets, Context ctx_param){
+    explicit ModelLoader(std::string file_prefix, mx_uint num_subnets, std::vector<mx_uint> num_heads, Context ctx_param){
 
         ctx = ctx_param;
         std::string network_json_path;
@@ -86,9 +86,15 @@ public:
                 network_param_path = file_prefix + "_replay_sub_net_" + std::to_string(i) + "-0000.params";
                 loadComponent(network_json_path, network_param_path, network_symbol_list, network_param_map_list);
                 if(i >= 1){
-                    query_json_path = file_prefix + "_replay_query_net_" + std::to_string(i) + "-symbol.json";
-                    query_param_path = file_prefix + "_replay_query_net_" + std::to_string(i) + "-0000.params";
-                    loadComponent(query_json_path, query_param_path, query_symbol_list, query_param_map_list);
+                    std::vector<Symbol> head_query_symbol_list = {};
+                    std::vector<std::map<std::string, NDArray>> head_query_param_map_list = {};
+                    for(int j=0; j < num_heads[i-1]; j++){
+                        query_json_path = file_prefix + "_replay_query_net_" + std::to_string(j) + "_sub_net_" + std::to_string(i) + "-symbol.json";
+                        query_param_path = file_prefix + "_replay_query_net_" + std::to_string(j) + "_sub_net_" + std::to_string(i) + "-0000.params";
+                        loadComponent(query_json_path, query_param_path, head_query_symbol_list, head_query_param_map_list);
+                    }
+                    query_symbol_list.push_back(head_query_symbol_list);
+                    query_param_map_list.push_back(head_query_param_map_list);
 
                     memory_path = file_prefix + "_replay_memory_" + std::to_string(i);
                     checkFile(memory_path);
@@ -126,11 +132,11 @@ public:
         return loss_param_map[0];
     }
 
-   std::vector<Symbol> GetQuerySymbols() {
+    std::vector<std::vector<Symbol>> GetQuerySymbols() {
         return query_symbol_list;
     }
 
-    std::vector<std::map<std::string, NDArray>> GetQueryParamMaps() {
+    std::vector<std::vector<std::map<std::string, NDArray>>>  GetQueryParamMaps() {
         return query_param_map_list;
     }
 

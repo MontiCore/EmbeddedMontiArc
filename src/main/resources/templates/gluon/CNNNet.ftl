@@ -2,6 +2,8 @@
 import mxnet as mx
 import numpy as np
 import math
+import os
+import abc
 from mxnet import gluon, nd
 
 
@@ -87,67 +89,113 @@ class CustomGRU(gluon.HybridBlock):
         output, [state0] = self.gru(data, [F.swapaxes(state0, 0, 1)])
         return output, F.swapaxes(state0, 0, 1)
 
+    
+class ReplayMemoryInterface(gluon.HybridBlock):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, use_replay, replay_interval, replay_batch_size, replay_steps, replay_gradient_steps, num_heads, **kwargs):
+        super(ReplayMemoryInterface, self).__init__(**kwargs)
+    
+        self.use_replay = use_replay
+        self.replay_interval = replay_interval
+        self.replay_batch_size = replay_batch_size
+        self.replay_steps = replay_steps
+        self.replay_gradient_steps = replay_gradient_steps
+        self.num_heads = num_heads
+
+    @abc.abstractmethod
+    def store_samples(self, data, y, query_network, store_prob, mx_context):
+        pass
+
+    @abc.abstractmethod
+    def sample_memory(self, batch_size, mx_context):
+        pass
+
+    @abc.abstractmethod
+    def get_query_network(self, mx_context):
+        pass   
+    
+    @abc.abstractmethod
+    def save_memory(self, path):
+        pass
+    
 #Memory layer
-class Memory(gluon.HybridBlock):
+class Memory(ReplayMemoryInterface):
     def __init__(self, 
                  sub_key_size, 
                  query_size, 
-                 query_act, 
+                 query_act,
+                 dist_measure,
                  k, 
                  num_heads,
-                 value_shape,
+                 use_replay,
+                 replay_interval,
+                 replay_batch_size,
+                 replay_steps,
+                 replay_gradient_steps,
+                 store_prob,
+                 value_shape=-1,
                  **kwargs):
-        super(Memory, self).__init__(**kwargs)
+        super(Memory, self).__init__(use_replay, replay_interval, replay_batch_size, replay_steps, replay_gradient_steps, num_heads, **kwargs)
         with self.name_scope():
-
-            #Parameter constraints
-            assert sub_key_size >= k
-
             #Memory parameters
+            self.dist_measure = dist_measure
             self.k = k
             self.num_heads = num_heads
+            self.query_act = query_act
+            self.query_size = query_size
 
             #Batch norm sub-layer
             self.batch_norm = gluon.nn.BatchNorm()
 
-            #Memory sub-layer
-            sub_key_shape = (sub_key_size, query_size[-1] / 2)
+            #Replay parameters
+            self.store_prob = store_prob
 
-            if value_shape == [-1]:
-                value_shape = (sub_key_size*sub_key_size, query_size[-1])
+            #Memory sub-layer
+            self.sub_key_size = sub_key_size
+            sub_key_shape = (self.sub_key_size, int(query_size[-1] / 2))
+
+            if value_shape == [-1]: #no -1 anymore but size of input
+                value_shape = (self.sub_key_size*self.sub_key_size, query_size[-1])
             else:
-                value_shape = (sub_key_size*sub_key_size,) + value_shape
+                value_shape = (self.sub_key_size*self.sub_key_size,) + value_shape
 
             self.sub_keys1 = self.params.get("sub_keys1", shape=sub_key_shape, differentiable=True)
             self.sub_keys2 = self.params.get("sub_keys2", shape=sub_key_shape, differentiable=True)
-
             self.values = self.params.get("values", shape=value_shape, differentiable=True)
+            self.label_memory = nd.array([])
 
-            self.query_net = []
-            for head_ind in range(num_heads):
-                head_net = []
-                for size in query_size:
-                    if query_act == "linear":
-                        head_net.append(gluon.nn.Dense(units=size))
-                    else:
-                        head_net.append(gluon.nn.Dense(units=size, activation=query_act))
-                    self.register_child(head_net[-1])
-                self.query_net.append(head_net)
+            self.get_query_network(None)
                         
     def hybrid_forward(self, F, x, sub_keys1, sub_keys2, values):
         x = self.batch_norm(x)
 
         for head_ind in range(self.num_heads):
-            q = self.query_net[head_ind][0](x)
-            if len(self.query_net[head_ind]) > 1:
-                for layer in self.query_net[head_ind][1:]:
-                    q = layer(q)
+            q = self.query_network[head_ind](x)
 
             q_split = F.split(q, num_outputs=2)
-            q1_dot = F.dot(q_split[0], sub_keys1, transpose_b=True)
-            q2_dot = F.dot(q_split[1], sub_keys2, transpose_b=True)
-            i1 = F.topk(q1_dot, k=self.k, ret_typ="indices")
-            i2 = F.topk(q2_dot, k=self.k, ret_typ="indices")
+    
+            def loop_batch_diff(data, state):
+                return F.broadcast_sub(data, state), state
+    
+            def loop_batch_dot(data, state):
+                return F.dot(data[0], data[1], transpose_b=trans_b), state
+    
+            def loop_batch_l2(data, state):
+                diff = F.broadcast_sub(data[0], data[1])
+                return F.norm(diff, axis=1), state
+    
+            if self.dist_measure == "l2":
+                q1_diff, _ = F.contrib.foreach(loop_batch_diff, q_split[0], init_states=sub_keys1)
+                q2_diff, _ = F.contrib.foreach(loop_batch_diff, q_split[1], init_states=sub_keys2)
+                q1_dist = F.norm(q1_diff, axis=2)
+                q2_dist = F.norm(q2_diff, axis=2)
+            else:
+                q1_dist = F.dot(q_split[0], sub_keys1, transpose_b=True)
+                q2_dist = F.dot(q_split[1], sub_keys2, transpose_b=True)
+    
+            i1 = F.topk(q1_dist, k=self.k, ret_typ="indices")
+            i2 = F.topk(q2_dist, k=self.k, ret_typ="indices")
 
             # Calculate cross product for keys at indices I1 and I2
             k1 = F.take(sub_keys1, i1)
@@ -157,29 +205,94 @@ class Memory(gluon.HybridBlock):
             k2 = F.repeat(k2, self.k, 1)
             c_cart = F.concat(k1, k2, dim=2)
 
-            def loop_batch_dot(data, state):
-                return F.dot(data[0], data[1], transpose_b=trans_b), state
-
             trans_b = True
-            state_batch_dot = F.zeros(1)  # state is not used, but needed for function call
-            (k_dot, _) = F.contrib.foreach(loop_batch_dot, [q, c_cart], init_states=state_batch_dot)
+            state_batch_dist = F.zeros(1)  # state is not used, but needed for function call
+            if self.dist_measure == "l2":
+                k_dist, _ = F.contrib.foreach(loop_batch_l2, [q, c_cart], init_states=state_batch_dist)
+            else:
+                k_dist, _ = F.contrib.foreach(loop_batch_dot, [q, c_cart], init_states=state_batch_dist)
 
-            i = F.topk(k_dot, k=self.k, ret_typ="both")
+            i = F.topk(k_dist, k=self.k, ret_typ="both")
+
             w = F.softmax(i[0])
-
             vi = F.take(values, i[1])
             trans_b = False
-            (aggr_value, _) = F.contrib.foreach(loop_batch_dot, [w, vi], init_states=state_batch_dot)
+            aggr_value, _ = F.contrib.foreach(loop_batch_dot, [w, vi], init_states=state_batch_dist)
 
             if "mv" in locals():
                 mv = F.broadcast_add(mv, aggr_value)
             else:
                 mv = aggr_value
 
-        return mv
+        return [mv, i[1]]
 
+    def store_samples(self, data, y, query_network, store_prob, mx_context):
+        ind = data[1]
+        num_outputs = len(y)
+
+        if len(self.label_memory) == 0:
+            size_memory = self.sub_key_size * self.sub_key_size
+            self.label_memory = nd.empty((num_outputs, size_memory, 1), ctx=mx_context)
+            x = data[0]
+            for net in query_network:
+                net(x)
+
+        replace_ind = nd.sample_multinomial(store_prob, ind.shape)
+
+        for i in range(num_outputs):
+            curr_memory = self.label_memory[i]
+            curr_labels = y[i]
+            for i in range(len(ind)):
+                max = nd.max(replace_ind[i])
+                if (max[0]):
+                    to_change_ind = nd.contrib.boolean_mask(ind[i], replace_ind[i])
+                    curr_memory[to_change_ind] = curr_labels[i]
+
+    def sample_memory(self, batch_size, mx_context):
+
+        memory_size = self.label_memory[0].shape[0]
+        if self.replay_batch_size == -1:
+            sample_ind = nd.random.randint(0, memory_size, (self.replay_steps, batch_size), ctx=mx_context)
+        else:
+            sample_ind = nd.random.randint(0, memory_size, (self.replay_steps, self.replay_batch_size), ctx=mx_context)
+
+        num_outputs = len(self.label_memory)
+
+        sample_labels = [[self.label_memory[i][ind] for i in range(num_outputs)] for ind in sample_ind]
+        sample_batches = [[self.values.data(mx_context)[ind], sample_labels[i]] for i, ind in enumerate(sample_ind)]
+
+        return sample_batches#
+
+    def get_query_network(self, mx_context):
+        if hasattr(self, 'query_network'):
+            return self.query_network
+        else:
+            self.query_network = []
+            for head_ind in range(self.num_heads):
+                head_net = gluon.nn.HybridSequential()
+                for size in self.query_size:
+                    if self.query_act == "linear":
+                        head_net.add(gluon.nn.Dense(units=size))
+                    else:
+                        head_net.add(gluon.nn.Dense(units=size, activation=self.query_act))
+                    self.register_child(head_net[-1])
+                self.query_network.append(head_net)
+                self.register_child(head_net)
+                head_net.hybridize()
+            return self.query_network
+    
+    def save_memory(self, path):
+        sub_keys1_data = self.sub_keys1.data()
+        sub_keys2_data = self.sub_keys2.data()
+        sub_keys1_data = nd.tile(sub_keys1_data, (len(sub_keys1_data), 1))
+        sub_keys2_data = nd.repeat(sub_keys2_data, len(sub_keys2_data), 0)
+        keys_data = nd.concat(sub_keys1_data, sub_keys2_data, dim=1)
+        values_data = self.values.data()
+        nd.save(path, {"keys": keys_data, "values": values_data, "labels": self.label_memory})
+    
+    
 #ReplayMemory layer
-class ReplayMemory(gluon.HybridBlock):
+class ReplayMemory(ReplayMemoryInterface):
     def __init__(self,
                  replay_interval,
                  replay_batch_size,
@@ -187,21 +300,18 @@ class ReplayMemory(gluon.HybridBlock):
                  replay_gradient_steps,
                  store_prob,
                  max_stored_samples,
+                 use_replay,
                  query_net_dir,
                  query_net_prefix,
                  **kwargs):
-        super(ReplayMemory, self).__init__(**kwargs)
+        super(ReplayMemory, self).__init__(use_replay, replay_interval, replay_batch_size, replay_steps, replay_gradient_steps, 1, **kwargs)
         with self.name_scope():
-
             #Replay parameters
-            self.replay_interval = replay_interval
-            self.replay_batch_size = replay_batch_size
-            self.replay_steps = replay_steps
-            self.replay_gradient_steps = replay_gradient_steps
-
-            self.store_prob = int(store_prob*100)
+            self.store_prob = store_prob
             self.max_stored_samples = max_stored_samples
-
+    
+            self.use_replay = use_replay
+    
             self.query_net_dir = query_net_dir
             self.query_net_prefix = query_net_prefix
     
@@ -211,32 +321,28 @@ class ReplayMemory(gluon.HybridBlock):
             self.label_memory = nd.array([])
 
     def hybrid_forward(self, F, x):
-            #propagate the input as the rest is only used for replay
-            return x
+        #propagate the input as the rest is only used for replay
+        return [x, []]
 
-    def store_samples(self, x, y, query_network, mx_context):
-        x_values = x
-        x_labels = y
-        batch_size = x_values.shape[0]
-        num_outputs = len(x_labels)
+    def store_samples(self, data, y, query_network, store_prob, mx_context):
+        x = data[0]
+        batch_size = x.shape[0]
+        num_outputs = len(y)
 
         if len(self.key_memory) == 0:
             self.key_memory = nd.empty(0, ctx=mx_context)
             self.value_memory = nd.empty(0, ctx=mx_context)
             self.label_memory = nd.empty((num_outputs, 0), ctx=mx_context)
 
-        zeros = nd.zeros(batch_size, ctx=mx_context)
-        ones = nd.ones(batch_size, ctx=mx_context)
-        rand = nd.random.randint(0, 100, batch_size, ctx=mx_context)
-        ind = nd.where(rand < self.store_prob, ones, zeros, ctx=mx_context)
+        ind = nd.sample_multinomial(store_prob, 10).as_in_context(mx_context)
 
-        to_store_values = nd.contrib.boolean_mask(x_values, ind)
-
-        if len(to_store_values) != 0:
+        max = nd.max(ind)
+        if(max[0]):
+            to_store_values = nd.contrib.boolean_mask(x, ind)
             to_store_labels = nd.empty((num_outputs, len(to_store_values)), ctx=mx_context)
             for i in range(num_outputs):
-                to_store_labels[i] = nd.contrib.boolean_mask(x_labels[i], ind)
-            to_store_keys = query_network(to_store_values)
+                to_store_labels[i] = nd.contrib.boolean_mask(y[i], ind)
+            to_store_keys = query_network[0](to_store_values)
 
             if self.value_memory.shape[0] == 0:
                 self.key_memory = to_store_keys
@@ -254,12 +360,11 @@ class ReplayMemory(gluon.HybridBlock):
                 self.label_memory = nd.concat(self.label_memory, to_store_labels, dim=1)
 
     def sample_memory(self, batch_size, mx_context):
-
         num_stored_samples = self.value_memory.shape[0]
         if self.replay_batch_size == -1:
             sample_ind = nd.random.randint(0, num_stored_samples, (self.replay_steps, batch_size), ctx=mx_context)
         else:
-            sample_ind = nd.random.normal(0, num_stored_samples, (self.replay_steps, self.replay_batch_size), ctx=mx_context)
+            sample_ind = nd.random.randint(0, num_stored_samples, (self.replay_steps, self.replay_batch_size), ctx=mx_context)
 
         num_outputs = len(self.label_memory)
 
@@ -268,6 +373,27 @@ class ReplayMemory(gluon.HybridBlock):
 
         return sample_batches
 
+    def get_query_network(self, mx_context):
+        lastEpoch = 0
+        for file in os.listdir(self.query_net_dir):
+            if self.query_net_prefix in file and ".json" in file:
+                symbolFile = file
+
+            if self.query_net_prefix in file and ".param" in file:
+                epochStr = file.replace(".params", "").replace(self.query_net_prefix + "-", "")
+                epoch = int(epochStr)
+                if epoch >= lastEpoch:
+                    lastEpoch = epoch
+                    weightFile = file
+
+        net = mx.gluon.nn.SymbolBlock.imports(self.query_net_dir + symbolFile, ["data"], self.query_net_dir + weightFile, ctx=mx_context)
+        net.hybridize()
+        return [net]
+    
+    def save_memory(self, path):
+        nd.save(path, {"keys": self.key_memory, "values": self.value_memory, "labels": self.label_memory}) 
+    
+    
 <#list tc.architecture.networkInstructions as networkInstruction>
 #Stream ${networkInstruction?index}
 <#list networkInstruction.body.replaySubNetworks as elements>
@@ -292,7 +418,7 @@ ${tc.include(networkInstruction.body, elements?index, "ARCHITECTURE_DEFINITION")
     
     def hybrid_forward(self, F, x):
 ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
-        return [[${tc.join(tc.getSubnetOutputNames(elements), ", ")}], [${tc.join(tc.getSubnetInputNames(elements), ", ")}]]
+        return [[${tc.join(tc.getSubnetOutputNames(elements), ", ")}], [${tc.join(tc.getSubnetInputNames(elements), ", ")}, ind_${tc.join(tc.getSubnetInputNames(elements), ", ")}]]
 </#if>
 
 </#list>
@@ -328,7 +454,7 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
         replaysubnet${elements?index}_ = self.replay_sub_nets[${elements?index-1}](replaysubnet${elements?index - 1}_[0][0])
 </#if>
 </#list>
-        return [replaysubnet${networkInstruction.body.replaySubNetworks?size - 1}_[0], [<#list networkInstruction.body.replaySubNetworks as elements><#if elements?index != 0>replaysubnet${elements?index}_[1][0], </#if></#list>]]
+        return [replaysubnet${networkInstruction.body.replaySubNetworks?size - 1}_[0], [<#list networkInstruction.body.replaySubNetworks as elements><#if elements?index != 0>replaysubnet${elements?index}_[1], </#if></#list>]]
 <#else>
 ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 <#if tc.isAttentionNetwork() && networkInstruction.isUnroll() >

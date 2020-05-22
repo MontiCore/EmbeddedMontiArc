@@ -8,6 +8,7 @@ import shutil
 import pickle
 import math
 import sys
+import inspect
 from mxnet import gluon, autograd, nd
 
 class CrossEntropyLoss(gluon.loss.Loss):
@@ -376,26 +377,41 @@ class ${tc.fileNameWithoutEnding}:
         
         loss_function.hybridize()
         
+<#list tc.architecture.networkInstructions as networkInstruction>    
+<#if networkInstruction.body.replaySubNetworks?has_content>
+<#assign replayVisited = true>
+</#if>
+</#list>    
+
+<#if replayVisited??>
         #Memory Replay
         replay_layers = {}
         replay_store_buffer = {}
         replay_query_networks = {}
+        store_prob = {}
 <#list tc.architecture.networkInstructions as networkInstruction>
         replay_layers[${networkInstruction?index}] = []
         replay_store_buffer[${networkInstruction?index}] = []
         replay_query_networks[${networkInstruction?index}] = []
+        store_prob[${networkInstruction?index}] = []
 <#list networkInstruction.body.replaySubNetworks as elements>
 <#if elements?index != 0>
         sub_net = self._networks[${networkInstruction?index}].replay_sub_nets[${elements?index - 1}]
-        replay_layers[${networkInstruction?index}].append(sub_net.replaymemory${elements?index}_)
+        layer = [param for param in inspect.getmembers(sub_net, lambda x: not(inspect.isroutine(x))) if param[0].startswith("memory")][0][1]
+        replay_layers[0].append(layer)
         replay_store_buffer[${networkInstruction?index}].append([])
-        replay_query_networks[${networkInstruction?index}].append(self._net_creator.load_network(replay_layers[${networkInstruction?index}][-1].query_net_dir, replay_layers[${networkInstruction?index}][-1].query_net_prefix, mx_context))
+        replay_query_networks[0].append(replay_layers[0][-1].get_query_network(mx_context))
+        store_prob[${networkInstruction?index}].append(nd.array([1-replay_layers[0][-1].store_prob, replay_layers[0][-1].store_prob], ctx=mx_context))                                                                                  
 </#if>
 </#list>
 </#list>
+</#if>
 
         tic = None
 
+        avg_speed = 0
+        n = 0
+    
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             if shuffle_data:
                 if preprocessing:
@@ -411,7 +427,6 @@ class ${tc.fileNameWithoutEnding}:
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 
-                #replay memory computations
 <#include "pythonReplayExecuteTrain.ftl">
                                  
                 with autograd.record():
@@ -438,12 +453,13 @@ class ${tc.fileNameWithoutEnding}:
 
                 for trainer in trainers:
                     trainer.step(batch_size)
-                                                      
+    
+<#if replayVisited??>                                                  
                 #storing samples for replay
                 for net_i in range(len(self._networks)):
                     for layer_i, layer in enumerate(replay_layers[net_i]):
-                        layer.store_samples(replay_store_buffer[net_i][layer_i], labels, replay_query_networks[net_i][layer_i], mx_context)
-
+                        layer.store_samples(replay_store_buffer[net_i][layer_i], labels, replay_query_networks[net_i][layer_i], store_prob[net_i][layer_i], mx_context)
+</#if>
                 if tic is None:
                     tic = time.time()
                 else:
@@ -457,7 +473,10 @@ class ${tc.fileNameWithoutEnding}:
                         loss_total = 0
 
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
-
+                        
+                        avg_speed += speed
+                        n += 1
+    
                         tic = time.time()
 
             global_loss_train /= (train_batches * batch_size)
@@ -520,6 +539,10 @@ class ${tc.fileNameWithoutEnding}:
                 for i, network in self._networks.items():
                     network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
 
+        print("--------------------------------------Speed------------------------------------------")
+        print(avg_speed/n)
+        print("--------------------------------------Speed------------------------------------------")
+    
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch + 1).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
@@ -528,12 +551,9 @@ class ${tc.fileNameWithoutEnding}:
                 network.replaysubnet0_.export(self.parameter_path(i) + '_newest_replay_sub_net_' + str(0), epoch=0)
                 for j, net in enumerate(network.replay_sub_nets):
                     net.export(self.parameter_path(i) + '_newest_replay_sub_net_' + str(j+1), epoch=0)
-                    replay_query_networks[i][j].export(self.parameter_path(i) + '_newest_replay_query_net_' + str(j+1), epoch=0)
-                    nd.save(self.parameter_path(i) + "_newest_replay_memory_" + str(j+1),
-                            {"keys": replay_layers[i][j].key_memory,
-                             "values": replay_layers[i][j].value_memory,
-                             "labels": replay_layers[i][j].label_memory})
-
+                    for ind, query_net in enumerate(replay_query_networks[i][j]):
+                        query_net.export(self.parameter_path(i) + '_newest_replay_query_net_' + str(ind) + "_sub_net_" + str(j+1), epoch=0)
+                    replay_layers[i][j].save_memory(self.parameter_path(i) + "_newest_replay_memory_" + str(j + 1))
             loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 
     def parameter_path(self, index):

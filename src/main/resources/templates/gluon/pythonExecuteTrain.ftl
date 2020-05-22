@@ -43,8 +43,11 @@
 </#list>
 <#else>
                     net_ret = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, true), ", ")})
-                    for i in range(len(replay_store_buffer[${networkInstruction?index}])):
+<#if networkInstruction.body.replaySubNetworks?has_content>
+
+                    for i in range(len(replay_layers[${networkInstruction?index}])):
                         replay_store_buffer[${networkInstruction?index}][i] = net_ret[1][i]
+</#if>
 
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
                     ${outputName} = net_ret[0][${outputName?index}]

@@ -51,14 +51,17 @@ public:
     const std::vector<std::string> replay_query_input_keys = {
         "data"
     };
-    std::vector<Executor *> replay_query_handles;
+    std::vector<std::vector<Executor *>> replay_query_handles;
     
     //replay memories
     std::vector<std::map<std::string, NDArray>> replay_memory;
     
     //parameters for local adapt
+    std::vector<bool> use_local_adaption = {};
+    std::vector<std::string> dist_measure = {};
     std::vector<mx_uint> replay_k = {};
     std::vector<mx_uint> gradient_steps = {};
+    std::vector<mx_uint> num_heads = {};
     Optimizer *optimizerHandle;
 
     mx_uint num_subnets = ${networkInstruction.body.replaySubNetworks?size};
@@ -76,14 +79,18 @@ public:
     ~${tc.fileNameWithoutEnding}_${networkInstruction?index}(){
         for(Executor * handle : network_handles){
             delete handle;
-        } 
-        for(Executor * handle : replay_query_handles){
-            delete handle;
+        }
+<#if networkInstruction.body.replaySubNetworks?has_content>
+        for(std::vector<Executor *> head_query_handles : replay_query_handles){
+            for(Executor *handle : head_query_handles){
+                delete handle;
+            }
         }
         for(Executor * handle : loss_handles){
             delete handle;
         }
         delete optimizerHandle;
+</#if>
         MXNotifyShutdown();
     }
 
@@ -94,7 +101,9 @@ public:
         std::vector<std::vector<float>> network_input = {${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ", "in_", "")}};
 
         for(mx_uint i=1; i < num_subnets; i++){
-            local_adapt(i, replay_query_handles[i-1], replay_memory[i-1], network_input, network_input_keys, network_input_shapes, network_input_sizes, loss_input_keys, gradient_steps[i-1], replay_k[i-1]);
+            if(use_local_adaption[i-1]){
+                local_adapt(i, replay_query_handles[i-1], replay_memory[i-1], network_input, network_input_keys, network_input_shapes, network_input_sizes, loss_input_keys, gradient_steps[i-1], dist_measure[i-1], replay_k[i-1]);
+            }
         }
 </#if>
     
@@ -136,7 +145,7 @@ public:
 <#if networkInstruction.body.replaySubNetworks?has_content>     
     //perform local adaption, train network on examples, only use updated on one inference (locally), don't save them
     void local_adapt(int net_start_ind,
-                     Executor *query_handle,
+                     std::vector<Executor *> query_handle,
                      std::map<std::string, NDArray> &memory,
                      const std::vector<std::vector<float>> &in_data_,
                      const std::vector<std::string> &in_keys,
@@ -144,6 +153,7 @@ public:
                      std::vector<mx_uint> &in_sizes,
                      const std::vector<std::string> &loss_keys,
                      mx_uint gradient_steps,
+                     std::string dist_measure,
                      mx_uint k){
 
         NDArray prev_output;
@@ -166,15 +176,14 @@ public:
             }
         }
 
-        prev_output.CopyTo(&(query_handle->arg_dict()[replay_query_input_keys[0]]));
+        prev_output.CopyTo(&(query_handle[0]->arg_dict()[replay_query_input_keys[0]]));
         NDArray::WaitAll();
 
-        query_handle->Forward(false);
+        query_handle[0]->Forward(false);
         CheckMXNetError("Query net forward, local_adapt, replay layer " + std::to_string(net_start_ind-1));
-        NDArray query_output = query_handle->outputs[0];
+        NDArray query_output = query_handle[0]->outputs[0];
 
-        std::vector<NDArray> samples = pick_samples(query_output, memory, k);
-
+        std::vector<NDArray> samples = pick_samples(query_output, memory, k, dist_measure);
 
         Operator slice("slice_axis");
         slice.SetParam("axis", 1);
@@ -233,7 +242,19 @@ public:
             }
         }
     }
+    
+    NDArray innerProdDist(NDArray &vec1, NDArray &vec2){
+        Operator dot("dot");
+        dot.SetParam("transpose_b", true);
 
+        NDArray ret;
+        dot.SetInput("lhs", vec1);
+        dot.SetInput("rhs", vec2);
+        dot.Invoke(ret);
+
+        return ret;
+    }
+    
     NDArray l2Norm(NDArray &vec1, NDArray &vec2){
         Operator br_diff("broadcast_sub");
         Operator l2_norm("norm");
@@ -251,7 +272,7 @@ public:
         return ret;
     }
 
-    std::vector<NDArray> pick_samples(NDArray query_output, std::map<std::string, NDArray> memory, mx_uint k){
+    std::vector<NDArray> pick_samples(NDArray query_output, std::map<std::string, NDArray> memory, mx_uint k, std::string dist_measure){
         Operator top_k("topk");
         top_k.SetParam("k", k);
         top_k.SetParam("ret_typ", "indices");
@@ -260,7 +281,14 @@ public:
         Operator take_labels("take");
         take_labels.SetParam("axis", 1);
 
-        NDArray dist = l2Norm(query_output, memory["keys"]);
+        NDArray dist;
+        if(dist_measure == "l2"){
+            dist = l2Norm(query_output, memory["keys"]);
+        }else if(dist_measure == "inner_prod"){
+            dist = innerProdDist(query_output, memory["keys"]);
+        }else{
+            throw std::invalid_argument("Provided value for dist_measure is not supported.");
+        }
 
         NDArray indices;
 
@@ -344,19 +372,19 @@ public:
         }
             
         network_input_sizes = getSizesOfShapes(network_input_shapes);
-    
-        ModelLoader model_loader(file_prefix, num_subnets, ctx);
-    
-        std::vector<Symbol> network_symbols = model_loader.GetNetworkSymbols();
-        std::vector<std::map<std::string, NDArray>> network_param_maps;
-        network_param_maps = model_loader.GetNetworkParamMaps();
 
 <#if networkInstruction.body.replaySubNetworks?has_content> 
         //Init Replay Memory prediction
 ${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
     
-        std::vector<Symbol> replay_query_symbols = model_loader.GetQuerySymbols();
-        std::vector<std::map<std::string, NDArray>> replay_query_param_maps;
+        ModelLoader model_loader(file_prefix, num_subnets, num_heads, ctx);
+    
+        std::vector<Symbol> network_symbols = model_loader.GetNetworkSymbols();
+        std::vector<std::map<std::string, NDArray>> network_param_maps;
+        network_param_maps = model_loader.GetNetworkParamMaps();
+    
+        std::vector<std::vector<Symbol>> replay_query_symbols = model_loader.GetQuerySymbols();
+        std::vector<std::vector<std::map<std::string, NDArray>>> replay_query_param_maps;
         replay_query_param_maps = model_loader.GetQueryParamMaps();
 
         replay_memory = model_loader.GetReplayMemory();
@@ -398,9 +426,12 @@ ${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
                 for(mx_uint j=0; j < replay_query_input_keys.size(); j++){
                     query_in_shape_map[replay_query_input_keys[j]] = prev_out_shapes[j];
                 }
-                replay_query_handles.push_back(initExecutor(replay_query_symbols[i-1], replay_query_param_maps[i-1], replay_query_input_keys, prev_out_shapes));
+                std::vector<Executor *> head_replay_query_handles = {};
+                for(mx_uint k=0; k < num_heads[i-1]; k++){
+                    head_replay_query_handles.push_back(initExecutor(replay_query_symbols[i-1][k], replay_query_param_maps[i-1][k], replay_query_input_keys, prev_out_shapes));
+                }
+                replay_query_handles.push_back(head_replay_query_handles);
             }
-            
             prev_out_shapes = {out_shapes[0]};
         }
 
@@ -411,7 +442,17 @@ ${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
         optimizerHandle = optimizer_creator.getOptimizer();
     
 <#else>
+        ModelLoader model_loader(file_prefix, 0, ctx);
+    
+        std::vector<Symbol> network_symbols = model_loader.GetNetworkSymbols();
+        std::vector<std::map<std::string, NDArray>> network_param_maps;
+        network_param_maps = model_loader.GetNetworkParamMaps();
+    
         //Init handles
+        std::map<std::string, std::vector<mx_uint>> in_shape_map;
+        for(mx_uint i=0; i < network_input_keys.size(); i++){
+            in_shape_map[network_input_keys[i]] = network_input_shapes[i];
+        }
         std::vector<std::vector<mx_uint>> in_shapes;
         std::vector<std::vector<mx_uint>> aux_shapes;
         std::vector<std::vector<mx_uint>> out_shapes;

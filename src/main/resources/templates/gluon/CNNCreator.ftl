@@ -78,24 +78,6 @@ class ${tc.fileNameWithoutEnding}:
                     network.load_parameters(self._weights_dir_ + param_file, allow_missing=True, ignore_extra=True)
                 else:
                     logging.info("No pretrained weights available at: " + self._weights_dir_ + param_file)
-
-    def load_network(self, modelDir, filePrefix, context):
-        lastEpoch = 0
-        for file in os.listdir(modelDir):
-            if filePrefix in file and ".json" in file:
-                symbolFile = file
-
-            if filePrefix in file and ".param" in file:
-                epochStr = file.replace(".params", "").replace(filePrefix + "-", "")
-                epoch = int(epochStr)
-                if epoch >= lastEpoch:
-                    lastEpoch = epoch
-                    weightFile = file
-
-        net = mx.gluon.nn.SymbolBlock.imports(modelDir + symbolFile, ["data"], modelDir + weightFile, ctx=context)
-        net.hybridize()
-        return net
-    
     
     def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
@@ -103,8 +85,9 @@ class ${tc.fileNameWithoutEnding}:
         self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, ctx=context)
         self.networks[${networkInstruction?index}].hybridize()
         self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#sep>, </#list>)
-        if hasattr(self.networks[${networkInstruction?index}], "replaysubnet0_"):
-            self.networks[0].replaysubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#sep>, </#list>)
+<#if networkInstruction.body.replaySubNetworks?has_content>
+        self.networks[0].replaysubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#sep>, </#list>)
+</#if>
 </#list>
 
         if not os.path.exists(self._model_dir_):

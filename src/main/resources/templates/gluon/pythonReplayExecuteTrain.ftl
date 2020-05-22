@@ -1,8 +1,12 @@
-                if batch_i > 0:
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.body.replaySubNetworks?has_content>
+<#if !replayVisitedReplayExecuteTrain??>
+                #replay memory computations
+                if batch_i > 0:
+<#assign replayVisitedReplayExecuteTrain = true>
+</#if>
                     for layer_i, layer in enumerate(replay_layers[${networkInstruction?index}]):
-                        if batch_i % layer.replay_interval == 0:
+                        if batch_i % layer.replay_interval == 0 and layer.use_replay:
                             replay_batches = layer.sample_memory(batch_size, mx_context)
 
                             for replay_batch in replay_batches:       
@@ -50,4 +54,6 @@
                                         trainer.step(batch_size, ignore_stale_grad=True)
 </#if>
 </#list>
+<#if replayVisitedReplayExecuteTrain??>
                     pass
+</#if>
