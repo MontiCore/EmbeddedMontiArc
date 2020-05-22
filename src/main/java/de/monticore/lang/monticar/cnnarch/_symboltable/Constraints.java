@@ -259,6 +259,26 @@ public enum Constraints {
                     + AllPredefinedLayers.MEMORY_ACTIVATION_SOFTSIGN;
         }
     },
+    DIST_MEASURE_TYPE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if (optString.get().equals(AllPredefinedLayers.L2)
+                        || optString.get().equals(AllPredefinedLayers.INNER_PROD)){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.L2 + " or "
+                    + AllPredefinedLayers.INNER_PROD + "or"
+                    + AllPredefinedLayers.RANDOM;
+        }
+    },
     NULLABLE_AXIS {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {

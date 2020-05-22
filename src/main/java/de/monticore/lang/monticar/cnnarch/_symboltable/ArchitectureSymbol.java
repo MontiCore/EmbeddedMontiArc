@@ -222,11 +222,40 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             List<ArchitectureElementSymbol> currentReplaySubNetworkElements = new ArrayList<>();
 
             for (ArchitectureElementSymbol element : elements){
-                if (element.getName().equals("ReplayMemory")) {
-                    if (!currentReplaySubNetworkElements.isEmpty()){
-                        replaySubNetworks.add(currentReplaySubNetworkElements);
+                if (AllPredefinedLayers.REPLAY_LAYER_NAMES.contains(element.getName())) {
+                    boolean use_replay = false;
+                    boolean use_local_adaption = false;
+
+                    for (ArgumentSymbol arg : ((LayerSymbol)element).getArguments()){
+                        if (arg.getName().equals(AllPredefinedLayers.USE_REPLAY_NAME) && (boolean)arg.getRhs().getValue().get()){
+                            use_replay = true;
+                            break;
+                        }else if (arg.getName().equals(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME) && (boolean)arg.getRhs().getValue().get()){
+                            use_local_adaption = true;
+                            break;
+                        }
                     }
-                    currentReplaySubNetworkElements = new ArrayList<>();
+
+                    if (!use_replay && !use_local_adaption) {
+                        for (ParameterSymbol param : ((LayerSymbol) element).getDeclaration().getParameters()) {
+                            if (param.getName().equals(AllPredefinedLayers.USE_REPLAY_NAME) &&
+                                    (boolean) param.getDefaultExpression().get().getValue().get()) {
+                                use_replay = true;
+                                break;
+                            } else if (param.getName().equals(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME) &&
+                                    (boolean) param.getDefaultExpression().get().getValue().get()) {
+                                use_local_adaption = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (use_replay || use_local_adaption){
+                        if (!currentReplaySubNetworkElements.isEmpty()){
+                            replaySubNetworks.add(currentReplaySubNetworkElements);
+                        }
+                        currentReplaySubNetworkElements = new ArrayList<>();
+                    }
                 }
                 currentReplaySubNetworkElements.add(element);
             }

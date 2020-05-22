@@ -43,6 +43,11 @@ public class ReplayMemory extends PredefinedLayerDeclaration {
         ReplayMemory declaration = new ReplayMemory();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.USE_REPLAY_NAME)
+                        .constraints(Constraints.BOOLEAN)
+                        .defaultValue(true)
+                        .build(),
+                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.REPLAY_INTERVAL_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
@@ -54,17 +59,31 @@ public class ReplayMemory extends PredefinedLayerDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.REPLAY_STEPS_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .defaultValue("linear")
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_TRAINING_NAME)
+                        .name(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .defaultValue(1)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.STORE_PROB_NAME)
+                        .name(AllPredefinedLayers.REPLAY_MEMORY_STORE_PROB_NAME)
                         .constraints(Constraints.NUMBER, Constraints.BETWEEN_ZERO_AND_ONE)
                         .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME)
+                        .constraints(Constraints.BOOLEAN, Constraints.POSITIVE)
+                        .defaultValue(true)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.LOCAL_ADAPTION_GRADIENT_STEPS_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.REPLAY_MEMORY_STORE_DIST_MEASURE_NAME)
+                        .constraints(Constraints.DIST_MEASURE_TYPE)
+                        .defaultValue(AllPredefinedLayers.L2)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.MAX_STORED_SAMPLES_NAME)
@@ -72,12 +91,7 @@ public class ReplayMemory extends PredefinedLayerDeclaration {
                         .defaultValue(-1)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.REPLAY_K_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .defaultValue(1)
-                        .build(),
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_PREDICTION_NAME)
+                        .name(AllPredefinedLayers.LOCAL_ADAPTION_K_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .defaultValue(1)
                         .build(),
