@@ -1,0 +1,3 @@
+[submodule "generators/EMADL2CPP"]
+	path = generators/EMADL2CPP
+	url = https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMADL2CPP.git
