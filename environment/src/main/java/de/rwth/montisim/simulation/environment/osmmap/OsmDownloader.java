@@ -26,8 +26,10 @@ public class OsmDownloader {
 
     public char[] download(Coordinates center, double rangeInMeters) throws IOException {
         SimpleCoordinateConverter conv = new SimpleCoordinateConverter(center);
-        Coordinates min_corner = conv.metersToCoords(new Vec2(rangeInMeters));
-        Coordinates max_corner = conv.metersToCoords(new Vec2(-rangeInMeters));
+        Coordinates min_corner = new Coordinates();
+        Coordinates max_corner = new Coordinates();
+        conv.metersToCoords(new Vec2(rangeInMeters), min_corner);
+        conv.metersToCoords(new Vec2(-rangeInMeters), max_corner);
         DecimalFormat format = new DecimalFormat("##0.0000000", DecimalFormatSymbols.getInstance(Locale.ENGLISH)); //$NON-NLS-1$
         String left = format.format(min_corner.lon);
         String bottom = format.format(min_corner.lat);

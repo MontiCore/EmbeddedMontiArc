@@ -17,8 +17,7 @@ public class SimpleBattery extends Battery {
     @Override
     public void init(ElectricalPTProperties properties){
         this.capacity = properties.batteryCapacity;
-        this.criticalCharge = properties.batteryCriticalCharge;
-        this.resistance = properties.batteryResistance;
+        this.criticalCharge = properties.batteryCriticalChargePercent*0.01*this.capacity;
         this.charge = this.capacity;
     }
 

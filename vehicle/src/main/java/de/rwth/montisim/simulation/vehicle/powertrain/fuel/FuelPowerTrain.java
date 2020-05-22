@@ -24,4 +24,10 @@ public class FuelPowerTrain extends PowerTrain {
         return tank.percentage();
     }
 
+    @Override
+    public double getTransmissionRatio() {
+        // TODO Auto-generated method stub
+        return 1;
+    }
+
 }

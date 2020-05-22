@@ -59,9 +59,9 @@ public class SetupErrorsTest {
         c1.connectToBus(b1);
         c2.connectToBus(b2);
         c3.connectToBus(b2);
-        c1.addOutput("m1", DataType.newDoubleType());
-        c2.addOutput("m1", DataType.newDoubleType());
-        c3.addOutput("m1", DataType.newDoubleType());
+        c1.addOutput("m1", DataType.DOUBLE);
+        c2.addOutput("m1", DataType.DOUBLE);
+        c3.addOutput("m1", DataType.DOUBLE);
         boolean foundError = false;
         try {
             simulator.finalizeSetup();
@@ -81,17 +81,19 @@ public class SetupErrorsTest {
         TestEEComponent c1 = new TestEEComponent(simulator, "c1");
         TestEEComponent c2 = new TestEEComponent(simulator, "c2");
         TestEEComponent c3 = new TestEEComponent(simulator, "c3");
+        TestEEComponent c4 = new TestEEComponent(simulator, "c4");
         c1.connectToBus(b1);
         c2.connectToBus(b2);
         c3.connectToBus(b2);
-        c1.addOutput("m1", DataType.newDoubleType());
-        c2.addInput("m1", DataType.newDoubleType());
-        c3.addInput("m2", DataType.newDoubleType());
+        c1.addOutput("m1", DataType.DOUBLE);
+        c2.addInput("m1", DataType.DOUBLE);
+        c3.addInput("m2", DataType.DOUBLE);
+        c4.addInput("m1", DataType.DOUBLE);
         boolean foundError = false;
         try {
             simulator.finalizeSetup();
         } catch (EESetupException e){
-            foundError = e.errors.missingOutputExceptions.size() == 2;
+            foundError = e.errors.missingOutputExceptions.size() == 3;
             //e.printStackTrace();
         }
         Assert.assertTrue("Expected an EEMissingOutputException to be thrown.", foundError);
@@ -108,9 +110,9 @@ public class SetupErrorsTest {
         c1.connectToBus(b1);
         c2.connectToBus(b1);
         c3.connectToBus(b1);
-        c1.addOutput("m1", DataType.newDoubleType());
-        c2.addInput("m1", DataType.newIntType());
-        c3.addInput("m1", new ArrayType(DataType.newIntType(), ArrayType.Dimensionality.ARRAY, 5));
+        c1.addOutput("m1", DataType.DOUBLE);
+        c2.addInput("m1", DataType.INT);
+        c3.addInput("m1", new ArrayType(DataType.INT, ArrayType.Dimensionality.ARRAY, 5));
         boolean foundError = false;
         try {
             simulator.finalizeSetup();

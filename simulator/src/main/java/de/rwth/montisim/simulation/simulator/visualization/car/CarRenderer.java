@@ -2,6 +2,7 @@ package de.rwth.montisim.simulation.simulator.visualization.car;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Optional;
 
 import javax.swing.JMenuItem;
 
@@ -23,7 +24,7 @@ public class CarRenderer extends Renderer {
         0,2,6,4, // -Z face
         1,3,7,5, // +Z face
     };
-    final DynamicObject car;
+    Optional<DynamicObject> car = Optional.empty();
     final Vec3 half_size = new Vec3();
     final Vec3 points[] = new Vec3[8];
     final boolean visible[] = new boolean[6];
@@ -43,18 +44,25 @@ public class CarRenderer extends Renderer {
     Vec3 a = new Vec3();
     Vec3 color = new Vec3(CAR_COLOR.getRed()/255d,CAR_COLOR.getGreen()/255d,CAR_COLOR.getBlue()/255d);
 
+    public CarRenderer() {}
     public CarRenderer(DynamicObject car, Vec3 size){
-        this.car = car;
+        setCar(car, size);
+    }
+
+    public void setCar(DynamicObject car, Vec3 size){
+        this.car = Optional.of(car);
         IPM.multiplyToVec(size, 0.5, half_size);
         for (int i = 0; i < points.length; ++i){
             points[i] = new Vec3();
         }
         IPM.normalize(light1);
         IPM.normalize(light2);
+        dirty = true;
     }
 
     @Override
     public void draw(Graphics2D g) {
+        if (!car.isPresent()) return;
         for (int i = 0; i < 6; ++i){
             if (visible[i]){
                 Polygonn p = faces[i];
@@ -66,6 +74,8 @@ public class CarRenderer extends Renderer {
 
     @Override
     public void computeGeometry(Mat3 viewMatrix) {
+        if (!car.isPresent()) return;
+        DynamicObject c = car.get();
         int i = 0;
         // Generate and project Box geometry in one go
         for (int dx = -1; dx <= 1; dx +=2){
@@ -77,8 +87,8 @@ public class CarRenderer extends Renderer {
                     p.y = half_size.y *dy;
                     p.z = half_size.z *dz;
                     // To world pos
-                    IPM.multiply(car.rotation, p);
-                    IPM.add(p, car.pos);
+                    IPM.multiply(c.rotation, p);
+                    IPM.add(p, c.pos);
                     p.z = 1; // "Project" to 2D homogenous coordinates
                     // To screen pos
                     IPM.multiply(viewMatrix, p);
@@ -90,12 +100,12 @@ public class CarRenderer extends Renderer {
         // -X, +X, -Y, +Y, -Z, +Z
         // Here the normals are the 3 local axes => rotated axes = entries in the rotation matrix
         // The "viewMatrix" is in 2D => doesn't affect Z => ignore
-        checkFace(0, car.rotation.col1, true);
-        checkFace(1, car.rotation.col1, false);
-        checkFace(2, car.rotation.col2, true);
-        checkFace(3, car.rotation.col2, false);
-        checkFace(4, car.rotation.col3, true);
-        checkFace(5, car.rotation.col3, false);
+        checkFace(0, c.rotation.col1, true);
+        checkFace(1, c.rotation.col1, false);
+        checkFace(2, c.rotation.col2, true);
+        checkFace(3, c.rotation.col2, false);
+        checkFace(4, c.rotation.col3, true);
+        checkFace(5, c.rotation.col3, false);
 
         // Fill faces
         for (i = 0; i < 6; i++){
@@ -117,17 +127,17 @@ public class CarRenderer extends Renderer {
     }
 
     @Override
-    public String getInfo() {
-        return "";
+    public String[] getInfo() {
+        return null;
     }
 
     @Override
-    public String getHoverInfo(Vec2 worldPos) {
-        return "";
+    public String[] getHoverInfo(Vec2 worldPos) {
+        return null;
     }
 
     @Override
-    public JMenuItem getClicMenuItem(Vec2 worldPos) {
+    public JMenuItem[] getClicMenuItem(Vec2 worldPos) {
         return null;
     }
 

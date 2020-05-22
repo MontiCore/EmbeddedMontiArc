@@ -7,7 +7,6 @@ import de.rwth.montisim.simulation.vehicle.vehicleproperties.ElectricalPTPropert
 public abstract class Battery {
     public double capacity;
     public double charge;
-    public double resistance;
     public double criticalCharge;
     
     abstract public void init(ElectricalPTProperties properties);

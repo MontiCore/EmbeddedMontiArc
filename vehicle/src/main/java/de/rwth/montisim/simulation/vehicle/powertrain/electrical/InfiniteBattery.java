@@ -16,7 +16,6 @@ public class InfiniteBattery extends Battery {
         this.charge = Float.POSITIVE_INFINITY;
         this.capacity = Float.POSITIVE_INFINITY;
         this.criticalCharge = 0;
-        this.resistance = 1;
     }
 
     @Override

@@ -1,27 +1,45 @@
 package de.rwth.montisim.simulation.simulator.visualization.plotter;
 
+import java.awt.Color;
+import java.util.Optional;
 import java.util.Vector;
 
 public class DataPoints {
+    public static final int BLOCK_SIZE = 1024;
     public final String name;
+    public final String unit;
     public int nameWidth; // Used by the plotter
 
-    Vector<Double> data = new Vector<>();
+    Vector<double[]> data = new Vector<>();
     public boolean discrete = false;
     public boolean showZero = true;
     private int index = 0;
+    private int arrayIndex = 0;
+    Optional<Color> color = Optional.empty();
 
-    public DataPoints(String name){
+    public DataPoints(String name, String unit, Color color){
         this.name = name;
-        data.setSize(1);
+        this.unit = unit;
+        data.add(new double[BLOCK_SIZE]);
+        this.color = Optional.of(color);
     }
 
-    public void add(double v){
-        data.set(index, v);
+    public DataPoints(String name, String unit){
+        this.name = name;
+        this.unit = unit;
+        data.add(new double[BLOCK_SIZE]);
+    }
+
+    public void setTickData(double v){
+        data.elementAt(arrayIndex)[index] = v;
     }
 
     public void nextTimeStep(){
-        data.setSize(data.size()+1);
         index++;
+        if (index == BLOCK_SIZE){
+            index = 0;
+            data.add(new double[BLOCK_SIZE]);
+            arrayIndex++;
+        }
     }
 }

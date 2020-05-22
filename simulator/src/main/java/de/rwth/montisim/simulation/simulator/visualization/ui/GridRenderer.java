@@ -3,6 +3,8 @@ package de.rwth.montisim.simulation.simulator.visualization.ui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JMenuItem;
 
@@ -79,19 +81,17 @@ public class GridRenderer extends Renderer {
     }
 
     @Override
-    public String getInfo() {
-        return "Grid spacing: "+gridRes;
+    public String[] getInfo() {
+        return new String[] {"Grid spacing: "+gridRes};
     }
 
     @Override
-    public String getHoverInfo(Vec2 worldPos) {
-        // TODO Auto-generated method stub
-        return "";
+    public String[] getHoverInfo(Vec2 worldPos) {
+        return null;
     }
 
     @Override
-    public JMenuItem getClicMenuItem(Vec2 worldPos) {
-        // TODO Auto-generated method stub
+    public JMenuItem[] getClicMenuItem(Vec2 worldPos) {
         return null;
     }
 

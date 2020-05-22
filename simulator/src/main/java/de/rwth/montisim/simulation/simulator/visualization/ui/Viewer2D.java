@@ -6,6 +6,9 @@
  */
 package de.rwth.montisim.simulation.simulator.visualization.ui;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -41,6 +45,13 @@ import de.rwth.montisim.commons.utils.Vec3;
  */
 public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelListener {
     private static final long serialVersionUID = 4687042051904715366L;
+    private static final ImageIcon a;
+    static {
+        java.net.URL imgURL = Control.class.getResource("/images/a.gif");
+        if (imgURL != null)
+            a = new ImageIcon(imgURL);
+        else a = null;
+    }
 
     private static final DecimalFormat format = new DecimalFormat("##0.00",
             DecimalFormatSymbols.getInstance(Locale.ENGLISH));
@@ -69,6 +80,7 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         this.addMouseWheelListener(this);
         this.addMouseMotionListener(this);
         addRenderer(new GridRenderer(this));
+
     }
 
     @Override
@@ -108,6 +120,10 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         if (dirty) dirty = false;
 
         renderInfoText(g);
+        
+        // if (a != null){
+        //     a.paintIcon(this, g, 100, 100);
+        // }
     }
 
     private void renderInfoText(Graphics g) {
@@ -119,15 +135,19 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         lines.add("Right clic to copy coordinates.");
         lines.add(" ");
 
-        for (Renderer r : renderers)
-            lines.add(r.getInfo());
+        for (Renderer r : renderers){
+            String[] l = r.getInfo();
+            if (l != null) for(String s : l) lines.add(s);
+        }
 
         lines.add(" ");
         if (hover) {
             Vec2 wp = getWorldPos(mousePos);
             lines.add("x: " + format.format(wp.x) + " y: " + format.format(wp.y));
-            for (Renderer r : renderers)
-                lines.add(r.getHoverInfo(wp));
+            for (Renderer r : renderers){
+                String[] l = r.getHoverInfo(wp);
+                if (l != null) for(String s : l) lines.add(s);
+            }
         }
 
         // Measure size
@@ -190,6 +210,13 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         dirty = true;
     }
 
+    public void setZoom(double newScale) {
+        // Get nearest scroll count
+        scrollCount = (int) Math.round(Math.log(newScale)/Math.log(UIInfo.SCROLL_FACTOR));
+        scale = Math.pow(UIInfo.SCROLL_FACTOR, scrollCount);
+        dirty = true;
+    }
+
     public Vec2 getWorldPos(Vec2 screenPos) {
         Vec3 res = invViewMatrix.multiply(new Vec3(screenPos.x, screenPos.y, 1));
         return new Vec2(res.x, res.y);
@@ -237,8 +264,8 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
                 items.add(new CopyMenuItem("Copy position ", pos, true));
             }
             for (Renderer r : renderers){
-                JMenuItem i = r.getClicMenuItem(wp);
-                if (i != null) items.add(i);
+                JMenuItem[] l = r.getClicMenuItem(wp);
+                if (l != null) for(JMenuItem s : l) items.add(s);
             }
             
             if (items.size() > 0){

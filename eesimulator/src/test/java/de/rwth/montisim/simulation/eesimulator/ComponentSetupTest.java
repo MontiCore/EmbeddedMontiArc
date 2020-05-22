@@ -33,18 +33,18 @@ public class ComponentSetupTest {
         c2 = new TestEEComponent(simulator, "TestComponent2");
         c3 = new TestEEComponent(simulator, "TestComponent3");
 
-        MessageInformation m1 = c1.addInput("m1", DataType.newIntType());
-        MessageInformation m2 = c1.addInput("m2", DataType.newDoubleType());
+        MessageInformation m1 = c1.addInput("m1", DataType.INT);
+        MessageInformation m2 = c1.addInput("m2", DataType.DOUBLE);
         
-        c2.addInput("m1", DataType.newIntType());
-        MessageInformation m3 = c2.addInput("m3", DataType.newIntType());
-        MessageInformation m4 = c2.addOutput("m4", DataType.newDoubleType());
-        MessageInformation m5 = c2.addOutput("m5", DataType.newDoubleType());
+        c2.addInput("m1", DataType.INT);
+        MessageInformation m3 = c2.addInput("m3", DataType.INT);
+        MessageInformation m4 = c2.addOutput("m4", DataType.DOUBLE);
+        MessageInformation m5 = c2.addOutput("m5", DataType.DOUBLE);
 
-        c3.addInput("m4", DataType.newDoubleType());
-        c3.addOutput("m1", DataType.newIntType());
-        c3.addOutput("m2", DataType.newDoubleType());
-        c3.addOutput("m3", DataType.newIntType());
+        c3.addInput("m4", DataType.DOUBLE);
+        c3.addOutput("m1", DataType.INT);
+        c3.addOutput("m2", DataType.DOUBLE);
+        c3.addOutput("m3", DataType.INT);
 
         // Test different connection methods
         c1.connectToBus(bus);
@@ -116,31 +116,31 @@ public class ComponentSetupTest {
         Bridge r2 = Bridge.newInstantBridge(simulator, "r2");
 
         // Set ports
-        MessageInformation m1 = c1.addOutput("m1", DataType.newIntType());
-        c2.addInput("m1", DataType.newIntType());
-        c3.addInput("m1", DataType.newIntType());
-        c4.addInput("m1", DataType.newIntType());
-        c5.addInput("m1", DataType.newIntType());
-        c6.addInput("m1", DataType.newIntType());
+        MessageInformation m1 = c1.addOutput("m1", DataType.INT);
+        c2.addInput("m1", DataType.INT);
+        c3.addInput("m1", DataType.INT);
+        c4.addInput("m1", DataType.INT);
+        c5.addInput("m1", DataType.INT);
+        c6.addInput("m1", DataType.INT);
 
-        MessageInformation m2 = c1.addOutput("m2", DataType.newDoubleType());
-        c2.addInput("m2", DataType.newDoubleType());
+        MessageInformation m2 = c1.addOutput("m2", DataType.DOUBLE);
+        c2.addInput("m2", DataType.DOUBLE);
 
-        MessageInformation m3 = c1.addOutput("m3", DataType.newIntType());
-        c3.addInput("m3", DataType.newIntType());
+        MessageInformation m3 = c1.addOutput("m3", DataType.INT);
+        c3.addInput("m3", DataType.INT);
 
-        MessageInformation m4 = c1.addOutput("m4", DataType.newDoubleType());
-        c4.addInput("m4", DataType.newDoubleType());
+        MessageInformation m4 = c1.addOutput("m4", DataType.DOUBLE);
+        c4.addInput("m4", DataType.DOUBLE);
 
-        MessageInformation m5 = c1.addOutput("m5", DataType.newIntType());
-        c4.addInput("m5", DataType.newIntType());
-        c5.addInput("m5", DataType.newIntType());
+        MessageInformation m5 = c1.addOutput("m5", DataType.INT);
+        c4.addInput("m5", DataType.INT);
+        c5.addInput("m5", DataType.INT);
 
-        MessageInformation m6 = c1.addOutput("m6", DataType.newDoubleType());
+        MessageInformation m6 = c1.addOutput("m6", DataType.DOUBLE);
 
-        MessageInformation m7 = c1.addOutput("m7", DataType.newIntType());
-        c3.addInput("m7", DataType.newIntType());
-        c6.addInput("m7", DataType.newIntType());
+        MessageInformation m7 = c1.addOutput("m7", DataType.INT);
+        c3.addInput("m7", DataType.INT);
+        c6.addInput("m7", DataType.INT);
         
         // Connect components and bridges
         c1.connectToBus(b1);
@@ -165,11 +165,11 @@ public class ComponentSetupTest {
         cB = new TestEEComponent(simulator, "cB");
 
         // Set ports
-        MessageInformation mA = cA.addOutput("mA", DataType.newIntType());
-        cB.addInput("mA", DataType.newIntType());
+        MessageInformation mA = cA.addOutput("mA", DataType.INT);
+        cB.addInput("mA", DataType.INT);
 
-        MessageInformation mB = cB.addOutput("mB", DataType.newDoubleType());
-        cA.addInput("mB", DataType.newDoubleType());
+        MessageInformation mB = cB.addOutput("mB", DataType.DOUBLE);
+        cA.addInput("mB", DataType.DOUBLE);
 
         // Connect components and bridges
         cA.connectToBus(bA);

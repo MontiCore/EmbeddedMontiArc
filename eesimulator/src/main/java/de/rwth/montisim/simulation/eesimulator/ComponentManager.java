@@ -327,11 +327,12 @@ public class ComponentManager {
             if (map == null) continue;
             for (PortInformation p : c.getInputPorts()){
                 InputInfo info = map.get(p.msg.name);
-                if (info == null){
-                    // Check optional
-                    if (!p.optional)
+                // Check optional
+                if (!p.optional) {
+                    if (info == null || (info != null && !info.covered))
                         errors.missingOutputExceptions.add(new EEMissingOutputException(p.msg.name, c.name));
-                } else {
+                }
+                if (info != null) {
                     // Check if the "multipleInputs" flag is respected
                     if (!p.multipleInputsAllowed && info.multiple)
                         errors.multipleInputsExceptions.add(new EEMultipleInputsException(c.name, p.msg.name, info.senders));

@@ -11,6 +11,6 @@ public abstract class PowerTrainProperties {
     public TractionType brakingType = TractionType.REAR;
 
     // TODO check
-    public double maxBrakingForce = 500; // In Newtons
+    public double maxBrakingForce = 5000; // In Newtons
 
 }

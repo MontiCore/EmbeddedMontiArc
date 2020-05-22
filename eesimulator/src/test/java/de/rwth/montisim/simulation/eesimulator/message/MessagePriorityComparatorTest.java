@@ -35,10 +35,10 @@ public class MessagePriorityComparatorTest {
         PriorityQueue<CANMessageTransmission> messages = new PriorityQueue<CANMessageTransmission>(
             new MessageTransmission.MsgTransPriorityComp(manager.msgPrioComp)
         );
-        Message msg1 = new Message(new MessageInformation("msg1", DataType.newDoubleType(), manager, null), null, 1, 0);
-        Message msg2 = new Message(new MessageInformation("msg2", DataType.newDoubleType(), manager, null), null, 1, 0);
-        Message msg3 = new Message(new MessageInformation("msg3", DataType.newDoubleType(), manager, null), null, 1, 0);
-        Message msg4 = new Message(new MessageInformation("msg4", DataType.newDoubleType(), manager, null), null, 1, 1);
+        Message msg1 = new Message(new MessageInformation("msg1", DataType.DOUBLE, manager, null), null, 1, 0);
+        Message msg2 = new Message(new MessageInformation("msg2", DataType.DOUBLE, manager, null), null, 1, 0);
+        Message msg3 = new Message(new MessageInformation("msg3", DataType.DOUBLE, manager, null), null, 1, 0);
+        Message msg4 = new Message(new MessageInformation("msg4", DataType.DOUBLE, manager, null), null, 1, 1);
 
         manager.addMessagePriorities(Arrays.asList(
             new Pair<String, Integer>("msg1", 1),

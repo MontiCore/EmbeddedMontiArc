@@ -24,7 +24,7 @@ import de.rwth.montisim.simulation.eesimulator.sensor.SensorLogic;
 
 public class Actuator extends EEComponent implements Updatable {
     final SensorLogic sensor;
-    double targetValue;
+    public double targetValue;
     final PhysicalValue currentValue;
     final double minValue;
     final double maxValue;
@@ -47,7 +47,7 @@ public class Actuator extends EEComponent implements Updatable {
         this.targetValue = actuatedValue.get();
         this.changeRate = changeRate;
         this.sendFeedback = sendFeedback;
-        this.msgInfo = addInput("set_"+actuatedValue.name, DataType.newDoubleType());
+        this.msgInfo = addOptionalInput("set_"+actuatedValue.name, DataType.DOUBLE, true);
         updater.addUpdatable(this);
     }
 

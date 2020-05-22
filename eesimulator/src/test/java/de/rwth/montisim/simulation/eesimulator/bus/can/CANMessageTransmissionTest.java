@@ -51,7 +51,7 @@ public class CANMessageTransmissionTest {
 
     public void testBitsizeComputation(int msgSize, int expectedFrames, long expectedBits) {
         MessageTypeManager manager = new MessageTypeManager(null, null);
-        CANMessageTransmission tr = new CANMessageTransmission(new Message(new MessageInformation("m1", DataType.newIntType(), manager, null), null, msgSize, 0), rnd);
+        CANMessageTransmission tr = new CANMessageTransmission(new Message(new MessageInformation("m1", DataType.INT, manager, null), null, msgSize, 0), rnd);
         Assert.assertEquals(expectedFrames, tr.getRequiredFrames());
         Assert.assertEquals(expectedBits, tr.getRequiredTotalBits());
     }

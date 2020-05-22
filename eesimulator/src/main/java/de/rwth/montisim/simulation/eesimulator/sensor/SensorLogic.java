@@ -34,7 +34,7 @@ public class SensorLogic implements Updatable {
         this.updateInterval = updateInterval;
         this.readTime = readTime;
         this.sendOnlyChanged = sendOnlyChanged;
-        this.msgInfo = component.addOutput(watchedValue.name, DataType.newDoubleType());
+        this.msgInfo = component.addOutput(watchedValue.name, DataType.DOUBLE);
         this.component = component;
     }
 

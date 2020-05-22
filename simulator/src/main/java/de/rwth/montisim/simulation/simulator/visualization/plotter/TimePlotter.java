@@ -22,11 +22,19 @@ import de.rwth.montisim.simulation.simulator.visualization.ui.UIInfo;
 
 public class TimePlotter extends JPanel {
     private static final long serialVersionUID = -9135099086009538480L;
+
+    public static final int LEGEND_LINE_WIDTH = 12;
+    public static final int LEGEND_LINE_HEIGHT = 3;
     
+    public boolean dirty = true;
     
     public Vec2 screen_size = new Vec2();
 
     List<DataPoints> graphs = new ArrayList<>();
+
+    public TimePlotter(){
+        setPreferredSize(new Dimension(100,300));
+    }
 
     @Override
     public void paintComponent(Graphics g) {
@@ -43,7 +51,38 @@ public class TimePlotter extends JPanel {
         screen_size.x = d.getWidth();
         screen_size.y = d.getHeight();
 
+        g2.setColor(new Color(255,180,180));
+        g2.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
+
+        if (dirty){
+            refresh();
+        }
+
         screen_size.y -= drawLegend(g2);
+
+        drawAxesAndGrid();
+
+        drawGraphs();
+    }
+
+
+    public void update(){
+        // Update time for graphs
+        for (DataPoints dp : graphs){
+            dp.nextTimeStep();
+        }
+        dirty = true;
+    }
+
+    private void refresh() {
+        // TODO
+        // Pre-process data point ranges:
+        // - get minimum required y display range
+        // - Clamp to "grid"
+        // - Get axes texts & sizes + tick spacing (see map grid?)
+        // Pre-compute graphs geometry (depending on scale AND scroll)
+        // Only add new Graph Point when distance to previous > threshold
+        dirty = false;
     }
 
     private int drawLegend(Graphics2D g) {
@@ -55,8 +94,25 @@ public class TimePlotter extends JPanel {
         return size;
     }
 
+    
+    private void drawAxesAndGrid() {
+        // Use precomputed labels sizes to draw axes lines
+        // Use precomputed info to draw label ticks and labels
+        // Draw Grid
+    }
+
+    private void drawGraphs() {
+        // Set clip region
+        // For all graphs
+        // Draw geom
+        // If big scale -> draw points
+        // If current time visible -> Draw Vertical Line
+    }
+
+
     public void addGraph(DataPoints dp) {
         graphs.add(dp);
+        dirty = true;
     }
     
 }

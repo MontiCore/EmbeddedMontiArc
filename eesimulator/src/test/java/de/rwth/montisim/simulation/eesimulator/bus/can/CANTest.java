@@ -55,19 +55,19 @@ public class CANTest {
         can.addComponent(c3);
 
         // Full frame payload
-        m1 = new Message(new MessageInformation("m1", DataType.newDoubleType(), simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES, 0);
+        m1 = new Message(new MessageInformation("m1", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES, 0);
         t1 = new CANMessageTransmission(m1, null);
         // Partial frame payload
-        m2 = new Message(new MessageInformation("m2", DataType.newDoubleType(), simulator.getMessageTypeManager(), c1), null, 3, 0);
+        m2 = new Message(new MessageInformation("m2", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, 3, 0);
         t2 = new CANMessageTransmission(m2, null);
         // Multi frame payload (full)
-        m3 = new Message(new MessageInformation("m3", DataType.newDoubleType(), simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*5, 0);
+        m3 = new Message(new MessageInformation("m3", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*5, 0);
         t3 = new CANMessageTransmission(m3, null);
         // Multi frame payload (full)
-        m4 = new Message(new MessageInformation("m4", DataType.newDoubleType(), simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*3 + 5, 0);
+        m4 = new Message(new MessageInformation("m4", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*3 + 5, 0);
         t4 = new CANMessageTransmission(m4, null);
         // Full frame payload
-        m5 = new Message(new MessageInformation("m5", DataType.newDoubleType(), simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES, 0);
+        m5 = new Message(new MessageInformation("m5", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES, 0);
         t5 = new CANMessageTransmission(m5, null);
         
         simulator.getMessageTypeManager().addMessagePriorities(Arrays.asList(

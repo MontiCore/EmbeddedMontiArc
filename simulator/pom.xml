@@ -52,6 +52,11 @@
             <artifactId>vehicle</artifactId>
             <version>${revision}</version>
         </dependency>
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>eecomponents</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
 
     <build>

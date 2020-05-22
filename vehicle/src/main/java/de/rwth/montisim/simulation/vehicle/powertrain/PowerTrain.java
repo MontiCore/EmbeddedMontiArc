@@ -16,4 +16,8 @@ public abstract class PowerTrain {
     }
 
     public abstract double getFuelPercentage();
+    /**
+     * @return The current ratio between the motor & the wheels (ratio = motor revolutions / wheel revolutions)
+     */
+    public abstract double getTransmissionRatio();
 }

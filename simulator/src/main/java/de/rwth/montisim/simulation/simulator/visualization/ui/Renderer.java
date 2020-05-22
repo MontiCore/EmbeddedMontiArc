@@ -7,6 +7,7 @@
 package de.rwth.montisim.simulation.simulator.visualization.ui;
 
 import java.awt.BasicStroke;
+import java.awt.Stroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -19,16 +20,18 @@ import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
 
 public abstract class Renderer {
+    public static final Stroke DEFAULT_STROKE = new BasicStroke();
+    public static final Color DEFAULT_COLOR = new Color(0, 0, 0);
 
     public boolean dirty = true;
     public abstract void draw(Graphics2D g);
     public abstract void computeGeometry(Mat3 viewMatrix);
     // return "" if nothing to show
-    public abstract String getInfo();
+    public abstract String[] getInfo();
     // return "" if nothing to show
-    public abstract String getHoverInfo(Vec2 worldPos);
+    public abstract String[] getHoverInfo(Vec2 worldPos);
     // Return null if nothing to show
-    public abstract JMenuItem getClicMenuItem(Vec2 worldPos);
+    public abstract JMenuItem[] getClicMenuItem(Vec2 worldPos);
 
     
     /**
@@ -40,7 +43,25 @@ public abstract class Renderer {
         public Vec3 points[];
         public int x[];
         public int y[];
+        public Color color;
+        public Stroke stroke = null;
         public Polyline(int size){
+            this.color = DEFAULT_COLOR;
+            this.stroke = DEFAULT_STROKE;
+            points = new Vec3[size];
+            x = new int[size];
+            y = new int[size];
+        }
+        public Polyline(int size, Color c){
+            this.color = c;
+            this.stroke = DEFAULT_STROKE;
+            points = new Vec3[size];
+            x = new int[size];
+            y = new int[size];
+        }
+        public Polyline(int size, Color c, Stroke stroke){
+            this.color = c;
+            this.stroke = stroke;
             points = new Vec3[size];
             x = new int[size];
             y = new int[size];
@@ -94,10 +115,10 @@ public abstract class Renderer {
         }
     }
 
-    protected static void drawLines(Graphics2D g, List<Polyline> lines, Color color, int thickness){
-        g.setColor(color);
-        g.setStroke(new BasicStroke(thickness));
+    protected static void drawLines(Graphics2D g, List<Polyline> lines){
         for (Polyline p : lines){
+            g.setColor(p.color);
+            g.setStroke(p.stroke);
             g.drawPolyline(p.x,p.y,p.x.length);
         }
     }

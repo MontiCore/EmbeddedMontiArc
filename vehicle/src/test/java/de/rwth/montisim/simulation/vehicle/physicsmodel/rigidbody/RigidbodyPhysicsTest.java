@@ -20,14 +20,17 @@ import de.rwth.montisim.simulation.eesimulator.EESimulator;
 import de.rwth.montisim.simulation.vehicle.vehicleproperties.ElectricalPTProperties;
 import de.rwth.montisim.simulation.vehicle.vehicleproperties.VehicleProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricMotor;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPowerTrain;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.SimpleBattery;
 
 public class RigidbodyPhysicsTest {
 
     @Test
-    public void testAccel(){
-        VehicleProperties properties = new VehicleProperties(new ElectricalPTProperties());
+    public void testAccel() throws Exception {
+        ElectricalPTProperties eptp = new ElectricalPTProperties();
+        VehicleProperties properties = new VehicleProperties(eptp);
         EESimulator eesimulator = new EESimulator();
-        RigidbodyPhysics physics = new RigidbodyPhysics(properties, new ElectricMotor(), eesimulator, new Updater());
+        RigidbodyPhysics physics = new RigidbodyPhysics(properties, new ElectricalPowerTrain(eesimulator, eptp, SimpleBattery.class, ElectricMotor.class), eesimulator, new Updater());
         physics.setGroundPosition(new Vec3(0,0,0), new Vec2(1,0));
 
         physics.gasValue.set(1);

@@ -12,9 +12,8 @@ import de.rwth.montisim.commons.utils.Coordinates;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 
 public class OsmMap {
@@ -51,14 +50,22 @@ public class OsmMap {
     }
 
     public class Way extends Tagged {
-        public List<Long> nodes = new LinkedList<>();
+        public final long osmID;
+        // Local ID is position in Node table. (Might be null)
+        public Vector<Integer> nodesLocalID = new Vector<>();
+
+        public Way(long osmID){
+            this.osmID = osmID;
+        }
     }
 
     public class Node extends Tagged {
-        public Coordinates coords;
+        public final long osmID;
+        public final Coordinates coords;
 
-        Node(Coordinates coords) {
+        Node(Coordinates coords, long osmID) {
             this.coords = coords;
+            this.osmID = osmID;
         }
     }
 
@@ -105,6 +112,7 @@ public class OsmMap {
         public final StringId BUILDING = new StringId("building");
         public final StringId HEIGHT = new StringId("height");
         public final StringId BUILDING_LEVELS = new StringId("building:levels");
+        public final StringId MAX_SPEED = new StringId("maxspeed");
         
         private Tag(){}
     }
@@ -148,8 +156,44 @@ public class OsmMap {
     */
     public final String name;
 
-    public HashMap<Long, Node> nodes;
-    public HashMap<Long, Way> ways;
+    // Can contain null entries
+    public Vector<Node> nodeTable = new Vector<>();
+    public Vector<Way> wayTable = new Vector<>();
+
+    public HashMap<Long, Integer> nodeLocalIDByOsmID = new HashMap<>();
+    //public HashMap<Long, Integer> wayLocalIDByOsmID = new HashMap<>();
+
+    private int addNode(Node node){
+        Integer i = nodeLocalIDByOsmID.get(node.osmID);
+        if (i != null){
+            if (nodeTable.elementAt(i) != null){
+                Logger.getGlobal().warning("OSM Node "+node.osmID+" already added.");
+            }
+            nodeTable.set(i, node);
+            return i;
+        } else {
+            int id = nodeTable.size();
+            nodeLocalIDByOsmID.put(node.osmID, id);
+            nodeTable.add(node);
+            return id;
+        }
+    }
+
+    // Returns a local id for the node even if the node itself was not encountered yet and added.
+    private int getNodeID(long osmID){
+        Integer i = nodeLocalIDByOsmID.get(osmID);
+        if (i != null) return i;
+        int id = nodeTable.size();
+        nodeLocalIDByOsmID.put(osmID, id);
+        nodeTable.add(null);
+        return id;
+    }
+
+    private int addWay(Way way){
+        int id = wayTable.size();
+        wayTable.add(way);
+        return id;
+    }
 
     public Coordinates min_corner = new Coordinates(0,0);
     public Coordinates mid_point = new Coordinates(0,0);
@@ -164,11 +208,6 @@ public class OsmMap {
 
     private void parseMap(XmlTraverser p) throws Exception {
         long start = System.nanoTime();
-
-        //tag_id_counter = 0;
-        //tag_ids = new HashMap<>();
-        nodes = new HashMap<>();
-        ways = new HashMap<>();
 
         //Find osm tag
         String tag;
@@ -215,8 +254,8 @@ public class OsmMap {
                         lon = Double.parseDouble(p.get_attribute_value());
                     }
                 } while (attrib.length() > 0);
-                if (!got_id) continue;
-                Node node = new Node(new Coordinates(lon, lat));
+                if (!got_id) continue; // Simply ignore if no osmID
+                Node node = new Node(new Coordinates(lon, lat), id);
 
                 //Check node tags
                 if (p.enter_tag()){
@@ -247,8 +286,7 @@ public class OsmMap {
                 p.exit_tag();
                 
 
-
-                nodes.put(id, node);
+                addNode(node);
             } else if (tag.equalsIgnoreCase("way")){
                 //Ex: <way id="5168924" visible="true" version="23" changeset="48959749" timestamp="2017-05-24T23:00:23Z" user="Steffen van Bergerem" uid="61868">
                 long id = 0;
@@ -261,7 +299,7 @@ public class OsmMap {
                     }
                 } while (attrib.length() > 0);
                 if (!got_id) continue;
-                Way way = new Way();
+                Way way = new Way(id);
 
                 //Go through list of <nd> (node references) and <tag>
                 if (p.enter_tag()){
@@ -276,8 +314,8 @@ public class OsmMap {
                             }
                             while (att.length() > 0 && !att.equalsIgnoreCase("ref"));
                             if (att.length() == 0) return;
-                            Long ref_id = Long.parseLong(p.get_attribute_value());
-                            way.nodes.add(ref_id);
+                            int ref_id = getNodeID(Long.parseLong(p.get_attribute_value()));
+                            way.nodesLocalID.add(ref_id);
                         } else if (tag2.equalsIgnoreCase("tag")){
                             //Ex: <tag k="highway" v="service"/>
                             String att;
@@ -302,7 +340,7 @@ public class OsmMap {
                 }
                 p.exit_tag();
                 
-                ways.put(id, way);
+                addWay(way);
             } else if (tag.equalsIgnoreCase("bounds")){
                 //TODO Optional check uniqueness of bounds tag
                 //Ex: <bounds minlat="50.7784900" minlon="6.0621200" maxlat="50.7815800" maxlon="6.0705400"/>

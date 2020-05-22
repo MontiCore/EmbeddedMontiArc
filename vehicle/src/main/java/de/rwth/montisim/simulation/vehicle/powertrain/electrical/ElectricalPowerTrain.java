@@ -17,11 +17,14 @@ public class ElectricalPowerTrain extends PowerTrain {
     public final Battery battery;
     public final ElectricMotor e_motor;
 
+    private final double transmissionRatio;
+
     public ElectricalPowerTrain(
         EESimulator ee_vehicle, ElectricalPTProperties properties,
         Class<? extends Battery> batteryClass, Class<? extends ElectricMotor> e_motorClass
     ) throws Exception {
         super("ElectricalPowerTrain");
+        this.transmissionRatio = properties.transmissionRatio;
         try {
             Constructor<? extends Battery> batteryConstructor = batteryClass.getConstructor();
             this.battery = batteryConstructor.newInstance();
@@ -43,5 +46,10 @@ public class ElectricalPowerTrain extends PowerTrain {
     @Override
     public double getFuelPercentage() {
         return battery.percentage();
+    }
+
+    @Override
+    public double getTransmissionRatio() {
+        return transmissionRatio;
     }
 }

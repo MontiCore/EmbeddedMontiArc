@@ -34,7 +34,7 @@ public class VehicleProperties {
      * Specifies the position, size & properties of the wheels.
      */
     public static class WheelProperties {
-        public double wheelDiameter = (0.255*0.4)*2 + (18*Geometry.INCH); // in meters: Tire width * Aspect Ratio * 2 + (Rim Diam * Inch)
+        public double wheelDiameter = (0.255*0.4)*2 + (18*Geometry.INCH_TO_METERS); // in meters: Tire width * Aspect Ratio * 2 + (Rim Diam * Inch)
         public double wheelWidth = 0.255; // in meters
         
         // For direction wheels
@@ -42,8 +42,8 @@ public class VehicleProperties {
         public double maxTurningAngle = 30; // In degrees
 
         // Wheel position
-        public double frontTrackWidth = 62.2 * Geometry.INCH; // (Track: center of wheel) -> distance between the 2 wheel's tracks
-        public double backTrackDist = 63.1 * Geometry.INCH;
+        public double frontTrackWidth = 62.2 * Geometry.INCH_TO_METERS; // (Track: center of wheel) -> distance between the 2 wheel's tracks
+        public double backTrackDist = 63.1 * Geometry.INCH_TO_METERS;
         public double wheelbase = 2.812; // Distance between the front & back axes
         public double frontWheelsDepth = 2.812*0.5; // Distance between the center of gravity of the car & the front wheel axis.
         public double backWheelsDepth = 2.812*0.5; // Distance between the center of gravity of the car & the back wheel axis.
