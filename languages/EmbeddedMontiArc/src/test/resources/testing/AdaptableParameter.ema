@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component AdaptableParameter(adaptable Q param1, Q param2){
+
+}

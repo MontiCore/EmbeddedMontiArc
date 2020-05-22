@@ -1,0 +1,3 @@
+Main-Component-Instantiation: symtab.instantiations.Top top_1;
+// always relative to main.txt
+Model-Paths: [../../../../../src/test/resources, ../../../../../src/main/resources]

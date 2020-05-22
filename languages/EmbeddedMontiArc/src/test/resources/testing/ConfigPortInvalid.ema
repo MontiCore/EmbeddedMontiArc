@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component ConfigPortInvalid{
+    //only incoming ports can be config
+    port adaptable out Q in1;
+}

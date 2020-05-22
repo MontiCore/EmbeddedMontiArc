@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component ConfigPortTag{
+    port in Q in1;
+    port in Q in2;
+    port out Q out1;
+
+}

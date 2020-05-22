@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package basicLibrary;
+
+component Switch<T> {
+	port 
+		in T in1, //if
+	    in B cond, // condition
+		in T in3, //else
+		out T out1;
+}

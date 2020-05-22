@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+import structures.*;
+
+component ComponentWithStructPorts {
+  ports
+    in S1 in1,
+    out S2 out1;
+}
