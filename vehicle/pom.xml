@@ -39,6 +39,11 @@
             <artifactId>eesimulator</artifactId>
             <version>${revision}</version>
         </dependency>
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>environment</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
         <!-- Vehicle has dependency to fmu-wrapper-->
         <dependency>

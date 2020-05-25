@@ -7,38 +7,31 @@
 package de.rwth.montisim.simulation.eesimulator.message;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
 
 import de.rwth.montisim.commons.utils.Pair;
-import de.rwth.montisim.simulation.eesimulator.ComponentManager;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
-import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupErrors;
 
 /**
  * Handles out message IDs for each message (by name).
  * The type has to be unique for a given message name across the simulation.
  */
 public class MessageTypeManager {
-    protected final EESetupErrors errors;
-    public final MessagePriorityComparator msgPrioComp;
+    public HashMap<String, HashSet<EEMessageTypeException>> messageTypeErrors = new HashMap<>();
     Vector<MessageInformation> messageIds = new Vector<>();
     HashMap<String, Integer> messageIdByName = new HashMap<>();
-    
-    public MessageTypeManager(ComponentManager compManager, EESetupErrors errors){
-        this.errors = errors;
-        this.msgPrioComp = new MessagePriorityComparator(this, compManager);
-    }
 
-    public int registerMessage(MessageInformation info) {
+    public int registerMessage(MessageInformation info) throws EEMessageTypeException {
         if (messageIdByName.containsKey(info.name)) {
             int id = messageIdByName.get(info.name);
             MessageInformation i = messageIds.get(id);
             if (!i.type.equals(info.type)) {
-                errors.addMessageTypeError(
+                throw new EEMessageTypeException(
                     info.name,
-                    new EEMessageTypeException(i.firstUser, i.type),
-                    new EEMessageTypeException(info.firstUser, info.type)
+                    i.firstUser, i.type,
+                    info.firstUser, info.type
                 );
             }
             return id;
@@ -64,4 +57,5 @@ public class MessageTypeManager {
             }
         }
     }
+
 }

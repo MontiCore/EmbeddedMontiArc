@@ -6,9 +6,6 @@
  */
 package de.rwth.montisim.simulation.simulator.visualization.ui;
 
-import java.awt.Image;
-import java.awt.Toolkit;
-
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;

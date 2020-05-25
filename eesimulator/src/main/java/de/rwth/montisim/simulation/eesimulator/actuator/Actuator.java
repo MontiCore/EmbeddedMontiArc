@@ -6,58 +6,51 @@
  */
 package de.rwth.montisim.simulation.eesimulator.actuator;
 
-import java.time.Duration;
 import java.util.logging.Logger;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
+import de.rwth.montisim.commons.dynamicinterface.DataType.Type;
 import de.rwth.montisim.commons.simulation.PhysicalValue;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
 import de.rwth.montisim.commons.simulation.Updater;
-import de.rwth.montisim.simulation.eesimulator.EEComponent;
-import de.rwth.montisim.simulation.eesimulator.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.EESimulator;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorLogic;
 
 public class Actuator extends EEComponent implements Updatable {
-    final SensorLogic sensor;
-    public double targetValue;
-    final PhysicalValue currentValue;
-    final double minValue;
-    final double maxValue;
-    double changeRate; // Max "value per second" this actuator can actuate.
-    final boolean sendFeedback; // Whether the actuator senses itself and sends its current value on the bus. ~> "Sensor enabled"
-    
-    final MessageInformation msgInfo;
+    public static final String SETTER_PREFIX = "set_";
 
-    public Actuator(
-        EESimulator simulator, String name, int priority, 
-        PhysicalValue actuatedValue, double minValue, double maxValue, double changeRate,
-        boolean sendFeedback, Duration updateInterval, Duration readTime, boolean sendOnlyChanged,
-        Updater updater
-    ){
-        super(simulator, name, priority);
-        sensor = new SensorLogic(actuatedValue, updateInterval, readTime, sendOnlyChanged, this);
-        this.currentValue = actuatedValue;
-        this.minValue = minValue;
-        this.maxValue = maxValue;
-        this.targetValue = actuatedValue.get();
-        this.changeRate = changeRate;
-        this.sendFeedback = sendFeedback;
-        this.msgInfo = addOptionalInput("set_"+actuatedValue.name, DataType.DOUBLE, true);
+    public final ActuatorProperties properties;
+    final PhysicalValue actuatedValue;
+    SensorLogic sensor;
+    public double targetValue;
+    final boolean sendFeedback; // Whether the actuator senses itself and sends its current value on the bus. ~>
+                                // "Sensor enabled"
+
+    MessageInformation msgInfo;
+
+    public Actuator(ActuatorProperties properties, PhysicalValue actuatedValue, Updater updater) {
+        super(properties);
+        if (actuatedValue.type.type != Type.DOUBLE && actuatedValue.type.type != Type.FLOAT) throw new IllegalArgumentException("Actuator can only actuate on float or double values (but here type "+actuatedValue.type+ " for value "+ actuatedValue.name +")");
+        this.properties = properties;
+        this.actuatedValue = actuatedValue;
+        this.targetValue = actuatedValue.type.type == Type.DOUBLE ? (Double) actuatedValue.get() : (Float) actuatedValue.get();
         updater.addUpdatable(this);
+        this.sendFeedback = properties.sensorProperties.isPresent();
+        if (sendFeedback)
+            this.sensor = new SensorLogic(properties.sensorProperties.get(), actuatedValue);
     }
 
-    /** Returns an actuator which doesn't send its value back. */
-    public static Actuator newSimpleActuator(
-        EESimulator simulator, String name, int priority,
-        PhysicalValue actuatedValue, double minValue, double maxValue, double changeRate,
-        Updater updater
-    ){
-        return new Actuator(simulator, name, priority, actuatedValue, minValue, maxValue, changeRate, false, Duration.ZERO, Duration.ZERO, true, updater);
+    @Override
+    protected void init() throws EEMessageTypeException {
+        this.msgInfo = addOptionalInput(SETTER_PREFIX+actuatedValue.name, DataType.DOUBLE, true);
+        if (sendFeedback)
+            sensor.init(this);
     }
 
     @Override
@@ -69,18 +62,18 @@ public class Actuator extends EEComponent implements Updatable {
 
     // Can be overwritten for more complex actuation behavior
     protected void actuate(TimeUpdate newTime){
-        double val = currentValue.get();
-        double maxChange = changeRate*newTime.deltaSeconds;
+        double val = actuatedValue.type.type == Type.DOUBLE ? (Double) actuatedValue.get() : (Float) actuatedValue.get();
+        double maxChange = properties.changeRate*newTime.deltaSeconds;
         double delta = targetValue - val;
         if (Math.abs(delta) > maxChange){
             delta = Math.signum(delta) * maxChange;
         }
         val += delta;
-        if (val > maxValue)
-            val = maxValue;
-        if (val < minValue)
-            val = minValue;
-        currentValue.set(val);
+        if (val > properties.maxValue)
+            val = properties.maxValue;
+        if (val < properties.minValue)
+            val = properties.minValue;
+        actuatedValue.set(actuatedValue.type.type == Type.DOUBLE ? new Double(val) : new Float(val));
     }
 
     @Override
@@ -97,5 +90,6 @@ public class Actuator extends EEComponent implements Updatable {
     public EEComponentType getComponentType() {
         return EEComponentType.ACTUATOR;
     }
+
 
 }

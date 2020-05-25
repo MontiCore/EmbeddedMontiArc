@@ -148,7 +148,9 @@ public class World {
 
                 if (!way.oneWay) {
                     WaySegment reverseSegment = new WaySegment(way, length, time_factor, count-1, lastPointIndex, -1, lastNodeID);
-                    addWaySegment(reverseSegment);
+                    int reverseSegmentID = addWaySegment(reverseSegment);
+                    reverseSegment.reverseId = segmentID;
+                    segment.reverseId = reverseSegmentID;
                 }
             }
         }

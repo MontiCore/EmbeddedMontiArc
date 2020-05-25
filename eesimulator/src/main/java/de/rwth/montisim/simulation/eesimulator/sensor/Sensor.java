@@ -6,25 +6,28 @@
  */
 package de.rwth.montisim.simulation.eesimulator.sensor;
 
-import java.time.Duration;
-
 import de.rwth.montisim.commons.simulation.PhysicalValue;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
 import de.rwth.montisim.commons.simulation.Updater;
-import de.rwth.montisim.simulation.eesimulator.EEComponent;
-import de.rwth.montisim.simulation.eesimulator.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.EESimulator;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 
 public class Sensor extends EEComponent implements Updatable {
     // Separate Sensor Logic & EEComponent to reuse sensor logic inside the actuator
     final SensorLogic logic;
 
-    public Sensor(EESimulator simulator, String name, int priority, PhysicalValue watchedValue, Duration updateInterval, Duration readTime, boolean sendOnlyChanged, Updater updater) {
-        super(simulator, name, priority);
-        logic = new SensorLogic(watchedValue, updateInterval, readTime, sendOnlyChanged, this);
+    public Sensor(SensorProperties properties, PhysicalValue watchedValue, Updater updater) {
+        super(properties);
         updater.addUpdatable(this);
+        logic = new SensorLogic(properties, watchedValue);
+    }
+
+    @Override
+    protected void init() throws EEMessageTypeException {
+        logic.init(this);
     }
 
     @Override
@@ -40,4 +43,5 @@ public class Sensor extends EEComponent implements Updatable {
     public EEComponentType getComponentType() {
         return EEComponentType.SENSOR;
     }
+
 }

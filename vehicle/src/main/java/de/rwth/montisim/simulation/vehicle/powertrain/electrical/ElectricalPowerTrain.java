@@ -6,41 +6,48 @@
  */
 package de.rwth.montisim.simulation.vehicle.powertrain.electrical;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import de.rwth.montisim.simulation.eesimulator.EESimulator;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
-import de.rwth.montisim.simulation.vehicle.vehicleproperties.ElectricalPTProperties;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.Battery;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.InfiniteBattery;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.SimpleBattery;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.motor.ElectricMotor;
 
 public class ElectricalPowerTrain extends PowerTrain {
     public final Battery battery;
-    public final ElectricMotor e_motor;
+    public final ElectricMotor e_motor;    
+    public final ElectricalPTProperties electricalPTProperties;
 
     private final double transmissionRatio;
 
-    public ElectricalPowerTrain(
-        EESimulator ee_vehicle, ElectricalPTProperties properties,
-        Class<? extends Battery> batteryClass, Class<? extends ElectricMotor> e_motorClass
-    ) throws Exception {
-        super("ElectricalPowerTrain");
-        this.transmissionRatio = properties.transmissionRatio;
-        try {
-            Constructor<? extends Battery> batteryConstructor = batteryClass.getConstructor();
-            this.battery = batteryConstructor.newInstance();
-            this.battery.init(properties);
+    public ElectricalPowerTrain(ElectricalPTProperties properties) {
+        super(properties);
+        this.electricalPTProperties = properties;
 
-            Constructor<? extends ElectricMotor> mConstructor = e_motorClass.getConstructor();
-            this.e_motor = mConstructor.newInstance();
-            this.motor = this.e_motor;
-            this.e_motor.setBattery(this.battery);
-            this.e_motor.init(properties);
-        } catch (NoSuchMethodException | SecurityException | 
-        InstantiationException | IllegalAccessException | IllegalArgumentException
-        | InvocationTargetException e) {
-            //e.printStackTrace();
-            throw new Exception(e);
+        this.transmissionRatio = properties.transmissionRatio;
+
+        switch (properties.batteryProperties.batteryType) {
+            case INFINITE:
+                battery = new InfiniteBattery();
+                break;
+            case SIMPLE:
+                battery = new SimpleBattery();
+                break;
+            default:
+            battery = null;
+                break;
         }
+        this.battery.init(properties.batteryProperties);
+
+        switch(properties.motorProperties.type) {
+            case DEFAULT:
+                e_motor = new ElectricMotor();
+                break;
+            default:
+                e_motor = null;
+        }
+        this.e_motor.setBattery(this.battery);
+        this.e_motor.init(properties.motorProperties);
+        this.motor = this.e_motor;
     }
 
     @Override

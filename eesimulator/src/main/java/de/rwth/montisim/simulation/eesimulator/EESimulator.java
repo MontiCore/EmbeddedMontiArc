@@ -7,8 +7,12 @@
 package de.rwth.montisim.simulation.eesimulator;
 
 import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
+import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
+import de.rwth.montisim.simulation.eesimulator.events.EEDiscreteEvent;
+import de.rwth.montisim.simulation.eesimulator.events.EEEventType;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupErrors;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupException;
+import de.rwth.montisim.simulation.eesimulator.message.MessagePriorityComparator;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 
 /**
@@ -25,15 +29,17 @@ public class EESimulator extends DiscreteEventSimulator<EEEventType, EEDiscreteE
 	// Vector<DataType> types = new Vector<>();
 	// HashMap<DataType, Integer> typeIds = new HashMap<>();
 
+    protected final MessagePriorityComparator msgPrioComp;
 	protected final ComponentManager componentManager;
 	protected final MessageTypeManager messageTypeManager;
 	protected final EESetupErrors errors;
 	private boolean finalized = false;
 
-	public EESimulator() {
+	public EESimulator(MessageTypeManager messageTypeManager) {
 		this.errors = new EESetupErrors();
 		this.componentManager = new ComponentManager(this.errors);
-		this.messageTypeManager = new MessageTypeManager(this.componentManager, this.errors);
+		this.messageTypeManager = messageTypeManager;
+        this.msgPrioComp = new MessagePriorityComparator(messageTypeManager, componentManager);
 	}
 
 	public void processEvent(EEDiscreteEvent event) {
@@ -46,6 +52,10 @@ public class EESimulator extends DiscreteEventSimulator<EEEventType, EEDiscreteE
 
 	public ComponentManager getComponentManager() {
 		return componentManager;
+	}
+
+	public MessagePriorityComparator getMsgPrioComp() {
+		return msgPrioComp;
 	}
 
 	public void finalizeSetup() throws EESetupException {

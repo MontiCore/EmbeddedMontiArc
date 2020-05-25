@@ -21,12 +21,15 @@ import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.simulation.eesimulator.EESimulator;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
+import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.eesimulator.testcomponents.TestEEComponent;
 
 public class CANTest {
     Instant startTime;
+    MessageTypeManager mtManager;
     EESimulator simulator;
     CAN can;
     TestEEComponent c1, c2, c3;
@@ -34,21 +37,25 @@ public class CANTest {
     CANMessageTransmission t1, t2, t3, t4, t5;
 
     /**
-     * All tests assume HIGH_SPEED_CAN transmission speed.
-     * The setup uses 3 TestEEComponents connected to a CAN bus.
-     * Routing: every messages is sent to all 3 test components.
+     * All tests assume HIGH_SPEED_CAN transmission speed. The setup uses 3
+     * TestEEComponents connected to a CAN bus. Routing: every messages is sent to
+     * all 3 test components.
      * 
      * For details: [docs/eesimulator.md]
+     * 
+     * @throws EEMessageTypeException
      */
     @Before
-    public void setup() {
+    public void setup() throws EEMessageTypeException {
         //startTime = Instant.now();
         startTime = Instant.EPOCH;
-        simulator = new EESimulator();
-        can = new CAN(simulator, "TestCanBus", CAN.HIGH_SPEED_CAN_BITRATE, simulator.getMessageTypeManager().msgPrioComp);
-        c1 = new TestEEComponent(simulator, "TestComponent1");
-        c2 = new TestEEComponent(simulator, "TestComponent2");
-        c3 = new TestEEComponent(simulator, "TestComponent3");
+        mtManager = new MessageTypeManager();
+        simulator = new EESimulator(mtManager);
+        can = new CAN(new CANProperties().setBitRate(CAN.HIGH_SPEED_CAN_BITRATE).setName("TestCanBus"), simulator.getMsgPrioComp());
+        can.attachTo(simulator);
+        c1 = new TestEEComponent("TestComponent1"); c1.attachTo(simulator);
+        c2 = new TestEEComponent("TestComponent2"); c2.attachTo(simulator);
+        c3 = new TestEEComponent("TestComponent3"); c3.attachTo(simulator);
         // Not necessary
         can.addComponent(c1);
         can.addComponent(c2);

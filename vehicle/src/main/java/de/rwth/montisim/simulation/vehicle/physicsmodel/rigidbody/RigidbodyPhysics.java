@@ -6,42 +6,31 @@
  */
 package de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody;
 
-import java.time.Duration;
 import java.util.Optional;
 
 import de.rwth.montisim.commons.boundingbox.Collision;
 import de.rwth.montisim.commons.boundingbox.OBB;
 import de.rwth.montisim.commons.simulation.DynamicObject;
-import de.rwth.montisim.commons.simulation.PhysicalValue;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
-import de.rwth.montisim.commons.simulation.Updater;
 import de.rwth.montisim.commons.utils.Geometry;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Mat3;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
-import de.rwth.montisim.simulation.eesimulator.EESimulator;
-import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
-import de.rwth.montisim.simulation.eesimulator.bus.Bus;
+import de.rwth.montisim.simulation.vehicle.Vehicle;
+import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
-import de.rwth.montisim.simulation.vehicle.vehicleproperties.VehicleProperties;
-import de.rwth.montisim.simulation.vehicle.vehicleproperties.PowerTrainProperties.TractionType;
+import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
+import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties.TractionType;
 
 public class RigidbodyPhysics implements PhysicsModel {
     // TODO model wheel friction/slipping
 
     private final PowerTrain powerTrain;
-    private final VehicleProperties properties;
 
     public final Rigidbody rb;
     public final OBB bbox;
-    public final Actuator steering; // In degrees
-    public final PhysicalValue steeringValue; // In degrees
-    public final Actuator braking; // From 0 to 1 (no brake - full brake)
-    public final PhysicalValue brakingValue;
-    public final Actuator gas; // From -0.5 to 1 (backwards - forward)
-    public final PhysicalValue gasValue;
 
     // TEMP information variables
     final double wheel_radius_inv;
@@ -93,74 +82,46 @@ public class RigidbodyPhysics implements PhysicsModel {
     private Vec3 ground_pos = new Vec3(0, 0, 0);
     Collision c = new Collision();
 
-    public RigidbodyPhysics(VehicleProperties properties, PowerTrain powerTrain, EESimulator eesimulator,
-            Updater vehicle) {
-        this.powerTrain = powerTrain;
-        this.properties = properties;
-        Vec3 size = new Vec3(properties.body.length, properties.body.width, properties.body.height);
+    public RigidbodyPhysics(Vehicle vehicle) {
+        this.powerTrain = vehicle.powerTrain;
+
+        VehicleProperties p = vehicle.properties;
+        PowerTrainProperties ptp = powerTrain.properties;
+
+        Vec3 size = new Vec3(p.body.length, p.body.width, p.body.height);
         this.bbox = new OBB();
         this.bbox.axes.setUnit();
         IPM.multiplyToVec(size, 0.5, this.bbox.half_extent);
 
         this.rb = new Rigidbody("RigidbodyCar");
         this.rb.bbox = Optional.of(bbox);
-        this.rb.mass = properties.body.mass;
-        setInertiaFromBox(properties.body.mass, size);
+        this.rb.mass = p.body.mass;
+        setInertiaFromBox(p.body.mass, size);
         rb.updateVars();
 
         // TEMP wheel info
-        this.wheel_circumference_inv = 1 / (Math.PI*properties.wheels.wheelDiameter);
-        this.wheel_radius_inv = 2 / properties.wheels.wheelDiameter;
+        this.wheel_circumference_inv = 1 / (Math.PI * p.wheels.wheelDiameter);
+        this.wheel_radius_inv = 2 / p.wheels.wheelDiameter;
         this.wheel_dist = size.x * 0.8;
         this.wheel_width = size.y * 0.9;
 
-        this.frontAccel = properties.powertrain.tractionType == TractionType.FRONT || 
-            properties.powertrain.tractionType == TractionType.ALL;
-        this.backAccel = properties.powertrain.tractionType == TractionType.REAR || 
-            properties.powertrain.tractionType == TractionType.ALL;
-        this.inv_traction_number = 1.0 / ((frontAccel? 2 : 0) + (backAccel ? 2 : 0));
+        this.frontAccel = ptp.tractionType == TractionType.FRONT
+                || ptp.tractionType == TractionType.ALL;
+        this.backAccel = ptp.tractionType == TractionType.REAR
+                || ptp.tractionType == TractionType.ALL;
+        this.inv_traction_number = 1.0 / ((frontAccel ? 2 : 0) + (backAccel ? 2 : 0));
 
-        this.frontBrake = properties.powertrain.brakingType == TractionType.FRONT || 
-            properties.powertrain.brakingType == TractionType.ALL;
-        this.backBrake = properties.powertrain.brakingType == TractionType.REAR || 
-            properties.powertrain.brakingType == TractionType.ALL;
-        
-        // TODO configurable actuator properties
-        // TODO update power train
-        this.steeringValue = new PhysicalValue("steering", 0);
-        this.steering = new Actuator(
-            eesimulator, "RigidbodySteering", 0, steeringValue, 
-            -30, 30, 60, 
-            true, Duration.ofMillis(100), Duration.ofMillis(1), false, vehicle
-        );
+        this.frontBrake = ptp.brakingType == TractionType.FRONT
+                || ptp.brakingType == TractionType.ALL;
+        this.backBrake = ptp.brakingType == TractionType.REAR
+                || ptp.brakingType == TractionType.ALL;
 
-        this.brakingValue = new PhysicalValue("braking", 0);
-        this.braking = new Actuator(
-            eesimulator, "RigidbodyBraking", 0, brakingValue, 
-            0, 1, 10, 
-            true, Duration.ofMillis(100), Duration.ofMillis(1), false, vehicle
-        );
-
-        this.gasValue = new PhysicalValue("gas", 0);
-        this.gas = new Actuator(
-            eesimulator, "RigidbodyGas", 0, gasValue, 
-            -0.5, 1, Double.POSITIVE_INFINITY, 
-            true, Duration.ofMillis(100), Duration.ofMillis(1), false, vehicle
-        );
-
-        for (int i = 0; i < 4; ++i){
+        for (int i = 0; i < 4; ++i) {
             this.wheel_pos[i] = new Vec3();
             this.new_wheel_pos[i] = new Vec3();
         }
     }
 
-    public void connectActuatorsToBus(Bus b){
-        gas.connectToBus(b);
-        steering.connectToBus(b);
-        braking.connectToBus(b);
-    }
-
-    
     private void setInertiaFromBox(double mass, Vec3 size) {
         a.x = mass * (size.y * size.y + size.z * size.z) / 12;
         a.y = mass * (size.x * size.x + size.z * size.z) / 12;
@@ -181,7 +142,6 @@ public class RigidbodyPhysics implements PhysicsModel {
         computeEnergy(timeUpdate.deltaSeconds);
     }
 
-    
     // Responsible for computing collisions between the vehicle and any static world
     // geometry.
     // Dynamic collisions are not handled physically and are only detected
@@ -190,7 +150,6 @@ public class RigidbodyPhysics implements PhysicsModel {
         // TODO Auto-generated method stub
         temp_check_ground_collision();
     }
-
 
     private void addWheelForces(double deltaSecs) {
         // TEMP: ignore static friction -> tires have "perfect" adherence
@@ -204,7 +163,7 @@ public class RigidbodyPhysics implements PhysicsModel {
         rot_change.set(0);
         int number = 0;
 
-        for (int i = 0; i < 4; ++i){
+        for (int i = 0; i < 4; ++i) {
             brake_force[i] = 0;
             accel_force[i] = 0;
         }
@@ -230,7 +189,7 @@ public class RigidbodyPhysics implements PhysicsModel {
                 int index = getWheelIndex(fb, lr);
                 if (!wheel_contact[index])
                     continue;
-                
+
                 Vec3 rel_pos = wheel_pos[index];
 
                 IPM.crossToVec(rb.angularVelocity, rel_pos, u);
@@ -251,9 +210,9 @@ public class RigidbodyPhysics implements PhysicsModel {
                 A.setUnit();
                 IPM.subtract(A, cr_mat); // A = diag(1) - rb.mass *(rb.J_i * crossMat(rel_pos) * crossMat(rel_pos))
                 double det = IPM.invertToMat(A, A_i);
-                if (det != 0){
+                if (det != 0) {
                     IPM.multiplyToVec(A_i, delta_u, impulse);
-                    
+
                     IPM.add(vel_change, impulse);
 
                     IPM.multiply(impulse, rb.mass);
@@ -263,7 +222,8 @@ public class RigidbodyPhysics implements PhysicsModel {
                     number++;
                 }
 
-                double wheel_force = getWheelForce(IPM.dot(u, side_vec), IPM.dot(u, front_vec), deltaSecs, front, index);
+                double wheel_force = getWheelForce(IPM.dot(u, side_vec), IPM.dot(u, front_vec), deltaSecs, front,
+                        index);
                 IPM.multiplyToVec(front_vec, wheel_force, movement_force);
                 IPM.add(rb.F, movement_force);
                 IPM.crossToVec(rel_pos, movement_force, a);
@@ -271,7 +231,8 @@ public class RigidbodyPhysics implements PhysicsModel {
             }
         }
 
-        // Apply "wheel track" impulses + "correct velocity" to "conserve momentum" (rough approximation)
+        // Apply "wheel track" impulses + "correct velocity" to "conserve momentum"
+        // (rough approximation)
         if (number > 0) {
             IPM.multiply(vel_change, 1.0 / number);
             IPM.multiply(rot_change, 1.0 / number);
@@ -283,12 +244,12 @@ public class RigidbodyPhysics implements PhysicsModel {
         }
 
         // Transform wheel pos from relative to absolute
-        for (Vec3 p : wheel_pos){
+        for (Vec3 p : wheel_pos) {
             IPM.add(p, rb.pos);
         }
     }
 
-    private void getWheelRelPos(Vec3 relPos[]){
+    private void getWheelRelPos(Vec3 relPos[]) {
         for (int fb = -1; fb <= 1; fb += 2) {
             double x = wheel_dist * 0.5 * fb;
             for (int lr = -1; lr <= 1; lr += 2) {
@@ -300,18 +261,19 @@ public class RigidbodyPhysics implements PhysicsModel {
         }
     }
 
-    private int getWheelIndex(int fb, int lr){
+    private int getWheelIndex(int fb, int lr) {
         return ((fb + 1) >> 1) + (((lr + 1) >> 1) << 1);
     }
-    private int getWheelIndex(boolean front, boolean left){
-        return (front ? 1 : 0) + (left? 2 : 0);
+
+    private int getWheelIndex(boolean front, boolean left) {
+        return (front ? 1 : 0) + (left ? 2 : 0);
     }
 
     /**
      * @return The steering angle in RADIANS
      */
     private double getWheelAngle() {
-        return steeringValue.value() * Geometry.DEG_TO_RAD;
+        return (Double) powerTrain.steeringValue.value() * Geometry.DEG_TO_RAD;
     }
 
     private double getWheelForce(double wheelSpeed, double front_vel, double deltaSecs, boolean front, int index) {
@@ -320,16 +282,17 @@ public class RigidbodyPhysics implements PhysicsModel {
         if ((front && frontAccel) || (!front && backAccel)) {
             // TODO right now this assumes 1:1 coupling between motor & wheels
             double ratio = powerTrain.getTransmissionRatio();
-            double rpm = wheelSpeed*wheel_circumference_inv * 60*ratio;
-            double i_accel = gasValue.value();
+            double rpm = wheelSpeed * wheel_circumference_inv * 60 * ratio;
+            double i_accel = (Double) powerTrain.gasValue.value();
             // TODO right now this assumes 1:1 coupling between motor & wheels
             f_accel = i_accel * powerTrain.motor.getMaxTorque(rpm) * wheel_radius_inv * inv_traction_number * ratio;
         }
 
         if ((front && frontBrake) || (!front && backBrake)) {
-            double i_brake = brakingValue.value();
-            double f_brake_abs = i_brake * properties.powertrain.maxBrakingForce;
-            // Limit braking force to avoid integration overshooting (when braking at near 0 speed)
+            double i_brake = (Double) powerTrain.brakingValue.value();
+            double f_brake_abs = i_brake * powerTrain.properties.maxBrakingForce;
+            // Limit braking force to avoid integration overshooting (when braking at near 0
+            // speed)
             double max_f = Math.abs(front_vel) * rb.mass / deltaSecs;
             if (f_brake_abs > max_f)
                 f_brake_abs = max_f;
@@ -343,15 +306,15 @@ public class RigidbodyPhysics implements PhysicsModel {
     }
 
     /**
-     * Computes an estimation of the energy used by the motor for acceleration
-     * and the energy output from braking.
+     * Computes an estimation of the energy used by the motor for acceleration and
+     * the energy output from braking.
      */
     private void computeEnergy(double delta_t) {
         // Get wheel positions after integration.
         getWheelRelPos(new_wheel_pos);
         double brakeEnergy = 0;
         double accelEnergy = 0;
-        for (int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             IPM.add(new_wheel_pos[i], rb.pos);
             IPM.subtract(new_wheel_pos[i], wheel_pos[i]); // new_wheel_pos[i] = delta x
             double deltaX = new_wheel_pos[i].magnitude();
@@ -365,7 +328,8 @@ public class RigidbodyPhysics implements PhysicsModel {
     }
 
     /**
-     * A simplified collision detection that only checks collision with the ground plane (ground_normal & ground_pos)
+     * A simplified collision detection that only checks collision with the ground
+     * plane (ground_normal & ground_pos)
      */
     private void temp_check_ground_collision() {
         for (int i = 0; i < 4; ++i)
@@ -456,11 +420,12 @@ public class RigidbodyPhysics implements PhysicsModel {
         // Create rotation matrix from vectors
         front_vec.set(front, 0);
         IPM.normalize(front_vec);
-        a.set(0,0,1);
+        a.set(0, 0, 1);
         IPM.crossToVec(a, front_vec, side_vec);
         rb.rotation.col1.set(front_vec);
         rb.rotation.col2.set(side_vec);
         rb.rotation.col3.set(a);
         rb.updateVars();
     }
+
 }

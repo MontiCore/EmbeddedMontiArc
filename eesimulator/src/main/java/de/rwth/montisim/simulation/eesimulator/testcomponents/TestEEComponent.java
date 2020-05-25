@@ -9,9 +9,8 @@ package de.rwth.montisim.simulation.eesimulator.testcomponents;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.rwth.montisim.simulation.eesimulator.EEComponent;
-import de.rwth.montisim.simulation.eesimulator.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.EESimulator;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 
 /**
@@ -21,8 +20,8 @@ import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 public class TestEEComponent extends EEComponent {
     public List<MessageReceiveEvent> events = new ArrayList<>();
 
-    public TestEEComponent(EESimulator simulator, String name) {
-        super(simulator, name);
+    public TestEEComponent(String name) {
+        super(new TestCompProperties(name));
     }
 
     @Override
@@ -33,6 +32,12 @@ public class TestEEComponent extends EEComponent {
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
         this.events.add(msgRecvEvent);
+    }
+
+    @Override
+    protected void init() {
+        // TODO Auto-generated method stub
+
     }
     
 }

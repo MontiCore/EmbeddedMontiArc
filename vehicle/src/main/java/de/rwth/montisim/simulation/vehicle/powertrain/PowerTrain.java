@@ -6,13 +6,35 @@
  */
 package de.rwth.montisim.simulation.vehicle.powertrain;
 
+import de.rwth.montisim.commons.dynamicinterface.DataType;
+import de.rwth.montisim.commons.simulation.PhysicalValue;
+import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
+import de.rwth.montisim.simulation.vehicle.Vehicle;
 
 public abstract class PowerTrain {
-    public final String type;
-    public Motor motor;
 
-    public PowerTrain(String type) {
-        this.type = type;
+    public final PowerTrainProperties properties;
+    public Motor motor;
+    
+    public final PhysicalValue steeringValue; // In degrees
+    public final PhysicalValue brakingValue;
+    public final PhysicalValue gasValue;
+    
+    public Actuator steeringActuator; // In degrees
+    public Actuator brakingActuator; // From 0 to 1 (no brake - full brake)
+    public Actuator gasActuator; // From -0.5 to 1 (backwards - forward)
+
+    public PowerTrain(PowerTrainProperties properties) {
+        this.properties = properties;
+        this.steeringValue = new PhysicalValue(PowerTrainProperties.STEERING_VALUE_NAME, DataType.DOUBLE, 0.0);
+        this.brakingValue = new PhysicalValue(PowerTrainProperties.BRAKING_VALUE_NAME, DataType.DOUBLE, 0.0);
+        this.gasValue = new PhysicalValue(PowerTrainProperties.GAS_VALUE_NAME, DataType.DOUBLE, 0.0);
+    }
+
+    public void registerPhysicalValues(Vehicle vehicle){
+        vehicle.addPhysicalValue(steeringValue);
+        vehicle.addPhysicalValue(brakingValue);
+        vehicle.addPhysicalValue(gasValue);
     }
 
     public abstract double getFuelPercentage();

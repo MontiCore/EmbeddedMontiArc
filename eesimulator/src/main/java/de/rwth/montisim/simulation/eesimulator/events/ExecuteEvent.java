@@ -6,10 +6,9 @@
  */
 package de.rwth.montisim.simulation.eesimulator.events;
 
-import de.rwth.montisim.simulation.eesimulator.EEDiscreteEvent;
-import de.rwth.montisim.simulation.eesimulator.EEEventProcessor;
-import de.rwth.montisim.simulation.eesimulator.EEEventType;
 import java.time.Instant;
+
+import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 
 public class ExecuteEvent extends EEDiscreteEvent {
 	

@@ -10,7 +10,11 @@ import de.rwth.montisim.simulation.vehicle.powertrain.Motor;
 
 public class FuelMotor implements Motor {
     FuelTank tank = null;
-    float litersPerJoule = 0; // TODO
+    double litersPerJoule;
+
+    public FuelMotor(FuelPTProperties properties){
+        this.litersPerJoule = 1.0/properties.joulesPerLiter;
+    }
 
     @Override
     public double getMaxTorque(double rpm) {

@@ -7,9 +7,16 @@
 package de.rwth.montisim.simulation.eesimulator.bus;
 
 import de.rwth.montisim.commons.eventsimulation.exceptions.*;
-
-import de.rwth.montisim.simulation.eesimulator.*;
+import de.rwth.montisim.simulation.eesimulator.bus.BusProperties.BusType;
+import de.rwth.montisim.simulation.eesimulator.bus.can.CAN;
+import de.rwth.montisim.simulation.eesimulator.bus.can.CANProperties;
+import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBus;
+import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
+import de.rwth.montisim.simulation.eesimulator.components.BusComponent;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 import de.rwth.montisim.simulation.eesimulator.events.*;
+import de.rwth.montisim.simulation.eesimulator.message.MessagePriorityComparator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +27,21 @@ import java.util.List;
  * through Bridges). Current implementations: ConstantBus, CAN & FlexRay.
  */
 public abstract class Bus extends EEEventProcessor {
+
+	public static Bus buildBus(BusProperties properties, MessagePriorityComparator comp){
+		switch(properties.busType) {
+			case CAN:
+				return new CAN((CANProperties)properties, comp);
+			case CONSTANT_BUS:
+				return new ConstantBus((ConstantBusProperties)properties);
+			case FLEXRAY:
+			 	// TODO
+				return null;
+			default:
+				return null;
+		}
+	}
+
 	/**
 	 * Components that are connected to this bus.
 	 */
@@ -27,8 +49,8 @@ public abstract class Bus extends EEEventProcessor {
 
 	protected final HashMap<Integer, List<BusComponent>> msgTargets = new HashMap<>();
 
-	protected Bus(EESimulator simulator, String name) {
-		super(simulator, name);
+	protected Bus(BusProperties properties) {
+		super(properties);
 	}
 
 	public EEComponentType getComponentType(){

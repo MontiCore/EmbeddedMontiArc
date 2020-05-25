@@ -8,7 +8,7 @@ package de.rwth.montisim.simulation.eesimulator.message;
 
 import java.util.Comparator;
 
-import de.rwth.montisim.simulation.eesimulator.ComponentManager;
+import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
 
 /**
  * Used for sorting in descending order of message priority

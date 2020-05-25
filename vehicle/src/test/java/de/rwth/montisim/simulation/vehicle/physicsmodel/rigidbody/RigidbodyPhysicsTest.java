@@ -8,41 +8,48 @@ package de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.logging.Logger;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.rwth.montisim.commons.simulation.TimeUpdate;
-import de.rwth.montisim.commons.simulation.Updater;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
-import de.rwth.montisim.simulation.eesimulator.EESimulator;
-import de.rwth.montisim.simulation.vehicle.vehicleproperties.ElectricalPTProperties;
-import de.rwth.montisim.simulation.vehicle.vehicleproperties.VehicleProperties;
-import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricMotor;
-import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPowerTrain;
-import de.rwth.montisim.simulation.vehicle.powertrain.electrical.SimpleBattery;
+import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
+import de.rwth.montisim.simulation.vehicle.Vehicle;
+import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
+import de.rwth.montisim.simulation.vehicle.config.TestVehicleConfig;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties.BatteryType;
 
 public class RigidbodyPhysicsTest {
 
     @Test
     public void testAccel() throws Exception {
-        ElectricalPTProperties eptp = new ElectricalPTProperties();
-        VehicleProperties properties = new VehicleProperties(eptp);
-        EESimulator eesimulator = new EESimulator();
-        RigidbodyPhysics physics = new RigidbodyPhysics(properties, new ElectricalPowerTrain(eesimulator, eptp, SimpleBattery.class, ElectricMotor.class), eesimulator, new Updater());
-        physics.setGroundPosition(new Vec3(0,0,0), new Vec2(1,0));
+        TestVehicleConfig config = new TestVehicleConfig();
+        config.electricalPTProperties.batteryProperties = new BatteryProperties(BatteryType.SIMPLE);
 
-        physics.gasValue.set(1);
+        MessageTypeManager mtManager = new MessageTypeManager();
+        Vehicle v = new VehicleBuilder(mtManager, null, config).setName("TestVehicle").build();
+        
+        v.physicsModel.setGroundPosition(new Vec3(0,0,0), new Vec2(1,0));
+
+        v.powerTrain.gasValue.set(1.0);
+
+        RigidbodyPhysics physics = (RigidbodyPhysics) v.physicsModel;
 
         long ST = System.nanoTime();
         TimeUpdate tu = new TimeUpdate(Instant.EPOCH, Duration.ofMillis(10)); // Don't update absolute time -> physics should only use deltas
         for (int i = 0; i < 1000; ++i){
-            physics.update(tu);
+            v.physicsModel.update(tu);
         }
-        long ET = System.nanoTime();
-        Logger.getGlobal().info("1000 physics steps: "+((ET-ST)*0.000001)+" ms.");
-        Logger.getGlobal().info("Pos: "+physics.rb.pos);
-        Logger.getGlobal().info("Vel: "+physics.rb.velocity);
+
+        Assert.assertTrue("Vehicle did not move", physics.rb.pos.x > 100);
+        Assert.assertTrue("Vehicle velocity too small", physics.rb.velocity.x > 50);
+
+        // long ET = System.nanoTime();
+        // Logger.getGlobal().info("1000 physics steps: "+((ET-ST)*0.000001)+" ms.");
+        // Logger.getGlobal().info("Pos: "+physics.rb.pos);
+        // Logger.getGlobal().info("Vel: "+physics.rb.velocity);
     }
 }

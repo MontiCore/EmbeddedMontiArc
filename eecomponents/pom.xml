@@ -41,6 +41,11 @@
             <artifactId>environment</artifactId>
             <version>${revision}</version>
         </dependency>
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>vehicle</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
     
 </project>

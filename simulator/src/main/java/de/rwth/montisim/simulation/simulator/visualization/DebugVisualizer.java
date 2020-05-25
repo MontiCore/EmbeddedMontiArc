@@ -15,6 +15,7 @@ import de.rwth.montisim.simulation.environment.world.elements.Node;
 import de.rwth.montisim.simulation.environment.world.elements.Way;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.osmmap.OsmToWorldLoader;
+import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.simulator.visualization.map.PathfinderRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.map.WorldRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.ui.UIInfo;
@@ -45,8 +46,8 @@ public class DebugVisualizer extends JFrame {
 
         viewer = new Viewer2D();
 
-        vis3(args);
-        //vis1(args);
+        //vis3(args);
+        vis1(args);
 
         setLayout(new BorderLayout());
         // add(new JLabel("Map Visualization."), BorderLayout.NORTH);
@@ -60,7 +61,7 @@ public class DebugVisualizer extends JFrame {
         try {
             World world = new OsmToWorldLoader(new OsmMap("aachen", new File(mapPath))).getWorld();
             viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
-            viewer.addRenderer(new PathfinderRenderer(world));
+            viewer.addRenderer(new PathfinderRenderer(new PathfindingImpl(world)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,7 +72,7 @@ public class DebugVisualizer extends JFrame {
         try {
             World world = new OsmToWorldLoader(new OsmMap("aachen", new File(mapPath))).getWorld();
             viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
-            viewer.addRenderer(new PathfinderRenderer(world));
+            viewer.addRenderer(new PathfinderRenderer(new PathfindingImpl(world)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,7 +81,7 @@ public class DebugVisualizer extends JFrame {
     public void vis3(String args[]) {
         World world = generateSimpleWorld();
         viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
-        viewer.addRenderer(new PathfinderRenderer(world));
+        viewer.addRenderer(new PathfinderRenderer(new PathfindingImpl(world)));
     }
 
 

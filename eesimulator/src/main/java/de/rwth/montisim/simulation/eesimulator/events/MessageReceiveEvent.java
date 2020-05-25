@@ -8,7 +8,7 @@ package de.rwth.montisim.simulation.eesimulator.events;
 
 import java.time.Instant;
 
-import de.rwth.montisim.simulation.eesimulator.*;
+import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 
 /**

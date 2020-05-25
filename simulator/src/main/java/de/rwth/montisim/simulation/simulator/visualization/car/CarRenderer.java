@@ -1,7 +1,16 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package de.rwth.montisim.simulation.simulator.visualization.car;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.swing.JMenuItem;
@@ -14,6 +23,8 @@ import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Renderer;
 
 public class CarRenderer extends Renderer {
+    private static final DecimalFormat posFormat = new DecimalFormat("##0.00",
+            DecimalFormatSymbols.getInstance(Locale.ENGLISH));
     public static final Color CAR_COLOR = new Color(239, 81, 38);
     public static final Color BOTTOM_COLOR = new Color(147, 47, 19);
     private static final int[] faceIndices = new int[] {
@@ -128,7 +139,12 @@ public class CarRenderer extends Renderer {
 
     @Override
     public String[] getInfo() {
-        return null;
+        if (!car.isPresent()) return null;
+        DynamicObject rb = car.get();
+        return new String[]{
+            "Car '"+rb.name+"' velocity: " + posFormat.format(rb.velocity.magnitude()*3.6),
+            "    pos: "+posFormat.format(rb.pos.x) + " : "+posFormat.format(rb.pos.y)
+        };
     }
 
     @Override

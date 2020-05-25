@@ -13,10 +13,9 @@ import java.util.PriorityQueue;
 import java.util.Random;
 
 import de.rwth.montisim.commons.utils.Time;
-import de.rwth.montisim.simulation.eesimulator.EESimulator;
 import de.rwth.montisim.simulation.eesimulator.bus.Bus;
-import de.rwth.montisim.simulation.eesimulator.bus.BusType;
 import de.rwth.montisim.simulation.eesimulator.bus.MessageTransmission;
+import de.rwth.montisim.simulation.eesimulator.bus.BusProperties.BusType;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
 import de.rwth.montisim.simulation.eesimulator.message.MessagePriorityComparator;
@@ -58,14 +57,14 @@ public class CAN extends Bus {
     public static final long MEDIUM_SPEED_CAN_BITRATE = 500_000;
     public static final long LOW_SPEED_CAN_BITRATE = 125_000;
 
-    private final Instant startTime;
+    public final CANProperties properties;
+
+    private Instant startTime;
     // Time in the bus expressed in transmitted bits: Equivalent time in sec. is
     // bitTime/Bitrate. (bitTime "0" corresponds to startTime.)
     // Should always be synced to the start of a new transmission (after frame end +
     // inter-frame space). (Since frames are an "atom" in CAN transmission.)
     private long bitTime = 0;
-
-    private long bitRate = 10_000_000; // In bits/sec
 
     /** Currently registered messages at this bus. */
     private PriorityQueue<CANMessageTransmission> messages;
@@ -74,12 +73,16 @@ public class CAN extends Bus {
 
     private final Random rnd = new Random();
 
-    public CAN(EESimulator simulator, String name, long bitrate, MessagePriorityComparator comp) {
-        super(simulator, name);
+    public CAN(CANProperties properties, MessagePriorityComparator comp) {
+        super(properties);
         this.messages = new PriorityQueue<CANMessageTransmission>(
                 new MessageTransmission.MsgTransPriorityComp(comp));
+        this.properties = properties;
+    }
+    
+    @Override
+    protected void init() {
         this.startTime = simulator.getSimulationTime();
-        this.bitRate = bitrate;
     }
 
     @Override
@@ -167,10 +170,11 @@ public class CAN extends Bus {
     }
 
     private Instant instantFromBitTime(long time){
-        return startTime.plus(Duration.ofNanos((time*Time.SECOND_TO_NANOSEC)/bitRate));
+        return startTime.plus(Duration.ofNanos((time*Time.SECOND_TO_NANOSEC)/properties.bitRate));
     }
     private long bitTimeFromInstant(Instant time){
         long nanos = Time.nanosecondsFromDuration(Duration.between(startTime, time));
-        return (nanos*bitRate)/Time.SECOND_TO_NANOSEC;
+        return (nanos*properties.bitRate)/Time.SECOND_TO_NANOSEC;
     }
+
 }

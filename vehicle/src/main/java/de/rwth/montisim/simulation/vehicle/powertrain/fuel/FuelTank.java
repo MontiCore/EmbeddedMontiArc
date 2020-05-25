@@ -10,21 +10,22 @@ public class FuelTank {
     public final double capacity;
     public double contained;
 
-    public static FuelTank newFullyLoaded(double capacity){
-        return new FuelTank(capacity, capacity);
+    // Init fully loaded
+    public FuelTank(FuelPTProperties properties) {
+        this.capacity = properties.tankCapacity;
+        this.contained = properties.tankCapacity;
     }
 
-    public static FuelTank newEmpty(double capacity){
-        return new FuelTank(capacity, 0);
+    public void setEmpty(){
+        this.contained = 0;
     }
 
-    public static FuelTank newFromPercent(double capacity, double percentFull){
-        return new FuelTank(capacity, capacity*percentFull*0.01f);
+    public void setFromPercentage(double percentFull) {
+        this.contained = capacity*percentFull*0.01f;
     }
 
-    public FuelTank(double capacity, double contained) {
-        this.capacity = capacity;
-        this.contained = contained;
+    public void setFullyLoaded() {
+        this.contained = capacity;
     }
 
     public void consume(double amount){

@@ -12,22 +12,34 @@ import org.junit.Test;
 import de.rwth.montisim.commons.dynamicinterface.ArrayType;
 import de.rwth.montisim.commons.dynamicinterface.DataType;
 import de.rwth.montisim.simulation.eesimulator.bridge.Bridge;
+import de.rwth.montisim.simulation.eesimulator.bridge.BridgeProperties;
 import de.rwth.montisim.simulation.eesimulator.bus.Bus;
 import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBus;
+import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupException;
+import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.eesimulator.testcomponents.TestEEComponent;
 
 public class SetupErrorsTest {
 
     @Test
-    public void cyclicSetup(){
-        EESimulator simulator = new EESimulator();
-        Bus b1 = ConstantBus.newInstantBus(simulator, "b1");
-        Bus b2 = ConstantBus.newInstantBus(simulator, "b2");
-        Bus b3 = ConstantBus.newInstantBus(simulator, "b3");
-        Bridge r1 = Bridge.newInstantBridge(simulator, "r1");
-        Bridge r2 = Bridge.newInstantBridge(simulator, "r2");
-        Bridge r3 = Bridge.newInstantBridge(simulator, "r3");
+    public void cyclicSetup() throws EEMessageTypeException {
+        MessageTypeManager mtManager = new MessageTypeManager();
+        EESimulator simulator = new EESimulator(mtManager);
+
+        Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
+        b1.attachTo(simulator);
+        Bus b2 = new ConstantBus(ConstantBusProperties.instantBus().setName("b2"));
+        b2.attachTo(simulator);
+        Bus b3 = new ConstantBus(ConstantBusProperties.instantBus().setName("b3"));
+        b3.attachTo(simulator);
+        Bridge r1 = new Bridge(BridgeProperties.instantBridge().setName("r1"));
+        r1.attachTo(simulator);
+        Bridge r2 = new Bridge(BridgeProperties.instantBridge().setName("r2"));
+        r2.attachTo(simulator);
+        Bridge r3 = new Bridge(BridgeProperties.instantBridge().setName("r3"));
+        r3.attachTo(simulator);
         r1.connectToBus(b1);
         r1.connectToBus(b2);
         r2.connectToBus(b2);
@@ -37,51 +49,61 @@ public class SetupErrorsTest {
         boolean foundError = false;
         try {
             simulator.finalizeSetup();
-        } catch (EESetupException e){
+        } catch (EESetupException e) {
             foundError = e.errors.cyclicError.isPresent();
-            //e.printStackTrace();
+            // e.printStackTrace();
         }
         Assert.assertTrue("Expected an EECyclicSetupException to be thrown.", foundError);
     }
 
     // Two components give the same output
     @Test
-    public void sameOutput(){
-        EESimulator simulator = new EESimulator();
-        Bus b1 = ConstantBus.newInstantBus(simulator, "b1");
-        Bus b2 = ConstantBus.newInstantBus(simulator, "b2");
-        Bridge r1 = Bridge.newInstantBridge(simulator, "r1");
+    public void sameOutput() throws EEMessageTypeException {
+        MessageTypeManager mtManager = new MessageTypeManager();
+        EESimulator simulator = new EESimulator(mtManager);
+        Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
+        b1.attachTo(simulator);
+        Bus b2 = new ConstantBus(ConstantBusProperties.instantBus().setName("b2"));
+        b2.attachTo(simulator);
+        Bridge r1 = new Bridge(BridgeProperties.instantBridge().setName("r1"));
+        r1.attachTo(simulator);
         r1.connectToBus(b1);
         r1.connectToBus(b2);
-        TestEEComponent c1 = new TestEEComponent(simulator, "c1");
-        TestEEComponent c2 = new TestEEComponent(simulator, "c2");
-        TestEEComponent c3 = new TestEEComponent(simulator, "c3");
+        TestEEComponent c1 = new TestEEComponent("c1");
+        c1.attachTo(simulator);
+        TestEEComponent c2 = new TestEEComponent("c2");
+        c2.attachTo(simulator);
+        TestEEComponent c3 = new TestEEComponent("c3");
+        c3.attachTo(simulator);
         c1.connectToBus(b1);
         c2.connectToBus(b2);
         c3.connectToBus(b2);
         c1.addOutput("m1", DataType.DOUBLE);
         c2.addOutput("m1", DataType.DOUBLE);
-        c3.addOutput("m1", DataType.DOUBLE);
+        c3.addInput("m1", DataType.DOUBLE);
         boolean foundError = false;
         try {
             simulator.finalizeSetup();
-        } catch (EESetupException e){
+        } catch (EESetupException e) {
             foundError = e.errors.multipleInputsExceptions.size() == 1;
-            //e.printStackTrace();
+            // e.printStackTrace();
         }
-        Assert.assertTrue("Expected an EEOutputOverlapException to be thrown.", foundError);
+        Assert.assertTrue("Expected an EEMultipleInputsException to be thrown.", foundError);
     }
 
     // A required input of a component is missing
     @Test
-    public void missingInput(){
-        EESimulator simulator = new EESimulator();
-        Bus b1 = ConstantBus.newInstantBus(simulator, "b1");
-        Bus b2 = ConstantBus.newInstantBus(simulator, "b2");
-        TestEEComponent c1 = new TestEEComponent(simulator, "c1");
-        TestEEComponent c2 = new TestEEComponent(simulator, "c2");
-        TestEEComponent c3 = new TestEEComponent(simulator, "c3");
-        TestEEComponent c4 = new TestEEComponent(simulator, "c4");
+    public void missingInput() throws EEMessageTypeException {
+        MessageTypeManager mtManager = new MessageTypeManager();
+        EESimulator simulator = new EESimulator(mtManager);
+        Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
+        b1.attachTo(simulator);
+        Bus b2 = new ConstantBus(ConstantBusProperties.instantBus().setName("b2"));
+        b2.attachTo(simulator);
+        TestEEComponent c1 = new TestEEComponent("c1"); c1.attachTo(simulator);
+        TestEEComponent c2 = new TestEEComponent("c2"); c2.attachTo(simulator);
+        TestEEComponent c3 = new TestEEComponent("c3"); c3.attachTo(simulator);
+        TestEEComponent c4 = new TestEEComponent("c4"); c4.attachTo(simulator);
         c1.connectToBus(b1);
         c2.connectToBus(b2);
         c3.connectToBus(b2);
@@ -101,36 +123,42 @@ public class SetupErrorsTest {
     
     // Two components register the same message with different types (output-input, input-input)
     @Test
-    public void messageType(){
-        EESimulator simulator = new EESimulator();
-        Bus b1 = ConstantBus.newInstantBus(simulator, "b1");
-        TestEEComponent c1 = new TestEEComponent(simulator, "c1");
-        TestEEComponent c2 = new TestEEComponent(simulator, "c2");
-        TestEEComponent c3 = new TestEEComponent(simulator, "c3");
+    public void messageType() throws EEMessageTypeException {
+        MessageTypeManager mtManager = new MessageTypeManager();
+        EESimulator simulator = new EESimulator(mtManager);
+        Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
+        b1.attachTo(simulator);
+        TestEEComponent c1 = new TestEEComponent("c1"); c1.attachTo(simulator);
+        TestEEComponent c2 = new TestEEComponent("c2"); c2.attachTo(simulator);
+        TestEEComponent c3 = new TestEEComponent("c3"); c3.attachTo(simulator);
         c1.connectToBus(b1);
         c2.connectToBus(b1);
         c3.connectToBus(b1);
-        c1.addOutput("m1", DataType.DOUBLE);
-        c2.addInput("m1", DataType.INT);
-        c3.addInput("m1", new ArrayType(DataType.INT, ArrayType.Dimensionality.ARRAY, 5));
-        boolean foundError = false;
+        int errorsFound = 0;
         try {
-            simulator.finalizeSetup();
-        } catch (EESetupException e){
-            foundError = e.errors.messageTypeErrors.size() == 1;
-            //e.printStackTrace();
+            c1.addOutput("m1", DataType.DOUBLE);
+            c2.addInput("m1", DataType.INT);
+        } catch (EEMessageTypeException e){
+            ++errorsFound;
         }
-        Assert.assertTrue("Expected an EEMessageTypeException to be thrown.", foundError);
+        try {
+            c3.addInput("m1", new ArrayType(DataType.INT, ArrayType.Dimensionality.ARRAY, 5));
+        } catch (EEMessageTypeException e){
+            ++errorsFound;
+        }
+        Assert.assertEquals("Expected 2 EEMessageTypeExceptions to be thrown.", 2, errorsFound);
     }
 
     // A component is connected to a bus using an invalid name or id
     @Test
-    public void invalidConnect(){
-        EESimulator simulator = new EESimulator();
-        ConstantBus.newInstantBus(simulator, "b1");
-        TestEEComponent c1 = new TestEEComponent(simulator, "c1");
-        TestEEComponent c2 = new TestEEComponent(simulator, "c2");
-        TestEEComponent c3 = new TestEEComponent(simulator, "c3");
+    public void invalidConnect() throws EEMessageTypeException {
+        MessageTypeManager mtManager = new MessageTypeManager();
+        EESimulator simulator = new EESimulator(mtManager);
+        Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
+        b1.attachTo(simulator);
+        TestEEComponent c1 = new TestEEComponent("c1"); c1.attachTo(simulator);
+        TestEEComponent c2 = new TestEEComponent("c2"); c2.attachTo(simulator);
+        TestEEComponent c3 = new TestEEComponent("c3"); c3.attachTo(simulator);
         c1.connectToBus("b2");
         c2.connectToBus(-1);
         c3.connectToBus(10);

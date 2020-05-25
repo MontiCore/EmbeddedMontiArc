@@ -6,7 +6,7 @@
  */
 package de.rwth.montisim.simulation.eesimulator.exceptions;
 
-import de.rwth.montisim.simulation.eesimulator.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 
 public class EEComponentTypeException extends Exception {
     private static final long serialVersionUID = -6666072759009657158L;

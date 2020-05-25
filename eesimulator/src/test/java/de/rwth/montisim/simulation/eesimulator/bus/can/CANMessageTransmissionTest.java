@@ -13,6 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
@@ -26,31 +27,19 @@ public class CANMessageTransmissionTest {
     }
 
     @Test
-    public void testBitsizeComputation() {
-        testBitsizeComputation(
-            CAN.MAX_PAYLOAD_SIZE_BYTES, 
-            1,
-            CAN.HEADER_SIZE_BITS + CAN.MAX_PAYLOAD_SIZE_BYTES * 8 + CAN.TRAILER_SIZE_BITS
-        );
-        testBitsizeComputation(
-            2, 
-            1, 
-            CAN.HEADER_SIZE_BITS + 2 * 8 + CAN.TRAILER_SIZE_BITS
-        );
-        testBitsizeComputation(
-            CAN.MAX_PAYLOAD_SIZE_BYTES + 3, 
-            2,
-            CAN.FULL_FRAME + CAN.HEADER_SIZE_BITS + 3 * 8 + CAN.TRAILER_SIZE_BITS
-        );
-        testBitsizeComputation(
-            CAN.MAX_PAYLOAD_SIZE_BYTES * 5, 
-            5,
-            CAN.FULL_FRAME * 4 + CAN.HEADER_SIZE_BITS + CAN.MAX_PAYLOAD_SIZE_BYTES * 8 + CAN.TRAILER_SIZE_BITS
-        );
+    public void testBitsizeComputation() throws EEMessageTypeException {
+        testBitsizeComputation(CAN.MAX_PAYLOAD_SIZE_BYTES, 1,
+                CAN.HEADER_SIZE_BITS + CAN.MAX_PAYLOAD_SIZE_BYTES * 8 + CAN.TRAILER_SIZE_BITS);
+        testBitsizeComputation(2, 1, CAN.HEADER_SIZE_BITS + 2 * 8 + CAN.TRAILER_SIZE_BITS);
+        testBitsizeComputation(CAN.MAX_PAYLOAD_SIZE_BYTES + 3, 2,
+                CAN.FULL_FRAME + CAN.HEADER_SIZE_BITS + 3 * 8 + CAN.TRAILER_SIZE_BITS);
+        testBitsizeComputation(CAN.MAX_PAYLOAD_SIZE_BYTES * 5, 5,
+                CAN.FULL_FRAME * 4 + CAN.HEADER_SIZE_BITS + CAN.MAX_PAYLOAD_SIZE_BYTES * 8 + CAN.TRAILER_SIZE_BITS);
     }
 
-    public void testBitsizeComputation(int msgSize, int expectedFrames, long expectedBits) {
-        MessageTypeManager manager = new MessageTypeManager(null, null);
+    public void testBitsizeComputation(int msgSize, int expectedFrames, long expectedBits)
+            throws EEMessageTypeException {
+        MessageTypeManager manager = new MessageTypeManager();
         CANMessageTransmission tr = new CANMessageTransmission(new Message(new MessageInformation("m1", DataType.INT, manager, null), null, msgSize, 0), rnd);
         Assert.assertEquals(expectedFrames, tr.getRequiredFrames());
         Assert.assertEquals(expectedBits, tr.getRequiredTotalBits());
