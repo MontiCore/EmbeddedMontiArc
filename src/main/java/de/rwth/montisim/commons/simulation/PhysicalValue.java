@@ -6,19 +6,23 @@
  */
 package de.rwth.montisim.commons.simulation;
 
+import de.rwth.montisim.commons.dynamicinterface.DataType;
+
 public class PhysicalValue {
-    protected double value;
+    protected Object value;
     public final String name;
-    public PhysicalValue(String name, double startValue){
-        this.value = startValue;
+    public final DataType type;
+    public PhysicalValue(String name, DataType type, Object startValue){
         this.name = name;
+        this.type = type;
+        this.value = startValue;
     }
 
     // These 2 functions can be overwritten to add some transformation on how to set/get the value.
-    public double get(){
+    public Object get(){
         return value;
     }
-    public void set(double value){
+    public void set(Object value){
         this.value = value;
     }
 
@@ -26,7 +30,7 @@ public class PhysicalValue {
      * This function returns returns the internal value. 
      * It should not be overwritten.
      */
-    public double value(){
+    public Object value(){
         return value;
     }
 }
