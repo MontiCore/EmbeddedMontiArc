@@ -51,7 +51,7 @@ public:
     const std::vector<std::string> replay_query_input_keys = {
         "data"
     };
-    std::vector<std::vector<Executor *>> replay_query_handles;
+    std::vector<Executor *> replay_query_handles;
     
     //replay memories
     std::vector<std::map<std::string, NDArray>> replay_memory;
@@ -61,7 +61,6 @@ public:
     std::vector<std::string> dist_measure = {};
     std::vector<mx_uint> replay_k = {};
     std::vector<mx_uint> gradient_steps = {};
-    std::vector<mx_uint> num_heads = {};
     Optimizer *optimizerHandle;
 
     mx_uint num_subnets = ${networkInstruction.body.replaySubNetworks?size};
@@ -81,10 +80,8 @@ public:
             delete handle;
         }
 <#if networkInstruction.body.replaySubNetworks?has_content>
-        for(std::vector<Executor *> head_query_handles : replay_query_handles){
-            for(Executor *handle : head_query_handles){
+        for(Executor *handle : replay_query_handles){
                 delete handle;
-            }
         }
         for(Executor * handle : loss_handles){
             delete handle;
@@ -145,7 +142,7 @@ public:
 <#if networkInstruction.body.replaySubNetworks?has_content>     
     //perform local adaption, train network on examples, only use updated on one inference (locally), don't save them
     void local_adapt(int net_start_ind,
-                     std::vector<Executor *> query_handle,
+                     Executor * query_handle,
                      std::map<std::string, NDArray> &memory,
                      const std::vector<std::vector<float>> &in_data_,
                      const std::vector<std::string> &in_keys,
@@ -176,12 +173,12 @@ public:
             }
         }
 
-        prev_output.CopyTo(&(query_handle[0]->arg_dict()[replay_query_input_keys[0]]));
+        prev_output.CopyTo(&(query_handle->arg_dict()[replay_query_input_keys[0]]));
         NDArray::WaitAll();
 
-        query_handle[0]->Forward(false);
+        query_handle->Forward(false);
         CheckMXNetError("Query net forward, local_adapt, replay layer " + std::to_string(net_start_ind-1));
-        NDArray query_output = query_handle[0]->outputs[0];
+        NDArray query_output = query_handle->outputs[0];
 
         std::vector<NDArray> samples = pick_samples(query_output, memory, k, dist_measure);
 
@@ -377,14 +374,14 @@ public:
         //Init Replay Memory prediction
 ${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
     
-        ModelLoader model_loader(file_prefix, num_subnets, num_heads, ctx);
+        ModelLoader model_loader(file_prefix, num_subnets, ctx);
     
         std::vector<Symbol> network_symbols = model_loader.GetNetworkSymbols();
         std::vector<std::map<std::string, NDArray>> network_param_maps;
         network_param_maps = model_loader.GetNetworkParamMaps();
     
-        std::vector<std::vector<Symbol>> replay_query_symbols = model_loader.GetQuerySymbols();
-        std::vector<std::vector<std::map<std::string, NDArray>>> replay_query_param_maps;
+        std::vector<Symbol> replay_query_symbols = model_loader.GetQuerySymbols();
+        std::vector<std::map<std::string, NDArray>> replay_query_param_maps;
         replay_query_param_maps = model_loader.GetQueryParamMaps();
 
         replay_memory = model_loader.GetReplayMemory();
@@ -426,11 +423,7 @@ ${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
                 for(mx_uint j=0; j < replay_query_input_keys.size(); j++){
                     query_in_shape_map[replay_query_input_keys[j]] = prev_out_shapes[j];
                 }
-                std::vector<Executor *> head_replay_query_handles = {};
-                for(mx_uint k=0; k < num_heads[i-1]; k++){
-                    head_replay_query_handles.push_back(initExecutor(replay_query_symbols[i-1][k], replay_query_param_maps[i-1][k], replay_query_input_keys, prev_out_shapes));
-                }
-                replay_query_handles.push_back(head_replay_query_handles);
+                replay_query_handles.push_back(initExecutor(replay_query_symbols[i-1], replay_query_param_maps[i-1], replay_query_input_keys, prev_out_shapes));
             }
             prev_out_shapes = {out_shapes[0]};
         }

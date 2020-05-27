@@ -90,6 +90,72 @@ class CustomGRU(gluon.HybridBlock):
         return output, F.swapaxes(state0, 0, 1)
 
     
+class DotProductSelfAttention(gluon.HybridBlock):
+    def __init__(self,
+                 scale_factor,
+                 num_heads,
+                 dim_model,
+                 dim_keys,
+                 dim_values,
+                 use_proj_bias,
+                 **kwargs):
+        super(DotProductSelfAttention, self).__init__(**kwargs)
+        with self.name_scope():
+            self.num_heads = num_heads
+            self.dim_model = dim_model
+            self.use_proj_bias = use_proj_bias
+
+            if dim_keys == -1:
+                self.dim_keys = int(dim_model / self.num_heads)
+            else:
+                self.dim_keys = dim_keys
+            if dim_values == -1:
+                self.dim_values = int(dim_model / self.num_heads)
+            else:
+                self.dim_values = dim_values
+    
+            if self.scale_factor == -1:
+                self.scale_factor = math.sqrt(dim_keys)
+            else:
+                self.scale_factor = scale_factor
+
+            self.proj_q = gluon.nn.Dense(self.num_heads*self.dim_keys, use_bias=self.use_proj_bias, flatten=False)
+            self.proj_k = gluon.nn.Dense(self.num_heads*self.dim_keys, use_bias=self.use_proj_bias, flatten=False)
+            self.proj_v = gluon.nn.Dense(self.num_heads*self.dim_values, use_bias=self.use_proj_bias, flatten=False)
+            self.proj_o = gluon.nn.Dense(self.dim_model, use_bias=self.use_proj_bias, flatten=False)
+
+    def hybrid_forward(self, F, queries, keys, values, *args, **kwargs):
+
+        head_queries = self.proj_q(queries)
+        head_keys = self.proj_k(keys)
+        head_values = self.proj_v(values)
+
+        head_queries = F.reshape(head_queries, shape=(0, 0, self.num_heads, -1))
+        head_queries = F.transpose(head_queries, axes=(0,2,1,3))
+        head_queries = F.reshape(head_queries, shape=(-1, 0, 0), reverse=True)
+
+        head_keys = F.reshape(head_keys, shape=(0, 0, self.num_heads, -1))
+        head_keys = F.transpose(head_keys, axes=(0,2,1,3))
+        head_keys = F.reshape(head_keys, shape=(-1, 0, 0), reverse=True)
+
+        score = F.batch_dot(head_queries, head_keys, transpose_b=True)
+        score = score * self.scale_factor
+        weights = F.softmax(score)
+
+        head_values = F.reshape(head_values, shape=(0, 0, self.num_heads, -1))
+        head_values = F.transpose(head_values, axes=(0,2,1,3))
+        head_values = F.reshape(head_values, shape=(-1, 0, 0), reverse=True)
+
+        ret = F.batch_dot(weights, head_values)
+        ret = F.reshape(ret, shape=(-1, self.num_heads, 0, 0), reverse=True)
+        ret = F.transpose(ret, axes=(0, 2, 1, 3))
+        ret = F.reshape(ret, shape=(0, 0, -1))
+
+        ret = self.proj_o(ret)
+
+        return ret
+
+    
 class ReplayMemoryInterface(gluon.HybridBlock):
     __metaclass__ = abc.ABCMeta
 
@@ -120,7 +186,7 @@ class ReplayMemoryInterface(gluon.HybridBlock):
         pass
     
 #Memory layer
-class Memory(ReplayMemoryInterface):
+class Memory(gluon.HybridBlock):
     def __init__(self, 
                  sub_key_size, 
                  query_size, 
@@ -128,15 +194,9 @@ class Memory(ReplayMemoryInterface):
                  dist_measure,
                  k, 
                  num_heads,
-                 use_replay,
-                 replay_interval,
-                 replay_batch_size,
-                 replay_steps,
-                 replay_gradient_steps,
-                 store_prob,
-                 value_shape=-1,
+                 value_shape,
                  **kwargs):
-        super(Memory, self).__init__(use_replay, replay_interval, replay_batch_size, replay_steps, replay_gradient_steps, num_heads, **kwargs)
+        super(Memory, self).__init__(**kwargs)
         with self.name_scope():
             #Memory parameters
             self.dist_measure = dist_measure
@@ -144,151 +204,98 @@ class Memory(ReplayMemoryInterface):
             self.num_heads = num_heads
             self.query_act = query_act
             self.query_size = query_size
-
+            self.num_heads = num_heads
+    
             #Batch norm sub-layer
             self.batch_norm = gluon.nn.BatchNorm()
-
-            #Replay parameters
-            self.store_prob = store_prob
 
             #Memory sub-layer
             self.sub_key_size = sub_key_size
             sub_key_shape = (self.sub_key_size, int(query_size[-1] / 2))
 
-            if value_shape == [-1]: #no -1 anymore but size of input
-                value_shape = (self.sub_key_size*self.sub_key_size, query_size[-1])
-            else:
-                value_shape = (self.sub_key_size*self.sub_key_size,) + value_shape
+            value_shape = (self.sub_key_size*self.sub_key_size,) + value_shape
 
             self.sub_keys1 = self.params.get("sub_keys1", shape=sub_key_shape, differentiable=True)
             self.sub_keys2 = self.params.get("sub_keys2", shape=sub_key_shape, differentiable=True)
             self.values = self.params.get("values", shape=value_shape, differentiable=True)
             self.label_memory = nd.array([])
 
-            self.get_query_network(None)
+            self.get_query_network()
                         
     def hybrid_forward(self, F, x, sub_keys1, sub_keys2, values):
         x = self.batch_norm(x)
 
-        for head_ind in range(self.num_heads):
-            q = self.query_network[head_ind](x)
+        q = self.query_network(x)
 
-            q_split = F.split(q, num_outputs=2)
+        q = F.reshape(q, shape=(0, self.num_heads, -1))
+        q = F.reshape(q, shape=(-1,0), reverse=True)
+
+        q_split = F.split(q, num_outputs=2)
     
-            def loop_batch_diff(data, state):
-                return F.broadcast_sub(data, state), state
+        def loop_batch_diff(data, state):
+            return F.broadcast_sub(data, state), state
+
+        def loop_batch_dot(data, state):
+            return F.dot(state, data), state
     
-            def loop_batch_dot(data, state):
-                return F.dot(data[0], data[1], transpose_b=trans_b), state
+        def loop_batch_l2(data, state):
+            diff = F.broadcast_sub(data[0], data[1])
+            return F.norm(diff, axis=1), state
     
-            def loop_batch_l2(data, state):
-                diff = F.broadcast_sub(data[0], data[1])
-                return F.norm(diff, axis=1), state
-    
-            if self.dist_measure == "l2":
-                q1_diff, _ = F.contrib.foreach(loop_batch_diff, q_split[0], init_states=sub_keys1)
-                q2_diff, _ = F.contrib.foreach(loop_batch_diff, q_split[1], init_states=sub_keys2)
-                q1_dist = F.norm(q1_diff, axis=2)
-                q2_dist = F.norm(q2_diff, axis=2)
-            else:
-                q1_dist = F.dot(q_split[0], sub_keys1, transpose_b=True)
-                q2_dist = F.dot(q_split[1], sub_keys2, transpose_b=True)
-    
-            i1 = F.topk(q1_dist, k=self.k, ret_typ="indices")
-            i2 = F.topk(q2_dist, k=self.k, ret_typ="indices")
-
-            # Calculate cross product for keys at indices I1 and I2
-            k1 = F.take(sub_keys1, i1)
-            k2 = F.take(sub_keys2, i2)
-
-            k1 = F.tile(k1, (1, self.k, 1))
-            k2 = F.repeat(k2, self.k, 1)
-            c_cart = F.concat(k1, k2, dim=2)
-
-            trans_b = True
-            state_batch_dist = F.zeros(1)  # state is not used, but needed for function call
-            if self.dist_measure == "l2":
-                k_dist, _ = F.contrib.foreach(loop_batch_l2, [q, c_cart], init_states=state_batch_dist)
-            else:
-                k_dist, _ = F.contrib.foreach(loop_batch_dot, [q, c_cart], init_states=state_batch_dist)
-
-            i = F.topk(k_dist, k=self.k, ret_typ="both")
-
-            w = F.softmax(i[0])
-            vi = F.take(values, i[1])
-            trans_b = False
-            aggr_value, _ = F.contrib.foreach(loop_batch_dot, [w, vi], init_states=state_batch_dist)
-
-            if "mv" in locals():
-                mv = F.broadcast_add(mv, aggr_value)
-            else:
-                mv = aggr_value
-
-        return [mv, i[1]]
-
-    def store_samples(self, data, y, query_network, store_prob, mx_context):
-        ind = data[1]
-        num_outputs = len(y)
-
-        if len(self.label_memory) == 0:
-            size_memory = self.sub_key_size * self.sub_key_size
-            self.label_memory = nd.empty((num_outputs, size_memory, 1), ctx=mx_context)
-            x = data[0]
-            for net in query_network:
-                net(x)
-
-        replace_ind = nd.sample_multinomial(store_prob, ind.shape)
-
-        for i in range(num_outputs):
-            curr_memory = self.label_memory[i]
-            curr_labels = y[i]
-            for i in range(len(ind)):
-                max = nd.max(replace_ind[i])
-                if (max[0]):
-                    to_change_ind = nd.contrib.boolean_mask(ind[i], replace_ind[i])
-                    curr_memory[to_change_ind] = curr_labels[i]
-
-    def sample_memory(self, batch_size, mx_context):
-
-        memory_size = self.label_memory[0].shape[0]
-        if self.replay_batch_size == -1:
-            sample_ind = nd.random.randint(0, memory_size, (self.replay_steps, batch_size), ctx=mx_context)
+        if self.dist_measure == "l2":
+            q1_diff, _ = F.contrib.foreach(loop_batch_diff, q_split[0], init_states=sub_keys1)
+            q2_diff, _ = F.contrib.foreach(loop_batch_diff, q_split[1], init_states=sub_keys2)
+            q1_dist = F.norm(q1_diff, axis=2)
+            q2_dist = F.norm(q2_diff, axis=2)
         else:
-            sample_ind = nd.random.randint(0, memory_size, (self.replay_steps, self.replay_batch_size), ctx=mx_context)
+            q1_dist = F.dot(q_split[0], sub_keys1, transpose_b=True)
+            q2_dist = F.dot(q_split[1], sub_keys2, transpose_b=True)
 
-        num_outputs = len(self.label_memory)
+        i1 = F.topk(q1_dist, k=self.k, ret_typ="indices")
+        i2 = F.topk(q2_dist, k=self.k, ret_typ="indices")
 
-        sample_labels = [[self.label_memory[i][ind] for i in range(num_outputs)] for ind in sample_ind]
-        sample_batches = [[self.values.data(mx_context)[ind], sample_labels[i]] for i, ind in enumerate(sample_ind)]
+        # Calculate cross product for keys at indices I1 and I2
+        k1 = F.take(sub_keys1, i1)
+        k2 = F.take(sub_keys2, i2)
 
-        return sample_batches#
+        k1 = F.tile(k1, (1, self.k, 1))
+        k2 = F.repeat(k2, self.k, 1)
+        c_cart = F.concat(k1, k2, dim=2)
 
-    def get_query_network(self, mx_context):
+        trans_b = True
+        state_batch_dist = F.zeros(1)  # state is not used, but needed for function call
+        if self.dist_measure == "l2":
+            k_dist, _ = F.contrib.foreach(loop_batch_l2, [q, c_cart], init_states=state_batch_dist)
+        else:
+            q = F.reshape(q, shape=(0, 1, -1))
+            k_dist = F.batch_dot(q, c_cart, transpose_b=True) #F.contrib.foreach(loop_batch_dot, [q, c_cart], init_states=state_batch_dist)
+            k_dist = F.reshape(k_dist, shape=(0, -1))
+
+        i = F.topk(k_dist, k=self.k, ret_typ="both")
+
+        w = F.softmax(i[0])
+        w = F.reshape(w, shape=(0,1,-1))
+        vi = F.take(values, i[1])
+        aggr_value = F.batch_dot(w, vi) #F.contrib.foreach(loop_batch_dot, [w, vi], init_states=state_batch_dist)
+
+        ret = F.reshape(aggr_value, shape=(-1, self.num_heads, 0), reverse=True)
+        one_vec = F.ones((1,self.num_heads))
+        ret, _ = F.contrib.foreach(loop_batch_dot, ret, init_states=one_vec)
+        ret = F.reshape(ret, shape=(-1, 0), reverse=True)
+
+        return ret
+
+    def get_query_network(self):
         if hasattr(self, 'query_network'):
             return self.query_network
         else:
-            self.query_network = []
-            for head_ind in range(self.num_heads):
-                head_net = gluon.nn.HybridSequential()
-                for size in self.query_size:
-                    if self.query_act == "linear":
-                        head_net.add(gluon.nn.Dense(units=size))
-                    else:
-                        head_net.add(gluon.nn.Dense(units=size, activation=self.query_act))
-                    self.register_child(head_net[-1])
-                self.query_network.append(head_net)
-                self.register_child(head_net)
-                head_net.hybridize()
+            self.query_network = gluon.nn.HybridSequential()
+            for size in self.query_size:
+                if self.query_act == "linear":
+                    self.query_network.add(gluon.nn.Dense(units=self.num_heads*size, flatten=False))
+                else:
+                    self.query_network.add(gluon.nn.Dense(units=self.num_heads*size, activation=self.query_act, flatten=False))
             return self.query_network
-    
-    def save_memory(self, path):
-        sub_keys1_data = self.sub_keys1.data()
-        sub_keys2_data = self.sub_keys2.data()
-        sub_keys1_data = nd.tile(sub_keys1_data, (len(sub_keys1_data), 1))
-        sub_keys2_data = nd.repeat(sub_keys2_data, len(sub_keys2_data), 0)
-        keys_data = nd.concat(sub_keys1_data, sub_keys2_data, dim=1)
-        values_data = self.values.data()
-        nd.save(path, {"keys": keys_data, "values": values_data, "labels": self.label_memory})
     
     
 #ReplayMemory layer
@@ -309,8 +316,6 @@ class ReplayMemory(ReplayMemoryInterface):
             #Replay parameters
             self.store_prob = store_prob
             self.max_stored_samples = max_stored_samples
-    
-            self.use_replay = use_replay
     
             self.query_net_dir = query_net_dir
             self.query_net_prefix = query_net_prefix
@@ -342,7 +347,7 @@ class ReplayMemory(ReplayMemoryInterface):
             to_store_labels = nd.empty((num_outputs, len(to_store_values)), ctx=mx_context)
             for i in range(num_outputs):
                 to_store_labels[i] = nd.contrib.boolean_mask(y[i], ind)
-            to_store_keys = query_network[0](to_store_values)
+            to_store_keys = query_network(to_store_values)
 
             if self.value_memory.shape[0] == 0:
                 self.key_memory = to_store_keys
@@ -388,7 +393,7 @@ class ReplayMemory(ReplayMemoryInterface):
 
         net = mx.gluon.nn.SymbolBlock.imports(self.query_net_dir + symbolFile, ["data"], self.query_net_dir + weightFile, ctx=mx_context)
         net.hybridize()
-        return [net]
+        return net
     
     def save_memory(self, path):
         nd.save(path, {"keys": self.key_memory, "values": self.value_memory, "labels": self.label_memory}) 

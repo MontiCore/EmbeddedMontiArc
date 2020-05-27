@@ -30,6 +30,5 @@
         dist_measure.push_back("${replayMemoryStoreDistMeasure}");
 	    replay_k.push_back(${localAdaptionK});
         gradient_steps.push_back(${localAdaptionGradientSteps});
-        num_heads.push_back(1);
 </#if>
 	

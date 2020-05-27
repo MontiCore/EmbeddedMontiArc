@@ -551,8 +551,7 @@ class ${tc.fileNameWithoutEnding}:
                 network.replaysubnet0_.export(self.parameter_path(i) + '_newest_replay_sub_net_' + str(0), epoch=0)
                 for j, net in enumerate(network.replay_sub_nets):
                     net.export(self.parameter_path(i) + '_newest_replay_sub_net_' + str(j+1), epoch=0)
-                    for ind, query_net in enumerate(replay_query_networks[i][j]):
-                        query_net.export(self.parameter_path(i) + '_newest_replay_query_net_' + str(ind) + "_sub_net_" + str(j+1), epoch=0)
+                    replay_query_networks[i][j].export(self.parameter_path(i) + '_newest_replay_query_net_' + str(j+1), epoch=0)
                     replay_layers[i][j].save_memory(self.parameter_path(i) + "_newest_replay_memory_" + str(j + 1))
             loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 
