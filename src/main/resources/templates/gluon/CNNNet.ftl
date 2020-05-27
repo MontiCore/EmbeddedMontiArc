@@ -114,8 +114,8 @@ class DotProductSelfAttention(gluon.HybridBlock):
             else:
                 self.dim_values = dim_values
     
-            if self.scale_factor == -1:
-                self.scale_factor = math.sqrt(dim_keys)
+            if scale_factor == -1:
+                self.scale_factor = math.sqrt(self.dim_keys)
             else:
                 self.scale_factor = scale_factor
 
@@ -126,6 +126,10 @@ class DotProductSelfAttention(gluon.HybridBlock):
 
     def hybrid_forward(self, F, queries, keys, values, *args, **kwargs):
 
+        queries = F.Reshape(queries, shape=(0, 0,-1))
+        keys = F.Reshape(queries, shape=(0, 0, -1))
+        values = F.Reshape(queries, shape=(0, 0, -1))
+    
         head_queries = self.proj_q(queries)
         head_keys = self.proj_k(keys)
         head_values = self.proj_v(values)
@@ -194,7 +198,7 @@ class Memory(gluon.HybridBlock):
                  dist_measure,
                  k, 
                  num_heads,
-                 value_shape,
+                 values_dim,
                  **kwargs):
         super(Memory, self).__init__(**kwargs)
         with self.name_scope():
@@ -211,13 +215,16 @@ class Memory(gluon.HybridBlock):
 
             #Memory sub-layer
             self.sub_key_size = sub_key_size
-            sub_key_shape = (self.sub_key_size, int(query_size[-1] / 2))
+            sub_key_shape = (self.num_heads, self.sub_key_size, int(query_size[-1] / 2))
 
-            value_shape = (self.sub_key_size*self.sub_key_size,) + value_shape
+            if values_dim == -1:
+                values_shape = (self.sub_key_size * self.sub_key_size, self.query_size[-1])
+            else:
+                values_shape = (self.sub_key_size*self.sub_key_size, values_dim)
 
             self.sub_keys1 = self.params.get("sub_keys1", shape=sub_key_shape, differentiable=True)
             self.sub_keys2 = self.params.get("sub_keys2", shape=sub_key_shape, differentiable=True)
-            self.values = self.params.get("values", shape=value_shape, differentiable=True)
+            self.values = self.params.get("values", shape=values_shape, differentiable=True)
             self.label_memory = nd.array([])
 
             self.get_query_network()
@@ -225,28 +232,23 @@ class Memory(gluon.HybridBlock):
     def hybrid_forward(self, F, x, sub_keys1, sub_keys2, values):
         x = self.batch_norm(x)
 
+        x = F.reshape(x, shape=(0, -1))
+
         q = self.query_network(x)
 
         q = F.reshape(q, shape=(0, self.num_heads, -1))
-        q = F.reshape(q, shape=(-1,0), reverse=True)
 
-        q_split = F.split(q, num_outputs=2)
-    
-        def loop_batch_diff(data, state):
-            return F.broadcast_sub(data, state), state
+        q_split = F.split(q, num_outputs=2, axis=-1)
 
-        def loop_batch_dot(data, state):
-            return F.dot(state, data), state
-    
-        def loop_batch_l2(data, state):
-            diff = F.broadcast_sub(data[0], data[1])
-            return F.norm(diff, axis=1), state
-    
-        if self.dist_measure == "l2":
-            q1_diff, _ = F.contrib.foreach(loop_batch_diff, q_split[0], init_states=sub_keys1)
-            q2_diff, _ = F.contrib.foreach(loop_batch_diff, q_split[1], init_states=sub_keys2)
-            q1_dist = F.norm(q1_diff, axis=2)
-            q2_dist = F.norm(q2_diff, axis=2)
+        if self.dist_measure == "inner_prod":
+            q_split_resh = F.reshape(q_split[0], shape=(0,0,1,-1))
+            sub_keys1_resh = F.reshape(sub_keys1, shape=(1,0,0,-1), reverse=True)
+            q1_diff = F.broadcast_sub(q_split_resh, sub_keys1_resh)
+            q1_dist = F.norm(q1_diff, axis=-1)
+            q_split_resh = F.reshape(q_split[1], shape=(0,0,1,-1))
+            sub_keys2_resh = F.reshape(sub_keys2, shape=(1,0,0,-1), reverse=True)
+            q2_diff = F.broadcast_sub(q_split_resh, sub_keys2_resh)
+            q2_dist = F.norm(q2_diff, axis=-1)
         else:
             q1_dist = F.dot(q_split[0], sub_keys1, transpose_b=True)
             q2_dist = F.dot(q_split[1], sub_keys2, transpose_b=True)
@@ -254,20 +256,39 @@ class Memory(gluon.HybridBlock):
         i1 = F.topk(q1_dist, k=self.k, ret_typ="indices")
         i2 = F.topk(q2_dist, k=self.k, ret_typ="indices")
 
+
         # Calculate cross product for keys at indices I1 and I2
-        k1 = F.take(sub_keys1, i1)
-        k2 = F.take(sub_keys2, i2)
+
+        # def head_take(data, state):
+        #     return [F.take(data[0], data[2]), F.take(data[1], data[3])], state,
+        #
+        # i1 = F.transpose(i1, axes=(1,0,2))
+        # i2 = F.transpose(i2, axes=(1, 0, 2))
+        # st = F.zeros(1)
+        # (k1, k2), _ = F.contrib.foreach(head_take, [sub_keys1, sub_keys2,i1,i2], st)
+        # k1 = F.reshape(k1, shape=(-1, 0, 0), reverse=True)
+        # k2 = F.reshape(k2, shape=(-1, 0, 0), reverse=True)
+        
+        i1 = F.split(i1, num_outputs=self.num_heads, axis=1, squeeze_axis=True)
+        sub_keys1 = F.split(sub_keys1, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
+        k1 = F.take(sub_keys1[0], i1[0])
+        i2 = F.split(i2, num_outputs=self.num_heads, axis=1, squeeze_axis=True)
+        sub_keys2 = F.split(sub_keys2, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
+        k2 = F.take(sub_keys2[0], i2[0])
+        for h in range(1, self.num_heads):
+            k1 = F.concat(k1, F.take(sub_keys1[h], i1[h]), dim=0)
+            k2 = F.concat(k2, F.take(sub_keys2[h], i2[h]), dim=0)
 
         k1 = F.tile(k1, (1, self.k, 1))
         k2 = F.repeat(k2, self.k, 1)
         c_cart = F.concat(k1, k2, dim=2)
 
-        trans_b = True
-        state_batch_dist = F.zeros(1)  # state is not used, but needed for function call
+        q = F.reshape(q, shape=(-1,0), reverse=True)
+        q = F.reshape(q, shape=(0, 1, -1))
         if self.dist_measure == "l2":
-            k_dist, _ = F.contrib.foreach(loop_batch_l2, [q, c_cart], init_states=state_batch_dist)
+            k_diff = F.broadcast_sub(q, c_cart)
+            k_dist = F.norm(k_diff, axis=-1)
         else:
-            q = F.reshape(q, shape=(0, 1, -1))
             k_dist = F.batch_dot(q, c_cart, transpose_b=True) #F.contrib.foreach(loop_batch_dot, [q, c_cart], init_states=state_batch_dist)
             k_dist = F.reshape(k_dist, shape=(0, -1))
 
@@ -279,8 +300,9 @@ class Memory(gluon.HybridBlock):
         aggr_value = F.batch_dot(w, vi) #F.contrib.foreach(loop_batch_dot, [w, vi], init_states=state_batch_dist)
 
         ret = F.reshape(aggr_value, shape=(-1, self.num_heads, 0), reverse=True)
-        one_vec = F.ones((1,self.num_heads))
-        ret, _ = F.contrib.foreach(loop_batch_dot, ret, init_states=one_vec)
+        one_vec = F.ones((1, 1, self.num_heads))
+        one_vec = F.broadcast_like(one_vec, ret, lhs_axes=0, rhs_axes=0)
+        ret = F.batch_dot(one_vec, ret)
         ret = F.reshape(ret, shape=(-1, 0), reverse=True)
 
         return ret
