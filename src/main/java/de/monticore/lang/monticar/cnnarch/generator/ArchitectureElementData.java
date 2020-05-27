@@ -183,6 +183,22 @@ public class ArchitectureElementData {
         return getLayerSymbol().getStringValue(AllPredefinedLayers.POOL_TYPE_NAME).get();
     }
 
+    public int getScaleFactor(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.SCALE_FACTOR_NAME).get();
+    }
+
+    public int getDimKeys(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.DIM_KEYS_NAME).get();
+    }
+
+    public int getDimValues(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.DIM_VALUES_NAME).get();
+    }
+
+    public boolean getUseProjBias() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.USE_PROJ_BIAS_NAME).get();
+    }
+
     public int getSubKeySize(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.SUB_KEY_SIZE_NAME).get();
     }
@@ -207,6 +223,10 @@ public class ArchitectureElementData {
 	
 	public int getNumHeads(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.NUM_HEADS_NAME).get();
+    }
+
+    public String getStoreDistMeasure(){
+        return getLayerSymbol().getStringValue(AllPredefinedLayers.STORE_DIST_MEASURE_NAME).get();
     }
     
     public int getReplayInterval(){
