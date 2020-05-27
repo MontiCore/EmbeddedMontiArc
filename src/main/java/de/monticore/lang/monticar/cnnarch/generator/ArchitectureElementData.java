@@ -285,14 +285,8 @@ public class ArchitectureElementData {
         return getLayerSymbol().getStringValue(AllPredefinedLayers.QUERY_NET_PREFIX_NAME).get();
     }
     
-    public List<Integer> getValueShape(){   
-        if (getLayerSymbol().getIntValue(AllPredefinedLayers.VALUE_SHAPE_NAME).isPresent()){
-            List<Integer> list = new ArrayList<>();
-            list.add((Integer) getLayerSymbol().getIntValue(AllPredefinedLayers.VALUE_SHAPE_NAME).get());
-            return list;
-        }else{
-            return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.VALUE_SHAPE_NAME).get();
-        }
+    public int getValuesDim(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.VALUES_DIM_NAME).get();
     }
     
     @Nullable
