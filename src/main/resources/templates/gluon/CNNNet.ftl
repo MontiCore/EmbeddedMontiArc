@@ -240,7 +240,7 @@ class Memory(gluon.HybridBlock):
 
         q_split = F.split(q, num_outputs=2, axis=-1)
 
-        if self.dist_measure == "inner_prod":
+        if self.dist_measure == "l2":
             q_split_resh = F.reshape(q_split[0], shape=(0,0,1,-1))
             sub_keys1_resh = F.reshape(sub_keys1, shape=(1,0,0,-1), reverse=True)
             q1_diff = F.broadcast_sub(q_split_resh, sub_keys1_resh)
@@ -268,12 +268,19 @@ class Memory(gluon.HybridBlock):
         # (k1, k2), _ = F.contrib.foreach(head_take, [sub_keys1, sub_keys2,i1,i2], st)
         # k1 = F.reshape(k1, shape=(-1, 0, 0), reverse=True)
         # k2 = F.reshape(k2, shape=(-1, 0, 0), reverse=True)
-        
-        i1 = F.split(i1, num_outputs=self.num_heads, axis=1, squeeze_axis=True)
-        sub_keys1 = F.split(sub_keys1, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
+
+        if self.num_heads == 1:
+            i1 = [F.split(i1, num_outputs=self.num_heads, axis=1, squeeze_axis=True)]
+            i2 = [F.split(i2, num_outputs=self.num_heads, axis=1, squeeze_axis=True)]
+            sub_keys1 = [F.split(sub_keys1, num_outputs=self.num_heads, axis=0, squeeze_axis=True)]
+            sub_keys2 = [F.split(sub_keys2, num_outputs=self.num_heads, axis=0, squeeze_axis=True)]
+        else:
+            i1 = F.split(i1, num_outputs=self.num_heads, axis=1, squeeze_axis=True)
+            i2 = F.split(i2, num_outputs=self.num_heads, axis=1, squeeze_axis=True)
+            sub_keys1 = F.split(sub_keys1, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
+            sub_keys2 = F.split(sub_keys2, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
+
         k1 = F.take(sub_keys1[0], i1[0])
-        i2 = F.split(i2, num_outputs=self.num_heads, axis=1, squeeze_axis=True)
-        sub_keys2 = F.split(sub_keys2, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
         k2 = F.take(sub_keys2[0], i2[0])
         for h in range(1, self.num_heads):
             k1 = F.concat(k1, F.take(sub_keys1[h], i1[h]), dim=0)
