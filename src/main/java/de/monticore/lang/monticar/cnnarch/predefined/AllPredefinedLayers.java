@@ -122,7 +122,7 @@ public class AllPredefinedLayers {
     public static final String K_NAME = "k";
 	public static final String NUM_HEADS_NAME = "numHeads";
     public static final String STORE_DIST_MEASURE_NAME = "storeDistMeasure";
-	public static final String VALUE_SHAPE_NAME = "valueShape";
+	public static final String VALUES_DIM_NAME = "valuesDim";
 
     //parameters for replay memory layer
 	public static final String MAX_STORED_SAMPLES_NAME = "maxStoredSamples";
@@ -184,6 +184,7 @@ public class AllPredefinedLayers {
                 SwapAxes.create(),
                 BroadcastAdd.create(),
                 Reshape.create(),
+                DotProductSelfAttention.create(),
                 Memory.create(),
                 ReplayMemory.create());
     }
