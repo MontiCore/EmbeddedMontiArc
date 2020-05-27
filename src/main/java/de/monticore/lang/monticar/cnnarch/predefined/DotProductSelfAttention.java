@@ -25,7 +25,7 @@ public class DotProductSelfAttention extends PredefinedLayerDeclaration {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        return layer.getInputTypes();
+        return Arrays.asList(layer.getInputTypes().get(2));
     }
 
     @Override

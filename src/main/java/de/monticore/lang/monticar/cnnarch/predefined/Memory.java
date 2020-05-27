@@ -89,8 +89,8 @@ public class Memory extends PredefinedLayerDeclaration {
                         .defaultValue(1)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.VALUE_SHAPE_NAME)
-                        .constraints(Constraints.INTEGER_OR_INTEGER_TUPLE, Constraints.POSITIVE_OR_MINUS_ONE)
+                        .name(AllPredefinedLayers.VALUES_DIM_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE_OR_MINUS_ONE)
                         .defaultValue(-1)
                         .build()));
         declaration.setParameters(parameters);
