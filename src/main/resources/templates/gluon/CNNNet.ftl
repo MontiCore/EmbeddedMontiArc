@@ -250,12 +250,24 @@ class Memory(gluon.HybridBlock):
             q2_diff = F.broadcast_sub(q_split_resh, sub_keys2_resh)
             q2_dist = F.norm(q2_diff, axis=-1)
         else:
-            q1_dist = F.dot(q_split[0], sub_keys1, transpose_b=True)
-            q2_dist = F.dot(q_split[1], sub_keys2, transpose_b=True)
+            q1 = F.split(q_split[0], num_outputs=self.num_heads, axis=1)
+            q2 = F.split(q_split[1], num_outputs=self.num_heads, axis=1)
+            sub_keys1_resh = F.split(sub_keys1, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
+            sub_keys2_resh = F.split(sub_keys2, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
+            if self.num_heads == 1:
+                q1 = [q1]
+                q2 = [q2]
+                sub_keys1_resh = [sub_keys1_resh ]
+                sub_keys2_resh = [sub_keys2_resh ]
+
+            q1_dist = F.dot(q1[0], sub_keys1_resh[0], transpose_b=True)
+            q2_dist = F.dot(q2[0], sub_keys2_resh[0], transpose_b=True)
+            for h in range(1, self.num_heads):
+                q1_dist = F.concat(q1_dist, F.dot(q1[0], sub_keys1_resh[h], transpose_b=True), dim=1)
+                q2_dist = F.concat(q2_dist, F.dot(q2[0], sub_keys1_resh[h], transpose_b=True), dim=1)
 
         i1 = F.topk(q1_dist, k=self.k, ret_typ="indices")
         i2 = F.topk(q2_dist, k=self.k, ret_typ="indices")
-
 
         # Calculate cross product for keys at indices I1 and I2
 
@@ -268,30 +280,29 @@ class Memory(gluon.HybridBlock):
         # (k1, k2), _ = F.contrib.foreach(head_take, [sub_keys1, sub_keys2,i1,i2], st)
         # k1 = F.reshape(k1, shape=(-1, 0, 0), reverse=True)
         # k2 = F.reshape(k2, shape=(-1, 0, 0), reverse=True)
-
+        i1 = F.split(i1, num_outputs=self.num_heads, axis=1)
+        i2 = F.split(i2, num_outputs=self.num_heads, axis=1)
+        sub_keys1 = F.split(sub_keys1, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
+        sub_keys2 = F.split(sub_keys2, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
         if self.num_heads == 1:
-            i1 = [F.split(i1, num_outputs=self.num_heads, axis=1, squeeze_axis=True)]
-            i2 = [F.split(i2, num_outputs=self.num_heads, axis=1, squeeze_axis=True)]
-            sub_keys1 = [F.split(sub_keys1, num_outputs=self.num_heads, axis=0, squeeze_axis=True)]
-            sub_keys2 = [F.split(sub_keys2, num_outputs=self.num_heads, axis=0, squeeze_axis=True)]
-        else:
-            i1 = F.split(i1, num_outputs=self.num_heads, axis=1, squeeze_axis=True)
-            i2 = F.split(i2, num_outputs=self.num_heads, axis=1, squeeze_axis=True)
-            sub_keys1 = F.split(sub_keys1, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
-            sub_keys2 = F.split(sub_keys2, num_outputs=self.num_heads, axis=0, squeeze_axis=True)
+            i1 = [i1]
+            i2 = [i2]
+            sub_keys1 = [sub_keys1]
+            sub_keys2 = [sub_keys2]
 
         k1 = F.take(sub_keys1[0], i1[0])
         k2 = F.take(sub_keys2[0], i2[0])
         for h in range(1, self.num_heads):
-            k1 = F.concat(k1, F.take(sub_keys1[h], i1[h]), dim=0)
-            k2 = F.concat(k2, F.take(sub_keys2[h], i2[h]), dim=0)
+            k1 = F.concat(k1, F.take(sub_keys1[h], i1[h]), dim=1)
+            k2 = F.concat(k2, F.take(sub_keys2[h], i2[h]), dim=1)
 
-        k1 = F.tile(k1, (1, self.k, 1))
-        k2 = F.repeat(k2, self.k, 1)
-        c_cart = F.concat(k1, k2, dim=2)
+        k1 = F.tile(k1, (1, 1, self.k, 1))
+        k2 = F.repeat(k2, self.k, 2)
+        c_cart = F.concat(k1, k2, dim=3)
 
         q = F.reshape(q, shape=(-1,0), reverse=True)
         q = F.reshape(q, shape=(0, 1, -1))
+        c_cart = F.reshape(c_cart, shape=(-1, 0, 0), reverse=True)
         if self.dist_measure == "l2":
             k_diff = F.broadcast_sub(q, c_cart)
             k_dist = F.norm(k_diff, axis=-1)
@@ -354,13 +365,13 @@ class ReplayMemory(ReplayMemoryInterface):
             self.value_memory = nd.array([])
             self.label_memory = nd.array([])
 
-    def hybrid_forward(self, F, x):
+    def hybrid_forward(self, F, *args):
         #propagate the input as the rest is only used for replay
-        return [x, []]
+        return [args[0], []]
 
     def store_samples(self, data, y, query_network, store_prob, mx_context):
         x = data[0]
-        batch_size = x.shape[0]
+        batch_size = x[0].shape[0]
         num_outputs = len(y)
 
         if len(self.key_memory) == 0:
@@ -372,29 +383,33 @@ class ReplayMemory(ReplayMemoryInterface):
 
         max = nd.max(ind)
         if(max[0]):
-            to_store_values = nd.contrib.boolean_mask(x, ind)
-            to_store_labels = nd.empty((num_outputs, len(to_store_values)), ctx=mx_context)
+            to_store_values = []
+            for i, out in enumerate(x):
+                to_store_values.append(nd.contrib.boolean_mask(out, ind))
+            to_store_keys = query_network(to_store_values[0])
+            to_store_labels = nd.empty((num_outputs, len(to_store_values[0])), ctx=mx_context)
             for i in range(num_outputs):
                 to_store_labels[i] = nd.contrib.boolean_mask(y[i], ind)
-            to_store_keys = query_network(to_store_values)
 
-            if self.value_memory.shape[0] == 0:
+            if self.key_memory.shape[0] == 0:
                 self.key_memory = to_store_keys
                 self.value_memory = to_store_values
                 self.label_memory = to_store_labels
-            elif self.max_stored_samples != -1 and self.value_memory.shape[0] >= self.max_stored_samples:
-                num_to_store = to_store_values.shape[0]
+            elif self.max_stored_samples != -1 and self.key_memory.shape[0] >= self.max_stored_samples:
+                num_to_store = to_store_keys.shape[0]
                 self.key_memory = nd.concat(self.key_memory[num_to_store:], to_store_keys, dim=0)
-                self.value_memory = nd.concat(self.value_memory[num_to_store:], to_store_values, dim=0)
+                for i in range(len(to_store_values)):
+                    self.value_memory[i] = nd.concat(self.value_memory[i][num_to_store:], to_store_values[i], dim=0)
                 self.label_memory = nd.slice_axis(self.label_memory, axis=1, begin=num_to_store, end=-1)
                 self.label_memory = nd.concat(self.label_memory, to_store_labels, dim=1)
             else:
                 self.key_memory = nd.concat(self.key_memory, to_store_keys, dim=0)
-                self.value_memory = nd.concat(self.value_memory, to_store_values, dim=0)
+                for i in range(len(to_store_values)):
+                    self.value_memory[i] = nd.concat(self.value_memory[i], to_store_values[i], dim=0)
                 self.label_memory = nd.concat(self.label_memory, to_store_labels, dim=1)
 
     def sample_memory(self, batch_size, mx_context):
-        num_stored_samples = self.value_memory.shape[0]
+        num_stored_samples = self.key_memory.shape[0]
         if self.replay_batch_size == -1:
             sample_ind = nd.random.randint(0, num_stored_samples, (self.replay_steps, batch_size), ctx=mx_context)
         else:
@@ -403,7 +418,7 @@ class ReplayMemory(ReplayMemoryInterface):
         num_outputs = len(self.label_memory)
 
         sample_labels = [[self.label_memory[i][ind] for i in range(num_outputs)] for ind in sample_ind]
-        sample_batches = [[self.value_memory[ind], sample_labels[i]] for i, ind in enumerate(sample_ind)]
+        sample_batches = [[[self.value_memory[j][ind] for j in range(len(self.value_memory))], sample_labels[i]] for i, ind in enumerate(sample_ind)]
 
         return sample_batches
 
@@ -425,7 +440,9 @@ class ReplayMemory(ReplayMemoryInterface):
         return net
     
     def save_memory(self, path):
-        nd.save(path, {"keys": self.key_memory, "values": self.value_memory, "labels": self.label_memory}) 
+        mem_arr = [("keys", self.key_memory)] + [("labels", self.key_memory)] + [("values_"+str(k),v) for (k,v) in enumerate(self.value_memory)]
+        mem_dict = {entry[0]:entry[1] for entry in mem_arr}
+        nd.save(path, mem_dict)
     
     
 <#list tc.architecture.networkInstructions as networkInstruction>
@@ -450,7 +467,7 @@ ${tc.include(networkInstruction.body, elements?index, "ARCHITECTURE_DEFINITION")
     
             pass
     
-    def hybrid_forward(self, F, x):
+    def hybrid_forward(self, F, *args):
 ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
         return [[${tc.join(tc.getSubnetOutputNames(elements), ", ")}], [${tc.join(tc.getSubnetInputNames(elements), ", ")}, ind_${tc.join(tc.getSubnetInputNames(elements), ", ")}]]
 </#if>

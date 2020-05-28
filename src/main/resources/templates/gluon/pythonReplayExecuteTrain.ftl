@@ -11,7 +11,7 @@
 
                             for replay_batch in replay_batches:       
                                 labels = [replay_batch[1][i].as_in_context(mx_context) for i in range(${tc.architectureOutputs?size?c})]
-                                replay_data = replay_batch[0].as_in_context(mx_context)
+                                replay_data = [replay_batch[0][i].as_in_context(mx_context) for i in range(len(replay_batch[0]))]
 
                                 for gradient_step in range(layer.replay_gradient_steps):
                                     with autograd.record():
@@ -20,15 +20,15 @@
 
                                         lossList = []
 
-                                        replay_output = self._networks[${networkInstruction?index}].replay_sub_nets[layer_i](replay_data)[0][0]
+                                        replay_output = self._networks[${networkInstruction?index}].replay_sub_nets[layer_i](*replay_data)[0]
                                         for i in range(layer_i+1, len(replay_layers[${networkInstruction?index}])):
-                                            replay_output = self._networks[${networkInstruction?index}].replay_sub_nets[i](replay_output)[0][0]
+                                            replay_output = self._networks[${networkInstruction?index}].replay_sub_nets[i](*replay_output)[0]
 
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
-                                        lossList.append(loss_function(replay_output, labels[${tc.getIndex(outputName, true)}]))
+                                        lossList.append(loss_function(replay_output[${tc.getIndex(outputName, true)}], labels[${tc.getIndex(outputName, true)}]))
 <#if tc.endsWithArgmax(networkInstruction.body)>
-                                        replay_output[${outputName?index}] = mx.nd.argmax(replay_output[${outputName?index}], axis=1).expand_dims(1)
+                                        replay_output[${tc.getIndex(outputName, true)}] = mx.nd.argmax(replay_output[${tc.getIndex(outputName, true)}], axis=1).expand_dims(1)
 </#if>
 </#if>
 </#list>

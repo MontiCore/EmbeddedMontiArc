@@ -180,7 +180,7 @@ public:
         CheckMXNetError("Query net forward, local_adapt, replay layer " + std::to_string(net_start_ind-1));
         NDArray query_output = query_handle->outputs[0];
 
-        std::vector<NDArray> samples = pick_samples(query_output, memory, k, dist_measure);
+        std::vector<std::vector<NDArray>> samples = pick_samples(query_output, memory, k, dist_measure);
 
         Operator slice("slice_axis");
         slice.SetParam("axis", 1);
@@ -269,14 +269,11 @@ public:
         return ret;
     }
 
-    std::vector<NDArray> pick_samples(NDArray query_output, std::map<std::string, NDArray> memory, mx_uint k, std::string dist_measure){
+    std::vector<std::vector<NDArray>> pick_samples(NDArray query_output, std::map<std::string, NDArray> memory, mx_uint k, std::string dist_measure){
         Operator top_k("topk");
         top_k.SetParam("k", k);
         top_k.SetParam("ret_typ", "indices");
         top_k.SetParam("dtype", "float32");
-        Operator take_values("take");
-        Operator take_labels("take");
-        take_labels.SetParam("axis", 1);
 
         NDArray dist;
         if(dist_measure == "l2"){
@@ -292,7 +289,7 @@ public:
         top_k.SetInput("data", dist);
         top_k.Invoke(indices);
 
-        std::vector<NDArray> ret;
+        std::vector<std::vector<NDArray>> ret;
 
         /*
         Note: The both inputs have to be set in this order.
@@ -300,14 +297,22 @@ public:
               regardless of the name,m which should be predefined.
               Probably a bug in mxnet-cpp.
         */
-        take_values.SetInput("a", memory["values"]);
-        take_values.SetInput("indices", indices);
-        ret.push_back(take_values.Invoke()[0]);
-
+        std::vector<NDArray> vals;
+        for(int i=0, i < memory.size()-2; i++){
+            Operator take_values("take");
+            take_values.SetInput("a", memory["values_" + std::to_string(i)]);
+            take_values.SetInput("indices", indices);
+            vals.push_back(take_values.Invoke()[0]);
+        ret.push_back(vals);
+        
+        std::vector<NDArray> labs;
+        Operator take_labels("take");
+        take_labels.SetParam("axis", 1);
         take_labels.SetInput("a", memory["labels"]);
         take_labels.SetInput("indices", indices);
-        ret.push_back(take_labels.Invoke()[0]);
-
+        labs.push_back(take_labels.Invoke()[0]);
+        ret.push_back(labs);
+        
         return ret;
     }
 </#if>

@@ -21,9 +21,11 @@
                                                 query_net_prefix="${queryNetPrefix}")
 <#elseif mode == "FORWARD_FUNCTION">
 <#if useReplay == "True" || useLocalAdaption == "true">
-        ${element.name}, ind_${element.name} = self.${element.name}(x)
+        ${element.name}full_, ind_${element.name} = self.${element.name}(args)
+        ${element.name} = ${element.name}full_
 <#else>
-        ${element.name}, ind_${element.name} = self.${element.name}(${input})
+        ${element.name}full_, ind_${element.name} = self.${element.name}(${input})
+	    ${element.name} = ${element.name}full_
 </#if>
 <#elseif mode == "PREDICTION_PARAMETER">
 		use_local_adaption.push_back(${useLocalAdaption});
