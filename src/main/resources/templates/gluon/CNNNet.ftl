@@ -367,7 +367,7 @@ class ReplayMemory(ReplayMemoryInterface):
 
     def hybrid_forward(self, F, *args):
         #propagate the input as the rest is only used for replay
-        return [args[0], []]
+        return [args, []]
 
     def store_samples(self, data, y, query_network, store_prob, mx_context):
         x = data[0]
@@ -459,7 +459,7 @@ ${tc.include(networkInstruction.body, elements?index, "ARCHITECTURE_DEFINITION")
     
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
 ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
-        return [[${tc.getName(elements[elements?size-1])}]]
+        return [[${tc.join(tc.getSubnetOutputNames(elements), ", ")}]]
 <#else>
         super(ReplaySubNet_${elements?index}, self).__init__(**kwargs)
         with self.name_scope():
@@ -469,7 +469,7 @@ ${tc.include(networkInstruction.body, elements?index, "ARCHITECTURE_DEFINITION")
     
     def hybrid_forward(self, F, *args):
 ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
-        return [[${tc.join(tc.getSubnetOutputNames(elements), ", ")}], [${tc.join(tc.getSubnetInputNames(elements), ", ")}, ind_${tc.join(tc.getSubnetInputNames(elements), ", ")}]]
+        return [[${tc.join(tc.getSubnetOutputNames(elements), ", ")}], [${tc.getSubnetInputNames(elements)[0]}full_, ind_${tc.join(tc.getSubnetInputNames(elements), ", ")}]]
 </#if>
 
 </#list>
@@ -502,7 +502,7 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 <#if elements?index == 0>
         replaysubnet${elements?index}_ = self.replaysubnet${elements?index}_(${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")})  
 <#else>
-        replaysubnet${elements?index}_ = self.replay_sub_nets[${elements?index-1}](replaysubnet${elements?index - 1}_[0][0])
+        replaysubnet${elements?index}_ = self.replay_sub_nets[${elements?index-1}](*replaysubnet${elements?index - 1}_[0])
 </#if>
 </#list>
         return [replaysubnet${networkInstruction.body.replaySubNetworks?size - 1}_[0], [<#list networkInstruction.body.replaySubNetworks as elements><#if elements?index != 0>replaysubnet${elements?index}_[1], </#if></#list>]]
