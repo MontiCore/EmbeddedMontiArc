@@ -1,0 +1,16 @@
+package de.monticore.lang.monticar.semantics.loops;
+
+import de.monticore.lang.monticar.semantics.basicLibrary.*;
+
+component SimpleLoop {
+    port
+        in Q in1,
+        out Q out1;
+
+    instance PlusMinus difference;
+    instance GainComponent gain;
+
+    connect in1 -> difference.in1;
+    connect difference.out1 -> gain.in1, out1;
+    connect gain.out1 -> difference.in2;
+}
