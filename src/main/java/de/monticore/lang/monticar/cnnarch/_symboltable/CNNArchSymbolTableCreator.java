@@ -17,6 +17,7 @@ import de.monticore.lang.monticar.cnnarch._visitor.CNNArchDelegatorVisitor;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.*;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -88,6 +89,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
                 CNNArchSymbolTableCreator.class.getSimpleName());
 
         List<ImportStatement> imports = new ArrayList<>();
+
+        this.compilationUnitPackage = Names.getQualifiedName(compilationUnit.getPackageList());
 
         ArtifactScope artifactScope = new ArtifactScope(
                 Optional.empty(),
