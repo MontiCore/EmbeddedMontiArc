@@ -17,7 +17,8 @@ public class ArrayType extends DataType {
     public int sizeOrMaxSize; 
 
     public ArrayType(DataType baseType, Dimensionality dim, int sizeOrMaxSize){
-        super(DataType.Type.ARRAY, baseType.getDataSize() * sizeOrMaxSize); //Must give dataSize manually since the default super() calls getDataSize() which is invalid before setting "baseType" & "sizeOrMaxSize".
+        //super(DataType.Type.ARRAY, baseType.getDataSize() * sizeOrMaxSize); //Must give dataSize manually since the default super() calls getDataSize() which is invalid before setting "baseType" & "sizeOrMaxSize".
+        super(DataType.Type.ARRAY);
         this.baseType = baseType;
         this.dimension = dim;
         this.sizeOrMaxSize = sizeOrMaxSize;

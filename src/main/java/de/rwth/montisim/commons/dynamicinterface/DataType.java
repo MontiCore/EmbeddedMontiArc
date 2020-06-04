@@ -67,17 +67,17 @@ public class DataType {
 
     public Type type;
     /// The virtual message size in bytes
-    public int dataSize;
+    //public int dataSize;
 
     public DataType(Type type){
         this.type = type;
-        this.dataSize = getDataSize();
+        //this.dataSize = getDataSize();
     }
 
-    protected DataType(Type type, int dataSize){
-        this.type = type;
-        this.dataSize = dataSize;
-    }
+    // protected DataType(Type type, int dataSize){
+    //     this.type = type;
+    //     this.dataSize = dataSize;
+    // }
     
 
 
