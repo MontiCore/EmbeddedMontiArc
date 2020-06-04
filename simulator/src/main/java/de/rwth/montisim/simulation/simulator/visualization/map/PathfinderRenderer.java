@@ -1,28 +1,16 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.visualization.map;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.awt.Graphics2D;
 
 import javax.swing.JMenuItem;
 
-import de.rwth.montisim.commons.utils.Mat3;
-import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.Vec3;
+import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Renderer;
-import de.rwth.montisim.simulation.environment.pathfinding.Path;
-import de.rwth.montisim.simulation.environment.pathfinding.Pathfinding;
+import de.rwth.montisim.simulation.environment.pathfinding.*;
 
 public class PathfinderRenderer extends Renderer {
     public static final Color PATH_COLOR = new Color(255, 100, 100, 100);

@@ -1,36 +1,18 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.visualization.map;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Vector;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JMenuItem;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
+import java.awt.*;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
-import de.rwth.montisim.commons.utils.Coordinates;
-import de.rwth.montisim.commons.utils.IPM;
-import de.rwth.montisim.commons.utils.Mat3;
-import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.Vec3;
+import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.simulation.environment.world.World;
-import de.rwth.montisim.simulation.environment.world.elements.Building;
-import de.rwth.montisim.simulation.environment.world.elements.Way;
-import de.rwth.montisim.simulation.environment.world.elements.WaySegment;
-import de.rwth.montisim.simulation.simulator.visualization.ui.Renderer;
-import de.rwth.montisim.simulation.simulator.visualization.ui.CopyMenuItem;
+import de.rwth.montisim.simulation.environment.world.elements.*;
+import de.rwth.montisim.simulation.simulator.visualization.ui.*;
 
 /**
  * Responsible for computing and storing the lines & polygons necessary to

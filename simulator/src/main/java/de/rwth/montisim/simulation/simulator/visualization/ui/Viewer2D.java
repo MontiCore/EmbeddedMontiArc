@@ -1,34 +1,16 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.visualization.ui;
 
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.swing.ImageIcon;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 
-import de.rwth.montisim.commons.utils.Mat3;
-import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.Vec3;
+import java.text.*;
+import java.util.*;
+import java.util.List;
+
+import de.rwth.montisim.commons.utils.*;
 
 /**
  * This class is a JPanel that allows navigating a 2D view.

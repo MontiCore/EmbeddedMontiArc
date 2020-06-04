@@ -1,15 +1,9 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.autopilots;
 
 import java.time.Duration;
 
-import de.rwth.montisim.simulation.vehicle.componentbuilders.ComputerComponentBuilder;
-import de.rwth.montisim.simulation.vehicle.componentbuilders.ComputerComponentProperties;
+import de.rwth.montisim.simulation.vehicle.componentbuilders.*;
 
 public class TestAutopilotProperties extends ComputerComponentProperties {
     public static final String COMPUTER_TYPE = "TestAutopilot";
@@ -30,6 +24,11 @@ public class TestAutopilotProperties extends ComputerComponentProperties {
 
     public TestAutopilotProperties() {
         super(COMPUTER_TYPE);
+    }
+
+    public TestAutopilotProperties setName(String name){
+        this.name = name;
+        return this;
     }
 
     public TestAutopilotProperties(Mode mode, Duration computeTime, double maxVehicleAccel,

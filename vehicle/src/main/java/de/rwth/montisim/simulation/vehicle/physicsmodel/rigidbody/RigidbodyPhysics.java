@@ -1,27 +1,14 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody;
 
 import java.util.Optional;
 
-import de.rwth.montisim.commons.boundingbox.Collision;
-import de.rwth.montisim.commons.boundingbox.OBB;
-import de.rwth.montisim.commons.simulation.DynamicObject;
-import de.rwth.montisim.commons.simulation.TimeUpdate;
-import de.rwth.montisim.commons.utils.Geometry;
-import de.rwth.montisim.commons.utils.IPM;
-import de.rwth.montisim.commons.utils.Mat3;
-import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.Vec3;
-import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.VehicleProperties;
+import de.rwth.montisim.commons.boundingbox.*;
+import de.rwth.montisim.commons.simulation.*;
+import de.rwth.montisim.commons.utils.*;
+import de.rwth.montisim.simulation.vehicle.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
-import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
-import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
+import de.rwth.montisim.simulation.vehicle.powertrain.*;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties.TractionType;
 
 public class RigidbodyPhysics implements PhysicsModel {
@@ -37,12 +24,12 @@ public class RigidbodyPhysics implements PhysicsModel {
     final double wheel_circumference_inv;
     final double wheel_dist;
     final double wheel_width;
-    boolean wheel_contact[] = new boolean[4];
-    Vec3 wheel_pos[] = new Vec3[4];
-    Vec3 new_wheel_pos[] = new Vec3[4];
+    final boolean wheel_contact[] = new boolean[4];
+    final Vec3 wheel_pos[] = new Vec3[4];
+    final Vec3 new_wheel_pos[] = new Vec3[4];
 
-    double accel_force[] = new double[4];
-    double brake_force[] = new double[4];
+    final double accel_force[] = new double[4];
+    final double brake_force[] = new double[4];
 
     final boolean frontAccel;
     final boolean backAccel;
@@ -51,36 +38,36 @@ public class RigidbodyPhysics implements PhysicsModel {
     final boolean backBrake;
 
     // Used for computations -> Avoid memory trashing with new Vec3's, ...
-    private Vec3 contact_normal = new Vec3();
-    private Vec3 vel_change = new Vec3();
-    private Vec3 rot_change = new Vec3();
-    private Vec3 dir_l = new Vec3();
-    private Vec3 dir = new Vec3();
-    private Vec3 side_vec = new Vec3();
-    private Vec3 front_vec = new Vec3();
-    private Vec3 local_pos = new Vec3();
-    private Vec3 u = new Vec3();
-    private Vec3 ut = new Vec3();
-    private Vec3 t = new Vec3();
-    private Vec3 un = new Vec3();
-    private Vec3 u_proj = new Vec3();
-    private Vec3 delta_u = new Vec3();
-    private Vec3 impulse = new Vec3();
-    private Vec3 a = new Vec3();
-    private Vec3 p = new Vec3();
-    private Vec3 point = new Vec3();
-    private Vec3 movement_force = new Vec3();
-    private Vec3 friction_force = new Vec3();
-    private Vec3 normal_force = new Vec3();
-    private Mat3 cr_mat = new Mat3();
-    private Mat3 B = new Mat3();
-    private Mat3 A = new Mat3();
-    private Mat3 A_i = new Mat3();
+    private final Vec3 contact_normal = new Vec3();
+    private final Vec3 vel_change = new Vec3();
+    private final Vec3 rot_change = new Vec3();
+    private final Vec3 dir_l = new Vec3();
+    private final Vec3 dir = new Vec3();
+    private final Vec3 side_vec = new Vec3();
+    private final Vec3 front_vec = new Vec3();
+    private final Vec3 local_pos = new Vec3();
+    private final Vec3 u = new Vec3();
+    private final Vec3 ut = new Vec3();
+    private final Vec3 t = new Vec3();
+    private final Vec3 un = new Vec3();
+    private final Vec3 u_proj = new Vec3();
+    private final Vec3 delta_u = new Vec3();
+    private final Vec3 impulse = new Vec3();
+    private final Vec3 a = new Vec3();
+    private final Vec3 p = new Vec3();
+    private final Vec3 point = new Vec3();
+    private final Vec3 movement_force = new Vec3();
+    private final Vec3 friction_force = new Vec3();
+    private final Vec3 normal_force = new Vec3();
+    private final Mat3 cr_mat = new Mat3();
+    private final Mat3 B = new Mat3();
+    private final Mat3 A = new Mat3();
+    private final Mat3 A_i = new Mat3();
 
     // TEMP for ground collision
-    private Vec3 ground_normal = new Vec3(0, 0, 1);
-    private Vec3 ground_pos = new Vec3(0, 0, 0);
-    Collision c = new Collision();
+    private final Vec3 ground_normal = new Vec3(0, 0, 1);
+    private final Vec3 ground_pos = new Vec3(0, 0, 0);
+    final Collision c = new Collision();
 
     public RigidbodyPhysics(Vehicle vehicle) {
         this.powerTrain = vehicle.powerTrain;

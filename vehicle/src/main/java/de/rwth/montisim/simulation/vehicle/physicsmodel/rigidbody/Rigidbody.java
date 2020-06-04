@@ -1,15 +1,8 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody;
 
 import de.rwth.montisim.commons.simulation.DynamicObject;
-import de.rwth.montisim.commons.utils.IPM;
-import de.rwth.montisim.commons.utils.Mat3;
-import de.rwth.montisim.commons.utils.Vec3;
+import de.rwth.montisim.commons.utils.*;
 
 /**
  * Class that represents a mass point of a rigid body

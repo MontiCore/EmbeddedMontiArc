@@ -1,23 +1,10 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.visualization.ui;
 
-import java.awt.BasicStroke;
-import java.awt.Stroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
+import java.awt.*;
 import java.util.List;
-
 import javax.swing.JMenuItem;
-
-import de.rwth.montisim.commons.utils.Mat3;
-import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.Vec3;
+import de.rwth.montisim.commons.utils.*;
 
 public abstract class Renderer {
     public static final Stroke DEFAULT_STROKE = new BasicStroke();

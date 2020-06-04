@@ -1,9 +1,4 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.message;
 
 import java.util.Arrays;
@@ -36,10 +31,10 @@ public class MessagePriorityComparatorTest {
         PriorityQueue<CANMessageTransmission> messages = new PriorityQueue<CANMessageTransmission>(
             new MessageTransmission.MsgTransPriorityComp(simulator.getMsgPrioComp())
         );
-        Message msg1 = new Message(new MessageInformation("msg1", DataType.DOUBLE, mtManager, null), null, 1, 0);
-        Message msg2 = new Message(new MessageInformation("msg2", DataType.DOUBLE, mtManager, null), null, 1, 0);
-        Message msg3 = new Message(new MessageInformation("msg3", DataType.DOUBLE, mtManager, null), null, 1, 0);
-        Message msg4 = new Message(new MessageInformation("msg4", DataType.DOUBLE, mtManager, null), null, 1, 1);
+        Message msg1 = new Message(0, new MessageInformation("msg1", DataType.DOUBLE, mtManager, null), null, 1);
+        Message msg2 = new Message(0, new MessageInformation("msg2", DataType.DOUBLE, mtManager, null), null, 1);
+        Message msg3 = new Message(0, new MessageInformation("msg3", DataType.DOUBLE, mtManager, null), null, 1);
+        Message msg4 = new Message(1, new MessageInformation("msg4", DataType.DOUBLE, mtManager, null), null, 1);
 
         mtManager.addMessagePriorities(Arrays.asList(
             new Pair<String, Integer>("msg1", 1),

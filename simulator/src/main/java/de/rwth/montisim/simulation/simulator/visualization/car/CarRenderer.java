@@ -1,26 +1,16 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.visualization.car;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-import java.util.Optional;
+import java.awt.*;
+import java.text.*;
+import java.util.*;
 
 import javax.swing.JMenuItem;
 
 import de.rwth.montisim.commons.simulation.DynamicObject;
-import de.rwth.montisim.commons.utils.IPM;
-import de.rwth.montisim.commons.utils.Mat3;
-import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.Vec3;
+import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Renderer;
+import de.rwth.montisim.simulation.vehicle.*;
 
 public class CarRenderer extends Renderer {
     private static final DecimalFormat posFormat = new DecimalFormat("##0.00",
@@ -58,6 +48,18 @@ public class CarRenderer extends Renderer {
     public CarRenderer() {}
     public CarRenderer(DynamicObject car, Vec3 size){
         setCar(car, size);
+    }
+
+    public void setCar(Vehicle vehicle){
+        VehicleProperties p = vehicle.properties;
+        this.car = Optional.of(vehicle.physicalObject);
+        IPM.multiplyToVec(new Vec3(p.body.length, p.body.width, p.body.height), 0.5, half_size);
+        for (int i = 0; i < points.length; ++i){
+            points[i] = new Vec3();
+        }
+        IPM.normalize(light1);
+        IPM.normalize(light2);
+        dirty = true;
     }
 
     public void setCar(DynamicObject car, Vec3 size){

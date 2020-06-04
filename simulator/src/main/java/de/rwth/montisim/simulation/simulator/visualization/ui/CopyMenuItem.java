@@ -1,18 +1,11 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.visualization.ui;
 
 import javax.swing.JMenuItem;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.datatransfer.StringSelection;
+import java.awt.event.*;
+import java.awt.datatransfer.*;
 import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
 
 public class CopyMenuItem extends JMenuItem implements ActionListener {
     private static final long serialVersionUID = 170035139576795954L;
@@ -32,6 +25,5 @@ public class CopyMenuItem extends JMenuItem implements ActionListener {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
     }
-
 
 }

@@ -1,9 +1,4 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.components;
 
 import java.util.ArrayList;
@@ -59,6 +54,12 @@ public class ComponentManager {
         EEEventProcessor e = componentsByName.get(name);
         if (e == null || e.getComponentType() != EEComponentType.BRIDGE) return Optional.empty();
         return Optional.of((Bridge)e);
+    }
+
+    public Optional<EEEventProcessor> getComponent(String name) {
+        EEEventProcessor e = componentsByName.get(name);
+        if (e == null) return Optional.empty();
+        return Optional.of(e);
     }
 
     /**

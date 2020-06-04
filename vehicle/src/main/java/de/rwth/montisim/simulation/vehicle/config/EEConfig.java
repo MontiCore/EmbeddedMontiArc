@@ -1,13 +1,7 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.config;
 
-import java.util.Optional;
-import java.util.Vector;
+import java.util.*;
 
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
 

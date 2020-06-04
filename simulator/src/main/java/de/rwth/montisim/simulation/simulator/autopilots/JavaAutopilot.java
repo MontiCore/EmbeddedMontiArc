@@ -1,15 +1,11 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.autopilots;
 
 import java.time.Duration;
 import java.time.Instant;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
+import de.rwth.montisim.commons.utils.Geometry;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.Vec2;
@@ -21,6 +17,7 @@ import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
+import de.rwth.montisim.simulation.vehicle.autopilots.PID;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
@@ -28,6 +25,9 @@ import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
 
 public class JavaAutopilot extends EEComponent {
     final JavaAutopilotProperties properties;
+
+    public static final double MAX_DEVIATION = 5; // max allowed deviation from the trajectory "corners" (in meters)
+    public static final double ORTHO_DIST = MAX_DEVIATION/(Math.sqrt(2)-1); // max allowed deviation from the trajectory "corners" (in meters)
     
     MessageInformation velocityMsg;
     MessageInformation positionMsg;
@@ -41,19 +41,23 @@ public class JavaAutopilot extends EEComponent {
     MessageInformation accelMsg;
     MessageInformation brakeMsg;
     
-    double currentVelocity = 0;
-    Vec2 currentPosition = null;
-    double currentCompass = 0;
+    public double currentVelocity = 0;
+    public Vec2 currentPosition = null;
+    public double currentCompass = Double.NaN;
 
     double newTrajX[] = null;
-    double trajX[] = null;
-    double trajY[] = null;
+    public double trajX[] = null;
+    public double trajY[] = null;
     
     Instant lastTime = null;
+    final PID speedPid;
+    final PID turnPid;
 
     public JavaAutopilot(JavaAutopilotProperties properties) {
         super(properties);
         this.properties = properties;
+        this.speedPid = new PID(1,0,0.2);
+        this.turnPid = new PID(1,0,0.2);
     }
     
     @Override
@@ -82,6 +86,7 @@ public class JavaAutopilot extends EEComponent {
         } else if (msg.msgId == compassMsg.messageId) {
             currentCompass = (Double) msg.message;
         } else if (msg.msgId == trajXMsg.messageId){
+            // Assumes the x positions array of a new trajectory always arrives first
             newTrajX = (double[]) msg.message;
         } else if (msg.msgId == trajYMsg.messageId){
             trajY = (double[]) msg.message;
@@ -89,56 +94,169 @@ public class JavaAutopilot extends EEComponent {
         }
     }
 
+    // TODO set in commons, use in getNearestSegment (autopilot, navigation, ...)
+    private class SegmentPos {
+        final Vec2 posStart = new Vec2();
+        final Vec2 posEnd = new Vec2();
+        final Vec2 dir = new Vec2();
+        final Vec2 normal = new Vec2();
+        final Vec2 relPos = new Vec2();
+
+        double length;
+        double projPos;
+        double orthoPos;
+        double dist;
+        double projDistToEnd;
+
+        void initFromTraj(int index){
+            getTrajPoint(index, posStart);
+            getTrajPoint(index+1, posEnd);
+            init();
+        }
+
+        /** Assumes posStart & posEnd are set */
+        void init() {
+            IPM.subtractToVec(posEnd, posStart, dir);
+            length = dir.magnitude();
+            if (length > 0.001){
+                IPM.multiply(dir, 1/length);
+            } else {
+                dir.set(Double.NaN,Double.NaN);
+            }
+            normal.set(-dir.y, dir.x);
+
+            IPM.subtractToVec(currentPosition, posStart, relPos);
+            projPos = IPM.dot(dir, relPos);
+            orthoPos = IPM.dot(normal, relPos);
+            dist = Math.abs(orthoPos);
+            projDistToEnd = length - projPos;
+        }
+    }
+
+    final SegmentPos currSeg = new SegmentPos();
+    final SegmentPos nextSeg = new SegmentPos();
+    SegmentPos targetSeg;
+
+    final Vec2 relPos = new Vec2();
+    final Vec2 targetDir = new Vec2();
+    final Vec2 carDir = new Vec2();
 
     void compute(Instant startTime) {
-        if (currentPosition == null) return;
+        if (currentPosition == null || Double.isNaN(currentCompass)) return;
+        double carAngle = currentCompass * Geometry.DEG_TO_RAD;
         Instant sendTime = startTime.plus(properties.computeTime);
 
         int index = getNearestSegment(currentPosition);
         if (index < 0){
             // No trajectory -> Stay in place
-            send(sendTime, new Message(accelMsg, 0.0, accelMsg.type.dataSize, this.id));
-            send(sendTime, new Message(brakeMsg, 1.0, brakeMsg.type.dataSize, this.id));
+            sendMessage(sendTime, accelMsg, 0.0);
+            sendMessage(sendTime, brakeMsg, 1.0);
             return;
         }
         
-        if (trajX.length == 1){
+        carDir.set(Math.cos(carAngle), Math.sin(carAngle));
+
+        if (trajX.length == 1 || index + 1 >= trajX.length){
             // Only one point -> orient towards it
+            // If "behind" -> just stop
+            // Orient and try to stop at position
             return;
         }
 
+        // Get current segment & next
+        currSeg.initFromTraj(index);
 
+        // Set Default Target
+        targetSeg = currSeg;
 
-        // double dt = 0;
-        // if (lastTime == null) {
-        //     lastTime = startTime;
-        // } else {
-        //     dt = Time.secondsFromDuration(Duration.between(lastTime, startTime));
-        // }
-        // double output = pid.compute(dt, currentVelocity, properties.targetVelocity);
-        // output /= 3.6; // Convert to m/s related space
-        // double accel = output / properties.maxVehicleAccel; // Convert to [0:1] actuator range
+        boolean hasNext = index + 2 < trajX.length;
+        if (hasNext){
+            nextSeg.initFromTraj(index+1);
+
+            // Eval junction turn
+            double junctionAngle = Math.acos(IPM.dot(currSeg.dir, nextSeg.dir));
+            double junctionSign = Math.signum(IPM.dot(normal, nextSeg.dir));
+            double maxRadius = junctionAngle == 0 ? Double.POSITIVE_INFINITY : MAX_DEVIATION / ((1/Math.cos(junctionAngle*0.5)) - 1);
+            double maxDistToCorner = Math.sqrt(MAX_DEVIATION * (MAX_DEVIATION + maxRadius*2));
+
+            // Check if "in turn"
+            if (currSeg.projDistToEnd <= maxDistToCorner){
+                targetSeg = nextSeg;
+            }
+        }
         
-        // send(sendTime, new Message(steeringMsg, properties.turnAngle, 8, this.id));
-        // send(sendTime, new Message(accelMsg, accel, 8, this.id));
+        // Now that we have a target segment, we follow it
+
+        // Wether the car is pointing towards the segment
+        boolean towardsSeg = targetSeg.orthoPos * IPM.dot(targetSeg.normal, carDir) < 0;
+        // Wether the car is pointing in the direction of the trajectory
+        boolean towardsEnd = IPM.dot(targetSeg.dir, carDir) > 0;
+
+        double segmentAngle = Math.acos(targetSeg.dir.x) * Math.signum(targetSeg.dir.y);
+
+        // Define TURNING to align with target (depending on distance, orientation & speed)
+
+        double targetAngle = segmentAngle;
+
+        // Target angle (relative to segment)
+        double targetAngleRel = targetSeg.dist < ORTHO_DIST ? Math.acos(1-targetSeg.dist/ORTHO_DIST) : Math.PI*0.5;
+        targetAngle += targetAngleRel * Math.signum(-targetSeg.orthoPos);
+        targetDir.set(Math.cos(targetAngleRel), Math.sin(targetAngleRel));
+
+        // If targetDir attained: check if "tangent turn" is possible
+        // targetDir attained = car pointing between orthogonal to segment & targetDir (CHECK symmetric +/- versions)
+        if (true) {
+
+        }
+
+        // Eval required speed -> in order to arrive at next turn with desired max speed or arrive at speed 0 at end
+        // Respect max speed
+
+        while (targetAngle > carAngle+Math.PI) targetAngle -= 2*Math.PI;
+        while (targetAngle < carAngle-Math.PI) targetAngle += 2*Math.PI;
+
+        double finalTargetSpeed = 30;
+
+        double dt = 0;
+        if (lastTime == null) {
+            lastTime = startTime;
+        } else {
+            dt = Time.secondsFromDuration(Duration.between(lastTime, startTime));
+        }
+
+        
+        double speedOutput = speedPid.compute(dt, currentVelocity, finalTargetSpeed);
+        speedOutput /= 3.6; // Convert to m/s related space
+        double accel = speedOutput / properties.maxVehicleAccel; // Convert to [0:1] actuator range
+
+        double turnOutput = turnPid.compute(dt, carAngle, targetAngle);
+        turnOutput *= Geometry.RAD_TO_DEG;
+        
+        sendMessage(sendTime, steeringMsg, turnOutput);
+        sendMessage(sendTime, accelMsg, accel);
     }
 
+    final Vec2 normal = new Vec2();
+    final Vec2 dir = new Vec2();
+    final Vec2 delta = new Vec2();
+    final Vec2 point = new Vec2();
+    final Vec2 lastPoint = new Vec2();
     
+    /**
+     * Returns the index of the closest point in "traj" 
+     * or the index of the start point of the closest segment
+     * or -1 if there is no trajectory
+     */
     private int getNearestSegment(Vec2 pos) {
         if (trajX == null || trajY == null) return -1;
         double currentNearestDistance = Double.POSITIVE_INFINITY;
         int closestIndex = -1;
         int count = trajX.length;
-        Vec2 normal = new Vec2();
-        Vec2 dir = new Vec2();
-        Vec2 delta = new Vec2();
-        Vec2 point = new Vec2();
         double dist;
-        Vec2 lastPoint = new Vec2();
         boolean hasLastPoint = false;
         
         for (int i = 0; i < count; i++){
-            point.set(trajX[i], trajY[i]);
+            getTrajPoint(i, point);
 
             if (hasLastPoint){
                 // Check segment
@@ -179,6 +297,10 @@ public class JavaAutopilot extends EEComponent {
             hasLastPoint = true;
         }
         return closestIndex;
+    }
+
+    void getTrajPoint(int index, Vec2 target){
+        target.set(trajX[index], trajY[index]);
     }
 
     @Override

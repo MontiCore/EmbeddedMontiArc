@@ -1,26 +1,11 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle;
 
 import java.util.HashMap;
 
-import de.rwth.montisim.commons.simulation.Destroyable;
-import de.rwth.montisim.commons.simulation.DynamicObject;
-import de.rwth.montisim.commons.simulation.ISimulator;
-import de.rwth.montisim.commons.simulation.PhysicalValue;
-import de.rwth.montisim.commons.simulation.SimulationObject;
-import de.rwth.montisim.commons.simulation.Updatable;
-import de.rwth.montisim.commons.simulation.Updater;
-import de.rwth.montisim.commons.simulation.TimeUpdate;
+import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.simulation.eesimulator.EESimulator;
-import de.rwth.montisim.simulation.vehicle.physicalvalues.PhysicalValueBuilder;
-import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
-import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
-import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
+import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
 

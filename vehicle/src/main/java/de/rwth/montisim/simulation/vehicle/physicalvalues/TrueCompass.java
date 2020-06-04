@@ -1,20 +1,12 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.physicalvalues;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
-import de.rwth.montisim.commons.simulation.DynamicObject;
-import de.rwth.montisim.commons.simulation.PhysicalValue;
-import de.rwth.montisim.commons.utils.Geometry;
-import de.rwth.montisim.commons.utils.IPM;
-import de.rwth.montisim.commons.utils.Vec2;
+import de.rwth.montisim.commons.simulation.*;
+import de.rwth.montisim.commons.utils.*;
 
 /**
- * Deviation in degrees from the X axis / West (positive and negative)
+ * Deviation in degrees from the X axis / West (positive and negative), counter-clockwise
  */
 public class TrueCompass extends PhysicalValue {
     public static final String VALUE_NAME = "true_compass";

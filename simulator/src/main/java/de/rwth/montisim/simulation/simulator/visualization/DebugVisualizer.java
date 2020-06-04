@@ -1,28 +1,18 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.visualization;
 
 import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import java.io.File;
 
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.environment.world.World;
-import de.rwth.montisim.simulation.environment.world.elements.Building;
-import de.rwth.montisim.simulation.environment.world.elements.Node;
-import de.rwth.montisim.simulation.environment.world.elements.Way;
-import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
-import de.rwth.montisim.simulation.environment.osmmap.OsmToWorldLoader;
+import de.rwth.montisim.simulation.environment.world.elements.*;
+import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
-import de.rwth.montisim.simulation.simulator.visualization.map.PathfinderRenderer;
-import de.rwth.montisim.simulation.simulator.visualization.map.WorldRenderer;
-import de.rwth.montisim.simulation.simulator.visualization.ui.UIInfo;
-import de.rwth.montisim.simulation.simulator.visualization.ui.Viewer2D;
+import de.rwth.montisim.simulation.simulator.visualization.map.*;
+import de.rwth.montisim.simulation.simulator.visualization.ui.*;
 
-import java.awt.BorderLayout;
-import java.io.File;
 
 /**
  * Start the main of this class to open a Map visualization. (MapViewer)

@@ -1,14 +1,8 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.visualization.plotter;
 
 import java.awt.Color;
-import java.util.Optional;
-import java.util.Vector;
+import java.util.*;
 
 public class DataPoints {
     public static final int BLOCK_SIZE = 1024;

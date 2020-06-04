@@ -1,9 +1,4 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.util;
 
 // import org.apache.commons.math3.geometry.euclidean.twod.Euclidean2D;

@@ -1,20 +1,13 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.sensor;
 
 import java.time.Instant;
 
-import de.rwth.montisim.commons.dynamicinterface.DataType;
 import de.rwth.montisim.commons.simulation.PhysicalValue;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
-import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 
 public class SensorLogic implements Updatable {
@@ -33,7 +26,7 @@ public class SensorLogic implements Updatable {
     }
 
     public void init(EEComponent component) throws EEMessageTypeException {
-        this.msgInfo = component.addOutput(watchedValue.name, DataType.DOUBLE);
+        this.msgInfo = component.addOutput(watchedValue.name, watchedValue.type);
         this.component = component;
     }
 
@@ -44,7 +37,7 @@ public class SensorLogic implements Updatable {
             Object readValue = readValue();
             if (!properties.sendOnlyChanged || hasChanged(readValue)){
                 lastValue = readValue;
-                component.send(newTime.oldTime.plus(properties.readTime), new Message(msgInfo, readValue, component.id));
+                component.sendMessage(newTime.oldTime.plus(properties.readTime), msgInfo, readValue);
             }
         }
     }

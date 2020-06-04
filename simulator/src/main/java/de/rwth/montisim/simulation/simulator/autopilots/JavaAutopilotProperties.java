@@ -1,9 +1,4 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.autopilots;
 
 import java.time.Duration;
@@ -20,10 +15,21 @@ public class JavaAutopilotProperties extends ComputerComponentProperties {
         );
     }
     public Duration computeTime = Duration.ZERO;
+    public double maxVehicleAccel;
 
-    public JavaAutopilotProperties() {
+    public JavaAutopilotProperties(double maxVehicleAccel) {
         super(COMPUTER_TYPE);
-        // TODO Auto-generated constructor stub
+        this.maxVehicleAccel = maxVehicleAccel;
+    }
+
+    public JavaAutopilotProperties setName(String name){
+        this.name = name;
+        return this;
+    }
+
+    public JavaAutopilotProperties setComputeTime(Duration computeTime) {
+        this.computeTime = computeTime;
+        return this;
     }
     
 }

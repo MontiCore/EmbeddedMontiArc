@@ -1,39 +1,26 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eecomponents.navigation;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Optional;
-import java.util.Stack;
-
-import de.rwth.montisim.commons.dynamicinterface.ArrayType;
-import de.rwth.montisim.commons.dynamicinterface.DataType;
+import java.time.*;
+import java.util.*;
+import de.rwth.montisim.commons.dynamicinterface.*;
 import de.rwth.montisim.commons.dynamicinterface.ArrayType.Dimensionality;
-import de.rwth.montisim.commons.utils.IPM;
-import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.simulation.environment.pathfinding.Path;
-import de.rwth.montisim.simulation.environment.pathfinding.Pathfinding;
+import de.rwth.montisim.commons.utils.*;
+import de.rwth.montisim.simulation.environment.pathfinding.*;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.components.*;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
-import de.rwth.montisim.simulation.eesimulator.message.Message;
-import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
+import de.rwth.montisim.simulation.eesimulator.message.*;
 
 // TODOS:
 // Send Empty "Overwrite" trajectory on errors
 // Only send trajectory every X seconds
 
 public class Navigation extends EEComponent {
-    public static final String GPS_POS_MSG = "gps_pos";
+    //public static final String GPS_POS_MSG = "gps_pos";
     public static final String PUSH_TARGET_POS_MSG = "push_target_pos";
-    public static final String POP_TARGET_POS_MSG = "push_target_pos";
+    public static final String POP_TARGET_POS_MSG = "pop_target_pos";
 
     public static final String AT_TARGET_POS_MSG = "at_target_pos";
     public static final String CURRENT_TARGET_POS_MSG = "current_target_pos";
@@ -53,7 +40,7 @@ public class Navigation extends EEComponent {
     public static final DataType TRAJECTORY_LON_TYPE = TRAJECTORY_X_TYPE;
     public static final DataType TRAJECTORY_LAT_TYPE = TRAJECTORY_X_TYPE;
 
-    MessageInformation gpsPosMsg;
+    //MessageInformation gpsPosMsg;
     MessageInformation truePosMsg;
 
     MessageInformation pushTargetPosMsg;
@@ -80,11 +67,11 @@ public class Navigation extends EEComponent {
 
     @Override
     protected void init() throws EEMessageTypeException {
-        this.gpsPosMsg = addInput(GPS_POS_MSG, DataType.VEC2);
+        //this.gpsPosMsg = addInput(GPS_POS_MSG, DataType.VEC2);
         this.truePosMsg = addInput(TruePosition.VALUE_NAME, TruePosition.TYPE);
 
-        this.pushTargetPosMsg = addInput(PUSH_TARGET_POS_MSG, DataType.VEC2, true);
-        this.popTargetPosMsg = addInput(POP_TARGET_POS_MSG, DataType.EMPTY, true);
+        this.pushTargetPosMsg = addInput(PUSH_TARGET_POS_MSG, DataType.VEC2, true, true);
+        this.popTargetPosMsg = addInput(POP_TARGET_POS_MSG, DataType.EMPTY, true, true);
 
         this.atTargetPosMsg = addOutput(AT_TARGET_POS_MSG, AT_TARGET_POS_TYPE);
         this.currentTargetPosMsg = addOutput(CURRENT_TARGET_POS_MSG, CURRENT_TARGET_POS_TYPE);
@@ -100,10 +87,11 @@ public class Navigation extends EEComponent {
         // TODO Auto-generated method stub
         Message msg = msgRecvEvent.getMessage();
         Instant time = msgRecvEvent.getEventTime();
-        if (msg.msgId == gpsPosMsg.messageId) {
-            // Update position -> Check current routing
-            // TODO
-        } else if (msg.msgId == truePosMsg.messageId) {
+        // if (msg.msgId == gpsPosMsg.messageId) {
+        //     // Update position -> Check current routing
+        //     // TODO
+        // } else 
+        if (msg.msgId == truePosMsg.messageId) {
             currentPos = Optional.of((Vec2) msg.message);
             if (!currentPath.isPresent() && !targets.empty()){
                 newTrajectory(time);
@@ -115,10 +103,12 @@ public class Navigation extends EEComponent {
             // Add new position to routing stack -> compute new routing
             // TODO
             pushTargetPos((Vec2)msg.message, time);
+            newTrajectory(time);
         } else if (msg.msgId == popTargetPosMsg.messageId) {
             // Remove target from routing stack -> compute new routing
             // TODO
             popTargetPos();
+            newTrajectory(time);
         }
     }
 
@@ -128,8 +118,9 @@ public class Navigation extends EEComponent {
 
     public void pushTargetPos(Vec2 target, Instant time){
         targets.push(target);
-        send(time, new Message(currentTargetPosMsg, target, currentTargetPosMsg.type.dataSize, id));
+        sendMessage(time, currentTargetPosMsg, target);
     }
+    
     public void popTargetPos() {
         if (!targets.empty()) targets.pop();
     }
@@ -138,7 +129,7 @@ public class Navigation extends EEComponent {
         currentPath = Optional.empty();
         if (!currentPos.isPresent()) return;
         if (targets.empty()){
-            send(time, new Message(atTargetPosMsg, new Boolean(true), atTargetPosMsg.type.dataSize, id));
+            sendMessage(time, atTargetPosMsg, new Boolean(true));
             return;
         }
         try {
@@ -149,7 +140,7 @@ public class Navigation extends EEComponent {
         }
     }
 
-    public void updateTrajectory(Instant time){
+    public void updateTrajectory(Instant time) {
         if (!currentPos.isPresent()) return;
         if (!currentPath.isPresent()) return;
         int index = getNearestSegment(currentPos.get());
@@ -162,8 +153,8 @@ public class Navigation extends EEComponent {
             x[i] = p.trajectoryX[index+i];
             y[i] = p.trajectoryY[index+i];
         }
-        send(time, new Message(trajectoryXMsg, x, 8*size, id));
-        send(time.plus(Duration.ofMillis(10)), new Message(trajectoryYMsg, y, 8*size, id));
+        sendMessage(time, trajectoryXMsg, x, 8*size);
+        sendMessage(time.plus(Duration.ofMillis(10)), trajectoryYMsg, y, 8*size);
     }
 
     private int getNearestSegment(Vec2 pos) {

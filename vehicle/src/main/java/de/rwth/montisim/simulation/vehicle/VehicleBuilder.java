@@ -1,44 +1,24 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle;
 
 import java.util.Vector;
 
 import de.rwth.montisim.simulation.eesimulator.EESimulator;
-import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
-import de.rwth.montisim.simulation.eesimulator.actuator.ActuatorProperties;
-import de.rwth.montisim.simulation.eesimulator.bridge.Bridge;
-import de.rwth.montisim.simulation.eesimulator.bridge.BridgeProperties;
-import de.rwth.montisim.simulation.eesimulator.bus.Bus;
-import de.rwth.montisim.simulation.eesimulator.bus.BusProperties;
-import de.rwth.montisim.simulation.eesimulator.components.BusComponent;
-import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
-import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
-import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupException;
+import de.rwth.montisim.simulation.eesimulator.actuator.*;
+import de.rwth.montisim.simulation.eesimulator.bridge.*;
+import de.rwth.montisim.simulation.eesimulator.bus.*;
+import de.rwth.montisim.simulation.eesimulator.components.*;
+import de.rwth.montisim.simulation.eesimulator.exceptions.*;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
-import de.rwth.montisim.simulation.eesimulator.sensor.Sensor;
-import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
+import de.rwth.montisim.simulation.eesimulator.sensor.*;
 import de.rwth.montisim.simulation.eesimulator.testcomponents.TestEEComponent;
 import de.rwth.montisim.simulation.environment.pathfinding.Pathfinding;
-import de.rwth.montisim.simulation.vehicle.componentbuilders.ComputerComponentBuilder;
-import de.rwth.montisim.simulation.vehicle.componentbuilders.ComputerComponentProperties;
-import de.rwth.montisim.simulation.vehicle.componentbuilders.ServiceComponentBuilder;
-import de.rwth.montisim.simulation.vehicle.componentbuilders.ServiceComponentProperties;
-import de.rwth.montisim.simulation.vehicle.config.TestVehicleConfig;
-import de.rwth.montisim.simulation.vehicle.config.VehicleConfig;
+import de.rwth.montisim.simulation.vehicle.componentbuilders.*;
+import de.rwth.montisim.simulation.vehicle.config.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysics;
-import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPowerTrain;
-import de.rwth.montisim.simulation.vehicle.powertrain.fuel.FuelPTProperties;
-import de.rwth.montisim.simulation.vehicle.powertrain.fuel.FuelPowerTrain;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.*;
+import de.rwth.montisim.simulation.vehicle.powertrain.fuel.*;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
-import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
 
 public class VehicleBuilder {
     final MessageTypeManager mtManager;
@@ -106,7 +86,8 @@ public class VehicleBuilder {
         // Create PhysicsModel
         switch (config.physicsProperties.physicsType) {
             case MODELICA:
-                break;
+                // TODO
+                throw new IllegalArgumentException("Missing Modelica implementation");
             case RIGIDBODY:
             target.physicsModel = new RigidbodyPhysics(target);
                 break;

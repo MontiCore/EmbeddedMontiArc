@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-
     (c) https://github.com/MontiCore/monticore
-
-    The license generally applicable for this project
-    can be found under https://github.com/MontiCore/monticore.
-
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

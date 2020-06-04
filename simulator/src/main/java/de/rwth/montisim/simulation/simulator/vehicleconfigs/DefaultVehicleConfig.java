@@ -1,21 +1,14 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator.vehicleconfigs;
 
 import java.time.Duration;
 
+import de.rwth.montisim.simulation.eecomponents.navigation.NavigationProperties;
 import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
-import de.rwth.montisim.simulation.vehicle.config.VehicleConfig;
-import de.rwth.montisim.simulation.vehicle.config.EEConfig;
-import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
-import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
-import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
+import de.rwth.montisim.simulation.vehicle.config.*;
+import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties;
@@ -66,6 +59,10 @@ public class DefaultVehicleConfig extends VehicleConfig {
             )
             .setName("TrueCompassSensor")
             .setPhysicalValueName(TrueCompass.VALUE_NAME)
+        );
+
+        eeConfig.addComponent(
+            new NavigationProperties().setName("Navigation")
         );
         
         eeConfig.addComponent(

@@ -1,9 +1,4 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.components;
 
 import java.time.Instant;
@@ -89,8 +84,12 @@ public abstract class EEComponent extends BusComponent {
 		}
 	}
 	
-	public void send(Instant time, Message msg) {
-		this.simulator.addEvent(new MessageSendEvent(time, this, msg));
+	public void sendMessage(Instant time, MessageInformation info, Object message, int msgLen) {
+		this.simulator.addEvent(new MessageSendEvent(time, this, new Message(this.id, info, message, msgLen)));
+	}
+
+	public void sendMessage(Instant time, MessageInformation info, Object message) {
+		this.simulator.addEvent(new MessageSendEvent(time, this, new Message(this.id, info, message)));
 	}
 
 	protected abstract void receive(MessageReceiveEvent msgRecvEvent);

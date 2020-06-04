@@ -1,9 +1,4 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.bus.can;
 
 import java.util.Random;
@@ -40,7 +35,7 @@ public class CANMessageTransmissionTest {
     public void testBitsizeComputation(int msgSize, int expectedFrames, long expectedBits)
             throws EEMessageTypeException {
         MessageTypeManager manager = new MessageTypeManager();
-        CANMessageTransmission tr = new CANMessageTransmission(new Message(new MessageInformation("m1", DataType.INT, manager, null), null, msgSize, 0), rnd);
+        CANMessageTransmission tr = new CANMessageTransmission(new Message(0, new MessageInformation("m1", DataType.INT, manager, null), null, msgSize), rnd);
         Assert.assertEquals(expectedFrames, tr.getRequiredFrames());
         Assert.assertEquals(expectedBits, tr.getRequiredTotalBits());
     }

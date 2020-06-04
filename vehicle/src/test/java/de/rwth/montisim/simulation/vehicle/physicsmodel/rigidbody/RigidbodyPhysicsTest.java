@@ -1,23 +1,13 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody;
 
-import java.time.Duration;
-import java.time.Instant;
-
-import org.junit.Assert;
-import org.junit.Test;
+import java.time.*;
+import org.junit.*;
 
 import de.rwth.montisim.commons.simulation.TimeUpdate;
-import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.Vec3;
+import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
-import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
+import de.rwth.montisim.simulation.vehicle.*;
 import de.rwth.montisim.simulation.vehicle.config.TestVehicleConfig;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties.BatteryType;

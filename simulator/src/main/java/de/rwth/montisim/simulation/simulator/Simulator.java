@@ -1,21 +1,10 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator;
 
 import java.time.Duration;
 import java.util.Vector;
 
-import de.rwth.montisim.commons.simulation.Destroyable;
-import de.rwth.montisim.commons.simulation.DynamicObject;
-import de.rwth.montisim.commons.simulation.ISimulator;
-import de.rwth.montisim.commons.simulation.SimulationObject;
-import de.rwth.montisim.commons.simulation.StaticObject;
-import de.rwth.montisim.commons.simulation.TimeUpdate;
-import de.rwth.montisim.commons.simulation.Updatable;
+import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.environment.pathfinding.Pathfinding;
 import de.rwth.montisim.simulation.environment.world.World;
@@ -35,6 +24,8 @@ public class Simulator implements ISimulator, Updatable {
 
     Vector<Updatable> updatables = new Vector<>();
     Vector<Destroyable> destroyables = new Vector<>();
+
+    
 
     public Simulator(SimulationConfig config, World world, Pathfinding pathfinding, MessageTypeManager mtManager) {
         this.config = config;

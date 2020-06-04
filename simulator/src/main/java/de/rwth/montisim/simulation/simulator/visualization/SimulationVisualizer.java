@@ -3,30 +3,38 @@ package de.rwth.montisim.simulation.simulator.visualization;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
+import java.io.File;
 import java.time.*;
-import java.util.logging.Logger;
 
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.*;
+import de.rwth.montisim.simulation.eecomponents.navigation.Navigation;
 import de.rwth.montisim.simulation.eesimulator.exceptions.*;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
+import de.rwth.montisim.simulation.environment.osmmap.*;
+import de.rwth.montisim.simulation.environment.world.World;
+import de.rwth.montisim.simulation.environment.pathfinding.*;
+import de.rwth.montisim.simulation.simulator.*;
+import de.rwth.montisim.simulation.simulator.autopilots.JavaAutopilotProperties;
+import de.rwth.montisim.simulation.simulator.vehicleconfigs.DefaultVehicleConfig;
 import de.rwth.montisim.simulation.simulator.visualization.car.CarRenderer;
+import de.rwth.montisim.simulation.simulator.visualization.map.*;
 import de.rwth.montisim.simulation.simulator.visualization.plotter.TimePlotter;
 import de.rwth.montisim.simulation.simulator.visualization.ui.*;
-import de.rwth.montisim.simulation.vehicle.*;
+import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.autopilots.TestAutopilotProperties;
-import de.rwth.montisim.simulation.vehicle.config.*;
+import de.rwth.montisim.simulation.vehicle.config.VehicleConfig;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysics;
 
-public class PhysicsDebug extends JFrame implements SimulationRunner {
+
+public class SimulationVisualizer extends JFrame implements SimulationRunner {
+    private static final long serialVersionUID = -8677459653174721311L;
+
+    public static final boolean SHOW_SEGMENTS = true;
     public static void main(String args[]) throws EESetupException {
-        new PhysicsDebug(args);
+        new SimulationVisualizer(args);
     }
-
     private static final Vec3 START_DIR = new Vec3(1, 0, 0);
-    private static final Vec3 START_CROSS = new Vec3(0, 1, 0);
-
-    private static final long serialVersionUID = 1L;
 
     final long PHYSICS_TICK_DURATION_MS = 10;
     final long TARGET_FPS = 30;
@@ -40,18 +48,21 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
     final Viewer2D viewer;
     final Control control;
     final CarRenderer cr;
-    final TestVehicleConfig setup;
+    final DefaultVehicleConfig setup;
     final TimePlotter plotter;
 
     MessageTypeManager mtManager;
     Vehicle vehicle;
     RigidbodyPhysics physics;
+    Simulator simulator;
+    World world;
+    Pathfinding pathfinding;
 
     boolean postedMsg = false;
     boolean crossedQuarter = false;
 
-    public PhysicsDebug(String args[]) throws EESetupException {
-        super("Physics Debug");
+    public SimulationVisualizer(String args[]) throws EESetupException {
+        super("SimulationVisualizer");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 900);
 
@@ -59,9 +70,9 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
 
         viewer = new Viewer2D();
 
-        // vis1(args);
+        vis1(args);
 
-        setup = new TestVehicleConfig();
+        setup = new DefaultVehicleConfig();
         cr = new CarRenderer();
         viewer.addRenderer(cr);
         viewer.setZoom(20);
@@ -84,27 +95,61 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
         setVisible(true);
     }
 
+    public void vis1(String args[]) {
+        String mapPath = "D:/EmbededMontiArc/basic-simulator/install/maps/aachen.osm";
+        try {
+            world = new OsmToWorldLoader(new OsmMap("aachen", new File(mapPath))).getWorld();
+            viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
+            pathfinding = new PathfindingImpl(world);
+            viewer.addRenderer(new PathfinderRenderer(pathfinding));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setup() throws EESetupException {
         simTime = Instant.EPOCH;
         postedMsg = false;
         crossedQuarter = false;
 
         mtManager = new MessageTypeManager();
-        VehicleConfig config = setupTurningCar();
+        simulator = new Simulator(new SimulationConfig(), world, pathfinding, mtManager);
+
+        //VehicleConfig config = setupTurningCar();
+        VehicleConfig config = setupJavaAutopilotCar();
         try {
-            vehicle = new VehicleBuilder(mtManager, null, config).setName("TestVehicle").build();
-            physics = (RigidbodyPhysics) vehicle.physicsModel;
-            physics.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
-            VehicleProperties p = vehicle.properties;
-            cr.setCar(physics.getPhysicalObject(), new Vec3(p.body.length, p.body.width, p.body.height));
+            vehicle = simulator.getVehicleBuilder(config).setName("TestVehicle").build();
+            simulator.addSimulationObject(vehicle);
+            
+            vehicle.physicsModel.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
+
+            cr.setCar(vehicle);
+
+            Navigation nav = (Navigation) vehicle.eesimulator.getComponentManager().getComponent("Navigation").get();
+            nav.pushTargetPos(new Vec2(384.77, -283.72));
+            
         } catch (EEMessageTypeException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
+    private VehicleConfig setupJavaAutopilotCar(){
+        DefaultVehicleConfig config = new DefaultVehicleConfig();
+
+        double maxForce = config.electricalPTProperties.motorProperties.motorPeekTorque *
+            config.electricalPTProperties.transmissionRatio * 2 /
+            config.properties.wheels.wheelDiameter;
+
+        config.eeConfig.addComponent(
+            new JavaAutopilotProperties(maxForce/config.properties.body.mass).setName("TestAutopilot")
+        );
+
+        return config;
+    }
+
     private VehicleConfig setupTurningCar(){
-        TestVehicleConfig config = new TestVehicleConfig();
+        DefaultVehicleConfig config = new DefaultVehicleConfig();
 
         double maxForce = config.electricalPTProperties.motorProperties.motorPeekTorque *
             config.electricalPTProperties.transmissionRatio * 2 /
@@ -123,22 +168,7 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
 
     @Override
     public long run(Instant timePoint) {
-        vehicle.update(new TimeUpdate(simTime, dt));
-
-        // Measure turning radius
-        // if (vehicle.physical_object.rotation.col1.dotProduct(START_DIR) <= 0){
-        //     crossedQuarter = true;
-        // }
-        // if (crossedQuarter && !postedMsg && vehicle.physical_object.rotation.col1.dotProduct(START_CROSS) <= 0){
-        //     Logger.getGlobal().info("Position at 180 deg turn: "+vehicle.physical_object.pos);
-        //     postedMsg = true;
-        // }
-
-        // Measure Flipping Speed
-        if (!postedMsg && Math.acos(vehicle.physicalObject.rotation.col3.z)*Geometry.RAD_TO_DEG >= 5){
-            Logger.getGlobal().info("Speed at 5 deg tilt (km/h): "+(vehicle.physicalObject.velocity.magnitude()*3.6));
-            postedMsg = true;
-        }
+        simulator.update(new TimeUpdate(simTime, dt));
 
         simTime = simTime.plus(dt);
         return TICK_NANO;

@@ -1,9 +1,4 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eecomponents.navigation;
 
 import de.rwth.montisim.simulation.environment.pathfinding.Pathfinding;
@@ -25,4 +20,9 @@ public class NavigationProperties extends ServiceComponentProperties {
         this.name = "UnnamedNavigation";
     }
     
+    public NavigationProperties setName(String name) {
+        this.name = name;
+        return this;
+    }
+
 }

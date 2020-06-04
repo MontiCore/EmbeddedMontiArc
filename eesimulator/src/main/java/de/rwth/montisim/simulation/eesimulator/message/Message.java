@@ -1,9 +1,4 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.message;
 
 /**
@@ -11,6 +6,9 @@ package de.rwth.montisim.simulation.eesimulator.message;
  */
 public class Message  {
 
+    /** Component ID from the ComponentManager */
+    public int senderId;
+    
     /** Message ID allocated in the MessageTypeManager. */
     public int msgId;
 
@@ -20,20 +18,18 @@ public class Message  {
 	/** Message length in bytes. */
 	public int msgLen;
 
-    /** Component ID from the ComponentManager */
-    public int senderId;
 
-    public Message(MessageInformation info, Object message, int msgLen, int senderId){
+    public Message(int senderId, MessageInformation info, Object message, int msgLen){
+        this.senderId = senderId;
         this.msgId = info.messageId;
         this.message = message;
         this.msgLen = msgLen;
-        this.senderId = senderId;
     }
-    public Message(MessageInformation info, Object message, int senderId){
+    public Message(int senderId, MessageInformation info, Object message){
+        this.senderId = senderId;
         this.msgId = info.messageId;
         this.message = message;
         this.msgLen = info.type.getDataSize();
-        this.senderId = senderId;
     }
 }
 
