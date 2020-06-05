@@ -1,10 +1,20 @@
-[//]: # (These documents are best viewed in their formatted form, e.g. in the online gitlab file viewer.)
+[Documentation Root](readme.md) | [Previous (Environment)](environment.md) | [Next (Vehicle)](vehicle.md)
+
+TODO
+- EESimulator/Structure
+- Components/Component Manager
+- Discrete Events system/Events
+- Messages/Types
+- EE Setup / Validation
+- Creating new components
+- Buses, Bridges
+- Sensors, Actuators
 
 # EESimulator
 
-> *__EE__ comes from "Electrical & Electronic Systems"*
-
 The `EESimulator` sub-project handles the transmission and processing of **discrete events** inside a vehicle. These discrete events mainly have the form of **messages** between **ee-components** across communication **buses**.
+
+> *__EE__ comes from "Electrical & Electronic Systems"*
 
 ## Usage
 

@@ -15,14 +15,14 @@ import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.pathfinding.*;
 import de.rwth.montisim.simulation.simulator.*;
-import de.rwth.montisim.simulation.simulator.autopilots.JavaAutopilotProperties;
+import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
+import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperties;
 import de.rwth.montisim.simulation.simulator.vehicleconfigs.DefaultVehicleConfig;
 import de.rwth.montisim.simulation.simulator.visualization.car.CarRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.map.*;
 import de.rwth.montisim.simulation.simulator.visualization.plotter.TimePlotter;
 import de.rwth.montisim.simulation.simulator.visualization.ui.*;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.autopilots.TestAutopilotProperties;
 import de.rwth.montisim.simulation.vehicle.config.VehicleConfig;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysics;
 

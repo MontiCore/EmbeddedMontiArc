@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.rwth.montisim.simulation.simulator.autopilots;
+package de.rwth.montisim.simulation.eecomponents.autopilots;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -17,7 +17,6 @@ import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
-import de.rwth.montisim.simulation.vehicle.autopilots.PID;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
@@ -26,7 +25,7 @@ import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
 public class JavaAutopilot extends EEComponent {
     final JavaAutopilotProperties properties;
 
-    public static final double MAX_DEVIATION = 5; // max allowed deviation from the trajectory "corners" (in meters)
+    public static final double MAX_DEVIATION = 3; // max allowed deviation from the trajectory "corners" (in meters)
     public static final double ORTHO_DIST = MAX_DEVIATION/(Math.sqrt(2)-1); // max allowed deviation from the trajectory "corners" (in meters)
     
     MessageInformation velocityMsg;
@@ -141,6 +140,10 @@ public class JavaAutopilot extends EEComponent {
     final Vec2 targetDir = new Vec2();
     final Vec2 carDir = new Vec2();
 
+    // TEMP
+    int mode = 0;
+    int target = 0;
+
     void compute(Instant startTime) {
         if (currentPosition == null || Double.isNaN(currentCompass)) return;
         double carAngle = currentCompass * Geometry.DEG_TO_RAD;
@@ -163,11 +166,84 @@ public class JavaAutopilot extends EEComponent {
             return;
         }
 
-        // Get current segment & next
-        currSeg.initFromTraj(index);
+        double dt = getDeltaTime(startTime);
 
-        // Set Default Target
-        targetSeg = currSeg;
+        SegmentPos targetSeg = findTargetSegment(index);
+        
+        // Now that we have a target segment, we follow it
+        double turnOutput = 0;
+        double speedOutput = 0;
+
+        boolean carTowardsSeg = targetSeg.orthoPos * IPM.dot(targetSeg.normal, carDir) < 0;
+        boolean carTowardsEnd = IPM.dot(targetSeg.dir, carDir) > 0;
+
+        double segmentAngle = Math.acos(targetSeg.dir.x) * Math.signum(targetSeg.dir.y);
+
+        // Define TURNING to align with target (depending on distance, orientation & speed)
+
+
+        // Target angle (relative to segment)
+        double margin = 0.2;
+        double targetAngleRel = targetSeg.dist < margin ? 
+            0 : 
+            targetSeg.dist < ORTHO_DIST ? 
+                Math.acos(1+(margin-targetSeg.dist)/ORTHO_DIST) : 
+                Math.PI*0.5;
+
+        // If targetDir attained: check if "tangent turn" is possible
+        // targetDir attained = car pointing between orthogonal to segment & targetDir (CHECK symmetric +/- versions)
+        if (carTowardsSeg && carTowardsEnd && Math.abs(carAngle - segmentAngle) < targetAngleRel) {
+            if (mode == 0) {
+                //System.out.println("Tangent turn");
+                mode = 1;
+            }
+
+            // Find the radius of a circle tangent to the segment and the car position
+            double junctionAngle = Math.acos(IPM.dot(targetSeg.dir, carDir));
+            double radius = Math.tan( (Math.PI - junctionAngle)*0.5) * targetSeg.dist / IPM.dot(carDir, targetSeg.normal);
+
+            turnOutput = 452/radius * Math.signum(-targetSeg.orthoPos);
+
+        } else {
+            if (mode == 1) {
+                //System.out.println("Follow angle");
+                mode = 0;
+            }
+            double targetAngle = segmentAngle;
+            targetAngle += targetAngleRel * Math.signum(-targetSeg.orthoPos);
+            targetDir.set(Math.cos(targetAngleRel), Math.sin(targetAngleRel));
+
+            while (targetAngle > carAngle+Math.PI) targetAngle -= 2*Math.PI;
+            while (targetAngle < carAngle-Math.PI) targetAngle += 2*Math.PI;
+            turnOutput = turnPid.compute(dt, carAngle, targetAngle);
+            turnOutput *= Geometry.RAD_TO_DEG;
+        }
+
+        // Eval required speed -> in order to arrive at next turn with desired max speed or arrive at speed 0 at end
+        // Respect max speed
+
+
+        double finalTargetSpeed = 30;
+        speedOutput = speedPid.compute(dt, currentVelocity, finalTargetSpeed);
+        speedOutput /= 3.6; // Convert to m/s related space
+        speedOutput /= properties.maxVehicleAccel; // Convert to [0:1] actuator range
+
+
+        sendMessage(sendTime, steeringMsg, turnOutput);
+        sendMessage(sendTime, accelMsg, speedOutput);
+    }
+
+    private double getDeltaTime(Instant time) {
+        if (lastTime == null) {
+            lastTime = time;
+            return 0;
+        } else {
+            return Time.secondsFromDuration(Duration.between(lastTime, time));
+        }
+    }
+
+    SegmentPos findTargetSegment(int index) {
+        currSeg.initFromTraj(index);
 
         boolean hasNext = index + 2 < trajX.length;
         if (hasNext){
@@ -181,59 +257,16 @@ public class JavaAutopilot extends EEComponent {
 
             // Check if "in turn"
             if (currSeg.projDistToEnd <= maxDistToCorner){
-                targetSeg = nextSeg;
+                if (target == 0){
+                    target = 1;
+                    //System.out.println("Following NEXT segment");
+                }
+                return nextSeg;
             }
         }
-        
-        // Now that we have a target segment, we follow it
 
-        // Wether the car is pointing towards the segment
-        boolean towardsSeg = targetSeg.orthoPos * IPM.dot(targetSeg.normal, carDir) < 0;
-        // Wether the car is pointing in the direction of the trajectory
-        boolean towardsEnd = IPM.dot(targetSeg.dir, carDir) > 0;
-
-        double segmentAngle = Math.acos(targetSeg.dir.x) * Math.signum(targetSeg.dir.y);
-
-        // Define TURNING to align with target (depending on distance, orientation & speed)
-
-        double targetAngle = segmentAngle;
-
-        // Target angle (relative to segment)
-        double targetAngleRel = targetSeg.dist < ORTHO_DIST ? Math.acos(1-targetSeg.dist/ORTHO_DIST) : Math.PI*0.5;
-        targetAngle += targetAngleRel * Math.signum(-targetSeg.orthoPos);
-        targetDir.set(Math.cos(targetAngleRel), Math.sin(targetAngleRel));
-
-        // If targetDir attained: check if "tangent turn" is possible
-        // targetDir attained = car pointing between orthogonal to segment & targetDir (CHECK symmetric +/- versions)
-        if (true) {
-
-        }
-
-        // Eval required speed -> in order to arrive at next turn with desired max speed or arrive at speed 0 at end
-        // Respect max speed
-
-        while (targetAngle > carAngle+Math.PI) targetAngle -= 2*Math.PI;
-        while (targetAngle < carAngle-Math.PI) targetAngle += 2*Math.PI;
-
-        double finalTargetSpeed = 30;
-
-        double dt = 0;
-        if (lastTime == null) {
-            lastTime = startTime;
-        } else {
-            dt = Time.secondsFromDuration(Duration.between(lastTime, startTime));
-        }
-
-        
-        double speedOutput = speedPid.compute(dt, currentVelocity, finalTargetSpeed);
-        speedOutput /= 3.6; // Convert to m/s related space
-        double accel = speedOutput / properties.maxVehicleAccel; // Convert to [0:1] actuator range
-
-        double turnOutput = turnPid.compute(dt, carAngle, targetAngle);
-        turnOutput *= Geometry.RAD_TO_DEG;
-        
-        sendMessage(sendTime, steeringMsg, turnOutput);
-        sendMessage(sendTime, accelMsg, accel);
+        target = 0;
+        return currSeg;
     }
 
     final Vec2 normal = new Vec2();

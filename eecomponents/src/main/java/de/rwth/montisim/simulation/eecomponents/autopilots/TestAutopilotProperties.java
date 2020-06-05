@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.rwth.montisim.simulation.vehicle.autopilots;
+package de.rwth.montisim.simulation.eecomponents.autopilots;
 
 import java.time.Duration;
 

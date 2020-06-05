@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.rwth.montisim.simulation.vehicle.autopilots;
+package de.rwth.montisim.simulation.eecomponents.autopilots;
 
 import java.time.*;
 
@@ -10,7 +10,7 @@ import de.rwth.montisim.simulation.eesimulator.components.*;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.*;
-import de.rwth.montisim.simulation.vehicle.autopilots.TestAutopilotProperties.Mode;
+import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperties.Mode;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
 
