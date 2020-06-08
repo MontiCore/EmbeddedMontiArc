@@ -14,7 +14,8 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
         The complete file.
         Use nonterminal Architecture for embedding in another language (e.g. EmbeddedMontiArc)
     */
-    symbol scope CNNArchCompilationUnit = "architecture"
+    symbol scope CNNArchCompilationUnit = ("package" package:(Name& || ".")+ ";")?  // optional package declaration
+                                          "architecture"
                                           name:Name
                                           ( "(" (ArchitectureParameter || ",")* ")" )? "{"
                                           ioDeclarations:IODeclaration*
