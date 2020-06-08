@@ -212,7 +212,7 @@ public enum Constraints {
         public boolean isValid(ArchSimpleExpressionSymbol exp) {
             if (exp.getIntValue().isPresent()){
                 int intValue = exp.getIntValue().get();
-                return intValue >= -1 && intValue <= 2; // -1 is null
+                return intValue >= -1 && intValue < 2; // -1 is null
             }
 
             return false;
