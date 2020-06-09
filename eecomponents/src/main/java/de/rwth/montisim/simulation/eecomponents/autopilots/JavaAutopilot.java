@@ -115,7 +115,7 @@ public class JavaAutopilot extends EEComponent {
 
         /** Assumes posStart & posEnd are set */
         void init() {
-            IPM.subtractToVec(posEnd, posStart, dir);
+            IPM.subtractTo(dir, posEnd, posStart);
             length = dir.magnitude();
             if (length > 0.001){
                 IPM.multiply(dir, 1/length);
@@ -124,7 +124,7 @@ public class JavaAutopilot extends EEComponent {
             }
             normal.set(-dir.y, dir.x);
 
-            IPM.subtractToVec(currentPosition, posStart, relPos);
+            IPM.subtractTo(relPos, currentPosition, posStart);
             projPos = IPM.dot(dir, relPos);
             orthoPos = IPM.dot(normal, relPos);
             dist = Math.abs(orthoPos);
@@ -295,7 +295,7 @@ public class JavaAutopilot extends EEComponent {
                 // Check segment
 
                 // 1) Get segment "normal"
-                IPM.subtractToVec(point, lastPoint, dir);
+                IPM.subtractTo(dir, point, lastPoint);
                 // Manual normalization to keep the length
                 double length = dir.magnitude();
                 if (length > 0.001){
@@ -305,7 +305,7 @@ public class JavaAutopilot extends EEComponent {
                 }
 
                 // 2) check if in segment bounds
-                IPM.subtractToVec(pos, lastPoint, delta);
+                IPM.subtractTo(delta, pos, lastPoint);
                 double projPos = IPM.dot(dir, delta);
                 if (projPos > 0 && projPos < length) {
                 

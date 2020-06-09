@@ -126,7 +126,7 @@ public class WorldRenderer extends Renderer {
                     //Get displacement
                     if (i == s.pointsStart) displacement.set(normals.elementAt(j));
                     else if (i == s.pointsEnd) displacement.set(normals.elementAt(j-1));
-                    else IPM.midpointToVec(normals.elementAt(j), normals.elementAt(j-1), displacement);
+                    else IPM.midpointTo(displacement, normals.elementAt(j), normals.elementAt(j-1));
                     p.points[j] = new Vec3(pi.x + displacement.x, pi.y + displacement.y, 1); // Transform to extended 2D coordinates
                     j++;
                 }

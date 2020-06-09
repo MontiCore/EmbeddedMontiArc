@@ -10,7 +10,7 @@ import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.simulation.eesimulator.exceptions.*;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
-import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperties;
+import de.rwth.montisim.simulation.simulator.vehicleconfigs.TestVehicleConfig;
 import de.rwth.montisim.simulation.simulator.visualization.car.CarRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.plotter.TimePlotter;
 import de.rwth.montisim.simulation.simulator.visualization.ui.*;
@@ -104,21 +104,11 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
     }
 
     private VehicleConfig setupTurningCar(){
-        TestVehicleConfig config = new TestVehicleConfig();
-
-        double maxForce = config.electricalPTProperties.motorProperties.motorPeekTorque *
-            config.electricalPTProperties.transmissionRatio * 2 /
-            config.properties.wheels.wheelDiameter;
-        
         double turnRadius = 30;
         double maxSpeed = 0.8*270*Math.pow(turnRadius, -0.5614);
         System.out.println("MaxSpeed: "+Double.toString(maxSpeed));
 
-        config.eeConfig.addComponent(
-            TestAutopilotProperties.circleAutopilot(Duration.ofMillis(1), maxForce/config.properties.body.mass, maxSpeed, turnRadius).setName("TestAutopilot")
-        );
-
-        return config;
+        return TestVehicleConfig.newCircleAutopilotConfig(maxSpeed, turnRadius);
     }
 
     @Override

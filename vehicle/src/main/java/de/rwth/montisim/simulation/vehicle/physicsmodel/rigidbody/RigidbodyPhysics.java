@@ -69,16 +69,16 @@ public class RigidbodyPhysics implements PhysicsModel {
     private final Vec3 ground_pos = new Vec3(0, 0, 0);
     final Collision c = new Collision();
 
-    public RigidbodyPhysics(Vehicle vehicle) {
-        this.powerTrain = vehicle.powerTrain;
+    public RigidbodyPhysics(PowerTrain powerTrain, VehicleProperties properties) {
+        this.powerTrain = powerTrain;
 
-        VehicleProperties p = vehicle.properties;
+        VehicleProperties p = properties;
         PowerTrainProperties ptp = powerTrain.properties;
 
         Vec3 size = new Vec3(p.body.length, p.body.width, p.body.height);
         this.bbox = new OBB();
         this.bbox.axes.setUnit();
-        IPM.multiplyToVec(size, 0.5, this.bbox.half_extent);
+        IPM.multiplyTo(this.bbox.half_extent, size, 0.5);
 
         this.rb = new Rigidbody("RigidbodyCar");
         this.rb.bbox = Optional.of(bbox);
@@ -161,14 +161,14 @@ public class RigidbodyPhysics implements PhysicsModel {
             boolean front = fb == 1;
             double angle = fb == 1 ? getWheelAngle() : 0; // Angle in Radians
             dir_l.set(Math.cos(angle), Math.sin(angle), 0); // Local
-            IPM.multiplyToVec(rb.rotation, dir_l, dir); // Global
+            IPM.multiplyTo(dir, rb.rotation, dir_l); // Global
             IPM.normalize(dir);
 
-            IPM.crossToVec(contact_normal, dir, side_vec);
+            IPM.crossTo(side_vec, contact_normal, dir);
             if (side_vec.magnitude() < 0.01f)
                 continue;
             IPM.normalize(side_vec);
-            IPM.crossToVec(side_vec, contact_normal, front_vec);
+            IPM.crossTo(front_vec, side_vec, contact_normal);
             IPM.normalize(front_vec);
 
             for (int lr = -1; lr <= 1; lr += 2) {
@@ -179,31 +179,31 @@ public class RigidbodyPhysics implements PhysicsModel {
 
                 Vec3 rel_pos = wheel_pos[index];
 
-                IPM.crossToVec(rb.angularVelocity, rel_pos, u);
+                IPM.crossTo(u, rb.angularVelocity, rel_pos);
                 IPM.add(u, rb.velocity); // Point velocity
 
                 // "Project" onto wheel dir (conserve length)
-                IPM.multiplyToVec(side_vec, IPM.dot(u, side_vec), u_proj); // u_proj = side_vec * dot(u, side_vec)
+                IPM.multiplyTo(u_proj, side_vec, IPM.dot(u, side_vec)); // u_proj = side_vec * dot(u, side_vec)
                 IPM.subtract(u_proj, u); // u_proj = (side_vec * dot(u, side_vec)) - u
                 IPM.normalize(u_proj); // u_proj = normalize((side_vec * dot(u, side_vec)) - u)
                 IPM.multiply(u_proj, -u.magnitude()); // u_proj = normalize(u - (side_vec * dot(u, side_vec)))*|u|
                 // Desired velocity change
-                IPM.subtractToVec(u_proj, u, delta_u);
+                IPM.subtractTo(delta_u, u_proj, u);
 
-                IPM.crossMatrixToMat(rel_pos, cr_mat); // cr_mat = crossMat(rel_pos)
-                IPM.multiplyToMat(cr_mat, cr_mat, B); // B = crossMat(rel_pos) * crossMat(rel_pos)
-                IPM.multiplyToMat(rb.J_i, rb.mass, A);
-                IPM.multiplyToMat(A, B, cr_mat); // cr_mat = rb.mass * rb.J_i * crossMat(rel_pos) * crossMat(rel_pos)
+                IPM.crossMatrixTo(cr_mat, rel_pos); // cr_mat = crossMat(rel_pos)
+                IPM.multiplyTo(B, cr_mat, cr_mat); // B = crossMat(rel_pos) * crossMat(rel_pos)
+                IPM.multiplyTo(A, rb.J_i, rb.mass);
+                IPM.multiplyTo(cr_mat, A, B); // cr_mat = rb.mass * rb.J_i * crossMat(rel_pos) * crossMat(rel_pos)
                 A.setUnit();
                 IPM.subtract(A, cr_mat); // A = diag(1) - rb.mass *(rb.J_i * crossMat(rel_pos) * crossMat(rel_pos))
-                double det = IPM.invertToMat(A, A_i);
+                double det = IPM.invertTo(A_i, A);
                 if (det != 0) {
-                    IPM.multiplyToVec(A_i, delta_u, impulse);
+                    IPM.multiplyTo(impulse, A_i, delta_u);
 
                     IPM.add(vel_change, impulse);
 
                     IPM.multiply(impulse, rb.mass);
-                    IPM.crossToVec(rel_pos, impulse, a);
+                    IPM.crossTo(a, rel_pos, impulse);
                     IPM.multiply(rb.J_i, a);
                     IPM.add(rot_change, a);
                     number++;
@@ -211,9 +211,9 @@ public class RigidbodyPhysics implements PhysicsModel {
 
                 double wheel_force = getWheelForce(IPM.dot(u, side_vec), IPM.dot(u, front_vec), deltaSecs, front,
                         index);
-                IPM.multiplyToVec(front_vec, wheel_force, movement_force);
+                IPM.multiplyTo(movement_force, front_vec, wheel_force);
                 IPM.add(rb.F, movement_force);
-                IPM.crossToVec(rel_pos, movement_force, a);
+                IPM.crossTo(a, rel_pos, movement_force);
                 IPM.add(rb.T, a);
             }
         }
@@ -243,7 +243,7 @@ public class RigidbodyPhysics implements PhysicsModel {
                 int index = getWheelIndex(fb, lr);
                 double y = wheel_width * 0.5f * lr;
                 local_pos.set(x, y, -bbox.half_extent.z);
-                IPM.multiplyToVec(rb.rotation, local_pos, relPos[index]);
+                IPM.multiplyTo(relPos[index], rb.rotation, local_pos);
             }
         }
     }
@@ -326,13 +326,13 @@ public class RigidbodyPhysics implements PhysicsModel {
         for (int dx = -1; dx <= 1; dx += 2)
             for (int dy = -1; dy <= 1; dy += 2)
                 for (int dz = -1; dz <= 1; dz += 2) {
-                    IPM.multiplyToVec(bbox.axes.col1, bbox.half_extent.x * dx, point);
-                    IPM.multiplyToVec(bbox.axes.col2, bbox.half_extent.y * dy, a);
+                    IPM.multiplyTo(point, bbox.axes.col1, bbox.half_extent.x * dx);
+                    IPM.multiplyTo(a, bbox.axes.col2, bbox.half_extent.y * dy);
                     IPM.add(point, a);
-                    IPM.multiplyToVec(bbox.axes.col3, bbox.half_extent.z * dz, a);
+                    IPM.multiplyTo(a, bbox.axes.col3, bbox.half_extent.z * dz);
                     IPM.add(point, a);
-                    IPM.multiplyToVec(rb.rotation, point, c.rel_pos);
-                    IPM.addToVec(c.rel_pos, rb.pos, point);
+                    IPM.multiplyTo(c.rel_pos, rb.rotation, point);
+                    IPM.addTo(point, c.rel_pos, rb.pos);
                     c.penetration = IPM.dot(point, ground_normal) - ref;
                     if (c.penetration < 0) {
                         temp_compute_collision_reaction(c, dz == -1);
@@ -353,44 +353,44 @@ public class RigidbodyPhysics implements PhysicsModel {
         double friction = 0.9;
         double stiffness = 100;
 
-        IPM.crossToVec(rb.angularVelocity, c.rel_pos, u);
+        IPM.crossTo(u, rb.angularVelocity, c.rel_pos);
         IPM.add(u, rb.velocity); // Point velocity
         double u_normal = IPM.dot(u, c.normal);
-        IPM.multiplyToVec(c.normal, u_normal, un);
+        IPM.multiplyTo(un, c.normal, u_normal);
 
-        IPM.subtractToVec(u, un, ut); // Tangential vel
+        IPM.subtractTo(ut, u, un); // Tangential vel
         t.set(0); // Normalized Tangent dir
         double tl = ut.magnitude();
         if (tl > 0.0001)
-            IPM.multiplyToVec(ut, 1 / tl, t);
+            IPM.multiplyTo(t, ut, 1 / tl);
 
         // Impulse
-        IPM.crossToVec(c.rel_pos, c.normal, a);
+        IPM.crossTo(a, c.rel_pos, c.normal);
         IPM.multiply(rb.J_i, a);
-        IPM.crossInPlace(a, c.rel_pos);
+        IPM.cross(a, c.rel_pos);
         // a = cross(rb.J_i * cross(c.rel_pos, c.normal), c.rel_pos);
         double denom = 1 / rb.mass + IPM.dot(c.normal, a);
-        IPM.multiplyToVec(un, (-1.0 - e) / denom, p);
+        IPM.multiplyTo(p, un, (-1.0 - e) / denom);
         /*
          * auto friction_impulse = t * (p.length() * -friction); p += friction_impulse;
          */
         if (IPM.dot(p, c.normal) > 0) {
-            IPM.multiplyToVec(p, (1 / rb.mass), a);
+            IPM.multiplyTo(a, p, (1 / rb.mass));
             IPM.add(rb.velocity, a);
-            IPM.crossToVec(c.rel_pos, p, a);
+            IPM.crossTo(a, c.rel_pos, p);
             IPM.multiply(rb.J_i, a);
             IPM.add(rb.angularVelocity, a);
         }
 
         // Penalty forces
-        IPM.multiplyToVec(c.normal, stiffness * -c.penetration * rb.mass, normal_force);
+        IPM.multiplyTo(normal_force, c.normal, stiffness * -c.penetration * rb.mass);
         IPM.add(rb.F, normal_force);
-        IPM.crossToVec(c.rel_pos, normal_force, a);
+        IPM.crossTo(a, c.rel_pos, normal_force);
         IPM.add(rb.T, a);
         if (!is_wheel) {
-            IPM.multiplyToVec(t, normal_force.magnitude() * -friction, friction_force);
+            IPM.multiplyTo(friction_force, t, normal_force.magnitude() * -friction);
             IPM.add(rb.F, friction_force);
-            IPM.crossToVec(c.rel_pos, friction_force, a);
+            IPM.crossTo(a, c.rel_pos, friction_force);
             IPM.add(rb.T, a);
         }
     }
@@ -408,7 +408,7 @@ public class RigidbodyPhysics implements PhysicsModel {
         front_vec.set(front, 0);
         IPM.normalize(front_vec);
         a.set(0, 0, 1);
-        IPM.crossToVec(a, front_vec, side_vec);
+        IPM.crossTo(side_vec, a, front_vec);
         rb.rotation.col1.set(front_vec);
         rb.rotation.col2.set(side_vec);
         rb.rotation.col3.set(a);

@@ -39,18 +39,18 @@ public class Rigidbody extends DynamicObject {
         IPM.multiply(accel, delta_secs);
         IPM.add(velocity, accel);
         
-        IPM.multiplyToVec(velocity, delta_secs, deltaX);
+        IPM.multiplyTo(deltaX, velocity, delta_secs);
         IPM.add(pos, deltaX);
 
-        IPM.multiplyToVec(J, angularVelocity, JW); // JW = J*angularVelocity
-        IPM.crossToVec(angularVelocity, JW, WxJW); // WxJW = angularVelocity x (J*angularVelocity)
+        IPM.multiplyTo(JW, J, angularVelocity); // JW = J*angularVelocity
+        IPM.crossTo(WxJW, angularVelocity, JW); // WxJW = angularVelocity x (J*angularVelocity)
         IPM.subtract(T, WxJW); // T = T - angularVelocity x (J*angularVelocity)
-        IPM.multiplyToVec(J_i, T, ang_accel); // ang_accel = J_i * (T - angularVelocity x (J*angularVelocity))
+        IPM.multiplyTo(ang_accel, J_i, T); // ang_accel = J_i * (T - angularVelocity x (J*angularVelocity))
         IPM.multiply(ang_accel, delta_secs);
         IPM.add(angularVelocity, ang_accel); // w += ang_accel * delta_secs;
 
-        IPM.crossMatrixToMat(angularVelocity, cross_matrix); // cross_matrix = cross_matrix(angularVelocity)
-        IPM.multiplyToMat(cross_matrix, rotation, a); // a = (cross_matrix(angularVelocity) * R)
+        IPM.crossMatrixTo(cross_matrix, angularVelocity); // cross_matrix = cross_matrix(angularVelocity)
+        IPM.multiplyTo(a, cross_matrix, rotation); // a = (cross_matrix(angularVelocity) * R)
         IPM.multiply(a, delta_secs); // a = (cross_matrix(angularVelocity) * rotation) * delta_secs
         IPM.add(rotation, a); // rotation += (cross_matrix(angularVelocity) * rotation) * delta_secs
 
@@ -58,14 +58,14 @@ public class Rigidbody extends DynamicObject {
     }
 
     public void updateVars() {
-        IPM.orthonormize(rotation);
-        IPM.transposeToMat(rotation, R_T);
+        IPM.orthonormalize(rotation);
+        IPM.transposeTo(R_T, rotation);
 
-        IPM.multiplyToMat(rotation, Jl, a);
-        IPM.multiplyToMat(a, R_T, J);
+        IPM.multiplyTo(a, rotation, Jl);
+        IPM.multiplyTo(J, a, R_T);
 
-        IPM.multiplyToMat(rotation, Jl_i, a);
-        IPM.multiplyToMat(a, R_T, J_i);
+        IPM.multiplyTo(a, rotation, Jl_i);
+        IPM.multiplyTo(J_i, a, R_T);
         
         F.x = 0;
         F.y = 0;

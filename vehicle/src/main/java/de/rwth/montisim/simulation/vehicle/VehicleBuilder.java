@@ -27,13 +27,13 @@ public class VehicleBuilder {
     final VehicleConfig config;
     String vehicleName;
 
-    public VehicleBuilder(MessageTypeManager mtManager, Pathfinding pathfinding) {
-        this.mtManager = mtManager;
-        this.pathfinding = pathfinding;
-        // Load default setup
-        target = new Vehicle();
-        this.config = new TestVehicleConfig();
-    }
+    // public VehicleBuilder(MessageTypeManager mtManager, Pathfinding pathfinding) {
+    //     this.mtManager = mtManager;
+    //     this.pathfinding = pathfinding;
+    //     // Load default setup
+    //     target = new Vehicle();
+    //     this.config = new TestVehicleConfig();
+    // }
 
     public VehicleBuilder(MessageTypeManager mtManager, Pathfinding pathfinding, VehicleConfig config) {
         this.mtManager = mtManager;
@@ -89,7 +89,7 @@ public class VehicleBuilder {
                 // TODO
                 throw new IllegalArgumentException("Missing Modelica implementation");
             case RIGIDBODY:
-            target.physicsModel = new RigidbodyPhysics(target);
+            target.physicsModel = new RigidbodyPhysics(target.powerTrain, target.properties);
                 break;
             default:
                 break;

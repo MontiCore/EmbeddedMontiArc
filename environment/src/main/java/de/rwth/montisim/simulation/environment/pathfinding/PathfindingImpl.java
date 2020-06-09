@@ -88,7 +88,7 @@ public class PathfindingImpl implements Pathfinding {
                     // Check segment
 
                     // 1) Get segment "normal"
-                    IPM.subtractToVec(p, lastPoint, dir);
+                    IPM.subtractTo(dir, p, lastPoint);
                     // Manual normalization to keep the length
                     double length = dir.magnitude();
                     if (length > 0.001){
@@ -98,7 +98,7 @@ public class PathfindingImpl implements Pathfinding {
                     }
 
                     // 2) check if in segment bounds
-                    IPM.subtractToVec(pos, lastPoint, delta);
+                    IPM.subtractTo(delta, pos, lastPoint);
                     double projPos = IPM.dot(dir, delta);
                     if (projPos > 0 && projPos < length) {
                     
@@ -109,7 +109,7 @@ public class PathfindingImpl implements Pathfinding {
                             currentNearestDistance = dist;
                             ref.roadSegmentID = rsID;
                             ref.isPoint = false;
-                            IPM.multiplyToVec(dir, projPos, ref.point);
+                            IPM.multiplyTo(ref.point, dir, projPos);
                             IPM.add(ref.point, lastPoint);
                             ref.roadPointID = i-inc;
                             ref.distance = totalDist + projPos;

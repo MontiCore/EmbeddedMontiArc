@@ -9,4 +9,6 @@ public class SimulationConfig {
     Duration maxSimulationDuration = Duration.ofSeconds(60);
     Duration tickDuration = Duration.ofNanos(Time.SECOND_TO_NANOSEC/100);
     Instant simulationStart = Instant.now();
+
+    
 }

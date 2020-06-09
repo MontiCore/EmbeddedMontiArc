@@ -15,9 +15,7 @@ import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.pathfinding.*;
 import de.rwth.montisim.simulation.simulator.*;
-import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
-import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperties;
-import de.rwth.montisim.simulation.simulator.vehicleconfigs.DefaultVehicleConfig;
+import de.rwth.montisim.simulation.simulator.vehicleconfigs.*;
 import de.rwth.montisim.simulation.simulator.visualization.car.CarRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.map.*;
 import de.rwth.montisim.simulation.simulator.visualization.plotter.TimePlotter;
@@ -48,7 +46,6 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
     final Viewer2D viewer;
     final Control control;
     final CarRenderer cr;
-    final DefaultVehicleConfig setup;
     final TimePlotter plotter;
 
     MessageTypeManager mtManager;
@@ -72,7 +69,6 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
 
         vis1(args);
 
-        setup = new DefaultVehicleConfig();
         cr = new CarRenderer();
         viewer.addRenderer(cr);
         viewer.setZoom(20);
@@ -116,7 +112,7 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
         simulator = new Simulator(new SimulationConfig(), world, pathfinding, mtManager);
 
         //VehicleConfig config = setupTurningCar();
-        VehicleConfig config = setupJavaAutopilotCar();
+        VehicleConfig config = DefaultVehicleConfig.withJavaAutopilot();
         try {
             vehicle = simulator.getVehicleBuilder(config).setName("TestVehicle").build();
             simulator.addSimulationObject(vehicle);
@@ -126,7 +122,10 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
             cr.setCar(vehicle);
 
             Navigation nav = (Navigation) vehicle.eesimulator.getComponentManager().getComponent("Navigation").get();
-            nav.pushTargetPos(new Vec2(384.77, -283.72));
+            Vec2 TARGET_POS = new Vec2(-63.83, -171.96);
+            //nav.pushTargetPos(new Vec2(384.77, -283.72));
+            nav.pushTargetPos(TARGET_POS);
+            vehicle.addTarget(TARGET_POS);
             
         } catch (EEMessageTypeException e) {
             // TODO Auto-generated catch block
@@ -134,36 +133,12 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
         }
     }
 
-    private VehicleConfig setupJavaAutopilotCar(){
-        DefaultVehicleConfig config = new DefaultVehicleConfig();
-
-        double maxForce = config.electricalPTProperties.motorProperties.motorPeekTorque *
-            config.electricalPTProperties.transmissionRatio * 2 /
-            config.properties.wheels.wheelDiameter;
-
-        config.eeConfig.addComponent(
-            new JavaAutopilotProperties(maxForce/config.properties.body.mass).setName("TestAutopilot")
-        );
-
-        return config;
-    }
-
     private VehicleConfig setupTurningCar(){
-        DefaultVehicleConfig config = new DefaultVehicleConfig();
-
-        double maxForce = config.electricalPTProperties.motorProperties.motorPeekTorque *
-            config.electricalPTProperties.transmissionRatio * 2 /
-            config.properties.wheels.wheelDiameter;
-        
         double turnRadius = 30;
         double maxSpeed = 0.8*270*Math.pow(turnRadius, -0.5614);
         System.out.println("MaxSpeed: "+Double.toString(maxSpeed));
 
-        config.eeConfig.addComponent(
-            TestAutopilotProperties.circleAutopilot(Duration.ofMillis(1), maxForce/config.properties.body.mass, maxSpeed, turnRadius).setName("TestAutopilot")
-        );
-
-        return config;
+        return TestVehicleConfig.newCircleAutopilotConfig(maxSpeed, turnRadius);
     }
 
     @Override

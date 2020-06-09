@@ -53,7 +53,7 @@ public class CarRenderer extends Renderer {
     public void setCar(Vehicle vehicle){
         VehicleProperties p = vehicle.properties;
         this.car = Optional.of(vehicle.physicalObject);
-        IPM.multiplyToVec(new Vec3(p.body.length, p.body.width, p.body.height), 0.5, half_size);
+        IPM.multiplyTo(half_size, new Vec3(p.body.length, p.body.width, p.body.height), 0.5);
         for (int i = 0; i < points.length; ++i){
             points[i] = new Vec3();
         }
@@ -64,7 +64,7 @@ public class CarRenderer extends Renderer {
 
     public void setCar(DynamicObject car, Vec3 size){
         this.car = Optional.of(car);
-        IPM.multiplyToVec(size, 0.5, half_size);
+        IPM.multiplyTo(half_size, size, 0.5);
         for (int i = 0; i < points.length; ++i){
             points[i] = new Vec3();
         }

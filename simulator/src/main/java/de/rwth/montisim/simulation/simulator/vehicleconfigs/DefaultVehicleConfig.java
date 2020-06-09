@@ -3,6 +3,7 @@ package de.rwth.montisim.simulation.simulator.vehicleconfigs;
 
 import java.time.Duration;
 
+import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
 import de.rwth.montisim.simulation.eecomponents.navigation.NavigationProperties;
 import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
@@ -68,6 +69,17 @@ public class DefaultVehicleConfig extends VehicleConfig {
         eeConfig.addComponent(
             ConstantBusProperties.instantBus().setName("DefaultBus")
         );
+    }
+
+    public static DefaultVehicleConfig withJavaAutopilot() {
+        DefaultVehicleConfig config = new DefaultVehicleConfig();
+        double maxForce = config.electricalPTProperties.motorProperties.motorPeekTorque *
+            config.electricalPTProperties.transmissionRatio * 2 /
+            config.properties.wheels.wheelDiameter;
+            config.eeConfig.addComponent(
+                new JavaAutopilotProperties(maxForce/config.properties.body.mass).setName("TestAutopilot")
+            );
+        return config;
     }
 
 }

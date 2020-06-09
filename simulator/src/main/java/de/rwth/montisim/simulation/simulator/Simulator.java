@@ -8,6 +8,7 @@ import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.environment.pathfinding.Pathfinding;
 import de.rwth.montisim.simulation.environment.world.World;
+import de.rwth.montisim.simulation.simulator.vehicleconfigs.DefaultVehicleConfig;
 import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 import de.rwth.montisim.simulation.vehicle.config.VehicleConfig;
 
@@ -25,7 +26,9 @@ public class Simulator implements ISimulator, Updatable {
     Vector<Updatable> updatables = new Vector<>();
     Vector<Destroyable> destroyables = new Vector<>();
 
-    
+    Vector<TaskRunner> taskRunners = new Vector<>();
+
+    boolean timeout = false;
 
     public Simulator(SimulationConfig config, World world, Pathfinding pathfinding, MessageTypeManager mtManager) {
         this.config = config;
@@ -43,8 +46,8 @@ public class Simulator implements ISimulator, Updatable {
         return new VehicleBuilder(mtManager, pathfinding, config);
     }
 
-    public VehicleBuilder getDefaultVehicleBuilder(VehicleConfig config) {
-        return new VehicleBuilder(mtManager, pathfinding);
+    public VehicleBuilder getDefaultVehicleBuilder() {
+        return new VehicleBuilder(mtManager, pathfinding, new DefaultVehicleConfig());
     }
 
     @Override
@@ -52,12 +55,25 @@ public class Simulator implements ISimulator, Updatable {
         // TODO: OBSERVERS
         updatables.forEach(x -> x.update(newTime));
         simulatedTime = simulatedTime.plus(newTime.deltaTime);
+        timeout = simulatedTime.compareTo(config.maxSimulationDuration) > 0;
     }
 
     public boolean finished() {
-        if (simulatedTime.compareTo(config.maxSimulationDuration) > 0) return true;
-        // TODO check scenario conditions
-        return false;
+        if (timeout) {
+            return true;
+        }
+        for (TaskRunner r : taskRunners){
+            if (r.status() != TaskStatus.SUCCEEDED) return false;
+        }
+        return true;
+    }
+
+    public boolean allTasksSucceeded() {
+        for (TaskRunner r : taskRunners){
+            if (r.status() != TaskStatus.SUCCEEDED) return false;
+        }
+        if (timeout) return taskRunners.size() == 0;
+        return true;
     }
 
     @Override
@@ -78,6 +94,11 @@ public class Simulator implements ISimulator, Updatable {
     @Override
     public void registerDestroyable(Destroyable destroyable) {
         destroyables.add(destroyable);
+    }
+
+    @Override
+    public void registerTaskRunner(TaskRunner runner) {
+        taskRunners.add(runner);
     }
 
 }
