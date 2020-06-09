@@ -8,6 +8,7 @@ package de.rwth.montisim.commons.controller.commons;
  * 
  * @author Christoph Grüne
  */
+@Deprecated
 public enum NavigationEntry {
     // // ***************************************************************************
     // // * Navigation Entries *

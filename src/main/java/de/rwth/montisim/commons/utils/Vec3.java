@@ -40,20 +40,21 @@ public class Vec3 {
         this.z = z;
     }
 
-    /// Creates a vector where all entries are 'a'
+    /** Sets all entries to 'a' */
     public Vec3(double a) {
         this.x = a;
         this.y = a;
         this.z = a;
     }
 
+    /** Sets all entries to 'a' */
     public void set(double a) {
         this.x = a;
         this.y = a;
         this.z = a;
     }
 
-    /// Creates a vector with all entries set to 0
+    /** Sets all entries to 0. */
     public Vec3() {
         this(0);
     }
@@ -182,5 +183,14 @@ public class Vec3 {
     @Override
     public String toString() {
         return "[" + x + ", " + y + ", " + z + "]";
+    }
+
+    public double at(int index) {
+        if (index < 0 || index >= 3) throw new IndexOutOfBoundsException("Accessing Vec3 at index: " + index);
+        switch (index) {
+            case 1: return y;
+            case 2: return z;
+            default: return x;
+        }
     }
 }

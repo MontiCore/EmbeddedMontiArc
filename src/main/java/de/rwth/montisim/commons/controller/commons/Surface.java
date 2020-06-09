@@ -4,6 +4,7 @@ package de.rwth.montisim.commons.controller.commons;
 /**
  * This enum administrates all surfaces
  */
+@Deprecated
 public enum Surface {
     // Asphalt(15.0, -10.0, 2.0);
     Asphalt(2.0, 0.0, 0.0);

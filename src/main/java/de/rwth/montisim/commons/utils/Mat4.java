@@ -1,13 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.utils;
-
+// TODO add constructors as in Mat3
 public class Mat4 {
     public Vec4 col1;
     public Vec4 col2;
     public Vec4 col3;
     public Vec4 col4;
 
-    /// Creates a 4x4 Matrix from its COLUMN vectors
+    /** Sets all entries to 0. */
+    public Mat4() {
+        this.col1 = new Vec4();
+        this.col2 = new Vec4();
+        this.col3 = new Vec4();
+        this.col4 = new Vec4();
+    }
+
     public Mat4(Vec4 col1, Vec4 col2, Vec4 col3, Vec4 col4) {
         this.col1 = col1.clone();
         this.col2 = col2.clone();
@@ -15,13 +22,6 @@ public class Mat4 {
         this.col4 = col4.clone();
     }
 
-    /// Creates a 4x4 Matrix with all entries set to 0
-    public Mat4() {
-        this.col1 = new Vec4();
-        this.col2 = new Vec4();
-        this.col3 = new Vec4();
-        this.col4 = new Vec4();
-    }
 
     public static Mat4 unit() {
         return new Mat4(new Vec4(1, 0, 0, 0), new Vec4(0, 1, 0, 0), new Vec4(0, 0, 1, 0), new Vec4(0, 0, 0, 1));
@@ -56,5 +56,15 @@ public class Mat4 {
         && this.col2.equals(m.col2, threshold)
         && this.col3.equals(m.col3, threshold)
         && this.col4.equals(m.col4, threshold);
+    }
+
+    public double at(int row, int collumn){
+        if (collumn < 0 || collumn >= 4) throw new IndexOutOfBoundsException("Accessing Mat4 at collumn: " + collumn);
+        switch (collumn){
+            case 1: return col2.at(row);
+            case 2: return col3.at(row);
+            case 3: return col4.at(row);
+            default: return col1.at(row);
+        }
     }
 }

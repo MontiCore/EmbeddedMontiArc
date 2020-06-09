@@ -9,13 +9,11 @@ import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
 
 /**
- * Abstract class for a discrete event simulation based on scheduled events This
- * class implements the SimulationLoopNotifiable interface to be combined with
- * vehicle simulator
+ * Abstract class for a discrete event simulation based on scheduled events.
  */
 public abstract class DiscreteEventSimulator<EventType, T extends DiscreteEvent<EventType>> implements Updatable {
 
-    /** Comparator for events. Sorts in ascending order of event time*/
+    /** Comparator for events. Sorts in ascending order of event time. */
 	private static final DiscreteEvent.DiscreteEventComparator listComparator = new DiscreteEvent.DiscreteEventComparator();
 
 	/** point of time of simulation */

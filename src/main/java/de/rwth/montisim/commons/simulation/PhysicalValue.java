@@ -3,6 +3,11 @@ package de.rwth.montisim.commons.simulation;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
 
+/**
+ * Wrapper around an Object that represents a physical value inside
+ * the simulation. The goal is that multiple users can read and set the value.
+ * The getter can be overloaded to hide more complex reading mechanisms for the users.
+ */
 public class PhysicalValue {
     protected Object value;
     public final String name;

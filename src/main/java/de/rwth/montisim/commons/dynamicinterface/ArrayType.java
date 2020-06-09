@@ -8,7 +8,7 @@ public class ArrayType extends DataType {
     }
     public DataType baseType;
     public Dimensionality dimension;
-    ///Number of elems for "ARRAY", max size for "DYNAMIC"
+    /** Number of elems for "ARRAY", max size for "DYNAMIC". */
     public int sizeOrMaxSize; 
 
     public ArrayType(DataType baseType, Dimensionality dim, int sizeOrMaxSize){

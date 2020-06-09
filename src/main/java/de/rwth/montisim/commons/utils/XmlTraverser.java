@@ -1,10 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore
- */
 package de.rwth.montisim.commons.utils;
 
 import java.io.BufferedReader;
@@ -12,8 +6,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-//import java.util.Stack;
 
+/**
+ * A Lightweight XML Traverser.
+ * The goal is to process the content stream only once.
+ * 
+ * The functions to traverse are:
+ * - next_tag()
+ * - next_attribute()
+ * - enter_tag()
+ * - exit_tag()
+ * 
+ * The the current tag name or current attribute key/value can be read and processed.
+ */
 public class XmlTraverser {
     //TODO create iterator objects for tags and attributes
     //TODO create Exception object to store position of error in file
@@ -97,7 +102,7 @@ public class XmlTraverser {
     }
 
 
-    public String read_keyword() throws Exception {
+    private String read_keyword() throws Exception {
         //Pos at first char of word
         int word_start = pos;
         while (is_next_valid() && !is_next_whitespace() && !is_next_any_delimiter()){
@@ -110,7 +115,7 @@ public class XmlTraverser {
 
     
 
-    //! Returns the name of the next attribute inside the last explored tag or the empty string if none.
+    /** Returns the name of the next attribute inside the last explored tag or the empty string if none. */
     public String next_attribute() throws Exception {
         //Must be inside opening tag
         if (!inside_tag) return ""; //Already escaped tag
@@ -125,14 +130,16 @@ public class XmlTraverser {
         return key;
     }
 
-    //! Returns value string of the last attribute traversed using next_attribute()
-    //! Note: Does not remove the escaping character (ex: \" will stay as is)
+    /** 
+     * Returns value string of the last attribute traversed using next_attribute()
+     * Note: Does not remove the escaping character (ex: \" will stay as is)
+     */
     public String get_attribute_value(){
         if (last_string_size == 0) return "";
         return new String(data, last_string_start, last_string_size);
     }
 
-    //! Returns the name of the next tag on the current traversal depth or the empty string if none.
+    /** Returns the name of the next tag on the current traversal depth or the empty string if none. */
     public String next_tag() throws Exception {
         //NOTE: this method must make sure the 'inside_tag' flag and the depth value are correct
         
@@ -203,11 +210,13 @@ public class XmlTraverser {
 
     
 
-    //! Sets the traversal depth to that of the current tag
-    //! This will make next_tag() return tags of this depth only
-    //! Works even if the tag is a one-liner
-    //! Returns true if there is content in the tag
-    //! Always call exit_tag() to cancel a call to enter_tag()
+    /**
+     * Sets the traversal depth to that of the current tag.
+     * This will make next_tag() return tags of this depth only.
+     * Works even if the tag is a one-liner.
+     * Always call exit_tag() to cancel a call to enter_tag().
+     * @return true if there is content in the tag.
+     */
     public boolean enter_tag() throws Exception {
         //NOTE: this method must make sure the 'inside_tag' flag and the depth value are correct
         traversed_depth++;
@@ -217,8 +226,9 @@ public class XmlTraverser {
         return traversed_depth == depth;
     }
 
-    //! Decreases traversal depth by one
+    /** Exits the previously entered tag. */
     public void exit_tag(){
+        // Decreases traversal depth by one
         traversed_depth--;
     }
 
@@ -243,7 +253,7 @@ public class XmlTraverser {
     }
 
     
-    public void skip_keyword() throws Exception {
+    private void skip_keyword() throws Exception {
         while (is_next_valid() && !is_next_whitespace() && !is_next_any_delimiter()){
             next_char();
         }
@@ -319,35 +329,35 @@ public class XmlTraverser {
     private boolean is_next_whitespace(){
         return current_char == ' ' || current_char == '\n' || current_char == '\r' || current_char == '\t';
     }
-    public boolean is_next_string_delimiter(){
+    private boolean is_next_string_delimiter(){
         return current_char == '"';
     }
-    public boolean is_next_valid(){
+    private boolean is_next_valid(){
         return current_char != '\0';
     }
-    public boolean is_next_tag(){
+    private boolean is_next_tag(){
         return current_char == '<';
     }
-    public boolean is_next_endoftag(){
+    private boolean is_next_endoftag(){
         return current_char == '>';
     }
-    public boolean is_next_slash(){
+    private boolean is_next_slash(){
         return current_char == '/';
     }
-    public boolean is_next_dash(){
+    private boolean is_next_dash(){
         return current_char == '-';
     }
-    public boolean is_next_special(){
+    private boolean is_next_special(){
         return current_char == '?';
     }
-    public boolean is_next_equal(){
+    private boolean is_next_equal(){
         return current_char == '=';
     }
-    public boolean is_next_comment(){
+    private boolean is_next_comment(){
         return current_char == '!';
     }
 
-    public boolean is_next_any_delimiter(){
+    private boolean is_next_any_delimiter(){
         return current_char == '=' ||
             current_char == '<' ||
             current_char == '>' ||

@@ -5,15 +5,17 @@ package de.rwth.montisim.commons.utils;
 import de.rwth.montisim.commons.utils.Coordinates;
 
 /**
- * Represents Geographic Coordinates on the earth
- * Expressed as (Longitude, Latitude)
- * Longitude -> Angle along the equator, "Horizontal"
- * Latitude -> Angle away from the equator, "Vertical"
+ * Represents Geographic Coordinates on the earth.
+ * Expressed as (Longitude, Latitude).
+ * Longitude -> Angle along the equator, "Horizontal".
+ * Latitude -> Angle away from the equator, "Vertical".
  * The (0,0) Coordinates is the intersection between the Greenwitch meridian and the Equator.
  */
 public class Coordinates {
     public static final double EARTH_RADIUS = 12742000*0.5; //In meters
+    /** Longitude */
     public double lon;
+    /** Latitude */
     public double lat;
 
     public Coordinates(double lon, double lat) {
@@ -21,17 +23,17 @@ public class Coordinates {
         this.lat = lat;
     }
 
-    /// Creates the (0;0) Coordinates
+    /** Creates the (0;0) Coordinates */
     public Coordinates() {
         this(0,0);
     }
 
-    /// Returns NEW Coordinates with the result
+    /** Returns NEW Coordinates with the result */
     public Coordinates add(double lon, double lat) {
         return new Coordinates(lon + this.lon, lat + this.lat);
     }
 
-    /// Returns NEW Coordinates with the result
+    /** Returns NEW Coordinates with the result */
     public Coordinates add(Coordinates p) {
         return new Coordinates(this.lon + p.lon, this.lat + p.lat);
     }
@@ -45,6 +47,10 @@ public class Coordinates {
         return 2*EARTH_RADIUS*Math.asin(Math.sqrt(h));
     }
 
+    /**
+     * Returns the distance between these coordinates and the parameter.
+     * Uses the https://en.wikipedia.org/wiki/Haversine_formula
+     */
     public double distance(Coordinates p) {
         return distance(p.lon, p.lat);
     }
@@ -78,12 +84,12 @@ public class Coordinates {
         return new Coordinates((p.lon + this.lon) * 0.5, (p.lat + this.lat) * 0.5);
     }
 
-    /// Returns a NEW Coordinates with the result
+    /** Returns NEW Coordinates with the result */
     public Coordinates subtract(Coordinates p) {
         return new Coordinates(this.lon - p.lon, this.lat - p.lat);
     }
 
-    /// Returns a NEW Coordinates with the result
+    /** Returns NEW Coordinates with the result */
     public Coordinates subtract(double lon, double lat) {
         return new Coordinates(this.lon - lon, this.lat - lat);
     }

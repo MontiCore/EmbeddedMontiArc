@@ -7,6 +7,7 @@ import de.rwth.montisim.commons.utils.Vec3;
  * Provides all information for a vertex data structure for a general graph. It
  * is widely used in this function block setting.
  */
+@Deprecated
 public class Vertex {
 
     public long id;

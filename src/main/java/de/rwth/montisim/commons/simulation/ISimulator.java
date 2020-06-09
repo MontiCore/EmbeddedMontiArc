@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.simulation;
 
+/**
+ * Interface for registering different SimulationObject components by the simulator.
+ */
 public interface ISimulator {
 
     void registerStaticObject(StaticObject staticObject);
@@ -11,4 +14,6 @@ public interface ISimulator {
     void registerUpdatable(Updatable updatable);
 
     void registerDestroyable(Destroyable destroyable);
+
+    void registerTaskRunner(TaskRunner runner);
 }

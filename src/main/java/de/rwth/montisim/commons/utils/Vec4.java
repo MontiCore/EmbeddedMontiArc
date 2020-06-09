@@ -154,4 +154,14 @@ public class Vec4 {
     public String toString() {
         return "[" + x + ", " + y + ", " + z + ", " + w + "]";
     }
+
+    public double at(int index) {
+        if (index < 0 || index >= 4) throw new IndexOutOfBoundsException("Accessing Vec4 at index: " + index);
+        switch (index) {
+            case 1: return y;
+            case 2: return z;
+            case 3: return w;
+            default: return x;
+        }
+    }
 }

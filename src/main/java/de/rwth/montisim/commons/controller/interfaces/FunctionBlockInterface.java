@@ -6,12 +6,6 @@ import java.util.Map;
 /**
  * This interface provides the basic structures of a function block
  *
- * Created by Christoph Grüne on 09.12.2016.
-<<<<<<< HEAD:src/main/java/de/rwth/monticore/EmbeddedMontiArc/simulators/commons/controller/interfaces/FunctionBlockInterface.java
-=======
- * 
- * @author Christoph Grüne
->>>>>>> ComponentRework:src/main/java/de/rwth/montisim/commons/controller/interfaces/FunctionBlockInterface.java
  */
 public interface FunctionBlockInterface {
 

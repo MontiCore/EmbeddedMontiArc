@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.dynamicinterface;
 
+/**
+ * Reflection class for the types of Messages sent in the simulation.
+ */
 public class DataType {
     public static final DataType DOUBLE     = new DataType(Type.DOUBLE);
     public static final DataType FLOAT      = new DataType(Type.FLOAT);

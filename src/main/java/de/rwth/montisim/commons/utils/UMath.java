@@ -3,8 +3,14 @@ package de.rwth.montisim.commons.utils;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 
+/**
+ * Math related utility functions: Random numbers, minimization, maximization, ...
+ */
 public class UMath {
     private static final RandomDataGenerator random = new RandomDataGenerator();
+    
+    public static final double METERS_PER_SEC_TO_KMH = 3.6;
+    public static final double KMH_TO_METERS_PER_SEC = 1/3.6;
 
     /**
      * Function that generates uniformly distributed random int values in a specified interval

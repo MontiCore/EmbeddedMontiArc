@@ -7,11 +7,5 @@ package de.rwth.montisim.commons.simulation;
  * update call.
  */
 public interface Updatable {
-    /**
-     * Function that requests the called object to update its state for given time
-     * difference.
-     * 
-     * @param deltaT Time difference between last and current state.
-     */
     void update(TimeUpdate newTime);
 }

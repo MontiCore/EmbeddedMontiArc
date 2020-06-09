@@ -5,14 +5,8 @@ import java.util.Map;
 
 /**
  * This is an interface for the DataBus.
- *
- * Created by Christoph Grüne on 30.12.2016.
-<<<<<<< HEAD:src/main/java/de/rwth/monticore/EmbeddedMontiArc/simulators/commons/controller/interfaces/Bus.java
-=======
- * 
- * @author Christoph Grüne
->>>>>>> ComponentRework:src/main/java/de/rwth/montisim/commons/controller/interfaces/Bus.java
  */
+@Deprecated
 public interface Bus {
 
     /**

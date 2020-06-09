@@ -12,7 +12,7 @@ public class LibraryService {
         OS_RESOLVE, ACCESS_RESOURCE, WRITE_LIBRARY
     }
 
-    public static class SystemInfo {
+    static class SystemInfo {
         public final String workingDirectory;
         public final String systemName;
         public final String libraryExtension;
@@ -34,7 +34,7 @@ public class LibraryService {
         }
     }
 
-    public static final SystemInfo systemInfo = new SystemInfo();
+    static final SystemInfo systemInfo = new SystemInfo();
 
     public static class LibraryException extends Exception {
         private static final long serialVersionUID = -602493909994696880L;
@@ -75,25 +75,25 @@ public class LibraryService {
         return lib_name + systemInfo.libraryExtension;
     }
 
-    /*
-     * Exports a resource as file. If system_dependent is true it will lookup
-     * "lib_name" under "windows", "linux" or "mac" depending on the system.
-     * (lib_name can contain a relative path plus the library name. The file will
+    /**
+     * Exports a resource as file. If 'systemDependent' is true it will lookup
+     * 'libName' under a "windows", "linux" or "mac" folder depending on the system.
+     * (libName can contain a relative path plus the library name. The file will
      * have the same relative path to the working directory.)
      */
-    public static void prepareLibrary(String lib_name, boolean system_dependent) throws LibraryException {
-        String lib_path = getWorkingDirectory() + lib_name;
+    public static void prepareLibrary(String libName, boolean systemDependent) throws LibraryException {
+        String libPath = getWorkingDirectory() + libName;
         // System.out.println("lib_path: " + lib_path);
-        File target_file = new File(lib_path);
-        if (target_file.exists() && !target_file.isDirectory()) {
+        File targetFile = new File(libPath);
+        if (targetFile.exists() && !targetFile.isDirectory()) {
             return;
         }
         // Write library to disk
         try {
-            String path_to_resource = system_dependent ? "/" + getSystemName() + "/" + lib_name : "/" + lib_name;
-            InputStream res = LibraryService.class.getResourceAsStream(path_to_resource);
-            target_file.getParentFile().mkdirs();
-            FileOutputStream fout = new FileOutputStream(target_file);
+            String pathToResource = systemDependent ? "/" + getSystemName() + "/" + libName : "/" + libName;
+            InputStream res = LibraryService.class.getResourceAsStream(pathToResource);
+            targetFile.getParentFile().mkdirs();
+            FileOutputStream fout = new FileOutputStream(targetFile);
             BufferedOutputStream out = new BufferedOutputStream(fout);
             int data = res.read();
             while (data != -1) {
@@ -104,9 +104,9 @@ public class LibraryService {
             out.close();
             fout.close();
         } catch (IOException e) {
-            throw new LibraryException(LibraryExceptionType.WRITE_LIBRARY, lib_name + (" (" + e + ")"));
+            throw new LibraryException(LibraryExceptionType.WRITE_LIBRARY, libName + (" (" + e + ")"));
         }
-        System.out.println("Exported library \"" + lib_name + "\" from the resources.");
+        System.out.println("Exported library \"" + libName + "\" from the resources.");
     }
 
 }

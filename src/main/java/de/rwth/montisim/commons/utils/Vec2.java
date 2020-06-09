@@ -19,13 +19,13 @@ public class Vec2 {
         this.y = v.y;
     }
 
-    /// Creates a vector where all entries are 'a'
+    /** Sets all entries to 'a' */
     public Vec2(double a) {
         this.x = a;
         this.y = a;
     }
 
-    /// Creates a vector with all entries set to 0
+    /** Sets all entries to 0. */
     public Vec2() {
         this(0);
     }
@@ -40,6 +40,10 @@ public class Vec2 {
         this.y = v.y;
     }
     public void set(Vec3 v){
+        this.x = v.x;
+        this.y = v.y;
+    }
+    public void set(Vec4 v){
         this.x = v.x;
         this.y = v.y;
     }
@@ -157,5 +161,13 @@ public class Vec2 {
     @Override
     public String toString() {
         return "[" + x + ", " + y + "]";
+    }
+
+    public double at(int index) {
+        if (index < 0 || index >= 2) throw new IndexOutOfBoundsException("Accessing Vec2 at index: " + index);
+        switch (index) {
+            case 1: return y;
+            default: return x;
+        }
     }
 }

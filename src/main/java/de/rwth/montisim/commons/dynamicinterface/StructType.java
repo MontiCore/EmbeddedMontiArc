@@ -3,6 +3,7 @@ package de.rwth.montisim.commons.dynamicinterface;
 
 import java.util.HashMap;
 
+// TODO use a vector and index based entries
 public class StructType extends DataType {
     public String name;
     public HashMap<String, DataType> components;
@@ -14,7 +15,6 @@ public class StructType extends DataType {
 
     /** 
      * Adds a field to the struct type.
-     * Note: takes ownership of the name and type.
     */
     public void addComponent(String fieldName, DataType fieldType){
         components.put(fieldName, fieldType);

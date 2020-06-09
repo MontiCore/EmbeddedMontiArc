@@ -1,16 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore
- */
 package de.rwth.montisim.commons.utils;
 
-/*
-    https://en.wikipedia.org/wiki/Equirectangular_projection
-    https://stackoverflow.com/questions/16266809/convert-from-latitude-longitude-to-x-y
-*/
+/**
+ * Performs approximated conversions between Geographic coordinates and a local coordinate system
+ * (in meters). It bases the transformation on a reference coordinate that will become the (0,0) point
+ * in the local coordinate system.
+ * 
+ * https://en.wikipedia.org/wiki/Equirectangular_projection
+ * https://stackoverflow.com/questions/16266809/convert-from-latitude-longitude-to-x-y
+ */
 public class SimpleCoordinateConverter {
     private static final double DEG_TO_METERS = Coordinates.EARTH_RADIUS * Geometry.DEG_TO_RAD;
     private static final double METERS_TO_DEG = 1 / DEG_TO_METERS;
@@ -20,8 +18,7 @@ public class SimpleCoordinateConverter {
     private double inv_lon_factor;
 
     /**
-     * Performs Geographic Coordinates <-> Meters conversions using an Equirectangular projection.
-     * @param ref reference for the Equirectangular projection.
+     * @param ref reference for the Equirectangular projection. Corresponds to the (0,0) point in the local coordinate system.
      */
     public SimpleCoordinateConverter(Coordinates ref){
         this.ref = ref;

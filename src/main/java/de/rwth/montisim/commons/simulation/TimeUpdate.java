@@ -6,10 +6,17 @@ import java.time.Instant;
 
 import de.rwth.montisim.commons.utils.Time;
 
+/**
+ * Contains the information on a new tick for the simulation:
+ * the new and old time and the delta between them.
+ */
 public class TimeUpdate {
-    public final Instant oldTime; // Time before this update
-    public final Instant newTime; // New time after this update (old time = newTime - deltaTime)
-    public final Duration deltaTime; // Time difference between last and current state.
+    /** Time before this update */
+    public final Instant oldTime;
+    /** New time after this update (old time = newTime - deltaTime) */
+    public final Instant newTime;
+    /** Time difference between last and current state. */
+    public final Duration deltaTime;
     public final double deltaSeconds;
 
     public TimeUpdate(Instant oldTime, Duration deltaTime){
