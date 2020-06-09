@@ -7,7 +7,7 @@
 
 # EmbeddedMontiArc
 
-## Overview of Languages
+## Overview of the Main Languages
 ```
                                                             
      EmbeddedMontiArc                                         MontiMath   
