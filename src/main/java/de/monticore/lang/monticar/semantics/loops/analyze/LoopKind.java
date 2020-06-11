@@ -2,5 +2,5 @@
 package de.monticore.lang.monticar.semantics.loops.analyze;
 
 public enum LoopKind {
-    Linear, QuadraticPolynom, NonLinear;
+    Default, QuadraticLinear, QuadraticPolynom, NonLinear, LinearDifferencial, NonLinearDifferencial;
 }

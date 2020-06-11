@@ -2,17 +2,12 @@ package de.monticore.lang.monticar.semantics.loops;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.monticar.semantics.loops.detection.Detection;
-import de.monticore.lang.monticar.semantics.loops.detection.EMAGraphTransformation;
-import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
-import de.monticore.lang.monticar.semantics.loops.graph.EMAVertex;
+import de.monticore.lang.monticar.semantics.loops.detection.StrongConnectedComponent;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class LoopDetectionTest extends AbstractSymtabTest{
@@ -47,12 +42,15 @@ public class LoopDetectionTest extends AbstractSymtabTest{
         check("de.monticore.lang.monticar.semantics.loops.SimulinkExample2");
     }
 
+    @Test
+    public void test6() {
+        check("de.monticore.lang.monticar.semantics.loops.SimpleLoop");
+    }
+
     public void check(String model) {
         Scope symTab = createSymTab("src/test/resources");
         EMAComponentSymbol component = symTab.<EMAComponentSymbol>resolve(model, EMAComponentSymbol.KIND).orElse(null);
         Detection detection = new Detection();
-        Detection.Loops loops = detection.detectLoops(component);
-        Map<Set<EMAVertex>, List<List<EMAVertex>>> cyclesForComponent = loops.getCyclesForComponent();
-        cyclesForComponent.size();
+        Set<StrongConnectedComponent> strongConnectedComponents = detection.detectLoops(component);
     }
 }

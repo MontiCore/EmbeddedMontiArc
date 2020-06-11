@@ -6,6 +6,7 @@ public class EMAPort {
 
     private String name;
     private String fullName;
+    private EMAVertex emaVertex;
     private EMAPortSymbol referencedPort;
 
     public EMAPort(String name, String fullName, EMAPortSymbol referencedPort) {
@@ -28,5 +29,13 @@ public class EMAPort {
 
     public String toString() {
         return fullName;
+    }
+
+    public EMAVertex getEmaVertex() {
+        return emaVertex;
+    }
+
+    public void setEmaVertex(EMAVertex emaVertex) {
+        this.emaVertex = emaVertex;
     }
 }

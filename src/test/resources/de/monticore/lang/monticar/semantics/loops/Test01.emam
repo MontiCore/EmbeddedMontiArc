@@ -8,7 +8,7 @@ component Test01 {
 
     instance Constant<1> one;
     instance PlusMinus difference;
-    instance GainComponent gain;
+    instance GainComponent<1> gain;
     instance SumComponent<Q, 2> sum;
 
     connect one.out1 -> sum.in1[2];

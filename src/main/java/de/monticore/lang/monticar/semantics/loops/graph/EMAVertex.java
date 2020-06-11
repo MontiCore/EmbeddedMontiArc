@@ -2,16 +2,19 @@ package de.monticore.lang.monticar.semantics.loops.graph;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
+import de.monticore.lang.math._ast.ASTStatement;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class EMAVertex {
-    private String name;
-    private String fullName;
-    private EMAComponentInstantiationSymbol referencedSymbol;
-    private List<EMAPort> inports;
-    private List<EMAPort> outports;
+    private String name = "";
+    private String fullName = "";
+    private EMAComponentInstantiationSymbol referencedSymbol = null;
+    private List<EMAPort> inports = new LinkedList<>();
+    private List<EMAPort> outports  = new LinkedList<>();
 
     public EMAVertex (String name, String fullName) {
         this.name = name;
@@ -25,6 +28,12 @@ public class EMAVertex {
         this.referencedSymbol = referencedSymbol;
         this.inports = inports;
         this.outports = outports;
+        for (EMAPort inport : inports) {
+            inport.setEmaVertex(this);
+        }
+        for (EMAPort outport : outports) {
+            outport.setEmaVertex(this);
+        }
     }
 
     public static EMAVertex create(EMAComponentInstantiationSymbol symbol, String parentFullName) {

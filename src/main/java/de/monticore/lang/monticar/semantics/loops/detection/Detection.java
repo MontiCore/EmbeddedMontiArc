@@ -13,7 +13,7 @@ import java.util.*;
 
 public class Detection {
 
-    public Loops detectLoops(EMAComponentSymbol component) {
+    public Set<StrongConnectedComponent> detectLoops(EMAComponentSymbol component) {
         EMAGraphTransformation emaTransformation = new EMAGraphTransformation();
         EMAGraph emaGraph = emaTransformation.transform(component);
 
@@ -34,49 +34,15 @@ public class Detection {
 
         List<List<EMAVertex>> simpleCycles = hawickJamesSimpleCycles​.findSimpleCycles();
 
-        return new Loops(simpleCycles, components, emaGraph);
-    }
-
-    public class Loops {
-
-        public Loops(List<List<EMAVertex>> simpleCycles, List<Set<EMAVertex>> components, EMAGraph graph) {
-            this.simpleCycles = simpleCycles;
-            this.components = components;
-            this.graph = graph;
-
-            this.cyclesForComponent = new HashMap<>();
-
-            for (Set<EMAVertex> component : this.components) {
-                this.cyclesForComponent.put(component, new LinkedList<>());
-                for (List<EMAVertex> cycle : this.simpleCycles) {
-                    if (component.containsAll(cycle)) {
-                        this.cyclesForComponent.get(component).add(cycle);
-                    }
-                }
+        Set<StrongConnectedComponent> res = new HashSet<>();
+        for (Set<EMAVertex> strongConnectedComponent : components) {
+            Set<List<EMAVertex>> simpleCyclesForStrongComponent = new HashSet<>();
+            for (List<EMAVertex> simpleCycle : simpleCycles) {
+                if (strongConnectedComponent.containsAll(simpleCycle))
+                    simpleCyclesForStrongComponent.add(simpleCycle);
             }
+            res.add(new StrongConnectedComponent(strongConnectedComponent, simpleCyclesForStrongComponent, emaGraph));
         }
-
-
-        private final List<List<EMAVertex>> simpleCycles;
-        private final List<Set<EMAVertex>> components;
-        private final Map<Set<EMAVertex>, List<List<EMAVertex>>> cyclesForComponent;
-
-        private final EMAGraph graph;
-
-        public List<List<EMAVertex>> getSimpleCycles() {
-            return simpleCycles;
-        }
-
-        public List<Set<EMAVertex>> getComponents() {
-            return components;
-        }
-
-        public Map<Set<EMAVertex>, List<List<EMAVertex>>> getCyclesForComponent() {
-            return cyclesForComponent;
-        }
-
-        public EMAGraph getGraph() {
-            return graph;
-        }
+        return res;
     }
 }

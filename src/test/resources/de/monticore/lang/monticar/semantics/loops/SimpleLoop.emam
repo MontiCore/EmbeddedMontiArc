@@ -8,7 +8,7 @@ component SimpleLoop {
         out Q out1;
 
     instance PlusMinus difference;
-    instance GainComponent gain;
+    instance GainComponent<Q>(2) gain;
 
     connect in1 -> difference.in1;
     connect difference.out1 -> gain.in1, out1;

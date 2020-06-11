@@ -5,6 +5,7 @@ import de.monticore.assignmentexpressions._ast.*;
 import de.monticore.commonexpressions._ast.*;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathVisitor;
+import de.monticore.lang.math._ast.ASTMathDottedNameExpression;
 import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.se_rwth.commons.logging.Log;
@@ -280,7 +281,12 @@ public class MathToIExpr {
             result = F.symbol(expr.getName());
         }
 
-//        @Override
+        @Override
+        public void visit(ASTMathDottedNameExpression expr) {
+            result = F.symbol(String.join(".", expr.getNameList()));
+        }
+
+        //        @Override
 //        public void visit(ASTMCQualifiedType type){
 //            type.setEnclosingScope(getScope());
 //        }

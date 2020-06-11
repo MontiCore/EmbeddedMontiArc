@@ -1,14 +1,18 @@
 package de.monticore.lang.monticar.semantics.loops.graph;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class EMAGraph {
     private Set<EMAVertex> vertices;
     private Set<EMAEdge> edges;
+
+    public Map<String, EMAPort> getPortMap() {
+        return portMap;
+    }
+
+    private Map<String, EMAPort> portMap = new HashMap<>();
+
 
     public EMAGraph() {
         this.vertices = new HashSet<>();
@@ -16,8 +20,12 @@ public class EMAGraph {
     }
 
     public void addSubGraph(EMAGraph subgraph) {
-        vertices.addAll(subgraph.getVertices());
-        edges.addAll(subgraph.getEdges());
+        for (EMAVertex vertex : subgraph.getVertices()) {
+            addVertex(vertex);
+        }
+        for (EMAEdge edge : subgraph.getEdges()) {
+            addEdge(edge);
+        }
     }
 
     public Optional<EMAVertex> getVertex(String fullName) {
@@ -63,10 +71,22 @@ public class EMAGraph {
 
     public void addVertex(EMAVertex v) {
         vertices.add(v);
+        for (EMAPort outport : v.getOutports()) {
+            portMap.put(outport.getFullName(), outport);
+        }
+        for (EMAPort inport : v.getInports()) {
+            portMap.put(inport.getFullName(), inport);
+        }
     }
 
     public void removeVertex(EMAVertex v) {
         vertices.remove(v);
+        for (EMAPort outport : v.getOutports()) {
+            portMap.remove(outport.getFullName(), outport);
+        }
+        for (EMAPort inport : v.getInports()) {
+            portMap.remove(inport.getFullName(), inport);
+        }
     }
 
     public void addEdge(EMAEdge e) {
