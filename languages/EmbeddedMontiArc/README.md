@@ -29,3 +29,6 @@ EmbeddedMontiArc is a language family developed for the design of embedded and c
             |                                               
     EmbeddedMontiArcDL                                      
 ```
+## Licence
+The license for this project can be found here [here](https://github.com/MontiCore/monticore).
+The project is also available on [Github](https://github.com/MontiCore/EmbeddedMontiArc/tree/master/languages/EmbeddedMontiArc)
