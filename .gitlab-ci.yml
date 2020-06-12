@@ -14,7 +14,7 @@ githubjob:
   - mkdir -p ~/.ssh
 #  - cat gitlab-known-hosts >> ~/.ssh/known_hosts
   script: 
-  - git clone https://github.com/MontiCore/EmbeddedMontiArc.git
+  - git clone git@github.com:MontiCore/EmbeddedMontiArc.git
   - cd EmbeddedMontiArc
   - git subtree pull --prefix languages/EmbeddedMontiArc https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/EmbeddedMontiArc.git master
   - git push --force
