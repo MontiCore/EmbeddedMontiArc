@@ -8,6 +8,7 @@ githubjob:
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
   - eval $(ssh-agent -s)
   - ssh-add <(echo "$GITHUB_SSH_PRIV_KEY")
+  - echo "$GITHUB_SSH_PRIV_KEY" | tr -d '\r' | ssh-add
   - git config --global user.email "evgeny.kusmenko@gmail.com"
   - git config --global user.name "EvgenyKusmenko"
   - mkdir -p ~/.ssh
