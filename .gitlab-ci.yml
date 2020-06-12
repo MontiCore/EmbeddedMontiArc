@@ -12,7 +12,7 @@ githubjob:
   - git config --global user.email "evgeny.kusmenko@gmail.com"
   - git config --global user.name "EvgenyKusmenko"
   - mkdir -p ~/.ssh
-  - cat gitlab-known-hosts >> ~/.ssh/known_hosts
+#  - cat gitlab-known-hosts >> ~/.ssh/known_hosts
   script: 
   - git clone git@github.com:MontiCore/EmbeddedMontiArc.git
   - cd EmbeddedMontiArc
