@@ -8,8 +8,8 @@ githubjob:
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
   - eval $(ssh-agent -s)
   - ssh-add <(echo "$GITHUB_SSH_PRIV_KEY")
-  - git config --global user.email "kusmenko@se-rwth.de"
-  - git config --global user.name "EMA CI"
+  - git config --global user.email "evgeny.kusmenko@gmail.com"
+  - git config --global user.name "EvgenyKusmenko"
   - mkdir -p ~/.ssh
 #  - cat gitlab-known-hosts >> ~/.ssh/known_hosts
   script: 
