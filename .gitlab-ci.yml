@@ -7,6 +7,7 @@ githubjob:
   before_script:
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
   - eval $(ssh-agent -s)
+  - echo "$GITHUB_SSH_PRIV_KEY2"
   - ssh-add <(echo "$GITHUB_SSH_PRIV_KEY2")
   - git config --global user.email "kusmenko@se-rwth.de"
   - git config --global user.name "EMA CI"
