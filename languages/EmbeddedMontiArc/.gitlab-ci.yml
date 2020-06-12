@@ -3,6 +3,26 @@
 image: maven:3-jdk-8
 
 
+githubjob:
+  before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$GITHUB_SSH_PRIV_KEY")
+  - echo "$GITHUB_SSH_PRIV_KEY" | tr -d '\r' | ssh-add -
+  - git config --global user.email "evgeny.kusmenko@gmail.com"
+  - git config --global user.name "EvgenyKusmenko"
+  - mkdir -p ~/.ssh
+#  - cat gitlab-known-hosts >> ~/.ssh/known_hosts
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  script: 
+  - git clone git@github.com:MontiCore/EmbeddedMontiArc.git
+  - cd EmbeddedMontiArc
+  - git subtree pull --prefix languages/EmbeddedMontiArc https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/EmbeddedMontiArc.git master
+  - git push --force
+  only:
+  - master
+
+
 masterJob:
   script: 
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy sonar:sonar --settings settings.xml
