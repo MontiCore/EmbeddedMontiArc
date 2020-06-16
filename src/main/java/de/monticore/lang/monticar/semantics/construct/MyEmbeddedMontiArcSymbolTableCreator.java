@@ -17,7 +17,6 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
-import java.util.List;
 import java.util.Set;
 
 public class MyEmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcMathSymbolTableCreator {
@@ -42,13 +41,16 @@ public class MyEmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcMathSy
 
     @Override
     protected void initSuperSTC(ResolvingConfiguration resolvingConfig) {
-        visitor = new EmbeddedMontiArcMathDelegatorVisitor();
+
         this.emadSTC = new MyEmbeddedMontiArcDynamicSymbolTableCreator(resolvingConfig, this.scopeStack);
         this.emadSTC.setComponentReplacements(componentReplacements);
         this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator());
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, this.scopeStack);
         this.emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, this.scopeStack);
         this.mathOptSTC = new MathOptSymbolTableCreator(resolvingConfig, this.scopeStack);
+
+        visitor = new EmbeddedMontiArcMathDelegatorVisitor();
+
         this.visitor.setEmbeddedMontiArcMathVisitor(this.emamSTC);
         this.visitor.setEmbeddedMontiArcVisitor(this.emadSTC);
         this.visitor.setEmbeddedMontiArcDynamicVisitor(this.emadSTC);

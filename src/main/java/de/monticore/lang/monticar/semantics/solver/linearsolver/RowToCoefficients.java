@@ -6,13 +6,16 @@ import de.monticore.commonexpressions._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathVisitor;
 import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.lang.math._ast.ASTNumberExpression;
+import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.monticar.semantics.util.ExpressionPrettyPrinter;
+import de.monticore.lang.monticar.semantics.util.math.MathSymbolVisitor;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-public class RowToCoefficients implements EmbeddedMontiArcMathVisitor {
+public class RowToCoefficients implements MathSymbolVisitor {
 
     private ArrayList<String> row;
     String solution;
@@ -73,280 +76,78 @@ public class RowToCoefficients implements EmbeddedMontiArcMathVisitor {
             solution = solution + " + " + val;
     }
 
-
-
-    private EmbeddedMontiArcMathVisitor realThis = this;
-
     @Override
-    public EmbeddedMontiArcMathVisitor getRealThis() {
-        return realThis;
-    }
-
-    @Override
-    public void setRealThis(EmbeddedMontiArcMathVisitor realThis) {
-        this.realThis = realThis;
-    }
-
-    /*************************************************ASSIGNMENT EXPRESSIONS****************************************************/
-    @Override
-    public void visit(ASTAssignmentExpression expr) {
-
-    }
-
-    @Override
-    public void traverse(ASTRegularAssignmentExpression expr) {
+    public void traverse(MathAssignmentExpressionSymbol expr) {
         leftOfAssignment = true;
-        expr.getLeftExpression().accept(getRealThis());
+        if (variables.contains(expr.getNameOfMathValue()))
+            addToIndex(mappingToIndex.get(expr.getNameOfMathValue()), "1");
+        else
+            addToSolution(expr.getNameOfMathValue());
         leftOfAssignment = false;
-        expr.getRightExpression().accept(getRealThis());
+        handle(expr.getExpressionSymbol());
     }
 
     @Override
-    public void visit(ASTMinusPrefixExpression expr) {
+    public void traverse(MathArithmeticExpressionSymbol expr) {
+        if (expr.getMathOperator().equals("-")) {
+            handle(expr.getLeftExpression());
+            negative = !negative;
+            handle(expr.getRightExpression());
+            negative = !negative;
+        } else if (expr.getMathOperator().equals("+")) {
+            handle(expr.getLeftExpression());
+            handle(expr.getRightExpression());
+        } else if (expr.getMathOperator().equals("*")) {
+            if (expr.getLeftExpression() instanceof MathNameExpressionSymbol &&
+                    variables.contains(((MathNameExpressionSymbol) expr.getLeftExpression()).getNameToResolveValue())) {
+                String var = ((MathNameExpressionSymbol) expr.getLeftExpression()).getNameToResolveValue();
+                String coefficient = expr.getRightExpression().getTextualRepresentation();
 
-    }
+                addToIndex(mappingToIndex.get(var), coefficient);
+            } else if (expr.getRightExpression() instanceof MathNameExpressionSymbol &&
+                    variables.contains(((MathNameExpressionSymbol) expr.getRightExpression()).getNameToResolveValue()))  {
+                String var =  ((MathNameExpressionSymbol) expr.getRightExpression()).getNameToResolveValue();
+                String coefficient = expr.getLeftExpression().getTextualRepresentation();
 
-    @Override
-    public void visit(ASTPlusPrefixExpression expr) {
+                addToIndex(mappingToIndex.get(var), coefficient);
+            } else {
+                String coefficient = expr.getTextualRepresentation();
 
-    }
+                addToSolution(coefficient);
+            }
+        } else if (expr.getMathOperator().equals("/")) {
+            if (expr.getLeftExpression() instanceof MathNameExpressionSymbol &&
+                    variables.contains(((MathNameExpressionSymbol) expr.getLeftExpression()).getNameToResolveValue())) {
+                String var = ((MathNameExpressionSymbol) expr.getLeftExpression()).getNameToResolveValue();
+                String coefficient = "1/(" + expr.getRightExpression().getTextualRepresentation() + ")";
 
-    @Override
-    public void visit(ASTDecPrefixExpression expr) {
+                addToIndex(mappingToIndex.get(var), coefficient);
+            } else if (expr.getRightExpression() instanceof MathNameExpressionSymbol &&
+                    variables.contains(((MathNameExpressionSymbol) expr.getRightExpression()).getNameToResolveValue()))  {
+                // TODO
+                Log.error("0x012305 Non Linear equation System");
+            } else {
+                String coefficient = expr.getTextualRepresentation();
 
-    }
-
-    @Override
-    public void visit(ASTDecSuffixExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTIncPrefixExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTIncSuffixExpression expr) {
-
-    }
-
-    /*************************************************COMMON EXPRESSIONS****************************************************/
-
-    @Override
-    public void visit(ASTGreaterEqualExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTLessEqualExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTGreaterThanExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTLessThanExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTPlusExpression expr) {
-
-    }
-
-    @Override
-    public void traverse(ASTMinusExpression expr) {
-        expr.getLeftExpression().accept(getRealThis());
-        negative = !negative;
-        expr.getRightExpression().accept(getRealThis());
-        negative = !negative;
-    }
-
-    @Override
-    public void traverse(ASTMultExpression expr) {
-        if (expr.getLeftExpression() instanceof ASTNameExpression &&
-                variables.contains(((ASTNameExpression) expr.getLeftExpression()).getName())) {
-            String var = ((ASTNameExpression) expr.getLeftExpression()).getName();
-            String coefficient = ExpressionPrettyPrinter.prettyPrint(expr.getRightExpression());
-
-            addToIndex(mappingToIndex.get(var), coefficient);
-        } else if (expr.getRightExpression() instanceof ASTNameExpression &&
-                variables.contains(((ASTNameExpression) expr.getRightExpression()).getName())) {
-            String var = ((ASTNameExpression) expr.getRightExpression()).getName();
-            String coefficient = ExpressionPrettyPrinter.prettyPrint(expr.getLeftExpression());
-
-            addToIndex(mappingToIndex.get(var), coefficient);
+                addToSolution(coefficient);
+            }
         } else {
-            String coefficient = ExpressionPrettyPrinter.prettyPrint(expr);
-
-            addToSolution(coefficient);
+            Log.error("0x458654 Not supported");
         }
     }
 
     @Override
-    public void traverse(ASTDivideExpression expr) {
-        if (expr.getLeftExpression() instanceof ASTNameExpression &&
-                variables.contains(((ASTNameExpression) expr.getLeftExpression()).getName())) {
-            String var = ((ASTNameExpression) expr.getLeftExpression()).getName();
-            String coefficient = "1/(" + ExpressionPrettyPrinter.prettyPrint(expr.getRightExpression()) + ")";
-
-            addToIndex(mappingToIndex.get(var), coefficient);
-        } else if (expr.getRightExpression() instanceof ASTNameExpression &&
-                variables.contains(((ASTNameExpression) expr.getRightExpression()).getName())) {
-            // TODO
-            return;
-        } else {
-            String coefficient = ExpressionPrettyPrinter.prettyPrint(expr);
-            addToSolution(coefficient);
-        }
-    }
-
-    @Override
-    public void visit(ASTModuloExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTEqualsExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTNotEqualsExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTCallExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTLogicalNotExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTBooleanAndOpExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTBooleanOrOpExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTBooleanNotExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTBracketExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTConditionalExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTArguments expr) {
-
-    }
-
-    /*************************************************BIT EXPRESSIONS****************************************************/
-
-//        @Override
-//        public void visit(ASTLogicalRightShiftExpression expr) {
-//
-//        }
-//
-//        @Override
-//        public void visit(ASTRightShiftExpression expr) {
-//
-//        }
-//
-//        @Override
-//        public void visit(ASTLeftShiftExpression expr) {
-//
-//        }
-    @Override
-    public void visit(ASTBinaryOrOpExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTBinaryAndExpression expr) {
-
-    }
-
-    @Override
-    public void visit(ASTBinaryXorExpression expr) {
-
-    }
-
-    /*************************************************SET EXPRESSIONS****************************************************/
-
-//        @Override
-//        public void visit(ASTIsInExpression expr){
-//
-//        }
-//
-//        @Override
-//        public void visit(ASTSetInExpression expr){
-//
-//        }
-//
-//        @Override
-//        public void visit(ASTUnionExpressionInfix expr){
-//
-//        }
-//
-//        @Override
-//        public void visit(ASTIntersectionExpressionInfix expr){
-//
-//        }
-
-    /*************************************************EXPRESSIONS BASIS****************************************************/
-
-//        @Override
-//        public void visit(ASTLiteralExpression expr){
-//
-//            expr.getLiteral().setEnclosingScope(getScope());
-//        }
-    @Override
-    public void visit(ASTNumberExpression expr) {
-        String val = "" + expr.getNumberWithUnit().getNumber().get().doubleValue();
+    public void visit(MathNumberExpressionSymbol expr) {
+        String val = "" + expr.getValue().getRealNumber().toString();
         addToSolution(val);
     }
 
     @Override
-    public void visit(ASTNameExpression expr) {
-        if (variables.contains(expr.getName())) {
-            addToIndex(mappingToIndex.get(expr.getName()), "1");
+    public void visit(MathNameExpressionSymbol expr) {
+        if (variables.contains(expr.getNameToResolveValue())) {
+            addToIndex(mappingToIndex.get(expr.getNameToResolveValue()), "1");
         } else {
-            addToSolution(expr.getName());
+            addToSolution(expr.getNameToResolveValue());
         }
     }
-
-//        @Override
-//        public void visit(ASTMCQualifiedType type){
-//            type.setEnclosingScope(getScope());
-//        }
-//
-//        @Override
-//        public void visit(ASTMCQualifiedName name) {
-//            name.setEnclosingScope(getScope());
-//        }
-//
-//        @Override
-//        public void visit(ASTMCReturnType type){
-//            type.setEnclosingScope(getScope());
-//        }
 }

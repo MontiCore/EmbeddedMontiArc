@@ -38,6 +38,7 @@ public class EMAGraph {
     }
 
     public Optional<EMAEdge> getEdgeWithTargetNode(EMAVertex target) {
+        if (target == null) return Optional.empty();
         List<EMAEdge> edges = getEdges().stream().
                 filter(v -> v.getTargetVertex() == target).collect(Collectors.toList());
 
@@ -47,6 +48,7 @@ public class EMAGraph {
     }
 
     public List<EMAEdge> getEdgesWithSourceNode(EMAVertex source) {
+        if (source == null) return new LinkedList<>();
         List<EMAEdge> edges = getEdges().stream().
                 filter(v -> v.getSourceVertex() == source).collect(Collectors.toList());
 
@@ -54,6 +56,7 @@ public class EMAGraph {
     }
 
     public Optional<EMAEdge> getEdgeWithTargetPort(EMAPort target) {
+        if (target == null) return Optional.empty();
         List<EMAEdge> edges = getEdges().stream().
                 filter(v -> v.getTargetPort() == target).collect(Collectors.toList());
 
@@ -63,6 +66,7 @@ public class EMAGraph {
     }
 
     public List<EMAEdge> getEdgesWithSourcePort(EMAPort source) {
+        if (source == null) return new LinkedList<>();
         List<EMAEdge> edges = getEdges().stream().
                 filter(v -> v.getSourcePort() == source).collect(Collectors.toList());
 
@@ -73,9 +77,11 @@ public class EMAGraph {
         vertices.add(v);
         for (EMAPort outport : v.getOutports()) {
             portMap.put(outport.getFullName(), outport);
+            portMap.put(outport.getFullName().toLowerCase(), outport);
         }
         for (EMAPort inport : v.getInports()) {
             portMap.put(inport.getFullName(), inport);
+            portMap.put(inport.getFullName().toLowerCase(), inport);
         }
     }
 
@@ -83,9 +89,11 @@ public class EMAGraph {
         vertices.remove(v);
         for (EMAPort outport : v.getOutports()) {
             portMap.remove(outport.getFullName(), outport);
+            portMap.remove(outport.getFullName().toLowerCase(), outport);
         }
         for (EMAPort inport : v.getInports()) {
             portMap.remove(inport.getFullName(), inport);
+            portMap.remove(inport.getFullName().toLowerCase(), inport);
         }
     }
 

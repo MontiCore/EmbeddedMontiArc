@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.semantics.loops.detection;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAVertex;
 import de.monticore.lang.monticar.semantics.loops.graph.JGraphEdge;
@@ -9,11 +9,14 @@ import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
 import org.jgrapht.alg.cycle.HawickJamesSimpleCycles;
 import org.jgrapht.alg.interfaces.StrongConnectivityAlgorithm;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class Detection {
 
-    public Set<StrongConnectedComponent> detectLoops(EMAComponentSymbol component) {
+    public Set<StrongConnectedComponent> detectLoops(EMAComponentInstanceSymbol component) {
         EMAGraphTransformation emaTransformation = new EMAGraphTransformation();
         EMAGraph emaGraph = emaTransformation.transform(component);
 

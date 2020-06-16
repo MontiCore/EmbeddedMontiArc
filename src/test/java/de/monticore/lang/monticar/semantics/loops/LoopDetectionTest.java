@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.semantics.loops;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.loops.detection.Detection;
 import de.monticore.lang.monticar.semantics.loops.detection.StrongConnectedComponent;
 import de.monticore.symboltable.Scope;
@@ -19,37 +19,37 @@ public class LoopDetectionTest extends AbstractSymtabTest{
 
     @Test
     public void test1() {
-        check("de.monticore.lang.monticar.semantics.loops.Test01");
+        check("de.monticore.lang.monticar.semantics.loops.test01");
     }
 
     @Test
     public void test2() {
-        check("de.monticore.lang.monticar.semantics.loops.SerialLoop");
+        check("de.monticore.lang.monticar.semantics.loops.serialLoop");
     }
 
     @Test
     public void test3() {
-        check("de.monticore.lang.monticar.semantics.loops.ParallelLoop");
+        check("de.monticore.lang.monticar.semantics.loops.parallelLoop");
     }
 
     @Test
     public void test4() {
-        check("de.monticore.lang.monticar.semantics.loops.VanDerPolEquation");
+        check("de.monticore.lang.monticar.semantics.loops.vanDerPolEquation");
     }
 
     @Test
     public void test5() {
-        check("de.monticore.lang.monticar.semantics.loops.SimulinkExample2");
+        check("de.monticore.lang.monticar.semantics.loops.simulinkExample2");
     }
 
     @Test
     public void test6() {
-        check("de.monticore.lang.monticar.semantics.loops.SimpleLoop");
+        check("de.monticore.lang.monticar.semantics.loops.simpleLoop");
     }
 
     public void check(String model) {
         Scope symTab = createSymTab("src/test/resources");
-        EMAComponentSymbol component = symTab.<EMAComponentSymbol>resolve(model, EMAComponentSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symTab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
         Detection detection = new Detection();
         Set<StrongConnectedComponent> strongConnectedComponents = detection.detectLoops(component);
     }

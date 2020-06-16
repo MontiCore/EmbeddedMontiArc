@@ -2,7 +2,7 @@
 package de.monticore.lang.monticar.semantics.construct;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.symboltable.GlobalScope;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class ComponentReplacementTest {
         GlobalScope symTab = SymtabCreator.createSymTabForReplacement(componentReplacements, "src/test/resources", "src/main/resources", "target/generated-components");
         EMAComponentSymbol component = symTab.<EMAComponentSymbol>resolve("de.monticore.lang.monticar.semantics.loops.SimpleLoop", EMAComponentSymbol.KIND).orElse(null);
 
-        EMADynamicComponentInstantiationSymbol emaComponentSymbol = symTab.<EMADynamicComponentInstantiationSymbol>resolve("de.monticore.lang.monticar.semantics.loops.SimpleLoop.difference", EMADynamicComponentInstantiationSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol emaComponentSymbol = symTab.<EMAComponentInstanceSymbol>resolve("de.monticore.lang.monticar.semantics.loops.simpleLoop.difference", EMAComponentInstanceSymbol.KIND).orElse(null);
         assert ("DifferenceSynthesized difference".equals(emaComponentSymbol.toString()));
     }
 }

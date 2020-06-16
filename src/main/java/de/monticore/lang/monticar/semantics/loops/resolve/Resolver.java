@@ -3,11 +3,12 @@ package de.monticore.lang.monticar.semantics.loops.resolve;
 
 import de.monticore.assignmentexpressions._ast.ASTRegularAssignmentExpression;
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.math._ast.ASTMathAssignmentStatement;
 import de.monticore.lang.math._ast.ASTNameExpression;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.lang.monticar.semantics.construct.ComponentReplacement;
 import de.monticore.lang.monticar.semantics.construct.MathComponentGenerator;
 import de.monticore.lang.monticar.semantics.construct.SymtabCreator;
@@ -40,7 +41,7 @@ public class Resolver {
     }
 
     public TaggingResolver createSymTab(GlobalScope scope) {
-        EMAComponentSymbol component = scope.<EMAComponentSymbol>resolve(rootModel, EMAComponentSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = scope.<EMAComponentInstanceSymbol>resolve(rootModel, EMAComponentInstanceSymbol.KIND).orElse(null);
 //        fix(component);
 
         Detection detection = new Detection();
@@ -73,20 +74,13 @@ public class Resolver {
         MathEclipseSolver msolver = new MathEclipseSolver();
         LinearEquationSystemSolver solver = new LinearEquationSystemSolver(msolver, msolver);
 
-        Set<ASTExpression> system = new HashSet<>();
+        Set<MathAssignmentExpressionSymbol> system = new HashSet<>();
         Set<String> variables = new HashSet<>();
 
         for (EMAPort emaPort : strongConnectedComponent.getPortStatements().keySet()) {
             variables.add(emaPort.getFullName());
-            ASTMathAssignmentStatement statement = strongConnectedComponent.getPortStatements().get(emaPort);
-            ASTNameExpression nameExpression = EmbeddedMontiArcMathMill.nameExpressionBuilder()
-                    .setName(statement.getName()).build();
-            ASTRegularAssignmentExpression expression = EmbeddedMontiArcMathMill.regularAssignmentExpressionBuilder()
-                    .setLeftExpression(nameExpression)
-                    .setRightExpression(statement.getExpression())
-                    .setOperator(statement.getMathAssignmentOperator().getOperator())
-                    .build();
-            system.add(expression);
+            MathAssignmentExpressionSymbol statement = strongConnectedComponent.getPortStatements().get(emaPort);
+            system.add(statement);
         }
 
         Map<String, String> solutions = solver.solveLinearEquationSystem(system, variables);
@@ -104,7 +98,7 @@ public class Resolver {
 
         for (EMAVertex emaVertex : componentsToReplace) {
             String fullName = emaVertex.getFullName();
-            String parentComponent = getParentComponent(fullName);
+            String parentComponent = emaVertex.getReferencedSymbol().getParent().get().getFullName();
             String type = emaVertex.getReferencedSymbol().getComponentType().getName() + "_synth";
             String packageName = emaVertex.getReferencedSymbol().getPackageName() + ".synth";
             String path = "target/generated-components";
@@ -134,9 +128,6 @@ public class Resolver {
                     // TODO
                 }
             }
-
-
-
 
             generator.generate(type, packageName, inports, outports, mathStatements, path);
 
@@ -171,15 +162,17 @@ public class Resolver {
         EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
         for (String mathStatement : mathStatements) {
             ASTExpression expr = null;
+            String parseName = mathStatement.replace(".","_");
             try {
-                expr = parser.parseExpression(new StringReader(mathStatement)).get();
+                expr = parser.parseExpression(new StringReader(parseName)).get();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             ConstantsCalculator constantsCalculator = new ConstantsCalculator(variables);
             expr.accept(constantsCalculator);
-            res.addAll(constantsCalculator.getConstants());
+            res.addAll(constantsCalculator.getConstants().stream().map(
+                    s -> s = s.replace("_", ".")).collect(Collectors.toSet()));
         }
         return res;
     }

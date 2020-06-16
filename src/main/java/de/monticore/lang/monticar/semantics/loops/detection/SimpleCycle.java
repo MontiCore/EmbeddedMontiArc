@@ -2,7 +2,7 @@
 package de.monticore.lang.monticar.semantics.loops.detection;
 
 import de.monticore.lang.math._ast.ASTMathAssignmentStatement;
-import de.monticore.lang.math._ast.ASTStatement;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.lang.monticar.semantics.loops.analyze.LoopKind;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAPort;
@@ -16,7 +16,7 @@ public class SimpleCycle implements ConnectedComponent {
     private LoopKind kind = LoopKind.Default;
     private Set<EMAPort> inports = new HashSet<>();
     private Set<EMAPort> outports = new HashSet<>();
-    private Map<EMAPort, ASTMathAssignmentStatement> portStatements = new HashMap<>();
+    private Map<EMAPort, MathAssignmentExpressionSymbol> portStatements = new HashMap<>();
 
     public SimpleCycle(EMAGraph graph, List<EMAVertex> allComponents) {
         this.graph = graph;
@@ -65,12 +65,12 @@ public class SimpleCycle implements ConnectedComponent {
 
 
     @Override
-    public Map<EMAPort, ASTMathAssignmentStatement> getPortStatements() {
+    public Map<EMAPort, MathAssignmentExpressionSymbol> getPortStatements() {
         return portStatements;
     }
 
     @Override
-    public void addPortStatement(EMAPort port, ASTMathAssignmentStatement statement) {
+    public void addPortStatement(EMAPort port, MathAssignmentExpressionSymbol statement) {
         portStatements.put(port, statement);
     }
 }

@@ -1,22 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.analyze;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.commonexpressions._ast.ASTDivideExpression;
 import de.monticore.commonexpressions._ast.ASTMinusExpression;
 import de.monticore.commonexpressions._ast.ASTMultExpression;
 import de.monticore.commonexpressions._ast.ASTPlusExpression;
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._ast.*;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math._visitor.MathVisitor;
 import de.monticore.lang.monticar.semantics.loops.detection.SimpleCycle;
 import de.monticore.lang.monticar.semantics.loops.detection.StrongConnectedComponent;
 import de.monticore.lang.monticar.semantics.loops.graph.*;
+import de.monticore.lang.monticar.semantics.util.math.NameReplacer;
 import de.se_rwth.commons.logging.Log;
+import org.apache.poi.ss.formula.functions.Na;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,14 +37,14 @@ public class LoopAnalyzer {
     private void setStatements(StrongConnectedComponent strongConnectedComponent) {
         for (EMAVertex component : strongConnectedComponent.getAllComponents()) {
             for (EMAPort outport : component.getOutports()) {
-                Optional<ASTMathAssignmentStatement> statementForPort = getStatementForPort(component.getReferencedSymbol(), outport.getName());
+                Optional<MathAssignmentExpressionSymbol> statementForPort = getStatementForPort(component.getReferencedSymbol(), outport.getName());
                 if (statementForPort.isPresent()) {
                     // replace portNames by fullNames
-                    statementForPort.get().setName(outport.getFullName());
+                    statementForPort.get().setNameOfMathValue(outport.getFullName());
                     for (EMAPort inport : component.getInports()) {
                         Optional<EMAEdge> edgeWithTargetPort = strongConnectedComponent.getGraph().getEdgeWithTargetPort(inport);
                         if (!edgeWithTargetPort.isPresent()) {
-                            Log.error ("0x1544231 no source port for connector");
+                            Log.error("0x1544231 no source port for connector");
                         }
 
                         String sourcePort;
@@ -51,12 +52,17 @@ public class LoopAnalyzer {
                             sourcePort = edgeWithTargetPort.get().getSourceVertex().getFullName();
                         else
                             sourcePort = edgeWithTargetPort.get().getSourcePort().getFullName();
-                        statementForPort.get().accept(new NameReplacer(inport.getName(), sourcePort));
+                        replaceNameInStatement(statementForPort.get(), sourcePort, inport.getName());
                     }
                     strongConnectedComponent.addPortStatement(outport, statementForPort.get());
                 }
             }
-         }
+        }
+    }
+
+    private void replaceNameInStatement(MathExpressionSymbol mathExpressionSymbol, String newName, String oldName) {
+        NameReplacer replacer = new NameReplacer(newName, oldName);
+        replacer.handle(mathExpressionSymbol);
     }
 
     private void setPorts(StrongConnectedComponent strongConnectedComponent) {
@@ -115,49 +121,29 @@ public class LoopAnalyzer {
 
     }
 
-    private Optional<ASTMathAssignmentStatement> getStatementForPort(EMAComponentInstantiationSymbol component, String portName) {
-        List<ASTMathAssignmentStatement> statements = new LinkedList<>();
-        Optional<MathStatementsSymbol> mathStatements = component.getComponentType().getReferencedComponent().get().getSpannedScope().<MathStatementsSymbol>resolve("MathStatements", MathStatementsSymbol.KIND);
+    private Optional<MathAssignmentExpressionSymbol> getStatementForPort(EMAComponentInstanceSymbol component, String portName) {
+        // Work on symbols because the the symbol table will be recreated either way
+        Optional<MathStatementsSymbol> mathStatements = component.getSpannedScope().<MathStatementsSymbol>resolve("MathStatements", MathStatementsSymbol.KIND);
         if (!mathStatements.isPresent())
             return Optional.empty();
-        else {
-            for (MathExpressionSymbol statement : mathStatements.get().getMathExpressionSymbols()) {
-                ASTNode astNode = statement.getAstNode().get();
-                if (astNode instanceof ASTMathAssignmentStatement)
-                    statements.add((ASTMathAssignmentStatement) astNode);
-                else if (astNode instanceof ASTMathAssignmentDeclarationStatement) {
-                    ASTMathAssignmentDeclarationStatement declaration = (ASTMathAssignmentDeclarationStatement) astNode;
-                    ASTMathAssignmentStatement newStatement =
-                            EmbeddedMontiArcMathMill.mathAssignmentStatementBuilder()
-                                    .setName(declaration.getName())
-                                    .setMathAssignmentOperator(declaration.getMathAssignmentOperator())
-                                    .setExpression(declaration.getExpression())
-                                    .setEnclosingScope(declaration.getEnclosingScope())
-                                    .set_SourcePositionStart(declaration.get_SourcePositionStart())
-                                    .set_SourcePositionEnd(declaration.get_SourcePositionEnd())
-                                    .build();
-                    statements.add(newStatement);
-                } else
-                    Log.error("0x654987 not yet supported");
-            }
-        }
 
-        ListIterator<ASTMathAssignmentStatement> iterator = statements.listIterator(statements.size());
-        ASTMathAssignmentStatement res = null;
 
-        while (iterator.hasPrevious()) {
-            ASTMathAssignmentStatement previous = iterator.previous();
-            if (previous.getName().equals(portName)) {
-                if (res == null)
-                    res = previous.deepClone();
-            } else {
-                if (res != null)
-                    if (res.getExpression() instanceof ASTNameExpression) {
-                        if (((ASTNameExpression) res.getExpression()).getName().equals(previous.getName()))
-                            res.setExpression(previous.getExpression());
-                    } else
-                        res.getExpression().accept(new ExpressionReplacer(previous.getName(), previous.getExpression()));
-            }
+        MathAssignmentExpressionSymbol res = null;
+        ListIterator<MathExpressionSymbol> iter = mathStatements.get().getMathExpressionSymbols()
+                .listIterator(mathStatements.get().getMathExpressionSymbols().size());
+        while (iter.hasPrevious()) {
+            MathExpressionSymbol statement = iter.previous();
+            if (statement.isAssignmentExpression()) {
+                MathAssignmentExpressionSymbol assignmentStatement = (MathAssignmentExpressionSymbol) statement;
+
+                if (assignmentStatement.getNameOfMathValue().equals(portName)) {
+                    res = assignmentStatement;
+                } else if (res != null) {
+                    // TODO replace
+                    res = res;
+                }
+            } else
+                Log.error("0x654987 not yet supported");
         }
 
         return Optional.ofNullable(res);

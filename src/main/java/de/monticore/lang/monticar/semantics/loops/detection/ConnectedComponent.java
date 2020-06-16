@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.detection;
 
-import de.monticore.lang.math._ast.ASTMathAssignmentStatement;
-import de.monticore.lang.math._ast.ASTStatement;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.lang.monticar.semantics.loops.analyze.LoopKind;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAPort;
@@ -22,6 +21,6 @@ public interface ConnectedComponent {
     public void setInports(Set<EMAPort> inports);
     public Set<EMAPort> getOutports();
     public void setOutports(Set<EMAPort> outports);
-    Map<EMAPort, ASTMathAssignmentStatement> getPortStatements();
-    void addPortStatement(EMAPort port, ASTMathAssignmentStatement statement);
+    Map<EMAPort, MathAssignmentExpressionSymbol> getPortStatements();
+    void addPortStatement(EMAPort port, MathAssignmentExpressionSymbol statement);
 }

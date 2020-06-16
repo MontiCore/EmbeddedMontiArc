@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.resolve;
 
-import de.monticore.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.lang.math._ast.ASTMathDottedNameExpression;
 import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.lang.math._visitor.MathVisitor;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ConstantsCalculator implements MathVisitor {
     private final Set<String> variables;

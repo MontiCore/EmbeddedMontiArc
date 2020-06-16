@@ -1,27 +1,19 @@
 package de.monticore.lang.monticar.semantics.loops.graph;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
-import de.monticore.lang.math._ast.ASTStatement;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class EMAVertex {
     private String name = "";
     private String fullName = "";
-    private EMAComponentInstantiationSymbol referencedSymbol = null;
+    private EMAComponentInstanceSymbol referencedSymbol = null;
     private List<EMAPort> inports = new LinkedList<>();
     private List<EMAPort> outports  = new LinkedList<>();
 
-    public EMAVertex (String name, String fullName) {
-        this.name = name;
-        this.fullName = fullName;
-    }
-
-    public EMAVertex(EMAComponentInstantiationSymbol referencedSymbol, String name, String fullName,
+    public EMAVertex(EMAComponentInstanceSymbol referencedSymbol, String name, String fullName,
                      List<EMAPort> inports, List<EMAPort> outports) {
         this.name = name;
         this.fullName = fullName;
@@ -36,18 +28,18 @@ public class EMAVertex {
         }
     }
 
-    public static EMAVertex create(EMAComponentInstantiationSymbol symbol, String parentFullName) {
-        String name = symbol.getName();
-        String fullName = parentFullName + "." + name;
+    public static EMAVertex create(EMAComponentInstanceSymbol component) {
+        String name = component.getName();
+        String fullName = component.getFullName();
         List<EMAPort> inports = new LinkedList<>();
         List<EMAPort> outports = new LinkedList<>();
-        for (EMAPortSymbol inport: symbol.getComponentType().getReferencedSymbol().getIncomingPorts()) {
-            inports.add(new EMAPort(inport.getName(), fullName + "." + inport.getName(), inport));
+        for (EMAPortInstanceSymbol inport: component.getIncomingPortInstances()) {
+            inports.add(new EMAPort(inport, inport.getFullName(), inport.getName()));
         }
-        for (EMAPortSymbol outport: symbol.getComponentType().getReferencedSymbol().getOutgoingPorts()) {
-            outports.add(new EMAPort(outport.getName(), fullName + "." + outport.getName(), outport));
+        for (EMAPortInstanceSymbol outport: component.getOutgoingPortInstances()) {
+            outports.add(new EMAPort(outport, outport.getFullName(), outport.getName()));
         }
-        return new EMAVertex(symbol, name, fullName, inports, outports);
+        return new EMAVertex(component, name, fullName, inports, outports);
     }
 
     public String getName() {
@@ -58,7 +50,7 @@ public class EMAVertex {
         return fullName;
     }
 
-    public EMAComponentInstantiationSymbol getReferencedSymbol() {
+    public EMAComponentInstanceSymbol getReferencedSymbol() {
         return referencedSymbol;
     }
 

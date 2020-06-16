@@ -3,7 +3,6 @@ package de.monticore.lang.monticar.semantics.util;
 
 import de.monticore.expressions.prettyprint.*;
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEmbeddedMontiArcMathNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathDelegatorVisitor;
 import de.monticore.prettyprint.IndentPrinter;
 

@@ -6,7 +6,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.Embe
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 

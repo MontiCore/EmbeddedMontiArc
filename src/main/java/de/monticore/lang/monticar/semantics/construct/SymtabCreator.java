@@ -11,7 +11,6 @@ import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
 
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Set;
 
 public class SymtabCreator {

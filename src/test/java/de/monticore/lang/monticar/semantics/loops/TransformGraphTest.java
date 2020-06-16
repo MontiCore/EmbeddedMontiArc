@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.semantics.loops;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.loops.detection.EMAGraphTransformation;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
 import de.monticore.symboltable.Scope;
@@ -11,7 +11,7 @@ public class TransformGraphTest extends AbstractSymtabTest {
     @Test
     public void test() {
         Scope symTab = createSymTab("src/test/resources");
-        EMAComponentSymbol component = symTab.<EMAComponentSymbol>resolve("de.monticore.lang.monticar.semantics.loops.Test01", EMAComponentSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symTab.<EMAComponentInstanceSymbol>resolve("de.monticore.lang.monticar.semantics.loops.test01", EMAComponentInstanceSymbol.KIND).orElse(null);
         EMAGraphTransformation transformation = new EMAGraphTransformation();
         EMAGraph graph = transformation.transform(component);
     }

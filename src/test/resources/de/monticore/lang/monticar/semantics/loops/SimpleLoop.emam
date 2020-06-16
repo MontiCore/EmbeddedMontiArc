@@ -7,7 +7,7 @@ component SimpleLoop {
         in Q in1,
         out Q out1;
 
-    instance PlusMinus difference;
+    instance PlusMinus<Q> difference;
     instance GainComponent<Q>(2) gain;
 
     connect in1 -> difference.in1;

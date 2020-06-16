@@ -9,7 +9,13 @@ public class EMAPort {
     private EMAVertex emaVertex;
     private EMAPortSymbol referencedPort;
 
-    public EMAPort(String name, String fullName, EMAPortSymbol referencedPort) {
+    public EMAPort(EMAPortSymbol referencedPort) {
+        this.referencedPort = referencedPort;
+        this.name = referencedPort.getName();
+        this.fullName = referencedPort.getFullName();
+    }
+
+    public EMAPort(EMAPortSymbol referencedPort, String fullName, String name) {
         this.name = name;
         this.fullName = fullName;
         this.referencedPort = referencedPort;

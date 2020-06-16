@@ -5,9 +5,10 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilatio
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTElement;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponentInstance;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicSymbolTableCreator;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
@@ -34,7 +35,8 @@ public class MyEmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiAr
     public void visit(ASTEMACompilationUnit node) {
         if (instanceStack.isEmpty()) {
             instanceStack.push(new Stack<>());
-            instanceStack.peek().push(node.getComponent().getName());
+            String packageName = String.join(".", node.getPackageList());
+            instanceStack.peek().push(packageName + "." + node.getComponent().getName());
         }
 
         List<ComponentReplacement> currentComponentReplacements = getCurrentReplacements();
@@ -49,7 +51,7 @@ public class MyEmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiAr
 
     @Override
     public void endVisit(ASTEMACompilationUnit node) {
-        super.visit(node);
+        super.endVisit(node);
 
         List<ComponentReplacement> currentComponentReplacements = getCurrentReplacements();
         for (ComponentReplacement componentReplacement : currentComponentReplacements) {
@@ -61,11 +63,10 @@ public class MyEmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiAr
 
     @Override
     public void visit(ASTSubComponent node) {
-        ListIterator<ASTSubComponentInstance> listIterator = node.getInstancesList().listIterator();
         instanceStack.push(new Stack<>());
 
-        while (listIterator.hasNext())
-            listIterator.next();
+        ListIterator<ASTSubComponentInstance> listIterator =
+                node.getInstancesList().listIterator(node.getInstancesList().size());
         while (listIterator.hasPrevious()) {
             ASTSubComponentInstance subcomponent = listIterator.previous();
             instanceStack.peek().push(subcomponent.getName());
@@ -117,12 +118,12 @@ public class MyEmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiAr
 
     private void replaceSymbolWithSynthesizedKind(ASTEMACompilationUnit node, ComponentReplacement componentReplacement) {
         Scope spannedScope = node.getComponent().getSpannedScope();
-        EMADynamicComponentInstantiationSymbol oldSymbol =
-                spannedScope.<EMADynamicComponentInstantiationSymbol>resolve(componentReplacement.getNewInstanceName(), EMADynamicComponentInstantiationSymbol.KIND)
+        EMAComponentInstantiationSymbol oldSymbol =
+                spannedScope.<EMAComponentInstantiationSymbol>resolveLocally(componentReplacement.getInstanceNameToReplace(), EMAComponentInstantiationSymbol.KIND)
                         .orElse(null);
 
-        EMADynamicComponentInstantiationSymbol newSymbol =
-                new SynthesizedComponentSymbol(oldSymbol.getName(), oldSymbol.getDynamicComponentType());
+        EMAComponentInstanceSymbol newSymbol =
+                new SynthesizedComponentSymbol(oldSymbol.getName(), oldSymbol.getComponentType());
 
         MutableScope enclosingScope = (MutableScope) oldSymbol.getEnclosingScope();
         enclosingScope.remove(oldSymbol);
@@ -136,8 +137,8 @@ public class MyEmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiAr
     }
 
     private List<ComponentReplacement> getCurrentReplacements() {
-        String currentComponent = getCurrentComponent();
-        return componentReplacements.stream().filter(s -> s.getParentComponent().equals(currentComponent)).collect(Collectors.toList());
+        String currentComponent = getCurrentComponent().toLowerCase();
+        return componentReplacements.stream().filter(s -> s.getParentComponent().toLowerCase().equals(currentComponent)).collect(Collectors.toList());
     }
 
     private static String getCurrentComponent() {

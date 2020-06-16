@@ -2,8 +2,12 @@
 package de.monticore.lang.monticar.semantics.solver.linearsolver;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class LinearEquationSystemSolver {
 
@@ -15,7 +19,7 @@ public class LinearEquationSystemSolver {
         this.simplifier = simplifier;
     }
 
-    public Map<String, String> solveLinearEquationSystem(Set<ASTExpression> system, Set<String> variables) {
+    public Map<String, String> solveLinearEquationSystem(Set<MathAssignmentExpressionSymbol> system, Set<String> variables) {
         Map<String, String> res = new HashMap<>();
         Map<String, Integer> mappingToIndex = new HashMap<>();
 
@@ -28,9 +32,9 @@ public class LinearEquationSystemSolver {
         ArrayList<ArrayList<String>> A = new ArrayList<>();
         ArrayList<String> b = new ArrayList<>();
 
-        for (ASTExpression astExpression : system) {
+        for (MathAssignmentExpressionSymbol expressionSymbol : system) {
             RowToCoefficients converter = new RowToCoefficients(variables, mappingToIndex);
-            astExpression.accept(converter);
+            converter.handle(expressionSymbol);
             A.add(converter.getRow());
             b.add(converter.getSolution());
         }

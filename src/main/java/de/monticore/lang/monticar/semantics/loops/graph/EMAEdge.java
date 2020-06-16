@@ -6,11 +6,6 @@ public class EMAEdge {
     private EMAPort sourcePort;
     private EMAPort targetPort;
 
-    public EMAEdge(EMAVertex sourceVertex, EMAVertex targetVertex) {
-        this.sourceVertex = sourceVertex;
-        this.targetVertex = targetVertex;
-    }
-
     public EMAEdge(EMAVertex sourceVertex, EMAVertex targetVertex, EMAPort sourcePort, EMAPort targetPort) {
         this.sourceVertex = sourceVertex;
         this.targetVertex = targetVertex;
