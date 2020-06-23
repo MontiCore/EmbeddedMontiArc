@@ -44,5 +44,5 @@
   "arg_nodes": [0, 2], 
   "node_row_ptr": [0, 1, 2, 3, 4, 5, 6], 
   "heads": [[5, 0, 0]], 
-  "attrs": {"mxnet_version": ["int", 10500]}
+  "attrs": {"mxnet_version": ["int", 10501]}
 }
