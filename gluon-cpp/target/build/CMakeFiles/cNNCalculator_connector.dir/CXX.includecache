@@ -6,6 +6,66 @@
 
 #IncludeRegexTransform: 
 
+../CNNLAOptimizer_cNNCalculator_connector_predictor1.h
+mxnet-cpp/MxNetCpp.h
+-
+string
+-
+vector
+-
+memory
+-
+
+../CNNLAOptimizer_cNNCalculator_connector_predictor2.h
+mxnet-cpp/MxNetCpp.h
+-
+string
+-
+vector
+-
+memory
+-
+
+../CNNLAOptimizer_cNNCalculator_connector_predictor3.h
+mxnet-cpp/MxNetCpp.h
+-
+string
+-
+vector
+-
+memory
+-
+
+../CNNLAOptimizer_cNNCalculator_connector_predictor4.h
+mxnet-cpp/MxNetCpp.h
+-
+string
+-
+vector
+-
+memory
+-
+
+../CNNLAOptimizer_cNNCalculator_connector_predictor5.h
+mxnet-cpp/MxNetCpp.h
+-
+string
+-
+vector
+-
+memory
+-
+
+../CNNLAOptimizer_cNNCalculator_connector_predictor6.h
+mxnet-cpp/MxNetCpp.h
+-
+string
+-
+vector
+-
+memory
+-
+
 ../CNNModelLoader.h
 mxnet-cpp/MxNetCpp.h
 -
@@ -27,6 +87,8 @@ vector
 -
 CNNModelLoader.h
 -
+CNNLAOptimizer_cNNCalculator_connector_predictor1.h
+-
 
 /home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target/CNNPredictor_cNNCalculator_connector_predictor2.h
 mxnet-cpp/MxNetCpp.h
@@ -38,6 +100,8 @@ string
 vector
 -
 CNNModelLoader.h
+-
+CNNLAOptimizer_cNNCalculator_connector_predictor2.h
 -
 
 /home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target/CNNPredictor_cNNCalculator_connector_predictor3.h
@@ -51,6 +115,8 @@ vector
 -
 CNNModelLoader.h
 -
+CNNLAOptimizer_cNNCalculator_connector_predictor3.h
+-
 
 /home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target/CNNPredictor_cNNCalculator_connector_predictor4.h
 mxnet-cpp/MxNetCpp.h
@@ -62,6 +128,8 @@ string
 vector
 -
 CNNModelLoader.h
+-
+CNNLAOptimizer_cNNCalculator_connector_predictor4.h
 -
 
 /home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target/CNNPredictor_cNNCalculator_connector_predictor5.h
@@ -75,6 +143,8 @@ vector
 -
 CNNModelLoader.h
 -
+CNNLAOptimizer_cNNCalculator_connector_predictor5.h
+-
 
 /home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target/CNNPredictor_cNNCalculator_connector_predictor6.h
 mxnet-cpp/MxNetCpp.h
@@ -86,6 +156,8 @@ string
 vector
 -
 CNNModelLoader.h
+-
+CNNLAOptimizer_cNNCalculator_connector_predictor6.h
 -
 
 /home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target/CNNTranslator.h
