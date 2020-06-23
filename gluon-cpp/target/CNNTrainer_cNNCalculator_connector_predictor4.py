@@ -22,6 +22,7 @@ if __name__ == "__main__":
         num_epoch=1,
         load_checkpoint=False,
         context='cpu',
+        preprocessing=False,
         normalize=False,
         optimizer='sgd',
         optimizer_params={

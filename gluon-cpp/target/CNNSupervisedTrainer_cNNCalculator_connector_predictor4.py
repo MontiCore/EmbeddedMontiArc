@@ -7,6 +7,7 @@ import shutil
 import pickle
 import math
 import sys
+import inspect
 from mxnet import gluon, autograd, nd
 
 class CrossEntropyLoss(gluon.loss.Loss):
@@ -50,12 +51,88 @@ class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
         if self._sparse_label:
             loss = -pick(pred, label, axis=self._axis, keepdims=True)
         else:
-            label = _reshape_like(F, label, pred)
+            label = gluon.loss._reshape_like(F, label, pred)
             loss = -(pred * label).sum(axis=self._axis, keepdims=True)
         # ignore some indices for loss, e.g. <pad> tokens in NLP applications
         for i in self._ignore_indices:
             loss = loss * mx.nd.logical_not(mx.nd.equal(mx.nd.argmax(pred, axis=1), mx.nd.ones_like(mx.nd.argmax(pred, axis=1))*i) * mx.nd.equal(mx.nd.argmax(pred, axis=1), label))
         return loss.mean(axis=self._batch_axis, exclude=True)
+
+class DiceLoss(gluon.loss.Loss):
+    def __init__(self, axis=-1, sparse_label=True, from_logits=False, weight=None,
+                 batch_axis=0, **kwargs):
+        super(DiceLoss, self).__init__(weight, batch_axis, **kwargs)
+        self._axis = axis
+        self._sparse_label = sparse_label
+        self._from_logits = from_logits
+
+    def dice_loss(self, F, pred, label):
+        smooth = 1.
+        pred_y = F.argmax(pred, axis = self._axis)
+        intersection = pred_y * label
+        score = (2 * F.mean(intersection, axis=self._batch_axis, exclude=True) + smooth) \
+            / (F.mean(label, axis=self._batch_axis, exclude=True) + F.mean(pred_y, axis=self._batch_axis, exclude=True) + smooth)
+
+        return - F.log(score)
+
+    def hybrid_forward(self, F, pred, label, sample_weight=None):
+        if not self._from_logits:
+            pred = F.log_softmax(pred, self._axis)
+        if self._sparse_label:
+            loss = -F.pick(pred, label, axis=self._axis, keepdims=True)
+        else:
+            label = gluon.loss._reshape_like(F, label, pred)
+            loss = -F.sum(pred*label, axis=self._axis, keepdims=True)
+        loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
+        diceloss = self.dice_loss(F, pred, label)
+        return F.mean(loss, axis=self._batch_axis, exclude=True) + diceloss
+
+class SoftmaxCrossEntropyLossIgnoreLabel(gluon.loss.Loss):
+    def __init__(self, axis=-1, from_logits=False, weight=None,
+                 batch_axis=0, ignore_label=255, **kwargs):
+        super(SoftmaxCrossEntropyLossIgnoreLabel, self).__init__(weight, batch_axis, **kwargs)
+        self._axis = axis
+        self._from_logits = from_logits
+        self._ignore_label = ignore_label
+
+    def hybrid_forward(self, F, output, label, sample_weight=None):
+        if not self._from_logits:
+            output = F.log_softmax(output, axis=self._axis)
+
+        valid_label_map = (label != self._ignore_label)
+        loss = -(F.pick(output, label, axis=self._axis, keepdims=True) * valid_label_map )
+
+        loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
+        return F.sum(loss) / F.sum(valid_label_map)
+
+@mx.metric.register
+class ACCURACY_IGNORE_LABEL(mx.metric.EvalMetric):
+    """Ignores a label when computing accuracy.
+    """
+    def __init__(self, axis=1, metric_ignore_label=255, name='accuracy',
+                 output_names=None, label_names=None):
+        super(ACCURACY_IGNORE_LABEL, self).__init__(
+            name, axis=axis,
+            output_names=output_names, label_names=label_names)
+        self.axis = axis
+        self.ignore_label = metric_ignore_label
+
+    def update(self, labels, preds):
+        mx.metric.check_label_shapes(labels, preds)
+
+        for label, pred_label in zip(labels, preds):
+            if pred_label.shape != label.shape:
+                pred_label = mx.nd.argmax(pred_label, axis=self.axis, keepdims=True)
+            label = label.astype('int32')
+            pred_label = pred_label.astype('int32').as_in_context(label.context)
+
+            mx.metric.check_label_shapes(label, pred_label)
+
+            correct = mx.nd.sum( (label == pred_label) * (label != self.ignore_label) ).asscalar()
+            total = mx.nd.sum( (label != self.ignore_label) ).asscalar()
+
+            self.sum_metric += correct
+            self.num_inst += total
 
 @mx.metric.register
 class BLEU(mx.metric.EvalMetric):
@@ -192,6 +269,7 @@ class CNNSupervisedTrainer_cNNCalculator_connector_predictor4:
               optimizer_params=(('learning_rate', 0.001),),
               load_checkpoint=True,
               checkpoint_period=5,
+              load_pretrained=False,
               log_period=50,
               context='gpu',
               save_attention_image=False,
@@ -236,6 +314,8 @@ class CNNSupervisedTrainer_cNNCalculator_connector_predictor4:
         begin_epoch = 0
         if load_checkpoint:
             begin_epoch = self._net_creator.load(mx_context)
+        elif load_pretrained:
+            self._net_creator.load_pretrained_weights(mx_context)
         else:
             if os.path.isdir(self._net_creator._model_dir_):
                 shutil.rmtree(self._net_creator._model_dir_)
@@ -253,16 +333,25 @@ class CNNSupervisedTrainer_cNNCalculator_connector_predictor4:
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
         ignore_indices = [loss_params['ignore_indices']] if 'ignore_indices' in loss_params else []
+        loss_axis = loss_params['loss_axis'] if 'loss_axis' in loss_params else -1
+        batch_axis = loss_params['batch_axis'] if 'batch_axis' in loss_params else 0
         if loss == 'softmax_cross_entropy':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
-            loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(from_logits=fromLogits, sparse_label=sparseLabel)
+            loss_function = mx.gluon.loss.SoftmaxCrossEntropyLoss(axis=loss_axis, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
         elif loss == 'softmax_cross_entropy_ignore_indices':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
-            loss_function = SoftmaxCrossEntropyLossIgnoreIndices(ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel)
+            loss_function = SoftmaxCrossEntropyLossIgnoreIndices(axis=loss_axis, ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
         elif loss == 'sigmoid_binary_cross_entropy':
             loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
         elif loss == 'cross_entropy':
-            loss_function = CrossEntropyLoss(sparse_label=sparseLabel)
+            loss_function = CrossEntropyLoss(axis=loss_axis, sparse_label=sparseLabel, batch_axis=batch_axis)
+        elif loss == 'dice_loss':
+            loss_weight = loss_params['loss_weight'] if 'loss_weight' in loss_params else None
+            loss_function = DiceLoss(axis=loss_axis, weight=loss_weight, sparse_label=sparseLabel, batch_axis=batch_axis)
+        elif loss == 'softmax_cross_entropy_ignore_label':
+            loss_weight = loss_params['loss_weight'] if 'loss_weight' in loss_params else None
+            loss_ignore_label = loss_params['loss_ignore_label'] if 'loss_ignore_label' in loss_params else None
+            loss_function = SoftmaxCrossEntropyLossIgnoreLabel(axis=loss_axis, ignore_label=loss_ignore_label, weight=loss_weight, batch_axis=batch_axis)
         elif loss == 'l2':
             loss_function = mx.gluon.loss.L2Loss()
         elif loss == 'l1':
@@ -287,14 +376,13 @@ class CNNSupervisedTrainer_cNNCalculator_connector_predictor4:
         
         loss_function.hybridize()
         
-        #Memory Replay
-        replay_layers = {}
-        replay_store_buffer = {}
-        replay_layers[0] = []
-        replay_store_buffer[0] = []
+
 
         tic = None
 
+        avg_speed = 0
+        n = 0
+    
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             if shuffle_data:
                 if preprocessing:
@@ -310,9 +398,7 @@ class CNNSupervisedTrainer_cNNCalculator_connector_predictor4:
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 
-                 #replay memory computations
-                if batch_i > 0:
-                    pass                                 
+                                 
                 with autograd.record():
                     labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
 
@@ -326,8 +412,6 @@ class CNNSupervisedTrainer_cNNCalculator_connector_predictor4:
                     lossList = []
 
                     net_ret = self._networks[0](data_)
-                    for i in range(len(replay_store_buffer[0])):
-                        replay_store_buffer[0][i] = net_ret[1][i]
 
                     softmax_ = net_ret[0][0]
                     lossList.append(loss_function(softmax_, labels[0]))
@@ -353,12 +437,7 @@ class CNNSupervisedTrainer_cNNCalculator_connector_predictor4:
 
                 for trainer in trainers:
                     trainer.step(batch_size)
-                                                      
-                #storing samples for replay
-                for net_i in range(len(self._networks)):
-                    for layer_i, layer in enumerate(replay_layers[net_i]):
-                        layer.store_samples(replay_store_buffer[net_i][layer_i], labels, mx_context)
-
+    
                 if tic is None:
                     tic = time.time()
                 else:
@@ -372,13 +451,15 @@ class CNNSupervisedTrainer_cNNCalculator_connector_predictor4:
                         loss_total = 0
 
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
-
+                        
+                        avg_speed += speed
+                        n += 1
+    
                         tic = time.time()
 
             global_loss_train /= (train_batches * batch_size)
 
             tic = None
-
 
             if eval_train:
                 train_iter.reset()
@@ -532,11 +613,7 @@ class CNNSupervisedTrainer_cNNCalculator_connector_predictor4:
 
                 predictions = []
                 for output_name in outputs:
-                    if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                        predictions.append(mx.nd.argmax(output_name, axis=1))
-                    #ArgMax already applied
-                    else:
-                        predictions.append(output_name)
+                    predictions.append(output_name)
 
                 metric.update(preds=predictions, labels=labels)
             test_metric_score = metric.get()[1]
@@ -549,15 +626,20 @@ class CNNSupervisedTrainer_cNNCalculator_connector_predictor4:
                 for i, network in self._networks.items():
                     network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
 
+        print("--------------------------------------Speed------------------------------------------")
+        print(avg_speed/n)
+        print("--------------------------------------Speed------------------------------------------")
+    
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch + 1).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
             
-            if hasattr(network, 'replay_sub_nets'):
-                network.replaysubnet0_.export(self.parameter_path(i) + '_newest_sub_net_' + str(0), epoch=0)
-                for j, net in enumerate(network.replay_sub_nets):
-                    net.export(self.parameter_path(i) + '_newest_sub_net_' + str(j+1), epoch=0)
-
+            if hasattr(network, 'episodic_sub_nets'):
+                network.episodicsubnet0_.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(0), epoch=0)
+                for j, net in enumerate(network.episodic_sub_nets):
+                    net.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(j+1), epoch=0)
+                    episodic_query_networks[i][j].export(self.parameter_path(i) + '_newest_episodic_query_net_' + str(j+1), epoch=0)
+                    episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_" + str(j + 1))
             loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 
     def parameter_path(self, index):
