@@ -2,15 +2,20 @@
 package dltag;
 
 tagschema DeepLearningFilePathSchema {
+    // tag schema definition for use in EmbeddedMontiArcDL
+    // TODO add corresponding implementation for the rest two tag schemas in EMADL and apply them in EMADL2CPP
 	tagtype DataPath for EMAComponentSymbol is { path = ${path:String}, type = ${type:String} };
+	tagtype TrainingConfigDataPath for EMAComponentSymbol is { path = ${path:String} (, fileName = ${fileName:String})? };
+    tagtype PreTrainedModelWeightsDataPath for ComponentSymbol is { path = ${path:String}, fileName = ${type:String} };
 
-	// the name of training config data is optional,
+    // tag schema definition for use in MontiThingsDL
+    // the name of training config data is optional,
     // in this case, we'll try to load the file with the same name as the architecture
-    tagtype TrainingConfigDataPath for ComponentSymbol is
-        { path = ${path:String} (, fileName = ${fileName:String})? };
-    tagtype TrainingConfigDataPath for ComponentInstanceSymbol is
-            { path = ${path:String} (, fileName = ${fileName:String})? };
+	tagtype DataPath for ComponentSymbol is { path = ${path:String}, type = ${type:String} };
+    tagtype TrainingConfigDataPath for ComponentSymbol is { path = ${path:String} (, fileName = ${fileName:String})? };
+    tagtype PreTrainedModelWeightsDataPath for ComponentSymbol is { path = ${path:String}, fileName = ${type:String} };
 
-    tagtype PreTrainedModelWeightsDataPath for ComponentSymbol is { path = ${path:String}, type = ${type:String} };
-    tagtype PreTrainedModelWeightsDataPath for ComponentInstanceSymbol is { path = ${path:String}, type = ${type:String} };
+	tagtype DataPath for ComponentInstanceSymbol is { path = ${path:String}, type = ${type:String} };
+    tagtype TrainingConfigDataPath for ComponentInstanceSymbol is { path = ${path:String} (, fileName = ${fileName:String})? };
+    tagtype PreTrainedModelWeightsDataPath for ComponentInstanceSymbol is { path = ${path:String}, fileName = ${type:String} };
 }
