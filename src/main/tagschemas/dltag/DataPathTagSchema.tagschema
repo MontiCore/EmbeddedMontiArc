@@ -3,4 +3,14 @@ package dltag;
 
 tagschema DeepLearningFilePathSchema {
 	tagtype DataPath for EMAComponentSymbol is { path = ${path:String}, type = ${type:String} };
+
+	// the name of training config data is optional,
+    // in this case, we'll try to load the file with the same name as the architecture
+    tagtype TrainingConfigDataPath for ComponentSymbol is
+        { path = ${path:String} (, fileName = ${fileName:String})? };
+    tagtype TrainingConfigDataPath for ComponentInstanceSymbol is
+            { path = ${path:String} (, fileName = ${fileName:String})? };
+
+    tagtype PreTrainedModelWeightsDataPath for ComponentSymbol is { path = ${path:String}, type = ${type:String} };
+    tagtype PreTrainedModelWeightsDataPath for ComponentInstanceSymbol is { path = ${path:String}, type = ${type:String} };
 }

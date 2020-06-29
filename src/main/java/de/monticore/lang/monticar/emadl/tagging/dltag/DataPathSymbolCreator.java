@@ -27,8 +27,8 @@ import java.util.regex.Pattern;
 
 public class DataPathSymbolCreator implements TagSymbolCreator {
 
-    private final String regexExpression =  "\\s*\\{\\s*path\\s*=\\s*(.*)\\s*,\\s*type\\s*=\\s*(.*)\\s*\\}\\s*";
-    private final Pattern pattern = Pattern.compile(regexExpression, Pattern.MULTILINE);
+    protected final String regexExpression =  "\\s*\\{\\s*path\\s*=\\s*(.*)\\s*,\\s*type\\s*=\\s*(.*)\\s*\\}\\s*";
+    protected final Pattern pattern = Pattern.compile(regexExpression, Pattern.MULTILINE);
 
     @Override
     public void create(ASTTaggingUnit unit, TaggingResolver tagging) {
@@ -56,7 +56,7 @@ public class DataPathSymbolCreator implements TagSymbolCreator {
         }
     }
 
-    private void addTag(ASTTag tag, TaggingResolver tagging, String root, SymbolKind kind) {
+    protected void addTag(ASTTag tag, TaggingResolver tagging, String root, SymbolKind kind) {
         tag.getTagElementList().stream()
             .filter(tagElement -> tagElement.getName().equals("DataPath"))
             .forEachOrdered(tagElement -> {
@@ -75,7 +75,7 @@ public class DataPathSymbolCreator implements TagSymbolCreator {
             });
     }
 
-    private Matcher matchRegexPattern(String regex) {
+    protected Matcher matchRegexPattern(String regex) {
         Matcher matcher = pattern.matcher(regex);
         if (matcher.matches()) {
             return matcher;
@@ -92,7 +92,7 @@ public class DataPathSymbolCreator implements TagSymbolCreator {
 
     }
 
-    private String dotJoin(String root, String name) {
+    protected String dotJoin(String root, String name) {
         if (StringUtils.isEmpty(root)) {
             return name;
         }
