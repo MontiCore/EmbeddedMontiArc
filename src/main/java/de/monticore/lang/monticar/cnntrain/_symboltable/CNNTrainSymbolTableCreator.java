@@ -14,6 +14,7 @@ import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.misc.Pair;
 
@@ -43,6 +44,8 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
                 CNNTrainSymbolTableCreator.class.getSimpleName());
 
         List<ImportStatement> imports = new ArrayList<>();
+
+        this.compilationUnitPackage = Names.getQualifiedName(compilationUnit.getPackageList());
 
         ArtifactScope artifactScope = new ArtifactScope(
                 Optional.empty(),
