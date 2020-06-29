@@ -2,7 +2,9 @@
 package de.monticore.lang.monticar;
 
 grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.NumberUnit{
-    symbol scope CNNTrainCompilationUnit = "configuration"
+    symbol scope CNNTrainCompilationUnit =
+                                ("package" package:(Name& || ".")+ ";")?  // optional package declaration
+                                "configuration"
                                  name:Name&
                                  Configuration;
 
