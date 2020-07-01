@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.utils;
 
+import de.rwth.montisim.commons.utils.JsonTraverser.ValueType;
+
 /**
  * Implementation of the javafx Point3D class.
  * https://docs.oracle.com/javase/8/javafx/api/javafx/geometry/Point3D.html
  */
-public class Vec3 {
+public class Vec3 implements JsonSerializable {
     public double x;
     public double y;
     public double z;
@@ -192,5 +194,29 @@ public class Vec3 {
             case 2: return z;
             default: return x;
         }
+    }
+
+    @Override
+    public void toJson(JsonWriter j) {
+        j.startArray();
+        j.writeValue(x);
+        j.writeValue(y);
+        j.writeValue(z);
+        j.endArray();
+    }
+
+    @Override
+    public void fromJson(JsonTraverser j) {
+        int i = 1;
+        for (ValueType t : j.streamArray()){
+            switch(i){
+                case 1: x = j.getDouble(); break;
+                case 2: y = j.getDouble(); break;
+                case 3: z = j.getDouble(); break;
+            }
+            ++i;
+        }
+        if (i < 4) throw new ParsingException("Missing entries in vector array");
+        if (i > 4) throw new ParsingException("Too many entries in vector array");
     }
 }

@@ -17,10 +17,10 @@ public abstract class DiscreteEventSimulator<EventType, T extends DiscreteEvent<
 	private static final DiscreteEvent.DiscreteEventComparator listComparator = new DiscreteEvent.DiscreteEventComparator();
 
 	/** point of time of simulation */
-	private Instant simulationTime = Instant.EPOCH;
+	protected Instant simulationTime = Instant.EPOCH;
 
     /** list of all discrete events */
-    private final PriorityQueue<T> eventList = new PriorityQueue<>(listComparator);
+    protected final PriorityQueue<T> eventList = new PriorityQueue<>(listComparator);
 
     /**
      * Function that needs to be implemented in subclasses of DiscreteEventSimulator

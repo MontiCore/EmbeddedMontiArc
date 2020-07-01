@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.utils;
+
+import de.rwth.montisim.commons.utils.JsonTraverser.ValueType;
+
 // TODO add constructors as in Mat3
-public class Mat4 {
+public class Mat4 implements JsonSerializable {
     public Vec4 col1;
     public Vec4 col2;
     public Vec4 col3;
@@ -66,5 +69,31 @@ public class Mat4 {
             case 3: return col4.at(row);
             default: return col1.at(row);
         }
+    }
+
+    @Override
+    public void toJson(JsonWriter j) {
+        j.startArray();
+        col1.toJson(j);
+        col2.toJson(j);
+        col3.toJson(j);
+        col4.toJson(j);
+        j.endArray();
+    }
+
+    @Override
+    public void fromJson(JsonTraverser j) {
+        int i = 1;
+        for (ValueType t : j.streamArray()){
+            switch(i){
+                case 1: col1.fromJson(j); break;
+                case 2: col2.fromJson(j); break;
+                case 3: col3.fromJson(j); break;
+                case 4: col4.fromJson(j); break;
+            }
+            ++i;
+        }
+        if (i < 5) throw new ParsingException("Missing entries in matrix array");
+        if (i > 5) throw new ParsingException("Too many entries in matrix array");
     }
 }

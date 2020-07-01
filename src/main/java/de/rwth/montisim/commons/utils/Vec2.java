@@ -1,12 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.utils;
 
+import de.rwth.montisim.commons.utils.JsonTraverser.ValueType;
+import de.rwth.montisim.commons.utils.json.*;
+
 /**
  * Implementation of the javafx Point2D class.
  * https://docs.oracle.com/javase/8/javafx/api/javafx/geometry/Point2D.html
  */
-public class Vec2 {
+public class Vec2 implements JsonSerializable {
+    @JsonEntry
     public double x;
+    @JsonEntry
     public double y;
 
     public Vec2(double x, double y) {
@@ -169,5 +174,28 @@ public class Vec2 {
             case 1: return y;
             default: return x;
         }
+    }
+
+    
+    @Override
+    public void toJson(JsonWriter j) {
+        j.startArray();
+        j.writeValue(x);
+        j.writeValue(y);
+        j.endArray();
+    }
+
+    @Override
+    public void fromJson(JsonTraverser j) {
+        int i = 1;
+        for (ValueType t : j.streamArray()){
+            switch(i){
+                case 1: x = j.getDouble(); break;
+                case 2: y = j.getDouble(); break;
+            }
+            ++i;
+        }
+        if (i < 3) throw new ParsingException("Missing entries in vector array");
+        if (i > 3) throw new ParsingException("Too many entries in vector array");
     }
 }

@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.utils;
 
-public class Vec4 {
+import de.rwth.montisim.commons.utils.JsonTraverser.ValueType;
+
+public class Vec4 implements JsonSerializable {
     public double x;
     public double y;
     public double z;
@@ -163,5 +165,32 @@ public class Vec4 {
             case 3: return w;
             default: return x;
         }
+    }
+
+    
+    @Override
+    public void toJson(JsonWriter j) {
+        j.startArray();
+        j.writeValue(x);
+        j.writeValue(y);
+        j.writeValue(z);
+        j.writeValue(w);
+        j.endArray();
+    }
+
+    @Override
+    public void fromJson(JsonTraverser j) {
+        int i = 1;
+        for (ValueType t : j.streamArray()){
+            switch(i){
+                case 1: x = j.getDouble(); break;
+                case 2: y = j.getDouble(); break;
+                case 3: z = j.getDouble(); break;
+                case 4: z = j.getDouble(); break;
+            }
+            ++i;
+        }
+        if (i < 5) throw new ParsingException("Missing entries in vector array");
+        if (i > 5) throw new ParsingException("Too many entries in vector array");
     }
 }

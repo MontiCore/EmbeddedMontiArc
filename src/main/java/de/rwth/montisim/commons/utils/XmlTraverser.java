@@ -1,21 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Iterator;
 
 /**
  * A Lightweight XML Traverser.
  * The goal is to process the content stream only once.
  * 
  * The functions to traverse are:
- * - next_tag()
- * - next_attribute()
- * - enter_tag()
- * - exit_tag()
+ * - nextTag()
+ * - nextAttribute() -> returns attribute ref
+ * - enterTag()
+ * - exitTag()
  * 
  * The the current tag name or current attribute key/value can be read and processed.
  */
@@ -32,120 +29,88 @@ public class XmlTraverser {
     int depth; //Depth of the current character (depth increases as soon as new tag opens ('<'...))
     int traversed_depth; //The depth of the tag currently being inspected
 
-    int last_string_start;
-    int last_string_size;
+    char c;
 
-    char current_char;
+    final StringRef currentTag = new StringRef();
+    final StringRef currentKeyword = new StringRef();
+    final StringRef currentValue = new StringRef();
 
-    public XmlTraverser from_file(File f) {
+    final TagIterable tagIterator = new TagIterable();
+    final AttribIterable attribIterator = new AttribIterable();
+
+    public XmlTraverser fromFile(File f) throws FileNotFoundException, IOException{
         data = null;
         if (f.exists()) {
-            try {
-                FileReader fr;
-                fr = new FileReader(f);
-                BufferedReader br = new BufferedReader(fr);
+            FileReader fr;
+            fr = new FileReader(f);
+            BufferedReader br = new BufferedReader(fr);
 
-                int size = (int) f.length();
-                data = new char[size];
+            int size = (int) f.length();
+            data = new char[size];
 
-                br.read(data);
-                br.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            br.read(data);
+            br.close();
         }
-        reset_traverser();
+        resetTraverser();
         return this;
     }
 
-    public void reset_traverser(){
+    public void resetTraverser(){
         pos = 0;
         inside_tag = false;
         //closing_tag = false;
         //tag_stack = new Stack<String>();
         depth = 0;
         traversed_depth = 0;
-        current_char = data[0];
+        c = data[0];
+        currentKeyword.init(data);
+        currentTag.init(data);
+        currentValue.init(data);
     }
 
-    
-
-    private void next_char(){
-        pos++;
-        if (pos >= data.length) current_char = '\0';
-        else current_char = data[pos];
+    public TagIterable tags() {
+        return tagIterator;
     }
 
-    private void read_string() throws Exception {
-        //Validate starting at '"'
-        if (!is_next_string_delimiter()){
-            last_string_size = 0;
-            throw new Exception("Started 'read_string()' not at string delimiter ('\"')");
-        }
-        boolean escape = false;
-        last_string_start = pos + 1;
-        do {
-            next_char();
-            if (!is_next_valid()) throw new Exception("Reached XML EOF while in string");
-            if (escape){
-                escape = false;
-            } else {
-                if (is_next_string_delimiter()) break;
-                else if (current_char == '\\') escape = true;
-            }
-        } while(true);
-        last_string_size = pos - last_string_start;
-        next_char();
-        skip_whitespace();
-    }
-
-
-    private String read_keyword() throws Exception {
-        //Pos at first char of word
-        int word_start = pos;
-        while (is_next_valid() && !is_next_whitespace() && !is_next_any_delimiter()){
-            next_char();
-        }
-        int size = pos - word_start;
-        skip_whitespace();
-        return size == 0 ? "" : new String(data, word_start, size);
-    }
-
-    
-
-    /** Returns the name of the next attribute inside the last explored tag or the empty string if none. */
-    public String next_attribute() throws Exception {
-        //Must be inside opening tag
-        if (!inside_tag) return ""; //Already escaped tag
-        if (is_next_endoftag() || is_next_slash() || !is_next_valid()) return ""; //No attrib left
-        String key = read_keyword();
-        if (!is_next_equal()) {
-            throw new Exception("Expected '=' between attribute key and value.");
-        }
-        next_char();
-        skip_whitespace();
-        read_string(); //Stores reference to attrib value for get_attribute_value()
-        return key;
+    public AttribIterable attribs() {
+        return attribIterator;
     }
 
     /** 
-     * Returns value string of the last attribute traversed using next_attribute()
-     * Note: Does not remove the escaping character (ex: \" will stay as is)
+     * Returns the name of the next attribute inside the last explored tag or null if none. 
      */
-    public String get_attribute_value(){
-        if (last_string_size == 0) return "";
-        return new String(data, last_string_start, last_string_size);
+    private StringRef nextAttributeKey() {
+        //Must be inside opening tag
+        if (!inside_tag) return null; //Already escaped tag
+        if (c == '>' || c == '/' || c == '\0') return null; //No attrib left
+        read_keyword(currentKeyword);
+        if (c != '=') {
+            throw new ParsingException(data, pos, "Expected '=' between attribute key and value.");
+        }
+        next_char();
+        skip_whitespace();
+        readAttribValue(); //Stores reference to attrib value for get_attribute_value()
+        return currentKeyword;
     }
 
-    /** Returns the name of the next tag on the current traversal depth or the empty string if none. */
-    public String next_tag() throws Exception {
+    /** 
+     * Returns the value string of the last attribute traversed using next_attribute()
+     * Note: Does not remove the escaping character (ex: \" will stay as is)
+     */
+    public StringRef getAttributeValue() {
+        return currentValue;
+    }
+
+
+    
+
+    /** Returns the name of the next tag on the current traversal depth or null if none. */
+    private StringRef nextTag() {
         //NOTE: this method must make sure the 'inside_tag' flag and the depth value are correct
         
         //If inside_tag is true:    Position is after tag name ('/' or '>' or attrib)
         //Else:                     Position is in CONTENT (but not whitespace)
-        if (!is_next_valid()) return "";
+        if (c == '\0') return null;
         
         if (inside_tag){
             internal_exit_tag();
@@ -157,59 +122,17 @@ public class XmlTraverser {
                 internal_exit_tag();
             }
         }
-        if (depth < traversed_depth) return ""; //No more tags on the traversal depth
+        if (depth < traversed_depth) return null; //No more tags on the traversal depth
 
         while (!process_tag()){
-            if (!is_next_valid() || depth < traversed_depth) return "";
+            if (c == '\0' || depth < traversed_depth) return null;
         }
-        return read_keyword();
-    }
-
-    //! From CONTENT: goes to next tag type element and checks it
-    //! Returns true if it entered a tag (oneliner or opening tag)
-    //! Returns false if it skipped the element (and position is set after the element)
-    private boolean process_tag() throws Exception {
-        to_new_tag();
-        if (!is_next_valid()) return false;
-        else if (is_next_special()) skip_special();
-        else if (is_next_comment()) skip_comment();
-        else if (is_next_slash()){
-            //Closing tag
-            next_char();
-            skip_keyword();
-            if (!is_next_endoftag()) throw new Exception("Expected '>' at end of closing tag.");
-            next_char();
-            depth--;
-        } else if (is_next_any_delimiter()) throw new Exception("Expected name, '/', '!--' or '?' after '<'.");
-        else {
-            //New tag
-            depth++;
-            inside_tag = true;
-            return true;
-        }
-        return false;
-    }
-
-    private void internal_exit_tag() throws Exception {
-        while (is_next_valid() && !is_next_slash() && !is_next_endoftag()){
-            if (is_next_any_delimiter())
-                throw new Exception("Expected attrib or '>' or '/>' in tag.");
-            skip_attrib();
-        }
-        if (!is_next_valid()){
-            throw new Exception("Reached End-of-File while inside tag.");
-        }
-        if (is_next_slash()){
-            depth--;
-            next_char();
-        }
-        if (!is_next_endoftag()) throw new Exception("Expected '>' at end of tag.");
-        next_char();
-        inside_tag = false;
+        read_keyword(currentTag);
+        return currentTag;
     }
 
     
-
+    
     /**
      * Sets the traversal depth to that of the current tag.
      * This will make next_tag() return tags of this depth only.
@@ -217,7 +140,7 @@ public class XmlTraverser {
      * Always call exit_tag() to cancel a call to enter_tag().
      * @return true if there is content in the tag.
      */
-    public boolean enter_tag() throws Exception {
+    public boolean enterTag() {
         //NOTE: this method must make sure the 'inside_tag' flag and the depth value are correct
         traversed_depth++;
         if (inside_tag){
@@ -227,19 +150,112 @@ public class XmlTraverser {
     }
 
     /** Exits the previously entered tag. */
-    public void exit_tag(){
+    public void exitTag(){
         // Decreases traversal depth by one
         traversed_depth--;
     }
+
+    private void next_char(){
+        pos++;
+        if (pos >= data.length) c = '\0';
+        else c = data[pos];
+    }
+
+    private void readAttribValue() {
+        //Validate starting at '"'
+        if (c != '"'){
+            currentValue.setEmpty();
+            throw new ParsingException(data, pos, "Started 'read_string()' not at string delimiter ('\"')");
+        }
+        boolean escape = false;
+        int last_string_start = pos + 1;
+        do {
+            next_char();
+            if (c == '\0') throw new ParsingException(data, pos, "Reached XML EOF while in string");
+            if (escape){
+                escape = false;
+            } else {
+                if (c == '"') break;
+                else if (c == '\\') escape = true;
+            }
+        } while(true);
+        currentValue.set(last_string_start, pos - last_string_start);
+        next_char();
+        skip_whitespace();
+    }
+
+
+    private void read_keyword(StringRef target) {
+        //Pos at first char of word
+        int word_start = pos;
+        while (c != '\0' && !is_next_whitespace() && !is_next_any_delimiter()){
+            next_char();
+        }
+        int size = pos - word_start;
+        skip_whitespace();
+        if (size == 0) {
+            target.setEmpty();
+        } else {
+            target.set(word_start, size);
+        }
+    }
+
+    
+
+    //! From CONTENT: goes to next tag type element and checks it
+    //! Returns true if it entered a tag (oneliner or opening tag)
+    //! Returns false if it skipped the element (and position is set after the element)
+    private boolean process_tag() {
+        to_new_tag();
+        if (c == '\0') return false;
+        else if (c == '?') skip_special();
+        else if (c == '!') skip_comment();
+        else if (c == '/'){
+            //Closing tag
+            next_char();
+            skip_keyword();
+            if (c != '>') throw new ParsingException(data,pos, "Expected '>' at end of closing tag.");
+            next_char();
+            depth--;
+        } else if (is_next_any_delimiter()) throw new ParsingException(data,pos, "Expected name, '/', '!--' or '?' after '<'.");
+        else {
+            //New tag
+            depth++;
+            inside_tag = true;
+            return true;
+        }
+        return false;
+    }
+
+    private void internal_exit_tag() {
+        while (c != '\0' && c != '/' && c != '>'){
+            if (is_next_any_delimiter())
+                throw new ParsingException(data,pos, "Expected attrib or '>' or '/>' in tag.");
+            skip_attrib();
+        }
+        if (c == '\0'){
+            throw new ParsingException(data,pos, "Reached End-of-File while inside tag.");
+        }
+        if (c == '/'){
+            depth--;
+            next_char();
+        }
+        if (c != '>') throw new ParsingException(data,pos, "Expected '>' at end of tag.");
+        next_char();
+        inside_tag = false;
+    }
+
+    
+
 
 
     private void to_new_tag(){
         //Only call in CONTENT
         //Go after next "<" or EOF
-        while (is_next_valid() && !is_next_tag()){
+        while (c != '\0' && c != '<'){
             next_char();
         }
-        if (is_next_valid()) next_char();
+        if (c != '\0') next_char();
     }
 
     /*
@@ -253,24 +269,24 @@ public class XmlTraverser {
     }
 
     
-    private void skip_keyword() throws Exception {
-        while (is_next_valid() && !is_next_whitespace() && !is_next_any_delimiter()){
+    private void skip_keyword() {
+        while (c != '\0' && !is_next_whitespace() && !is_next_any_delimiter()){
             next_char();
         }
         skip_whitespace();
     }
 
-    private void skip_attrib() throws Exception {
+    private void skip_attrib() {
         skip_keyword();
-        if (!is_next_equal()) {
-            throw new Exception("Expected '=' between attribute key and value.");
+        if (c != '=') {
+            throw new ParsingException(data, pos, "Expected '=' between attribute key and value.");
         }
         next_char();
         skip_whitespace();
-        read_string();
+        readAttribValue();
     }
 
-    private void skip_comment() throws Exception {
+    private void skip_comment() {
         //Searches for "-->"
         //Current is at '!' in "<!--"
         next_char();
@@ -279,12 +295,12 @@ public class XmlTraverser {
         boolean need_dash = false;
         boolean need_delimiter = false;
         do {
-            if (is_next_dash()){
+            if (c == '-'){
                 if (need_dash){
                     need_delimiter = true;
                 }
                 need_dash = true;
-            } else if (is_next_endoftag()){
+            } else if (c == '>'){
                 if (need_delimiter){
                     next_char();
                     return;
@@ -296,27 +312,27 @@ public class XmlTraverser {
                 need_delimiter = false;
             }
             next_char();
-        } while (is_next_valid());
-        throw new Exception("Reached End-of-File while in comment");
+        } while (c != '\0');
+        throw new ParsingException(data,pos, "Reached End-of-File while in comment");
     }
 
     
 
-    private void skip_special() throws Exception {
+    private void skip_special() {
         //Searches for "?>"
         //Current pos is at '?' in "<?"
         next_char();
         skip_keyword();
-        while (is_next_valid() && !is_next_special()){
+        while (c != '\0' && c != '?'){
             if (is_next_any_delimiter())
-                throw new Exception("Expected attrib or '?>' in special tag");
+                throw new ParsingException(data, pos, "Expected attrib or '?>' in special tag");
             skip_attrib();
         }
         next_char();
-        if (!is_next_valid())
-            throw new Exception("Reached End-of-File while in '<? ?>' tag");
-        if (!is_next_endoftag())
-            throw new Exception("Expected '>' after '?' in special tag");
+        if (c == '\0')
+            throw new ParsingException(data, pos, "Reached End-of-File while in '<? ?>' tag");
+        if (c != '>')
+            throw new ParsingException(data, pos, "Expected '>' after '?' in special tag");
         next_char();
     }
 
@@ -327,44 +343,68 @@ public class XmlTraverser {
 
 
     private boolean is_next_whitespace(){
-        return current_char == ' ' || current_char == '\n' || current_char == '\r' || current_char == '\t';
+        return c == ' ' || c == '\n' || c == '\r' || c == '\t';
     }
-    private boolean is_next_string_delimiter(){
-        return current_char == '"';
-    }
-    private boolean is_next_valid(){
-        return current_char != '\0';
-    }
-    private boolean is_next_tag(){
-        return current_char == '<';
-    }
-    private boolean is_next_endoftag(){
-        return current_char == '>';
-    }
-    private boolean is_next_slash(){
-        return current_char == '/';
-    }
-    private boolean is_next_dash(){
-        return current_char == '-';
-    }
-    private boolean is_next_special(){
-        return current_char == '?';
-    }
-    private boolean is_next_equal(){
-        return current_char == '=';
-    }
-    private boolean is_next_comment(){
-        return current_char == '!';
+    private boolean is_next_any_delimiter(){
+        return c == '=' ||
+            c == '<' ||
+            c == '>' ||
+            c == '/' ||
+            c == '\\' ||
+            c == '"' ||
+            c == '?' ||
+            c == '!';
     }
 
-    private boolean is_next_any_delimiter(){
-        return current_char == '=' ||
-            current_char == '<' ||
-            current_char == '>' ||
-            current_char == '/' ||
-            current_char == '\\' ||
-            current_char == '"' ||
-            current_char == '?' ||
-            current_char == '!';
+    public class TagIterable implements Iterable<StringRef> {
+        public TagIterator it = new TagIterator();
+        @Override
+        public Iterator<StringRef> iterator() {
+            return it;
+        }
+    }
+
+    public class TagIterator implements Iterator<StringRef> {
+        StringRef currentTag = null;
+        @Override
+        public boolean hasNext() {
+            try {
+                currentTag = nextTag();
+            } catch (ParsingException e) {
+                throw new IllegalArgumentException(e.getMessage());
+            }
+            return currentTag != null;
+        }
+
+        @Override
+        public StringRef next() {
+            return currentTag;
+        }
+    }
+
+    public class AttribIterable implements Iterable<StringRef> {
+        public AttribIterator it = new AttribIterator();
+        @Override
+        public Iterator<StringRef> iterator() {
+            return it;
+        }
+    }
+
+    public class AttribIterator implements Iterator<StringRef> {
+        StringRef currentAttrib = null;
+        @Override
+        public boolean hasNext() {
+            try {
+                currentAttrib = nextAttributeKey();
+            } catch (ParsingException e) {
+                throw new IllegalArgumentException(e.getMessage());
+            }
+            return currentAttrib != null;
+        }
+
+        @Override
+        public StringRef next() {
+            return currentAttrib;
+        }
     }
 }

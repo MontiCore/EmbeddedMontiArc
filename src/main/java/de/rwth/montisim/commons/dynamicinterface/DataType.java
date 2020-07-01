@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.dynamicinterface;
 
+import de.rwth.montisim.commons.utils.*;
+import de.rwth.montisim.commons.utils.json.JsonEntry;
+
 /**
  * Reflection class for the types of Messages sent in the simulation.
  */
@@ -17,6 +20,7 @@ public class DataType {
 
 
     public static enum Type {
+        //@JsonEntry
         DOUBLE,
         FLOAT,
         INT,
@@ -93,5 +97,39 @@ public class DataType {
         if (this.getClass() != o.getClass())
             return false;
         return this.type == ((DataType)o).type;
+    }
+
+    public void toJson(JsonWriter j, Object o) {
+        switch(type){
+            case DOUBLE: j.writeValue((Double)o); return;
+            case FLOAT: j.writeValue((Float)o); return;
+            case INT: j.writeValue((Integer)o); return;
+            case BYTE: j.writeValue((Byte)o); return;
+            case BOOLEAN: j.writeValue((Boolean)o); return;
+            case EMPTY: return;
+            case VEC2: ((Vec2)o).toJson(j); return;
+            case VEC3: ((Vec3)o).toJson(j); return;
+            default: throw new IllegalArgumentException("Missing type implementation (type: "+type+")");
+        }
+    }
+
+    public Object fromJson(JsonTraverser j){
+        switch(type){
+            case DOUBLE: return j.getDouble();
+            case FLOAT: return (float)j.getDouble();
+            case INT: return (int)j.getLong();
+            case BYTE: return (byte)j.getLong();
+            case BOOLEAN: return j.getBoolean();
+            case EMPTY: return null;
+            case VEC2: 
+            Vec2 v = new Vec2();
+            v.fromJson(j);
+            return v;
+            case VEC3: 
+            Vec3 v2 = new Vec3();
+            v2.fromJson(j);
+            return v2;
+            default: throw new IllegalArgumentException("Missing type implementation (type: "+type+")");
+        }
     }
 }

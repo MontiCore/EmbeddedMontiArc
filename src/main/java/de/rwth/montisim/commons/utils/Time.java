@@ -2,6 +2,9 @@
 package de.rwth.montisim.commons.utils;
 
 import java.time.Duration;
+import java.time.Instant;
+
+import de.rwth.montisim.commons.utils.JsonTraverser.ArrayEntryStream;
 
 public class Time {
     public static final long SECOND_TO_NANOSEC = 1000000000;
@@ -15,5 +18,24 @@ public class Time {
     }
     public static Duration durationFromSeconds(double seconds){
         return Duration.ofNanos((long)(seconds*SECOND_TO_NANOSEC));
+    }
+
+    public static void toJson(JsonWriter j, Instant t) {
+        j.startArray();
+        j.writeValue(t.getEpochSecond());
+        j.writeValue(t.getNano());
+        j.endArray();
+    }
+
+    public static Instant fromJson(JsonTraverser j){
+        ArrayEntryStream it = j.streamArray().it;
+        if (!it.hasNext()) throw new ParsingException("Expected 'Seconds' entry");
+        it.next();
+        long sec = j.getLong();
+        if (!it.hasNext()) throw new ParsingException("Expected 'nanoseconds' entry");
+        it.next();
+        long nano = j.getLong();
+        Instant t = Instant.ofEpochSecond(sec, nano);
+        return t;
     }
 }

@@ -8,9 +8,12 @@ import java.util.Comparator;
  * Interface for a discrete event in a discrete event simulation
  */
 public abstract class DiscreteEvent<EventType> {
-    protected final Instant time;
+    protected Instant time;
     public DiscreteEvent(Instant time){
         this.time = time;
+    }
+    protected DiscreteEvent(){
+        this.time = null;
     }
     public Instant getEventTime(){
         return time;
